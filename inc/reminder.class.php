@@ -76,7 +76,7 @@ class Reminder extends CommonDBTM {
 		}	
 
 		if ($input['recursive']&&!$input['private']){
-			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
+			if (!haveRecursiveAccessToEntity($input["entities_id"])){
 				unset($input['recursive']);
 				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
@@ -111,7 +111,7 @@ class Reminder extends CommonDBTM {
 			}
 		}	
 		if ($input['recursive']&&!$input['private']){
-			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
+			if (!haveRecursiveAccessToEntity($input["entities_id"])){
 				unset($input['recursive']);
 				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
@@ -135,7 +135,7 @@ class Reminder extends CommonDBTM {
 		$this->fields["name"]=$LANG['reminder'][6];
 		$this->fields["users_id"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
-		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
+		$this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
 	}
 
 	/**
@@ -205,7 +205,7 @@ class Reminder extends CommonDBTM {
 				}
 			}
 
-			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+			privatePublicSwitch($this->fields["private"],$this->fields["entities_id"],$this->fields["recursive"]);
 		}else{
 			if ($this->fields["private"]){
 				echo $LANG['common'][77];

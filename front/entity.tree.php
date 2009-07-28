@@ -82,7 +82,7 @@ if (isset($_POST["move"])) {
 			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 		else 	
 			commonHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
-		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["entities_id"]);
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popFooter();
 		else 

@@ -55,10 +55,10 @@ if (!isset($_POST["add"]))
 else
 	$post_ticket = true;	
 
-if (!isset($_POST["FK_entities"]))
+if (!isset($_POST["entities_id"]))
 	$entity_restrict = $_SESSION["glpiactive_entity"];
 else
-	$entity_restrict = $_POST["FK_entities"];	
+	$entity_restrict = $_POST["entities_id"];	
 
 
 if (isset($_GET["itemtype"])) $itemtype=$_GET["itemtype"];

@@ -68,7 +68,7 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 		$query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_infocoms.items_id ";
 		$query[$val].= " LEFT JOIN glpi_contractstypes ON (glpi_contracts.contract_type = glpi_contractstypes.ID) ";
 		$query[$val].= " LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_locations.ID) ";
-		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".FK_entities = glpi_entities.ID) ";
+		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".entities_id = glpi_entities.ID) ";
 
 		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
 		$query[$val].= getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$val]);

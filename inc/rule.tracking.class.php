@@ -80,8 +80,8 @@ class TrackingBusinessRule extends Rule {
 
 	function addSpecificParamsForPreview($input,$params)
 	{
-		if (!isset($params["FK_entities"]))
-			$params["FK_entities"] = $_SESSION["glpiactive_entity"];
+		if (!isset($params["entities_id"]))
+			$params["entities_id"] = $_SESSION["glpiactive_entity"];
 		return $params;
 	}
 
@@ -90,7 +90,7 @@ class TrackingBusinessRule extends Rule {
 	 * @param $fields fields values
 	 */
 	function showSpecificCriteriasForPreview($fields){
-		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+		echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 	}
 
 	function executeActions($output,$params,$regex_results)
@@ -104,20 +104,20 @@ class TrackingBusinessRule extends Rule {
 					case "affectbyip":
 					case "affectbyfqdn":
 					case "affectbymac":
-						if (!isset($output["FK_entities"]))
-							$output["FK_entities"]=$params["FK_entities"];
+						if (!isset($output["entities_id"]))
+							$output["entities_id"]=$params["entities_id"];
 						$regexvalue = getRegexResultById($action->fields["value"],$regex_results);
 						
 						switch ($action->fields["action_type"])
 						{
 							case "affectbyip":
-								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",$output["FK_entities"]);
+								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",$output["entities_id"]);
 								break;
 							case "affectbyfqdn":
-								$result= getUniqueObjectIDByFQDN($regexvalue,$output["FK_entities"]);	
+								$result= getUniqueObjectIDByFQDN($regexvalue,$output["entities_id"]);	
 								break;
 							case "affectbymac":
-								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",$output["FK_entities"]);
+								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",$output["entities_id"]);
 								break;
 							default:
 								$result=array();	

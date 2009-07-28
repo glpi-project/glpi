@@ -45,7 +45,7 @@ $constype=new ConsumableType();
 
 if (isset($_POST["add"]))
 {
-	$constype->check(-1,'w',$_POST['FK_entities']);
+	$constype->check(-1,'w',$_POST['entities_id']);
 
 	$newID=$constype->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

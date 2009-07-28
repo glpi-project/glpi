@@ -128,7 +128,7 @@ class User extends CommonDBTM {
 				if (haveAccessToEntity($ent)){
 					$all=false;
 					$query = "DELETE FROM glpi_profiles_users 
-						WHERE users_id = '$ID' AND FK_entities='$ent'";
+						WHERE users_id = '$ID' AND entities_id='$ent'";
 					$DB->query($query);
 				}
 			}
@@ -229,8 +229,8 @@ class User extends CommonDBTM {
 			$input["deleted"]=0;
 		}
 
-		if (!isset($input["FK_entities"])){
-			$input["FK_entities"]=0;
+		if (!isset($input["entities_id"])){
+			$input["entities_id"]=0;
 		}
 
 		if (!isset($input["FK_profiles"])){
@@ -259,12 +259,12 @@ class User extends CommonDBTM {
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
 				$right=$DB->result($result,0,0);
-				if (isset($input["FK_entities"])){
-					$affectation["FK_entities"] = $input["FK_entities"];
+				if (isset($input["entities_id"])){
+					$affectation["entities_id"] = $input["entities_id"];
 				} else if (isset($_SESSION['glpiactive_entity'])){
-					$affectation["FK_entities"] = $_SESSION['glpiactive_entity'];
+					$affectation["entities_id"] = $_SESSION['glpiactive_entity'];
 				} else {
-					$affectation["FK_entities"] = 0;
+					$affectation["entities_id"] = 0;
 				}
 				$affectation["FK_profiles"] = $DB->result($result,0,0);
 				$affectation["users_id"] = $input["ID"];
@@ -311,8 +311,8 @@ class User extends CommonDBTM {
 		}
 
 		
-		if (isset ($_SESSION["glpiID"]) && isset ($input["FK_entities"]) && $_SESSION["glpiID"] == $input['ID']) {
-			$_SESSION["glpidefault_entity"] = $input["FK_entities"];
+		if (isset ($_SESSION["glpiID"]) && isset ($input["entities_id"]) && $_SESSION["glpiID"] == $input['ID']) {
+			$_SESSION["glpidefault_entity"] = $input["entities_id"];
 		}
 
 		// Manage preferences fields
@@ -380,7 +380,7 @@ class User extends CommonDBTM {
 			
 			//For each affectation -> write it in DB		
 			foreach($entities_rules as $entity){
-				$affectation["FK_entities"] = $entity[0];
+				$affectation["entities_id"] = $entity[0];
 				$affectation["FK_profiles"] = $entity[1];
 				$affectation["recursive"] = $entity[2];
 				$affectation["users_id"] = $input["ID"];
@@ -405,7 +405,7 @@ class User extends CommonDBTM {
 			if (count($rights)>0&&count($entities)>0){
 				foreach($entities as $entity){
 					foreach($rights as $right){
-						$affectation["FK_entities"] = $entity[0];
+						$affectation["entities_id"] = $entity[0];
 						$affectation["FK_profiles"] = $right;
 						$affectation["users_id"] = $input["ID"];
 						$affectation["recursive"] = $entity[1];
@@ -944,7 +944,7 @@ class User extends CommonDBTM {
 			echo "<div class='center' id='tabsbody' >";
 			
 			if (empty ($ID)) {
-				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
+				echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
 				echo "<input type='hidden' name='auth_method' value='1'>";
 			}
 			echo "<table class='tab_cadre_fixe'>";
@@ -1221,7 +1221,7 @@ class User extends CommonDBTM {
 
 			if (count($_SESSION['glpiactiveentities'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['profiles'][37] . "</td><td>";
-				dropdownValue("glpi_entities","FK_entities",$_SESSION["glpidefault_entity"],1,$_SESSION['glpiactiveentities']);
+				dropdownValue("glpi_entities","entities_id",$_SESSION["glpidefault_entity"],1,$_SESSION['glpiactiveentities']);
 				echo "</td></tr>";
 			}
 			

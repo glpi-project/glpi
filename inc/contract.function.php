@@ -193,7 +193,7 @@ function showDeviceContract($instID) {
  			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
 						FROM glpi_contracts_items, " .$LINK_ID_TABLE[$type];
 			if ($type != ENTITY_TYPE) {	
-				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".FK_entities=glpi_entities.ID) ";
+				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".entities_id=glpi_entities.ID) ";
 			}
 			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contracts_items.items_id 
 								AND glpi_contracts_items.itemtype='$type' 
@@ -254,7 +254,7 @@ function showDeviceContract($instID) {
       if ($contract->fields['device_countmax']==0 || $contract->fields['device_countmax'] > $totalnb){
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          echo "<div class='software-instal'>";
-         dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['FK_entities']),$CFG_GLPI["contract_types"]);
+         dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
          echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "<input type='hidden' name='ID' value='$instID'>";
          echo "</td><td>&nbsp;</td>";
@@ -341,7 +341,7 @@ function showEnterpriseContract($instID) {
 			glpi_suppliers.website as website, glpi_suppliers.phonenumber as phone, glpi_suppliers.type as type, 
 			glpi_entities.ID AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_suppliers "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.FK_entities) "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
 		. " WHERE glpi_contracts_suppliers.FK_contract = '$instID' AND glpi_contracts_suppliers.FK_enterprise = glpi_suppliers.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true)
 		. " ORDER BY glpi_entities.completename,name";
@@ -390,17 +390,17 @@ function showEnterpriseContract($instID) {
 	}
 	if ($canedit){
 		if ($contract->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contract->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contract->fields["entities_id"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_suppliers",$contract->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_suppliers",$contract->fields["entities_id"]);
 		}
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contract->fields["recursive"]) {
-            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contract->fields["FK_entities"]),$used);
+            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contract->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_suppliers","entID",1,$contract->fields["FK_entities"],$used);
+				dropdown("glpi_suppliers","entID",1,$contract->fields["entities_id"],$used);
 			}
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -497,7 +497,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 
 	$query = "SELECT glpi_contracts_items.* 
 		FROM glpi_contracts_items, glpi_contracts 
-		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)
+		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id=glpi_entities.ID)
 		WHERE glpi_contracts.ID=glpi_contracts_items.FK_contract AND glpi_contracts_items.items_id = '$ID' 
 			AND glpi_contracts_items.itemtype = '$itemtype' 
 		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
@@ -536,7 +536,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
 		if ($_SESSION["glpiview_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</strong></a></td>";
-		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["FK_entities"])."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
 		echo "<td class='center'>".$con->fields["num"]."</td>";
 		echo "<td class='center'>".getDropdownName("glpi_contractstypes",$con->fields["contract_type"])."</td>";
 		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
@@ -562,7 +562,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	$q="SELECT * 
 		FROM glpi_contracts 
 		WHERE deleted='0' "
-		.getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$ci->obj->getEntityID(),true);;
+		.getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$ci->obj->getEntityID(),true);;
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
 
@@ -603,7 +603,7 @@ function showContractAssociatedEnterprise($ID){
 
 	$query = "SELECT glpi_contracts.*, glpi_contracts_suppliers.ID AS assocID, glpi_entities.ID AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_contracts "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contracts.FK_entities) "	
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contracts.entities_id) "	
 		. " WHERE glpi_contracts_suppliers.FK_enterprise = '$ID' AND glpi_contracts_suppliers.FK_contract=glpi_contracts.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contracts.name";
@@ -654,18 +654,18 @@ function showContractAssociatedEnterprise($ID){
 	}
 	if ($canedit){
 		if ($ent->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",$ent->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",$ent->fields["entities_id"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_contracts",$ent->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_contracts",$ent->fields["entities_id"]);
 		}
 
 		if ($nb>count($used)){
 			echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
 			if ($ent->fields["recursive"]) {
-            dropdownContracts("conID",getSonsOf("glpi_entities",$ent->fields["FK_entities"]),$used);
+            dropdownContracts("conID",getSonsOf("glpi_entities",$ent->fields["entities_id"]),$used);
 			} else {
-				dropdownContracts("conID",$ent->fields['FK_entities'],$used);
+				dropdownContracts("conID",$ent->fields['entities_id'],$used);
 			}
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='addcontract' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -713,15 +713,15 @@ function cron_contract($display=false){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
-			if (!isset($message[$data["FK_entities"]])){
-				$message[$data["FK_entities"]]="";
+			if (!isset($message[$data["entities_id"]])){
+				$message[$data["entities_id"]]="";
 			}
-			if (!isset($items_notice[$data["FK_entities"]])){
-				$items_notice[$data["FK_entities"]]=array();
+			if (!isset($items_notice[$data["entities_id"]])){
+				$items_notice[$data["entities_id"]]=array();
 			}
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG['mailing'][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
-			$items_notice[$data["FK_entities"]][]=$data["ID"];
+			$message[$data["entities_id"]].=$LANG['mailing'][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
+			$items_notice[$data["entities_id"]][]=$data["ID"];
 		}
 	}
 
@@ -739,16 +739,16 @@ function cron_contract($display=false){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
-			if (!isset($message[$data["FK_entities"]])){
-				$message[$data["FK_entities"]]="";
+			if (!isset($message[$data["entities_id"]])){
+				$message[$data["entities_id"]]="";
 			}
-			if (!isset($items_end[$data["FK_entities"]])){
-				$items_end[$data["FK_entities"]]=array();
+			if (!isset($items_end[$data["entities_id"]])){
+				$items_end[$data["entities_id"]]=array();
 			}
 
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG['mailing'][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
-			$items_end[$data["FK_entities"]][]=$data["ID"];
+			$message[$data["entities_id"]].=$LANG['mailing'][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
+			$items_end[$data["entities_id"]][]=$data["ID"];
 		}
 
 

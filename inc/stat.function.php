@@ -371,7 +371,7 @@ function getNbIntervDropdown($dropdown){
 	$order=" ORDER BY $field";
 	if (in_array($dropdown,$CFG_GLPI["specif_entities_tables"])){
 		$where=getEntitiesRestrictRequest(" WHERE",$dropdown);
-		$order=" ORDER BY FK_entities, $field";	
+		$order=" ORDER BY entities_id, $field";	
 	}
 
 	$query = "SELECT * FROM ". $dropdown.$where.$order;
@@ -1045,7 +1045,7 @@ function showItemStats($target,$date1,$date2,$start){
 				echo displaySearchNewLine($output_type,$i%2);
 				echo displaySearchItem($output_type,$ci->getType()." - ".$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
 				if ($view_entities){
-					$ent=$ci->getField('FK_entities');
+					$ent=$ci->getField('entities_id');
 					if ($ent==0){
 						$ent=$LANG['entity'][2];
 					} else {

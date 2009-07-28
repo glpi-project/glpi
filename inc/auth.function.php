@@ -539,10 +539,10 @@ function initEntityProfiles($userID) {
 		}
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-			$query2 = "SELECT glpi_profiles_users.FK_entities as eID, glpi_profiles_users.ID as kID, 
+			$query2 = "SELECT glpi_profiles_users.entities_id as eID, glpi_profiles_users.ID as kID, 
 					glpi_profiles_users.recursive as recursive, glpi_entities.* 
 				FROM glpi_profiles_users 
-				LEFT JOIN glpi_entities ON (glpi_profiles_users.FK_entities = glpi_entities.ID)
+				LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
 				WHERE glpi_profiles_users.FK_profiles='$key' AND glpi_profiles_users.users_id='$userID' 
 				ORDER BY glpi_entities.completename";
 			$result2 = $DB->query($query2);
@@ -719,7 +719,7 @@ function loadGroups() {
 			FROM glpi_groups_users 
 			LEFT JOIN glpi_groups ON (glpi_groups_users.FK_groups = glpi_groups.ID) 
 			WHERE glpi_groups_users.users_id='" . $_SESSION['glpiID'] . "' " .
-			getEntitiesRestrictRequest(" AND ","glpi_groups","FK_entities",$_SESSION['glpiactiveentities'],true);
+			getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",$_SESSION['glpiactiveentities'],true);
 
 	$result_gp = $DB->query($query_gp);
 	if ($DB->numrows($result_gp)) {
@@ -806,7 +806,7 @@ function haveAccessToOneOfEntities($tab) {
  *
  * @param $separator : separator in the begin of the request
  * @param $table : table where apply the limit (if needed, multiple tables queries)
- * @param $field : field where apply the limit (id != FK_entities)
+ * @param $field : field where apply the limit (id != entities_id)
  * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
  * @param $recursive : need to use recursive process to find item (field need to be named recursive)
  * @return String : the WHERE clause to restrict 
@@ -833,7 +833,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		if ($table=='glpi_entities') {
 			$field="ID";
 		} else {
-			$field="FK_entities";
+			$field="entities_id";
 		}
 	}
 

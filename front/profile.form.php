@@ -65,10 +65,10 @@ if (isset($_POST["add"])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/profile.php");
 } else if (isset($_POST["moveentity"])){
 	checkRight("user","w");
-	if (isset($_POST['FK_entities'])&&$_POST['FK_entities']>=0){
+	if (isset($_POST['entities_id'])&&$_POST['entities_id']>=0){
 		foreach ($_POST["item"] as $key => $val){
 			if ($val==1) {
-				moveUserProfileEntity($key,$_POST['FK_entities']);
+				moveUserProfileEntity($key,$_POST['entities_id']);
 			}
 		}
 	}

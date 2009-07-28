@@ -935,12 +935,12 @@ function importArrayFromDB($DATA) {
  * @param $field field to autoname
  * @param $isTemplate true if create an object from a template 
  * @param $type device type
- * @param $FK_entities limit generation to an entity
+ * @param $entities_id limit generation to an entity
  *
  * @return new auto string
  *
  **/
-function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
+function autoName($objectName, $field, $isTemplate, $type,$entities_id=-1){
 	global $LINK_ID_TABLE,$DB,$CFG_GLPI;
 
 	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
@@ -967,8 +967,8 @@ function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 							WHERE $field LIKE '$like' 
 							AND deleted = '0' 
 							AND is_template = '0'";
-							if ($CFG_GLPI["autoname_entity"]&&$FK_entities>=0){
-								$query.=" AND FK_entities = '$FK_entities' ";
+							if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
+								$query.=" AND entities_id = '$entities_id' ";
 							}
 						$first = 0;
 					}
@@ -982,8 +982,8 @@ function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 					WHERE $field LIKE '$like' ";
 				if ($type != INFOCOM_TYPE){
 					$query .= " AND deleted = '0' AND is_template = '0'";
-					if ($CFG_GLPI["autoname_entity"]&&$FK_entities>=0){
-						$query.=" AND FK_entities = '$FK_entities' ";
+					if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
+						$query.=" AND entities_id = '$entities_id' ";
 					}
 				}
 

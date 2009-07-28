@@ -115,8 +115,8 @@ class Printer  extends CommonDBTM {
 		if (!parent::canUnrecurs()) {
 			return false;
 		}
-		$entities = "(".$this->fields['FK_entities'];
-      foreach (getAncestorsOf("glpi_entities",$this->fields['FK_entities']) as $papa) {
+		$entities = "(".$this->fields['entities_id'];
+      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
 			$entities .= ",$papa";
 		}
 		$entities .= ")";
@@ -140,7 +140,7 @@ class Printer  extends CommonDBTM {
 				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
 					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
 	
-					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND FK_entities NOT IN $entities")>0) {
+					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
 							return false;						
 					}
 				}			
@@ -173,7 +173,7 @@ class Printer  extends CommonDBTM {
 				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
 				if (empty($ic->fields['use_date'])){
 					unset($ic->fields['use_date']);
@@ -336,7 +336,7 @@ class Printer  extends CommonDBTM {
 		
 		if ($canedit) {
 			echo "<form method='post' name='form' action=\"$target\">\n";
-			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";		
+			echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";		
 		}
 		echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
 		$this->showFormHeader($ID,$withtemplate);
@@ -347,12 +347,12 @@ class Printer  extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
       echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("name","glpi_printers","name",$objectName,40,$this->fields["FK_entities"]);
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("name","glpi_printers","name",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
@@ -360,24 +360,24 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-      autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-      autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
 
       echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["FK_entities"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
-      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
 
@@ -418,12 +418,12 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-      autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['printers'][18].": </td><td>\n";
@@ -456,11 +456,11 @@ class Printer  extends CommonDBTM {
 
       // Ram ?
       echo "<tr><td>".$LANG['devices'][6].":</td><td>\n";
-      autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
       // Initial count pages ?
       echo "<tr><td>".$LANG['printers'][30].":</td><td>\n";
-      autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
 

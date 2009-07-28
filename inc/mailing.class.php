@@ -167,7 +167,7 @@ class Mailing
 			if ($sendprivate){
 				$join=" INNER JOIN glpi_profiles_users 
 					ON (glpi_profiles_users.users_id = glpi_users.ID 
-						".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->job->fields['FK_entities'],true).")
+						".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true).")
 					INNER JOIN glpi_profiles 
 					ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 				$joinprofile=	"INNER JOIN glpi_profiles 
@@ -187,7 +187,7 @@ class Mailing
 							case ADMIN_ENTITY_MAILING :
 								$query2 = "SELECT admin_email AS EMAIL 
 									FROM glpi_entitiesdatas 
-									WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
+									WHERE entities_id = '".$this->job->fields["entities_id"]."'";
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
@@ -377,7 +377,7 @@ class Mailing
 						FROM glpi_profiles_users 
 						INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) $joinprofile 
 						WHERE glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data["FK_item"]."' ".
-						getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->job->fields['FK_entities'],true);
+						getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true);
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -459,7 +459,7 @@ class Mailing
 
 		$query = "SELECT admin_email AS EMAIL 
 			FROM glpi_entitiesdatas 
-			WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
+			WHERE entities_id = '".$this->job->fields["entities_id"]."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);
@@ -484,7 +484,7 @@ class Mailing
 		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["ID"],"] ");
 
 		if (isMultiEntitiesMode()){
-			$subject.=getDropdownName("glpi_entities",$this->job->fields['FK_entities'])." | ";
+			$subject.=getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
 		}
 
 		switch ($this->type){
@@ -530,7 +530,7 @@ class Mailing
 		// Entity  conf
 		$query = "SELECT admin_email AS EMAIL, admin_reply AS REPLY 
 			FROM glpi_entitiesdatas 
-			WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
+			WHERE entities_id = '".$this->job->fields["entities_id"]."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);
@@ -735,14 +735,14 @@ class MailingResa{
 								$entity=-1;
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
 									if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
-										$entity=$ci->getField('FK_entities');
+										$entity=$ci->getField('entities_id');
 									}
 								}
 								
 								if ($entity>=0){
 									$query2 = "SELECT admin_email AS EMAIL 
 										FROM glpi_entitiesdatas 
-										WHERE FK_entities = '".$entity."'";
+										WHERE entities_id = '".$entity."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -804,12 +804,12 @@ class MailingResa{
 						$ri->getFromDB($this->resa->fields['id_item']);
 						$ci = new CommonItem();
 						$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
-						$FK_entities=$ci->getField('FK_entities');
+						$entities_id=$ci->getField('entities_id');
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
 							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."' 
-							".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$FK_entities,true);
+							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$entities_id,true);
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -850,11 +850,11 @@ class MailingResa{
 		$entity=-1;
 		if ($ri->getFromDB($this->resa->fields["id_item"])){
 			if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
-				$entity=$ci->getField('FK_entities');
+				$entity=$ci->getField('entities_id');
 			}
 		}
 		if ($entity>=0){
-			$query = "SELECT admin_email AS EMAIL FROM glpi_entitiesdatas WHERE FK_entities = '$entity'";
+			$query = "SELECT admin_email AS EMAIL FROM glpi_entitiesdatas WHERE entities_id = '$entity'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					$data=$DB->fetch_assoc($result);
@@ -1054,7 +1054,7 @@ class MailingAlert
 							case ADMIN_ENTITY_MAILING :
 								$query2 = "SELECT admin_email AS EMAIL 
 									FROM glpi_entitiesdatas 
-									WHERE FK_entities = '".$this->entity."'";
+									WHERE entities_id = '".$this->entity."'";
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
@@ -1072,7 +1072,7 @@ class MailingAlert
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
 							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."'
-							".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->entity,true);
+							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->entity,true);
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2)){
@@ -1171,7 +1171,7 @@ class MailingAlert
 	function get_mail_sender(){
 		global $CFG_GLPI,$DB;
 
-		$query = "SELECT admin_email AS EMAIL FROM glpi_entitiesdatas WHERE FK_entities = '".$this->entity."'";
+		$query = "SELECT admin_email AS EMAIL FROM glpi_entitiesdatas WHERE entities_id = '".$this->entity."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);

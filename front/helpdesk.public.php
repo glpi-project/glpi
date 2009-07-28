@@ -50,7 +50,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 				glpi_header($_SERVER['PHP_SELF']);
 			}
 		} else {
-			glpi_header(preg_replace("/FK_entities=.*/","",$_SERVER['HTTP_REFERER']));
+			glpi_header(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
 		}
 	}
 
@@ -61,7 +61,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 		}
 		changeActiveEntities($_GET["active_entity"],$_GET["recursive"]);
 		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
-			glpi_header(preg_replace("/FK_entities.*/","",$_SERVER['HTTP_REFERER']));
+			glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
 		}
 	}
 

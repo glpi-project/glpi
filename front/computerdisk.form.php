@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 	$computer=new Computer();
 	if ($computer->getFromDB($_POST['FK_computers'])){
 
-		$disk->check(-1,'w',$computer->fields['FK_entities']);
+		$disk->check(-1,'w',$computer->fields['entities_id']);
 
 		if ($newID=$disk->add($_POST)){
 			logEvent($_POST['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");

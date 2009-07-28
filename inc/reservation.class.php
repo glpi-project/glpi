@@ -336,7 +336,7 @@ class ReservationResa extends CommonDBTM {
 			return false;			
 		}
 
-		return haveAccessToEntity($ci->obj->fields["FK_entities"]);		
+		return haveAccessToEntity($ci->obj->fields["entities_id"]);		
 	}
 }
 ?>

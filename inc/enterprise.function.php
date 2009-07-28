@@ -83,7 +83,7 @@ function showInfocomEnterprise($instID) {
 				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.items_id) "
 				." WHERE glpi_infocoms.itemtype='$type' AND glpi_infocoms.FK_enterprise = '$instID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type]) 
-				." ORDER BY FK_entities, ".$LINK_ID_TABLE[$type].".name";
+				." ORDER BY entities_id, ".$LINK_ID_TABLE[$type].".name";
 				
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
@@ -108,7 +108,7 @@ function showInfocomEnterprise($instID) {
 						echo "<td class='center' rowspan='$nb' valign='top'>".$ci->getType()
 							.($nb>1?"<br />$nb</td>":"</td>");
 					}
-					echo "<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>";
+					echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
 					
 					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
@@ -143,7 +143,7 @@ function showAssociatedContact($instID) {
 
 	$query = "SELECT glpi_contacts.*, glpi_contacts_suppliers.ID as ID_ent, glpi_entities.ID as entity "
 		. " FROM glpi_contacts_suppliers, glpi_contacts "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.FK_entities) "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.entities_id) "
 		. " WHERE glpi_contacts_suppliers.FK_contact=glpi_contacts.ID AND glpi_contacts_suppliers.FK_enterprise = '$instID' "
 		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contacts.name";
@@ -189,9 +189,9 @@ function showAssociatedContact($instID) {
 	echo "</table><br>"    ;
 	if ($canedit){
 		if ($enterprise->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_contacts",getSonsOf("glpi_entities",$enterprise->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_contacts",getSonsOf("glpi_entities",$enterprise->fields["entities_id"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_contacts",$enterprise->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_contacts",$enterprise->fields["entities_id"]);
 		}
 		if ($nb>count($used)) {
 			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
@@ -199,9 +199,9 @@ function showAssociatedContact($instID) {
 			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='eID' value='$instID'>";
 			if ($enterprise->fields["recursive"]) {
-            dropdown("glpi_contacts","cID",1,getSonsOf("glpi_entities",$enterprise->fields["FK_entities"]),$used);
+            dropdown("glpi_contacts","cID",1,getSonsOf("glpi_entities",$enterprise->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_contacts","cID",1,$enterprise->fields["FK_entities"],$used);
+				dropdown("glpi_contacts","cID",1,$enterprise->fields["entities_id"],$used);
 			}
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='addcontact' value=\"".$LANG['buttons'][8]."\" class='submit'>";

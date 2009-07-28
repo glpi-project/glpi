@@ -150,8 +150,8 @@ class CommonDBTM {
 		} else {
 			return false;
 		}
-		if (isset($this->fields['FK_entities'])&&isset($_SESSION["glpiactive_entity"])){
-			$this->fields['FK_entities']=$_SESSION["glpiactive_entity"];
+		if (isset($this->fields['entities_id'])&&isset($_SESSION["glpiactive_entity"])){
+			$this->fields['entities_id']=$_SESSION["glpiactive_entity"];
 		}
 		$this->post_getEmpty();
 		return true;
@@ -1135,11 +1135,11 @@ class CommonDBTM {
 				
 		} else {
 			if ($this->fields["recursive"]) {
-				$can_edit = $can_edit && haveRecursiveAccessToEntity($this->fields["FK_entities"]);
+				$can_edit = $can_edit && haveRecursiveAccessToEntity($this->fields["entities_id"]);
 				$can_recu = $can_edit;
 			}	
 			else {
-				$can_recu = $can_edit && haveRecursiveAccessToEntity($this->fields["FK_entities"]);	
+				$can_recu = $can_edit && haveRecursiveAccessToEntity($this->fields["entities_id"]);	
 			}
 		}
 	
@@ -1197,8 +1197,8 @@ class CommonDBTM {
 		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
 		}
-		$entities = "('".$this->fields['FK_entities']."'";
-      foreach (getAncestorsOf("glpi_entities",$this->fields['FK_entities']) as $papa) {
+		$entities = "('".$this->fields['entities_id']."'";
+      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
 			$entities .= ",'$papa'";
 		}
 		$entities .= ")";
@@ -1211,12 +1211,12 @@ class CommonDBTM {
 					// 1->N Relation
 					if (is_array($field)) {
 						foreach ($field as $f) {
-							if (countElementsInTable($tablename, "`$f`='$ID' AND FK_entities NOT IN $entities")>0) {
+							if (countElementsInTable($tablename, "`$f`='$ID' AND entities_id NOT IN $entities")>0) {
 								return false;
 							}
 						}
 					} else {
-						if (countElementsInTable($tablename, "`$field`='$ID' AND FK_entities NOT IN $entities")>0) {
+						if (countElementsInTable($tablename, "`$field`='$ID' AND entities_id NOT IN $entities")>0) {
 							return false;
 						}
 					}
@@ -1243,7 +1243,7 @@ class CommonDBTM {
 										"`$tablename`.`$field`='$ID' 
 										AND `$tablename`.`$typefield`='$type' 
 										AND `$tablename`.`$devfield`=`$device`.ID 
-										AND `$device`.FK_entities NOT IN $entities")>0) {
+										AND `$device`.entities_id NOT IN $entities")>0) {
 											return false;											
 									}
 								}			
@@ -1259,7 +1259,7 @@ class CommonDBTM {
 									if (countElementsInTable("$tablename, $othertable",
 										"`$tablename`.`$field`='$ID' 
 										AND `$tablename`.`$otherfield`=`$othertable`.ID 
-										AND `$othertable`.FK_entities NOT IN $entities")>0) {
+										AND `$othertable`.entities_id NOT IN $entities")>0) {
 										return false;
 									}
 								}
@@ -1268,7 +1268,7 @@ class CommonDBTM {
 								if (countElementsInTable("$tablename, $othertable", 
 									"`$tablename`.`$field`=$ID 
 									AND `$tablename`.`$otherfield`=`$othertable`.ID 
-									AND `$othertable`.FK_entities NOT IN $entities")>0) {
+									AND `$othertable`.entities_id NOT IN $entities")>0) {
 									return false;
 								}
 							}						
@@ -1281,7 +1281,7 @@ class CommonDBTM {
 		// Doc links to this item
 		if ($this->type > 0
 			&& countElementsInTable("glpi_documents_items, glpi_documents",
-				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.FK_doc=glpi_documents.ID AND glpi_documents.FK_entities NOT IN $entities")>0) {
+				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.FK_doc=glpi_documents.ID AND glpi_documents.entities_id NOT IN $entities")>0) {
 					return false;                       
 		} 
 		// TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
@@ -1313,7 +1313,7 @@ class CommonDBTM {
 			
 			echo "<input type='hidden' name='is_template' value='1' />\n";
 			echo $LANG['common'][6].": "; 
-			autocompletionTextField("tplname",$this->table,"tplname",$this->fields["tplname"],25,$this->fields["FK_entities"]); 			
+			autocompletionTextField("tplname",$this->table,"tplname",$this->fields["tplname"],25,$this->fields["entities_id"]); 			
 		
 		} else if (empty($ID)||$ID<0){
 
@@ -1325,7 +1325,7 @@ class CommonDBTM {
 		}
 		
 		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
 		}
 		
 		echo "</th><th colspan='$colspan'>";
@@ -1493,8 +1493,8 @@ class CommonDBTM {
 	 * @return ID of the entity 
 	**/
 	function getEntityID () {
-		if ($this->entity_assign && isset($this->fields["FK_entities"])) {
-			return $this->fields["FK_entities"];		
+		if ($this->entity_assign && isset($this->fields["entities_id"])) {
+			return $this->fields["entities_id"];		
 		} 
 		return  -1;
 	}	

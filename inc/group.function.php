@@ -64,7 +64,7 @@ function showGroupDevice($ID){
 				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
 				$linktype="";
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
-				echo "<td>".getDropdownName("glpi_entities",$data['FK_entities'])."</td></tr>";
+				echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
 			}
 		}
 
@@ -154,9 +154,9 @@ function showGroupUsers($target,$ID){
 			echo "</div>";
 
 			if ($group->fields["recursive"]) {
-            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",$group->fields["FK_entities"]), 0, $used);
+            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",$group->fields["entities_id"]), 0, $used);
 			} else {
-				$res=dropdownUsersSelect (true, "all", $group->fields["FK_entities"], 0, $used);
+				$res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
 			}		
 			$nb=($res ? $DB->result($res,0,"CPT") : 0);
 			
@@ -165,11 +165,11 @@ function showGroupUsers($target,$ID){
 				echo "<table  class='tab_cadre_fixe'>";
 				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 				if ($group->fields["recursive"]) {
-               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["FK_entities"]),0,$used);
+               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["entities_id"]),0,$used);
 				} else {
-					dropdownUsers("users_id",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
+					dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);
 				}
-				//dropdownAllUsers("users_id",0,1,$group->fields["FK_entities"],0,$used);
+				//dropdownAllUsers("users_id",0,1,$group->fields["entities_id"],0,$used);
 				echo "</td><td align='center' class='tab_bg_2'>";
 				echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 				echo "</td></tr>";
@@ -221,7 +221,7 @@ function isGroupVisibleInEntity($group,$entity_restrict)
 	$query = "SELECT ID 
 		FROM glpi_groups 
 		WHERE ID='$group' ".
-		getEntitiesRestrictRequest(" AND","glpi_groups","FK_entities",$entity_restrict,true);
+		getEntitiesRestrictRequest(" AND","glpi_groups","entities_id",$entity_restrict,true);
 	$result = $DB->query($query);
 	$found = false;
 

@@ -146,7 +146,7 @@ class Contract extends CommonDBTM {
 		if ($can_edit) {
 			echo "<form name='form' method='post' action=\"$target\">";
 			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
@@ -154,7 +154,7 @@ class Contract extends CommonDBTM {
 		$this->showFormHeader($ID,'',2);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td><td>";
-      autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td>";
 
       echo "<td>".$LANG['financial'][6].":		</td><td >";
@@ -185,7 +185,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
 
       echo "<td>".$LANG['financial'][13].":		</td><td>";
-      autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],40,$this->fields["entities_id"]);
 
       echo "</td></tr>";
 

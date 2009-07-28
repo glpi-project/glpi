@@ -131,7 +131,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_userprofile":
-			dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
+			dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
 			echo ".&nbsp;".$LANG['profiles'][22].":";
 			dropdownUnderProfiles("FK_profiles");
 			echo ".&nbsp;".$LANG['profiles'][28].":";
@@ -181,7 +181,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 					$newgroup.="<optgroup label=\"$val\">";
 				} else {
 					if ($key>1
-						&&$key!=80 // No FK_entities massive action
+						&&$key!=80 // No entities_id massive action
 					){ // No ID
 						if (!empty($val["linkfield"])
 								||($val["table"]=="glpi_infocoms" && $key!=120) // no end_warranty

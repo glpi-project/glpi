@@ -219,26 +219,14 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename foreign keys'); // Updating schema
 
    $foreignkeys=array(
-   'FK_device' => array(array('to' => 'items_id',
-                           'noindex' => array('glpi_alerts','glpi_contracts_items',
-                                 'glpi_documents_items','glpi_infocoms'),
-                           'tables' => array('glpi_alerts','glpi_contracts_items',
-                                 'glpi_documents_items','glpi_infocoms')),
-                        array('to' => 'devices_id',
-                           'noindex' => array('glpi_computers_devices'),
-                           'tables' => array('glpi_computers_devices')),
+   'assign' => array(array('to' => 'users_id_assign',
+                           'noindex' => array(),
+                           'tables' => array('glpi_tickets')),
                      ),
-   'FK_glpi_device' => array(array('to' => 'items_id',
-                           'noindex' => array('glpi_logs'),
-                           'tables' => array('glpi_logs')),
-                     ),
-   'on_device' => array(array('to' => 'items_id',
-                           'noindex' => array('glpi_networkports'),
-                           'tables' => array('glpi_networkports')),
-                     ),
-   'id_device' => array(array('to' => 'items_id',
-                           'noindex' => array('glpi_reservationsitems'),
-                           'tables' => array('glpi_reservationsitems')),
+   'author' => array(array('to' => 'users_id',
+                           'noindex' => array(),
+                           'tables' => array('glpi_ticketsfollowups','glpi_knowbaseitems',
+                              'glpi_tickets')),
                      ),
    'computer' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_tickets'),
@@ -261,6 +249,19 @@ function update0721to080() {
                                        'noindex' => array(),
                                        'tables' => array('glpi_logs')),
                      ),
+   'FK_device' => array(array('to' => 'items_id',
+                           'noindex' => array('glpi_alerts','glpi_contracts_items',
+                                 'glpi_documents_items','glpi_infocoms'),
+                           'tables' => array('glpi_alerts','glpi_contracts_items',
+                                 'glpi_documents_items','glpi_infocoms')),
+                        array('to' => 'devices_id',
+                           'noindex' => array('glpi_computers_devices'),
+                           'tables' => array('glpi_computers_devices')),
+                     ),
+   'FK_glpi_device' => array(array('to' => 'items_id',
+                           'noindex' => array('glpi_logs'),
+                           'tables' => array('glpi_logs')),
+                     ),
    'FK_users' => array(array('to' => 'users_id',
                               'noindex' => array('glpi_displayprefs','glpi_bookmarks_users',
                                  'glpi_groups_users',),
@@ -271,6 +272,26 @@ function update0721to080() {
                                  'glpi_networkequipments', 'glpi_peripherals', 'glpi_phones',
                                  'glpi_printers','glpi_softwares')),
                      ),
+   'id_assign' => array(array('to' => 'users_id',
+                           'noindex' => array(),
+                           'tables' => array('glpi_ticketsplannings')),
+                     ),
+   'id_device' => array(array('to' => 'items_id',
+                           'noindex' => array('glpi_reservationsitems'),
+                           'tables' => array('glpi_reservationsitems')),
+                     ),
+   'id_user' => array(array('to' => 'users_id',
+                           'noindex' => array(),
+                           'tables' => array('glpi_consumables','glpi_reservations')),
+                     ),
+   'on_device' => array(array('to' => 'items_id',
+                           'noindex' => array('glpi_networkports'),
+                           'tables' => array('glpi_networkports')),
+                     ),
+   'recipient' => array(array('to' => 'users_id_recipient',
+                           'noindex' => array(),
+                           'tables' => array('glpi_tickets')),
+                     ),
    'tech_num' => array(array('to' => 'users_id_tech',
                               'noindex' => array(),
                               'tables' => array('glpi_cartridgesitems','glpi_computers',
@@ -278,26 +299,24 @@ function update0721to080() {
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
                      ),
-   'id_user' => array(array('to' => 'users_id',
-                           'noindex' => array(),
-                           'tables' => array('glpi_consumables','glpi_reservations')),
+
+   'server_id' => array(array('to' => 'authldaps_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_authldapsreplicates')),
                      ),
-   'author' => array(array('to' => 'users_id',
-                           'noindex' => array(),
-                           'tables' => array('glpi_ticketsfollowups','glpi_knowbaseitems',
-                              'glpi_tickets')),
-                     ),
-   'recipient' => array(array('to' => 'users_id_recipient',
-                           'noindex' => array(),
-                           'tables' => array('glpi_tickets')),
-                     ),
-   'id_assign' => array(array('to' => 'users_id',
-                           'noindex' => array(),
-                           'tables' => array('glpi_ticketsplannings')),
-                     ),
-   'assign' => array(array('to' => 'users_id_assign',
-                           'noindex' => array(),
-                           'tables' => array('glpi_tickets')),
+   'FK_entities' => array(array('to' => 'entities_id',
+                           'noindex' => array('glpi_locations','glpi_netpoints',
+                              'glpi_entitiesdatas',),
+                           'tables' => array('glpi_bookmarks','glpi_cartridgesitems',
+                              'glpi_computers','glpi_consumablesitems','glpi_contacts',
+                              'glpi_contracts','glpi_documents','glpi_locations',
+                              'glpi_netpoints','glpi_suppliers','glpi_entitiesdatas',
+                              'glpi_groups','glpi_knowbaseitems','glpi_links',
+                              'glpi_mailcollectors','glpi_monitors','glpi_networkequipments',
+                              'glpi_peripherals','glpi_phones','glpi_printers',
+                              'glpi_reminders','glpi_rules','glpi_softwares',
+                              'glpi_softwareslicenses','glpi_tickets','glpi_users',
+                              'glpi_profiles_users',)),
                      ),
    );
    foreach ($foreignkeys as $oldname => $newnames) {
@@ -471,10 +490,15 @@ function update0721to080() {
       $query = "ALTER TABLE `glpi_budgets` ADD `recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
       $DB->query($query) or die("0.80 add recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists("glpi_budgets","FK_entities")) {
-         $query = "ALTER TABLE `glpi_budgets` ADD `FK_entities` int(11) NOT NULL default '0' AFTER `name`;";
-         $DB->query($query) or die("0.80 add FK_entities field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_budgets","entities_id")) {
+         $query = "ALTER TABLE `glpi_budgets` ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`;";
+         $DB->query($query) or die("0.80 add entities_id field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
+   if (!isIndex("glpi_budgets","entities_id")) {
+      $query="ALTER TABLE `glpi_budgets` ADD INDEX `entities_id` (`entities_id`);";
+      $DB->query($query) or die("0.80 create index entities_id in glpi_budgets " . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists("glpi_budgets","deleted")) {
       $query = "ALTER TABLE `glpi_budgets` ADD `deleted` tinyint(1) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.80 add deleted field in glpi_budgets" . $LANG['update'][90] . $DB->error());
@@ -494,6 +518,10 @@ function update0721to080() {
    if (!FieldExists("glpi_budgets","is_template")) {
       $query = "ALTER TABLE `glpi_budgets` ADD `is_template` tinyint(1) NOT NULL default '0'";
       $DB->query($query) or die("0.80 add is_template field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex("glpi_budgets","is_template")) {
+      $query="ALTER TABLE `glpi_budgets` ADD INDEX `is_template` (`is_template`);";
+      $DB->query($query) or die("0.80 create index is_template in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_budgets","tplname")) {

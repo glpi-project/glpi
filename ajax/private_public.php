@@ -50,7 +50,7 @@ if (!defined('GLPI_ROOT')){
 		switch ($_POST['private']){
 			case true :
 				echo "<input type='hidden' name='private' value='1'>\n";
-				echo "<input type='hidden' name='FK_entities' value='-1'>\n";
+				echo "<input type='hidden' name='entities_id' value='-1'>\n";
 				echo "<input type='hidden' name='recursive' value='0'>\n";
 				echo $LANG['common'][77]. " - ";
 
@@ -59,7 +59,7 @@ if (!defined('GLPI_ROOT')){
 			case false :
 				echo "<input type='hidden' name='private' value='0'>\n";
 				echo $LANG['common'][76].":&nbsp;";
-				dropdownValue('glpi_entities',"FK_entities",$_POST["FK_entities"]);
+				dropdownValue('glpi_entities',"entities_id",$_POST["entities_id"]);
 				echo "&nbsp;+&nbsp;".$LANG['entity'][9].":&nbsp;";
 				dropdownYesNo('recursive',$_POST["recursive"]);
 

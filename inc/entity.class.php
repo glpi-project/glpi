@@ -49,7 +49,7 @@ class EntityData extends CommonDBTM{
 		$this->type=-1;
 	}
 	function getIndexName(){
-		return "FK_entities";
+		return "entities_id";
 	}
 
 }
@@ -140,7 +140,7 @@ class Entity extends CommonDBTM{
 		// Get data 
 		$entdata=new EntityData();
 		if (!$entdata->getFromDB($ID)){
-			$entdata->add(array("FK_entities"=>$ID)); 
+			$entdata->add(array("entities_id"=>$ID)); 
 			if (!$entdata->getFromDB($ID)){
 				$con_spotted=false;
 			}
@@ -242,7 +242,7 @@ class Entity extends CommonDBTM{
 		if ($canedit) {
 			echo "<tr>";
 			echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
-			echo "<input type='hidden' name='FK_entities' value=\"$ID\">\n";
+			echo "<input type='hidden' name='entities_id' value=\"$ID\">\n";
 			echo "<input type='hidden' name='ID' value=\"".$entdata->fields["ID"]."\">\n";
 			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
 			echo "</td>\n\n";

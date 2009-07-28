@@ -265,7 +265,7 @@ class OcsAffectEntityRule extends Rule {
 			$this->dropdownRulesMatch("match", "AND");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
-			echo "<input type=hidden name='FK_entities' value=\"-1\">";
+			echo "<input type=hidden name='entities_id' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
 			echo "<input type='submit' name='add_rule' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 			echo "</td></tr>";
@@ -340,7 +340,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
 		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
-		WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  
+		WHERE gra.FK_rules=grd.ID AND gra.field='entities_id'  
 		AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
@@ -379,7 +379,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 								$target_entity = getEntityIDByTag($res);
 
 								if ($target_entity != '')
-									$output["FK_entities"]=$target_entity;
+									$output["entities_id"]=$target_entity;
 							} 
 						}
 					break;								

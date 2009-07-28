@@ -101,7 +101,7 @@ class Bookmark extends CommonDBTM {
 		$this->fields["users_id"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
 		$this->fields["recursive"]=0;
-		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
+		$this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
 	}
 
         function cleanDBonPurge($ID) {
@@ -172,7 +172,7 @@ class Bookmark extends CommonDBTM {
 		echo "<td>";
 
 		if(haveRight("bookmark_public","w")) { 
-			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+			privatePublicSwitch($this->fields["private"],$this->fields["entities_id"],$this->fields["recursive"]);
 		}else{
 			if ($this->fields["private"]){
 				echo $LANG['common'][77];

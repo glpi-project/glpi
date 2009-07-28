@@ -65,7 +65,7 @@ function showEntityUser($target,$ID){
 			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-			echo "<input type='hidden' name='FK_entities' value='$ID'>";
+			echo "<input type='hidden' name='entities_id' value='$ID'>";
 			dropdownAllUsers("users_id",0,1);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['profiles'][22].":";
@@ -92,7 +92,7 @@ function showEntityUser($target,$ID){
 				FROM glpi_profiles_users 
 				LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
 				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id)
-				WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0;";
+				WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.deleted=0;";
 	
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -103,7 +103,7 @@ function showEntityUser($target,$ID){
 				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.recursive,glpi_profiles_users.dynamic
 					FROM glpi_profiles_users 
 					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id) 
-					WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data['ID']."'   
+					WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data['ID']."'   
 					ORDER BY glpi_profiles_users.FK_profiles, glpi_users.name, glpi_users.realname, glpi_users.firstname";
 				$result2=$DB->query($query);
 				if ($DB->numrows($result2)>0){
@@ -175,12 +175,12 @@ function showEntityUser($target,$ID){
 /**
  * Add a right to a user 
  *
- * @param $input array : parameters : need FK_entities / users_id / FK_profiles optional : recurisve=0 / dynamic=0
+ * @param $input array : parameters : need entities_id / users_id / FK_profiles optional : recurisve=0 / dynamic=0
  * @return new glpi_profiles_users ID
  */
 function addUserProfileEntity($input){
 	global $DB;
-	if (!isset($input['FK_entities'])||$input['FK_entities']<0
+	if (!isset($input['entities_id'])||$input['entities_id']<0
 		||!isset($input['users_id'])||$input['users_id']==0
 		||!isset($input['FK_profiles'])||$input['FK_profiles']==0) {
 		return false;
@@ -192,8 +192,8 @@ function addUserProfileEntity($input){
 		$input['dynamic']=0;
 	}
 
-	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
-		VALUES ('".$input['users_id']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
+	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `FK_profiles` , `entities_id` , `recursive` , `dynamic` )
+		VALUES ('".$input['users_id']."', '".$input['FK_profiles']."', '".$input['entities_id']."', '".$input['recursive']."', '".$input['dynamic']."');";
 	
 	return $DB->query($query);
 }
@@ -219,12 +219,12 @@ function deleteUserProfileEntity($ID){
  * Move a right to another entity
  *
  * @param $ID integer : glpi_profiles_users ID
- * @param $FK_entities integer : new entity ID
+ * @param $entities_id integer : new entity ID
  */
-function moveUserProfileEntity($ID,$FK_entities){
+function moveUserProfileEntity($ID,$entities_id){
 
 	global $DB;
-	$query="UPDATE glpi_profiles_users SET FK_entities='$FK_entities' WHERE ID = '$ID';";
+	$query="UPDATE glpi_profiles_users SET entities_id='$entities_id' WHERE ID = '$ID';";
 	return $DB->query($query);
 }
 
@@ -233,11 +233,11 @@ function moveUserProfileEntity($ID,$FK_entities){
 function getEntityIDByField($field,$value)
 {
 	global $DB;
-	$sql = "SELECT FK_entities FROM glpi_entitiesdatas WHERE ".$field."='".$value."'";
+	$sql = "SELECT entities_id FROM glpi_entitiesdatas WHERE ".$field."='".$value."'";
 	
 	$result = $DB->query($sql);
 	if ($DB->numrows($result)==1)
-		return $DB->result($result,0,"FK_entities");
+		return $DB->result($result,0,"entities_id");
 	else
 		return "";	
 }

@@ -127,7 +127,7 @@ class Link extends CommonDBTM {
 		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
 		echo "</td></tr>";
 
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
 
 
 		if ($canedit)

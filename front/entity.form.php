@@ -45,7 +45,7 @@ $entitydata=new EntityData();
 
 if (isset($_POST["update"]))
 {
-	$entity->check($_POST["FK_entities"],'w');
+	$entity->check($_POST["entities_id"],'w');
 
 	$entitydata->update($_POST);
 
@@ -53,11 +53,11 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["adduser"]))
 {
-	$entity->check($_POST["FK_entities"],'w');
+	$entity->check($_POST["entities_id"],'w');
 
 	addUserProfileEntity($_POST);
 
-	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+	logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_rule"]))
 {
@@ -72,7 +72,7 @@ if (isset($_POST["update"]))
 		//Add an action associated to the rule
 		$ruleAction = new RuleAction;
 		//Action is : affect computer to this entity
-		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
+		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
 	}
 		
 	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
@@ -90,7 +90,7 @@ if (isset($_POST["update"]))
 		//Add an action associated to the rule
 		$ruleAction = new RuleAction;
 		//Action is : affect computer to this entity
-		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
+		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
 		if ($_POST["FK_profiles"]){
 			$ruleAction->addActionByAttributes("assign", $ruleid, "FK_profiles", $_POST["FK_profiles"]);
 		}
@@ -102,7 +102,7 @@ if (isset($_POST["update"]))
 
 } else if (isset($_POST["deleteuser"]))
 {
-	$entity->check($_POST["FK_entities"],'w');
+	$entity->check($_POST["entities_id"],'w');
 
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){
@@ -110,7 +110,7 @@ if (isset($_POST["update"]))
 		}
 	}
 
-	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
+	logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
 {

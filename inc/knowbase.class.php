@@ -211,7 +211,7 @@ class kbitem extends CommonDBTM {
 		
 			if (isMultiEntitiesMode()){
 				echo $LANG['entity'][0].": ";
-				dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
+				dropdownValue("glpi_entities", "entities_id", $this->fields["entities_id"],0);
 	
 				echo "&nbsp;&nbsp;".$LANG['entity'][9].":	";
 				if ($canrecu) {

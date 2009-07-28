@@ -64,9 +64,9 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
 		$group_infos = ldap_search_group_by_dn($ds, $config_ldap->fields['ldap_basedn'], stripslashes($group_dn),$config_ldap->fields["ldap_group_condition"]);
 		$group = new Group();
 		if ($type == "groups")
-			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_group_dn"=>addslashes($group_infos["dn"]),"FK_entities"=>$entity));
+			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_group_dn"=>addslashes($group_infos["dn"]),"entities_id"=>$entity));
 		else
-			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_field"=>$config_ldap->fields["ldap_field_group"], "ldap_value"=>addslashes($group_infos["dn"]),"FK_entities"=>$entity));
+			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_field"=>$config_ldap->fields["ldap_field_group"], "ldap_value"=>addslashes($group_infos["dn"]),"entities_id"=>$entity));
 	}
 }
 

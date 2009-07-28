@@ -575,7 +575,7 @@ function dropdownCompatibleCartridges($pID) {
 						AND glpi_cartridges.date_use IS NULL)
 		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.location)
 		WHERE  glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
-		AND glpi_cartridgesitems.FK_entities='".$p->fields["FK_entities"]."' 
+		AND glpi_cartridgesitems.entities_id='".$p->fields["entities_id"]."' 
 		GROUP BY glpi_cartridgesitems.ID 
 		ORDER BY glpi_cartridgesitems.name, glpi_cartridgesitems.ref";
 	if ($result = $DB->query($query)){
@@ -632,7 +632,7 @@ function cron_cartridge($display=false){
 	loadLanguage($CFG_GLPI["language"]);
 
 	// Get cartridges type with alarm activated and last warning > X days depending on config
-	$query="SELECT glpi_cartridgesitems.ID AS cartID, glpi_cartridgesitems.FK_entities as entity, 
+	$query="SELECT glpi_cartridgesitems.ID AS cartID, glpi_cartridgesitems.entities_id as entity, 
 			glpi_cartridgesitems.ref as cartref, glpi_cartridgesitems.name AS cartname, 
 			glpi_cartridgesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
 		FROM glpi_cartridgesitems 

@@ -82,9 +82,9 @@ if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
 else $ID="";
 
-if (isset($_POST["FK_entities"])) $FK_entities=$_POST["FK_entities"];
-elseif (isset($_GET["FK_entities"])) $FK_entities=$_GET["FK_entities"];
-else $FK_entities="";
+if (isset($_POST["entities_id"])) $entities_id=$_POST["entities_id"];
+elseif (isset($_GET["entities_id"])) $entities_id=$_GET["entities_id"];
+else $entities_id="";
 
 if (isset($_POST['mass_delete'])){
 	$input['tablename']=$_POST['which'];
@@ -94,7 +94,7 @@ if (isset($_POST['mass_delete'])){
 			deleteDropdown($input);
 		}
 	}
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 }else if (isset($_POST["several_add"])) {
 	
@@ -104,42 +104,42 @@ if (isset($_POST['mass_delete'])){
 	}
 
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 }else if (isset($_POST["move"])) {
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]." ".getDropdownName($_POST['tablename'],$_POST['value_to_move']));
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 }else if (isset($_POST["add"])) {
 	addDropdown($_POST);
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["value"]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 } else if (isset($_POST["delete"]) && $_POST["ID"]>0) {
 	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (!strpos($_SERVER['PHP_SELF'],"popup")){
 			commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 		}
-		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["entities_id"]);
 		if (!strpos($_SERVER['PHP_SELF'],"popup")){
 			commonFooter();
 		}
 	} else {
 		logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".getDropdownName($_POST['which'],$_POST['ID']));
 		deleteDropdown($_POST);
-		glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&FK_entities=$FK_entities");
+		glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&entities_id=$entities_id");
 	}
 
 } else if (isset($_POST["update"])) {
 	updateDropdown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&ID=$ID&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&ID=$ID&entities_id=$entities_id");
 
 } else if (isset($_POST["replace"])) {
 	replaceDropDropDown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&FK_entities=$FK_entities");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&entities_id=$entities_id");
 
 } else {
 	if (!strpos($_SERVER['PHP_SELF'],"popup")){
@@ -291,15 +291,15 @@ if (isset($_POST['mass_delete'])){
 				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 				echo $LANG['setup'][77].": </th></tr><tr class='tab_bg_1'><td>";
 				echo "<input type='hidden' name='which' value='glpi_netpoints' />";
-				dropdownValue("glpi_locations", "value2", $value2, $FK_entities);
+				dropdownValue("glpi_locations", "value2", $value2, $entities_id);
 				echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 				echo "</table></form></div>";
 			}
 			if (strlen($value2) > 0) {
 				if (isset($_GET['mass_deletion'])){
-					showDropdownList($_SERVER['PHP_SELF'],$which,$FK_entities,$value2);
+					showDropdownList($_SERVER['PHP_SELF'],$which,$entities_id,$value2);
 				} else {
-					showFormNetpoint($_SERVER['PHP_SELF'],$title,$ID,$FK_entities,$value2);
+					showFormNetpoint($_SERVER['PHP_SELF'],$title,$ID,$entities_id,$value2);
 				}
 			}		
 		}
@@ -312,13 +312,13 @@ if (isset($_POST['mass_delete'])){
 			}
 		}
 		if (isset($_GET['mass_deletion'])){
-			showDropdownList($_SERVER['PHP_SELF'],$which,$FK_entities);
+			showDropdownList($_SERVER['PHP_SELF'],$which,$entities_id);
 		} else {
 			if (!empty($title)){
 				if (in_array($which,$CFG_GLPI["dropdowntree_tables"])){
-					showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$where,$tomove,$type,$FK_entities);
+					showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$where,$tomove,$type,$entities_id);
 				} else {
-					showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID,$FK_entities);
+					showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID,$entities_id);
 				}
 			}
 		}

@@ -47,7 +47,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $netdevice=new Netdevice();
 if (isset($_POST["add"]))
 {
-	$netdevice->check(-1,'w',$_POST['FK_entities']);
+	$netdevice->check(-1,'w',$_POST['entities_id']);
 
 	$newID=$netdevice->add($_POST);
 	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");

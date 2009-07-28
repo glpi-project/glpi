@@ -127,7 +127,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 				if (!$show_old&&$canedit){
 					echo "<th>";
-					dropdownAllUsers("users_id",0,1,$cartype->fields["FK_entities"]);
+					dropdownAllUsers("users_id",0,1,$cartype->fields["entities_id"]);
 					echo "&nbsp;<input type='submit' class='submit' name='give' value='".$LANG['consumables'][32]."'>";
 					echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
@@ -481,7 +481,7 @@ function cron_consumable($display=false){
 	loadLanguage($CFG_GLPI["language"]);
 
 	// Get cartridges type with alarm activated and last warning > config
-	$query="SELECT glpi_consumablesitems.ID AS consID, glpi_consumablesitems.FK_entities as entity, 
+	$query="SELECT glpi_consumablesitems.ID AS consID, glpi_consumablesitems.entities_id as entity, 
 			glpi_consumablesitems.ref as consref, glpi_consumablesitems.name AS consname, 
 			glpi_consumablesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
 		FROM glpi_consumablesitems 

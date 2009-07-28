@@ -104,7 +104,7 @@ class Budget extends CommonDBTM{
       if ($canedit) {
          echo "<form method='post' name=form action=\"$target\">";
          if (empty($ID)||$ID<0){
-            echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+            echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
          }
       }
 
@@ -117,7 +117,7 @@ class Budget extends CommonDBTM{
 
       echo "<td>".$LANG['common'][16].":	</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][21]."</td><td>";

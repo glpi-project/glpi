@@ -50,7 +50,7 @@ $phone=new Phone();
 
 if (isset($_POST["add"]))
 {
-	$phone->check(-1,'w',$_POST['FK_entities']);
+	$phone->check(-1,'w',$_POST['entities_id']);
 
 	$newID=$phone->add($_POST);
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

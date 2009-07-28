@@ -116,10 +116,10 @@ if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
 }
 $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
 		$table.serial AS serial,$table.otherserial AS otherserial,
-		$table.FK_entities as FK_entities 
+		$table.entities_id as entities_id 
 	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH 
 	$where 
-	ORDER BY FK_entities, name ASC";
+	ORDER BY entities_id, name ASC";
 
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -131,11 +131,11 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	$prev=-1;
 	while ($data = $DB->fetch_array($result)) {
-		if ($multi && $data["FK_entities"]!=$prev) {
+		if ($multi && $data["entities_id"]!=$prev) {
 			if ($prev>=0) {
 				echo "</optgroup>";
 			}
-			$prev=$data["FK_entities"];
+			$prev=$data["entities_id"];
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		

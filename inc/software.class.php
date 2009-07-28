@@ -139,7 +139,7 @@ class Software extends CommonDBTM {
 				$ic->fields["items_id"] = $newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
 				if (empty($ic->fields['use_date'])){
 					unset($ic->fields['use_date']);
@@ -290,7 +290,7 @@ class Software extends CommonDBTM {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
 
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 	
@@ -298,7 +298,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
       echo "<td>";
-      autocompletionTextField("name", "glpi_softwares", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
+      autocompletionTextField("name", "glpi_softwares", "name", $this->fields["name"], 40,$this->fields["entities_id"]);
       echo "</td>";
       
       
@@ -317,19 +317,19 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >" . $LANG['common'][34] . ": 	</td>";
       echo "<td >";
-      dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["FK_entities"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
       echo "</td>";
 
       echo "<td>" . $LANG['common'][35] . ":</td><td>";
-      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["FK_entities"]);
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][10] . ": 	</td><td>";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"], "interface", 1, $this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"], "interface", 1, $this->fields["entities_id"]);
       echo "</td>";
 
       echo "<td>" . $LANG['common'][15] . ": 	</td><td>";
-      dropdownValue("glpi_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
+      dropdownValue("glpi_locations", "location", $this->fields["location"], 1, $this->fields["entities_id"]);
       echo "</td></tr>";
 
       // UPDATE
@@ -673,7 +673,7 @@ class SoftwareLicense extends CommonDBTM {
 			unset ($ic->fields["ID"]);
 			$ic->fields["items_id"] = $newID;
 			if (isset($ic->fields["num_immo"])) {
-				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['entities_id']);
 			}
 			if (empty($ic->fields['use_date'])){
 				unset($ic->fields['use_date']);
@@ -751,7 +751,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		
@@ -816,7 +816,7 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG['software'][50].":		</td>";
 		echo "<td>";
 		if ($this->fields["number"]==1) {
-			dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['FK_entities']);
+			dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['entities_id']);
 		} else {
 			echo $LANG['software'][51];
 		}
