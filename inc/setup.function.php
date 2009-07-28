@@ -479,11 +479,11 @@ function moveTreeUnder($table, $to_move, $where) {
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
          // Clean sons / ancestors if needed
-         if (FieldExists($input["tablename"],"cache_sons")){
+         if (FieldExists($table,"cache_sons")){
             $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
             $DB->query($query);
          }
-         if (FieldExists($input["tablename"],"cache_ancestors")){
+         if (FieldExists($table,"cache_ancestors")){
             $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
             $DB->query($query);
          }         
@@ -545,7 +545,7 @@ function getDropdownID($input){
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-            $parentIDfield=getForeignKeyFieldFor($table);
+            $parentIDfield=getForeignKeyFieldFor($input["tablename"]);
 
 				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
 					WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='0'";
@@ -684,7 +684,7 @@ function addDropdown($input) {
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-            $parentIDfield=getForeignKeyFieldFor($table);
+            $parentIDfield=getForeignKeyFieldFor($input["tablename"]);
 				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
