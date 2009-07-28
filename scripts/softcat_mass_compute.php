@@ -61,7 +61,7 @@ if ($result=$DB->query($query)){
 				//Get software name and manufacturer
 				$soft->getFromDB($data['ID']);
 				$params["name"]=$soft->fields["name"];
-				$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
+				$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
 								
 				//Process rules
 				$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));

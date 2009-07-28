@@ -408,9 +408,9 @@ class Transfer extends CommonDBTM{
 				}
 			}
 
-			if (count($this->needtobe_transfer[COMPUTER_TYPE])>0) { // because -1 (empty list) is possible for FK_computers
+			if (count($this->needtobe_transfer[COMPUTER_TYPE])>0) { // because -1 (empty list) is possible for computers_id
 				// Transfer affected license (always even if recursive)
-				$query = "SELECT ID FROM glpi_softwareslicenses WHERE FK_computers IN ".$this->item_search[COMPUTER_TYPE];
+				$query = "SELECT ID FROM glpi_softwareslicenses WHERE computers_id IN ".$this->item_search[COMPUTER_TYPE];
 				foreach ($DB->request($query) AS $lic) {
 					$this->addToBeTransfer(SOFTWARELICENSE_TYPE,$lic['ID']);			
 				}
@@ -1236,14 +1236,14 @@ class Transfer extends CommonDBTM{
 		// Affected licenses 
 		if ($this->options['keep_softwares']){
 			$query = "SELECT *	FROM glpi_softwareslicenses
-				WHERE FK_computers = '$ID'";
+				WHERE computers_id = '$ID'";
 			
 			foreach ($DB->request($query) AS $data) {
 				$this->transferItem(SOFTWARELICENSE_TYPE,$data['ID'],$data['ID']);
 			}
 			
 		} else {
-			$query="UPDATE glpi_softwareslicenses SET FK_computers = -1 WHERE FK_computers='$ID'";			
+			$query="UPDATE glpi_softwareslicenses SET computers_id = -1 WHERE computers_id='$ID'";			
 			$DB->query($query);
 		}		
 	}
@@ -2381,7 +2381,7 @@ class Transfer extends CommonDBTM{
 			// delete devices
 			case 0 :  
 				$query = "DELETE FROM glpi_computers_devices 
-					WHERE FK_computers = '$ID'";
+					WHERE computers_id = '$ID'";
 				$result = $DB->query($query);
 				// Only case of ocs link update is needed (if devices are keep nothing to do)
 				if ($ocs_computer){

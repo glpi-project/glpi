@@ -379,7 +379,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 				
 				// Update specificity 
 				$WHERE=" WHERE devices_id = '".$data["devices_id"]."'
-					AND FK_computers = '".$data["FK_computers"]."' 
+					AND computers_id = '".$data["computers_id"]."' 
 					AND devicetype = '".$data["devicetype"]."'
 					AND specificity='".$data["specificity"]."'";
 				if ($strict) $WHERE=" WHERE ID='$compDevID'";
@@ -391,7 +391,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 					$changes[1]=addslashes($data["specificity"]);
 					$changes[2]=$newValue;
 					// history log
-					historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_UPDATE_DEVICE);
+					historyLog ($data["computers_id"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_UPDATE_DEVICE);
 					return true;
 				}else{ 
 					return false;
@@ -417,7 +417,7 @@ function update_device_quantity($newNumber,$compDevID){
 
 		$query2 = "SELECT ID 
 			FROM glpi_computers_devices 
-			WHERE devices_id = '".$data["devices_id"]."' AND FK_computers = '".$data["FK_computers"]."'
+			WHERE devices_id = '".$data["devices_id"]."' AND computers_id = '".$data["computers_id"]."'
 				AND devicetype = '".$data["devicetype"]."' AND specificity='".$data["specificity"]."'";
 		if ($result2 = $DB->query($query2)) {
 
@@ -431,7 +431,7 @@ function update_device_quantity($newNumber,$compDevID){
 				// Add devices
 			} else if ($number<$newNumber){
 				for ($i=$number;$i<$newNumber;$i++){
-					compdevice_add($data["FK_computers"],$data["devicetype"],$data["devices_id"],$data["specificity"],1);
+					compdevice_add($data["computers_id"],$data["devicetype"],$data["devices_id"],$data["specificity"],1);
 				}
 			}
 		}
@@ -468,7 +468,7 @@ function unlink_device_computer($compDevID,$dohistory=1){
 				$changes[1]=addslashes($device->fields["designation"]);
 				$changes[2]="";
 				// history log
-				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_DELETE_DEVICE);
+				historyLog ($data["computers_id"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_DELETE_DEVICE);
 			}
 		}
 
@@ -518,7 +518,7 @@ function showDevicesList($devicetype,$target) {
 
 	$query = "SELECT device.ID, device.designation, glpi_manufacturers.name as manufacturer 
 		FROM ".getDeviceTable($devicetype)." as device ";
-	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.ID = device.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.ID = device.manufacturers_id ) ";
 	$query .= " ORDER by device.designation ASC";
 	
 	// Get it from database	
@@ -620,7 +620,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
-	dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
+	dropdownValue("glpi_manufacturers","manufacturers_id",$device->fields["manufacturers_id"]);
 	echo "</td></tr>";
 	if (getDeviceSpecifityLabel($devicetype)!=""){
 		echo "<tr><td>".getDeviceSpecifityLabel($devicetype)." ".$LANG['devices'][24]."</td>";

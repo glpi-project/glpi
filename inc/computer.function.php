@@ -41,27 +41,6 @@ if (!defined('GLPI_ROOT')){
 
 
 /**
- * Test if a field is a dropdown
- *
- * Return true if the field $field is a dropdown 
- * or false if not.
- *
- *@param $field string field name
- *
- *
- *@return bool
- *
- **/
-function IsDropdown($field) {
-	$dropdown = array("netpoint","os","model");
-	if(in_array($field,$dropdown)) {
-		return true;
-	}
-	else  {
-		return false;
-	}
-}
-/**
  * Test if a field is a device
  *
  * Return true if the field $field is a device 
@@ -297,8 +276,8 @@ function showComputerDisks($ID,$withtemplate='') {
 
 	$query = "SELECT glpi_filesystems.name as fsname, glpi_computersdisks.* 
 		FROM glpi_computersdisks
-		LEFT JOIN glpi_filesystems ON (glpi_computersdisks.FK_filesystems = glpi_filesystems.ID)
-		WHERE (FK_computers = '$ID')";
+		LEFT JOIN glpi_filesystems ON (glpi_computersdisks.filesystems_id = glpi_filesystems.ID)
+		WHERE (computers_id = '$ID')";
 
 	if ($result=$DB->query($query)){
 		echo "<table class='tab_cadre_fixe'><tr>";

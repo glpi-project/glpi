@@ -66,8 +66,8 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 		if (isset($software["comments"]))
 			$params["comments"]=$software["comments"];
 			
-		if (isset($software["FK_glpi_enterprise"]))
-			$params["manufacturer"]=getDropdownName("glpi_manufacturers",$software["FK_glpi_enterprise"]);
+		if (isset($software["manufacturers_id"]))
+			$params["manufacturer"]=getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
 		return $params;
 	}
 }

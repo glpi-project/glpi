@@ -99,22 +99,22 @@ $SEARCH_OPTION[COMPUTER_TYPE][31]['name']=$LANG['state'][0];
 
 $SEARCH_OPTION[COMPUTER_TYPE][6]['table']='glpi_operatingsystems';
 $SEARCH_OPTION[COMPUTER_TYPE][6]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][6]['linkfield']='os';
+$SEARCH_OPTION[COMPUTER_TYPE][6]['linkfield']='operatingsystems_id';
 $SEARCH_OPTION[COMPUTER_TYPE][6]['name']=$LANG['computers'][9];
 
 $SEARCH_OPTION[COMPUTER_TYPE][40]['table']='glpi_operatingsystemsversions';
 $SEARCH_OPTION[COMPUTER_TYPE][40]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][40]['linkfield']='os_version';
+$SEARCH_OPTION[COMPUTER_TYPE][40]['linkfield']='operatingsystemsversions_id';
 $SEARCH_OPTION[COMPUTER_TYPE][40]['name']=$LANG['computers'][52];
 
 $SEARCH_OPTION[COMPUTER_TYPE][41]['table']='glpi_operatingsystemsservicepacks';
 $SEARCH_OPTION[COMPUTER_TYPE][41]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][41]['linkfield']='os_sp';
+$SEARCH_OPTION[COMPUTER_TYPE][41]['linkfield']='operatingsystemsservicepacks';
 $SEARCH_OPTION[COMPUTER_TYPE][41]['name']=$LANG['computers'][53];
 
 $SEARCH_OPTION[COMPUTER_TYPE][42]['table']='glpi_autoupdatesystems';
 $SEARCH_OPTION[COMPUTER_TYPE][42]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][42]['linkfield']='auto_update';
+$SEARCH_OPTION[COMPUTER_TYPE][42]['linkfield']='autoupdatesystems_id';
 $SEARCH_OPTION[COMPUTER_TYPE][42]['name']=$LANG['computers'][51];
 
 $SEARCH_OPTION[COMPUTER_TYPE][43]['table']='glpi_computers';
@@ -186,7 +186,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[COMPUTER_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[COMPUTER_TYPE][23]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[COMPUTER_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[COMPUTER_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[COMPUTER_TYPE][24]['table']='glpi_users';
@@ -721,7 +721,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[NETWORKING_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[NETWORKING_TYPE][23]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[NETWORKING_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[NETWORKING_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[NETWORKING_TYPE][24]['table']='glpi_users';
@@ -1063,7 +1063,7 @@ $SEARCH_OPTION[PRINTER_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[PRINTER_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[PRINTER_TYPE][23]['field']='name';
-$SEARCH_OPTION[PRINTER_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[PRINTER_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[PRINTER_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[PRINTER_TYPE][24]['table']='glpi_users';
@@ -1434,7 +1434,7 @@ $SEARCH_OPTION[MONITOR_TYPE][46]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[MONITOR_TYPE][23]['field']='name';
-$SEARCH_OPTION[MONITOR_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[MONITOR_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[MONITOR_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[MONITOR_TYPE][24]['table']='glpi_users';
@@ -1723,7 +1723,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][11]['name']=$LANG['peripherals'][18];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[PERIPHERAL_TYPE][23]['field']='name';
-$SEARCH_OPTION[PERIPHERAL_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[PERIPHERAL_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[PERIPHERAL_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][24]['table']='glpi_users';
@@ -1988,7 +1988,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][31]['name']=$LANG['state'][0];
 */
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['table']='glpi_operatingsystems';
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['field']='name';
-$SEARCH_OPTION[SOFTWARE_TYPE][4]['linkfield']='platform';
+$SEARCH_OPTION[SOFTWARE_TYPE][4]['linkfield']='operatingsystems_id';
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['name']=$LANG['software'][3];
 /*
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwaresversions';
@@ -2026,7 +2026,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[SOFTWARE_TYPE][23]['field']='name';
-$SEARCH_OPTION[SOFTWARE_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[SOFTWARE_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[SOFTWARE_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][24]['table']='glpi_users';
@@ -2368,7 +2368,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['table']='glpi_computers'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='FK_computers'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='computers_id'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG['software'][50]; 
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['table']='glpi_softwareslicenses';
@@ -2870,7 +2870,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][5]['table']='glpi_manufacturers';
 $SEARCH_OPTION[CARTRIDGE_TYPE][5]['field']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][5]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[CARTRIDGE_TYPE][5]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[CARTRIDGE_TYPE][5]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][6]['table']='glpi_locations';
@@ -3289,7 +3289,7 @@ $SEARCH_OPTION[PHONE_TYPE][11]['name']=$LANG['peripherals'][18];
 
 $SEARCH_OPTION[PHONE_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[PHONE_TYPE][23]['field']='name';
-$SEARCH_OPTION[PHONE_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[PHONE_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[PHONE_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[PHONE_TYPE][24]['table']='glpi_users';
@@ -3713,7 +3713,7 @@ $SEARCH_OPTION[STATE_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[STATE_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[STATE_TYPE][23]['field']='name';
-$SEARCH_OPTION[STATE_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[STATE_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[STATE_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[STATE_TYPE][24]['table']='glpi_users';
@@ -3783,7 +3783,7 @@ $SEARCH_OPTION[RESERVATION_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[RESERVATION_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[RESERVATION_TYPE][23]['field']='name';
-$SEARCH_OPTION[RESERVATION_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[RESERVATION_TYPE][23]['linkfield']='manufacturers_id';
 $SEARCH_OPTION[RESERVATION_TYPE][23]['name']=$LANG['common'][5];
 
 $SEARCH_OPTION[RESERVATION_TYPE][24]['table']='glpi_users';

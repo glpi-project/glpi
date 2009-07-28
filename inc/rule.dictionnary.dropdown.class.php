@@ -408,7 +408,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 		$Sql="SELECT DISTINCT glpi_manufacturers.ID AS idmanu, glpi_manufacturers.name AS manufacturer, 
 			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comments AS comments 
 			FROM `".$this->item_table."`, $model_table 
-			LEFT JOIN glpi_manufacturers ON ($model_table.FK_glpi_enterprise=glpi_manufacturers.ID) 
+			LEFT JOIN glpi_manufacturers ON ($model_table.manufacturers_id=glpi_manufacturers.ID) 
 			WHERE $model_table.model=`".$this->item_table."`.ID ";
 		if ($offset) {
 			$Sql .= " LIMIT ".intval($offset).",999999999";
@@ -443,9 +443,9 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 					$tocheck[$data["ID"]][]=$ID;
 					$sql = "UPDATE $model_table SET model=".$ID." WHERE model=".$data['ID'];
 					if (empty($data['idmanu'])){
-						$sql .= " AND (FK_glpi_enterprise IS NULL OR FK_glpi_enterprise = 0)";
+						$sql .= " AND (manufacturers_id IS NULL OR manufacturers_id = 0)";
 					} else {
-						$sql .= " AND FK_glpi_enterprise='".$data['idmanu']."'";
+						$sql .= " AND manufacturers_id='".$data['idmanu']."'";
 					}
 					
 					$DB->query($sql);

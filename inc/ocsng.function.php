@@ -616,7 +616,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 			$line = $DBocs->fetch_array($result);
 
 			if ($cfg_ocs["import_general_os"])
-				ocsResetDropdown($glpi_id, "os", "glpi_operatingsystems");
+				ocsResetDropdown($glpi_id, "operatingsystems_id", "glpi_operatingsystems");
 			if ($cfg_ocs["import_device_processor"])
 				ocsResetDevices($glpi_id, PROCESSOR_DEVICE);
 			if ($cfg_ocs["import_device_iface"])
@@ -1054,13 +1054,12 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 
 		$sql_computer = "SELECT glpi_operatingsystems.name as os_name, glpi_operatingsystemsservicepacks.name as os_sp" .
 			" FROM glpi_computers, glpi_ocslinks, glpi_operatingsystems, glpi_operatingsystemsservicepacks" .
-			" WHERE glpi_ocslinks.glpi_id = glpi_computers.ID AND glpi_operatingsystems.ID = glpi_computers.os 
-				AND glpi_operatingsystemsservicepacks.ID = glpi_computers.os_sp
+			" WHERE glpi_ocslinks.glpi_id = glpi_computers.ID AND glpi_operatingsystems.ID = glpi_computers.operatingsystems_id 
+				AND glpi_operatingsystemsservicepacks.ID = glpi_computers.operatingsystemsservicepacks_id
 				AND glpi_ocslinks.ocs_id='".$ocs_id."' AND glpi_ocslinks.ocs_server_id='".$ocs_server_id."'";
 
 		$res_computer = $DB->query($sql_computer);
-		if ($DB->numrows($res_computer) ==  1)
-		{
+		if ($DB->numrows($res_computer) ==  1) {
 			$data_computer = $DB->fetch_array($res_computer);
 			$computerOS = $data_computer["os_name"];
 			$computerOSSP = $data_computer["os_sp"];
@@ -1071,20 +1070,20 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 		}
 			
 		if ($cfg_ocs["import_general_os"]) {
-			if (!in_array("os", $computer_updates)) {
+			if (!in_array("operatingsystems_id", $computer_updates)) {
 				$osname=$line["OSNAME"];
 				// Hack for OCS encoding problems
 				if (!seems_utf8($osname)){
 					$osname=utf8_encode($osname);
 				}
 			
-				$compupdate["os"] = externalImportDropdown('glpi_operatingsystems', $osname);
+				$compupdate["operatingsystems_id"] = externalImportDropdown('glpi_operatingsystems', $osname);
 			}
-			if (!in_array("os_version", $computer_updates)) {
-				$compupdate["os_version"] = externalImportDropdown('glpi_operatingsystemsversions', $line["OSVERSION"]);
+			if (!in_array("operatingsystemsversions_id", $computer_updates)) {
+				$compupdate["operatingsystemsversions_id"] = externalImportDropdown('glpi_operatingsystemsversions', $line["OSVERSION"]);
 			}
-			if (!strpos($line["OSCOMMENTS"],"CEST") && !in_array("os_sp", $computer_updates)) // Not linux comment
-				$compupdate["os_sp"] = externalImportDropdown('glpi_operatingsystemsservicepacks', $line["OSCOMMENTS"]);
+			if (!strpos($line["OSCOMMENTS"],"CEST") && !in_array("operatingsystemsservicepacks_id", $computer_updates)) // Not linux comment
+				$compupdate["operatingsystemsservicepacks_id"] = externalImportDropdown('glpi_operatingsystemsservicepacks', $line["OSCOMMENTS"]);
 		}
 
 		if ($cfg_ocs["import_general_domain"] && !in_array("domain", $computer_updates)) {
@@ -1161,8 +1160,8 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
 			$compupdate["model"] = externalImportDropdown('glpi_computersmodels', $line["SMODEL"],-1,(isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
 		}
 
-		if ($cfg_ocs["import_general_enterprise"] && !in_array("FK_glpi_enterprise", $computer_updates)) {
-			$compupdate["FK_glpi_enterprise"] = externalImportDropdown("glpi_manufacturers", $line["SMANUFACTURER"]);
+		if ($cfg_ocs["import_general_enterprise"] && !in_array("manufacturers_id", $computer_updates)) {
+			$compupdate["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["SMANUFACTURER"]);
 		}
 
 		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("computerstypes_id", $computer_updates)) {
@@ -1503,7 +1502,7 @@ function getOcsLockableFields(){
 	return array (
 			"name"=>$LANG['common'][16],
 			"computerstypes_id"=>$LANG['common'][17],
-			"FK_glpi_enterprise"=>$LANG['common'][5],
+			"manufacturers_id"=>$LANG['common'][5],
 			"model"=>$LANG['common'][22],
 			"serial"=>$LANG['common'][19],
 			"otherserial"=>$LANG['common'][20],
@@ -1512,9 +1511,9 @@ function getOcsLockableFields(){
 			"contact_num"=>$LANG['common'][21],
 			"domain"=>$LANG['setup'][89],
 			"network"=>$LANG['setup'][88],
-			"os"=>$LANG['computers'][9],
-			"os_sp"=>$LANG['computers'][53],
-			"os_version"=>$LANG['computers'][52],
+			"operatingsystems_id"=>$LANG['computers'][9],
+			"operatingsystemsservicepacks_id"=>$LANG['computers'][53],
+			"operatingsystemsversions_id"=>$LANG['computers'][52],
 			"os_license_number"=>$LANG['computers'][10],
 			"os_license_id"=>$LANG['computers'][11],
 			"users_id"=>$LANG['common'][34],
@@ -2496,7 +2495,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 							// Clean monitor object
 							$m->reset();
 
-							$mon["FK_glpi_enterprise"] = externalImportDropdown("glpi_manufacturers", $line["MANUFACTURER"]);
+							$mon["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["MANUFACTURER"]);
 							
 							if ($cfg_ocs["import_monitor_comments"])
 								$mon["comments"] = $line["DESCRIPTION"];
@@ -3168,18 +3167,18 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 			// Only not empty disk
 			if ($line['TOTAL']>0){
 				$disk=array();
-				$disk['FK_computers']=$glpi_id;
+				$disk['computers_id']=$glpi_id;
 				// TYPE : vxfs / ufs  : VOLUMN = mount / FILESYSTEM = device
 				if (in_array($line['TYPE'],array("vxfs","ufs")) ){
 					$disk['name']=$line['VOLUMN'];
 					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['FILESYSTEM'];
-					$disk['FK_filesystems']=externalImportDropdown('glpi_filesystems', $line["TYPE"]);
+					$disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["TYPE"]);
 				} else if (in_array($line['FILESYSTEM'],array('ext3','jfs','jfs2','smbfs','nfs')) ){
 					$disk['name']=$line['VOLUMN'];
 					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['TYPE'];
-					$disk['FK_filesystems']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
+					$disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
 				} else if (in_array($line['FILESYSTEM'],array('FAT32','NTFS','FAT')) ){
 					if (!empty($line['VOLUMN'])){
 						$disk['name']=$line['VOLUMN'];
@@ -3187,7 +3186,7 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 						$disk['name']=$line['LETTER'];
 					}
 					$disk['mountpoint']=$line['LETTER'];
-					$disk['FK_filesystems']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
+					$disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
 				}
 
 				// Ok import disk
@@ -3287,7 +3286,7 @@ function ocsResetDisks($glpi_computer_id) {
 	global $DB;
 
 	$query = "DELETE FROM glpi_computersdisks
-			WHERE FK_computers = '" . $glpi_computer_id . "'";
+			WHERE computers_id = '" . $glpi_computer_id . "'";
 	$DB->query($query);
 }
 /**
@@ -3355,7 +3354,7 @@ function ocsResetDevices($glpi_computer_id, $devicetype) {
 	global $DB;
 	$query = "DELETE FROM glpi_computers_devices 
 				WHERE devicetype = '" . $devicetype . "'
-				AND FK_computers = '" . $glpi_computer_id . "'";
+				AND computers_id = '" . $glpi_computer_id . "'";
 	$DB->query($query);
 }
 

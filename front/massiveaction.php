@@ -496,7 +496,7 @@ if (isset($_POST["itemtype"])){
 						//Get software name and manufacturer
 						$soft->getFromDB($key);
 						$params["name"]=$soft->fields["name"];
-						$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
+						$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
 						$params["comments"]=$soft->fields["comments"];
 						
 						//Process rules

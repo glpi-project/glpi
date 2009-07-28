@@ -115,7 +115,7 @@ class Computer extends CommonDBTM {
 		if ($this->getFromDB($ID)){
 			$query = "SELECT count(*) AS NB, ID, devicetype, devices_id, specificity
 				FROM glpi_computers_devices 
-				WHERE FK_computers = '$ID' 
+				WHERE computers_id = '$ID' 
 				GROUP BY devicetype, devices_id, specificity
 				ORDER BY devicetype, ID";
 			if ($result = $DB->query($query)) {
@@ -358,14 +358,14 @@ class Computer extends CommonDBTM {
        			// ADD volumes
 			$query="SELECT ID 
 				FROM glpi_computersdisks 
-				WHERE FK_computers='".$input["_oldID"]."'";
+				WHERE computers_id='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
                                   $disk=new ComputerDisk();
                                   $disk->getfromDB($data['ID']);
                                   unset($disk->fields["ID"]);
-                                  $disk->fields["FK_computers"]=$newID;
+                                  $disk->fields["computers_id"]=$newID;
                                   $disk->addToDB();
                                 }
 
@@ -496,13 +496,13 @@ class Computer extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_computers_devices WHERE (FK_computers = '$ID')";
+		$query = "DELETE FROM glpi_computers_devices WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_ocslinks WHERE (glpi_id = '$ID')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_computersdisks WHERE (FK_computers = '$ID')";
+		$query = "DELETE FROM glpi_computersdisks WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);
 	}
 
@@ -628,7 +628,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5].": 	</td><td>";
-      dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td>";
 
       echo "<td >".$LANG['common'][10].": 	</td>";
@@ -638,7 +638,7 @@ class Computer extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][9].":</td><td>";
-      dropdownValue("glpi_operatingsystems", "os", $this->fields["os"]);
+      dropdownValue("glpi_operatingsystems", "operatingsystems_id", $this->fields["operatingsystems_id"]);
       echo "</td>";
       
       echo "<td>".$LANG['setup'][88].":</td><td>";
@@ -647,7 +647,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52].":</td><td>";
-      dropdownValue("glpi_operatingsystemsversions", "os_version", $this->fields["os_version"]);
+      dropdownValue("glpi_operatingsystemsversions", "operatingsystemsversions_id", $this->fields["operatingsystemsversions_id"]);
       echo "</td>";
 
 
@@ -658,7 +658,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][53].":</td><td>";
-      dropdownValue("glpi_operatingsystemsservicepacks", "os_sp", $this->fields["os_sp"]);
+      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id", $this->fields["operatingsystemsservicepacks_id"]);
       echo "</td>";
 
       echo "<td>".$LANG['common'][19].":	</td><td>";
@@ -709,7 +709,7 @@ class Computer extends CommonDBTM {
          echo "<td colspan=2></td>";
       }
       echo "<td>".$LANG['computers'][51].":</td><td>";
-      dropdownValue("glpi_autoupdatesystems", "auto_update", $this->fields["auto_update"]);
+      dropdownValue("glpi_autoupdatesystems", "autoupdatesystems_id", $this->fields["autoupdatesystems_id"]);
       echo "</td>";
 
       echo "</tr>";
@@ -813,7 +813,7 @@ class ComputerDisk extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		// Not attached to software -> not added
-		if (!isset($input['FK_computers']) || $input['FK_computers'] <= 0){
+		if (!isset($input['computers_id']) || $input['computers_id'] <= 0){
 			return false;
 		}
 		return $input;
@@ -825,10 +825,10 @@ class ComputerDisk extends CommonDBTM {
 	}
 
 	function getEntityID () {
-		if (isset($this->fields['FK_computers']) && $this->fields['FK_computers'] >0){
+		if (isset($this->fields['computers_id']) && $this->fields['computers_id'] >0){
 			$computer=new Computer();
 
-			$computer->getFromDB($this->fields['FK_computers']);
+			$computer->getFromDB($this->fields['computers_id']);
 			return $computer->fields['entities_id'];
 		}
 		return  -1;
@@ -863,14 +863,14 @@ class ComputerDisk extends CommonDBTM {
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='4'>".$LANG['common'][2]." $ID";
-			echo " - <a href='computer.form.php?ID=".$this->fields["FK_computers"]."'>".getDropdownName("glpi_computers",$this->fields["FK_computers"])."</a>";
+			echo " - <a href='computer.form.php?ID=".$this->fields["computers_id"]."'>".getDropdownName("glpi_computers",$this->fields["computers_id"])."</a>";
 			echo "</th></tr>";
 		} else {
 			echo "<tr><th colspan='4'>".$LANG['computers'][7];
 			echo " - <a href='computer.form.php?ID=".$cID."'>".getDropdownName("glpi_computers",$cID)."</a>";
 
 			echo "</th></tr>";
-			echo "<input type='hidden' name='FK_computers' value='$cID'>";
+			echo "<input type='hidden' name='computers_id' value='$cID'>";
 		}
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
@@ -891,7 +891,7 @@ class ComputerDisk extends CommonDBTM {
 
 		echo "<td>".$LANG['computers'][4].":		</td>";
 		echo "<td>";
-		dropdownValue("glpi_filesystems", "FK_filesystems", $this->fields["FK_filesystems"]);
+		dropdownValue("glpi_filesystems", "filesystems_id", $this->fields["filesystems_id"]);
 		echo "</td>";
 		echo "</tr>";
 

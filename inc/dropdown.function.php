@@ -620,8 +620,8 @@ function getDropdownName($table,$id,$withcomments=0) {
 							$name .= " (".getDropdownName("glpi_locations",$data["locations_id"]).")";
 							break;
 						case "glpi_softwares":
-							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
-								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["platform"]);
+							if ($data["operatingsystems_id"]!=0 && $data["helpdesk_visible"] != 0)
+								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
 							break;
 					}
 	

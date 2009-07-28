@@ -307,11 +307,11 @@ class Software extends CommonDBTM {
       echo "</td>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";
-      dropdownValue("glpi_operatingsystems", "platform", $this->fields["platform"]);
+      dropdownValue("glpi_operatingsystems", "operatingsystems_id", $this->fields["operatingsystems_id"]);
       echo "</td>";
 
       echo "<td>" . $LANG['common'][5] . ": 	</td><td>";
-      dropdownValue("glpi_manufacturers", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
+      dropdownValue("glpi_manufacturers", "manufacturers_id", $this->fields["manufacturers_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -631,8 +631,8 @@ class SoftwareLicense extends CommonDBTM {
 		/*if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
 		}*/
-		if (!isset($input['FK_computers']) || $input['FK_computers'] <= 0){
-			$input['FK_computers'] = -1;
+		if (!isset($input['computers_id']) || $input['computers_id'] <= 0){
+			$input['computers_id'] = -1;
 		} else {
 			// Number is 1 for affected license
 			$input['number']=1;
@@ -646,11 +646,11 @@ class SoftwareLicense extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 
-		if (isset($input['FK_computers']) && $input['FK_computers'] == 0){
-			$input['FK_computers'] = -1;
+		if (isset($input['computers_id']) && $input['computers_id'] == 0){
+			$input['computers_id'] = -1;
 		}
-		if ((isset($input['FK_computers']) && $input['FK_computers'] > 0) 
-		 	|| (!isset($input['FK_computers']) && isset($this->fields['FK_computers']) && $this->fields['FK_computers']>0)){
+		if ((isset($input['computers_id']) && $input['computers_id'] > 0) 
+		 	|| (!isset($input['computers_id']) && isset($this->fields['computers_id']) && $this->fields['computers_id']>0)){
 			// Number is 1 for affected license
 			$input['number']=1;
 		}
@@ -784,7 +784,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['tracking'][29].":		</td>";
 		echo "<td>";
-		if ($this->fields["FK_computers"]>0) {
+		if ($this->fields["computers_id"]>0) {
 			echo "1  (".$LANG['software'][50].")";		
 		} else {
 			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));			
@@ -816,7 +816,7 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG['software'][50].":		</td>";
 		echo "<td>";
 		if ($this->fields["number"]==1) {
-			dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['entities_id']);
+			dropdownValue('glpi_computers','computers_id',$this->fields["computers_id"],1,$this->fields['entities_id']);
 		} else {
 			echo $LANG['software'][51];
 		}
