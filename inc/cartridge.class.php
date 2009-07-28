@@ -128,7 +128,7 @@ class CartridgeType extends CommonDBTM {
 		global $DB;
 		if ($tID>0&&$type>0){
 
-			$query="INSERT INTO glpi_cartridges_printersmodels (FK_glpi_cartridges_type,FK_glpi_dropdown_model_printers ) VALUES ('$tID','$type');";
+			$query="INSERT INTO glpi_cartridges_printersmodels (FK_glpi_cartridges_type,printersmodels_id ) VALUES ('$tID','$type');";
 			$result = $DB->query($query);
 		}
 	}
@@ -225,7 +225,7 @@ class CartridgeType extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
-      dropdownValue("glpi_locations","location",$this->fields["location"],1,$this->fields["entities_id"]);
+      dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";
@@ -331,7 +331,7 @@ class Cartridge extends CommonDBTM {
 
 		global $DB;
 		$query = "UPDATE glpi_cartridges 
-			SET date_out = NULL, date_use = NULL, FK_glpi_printers= 0 
+			SET date_out = NULL, date_use = NULL, printers_id= 0 
 			WHERE ID='".$input["ID"]."'";
 		if ($result = $DB->query($query)) {
 			return true;
@@ -376,7 +376,7 @@ class Cartridge extends CommonDBTM {
 		if ($DB->numrows($result)>0){
 			// Mise a jour cartouche en prenant garde aux insertion multiples	
 			$query = "UPDATE glpi_cartridges 
-				SET date_use = '".date("Y-m-d")."', FK_glpi_printers = '$pID' 
+				SET date_use = '".date("Y-m-d")."', printers_id = '$pID' 
 				WHERE ID='".$DB->result($result,0,0)."' AND date_use IS NULL";
 			if ($result = $DB->query($query)) {
 				return true;

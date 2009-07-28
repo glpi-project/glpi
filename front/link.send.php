@@ -81,12 +81,12 @@ if (isset($_GET["lID"])){
 
 
 		if (strstr($file,"[LOCATIONID]")){
-			if (isset($ci->obj->fields["location"]))
-				$file=str_replace("[LOCATIONID]",$ci->obj->fields["location"],$file);
+			if (isset($ci->obj->fields["locations_id"]))
+				$file=str_replace("[LOCATIONID]",$ci->obj->fields["locations_id"],$file);
 		}
 		if (strstr($file,"[LOCATION]")){
-			if (isset($ci->obj->fields["location"]))
-				$file=str_replace("[LOCATION]",getDropdownName("glpi_locations",$ci->obj->fields["location"]),$file);
+			if (isset($ci->obj->fields["locations_id"]))
+				$file=str_replace("[LOCATION]",getDropdownName("glpi_locations",$ci->obj->fields["locations_id"]),$file);
 		}
 		if (strstr($file,"[NETWORK]")){
 			if (isset($ci->obj->fields["network"]))

@@ -286,7 +286,7 @@ class Printer  extends CommonDBTM {
 		$query = "DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype='".PRINTER_TYPE."'";
 		$result = $DB->query($query);
 
-		$query = "UPDATE glpi_cartridges SET FK_glpi_printers = NULL WHERE FK_glpi_printers='$ID'";
+		$query = "UPDATE glpi_cartridges SET printers_id = NULL WHERE printers_id='$ID'";
 		$result = $DB->query($query);
 
 	}
@@ -352,7 +352,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["entities_id"]);
+      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";

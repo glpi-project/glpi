@@ -187,14 +187,14 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
  *
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
- * @param $location default location for search
+ * @param $locations_id default location ID for search
  * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $devtype
  * @return nothing (display the select box)
  *
  */
-function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$entity_restrict=-1,$devtype=-1) {
+function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comments=1,$entity_restrict=-1,$devtype=-1) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -215,12 +215,12 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	
 	$use_ajax=false;	
 	if ($CFG_GLPI["use_ajax"]){
-		if ($location < 0 || $devtype==NETWORKING_TYPE) {
+		if ($locations_id < 0 || $devtype==NETWORKING_TYPE) {
 			$nb=countElementsInTableForEntity("glpi_netpoints",$entity_restrict);
-		} else if ($location > 0) {
-			$nb=countElementsInTable("glpi_netpoints", "location=$location ");
+		} else if ($locations_id > 0) {
+			$nb=countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
 		} else {
-			$nb=countElementsInTable("glpi_netpoints", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_netpoints",'',$entity_restrict));
+			$nb=countElementsInTable("glpi_netpoints", "locations_id=0 ".getEntitiesRestrictRequest(" AND ","glpi_netpoints",'',$entity_restrict));
 		}
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
@@ -229,7 +229,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 
 	$params=array('searchText'=>'__VALUE__',
 			'value'=>$value,
-			'location'=>$location,
+			'locations_id'=>$locations_id,
 			'myname'=>$myname,
 			'limit'=>$limit_length,
 			'comments'=>$display_comments,
@@ -246,7 +246,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	if ($display_comments){
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
 		if (haveRight("entity_dropdown","w")) {
-			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$location"."&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$locations_id"."&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
 		}
 		echo ">";
 		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
@@ -617,7 +617,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 							break;
 
 						case "glpi_netpoints":
-							$name .= " (".getDropdownName("glpi_locations",$data["location"]).")";
+							$name .= " (".getDropdownName("glpi_locations",$data["locations_id"]).")";
 							break;
 						case "glpi_softwares":
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)

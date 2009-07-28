@@ -147,7 +147,7 @@ function showCartridges ($tID,$show_old=0) {
 		$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, 
 				glpi_printers.initial_pages as initial_pages 
 			FROM glpi_cartridges 
-			LEFT JOIN glpi_printers ON (glpi_cartridges.FK_glpi_printers = glpi_printers.ID) 
+			LEFT JOIN glpi_printers ON (glpi_cartridges.printers_id = glpi_printers.ID) 
 			WHERE (glpi_cartridges.FK_glpi_cartridges_type = '$tID') $where 
 			ORDER BY $ORDER";
 	
@@ -159,7 +159,7 @@ function showCartridges ($tID,$show_old=0) {
 				$date_in=convDate($data["date_in"]);
 				$date_use=convDate($data["date_use"]);
 				$date_out=convDate($data["date_out"]);
-				$printer=$data["FK_glpi_printers"];
+				$printer=$data["printers_id"];
 				$page=$data["pages"];
 	
 				echo "<tr  class='tab_bg_1'><td class='center'>";
@@ -262,7 +262,7 @@ function showCompatiblePrinters($instID) {
 	if ($instID > 0){
 		$query = "SELECT glpi_printersmodels.name as type, glpi_cartridges_printersmodels.ID as ID 
 			FROM glpi_cartridges_printersmodels, glpi_printersmodels 
-			WHERE glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers=glpi_printersmodels.ID 
+			WHERE glpi_cartridges_printersmodels.printersmodels_id=glpi_printersmodels.ID 
 				AND glpi_cartridges_printersmodels.FK_glpi_cartridges_type = '$instID' 
 			ORDER BY glpi_printersmodels.name";
 	
@@ -319,12 +319,12 @@ function showCartridgeInstalled($instID,$old=0) {
 			glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0){
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
-			WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' 
+			WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.printers_id= '$instID' 
 				AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridgesitems.ID 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	} else {
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
-			WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.FK_glpi_printers= '$instID' 
+			WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.printers_id= '$instID' 
 			AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridgesitems.ID 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	}
@@ -573,8 +573,8 @@ function dropdownCompatibleCartridges($pID) {
 		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.ID = glpi_cartridges_printersmodels.FK_glpi_cartridges_type )
 		INNER JOIN glpi_cartridges ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridgesitems.ID 
 						AND glpi_cartridges.date_use IS NULL)
-		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.location)
-		WHERE  glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
+		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.locations_id)
+		WHERE  glpi_cartridges_printersmodels.printersmodels_id = '".$p->fields["model"]."' 
 		AND glpi_cartridgesitems.entities_id='".$p->fields["entities_id"]."' 
 		GROUP BY glpi_cartridgesitems.ID 
 		ORDER BY glpi_cartridgesitems.name, glpi_cartridgesitems.ref";

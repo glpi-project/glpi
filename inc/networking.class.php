@@ -342,7 +342,7 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["entities_id"]);
+      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
@@ -502,8 +502,8 @@ class Netport extends CommonDBTM {
 	var $itemtype		= 0;
 	/// hardare data : entity
 	var $entities_id		= -1;
-	/// hardare data : location
-	var $location		= -1;
+	/// hardare data : locations_id
+	var $locations_id		= -1;
 
 	/**
 	 * Constructor
@@ -574,7 +574,7 @@ class Netport extends CommonDBTM {
 			$this->device_name = $data["name"];
 			$this->deleted = $data["deleted"];
 			$this->entities_id = $data["entities_id"];
-			$this->location = $data["location"];
+			$this->locations_id = $data["locations_id"];
 			$this->device_ID = $ID;
 			$this->itemtype = $type;
 			$this->recursive = (isset($data["recursive"])?$data["recursive"]:0);

@@ -447,7 +447,7 @@ class CommonItem{
       if ($tmp=$this->getField('otherserial')){
          $comment.="<strong>".$LANG['common'][20].": "."</strong>".$tmp."<br>";
       }
-      if ($tmp=$this->getField('location')){
+      if ($tmp=$this->getField('locations_id')){
          $tmp=getDropdownName("glpi_locations",$tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][15].": "."</strong>".$tmp."<br>";

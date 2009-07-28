@@ -1012,14 +1012,14 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][15] . ":</td><td>";
          if (!empty($ID)){
             if (count($entities)>0){
-               dropdownValue("glpi_locations", "location", $this->fields["location"],1,$entities);
+               dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,$entities);
             } else {
                echo "&nbsp;";
             }
          } else {
             if (!isMultiEntitiesMode()){
                // Display all locations : only one entity
-               dropdownValue("glpi_locations", "location", $this->fields["location"],1);
+               dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1);
             } else {
                echo "&nbsp;";
             }

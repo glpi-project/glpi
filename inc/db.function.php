@@ -849,8 +849,8 @@ function getUserName($ID,$link=0){
 					$user["comments"].=$LANG['help'][35].": ".$data["phone"]."<br>";
 				if (!empty($data["mobile"]))
 					$user["comments"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
-				if ($data["location"]>0){
-					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["location"])."<br>";
+				if ($data["locations_id"]>0){
+					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["locations_id"])."<br>";
 				}
 				if ($data["title"]>0)
 					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["title"])."<br>";
