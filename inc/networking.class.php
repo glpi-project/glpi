@@ -346,7 +346,7 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-      dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
@@ -358,7 +358,7 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-      dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][35].": 	</td><td>";

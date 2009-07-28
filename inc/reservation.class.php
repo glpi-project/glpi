@@ -101,7 +101,7 @@ class ReservationResa extends CommonDBTM {
 	function pre_deleteItem($ID) {
 		global $CFG_GLPI;
 		if ($this->getFromDB($ID))
-			if (isset($this->fields["id_user"])&&($this->fields["id_user"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
+			if (isset($this->fields["users_id"])&&($this->fields["users_id"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
 				// Processing Email
 				if ($CFG_GLPI["mailing"]){
 					$mail = new MailingResa($this,"delete");
@@ -269,14 +269,14 @@ class ReservationResa extends CommonDBTM {
 		if ($ri->getFromDB($this->fields["id_item"])){
 			if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 				$name=$ci->getType()." ".$ci->getName();
-				if ($ci->getField('tech_num')){
-					$tech=getUserName($ci->getField('tech_num'));
+				if ($ci->getField('users_id_tech')){
+					$tech=getUserName($ci->getField('users_id_tech'));
 				}
 			}
 		}
 		
 		$u=new User();
-		$u->getFromDB($this->fields["id_user"]);
+		$u->getFromDB($this->fields["users_id"]);
 		$content="";
 
 		if($format=="html"){
@@ -321,7 +321,7 @@ class ReservationResa extends CommonDBTM {
 			}
 		}
 		// Original user always have right
-		if ($this->fields['id_user']==$_SESSION['glpiID']) {
+		if ($this->fields['users_id']==$_SESSION['glpiID']) {
 			return true;
 		} 
 		if (!haveRight("reservation_central",$right)) {

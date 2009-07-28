@@ -68,7 +68,7 @@ class Job extends CommonDBTM{
 			}
 		}elseif (haveRight("comment_ticket","1")){
 			$ong[1]=$LANG['job'][38]." ".$ID;
-			if (!strstr($job->fields["status"],"old_")&&$job->fields["author"]==$_SESSION["glpiID"]){
+			if (!strstr($job->fields["status"],"old_")&&$job->fields["users_id"]==$_SESSION["glpiID"]){
 				$ong[2]=$LANG['job'][29];
 			}
 		}
@@ -143,18 +143,18 @@ class Job extends CommonDBTM{
 
 		// Security checks
 		if (!haveRight("assign_ticket","1")){
-			if (isset($input["assign"])){
+			if (isset($input["users_id_assign"])){
 				$this->getFromDB($input['ID']);
 				// must own_ticket to grab a non assign ticket
-				if ($this->fields['assign']==0){
+				if ($this->fields['users_id_assign']==0){
 					if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
-						|| ($input["assign"]!=$_SESSION["glpiID"])){
-						unset($input["assign"]);
+						|| ($input["users_id_assign"]!=$_SESSION["glpiID"])){
+						unset($input["users_id_assign"]);
 					}
 				} else {
 					// Can not steal or can steal and not assign to me
-					if (!haveRight("steal_ticket","1")||$input["assign"]!=$_SESSION["glpiID"]){
-						unset($input["assign"]);
+					if (!haveRight("steal_ticket","1")||$input["users_id_assign"]!=$_SESSION["glpiID"]){
+						unset($input["users_id_assign"]);
 					} 
 
 				}
@@ -170,8 +170,8 @@ class Job extends CommonDBTM{
 
 		if (!haveRight("update_ticket","1")){
 			// Manage assign and steal right
-			if (isset($input["assign"])){
-				$ret["assign"]=$input["assign"];
+			if (isset($input["users_id_assign"])){
+				$ret["users_id_assign"]=$input["users_id_assign"];
 			}
 			if (isset($input["assign_ent"])){
 				$ret["assign_ent"]=$input["assign_ent"];
@@ -258,15 +258,15 @@ class Job extends CommonDBTM{
 		// Old values for add followup in change
 		if ($CFG_GLPI["followup_on_update_ticket"]){
 			$this->getFromDB($input["ID"]);
-			$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
-			$input["_old_assign"]=$this->fields["assign"];
+			$input["_old_assign_name"]=getAssignName($this->fields["users_id_assign"],USER_TYPE);
+			$input["_old_assign"]=$this->fields["users_id_assign"];
 			$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
 			$input["_old_assign_group_name"]=getAssignName($this->fields["assign_group"],GROUP_TYPE);
 			$input["_old_category"]=$this->fields["category"];
 			$input["_old_item"]=$this->fields["items_id"];
 			$input["_old_item_type"]=$this->fields["itemtype"];
-			$input["_old_author"]=$this->fields["author"];
-			$input["_old_recipient"]=$this->fields["recipient"];
+			$input["_old_users_id"]=$this->fields["users_id"];
+			$input["_old_recipient"]=$this->fields["users_id_recipient"];
 			$input["_old_group"]=$this->fields["FK_group"];
 			$input["_old_priority"]=$this->fields["priority"];
 			$input["_old_status"]=$this->fields["status"];
@@ -283,13 +283,13 @@ class Job extends CommonDBTM{
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		global $LANG;
 
-		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
+		if (((in_array("users_id_assign",$updates)&&$input["users_id_assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
 			$updates[]="status";
 			$this->fields["status"]="assign";
 		}
 		if (isset($input["status"])){
 			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&isset($input["assign_group"])&&$input["assign_group"]==0&&
-			isset($input["assign"])&&$input["assign"]==0&&$input["status"]=="assign"){
+			isset($input["users_id_assign"])&&$input["users_id_assign"]==0&&$input["status"]=="assign"){
 				$updates[]="status";
 				$this->fields["status"]="new";
 			}
@@ -330,9 +330,9 @@ class Job extends CommonDBTM{
 		}
 
 
-		if (in_array("author",$updates)){
+		if (in_array("users_id",$updates)){
 			$user=new User;
-			$user->getFromDB($input["author"]);
+			$user->getFromDB($input["users_id"]);
 			if (!empty($user->fields["email"])){
 				$updates[]="uemail";
 				$this->fields["uemail"]=$user->fields["email"];
@@ -407,21 +407,21 @@ class Job extends CommonDBTM{
 		
 						$global_mail_change_count++;
 					break;
-					case "author":
-						$author=new User;
-						$author->getFromDB($input["_old_author"]);
-						$old_author_name=$author->getName();
-						$author->getFromDB($this->fields["author"]);
-						$new_author_name=$author->getName();
-						$change_followup_content.=$LANG['mailing'][18].": $old_author_name -> ".$new_author_name."\n";
+					case "users_id":
+						$users_id=new User;
+						$users_id->getFromDB($input["_old_users_id"]);
+						$old_users_id_name=$users_id->getName();
+						$users_id->getFromDB($this->fields["users_id"]);
+						$new_users_id_name=$users_id->getName();
+						$change_followup_content.=$LANG['mailing'][18].": $old_users_id_name -> ".$new_users_id_name."\n";
 		
 						$global_mail_change_count++;
 					break;
-					case "recipient":
+					case "users_id_recipient":
 						$recipient=new User;
 						$recipient->getFromDB($input["_old_recipient"]);
 						$old_recipient_name=$recipient->getName();
-						$recipient->getFromDB($this->fields["recipient"]);
+						$recipient->getFromDB($this->fields["users_id_recipient"]);
 						$new_recipient_name=$recipient->getName();
 						$change_followup_content.=$LANG['mailing'][50].": $old_recipient_name -> ".$new_recipient_name."\n";
 		
@@ -475,8 +475,8 @@ class Job extends CommonDBTM{
 						if (in_array("items_id",$updates)) $global_mail_change_count++;
 						if (in_array("itemtype",$updates)) $global_mail_change_count++;
 					break;
-					case "assign" :
-						$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
+					case "users_id_assign" :
+						$new_assign_name=getAssignName($this->fields["users_id_assign"],USER_TYPE);
 						if ($input["_old_assign"]==0){
 							$input["_old_assign_name"]=$LANG['mailing'][105];
 						}
@@ -515,7 +515,7 @@ class Job extends CommonDBTM{
 					break;
 				}
 			}
-			if (!in_array("assign",$updates)){
+			if (!in_array("users_id_assign",$updates)){
 				unset($input["_old_assign"]);
 			}
 			$mail_send=false;
@@ -523,12 +523,12 @@ class Job extends CommonDBTM{
 			if (!empty($change_followup_content)){ // Add followup if not empty
 				$newinput=array();
 				$newinput["contents"]=addslashes($change_followup_content);
-				$newinput["author"]=$_SESSION['glpiID'];
+				$newinput["users_id"]=$_SESSION['glpiID'];
 				$newinput["private"]=0;
 				$newinput["hour"]=$newinput["minute"]=0;
 				$newinput["tracking"]=$this->fields["ID"];
 				$newinput["type"]="update";
-				$newinput["_do_not_check_author"]=true;
+				$newinput["_do_not_check_users_id"]=true;
 				// pass _old_assign if assig changed
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
@@ -602,22 +602,24 @@ class Job extends CommonDBTM{
 
 		// No Auto set Import for external source
 		if (!isset($input['_auto_import'])){
-			if (!isset($input["author"])){
+			if (!isset($input["users_id"])){
 				if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
-					$input["author"]=$_SESSION["glpiID"];
+					$input["users_id"]=$_SESSION["glpiID"];
 			}
 		}
 
 		// No Auto set Import for external source
 		if (isset($_SESSION["glpiID"])&&!isset($input['_auto_import'])) {
-			$input["recipient"]=$_SESSION["glpiID"];
-		} else if ($input["author"]) {
-			$input["recipient"]=$input["author"];
+			$input["users_id_recipient"]=$_SESSION["glpiID"];
+		} else if ($input["users_id"]) {
+			$input["users_id_recipient"]=$input["users_id"];
 		}
 
 		if (!isset($input["request_type"])) $input["request_type"]=1;
 		if (!isset($input["status"])) $input["status"]="new";
-		if (!isset($input["assign"])) $input["assign"]=0;
+		if (!isset($input["users_id_assign"])) {
+         $input["users_id_assign"]=0;
+      }
 		
 		if (!isset($input["date"])||empty($input["date"])){
 			$input["date"] = $_SESSION["glpi_currenttime"];
@@ -640,12 +642,12 @@ class Job extends CommonDBTM{
 			}
 		}
 
-		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["items_id"])&&$input["items_id"]>0&&isset($input["itemtype"])&&$input["itemtype"]>0){
+		if ($CFG_GLPI["auto_assign"]&&$input["users_id_assign"]==0&&isset($input["items_id"])&&$input["items_id"]>0&&isset($input["itemtype"])&&$input["itemtype"]>0){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["itemtype"],$input["items_id"]);
-			if ($tmp=$ci->getField('tech_num')){
-				$input["assign"] = $tmp;
-				if ($input["assign"]>0){
+			if ($tmp=$ci->getField('users_id_tech')){
+				$input["users_id_assign"] = $tmp;
+				if ($input["users_id_assign"]>0){
 					$input["status"] = "assign";
 				}
 			}
@@ -656,12 +658,12 @@ class Job extends CommonDBTM{
 
 		// Set unset variables with are needed
 		$user=new User();
-		if ($user->getFromDB($input["author"])){
-			$input['author_location']=$user->fields['location'];
+		if ($user->getFromDB($input["users_id"])){
+			$input['users_id_location']=$user->fields['location'];
 		}
 
 		// Set default dropdown
-		$dropdown_fields=array('FK_entities','itemtype','request_type','assign_group','assign','FK_group','author','category');
+		$dropdown_fields=array('FK_entities','itemtype','request_type','assign_group','users_id_assign','FK_group','users_id','category');
 		foreach ($dropdown_fields as $field ){
 			if (!isset($input[$field])){
 				$input[$field]=0;
@@ -672,11 +674,11 @@ class Job extends CommonDBTM{
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
 			$user=new User();
-			$user->getFromDB($input["author"]);
+			$user->getFromDB($input["users_id"]);
 			$input["uemail"]=$user->fields["email"];
 		}
 
-		if (((isset($input["assign"])&&$input["assign"]>0)
+		if (((isset($input["users_id_assign"])&&$input["users_id_assign"]>0)
 				||(isset($input["assign_group"])&&$input["assign_group"]>0)
 				||(isset($input["assign_ent"])&&$input["assign_ent"]>0))
 			&&$input["status"]=="new"){
@@ -734,7 +736,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Log this event
-		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$LANG['log'][20]);
+		logEvent($newID,"tracking",4,"tracking",getUserName($input["users_id"])." ".$LANG['log'][20]);
 
 		$already_mail=false;
 		if (((isset($input["_followup"]) && is_array($input["_followup"])
@@ -772,7 +774,7 @@ class Job extends CommonDBTM{
 		if ($CFG_GLPI["mailing"]&&!$already_mail)
 		{
 			$user=new User();
-			$user->getFromDB($input["author"]);
+			$user->getFromDB($input["users_id"]);
 			// Clean reload of the ticket
 			$this->getFromDB($newID);
 
@@ -946,14 +948,14 @@ class Job extends CommonDBTM{
 				}
 				$name.=" - ".getDropdownName("glpi_computersmodels".$add,$this->hardwaredatas->obj->fields["model"]);
 			}
-			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
-					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
+			if (isset($this->hardwaredatas->obj->fields["users_id_tech"])&&$this->hardwaredatas->obj->fields["users_id_tech"]>0){
+					$tech=getUserName($this->hardwaredatas->obj->fields["users_id_tech"]);
 			}
 			if (isset($this->hardwaredatas->obj->fields["contact"])){
 				$contact=$this->hardwaredatas->obj->fields["contact"];
 			}
-			if (isset($this->hardwaredatas->obj->fields["FK_users"])){
-				$contact=getUserName($this->hardwaredatas->obj->fields["FK_users"]);
+			if (isset($this->hardwaredatas->obj->fields["users_id"])){
+				$contact=getUserName($this->hardwaredatas->obj->fields["users_id"]);
 			}
 			if (isset($this->hardwaredatas->obj->fields["FK_groups"])){
 				if (!empty($contact)) $contact.=" / ";
@@ -968,16 +970,16 @@ class Job extends CommonDBTM{
 
 			$message.="<div class='description'><strong>".$LANG['mailing'][5]."</strong></div>\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][57].":</span> ".$this->fields["name"]."\n";
-			$author=$this->getAuthorName();
-			if (empty($author)) $author=$LANG['mailing'][108];
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['job'][4].":</span> ".$author."\n";
+			$users_id=$this->getAuthorName();
+			if (empty($users_id)) $users_id=$LANG['mailing'][108];
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['job'][4].":</span> ".$users_id."\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['search'][8].":</span> ".convDateTime($this->fields["date"])."\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['job'][44].":</span> ".getRequestTypeName($this->fields["request_type"])."\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['mailing'][7].":</span> ".$name."\n";
 			if (!empty($tech))
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['common'][10].":</span> ".$tech."\n";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['joblist'][0].":</span> ".getStatusName($this->fields["status"])."\n";
-			$assign=getAssignName($this->fields["assign"],USER_TYPE);
+			$assign=getAssignName($this->fields["users_id_assign"],USER_TYPE);
 			$assign_group="";
 			if (isset($this->fields["assign_group"])){
 				$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
@@ -1014,16 +1016,16 @@ class Job extends CommonDBTM{
 			$message = $LANG['mailing'][1]."\n*".$LANG['mailing'][5]."*\n".$LANG['mailing'][1]."\n";
 			
 			$message.=mailRow($LANG['common'][57],$this->fields["name"]);
-			$author=$this->getAuthorName();
-			if (empty($author)) $author=$LANG['mailing'][108];
-			$message.=mailRow($LANG['job'][4],$author);
+			$users_id=$this->getAuthorName();
+			if (empty($users_id)) $users_id=$LANG['mailing'][108];
+			$message.=mailRow($LANG['job'][4],$users_id);
 			$message.=mailRow($LANG['search'][8],convDateTime($this->fields["date"]));
 			$message.=mailRow($LANG['job'][44],getRequestTypeName($this->fields["request_type"]));
 			$message.=mailRow($LANG['mailing'][7],$name);
 			if (!empty($tech))
 				$message.= mailRow($LANG['common'][10],$tech);
 			$message.= mailRow($LANG['joblist'][0],getStatusName($this->fields["status"]));
-			$assign=getAssignName($this->fields["assign"],USER_TYPE);
+			$assign=getAssignName($this->fields["users_id_assign"],USER_TYPE);
 			$assign_group="";
 			if (isset($this->fields["assign_group"])){
 				$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
@@ -1065,13 +1067,13 @@ class Job extends CommonDBTM{
 
 
 	/**
-	 * Get author name
+	 * Get users_id name
 	 * 
 	 * @param $link boolean with link ?
-	 * @return string author name
+	 * @return string users_id name
 	 */
 	function getAuthorName($link=0){
-		return getUserName($this->fields["author"],$link);
+		return getUserName($this->fields["users_id"],$link);
 	}
 
 	/**
@@ -1080,9 +1082,9 @@ class Job extends CommonDBTM{
 	 * @return boolean
 	 */
 	function canAddFollowups(){
-		return ((haveRight("comment_ticket","1")&&$this->fields["author"]==$_SESSION["glpiID"])
+		return ((haveRight("comment_ticket","1")&&$this->fields["users_id"]==$_SESSION["glpiID"])
 			||haveRight("comment_all_ticket","1")
-			||(isset($_SESSION["glpiID"])&&$this->fields["assign"]==$_SESSION["glpiID"])
+			||(isset($_SESSION["glpiID"])&&$this->fields["users_id_assign"]==$_SESSION["glpiID"])
 			||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION['glpigroups']))
 			);
 	}
@@ -1094,10 +1096,10 @@ class Job extends CommonDBTM{
 	function canView(){
 		return (
 			haveRight("show_all_ticket","1")
-			|| (isset($_SESSION["glpiID"])&&$this->fields["author"]==$_SESSION["glpiID"])
+			|| (isset($_SESSION["glpiID"])&&$this->fields["users_id"]==$_SESSION["glpiID"])
 			|| (haveRight("show_group_ticket",'1')&&isset($_SESSION["glpigroups"])&&in_array($this->fields["FK_group"],$_SESSION["glpigroups"]))
 			|| (haveRight("show_assign_ticket",'1')&&(
-				(isset($_SESSION["glpiID"])&&$this->fields["assign"]==$_SESSION["glpiID"])
+				(isset($_SESSION["glpiID"])&&$this->fields["users_id_assign"]==$_SESSION["glpiID"])
 				||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION["glpigroups"]))
 				)
 			)
@@ -1134,7 +1136,7 @@ class Followup  extends CommonDBTM {
 
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		if (isset($_SESSION["glpiID"])){
-			$input["author"]=$_SESSION["glpiID"];
+			$input["users_id"]=$_SESSION["glpiID"];
 		}
 
 		if (isset($input["plan"])){
@@ -1204,9 +1206,9 @@ class Followup  extends CommonDBTM {
 
 		$input["_job"]=new Job;
 		if ($input["_job"]->getFromDB($input["tracking"])){
-			// Security to add unauthorized followups
-			if (!isset($input['_do_not_check_author'])
-			&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]
+			// Security to add unusers_idized followups
+			if (!isset($input['_do_not_check_users_id'])
+			&&$input["_job"]->fields["users_id"]!=$_SESSION["glpiID"]
 			&&!$input["_job"]->canAddFollowups()) {
 				return false;
 			}
@@ -1227,8 +1229,8 @@ class Followup  extends CommonDBTM {
 		$input['_close']=0;
 		unset($input["add"]);
 
-		if (!isset($input["author"]))
-			$input["author"]=$_SESSION["glpiID"];
+		if (!isset($input["users_id"]))
+			$input["users_id"]=$_SESSION["glpiID"];
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"){
 			if (isset($input['plan'])){
@@ -1296,7 +1298,7 @@ class Followup  extends CommonDBTM {
       // No check on admin because my be used by mailgate
       if (isset($input["_reopen"]) && $input["_reopen"] && strstr($input["_job"]->fields["status"],"old_")){
          $updates[]="status";
-         if ($input["_job"]->fields["assign"]>0 || $input["_job"]->fields["assign_group"]>0
+         if ($input["_job"]->fields["users_id_assign"]>0 || $input["_job"]->fields["assign_group"]>0
             || $input["_job"]->fields["assign_ent"]>0){
             $input["_job"]->fields["status"]="assign";
          } else {
@@ -1321,13 +1323,13 @@ class Followup  extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 
 	/**
-	 * Get the author name of the followup
+	 * Get the users_id name of the followup
 	 * @param $link insert link ?
 	 *
-	 *@return string of the author name
+	 *@return string of the users_id name
 	**/
 	function getAuthorName($link=0){
-		return getUserName($this->fields["author"],$link);
+		return getUserName($this->fields["users_id"],$link);
 	}	
 
 }

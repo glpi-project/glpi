@@ -56,7 +56,7 @@ if (isset($_POST['entity_restrict'])&&$_POST['entity_restrict']>=0&&in_array($_P
 }
 
 if (isset($_POST['user_restrict'])&&$_POST['user_restrict']>0){
-	$entity=" AND FK_users='".$_POST['user_restrict']."' ";
+	$entity=" AND users_id='".$_POST['user_restrict']."' ";
 }
 
 $query="SELECT COUNT(`".$_POST['field']."`) 

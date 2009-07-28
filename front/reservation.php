@@ -53,7 +53,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
-		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]){
+		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["users_id"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
 			if ($rr->update($_POST)){
@@ -107,7 +107,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 				$_POST["begin"]=date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
 				$_POST["end"]=date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
 	
-				if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
+				if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["users_id"]) {
 					unset($rr->fields["ID"]);
 					$_POST['_ok']=$rr->add($_POST);
 				}

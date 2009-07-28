@@ -99,7 +99,7 @@ function showGroupUsers($target,$ID){
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
 		$query="SELECT glpi_users.*, glpi_groups_users.ID as linkID 
 			FROM glpi_groups_users 
-			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups_users.FK_users) 
+			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups_users.users_id) 
 			WHERE glpi_groups_users.FK_groups='$ID'
 			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
@@ -165,11 +165,11 @@ function showGroupUsers($target,$ID){
 				echo "<table  class='tab_cadre_fixe'>";
 				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 				if ($group->fields["recursive"]) {
-               dropdownUsers("FK_users",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["FK_entities"]),0,$used);
+               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["FK_entities"]),0,$used);
 				} else {
-					dropdownUsers("FK_users",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
+					dropdownUsers("users_id",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
 				}
-				//dropdownAllUsers("FK_users",0,1,$group->fields["FK_entities"],0,$used);
+				//dropdownAllUsers("users_id",0,1,$group->fields["FK_entities"],0,$used);
 				echo "</td><td align='center' class='tab_bg_2'>";
 				echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 				echo "</td></tr>";
@@ -192,7 +192,7 @@ function addUserGroup($uID,$gID){
 	global $DB;
 	if ($uID>0&&$gID>0){
 
-		$query="INSERT INTO glpi_groups_users (FK_users,FK_groups ) VALUES ('$uID','$gID');";
+		$query="INSERT INTO glpi_groups_users (users_id,FK_groups ) VALUES ('$uID','$gID');";
 		$result = $DB->query($query);
 	}
 }

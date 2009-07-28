@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')){
 /** CartridgeType Class
   This class is used to manage the various types of cartridges.
   \see Cartridge
-  \author Julien Dombre
+  \users_id Julien Dombre
  */
 class CartridgeType extends CommonDBTM {
 
@@ -221,7 +221,7 @@ class CartridgeType extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-      dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
@@ -282,8 +282,8 @@ class CartridgeType extends CommonDBTM {
 //!  Cartridge Class
 /**
   This class is used to manage the cartridges.
-  \see CartridgeType
-  \author Julien Dombre
+  @see CartridgeType
+  @author Julien Dombre
  */
 class Cartridge extends CommonDBTM {
 

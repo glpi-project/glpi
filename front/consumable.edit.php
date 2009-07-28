@@ -68,12 +68,12 @@ else if (isset($_POST["give"]))
 {	
 	$constype->check($_POST["tID"],'w');
 
-	if ($_POST["id_user"]>0){
+	if ($_POST["users_id"]>0){
 		if (isset($_POST["out"]))
 			foreach ($_POST["out"] as $key => $val)
-				$con->out($key,$_POST["id_user"]);
+				$con->out($key,$_POST["users_id"]);
 	
-		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["id_user"]);
+		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

@@ -74,20 +74,20 @@ if (!$post_ticket && isset($_POST["status"]))
 elseif (!isset($_SESSION["helpdeskSaved"]["status"])) $status=1;
 else $status=$_SESSION["helpdeskSaved"]["status"];
 
-if (!$post_ticket && isset($_POST["author"]))
-	$author=$_POST["author"];
-elseif (!isset($_SESSION["helpdeskSaved"]["author"])) $author=$_SESSION["glpiID"];
-else $author=$_SESSION["helpdeskSaved"]["author"];
+if (!$post_ticket && isset($_POST["users_id"]))
+	$users_id=$_POST["users_id"];
+elseif (!isset($_SESSION["helpdeskSaved"]["users_id"])) $users_id=$_SESSION["glpiID"];
+else $users_id=$_SESSION["helpdeskSaved"]["users_id"];
 
 if (!$post_ticket && isset($_POST["FK_group"]))
 	$group=$_POST["FK_group"];
 elseif (!isset($_SESSION["helpdeskSaved"]["FK_group"])) $group=0;
 else $group=$_SESSION["helpdeskSaved"]["FK_group"];
 
-if (!$post_ticket && isset($_POST["assign"]))
-	$assign=$_POST["assign"];	
-elseif (!isset($_SESSION["helpdeskSaved"]["assign"])) $assign=0;
-else $assign=$_SESSION["helpdeskSaved"]["assign"];
+if (!$post_ticket && isset($_POST["users_id_assign"]))
+	$assign=$_POST["users_id_assign"];	
+elseif (!isset($_SESSION["helpdeskSaved"]["users_id_assign"])) $assign=0;
+else $assign=$_SESSION["helpdeskSaved"]["users_id_assign"];
 
 if (!$post_ticket && isset($_POST["assign_group"]))
 	$assign_group=$_POST["assign_group"];
@@ -158,7 +158,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$author,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
+	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
 }
 
 commonFooter();

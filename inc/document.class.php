@@ -100,7 +100,7 @@ class Document extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		global $LANG;
 
-		$input["FK_users"] = $_SESSION["glpiID"];
+		$input["users_id"] = $_SESSION["glpiID"];
 
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type'])){
 			$input['mime']=$_FILES['filename']['type'];
@@ -196,8 +196,8 @@ class Document extends CommonDBTM {
 		$this->showFormHeader($ID);
 		if ($ID>0) {
 			echo "<tr><th>";
-			if ($this->fields["FK_users"]>0){
-				echo $LANG['document'][42]." ".getUserName($this->fields["FK_users"],1);
+			if ($this->fields["users_id"]>0){
+				echo $LANG['document'][42]." ".getUserName($this->fields["users_id"],1);
 			} else {
 				echo "&nbsp;";
 			}

@@ -531,7 +531,7 @@ function showInstallations($searchID, $crit="sID") {
 		LEFT JOIN glpi_locations ON (glpi_computers.location=glpi_locations.ID)
 		LEFT JOIN glpi_states ON (glpi_computers.state=glpi_states.ID)
 		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
-		LEFT JOIN glpi_users ON (glpi_computers.FK_users=glpi_users.ID)
+		LEFT JOIN glpi_users ON (glpi_computers.users_id=glpi_users.ID)
 		LEFT JOIN glpi_softwareslicenses ON (glpi_softwareslicenses.sID=glpi_softwaresversions.sID AND glpi_softwareslicenses.FK_computers=glpi_computers.ID)
 		WHERE (glpi_softwaresversions.$crit = '$searchID') " .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .

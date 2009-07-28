@@ -1397,7 +1397,7 @@ class CommonDBTM {
 		switch ($right){
 			case 'r':
 				// Personnal item
-				if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
+				if ($this->may_be_private && $this->fields['private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
 					return true;
 				} else {
 					// Check Global Right
@@ -1418,7 +1418,7 @@ class CommonDBTM {
 				break;
 			case 'w':
 				// Personnal item
-				if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
+				if ($this->may_be_private && $this->fields['private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
 					return true;
 				} else {
 					// Check Global Right

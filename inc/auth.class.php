@@ -335,7 +335,7 @@ class Identification {
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
 					$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 					$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
-					$_SESSION["glpiauthorisation"] = true;
+					$_SESSION["glpiusers_idisation"] = true;
 					$_SESSION["glpiextauth"] = $this->extauth;
 					$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
 					$_SESSION["glpisearchcount"] = array ();

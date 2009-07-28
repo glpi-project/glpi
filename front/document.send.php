@@ -61,7 +61,7 @@ if (isset($_GET["file"])){
 				if (isset($_SESSION["glpiactiveprofile"]["interface"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
 					if (haveRight("document","r")
-							||$doc->fields["FK_users"]==$_SESSION["glpiID"])
+							||$doc->fields["users_id"]==$_SESSION["glpiID"])
 						$send=true;
 
 					// Knowbase Case
@@ -94,7 +94,7 @@ if (isset($_GET["file"])){
 						$job=new Job;
 						$job->getFromDB($_GET["tracking"]);
 
-						if ($job->fields["author"]==$_SESSION["glpiID"]||$job->fields["assign"]==$_SESSION["glpiID"]){
+						if ($job->fields["users_id"]==$_SESSION["glpiID"]||$job->fields["users_id_assign"]==$_SESSION["glpiID"]){
 							$query = "SELECT * 
 								FROM glpi_documents_items 
 								WHERE glpi_documents_items.items_id = '".$_GET["tracking"]."' 
@@ -108,7 +108,7 @@ if (isset($_GET["file"])){
 				} else {
 
 					// Check if it is my doc
-					if (isset($_SESSION["glpiID"])&&$doc->fields["FK_users"]==$_SESSION["glpiID"]){
+					if (isset($_SESSION["glpiID"])&&$doc->fields["users_id"]==$_SESSION["glpiID"]){
 						$send=true;
 					} else {
 						if (haveRight("faq","r")||$CFG_GLPI["public_faq"]){
@@ -130,7 +130,7 @@ if (isset($_GET["file"])){
 							$job=new Job;
 							$job->getFromDB($_GET["tracking"]);
 
-							if ($job->fields["author"]==$_SESSION["glpiID"]){
+							if ($job->fields["users_id"]==$_SESSION["glpiID"]){
 								$query = "SELECT * 
 									FROM glpi_documents_items 
 									WHERE glpi_documents_items.items_id = '".$_GET["tracking"]."' 

@@ -216,7 +216,7 @@ function showLinkOnDevice($type,$ID){
 						$link=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$tmp),$link);
 				}
 				if (strstr($link,"[USER]")){
-					if ($tmp=$ci->getField('FK_users'))
+					if ($tmp=$ci->getField('users_id'))
 						$link=str_replace("[USER]",getDropdownName("glpi_users",$tmp),$link);
 				}
 				if (strstr($link,"[GROUP]")){

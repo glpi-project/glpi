@@ -1097,8 +1097,8 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 				FROM glpi_users
 				WHERE name='" . $line["USERID"] . "';";
 			$result = $DB->query($query);
-			if ($DB->numrows($result) == 1 && !in_array("FK_users", $computer_updates)) {
-				$compupdate["FK_users"] = $DB->result($result, 0, 0);
+			if ($DB->numrows($result) == 1 && !in_array("users_id", $computer_updates)) {
+				$compupdate["users_id"] = $DB->result($result, 0, 0);
 			}
 		}
 
@@ -1517,7 +1517,7 @@ function getOcsLockableFields(){
 			"os_version"=>$LANG['computers'][52],
 			"os_license_number"=>$LANG['computers'][10],
 			"os_license_id"=>$LANG['computers'][11],
-			"FK_users"=>$LANG['common'][34],
+			"users_id"=>$LANG['common'][34],
 			"location"=>$LANG['common'][15],
 			"FK_groups"=>$LANG['common'][35],
 		);

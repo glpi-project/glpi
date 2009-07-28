@@ -52,7 +52,7 @@ if (isset($_GET["redirect"])){
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
 		$id_item=key($_POST["items"]);
-		if ($_SESSION["glpiID"]==$_POST["id_user"]){
+		if ($_SESSION["glpiID"]==$_POST["users_id"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
 
@@ -106,7 +106,7 @@ if (isset($_GET["redirect"])){
 			for ($i=1;$i<=$times&&$_POST['_ok'];$i++){
 				$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 				$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-				if ($_SESSION["glpiID"]==$_POST["id_user"]) {
+				if ($_SESSION["glpiID"]==$_POST["users_id"]) {
 					unset($rr->fields["ID"]);
 					$_POST['_ok']=$rr->add($_POST);
 				}

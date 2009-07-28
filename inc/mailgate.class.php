@@ -314,19 +314,19 @@ class MailCollect {
 		}
 
 		//  Who is the user ?
-		$tkt['author']=0;
+		$tkt['users_id']=0;
 		$query="SELECT ID 
 			FROM glpi_users 
 			WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
 		if ($result&&$DB->numrows($result)){
-			$tkt['author']=$DB->result($result,0,"ID");
+			$tkt['users_id']=$DB->result($result,0,"ID");
 		}
 
 		// AUto_import
 		$tkt['_auto_import']=1;
-		// For followup : do not check author = login user
-		$tkt['_do_not_check_author']=1;
+		// For followup : do not check users_id = login user
+		$tkt['_do_not_check_users_id']=1;
 
 		$body=$this->getBody($i);
 
@@ -371,10 +371,10 @@ class MailCollect {
 			// it's a reply to a previous ticket
 			$job=new Job();
 
-			// Check if tracking exists and author exists in GLPI
-			/// TODO check if author have right to add a followup to the ticket
+			// Check if tracking exists and users_id exists in GLPI
+			/// TODO check if users_id have right to add a followup to the ticket
 			if ( $job->getFromDB($tkt['tracking']) 
-				&&  ($tkt['author'] > 0 || !strcasecmp($job->fields['uemail'],$head['from']))) {
+				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['uemail'],$head['from']))) {
 		
 				$content=explode("\n",$tkt['contents']);
 				$tkt['contents']="";

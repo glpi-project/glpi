@@ -602,7 +602,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)';
+		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.users_id)';
 	}	
 
 	$query = "SELECT `$table`.ID 
@@ -674,7 +674,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)';
+		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.users_id)';
 	}	
 
 	$query = "SELECT `$table`.ID 

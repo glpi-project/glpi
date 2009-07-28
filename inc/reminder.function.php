@@ -40,13 +40,13 @@ function showCentralReminder($entity = -1, $parent = false){
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	$author=$_SESSION['glpiID'];	
+	$users_id=$_SESSION['glpiID'];	
 	$today=$_SESSION["glpi_currenttime"];
 
 	if ($entity < 0) {
 
 		$query = "SELECT * FROM glpi_reminders " .
-				"WHERE FK_users='$author' AND private=1 AND (end>='$today' or rv='0') " .
+				"WHERE users_id='$users_id' AND private=1 AND (end>='$today' or rv='0') " .
 				"ORDER BY `name`";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][0]."</a>";	
 		$private  = 1;
@@ -123,7 +123,7 @@ function showListReminder($private=1,$recursive=0){
 
 	$planningRight=haveRight("show_planning","1");
 
-	$author=$_SESSION['glpiID'];	
+	$users_id=$_SESSION['glpiID'];	
 
 	if(!$private && $recursive){ // show public reminder
 		$query="SELECT * FROM glpi_reminders WHERE private=0 and recursive = 1  ".getEntitiesRestrictRequest("AND","glpi_reminders","","",true);
@@ -132,7 +132,7 @@ function showListReminder($private=1,$recursive=0){
 		$query="SELECT * FROM glpi_reminders WHERE private=0 and recursive = 0 ".getEntitiesRestrictRequest("AND","glpi_reminders");
 		$titre=$LANG['reminder'][1];
 	} else { // show private reminder
-		$query="SELECT * FROM glpi_reminders WHERE FK_users='$author' AND private = 1 ";
+		$query="SELECT * FROM glpi_reminders WHERE users_id='$users_id' AND private = 1 ";
 		$titre=$LANG['reminder'][0];
 	}
 
@@ -154,7 +154,7 @@ function showListReminder($private=1,$recursive=0){
 			}
 
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
-			$tabremind[$sort."$$".$i]["FK_users"]=$remind->fields["FK_users"];
+			$tabremind[$sort."$$".$i]["users_id"]=$remind->fields["users_id"];
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["FK_entities"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
@@ -186,7 +186,7 @@ function showListReminder($private=1,$recursive=0){
 			if (!$private) {
 				// preg to split line (if needed) before ">" sign in completename
 				echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
-					 "<td>" .getdropdownName("glpi_users", $val["FK_users"]) . "</td>";
+					 "<td>" .getdropdownName("glpi_users", $val["users_id"]) . "</td>";
 			}
 			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["name"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
@@ -195,7 +195,7 @@ function showListReminder($private=1,$recursive=0){
 			if ($type != 'private') {
 				echo "<br />&nbsp;<br /><strong>".
 					getdropdownName("glpi_entities", $val["entity"]). "</strong> / ".
-					getdropdownName("glpi_users", $val["FK_users"]);
+					getdropdownName("glpi_users", $val["users_id"]);
 			} 
 			*/
 			echo "</div></td>";

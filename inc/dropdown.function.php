@@ -397,7 +397,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 	} else {
 		$query = "SELECT DISTINCT glpi_users.* FROM glpi_users ";
 	}
-	$query.=" LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)";
+	$query.=" LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.users_id)";
 	if ($joinprofile){
 		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_profiles_users.FK_profiles) ";
 	}
@@ -945,7 +945,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			if (isPossibleToAssignType($type)){
 				$query="SELECT * 
 					FROM ".$LINK_ID_TABLE[$type]." 
-					WHERE FK_users='".$userID."' AND deleted='0' ";
+					WHERE users_id='".$userID."' AND deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
@@ -993,7 +993,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
 				FROM glpi_groups_users 
 				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
-				WHERE glpi_groups_users.FK_users='".$userID."' ";
+				WHERE glpi_groups_users.users_id='".$userID."' ";
 			$query.=getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
 			$result=$DB->query($query);
 			$first=true;

@@ -88,17 +88,17 @@ class Bookmark extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		// Set new user if initial user have been deleted 
-		if ($this->fields['FK_users']==0){
-			$input['FK_users']=$_SESSION["glpiID"];
-			$this->fields['FK_users']=$_SESSION["glpiID"];
-			$updates[]="FK_users";
+		if ($this->fields['users_id']==0){
+			$input['users_id']=$_SESSION["glpiID"];
+			$this->fields['users_id']=$_SESSION["glpiID"];
+			$updates[]="users_id";
 		}
 		return array($input,$updates);
 	}
 
 	function post_getEmpty () {
 		global $LANG;
-		$this->fields["FK_users"]=$_SESSION['glpiID'];
+		$this->fields["users_id"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
 		$this->fields["recursive"]=0;
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
@@ -165,7 +165,7 @@ class Bookmark extends CommonDBTM {
 		echo "<tr><td class='tab_bg_1'>".$LANG['common'][16]."</td>"; 
 
 		echo "<td class='tab_bg_1'>";
-		autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["FK_users"]);				
+		autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["users_id"]);				
 		echo "</td></tr>"; 
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].":		</td>";
@@ -186,7 +186,7 @@ class Bookmark extends CommonDBTM {
 		if ($ID<=0) { // add
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
+			echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">\n";
 			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td>";
 			echo "</tr>";
@@ -306,7 +306,7 @@ class Bookmark extends CommonDBTM {
 			// Is default view for this itemtype already exists ?
 			$query="SELECT ID 
 				FROM glpi_bookmarks_users 
-				WHERE FK_users='".$_SESSION['glpiID']."'
+				WHERE users_id='".$_SESSION['glpiID']."'
 					AND itemtype='".$this->fields['itemtype']."'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result) > 0){
@@ -314,7 +314,7 @@ class Bookmark extends CommonDBTM {
 					$updateID=$DB->result($result,0,0);
 					$dd->update(array('ID'=>$updateID,'FK_bookmark'=>$ID));
 				} else {
-					$dd->add(array('FK_bookmark'=>$ID,'FK_users'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
+					$dd->add(array('FK_bookmark'=>$ID,'users_id'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
 				}
 			}
 			
@@ -336,7 +336,7 @@ class Bookmark extends CommonDBTM {
 			// Is default view for this itemtype already exists ?
 			$query="SELECT ID 
 				FROM glpi_bookmarks_users 
-				WHERE FK_users='".$_SESSION['glpiID']."'
+				WHERE users_id='".$_SESSION['glpiID']."'
 					AND FK_bookmark='$ID'
 					AND itemtype='".$this->fields['itemtype']."'";
 			if ($result=$DB->query($query)){
@@ -371,7 +371,7 @@ class Bookmark extends CommonDBTM {
 			WHERE ";
 			
 		if ($private){
-			$query.="(`".$this->table."`.private=1 AND `".$this->table."`.FK_users='".$_SESSION['glpiID']."') ";
+			$query.="(`".$this->table."`.private=1 AND `".$this->table."`.users_id='".$_SESSION['glpiID']."') ";
 		} else {
 			$query.="(`".$this->table."`.private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}

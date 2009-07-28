@@ -292,7 +292,7 @@ if (isset($_POST["itemtype"])){
 				$input['recursive']=$_POST['recursive'];
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$input['FK_users']=$key;
+						$input['users_id']=$key;
 						addUserProfileEntity($input);
 					}
 				}

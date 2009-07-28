@@ -236,22 +236,22 @@ function showPlanning($who,$who_group,$when,$type){
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
 			$groups=implode("','",$_SESSION['glpigroups']);
-			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_groups_users WHERE FK_groups IN ('$groups')) AND";
+			$ASSIGN="users_id IN (SELECT DISTINCT users_id FROM glpi_groups_users WHERE FK_groups IN ('$groups')) AND";
 		} else { // Only personal ones
-			$ASSIGN="id_assign='$who' AND ";
+			$ASSIGN="users_id='$who' AND ";
 		}
 	} else {
 
 		if ($who>0){
-			$ASSIGN="id_assign='$who' AND ";
+			$ASSIGN="users_id='$who' AND ";
 		}
 
 		if ($who_group>0){
-			$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_groups_users WHERE FK_groups = '$who_group') AND";
+			$ASSIGN="users_id IN (SELECT users_id FROM glpi_groups_users WHERE FK_groups = '$who_group') AND";
 		}
 	}
 	if (empty($ASSIGN)){
-		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_profiles_users.FK_users 
+		$ASSIGN=" users_id IN (SELECT DISTINCT glpi_profiles_users.users_id 
 					FROM glpi_profiles 
 					LEFT JOIN glpi_profiles_users ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles)
 					WHERE glpi_profiles.interface='central' ";
@@ -286,7 +286,7 @@ function showPlanning($who,$who_group,$when,$type){
 				$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
 				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
 				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
-				$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
+				$interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
 				if (strcmp($begin,$data["begin"])>0){
 					$interv[$data["begin"]."$$$".$i]["begin"]=$begin;
@@ -316,7 +316,7 @@ function showPlanning($who,$who_group,$when,$type){
 	
 	// See my private reminder ?
 	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
-		$readpriv="(private=1 AND FK_users='".$_SESSION["glpiID"]."')";		
+		$readpriv="(private=1 AND users_id='".$_SESSION["glpiID"]."')";		
 	}
 	
 	if ($readpub && $readpriv) {
@@ -346,7 +346,7 @@ function showPlanning($who,$who_group,$when,$type){
 	
 				$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
-				$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
+				$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 	
@@ -555,7 +555,7 @@ function showPlanning($who,$who_group,$when,$type){
 function displayPlanningItem($val,$who,$type="",$complete=0){
 	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
-	$author="";  // show author reminder
+	$users_id="";  // show users_id reminder
 	$img="rdv_private.png"; // default icon for reminder
 	$color="#e4e4e4";
 	$styleText="";
@@ -618,7 +618,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		
 		if ($who<=0){ // show tech for "show all and show group"
 			echo "<br>- ";
-			echo $LANG['planning'][9]." ".getUserName($val["id_assign"]);
+			echo $LANG['planning'][9]." ".getUserName($val["users_id"]);
 		} 
 		echo "</a>";
 		if ($complete){
@@ -635,7 +635,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 
 	}else{  // show Reminder
 		if (!$val["private"]){
-			$author="<br>".$LANG['planning'][9]." : ".getUserName($val["FK_users"]);
+			$users_id="<br>".$LANG['planning'][9]." : ".getUserName($val["users_id"]);
 			$img="rdv_public.png";
 		} 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37]."'>&nbsp;";
@@ -660,7 +660,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 
 		}
 		echo $val["name"];
-		echo $author;
+		echo $users_id;
 		echo "</a>";
 		if ($complete){
 			echo "<br><strong>".getPlanningState($val["state"])."</strong><br>";
@@ -716,7 +716,7 @@ function showPlanningCentral($who){
 	// followup
 	$ASSIGN="";
 	if ($who!=0){
-		$ASSIGN="id_assign='$who' AND";
+		$ASSIGN="users_id='$who' AND";
 	} else {
 		return false;
 	} 
@@ -755,7 +755,7 @@ function showPlanningCentral($who){
 						$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 						$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 						$interv[$data["begin"]."$$".$i]["status"]=$job->fields['status'];
-						$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
+						$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
 						$interv[$data["begin"]."$$".$i]["ID"]=$job->fields['ID'];
 						$interv[$data["begin"]."$$".$i]["name"]=$job->fields['name'];
 						$interv[$data["begin"]."$$".$i]["priority"]=$job->fields['priority'];
@@ -773,7 +773,7 @@ function showPlanningCentral($who){
 	$query2="SELECT * 
 		FROM glpi_reminders 
 		WHERE rv='1' 
-			AND (FK_users='$who' $read_public)    
+			AND (users_id='$who' $read_public)    
 			AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
 				OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) 
 				OR (begin <= '".$debut."' AND end > '".$debut."') 
@@ -796,7 +796,7 @@ function showPlanningCentral($who){
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
-				$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
+				$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 				$i++;
@@ -900,7 +900,7 @@ function generateIcal($who){
 	// export job
 	$query="SELECT * 
 		FROM glpi_ticketsplannings 
-		WHERE id_assign='$who' 
+		WHERE users_id='$who' 
 			AND end > '$begin' 
 			AND begin < '$end' ";
 
@@ -920,7 +920,7 @@ function generateIcal($who){
 			}
 
 			$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['id_followup'];
-			$interv[$data["begin"]."$$".$i]["id_assign"]=$data['id_assign'];
+			$interv[$data["begin"]."$$".$i]["users_id"]=$data['users_id'];
 			$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
@@ -942,7 +942,7 @@ function generateIcal($who){
 	$query2="SELECT * 
 		FROM glpi_reminders 
 		WHERE rv='1' 
-			AND (FK_users='$who' OR private=0) 
+			AND (users_id='$who' OR private=0) 
 			AND end > '$begin' AND begin < '$end'";
 
 	$result2=$DB->query($query2);
