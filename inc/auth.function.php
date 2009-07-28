@@ -1409,7 +1409,7 @@ function isAlternateAuth($id_auth){
 **/
 function isAlternateAuthWithLdap($id_auth){
 	global $CFG_GLPI;
-	return (isAlternateAuth($id_auth) && $CFG_GLPI["extra_ldap_server"] > 0);
+	return (isAlternateAuth($id_auth) && $CFG_GLPI["authldaps_id_extra"] > 0);
 }
 
 function getLdapServers () {

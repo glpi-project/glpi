@@ -83,7 +83,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		$identificat->user->fields['auth_method'] = $auth_method; 
 
 		// if LDAP enabled too, get user's infos from LDAP
-		$identificat->user->fields["id_auth"]=$CFG_GLPI['extra_ldap_server'];
+		$identificat->user->fields["id_auth"]=$CFG_GLPI['authldaps_id_extra'];
 		if (canUseLdap()){
 			if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 				$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];

@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
-   "glpi_authldaps" => array("glpi_configs"=>"extra_ldap_server",
+   "glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                               "glpi_authldapsreplicates"=>"authldaps_id"),
 	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"FK_bookmark"),
 
@@ -166,11 +166,11 @@ $RELATION=array(
 	
 	"glpi_devicesmemoriestypes" =>array("glpi_devicesmemories"=>"devicesmemoriestypes_id"),
 	
-	"glpi_documentscategories" =>array("glpi_configs"=>"default_rubdoc_tracking",
+	"glpi_documentscategories" =>array("glpi_configs"=>"documentscategories_id_forticket",
 					"glpi_documents"=>"rubrique"),
 
 	"glpi_softwarescategories" =>array("glpi_softwares"=>"category",
-					"glpi_configs"=>"category_on_software_delete",),
+					"glpi_configs"=>"softwarescategories_id_ondelete",),
 	
 	"glpi_states" =>array("glpi_computers"=>"states_id",
 					"glpi_monitors"=>"states_id",

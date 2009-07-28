@@ -1295,8 +1295,8 @@ function putSoftwareInTrash($ID, $comments = '') {
 	$config->getFromDB($CFG_GLPI["ID"]);
 	
 	//change category of the software on deletion (if defined in glpi_configs)
-	if (isset($config->fields["category_on_software_delete"]) && $config->fields["category_on_software_delete"] != 0)
-		$input["category"] = $config->fields["category_on_software_delete"];
+	if (isset($config->fields["softwarescategories_id_ondelete"]) && $config->fields["softwarescategories_id_ondelete"] != 0)
+		$input["category"] = $config->fields["softwarescategories_id_ondelete"];
 		
 	//Add dictionnary comment to the current comments
 	$input["comments"] = ($software->fields["comments"] != '' ? "\n" : '') . $comments;
