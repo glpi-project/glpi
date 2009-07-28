@@ -200,8 +200,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['computer']['page']='/front/computer.php';
       $menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
       if (haveRight("computer","w")){
-         $menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?itemtype='.COMPUTER_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?itemtype='.COMPUTER_TYPE.'&amp;add=0';
       }
       $showstate=true;
    }
@@ -211,8 +211,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['monitor']['page']='/front/monitor.php';
       $menu['inventory']['content']['monitor']['links']['search']='/front/monitor.php';
       if (haveRight("monitor","w")){
-         $menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?itemtype='.MONITOR_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?itemtype='.MONITOR_TYPE.'&amp;add=0';
       }
 
       $showstate=true;
@@ -223,8 +223,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['software']['page']='/front/software.php';
       $menu['inventory']['content']['software']['links']['search']='/front/software.php';
       if (haveRight("software","w")){
-         $menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?itemtype='.SOFTWARE_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?itemtype='.SOFTWARE_TYPE.'&amp;add=0';
       }
 
       $showstate=true;
@@ -235,8 +235,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['networking']['page']='/front/networking.php';
       $menu['inventory']['content']['networking']['links']['search']='/front/networking.php';
       if (haveRight("networking","w")){
-         $menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?itemtype='.NETWORKING_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?itemtype='.NETWORKING_TYPE.'&amp;add=0';
       }
       $showstate=true;
    }
@@ -246,8 +246,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
       $menu['inventory']['content']['peripheral']['links']['search']='/front/peripheral.php';
       if (haveRight("peripheral","w")){
-         $menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?itemtype='.PERIPHERAL_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?itemtype='.PERIPHERAL_TYPE.'&amp;add=0';
       }
       $showstate=true;
    }
@@ -257,8 +257,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['printer']['page']='/front/printer.php';
       $menu['inventory']['content']['printer']['links']['search']='/front/printer.php';
       if (haveRight("printer","w")){
-         $menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?itemtype='.PRINTER_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?itemtype='.PRINTER_TYPE.'&amp;add=0';
       }
       $showstate=true;
    }
@@ -287,8 +287,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['inventory']['content']['phone']['page']='/front/phone.php';
       $menu['inventory']['content']['phone']['links']['search']='/front/phone.php';
       if (haveRight("phone","w")){
-         $menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=1';
-         $menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=0';
+         $menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?itemtype='.PHONE_TYPE.'&amp;add=1';
+         $menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?itemtype='.PHONE_TYPE.'&amp;add=0';
       }
       $showstate=true;
    }
@@ -2263,18 +2263,18 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
  *  show notes for item
  *
  * @param $target target page to update item
- * @param $type item type of the device to display notes
+ * @param $itemtype item type of the device to display notes
  * @param $id id of the device to display notes
  * @return nothing
  */
-function showNotesForm($target,$type,$id){
+function showNotesForm($target,$itemtype,$id){
 	global $LANG;
 
 	if (!haveRight("notes","r")) return false;
 	//new objet
 	$ci =new CommonItem;
 	//getFromDB
-	$ci->getFromDB ($type,$id);
+	$ci->getFromDB ($itemtype,$id);
 	$canedit=(haveRight("notes","w") && (!$ci->obj->isEntityAssign() || haveAccessToEntity($ci->obj->getEntityID())));
 
 	if ($canedit) {

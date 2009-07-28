@@ -43,8 +43,8 @@ header_nocache();
 checkRight("networking","w");
 
 
-if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
-	$table=$LINK_ID_TABLE[$_POST["type"]];
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
+	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
 	$rand=mt_rand();
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
@@ -116,7 +116,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 
         $paramsconnectpd=array('item'=>'__VALUE__',
-                        'type'=>$_POST['type'],
+                        'itemtype'=>$_POST['itemtype'],
                         'current'=>$_POST['current'],
                         'myname'=>$_POST["myname"],
                         );

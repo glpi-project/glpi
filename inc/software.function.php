@@ -331,7 +331,7 @@ function showLicenses($sID) {
 		LEFT JOIN glpi_softwaresversions AS buyvers ON (buyvers.ID = glpi_softwareslicenses.buy_version)
 		LEFT JOIN glpi_softwaresversions AS usevers ON (usevers.ID = glpi_softwareslicenses.use_version)
 		LEFT JOIN glpi_entities ON (glpi_entities.ID = glpi_softwareslicenses.entities_id)
-		LEFT JOIN glpi_softwareslicensestypes ON (glpi_softwareslicensestypes.ID = glpi_softwareslicenses.type)
+		LEFT JOIN glpi_softwareslicensestypes ON (glpi_softwareslicensestypes.ID = glpi_softwareslicenses.softwareslicensestypes_id)
 		WHERE (glpi_softwareslicenses.sID = '$sID') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwareslicenses', '', '', true) .
 		"ORDER BY " . $sort." ".$order . " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
@@ -812,7 +812,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.category as category_id, 
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.deleted, glpi_states.name AS state,
-		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.FK_computers AS FK_computers,glpi_softwareslicenses.type AS lictype
+		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.FK_computers AS FK_computers,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_computers_softwaresversions 
 		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID )
 		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.state )
@@ -823,7 +823,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.category as category_id,
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.deleted, glpi_states.name AS state,
-		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.FK_computers AS FK_computers,glpi_softwareslicenses.type AS lictype
+		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.FK_computers AS FK_computers,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 	    FROM glpi_computers_softwaresversions 
 		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID ) 
 		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.state )
@@ -884,7 +884,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	// Affected licenses NOT installed
 	$query = "SELECT glpi_softwares.name as softname, glpi_softwares.deleted, glpi_states.name AS state, glpi_softwareslicenses.buy_version,
-		glpi_softwareslicenses.sID, glpi_softwaresversions.name AS version, glpi_softwareslicenses.type AS lictype
+		glpi_softwareslicenses.sID, glpi_softwaresversions.name AS version, glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_softwareslicenses 
 		INNER JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID) 
 		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)
@@ -942,7 +942,7 @@ function displayCategoryFooter($cat,$rand,$canedit) {
 			}
 			echo "</select>";
 	
-			$params=array('type'=>'__VALUE__');
+			$params=array('actiontype'=>'__VALUE__');
 			ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
 	
 			echo "<span id='update_licenses_view$cat$rand'>\n";

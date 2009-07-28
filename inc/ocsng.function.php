@@ -1165,8 +1165,8 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
 			$compupdate["FK_glpi_enterprise"] = externalImportDropdown("glpi_manufacturers", $line["SMANUFACTURER"]);
 		}
 
-		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("type", $computer_updates)) {
-			$compupdate["type"] = externalImportDropdown('glpi_computerstypes', $line["TYPE"]);
+		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("computerstypes_id", $computer_updates)) {
+			$compupdate["computerstypes_id"] = externalImportDropdown('glpi_computerstypes', $line["TYPE"]);
 		}
 
 		if (count($compupdate)) {
@@ -1502,7 +1502,7 @@ function getOcsLockableFields(){
 	
 	return array (
 			"name"=>$LANG['common'][16],
-			"type"=>$LANG['common'][17],
+			"computerstypes_id"=>$LANG['common'][17],
 			"FK_glpi_enterprise"=>$LANG['common'][5],
 			"model"=>$LANG['common'][22],
 			"serial"=>$LANG['common'][19],
@@ -1892,7 +1892,7 @@ function ocsUpdateDevices($devicetype, $glpi_id, $ocs_id, $ocs_server_id, $cfg_o
 							$ram["specif_default"] = $line2["CAPACITY"];
 							if (!in_array(RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"], $import_device)) {
 								$ram["frequence"] = $line2["SPEED"];
-								$ram["type"] = externalImportDropdown("glpi_devicesmemoriestypes", $line2["TYPE"]);
+								$ram["devicesmemoriestypes_id"] = externalImportDropdown("glpi_devicesmemoriestypes", $line2["TYPE"]);
 								$ram_id = ocsAddDevice(RAM_DEVICE, $ram);
 								if ($ram_id) {
 									$devID = compdevice_add($glpi_id, RAM_DEVICE, $ram_id, $line2["CAPACITY"], $dohistory);
@@ -2381,7 +2381,7 @@ function ocsAddDevice($devicetype, $dev_array) {
  *
  * 
  *
- *@param $itemtype integer : device type 
+ *@param $itemtype integer : item type 
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
@@ -2545,7 +2545,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									//Try to find a monitor with no serial, the same name and not already connected.
 									if (!empty ($mon["name"])) {
 										$query = "SELECT glpi_monitors.ID FROM glpi_monitors " .
-											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.type=".MONITOR_TYPE." AND glpi_computers_items.end1=glpi_monitors.ID) " .
+											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype=".MONITOR_TYPE." AND glpi_computers_items.end1=glpi_monitors.ID) " .
 											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND entities_id='$entity' AND glpi_computers_items.end2 IS NULL";
 										$result_search = $DB->query($query);
 										if ($DB->numrows($result_search) == 1) {
@@ -2711,7 +2711,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								$periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"] != "NULL")
 								$periph["comments"] = $line["INTERFACE"];
-							$periph["type"] = externalImportDropdown("glpi_peripheralstypes", $line["TYPE"]);
+							$periph["peripheralstypes_id"] = externalImportDropdown("glpi_peripheralstypes", $line["TYPE"]);
 
 							$id_periph = 0;
 
@@ -3376,7 +3376,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 	$query = "SELECT * 
 		FROM glpi_computers_items 
 		WHERE end2 = '" . $glpi_computer_id . "' 
-		AND type = '" . PERIPHERAL_TYPE . "'";
+		AND itemtype = '" . PERIPHERAL_TYPE . "'";
 	$result = $DB->query($query);
 	$per = new Peripheral();
 	if ($DB->numrows($result) > 0) {
@@ -3387,7 +3387,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
-				AND type = '" . PERIPHERAL_TYPE . "'";
+				AND itemtype = '" . PERIPHERAL_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$per->delete(array (
@@ -3415,7 +3415,7 @@ function ocsResetMonitors($glpi_computer_id) {
 	$query = "SELECT * 
 				FROM glpi_computers_items 
 				WHERE end2 = '" . $glpi_computer_id . "' 
-				AND type = '" . MONITOR_TYPE . "'";
+				AND itemtype = '" . MONITOR_TYPE . "'";
 
 	$result = $DB->query($query);
 	$mon = new Monitor();
@@ -3427,7 +3427,7 @@ function ocsResetMonitors($glpi_computer_id) {
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
-				AND type = '" . MONITOR_TYPE . "'";
+				AND itemtype = '" . MONITOR_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$mon->delete(array (
@@ -3454,7 +3454,7 @@ function ocsResetPrinters($glpi_computer_id) {
 	$query = "SELECT * 
 		FROM glpi_computers_items 
 		WHERE end2 = '" . $glpi_computer_id . "' 
-		AND type = '" . PRINTER_TYPE . "'";
+		AND itemtype = '" . PRINTER_TYPE . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
@@ -3464,7 +3464,7 @@ function ocsResetPrinters($glpi_computer_id) {
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
-				AND type = '" . PRINTER_TYPE . "'";
+				AND itemtype = '" . PRINTER_TYPE . "'";
 			$result2 = $DB->query($query2);
 			$printer = new Printer();
 			if ($DB->result($result2, 0, 0) == 1) {

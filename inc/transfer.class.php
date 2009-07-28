@@ -165,11 +165,11 @@ class Transfer extends CommonDBTM{
 			
 			// Inventory Items : MONITOR....
 			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARELICENSE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
-			foreach ($INVENTORY_TYPES as $type){
-				$this->inittype=$type;
-				if (isset($items[$type])&&count($items[$type])){
-					foreach ($items[$type] as $ID){
-						$this->transferItem($type,$ID,$ID);
+			foreach ($INVENTORY_TYPES as $itemtype){
+				$this->inittype=$itemtype;
+				if (isset($items[$itemtype])&&count($items[$itemtype])){
+					foreach ($items[$itemtype] as $ID){
+						$this->transferItem($itemtype,$ID,$ID);
 					}
 				}
 			}
@@ -182,21 +182,21 @@ class Transfer extends CommonDBTM{
 
 			// Management Items
 			$MANAGEMENT_TYPES = array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, DOCUMENT_TYPE);
-			foreach ($MANAGEMENT_TYPES as $type){
-				$this->inittype=$type;
-				if (isset($items[$type])&&count($items[$type])){
-					foreach ($items[$type] as $ID){
-						$this->transferItem($type,$ID,$ID);
+			foreach ($MANAGEMENT_TYPES as $itemtype){
+				$this->inittype=$itemtype;
+				if (isset($items[$itemtype])&&count($items[$itemtype])){
+					foreach ($items[$itemtype] as $ID){
+						$this->transferItem($itemtype,$ID,$ID);
 					}
 				}
 			}
 			// Tickets
 			$OTHER_TYPES = array(TRACKING_TYPE,GROUP_TYPE,LINK_TYPE);
-			foreach ($OTHER_TYPES as $type){
-				$this->inittype=$type;
-				if (isset($items[$type])&&count($items[$type])){
-					foreach ($items[$type] as $ID){
-						$this->transferItem($type,$ID,$ID);
+			foreach ($OTHER_TYPES as $itemtype){
+				$this->inittype=$itemtype;
+				if (isset($items[$itemtype])&&count($items[$itemtype])){
+					foreach ($items[$itemtype] as $ID){
+						$this->transferItem($itemtype,$ID,$ID);
 					}
 				}
 			}
@@ -207,41 +207,41 @@ class Transfer extends CommonDBTM{
 	/**
 	* Add an item in the needtobe_transfer list
 	*
-	*@param $type of the item
+	*@param $itemtype of the item
 	*@param $ID of the item
 	*
 	**/
-	function addToBeTransfer ($type, $ID) {
+	function addToBeTransfer ($itemtype, $ID) {
 		global $LINK_ID_TABLE;
-		// error_log("Transfer::addToBeTransfer(".$LINK_ID_TABLE[$type].",$ID)");
+		// error_log("Transfer::addToBeTransfer(".$LINK_ID_TABLE[$itemtype].",$ID)");
 		
-		if (!isset($this->needtobe_transfer[$type])){
-			$this->needtobe_transfer[$type]=array();
+		if (!isset($this->needtobe_transfer[$itemtype])){
+			$this->needtobe_transfer[$itemtype]=array();
 		}
 		// Can't be in both list (in fact, always false)
-		if (isset($this->noneedtobe_transfer[$type][$ID]))
-			unset($this->noneedtobe_transfer[$type][$ID]);
+		if (isset($this->noneedtobe_transfer[$itemtype][$ID]))
+			unset($this->noneedtobe_transfer[$itemtype][$ID]);
 			
-		$this->needtobe_transfer[$type][$ID]=$ID;
+		$this->needtobe_transfer[$itemtype][$ID]=$ID;
 	}
 
 	/**
 	* Add an item in the noneedtobe_transfer list
 	*
-	*@param $type of the item
+	*@param $itemtype of the item
 	*@param $ID of the item
 	*
 	**/
-	function addNotToBeTransfer ($type, $ID) {
+	function addNotToBeTransfer ($itemtype, $ID) {
 		global $LINK_ID_TABLE;
-		// error_log("Transfer::addNotToBeTransfer(".$LINK_ID_TABLE[$type].",$ID)");
+		// error_log("Transfer::addNotToBeTransfer(".$LINK_ID_TABLE[$itemtype].",$ID)");
 		
-		if (!isset($this->noneedtobe_transfer[$type])){
-			$this->noneedtobe_transfer[$type]=array();
+		if (!isset($this->noneedtobe_transfer[$itemtype])){
+			$this->noneedtobe_transfer[$itemtype]=array();
 		}
 		// Can't be in both list (in fact, always true)
-		if (!isset($this->needtobe_transfer[$type][$ID])) {
-			$this->noneedtobe_transfer[$type][$ID]=$ID;
+		if (!isset($this->needtobe_transfer[$itemtype][$ID])) {
+			$this->noneedtobe_transfer[$itemtype][$ID]=$ID;
 		}
 	}
 
@@ -304,12 +304,12 @@ class Transfer extends CommonDBTM{
 		}
 		$ci = new CommonItem();
 		if (count($DC_CONNECT)&&count($this->needtobe_transfer[COMPUTER_TYPE])>0){
-			foreach ($DC_CONNECT as $type){
+			foreach ($DC_CONNECT as $itemtype){
 				// Clean DB / Search unexisting links and force disconnect
 				$query="SELECT glpi_computers_items.ID 
 					FROM glpi_computers_items 
-					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_computers_items.end1 = ".$LINK_ID_TABLE[$type].".ID ) 
-					WHERE glpi_computers_items.type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+					LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_computers_items.end1 = ".$LINK_ID_TABLE[$itemtype].".ID )
+					WHERE glpi_computers_items.itemtype='".$itemtype."' AND ".$LINK_ID_TABLE[$itemtype].".ID IS NULL";
 
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
@@ -322,25 +322,25 @@ class Transfer extends CommonDBTM{
 
 				$query = "SELECT DISTINCT end1
 				FROM glpi_computers_items 
-				WHERE type='".$type."' AND end2 IN ".$this->item_search[COMPUTER_TYPE];
+				WHERE itemtype='".$itemtype."' AND end2 IN ".$this->item_search[COMPUTER_TYPE];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							if (isset($CFG_GLPI["recursive_type"][$type])
-                           && $ci->getFromDB($type,$data['end1'])
+							if (isset($CFG_GLPI["recursive_type"][$itemtype])
+                           && $ci->getFromDB($itemtype,$data['end1'])
                            && $ci->obj->isRecursive()
                            && in_array($ci->obj->getEntityID(), $to_entity_ancestors)) {
-								$this->addNotToBeTransfer($type,$data['end1']);
+								$this->addNotToBeTransfer($itemtype,$data['end1']);
 							} else {
-								$this->addToBeTransfer($type,$data['end1']);
+								$this->addToBeTransfer($itemtype,$data['end1']);
 							}
 						}
 					}
 				}
 			}
-			$this->item_search[$type]=$this->createSearchConditionUsingArray($this->needtobe_transfer[$type]);
-			if (isset($CFG_GLPI["recursive_type"][$type])) {
-				$this->item_recurs[$type]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[$type]);				
+			$this->item_search[$itemtype]=$this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+			if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
+				$this->item_recurs[$itemtype]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
 			}
 		} // End of direct connections	
 
@@ -448,10 +448,10 @@ class Transfer extends CommonDBTM{
 
 		// Tickets
 		if ($this->options['keep_tickets']){
-			foreach ($this->TICKETS_TYPES as $type)
-			if(isset($this->item_search[$type])){
+			foreach ($this->TICKETS_TYPES as $itemtype)
+			if(isset($this->item_search[$itemtype])){
 				$query="SELECT DISTINCT ID FROM glpi_tickets
-				WHERE itemtype='$type' AND items_id IN ".$this->item_search[$type];
+				WHERE itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
@@ -465,12 +465,12 @@ class Transfer extends CommonDBTM{
 
 		// Contract : keep / delete + clean unused / keep unused
 		if ($this->options['keep_contracts']){
-			foreach ($this->CONTRACTS_TYPES as $type)
-			if (isset($this->item_search[$type])){
+			foreach ($this->CONTRACTS_TYPES as $itemtype)
+			if (isset($this->item_search[$itemtype])){
 				// Clean DB
 				$query="SELECT glpi_contracts_items.ID FROM glpi_contracts_items 
-					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_contracts_items.items_id = ".$LINK_ID_TABLE[$type].".ID ) 
-					WHERE glpi_contracts_items.itemtype='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+					LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_contracts_items.items_id = ".$LINK_ID_TABLE[$itemtype].".ID )
+					WHERE glpi_contracts_items.itemtype='".$itemtype."' AND ".$LINK_ID_TABLE[$itemtype].".ID IS NULL";
 
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
@@ -484,7 +484,8 @@ class Transfer extends CommonDBTM{
 				$query="SELECT FK_contract, glpi_contracts.entities_id, glpi_contracts.recursive" .
 						" FROM glpi_contracts_items" .
 						" LEFT JOIN glpi_contracts ON (glpi_contracts_items.FK_contract=glpi_contracts.ID)" .
-						" WHERE itemtype='$type' AND items_id IN ".$this->item_search[$type];
+						" WHERE glpi_contracts_items.itemtype='$itemtype'
+                        AND glpi_contracts_items.items_id IN ".$this->item_search[$itemtype];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
@@ -568,12 +569,12 @@ class Transfer extends CommonDBTM{
 
 			// Enterprise infocoms
 			if ($this->options['keep_infocoms']){
-				foreach ($this->INFOCOMS_TYPES as $type){
-					if (isset($this->item_search[$type])){
+				foreach ($this->INFOCOMS_TYPES as $itemtype){
+					if (isset($this->item_search[$itemtype])){
 						// Clean DB
 						$query="SELECT glpi_infocoms.ID FROM glpi_infocoms 
-							LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_infocoms.items_id = ".$LINK_ID_TABLE[$type].".ID ) 
-							WHERE glpi_infocoms.itemtype='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+							LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_infocoms.items_id = ".$LINK_ID_TABLE[$itemtype].".ID )
+							WHERE glpi_infocoms.itemtype='".$itemtype."' AND ".$LINK_ID_TABLE[$itemtype].".ID IS NULL";
 		
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
@@ -587,7 +588,7 @@ class Transfer extends CommonDBTM{
 						$query="SELECT DISTINCT FK_enterprise, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
 								" FROM glpi_infocoms" .
 								" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_infocoms.FK_enterprise) " .
-								" WHERE FK_enterprise > 0 AND itemtype='$type' AND items_id IN ".$this->item_search[$type];
+								" WHERE FK_enterprise > 0 AND itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
 								while ($data=$DB->fetch_array($result)){
@@ -658,12 +659,12 @@ class Transfer extends CommonDBTM{
 
 		// Document : keep / delete + clean unused / keep unused
 		if ($this->options['keep_documents']){
-			foreach ($this->DOCUMENTS_TYPES as $type)
-			if (isset($this->item_search[$type])){
+			foreach ($this->DOCUMENTS_TYPES as $itemtype)
+			if (isset($this->item_search[$itemtype])){
 				// Clean DB
 				$query="SELECT glpi_documents_items.ID FROM glpi_documents_items 
-					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_documents_items.items_id = ".$LINK_ID_TABLE[$type].".ID ) 
-					WHERE glpi_documents_items.itemtype='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+					LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_documents_items.items_id = ".$LINK_ID_TABLE[$itemtype].".ID )
+					WHERE glpi_documents_items.itemtype='".$itemtype."' AND ".$LINK_ID_TABLE[$itemtype].".ID IS NULL";
 		
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
@@ -677,7 +678,7 @@ class Transfer extends CommonDBTM{
 				$query="SELECT FK_doc, glpi_documents.recursive, glpi_documents.entities_id" .
 						" FROM glpi_documents_items" .
 						" LEFT JOIN glpi_documents ON (glpi_documents.ID=glpi_documents_items.FK_doc) " .
-						" WHERE itemtype='$type' AND items_id IN ".$this->item_search[$type];
+						" WHERE itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
@@ -712,9 +713,9 @@ class Transfer extends CommonDBTM{
 
 
 		// Init all item_search if not defined
-		foreach ($types as $type){
-			if (!isset($this->item_search[$type])){
-				$this->item_search[$type]="(-1)";
+		foreach ($types as $itemtype){
+			if (!isset($this->item_search[$itemtype])){
+				$this->item_search[$itemtype]="(-1)";
 			}
 		}
 
@@ -737,7 +738,7 @@ class Transfer extends CommonDBTM{
 	/**
 	* transfer an item to another item (may be the same) in the new entity
 	*
-	*@param $type device type to transfer
+	*@param $itemtype item type to transfer
 	*@param $ID ID of the item to transfer
 	*@param $newID new ID of the ite
 	*
@@ -745,19 +746,19 @@ class Transfer extends CommonDBTM{
 	*@return nothing (diplays)
 	*
 	**/
-	function transferItem($type,$ID,$newID){
+	function transferItem($itemtype,$ID,$newID){
 		global $CFG_GLPI,$DB;
 		
 		$cinew=new CommonItem();
 		// Is already transfer ?
-		if (!isset($this->already_transfer[$type][$ID])){
+		if (!isset($this->already_transfer[$itemtype][$ID])){
 			// Check computer exists ?
-			if ($cinew->getFromDB($type,$newID)){
+			if ($cinew->getFromDB($itemtype,$newID)){
 
 				// Manage Ocs links 
 				$dataocslink=array();
 				$ocs_computer=false;
-				if ($type==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
+				if ($itemtype==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
 					$query="SELECT * FROM glpi_ocslinks WHERE glpi_id='$ID'";
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)>0){
@@ -769,77 +770,77 @@ class Transfer extends CommonDBTM{
 				}
 
 				// Network connection ? keep connected / keep_disconnected / delete
-				if (in_array($type,
+				if (in_array($itemtype,
 					array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE))) {
-					$this->transferNetworkLink($type,$ID,$newID,$ocs_computer);
+					$this->transferNetworkLink($itemtype,$ID,$newID,$ocs_computer);
 				}
 				// Device : keep / delete : network case : delete if net connection delete in ocs case
-				if (in_array($type,array(COMPUTER_TYPE))){
-					$this->transferDevices($type,$ID,$ocs_computer);
+				if (in_array($itemtype,array(COMPUTER_TYPE))){
+					$this->transferDevices($itemtype,$ID,$ocs_computer);
 				}
 				// Reservation : keep / delete
-				if (in_array($type,$CFG_GLPI["reservation_types"])){
-					$this->transferReservations($type,$ID,$newID);
+				if (in_array($itemtype,$CFG_GLPI["reservation_types"])){
+					$this->transferReservations($itemtype,$ID,$newID);
 				}
 				// History : keep / delete
-				$this->transferHistory($type,$ID,$newID);
+				$this->transferHistory($itemtype,$ID,$newID);
 				// Ticket : delete / keep and clean ref / keep and move
-				$this->transferTickets($type,$ID,$newID);
+				$this->transferTickets($itemtype,$ID,$newID);
 				// Infocoms : keep / delete
-				if (in_array($type,$this->INFOCOMS_TYPES)) {
-					$this->transferInfocoms($type,$ID,$newID);
+				if (in_array($itemtype,$this->INFOCOMS_TYPES)) {
+					$this->transferInfocoms($itemtype,$ID,$newID);
 				}
 			
-				if ($type==SOFTWARE_TYPE){
+				if ($itemtype==SOFTWARE_TYPE){
 					$this->transferSoftwareLicensesAndVersions($ID);
 				}
-				if ($type==COMPUTER_TYPE){
+				if ($itemtype==COMPUTER_TYPE){
 					// Monitor Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,MONITOR_TYPE,$ocs_computer);
+					$this->transferDirectConnection($itemtype,$ID,MONITOR_TYPE,$ocs_computer);
 					// Peripheral Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE,$ocs_computer);
+					$this->transferDirectConnection($itemtype,$ID,PERIPHERAL_TYPE,$ocs_computer);
 					// Phone Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,PHONE_TYPE);
+					$this->transferDirectConnection($itemtype,$ID,PHONE_TYPE);
 					// Printer Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,PRINTER_TYPE,$ocs_computer);
+					$this->transferDirectConnection($itemtype,$ID,PRINTER_TYPE,$ocs_computer);
 					// Licence / Software :  keep / delete + clean unused / keep unused 
-					$this->transferComputerSoftwares($ID,$ocs_computer);
+					$this->transferComputerSoftwares($itemtype,$ocs_computer);
 				}
-				if ($type==SOFTWARELICENSE_TYPE){
+				if ($itemtype==SOFTWARELICENSE_TYPE){
 					$this->transferLicenseSoftwares($ID);
 				}
 				// Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
-				if ($this->inittype==$type&&in_array($type,
+				if ($this->inittype==$itemtype&&in_array($itemtype,
 					array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE))){
-					$this->deleteDirectConnection($type,$ID);
+					$this->deleteDirectConnection($itemtype,$ID);
 				}
 
 				// Contract : keep / delete + clean unused / keep unused
-				if (in_array($type,$this->CONTRACTS_TYPES)) {
-					$this->transferContracts($type,$ID,$newID);
+				if (in_array($itemtype,$this->CONTRACTS_TYPES)) {
+					$this->transferContracts($itemtype,$ID,$newID);
 				}
 
 				// Contact / Enterprise : keep / delete + clean unused / keep unused
-				if ($type==ENTERPRISE_TYPE){
+				if ($itemtype==ENTERPRISE_TYPE){
 					$this->transferEnterpriseContacts($ID,$newID);
 				}
 
 				// Document : keep / delete + clean unused / keep unused
-				if (in_array($type,$this->DOCUMENTS_TYPES)) {
-					$this->transferDocuments($type,$ID,$newID);
+				if (in_array($itemtype,$this->DOCUMENTS_TYPES)) {
+					$this->transferDocuments($itemtype,$ID,$newID);
 				}
 
 				// transfer compatible printers
-				if ($type==CARTRIDGE_TYPE) {
+				if ($itemtype==CARTRIDGE_TYPE) {
 					$this->transferCompatiblePrinters($ID,$newID);
 				}
 
-				// Cartridges  and cartridges type linked to printer
-				if ($type==PRINTER_TYPE) {
+				// Cartridges  and cartridges items linked to printer
+				if ($itemtype==PRINTER_TYPE) {
 					$this->transferPrinterCartridges($ID,$newID);
 				}
 				// TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
-				//if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
+				//if ($this->inittype==$itemtype&&$itemtype==DOCUMENT_TYPE&&$ID==$newID) {
 				
 				//}
 
@@ -854,7 +855,7 @@ class Transfer extends CommonDBTM{
 					$input['locations_id']=$this->transferDropdownLocation($cinew->obj->fields['locations_id']);
 				}
 				// Transfer Document file if exists (not to do if same entity) / Only for copy document
-				if ($type==DOCUMENT_TYPE&&$ID!=$newID
+				if ($itemtype==DOCUMENT_TYPE&&$ID!=$newID
 					&&!empty($cinew->obj->fields['filename'])
 					&&$cinew->obj->fields['entities_id']!=$this->to
 				){
@@ -862,8 +863,8 @@ class Transfer extends CommonDBTM{
 				}
 
 				$cinew->obj->update($input);
-				$this->addToAlreadyTransfer($type,$ID,$newID);
-				doHook("item_transfer",array("type"=>$type, "ID" => $ID, "newID"=>$newID));
+				$this->addToAlreadyTransfer($itemtype,$ID,$newID);
+				doHook("item_transfer",array("type"=>$itemtype, "ID" => $ID, "newID"=>$newID));
 			}
 		}
 	}
@@ -871,15 +872,15 @@ class Transfer extends CommonDBTM{
 	/**
 	* Add an item to already transfer array
 	*
-	*@param $type item type
+	*@param $itemtype item type
 	*@param $ID item original ID
 	*@param $newID item new ID
 	**/
-	function addToAlreadyTransfer($type,$ID,$newID){
-		if (!isset($this->already_transfer[$type])){
-			$this->already_transfer[$type]=array();
+	function addToAlreadyTransfer($itemtype,$ID,$newID){
+		if (!isset($this->already_transfer[$itemtype])){
+			$this->already_transfer[$itemtype]=array();
 		}
-		$this->already_transfer[$type][$ID]=$newID;
+		$this->already_transfer[$itemtype][$ID]=$newID;
 	}
 	
 	/**
@@ -1352,7 +1353,7 @@ class Transfer extends CommonDBTM{
 	}
 	
 	/* previous function
-	function transferSoftwares($type,$ID,$ocs_computer=false){
+	function transferSoftwares($itemtype,$ID,$ocs_computer=false){
 		global $DB;
 		// Get licenses linked
 		$query = "SELECT glpi_softwaresversions.sID as softID, glpi_softwaresversions.ID as versID, glpi_computers_softwaresversions.ID as instID
@@ -1520,11 +1521,11 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer contracts
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID original ID of the contract
 	*@param $newID new ID of the contract
 	**/
-	function transferContracts($type,$ID,$newID){
+	function transferContracts($itemtype,$ID,$newID){
 		global $DB;
 		$need_clean_process=false;
 
@@ -1533,7 +1534,7 @@ class Transfer extends CommonDBTM{
 			$contract=new Contract();
 			// Get contracts for the item
 			$query="SELECT * FROM glpi_contracts_items" .
-					" WHERE items_id = '$ID' AND itemtype = '$type' AND FK_contract NOT IN ".$this->item_recurs[CONTRACT_TYPE];
+					" WHERE items_id = '$ID' AND itemtype = '$itemtype' AND FK_contract NOT IN ".$this->item_recurs[CONTRACT_TYPE];
 	
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
@@ -1612,7 +1613,7 @@ class Transfer extends CommonDBTM{
 						} else {
 							// Copy Item -> copy links
 							if ($item_ID!=$newcontractID){
-								$query="INSERT INTO glpi_contracts_items (FK_contract,items_id,itemtype) VALUES ('$newcontractID','$newID','$type')";
+								$query="INSERT INTO glpi_contracts_items (FK_contract,items_id,itemtype) VALUES ('$newcontractID','$newID','$itemtype')";
 								$DB->query($query);
 							} else { // same contract for new item update link
 								$query="UPDATE glpi_contracts_items SET items_id = '$newID' WHERE ID='".$data['ID']."'";
@@ -1639,7 +1640,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		} else {// else unlink
-			$query="DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype = '$type'";
+			$query="DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 			$DB->query($query);
 		}
 
@@ -1648,11 +1649,11 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer documents
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID original ID of the document
 	*@param $newID new ID of the document
 	**/
-	function transferDocuments($type,$ID,$newID){
+	function transferDocuments($itemtype,$ID,$newID){
 		global $DB;
 		$need_clean_process=false;
 
@@ -1660,7 +1661,7 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_documents']){
 			$document=new Document();
 			// Get contracts for the item
-			$query="SELECT * FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$type' AND FK_doc NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
+			$query="SELECT * FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$itemtype' AND FK_doc NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					// Foreach get item 
@@ -1741,7 +1742,7 @@ class Transfer extends CommonDBTM{
 						} else {
 							// Copy Item -> copy links
 							if ($item_ID!=$newdocID){
-								$query="INSERT INTO glpi_documents_items (FK_doc,items_id,itemtype) VALUES ('$newdocID','$newID','$type')";
+								$query="INSERT INTO glpi_documents_items (FK_doc,items_id,itemtype) VALUES ('$newdocID','$newID','$itemtype')";
 								$DB->query($query);
 							} else { // same doc for new item update link
 								$query="UPDATE glpi_documents_items SET items_id = '$newID' WHERE ID='".$data['ID']."'";
@@ -1768,7 +1769,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		} else {// else unlink
-			$query="DELETE FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$type'";
+			$query="DELETE FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 			$DB->query($query);
 		}
 
@@ -1777,12 +1778,12 @@ class Transfer extends CommonDBTM{
 	/**
 	* Delete direct connection for a linked item 
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID ID of the item
 	*@param $link_type type of the linked items to transfer
 	*@param $ocs_computer if computer type OCS ID of the item if available
 	**/
-	function transferDirectConnection($type,$ID,$link_type,$ocs_computer=false){
+	function transferDirectConnection($itemtype,$ID,$link_type,$ocs_computer=false){
 		global $DB,$LINK_ID_TABLE;
 		// Only same Item case : no duplication of computers
 		// Default : delete
@@ -1816,7 +1817,7 @@ class Transfer extends CommonDBTM{
 		// Get connections
 		$query = "SELECT * 
 			FROM glpi_computers_items 
-			WHERE end2='$ID' AND type='".$link_type."'";
+			WHERE end2='$ID' AND itemtype='".$link_type."'";
 		if (isset($CFG_GLPI["recursive_type"][$link_type])){
 			$query .= " AND end1 NOT IN ".$this->item_recurs[$link_type];
 		}	
@@ -1844,7 +1845,7 @@ class Transfer extends CommonDBTM{
 									// Can be managed like a non global one ? = all linked computers need to be transfer (so not copy)
 									$query="SELECT count(*) AS CPT 
 										FROM glpi_computers_items 
-										WHERE type='".$link_type."' AND end1='$item_ID' 
+										WHERE itemtype='".$link_type."' AND end1='$item_ID' 
 											AND end2 NOT IN ".$this->item_search[COMPUTER_TYPE];
 									$result_search=$DB->query($query);
 									// All linked computers need to be transfer -> use unique transfer system
@@ -1904,7 +1905,7 @@ class Transfer extends CommonDBTM{
 							if ($need_clean_process&&$clean){
 								$query = "SELECT COUNT(*) AS CPT
 									FROM glpi_computers_items 
-									WHERE end1='$item_ID' AND type='".$link_type."'";
+									WHERE end1='$item_ID' AND itemtype='".$link_type."'";
 								if ($result_dc=$DB->query($query)){
 									if ($DB->result($result_dc,0,'CPT')==0){
 										if ($clean==1){
@@ -1950,31 +1951,31 @@ class Transfer extends CommonDBTM{
 	* Delete direct connection for a linked item 
 	*
 	*@param $ID ID of the item
-	*@param $type device type
+	*@param $itemtype item type
 	**/
-	function deleteDirectConnection($type,$ID){
+	function deleteDirectConnection($itemtype,$ID){
 		global $DB;
 		// Delete Direct connection to computers for item type 
 		$query = "SELECT * 
 			FROM glpi_computers_items 
-			WHERE end1 = '$ID' AND type = '".$type."'";
+			WHERE end1 = '$ID' AND itemtype = '".$itemtype."'";
 		$result = $DB->query($query);
 	}
 
 	/**
 	* Transfer tickets
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype type of transfered item
 	*@param $ID original ID of the ticket
 	*@param $newID new ID of the ticket
 	**/
-	function transferTickets($type,$ID,$newID){
+	function transferTickets($itemtype,$ID,$newID){
 		global $DB;
 		$job= new Job();
 
 		$query = "SELECT ID, assign_ent
 			FROM glpi_tickets 
-			WHERE items_id = '$ID' AND itemtype = '$type'";
+			WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
 				switch ($this->options['keep_tickets']){
@@ -1986,7 +1987,7 @@ class Transfer extends CommonDBTM{
 							if ($data['assign_ent']>0){
 								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
 							}
-							$job->update(array("ID"=>$data['ID'],'entities_id' => $this->to, 'items_id'=>$newID, 'itemtype'=>$type, 'assign_ent'=>$assign_ent));
+							$job->update(array("ID"=>$data['ID'],'entities_id' => $this->to, 'items_id'=>$newID, 'itemtype'=>$itemtype, 'assign_ent'=>$assign_ent));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
@@ -2021,11 +2022,11 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer history
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID original ID of the history
 	*@param $newID new ID of the history
 	**/
-	function transferHistory($type,$ID,$newID){
+	function transferHistory($itemtype,$ID,$newID){
 		global $DB;
 
 		switch ($this->options['keep_history']){
@@ -2034,7 +2035,7 @@ class Transfer extends CommonDBTM{
 				// Same item -> delete
 				if ($ID==$newID){ 
 					$query = "DELETE FROM glpi_logs 
-						WHERE itemtype = '$type' AND items_id = '$ID'";
+						WHERE itemtype = '$itemtype' AND items_id = '$ID'";
 					$result = $DB->query($query);
 				}
 				// Copy -> nothing to do
@@ -2045,7 +2046,7 @@ class Transfer extends CommonDBTM{
 				// Copy -> Copy datas 
 				if ($ID!=$newID){
 					$query = "SELECT * FROM glpi_logs 
-						WHERE itemtype = '$type' AND items_id = '$ID'";
+						WHERE itemtype = '$itemtype' AND items_id = '$ID'";
 					$result=$DB->query($query);
 					if ($result = $DB->query($query)) {
 						if ($DB->numrows($result)!=0) { 
@@ -2054,7 +2055,7 @@ class Transfer extends CommonDBTM{
 								$query = "INSERT INTO glpi_logs
 								(items_id, itemtype, devicetype, linked_action, user_name, date_mod, id_search_option, old_value, new_value)
 								VALUES
-								('$newID','$type','".$data['devicetype']."','".$data['linked_action']."','". $data['user_name']."', '".$data['date_mod']."', '".$data['id_search_option']."', '".$data['old_value']."', '".$data['new_value']."');";
+								('$newID','$itemtype','".$data['devicetype']."','".$data['linked_action']."','". $data['user_name']."', '".$data['date_mod']."', '".$data['id_search_option']."', '".$data['old_value']."', '".$data['new_value']."');";
 								$DB->query($query);
 							}
 						}
@@ -2092,22 +2093,22 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer infocoms of an item
 	*
-	*@param $type type of the item to transfer
+	*@param $itemtype type of the item to transfer
 	*@param $ID original ID of the item 
 	*@param $newID new ID of the item
 	**/
-	function transferInfocoms($type,$ID,$newID){
+	function transferInfocoms($itemtype,$ID,$newID){
 		global $DB;
 
 		$ic=new Infocom();
-		if ($ic->getFromDBforDevice($type,$ID)){
+		if ($ic->getFromDBforDevice($itemtype,$ID)){
 			switch ($this->options['keep_infocoms']){
 				// delete
 				case 0 :  
 					// Same item -> delete
 					if ($ID==$newID){ 
 						$query = "DELETE FROM glpi_infocoms 
-							WHERE itemtype = '$type' AND items_id = '$ID'";
+							WHERE itemtype = '$itemtype' AND items_id = '$ID'";
 						$result = $DB->query($query);
 					}
 					// Copy : nothing to do
@@ -2169,9 +2170,9 @@ class Transfer extends CommonDBTM{
 				if ($links_remaining==0){
 					// Search for infocoms
 					if ($this->options['keep_infocoms']){
-						foreach ($this->INFOCOMS_TYPES as $type){
+						foreach ($this->INFOCOMS_TYPES as $itemtype){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
-								WHERE FK_enterprise='$ID' AND itemtype='$type' AND items_id NOT IN ".$this->item_search[$type];
+								WHERE FK_enterprise='$ID' AND itemtype='$itemtype' AND items_id NOT IN ".$this->item_search[$itemtype];
 							if ($result_search = $DB->query($query)) {
 								$links_remaining+=$DB->result($result_search,0,'CPT');
 							}
@@ -2330,16 +2331,16 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer reservations of an item
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID original ID of the item
 	*@param $newID new ID of the item
 	**/
-	function transferReservations($type,$ID,$newID){
+	function transferReservations($itemtype,$ID,$newID){
 		global $DB;
 
 		$ri=new ReservationItem();
 
-		if ($ri->getFromDBbyItem($type,$ID)){
+		if ($ri->getFromDBbyItem($itemtype,$ID)){
 			switch ($this->options['keep_reservations']){
 				// delete
 				case 0 :  
@@ -2354,7 +2355,7 @@ class Transfer extends CommonDBTM{
 				default : 
 					// Copy : set item as reservable
 					if ($ID!=$newID){
-						$input['itemtype']=$type;
+						$input['itemtype']=$itemtype;
 						$input['items_id']=$newID;
 						$input['active']=$ri->fields['active'];
 						unset($ri->fields);
@@ -2369,11 +2370,11 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer devices of a computer
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID ID of the computer
 	*@param $ocs_computer if computer type OCS ID of the item if available
 	**/
-	function transferDevices($type,$ID,$ocs_computer=false){
+	function transferDevices($itemtype,$ID,$ocs_computer=false){
 		global $DB;
 		// Only same case because no duplication of computers
 		switch ($this->options['keep_devices']){
@@ -2399,18 +2400,18 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer network links
 	*
-	*@param $type original type of transfered item
+	*@param $itemtype original type of transfered item
 	*@param $ID original ID of the item
 	*@param $newID new ID of the item
 	*@param $ocs_computer if computer type OCS ID of the item if available
 	**/
-	function transferNetworkLink($type,$ID,$newID,$ocs_computer=false){
+	function transferNetworkLink($itemtype,$ID,$newID,$ocs_computer=false){
 		global $DB;
 		$np=new Netport();
 
 		$query = "SELECT *
 			FROM glpi_networkports 
-			WHERE items_id = '$ID' AND itemtype = '$type'";
+			WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
 				switch ($this->options['keep_networklinks']){
@@ -2751,9 +2752,9 @@ class Transfer extends CommonDBTM{
 			echo '</th></tr>';
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 			
-			foreach ($_SESSION['glpitransfer_list'] as $type => $tab){
+			foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab){
 				if (count($tab)){
-					$table=$LINK_ID_TABLE[$type];
+					$table=$LINK_ID_TABLE[$itemtype];
 					$query="SELECT $table.ID, $table.name, glpi_entities.completename AS locname, glpi_entities.ID AS entID 
 						FROM $table LEFT JOIN glpi_entities ON ($table.entities_id = glpi_entities.ID) 
 						WHERE $table.ID IN ".$this->createSearchConditionUsingArray($tab)."
@@ -2761,7 +2762,7 @@ class Transfer extends CommonDBTM{
 					$entID=-1;
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)){
-							$ci->setType($type);
+							$ci->setType($itemtype);
 							echo '<h3>'.$ci->getType().'</h3>';
 							while ($data=$DB->fetch_assoc($result)){
 								if ($entID!=$data['entID']){

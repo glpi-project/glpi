@@ -39,11 +39,11 @@ if (!defined('GLPI_ROOT')){
 
 
 /**
- * Print out a link to add directly a new consumable from a consumable type.
+ * Print out a link to add directly a new consumable from a consumable item.
  *
- * Print out the link witch make a new consumable from consumable type idetified by $ID
+ * Print out the link witch make a new consumable from consumable item idetified by $ID
  *
- *@param $ID Consumable type identifier.
+ *@param $ID Consumable item identifier.
  *
  *
  *@return Nothing (displays)
@@ -74,9 +74,9 @@ function showConsumableAdd($ID) {
 /**
  * Print out the consumables of a defined type
  *
- * Print out all the consumables that are issued from the consumable type identified by $ID
+ * Print out all the consumables that are issued from the consumable item identified by $ID
  *
- *@param $tID integer : Consumable type identifier.
+ *@param $tID integer : Consumable item identifier.
  *@param $show_old boolean : show old consumables or not. 
  *
  *@return Nothing (displays)
@@ -222,9 +222,9 @@ function showConsumables ($tID,$show_old=0) {
 /**
  * Print the consumable count HTML array for a defined consumable type
  *
- * Print the consumable count HTML array for the consumable type $tID
+ * Print the consumable count HTML array for the consumable item $tID
  *
- *@param $tID integer: consumable type identifier.
+ *@param $tID integer: consumable item identifier.
  *@param $alarm integer: threshold alarm value.
  *@param $nohtml integer: Return value without HTML tags.
  *
@@ -262,9 +262,9 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 /**
  * count how many consumable for a consumable type
  *
- * count how many consumable for the consumable type $tID
+ * count how many consumable for the consumable item $tID
  *
- *@param $tID integer: consumable type identifier.
+ *@param $tID integer: consumable item identifier.
  *
  *@return integer : number of consumable counted.
  *
@@ -279,9 +279,9 @@ function getConsumablesNumber($tID){
 /**
  * count how many old consumable for a consumable type
  *
- * count how many old consumable for the consumable type $tID
+ * count how many old consumable for the consumable item $tID
  *
- *@param $tID integer: consumable type identifier.
+ *@param $tID integer: consumable item identifier.
  *
  *@return integer : number of old consumable counted.
  *
@@ -295,9 +295,9 @@ function getOldConsumablesNumber($tID){
 /**
  * count how many consumable unused for a consumable type
  *
- * count how many consumable unused for the consumable type $tID
+ * count how many consumable unused for the consumable item $tID
  *
- *@param $tID integer: consumable type identifier.
+ *@param $tID integer: consumable item identifier.
  *
  *@return integer : number of consumable unused counted.
  *
@@ -315,7 +315,7 @@ function getUnusedConsumablesNumber($tID){
  *
  * 
  *
- *@param $cID integer : consumable type.
+ *@param $cID integer : consumable ID.
  *
  *@return 
  *
@@ -332,7 +332,7 @@ function isNewConsumable($cID){
  *
  * 
  *
- *@param $cID integer : consumable type.
+ *@param $cID integer : consumable ID.
  *
  *@return 
  *

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-07-28 17:28
+#GLPI Dump database on 2009-07-28 22:39
 
 ### Dump table glpi_alerts
 
@@ -188,7 +188,7 @@ CREATE TABLE `glpi_cartridgesitems` (
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ref` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_cartridge_type (ID)',
+  `cartridgesitemstypes_id` int(11) NOT NULL default '0',
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `users_id_tech` int(11) NOT NULL default '0',
   `deleted` smallint(6) NOT NULL default '0',
@@ -198,12 +198,12 @@ CREATE TABLE `glpi_cartridgesitems` (
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `alarm` (`alarm`),
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `cartridgesitemstypes_id` (`cartridgesitemstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -243,7 +243,7 @@ CREATE TABLE `glpi_computers` (
   `domain` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_domain (ID)',
   `network` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_network (ID)',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model (ID)',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_computers (ID)',
+  `computerstypes_id` int(11) NOT NULL default '0',
   `is_template` smallint(6) NOT NULL default '0',
   `tplname` varchar(255) collate utf8_unicode_ci default NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
@@ -259,7 +259,6 @@ CREATE TABLE `glpi_computers` (
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `os_sp` (`os_sp`),
@@ -272,8 +271,9 @@ CREATE TABLE `glpi_computers` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `computerstypes_id` (`computerstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -301,11 +301,11 @@ CREATE TABLE `glpi_computers_items` (
   `ID` int(11) NOT NULL auto_increment,
   `end1` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to type (ID)',
   `end2` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_computers (ID)',
-  `type` smallint(6) NOT NULL default '0',
+  `itemtype` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `connect` (`end1`,`end2`,`type`),
+  UNIQUE KEY `connect` (`end1`,`end2`,`itemtype`),
   KEY `end2` (`end2`),
-  KEY `type` (`type`)
+  KEY `type` (`itemtype`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -516,7 +516,7 @@ CREATE TABLE `glpi_consumablesitems` (
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ref` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_consumable_type (ID)',
+  `consumablesitemstypes_id` int(11) NOT NULL default '0',
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `users_id_tech` int(11) NOT NULL default '0',
   `deleted` smallint(6) NOT NULL default '0',
@@ -526,12 +526,12 @@ CREATE TABLE `glpi_consumablesitems` (
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `alarm` (`alarm`),
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `consumablesitemstypes_id` (`consumablesitemstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -561,15 +561,15 @@ CREATE TABLE `glpi_contacts` (
   `mobile` varchar(255) collate utf8_unicode_ci default NULL,
   `fax` varchar(255) collate utf8_unicode_ci default NULL,
   `email` varchar(255) collate utf8_unicode_ci default NULL,
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_contact_type (ID)',
+  `contactstypes_id` int(11) NOT NULL default '0',
   `comments` text collate utf8_unicode_ci,
   `deleted` smallint(6) NOT NULL default '0',
   `notes` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
-  KEY `type` (`type`),
   KEY `name` (`name`),
   KEY `deleted` (`deleted`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `contactstypes_id` (`contactstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -686,13 +686,14 @@ DROP TABLE IF EXISTS `glpi_devicescases`;
 CREATE TABLE `glpi_devicescases` (
   `ID` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_case_type (ID)',
+  `devicescasestypes_id` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
-  KEY `designation` (`designation`)
+  KEY `designation` (`designation`),
+  KEY `devicescasestypes_id` (`devicescasestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -791,11 +792,11 @@ CREATE TABLE `glpi_devicesmemories` (
   `comment` text collate utf8_unicode_ci,
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_ram_type (ID)',
+  `devicesmemoriestypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `designation` (`designation`),
-  KEY `type` (`type`)
+  KEY `devicesmemoriestypes_id` (`devicesmemoriestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -916,15 +917,16 @@ CREATE TABLE `glpi_devicessoundcards` (
 DROP TABLE IF EXISTS `glpi_displayprefs`;
 CREATE TABLE `glpi_displayprefs` (
   `ID` int(11) NOT NULL auto_increment,
-  `type` smallint(6) NOT NULL default '0',
+  `itemtype` int(11) NOT NULL default '0',
   `num` smallint(6) NOT NULL default '0',
   `rank` smallint(6) NOT NULL default '0',
   `users_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `display` (`type`,`num`,`users_id`),
+  UNIQUE KEY `display` (`itemtype`,`num`,`users_id`),
   KEY `rank` (`rank`),
   KEY `num` (`num`),
-  KEY `FK_users` (`users_id`)
+  KEY `FK_users` (`users_id`),
+  KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_displayprefs` VALUES ('32','1','4','4','0');
@@ -1235,7 +1237,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-23 17:50:02','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-07-28 17:28:35','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-07-28 22:39:32','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1545,7 +1547,7 @@ CREATE TABLE `glpi_monitors` (
   `flags_dvi` smallint(6) NOT NULL default '0',
   `flags_pivot` smallint(6) NOT NULL default '0',
   `locations_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_docs (ID)',
+  `monitorstypes_id` int(11) NOT NULL default '0',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model_monitors (ID)',
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `is_global` smallint(6) NOT NULL default '0',
@@ -1560,7 +1562,6 @@ CREATE TABLE `glpi_monitors` (
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `is_template` (`is_template`),
@@ -1568,8 +1569,9 @@ CREATE TABLE `glpi_monitors` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `monitorstypes_id` (`monitorstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1632,7 +1634,7 @@ CREATE TABLE `glpi_networkequipments` (
   `locations_id` int(11) NOT NULL default '0',
   `domain` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_domain (ID)',
   `network` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_network (ID)',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_networking (ID)',
+  `networkequipmentstypes_id` int(11) NOT NULL default '0',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model_networking (ID)',
   `firmware` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_firmware (ID)',
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
@@ -1650,7 +1652,6 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `firmware` (`firmware`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `network` (`network`),
@@ -1659,8 +1660,9 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `networkequipmentstypes_id` (`networkequipmentstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1925,7 +1927,7 @@ CREATE TABLE `glpi_peripherals` (
   `serial` varchar(255) collate utf8_unicode_ci default NULL,
   `otherserial` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_peripherals (ID)',
+  `peripheralstypes_id` int(11) NOT NULL default '0',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model_peripherals (ID)',
   `brand` varchar(255) collate utf8_unicode_ci default NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
@@ -1941,7 +1943,6 @@ CREATE TABLE `glpi_peripherals` (
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `is_template` (`is_template`),
@@ -1949,8 +1950,9 @@ CREATE TABLE `glpi_peripherals` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `peripheralstypes_id` (`peripheralstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1994,7 +1996,7 @@ CREATE TABLE `glpi_phones` (
   `otherserial` varchar(255) collate utf8_unicode_ci default NULL,
   `firmware` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_phones (ID)',
+  `phonestypes_id` int(11) NOT NULL default '0',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model_phones (ID)',
   `brand` varchar(255) collate utf8_unicode_ci default NULL,
   `power` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_phone_power (ID)',
@@ -2014,7 +2016,6 @@ CREATE TABLE `glpi_phones` (
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `power` (`power`),
@@ -2023,8 +2024,9 @@ CREATE TABLE `glpi_phones` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `phonestypes_id` (`phonestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2102,7 +2104,7 @@ CREATE TABLE `glpi_printers` (
   `locations_id` int(11) NOT NULL default '0',
   `domain` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_domain (ID)',
   `network` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_network (ID)',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_type_printers (ID)',
+  `printerstypes_id` int(11) NOT NULL default '0',
   `model` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_model_printers (ID)',
   `FK_glpi_enterprise` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_manufacturer (ID)',
   `is_global` smallint(6) NOT NULL default '0',
@@ -2118,7 +2120,6 @@ CREATE TABLE `glpi_printers` (
   PRIMARY KEY  (`ID`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `model` (`model`),
   KEY `FK_groups` (`FK_groups`),
   KEY `network` (`network`),
@@ -2128,8 +2129,9 @@ CREATE TABLE `glpi_printers` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `locations_id` (`locations_id`)
+  KEY `printerstypes_id` (`printerstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2678,7 +2680,7 @@ CREATE TABLE `glpi_softwares` (
   `recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
-  `location` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_locations (ID)',
+  `locations_id` int(11) NOT NULL default '0',
   `users_id_tech` int(11) NOT NULL default '0',
   `platform` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_os (ID)',
   `is_update` smallint(6) NOT NULL default '0',
@@ -2697,7 +2699,6 @@ CREATE TABLE `glpi_softwares` (
   `category` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_software_category (ID)',
   PRIMARY KEY  (`ID`),
   KEY `platform` (`platform`),
-  KEY `location` (`location`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -2708,6 +2709,7 @@ CREATE TABLE `glpi_softwares` (
   KEY `deleted` (`deleted`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2733,7 +2735,7 @@ CREATE TABLE `glpi_softwareslicenses` (
   `entities_id` int(11) NOT NULL default '0',
   `recursive` tinyint(1) NOT NULL default '0',
   `number` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_licensetypes (ID)',
+  `softwareslicensestypes_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `serial` varchar(255) collate utf8_unicode_ci default NULL,
   `otherserial` varchar(255) collate utf8_unicode_ci default NULL,
@@ -2744,7 +2746,6 @@ CREATE TABLE `glpi_softwareslicenses` (
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
-  KEY `type` (`type`),
   KEY `sID` (`sID`),
   KEY `buy_version` (`buy_version`),
   KEY `use_version` (`use_version`),
@@ -2752,7 +2753,8 @@ CREATE TABLE `glpi_softwareslicenses` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `expire` (`expire`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `softwareslicensestypes_id` (`softwareslicensestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2804,7 +2806,7 @@ CREATE TABLE `glpi_suppliers` (
   `entities_id` int(11) NOT NULL default '0',
   `recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_enttype (ID)',
+  `supplierstypes_id` int(11) NOT NULL default '0',
   `address` text collate utf8_unicode_ci,
   `postcode` varchar(255) collate utf8_unicode_ci default NULL,
   `town` varchar(255) collate utf8_unicode_ci default NULL,
@@ -2818,10 +2820,10 @@ CREATE TABLE `glpi_suppliers` (
   `email` varchar(255) collate utf8_unicode_ci default NULL,
   `notes` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
-  KEY `type` (`type`),
   KEY `name` (`name`),
   KEY `deleted` (`deleted`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `supplierstypes_id` (`supplierstypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3005,7 +3007,7 @@ CREATE TABLE `glpi_users` (
   `FK_profiles` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (ID)',
   `entities_id` int(11) NOT NULL default '0',
   `title` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_user_titles (ID)',
-  `type` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_dropdown_user_types (ID)',
+  `userstypes_id` int(11) NOT NULL default '0',
   `dateformat` smallint(6) default NULL,
   `numberformat` smallint(6) default NULL,
   `view_ID` smallint(6) default NULL,
@@ -3029,13 +3031,13 @@ CREATE TABLE `glpi_users` (
   KEY `realname` (`realname`),
   KEY `deleted` (`deleted`),
   KEY `title` (`title`),
-  KEY `type` (`type`),
   KEY `active` (`active`),
   KEY `entities_id` (`entities_id`),
-  KEY `locations_id` (`locations_id`)
+  KEY `locations_id` (`locations_id`),
+  KEY `userstypes_id` (`userstypes_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-07-28 17:28:35','2009-07-28 17:28:35','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-07-28 22:39:32','2009-07-28 22:39:32','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);

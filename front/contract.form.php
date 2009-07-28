@@ -86,8 +86,8 @@ else if (isset($_POST["additem"]))
 {
 	$contract->check($_POST['conID'],'w');
 
-	if ($_POST['type']>0&&$_POST['item']>0){
-		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
+	if ($_POST['itemtype']>0&&$_POST['items_id']>0){
+		addDeviceContract($_POST["conID"],$_POST['itemtype'],$_POST['items_id']);
 		logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);

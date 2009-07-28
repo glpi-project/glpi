@@ -51,7 +51,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		global $DB;
 		$query="SELECT MAX(rank) 
 			FROM glpi_displayprefs 
-			WHERE type='".$input["type"]."' AND users_id='".$input["users_id"]."'";
+			WHERE itemtype='".$input["itemtype"]."' AND users_id='".$input["users_id"]."'";
 		$result=$DB->query($query);
 		$input["rank"]=$DB->result($result,0,0)+1;
 
@@ -61,7 +61,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	/**
 	 * Active personal config based on global one
 	 *
-	 *@param $input parameter array (type,users_id)
+	 *@param $input parameter array (itemtype,users_id)
 	 *
 	 **/
 	function activatePerso($input){
@@ -71,7 +71,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		$query="SELECT * 
 			FROM glpi_displayprefs 
-			WHERE type='".$input["type"]."' AND users_id='0'";
+			WHERE itemtype='".$input["itemtype"]."' AND users_id='0'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
@@ -82,13 +82,12 @@ class SetupSearchDisplay extends CommonDBTM{
 			}
 		} else {
 			// No items in the global config
-			if (count($SEARCH_OPTION[$input["type"]])>1){
+			if (count($SEARCH_OPTION[$input["itemtype"]])>1){
 				$done=false;
-				foreach($SEARCH_OPTION[$input["type"]] as $key => $val)
+				foreach($SEARCH_OPTION[$input["itemtype"]] as $key => $val)
 					if (is_array($val)&&$key!=1&&!$done){
 						$data["users_id"]=$input["users_id"];
-						$data["type"]=$input["type"];
-						$data["type"]=$input["type"];
+						$data["itemtype"]=$input["itemtype"];
 						$data["rank"]=1;
 						$data["num"]=$key;
 						$this->fields=$data;
@@ -106,7 +105,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	/**
 	 * Move up an item
 	 *
-	 *@param $input parameter array (ID,type,users_id)
+	 *@param $input parameter array (ID,itemtype,users_id)
 	 *
 	 **/
 	function up($input){
@@ -120,7 +119,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Get previous item
 		$query="SELECT ID, rank 
 			FROM glpi_displayprefs 
-			WHERE type='".$input['type']."' AND users_id='".$input["users_id"]."' AND rank<'$rank1'
+			WHERE itemtype='".$input['itemtype']."' AND users_id='".$input["users_id"]."' AND rank<'$rank1'
 			ORDER BY rank DESC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
@@ -139,7 +138,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	/**
 	 * Move down an item
 	 *
-	 *@param $input parameter array (ID,type,users_id)
+	 *@param $input parameter array (ID,itemtype,users_id)
 	 *
 	 **/
 	function down($input){
@@ -154,7 +153,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Get next item
 		$query="SELECT ID, rank 
 			FROM glpi_displayprefs 
-			WHERE type='".$input['type']."' AND users_id='".$input["users_id"]."' AND rank>'$rank1' 
+			WHERE itemtype='".$input['itemtype']."' AND users_id='".$input["users_id"]."' AND rank>'$rank1'
 			ORDER BY rank ASC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
@@ -174,14 +173,14 @@ class SetupSearchDisplay extends CommonDBTM{
 	 * Print the search config form
 	 *
 	 *@param $target form target
-	 *@param $type item type
+	 *@param $itemtype item type
 	 *
 	 *@return nothing
 	 **/
-	function showFormPerso($target,$type){
+	function showFormPerso($target,$itemtype){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
-		if (!isset($SEARCH_OPTION[$type])) {
+		if (!isset($SEARCH_OPTION[$itemtype])) {
 			return false;
 		}
 
@@ -191,7 +190,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Defined items
 		$query="SELECT * 
 			FROM glpi_displayprefs 
-			WHERE type='$type' AND users_id='$IDuser' 
+			WHERE itemtype='$itemtype' AND users_id='$IDuser'
 			ORDER BY rank";
 
 		$result=$DB->query($query);
@@ -201,7 +200,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			checkRight("search_config","w");
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
 			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='type' value='$type'>";
+			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 			echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 			echo $LANG['setup'][241];
@@ -214,11 +213,11 @@ class SetupSearchDisplay extends CommonDBTM{
 			echo $LANG['setup'][252].": </th></tr>";
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='type' value='$type'>";
+			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 			echo "<input type='hidden' name='users_id' value='$IDuser'>";
 			echo "<select name='num'>";
 			$first_group=true;
-			$searchopt=cleanSearchOption($type);
+			$searchopt=cleanSearchOption($itemtype);
 			foreach ($searchopt as $key => $val)
 				if (!is_array($val)){
 					if (!$first_group) echo "</optgroup>";
@@ -237,7 +236,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 			// print first element 
 			echo "<tr class='tab_bg_2'><td  align='center' width='50%'>";
-			echo $SEARCH_OPTION[$type][1]["name"];
+			echo $SEARCH_OPTION[$itemtype][1]["name"];
 
 
 				echo "</td><td colspan='3'>&nbsp;</td>";
@@ -247,7 +246,7 @@ class SetupSearchDisplay extends CommonDBTM{
 				while ($data=$DB->fetch_array($result)){
 					if ($data["num"]!=1){
 						echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
-						echo $SEARCH_OPTION[$type][$data["num"]]["name"];
+						echo $SEARCH_OPTION[$itemtype][$data["num"]]["name"];
 						echo "</td>";
 						if ($i!=0){
 							echo "<td align='center' valign='middle'>";
@@ -255,7 +254,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-							echo "<input type='hidden' name='type' value='$type'>";
+							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 							echo "<input type='image' name='up'  value=\"".$LANG['buttons'][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\" >";	
 							echo "</form>";
 							echo "</td>";
@@ -266,7 +265,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-							echo "<input type='hidden' name='type' value='$type'>";
+							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 							echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG['buttons'][25]."\"  title=\"".$LANG['buttons'][25]."\" >";	
 							echo "</form>";
 							echo "</td>";
@@ -277,7 +276,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 						echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-						echo "<input type='hidden' name='type' value='$type'>";
+						echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 						echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG['buttons'][6]."\"  title=\"".$LANG['buttons'][6]."\" >";	
 						echo "</form>";
 						echo "</td>";
@@ -295,14 +294,14 @@ class SetupSearchDisplay extends CommonDBTM{
 	 * Print the search config form
 	 *
 	 *@param $target form target
-	 *@param $type item type
+	 *@param $itemtype item type
 	 *
 	 *@return nothing
 	 **/
-	function showFormGlobal($target,$type){
+	function showFormGlobal($target,$itemtype){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
-		if (!isset($SEARCH_OPTION[$type])) {
+		if (!isset($SEARCH_OPTION[$itemtype])) {
 			return false;
 		}
 		$IDuser=0;
@@ -313,7 +312,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Defined items
 		$query="SELECT * 
 			FROM glpi_displayprefs 
-			WHERE type='$type' AND users_id='$IDuser' 
+			WHERE itemtype='$itemtype' AND users_id='$IDuser'
 			ORDER BY rank";
 
 		$result=$DB->query($query);
@@ -325,11 +324,11 @@ class SetupSearchDisplay extends CommonDBTM{
 		if ($global_write){
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='type' value='$type'>";
+			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 			echo "<input type='hidden' name='users_id' value='$IDuser'>";
 			echo "<select name='num'>";
 			$first_group=true;
-			$searchopt=cleanSearchOption($type);
+			$searchopt=cleanSearchOption($itemtype);
 			foreach ($searchopt as $key => $val)
 				if (!is_array($val)){
 					if (!$first_group) echo "</optgroup>";
@@ -348,7 +347,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		// print first element 
 		echo "<tr class='tab_bg_2'><td  align='center' width='50%'>";
-		echo $SEARCH_OPTION[$type][1]["name"];
+		echo $SEARCH_OPTION[$itemtype][1]["name"];
 
 
 		if ($global_write){
@@ -360,7 +359,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			while ($data=$DB->fetch_array($result)){
 				if ($data["num"]!=1){
 					echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
-					echo $SEARCH_OPTION[$type][$data["num"]]["name"];
+					echo $SEARCH_OPTION[$itemtype][$data["num"]]["name"];
 					echo "</td>";
 					if ($global_write){
 						if ($i!=0){
@@ -369,7 +368,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-							echo "<input type='hidden' name='type' value='$type'>";
+							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 							echo "<input type='image' name='up'  value=\"".$LANG['buttons'][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\" >";	
 							echo "</form>";
 							echo "</td>";
@@ -380,7 +379,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-							echo "<input type='hidden' name='type' value='$type'>";
+							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 							echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG['buttons'][25]."\"  title=\"".$LANG['buttons'][25]."\" >";	
 							echo "</form>";
 							echo "</td>";
@@ -391,7 +390,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 						echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
-						echo "<input type='hidden' name='type' value='$type'>";
+						echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 						echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG['buttons'][6]."\"  title=\"".$LANG['buttons'][6]."\" >";	
 						echo "</form>";
 						echo "</td>";

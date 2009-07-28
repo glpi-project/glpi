@@ -60,7 +60,7 @@ function showEnterpriseContact($instID) {
 
 	$query = "SELECT glpi_contacts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
 			glpi_suppliers.website as website, glpi_suppliers.fax as fax, glpi_suppliers.phonenumber as phone,
-			glpi_suppliers.type as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
+			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
 		. " FROM glpi_contacts_suppliers, glpi_suppliers "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
 		. " WHERE glpi_contacts_suppliers.FK_contact = '$instID' AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID"

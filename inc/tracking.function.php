@@ -323,9 +323,9 @@ function showCentralJobCount(){
 
 
 
-function showJobListForItem($item_type,$item) {
-	// $item is required
-	//affiche toutes les vielles intervention pour un $item donn� 
+function showJobListForItem($itemtype,$items_id) {
+	// $items_id is required
+	//affiche toutes les vielles intervention pour un $items_id donn� 
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -335,7 +335,7 @@ function showJobListForItem($item_type,$item) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (items_id = '$item' and itemtype= '$item_type')
+			WHERE (items_id = '$items_id' and itemtype= '$itemtype')
 				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
@@ -345,24 +345,24 @@ function showJobListForItem($item_type,$item) {
 	if ($number > 0)
 	{
 		$ci = new CommonItem();
-		$ci->getFromDB($item_type,$item);
+		$ci->getFromDB($itemtype,$items_id);
 		initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8].": &nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG['buttons'][40]."</a>";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
 		echo "</th></tr>";
 
-		if ($item)
+		if ($items_id)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$item&amp;itemtype=$item_type\"><strong>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
 			echo $LANG['joblist'][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
 		}
 		
-		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item","","",true);
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$items_id","","",true);
 
 		while ($data=$DB->fetch_assoc($result)){
 			addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
@@ -376,11 +376,11 @@ function showJobListForItem($item_type,$item) {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
 
-		if ($item)
+		if ($items_id)
 		{
 
 			echo "<tr><td align='center' class='tab_bg_2'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$item&amp;itemtype=$item_type\"><strong>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
 			echo $LANG['joblist'][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -391,8 +391,6 @@ function showJobListForItem($item_type,$item) {
 }
 
 function showJobListForEnterprise($entID) {
-	// $item is required
-	//affiche toutes les vielles intervention pour un $item donn� 
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -442,8 +440,6 @@ function showJobListForEnterprise($entID) {
 
 
 function showJobListForUser($userID) {
-	// $item is required
-	//affiche toutes les vielles intervention pour un $item donn� 
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -533,7 +529,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			if (isset($_SESSION['glpimassiveactionselected'][$data["ID"]])){
 				$sel="checked";
 			}
-			$first_col.="&nbsp;<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
+			$first_col.="&nbsp;<input type='checkbox' name='items_id[".$data["ID"]."]' value='1' $sel>";
 		}
 
 
@@ -1158,7 +1154,7 @@ global $CFG_GLPI,  $LANG;
 
 }
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$users_id=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$users_id=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$items_id=0,$itemtype=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
 	// Print Search Form
 
 	global $CFG_GLPI,  $LANG, $DB;
@@ -1252,7 +1248,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
 	echo "<td class='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$LANG['common'][1].":</td><td>";
-	dropdownAllItems("item",$type,$item,-1,array_keys(getAllTypesForHelpdesk()));
+	dropdownAllItems("items_id",$itemtype,$items_id,-1,array_keys(getAllTypesForHelpdesk()));
 	echo "</td></tr></table>";
 	echo "</td>";
 
@@ -1419,10 +1415,10 @@ function getCommonLeftJoinForTrackingSearch(){
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$users_id=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$users_id=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$items_id=0,$itemtype=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
-	// If $item is given, only jobs for a particular machine
+	// If $items_id is given, only jobs for a particular machine
 	// are listed.
 	// group = 0 : not use
 	// group = -1 : groups of the users_id if session variable OK
@@ -1536,11 +1532,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" AND glpi_tickets.users_id_recipient='$recipient'";
 
 
-	if ($type!=0)
-		$where.=" AND glpi_tickets.itemtype='$type'";	
+	if ($itemtype!=0)
+		$where.=" AND glpi_tickets.itemtype='$itemtype'";	
 
-	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tickets.items_id = '$item'";
+	if ($items_id!=0&&$itemtype!=0)
+		$where.=" AND glpi_tickets.items_id = '$items_id'";
 
 	$search_users_id=false;
 
@@ -1664,7 +1660,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.locations_id)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
-		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.type)";
+		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.computerstypes_id)";
 		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.FK_glpi_enterprise ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.users_id_tech ) ";
 		$where.=" WHERE $wherecomp) ";
@@ -1694,7 +1690,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 			// Pager
-			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;users_id_assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;users_id=$users_id&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;item=$item&amp;request_type=$request_type";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;users_id_assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;users_id=$users_id&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;itemtype=$itemtype&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;items_id=$items_id&amp;request_type=$request_type";
 			
 			// Specific case of showing tracking of an item
 			if (isset($_GET["ID"])){
@@ -1774,9 +1770,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				if ($request_type!=0) $title.=" - ".$LANG['job'][44]." = ".getRequestTypeName($request_type);
 				if ($category!=0) $title.=" - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",$category);
 				if ($priority!=0) $title.=" - ".$LANG['joblist'][2]." = ".getPriorityName($priority);
-				if ($type!=0&&$item!=0){
+				if ($itemtype!=0&&$itemitem!=0){
 					$ci=new CommonItem();
-					$ci->getFromDB($type,$item);
+					$ci->getFromDB($itemtype,$items_id);
 					$title.=" - ".$LANG['common'][1]." = ".$ci->getType()." / ".$ci->getNameID();
 
 				}
@@ -1852,10 +1848,10 @@ function showFollowupsShort($ID) {
 
 
 
-function getAssignName($ID,$type,$link=0){
+function getAssignName($ID,$itemtype,$link=0){
 	global $CFG_GLPI;
 
-	switch ($type){
+	switch ($itemtype){
 		case USER_TYPE :
 			if ($ID==0) return "[Nobody]";
 			return getUserName($ID,$link);
@@ -1863,10 +1859,10 @@ function getAssignName($ID,$type,$link=0){
 		case ENTERPRISE_TYPE :
 		case GROUP_TYPE :
 			$ci=new CommonItem();
-			if ($ci->getFromDB($type,$ID)){
+			if ($ci->getFromDB($itemtype,$ID)){
 				$before="";
 				$after="";
-				if ($link&&haveTypeRight($type,'r')){
+				if ($link&&haveTypeRight($itemtype,'r')){
 					$ci->getLink(1);
 				}
 				return $ci->getNameID();
@@ -2751,20 +2747,20 @@ function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
  *
  * 
  *
- *@param $item_type device type
- *@param $item ID of the device
+ *@param $itemtype device type
+ *@param $items_id ID of the device
  *
  *@return float
  *
  **/
-function computeTicketTco($item_type,$item){
+function computeTicketTco($itemtype,$items_id){
 	global $DB;
 	$totalcost=0;
 
 	$query="SELECT * 
 		FROM glpi_tickets 
-		WHERE (itemtype = '$item_type' 
-				AND items_id = '$item')
+		WHERE (itemtype = '$itemtype' 
+				AND items_id = '$items_id')
 			AND (cost_time>0 
 				OR cost_fixed>0
 				OR cost_material>0)";
@@ -2831,9 +2827,9 @@ function getAllTypesForHelpdesk()
 	}
 
 	//Types of the core (after the plugin for robustness)     				
-	foreach ($array_types as $type => $label)
-		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
-			$types[$type] = $label;
+	foreach ($array_types as $itemtype => $label)
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype))
+			$types[$itemtype] = $label;
 	
 	ksort($types); // core type first... asort could be better ?
 
@@ -2842,17 +2838,17 @@ function getAllTypesForHelpdesk()
 
 /**
  * Check if it's possible to assign ticket to a type (core or plugin)
- * @param type the object's type
+ * @param $itemtype the object's type
  * @return true if ticket can be assign to this type, false if not
  */
-function isPossibleToAssignType($type)
+function isPossibleToAssignType($itemtype)
 {
 	global $PLUGIN_HOOKS;
 
 	//check the core
-	if ($type < 1000)
+	if ($itemtype < 1000)
 	{
-		if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)))
+		if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype)))
 			return true;
 		else
 			return false;		
@@ -2864,7 +2860,7 @@ function isPossibleToAssignType($type)
 		foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
 			$types=doOneHook($plugin,'AssignToTicket',$types);
 		}
-		if (array_key_exists($type,$types))
+		if (array_key_exists($itemtype,$types))
 			return true;
 	}
 	return false;	

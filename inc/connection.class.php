@@ -49,7 +49,7 @@ class Connection {
 	//! Connected Item  ID
 	var $end2			= 0;
 	//! Connected Item Type
-	var $type			= 0;
+	var $itemtype			= 0;
 	//! Name of the computer
 	var $device_name	= "";
 	//! ID of the computer
@@ -62,18 +62,18 @@ class Connection {
 	/**
 	 * Get computers connected to a item
 	 *
-	 * $type must set before
+	 * $itemtype must set before
 	 *
 	 * @param $ID ID of the computer
-         * @param $type type of the items searched
+   * @param $type type of the items searched
 	 * @return array of ID of connected items
 	 */
-	function getComputersContact ($type,$ID) {
+	function getComputersContact ($itemtype,$ID) {
 		global $DB;
 		$query = "SELECT glpi_computers_items.ID as connectID, glpi_computers_items.end2 as end2, glpi_computers.* 
 			FROM glpi_computers_items 
 			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_computers_items.end2)
-			 WHERE (glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$type' 
+			 WHERE (glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 				AND glpi_computers.is_template = '0')" .
 				getEntitiesRestrictRequest(" AND", "glpi_computers");
 				
@@ -112,7 +112,7 @@ class Connection {
 	/**
 	 * Add a connection
 	 *
-	 * end1, end2 and type must be set
+	 * end1, end2 and itemtype must be set
 	 *
 	 * @return integer : ID of added connection
 	 */
@@ -120,7 +120,7 @@ class Connection {
 		global $DB;
 
 		// Build query
-		$query = "INSERT INTO glpi_computers_items (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
+		$query = "INSERT INTO glpi_computers_items (end1,end2,itemtype) VALUES ('$this->end1','$this->end2','$this->itemtype')";
 		$result=$DB->query($query);
 		return $DB->insert_id();
 	}

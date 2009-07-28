@@ -1101,7 +1101,7 @@ class CommonDBTM {
 			foreach ($onglets as $key => $val ) {
 				$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$this->type."&glpi_tab=$key&ID=$ID$template$extraparam");
+						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=$key&ID=$ID$template$extraparam");
 			}			
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
@@ -1109,7 +1109,7 @@ class CommonDBTM {
 			if($display_all && empty($withtemplate) && count($tabs)>1){
 				$tabs[-1]=array('title'=>$LANG['common'][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
+						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
 			}
 
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
@@ -1230,18 +1230,18 @@ class CommonDBTM {
 							$devfield  = $rel[$tablename][0]; // items_id, items_id, end1...
 							$typefield = $rel[$tablename][1]; // itemtype, type, ...
 							
-							$sql = "SELECT DISTINCT `$typefield` AS type FROM `$tablename` WHERE `$field`='$ID'";
+							$sql = "SELECT DISTINCT `$typefield` AS itemtype FROM `$tablename` WHERE `$field`='$ID'";
 							$res = $DB->query($sql);
 							
 							// Search linked device of each type
 							if ($res) while ($data = $DB->fetch_assoc($res)) {
-								$type=$data["type"];
-								if (isset($LINK_ID_TABLE[$type]) && 
-									in_array($device=$LINK_ID_TABLE[$type], $CFG_GLPI["specif_entities_tables"])) {
+								$itemtype=$data["itemtype"];
+								if (isset($LINK_ID_TABLE[$itemtype]) && 
+									in_array($device=$LINK_ID_TABLE[$itemtype], $CFG_GLPI["specif_entities_tables"])) {
 
 									if (countElementsInTable("$tablename, $device", 
 										"`$tablename`.`$field`='$ID' 
-										AND `$tablename`.`$typefield`='$type' 
+										AND `$tablename`.`$typefield`='$itemtype' 
 										AND `$tablename`.`$devfield`=`$device`.ID 
 										AND `$device`.entities_id NOT IN $entities")>0) {
 											return false;											

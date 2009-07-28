@@ -76,24 +76,24 @@ function showInfocomEnterprise($instID) {
 	$ci=new CommonItem;
 	$num=0;
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "itemtype");
-		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=SOFTWARELICENSE_TYPE){
-			$query = "SELECT ".$LINK_ID_TABLE[$type].".* "
+		$itemtype=$DB->result($result, $i, "itemtype");
+		if (haveTypeRight($itemtype,"r")&&$itemtype!=CONSUMABLE_ITEM_TYPE&&$itemtype!=CARTRIDGE_ITEM_TYPE&&$itemtype!=SOFTWARELICENSE_TYPE){
+			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* "
 				." FROM glpi_infocoms "
-				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.items_id) "
-				." WHERE glpi_infocoms.itemtype='$type' AND glpi_infocoms.FK_enterprise = '$instID' "
-				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type]) 
-				." ORDER BY entities_id, ".$LINK_ID_TABLE[$type].".name";
+				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id) "
+				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.FK_enterprise = '$instID' "
+				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype]) 
+				." ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 				
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
-			$ci->setType($type);
-			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
+			$ci->setType($itemtype);
+			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
 				
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";		
@@ -101,7 +101,7 @@ function showInfocomEnterprise($instID) {
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
 					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					if ($prem) {
@@ -176,7 +176,7 @@ function showAssociatedContact($instID) {
 			echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
 			echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 			echo "<td class='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-			echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["type"])."</td>";
+			echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["contactstypes_id"])."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";

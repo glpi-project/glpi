@@ -38,9 +38,9 @@ if (!defined('GLPI_ROOT')){
 	}
 
 /**
- * Print out a link to add directly a new cartridge from a cartridge type.
+ * Print out a link to add directly a new cartridge from a cartridge item.
  *
- * Print out the link witch make a new cartridge from cartridge type idetified by $ID
+ * Print out the link witch make a new cartridge from cartridge item idetified by $ID
  *
  *@param $ID Cartridge type identifier.
  *
@@ -444,9 +444,9 @@ function showCartridgeInstalled($instID,$old=0) {
 /**
  * Print the cartridge count HTML array for a defined cartridge type
  *
- * Print the cartridge count HTML array for the cartridge type $tID
+ * Print the cartridge count HTML array for the cartridge item $tID
  *
- *@param $tID integer: cartridge type identifier.
+ *@param $tID integer: cartridge item identifier.
  *@param $alarm integer: threshold alarm value.
  *@param $nohtml integer: Return value without HTML tags.
  *
@@ -483,9 +483,9 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 /**
  * count how many cartbridge for a cartbridge type
  *
- * count how many cartbridge for the cartbridge type $tID
+ * count how many cartbridge for the cartridge item $tID
  *
- *@param $tID integer: cartridge type identifier.
+ *@param $tID integer: cartridge item identifier.
  *
  *@return integer : number of cartridge counted.
  *
@@ -500,9 +500,9 @@ function getCartridgesNumber($tID){
 /**
  * count how many cartridge used for a cartbridge type
  *
- * count how many cartridge used for the cartbridge type $tID
+ * count how many cartridge used for the cartbridge item $tID
  *
- *@param $tID integer: cartridge type identifier.
+ *@param $tID integer: cartridge item identifier.
  *
  *@return integer : number of cartridge used counted.
  *
@@ -518,9 +518,9 @@ function getUsedCartridgesNumber($tID){
 /**
  * count how many old cartbridge for a cartbridge type
  *
- * count how many old cartbridge for the cartbridge type $tID
+ * count how many old cartbridge for the cartbridge item $tID
  *
- *@param $tID integer: cartridge type identifier.
+ *@param $tID integer: cartridge item identifier.
  *
  *@return integer : number of old cartridge counted.
  *
@@ -535,9 +535,9 @@ function getOldCartridgesNumber($tID){
 /**
  * count how many cartbridge unused for a cartbridge type
  *
- * count how many cartbridge unused for the cartbridge type $tID
+ * count how many cartbridge unused for the cartbridge item $tID
  *
- *@param $tID integer: cartridge type identifier.
+ *@param $tID integer: cartridge item identifier.
  *
  *@return integer : number of cartridge unused counted.
  *

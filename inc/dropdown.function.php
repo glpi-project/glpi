@@ -829,7 +829,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 	}
 	asort($options);
 	if (count($options)){
-		echo "<select name='type' id='item_type$rand'>\n";
+		echo "<select name='itemtype' id='itemtype$rand'>\n";
 			echo "<option value='0'>-----</option>\n";
 		foreach ($options as $key => $val){
 			echo "<option value='".$key."'>".$val."</option>\n";
@@ -844,13 +844,13 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 		if ($onlyglobal){
 			$params['onlyglobal']=1;
 		}
-		ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
+		ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
 
 		echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
 
 		if ($value>0){
 			echo "<script type='text/javascript' >\n";
-			echo "window.document.getElementById('item_type$rand').value='".$value_type."';";
+			echo "window.document.getElementById('item_ype$rand').value='".$value_type."';";
 			echo "</script>\n";
 
 			$params["idtable"]=$value_type;
@@ -941,27 +941,27 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 
 		// My items
-		foreach ($CFG_GLPI["linkuser_types"] as $type){
-			if (isPossibleToAssignType($type)){
+		foreach ($CFG_GLPI["linkuser_types"] as $itemtype){
+			if (isPossibleToAssignType($itemtype)){
 				$query="SELECT * 
-					FROM ".$LINK_ID_TABLE[$type]." 
+					FROM ".$LINK_ID_TABLE[$itemtype]." 
 					WHERE users_id='".$userID."' AND deleted='0' ";
-				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
 				
 				
-				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
+				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 				$query.=" ORDER BY name ";
 
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
-					$ci->setType($type);
+					$ci->setType($itemtype);
 					$type_name=$ci->getType();
 					
 					while ($data=$DB->fetch_array($result)){
 						$output=$data["name"];
-						if ($type!=SOFTWARE_TYPE){
+						if ($itemtype!=SOFTWARE_TYPE){
 							if (!empty($data['serial'])){
 								$output.=" - ".$data['serial'];
 							}
@@ -972,11 +972,11 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 						if (empty($output)||$_SESSION["glpiview_ID"]) {
 							$output.=" (".$data['ID'].")";
 						}
-						$my_devices.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-						$my_devices.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
+						$my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
+						$my_devices.="$itemtype_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
 						$my_devices.="</option>";
 
-						$already_add[$type][]=$data["ID"];
+						$already_add[$itemtype][]=$data["ID"];
 					}
 				}
 			}
@@ -1006,20 +1006,20 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				}
 
 				$tmp_device="";
-				foreach ($CFG_GLPI["linkgroup_types"] as $type){
-					if (isPossibleToAssignType($type))
+				foreach ($CFG_GLPI["linkgroup_types"] as $itemtype){
+					if (isPossibleToAssignType($itemtype))
 					{
 						$query="SELECT * 
-							FROM `".$LINK_ID_TABLE[$type]."` 
+							FROM `".$LINK_ID_TABLE[$itemtype]."` 
 							WHERE ($group_where) AND deleted='0' ";
-						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
+						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
-							$ci->setType($type);
+							$ci->setType($itemtype);
 							$type_name=$ci->getType();
-							if (!isset($already_add[$type])) $already_add[$type]=array();
+							if (!isset($already_add[$itemtype])) $already_add[$itemtype]=array();
 							while ($data=$DB->fetch_array($result)){
-								if (!in_array($data["ID"],$already_add[$type])){
+								if (!in_array($data["ID"],$already_add[$itemtype])){
 									$output='';
 									if (isset($data["name"])) {
 										$output = $data["name"];
@@ -1033,10 +1033,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 									if (empty($output)||$_SESSION["glpiview_ID"]) {
 										$output .= " (".$data['ID'].")";	
 									}
-									$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
+									$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
 									$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
 									$tmp_device.="</option>";
-									$already_add[$type][]=$data["ID"];
+									$already_add[$itemtype][]=$data["ID"];
 								}
 							}
 						}
@@ -1062,37 +1062,37 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			$tmp_device="";
 			// Direct Connection
 			$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
-			foreach ($types as $type){
-				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
-					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* 
+			foreach ($types as $itemtype){
+				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype)){
+					if (!isset($already_add[$itemtype])) $already_add[$itemtype]=array();
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$itemtype].".* 
 						FROM glpi_computers_items 
-						LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_computers_items.end1=".$LINK_ID_TABLE[$type].".ID) 
-						WHERE glpi_computers_items.type='$type' 
+						LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_computers_items.end1=".$LINK_ID_TABLE[$itemtype].".ID)
+						WHERE glpi_computers_items.itemtype='$itemtype' 
 							AND  ".str_replace("XXXX","glpi_computers_items.end2",$search_computer)." 
-							AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
-					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+							AND ".$LINK_ID_TABLE[$itemtype].".deleted='0' ";
+					if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
 					}
-					$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
-					$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".name";
+					$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict);
+					$query.=" ORDER BY ".$LINK_ID_TABLE[$itemtype].".name";
 
 					$result=$DB->query($query);
 					if ($DB->numrows($result)>0){
-						$ci->setType($type);
+						$ci->setType($itemtype);
 						$type_name=$ci->getType();
 							while ($data=$DB->fetch_array($result)){
-							if (!in_array($data["ID"],$already_add[$type])){
+							if (!in_array($data["ID"],$already_add[$itemtype])){
 								$output=$data["name"];
-								if ($type!=SOFTWARE_TYPE){
+								if ($itemtype!=SOFTWARE_TYPE){
 									$output.=" - ".$data['serial']." - ".$data['otherserial'];
 								}
 								if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
-								$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
+								$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
 								$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
 								$tmp_device.="</option>";
 
-								$already_add[$type][]=$data["ID"];
+								$already_add[$itemtype][]=$data["ID"];
 							}
 						}
 					}
@@ -1163,9 +1163,9 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 			$types = getAllTypesForHelpdesk();
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG['help'][30]."</option>\n";
-			foreach ($types as $type => $label)
+			foreach ($types as $itemtype => $label)
 			{
-				echo "<option value='".$type."' ".(($value==$type)?" selected":"").">".$label."</option>\n";
+				echo "<option value='".$itemtype."' ".(($value==$itemtype)?" selected":"").">".$label."</option>\n";
 			}
 			
 			/*
@@ -1189,7 +1189,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 			echo "</select>\n";
 
 			
-			$params=array('type'=>'__VALUE__',
+			$params=array('itemtype'=>'__VALUE__',
 					'entity_restrict'=>$entity_restrict,
 					'admin'=>$admin,
 					'myname'=>"items_id",
@@ -1219,7 +1219,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 /**
  * Make a select box for connections
  *
- * @param $type type to connect
+ * @param $itemtype type to connect
  * @param $fromtype from where the connection is
  * @param $myname select name
  * @param $entity_restrict Restrict to a defined entity
@@ -1227,7 +1227,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
  * 
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,$used=array()) {
+function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,$used=array()) {
 	global $CFG_GLPI,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
@@ -1236,9 +1236,9 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
 		if ($entity_restrict>=0){
-			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$type],$entity_restrict);
+			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$itemtype],$entity_restrict);
 		} else {
-			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$type]);
+			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$itemtype]);
 		}
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
@@ -1247,7 +1247,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 
         $params=array('searchText'=>'__VALUE__',
                         'fromtype'=>$fromtype,
-                        'idtable'=>$type,
+                        'idtable'=>$itemtype,
                         'myname'=>$myname,
                         'onlyglobal'=>$onlyglobal,
                         'entity_restrict'=>$entity_restrict,
@@ -1265,35 +1265,35 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
  * Make a select box for  connected port
  *
  * @param $ID ID of the current port to connect
- * @param $type type of device where to search ports
+ * @param $itemtype type of device where to search ports
  * @param $myname select name
  * @param $entity_restrict Restrict to a defined entity (or an array of entities)
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
+function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
 	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
-	echo "<select name='type[$ID]' id='item_type$rand'>\n";
+	echo "<select name='itemtype[$ID]' id='itemtype$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
 
 	$ci =new CommonItem();
 
-	foreach ($CFG_GLPI["netport_types"] as $type){
-		$ci->setType($type);
-		echo "<option value='".$type."'>".$ci->getType()."</option>\n";
+	foreach ($CFG_GLPI["netport_types"] as $itemtype){
+		$ci->setType($itemtype);
+		echo "<option value='".$itemtype."'>".$ci->getType()."</option>\n";
 	}
 
 	echo "</select>\n";
 
 
-	$params=array('type'=>'__VALUE__',
+	$params=array('itemtype'=>'__VALUE__',
 			'entity_restrict'=>$entity_restrict,
 			'current'=>$ID,
 			'myname'=>$myname,
 			);
 
-	ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",$params);
+	ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",$params);
 
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
@@ -1679,7 +1679,7 @@ function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 
 	$params=array('action'=>'__VALUE__',
 			'deleted'=>$deleted,
-			'type'=>$itemtype,
+			'itemtype'=>$itemtype,
 			);
 	
 	if (count($extraparams)){
@@ -1712,7 +1712,7 @@ function dropdownMassiveActionPorts($itemtype){
 
 
 	$params=array('action'=>'__VALUE__',
-			'type'=>$itemtype,
+			'itemtype'=>$itemtype,
 			);
 	
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",$params);

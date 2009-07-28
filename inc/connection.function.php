@@ -42,11 +42,11 @@ if (!defined('GLPI_ROOT')){
  *
  * @param $target the page where we'll print out this.
  * @param $ID the connection ID
- * @param $type the connection type
+ * @param $itemtype the connection type
  * @return nothing (print out a table)
  *
  */
-function showConnect($target,$ID,$type) {
+function showConnect($target,$ID,$itemtype) {
 	// Prints a direct connection to a computer
 
 	global $LANG, $CFG_GLPI;
@@ -57,14 +57,14 @@ function showConnect($target,$ID,$type) {
 	// Is global connection ?
 	$global=0;
 	$ci=new CommonItem();
-	if (!$ci->getFromDB($type,$ID)) return false;
+	if (!$ci->getFromDB($itemtype,$ID)) return false;
 	
 	if ($ci->obj->can($ID,"r")){
 		$canedit=$ci->obj->can($ID,"w");
 
 		$global=$ci->getField('is_global');
 
-		$computers = $connect->getComputersContact($type,$ID);
+		$computers = $connect->getComputersContact($itemtype,$ID);
 		if (!$computers) $nb=0;
 		else $nb=count($computers);
 
@@ -98,11 +98,11 @@ function showConnect($target,$ID,$type) {
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
-				echo "<input type='hidden' name='itemtype' value='$type'>";				
+				echo "<input type='hidden' name='itemtype' value='$itemtype'>";				
 				if ($ci->getField('recursive')) {
-               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$itemtype,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('entities_id'),0,$used);
+					dropdownConnect(COMPUTER_TYPE,$itemtype,"item",$ci->getField('entities_id'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";
@@ -120,11 +120,11 @@ function showConnect($target,$ID,$type) {
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
-				echo "<input type='hidden' name='itemtype' value='$type'>";
+				echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 				if ($ci->getField('recursive')) {
-               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$itemtype,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('entities_id'),0,$used);
+					dropdownConnect(COMPUTER_TYPE,$itemtype,"item",$ci->getField('entities_id'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";
@@ -154,7 +154,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 
 
 	//Get info about the periph
-	$query = "SELECT end1,end2, type 
+	$query = "SELECT end1,end2, itemtype
 		FROM glpi_computers_items 
 		WHERE ID='$ID'";		
 	$res = $DB->query($query);
@@ -166,7 +166,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 			$data = $DB->fetch_array($res);
 	
 			$decoConf = "";
-			$type_elem= $data["type"]; 
+			$type_elem= $data["itemtype"]; 
 			$id_elem= $data["end1"]; 
 			$id_parent= $data["end2"]; 
 			$table = $LINK_ID_TABLE[$type_elem];
@@ -281,28 +281,28 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
  *
  * @param $sID connection source ID.
  * @param $cID computer ID (where the sID would be connected).
- * @param $type connection type.
+ * @param $itemtype connection type.
  * @param $dohistory store change in history ?
  */
-function Connect($sID,$cID,$type,$dohistory=1) {
+function Connect($sID,$cID,$itemtype,$dohistory=1) {
 	global $LANG,$CFG_GLPI,$DB;
 	// Makes a direct connection
 
 	// Mise a jour lieu du periph si nécessaire
 	$dev=new CommonItem();
-	$dev->getFromDB($type,$sID);
+	$dev->getFromDB($itemtype,$sID);
 
 	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
 		$query = "SELECT ID, end2 
 			FROM glpi_computers_items 
-			WHERE glpi_computers_items.end1 = '$sID' AND glpi_computers_items.type = '$type'";
+			WHERE glpi_computers_items.end1 = '$sID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result = $DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
 			Disconnect($data["ID"],$dohistory);
 
 			// As we come from OCS, do not lock the device
-			switch ($type) {
+			switch ($itemtype) {
 				case MONITOR_TYPE:
 					deleteInOcsArray($data["end2"],$data["ID"],"import_monitor");
 					break;
@@ -323,7 +323,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 	$connect = new Connection;
 	$connect->end1=$sID;
 	$connect->end2=$cID;
-	$connect->type=$type;
+	$connect->itemtype=$itemtype;
 	$newID=$connect->addtoDB();
 
 	if ($dohistory){
@@ -336,7 +336,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 		}
 					
 		//Log connection in the device's history
-		historyLog ($cID,COMPUTER_TYPE,$changes,$type,HISTORY_CONNECT_DEVICE);
+		historyLog ($cID,COMPUTER_TYPE,$changes,$itemtype,HISTORY_CONNECT_DEVICE);
 	}
 
 	if (!$dev->getField('is_global')){
@@ -345,7 +345,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 
 		if ($dohistory){
 			$changes[2]=addslashes($comp->fields["name"]);
-			historyLog ($sID,$type,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
+			historyLog ($sID,$itemtype,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
 		}
 		
 		if ($CFG_GLPI["autoupdate_link_location"]&&$comp->fields['locations_id']!=$dev->getField('locations_id')){
@@ -395,16 +395,16 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 /**
  * Get the connection count of an item
  *
- * @param $type item type
+ * @param $itemtype item type
  * @param $ID item ID
  * @return integer connection count
  */
-function getNumberConnections($type,$ID){
+function getNumberConnections($itemtype,$ID){
 	global $DB;
 	$query = "SELECT count(*) 
 		FROM glpi_computers_items 
 			INNER JOIN glpi_computers ON ( glpi_computers_items.end2=glpi_computers.ID ) 
-		WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$type' 
+		WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 			AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
 
 	$result = $DB->query($query);
@@ -433,7 +433,7 @@ function unglobalizeDevice($itemtype,$ID){
 		// Get connect_wire for this connection
 		$query = "SELECT glpi_computers_items.ID AS connectID 
 			FROM glpi_computers_items 
-			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$itemtype'";
+			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result=$DB->query($query);
 		if (($nb=$DB->numrows($result))>1){
 			for ($i=1;$i<$nb;$i++){

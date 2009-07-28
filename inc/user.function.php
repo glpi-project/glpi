@@ -107,26 +107,26 @@ function showDeviceUser($ID){
 		."</th><th>".$LANG['common'][20]
 		."</th><th>&nbsp;</th></tr>";
 
-	foreach ($CFG_GLPI["linkuser_types"] as $type){
-		if (haveTypeRight($type,'r')){
-			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE users_id='$ID'";
+	foreach ($CFG_GLPI["linkuser_types"] as $itemtype){
+		if (haveTypeRight($itemtype,'r')){
+			$query="SELECT * FROM ".$LINK_ID_TABLE[$itemtype]." WHERE users_id='$ID'";
 
-			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 				$query.=" AND is_template=0 ";
 			}
-			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
 				$query.=" AND deleted=0 ";
 			}
 
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
-				$ci->setType($type,true);
+				$ci->setType($itemtype,true);
 				$type_name=$ci->getType();
 				while ($data=$DB->fetch_array($result)){
 					$cansee=$ci->obj->can($data["ID"],"r");
 					$link=$data["name"];
 					if ($cansee) {
-						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".
+						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".
 							$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
 					}
 					$linktype="";
@@ -160,24 +160,24 @@ function showDeviceUser($ID){
 			.$LANG['common'][19]."</th><th>"
 			.$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 	
-		foreach ($CFG_GLPI["linkgroup_types"] as $type){
-			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+		foreach ($CFG_GLPI["linkgroup_types"] as $itemtype){
+			$query="SELECT * FROM ".$LINK_ID_TABLE[$itemtype]." WHERE $group_where";
 
-			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 				$query.=" AND is_template=0 ";
 			}
-			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
 				$query.=" AND deleted=0 ";
 			}
 
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
-				$ci->setType($type,true);
+				$ci->setType($itemtype,true);
 				$type_name=$ci->getType();
 				while ($data=$DB->fetch_array($result)){
 					$cansee=$ci->obj->can($data["ID"],"r");
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
 					if (isset($groups[$data["FK_groups"]])){
 						$linktype=$LANG['common'][35]." ".$groups[$data["FK_groups"]];
@@ -612,8 +612,8 @@ function getLDAPSyncFields($auth_method_array){
  			'ldap_field_phone2'=>'phone2', 
  			'ldap_field_mobile'=>'mobile', 
  			'ldap_field_comments'=>'comments', 
- 			'ldap_field_title'=>'title',
- 			'ldap_field_type'=>'type',
+ 			'ldap_field_title'=>'userstitles_id',
+ 			'ldap_field_type'=>'userstypes_id',
  			'ldap_field_language'=>'language'		
  		); 
  	foreach ($fields as $key => $val){ 

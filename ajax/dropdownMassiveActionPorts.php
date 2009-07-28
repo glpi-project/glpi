@@ -58,7 +58,7 @@ if (isset($_POST["action"])){
 		echo "&nbsp;<input type=\"submit\" name=\"unassign_vlan_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "move":
-			dropdownValue($LINK_ID_TABLE[$_POST['type']],"device",0);
+			dropdownValue($LINK_ID_TABLE[$_POST['itemtype']],"device",0);
 			echo "&nbsp;<input type=\"submit\" name=\"move\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 	}

@@ -71,14 +71,14 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 	$search=makeTextSearch($_POST['searchText']);
 	$WWHERE="";
 	$FWHERE="";
-	if ($_POST['table']!="glpi_softwares" && $_POST['type']<1000){
+	if ($_POST['table']!="glpi_softwares" && $_POST['itemtype']<1000){
 		$WWHERE=" OR contact ".$search." OR serial ".$search." OR otherserial ".$search;
 	} 
 	 	
 	$where.=" AND (name ".$search." OR ID = '".$_POST['searchText']."' $WWHERE)";
 }
 //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
-if (in_array($_POST['type'],$CFG_GLPI["helpdesk_visible_types"])){
+if (in_array($_POST['itemtype'],$CFG_GLPI["helpdesk_visible_types"])){
 	$where.= " AND helpdesk_visible=1 ";
 }
 $NBMAX=$CFG_GLPI["dropdown_max"];
@@ -102,7 +102,7 @@ if ($DB->numrows($result)) {
 	while ($data = $DB->fetch_array($result)) {
 
 		$output = $data['name'];
-		if ($_POST['table']!="glpi_softwares" && $_POST['type']<1000){
+		if ($_POST['table']!="glpi_softwares" && $_POST['itemtype']<1000){
 			if (!empty($data['contact'])){
 				$output.=" - ".$data['contact'];
 			}

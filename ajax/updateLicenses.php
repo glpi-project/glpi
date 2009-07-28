@@ -44,8 +44,14 @@
 	
 	checkRight("software","w");
 	
-	switch ($_POST["type"]){
-		case "update_buy"	:
+	switch ($_POST["actiontype"]){
+		case "uninstall_license": 
+			echo "<input type='submit' name='uninstall_license' value='".$LANG['buttons'][2]."' class='submit'>";
+		break;
+		case "install_license": 
+			echo "<input type='submit' name='install_license' value='".$LANG['buttons'][2]."' class='submit'>";
+		break;
+/*		case "update_buy"	:
 			dropdownYesNo("buy");
 			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
@@ -73,13 +79,14 @@
 		case "install_license": 
 			echo "<input type='submit' name='install_license' value='".$LANG['buttons'][2]."' class='submit'>";
 		break;
+
 		case "move_to_software":
 			$soft=new Software();
 			$soft->getFromDB($_POST["sID"]);
 			dropdownValue("glpi_softwares","sID",0,1,$soft->fields['entities_id']);
 			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
-		
+*/		
 	}
 
 ?>

@@ -99,12 +99,12 @@ else if (isset($_POST["additem"])){
 		$doc->check($_POST["conID"],'w');
 	} else { // $_POST["right"]=="item"
 		$ci=new CommonItem();
-		$ci->getFromDB($_POST['type'], $_POST['item']);
+		$ci->getFromDB($_POST['itemtype'], $_POST['item']);
 		$ci->obj->check($_POST['item'],'w');
 	}
 
-	if ($_POST['type']>0&&$_POST['item']>0){
-		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item']);
+	if ($_POST['itemtype']>0&&$_POST['item']>0){
+		addDeviceDocument($_POST["conID"],$_POST['itemtype'],$_POST['item']);
 		logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
