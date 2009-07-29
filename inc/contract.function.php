@@ -538,7 +538,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
 		echo "<td class='center'>".$con->fields["num"]."</td>";
-		echo "<td class='center'>".getDropdownName("glpi_contractstypes",$con->fields["contract_type"])."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_contractstypes",$con->fields["contractstypes_id"])."</td>";
 		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
 		echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
@@ -636,7 +636,7 @@ function showContractAssociatedEnterprise($ID){
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 		echo "<td class='center'>".$data["num"]."</td>";
-		echo "<td class='center'>".getDropdownName("glpi_contractstypes",$data["contract_type"])."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_contractstypes",$data["contractstypes_id"])."</td>";
 		//echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($data["begin_date"])."</td>";
 		echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];

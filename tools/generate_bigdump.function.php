@@ -159,7 +159,7 @@ function addTracking($type,$ID,$ID_entity){
 
 	$tco=0;
 	while (mt_rand(0,100)<$percent['tracking_on_item']){
-		// tracking closed ?
+		// ticket closed ?
 		$status="old";
 		if (mt_rand(0,100)<$percent['closed_tracking']){
 			$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
@@ -421,7 +421,7 @@ function generateGlobalDropdowns(){
 	$items=array("Documentation","Facture","Bon Livraison","Bon commande","Capture Ecran","Dossier Technique");
 	for ($i=0;$i<$MAX['rubdocs'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
-		else $val="rubrique $i";
+		else $val="category $i";
 		$query="INSERT INTO glpi_documentscategories VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}

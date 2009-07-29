@@ -43,7 +43,7 @@ commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 
 
 if (isset($_GET['reset'])&&$_GET['reset']=="reset_before") {
-	unset($_SESSION['tracking']);
+	unset($_SESSION['tickets_id']);
 	unset($_GET['reset']);
 }
 
@@ -51,12 +51,12 @@ if (isset($_GET['reset'])&&$_GET['reset']=="reset_before") {
 		if (is_array($_GET))
 			foreach ($_GET as $key => $val)
 				if ($key[0]!='_')
-					$_SESSION['tracking'][$key]=$val;
+					$_SESSION['tickets_id'][$key]=$val;
 	}
-if (isset($_GET['reset'])) unset($_SESSION['tracking']);
+if (isset($_GET['reset'])) unset($_SESSION['tickets_id']);
 
-if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
-foreach ($_SESSION['tracking'] as $key => $val)
+if (isset($_SESSION['tickets_id'])&&is_array($_SESSION['tickets_id']))
+foreach ($_SESSION['tickets_id'] as $key => $val)
 if (!isset($_GET[$key])) $_GET[$key]=$val;
 
 if (!isset($_GET["sort"])||isset($_GET['reset'])) $_GET["sort"]="";

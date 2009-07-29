@@ -675,17 +675,17 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT FK_doc, glpi_documents.recursive, glpi_documents.entities_id" .
+				$query="SELECT documents_id, glpi_documents.recursive, glpi_documents.entities_id" .
 						" FROM glpi_documents_items" .
-						" LEFT JOIN glpi_documents ON (glpi_documents.ID=glpi_documents_items.FK_doc) " .
+						" LEFT JOIN glpi_documents ON (glpi_documents.ID=glpi_documents_items.documents_id) " .
 						" WHERE itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
                      if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
-								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
+								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['documents_id']);
 							} else {
-								$this->addToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
+								$this->addToBeTransfer(DOCUMENT_TYPE,$data['documents_id']);
 							}
 						}
 					}
@@ -1661,13 +1661,13 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_documents']){
 			$document=new Document();
 			// Get contracts for the item
-			$query="SELECT * FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$itemtype' AND FK_doc NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
+			$query="SELECT * FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$itemtype' AND documents_id NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					// Foreach get item 
 					while ($data=$DB->fetch_array($result)) {
 						$need_clean_process=false;
-						$item_ID=$data['FK_doc'];
+						$item_ID=$data['documents_id'];
 						$newdocID=-1;
 						// is already transfer ?
 						if (isset($this->already_transfer[DOCUMENT_TYPE][$item_ID])){
@@ -1679,7 +1679,7 @@ class Transfer extends CommonDBTM{
 							// No
 							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
 							$canbetransfer=true;
-							$query="SELECT DISTINCT itemtype FROM glpi_documents_items WHERE FK_doc='$item_ID'";
+							$query="SELECT DISTINCT itemtype FROM glpi_documents_items WHERE documents_id='$item_ID'";
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
@@ -1689,7 +1689,7 @@ class Transfer extends CommonDBTM{
 											// No items to transfer -> exists links
 											$query_search="SELECT count(*) AS CPT 
 													FROM glpi_documents_items 
-													WHERE FK_doc='$item_ID' AND itemtype='$dtype' AND items_id NOT IN ".$this->item_search[$dtype];
+													WHERE documents_id='$item_ID' AND itemtype='$dtype' AND items_id NOT IN ".$this->item_search[$dtype];
 											// contacts, contracts, and enterprises are linked as device. 
 											if (isset($this->item_recurs[$dtype])) {
 												$query_search .= " AND items_id NOT IN ".$this->item_recurs[$dtype];
@@ -1735,14 +1735,14 @@ class Transfer extends CommonDBTM{
 						// Update links 
 						if ($ID==$newID){
 							if ($item_ID!=$newdocID){
-								$query="UPDATE glpi_documents_items SET FK_doc = '$newdocID' WHERE ID='".$data['ID']."'";
+								$query="UPDATE glpi_documents_items SET documents_id = '$newdocID' WHERE ID='".$data['ID']."'";
 								$DB->query($query);
 							}
 							// Same Item -> update links
 						} else {
 							// Copy Item -> copy links
 							if ($item_ID!=$newdocID){
-								$query="INSERT INTO glpi_documents_items (FK_doc,items_id,itemtype) VALUES ('$newdocID','$newID','$itemtype')";
+								$query="INSERT INTO glpi_documents_items (documents_id,items_id,itemtype) VALUES ('$newdocID','$newID','$itemtype')";
 								$DB->query($query);
 							} else { // same doc for new item update link
 								$query="UPDATE glpi_documents_items SET items_id = '$newID' WHERE ID='".$data['ID']."'";
@@ -1753,7 +1753,7 @@ class Transfer extends CommonDBTM{
 						if ($need_clean_process&&$this->options['clean_documents']){
 							$query = "SELECT COUNT(*) AS CPT 
 								FROM glpi_documents_items 
-								WHERE FK_doc='$item_ID'";
+								WHERE documents_id='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
 									if ($this->options['clean_documents']==1){

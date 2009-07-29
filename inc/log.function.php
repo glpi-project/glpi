@@ -105,7 +105,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 					$items_id=$ic->fields['items_id'];
 					if (isset($SEARCH_OPTION[$real_itemtype])) foreach($SEARCH_OPTION[$real_itemtype] as $key2 => $val2){
 						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
-							($key=='budget'&&$val2['table']=='glpi_budgets') ||
+							($key=='budgets_id'&&$val2['table']=='glpi_budgets') ||
 							($key=='suppliers_id'&&$val2['table']=='glpi_suppliers_infocoms')) {
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 							if ($val2["table"]=="glpi_infocoms"){
@@ -383,6 +383,7 @@ function logArray(){
 			"peripherals"=>$LANG['log'][8],
 			"consumables"=>$LANG['log'][9],
 			"tracking"=>$LANG['log'][10],
+			"ticket"=>$LANG['log'][10], ///TODO prepare update name : delete when tracking -> ticket
 			"contacts"=>$LANG['log'][11],
 			"enterprises"=>$LANG['log'][12],
 			"documents"=>$LANG['log'][13],

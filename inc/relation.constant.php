@@ -39,7 +39,7 @@ $RELATION=array(
 
    "glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                               "glpi_authldapsreplicates"=>"authldaps_id"),
-	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"FK_bookmark"),
+	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"bookmarks_id"),
 
 	"glpi_cartridgesitems" => array("glpi_cartridges"=>"cartridgesitems_id",
 				"glpi_cartridges_printersmodels"=>"cartridgesitems_id"),
@@ -60,11 +60,11 @@ $RELATION=array(
 	"glpi_contracts" => array("glpi_contracts_items"=>"contracts_id",
 						"glpi_contracts_suppliers"=>"contracts_id"),
 	
-	"glpi_documents" => array("glpi_documents_items"=>"FK_doc"),
+	"glpi_documents" => array("glpi_documents_items"=>"documents_id"),
 
 	"glpi_autoupdatesystems" => array("glpi_computers"=>"autoupdatesystems_id"),
 
-	"glpi_budgets" => array("glpi_infocoms"=>"budget"),
+	"glpi_budgets" => array("glpi_infocoms"=>"budgets_id"),
 	
 	"glpi_cartridgesitemstypes" => array("glpi_cartridgesitems"=>"cartridgesitemstypes_id"),
 	
@@ -74,7 +74,7 @@ $RELATION=array(
 	
 	"glpi_contactstypes"=>array("glpi_contacts"=>"contactstypes_id"),
 	
-	"glpi_contractstypes" =>array("glpi_contracts"=>"contract_type"),
+	"glpi_contractstypes" =>array("glpi_contracts"=>"contractstypes_id"),
 	
 	"glpi_domains" => array("glpi_computers"=>"domains_id",
 						"glpi_printers"=>"domains_id",
@@ -88,10 +88,10 @@ $RELATION=array(
 	
 	"glpi_networkinterfaces" =>array("glpi_networkports"=>"iface"),
 	
-	"glpi_interfaces" =>array("glpi_devicesharddrives"=>"FK_interface",
-					"glpi_devicesdrives"=>"FK_interface",
-					"glpi_devicesgraphiccards"=>"FK_interface",
-					"glpi_devicescontrols"=>"FK_interface"),
+	"glpi_interfaces" =>array("glpi_devicesharddrives"=>"interfaces_id",
+					"glpi_devicesdrives"=>"interfaces_id",
+					"glpi_devicesgraphiccards"=>"interfaces_id",
+					"glpi_devicescontrols"=>"interfaces_id"),
 	
 	"glpi_knowbaseitemscategories" =>array("glpi_knowbaseitemscategories"=>"knowbaseitemscategories_id",
 					"glpi_knowbaseitems" =>"categoryID"),
@@ -167,7 +167,7 @@ $RELATION=array(
 	"glpi_devicesmemoriestypes" =>array("glpi_devicesmemories"=>"devicesmemoriestypes_id"),
 	
 	"glpi_documentscategories" =>array("glpi_configs"=>"documentscategories_id_forticket",
-					"glpi_documents"=>"rubrique"),
+					"glpi_documents"=>"documentscategories_id"),
 
 	"glpi_softwarescategories" =>array("glpi_softwares"=>"category",
 					"glpi_configs"=>"softwarescategories_id_ondelete",),
@@ -279,8 +279,8 @@ $RELATION=array(
 	"glpi_softwaresversions" =>array("glpi_computers_softwaresversions"=>"vID",
 					"glpi_softwareslicenses"=>array("buy_version","use_version")),
 
-	"glpi_tickets" => array("_glpi_documents"=>"FK_tracking",
-				"glpi_ticketsfollowups"=>"tracking"),
+	"glpi_tickets" => array("_glpi_documents"=>"tickets_id",
+				"glpi_ticketsfollowups"=>"tickets_id"),
 
 	"glpi_computerstypes"=>array("glpi_computers"=>"computerstypes_id"),
 	

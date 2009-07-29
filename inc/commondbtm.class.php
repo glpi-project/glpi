@@ -1281,7 +1281,7 @@ class CommonDBTM {
 		// Doc links to this item
 		if ($this->type > 0
 			&& countElementsInTable("glpi_documents_items, glpi_documents",
-				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.FK_doc=glpi_documents.ID AND glpi_documents.entities_id NOT IN $entities")>0) {
+				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.documents_id=glpi_documents.ID AND glpi_documents.entities_id NOT IN $entities")>0) {
 					return false;                       
 		} 
 		// TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item

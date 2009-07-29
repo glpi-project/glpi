@@ -69,7 +69,7 @@ class Document extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI,$LANG;
 
-		$query3 = "DELETE FROM glpi_documents_items WHERE (FK_doc = '$ID')";
+		$query3 = "DELETE FROM glpi_documents_items WHERE (documents_id = '$ID')";
 		$result3 = $DB->query($query3);
 
 		// UNLINK DU FICHIER
@@ -238,7 +238,7 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][3].":		</td>";
       echo "<td>";
-      dropdownValue("glpi_documentscategories","rubrique",$this->fields["rubrique"]);
+      dropdownValue("glpi_documentscategories","documentscategories_id",$this->fields["documentscategories_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][4].":		</td>";

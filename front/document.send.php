@@ -69,7 +69,7 @@ if (isset($_GET["file"])){
 						$query = "SELECT * 
 							FROM glpi_documents_items 
 							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
-								AND glpi_documents_items.FK_doc='".$doc->fields["ID"]."'";
+								AND glpi_documents_items.documents_id='".$doc->fields["ID"]."'";
 
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0)
@@ -80,7 +80,7 @@ if (isset($_GET["file"])){
 							FROM glpi_documents_items 
 								LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device) 
 							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
-								AND glpi_documents_items.FK_doc='".$doc->fields["ID"]."' 
+								AND glpi_documents_items.documents_id='".$doc->fields["ID"]."' 
 								AND glpi_knowbaseitems.faq='1'";
 
 						$result=$DB->query($query);
@@ -90,16 +90,16 @@ if (isset($_GET["file"])){
 
 
 					// Tracking Case
-					if (!$send&&isset($_GET["tracking"])){
+					if (!$send&&isset($_GET["tickets_id"])){
 						$job=new Job;
-						$job->getFromDB($_GET["tracking"]);
+						$job->getFromDB($_GET["tickets_id"]);
 
 						if ($job->fields["users_id"]==$_SESSION["glpiID"]||$job->fields["users_id_assign"]==$_SESSION["glpiID"]){
 							$query = "SELECT * 
 								FROM glpi_documents_items 
-								WHERE glpi_documents_items.items_id = '".$_GET["tracking"]."' 
+								WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."' 
 									AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' 
-									AND FK_doc='".$doc->fields["ID"]."'";
+									AND documents_id='".$doc->fields["ID"]."'";
 							$result=$DB->query($query);
 							if ($DB->numrows($result)>0)
 								$send=true;
@@ -117,7 +117,7 @@ if (isset($_GET["file"])){
 								FROM glpi_documents_items 
 									LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device)
 								WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
-									AND glpi_documents_items.FK_doc='".$doc->fields["ID"]."'
+									AND glpi_documents_items.documents_id='".$doc->fields["ID"]."'
 									AND glpi_knowbaseitems.faq='1'";
 
 							$result=$DB->query($query);
@@ -126,16 +126,16 @@ if (isset($_GET["file"])){
 						}
 
 						// Tracking Case
-						if (!$send&&isset($_GET["tracking"])){
+						if (!$send&&isset($_GET["tickets_id"])){
 							$job=new Job;
-							$job->getFromDB($_GET["tracking"]);
+							$job->getFromDB($_GET["tickets_id"]);
 
 							if ($job->fields["users_id"]==$_SESSION["glpiID"]){
 								$query = "SELECT * 
 									FROM glpi_documents_items 
-									WHERE glpi_documents_items.items_id = '".$_GET["tracking"]."' 
+									WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."' 
 										AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' 
-										AND FK_doc='".$doc->fields["ID"]."'";
+										AND documents_id='".$doc->fields["ID"]."'";
 								$result=$DB->query($query);
 								if ($DB->numrows($result)>0)
 									$send=true;

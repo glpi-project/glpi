@@ -2751,7 +2751,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][3]['name']=$LANG['financial'][4];
 
 $SEARCH_OPTION[CONTRACT_TYPE][4]['table']='glpi_contractstypes';
 $SEARCH_OPTION[CONTRACT_TYPE][4]['field']='name';
-$SEARCH_OPTION[CONTRACT_TYPE][4]['linkfield']='contract_type';
+$SEARCH_OPTION[CONTRACT_TYPE][4]['linkfield']='contractstypes_id';
 $SEARCH_OPTION[CONTRACT_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[CONTRACT_TYPE][5]['table']='glpi_contracts';
@@ -2988,7 +2988,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['table']='glpi_documentscategories';
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['field']='name';
-$SEARCH_OPTION[DOCUMENT_TYPE][7]['linkfield']='rubrique';
+$SEARCH_OPTION[DOCUMENT_TYPE][7]['linkfield']='documentscategories_id';
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['name']=$LANG['document'][3];
 
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['table']='glpi_entities';

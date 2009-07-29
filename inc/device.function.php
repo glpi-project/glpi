@@ -179,7 +179,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$LANG['device_hdd'][0]]=$device->fields["rpm"];
-			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
+			if ($device->fields["interfaces_id"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interfaces_id"]);
 			if (!empty($device->fields["cache"])) $entry[$LANG['device_hdd'][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
@@ -190,7 +190,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 //			if (!empty($device->fields["ram"])) $entry[$LANG['device_gfxcard'][0]]=$device->fields["ram"];
 //			if (!empty($device->fields["interface"])) 		$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interface"]);
 
-			$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
+			$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interfaces_id"]);
 			$specificity_size = 10;
 			break;
 		case NETWORK_DEVICE :
@@ -236,13 +236,13 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			if ($device->fields["is_writer"]) $entry[$LANG['device_drive'][0]]=getYesNo($device->fields["is_writer"]);
 			if (!empty($device->fields["speed"])) $entry[$LANG['device_drive'][1]]=$device->fields["speed"];
 			if (!empty($device->fields["frequence"])) $entry[$LANG['common'][65]]=$device->fields["frequence"];
-			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
+			if ($device->fields["interfaces_id"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interfaces_id"]);
 			break;
 		case CONTROL_DEVICE :
 			$type=$LANG['devices'][20];
 			$name=$device->fields["designation"];
 			if ($device->fields["raid"]) $entry[$LANG['device_control'][0]]=getYesNo($device->fields["raid"]);
-			if ($device->fields["FK_interface"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
+			if ($device->fields["interfaces_id"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interfaces_id"]);
 
 			break;
 		case PCI_DEVICE :
@@ -669,7 +669,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 	
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","interfaces_id",$device->fields["interfaces_id"]);
 			echo "</td>";
 	
 			echo "</tr>";
@@ -689,7 +689,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 	
-			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","interfaces_id",$device->fields["interfaces_id"]);
 	
 			echo "</td>";
 			echo "</tr>";
@@ -708,7 +708,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 			echo "</tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","interfaces_id",$device->fields["interfaces_id"]);
 			echo "</td>";
 			echo "</tr>";
 
@@ -720,7 +720,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","interfaces_id",$device->fields["interfaces_id"]);
 			echo "</td>";
 			echo "</tr>";
 		break;

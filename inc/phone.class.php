@@ -153,14 +153,14 @@ class Phone extends CommonDBTM {
 			}
 	
 			// ADD Documents			
-			$query="SELECT FK_doc 
+			$query="SELECT documents_id 
 				FROM glpi_documents_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceDocument($data["FK_doc"],PHONE_TYPE,$newID);
+					addDeviceDocument($data["documents_id"],PHONE_TYPE,$newID);
 			}
 		}
 

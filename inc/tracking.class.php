@@ -119,14 +119,14 @@ class Job extends CommonDBTM{
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query="SELECT ID FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
+		$query="SELECT ID FROM glpi_ticketsfollowups WHERE tickets_id = '$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0)
 			while ($data=$DB->fetch_array($result)){
 				$querydel="DELETE FROM glpi_ticketsplannings WHERE id_followup = '".$data['ID']."'";
 				$DB->query($querydel);				
 			}
-		$query1="DELETE FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
+		$query1="DELETE FROM glpi_ticketsfollowups WHERE tickets_id = '$ID'";
 		$DB->query($query1);
 
 	}
@@ -222,8 +222,8 @@ class Job extends CommonDBTM{
 			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 				$input2=array();
 				$input2["name"]=addslashes(resume_text($LANG['tracking'][24]." ".$input["ID"],200)); 
-				$input2["FK_tracking"]=$input["ID"];
-				$input2["rubrique"]=$CFG_GLPI["documentscategories_id_forticket"];
+				$input2["tickets_id"]=$input["ID"];
+				$input2["documentscategories_id"]=$CFG_GLPI["documentscategories_id_forticket"];
 				$this->getFromDB($input["ID"]);
 				$input2["entities_id"]=$this->fields["entities_id"];
 				$input2["_only_if_upload_succeed"]=1;
@@ -522,7 +522,7 @@ class Job extends CommonDBTM{
 				$newinput["users_id"]=$_SESSION['glpiID'];
 				$newinput["private"]=0;
 				$newinput["hour"]=$newinput["minute"]=0;
-				$newinput["tracking"]=$this->fields["ID"];
+				$newinput["tickets_id"]=$this->fields["ID"];
 				$newinput["type"]="update";
 				$newinput["_do_not_check_users_id"]=true;
 				// pass _old_assign if assig changed
@@ -721,9 +721,9 @@ class Job extends CommonDBTM{
 			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 				$input2=array();
 				$input2["name"]=$LANG['tracking'][24]." $newID";
-				$input2["FK_tracking"]=$newID;
+				$input2["tickets_id"]=$newID;
 				$input2["entities_id"]=$this->fields["entities_id"];
-				$input2["rubrique"]=$CFG_GLPI["documentscategories_id_forticket"];
+				$input2["documentscategories_id"]=$CFG_GLPI["documentscategories_id_forticket"];
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();
 				if ($docID=$doc->add($input2))
@@ -746,7 +746,7 @@ class Job extends CommonDBTM{
 			if (isset($this->fields["status"])&&strstr($this->fields["status"],"old_")) {
             $type="finish";
          }
-			$toadd=array("type"=>$type,"tracking"=>$newID);
+			$toadd=array("type"=>$type,"tickets_id"=>$newID);
 			if (isset($input["_hour"])) {
             $toadd["hour"]=$input["_hour"];
          }
@@ -794,7 +794,7 @@ class Job extends CommonDBTM{
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_ticketsfollowups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
+		$query = "SELECT count(*) FROM glpi_ticketsfollowups WHERE tickets_id = '".$this->fields["ID"]."' $RESTRICT";
 		$result = $DB->query($query);
 		return $DB->result($result,0,0);
 
@@ -810,7 +810,7 @@ class Job extends CommonDBTM{
 		// update Status of Job
 
 		global $DB;
-		$query = "SELECT SUM(realtime) FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
+		$query = "SELECT SUM(realtime) FROM glpi_ticketsfollowups WHERE tickets_id = '$ID'";
 		if ($result = $DB->query($query)) {
 			$sum=$DB->result($result,0,0);
 			if (is_null($sum)) $sum=0;
@@ -844,7 +844,7 @@ class Job extends CommonDBTM{
 		global $DB,$LANG;
 
 		if (isset($this->fields["ID"])){
-			$query = "SELECT * FROM glpi_ticketsfollowups WHERE tracking = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
+			$query = "SELECT * FROM glpi_ticketsfollowups WHERE tickets_id = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
@@ -1107,8 +1107,8 @@ class Followup  extends CommonDBTM {
 
 	function post_deleteFromDB($ID){
 		$job=new Job();
-		$job->updateRealtime($this->fields['tracking']);
-		$job->updateDateMod($this->fields["tracking"]);		
+		$job->updateRealtime($this->fields['tickets_id']);
+		$job->updateDateMod($this->fields["tickets_id"]);		
 	}
 
 
@@ -1132,8 +1132,8 @@ class Followup  extends CommonDBTM {
 		$job=new Job;
 		$mailsend=false;
 
-		if ($job->getFromDB($input["tracking"])){
-			$job->updateDateMod($input["tracking"]);
+		if ($job->getFromDB($input["tickets_id"])){
+			$job->updateDateMod($input["tickets_id"]);
 			
 			if (count($updates)){
 		
@@ -1147,7 +1147,7 @@ class Followup  extends CommonDBTM {
 				}
 		
 				if (in_array("realtime",$updates)) {
-					$job->updateRealTime($input["tracking"]);
+					$job->updateRealTime($input["tickets_id"]);
 				}
 			}
 		}
@@ -1158,7 +1158,7 @@ class Followup  extends CommonDBTM {
 			// Update case
 			if (isset($input["_plan"]["ID"])){
 				$input["_plan"]['id_followup']=$input["ID"];
-				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['id_tracking']=$input['tickets_id'];
 				$input["_plan"]['_nomail']=$mailsend;
 
 				if (!$pt->update($input["_plan"])){
@@ -1168,7 +1168,7 @@ class Followup  extends CommonDBTM {
 			// Add case
 			} else {
 				$input["_plan"]['id_followup']=$input["ID"];
-				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['id_tracking']=$input['tickets_id'];
 				$input["_plan"]['_nomail']=1;
 
 				if (!$pt->add($input["_plan"])){
@@ -1185,7 +1185,7 @@ class Followup  extends CommonDBTM {
 		$input["_isadmin"]=haveRight("comment_all_ticket","1");
 
 		$input["_job"]=new Job;
-		if ($input["_job"]->getFromDB($input["tracking"])){
+		if ($input["_job"]->getFromDB($input["tickets_id"])){
 			// Security to add unusers_idized followups
 			if (!isset($input['_do_not_check_users_id'])
 			&&$input["_job"]->fields["users_id"]!=$_SESSION["glpiID"]
@@ -1244,10 +1244,10 @@ class Followup  extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
 
-		$input["_job"]->updateDateMod($input["tracking"]);
+		$input["_job"]->updateDateMod($input["tickets_id"]);
 
 		if (isset($input["realtime"])&&$input["realtime"]>0) {
-			$input["_job"]->updateRealTime($input["tracking"]);
+			$input["_job"]->updateRealTime($input["tickets_id"]);
 		}
 
 
@@ -1255,7 +1255,7 @@ class Followup  extends CommonDBTM {
 
 			if (isset($input["_plan"])){
 				$input["_plan"]['id_followup']=$newID;
-				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['id_tracking']=$input['tickets_id'];
 				$input["_plan"]['_nomail']=1;
 				$pt=new PlanningTracking();
 

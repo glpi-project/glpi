@@ -549,7 +549,7 @@ if (isset($_POST["itemtype"])){
 				$fup=new Followup();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$_POST['tracking']=$key;
+						$_POST['tickets_id']=$key;
 						unset($fup->fields);
 						$fup->add($_POST);
 					}

@@ -149,7 +149,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 	
 				if (haveRight("budget","r")) {
 					echo "<td>".$LANG['financial'][87].":	</td><td >";
-					dropdownValue("glpi_budgets","budget",$ic->fields["budget"],0,$ci->obj->fields["entities_id"]);
+					dropdownValue("glpi_budgets","budgets_id",$ic->fields["budgets_id"],0,$ci->obj->fields["entities_id"]);
 					echo "</td></tr>";
 				}
 				else
