@@ -252,7 +252,7 @@ class Identification {
          *
 	 * @return boolean : user login success
 	**/
-	function getAlternateAuthSystemsUserLogin($authtype=-1){
+	function getAlternateAuthSystemsUserLogin($authtype=0){
 		global $CFG_GLPI;
 	
 		switch ($authtype){

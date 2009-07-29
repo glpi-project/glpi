@@ -230,7 +230,7 @@ function update0721to080() {
                      ),
    'auth_method' => array(array('to' => 'authtype',
                            'noindex' => array('glpi_users'),
-                           'tables' => array('glpi_users')),
+                           'tables' => array('glpi_users'),),
                      ),
    'author' => array(array('to' => 'users_id',
                            'tables' => array('glpi_ticketsfollowups','glpi_knowbaseitems',
@@ -365,7 +365,8 @@ function update0721to080() {
                               'glpi_peripherals','glpi_phones','glpi_printers',
                               'glpi_reminders','glpi_rules','glpi_softwares',
                               'glpi_softwareslicenses','glpi_tickets','glpi_users',
-                              'glpi_profiles_users',)),
+                              'glpi_profiles_users',),
+                           'default'=> array('glpi_bookmarks' => "-1")),
                      ),
    'FK_filesystems' => array(array('to' => 'filesystems_id',
                            'tables' => array('glpi_computersdisks',)),
@@ -451,7 +452,7 @@ function update0721to080() {
                      ),
    'id_auth' => array(array('to' => 'auths_id',
                            'noindex' => array('glpi_users'),
-                           'tables' => array('glpi_users')),
+                           'tables' => array('glpi_users'),),
                      ),
    'id_device' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_reservationsitems'),
@@ -642,7 +643,12 @@ function update0721to080() {
                if (isset($tab['comments']) && isset($tab['comments'][$table])) {
                   $addcomment=" COMMENT '".$tab['comments'][$table]."' ";
                }
-               $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '0' $addcomment";
+               $default_value=0;
+               if (isset($tab['default']) && isset($tab['default'][$table])) {
+                  $default_value=$tab['default'][$table];
+               }
+   
+               $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
                $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
             } else {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
@@ -660,6 +666,20 @@ function update0721to080() {
             }
          }
       }
+   }
+
+   // Change defaults store values :
+   if (FieldExists('glpi_softwares', 'sofwtares_id')) {
+      $query="UPDATE glpi_softwares SET sofwtares_id=0 WHERE sofwtares_id < 0";
+      $DB->query($query) or die("0.80 update default value of sofwtares_id in glpi_softwares " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_users', 'authtype')) {
+      $query="UPDATE glpi_users SET authtype=0 WHERE authtype < 0";
+      $DB->query($query) or die("0.80 update default value of authtype in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_users', 'auths_id')) {
+      $query="UPDATE glpi_users SET auths_id=0 WHERE auths_id < 0";
+      $DB->query($query) or die("0.80 update default value of auths_id in glpi_users " . $LANG['update'][90] . $DB->error());
    }
 
    /// TODO Update glpi_ocsadmininfoslinks table for  : location -> locations_id network -> networks_id

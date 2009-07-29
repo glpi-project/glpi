@@ -238,7 +238,7 @@ class User extends CommonDBTM {
 		}
 
 		if (!isset($input["authtype"])){
-			$input["authtype"]=-1;
+			$input["authtype"]=0;
 		}
 
 

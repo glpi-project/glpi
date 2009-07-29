@@ -97,7 +97,7 @@ class Software extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 
 		if (isset ($input['is_update']) && ! $input['is_update'])
-			$input['update_software'] = -1;
+			$input['update_software'] = 0;
 
 		return $input;
 	}
@@ -105,7 +105,7 @@ class Software extends CommonDBTM {
 	function prepareInputForAdd($input) {
 
 		if (isset ($input['is_update']) && !$input['is_update'])
-			$input['update_software'] = -1;
+			$input['update_software'] = 0;
 
 		if (isset($input["ID"])&&$input["ID"]>0){
 			$input["_oldID"]=$input["ID"];
