@@ -138,7 +138,7 @@ class Netdevice extends CommonDBTM {
 					unset($np->fields["ID"]);
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
-					unset($np->fields["netpoint"]);
+					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}
@@ -391,7 +391,7 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['setup'][71].": 	</td><td>\n";
-      dropdownValue("glpi_networkequipmentsfirmwares", "firmware", $this->fields["firmware"]);
+      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id", $this->fields["networkequipmentsfirmwares_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
@@ -514,9 +514,9 @@ class Netport extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1){
-		//$tomatch=array("netpoint","ifaddr","ifmac");
+		//$tomatch=array("netpoints_id","ifaddr","ifmac");
 		// Only netpoint updates : ifaddr and ifmac may be different.
-		$tomatch=array("netpoint");
+		$tomatch=array("netpoints_id");
 		$updates=array_intersect($updates,$tomatch);
 		if (count($updates)){
 			$save_ID=$this->fields["ID"];

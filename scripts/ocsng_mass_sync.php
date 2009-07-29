@@ -58,10 +58,10 @@ include (GLPI_ROOT."/inc/includes.php");
 
 //// PARAMETERS
 // Just import these ocs computer
-$ocs_id=0;
-$ocs_server_id=0;
-if (isset($_GET["ocs_id"])) $ocs_id=$_GET["ocs_id"];
-if (isset($_GET["ocs_server_id"])) $ocs_server_id=$_GET["ocs_server_id"];
+$ocsid=0;
+$ocsservers_id=0;
+if (isset($_GET["ocsid"])) $ocsid=$_GET["ocsid"];
+if (isset($_GET["ocsservers_id"])) $ocsservers_id=$_GET["ocsservers_id"];
 
 // Limit import
 $limit=0;
@@ -71,11 +71,11 @@ $all=0;
 if (isset($_GET["all"])) $all=$_GET["all"];
 
 
-$DBocs = new DBocs($ocs_server_id);
-$cfg_ocs=getOcsConf($ocs_server_id);
-ocsManageDeleted($ocs_server_id);
+$DBocs = new DBocs($ocsservers_id);
+$cfg_ocs=getOcsConf($ocsservers_id);
+ocsManageDeleted($ocsservers_id);
 $WHERE="";
-if ($ocs_id) $WHERE=" AND ID='$ocs_id'";
+if ($ocsid) $WHERE=" AND ID='$ocsid'";
 
 $query_ocs = "SELECT * 
 FROM hardware 
@@ -101,8 +101,8 @@ if ($DBocs->numrows($result_ocs)>0){
 	while($data=$DB->fetch_assoc($result_glpi)){
 		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
-		if (isset($hardware[$data["ocs_id"]])){ 
-			ocsUpdateComputer($data["ID"],$ocs_server_id,1);
+		if (isset($hardware[$data["ocsid"]])){ 
+			ocsUpdateComputer($data["ID"],$ocsservers_id,1);
 			if ($limit&&$done>=$limit) exit();
 			echo ".";
 			$done++;

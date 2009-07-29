@@ -65,6 +65,22 @@ function getTableNameForForeignKeyField($fkname){
    }
   return "glpi_".preg_replace("/_id.*/","",$fkname);
 }
+
+/**
+ * Is a table used for devices
+ *
+ *@param $tablename table name
+ *
+ *
+ *@return bool
+ *
+ **/
+function isDeviceTable($tablename) {
+
+   // begin by glpi_devices but Not types tables (end = types)
+   return (preg_match('/^glpi_devices',$tablename) && !preg_match('/types$',$tablename));
+}
+
 /**
  * Count the number of elements in a table.
  *
@@ -851,8 +867,8 @@ function getUserName($ID,$link=0){
 				if ($data["locations_id"]>0){
 					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["locations_id"])."<br>";
 				}
-				if ($data["title"]>0)
-					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["title"])."<br>";
+				if ($data["userstitles_id"]>0)
+					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
 				if ($data["userscategories_id"]>0)
 					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$data["userscategories_id"])."<br>";
 			} else {

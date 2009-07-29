@@ -47,7 +47,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 		AS ip, glpi_networkports.ifmac AS mac,glpi_networkports.ID AS IDport, glpi_locations.ID as locations_id,glpi_locations.completename
 		FROM glpi_locations
 		INNER JOIN glpi_netpoints ON glpi_netpoints.locations_id = glpi_locations.ID
-		INNER JOIN glpi_networkports ON glpi_networkports.netpoint=glpi_netpoints.id 
+		INNER JOIN glpi_networkports ON glpi_networkports.netpoints_id=glpi_netpoints.id
 		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])." AND glpi_networkports.itemtype=".NETWORKING_TYPE."
 		ORDER BY glpi_locations.completename, glpi_networkports.name;";
 

@@ -180,9 +180,9 @@ if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 			case "glpi_softwaresversions":
 				
 				switch ($search["linkfield"]){
-					case "use_version":
-					case "buy_version":
-					$_POST['sID']=$_POST['extra_sID'];
+					case "softwaresversions_id_use":
+					case "softwaresversions_id_buy":
+					$_POST['softwares_id']=$_POST['extra_softwares_id'];
 					$_POST['myname']=$search['linkfield'];
 					include("dropdownInstallVersion.php");
 					break;

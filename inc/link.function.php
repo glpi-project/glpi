@@ -69,7 +69,7 @@ function showLinkDevice($instID) {
 	if (!haveRight("link","r")) return false;
 	//$canedit= haveRight("link","w");
 	$ci = new CommonItem();
-	$query = "SELECT * FROM glpi_links_itemtypes WHERE FK_links='$instID' ORDER BY itemtype";
+	$query = "SELECT * FROM glpi_links_itemtypes WHERE links_id='$instID' ORDER BY itemtype";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -128,7 +128,7 @@ function addLinkDevice($tID,$lID){
 	global $DB;
 	if ($tID>0&&$lID>0){
 
-		$query="INSERT INTO glpi_links_itemtypes (itemtype,FK_links ) VALUES ('$itemtype','$lID');";
+		$query="INSERT INTO glpi_links_itemtypes (itemtype,links_id ) VALUES ('$itemtype','$lID');";
 		$result = $DB->query($query);
 	}
 }
@@ -149,7 +149,7 @@ function showLinkOnDevice($itemtype,$ID){
 
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
 		FROM glpi_links 
-		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.FK_links
+		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.links_id
 		WHERE glpi_links_itemtypes.itemtype='$itemtype' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","entities_id",$commonitem->obj->fields["entities_id"],true).
 		" ORDER BY glpi_links.name";

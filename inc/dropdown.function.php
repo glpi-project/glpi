@@ -1106,7 +1106,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_softwaresversions.name as version, glpi_softwares.name as name, 
 					glpi_softwares.ID as ID FROM glpi_computers_softwaresversions, glpi_softwares, glpi_softwaresversions ";
-				$query.= "WHERE glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID AND glpi_softwaresversions.sID = glpi_softwares.ID AND ".str_replace("XXXX","glpi_computers_softwaresversions.cID",$search_computer)." AND  glpi_softwares.helpdesk_visible=1 ";
+				$query.= "WHERE glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID AND glpi_softwaresversions.softwares_id = glpi_softwares.ID AND ".str_replace("XXXX","glpi_computers_softwaresversions.computers_id",$search_computer)." AND  glpi_softwares.helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict);
 				$query.=" ORDER BY glpi_softwares.name";
 
@@ -1401,17 +1401,17 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
  *
  *
  * @param $myname select name
- * @param $sID ID of the software
+ * @param $softwares_id ID of the software
  * @param $value value of the selected version
  * @return nothing (print out an HTML select box)
  */
-function dropdownSoftwareVersions($myname,$sID,$value=0) {
+function dropdownSoftwareVersions($myname,$softwares_id,$value=0) {
 	global $CFG_GLPI;
 
 	$rand=mt_rand();
 
 
-	$params=array('sID'=>$sID,
+	$params=array('softwares_id'=>$softwares_id,
 		'myname'=>$myname,
 		'value'=>$value,
 		);
@@ -1500,11 +1500,11 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
  * Make a select box form  for device type 
  *
  * @param $target URL to post the form
- * @param $cID computer ID
+ * @param $computers_id computer ID
  * @param $withtemplate is it a template computer ?
  * @return nothing (print out an HTML select box)
  */
-function device_selecter($target,$cID,$withtemplate='') {
+function device_selecter($target,$computers_id,$withtemplate='') {
 	global $LANG,$CFG_GLPI;
 
 	if (!haveRight("computer","w")) return false;
@@ -1541,7 +1541,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
-		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
+		echo "<input type=\"hidden\" name=\"computers_id\" value=\"".$computers_id."\" >";
 		echo "<input type=\"submit\" class ='submit' value=\"".$LANG['buttons'][2]."\" >";
 		echo "</form>";
 		echo "</td>";
@@ -1834,15 +1834,15 @@ function dropdownHours($name,$value,$limit_planning=0){
  * Dropdown licenses for a software
  *
 * @param $myname select name
- * @param $sID software ID
+ * @param $softwares_id software ID
  */
-function dropdownLicenseOfSoftware($myname,$sID) {
+function dropdownLicenseOfSoftware($myname,$softwares_id) {
 	global $DB,$LANG;
 
 // TODO : this function is probably no more used (no more glpi_licenses)
 
 	$query="SELECT * FROM glpi_licenses 
-		WHERE sID='$sID' 
+		WHERE softwares_id='$softwares_id'
 		GROUP BY version, serial, expire, oem, oem_computer, buy 
 		ORDER BY version, serial, expire, oem, oem_computer, buy";
 	$result=$DB->query($query);

@@ -480,25 +480,25 @@ function unlink_device_computer($compDevID,$dohistory=1){
 /**
  * Link the device to the computer
  * 
- * @param $cID Computer ID
+ * @param $computers_id Computer ID
  * @param $devicetype device type
  * @param $dID device ID
  * @param $specificity specificity value
  * @param $dohistory do history log
  * @returns new computer device ID
  **/
-function compdevice_add($cID,$devicetype,$dID,$specificity='',$dohistory=1) {
+function compdevice_add($computers_id,$devicetype,$dID,$specificity='',$dohistory=1) {
 	$device = new Device($devicetype);
 	$device->getFromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
-	$newID=$device->computer_link($cID,$devicetype,$specificity);
+	$newID=$device->computer_link($computers_id,$devicetype,$specificity);
 	
    if ($dohistory){
 		$changes[0]='0';
 		$changes[1]="";
 		$changes[2]=addslashes($device->fields["designation"]);
 		// history log
-		historyLog ($cID,COMPUTER_TYPE,$changes,$devicetype,HISTORY_ADD_DEVICE);
+		historyLog ($computers_id,COMPUTER_TYPE,$changes,$devicetype,HISTORY_ADD_DEVICE);
 	}
 	return $newID;
 }

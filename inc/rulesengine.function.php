@@ -434,11 +434,11 @@ function getCategoryNameToDisplay($sub_type){
 	}
 }
 
-function getAlreadyUsedActionsByRuleID($rule_id,$sub_type){
+function getAlreadyUsedActionsByRuleID($rules_id,$sub_type){
 	global $DB,$RULES_ACTIONS;
 	$actions = array();
 
-	$res = $DB->query("SELECT field FROM glpi_rulesactions WHERE FK_rules='".$rule_id."'");
+	$res = $DB->query("SELECT field FROM glpi_rulesactions WHERE rules_id='".$rules_id."'");
 	while ($action = $DB->fetch_array($res)){
 		if (isset($RULES_ACTIONS[$sub_type][$action["field"]])) {
 			$actions[$action["field"]] = $action["field"];

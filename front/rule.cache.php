@@ -50,12 +50,12 @@ if (isset($_GET["sub_type"]))
 	$rulecollection = getRuleCollectionClass($_GET["sub_type"]);
 	if (haveRight($rulecollection->right,"r"))
 	{
-		if (!isset($_GET["rule_id"]))
+		if (!isset($_GET["rules_id"]))
 			$rulecollection->showCacheStatusForRuleType();
 		else
 		{
 			$rule = $rulecollection->getRuleClass();
-			$rule->getRuleWithCriteriasAndActions($_GET["rule_id"],0,0);
+			$rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
 			$rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
 		}
 	}

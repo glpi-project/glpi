@@ -61,7 +61,7 @@ class AdminInfo extends CommonDBTM{
 	 **/
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query = "DELETE FROM glpi_ocsadmininfoslinks WHERE ocs_server_id = '$ID'"; 
+		$query = "DELETE FROM glpi_ocsadmininfoslinks WHERE ocsservers_id = '$ID'"; 
 		$result = $DB->query($query);
 	}
 } 

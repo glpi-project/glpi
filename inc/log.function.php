@@ -348,18 +348,18 @@ function showHistory($itemtype,$items_id){
  * Log the event $event on the glpi_event table with all the others args, if
  * $level is above or equal to setting from configuration.
  *
- * @param $item 
+ * @param $items_id 
  * @param $itemtype
  * @param $level
  * @param $service
  * @param $event
  **/
-function logEvent ($item, $itemtype, $level, $service, $event) {
+function logEvent ($items_id, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 	
 	global $DB,$CFG_GLPI, $LANG;
 	if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) { 
-		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
+		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($items_id)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 		$result = $DB->query($query);    
 
 	}
@@ -422,30 +422,30 @@ function logArray(){
 
 }
 
-function displayItemLogID($itemtype,$item){
+function displayItemLogID($itemtype,$items_id){
 	global $CFG_GLPI;
 
-	if ($item=="-1" || $item=="0") {
+	if ($items_id=="-1" || $items_id=="0") {
 		echo "&nbsp;";//$item;
 	} else {
 		if ($itemtype=="infocom"){
-			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
+			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
 		} else {
-			if ($item=="-1" || $item=="0") {
+			if ($items_id=="-1" || $items_id=="0") {
 				echo "&nbsp;";//$item;
 			} else {
 				switch ($itemtype){
 					case "rules" :
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$item."\">".$item."</a>";
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$items_id."\">".$items_id."</a>";
 						break;
 					case "infocom" :
-						echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
+						echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
 						break;
 					case "devices":
-						echo $item;
+						echo $items_id;
 						break;
 					case "reservation":
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$item."\">$item</a>";
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$items_id."\">$items_id</a>";
 						break;
 					default :
 					if ($itemtype[strlen($itemtype)-1]=='s'){
@@ -453,8 +453,8 @@ function displayItemLogID($itemtype,$item){
 					}else $show=$itemtype;
 						
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
-					echo $item;
-					echo "\">$item</a>";
+					echo $items_id;
+					echo "\">$items_id</a>";
 					break;
 				}
 			}			
@@ -527,7 +527,7 @@ function showAddEvents($target,$user="") {
 
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
-		$item = $DB->result($result, $i, "item");
+		$items_id = $DB->result($result, $i, "items_id");
 		$itemtype = $DB->result($result, $i, "itemtype");
 		$date = $DB->result($result, $i, "date");
 		$service = $DB->result($result, $i, "service");
@@ -537,7 +537,7 @@ function showAddEvents($target,$user="") {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$logItemtype[$itemtype].":</td><td class='center'>";
 
-		displayItemLogID($itemtype,$item);
+		displayItemLogID($itemtype,$items_id);
 		echo "</td><td  class='center'>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
@@ -567,7 +567,7 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	// Columns of the Table
 	$items = array(
-		"item"		=> array($LANG['event'][0], "colspan='2'"),
+		"items_id"		=> array($LANG['event'][0], "colspan='2'"),
 		"date"		=> array($LANG['common'][27], ""),
 		"service"	=> array($LANG['event'][2], "width='8%'"),
 		"level"		=> array($LANG['event'][3], "width='8%'"),
@@ -622,7 +622,7 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
-		$item = $DB->result($result, $i, "item");
+		$items_id = $DB->result($result, $i, "items_id");
 		$itemtype = $DB->result($result, $i, "itemtype");
 		$date = $DB->result($result, $i, "date");
 		$service = $DB->result($result, $i, "service");
@@ -631,7 +631,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td class='center'><strong>"; 
-		displayItemLogID($itemtype,$item);	
+		displayItemLogID($itemtype,$items_id);	
 		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td><td class='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 

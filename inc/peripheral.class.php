@@ -136,7 +136,7 @@ class Peripheral  extends CommonDBTM  {
 					unset($np->fields["ID"]);
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
-					unset($np->fields["netpoint"]);
+					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}

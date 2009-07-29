@@ -1182,15 +1182,15 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["glpi_operatingsystemsservicepacks.name"]		= $LANG['computers'][53];
 		$option["glpi_autoupdatesystems.name"]		= $LANG['computers'][51];
 		$option["glpi_manufacturers.name"]		= $LANG['common'][5];
-		$option["processor.designation"]		= $LANG['computers'][21];
+		$option["glpi_devicesprocessors.designation"]		= $LANG['computers'][21];
 		$option["comp.serial"]				= $LANG['common'][19];
 		$option["comp.otherserial"]			= $LANG['common'][20];
-		$option["ram.designation"]			= $LANG['computers'][23];
-		$option["iface.designation"]			= $LANG['setup'][9];
-		$option["sndcard.designation"]			= $LANG['devices'][7];
-		$option["gfxcard.designation"]			= $LANG['devices'][2];
-		$option["moboard.designation"]			= $LANG['devices'][5];
-		$option["hdd.designation"]			= $LANG['computers'][36];
+		$option["glpi_devicesmemories.designation"]			= $LANG['computers'][23];
+		$option["glpi_devicesnetworkcards.designation"]			= $LANG['setup'][9];
+		$option["glpi_devicessoundcards.designation"]			= $LANG['devices'][7];
+		$option["glpi_devicesgraphiccards.designation"]			= $LANG['devices'][2];
+		$option["glpi_devicesmotherboards.designation"]			= $LANG['devices'][5];
+		$option["glpi_devicesharddrives.designation"]			= $LANG['computers'][36];
 		$option["comp.comments"]			= $LANG['common'][25];
 		$option["comp.contact"]				= $LANG['common'][18];
 		$option["comp.contact_num"]		        = $LANG['common'][21];
@@ -1455,7 +1455,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$result = $DB->query($query);
 			$i = 0;
          /// TODO delete os_license_id after db clean
-         $exclude_fields=array('entities_id','users_id_tech','users_id','os_license_id');
+         $exclude_fields=array('entities_id','users_id_tech','users_id','os_license_id','domains_id','networks_id','states_id');
 			while($line = $DB->fetch_array($result)) {
             if (!in_array($line["Field"],$exclude_fields)){
                if($i != 0) {
@@ -1471,10 +1471,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                $i++;
             }
 			}
-			foreach($CFG_GLPI["devices_tables"] as $key => $val) {
-				if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
-					$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,0);
-			}
+         // Add devices
+			$wherecomp .= " OR glpi_devicesmotherboards.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicesprocessors.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicesgraphiccards.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicesharddrives.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicesnetworkcards.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicesmemories.designation $SEARCH";
+			$wherecomp .= " OR glpi_devicessoundcards.designation $SEARCH";
+
 			$wherecomp .= " OR glpi_networkports.ifaddr $SEARCH";
 			$wherecomp .= " OR glpi_networkports.ifmac $SEARCH";
 			$wherecomp .= " OR glpi_netpoints.name $SEARCH";
@@ -1484,12 +1489,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$wherecomp .= ")";
 		}
 		else {
-			if(IsDevice($field)) {
-				$wherecomp = "(glpi_device_".$field." $SEARCH )";
-			}
-			else {
-				$wherecomp = "($field $SEARCH)";
-			}
+			$wherecomp = "($field $SEARCH)";
 		}
 	}
 	if (!$start) {
@@ -1653,15 +1653,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" AND glpi_tickets.itemtype= '1'";
 		$where.= " AND glpi_tickets.items_id IN (SELECT comp.ID FROM glpi_computers as comp ";
 		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.computers_id) ";
-		$where.= "LEFT JOIN glpi_devicesmotherboards as moboard ON (moboard.ID = gcdev.devices_id AND gcdev.devicetype = '".MOBOARD_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesprocessors as processor ON (processor.ID = gcdev.devices_id AND gcdev.devicetype = '".PROCESSOR_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesgraphiccards as gfxcard ON (gfxcard.ID = gcdev.devices_id AND gcdev.devicetype = '".GFX_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesharddrives as hdd ON (hdd.ID = gcdev.devices_id AND gcdev.devicetype = '".HDD_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesnetworkcards as iface ON (iface.ID = gcdev.devices_id AND gcdev.devicetype = '".NETWORK_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesmemories as ram ON (ram.ID = gcdev.devices_id AND gcdev.devicetype = '".RAM_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.devices_id AND gcdev.devicetype = '".SND_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesmotherboards  ON (glpi_devicesmotherboards.ID = gcdev.devices_id AND gcdev.devicetype = '".MOBOARD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesprocessors  ON (glpi_devicesprocessors.ID = gcdev.devices_id AND gcdev.devicetype = '".PROCESSOR_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesgraphiccards ON (glpi_devicesgraphiccards.ID = gcdev.devices_id AND gcdev.devicetype = '".GFX_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesharddrives  ON (glpi_devicesharddrives.ID = gcdev.devices_id AND gcdev.devicetype = '".HDD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesnetworkcards ON (glpi_devicesnetworkcards.ID = gcdev.devices_id AND gcdev.devicetype = '".NETWORK_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesmemories ON (glpi_devicesmemories.ID = gcdev.devices_id AND gcdev.devicetype = '".RAM_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicessoundcards ON (glpi_devicessoundcards.ID = gcdev.devices_id AND gcdev.devicetype = '".SND_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.items_id AND  glpi_networkports.itemtype='1')";
-		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoint)";
+		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoints_id)";
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.operatingsystems_id)";
 		$where.= "LEFT JOIN glpi_operatingsystemsversions on (glpi_operatingsystemsversions.ID = comp.operatingsystemsversions_id)";
 		$where.= "LEFT JOIN glpi_operatingsystemsservicepacks on (glpi_operatingsystemsservicepacks.ID = comp.operatingsystemsservicepacks_id)";

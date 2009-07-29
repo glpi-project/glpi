@@ -279,7 +279,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			break;
 			case "glpi_softwareslicenses":
 				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_softwares.name,' - ',glpi_softwareslicenses.name) as $field
-					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID)
+					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.ID)
 					$where";
 
 			break;

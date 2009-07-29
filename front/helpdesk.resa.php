@@ -51,7 +51,7 @@ if (isset($_GET["redirect"])){
 	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
-		$id_item=key($_POST["items"]);
+		$reservationsitems_id=key($_POST["items"]);
 		if ($_SESSION["glpiID"]==$_POST["users_id"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
@@ -67,14 +67,14 @@ if (isset($_GET["redirect"])){
 	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	if (isset($_POST["clear_resa"])){
-		$id_item=key($_POST["items"]);
+		$reservationsitems_id=key($_POST["items"]);
 		if ($rr->delete($_POST)){ // delete() need an array !
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
 		}
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		printCalendrier($_SERVER['PHP_SELF'],$id_item);
+		printCalendrier($_SERVER['PHP_SELF'],$reservationsitems_id);
 
 	}
 
@@ -90,9 +90,9 @@ if (isset($_GET["redirect"])){
 	}
 	else if (isset($_POST["add_resa"])){
 		$all_ok=true;
-		$id_item=0;
-		foreach ($_POST['items'] as $id_item){
-			$_POST['id_item']=$id_item;
+		$reservationsitems_id=0;
+		foreach ($_POST['items'] as $reservationsitems_id){
+			$_POST['reservationsitems_id']=$reservationsitems_id;
 			$ok=true;
 			$times=$_POST["periodicity_times"];
 			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
@@ -117,7 +117,7 @@ if (isset($_GET["redirect"])){
 			$_GET["annee_courant"]=$begin_year;
 	
 			if ($_POST['_ok']){
-				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
+				logEvent($_POST["reservationsitems_id"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
 			} else $all_ok=false;
 		}
 
@@ -126,7 +126,7 @@ if (isset($_GET["redirect"])){
 			if (count($_POST['items'])>1){
 				glpi_header($CFG_GLPI["root_doc"] . "/front/helpdesk.resa.php?ID=");
 			} else { // Only one reservation
-				glpi_header($CFG_GLPI["root_doc"] . "/front/helpdesk.resa.php?ID=".$_POST['id_item']);
+				glpi_header($CFG_GLPI["root_doc"] . "/front/helpdesk.resa.php?ID=".$_POST['reservationsitems_id']);
 			}
 		}
 	}

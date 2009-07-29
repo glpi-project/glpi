@@ -65,7 +65,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 	commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 	if (isset($_POST["clear_resa"])){
-		$id_item=key($_POST["items"]);
+		$reservationsitems_id=key($_POST["items"]);
 		if ($rr->delete($_POST)){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 		}
@@ -73,7 +73,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		printCalendrier($_SERVER['PHP_SELF'],$id_item);
+		printCalendrier($_SERVER['PHP_SELF'],$reservationsitems_id);
 	} else if (isset($_GET["add_resa_on_item"])){
 		if (!isset($_GET["date"])) $_GET["date"]=date("Y-m-d");
 		if (count($_GET["add_item"])){
@@ -87,9 +87,9 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 	else if (isset($_POST["add_resa"])){
 		$all_ok=true;
-		$id_item=0;
-		foreach ($_POST['items'] as $id_item){
-			$_POST['id_item']=$id_item;
+		$reservationsitems_id=0;
+		foreach ($_POST['items'] as $reservationsitems_id){
+			$_POST['reservationsitems_id']=$reservationsitems_id;
 
 			$times=$_POST["periodicity_times"];
 			$begin=$_POST["begin"];
@@ -118,7 +118,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			$_GET["annee_courant"]=$begin_year;
 	
 			if ($_POST['_ok']){
-				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+				logEvent($_POST["reservationsitems_id"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 			} else $all_ok=false;
 
 			if ($all_ok){
@@ -126,7 +126,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 				if (count($_POST['items'])>1){
 					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=");
 				} else { // Only one reservation
-					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=$id_item");
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=$reservationsitems_id");
 				}
 			}
 		}

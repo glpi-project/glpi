@@ -2537,7 +2537,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 		case "glpi_tickets.count":
 			if ($data[$NAME.$num]>0
 				&& haveRight("show_all_ticket","1")) { 
-				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&itemtype=$itemtype&item=".$data['ID']."\">";
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&itemtype=$itemtype&items_id=".$data['ID']."\">";
 				$out.= $data[$NAME.$num];
 				$out.="</a>";
 			} else {
@@ -2881,13 +2881,13 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.entities_id) ";
 		break;
 		case "glpi_ocslinks":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computers_id) ";
 		break;
 		case "glpi_ocslinks":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computers_id) ";
 		break;
 		case "glpi_registrykeys":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computers_id) ";
 		break;
 		case "glpi_operatingsystems":
 			if ($itemtype==SOFTWARE_TYPE){
@@ -2907,7 +2907,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 		case "glpi_netpoints":
 			// Link to glpi_networkports before
 			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_networkports",$linkfield);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_networkports.netpoint = $nt.ID) ";
+		return $out." LEFT JOIN $new_table $AS ON (glpi_networkports.netpoints_id = $nt.ID) ";
 		break;
 		case "glpi_tickets":
 			return " LEFT JOIN $new_table $AS ON ($nt.itemtype='$itemtype' AND $rt.ID = $nt.items_id) ";
@@ -3026,21 +3026,21 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 			break;
 		case "glpi_softwareslicenses":
 			if (!$meta){
-				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID ".getEntitiesRestrictRequest("AND",$nt,'','',true).") ";
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.softwares_id ".getEntitiesRestrictRequest("AND",$nt,'','',true).") ";
 			} else {
 				return "";
 			}
 		break;
 		case "glpi_softwaresversions":
 			if (!$meta){
-				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID) ";
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.softwares_id) ";
 			} else {
 				return "";
 			}
 		break;
 		case "glpi_computers_softwaresversions":
 			$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_softwaresversions$addmetanum.ID = $nt.vID) ";
+		return $out." LEFT JOIN $new_table $AS ON (glpi_softwaresversions$addmetanum.ID = $nt.softwaresversions_id) ";
 		break;
 		case "glpi_computers_devices":
 			if ($devicetype==0){
@@ -3167,10 +3167,10 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 				case SOFTWARE_TYPE :
 					/// TODO: link licenses via installed software OR by affected/computers_id ???
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
-					return " $LINK glpi_computers_softwaresversions as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
-						" $LINK glpi_softwaresversions as glpi_softwaresversions_$to_type ON ( inst_$to_type.vID=glpi_softwaresversions_$to_type.ID ) ".
-						" $LINK glpi_softwares ON (glpi_softwaresversions_$to_type.sID = glpi_softwares.ID)".
-						" $LINK glpi_softwareslicenses AS glpi_softwareslicenses_$to_type ON (glpi_softwares.ID=glpi_softwareslicenses_$to_type.sID " .
+					return " $LINK glpi_computers_softwaresversions as inst_$to_type ON (inst_$to_type.computers_id = glpi_computers.ID) ".
+						" $LINK glpi_softwaresversions as glpi_softwaresversions_$to_type ON ( inst_$to_type.softwaresversions_id=glpi_softwaresversions_$to_type.ID ) ".
+						" $LINK glpi_softwares ON (glpi_softwaresversions_$to_type.softwares_id = glpi_softwares.ID)".
+						" $LINK glpi_softwareslicenses AS glpi_softwareslicenses_$to_type ON (glpi_softwares.ID=glpi_softwareslicenses_$to_type.softwares_id " .
 							getEntitiesRestrictRequest(' AND',"glpi_softwareslicenses_$to_type",'','',true).")";
 					break;
 			}
@@ -3219,9 +3219,9 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_softwaresversions as glpi_softwaresversions_$to_type ON ( glpi_softwaresversions_$to_type.sID = glpi_softwares.ID ) ".
-						" $LINK glpi_computers_softwaresversions as inst_$to_type ON (inst_$to_type.vID = glpi_softwaresversions_$to_type.ID) ".
-						" $LINK glpi_computers ON (inst_$to_type.cID = glpi_computers.ID)";
+					return " $LINK glpi_softwaresversions as glpi_softwaresversions_$to_type ON ( glpi_softwaresversions_$to_type.softwares_id = glpi_softwares.ID ) ".
+						" $LINK glpi_computers_softwaresversions as inst_$to_type ON (inst_$to_type.softwaresversions_id = glpi_softwaresversions_$to_type.ID) ".
+						" $LINK glpi_computers ON (inst_$to_type.computers_id = glpi_computers.ID)";
 
 					break;
 			}

@@ -54,7 +54,7 @@ checkRight("reports","r");
 				c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 			FROM glpi_netpoints
 			LEFT JOIN glpi_locations a ON a.id=glpi_netpoints.locations_id
-			LEFT JOIN glpi_networkports c ON c.netpoint=glpi_netpoints.id 
+			LEFT JOIN glpi_networkports c ON c.netpoints_id=glpi_netpoints.id
 			WHERE glpi_netpoints.id='".$_POST["prise"]."' AND c.itemtype=".NETWORKING_TYPE.";";
 
 		/*!

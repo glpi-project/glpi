@@ -66,7 +66,7 @@ class Link extends CommonDBTM {
 
 		global $DB;
 
-		$query2="DELETE FROM glpi_links_itemtypes WHERE FK_links='$ID'";
+		$query2="DELETE FROM glpi_links_itemtypes WHERE links_id='$ID'";
 		$DB->query($query2);
 	}
 

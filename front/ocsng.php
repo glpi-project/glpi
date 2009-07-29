@@ -64,14 +64,14 @@ if (isset ($_SESSION["ocs_link"]))
 if (isset ($_SESSION["ocs_update"]))
 	unset ($_SESSION["ocs_update"]);
 
-if (isset($_GET["ocs_server_id"]) && $_GET["ocs_server_id"]) {
+if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
 	$name = "";
-	if (isset($_GET["ocs_server_id"]))
-		$_SESSION["ocs_server_id"] = $_GET["ocs_server_id"];
+	if (isset($_GET["ocsservers_id"]))
+		$_SESSION["ocsservers_id"] = $_GET["ocsservers_id"];
 				
 	$sql = "SELECT name 
 		FROM glpi_ocsservers 
-		WHERE ID='".$_SESSION["ocs_server_id"]."'";
+		WHERE ID='".$_SESSION["ocsservers_id"]."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {
 		$datas = $DB->fetch_array($result);
@@ -94,7 +94,7 @@ if (isset($_GET["ocs_server_id"]) && $_GET["ocs_server_id"]) {
 
 	echo "</table></div>";
 
-	ocsManageDeleted($_SESSION["ocs_server_id"]);
+	ocsManageDeleted($_SESSION["ocsservers_id"]);
 } else {
 	ocsChooseServer($_SERVER['PHP_SELF']);
 }

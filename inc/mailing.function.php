@@ -58,17 +58,17 @@ function testMail(){
 	
 		$options="";
 		// Get User mailing
-		$query = "SELECT glpi_mailingsettings.FK_item as item, glpi_mailingsettings.ID as ID 
+		$query = "SELECT glpi_mailingsettings.items_id , glpi_mailingsettings.ID as ID
 				FROM glpi_mailingsettings 
 				WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . USER_MAILING_TYPE . "' 
-				ORDER BY glpi_mailingsettings.FK_item;";
+				ORDER BY glpi_mailingsettings.items_id;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				if (isset($profiles[USER_MAILING_TYPE."_".$data["item"]])) {
-					unset($profiles[USER_MAILING_TYPE."_".$data["item"]]);
+				if (isset($profiles[USER_MAILING_TYPE."_".$data["items_id"]])) {
+					unset($profiles[USER_MAILING_TYPE."_".$data["items_id"]]);
 				}
-				switch ($data["item"]) {
+				switch ($data["items_id"]) {
 					case ADMIN_MAILING :
 						$name = $LANG['setup'][237];
 						break;
@@ -112,32 +112,32 @@ function testMail(){
 				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>\n";
 			}
 		// Get Profile mailing
-		$query = "SELECT glpi_mailingsettings.FK_item as item, glpi_mailingsettings.ID as ID, glpi_profiles.name as prof 
+		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_profiles.name as prof
 			FROM glpi_mailingsettings 
-			LEFT JOIN glpi_profiles ON (glpi_mailingsettings.FK_item = glpi_profiles.ID) 
+			LEFT JOIN glpi_profiles ON (glpi_mailingsettings.items_id = glpi_profiles.ID) 
 			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . PROFILE_MAILING_TYPE . "' 
 			ORDER BY glpi_profiles.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
 				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['profiles'][22] . " " . $data["prof"] . "</option>\n";
-				if (isset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]])) {
-					unset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]]);
+				if (isset($profiles[PROFILE_MAILING_TYPE."_".$data["items_id"]])) {
+					unset($profiles[PROFILE_MAILING_TYPE."_".$data["items_id"]]);
 				}
 			}
 	
 		// Get Group mailing
-		$query = "SELECT glpi_mailingsettings.FK_item as item, glpi_mailingsettings.ID as ID, glpi_groups.name as name 
+		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_groups.name as name
 			FROM glpi_mailingsettings 
-			LEFT JOIN glpi_groups ON (glpi_mailingsettings.FK_item = glpi_groups.ID) 
+			LEFT JOIN glpi_groups ON (glpi_mailingsettings.items_id = glpi_groups.ID) 
 			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . GROUP_MAILING_TYPE . "' 
 			ORDER BY glpi_groups.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
 				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['common'][35] . " " . $data["name"] . "</option>\n";
-				if (isset($profiles[GROUP_MAILING_TYPE."_".$data["item"]])) {
-					unset($profiles[GROUP_MAILING_TYPE."_".$data["item"]]);
+				if (isset($profiles[GROUP_MAILING_TYPE."_".$data["items_id"]])) {
+					unset($profiles[GROUP_MAILING_TYPE."_".$data["items_id"]]);
 				}
 			}
 
@@ -146,7 +146,7 @@ function testMail(){
 			echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
 		
 			foreach ($profiles as $key => $val) {
-				list ($item_type, $item) = explode("_", $key);
+				list ($item_type, $items_id) = explode("_", $key);
 				echo "<option value='$key'>" . $val . "</option>\n";
 			}
 			echo "</select>";			
@@ -191,8 +191,8 @@ function testMail(){
 			foreach ($input["mailing_to_" . $action . "_" . $type] as $val) {
 				switch ($action) {
 					case "add" :
-						list ($item_type, $item) = explode("_", $val);
-						$query = "INSERT INTO glpi_mailingsettings (type,FK_item,item_type) VALUES ('$type','$item','$item_type')";
+						list ($item_type, $items_id) = explode("_", $val);
+						$query = "INSERT INTO glpi_mailingsettings (type,items_id,item_type) VALUES ('$type','$items_id','$item_type')";
 						$DB->query($query);
 						break;
 					case "delete" :
@@ -232,7 +232,7 @@ function isAuthorMailingActivatedForHelpdesk(){
 
 	if ($CFG_GLPI['mailing']){
 		$query="SELECT COUNT(ID) FROM glpi_mailingsettings WHERE type IN ('new','followup','update','finish') 
-				AND item_type = '".USER_MAILING_TYPE."' AND FK_item = '".AUTHOR_MAILING."' ;";
+				AND item_type = '".USER_MAILING_TYPE."' AND items_id = '".AUTHOR_MAILING."' ;";
 		if ($result=$DB->query($query)){
 			if ($DB->result($result,0,0)>0){
 				return true;

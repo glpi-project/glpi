@@ -178,7 +178,7 @@ class Mailing
 			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
-						switch($data["FK_item"]){
+						switch($data["items_id"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								$this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
@@ -376,7 +376,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 						FROM glpi_profiles_users 
 						INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) $joinprofile 
-						WHERE glpi_users.deleted=0 AND glpi_profiles_users.profiles_id='".$data["FK_item"]."' ".
+						WHERE glpi_users.deleted=0 AND glpi_profiles_users.profiles_id='".$data["items_id"]."' ".
 						getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true);
 
 						if ($result2= $DB->query($query)){
@@ -390,7 +390,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_groups_users 
 							INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-							WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$data["FK_item"]."'";
+							WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$data["items_id"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -722,7 +722,7 @@ class MailingResa{
 			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
-						switch ($data["FK_item"]){
+						switch ($data["items_id"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								$this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
@@ -733,7 +733,7 @@ class MailingResa{
 								$ri=new ReservationItem();
 								$ci=new CommonItem();
 								$entity=-1;
-								if ($ri->getFromDB($this->resa->fields["id_item"])){
+								if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])){
 									if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 										$entity=$ci->getField('entities_id');
 									}
@@ -760,7 +760,7 @@ class MailingResa{
 							// TECH SEND
 							case TECH_MAILING :
 								$ri=new ReservationItem();
-								if ($ri->getFromDB($this->resa->fields["id_item"])){
+								if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])){
 									$ci=new CommonItem();
 									$ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
 
@@ -779,7 +779,7 @@ class MailingResa{
 							// USER SEND
 							case USER_MAILING :
 								$ri=new ReservationItem();
-								if ($ri->getFromDB($this->resa->fields["id_item"])){
+								if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])){
 									$ci=new CommonItem();
 									$ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
 
@@ -801,14 +801,14 @@ class MailingResa{
 					case PROFILE_MAILING_TYPE :
 						// Get entity
 						$ri=new ReservationItem();
-						$ri->getFromDB($this->resa->fields['id_item']);
+						$ri->getFromDB($this->resa->fields['reservationsitems_id']);
 						$ci = new CommonItem();
 						$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 						$entities_id=$ci->getField('entities_id');
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
-							WHERE glpi_profiles_users.profiles_id='".$data["FK_item"]."' 
+							WHERE glpi_profiles_users.profiles_id='".$data["items_id"]."' 
 							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$entities_id,true);
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -821,7 +821,7 @@ class MailingResa{
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG  
 						FROM glpi_groups_users 
 						INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) 
-						WHERE glpi_groups_users.groups_id='".$data["FK_item"]."'";
+						WHERE glpi_groups_users.groups_id='".$data["items_id"]."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -848,7 +848,7 @@ class MailingResa{
 		$ri=new ReservationItem();
 		$ci=new CommonItem();
 		$entity=-1;
-		if ($ri->getFromDB($this->resa->fields["id_item"])){
+		if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])){
 			if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 				$entity=$ci->getField('entities_id');
 			}
@@ -1044,7 +1044,7 @@ class MailingAlert
 			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
-						switch($data["FK_item"]){
+						switch($data["items_id"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
@@ -1071,7 +1071,7 @@ class MailingAlert
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
-							WHERE glpi_profiles_users.profiles_id='".$data["FK_item"]."'
+							WHERE glpi_profiles_users.profiles_id='".$data["items_id"]."'
 							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->entity,true);
 
 						if ($result2= $DB->query($query)){
@@ -1088,7 +1088,7 @@ class MailingAlert
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_groups_users 
 							INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) 
-							WHERE glpi_groups_users.groups_id='".$data["FK_item"]."'";
+							WHERE glpi_groups_users.groups_id='".$data["items_id"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))

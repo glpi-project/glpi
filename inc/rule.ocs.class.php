@@ -40,16 +40,16 @@ if (!defined('GLPI_ROOT')) {
 class OcsRuleCollection extends RuleCollection {
 
 	///Store the id of the ocs server
-	var $ocs_server_id;
+	var $ocsservers_id;
 
 	/**
 	 * Constructor
-	 * @param $ocs_server_id ID of the OCS server
+	 * @param $ocsservers_id ID of the OCS server
 	**/
-	function __construct($ocs_server_id=-1) {
+	function __construct($ocsservers_id=-1) {
 		$this->sub_type = RULE_OCS_AFFECT_COMPUTER;
 		$this->rule_class_name = 'OcsAffectEntityRule';
-		$this->ocs_server_id = $ocs_server_id;
+		$this->ocsservers_id = $ocsservers_id;
 		$this->stop_on_first_match=true;
 		$this->right="rule_ocs";
 	}
@@ -59,7 +59,7 @@ class OcsRuleCollection extends RuleCollection {
 		return $LANG['rulesengine'][18];
 	}
 
-	function prepareInputDataForProcess($input,$computer_id){
+	function prepareInputDataForProcess($input,$computers_id){
 		global $DBocs;
 		$tables = $this->getTablesForQuery();
 		$fields = $this->getFieldsForQuery();
@@ -78,7 +78,7 @@ class OcsRuleCollection extends RuleCollection {
 			switch (strtoupper($field)) {
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
 				case "OCS_SERVER" :
-					$rule_parameters["OCS_SERVER"] = $this->ocs_server_id;
+					$rule_parameters["OCS_SERVER"] = $this->ocsservers_id;
 					break;
 					//TAG and DOMAIN should come from the OCS DB 
 				default :
@@ -104,9 +104,9 @@ class OcsRuleCollection extends RuleCollection {
 
 		if ($select_sql != "" && $from_sql != "" /*&& $where_sql != ""*/) {
 			//Build the all request
-			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE  hardware.ID='".$computer_id."'";
+			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE  hardware.ID='".$computers_id."'";
 		
-			checkOCSconnection($this->ocs_server_id);
+			checkOCSconnection($this->ocsservers_id);
 			$result = $DBocs->query($sql);
 			$ocs_datas = array ();
 
@@ -127,7 +127,7 @@ class OcsRuleCollection extends RuleCollection {
 			//Sometimes OCS can't find network ports but fill the right ip in hardware table...
 			//So let's use the ip to proceed rules (if IP is a criteria of course)
 			if (in_array("IPADDRESS",$fields) && !isset($ocs_datas['IPADDRESS']))
-				$ocs_datas['IPADDRESS']=getOcsGeneralIpAddress($this->ocs_server_id,$computer_id);	
+				$ocs_datas['IPADDRESS']=getOcsGeneralIpAddress($this->ocsservers_id,$computers_id);	
 
 			return array_merge($rule_parameters, $ocs_datas);
 		} else
@@ -221,9 +221,9 @@ class OcsAffectEntityRule extends Rule {
 
 	/**
 	 * Constructor
-         * @param $ocs_server_id ID of the OCS server
+         * @param $ocsservers_id ID of the OCS server
 	**/
-	function __construct($ocs_server_id=-1) {
+	function __construct($ocsservers_id=-1) {
 		parent::__construct(RULE_OCS_AFFECT_COMPUTER);
 		$this->right="rule_ocs";
 		$this->can_sort=true;
@@ -340,7 +340,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
 		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
-		WHERE gra.FK_rules=grd.ID AND gra.field='entities_id'  
+		WHERE gra.rules_id=grd.ID AND gra.field='entities_id'  
 		AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);

@@ -82,7 +82,7 @@ function showConnect($target,$ID,$itemtype) {
 				echo "</strong></td>";
 				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";
 				if ($canedit){
-					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
+					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;computers_id=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
 				} else {
 					echo "&nbsp;";
 				}
@@ -146,10 +146,10 @@ function showConnect($target,$ID,$itemtype) {
  * @param $ID the connection ID to disconnect.
  * @param $dohistory make history
  * @param $doautoactions make auto actions on disconnect
- * @param $ocs_server_id ocs server id of the computer if know
+ * @param $ocsservers_id ocs server id of the computer if know
  * @return nothing
  */
-function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
+function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
 	global $DB,$LINK_ID_TABLE,$LANG,$CFG_GLPI;
 
 
@@ -236,13 +236,13 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 				}
 			}
 	
-			if ($ocs_server_id==0){
-				$ocs_server_id = getOCSServerByMachineID($data["computers_id"]);
+			if ($ocsservers_id==0){
+				$ocsservers_id = getOCSServerByMachineID($data["computers_id"]);
 			}
-			if ($ocs_server_id>0){
+			if ($ocsservers_id>0){
 	
 				//Get OCS configuration
-				$ocs_config = getOcsConf($ocs_server_id);
+				$ocs_config = getOcsConf($ocsservers_id);
 					
 				//Get the management mode for this device
 				$mode = getMaterialManagementMode($ocs_config,$type_elem);
@@ -264,7 +264,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 						$device->obj->update($tmp,$dohistory);
 					}
 				}		
-			} // $ocs_server_id>0
+			} // $ocsservers_id>0
 		}
 
 		// Disconnects a direct connection
@@ -280,11 +280,11 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
  * Makes a direct connection
  *
  * @param $sID connection source ID.
- * @param $cID computer ID (where the sID would be connected).
+ * @param $computers_id computer ID (where the sID would be connected).
  * @param $itemtype connection type.
  * @param $dohistory store change in history ?
  */
-function Connect($sID,$cID,$itemtype,$dohistory=1) {
+function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
 	global $LANG,$CFG_GLPI,$DB;
 	// Makes a direct connection
 
@@ -322,7 +322,7 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 	// Create the New connexion
 	$connect = new Connection;
 	$connect->items_id=$sID;
-	$connect->computers_id=$cID;
+	$connect->computers_id=$computers_id;
 	$connect->itemtype=$itemtype;
 	$newID=$connect->addtoDB();
 
@@ -336,12 +336,12 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 		}
 					
 		//Log connection in the device's history
-		historyLog ($cID,COMPUTER_TYPE,$changes,$itemtype,HISTORY_CONNECT_DEVICE);
+		historyLog ($computers_id,COMPUTER_TYPE,$changes,$itemtype,HISTORY_CONNECT_DEVICE);
 	}
 
 	if (!$dev->getField('is_global')){
 		$comp=new Computer();
-		$comp->getFromDB($cID);
+		$comp->getFromDB($computers_id);
 
 		if ($dohistory){
 			$changes[2]=addslashes($comp->fields["name"]);

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class DBocs extends DBmysql {
 
 	///Store the id of the ocs server
-	var $ocs_server_id = -1;
+	var $ocsservers_id = -1;
 
 	/**
 	 * Constructor
@@ -46,7 +46,7 @@ class DBocs extends DBmysql {
 	**/
 	function __construct($ID) {
 		global $CFG_GLPI;
-			$this->ocs_server_id = $ID;
+			$this->ocsservers_id = $ID;
 			
 			if ($CFG_GLPI["ocs_mode"]) {
 				$data = getOcsConf($ID);
@@ -65,7 +65,7 @@ class DBocs extends DBmysql {
 	**/
 	function getServerID()
 	{
-		return $this->ocs_server_id;
+		return $this->ocsservers_id;
 	}
 
 
@@ -293,7 +293,7 @@ class Ocsng extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][9] . " </td><td> <input type=\"text\" size='30' name=\"tag_exclude\" value=\"" . $this->fields["tag_exclude"] . "\"></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td><td>";
-		dropdownValue("glpi_states", "default_state", $this->fields["default_state"]);
+		dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td><td>";
@@ -383,7 +383,7 @@ class Ocsng extends CommonDBTM {
 		dropdownYesNo("link_serial", $this->fields["link_serial"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td><td>";
-		dropdownValue("glpi_states", "link_if_status", $this->fields["link_if_status"]);
+		dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
 		echo "</td><td colspan='2'></tr>";
 		
 		echo "</table><br>".$LANG['ocsconfig'][58];
@@ -554,7 +554,7 @@ class Ocsng extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_ocslinks WHERE (ocs_server_id = '$ID')";
+		$query = "DELETE FROM glpi_ocslinks WHERE (ocsservers_id = '$ID')";
 		$result = $DB->query($query);
 	}
 
@@ -573,7 +573,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_location"])){
 				if($tab["import_location"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocs_server_id"] = $tab["ID"];							
+					$adm->fields["ocsservers_id"] = $tab["ID"];							
 					$adm->fields["glpi_column"] = "locations_id";	
 					$adm->fields["ocs_column"] = $tab["import_location"];				
 					$isNewAdm = $adm->addToDB(); 
@@ -582,7 +582,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_otherserial"])){
 				if($tab["import_otherserial"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocs_server_id"] =  $tab["ID"];			
+					$adm->fields["ocsservers_id"] =  $tab["ID"];			
 					$adm->fields["glpi_column"] = "otherserial";	
 					$adm->fields["ocs_column"] = $tab["import_otherserial"];		
 					$isNewAdm = $adm->addToDB();
@@ -591,7 +591,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_group"])){			
 				if($tab["import_group"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["ID"];		
 					$adm->fields["glpi_column"] = "groups_id";	
 					$adm->fields["ocs_column"] = $tab["import_group"];				
 					$isNewAdm = $adm->addToDB();
@@ -600,7 +600,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_network"])){
 				if($tab["import_network"]!=""){			
 					$adm = new AdminInfo();			
-					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["ID"];		
 					$adm->fields["glpi_column"] = "networks_id";	
 					$adm->fields["ocs_column"] = $tab["import_network"];				
 					$isNewAdm = $adm->addToDB();
@@ -609,7 +609,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_contact_num"])){
 				if($tab["import_contact_num"]!=""){			
 					$adm = new AdminInfo();			
-					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["ID"];		
 					$adm->fields["glpi_column"] = "contact_num";	
 					$adm->fields["ocs_column"] = $tab["import_contact_num"];				
 					$isNewAdm = $adm->addToDB(); 
