@@ -135,7 +135,7 @@ class Phone extends CommonDBTM {
 					unset($np->fields["ID"]);
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
-					unset($np->fields["netpoint"]);
+					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}
@@ -346,7 +346,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['phones'][36].":</td><td>";
-      dropdownValue("glpi_phonespowersupplies", "power", $this->fields["power"]);
+      dropdownValue("glpi_phonespowersupplies", "phonespowersupplies_id", $this->fields["phonespowersupplies_id"]);
       echo "</td></tr>";
 
 

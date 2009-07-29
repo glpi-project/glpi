@@ -274,7 +274,7 @@ if (isset($_POST["itemtype"])){
 					if ($val==1) {
 						$comp=new Computer;
 						if ($comp->getFromDB($key)&&$comp->fields["entities_id"]==$_SESSION["glpiactive_entity"]){
-							installSoftwareVersion($key,$_POST["vID"]);
+							installSoftwareVersion($key,$_POST["softwaresversions_id"]);
 						}
 					}
 				}
@@ -467,15 +467,15 @@ if (isset($_POST["itemtype"])){
 					if (count($_SESSION['glpi_massiveaction']['items'])>0){
 						$key=array_pop($_SESSION['glpi_massiveaction']['items']);
 						//Try to get the OCS server whose machine belongs
-						$query = "SELECT ocs_server_id, ID
+						$query = "SELECT ocsservers_id, ID
 							FROM glpi_ocslinks
-							WHERE glpi_id='".$key."'";
+							WHERE computers_id='".$key."'";
 						$result = $DB->query($query);
 						if ($DB->numrows($result) == 1) {                   
 							$data = $DB->fetch_assoc($result);
-							if ($data['ocs_server_id'] != -1){
+							if ($data['ocsservers_id'] != -1){
 							//Force update of the machine
-							ocsUpdateComputer($data['ID'],$data['ocs_server_id'],1,1);
+							ocsUpdateComputer($data['ID'],$data['ocsservers_id'],1,1);
 							}
 						}
 						glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');

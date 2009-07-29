@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
-if(!isset($_GET["sID"])) $_GET["sID"] = "";
+if(!isset($_GET["softwares_id"])) $_GET["softwares_id"] = "";
 
 $license=new SoftwareLicense();
 if (isset($_POST["add"]))
@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 	checkRight("software","w");
 
 	$newID=$license->add($_POST);
-	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][85]." $newID.");
+	logEvent($_POST['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][85]." $newID.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -59,16 +59,16 @@ else if (isset($_POST["delete"]))
 
 	$license->delete($_POST);
 
-	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
+	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['softwares_id']);
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("software","w");
 
 	$license->update($_POST);
-	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["ID"]);
-	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
+	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["ID"]);
+	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['softwares_id']);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
@@ -76,7 +76,7 @@ else
 	checkRight("software","r");
 
 	commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
-	$license->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["sID"]);
+	$license->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["softwares_id"]);
 
 	commonFooter();
 }

@@ -144,7 +144,7 @@ class Computer extends CommonDBTM {
 		if (isset($input["_auto_update_ocs"])){
 			$query="UPDATE glpi_ocslinks 
 				SET auto_update='".$input["_auto_update_ocs"]."' 
-				WHERE glpi_id='".$input["ID"]."'";
+				WHERE computers_id='".$input["ID"]."'";
 			$DB->query($query);
 		}
 
@@ -372,13 +372,13 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD software
-			$query="SELECT vID 
+			$query="SELECT softwaresversions_id 
 				FROM glpi_computers_softwaresversions 
-				WHERE cID='".$input["_oldID"]."'";
+				WHERE computers_id='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
-					installSoftwareVersion($newID,$data['vID']);
+					installSoftwareVersion($newID,$data['softwaresversions_id']);
 			}
 
 			// ADD Contract
@@ -413,7 +413,7 @@ class Computer extends CommonDBTM {
 					unset($np->fields["ID"]);
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
-					unset($np->fields["netpoint"]);
+					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}
@@ -454,7 +454,7 @@ class Computer extends CommonDBTM {
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query = "DELETE FROM glpi_computers_softwaresversions WHERE (cID = '$ID')";
+		$query = "DELETE FROM glpi_computers_softwaresversions WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);		
 
 		$query = "DELETE FROM glpi_contracts_items
@@ -490,7 +490,7 @@ class Computer extends CommonDBTM {
 		}
 
 
-		$query = "DELETE FROM glpi_registrykeys WHERE (computer_id = '$ID')";
+		$query = "DELETE FROM glpi_registrykeys WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);
 
 		$query="SELECT * FROM glpi_reservationsitems WHERE (itemtype='".COMPUTER_TYPE."' AND items_id='$ID')";
@@ -504,7 +504,7 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_computers_devices WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_ocslinks WHERE (glpi_id = '$ID')";
+		$query = "DELETE FROM glpi_ocslinks WHERE (computers_id = '$ID')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_computersdisks WHERE (computers_id = '$ID')";
@@ -695,7 +695,7 @@ class Computer extends CommonDBTM {
       if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
          $query="SELECT *
             FROM glpi_ocslinks
-            WHERE glpi_id='$ID'";
+            WHERE computers_id='$ID'";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)==1){
@@ -729,7 +729,7 @@ class Computer extends CommonDBTM {
          echo "<br>";
          if (haveRight("ocsng","r")){
             echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-            $query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocslinks WHERE (glpi_id = '$ID')";
+            $query = "SELECT ocs_agent_version, ocsid FROM glpi_ocslinks WHERE (computers_id = '$ID')";
             $result_agent_version = $DB->query($query);
             $data_version = $DB->fetch_array($result_agent_version);
 
@@ -738,7 +738,7 @@ class Computer extends CommonDBTM {
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '')
             {
-               echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),$data_version["ocs_id"],$LANG['ocsng'][57]);
+               echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),$data_version["ocsid"],$LANG['ocsng'][57]);
             }
 
             if ($data_version["ocs_agent_version"] != NULL)
@@ -844,11 +844,11 @@ class ComputerDisk extends CommonDBTM {
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the version or the template to print
-	 *@param $cID ID of the computer for add process
+	 *@param $computers_id ID of the computer for add process
 	 *
 	 *@return true if displayed  false if item not found or not right to display
 	 **/	
-	function showForm($target,$ID,$cID=-1){
+	function showForm($target,$ID,$computers_id=-1){
 		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("computer","w"))	return false;
@@ -872,10 +872,10 @@ class ComputerDisk extends CommonDBTM {
 			echo "</th></tr>";
 		} else {
 			echo "<tr><th colspan='4'>".$LANG['computers'][7];
-			echo " - <a href='computer.form.php?ID=".$cID."'>".getDropdownName("glpi_computers",$cID)."</a>";
+			echo " - <a href='computer.form.php?ID=".$computers_id."'>".getDropdownName("glpi_computers",$computers_id)."</a>";
 
 			echo "</th></tr>";
-			echo "<input type='hidden' name='computers_id' value='$cID'>";
+			echo "<input type='hidden' name='computers_id' value='$computers_id'>";
 		}
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";

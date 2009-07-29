@@ -67,19 +67,19 @@ $query = "SELECT DISTINCT glpi_softwares.ID, glpi_softwares.name
 		ORDER BY glpi_softwares.name";
 $result = $DB->query($query);
 
-echo "<select name='sID' id='item_type$rand'>\n";
+echo "<select name='softwares_id' id='item_type$rand'>\n";
 echo "<option value='0'>-----</option>\n";
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
-		$sID = $data["ID"];
+		$softwares_id = $data["ID"];
 		$output=$data["name"];
-		echo  "<option value='$sID' title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo  "<option value='$softwares_id' title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}	
 }
 echo "</select>\n";
 
 
-$paramsselsoft=array('sID'=>'__VALUE__',
+$paramsselsoft=array('softwares_id'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
 		);
 ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",$paramsselsoft,false);

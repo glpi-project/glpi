@@ -64,7 +64,7 @@
 		break;
 		case "move":
 			// TODO : check this ? obsoleted function call
-			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
+			dropdownLicenseOfSoftware("lID",$_POST["softwares_id"]);
 			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
 		case "delete_similar_license":
@@ -82,8 +82,8 @@
 
 		case "move_to_software":
 			$soft=new Software();
-			$soft->getFromDB($_POST["sID"]);
-			dropdownValue("glpi_softwares","sID",0,1,$soft->fields['entities_id']);
+			$soft->getFromDB($_POST["softwares_id"]);
+			dropdownValue("glpi_softwares","softwares_id",0,1,$soft->fields['entities_id']);
 			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
 */		

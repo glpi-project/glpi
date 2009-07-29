@@ -390,7 +390,7 @@ function printReservation($target,$ID,$date){
 
 		$query = "SELECT DISTINCT glpi_reservationsitems.ID 
 			FROM glpi_reservationsitems 
-			INNER JOIN glpi_reservations ON (glpi_reservationsitems.ID = glpi_reservations.id_item )
+			INNER JOIN glpi_reservations ON (glpi_reservationsitems.ID = glpi_reservations.reservationsitems_id )
 			WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin 
 			ORDER BY begin";
 //		echo $query;
@@ -432,7 +432,7 @@ function printReservationItem($target,$ID,$date){
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 	$query = "SELECT * FROM glpi_reservations".
-		" WHERE '".$debut."' < end AND '".$fin."' > begin AND id_item='$ID' 
+		" WHERE '".$debut."' < end AND '".$fin."' > begin AND reservationsitems_id='$ID' 
 		ORDER BY begin";
 	//		echo $query."<br>";
 	if ($result=$DB->query($query)){
@@ -599,7 +599,7 @@ function showDeviceReservations($target,$itemtype,$ID){
 
 		$now=$_SESSION["glpi_currenttime"];
 		// Print reservation in progress
-		$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
+		$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND reservationsitems_id='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
@@ -633,7 +633,7 @@ function showDeviceReservations($target,$itemtype,$ID){
 		echo "<br>";
 		// Print old reservations
 
-		$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
+		$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND reservationsitems_id='$resaID' ORDER BY begin DESC";
 		$result=$DB->query($query);
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
@@ -698,7 +698,7 @@ function showUserReservations($target,$ID){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
-			if ($ri->getFromDB($data["id_item"])){
+			if ($ri->getFromDB($data["reservationsitems_id"])){
 				$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 				echo "<td class='center'>".$ci->getLink()."</td>";
 			} else {
@@ -709,7 +709,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["reservationsitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
 			echo "</tr>";
@@ -731,7 +731,7 @@ function showUserReservations($target,$ID){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
-			if ($ri->getFromDB($data["id_item"])){
+			if ($ri->getFromDB($data["reservationsitems_id"])){
 				$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 				echo "<td class='center'>".$ci->getLink()."</td>";
 			} else {
@@ -742,7 +742,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["reservationsitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
 			echo "</tr>";

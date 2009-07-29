@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
-if(!isset($_GET["cID"])) $_GET["cID"] = "";
+if(!isset($_GET["computers_id"])) $_GET["computers_id"] = "";
 
 $disk=new ComputerDisk();
 if (isset($_POST["add"]))
@@ -87,7 +87,7 @@ else
 {
 
 	commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
-	$disk->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["cID"]);
+	$disk->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["computers_id"]);
 
 	commonFooter();
 }

@@ -389,7 +389,6 @@
 	define("PLUGIN_TOBECLEANED",5);
 
 	//DEVICE ARRAY.
-	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers","glpi_monitors","glpi_peripherals",
 		"glpi_softwares","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_suppliers","glpi_documents","glpi_phones",
 		"glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");

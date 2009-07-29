@@ -50,7 +50,7 @@ if (isset($_SESSION["ocs_update"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_update"]);
-		ocsUpdateComputer($key,$_SESSION["ocs_server_id"],2);
+		ocsUpdateComputer($key,$_SESSION["ocsservers_id"],2);
 		glpi_header($_SERVER['PHP_SELF']);
 	} else {
 		unset($_SESSION["ocs_update"]);
@@ -68,8 +68,8 @@ if (!isset($_POST["update_ok"])){
 	if (!isset($_GET['check'])) $_GET['check']='all';
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
-	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsShowUpdateComputer($_SESSION["ocs_server_id"],$_GET['check'],$_GET['start']);
+	ocsManageDeleted($_SESSION["ocsservers_id"]);
+	ocsShowUpdateComputer($_SESSION["ocsservers_id"],$_GET['check'],$_GET['start']);
 
 } else {
 	if (count($_POST['toupdate'])>0){		

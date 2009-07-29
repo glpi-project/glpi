@@ -261,7 +261,7 @@ function showDeviceDocument($instID) {
 							if ($itemtype==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
 							if ($itemtype==KNOWBASE_TYPE) $data["name"]=$data["question"];
                      if ($itemtype==SOFTWARELICENSE_TYPE) {
-                        $soft->getFromDB($data['sID']);
+                        $soft->getFromDB($data['softwares_id']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
 							

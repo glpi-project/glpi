@@ -45,7 +45,7 @@ if(strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")){
 
 checkRight("software","w");
 
-if ($_POST['sID']>0){
+if ($_POST['softwares_id']>0){
 	if (!isset($_POST['value'])){
 		$_POST['value']=0;
 	}
@@ -53,7 +53,7 @@ if ($_POST['sID']>0){
 
 	$query = "SELECT DISTINCT glpi_softwaresversions.*, glpi_states.name AS sname FROM glpi_softwaresversions "
 			." LEFT JOIN glpi_states on (glpi_softwaresversions.states_id=glpi_states.ID) "
-			." WHERE glpi_softwaresversions.sID='".$_POST['sID']."'"
+			." WHERE glpi_softwaresversions.softwares_id='".$_POST['softwares_id']."'"
 			." ORDER BY name";
 
 	$result = $DB->query($query);

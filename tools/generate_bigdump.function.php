@@ -1396,9 +1396,9 @@ function generate_entity($ID_entity){
 		// Add licenses
 		$val2=mt_rand(1,$MAX['softwarelicenses']);
 		for ($j=0;$j<$val2;$j++){
-			$buy_version=mt_rand($FIRST["version"],$LAST["version"]);
-			$use_version=mt_rand($buy_version,$LAST["version"]);
-			$query="INSERT INTO glpi_softwareslicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$buy_version','$use_version',NULL,0,'comment license $j')";
+			$softwaresversions_id_buy=mt_rand($FIRST["version"],$LAST["version"]);
+			$softwaresversions_id_use=mt_rand($softwaresversions_id_buy,$LAST["version"]);
+			$query="INSERT INTO glpi_softwareslicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$softwaresversions_id_buy','$softwaresversions_id_use',NULL,0,'comment license $j')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 

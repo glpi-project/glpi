@@ -41,29 +41,6 @@ if (!defined('GLPI_ROOT')){
 
 
 /**
- * Test if a field is a device
- *
- * Return true if the field $field is a device 
- * or false if not.
- *
- *@param $field string device name
- *
- *
- *@return bool
- *
- **/
-function IsDevice($field) {
-	global $CFG_GLPI;
-	if(in_array($field,$CFG_GLPI["devices_tables"])) {
-		return true;
-	}
-	else  {
-		return false;
-	}
-}
-
-
-/**
  * Print the form for devices linked to a computer or a template
  *
  *
@@ -204,7 +181,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "</td><td>".$ci->getField('otherserial');
 							echo "</td><td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
+								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?computers_id=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
 								echo $LANG['buttons'][10];
 								echo "</strong></a></td>";
 							}
@@ -232,7 +209,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						if(empty($withtemplate) || $withtemplate != 2) {
 							echo "<form method='post' action=\"$target\">";
 							echo "<input type='hidden' name='connect' value='connect'>";
-							echo "<input type='hidden' name='cID' value='$ID'>";
+							echo "<input type='hidden' name='computers_id' value='$ID'>";
 							echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
 							if (empty($withtemplate)){
 								echo "<input type='hidden' name='dohistory' value='1'>";
@@ -315,7 +292,7 @@ function showComputerDisks($ID,$withtemplate='') {
 			echo "<tr><th colspan='6'>".$LANG['search'][15]."</th></tr>";
 		}
 	if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)){
-		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID&amp;withtemplate=".$withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
+		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".$withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
 	}
 	echo "</table>";
 	}

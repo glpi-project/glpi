@@ -89,9 +89,6 @@ class Transfer extends CommonDBTM{
 		// unset mailing
 		$CFG_GLPI["mailing"]=0;
 		
-		// $items=array(TYPE => array(id_items))
-		// $options=array()
-		
 		$default_options=array(
 			'keep_tickets'=>0,
 			'keep_networklinks'=>0,
@@ -349,7 +346,7 @@ class Transfer extends CommonDBTM{
 			// Clean DB
 			$query="SELECT glpi_computers_softwaresversions.ID 
 				FROM glpi_computers_softwaresversions 
-				LEFT JOIN glpi_computers ON (glpi_computers_softwaresversions.cID = glpi_computers.ID ) 
+				LEFT JOIN glpi_computers ON (glpi_computers_softwaresversions.computers_id = glpi_computers.ID )
 				WHERE glpi_computers.ID IS NULL";
 
 			if ($result = $DB->query($query)) {
@@ -364,7 +361,7 @@ class Transfer extends CommonDBTM{
 			// Clean DB
 			$query="SELECT glpi_computers_softwaresversions.ID 
 				FROM glpi_computers_softwaresversions 
-				LEFT JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID ) 
+				LEFT JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID )
 				WHERE glpi_softwaresversions.ID IS NULL";
 
 			if ($result = $DB->query($query)) {
@@ -379,7 +376,7 @@ class Transfer extends CommonDBTM{
 			// Clean DB
 			$query="SELECT glpi_softwaresversions.ID 
 				FROM glpi_softwaresversions 
-				LEFT JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.sID ) 
+				LEFT JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.softwares_id ) 
 				WHERE glpi_softwares.ID IS NULL";
 
 			if ($result = $DB->query($query)) {
@@ -393,9 +390,9 @@ class Transfer extends CommonDBTM{
 
 			$query = "SELECT glpi_softwares.ID, glpi_softwares.entities_id, glpi_softwares.recursive, glpi_softwaresversions.ID AS vID
 				FROM glpi_computers_softwaresversions 
-				INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID)
-				INNER JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.sID)
-				WHERE glpi_computers_softwaresversions.cID IN ".$this->item_search[COMPUTER_TYPE];
+				INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID)
+				INNER JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.softwares_id)
+				WHERE glpi_computers_softwaresversions.computers_id IN ".$this->item_search[COMPUTER_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
@@ -423,16 +420,16 @@ class Transfer extends CommonDBTM{
 
 		// Move license of software 
 		// TODO : should we transfert "affected license" ? 
-		$query = "SELECT ID, buy_version, use_version FROM glpi_softwareslicenses WHERE sID IN ".$this->item_search[SOFTWARE_TYPE];
+		$query = "SELECT ID, softwaresversions_id_buy, softwaresversions_id_use FROM glpi_softwareslicenses WHERE softwares_id IN ".$this->item_search[SOFTWARE_TYPE];
 		foreach ($DB->request($query) AS $lic) {
 			$this->addToBeTransfer(SOFTWARELICENSE_TYPE,$lic['ID']);			
 
 			// Force version transfer (remove from item_recurs)
-			if ($lic['buy_version']>0) {
-				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['buy_version']);	
+			if ($lic['softwaresversions_id_buy']>0) {
+				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['softwaresversions_id_buy']);	
 			}
-			if ($lic['use_version']>0) {
-				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['use_version']);
+			if ($lic['softwaresversions_id_use']>0) {
+				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['softwaresversions_id_use']);
 			}
 		}
 
@@ -759,7 +756,7 @@ class Transfer extends CommonDBTM{
 				$dataocslink=array();
 				$ocs_computer=false;
 				if ($itemtype==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
-					$query="SELECT * FROM glpi_ocslinks WHERE glpi_id='$ID'";
+					$query="SELECT * FROM glpi_ocslinks WHERE computers_id='$ID'";
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)>0){
 							$dataocslink=$DB->fetch_assoc($result);
@@ -963,18 +960,18 @@ class Transfer extends CommonDBTM{
 	/**
 	* Transfer netpoint
 	*
-	*@param $netID netpoint ID
+	*@param $netpoints_id netpoint ID
 	*@return new netpoint ID
 	**/
-	function transferDropdownNetpoint($netID){
+	function transferDropdownNetpoint($netpoints_id){
 		global $DB;
 
-		if ($netID>0){
-			if (isset($this->already_transfer['netpoint'][$netID])){
-				return $this->already_transfer['netpoint'][$netID];
+		if ($netpoints_id>0){
+			if (isset($this->already_transfer['netpoints_id'][$netpoints_id])){
+				return $this->already_transfer['netpoints_id'][$netpoints_id];
 			} else { // Not already transfer
 				// Search init item
-				$query="SELECT * FROM glpi_netpoints WHERE ID='$netID'";
+				$query="SELECT * FROM glpi_netpoints WHERE ID='$netpoints_id'";
 				if ($result=$DB->query($query)){
 					if ($DB->numrows($result)){
 						$data=$DB->fetch_array($result);
@@ -986,7 +983,7 @@ class Transfer extends CommonDBTM{
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
 									$newID=$DB->result($result_search,0,'ID');
-									$this->addToAlreadyTransfer('netpoint',$netID,$newID);
+									$this->addToAlreadyTransfer('netpoints_id',$netpoints_id,$newID);
 									return $newID;
 								}
 							}
@@ -1000,7 +997,7 @@ class Transfer extends CommonDBTM{
 							$input['value2']=$locID; 
 							// add item
 							$newID=addDropdown($input);
-							$this->addToAlreadyTransfer('netpoint',$netID,$newID);
+							$this->addToAlreadyTransfer('netpoints_id',$netpoints_id,$newID);
 							return $newID;
 					} 
 				}
@@ -1172,13 +1169,14 @@ class Transfer extends CommonDBTM{
 		if ($vers->getFromDB($ID)) {
 			// error_log("copySingleVersion: ".$vers->fields['name']);
 			
-			$newsoftID = $this->copySingleSoftware($vers->fields['sID']);
+			$newsoftID = $this->copySingleSoftware($vers->fields['softwares_id']);
 
-			if ($newsoftID == $vers->fields['sID']) {
+			if ($newsoftID == $vers->fields['softwares_id']) {
 				// no need to copy
 				$newversID = $ID;
 			} else {				
-				$query="SELECT ID FROM glpi_softwaresversions WHERE sID=$newsoftID AND  name='".addslashes($vers->fields['name'])."'";			
+				$query="SELECT ID FROM glpi_softwaresversions
+                  WHERE softwares_id=$newsoftID AND  name='".addslashes($vers->fields['name'])."'";
 				if ($data=$DB->request($query)->next()) {
 					$newversID=$data["ID"];
 				} else {
@@ -1186,7 +1184,7 @@ class Transfer extends CommonDBTM{
 					unset($vers->fields['ID']);
 					$input=$vers->fields;
 					unset($vers->fields);
-					$input['sID']=$newsoftID;
+					$input['softwares_id']=$newsoftID;
 					$newversID=$vers->add($input);
 				}
 			}
@@ -1207,16 +1205,18 @@ class Transfer extends CommonDBTM{
 
 		// Get Installed version
 		$query = "SELECT *	FROM glpi_computers_softwaresversions 
-			WHERE cID = $ID AND vID NOT IN ".$this->item_recurs[SOFTWAREVERSION_TYPE];
+			WHERE computers_id = $ID
+            AND softwaresversions_id NOT IN ".$this->item_recurs[SOFTWAREVERSION_TYPE];
 			
 		foreach ($DB->request($query) AS $data) {
 			
 			if ($this->options['keep_softwares']){
 
-				$newversID = $this->copySingleVersion($data['vID']);
+				$newversID = $this->copySingleVersion($data['softwaresversions_id']);
 				
-				if ($newversID>0 && $newversID!=$data['vID']){
-					$query="UPDATE glpi_computers_softwaresversions SET vID=$newversID WHERE ID=".$data['ID'];
+				if ($newversID>0 && $newversID!=$data['softwaresversions_id']){
+					$query="UPDATE glpi_computers_softwaresversions
+                        SET softwaresversions_id=$newversID WHERE ID=".$data['ID'];
 					$DB->query($query);	
 				}
 				
@@ -1227,7 +1227,7 @@ class Transfer extends CommonDBTM{
 				$DB->query($del_query);
 
 				if ($ocs_computer){
-					$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE glpi_id=$ID";
+					$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE computers_id=$ID";
 					$DB->query($query);
 				}	
 			}
@@ -1264,12 +1264,12 @@ class Transfer extends CommonDBTM{
 		if ($license->getFromDB($ID)) {
 			$input=array();
 
-			$newsoftID = $this->copySingleSoftware($license->fields['sID']);
-			if ($newsoftID>0 && $newsoftID!=$license->fields['sID']){
-				$input['sID']=$newsoftID;
+			$newsoftID = $this->copySingleSoftware($license->fields['softwares_id']);
+			if ($newsoftID>0 && $newsoftID!=$license->fields['softwares_id']){
+				$input['softwares_id']=$newsoftID;
 			}
 
-			foreach (array("buy_version","use_version") as $field) {			
+			foreach (array("softwaresversions_id_buy","softwaresversions_id_use") as $field) {			
 				if ($license->fields[$field]>0) {
 					$newversID = $this->copySingleVersion($license->fields[$field]);
 					
@@ -1296,14 +1296,14 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		$query = "SELECT ID FROM glpi_softwareslicenses
-			WHERE sID = '$ID'";
+			WHERE softwares_id = '$ID'";
 		
 		foreach ($DB->request($query) AS $data) {
 			$this->transferItem(SOFTWARELICENSE_TYPE,$data['ID'],$data['ID']);
 		}
 
 		$query = "SELECT ID FROM glpi_softwaresversions
-			WHERE sID = '$ID'";
+			WHERE softwares_id = '$ID'";
 		
 		foreach ($DB->request($query) AS $data) {
 			// Just Store the info.
@@ -1319,9 +1319,9 @@ class Transfer extends CommonDBTM{
 		
 		foreach ($this->already_transfer[SOFTWAREVERSION_TYPE] AS $old => $new) {
 
-			if    (countElementsInTable("glpi_softwareslicenses","buy_version=$old")==0
-				&& countElementsInTable("glpi_softwareslicenses","use_version=$old")==0
-				&& countElementsInTable("glpi_computers_softwaresversions","vID=$old")==0) {
+			if    (countElementsInTable("glpi_softwareslicenses","softwaresversions_id_buy=$old")==0
+				&& countElementsInTable("glpi_softwareslicenses","softwaresversions_id_use=$old")==0
+				&& countElementsInTable("glpi_computers_softwaresversions","softwaresversions_id=$old")==0) {
 
 				// if ($vers->getFromDB($old)) error_log("cleanSoftwareVersions: ".$vers->fields['name']);
 				
@@ -1337,8 +1337,8 @@ class Transfer extends CommonDBTM{
 		
 		foreach ($this->already_transfer[SOFTWARE_TYPE] AS $old => $new) {
 
-			if    (countElementsInTable("glpi_softwareslicenses","sID=$old")==0
-				&& countElementsInTable("glpi_softwaresversions","sID=$old")==0) {
+			if    (countElementsInTable("glpi_softwareslicenses","softwares_id=$old")==0
+				&& countElementsInTable("glpi_softwaresversions","softwares_id=$old")==0) {
 
 				// if ($soft->getFromDB($old)) error_log("cleanSoftwares: ".$soft->fields['name']);
 
@@ -1356,10 +1356,10 @@ class Transfer extends CommonDBTM{
 	function transferSoftwares($itemtype,$ID,$ocs_computer=false){
 		global $DB;
 		// Get licenses linked
-		$query = "SELECT glpi_softwaresversions.sID as softID, glpi_softwaresversions.ID as versID, glpi_computers_softwaresversions.ID as instID
+		$query = "SELECT glpi_softwaresversions.softwares_id as softID, glpi_softwaresversions.ID as versID, glpi_computers_softwaresversions.ID as instID
 			FROM glpi_computers_softwaresversions 
-			LEFT JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID)
-			WHERE glpi_computers_softwaresversions.cID = '$ID' AND glpi_softwaresversions.sID NOT IN ".$this->item_recurs[SOFTWARE_TYPE];
+			LEFT JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID)
+			WHERE glpi_computers_softwaresversions.computers_id = '$ID' AND glpi_softwaresversions.softwares_id NOT IN ".$this->item_recurs[SOFTWARE_TYPE];
 			
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) { 
@@ -1393,8 +1393,8 @@ class Transfer extends CommonDBTM{
 								} else {
 									// Not already transfer soft
 									$query="SELECT count(*) AS CPT 
-										FROM glpi_computers_softwaresversions INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID)
-										WHERE glpi_softwaresversions.sID='".$data['softID']."' AND glpi_computers_softwaresversions.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
+										FROM glpi_computers_softwaresversions INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID)
+										WHERE glpi_softwaresversions.softwares_id='".$data['softID']."' AND glpi_computers_softwaresversions.computers_id NOT IN ".$this->item_search[COMPUTER_TYPE];
 									$result_search=$DB->query($query);
 									// Is the software will be completly transfer ?
 									if ($DB->result($result_search,0,'CPT')==0){
@@ -1432,18 +1432,18 @@ class Transfer extends CommonDBTM{
 								// destination soft <> original soft -> copy soft
 									$query="SELECT count(*) AS CPT 
 										FROM glpi_computers_softwaresversions 
-										WHERE glpi_computers_softwaresversions.vID='".$data['versID']."' AND glpi_computers_softwaresversions.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
+										WHERE glpi_computers_softwaresversions.softwaresversions_id='".$data['versID']."' AND glpi_computers_softwaresversions.computers_id NOT IN ".$this->item_search[COMPUTER_TYPE];
 									$result_search=$DB->query($query);
 									// Is the version will be completly transfer ?
 									if ($DB->result($result_search,0,'CPT')==0){
 										// Yes : transfer version to copy software
-										$vers->update(array("ID"=>$data['versID'],'sID' => $newsoftID));
+										$vers->update(array("ID"=>$data['versID'],'softwares_id' => $newsoftID));
 										$this->addToAlreadyTransfer(SOFTWAREVERSION_TYPE,$data['versID'],$data['versID']);
 									} else {
 										$vers->getFromDB($data['versID']);
 										// No : Search licence
 										$query="SELECT ID 
-											FROM glpi_softwaresversions WHERE sID='$newsoftID' AND  version='".addslashes($vers->fields['name'])."'";
+											FROM glpi_softwaresversions WHERE softwares_id='$newsoftID' AND  version='".addslashes($vers->fields['name'])."'";
 										if ($result_search=$DB->query($query)){
 											if ($DB->numrows($result_search)>0){
 												$newversID=$DB->result($result_search,0,'ID');
@@ -1454,7 +1454,7 @@ class Transfer extends CommonDBTM{
 											unset($vers->fields['ID']);
 											$input=$vers->fields;
 											unset($vers->fields);
-											$input['sID']=$newsoftID;
+											$input['softwares_id']=$newsoftID;
 											$newversID=$vers->add($input);
 										}
 										$this->addToAlreadyTransfer(SOFTWAREVERSION_TYPE,$data['versID'],$newversID);
@@ -1465,7 +1465,7 @@ class Transfer extends CommonDBTM{
 							}
 							// Update inst software if needed
 							if ($newversID>0&&$newversID!=$data['versID']){
-								$query="UPDATE glpi_computers_softwaresversions SET vID='$newversID' WHERE ID='".$data['instID']."'";
+								$query="UPDATE glpi_computers_softwaresversions SET softwaresversions_id='$newversID' WHERE ID='".$data['instID']."'";
 								$DB->query($query);	
 							}
 						} else {
@@ -1482,7 +1482,7 @@ class Transfer extends CommonDBTM{
 						$DB->query($del_query);
 						$need_clean_process=true;
 						if ($ocs_computer){
-							$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE glpi_id='$ID'";
+							$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE computers_id='$ID'";
 							$DB->query($query);
 						}
 					}
@@ -1491,7 +1491,7 @@ class Transfer extends CommonDBTM{
 						// Clean license
 						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_computers_softwaresversions 
-								WHERE vID = '" . $data['versID'] . "'";
+								WHERE softwaresversions_id = '" . $data['versID'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 'CPT') == 0) {
 							$vers->delete(array (
@@ -1501,7 +1501,7 @@ class Transfer extends CommonDBTM{
 						// Clean software
 						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_softwaresversions 
-								WHERE sID = '" . $data['softID'] . "'";
+								WHERE softwares_id = '" . $data['softID'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 'CPT') == 0) {
 							if ($this->options['clean_softwares']==1){ // delete
@@ -1896,7 +1896,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								// OCS clean link
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE computers_id='$ID'";
 									$DB->query($query);
 								}
 
@@ -1933,7 +1933,7 @@ class Transfer extends CommonDBTM{
 									$ci->obj->delete(array('ID'=>$item_ID),1);
 								}
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE computers_id='$ID'";
 									$DB->query($query);
 								}
 							}
@@ -2385,7 +2385,7 @@ class Transfer extends CommonDBTM{
 				$result = $DB->query($query);
 				// Only case of ocs link update is needed (if devices are keep nothing to do)
 				if ($ocs_computer){
-					$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE glpi_id='$ID'";
+					$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE computers_id='$ID'";
 					$DB->query($query);
 				}
 				break;
@@ -2424,7 +2424,7 @@ class Transfer extends CommonDBTM{
 							}
 							// Only case of ocs link update is needed (if netports are keep nothing to do)
 							if ($ocs_computer){
-								$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE glpi_id='$ID'";
+								$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE computers_id='$ID'";
 								$DB->query($query);
 							}
 						}
@@ -2437,10 +2437,10 @@ class Transfer extends CommonDBTM{
 						if ($ID==$newID){ 
 							while ($data=$DB->fetch_array($result)) {
 								removeConnector($data['ID']);
-								if ($data['netpoint']){
-									$netpointID=$this->transferDropdownNetpoint($data['netpoint']);
+								if ($data['netpoints_id']){
+									$netpointID=$this->transferDropdownNetpoint($data['netpoints_id']);
 									$input['ID']=$data['ID'];
-									$input['netpoint']=$netpointID;
+									$input['netpoints_id']=$netpointID;
 									$np->update($input);
 								}
 							}
@@ -2449,7 +2449,7 @@ class Transfer extends CommonDBTM{
 								$data = addslashes_deep($data);
 								unset($data['ID']);
 								$data['items_id']=$newID;
-								$data['netpoint']=$this->transferDropdownNetpoint($data['netpoint']);
+								$data['netpoints_id']=$this->transferDropdownNetpoint($data['netpoints_id']);
 								unset($np->fields);
 								$np->add($data);
 							}
@@ -2463,17 +2463,17 @@ class Transfer extends CommonDBTM{
 							while ($data=$DB->fetch_array($result)) {
 								unset($data['ID']);
 								$data['items_id']=$newID;
-								$data['netpoint']=$this->transferDropdownNetpoint($data['netpoint']);
+								$data['netpoints_id']=$this->transferDropdownNetpoint($data['netpoints_id']);
 								unset($np->fields);
 								$np->add($data);
 							}
 						} else {
 							while ($data=$DB->fetch_array($result)) {
 								// Not a copy -> only update netpoint
-								if ($data['netpoint']){
-									$netpointID=$this->transferDropdownNetpoint($data['netpoint']);
+								if ($data['netpoints_id']){
+									$netpointID=$this->transferDropdownNetpoint($data['netpoints_id']);
 									$input['ID']=$data['ID'];
-									$input['netpoint']=$netpointID;
+									$input['netpoints_id']=$netpointID;
 									$np->update($input);
 								}
 							}

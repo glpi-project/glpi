@@ -65,7 +65,7 @@ if (isset($_POST["delete_criteria"]))
 	
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
 		
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -83,7 +83,7 @@ if (isset($_POST["delete_action"]))
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -94,10 +94,10 @@ elseif (isset($_POST["add_criteria"]))
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
 	
-	unset($_POST["rule_id"]);
+	unset($_POST["rules_id"]);
 	$rulecriteria->add($_POST);
 
 
@@ -109,10 +109,10 @@ elseif (isset($_POST["add_action"]))
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
 
-	unset($_POST["rule_id"]);
+	unset($_POST["rules_id"]);
 
 	$ruleaction->add($_POST);
 

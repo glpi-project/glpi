@@ -59,22 +59,22 @@ include (GLPI_ROOT."/inc/includes.php");
 $tag="";
 if (isset($_GET["tag"])) $tag=$_GET["tag"];
 // Just import these ocs computer
-$ocs_id=0;
-$ocs_server_id=0;
-if (isset($_GET["ocs_id"])) $ocs_id=$_GET["ocs_id"];
-if (isset($_GET["ocs_server_id"])) $ocs_server_id=$_GET["ocs_server_id"];
+$ocsid=0;
+$ocsservers_id=0;
+if (isset($_GET["ocsid"])) $ocsid=$_GET["ocsid"];
+if (isset($_GET["ocsservers_id"])) $ocsservers_id=$_GET["ocsservers_id"];
 
 // Limit import
 $limit=0;
 if (isset($_GET["limit"])) $limit=$_GET["limit"];
 
-$DBocs = new DBocs($ocs_server_id);
-$cfg_ocs=getOcsConf($ocs_server_id);
+$DBocs = new DBocs($ocsservers_id);
+$cfg_ocs=getOcsConf($ocsservers_id);
 
 // PREREQUISITE : activate trace_deleted (check done in ocsManageDeleted)
 // Clean links
-ocsManageDeleted($ocs_server_id);
-ocsCleanLinks($ocs_server_id);
+ocsManageDeleted($ocsservers_id);
+ocsCleanLinks($ocsservers_id);
 
 
 $WHERE="";
@@ -87,9 +87,9 @@ if (!empty($tag)){
 	}
 }
 
-if ($ocs_id){
+if ($ocsid){
 	if (empty($WHERE)) $WHERE="WHERE";
-	$WHERE.=" hardware.ID='$ocs_id'";
+	$WHERE.=" hardware.ID='$ocsid'";
 }
 
 $query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
@@ -102,7 +102,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
 	FROM glpi_ocslinks";
-	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id' and ocs_server_id=".$ocs_server_id;
+	if ($ocsid) $query_glpi.=" WHERE ocsid='$ocsid' and ocsservers_id=".$ocsservers_id;
 	$result_glpi = $DB->query($query_glpi);
 
 	if ($DBocs->numrows($result_ocs)>0){
@@ -118,7 +118,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 		$already_linked=array();
 		if ($DB->numrows($result_glpi)>0){
 			while($data=$DBocs->fetch_array($result_glpi)){
-				$already_linked[$data["ocs_id"]]=$data["last_update"];
+				$already_linked[$data["ocsid"]]=$data["last_update"];
 			}
 		}
 
@@ -135,7 +135,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			foreach ($hardware as $ID => $tab){
 				echo ".";
 				if ($limit&&$i>=$limit) exit();
-				ocsProcessComputer($ID,$ocs_server_id,0,-1,1);
+				ocsProcessComputer($ID,$ocsservers_id,0,-1,1);
 				$i++;
 			}
 		}

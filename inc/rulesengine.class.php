@@ -624,7 +624,7 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rulescriterias as grc, glpi_rules grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.sub_type='".$this->sub_type."'");
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rulescriterias as grc, glpi_rules grd WHERE grd.active=1 AND grc.rules_id=grd.ID AND grd.sub_type='".$this->sub_type."'");
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
@@ -860,7 +860,7 @@ class Rule extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>"; 
+				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rules_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>"; 
 				echo "</td></tr>";
 			}
 		}			
@@ -951,9 +951,9 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display all rules actions
 	 * @param $target  where to go for action
-	 * @param $rule_id  rule ID
+	 * @param $rules_id  rule ID
 	**/
-	function showActionsList($target,$rule_id){
+	function showActionsList($target,$rules_id){
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight($this->right, "w");
@@ -962,7 +962,7 @@ class Rule extends CommonDBTM{
 
 		if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount()) && $canedit){
 			echo "<form name='actionsaddform' method='post' action=\"$target\">\n";
-			$this->addActionForm($rule_id);
+			$this->addActionForm($rules_id);
 			echo "</form>";
 		}
 		
@@ -994,7 +994,7 @@ class Rule extends CommonDBTM{
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_action' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
-			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
+			echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 			echo "</td></tr></table>";
 			echo "</div>";
 		} 			
@@ -1004,9 +1004,9 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the add action form
-	 * @param $rule_id rule ID
+	 * @param $rules_id rule ID
 	**/
-	function addActionForm($rule_id) {
+	function addActionForm($rules_id) {
 		global $LANG,$CFG_GLPI;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
@@ -1014,7 +1014,7 @@ class Rule extends CommonDBTM{
 		echo "<tr  class='tab_bg_2' align='center'><td>";
 		echo $LANG['rulesengine'][30] . ":";
 		echo "</td><td>";
-		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rule_id,$this->sub_type));
+		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rules_id,$this->sub_type));
 		echo "</td><td align='left' width='500px'>";
 		echo "<span id='action_span'>\n";
 		$_POST["sub_type"]=$this->sub_type;
@@ -1023,9 +1023,9 @@ class Rule extends CommonDBTM{
 		echo "</span>\n";	
 
 		echo "</td><td>";
-		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
+		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
+		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		
 		echo "</td></tr>";
 
@@ -1034,9 +1034,9 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the add criteria form
-	 * @param $rule_id rule ID
+	 * @param $rules_id rule ID
 	 */
-	function addCriteriaForm($rule_id) {
+	function addCriteriaForm($rules_id) {
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
@@ -1057,9 +1057,9 @@ class Rule extends CommonDBTM{
 
 
 			
-		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
+		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_criteria' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
+		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
@@ -1076,9 +1076,9 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display all rules criterias
 	 * @param $target
-	 * @param $rule_id
+	 * @param $rules_id
 	 */
-	function showCriteriasList($target,$rule_id)
+	function showCriteriasList($target,$rules_id)
 	{
 		global $CFG_GLPI, $LANG;
 			
@@ -1089,7 +1089,7 @@ class Rule extends CommonDBTM{
 		$this->getTitleCriteria($target);
 		if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount()) && $canedit){
 			echo "<form name='criteriasaddform'method='post' action=\"$target\">\n";
-			$this->addCriteriaForm($rule_id);
+			$this->addCriteriaForm($rules_id);
 			echo "</form>";	
 		}
 		
@@ -1119,7 +1119,7 @@ class Rule extends CommonDBTM{
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
-			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
+			echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</div>";
@@ -1462,10 +1462,10 @@ class Rule extends CommonDBTM{
 	function cleanDBonPurge($ID){
 		// Delete a rule and all associated criterias and actions
 		global $DB;
-		$sql = "DELETE FROM glpi_rulesactions WHERE FK_rules='".$ID."'";
+		$sql = "DELETE FROM glpi_rulesactions WHERE rules_id='".$ID."'";
 		$DB->query($sql);
 		
-		$sql = "DELETE FROM glpi_rulescriterias WHERE FK_rules='".$ID."'";
+		$sql = "DELETE FROM glpi_rulescriterias WHERE rules_id='".$ID."'";
 		$DB->query($sql);
 	}
 
@@ -1915,13 +1915,13 @@ class Rule extends CommonDBTM{
 	/**
  	 * Criteria form used to preview rule
  	 * @param $target target of the form
-	 * @param $rule_id ID of the rule
+	 * @param $rules_id ID of the rule
  	 */
-	function showRulePreviewCriteriasForm($target,$rule_id){
+	function showRulePreviewCriteriasForm($target,$rules_id){
 
 		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
 		
-		if ($this->getRuleWithCriteriasAndActions($rule_id,1,0)){
+		if ($this->getRuleWithCriteriasAndActions($rules_id,1,0)){
 			echo "<form name='testrule_form' id='testrule_form' method='post' action=\"$target\">\n";
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre_fixe'>"; 
@@ -1966,7 +1966,7 @@ class Rule extends CommonDBTM{
 
 			echo "<tr><td class='tab_bg_2' colspan='3' align='center'>"; 
 			echo "<input type='submit' name='test_rule' value=\"" . $LANG['buttons'][50] . "\" class='submit'>";
-			echo "<input type='hidden' name='rule_id' value=\"" . $rule_id . "\">"; 
+			echo "<input type='hidden' name='rules_id' value=\"" . $rules_id . "\">"; 
 			echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">"; 
 			echo "</td></tr>"; 
 			echo "</table>";
@@ -1996,7 +1996,7 @@ class RuleAction extends CommonDBTM {
 	 * @return an array of RuleAction objects
 	**/
 	function getRuleActions($ID) {
-		$sql = "SELECT * FROM glpi_rulesactions WHERE FK_rules='".$ID."'";
+		$sql = "SELECT * FROM glpi_rulesactions WHERE rules_id='".$ID."'";
 		global $DB;
 
 		$rules_actions = array ();
@@ -2022,7 +2022,7 @@ class RuleAction extends CommonDBTM {
 		$input["action_type"]=$action;
 		$input["field"]=$field;
 		$input["value"]=$value;
-		$input["FK_rules"]=$ruleid;
+		$input["rules_id"]=$ruleid;
 		$ruleAction->add($input);
 	}
 }
@@ -2044,7 +2044,7 @@ class RuleCriteria extends CommonDBTM {
 	**/
 	function getRuleCriterias($ID) {
 		global $DB;
-		$sql = "SELECT * FROM glpi_rulescriterias WHERE FK_rules='".$ID."'";
+		$sql = "SELECT * FROM glpi_rulescriterias WHERE rules_id='".$ID."'";
 
 		$rules_list = array ();
 		$result = $DB->query($sql);
@@ -2164,7 +2164,7 @@ class RuleCached extends Rule{
 	**/
 	function deleteCacheByRuleId($ID){
 		global $DB;
-		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->sub_type)." WHERE rule_id='".$ID."'");
+		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->sub_type)." WHERE rules_id='".$ID."'");
 	}
 
 	function cleanDBonPurge($ID){
@@ -2189,8 +2189,8 @@ class RuleCached extends Rule{
 		
 		$query="SELECT *
 			FROM `".$rulecollection->cache_table."`, glpi_rules
-			WHERE `".$rulecollection->cache_table."`.rule_id=glpi_rules.ID 
-			AND `".$rulecollection->cache_table."`.rule_id='".$this->fields["ID"]."' 
+			WHERE `".$rulecollection->cache_table."`.rules_id=glpi_rules.ID 
+			AND `".$rulecollection->cache_table."`.rules_id='".$this->fields["ID"]."' 
 			ORDER BY name";
 
 		$res_count=$DB->query($query);
@@ -2306,9 +2306,9 @@ class RuleCachedCollection extends RuleCollection{
 		echo "<div class='center'>"; 
 		echo "<table  class='tab_cadre_fixe'>";
 
-		$query="SELECT name, rule_id, count(rule_id) as cpt
+		$query="SELECT name, rules_id, count(rules_id) as cpt
 				FROM `".$this->cache_table."`, glpi_rules
-				WHERE `".$this->cache_table."`.rule_id=glpi_rules.ID GROUP BY rule_id
+				WHERE `".$this->cache_table."`.rules_id=glpi_rules.ID GROUP BY rules_id
 				ORDER BY name";
 		$res_count=$DB->query($query);
 
@@ -2322,7 +2322,7 @@ class RuleCachedCollection extends RuleCollection{
 		while ($datas = $DB->fetch_array($res_count)){
 			echo "<tr>";			
 			echo "<td class='tab_bg_2'>";
-			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."&rules_id=".$datas["rules_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
 			echo $datas["name"];
 			echo "</a></td>";
 			echo "<td class='tab_bg_2'>".$datas["cpt"]."</td>";
@@ -2396,7 +2396,7 @@ class RuleCachedCollection extends RuleCollection{
 			$into_new.=", `".$value."`";
 			$new_values.=" ,\"".$output[$param]."\"";
 		}
-		$sql="INSERT INTO `".$this->cache_table."` (".$into_old."`rule_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
+		$sql="INSERT INTO `".$this->cache_table."` (".$into_old."`rules_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
 		$DB->query($sql);
 	}
 

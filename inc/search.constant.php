@@ -690,7 +690,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[NETWORKING_TYPE][11]['table']='glpi_networkequipmentsfirmwares';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][11]['linkfield']='firmware';
+$SEARCH_OPTION[NETWORKING_TYPE][11]['linkfield']='networkequipmentsfirmwares_id';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['name']=$LANG['setup'][71];
 
 $SEARCH_OPTION[NETWORKING_TYPE][14]['table']='glpi_networkequipments';
@@ -2352,12 +2352,12 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='buy_version'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='softwaresversions_id_buy'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['name']=$LANG['software'][1]; 
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['linkfield']='use_version'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['linkfield']='softwaresversions_id_use'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['name']=$LANG['software'][2]; 
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwareslicenses'; 
@@ -3299,7 +3299,7 @@ $SEARCH_OPTION[PHONE_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[PHONE_TYPE][42]['table']='glpi_phonespowersupplies';
 $SEARCH_OPTION[PHONE_TYPE][42]['field']='name';
-$SEARCH_OPTION[PHONE_TYPE][42]['linkfield']='power';
+$SEARCH_OPTION[PHONE_TYPE][42]['linkfield']='phonespowersupplies_id';
 $SEARCH_OPTION[PHONE_TYPE][42]['name']=$LANG['phones'][36];
 
 $SEARCH_OPTION[PHONE_TYPE][80]['table']='glpi_entities';

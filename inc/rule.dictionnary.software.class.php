@@ -279,7 +279,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		}
 
 		//Get all the different versions for a software
-		$result = $DB->query("SELECT * FROM glpi_softwaresversions WHERE sID='" . $ID . "'");
+		$result = $DB->query("SELECT * FROM glpi_softwaresversions WHERE softwares_id='" . $ID . "'");
 		while ($version = $DB->fetch_array($result)) {
 			$input["version"] = addslashes($version["name"]);
 
@@ -315,9 +315,9 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$ids = implode("','", $soft_ids);
 
 			//Try to delete all the software that are not used anymore (which means that don't have version associated anymore)
-			$res_countsoftinstall = $DB->query("SELECT glpi_softwares.ID as ID, count( glpi_softwaresversions.sID ) AS cpt " .
+			$res_countsoftinstall = $DB->query("SELECT glpi_softwares.ID as ID, count( glpi_softwaresversions.softwares_id ) AS cpt " .
 			"FROM `glpi_softwares` 
-									LEFT JOIN glpi_softwaresversions ON glpi_softwaresversions.sID = glpi_softwares.ID " .
+									LEFT JOIN glpi_softwaresversions ON glpi_softwaresversions.softwares_id = glpi_softwares.ID " .
 			"WHERE glpi_softwares.ID IN ('" . $ids . "') AND deleted=0 GROUP BY glpi_softwares.ID HAVING cpt=0 ORDER BY cpt");
 
 			$software = new Software;
@@ -347,15 +347,21 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			if ($new_versionID == -1) {
 				//Transfer versions from old software to new software for a specific version
 				$DB->query("UPDATE glpi_softwaresversions 
-									SET name='$new_version', sID='$new_software_id' 
+									SET name='$new_version', softwares_id='$new_software_id'
 									WHERE ID='$version_id';");
 			} else {
 				//Change ID of the version in glpi_computers_softwaresversions
-				$DB->query("UPDATE glpi_computers_softwaresversions SET vID='$new_versionID' WHERE vID='$version_id'");
+				$DB->query("UPDATE glpi_computers_softwaresversions
+                     SET softwaresversions_id='$new_versionID'
+                     WHERE softwaresversions_id='$version_id'");
 
 				// Update licenses version link
-				$DB->query("UPDATE glpi_softwareslicenses SET buy_version='$new_versionID' WHERE buy_version='$version_id'");
-				$DB->query("UPDATE glpi_softwareslicenses SET use_version='$new_versionID' WHERE use_version='$version_id'");
+				$DB->query("UPDATE glpi_softwareslicenses
+                        SET softwaresversions_id_buy='$new_versionID'
+                        WHERE softwaresversions_id_buy='$version_id'");
+				$DB->query("UPDATE glpi_softwareslicenses
+                        SET softwaresversions_id_use='$new_versionID'
+                        WHERE softwaresversions_id_use='$version_id'");
 
 				//Delete old version
 				$old_version = new SoftwareVersion;
@@ -381,7 +387,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		//Transfer licenses to new software if needed
 		if ($ID != $new_software_id) {
-			$DB->query("UPDATE glpi_softwareslicenses SET sID='$new_software_id' WHERE sID='$ID';");
+			$DB->query("UPDATE glpi_softwareslicenses SET softwares_id='$new_software_id' WHERE softwares_id='$ID';");
 		}
 	}
 
@@ -395,7 +401,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		global $DB;
 
 		//Check if the version exists
-		$sql = "SELECT * FROM glpi_softwaresversions WHERE sID='$software_id' AND name='$version'";
+		$sql = "SELECT * FROM glpi_softwaresversions WHERE softwares_id='$software_id' AND name='$version'";
 
 		$res_version = $DB->query($sql);
 		return (!$DB->numrows($res_version) ? -1 : $DB->result($res_version, 0, "ID"));

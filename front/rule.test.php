@@ -46,9 +46,9 @@ elseif (isset($_GET["sub_type"]))$sub_type=$_GET["sub_type"];
 else $sub_type=0;
 
 
-if (isset($_POST["rule_id"]))$rule_id=$_POST["rule_id"];
-elseif (isset($_GET["rule_id"]))$rule_id=$_GET["rule_id"];
-else $rule_id=0;
+if (isset($_POST["rules_id"]))$rules_id=$_POST["rules_id"];
+elseif (isset($_GET["rules_id"]))$rules_id=$_GET["rules_id"];
+else $rules_id=0;
 
 $rule = getRuleClass($sub_type);
 checkRight($rule->right,"r");
@@ -59,16 +59,16 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
-$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rule_id);
+$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rules_id);
 
 if (isset($_POST["test_rule"]))
 {
 	$params=array();
 	//Unset values that must not be processed by the rule
 	unset($_POST["test_rule"]);
-	unset($_POST["rule_id"]);
+	unset($_POST["rules_id"]);
 	unset($_POST["sub_type"]);
-	$rule->getRuleWithCriteriasAndActions($rule_id,1,1);
+	$rule->getRuleWithCriteriasAndActions($rules_id,1,1);
 	
 	// Need for RuleEngines
 	foreach ($_POST as $key => $val) {

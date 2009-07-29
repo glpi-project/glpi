@@ -95,17 +95,17 @@ else if (isset($_POST["update"])) {
 //Disconnect a device 
 else if (isset($_GET["disconnect"])) {
 
-	$computer->check($_GET['cID'],'w');
+	$computer->check($_GET['computers_id'],'w');
 
 	Disconnect($_GET["ID"]);
-	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][26]);
+	logEvent($_GET["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0){
-	$computer->check($_POST['cID'],'w');
+	$computer->check($_POST['computers_id'],'w');
 
-	Connect($_POST["item"],$_POST["cID"],$_POST["itemtype"],$_POST["dohistory"]);
-	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][27]);
+	Connect($_POST["item"],$_POST["computers_id"],$_POST["itemtype"],$_POST["dohistory"]);
+	logEvent($_POST["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Update a device specification
@@ -135,11 +135,11 @@ elseif(isset($_POST["update_device"])) {
 }
 //add a new device
 elseif (isset($_POST["connect_device"])) {
-	$computer->check($_POST['cID'],'w');
+	$computer->check($_POST['computers_id'],'w');
 
 	if (isset($_POST["devices_id"])&&$_POST["devices_id"]>0)
-		compdevice_add($_POST["cID"],$_POST["devicetype"],$_POST["devices_id"]);
-	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$_POST["withtemplate"]);
+		compdevice_add($_POST["computers_id"],$_POST["devicetype"],$_POST["devices_id"]);
+	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["computers_id"]."&withtemplate=".$_POST["withtemplate"]);
 }
 elseif(isset($_POST["unlock_monitor"])){
 	$computer->check($_POST['ID'],'w');
@@ -207,10 +207,10 @@ elseif(isset($_POST["unlock_field"])){
 	$computer->check($_POST['ID'],'w');
 	
 	//Get the ocs server id associated with the machine
-	$ocs_server_id = getOCSServerByMachineID($_POST["ID"]);
+	$ocsservers_id = getOCSServerByMachineID($_POST["ID"]);
 
 	//Update the computer
-	ocsUpdateComputer($_POST["resynch_id"],$ocs_server_id,1,1);
+	ocsUpdateComputer($_POST["resynch_id"],$ocsservers_id,1,1);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {//print computer informations
 

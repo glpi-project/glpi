@@ -44,7 +44,7 @@ checkRight("ocsng","w");
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 
-ocsCleanLinks($_SESSION["ocs_server_id"]);
+ocsCleanLinks($_SESSION["ocsservers_id"]);
 
 echo "<div align='center'><strong>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";
 displayBackLink();

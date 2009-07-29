@@ -311,7 +311,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
 		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
-		WHERE gra.FK_rules=grd.ID AND gra.field='entities_id' 
+		WHERE gra.rules_id=grd.ID AND gra.field='entities_id' 
 			AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
@@ -482,7 +482,7 @@ class RightRuleCollection extends RuleCollection {
 		$sql = "SELECT DISTINCT value 
 			FROM glpi_rules, glpi_rulescriterias, glpi_rulesldapparameters 
 			WHERE glpi_rules.sub_type='".$this->sub_type."' 
-				AND glpi_rulescriterias.FK_rules=glpi_rules.ID 
+				AND glpi_rulescriterias.rules_id=glpi_rules.ID 
 				AND glpi_rulescriterias.criteria=glpi_rulesldapparameters.value";
 		
 		$result = $DB->query($sql);
