@@ -288,7 +288,7 @@ if (isset($_POST["itemtype"])){
 			break;
 			case "add_userprofile":
 				$input['entities_id']=$_POST['entities_id'];
-				$input['FK_profiles']=$_POST['FK_profiles'];
+				$input['profiles_id']=$_POST['profiles_id'];
 				$input['recursive']=$_POST['recursive'];
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
@@ -396,12 +396,12 @@ if (isset($_POST["itemtype"])){
 					}
 				}
 			break;
-			case "change_auth_method":
+			case "change_authtype":
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) 
 						$ids[]=$key;
 				}
-			changeUserAuthMethod($ids,$_POST["auth_method"],$_POST["auth_server"]);
+			changeUserAuthMethod($ids,$_POST["authtype"],$_POST["auth_server"]);
 
 			break;
 			case "unlock_ocsng_field":
@@ -524,8 +524,8 @@ if (isset($_POST["itemtype"])){
 					if ($val==1)
 					{
 						$user->getFromDB($key);
-						if (($user->fields["auth_method"] == AUTH_LDAP) || ($user->fields["auth_method"] == AUTH_EXTERNAL))
-							ldapImportUserByServerId($user->fields["name"],1,$user->fields["id_auth"]);
+						if (($user->fields["authtype"] == AUTH_LDAP) || ($user->fields["authtype"] == AUTH_EXTERNAL))
+							ldapImportUserByServerId($user->fields["name"],1,$user->fields["auths_id"]);
 					} 
 				}
 			break;

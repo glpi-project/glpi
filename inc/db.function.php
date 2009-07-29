@@ -853,8 +853,8 @@ function getUserName($ID,$link=0){
 				}
 				if ($data["title"]>0)
 					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["title"])."<br>";
-				if ($data["userstypes_id"]>0)
-					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userstypes",$data["userstypes_id"])."<br>";
+				if ($data["userscategories_id"]>0)
+					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$data["userscategories_id"])."<br>";
 			} else {
 				$user=$username;
 			}

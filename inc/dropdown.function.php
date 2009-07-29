@@ -399,7 +399,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 	}
 	$query.=" LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.users_id)";
 	if ($joinprofile){
-		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_profiles_users.FK_profiles) ";
+		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_profiles_users.profiles_id) ";
 	}
 
 	if ($count) {
@@ -1646,7 +1646,7 @@ function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 				if ($isadmin){
 					echo "<option value=\"add_group\">".$LANG['setup'][604]."</option>";
 					echo "<option value=\"add_userprofile\">".$LANG['setup'][607]."</option>";
-					echo "<option value=\"change_auth_method\">".$LANG['login'][30]."</option>";
+					echo "<option value=\"change_authtype\">".$LANG['login'][30]."</option>";
 				}
 
 				if (haveRight("user","w")){

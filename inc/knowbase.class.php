@@ -164,7 +164,7 @@ class kbitem extends CommonDBTM {
 			echo "<fieldset>";
 			echo "<legend>".$LANG['knowbase'][13]."</legend>";
 			echo "<div class='center'>".$LANG['knowbase'][6];
-			dropdownValue("glpi_knowbaseitemscategories","categoryID",$this->fields["categoryID"]);
+			dropdownValue("glpi_knowbaseitemscategories","knowbaseitemscategories_id",$this->fields["knowbaseitemscategories_id"]);
 			echo "</div></fieldset>";
 		
 			echo "<fieldset>";

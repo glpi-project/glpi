@@ -827,7 +827,7 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 		}
 
 		if ($table == "glpi_knowbaseitemscategories") {
-			$query = "SELECT COUNT(*) AS cpt FROM `glpi_knowbaseitems` WHERE `categoryID` = '" . $ID . "'";
+			$query = "SELECT COUNT(*) AS cpt FROM `glpi_knowbaseitems` WHERE `knowbaseitemscategories_id` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
 				echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";

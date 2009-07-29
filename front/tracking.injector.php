@@ -53,7 +53,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($CFG_GLPI["permi
 //$status = "new";
 
 // Sauvegarde des donn�s dans le cas de retours avec des navigateurs pourris style IE
-/*$varstosav = array('emailupdates', 'uemail', 'items_id', 'itemtype', 'contents','_my_items','category');
+/*$varstosav = array('emailupdates', 'uemail', 'items_id', 'itemtype', 'contents','_my_items','ticketscategories_id');
 
 	foreach ($varstosav as $v){
 		if (isset($_POST[$v]))
@@ -85,7 +85,7 @@ if (empty($_POST)||count($_POST)==0){
 	nullFooter();
 	exit;
 }
-if (!empty($_POST["priority"]) && !$_POST["category"])
+if (!empty($_POST["priority"]) && !$_POST["ticketscategories_id"])
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);

@@ -108,7 +108,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 	// Check Auth connections
 	$auth = new Identification();
 	$auth->getAuthMethods();
-	$ldap_methods = $auth->auth_methods["ldap"];
+	$ldap_methods = $auth->authtypes["ldap"];
 		
 	if (count($ldap_methods)){
 		echo "Check LDAP servers:";

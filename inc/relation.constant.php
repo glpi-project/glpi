@@ -94,7 +94,7 @@ $RELATION=array(
 					"glpi_devicescontrols"=>"interfaces_id"),
 	
 	"glpi_knowbaseitemscategories" =>array("glpi_knowbaseitemscategories"=>"knowbaseitemscategories_id",
-					"glpi_knowbaseitems" =>"categoryID"),
+					"glpi_knowbaseitems" =>"knowbaseitemscategories_id"),
 
 	"glpi_softwareslicensestypes" =>array("glpi_softwareslicenses"=>"softwareslicensestypes_id"),
 	
@@ -169,7 +169,7 @@ $RELATION=array(
 	"glpi_documentscategories" =>array("glpi_configs"=>"documentscategories_id_forticket",
 					"glpi_documents"=>"documentscategories_id"),
 
-	"glpi_softwarescategories" =>array("glpi_softwares"=>"category",
+	"glpi_softwarescategories" =>array("glpi_softwares"=>"softwarescategories_id",
 					"glpi_configs"=>"softwarescategories_id_ondelete",),
 	
 	"glpi_states" =>array("glpi_computers"=>"states_id",
@@ -182,18 +182,18 @@ $RELATION=array(
 					"glpi_softwaresversions"=>"states_id",
 				),
 	
-	"glpi_ticketscategories" =>array("glpi_tickets"=>"category"),
+	"glpi_ticketscategories" =>array("glpi_tickets"=>"ticketscategories_id"),
 
-	"glpi_userstitles" =>array("glpi_users"=>"title"),
+	"glpi_userstitles" =>array("glpi_users"=>"userstitles_id"),
 	
-	"glpi_userstypes" =>array("glpi_users"=>"userstypes_id"),
+	"glpi_userscategories" =>array("glpi_users"=>"userscategories_id"),
 	
 	"glpi_vlans" =>array("glpi_networkports_vlans"=>"FK_vlan"),
 	
 	"glpi_suppliers" =>array("glpi_contacts_suppliers"=>"suppliers_id",
 				"glpi_contracts_suppliers"=>"suppliers_id",
 				"glpi_infocoms" =>"suppliers_id",
-				"glpi_tickets"=>"assign_ent",
+				"glpi_tickets"=>"suppliers_id_assign",
 	),
 	"glpi_entities" => array("glpi_bookmarks"=>"entities_id", 
 				"glpi_cartridgesitems"=>"entities_id", 
@@ -223,7 +223,7 @@ $RELATION=array(
 				"glpi_tickets"=>"entities_id",
 				"glpi_users"=>"entities_id",
 				"glpi_profiles_users"=>"entities_id"),
-	"glpi_ticketsfollowups" =>array("glpi_ticketsplannings"=>"id_followup"),
+	"glpi_ticketsfollowups" =>array("glpi_ticketsplannings"=>"ticketsfollowups_id"),
 
 	"glpi_groups" =>array("glpi_computers"=>"groups_id",
 						"glpi_monitors"=>"groups_id",
@@ -232,7 +232,7 @@ $RELATION=array(
 						"glpi_phones"=>"groups_id",
 						"glpi_printers"=>"groups_id",
 						"glpi_softwares"=>"groups_id",
-						"glpi_tickets"=>array("FK_group","assign_group"),
+						"glpi_tickets"=>array("groups_id","groups_id_assign"),
 						"glpi_groups_users"=>"groups_id",
 	),
 	
@@ -247,8 +247,8 @@ $RELATION=array(
 
 	"glpi_printers" =>array("glpi_cartridges"=>"printers_id"),
 	
-	"glpi_profiles" =>array("glpi_users"=>"FK_profiles",
-				"glpi_profiles_users"=>"FK_profiles",
+	"glpi_profiles" =>array("glpi_users"=>"profiles_id",
+				"glpi_profiles_users"=>"profiles_id",
 				),
 
 	"glpi_reservationsitems" => array("glpi_reservations"=>"id_item"),

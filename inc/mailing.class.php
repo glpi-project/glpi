@@ -169,9 +169,9 @@ class Mailing
 					ON (glpi_profiles_users.users_id = glpi_users.ID 
 						".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true).")
 					INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_profiles_users.profiles_id AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 				$joinprofile=	"INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_profiles_users.profiles_id AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 
 			}
 
@@ -212,10 +212,10 @@ class Mailing
 							// ASSIGN SEND
 							case ASSIGN_ENT_MAILING :
 								
-								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
+								if (!$sendprivate&&isset($this->job->fields["suppliers_id_assign"])&&$this->job->fields["suppliers_id_assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_suppliers.email AS EMAIL 
 									FROM glpi_suppliers 
-									WHERE glpi_suppliers.ID = '".$this->job->fields["assign_ent"]."'";
+									WHERE glpi_suppliers.ID = '".$this->job->fields["suppliers_id_assign"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -226,11 +226,11 @@ class Mailing
 								break;
 							// ASSIGN GROUP SEND
 							case ASSIGN_GROUP_MAILING :
-								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
+								if (isset($this->job->fields["groups_id_assign"])&&$this->job->fields["groups_id_assign"]>0){
 									$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups_users 
 									INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-									WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$this->job->fields["assign_group"]."'";
+									WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$this->job->fields["groups_id_assign"]."'";
 				
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
@@ -243,11 +243,11 @@ class Mailing
 								break;
 							// SUPERVISOR ASSIGN GROUP SEND
 							case SUPERVISOR_ASSIGN_GROUP_MAILING :
-								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
+								if (isset($this->job->fields["groups_id_assign"])&&$this->job->fields["groups_id_assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups 
 									LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.users_id) $join 
-									WHERE glpi_groups.ID = '".$this->job->fields["assign_group"]."'";
+									WHERE glpi_groups.ID = '".$this->job->fields["groups_id_assign"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -305,11 +305,11 @@ class Mailing
 								break;
 							// SUPERVISOR ASSIGN GROUP SEND
 							case SUPERVISOR_AUTHOR_GROUP_MAILING :
-								if (isset($this->job->fields["FK_group"])&&$this->job->fields["FK_group"]>0){
+								if (isset($this->job->fields["groups_id"])&&$this->job->fields["groups_id"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 										FROM glpi_groups 
 										LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.users_id) $join 
-										WHERE glpi_groups.ID = '".$this->job->fields["FK_group"]."'";
+										WHERE glpi_groups.ID = '".$this->job->fields["groups_id"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -376,7 +376,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 						FROM glpi_profiles_users 
 						INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) $joinprofile 
-						WHERE glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data["FK_item"]."' ".
+						WHERE glpi_users.deleted=0 AND glpi_profiles_users.profiles_id='".$data["FK_item"]."' ".
 						getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true);
 
 						if ($result2= $DB->query($query)){
@@ -808,7 +808,7 @@ class MailingResa{
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
-							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."' 
+							WHERE glpi_profiles_users.profiles_id='".$data["FK_item"]."' 
 							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$entities_id,true);
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -1071,7 +1071,7 @@ class MailingAlert
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_profiles_users 
 							INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) 
-							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."'
+							WHERE glpi_profiles_users.profiles_id='".$data["FK_item"]."'
 							".getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->entity,true);
 
 						if ($result2= $DB->query($query)){

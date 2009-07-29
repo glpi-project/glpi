@@ -810,7 +810,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$canedit=haveRight("software", "w");
 	$entities_id = $comp->fields["entities_id"];
 
-	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.category as category_id, 
+	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id as category_id,
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.deleted, glpi_states.name AS state,
 		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_computers_softwaresversions 
@@ -818,10 +818,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.sID = glpi_softwareslicenses.sID AND glpi_softwareslicenses.computers_id = '$instID')
 		LEFT JOIN glpi_softwares ON (glpi_softwaresversions.sID = glpi_softwares.ID) 
-		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)";
-	$query_cat .= " WHERE glpi_computers_softwaresversions.cID = '$instID' AND glpi_softwares.category > 0";
+		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)";
+	$query_cat .= " WHERE glpi_computers_softwaresversions.cID = '$instID' AND glpi_softwares.softwarescategories_id > 0";
 
-	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.category as category_id,
+	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id as category_id,
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.deleted, glpi_states.name AS state,
 		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 	    FROM glpi_computers_softwaresversions 
@@ -829,10 +829,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.sID = glpi_softwareslicenses.sID AND glpi_softwareslicenses.computers_id = '$instID')
 	    LEFT JOIN glpi_softwares ON (glpi_softwaresversions.sID = glpi_softwares.ID)  
-	    LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)";
-	$query_nocat .= " WHERE glpi_computers_softwaresversions.cID = '$instID' AND (glpi_softwares.category <= 0 OR glpi_softwares.category IS NULL )";
+	    LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)";
+	$query_nocat .= " WHERE glpi_computers_softwaresversions.cID = '$instID' AND (glpi_softwares.softwarescategories_id <= 0 OR glpi_softwares.softwarescategories_id IS NULL )";
 
-	$query = "( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
+	$query = "( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, softwarescategories_id, softname, version";
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 
@@ -887,7 +887,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		glpi_softwareslicenses.sID, glpi_softwaresversions.name AS version, glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_softwareslicenses 
 		INNER JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID) 
-		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)
+		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)
 		LEFT JOIN glpi_softwaresversions ON ( glpi_softwareslicenses.buy_version = glpi_softwaresversions.ID )
 		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		WHERE glpi_softwareslicenses.computers_id = '$instID' ";
@@ -1266,10 +1266,10 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 		//Process software's category rules
 		$softcatrule = new SoftwareCategoriesRuleCollection;
 		$result = $softcatrule->processAllRules(null, null, $input);
-		if (!empty ($result) && isset ($result["category"])) {
-			$input["category"] = $result["category"];
+		if (!empty ($result) && isset ($result["softwarescategories_id"])) {
+			$input["softwarescategories_id"] = $result["softwarescategories_id"];
 		} else {
-			$input["category"] = 0;
+			$input["softwarescategories_id"] = 0;
 		}
 
 		$id = $software->add($input);
@@ -1295,8 +1295,10 @@ function putSoftwareInTrash($ID, $comments = '') {
 	$config->getFromDB($CFG_GLPI["ID"]);
 	
 	//change category of the software on deletion (if defined in glpi_configs)
-	if (isset($config->fields["softwarescategories_id_ondelete"]) && $config->fields["softwarescategories_id_ondelete"] != 0)
-		$input["category"] = $config->fields["softwarescategories_id_ondelete"];
+	if (isset($config->fields["softwarescategories_id_ondelete"])
+         && $config->fields["softwarescategories_id_ondelete"] != 0) {
+		$input["softwarescategories_id"] = $config->fields["softwarescategories_id_ondelete"];
+   }
 		
 	//Add dictionnary comment to the current comments
 	$input["comments"] = ($software->fields["comments"] != '' ? "\n" : '') . $comments;
@@ -1315,10 +1317,11 @@ function removeSoftwareFromTrash($ID) {
 	$softcatrule = new SoftwareCategoriesRuleCollection;
 	$result = $softcatrule->processAllRules(null, null, $s->fields);
 
-	if (!empty ($result) && isset ($result["category"]))
-		$input["category"] = $result["category"];
-	else
-		$input["category"] = 0;
+	if (!empty ($result) && isset ($result["softwarescategories_id"])) {
+		$input["softwarescategories_id"] = $result["softwarescategories_id"];
+	} else {
+		$input["softwarescategories_id"] = 0;
+   }
 
 	$s->restore(array (
 		"ID" => $ID

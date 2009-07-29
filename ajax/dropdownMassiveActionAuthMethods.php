@@ -42,9 +42,9 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("user","w");
-if ($_POST["auth_method"] > 0)
+if ($_POST["authtype"] > 0)
 {
-	switch($_POST["auth_method"])
+	switch($_POST["authtype"])
 	{
 		case AUTH_DB_GLPI:
 			echo "<input type=\"hidden\" name=\"auth_server\" value='0'>";

@@ -340,7 +340,7 @@ function showUserRights($target,$ID){
 		echo "</td><td class='center'>";
 
 		echo $LANG['profiles'][22].":";
-		dropdownUnderProfiles("FK_profiles");
+		dropdownUnderProfiles("profiles_id");
 		echo "</td><td class='center'>";
 		echo $LANG['profiles'][28].":";
 		dropdownYesNo("recursive",0);
@@ -356,7 +356,7 @@ function showUserRights($target,$ID){
 	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.recursive,
 			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
 			FROM glpi_profiles_users 
-			LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
+			LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
 			LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
 			WHERE glpi_profiles_users.users_id='$ID'
 			ORDER BY glpi_profiles.name, glpi_entities.completename;";
@@ -496,57 +496,57 @@ function getUserEntities($ID,$recursive=true){
 	return array();
 }
 
-/** Get all the authentication methods parameters for a specific auth_method and id_auth and return it as an array 
-* @param $auth_method Authentication method
-* @param $id_auth Authentication method ID
+/** Get all the authentication methods parameters for a specific authtype and auths_id and return it as an array 
+* @param $authtype Authentication method
+* @param $auths_id Authentication method ID
 */
-function getAuthMethodsByID($auth_method, $id_auth) {
+function getAuthMethodsByID($authtype, $auths_id) {
 	global $DB;
 
-	$auth_methods = array ();
+	$authtypes = array ();
 	$sql = "";
 
-	switch ($auth_method) {
+	switch ($authtype) {
 		case AUTH_X509 :
 		case AUTH_EXTERNAL :
 		case AUTH_CAS :
-			if ($id_auth>0){
+			if ($auths_id>0){
 				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$id_auth."'";
+				$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$auths_id."'";
 			}
 			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$id_auth."'";
+			$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$auths_id."'";
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_authmails WHERE ID='".$id_auth."'";
+			$sql = "SELECT * FROM glpi_authmails WHERE ID='".$auths_id."'";
 			break;
 	}
 
 	if ($sql != "") {
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
-			$auth_methods = $DB->fetch_array($result);
+			$authtypes = $DB->fetch_array($result);
 		}
 	}
 	//Return all the authentication methods in an array
-	return $auth_methods;
+	return $authtypes;
 }
 
 /** Get name of an authentication method
-* @param $auth_method Authentication method
-* @param $id_auth Authentication method ID
+* @param $authtype Authentication method
+* @param $auths_id Authentication method ID
 * @param $link show links to config page ?
 * @param $name override the name if not empty
 */
-function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
+function getAuthMethodName($authtype, $auths_id, $link=0,$name=''){
 	global $LANG,$CFG_GLPI;
-	switch ($auth_method) {
+	switch ($authtype) {
 		case AUTH_LDAP :
 			if (empty($name)){
-				$method = getAuthMethodsByID($auth_method,$id_auth);
+				$method = getAuthMethodsByID($authtype,$auths_id);
 				if (isset($method["name"])){
 					$name=$method["name"];
 				} else {
@@ -556,14 +556,14 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 			}
 			$out= $LANG['login'][2];
 			if ($link && haveRight("config", "w")){
-				return  $out."&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&amp;ID=" . $id_auth . "\">" . $name . "</a>";
+				return  $out."&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&amp;ID=" . $auths_id . "\">" . $name . "</a>";
 			} else {
 				return  $out."&nbsp " . $LANG['common'][52] . " " . $name;
 			}
 		break;
 		case AUTH_MAIL :
 			if (empty($name)){
-				$method = getAuthMethodsByID($auth_method,$id_auth);
+				$method = getAuthMethodsByID($authtype,$auths_id);
 
 				if (isset($method["name"])){
 					$name=$method["name"];
@@ -574,7 +574,7 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 			}
 			$out= $LANG['login'][3];
 			if ($link && haveRight("config", "w")){
-				return  $out. "&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&amp;ID=" . $id_auth . "\">" . $name . "</a>";
+				return  $out. "&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&amp;ID=" . $auths_id . "\">" . $name . "</a>";
 			} else {
 				return  $out. "&nbsp " . $LANG['common'][52] . " " . $name;
 			}
@@ -598,9 +598,9 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 }
 
 /** Get LDAP fields to sync to GLPI data from a glpi_authldaps array 
-* @param $auth_method_array Authentication method config array
+* @param $authtype_array Authentication method config array
 */
-function getLDAPSyncFields($auth_method_array){ 
+function getLDAPSyncFields($authtype_array){ 
 
 	$ret=array(); 
       
@@ -613,12 +613,12 @@ function getLDAPSyncFields($auth_method_array){
  			'ldap_field_mobile'=>'mobile', 
  			'ldap_field_comments'=>'comments', 
  			'ldap_field_title'=>'userstitles_id',
- 			'ldap_field_type'=>'userstypes_id',
+ 			'ldap_field_type'=>'userscategories_id',
  			'ldap_field_language'=>'language'		
  		); 
  	foreach ($fields as $key => $val){ 
- 		if (isset($auth_method_array[$key])){ 
- 			$ret[$val]=$auth_method_array[$key]; 
+ 		if (isset($authtype_array[$key])){ 
+ 			$ret[$val]=$authtype_array[$key]; 
  		} 
  	} 
  	return $ret; 
@@ -640,13 +640,13 @@ function getUserLanguage($lang)
 	return ""; 
 }
 
-function changeUserAuthMethod($IDs=array(),$auth_method=1,$server=-1)
+function changeUserAuthMethod($IDs=array(),$authtype=1,$server=-1)
 {
 	global $DB;
-	if (!empty($IDs) && in_array($auth_method,array(AUTH_DB_GLPI,AUTH_LDAP,AUTH_MAIL,AUTH_EXTERNAL)))
+	if (!empty($IDs) && in_array($authtype,array(AUTH_DB_GLPI,AUTH_LDAP,AUTH_MAIL,AUTH_EXTERNAL)))
 	{
 		$where = implode(',',$IDs);
-		$query="UPDATE glpi_users SET auth_method=".$auth_method.", id_auth=".$server." WHERE ID IN (".$where.")";
+		$query="UPDATE glpi_users SET authtype=".$authtype.", auths_id=".$server." WHERE ID IN (".$where.")";
 		$DB->query($query);
 	}
 }

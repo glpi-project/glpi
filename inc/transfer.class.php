@@ -549,17 +549,17 @@ class Transfer extends CommonDBTM{
 				}
 			}
 			// Ticket Enterprise
-			$query="SELECT DISTINCT assign_ent, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
+			$query="SELECT DISTINCT suppliers_id_assign, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
 					" FROM glpi_tickets" .
-					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_tickets.assign_ent) " .
-					" WHERE assign_ent > 0 AND glpi_tickets.ID IN ".$this->item_search[TRACKING_TYPE];
+					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_tickets.suppliers_id_assign) " .
+					" WHERE suppliers_id_assign > 0 AND glpi_tickets.ID IN ".$this->item_search[TRACKING_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
                   if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
-							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
+							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id_assign']);
 						} else {
-							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
+							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id_assign']);
 						}
 					}
 				}
@@ -1973,7 +1973,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		$job= new Job();
 
-		$query = "SELECT ID, assign_ent
+		$query = "SELECT ID, suppliers_id_assign
 			FROM glpi_tickets 
 			WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 		if ($result = $DB->query($query)) {
@@ -1983,11 +1983,11 @@ class Transfer extends CommonDBTM{
 					case 2: 
 						// Same Item / Copy Item -> update entity
 						while ($data=$DB->fetch_array($result)) {
-							$assign_ent=0;
-							if ($data['assign_ent']>0){
-								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
+							$suppliers_id_assign=0;
+							if ($data['suppliers_id_assign']>0){
+								$suppliers_id_assign=$this->transferSingleEnterprise($data['suppliers_id_assign']);
 							}
-							$job->update(array("ID"=>$data['ID'],'entities_id' => $this->to, 'items_id'=>$newID, 'itemtype'=>$itemtype, 'assign_ent'=>$assign_ent));
+							$job->update(array("ID"=>$data['ID'],'entities_id' => $this->to, 'items_id'=>$newID, 'itemtype'=>$itemtype, 'suppliers_id_assign'=>$suppliers_id_assign));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
@@ -1995,12 +1995,12 @@ class Transfer extends CommonDBTM{
 					case 1: 
 						// Same Item / Copy Item : keep and clean ref
 						while ($data=$DB->fetch_array($result)) {
-							$assign_ent=0;
-							if ($data['assign_ent']>0){
-								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
+							$suppliers_id_assign=0;
+							if ($data['suppliers_id_assign']>0){
+								$suppliers_id_assign=$this->transferSingleEnterprise($data['suppliers_id_assign']);
 							}
 
-							$job->update(array("ID"=>$data['ID'],'itemtype' => 0, 'items_id'=>0, 'assign_ent'=>$assign_ent));
+							$job->update(array("ID"=>$data['ID'],'itemtype' => 0, 'items_id'=>0, 'suppliers_id_assign'=>$suppliers_id_assign));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;

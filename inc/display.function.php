@@ -1674,7 +1674,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$computer="";
 	$contents="";
 	$title="";
-	$category = 0;
+	$ticketscategories_id = 0;
 	$priority  = 3;
 
 
@@ -1688,8 +1688,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$contents = cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
 	if (isset($_SESSION["helpdeskSaved"]["name"]))
 		$title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
-	if (isset($_SESSION["helpdeskSaved"]["category"]))
-		$category = stripslashes($_SESSION["helpdeskSaved"]["category"]);
+	if (isset($_SESSION["helpdeskSaved"]["ticketscategories_id"]))
+		$ticketscategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketscategories_id"]);
 	if (isset($_SESSION["helpdeskSaved"]["priority"]))
 		$priority = stripslashes($_SESSION["helpdeskSaved"]["priority"]);
 
@@ -1738,7 +1738,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$LANG['common'][36].":</td><td>";
 
-	dropdownValue("glpi_ticketscategories","category",$category);
+	dropdownValue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
 	echo "</td>";
 	echo "</tr>";
 
