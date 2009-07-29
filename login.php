@@ -73,20 +73,20 @@ if (isset ($_POST['login_password'])) {
 	$_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
 }
 
-if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
+if (!isset ($_POST["noAUTO"]) && $authtype=checkAlternateAuthSystems()) {
 
-	if ($identificat->getAlternateAuthSystemsUserLogin($auth_method)&&!empty($identificat->user->fields['name'])){
+	if ($identificat->getAlternateAuthSystemsUserLogin($authtype)&&!empty($identificat->user->fields['name'])){
 		$user=$identificat->user->fields['name'];
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($user));
-		$identificat->user->fields['auth_method'] = $auth_method; 
+		$identificat->user->fields['authtype'] = $authtype; 
 
 		// if LDAP enabled too, get user's infos from LDAP
-		$identificat->user->fields["id_auth"]=$CFG_GLPI['authldaps_id_extra'];
+		$identificat->user->fields["auths_id"]=$CFG_GLPI['authldaps_id_extra'];
 		if (canUseLdap()){
-			if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
-				$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
+			if (isset($identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]])) {
+				$ldap_method = $identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]];
 				
 				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"],$ldap_method["ldap_opt_deref"]);
 				if ($ds) {
@@ -130,7 +130,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 					if ($identificat->auth_succeded) {
 						$identificat->extauth=0;
 						$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
-						$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+						$identificat->user->fields["authtype"] = AUTH_DB_GLPI;
 						$identificat->user->fields["password"] = $_POST['login_password'];
 					} 
 	
@@ -141,21 +141,21 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 				//The determine authentication method
 				$identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
 				
-				//If the user has already been logged, the method_auth and id_auth are already set
+				//If the user has already been logged, the method_auth and auths_id are already set
 				//so we test this connection first
-				switch ($identificat->user->fields["auth_method"]) {
+				switch ($identificat->user->fields["authtype"]) {
 					case AUTH_EXTERNAL:
 					case AUTH_LDAP :
 						if (canUseLdap()){
 							error_reporting(0);
 							$identificat = try_ldap_auth($identificat, $_POST['login_name'],
-									$_POST['login_password'],$identificat->user->fields["id_auth"]);
+									$_POST['login_password'],$identificat->user->fields["auths_id"]);
 						}
 						break;
 					case AUTH_MAIL :
 						if (canUseImapPop()){
 							$identificat = try_mail_auth($identificat,$_POST['login_name'],
-									$_POST['login_password'],$identificat->user->fields["id_auth"]);
+									$_POST['login_password'],$identificat->user->fields["auths_id"]);
 						}
 						break;
 					case NOT_YET_AUTHENTIFIED:

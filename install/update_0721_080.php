@@ -185,7 +185,7 @@ function update0721to080() {
       'glpi_transfers'                    => 'glpi_transfers',
       'glpi_users'                        => 'glpi_users',
       'glpi_dropdown_user_titles'         => 'glpi_userstitles',
-      'glpi_dropdown_user_types'          => 'glpi_userstypes',
+      'glpi_dropdown_user_types'          => 'glpi_userscategories',
       'glpi_dropdown_vlan'                => 'glpi_vlans',
    );
    $backup_tables=false;
@@ -222,6 +222,16 @@ function update0721to080() {
    'assign' => array(array('to' => 'users_id_assign',
                            'tables' => array('glpi_tickets')),
                      ),
+   'assign_group' => array(array('to' => 'groups_id_assign',
+                           'tables' => array('glpi_tickets')),
+                     ),
+   'assign_ent' => array(array('to' => 'suppliers_id_assign',
+                           'tables' => array('glpi_tickets')),
+                     ),
+   'auth_method' => array(array('to' => 'authtype',
+                           'noindex' => array('glpi_users'),
+                           'tables' => array('glpi_users')),
+                     ),
    'author' => array(array('to' => 'users_id',
                            'tables' => array('glpi_ticketsfollowups','glpi_knowbaseitems',
                               'glpi_tickets')),
@@ -231,6 +241,14 @@ function update0721to080() {
                      ),
    'budget' => array(array('to' => 'budgets_id',
                            'tables' => array('glpi_infocoms')),
+                     ),
+   'category' => array(array('to' => 'ticketscategories_id',
+                           'tables' => array('glpi_tickets')),
+                      array('to' => 'softwarescategories_id',
+                           'tables' => array('glpi_softwares')),
+                     ),
+   'categoryID' => array(array('to' => 'knowbaseitemscategories_id',
+                           'tables' => array('glpi_knowbaseitems')),
                      ),
    'category_on_software_delete' => array(array('to' => 'softwarescategories_id_ondelete',
                            'noindex' => array('glpi_configs'),
@@ -365,6 +383,9 @@ function update0721to080() {
    'FK_glpi_printers' => array(array('to' => 'printers_id',
                            'tables' => array('glpi_cartridges',)),
                      ),
+   'FK_group' => array(array('to' => 'groups_id',
+                           'tables' => array('glpi_tickets')),
+                     ),
    'FK_groups' => array(array('to' => 'groups_id',
                            'tables' => array('glpi_computers','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
@@ -372,6 +393,9 @@ function update0721to080() {
                      ),
    'FK_interface' => array(array('to' => 'interfaces_id',
                            'tables' => array('glpi_devicesgraphiccards')),
+                     ),
+   'FK_profiles' => array(array('to' => 'profiles_id',
+                           'tables' => array('glpi_profiles_users','glpi_users')),
                      ),
    'FK_tracking' => array(array('to' => 'tickets_id',
                            'tables' => array('glpi_documents')),
@@ -389,9 +413,16 @@ function update0721to080() {
    'id_assign' => array(array('to' => 'users_id',
                            'tables' => array('glpi_ticketsplannings')),
                      ),
+   'id_auth' => array(array('to' => 'auths_id',
+                           'noindex' => array('glpi_users'),
+                           'tables' => array('glpi_users')),
+                     ),
    'id_device' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_reservationsitems'),
                            'tables' => array('glpi_reservationsitems')),
+                     ),
+   'id_followup' => array(array('to' => 'ticketsfollowups_id',
+                           'tables' => array('glpi_ticketsplannings')),
                      ),
    'id_user' => array(array('to' => 'users_id',
                            'tables' => array('glpi_consumables','glpi_reservations')),
@@ -470,6 +501,9 @@ function update0721to080() {
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
                      ),
+   'title' => array(array('to' => 'userstitles_id',
+                           'tables' => array('glpi_users')),
+                     ),
    'tracking' => array(array('to' => 'tickets_id',
                            'tables' => array('glpi_ticketsfollowups')),
                      ),
@@ -499,11 +533,15 @@ function update0721to080() {
                            'tables' => array('glpi_printers')),
                   array('to' => 'softwareslicensestypes_id',
                            'tables' => array('glpi_softwareslicenses')),
-                  array('to' => 'userstypes_id', 
+                  array('to' => 'userscategories_id', 
                            'tables' => array('glpi_users')),
                   array('to' => 'itemtype', 'noindex' => array('glpi_computers_items'),
                            'tables' => array('glpi_computers_items','glpi_displayprefs')),
                      ),
+
+
+
+
 
 
 
@@ -549,6 +587,10 @@ function update0721to080() {
    /// TODO Update tracking bookmarks for new columns fields
    /// TODO See if type -> itemtype need update bookmarks
    /// TODO upgrade XXX_update in ocs_links
+   /// TODO updgrade rules actions and criterias : RULE_AFFECT_RIGHTS : FK_profiles -> profiles_id
+   ///                                   global : FK_entities -> entities_id
+   ///      RULE_TRACKING_AUTO_ACTION : author -> users_id / author_location -> users_locations / category -> ticketscategories_id / assignx -> YYY
+   ///      RULE_SOFTWARE_CATEGORY : category softwarescategories_id
    
 
 

@@ -114,14 +114,14 @@ class Software extends CommonDBTM {
 		unset($input['withtemplate']);
 
 		//If category was not set by user (when manually adding a user)
-		if (!isset($input["category"])||!$input["category"])
+		if (!isset($input["softwarescategories_id"])||!$input["softwarescategories_id"])
 		{
 			$softcatrule = new SoftwareCategoriesRuleCollection;
 			$result = $softcatrule->processAllRules(null,null,$input);
-			if (!empty($result) && isset($result["category"])){
-				$input["category"]=$result["category"];
+			if (!empty($result) && isset($result["softwarescategories_id"])){
+				$input["softwarescategories_id"]=$result["softwarescategories_id"];
 			} else {
-				$input["category"]=0;
+				$input["softwarescategories_id"]=0;
 			}
 		}
 				
@@ -303,7 +303,7 @@ class Software extends CommonDBTM {
       
       
       echo "<td>" . $LANG['common'][36] . ":		</td><td>";
-      dropdownValue("glpi_softwarescategories", "category", $this->fields["category"]);
+      dropdownValue("glpi_softwarescategories", "softwarescategories_id", $this->fields["softwarescategories_id"]);
       echo "</td>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";

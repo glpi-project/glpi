@@ -2015,7 +2015,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][62]['table']='glpi_softwarescategories';
 $SEARCH_OPTION[SOFTWARE_TYPE][62]['field']='name';
-$SEARCH_OPTION[SOFTWARE_TYPE][62]['linkfield']='category';
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['linkfield']='softwarescategories_id';
 $SEARCH_OPTION[SOFTWARE_TYPE][62]['name']=$LANG['common'][36];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['table']='glpi_softwares';
@@ -3106,12 +3106,12 @@ $SEARCH_OPTION[USER_TYPE][80]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][81]['table']='glpi_userstitles';
 $SEARCH_OPTION[USER_TYPE][81]['field']='name';
-$SEARCH_OPTION[USER_TYPE][81]['linkfield']='title';
+$SEARCH_OPTION[USER_TYPE][81]['linkfield']='userstitles_id';
 $SEARCH_OPTION[USER_TYPE][81]['name']=$LANG['users'][1];
 
-$SEARCH_OPTION[USER_TYPE][82]['table']='glpi_userstypes';
+$SEARCH_OPTION[USER_TYPE][82]['table']='glpi_userscategories';
 $SEARCH_OPTION[USER_TYPE][82]['field']='name';
-$SEARCH_OPTION[USER_TYPE][82]['linkfield']='userstypes_id';
+$SEARCH_OPTION[USER_TYPE][82]['linkfield']='userscategories_id';
 $SEARCH_OPTION[USER_TYPE][82]['name']=$LANG['users'][2];
 
 //////CONSUMABLE_TYPE
@@ -3817,7 +3817,7 @@ $SEARCH_OPTION[TRACKING_TYPE][4]['name']=$LANG['job'][4];
 
 $SEARCH_OPTION[TRACKING_TYPE][71]['table']='glpi_groups';
 $SEARCH_OPTION[TRACKING_TYPE][71]['field']='name';
-$SEARCH_OPTION[TRACKING_TYPE][71]['linkfield']='FK_group';
+$SEARCH_OPTION[TRACKING_TYPE][71]['linkfield']='groups_id';
 $SEARCH_OPTION[TRACKING_TYPE][71]['name']=$LANG['common'][35];
 
 $SEARCH_OPTION[TRACKING_TYPE][5]['table']='glpi_users';
@@ -3827,17 +3827,17 @@ $SEARCH_OPTION[TRACKING_TYPE][5]['name']=$LANG['job'][5]." - ".$LANG['job'][6];
 
 $SEARCH_OPTION[TRACKING_TYPE][6]['table']='glpi_suppliers';
 $SEARCH_OPTION[TRACKING_TYPE][6]['field']='name';
-$SEARCH_OPTION[TRACKING_TYPE][6]['linkfield']='assign_ent';
+$SEARCH_OPTION[TRACKING_TYPE][6]['linkfield']='suppliers_id_assign';
 $SEARCH_OPTION[TRACKING_TYPE][6]['name']=$LANG['job'][5]." - ".$LANG['financial'][26];
 
 $SEARCH_OPTION[TRACKING_TYPE][8]['table']='glpi_groups';
 $SEARCH_OPTION[TRACKING_TYPE][8]['field']='name';
-$SEARCH_OPTION[TRACKING_TYPE][8]['linkfield']='assign_group';
+$SEARCH_OPTION[TRACKING_TYPE][8]['linkfield']='groups_id_assign';
 $SEARCH_OPTION[TRACKING_TYPE][8]['name']=$LANG['job'][5]." - ".$LANG['common'][35];
 
 $SEARCH_OPTION[TRACKING_TYPE][7]['table']='glpi_ticketscategories';
 $SEARCH_OPTION[TRACKING_TYPE][7]['field']='name';
-$SEARCH_OPTION[TRACKING_TYPE][7]['linkfield']='category';
+$SEARCH_OPTION[TRACKING_TYPE][7]['linkfield']='ticketscategories_id';
 $SEARCH_OPTION[TRACKING_TYPE][7]['name']=$LANG['common'][36];
 
 

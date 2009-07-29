@@ -75,11 +75,11 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 		case "add_followup":
 			showAddFollowupForm(-1,true);
 		break;
-		case "change_auth_method":
-			$rand = dropdownAuthMethods("auth_method");
-			$paramsmassaction=array('auth_method'=>'__VALUE__');
+		case "change_authtype":
+			$rand = dropdownAuthMethods("authtype");
+			$paramsmassaction=array('authtype'=>'__VALUE__');
 			
-			ajaxUpdateItemOnSelectEvent("dropdown_auth_method$rand","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",$paramsmassaction);
+			ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",$paramsmassaction);
 	
 			echo "<span id='show_massiveaction_field'>"; 
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
@@ -133,7 +133,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 		case "add_userprofile":
 			dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
 			echo ".&nbsp;".$LANG['profiles'][22].":";
-			dropdownUnderProfiles("FK_profiles");
+			dropdownUnderProfiles("profiles_id");
 			echo ".&nbsp;".$LANG['profiles'][28].":";
 			dropdownYesNo("recursive",0);
 			

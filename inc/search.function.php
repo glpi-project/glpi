@@ -1613,7 +1613,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0){
 
 	switch($table.".".$field){
 		case "glpi_auth_tables.name" :
-			return " ORDER BY glpi_users.auth_method, glpi_authldaps.name, glpi_authmails.name $order ";
+			return " ORDER BY glpi_users.authtype, glpi_authldaps.name, glpi_authmails.name $order ";
 		break;
 		case "glpi_contracts.expire":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
@@ -1848,7 +1848,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 		break;
 */
 		case "glpi_auth_tables.name":
-			return "glpi_users.auth_method AS ".$NAME."_".$num.", glpi_users.id_auth AS ".$NAME."_".$num."_2, glpi_authldaps".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_authmails".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
+			return "glpi_users.authtype AS ".$NAME."_".$num.", glpi_users.auths_id AS ".$NAME."_".$num."_2, glpi_authldaps".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_authmails".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
 		break;
 		case "glpi_softwareslicenses.name" :
 		case "glpi_softwaresversions.name" :
@@ -2860,8 +2860,8 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 	switch ($new_table){
 		// No link
 		case "glpi_auth_tables":
-			return " LEFT JOIN glpi_authldaps ON (glpi_users.auth_method = ".AUTH_LDAP." AND glpi_users.id_auth = glpi_authldaps.ID) 
-				LEFT JOIN glpi_authmails ON (glpi_users.auth_method = ".AUTH_MAIL." AND glpi_users.id_auth = glpi_authmails.ID) ";
+			return " LEFT JOIN glpi_authldaps ON (glpi_users.authtype = ".AUTH_LDAP." AND glpi_users.auths_id = glpi_authldaps.ID) 
+				LEFT JOIN glpi_authmails ON (glpi_users.authtype = ".AUTH_MAIL." AND glpi_users.auths_id = glpi_authmails.ID) ";
 		break;
 		case "glpi_reservationsitems":
 			return "";
@@ -2976,7 +2976,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 			if ($itemtype==USER_TYPE){
 				$out.=addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
 			}
-		return $out." LEFT JOIN $new_table $AS ON (glpi_profiles_users.FK_profiles = $nt.ID) ";
+		return $out." LEFT JOIN $new_table $AS ON (glpi_profiles_users.profiles_id = $nt.ID) ";
 		break;
 		case "glpi_entities":
 			if ($itemtype==USER_TYPE){

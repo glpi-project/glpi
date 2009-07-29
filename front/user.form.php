@@ -92,10 +92,10 @@ else if (isset($_POST["purge"]))
 
 } else if (isset ($_POST["force_ldap_resynch"]))
 {
-	checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
+	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 	
 	$user->getFromDB($_POST["ID"]);
-	ldapImportUserByServerId($user->fields["name"],true,$user->fields["id_auth"],true);
+	ldapImportUserByServerId($user->fields["name"],true,$user->fields["auths_id"],true);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
 	checkRight("user","w");
@@ -126,7 +126,7 @@ else if (isset($_POST["deletegroup"]))
 	checkRight("user","w");
 
 	$prof=new Profile();
-	if ($prof->currentUserHaveMoreRightThan(array($_POST['FK_profiles']=>$_POST['FK_profiles']))){
+	if ($prof->currentUserHaveMoreRightThan(array($_POST['profiles_id']=>$_POST['profiles_id']))){
 		addUserProfileEntity($_POST);
 		logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
 	}
@@ -146,32 +146,32 @@ else if (isset($_POST["deletegroup"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["switch_auth_internal"]))
 {
-	checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
+	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 	
 	$user = new User;
 	$input["ID"]=$_POST["ID"];
-	$input["auth_method"]=AUTH_DB_GLPI;
-	$input["id_auth"]=0;
+	$input["authtype"]=AUTH_DB_GLPI;
+	$input["auths_id"]=0;
 	$user->update($input);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["switch_auth_ldap"]))
 {
-	checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
+	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 	
 	$user = new User;
 	$input["ID"]=$_POST["ID"];
-	$input["auth_method"]=AUTH_LDAP;
-	$input["id_auth"]=$_POST["id_auth"];
+	$input["authtype"]=AUTH_LDAP;
+	$input["auths_id"]=$_POST["auths_id"];
 	$user->update($input);
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }elseif (isset($_POST["switch_auth_mail"]))
 {
-	checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
+	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 	
 	$user = new User;
 	$input["ID"]=$_POST["ID"];
-	$input["auth_method"]=AUTH_MAIL;
-	$input["id_auth"]=$_POST["id_auth"];
+	$input["authtype"]=AUTH_MAIL;
+	$input["auths_id"]=$_POST["auths_id"];
 	$user->update($input);
 	glpi_header($_SERVER['HTTP_REFERER']);	
 } else {

@@ -67,7 +67,7 @@ function showProfileEntityUser($target,$ID,$prof){
  		FROM glpi_profiles_users 
  		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_profiles_users.entities_id)
  		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_profiles_users.users_id)
- 		WHERE glpi_profiles_users.FK_profiles='".$ID."' 
+ 		WHERE glpi_profiles_users.profiles_id='".$ID."' 
 			AND glpi_users.deleted=0 ".getEntitiesRestrictRequest("AND","glpi_profiles_users")." 
  		ORDER BY glpi_entities.completename";
 

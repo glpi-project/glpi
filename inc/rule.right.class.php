@@ -93,7 +93,7 @@ class RightAffectRule extends Rule {
 			echo "<tr><td align='center' class='tab_bg_2'>";
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['profiles'][22].":";
-			dropdownValue("glpi_profiles","FK_profiles");
+			dropdownValue("glpi_profiles","profiles_id");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['profiles'][28].":";
 			dropdownYesNo("recursive",0);
@@ -230,7 +230,7 @@ class RightAffectRule extends Rule {
 							case "entities_id":
 								$entity = $action->fields["value"];
 								break;
-							case "FK_profiles":
+							case "profiles_id":
 								$right = $action->fields["value"];
 								break;
 							case "recursive":

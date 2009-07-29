@@ -115,15 +115,15 @@ function showKbCategoriesFirstLevel($target,$knowbaseitemscategories_id=0,$faq=0
 		// Get All FAQ categories
 		if (!isset($_SESSION['glpi_faqcategories'])){
 			$_SESSION['glpi_faqcategories']=array();
-			$query="SELECT DISTINCT categoryID 
+			$query="SELECT DISTINCT knowbaseitemscategories_id 
 				FROM glpi_knowbaseitems 
 				WHERE glpi_knowbaseitems.faq = '1'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					while ($data=$DB->fetch_array($result)){
-						if (!in_array($data['categoryID'],$_SESSION['glpi_faqcategories'])){
-							$_SESSION['glpi_faqcategories'][]=$data['categoryID'];
-							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOf('glpi_knowbaseitemscategories',$data['categoryID']));
+						if (!in_array($data['knowbaseitemscategories_id'],$_SESSION['glpi_faqcategories'])){
+							$_SESSION['glpi_faqcategories'][]=$data['knowbaseitemscategories_id'];
+							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOf('glpi_knowbaseitemscategories',$data['knowbaseitemscategories_id']));
 						}
 					}
 				}
@@ -280,7 +280,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$fa
 		}
 
 	} else { // no search -> browse by category
-		$where.="(glpi_knowbaseitems.categoryID = '$knowbaseitemscategories_id') ";
+		$where.="(glpi_knowbaseitems.knowbaseitemscategories_id = '$knowbaseitemscategories_id') ";
 		$order="ORDER BY glpi_knowbaseitems.question ASC";
 	}
 	
@@ -540,12 +540,12 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 	
 	
 	
-		$categoryID = $ki->fields["categoryID"];
-		$fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemscategories",$categoryID);
+		$knowbaseitemscategories_id = $ki->fields["knowbaseitemscategories_id"];
+		$fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemscategories",$knowbaseitemscategories_id);
 	
 		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
-		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?knowbaseitemscategories_id=$categoryID'>".$fullcategoryname."</a></th></tr>";
+		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?knowbaseitemscategories_id=$knowbaseitemscategories_id'>".$fullcategoryname."</a></th></tr>";
 	
       echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
       echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
@@ -647,7 +647,7 @@ function getFAQCategories()
 
 	global $DB;	
 
-	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_knowbaseitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_knowbaseitems.categoryID = glpi_knowbaseitemscategories.ID) WHERE (glpi_knowbaseitems.faq = '1')";
+	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_knowbaseitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_knowbaseitems.knowbaseitemscategories_id = glpi_knowbaseitemscategories.ID) WHERE (glpi_knowbaseitems.faq = '1')";
 	$toprocess=array();
 	$catNumbers = array();
 

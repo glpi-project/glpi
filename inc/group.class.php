@@ -224,7 +224,7 @@ class Group extends CommonDBTM{
 		global $LANG, $CFG_GLPI;
 
 		$buttons = array ();
-		if (haveRight("group", "w") && haveRight("user_auth_method", "w") && useAuthLdap()) {
+		if (haveRight("group", "w") && haveRight("user_authtype", "w") && useAuthLdap()) {
 			$buttons["ldap.group.php"] = $LANG['setup'][3];
 			$title="";
 		} else {

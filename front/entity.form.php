@@ -91,8 +91,8 @@ if (isset($_POST["update"]))
 		$ruleAction = new RuleAction;
 		//Action is : affect computer to this entity
 		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
-		if ($_POST["FK_profiles"]){
-			$ruleAction->addActionByAttributes("assign", $ruleid, "FK_profiles", $_POST["FK_profiles"]);
+		if ($_POST["profiles_id"]){
+			$ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
 		}
 		$ruleAction->addActionByAttributes("assign", $ruleid, "recursive", $_POST["recursive"]);
 	}

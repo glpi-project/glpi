@@ -80,7 +80,7 @@ class Profile extends CommonDBTM{
 
 		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
-		$query = "DELETE FROM glpi_profiles_users WHERE (FK_profiles = '$ID')";
+		$query = "DELETE FROM glpi_profiles_users WHERE (profiles_id = '$ID')";
 		$DB->query($query);
 
 	}
@@ -663,7 +663,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("group",$this->fields["group"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG['profiles'][43].":</td><td>";
-		dropdownNoneReadWrite("user_auth_method",$this->fields["user_auth_method"],1,1,1);
+		dropdownNoneReadWrite("user_authtype",$this->fields["user_authtype"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
 

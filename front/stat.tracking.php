@@ -80,21 +80,21 @@ $items=array(
 			),
 		"group"=>array(	
 			"title"=>$LANG['common'][35],
-			"field"=>"glpi_tickets.FK_group"
+			"field"=>"glpi_tickets.groups_id"
 			),
-		"title"=>array(	
+		"userstitles_id"=>array(
 			"title"=>$LANG['users'][1],
-			"field"=>"glpi_userstitles.title"
+			"field"=>"glpi_userstitles.userstitles_id"
 			),
-		"type"=>array(	
+		"userscategories_id"=>array(
 			"title"=>$LANG['users'][2],
-			"field"=>"glpi_userstitles.type"
+			"field"=>"glpi_users.userscategories_id"
 			),
 	),
 	$LANG['common'][32] => array(
-		"category"=>array(	
+		"ticketscategories_id"=>array(	
 			"title"=>$LANG['common'][36],
-			"field"=>"glpi_tickets.category"
+			"field"=>"glpi_tickets.ticketscategories_id"
 			),
 		"priority"=>array(	
 			"title"=>$LANG['joblist'][2],
@@ -114,13 +114,13 @@ $items=array(
 				"title"=>$LANG['job'][6]." ".$LANG['stats'][49],
 				"field"=>"glpi_followup.users_id"
 				),
-		"assign_group"=>array(	
+		"groups_id_assign"=>array(	
 			"title"=>$LANG['common'][35],
-			"field"=>"glpi_tickets.assign_group"
+			"field"=>"glpi_tickets.groups_id_assign"
 			),
 		"enterprise"=>array(	
 				"title"=>$LANG['financial'][26],
-				"field"=>"glpi_tickets.assign_ent"
+				"field"=>"glpi_tickets.suppliers_id_assign"
 				),
 	)
 		);

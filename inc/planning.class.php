@@ -89,7 +89,7 @@ class PlanningTracking extends CommonDBTM {
 
 		// Auto update realtime
 		$fup=new Followup();
-		$fup->getFromDB($input["id_followup"]);
+		$fup->getFromDB($input["ticketsfollowups_id"]);
 		$tmp_beg=explode(" ",$input["begin"]);
 		$tmp_end=explode(" ",$input["end"]);
 		$tmp_dbeg=explode("-",$tmp_beg[0]);
@@ -149,7 +149,7 @@ class PlanningTracking extends CommonDBTM {
 
 		// Auto update realtime
 		$fup=new Followup();
-		$fup->getFromDB($input["id_followup"]);
+		$fup->getFromDB($input["ticketsfollowups_id"]);
 
 		if ($fup->fields["realtime"]==0){
 			$tmp_beg=explode(" ",$this->fields["begin"]);
@@ -182,7 +182,7 @@ class PlanningTracking extends CommonDBTM {
 			if (isset($this->fields["users_id"])&&($this->fields["users_id"]==$_SESSION["glpiID"]||haveRight("comment_all_ticket","1"))){
 				// Auto update realtime
 				$fup=new Followup();
-				$fup->getFromDB($this->fields["id_followup"]);
+				$fup->getFromDB($this->fields["ticketsfollowups_id"]);
 				$updates2[]="realtime";
 				$fup->fields["realtime"]=0;
 				$fup->updateInDB($updates2);

@@ -525,7 +525,7 @@ function initEntityProfiles($userID) {
 
 	$query = "SELECT DISTINCT glpi_profiles.* 
 		FROM glpi_profiles_users 
-			INNER JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
+			INNER JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
 		WHERE glpi_profiles_users.users_id='$userID' 
 		ORDER BY glpi_profiles.name";
 	$result = $DB->query($query);
@@ -543,7 +543,7 @@ function initEntityProfiles($userID) {
 					glpi_profiles_users.recursive as recursive, glpi_entities.* 
 				FROM glpi_profiles_users 
 				LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
-				WHERE glpi_profiles_users.FK_profiles='$key' AND glpi_profiles_users.users_id='$userID' 
+				WHERE glpi_profiles_users.profiles_id='$key' AND glpi_profiles_users.users_id='$userID' 
 				ORDER BY glpi_entities.completename";
 			$result2 = $DB->query($query2);
 			if ($DB->numrows($result2)) {
@@ -1018,14 +1018,14 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
  * @param $identificat : identification object
  * @param $login : user login
  * @param $password : user password
- * @param $id_auth : id_auth already used for the user
+ * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
+function try_ldap_auth($identificat,$login,$password, $auths_id = -1) {
 
 	//If no specific source is given, test all ldap directories
-	if ($id_auth == -1) {
-		foreach  ($identificat->auth_methods["ldap"] as $ldap_method) {
+	if ($auths_id == -1) {
+		foreach  ($identificat->authtypes["ldap"] as $ldap_method) {
 			if (!$identificat->auth_succeded) {
 				$identificat = ldap_auth($identificat, $login,$password,$ldap_method);
 			} else {
@@ -1033,10 +1033,10 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
 			}
 		}
 	//Check if the ldap server indicated as the last good one still exists !
-	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])){ 
+	} else if(array_key_exists($auths_id,$identificat->authtypes["ldap"])){ 
 		
 		//A specific ldap directory is given, test it and only this one !
-		$identificat = ldap_auth($identificat, $login,$password,$identificat->auth_methods["ldap"][$id_auth]);
+		$identificat = ldap_auth($identificat, $login,$password,$identificat->authtypes["ldap"][$auths_id]);
 	}
 	return $identificat;
 }
@@ -1059,8 +1059,8 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
 		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
 		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
 		$identificat->auth_parameters = $ldap_method;
-		$identificat->user->fields["auth_method"] = AUTH_LDAP;
-		$identificat->user->fields["id_auth"] = $ldap_method["ID"];
+		$identificat->user->fields["authtype"] = AUTH_LDAP;
+		$identificat->user->fields["auths_id"] = $ldap_method["ID"];
 	}
 	return $identificat;
 }
@@ -1070,12 +1070,12 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
  * @param $identificat : identification object
  * @param $login : user login
  * @param $password : user password
- * @param $id_auth : id_auth already used for the user
+ * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_mail_auth($identificat, $login,$password,$id_auth = -1) {
-	if ($id_auth == -1) {
-		foreach ($identificat->auth_methods["mail"] as $mail_method) {
+function try_mail_auth($identificat, $login,$password,$auths_id = -1) {
+	if ($auths_id == -1) {
+		foreach ($identificat->authtypes["mail"] as $mail_method) {
 			if (!$identificat->auth_succeded) {
 				$identificat = mail_auth($identificat, $login,$password,$mail_method);
 			}
@@ -1083,8 +1083,8 @@ function try_mail_auth($identificat, $login,$password,$id_auth = -1) {
 				break;
 			}
 		}
-	} else if(array_key_exists($id_auth,$identificat->auth_methods["mail"])){ //Check if the mail server indicated as the last good one still exists !
-		$identificat = mail_auth($identificat, $login,$password,$identificat->auth_methods["mail"][$id_auth]);
+	} else if(array_key_exists($auths_id,$identificat->authtypes["mail"])){ //Check if the mail server indicated as the last good one still exists !
+		$identificat = mail_auth($identificat, $login,$password,$identificat->authtypes["mail"][$auths_id]);
 	}
 	return $identificat;
 }
@@ -1109,8 +1109,8 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 			$identificat->user->getFromIMAP($mail_method, utf8_decode($login));
 
 			//Update the authentication method for the current user
-			$identificat->user->fields["auth_method"] = AUTH_MAIL;
-			$identificat->user->fields["id_auth"] = $mail_method["ID"];
+			$identificat->user->fields["authtype"] = AUTH_MAIL;
+			$identificat->user->fields["auths_id"] = $mail_method["ID"];
 		}
 	}
 	return $identificat;
@@ -1142,7 +1142,7 @@ function import_user_from_ldap_servers($login){
 	//If the user does not exists
 	if ($identificat->user_present == 0){
 		$identificat->getAuthMethods();
-		$ldap_methods = $identificat->auth_methods["ldap"];
+		$ldap_methods = $identificat->authtypes["ldap"];
 		$userid = -1;
 		
 		foreach ($ldap_methods as $ldap_method){
@@ -1394,22 +1394,22 @@ function checkAlternateAuthSystems($redirect=false,$redirect_string=''){
 /**
  * Is an alternate auth ?
  * 
- * @param $id_auth auth type
+ * @param $auths_id auth type
  * @return boolean
 **/
-function isAlternateAuth($id_auth){
-	return  in_array($id_auth,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
+function isAlternateAuth($auths_id){
+	return  in_array($auths_id,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
 }
 
 /**
  * Is an alternate auth wich used LDAP extra server?
  * 
- * @param $id_auth auth type
+ * @param $auths_id auth type
  * @return boolean
 **/
-function isAlternateAuthWithLdap($id_auth){
+function isAlternateAuthWithLdap($auths_id){
 	global $CFG_GLPI;
-	return (isAlternateAuth($id_auth) && $CFG_GLPI["authldaps_id_extra"] > 0);
+	return (isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
 }
 
 function getLdapServers () {

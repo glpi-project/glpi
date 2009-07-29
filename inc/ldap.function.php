@@ -116,8 +116,8 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 			if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")){
 				//Add the auth method
 				if (!$sync){
-					$user->fields["auth_method"] = AUTH_LDAP;
-					$user->fields["id_auth"] = $ldap_server;
+					$user->fields["authtype"] = AUTH_LDAP;
+					$user->fields["auths_id"] = $ldap_server;
 				}
 				// Force date mod
 				$user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
@@ -248,15 +248,15 @@ function getGroupCNByDn($ldap_connection,$group_dn)
 
 /** Get all LDAP groups from a ldap server which are not already in an entity
  *
- * @param   $id_auth ID of the server to use
+ * @param   $auths_id ID of the server to use
  * @param   $myfilter ldap filter to use
  * @param   $entity entity to search
  * @return  array of the groups
  */
-function getAllGroups($id_auth,$filter,$filter2,$entity,$order='DESC'){
+function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC'){
 	global $DB, $LANG,$CFG_GLPI;
 	$config_ldap = new AuthLDAP();
-	$res = $config_ldap->getFromDB($id_auth);
+	$res = $config_ldap->getFromDB($auths_id);
 	$infos = array();
 	$groups = array();
 	
@@ -387,16 +387,16 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 
 /** Get the list of LDAP users to add/synchronize
  *
- * @param   $id_auth ID of the server to use
+ * @param   $auths_id ID of the server to use
  * @param   $sync user to synchronise or add ?
  * @param   $myfilter ldap filter to use
  * @return  array of the user
  */
-function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
+function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
 	global $DB, $LANG,$CFG_GLPI;
 
 	$config_ldap = new AuthLDAP();
-	$res = $config_ldap->getFromDB($id_auth);
+	$res = $config_ldap->getFromDB($auths_id);
 	$ldap_users = array ();
 
 	// we prevent some delay...
@@ -461,7 +461,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 	$glpi_users = array ();
 	$sql = "SELECT name, date_mod FROM glpi_users ";
 	if ($sync){
-		$sql.=" WHERE auth_method IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
+		$sql.=" WHERE authtype IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
 	}
 	$sql.="ORDER BY name ".$order;
 	
@@ -601,13 +601,13 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DES
 
 /** Test a LDAP connection
  *
- * @param   $id_auth ID of the LDAP server
+ * @param   $auths_id ID of the LDAP server
  * @param   $replicate_id use a replicate if > 0
  * @return  boolean connection succeeded ?
  */
-function testLDAPConnection($id_auth,$replicate_id=-1) {
+function testLDAPConnection($auths_id,$replicate_id=-1) {
 	$config_ldap = new AuthLDAP();
-	$res = $config_ldap->getFromDB($id_auth);
+	$res = $config_ldap->getFromDB($auths_id);
 	$ldap_users = array ();
 
 	// we prevent some delay...
@@ -647,7 +647,7 @@ function showSynchronizationForm($target, $ID) {
 
 	if (haveRight("user", "w")){
 		//Look it the user's auth method is LDAP
-		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID='" . $ID."'";
+		$sql = "SELECT authtype, auths_id FROM glpi_users WHERE ID='" . $ID."'";
 		$result = $DB->query($sql);
 		
 		if ($DB->numrows($result) == 1) {
@@ -655,12 +655,12 @@ function showSynchronizationForm($target, $ID) {
 			echo "<div class='center'>";
 			echo "<form method='post' action=\"$target\">";
 
-			switch($data["auth_method"])
+			switch($data["authtype"])
 			{
 				case AUTH_LDAP :
 						
 					//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-					$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["id_auth"]."'";
+					$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["auths_id"]."'";
 					$result = $DB->query($sql);
 
 					if ($DB->numrows($result) > 0) {
@@ -688,9 +688,9 @@ function showSynchronizationForm($target, $ID) {
 				case AUTH_CAS :
 				case AUTH_EXTERNAL :
 
-					if ($data["id_auth"]){
+					if ($data["auths_id"]){
 						//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-						$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["id_auth"]."'";
+						$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["auths_id"]."'";
 						$result = $DB->query($sql);
 	
 						if ($DB->numrows($result) > 0) {
@@ -751,7 +751,7 @@ function formChangeAuthMethodToLDAP($ID)
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][2]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
 		echo $LANG['login'][31]."</td><td>";
-		dropdownValue("glpi_authldaps","id_auth");
+		dropdownValue("glpi_authldaps","auths_id");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";
@@ -772,7 +772,7 @@ function formChangeAuthMethodToMail($ID){
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][3]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
 		echo $LANG['login'][33]."</td><td>";
-		dropdownValue("glpi_authmails","id_auth");
+		dropdownValue("glpi_authmails","auths_id");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";
@@ -783,11 +783,11 @@ function formChangeAuthMethodToMail($ID){
 /* // NOT_USED
 function getAuthMethodFromDB($ID) {
 	global $DB;
-	$sql = "SELECT auth_method FROM glpi_users WHERE ID='".$ID."'";
+	$sql = "SELECT authtype FROM glpi_users WHERE ID='".$ID."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);
-		return $data["auth_method"];
+		return $data["authtype"];
 	} else
 		return NOT_YET_AUTHENTIFIED;
 }

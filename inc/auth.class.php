@@ -52,7 +52,7 @@ class Identification {
 	//! External authentification variable : boolean
 	var $extauth = 0;
 	///External authentifications methods;
-	var $auth_methods;
+	var $authtypes;
 
 	///Indicates if the user is authenticated or not
 	var $auth_succeded = 0;
@@ -248,14 +248,14 @@ class Identification {
 	/**
 	 * Try to get login of external auth method
 	 *
-	 * @param $auth_method extenral auth type
+	 * @param $authtype extenral auth type
          *
 	 * @return boolean : user login success
 	**/
-	function getAlternateAuthSystemsUserLogin($auth_method=-1){
+	function getAlternateAuthSystemsUserLogin($authtype=-1){
 		global $CFG_GLPI;
 	
-		switch ($auth_method){
+		switch ($authtype){
 			case AUTH_CAS:
 				include (GLPI_ROOT . "/lib/phpcas/CAS.php");
 				$cas = new phpCas(); 
@@ -337,7 +337,7 @@ class Identification {
 					$_SESSION["glpidefault_entity"] = $this->user->fields['entities_id'];
 					$_SESSION["glpiusers_idisation"] = true;
 					$_SESSION["glpiextauth"] = $this->extauth;
-					$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
+					$_SESSION["glpiauthtype"] = $this->user->fields['authtype'];
 					$_SESSION["glpisearchcount"] = array ();
 					$_SESSION["glpisearchcount2"] = array ();
 					$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
@@ -363,8 +363,8 @@ class Identification {
 					initEntityProfiles($_SESSION["glpiID"]);
 					// Use default profile if exist
 					
-					if (isset($_SESSION['glpiprofiles'][$this->user->fields['FK_profiles']])){
-						changeProfile($this->user->fields['FK_profiles']);
+					if (isset($_SESSION['glpiprofiles'][$this->user->fields['profiles_id']])){
+						changeProfile($this->user->fields['profiles_id']);
 					} else { // Else use first
 						changeProfile(key($_SESSION['glpiprofiles']));
 					}
@@ -430,7 +430,7 @@ class Identification {
 	function getAuthMethods() {
 		global $DB;
 
-		$auth_methods_ldap = array ();
+		$authtypes_ldap = array ();
 
 		//Get all the ldap directories
 		$sql = "SELECT * FROM glpi_authldaps";
@@ -439,11 +439,11 @@ class Identification {
 
 			//Store in an array all the directories
 			while ($ldap_method = $DB->fetch_array($result)){
-				$auth_methods_ldap[$ldap_method["ID"]] = $ldap_method;
+				$authtypes_ldap[$ldap_method["ID"]] = $ldap_method;
 			}
 		}
 
-		$auth_methods_mail = array ();
+		$authtypes_mail = array ();
 		//Get all the pop/imap servers
 		$sql = "SELECT * FROM glpi_authmails";
 		$result = $DB->query($sql);
@@ -451,13 +451,13 @@ class Identification {
 
 			//Store all in an array
 			while ($mail_method = $DB->fetch_array($result)){
-				$auth_methods_mail[$mail_method["ID"]] = $mail_method;
+				$authtypes_mail[$mail_method["ID"]] = $mail_method;
 			}
 		}
 		//Return all the authentication methods in an array
-		$this->auth_methods = array (
-			"ldap" => $auth_methods_ldap,
-			"mail" => $auth_methods_mail
+		$this->authtypes = array (
+			"ldap" => $authtypes_ldap,
+			"mail" => $authtypes_mail
 			);
 	}
 
