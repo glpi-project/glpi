@@ -160,7 +160,7 @@ if (isset($_POST["itemtype"])){
 					if ($val==1) {
 						$query="SELECT * 
 							FROM glpi_computers_items 
-							WHERE itemtype='".$_POST["itemtype"]."' AND end1 = '$key'";
+							WHERE itemtype='".$_POST["itemtype"]."' AND items_id = '$key'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							while ($data=$DB->fetch_assoc($result)){

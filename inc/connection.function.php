@@ -154,7 +154,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 
 
 	//Get info about the periph
-	$query = "SELECT end1,end2, itemtype
+	$query = "SELECT items_id,computers_id, itemtype
 		FROM glpi_computers_items 
 		WHERE ID='$ID'";		
 	$res = $DB->query($query);
@@ -167,8 +167,8 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 	
 			$decoConf = "";
 			$type_elem= $data["itemtype"]; 
-			$id_elem= $data["end1"]; 
-			$id_parent= $data["end2"]; 
+			$id_elem= $data["items_id"]; 
+			$id_parent= $data["computers_id"]; 
 			$table = $LINK_ID_TABLE[$type_elem];
 	
 	
@@ -237,7 +237,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 			}
 	
 			if ($ocs_server_id==0){
-				$ocs_server_id = getOCSServerByMachineID($data["end2"]);
+				$ocs_server_id = getOCSServerByMachineID($data["computers_id"]);
 			}
 			if ($ocs_server_id>0){
 	
@@ -294,9 +294,9 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 
 	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
-		$query = "SELECT ID, end2 
+		$query = "SELECT ID, computers_id 
 			FROM glpi_computers_items 
-			WHERE glpi_computers_items.end1 = '$sID' AND glpi_computers_items.itemtype = '$itemtype'";
+			WHERE glpi_computers_items.items_id = '$sID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result = $DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
 			Disconnect($data["ID"],$dohistory);
@@ -304,16 +304,16 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 			// As we come from OCS, do not lock the device
 			switch ($itemtype) {
 				case MONITOR_TYPE:
-					deleteInOcsArray($data["end2"],$data["ID"],"import_monitor");
+					deleteInOcsArray($data["computers_id"],$data["ID"],"import_monitor");
 					break;
 				case DEVICE_TYPE:
-					deleteInOcsArray($data["end2"],$data["ID"],"import_device");
+					deleteInOcsArray($data["computers_id"],$data["ID"],"import_device");
 					break;
 				case PERIPHERAL_TYPE:
-					deleteInOcsArray($data["end2"],$data["ID"],"import_peripheral");
+					deleteInOcsArray($data["computers_id"],$data["ID"],"import_peripheral");
 					break;
 				case PRINTER_TYPE:
-					deleteInOcsArray($data["end2"],$data["ID"],"import_printers");
+					deleteInOcsArray($data["computers_id"],$data["ID"],"import_printers");
 					break;
 			}
 		}
@@ -321,8 +321,8 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 	
 	// Create the New connexion
 	$connect = new Connection;
-	$connect->end1=$sID;
-	$connect->end2=$cID;
+	$connect->items_id=$sID;
+	$connect->computers_id=$cID;
 	$connect->itemtype=$itemtype;
 	$newID=$connect->addtoDB();
 
@@ -403,8 +403,8 @@ function getNumberConnections($itemtype,$ID){
 	global $DB;
 	$query = "SELECT count(*) 
 		FROM glpi_computers_items 
-			INNER JOIN glpi_computers ON ( glpi_computers_items.end2=glpi_computers.ID ) 
-		WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
+			INNER JOIN glpi_computers ON ( glpi_computers_items.computers_id=glpi_computers.ID )
+		WHERE glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 			AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
 
 	$result = $DB->query($query);
@@ -433,7 +433,7 @@ function unglobalizeDevice($itemtype,$ID){
 		// Get connect_wire for this connection
 		$query = "SELECT glpi_computers_items.ID AS connectID 
 			FROM glpi_computers_items 
-			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'";
+			WHERE glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result=$DB->query($query);
 		if (($nb=$DB->numrows($result))>1){
 			for ($i=1;$i<$nb;$i++){
@@ -444,7 +444,7 @@ function unglobalizeDevice($itemtype,$ID){
 					if ($newID=$ci->obj->add(array("ID"=>$ID))){
 						// Update Connection
 						$query2="UPDATE glpi_computers_items 
-							SET end1='$newID' 
+							SET items_id='$newID'
 							WHERE ID='".$data["connectID"]."'";
 						$DB->query($query2);
 					}

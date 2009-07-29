@@ -151,8 +151,8 @@ if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 				}
 			break;
 			case "glpi_suppliers_infocoms": // Infocoms suppliers
-				dropdown("glpi_suppliers","FK_enterprise",1,$_SESSION["glpiactive_entity"]);
-				echo "<input type='hidden' name='field' value='FK_enterprise'>";
+				dropdown("glpi_suppliers","suppliers_id",1,$_SESSION["glpiactive_entity"]);
+				echo "<input type='hidden' name='field' value='suppliers_id'>";
 				$FIELDNAME_PRINTED=true;
 			break;
 			case "glpi_budgets": // Infocoms budget

@@ -162,12 +162,12 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 						if ($resultnum>0) {
 							for ($j=0; $j < $resultnum; $j++) {
-								$tID = $DB->result($result, $j, "end1");
+								$tID = $DB->result($result, $j, "items_id");
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('contact')!=$this->fields['contact']||$ci->getField('contact_num')!=$this->fields['contact_num']){
@@ -200,14 +200,14 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 
 						if ($resultnum>0) {
 							for ($j=0; $j < $resultnum; $j++) {
-								$tID = $DB->result($result, $j, "end1");
+								$tID = $DB->result($result, $j, "items_id");
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
@@ -242,14 +242,14 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 
 						if ($resultnum>0) {
 							for ($j=0; $j < $resultnum; $j++) {
-								$tID = $DB->result($result, $j, "end1");
+								$tID = $DB->result($result, $j, "items_id");
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
@@ -281,14 +281,14 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 
 						if ($resultnum>0) {
 							for ($j=0; $j < $resultnum; $j++) {
-								$tID = $DB->result($result, $j, "end1");
+								$tID = $DB->result($result, $j, "items_id");
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
@@ -382,13 +382,13 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Contract
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],COMPUTER_TYPE,$newID);
 			}
 
 			// ADD Documents
@@ -422,12 +422,12 @@ class Computer extends CommonDBTM {
 			// Add connected devices
 			$query="SELECT * 
 				FROM glpi_computers_items 
-				WHERE end2='".$input["_oldID"]."';";
+				WHERE computers_id='".$input["_oldID"]."';";
 	
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
-					Connect($data["end1"],$newID,$data["itemtype"]);
+					Connect($data["items_id"],$newID,$data["itemtype"]);
 				}
 			}
 		}
@@ -457,24 +457,29 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_computers_softwaresversions WHERE (cID = '$ID')";
 		$result = $DB->query($query);		
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='".COMPUTER_TYPE."')";
+		$query = "DELETE FROM glpi_contracts_items
+               WHERE (items_id = '$ID' AND itemtype='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".COMPUTER_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms
+               WHERE (items_id = '$ID' AND itemtype='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
-		$query = "SELECT ID FROM glpi_networkports WHERE (items_id = '$ID' AND itemtype = '".COMPUTER_TYPE."')";
+		$query = "SELECT ID FROM glpi_networkports
+            WHERE (items_id = '$ID' AND itemtype = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
+			$q = "DELETE FROM glpi_networkports_networkports
+            WHERE (networkports_id_1 = '".$data["ID"]."' OR networkports_id_2 = '".$data["ID"]."')";
 			$result2 = $DB->query($q);					
 		}	
 
-		$query = "DELETE FROM glpi_networkports WHERE (items_id = '$ID' AND itemtype = '".COMPUTER_TYPE."')";
+		$query = "DELETE FROM glpi_networkports
+               WHERE (items_id = '$ID' AND itemtype = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 
-		$query="SELECT * FROM glpi_computers_items WHERE (end2='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (computers_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

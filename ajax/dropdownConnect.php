@@ -112,7 +112,7 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 
 $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
-	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.ID = glpi_computers_items.end1 AND glpi_computers_items.itemtype = '".$_POST['idtable']."')";
+	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.ID = glpi_computers_items.items_id AND glpi_computers_items.itemtype = '".$_POST['idtable']."')";
 }
 $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
 		$table.serial AS serial,$table.otherserial AS otherserial,

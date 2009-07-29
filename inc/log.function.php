@@ -106,7 +106,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 					if (isset($SEARCH_OPTION[$real_itemtype])) foreach($SEARCH_OPTION[$real_itemtype] as $key2 => $val2){
 						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
 							($key=='budget'&&$val2['table']=='glpi_budgets') ||
-							($key=='FK_enterprise'&&$val2['table']=='glpi_suppliers_infocoms')) {
+							($key=='suppliers_id'&&$val2['table']=='glpi_suppliers_infocoms')) {
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 							if ($val2["table"]=="glpi_infocoms"){
 								// 1st case : text field -> keep datas

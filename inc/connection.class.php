@@ -44,10 +44,10 @@ class Connection {
 
 	//! Connection ID
 	var $ID				= 0;
-	//! Computer ID
-	var $end1			= 0;
 	//! Connected Item  ID
-	var $end2			= 0;
+	var $items_id			= 0;
+	//! Computer ID
+	var $computers_id			= 0;
 	//! Connected Item Type
 	var $itemtype			= 0;
 	//! Name of the computer
@@ -70,10 +70,10 @@ class Connection {
 	 */
 	function getComputersContact ($itemtype,$ID) {
 		global $DB;
-		$query = "SELECT glpi_computers_items.ID as connectID, glpi_computers_items.end2 as end2, glpi_computers.* 
+		$query = "SELECT glpi_computers_items.ID as connectID, glpi_computers_items.computers_id, glpi_computers.*
 			FROM glpi_computers_items 
-			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_computers_items.end2)
-			 WHERE (glpi_computers_items.end1 = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
+			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_computers_items.computers_id)
+			 WHERE (glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 				AND glpi_computers.is_template = '0')" .
 				getEntitiesRestrictRequest(" AND", "glpi_computers");
 				
@@ -81,7 +81,7 @@ class Connection {
 			if ($DB->numrows($result)==0) return false;
 			$ret=array();
 			while ($data = $DB->fetch_array($result)){
-				if (isset($data["end2"])) {
+				if (isset($data["computers_id"])) {
 					$ret[$data["connectID"]] = $data;
 				}
 			}
@@ -112,7 +112,7 @@ class Connection {
 	/**
 	 * Add a connection
 	 *
-	 * end1, end2 and itemtype must be set
+	 * items_id, computers_id and itemtype must be set
 	 *
 	 * @return integer : ID of added connection
 	 */
@@ -120,7 +120,8 @@ class Connection {
 		global $DB;
 
 		// Build query
-		$query = "INSERT INTO glpi_computers_items (end1,end2,itemtype) VALUES ('$this->end1','$this->end2','$this->itemtype')";
+		$query = "INSERT INTO glpi_computers_items (items_id,computers_id,itemtype)
+                     VALUES ('$this->items_id','$this->computers_id','$this->itemtype')";
 		$result=$DB->query($query);
 		return $DB->insert_id();
 	}

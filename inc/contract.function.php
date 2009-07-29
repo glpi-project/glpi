@@ -155,7 +155,7 @@ function showDeviceContract($instID) {
 	$canedit=$contract->can($instID,'w');
 	$query = "SELECT DISTINCT itemtype 
 		FROM glpi_contracts_items 
-		WHERE glpi_contracts_items.FK_contract = '$instID' 
+		WHERE glpi_contracts_items.contracts_id = '$instID' 
 		ORDER BY itemtype";
 
 	$result = $DB->query($query);
@@ -197,7 +197,7 @@ function showDeviceContract($instID) {
 			}
 			$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_contracts_items.items_id
 								AND glpi_contracts_items.itemtype='$itemtype' 
-								AND glpi_contracts_items.FK_contract = '$instID'";
+								AND glpi_contracts_items.contracts_id = '$instID'";
 						
 			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 				$query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
@@ -298,7 +298,7 @@ function addDeviceContract($conID,$itemtype,$ID){
 
 	if ($ID>0&&$conID>0){
 
-		$query="INSERT INTO glpi_contracts_items (FK_contract,items_id, itemtype ) VALUES ('$conID','$ID','$itemtype');";
+		$query="INSERT INTO glpi_contracts_items (contracts_id,items_id, itemtype ) VALUES ('$conID','$ID','$itemtype');";
 		$result = $DB->query($query);
 	}
 }
@@ -342,7 +342,7 @@ function showEnterpriseContract($instID) {
 			glpi_entities.ID AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_suppliers "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
-		. " WHERE glpi_contracts_suppliers.FK_contract = '$instID' AND glpi_contracts_suppliers.FK_enterprise = glpi_suppliers.ID"
+		. " WHERE glpi_contracts_suppliers.contracts_id = '$instID' AND glpi_contracts_suppliers.suppliers_id = glpi_suppliers.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true)
 		. " ORDER BY glpi_entities.completename,name";
 		
@@ -428,7 +428,7 @@ function addEnterpriseContract($conID,$ID){
 	global $DB;
 	if ($conID>0&&$ID>0){
 
-		$query="INSERT INTO glpi_contracts_suppliers (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
+		$query="INSERT INTO glpi_contracts_suppliers (contracts_id,suppliers_id ) VALUES ('$conID','$ID');";
 		$result = $DB->query($query);
 	}
 }
@@ -465,7 +465,7 @@ function getContractEnterprises($ID){
 
 	$query = "SELECT glpi_suppliers.* 
 			FROM glpi_contracts_suppliers, glpi_suppliers 
-			WHERE glpi_contracts_suppliers.FK_enterprise = glpi_suppliers.ID AND glpi_contracts_suppliers.FK_contract = '$ID'";
+			WHERE glpi_contracts_suppliers.suppliers_id = glpi_suppliers.ID AND glpi_contracts_suppliers.contracts_id = '$ID'";
 	$result = $DB->query($query);
 	$out="";
 	while ($data=$DB->fetch_array($result)){
@@ -498,7 +498,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	$query = "SELECT glpi_contracts_items.* 
 		FROM glpi_contracts_items, glpi_contracts 
 		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id=glpi_entities.ID)
-		WHERE glpi_contracts.ID=glpi_contracts_items.FK_contract AND glpi_contracts_items.items_id = '$ID' 
+		WHERE glpi_contracts.ID=glpi_contracts_items.contracts_id AND glpi_contracts_items.items_id = '$ID' 
 			AND glpi_contracts_items.itemtype = '$itemtype' 
 		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
 		ORDER BY glpi_contracts.name";
@@ -525,7 +525,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	}
 	$contracts=array();
 	while ($i < $number) {
-		$cID=$DB->result($result, $i, "FK_contract");
+		$cID=$DB->result($result, $i, "contracts_id");
 		addToNavigateListItems(CONTRACT_TYPE,$cID);
 
 		$contracts[]=$cID;
@@ -604,7 +604,7 @@ function showContractAssociatedEnterprise($ID){
 	$query = "SELECT glpi_contracts.*, glpi_contracts_suppliers.ID AS assocID, glpi_entities.ID AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_contracts "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contracts.entities_id) "	
-		. " WHERE glpi_contracts_suppliers.FK_enterprise = '$ID' AND glpi_contracts_suppliers.FK_contract=glpi_contracts.ID"
+		. " WHERE glpi_contracts_suppliers.suppliers_id = '$ID' AND glpi_contracts_suppliers.contracts_id=glpi_contracts.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contracts.name";
 

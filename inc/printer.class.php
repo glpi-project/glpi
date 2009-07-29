@@ -124,7 +124,7 @@ class Printer  extends CommonDBTM {
 		// RELATION : printers -> _port -> _wire -> _port -> device
 
 		// Evaluate connection in the 2 ways
-		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
+		for ($tabend=array("networkports_id_1"=>"networkports_id_2","networkports_id_2"=>"networkports_id_1");list($enda,$endb)=each($tabend);) {
 			
 			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
 				"FROM glpi_networkports_networkports, glpi_networkports " .
@@ -205,14 +205,14 @@ class Printer  extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PRINTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],PRINTER_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],PRINTER_TYPE,$newID);
 			}
 	
 			// ADD Documents			
@@ -254,14 +254,18 @@ class Printer  extends CommonDBTM {
 			WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networkports_networkports WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
+			$q = "DELETE FROM glpi_networkports_networkports
+               WHERE networkports_id_1 = '".$data["ID"]."'
+                  OR networkports_id_2 = '".$data["ID"]."'";
 			$result2 = $DB->query($q);					
 		}
 
-		$query2 = "DELETE FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
+		$query2 = "DELETE FROM glpi_networkports
+                  WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
 		$result2 = $DB->query($query2);
 
-		$query="SELECT * FROM glpi_computers_items WHERE itemtype='".PRINTER_TYPE."' AND end1='$ID'";
+		$query="SELECT * FROM glpi_computers_items
+               WHERE itemtype='".PRINTER_TYPE."' AND items_id='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

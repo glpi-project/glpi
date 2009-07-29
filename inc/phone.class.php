@@ -142,14 +142,14 @@ class Phone extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],PHONE_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],PHONE_TYPE,$newID);
 			}
 	
 			// ADD Documents			
@@ -197,11 +197,13 @@ class Phone extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms
+                  WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 
 
-		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".PHONE_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items
+               WHERE (itemtype='".PHONE_TYPE."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -211,7 +213,8 @@ class Phone extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
+		$query = "DELETE FROM glpi_contracts_items
+               WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 	}
 

@@ -54,7 +54,7 @@ class Contact extends CommonDBTM{
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_contacts_suppliers WHERE FK_contact = '$ID'";
+		$query = "DELETE FROM glpi_contacts_suppliers WHERE contacts_id = '$ID'";
 		$DB->query($query);
 	}
 
@@ -88,8 +88,8 @@ class Contact extends CommonDBTM{
 		$query = "SELECT  glpi_suppliers.name, glpi_suppliers.address, glpi_suppliers.postcode, 
 				glpi_suppliers.town, glpi_suppliers.state, glpi_suppliers.country 
 			FROM glpi_suppliers,glpi_contacts_suppliers 
-			WHERE glpi_contacts_suppliers.FK_contact = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID";
+			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["ID"]."' 
+				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){
@@ -112,8 +112,8 @@ class Contact extends CommonDBTM{
 
 		$query = "SELECT  glpi_suppliers.website as website 
 			FROM glpi_suppliers,glpi_contacts_suppliers 
-			WHERE glpi_contacts_suppliers.FK_contact = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID";
+			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["ID"]."' 
+				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){

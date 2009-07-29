@@ -143,14 +143,14 @@ class Peripheral  extends CommonDBTM  {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PERIPHERAL_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],PERIPHERAL_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],PERIPHERAL_TYPE,$newID);
 			}
 	
 			// ADD Documents			
@@ -179,12 +179,14 @@ class Peripheral  extends CommonDBTM  {
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0'
+                        WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query="SELECT * FROM glpi_reservationsitems WHERE (itemtype='".PERIPHERAL_TYPE."' AND items_id='$ID')";
+		$query="SELECT * FROM glpi_reservationsitems
+               WHERE (itemtype='".PERIPHERAL_TYPE."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
@@ -192,10 +194,12 @@ class Peripheral  extends CommonDBTM  {
 			}
 		}
 
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms
+               WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".PERIPHERAL_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items
+               WHERE (itemtype='".PERIPHERAL_TYPE."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -205,7 +209,8 @@ class Peripheral  extends CommonDBTM  {
 			}
 		}
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
+		$query = "DELETE FROM glpi_contracts_items
+               WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
 		$result = $DB->query($query);
 	}
 

@@ -46,7 +46,7 @@ $RELATION=array(
 
 	"glpi_computers" => array("glpi_computers_devices"=>"computers_id",
 						"glpi_computersdisks"=>"computers_id",
-						"glpi_computers_items"=>"end2",
+						"glpi_computers_items"=>"computers_id",
 						"glpi_computers_softwaresversions"=>"cID",
 						"glpi_softwareslicenses"=>"computers_id",
 						"glpi_ocslinks"=>"glpi_id",
@@ -55,10 +55,10 @@ $RELATION=array(
 
 	"glpi_consumablesitems" => array("glpi_consumables"=>"consumablesitems_id"),
 
-	"glpi_contacts" => array("glpi_contacts_suppliers"=>"FK_contact"),
+	"glpi_contacts" => array("glpi_contacts_suppliers"=>"contacts_id"),
 	
-	"glpi_contracts" => array("glpi_contracts_items"=>"FK_contract",
-						"glpi_contracts_suppliers"=>"FK_contract"),
+	"glpi_contracts" => array("glpi_contracts_items"=>"contracts_id",
+						"glpi_contracts_suppliers"=>"contracts_id"),
 	
 	"glpi_documents" => array("glpi_documents_items"=>"FK_doc"),
 
@@ -190,9 +190,9 @@ $RELATION=array(
 	
 	"glpi_vlans" =>array("glpi_networkports_vlans"=>"FK_vlan"),
 	
-	"glpi_suppliers" =>array("glpi_contacts_suppliers"=>"FK_enterprise",
-				"glpi_contracts_suppliers"=>"FK_enterprise",
-				"glpi_infocoms" =>"FK_enterprise",
+	"glpi_suppliers" =>array("glpi_contacts_suppliers"=>"suppliers_id",
+				"glpi_contracts_suppliers"=>"suppliers_id",
+				"glpi_infocoms" =>"suppliers_id",
 				"glpi_tickets"=>"assign_ent",
 	),
 	"glpi_entities" => array("glpi_bookmarks"=>"entities_id", 
@@ -240,7 +240,7 @@ $RELATION=array(
 	"glpi_links" =>array("glpi_links_itemtypes"=>"FK_links"),
 	
 	"glpi_networkports"=>array("glpi_networkports_vlans"=>"FK_port",
-							"glpi_networkports_networkports"=>array("end1","end2")
+							"glpi_networkports_networkports"=>array("networkports_id_1","networkports_id_2")
 	),
 
 	"glpi_ocsservers" => array("glpi_ocslinks"=>"ocs_server_id"),

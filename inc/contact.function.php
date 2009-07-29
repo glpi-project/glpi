@@ -63,7 +63,7 @@ function showEnterpriseContact($instID) {
 			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
 		. " FROM glpi_contacts_suppliers, glpi_suppliers "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
-		. " WHERE glpi_contacts_suppliers.FK_contact = '$instID' AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID"
+		. " WHERE glpi_contacts_suppliers.contacts_id = '$instID' AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) 
 		. " ORDER BY glpi_entities.completename,name";
 	

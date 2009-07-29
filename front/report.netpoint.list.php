@@ -85,7 +85,7 @@ checkRight("reports","r");
 				$lieu=getDropdownName("glpi_locations",$ID);
 				//$etage=$ligne['etage'];
 				$nw=new NetWire();
-				$end1=$nw->getOppositeContact($ligne['IDport']);
+				$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
 				$np=new Netport();
 
 				$ordi="";
@@ -93,8 +93,8 @@ checkRight("reports","r");
 				$mac2="";
 				$portordi="";
 
-				if ($end1){
-					$np->getFromDB($end1);
+				if ($networkports_id_1){
+					$np->getFromDB($networkports_id_1);
 					$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 					$ordi=$np->device_name;
 					$ip2=$np->fields['ifaddr'];
