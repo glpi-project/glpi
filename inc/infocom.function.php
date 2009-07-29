@@ -94,9 +94,9 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][26].":		</td>";
 			echo "<td class='center'>";
 			if ($withtemplate==2) {
-				echo getDropdownName("glpi_suppliers",$ic->fields["FK_enterprise"]);
+				echo getDropdownName("glpi_suppliers",$ic->fields["suppliers_id"]);
 			} else {
-				dropdownValue("glpi_suppliers","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('entities_id'));
+				dropdownValue("glpi_suppliers","suppliers_id",$ic->fields["suppliers_id"],1,$ci->getField('entities_id'));
 			}
 	
 			echo "</td>";

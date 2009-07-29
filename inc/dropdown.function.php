@@ -1067,9 +1067,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					if (!isset($already_add[$itemtype])) $already_add[$itemtype]=array();
 					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$itemtype].".* 
 						FROM glpi_computers_items 
-						LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_computers_items.end1=".$LINK_ID_TABLE[$itemtype].".ID)
+						LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_computers_items.items_id=".$LINK_ID_TABLE[$itemtype].".ID)
 						WHERE glpi_computers_items.itemtype='$itemtype' 
-							AND  ".str_replace("XXXX","glpi_computers_items.end2",$search_computer)." 
+							AND  ".str_replace("XXXX","glpi_computers_items.computers_id",$search_computer)."
 							AND ".$LINK_ID_TABLE[$itemtype].".deleted='0' ";
 					if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
@@ -2575,7 +2575,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)){
 
-		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contracts_items","FK_contract = '".$data['ID']."'" )){
+		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contracts_items","contracts_id = '".$data['ID']."'" )){
 			if ($data["entities_id"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";

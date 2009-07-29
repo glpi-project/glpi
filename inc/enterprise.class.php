@@ -59,11 +59,11 @@ class Enterprise extends CommonDBTM {
 		$job=new Job;
 
 		// Delete all enterprises associations from infocoms and contract
-		$query3 = "DELETE FROM glpi_contracts_suppliers WHERE (FK_enterprise = '$ID')";
+		$query3 = "DELETE FROM glpi_contracts_suppliers WHERE (suppliers_id = '$ID')";
 		$result3 = $DB->query($query3);
 
 		// Delete all contact enterprise associations
-		$query2 = "DELETE FROM glpi_contacts_suppliers WHERE (FK_enterprise = '$ID')";
+		$query2 = "DELETE FROM glpi_contacts_suppliers WHERE (suppliers_id = '$ID')";
 		$result2 = $DB->query($query2);
 	}
 
@@ -105,7 +105,7 @@ class Enterprise extends CommonDBTM {
 	// NOT_USED
 	function countContacts() {
 		global $DB;
-		$query = "SELECT * FROM glpi_contacts_suppliers WHERE (FK_enterprise = '".$this->fields["ID"]."')";
+		$query = "SELECT * FROM glpi_contacts_suppliers WHERE (suppliers_id = '".$this->fields["ID"]."')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;

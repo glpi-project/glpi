@@ -182,13 +182,13 @@ function showConnections($target,$ID,$withtemplate='') {
 				}
 				echo "<td class='center'>";
 				$query = "SELECT * FROM glpi_computers_items 
-					WHERE end2='$ID' AND itemtype='".$itemtype."'";
+					WHERE computers_id='$ID' AND itemtype='".$itemtype."'";
 				if ($result=$DB->query($query)) {
 					$resultnum = $DB->numrows($result);
 					if ($resultnum>0) {
 						echo "<table width='100%'>";
 						for ($i=0; $i < $resultnum; $i++) {
-							$tID = $DB->result($result, $i, "end1");
+							$tID = $DB->result($result, $i, "items_id");
 							$connID = $DB->result($result, $i, "ID");
 							$ci->getFromDB($itemtype,$tID);
 	

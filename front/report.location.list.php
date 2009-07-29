@@ -72,7 +72,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			$prise=$ligne['prise'];
 			$port=$ligne['port'];
 			$nw=new NetWire();
-			$end1=$nw->getOppositeContact($ligne['IDport']);
+			$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
 			$np=new Netport();
 
 			$ordi="";
@@ -80,8 +80,8 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			$mac2="";
 			$portordi="";
 
-			if ($end1){
-				$np->getFromDB($end1);
+			if ($networkports_id_1){
+				$np->getFromDB($networkports_id_1);
 				$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 				$ordi=$np->device_name;
 				$ip2=$np->fields['ifaddr'];

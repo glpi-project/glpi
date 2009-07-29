@@ -152,12 +152,12 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query = "SELECT FK_contract FROM glpi_contracts_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT contracts_id FROM glpi_contracts_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
 				while ($data = $DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"], SOFTWARE_TYPE, $newID);
+					addDeviceContract($data["contracts_id"], SOFTWARE_TYPE, $newID);
 			}
 	
 			// ADD Documents			

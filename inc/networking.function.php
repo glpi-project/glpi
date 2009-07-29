@@ -729,7 +729,8 @@ function removeConnector($ID, $dohistory = true) {
 	// Update to blank networking item
 	$nw = new Netwire;
 	if ($ID2 = $nw->getOppositeContact($ID)) {
-		$query = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$query = "DELETE FROM glpi_networkports_networkports
+            WHERE (networkports_id_1 = '$ID' OR networkports_id_2 = '$ID')";
 		if ($result = $DB->query($query)) {
 
 			// clean datas of linked ports if network one
@@ -877,8 +878,8 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			if ($network_port != -1) {
 				//If the 2 ports are linked each others
 				$query = "SELECT ID FROM glpi_networkports_networkports 
-					WHERE (end1='".$port1["portID"]."' AND end2='".$port2["portID"]."') 
-						OR (end1='".$port2["portID"]."' AND end2='".$port1["portID"]."')";
+					WHERE (networkports_id_1='".$port1["portID"]."' AND networkports_id_2='".$port2["portID"]."')
+						OR (networkports_id_1='".$port2["portID"]."' AND networkports_id_2='".$port1["portID"]."')";
 				$query = $DB->query($query);
 				if ($DB->numrows($query) == 1)
 					return array (

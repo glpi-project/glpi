@@ -132,14 +132,14 @@ class Monitor extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".MONITOR_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],MONITOR_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],MONITOR_TYPE,$newID);
 			}
 	
 			// ADD Documents			
@@ -185,7 +185,7 @@ class Monitor extends CommonDBTM {
 			}
 		}
 
-		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".MONITOR_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".MONITOR_TYPE."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

@@ -1541,7 +1541,7 @@ function ocsUnlockItems($glpi_id,$field){
 						case "import_monitor":
 						case "import_printers":
 						case "import_peripheral":
-							$querySearchLocked = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
+							$querySearchLocked = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 							break;
 						case "import_software":
 							$querySearchLocked = "SELECT ID FROM glpi_computers_softwaresversions WHERE ID='$key'";
@@ -1637,7 +1637,7 @@ function ocsEditLock($target, $ID) {
 		$locked_monitor = importArrayFromDB($data["import_monitor"]);
 		foreach ($locked_monitor as $key => $val) {
 			if ($val != "_version_070_") {
-				$querySearchLockedMonitor = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
+				$querySearchLockedMonitor = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 				$resultSearch = $DB->query($querySearchLockedMonitor);
 				if ($DB->numrows($resultSearch) == 0) {
 					//$header = true;
@@ -1666,7 +1666,7 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_printers"]);
 		foreach ($locked_printer as $key => $val) {
-			$querySearchLockedPrinter = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
+			$querySearchLockedPrinter = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPrinter);
 			if ($DB->numrows($resultSearchPrinter) == 0) {
 				//$header = true;
@@ -1694,7 +1694,7 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_peripheral"]);
 		foreach ($locked_printer as $key => $val) {
-			$querySearchLockedPeriph = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
+			$querySearchLockedPeriph = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPeriph);
 			if ($DB->numrows($resultSearchPrinter) == 0) {
 				//$header = true;
@@ -2414,11 +2414,11 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 						deleteInOcsArray($glpi_id, $key, "import_monitor");
 						//search serial when it exists	
 						$monitor_serial = "";
-						$query_monitor_id = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
+						$query_monitor_id = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 						$result_monitor_id = $DB->query($query_monitor_id);
 						if ($DB->numrows($result_monitor_id) == 1) {
 							//get monitor Id
-							$id_monitor = $DB->result($result_monitor_id, 0, "end1");
+							$id_monitor = $DB->result($result_monitor_id, 0, "items_id");
 							$query_monitor_serial = "SELECT serial FROM glpi_monitors WHERE ID = '$id_monitor'";
 							$result_monitor_serial = $DB->query($query_monitor_serial);
 							//get serial
@@ -2544,8 +2544,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									//Try to find a monitor with no serial, the same name and not already connected.
 									if (!empty ($mon["name"])) {
 										$query = "SELECT glpi_monitors.ID FROM glpi_monitors " .
-											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype=".MONITOR_TYPE." AND glpi_computers_items.end1=glpi_monitors.ID) " .
-											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND entities_id='$entity' AND glpi_computers_items.end2 IS NULL";
+											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype=".MONITOR_TYPE." AND glpi_computers_items.items_id=glpi_monitors.ID) " .
+											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND entities_id='$entity' AND glpi_computers_items.computers_id IS NULL";
 										$result_search = $DB->query($query);
 										if ($DB->numrows($result_search) == 1) {
 											$id_monitor = $DB->result($result_search, 0, "ID");
@@ -3374,7 +3374,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 
 	$query = "SELECT * 
 		FROM glpi_computers_items 
-		WHERE end2 = '" . $glpi_computer_id . "' 
+		WHERE computers_id = '" . $glpi_computer_id . "'
 		AND itemtype = '" . PERIPHERAL_TYPE . "'";
 	$result = $DB->query($query);
 	$per = new Peripheral();
@@ -3385,12 +3385,12 @@ function ocsResetPeriphs($glpi_computer_id) {
 
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
-				WHERE end1 = '" . $data['end1'] . "' 
+				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . PERIPHERAL_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$per->delete(array (
-					'ID' => $data['end1'],
+					'ID' => $data['items_id'],
 				), 1);
 			}
 			
@@ -3413,7 +3413,7 @@ function ocsResetMonitors($glpi_computer_id) {
 	global $DB;
 	$query = "SELECT * 
 				FROM glpi_computers_items 
-				WHERE end2 = '" . $glpi_computer_id . "' 
+				WHERE computers_id = '" . $glpi_computer_id . "'
 				AND itemtype = '" . MONITOR_TYPE . "'";
 
 	$result = $DB->query($query);
@@ -3425,12 +3425,12 @@ function ocsResetMonitors($glpi_computer_id) {
 
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
-				WHERE end1 = '" . $data['end1'] . "' 
+				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . MONITOR_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$mon->delete(array (
-					'ID' => $data['end1'],
+					'ID' => $data['items_id'],
 				), 1);
 			}
 		}
@@ -3452,7 +3452,7 @@ function ocsResetPrinters($glpi_computer_id) {
 
 	$query = "SELECT * 
 		FROM glpi_computers_items 
-		WHERE end2 = '" . $glpi_computer_id . "' 
+		WHERE computers_id = '" . $glpi_computer_id . "'
 		AND itemtype = '" . PRINTER_TYPE . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
@@ -3462,13 +3462,13 @@ function ocsResetPrinters($glpi_computer_id) {
 
 			$query2 = "SELECT COUNT(*) 
 				FROM glpi_computers_items 
-				WHERE end1 = '" . $data['end1'] . "' 
+				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . PRINTER_TYPE . "'";
 			$result2 = $DB->query($query2);
 			$printer = new Printer();
 			if ($DB->result($result2, 0, 0) == 1) {
 				$printer->delete(array (
-					'ID' => $data['end1'],
+					'ID' => $data['items_id'],
 				), 1);
 			}
 		}

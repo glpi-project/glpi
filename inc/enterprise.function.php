@@ -56,7 +56,7 @@ function showInfocomEnterprise($instID) {
 
 	$query = "SELECT DISTINCT itemtype 
 		FROM glpi_infocoms 
-		WHERE FK_enterprise = '$instID' 
+		WHERE suppliers_id = '$instID' 
 		ORDER BY itemtype";
 
 	$result = $DB->query($query);
@@ -81,7 +81,7 @@ function showInfocomEnterprise($instID) {
 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* "
 				." FROM glpi_infocoms "
 				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id) "
-				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.FK_enterprise = '$instID' "
+				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.suppliers_id = '$instID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype]) 
 				." ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 				
@@ -144,7 +144,7 @@ function showAssociatedContact($instID) {
 	$query = "SELECT glpi_contacts.*, glpi_contacts_suppliers.ID as ID_ent, glpi_entities.ID as entity "
 		. " FROM glpi_contacts_suppliers, glpi_contacts "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.entities_id) "
-		. " WHERE glpi_contacts_suppliers.FK_contact=glpi_contacts.ID AND glpi_contacts_suppliers.FK_enterprise = '$instID' "
+		. " WHERE glpi_contacts_suppliers.contacts_id=glpi_contacts.ID AND glpi_contacts_suppliers.suppliers_id = '$instID' "
 		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contacts.name";
 
@@ -223,7 +223,7 @@ function addContactEnterprise($eID,$cID){
 	global $DB;
 	if ($eID>0&&$cID>0){
 
-		$query="INSERT INTO glpi_contacts_suppliers (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
+		$query="INSERT INTO glpi_contacts_suppliers (suppliers_id,contacts_id ) VALUES ('$eID','$cID');";
 		$result = $DB->query($query);
 	}
 }

@@ -145,14 +145,14 @@ class Netdevice extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract 
+			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["FK_contract"],NETWORKING_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],NETWORKING_TYPE,$newID);
 			}
 	
 			// ADD Documents			
@@ -194,7 +194,7 @@ class Netdevice extends CommonDBTM {
 		$query = "SELECT ID FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networkports_networkports WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
+			$q = "DELETE FROM glpi_networkports_networkports WHERE networkports_id_1 = '".$data["ID"]."' OR networkports_id_2 = '".$data["ID"]."'";
 			$result2 = $DB->query($q);				
 		}
 
@@ -247,7 +247,7 @@ class Netdevice extends CommonDBTM {
 		// RELATION : networking -> _port -> _wire -> _port -> device
 
 		// Evaluate connection in the 2 ways
-		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
+		for ($tabend=array("networkports_id_1"=>"networkports_id_2","networkports_id_2"=>"networkports_id_1");list($enda,$endb)=each($tabend);) {
 			
 			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
 				"FROM glpi_networkports_networkports, glpi_networkports " .
@@ -547,7 +547,7 @@ class Netport extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$query = "DELETE FROM glpi_networkports_networkports WHERE (networkports_id_1 = '$ID' OR networkports_id_2 = '$ID')";
 		$result = $DB->query($query);
 	}
 
@@ -617,9 +617,9 @@ class Netwire {
 	/// ID of the netwire
 	var $ID		= 0;
 	/// first connected port ID
-	var $end1	= 0;
+	var $networkports_id_1	= 0;
 	/// second connected port ID
-	var $end2	= 0;
+	var $networkports_id_2	= 0;
 
 	/**
 	 * Get port opposite port ID 
@@ -630,19 +630,20 @@ class Netwire {
 	 **/
 	function getOppositeContact ($ID){
 		global $DB;
-		$query = "SELECT * FROM glpi_networkports_networkports WHERE end1 = '$ID' OR end2 = '$ID'";
+		$query = "SELECT * FROM glpi_networkports_networkports
+               WHERE networkports_id_1 = '$ID' OR networkports_id_2 = '$ID'";
 		if ($result=$DB->query($query))
 		{
 			$data = $DB->fetch_array($result);
 			if (is_array($data)){
-				$this->end1 = $data["end1"];
-				$this->end2 = $data["end2"];
+				$this->networkports_id_1 = $data["networkports_id_1"];
+				$this->networkports_id_2 = $data["networkports_id_2"];
 			}
 
-			if ($this->end1 == $ID){
-				return $this->end2;
-			} else if ($this->end2 == $ID){
-				return $this->end1;
+			if ($this->networkports_id_1 == $ID){
+				return $this->networkports_id_2;
+			} else if ($this->networkports_id_2 == $ID){
+				return $this->networkports_id_1;
 			} else {
 				return false;
 			}
