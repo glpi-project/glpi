@@ -647,7 +647,10 @@ function update0721to080() {
                if (isset($tab['default']) && isset($tab['default'][$table])) {
                   $default_value=$tab['default'][$table];
                }
-   
+               // Manage NULL fields 
+               $query="UPDATE `$table` SET `$oldname`='$default_value' WHERE `$oldname` IS NULL ";
+               $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+
                $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
                $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
             } else {
@@ -681,16 +684,77 @@ function update0721to080() {
       $query="UPDATE glpi_users SET auths_id=0 WHERE auths_id < 0";
       $DB->query($query) or die("0.80 update default value of auths_id in glpi_users " . $LANG['update'][90] . $DB->error());
    }
+   // Update glpi_ocsadmininfoslinks table for new field name
+   if (FieldExists('glpi_ocsadmininfoslinks', 'glpi_column')) {
+      $query="UPDATE glpi_ocsadmininfoslinks SET glpi_column='locations_id' WHERE glpi_column = 'location'";
+      $DB->query($query) or die("0.80 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] . $DB->error());
+      $query="UPDATE glpi_ocsadmininfoslinks SET glpi_column='networks_id' WHERE glpi_column = 'network'";
+      $DB->query($query) or die("0.80 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] . $DB->error());
+      $query="UPDATE glpi_ocsadmininfoslinks SET glpi_column='groups_id' WHERE glpi_column = 'FK_groups'";
+      $DB->query($query) or die("0.80 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] . $DB->error());
+   }
 
-   /// TODO Update glpi_ocsadmininfoslinks table for  : location -> locations_id network -> networks_id
-   /// TODO Update tracking bookmarks for new columns fields
-   /// TODO See if type -> itemtype need update bookmarks
-   /// TODO upgrade XXX_update in ocs_links
-   /// TODO updgrade rules actions and criterias : RULE_AFFECT_RIGHTS : FK_profiles -> profiles_id
-   ///                                   global : FK_entities -> entities_id
-   ///      RULE_TRACKING_AUTO_ACTION : author -> users_id / author_location -> users_locations / category -> ticketscategories_id / assignx -> YYY
-   ///      RULE_SOFTWARE_CATEGORY : category softwarescategories_id
+   // Update tracking bookmarks for new columns fields
+   if (FieldExists('glpi_bookmarks', 'query')) {
+      $olds = array("category", "type", "author","assign",
+               "assign_group","assign_ent","recipient");
    
+      $news   = array("ticketscategories_id", "itemtype", "ice users_id","users_id_assign",
+               "groups_id_assign","suppliers_id_assign","users_id_recipient");
+
+      foreach ($olds as $key => $val){
+         $olds[$key]="&$val=";
+      }
+      foreach ($news as $key => $val){
+         $news[$key]="&$val=";
+      }
+
+   // Change mailgate search pref : add ative
+   $query="SELECT ID,query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
+   if ($result = $DB->query($query)){
+      if ($DB->numrows($result)>0){
+         while ($data = $DB->fetch_assoc($result)){
+            $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
+            $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
+         }
+      }
+   }
+   }
+
+   //// Upgrade rules datas
+   // For RULE_AFFECT_RIGHTS
+   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id');
+   // For RULE_OCS_AFFECT_COMPUTER
+   $changes[RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
+   // For RULE_SOFTWARE_CATEGORY
+   $changes[RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarescategories_id');
+   // For RULE_TRACKING_AUTO_ACTION
+   $changes[RULE_TRACKING_AUTO_ACTION]=array('category'=>'ticketscategories_id',
+                           'author'=>'users_id','author_location'=>'users_locations',
+                           'FK_group'=>'groups_id','assign'=>'users_id_assign',
+                           'assign_group'=>'groups_id_assign','device_type'=>'itemtype',
+                           'FK_entities'=>'entities_id');
+   foreach ($changes as $ruletype => $tab){
+      // Get rules
+      $query = "SELECT GROUP_CONCAT(ID) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
+      echo $query."<br>";
+      if ($result = $DB->query($query)){
+         if ($DB->numrows($result)>0){
+            // Get rule string
+            $rules=$DB->result($result,0,0);
+            // Update actions
+            foreach ($tab as $old => $new){
+               $query = "UPDATE glpi_rulesactions SET field='$new' WHERE field='$old' AND rules_id IN ($rules);";
+               $DB->query($query) or die("0.80 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+            }
+            // Update criterias
+            foreach ($tab as $old => $new){
+               $query = "UPDATE glpi_rulescriterias SET criteria='$new' WHERE criteria='$old' AND rules_id IN ($rules);";
+               $DB->query($query) or die("0.80 update datas for rules criterias " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+   }
 
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
@@ -707,18 +771,18 @@ function update0721to080() {
 	}
 
    // Change mailgate search pref : add ative
-	$query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".MAILGATE_TYPE.";";
+	$query="SELECT DISTINCT users_id FROM glpi_displayprefs WHERE itemtype=".MAILGATE_TYPE.";";
 	if ($result = $DB->query($query)){
 		if ($DB->numrows($result)>0){
 			while ($data = $DB->fetch_assoc($result)){
-				$query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".MAILGATE_TYPE.";";
+				$query="SELECT max(rank) FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND itemtype=".MAILGATE_TYPE.";";
 				$result=$DB->query($query);
 				$rank=$DB->result($result,0,0);
 				$rank++;
-				$query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=2 AND type=".MAILGATE_TYPE.";";
+				$query="SELECT * FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND num=2 AND itemtype=".MAILGATE_TYPE.";";
 				if ($result2=$DB->query($query)){
 					if ($DB->numrows($result2)==0){
-						$query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['FK_users']."');";
+						$query="INSERT INTO glpi_displayprefs (itemtype ,`num` ,`rank` ,users_id) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['users_id']."');";
 						$DB->query($query);
 					}
 				}
