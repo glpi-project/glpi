@@ -111,7 +111,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
 
 	// First view of the page : try to load a bookmark
 	if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])){
-		$query="SELECT FK_bookmark 
+		$query="SELECT bookmarks_id 
 			FROM glpi_bookmarks_users 
 			WHERE users_id='".$_SESSION['glpiID']."'
 				AND itemtype='$itemtype';";
@@ -2536,8 +2536,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 			break;
 		case "glpi_tickets.count":
 			if ($data[$NAME.$num]>0
-				&& haveRight("show_all_ticket","1")
-				&& $itemtype<1000) { // Plugin not yet supported in tracking search engine
+				&& haveRight("show_all_ticket","1")) { 
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&itemtype=$itemtype&item=".$data['ID']."\">";
 				$out.= $data[$NAME.$num];
 				$out.="</a>";
@@ -2943,7 +2942,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 		break;
 		case "glpi_budgets":
 			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budget = $nt.ID) ";
+		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budgets_id = $nt.ID) ";
 		break;
 		case "glpi_infocoms":
 			if ($itemtype == SOFTWARE_TYPE) {

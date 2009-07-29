@@ -242,7 +242,7 @@ class MailCollect {
 					$result=imap_fetchheader($this->marubox,$i);
 	
 					// Is a mail responding of an already existgin ticket ?
-					if (isset($tkt['tracking']) ) {
+					if (isset($tkt['tickets_id']) ) {
 						// Deletion of message with sucess
 						if (false === is_array($result)){
 							$fup=new Followup();
@@ -352,28 +352,28 @@ class MailCollect {
 		// See In-Reply-To field
 		if (isset($head['in_reply_to'])){
 			if (preg_match($glpi_message_match,$head['in_reply_to'],$match)){
-				$tkt['tracking'] = (int)$match[1];
+				$tkt['tickets_id'] = (int)$match[1];
 			}
 		}
 		// See in References
-		if (!isset($tkt['tracking']) && isset($head['references'])){
+		if (!isset($tkt['tickets_id']) && isset($head['references'])){
 			if (preg_match($glpi_message_match,$head['references'],$match)){
-				$tkt['tracking'] = (int)$match[1];
+				$tkt['tickets_id'] = (int)$match[1];
 			}
 		}
 
 		// See in title
-		if (!isset($tkt['tracking']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)){
-				$tkt['tracking']=(int)$match[1];
+		if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)){
+				$tkt['tickets_id']=(int)$match[1];
 		}
 		// Found ticket link
-		if ( isset($tkt['tracking']) ) {
+		if ( isset($tkt['tickets_id']) ) {
 			// it's a reply to a previous ticket
 			$job=new Job();
 
-			// Check if tracking exists and users_id exists in GLPI
+			// Check if ticket  exists and users_id exists in GLPI
 			/// TODO check if users_id have right to add a followup to the ticket
-			if ( $job->getFromDB($tkt['tracking']) 
+			if ( $job->getFromDB($tkt['tickets_id']) 
 				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['uemail'],$head['from']))) {
 		
 				$content=explode("\n",$tkt['contents']);
@@ -406,11 +406,11 @@ class MailCollect {
 					$tkt['contents'].=$content[$ID]."\n";
 				}
 			} else {
-				unset($tkt['tracking']);
+				unset($tkt['tickets_id']);
 			}
 		}
 
-		if ( ! isset($tkt['tracking']) ) {
+		if ( ! isset($tkt['tickets_id']) ) {
 			// Mail followup
 			$tkt['uemail']=$head['from'];
 			$tkt['emailupdates']=1;

@@ -297,7 +297,7 @@ function getNbIntervTechFollowup($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT glpi_ticketsfollowups.users_id as users_id, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tickets ";
-	$query.= " LEFT JOIN glpi_ticketsfollowups ON (glpi_tickets.ID = glpi_ticketsfollowups.tracking) ";
+	$query.= " LEFT JOIN glpi_ticketsfollowups ON (glpi_tickets.ID = glpi_ticketsfollowups.tickets_id) ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_ticketsfollowups.users_id) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
@@ -539,7 +539,7 @@ function getNbIntervRequestType($date1,$date2){
 function getNbIntervCategory($date1,$date2){	
 	global $DB;
 	
-	// Get all tracking categories for tree merge management
+	// Get all ticket categories for tree merge management
 
 	$query="SELECT DISTINCT glpi_ticketscategories.ID,   glpi_ticketscategories.completename AS category
 		FROM glpi_ticketscategories ";
@@ -641,7 +641,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "technicien_followup":
 			$WHERE.=" AND glpi_ticketsfollowups.users_id='$value'";
-			$LEFTJOIN= "LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tracking = glpi_tickets.ID)";
+			$LEFTJOIN= "LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.ID)";
 		break;	
 		case "enterprise":
 			$WHERE.=" AND glpi_tickets.assign_ent='$value'";
@@ -739,7 +739,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($begin)) $WHERE.= " AND glpi_tickets.closedate >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tickets.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
-			$query="SELECT glpi_tickets.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tickets.closedate)-UNIX_TIMESTAMP(glpi_tickets.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_ticketsfollowups.date)-UNIX_TIMESTAMP(glpi_tickets.date)) AS FIRST FROM glpi_tickets LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tracking = glpi_tickets.ID) ";
+			$query="SELECT glpi_tickets.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tickets.closedate)-UNIX_TIMESTAMP(glpi_tickets.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_ticketsfollowups.date)-UNIX_TIMESTAMP(glpi_tickets.date)) AS FIRST FROM glpi_tickets LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.ID) ";
 			if (!strstr($LEFTJOIN,"glpi_ticketsfollowups")){
 				$query.=$LEFTJOIN;
 			}

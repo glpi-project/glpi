@@ -229,6 +229,9 @@ function update0721to080() {
    'auto_update' => array(array('to' => 'autoupdatesystems_id',
                            'tables' => array('glpi_computers',)),
                      ),
+   'budget' => array(array('to' => 'budgets_id',
+                           'tables' => array('glpi_infocoms')),
+                     ),
    'category_on_software_delete' => array(array('to' => 'softwarescategories_id_ondelete',
                            'noindex' => array('glpi_configs'),
                            'tables' => array('glpi_configs'),
@@ -237,6 +240,9 @@ function update0721to080() {
    'computer' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_tickets'),
                            'tables' => array('glpi_tickets')),
+                     ),
+   'contract_type' => array(array('to' => 'contractstypes_id',
+                           'tables' => array('glpi_contracts')),
                      ),
    'default_rubdoc_tracking' => array(array('to' => 'documentscategories_id_forticket',
                            'noindex' => array('glpi_configs'),
@@ -281,6 +287,9 @@ function update0721to080() {
                            'tables' => array('glpi_configs'),
                            'comments' => array('glpi_configs'=>'extra server')),
                      ),
+   'FK_bookmark' => array(array('to' => 'bookmarks_id',
+                           'tables' => array('glpi_bookmarks_users')),
+                     ),
    'FK_computers' => array(array('to' => 'computers_id',
                            'tables' => array('glpi_computers_devices','glpi_computersdisks',
                                        'glpi_softwareslicenses',)),
@@ -300,6 +309,10 @@ function update0721to080() {
                         array('to' => 'devices_id',
                            'noindex' => array('glpi_computers_devices'),
                            'tables' => array('glpi_computers_devices')),
+                     ),
+   'FK_doc' => array(array('to' => 'documents_id',
+                           'noindex' => array('glpi_documents_items'),
+                           'tables' => array('glpi_documents_items')),
                      ),
    'FK_enterprise' => array(array('to' => 'suppliers_id',
                            'noindex' => array('glpi_contacts_suppliers','glpi_contracts_suppliers'),
@@ -357,6 +370,12 @@ function update0721to080() {
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares','glpi_groups_users')),
                      ),
+   'FK_interface' => array(array('to' => 'interfaces_id',
+                           'tables' => array('glpi_devicesgraphiccards')),
+                     ),
+   'FK_tracking' => array(array('to' => 'tickets_id',
+                           'tables' => array('glpi_documents')),
+                     ),
    'FK_users' => array(array('to' => 'users_id',
                               'noindex' => array('glpi_displayprefs','glpi_bookmarks_users',
                                  'glpi_groups_users',),
@@ -376,6 +395,10 @@ function update0721to080() {
                      ),
    'id_user' => array(array('to' => 'users_id',
                            'tables' => array('glpi_consumables','glpi_reservations')),
+                     ),
+   'interface' => array(array('to' => 'interfaces_id',
+                           'tables' => array('glpi_devicescontrols','glpi_devicesharddrives',
+                                 'glpi_devicesdrives')),
                      ),
    'location' => array(array('to' => 'locations_id',
                            'noindex' => array('glpi_netpoints'),
@@ -430,6 +453,9 @@ function update0721to080() {
    'recipient' => array(array('to' => 'users_id_recipient',
                            'tables' => array('glpi_tickets')),
                      ),
+   'rubrique' => array(array('to' => 'documentscategories_id',
+                           'tables' => array('glpi_documents')),
+                     ),
    'server_id' => array(array('to' => 'authldaps_id',
                            'tables' => array('glpi_authldapsreplicates')),
                      ),
@@ -443,6 +469,9 @@ function update0721to080() {
                               'glpi_consumablesitems','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
+                     ),
+   'tracking' => array(array('to' => 'tickets_id',
+                           'tables' => array('glpi_ticketsfollowups')),
                      ),
    'type' => array(array('to' => 'cartridgesitemstypes_id',
                            'tables' => array('glpi_cartridgesitems')),
@@ -476,7 +505,11 @@ function update0721to080() {
                            'tables' => array('glpi_computers_items','glpi_displayprefs')),
                      ),
 
+
+
+
    );
+
 
    foreach ($foreignkeys as $oldname => $newnames) {
       foreach ($newnames as $tab){
@@ -552,40 +585,6 @@ function update0721to080() {
 		}
 	}
    
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_device_xxxx'); // Updating schema
-         
-
-	if (FieldExists("glpi_devicescontrols", "interface")) {
-		$query="ALTER TABLE `glpi_devicescontrols` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_devicescontrols " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_devicescontrols", "interface")) {
-			$query="ALTER TABLE `glpi_devicescontrols` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-         $DB->query($query) or die("0.80 alter interface index in glpi_devicescontrols " . $LANG['update'][90] . $DB->error());
-		}
-	}
-
-	if (FieldExists("glpi_devicesharddrives", "interface")) {
-		$query="ALTER TABLE `glpi_devicesharddrives` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_devicesharddrives " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_devicesharddrives", "interface")) {
-			$query="ALTER TABLE `glpi_devicesharddrives` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-			$DB->query($query) or die("0.v alter interface index in glpi_devicesharddrives " . $LANG['update'][90] . $DB->error());
-		}
-	}
-
-	if (FieldExists("glpi_devicesdrives", "interface")) {
-		$query="ALTER TABLE `glpi_devicesdrives` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_devicesdrives " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_devicesdrives", "interface")) {
-			$query="ALTER TABLE `glpi_devicesdrives` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-			$DB->query($query) or die("0.v alter interface index in glpi_devicesdrives " . $LANG['update'][90] . $DB->error());
-		}
-	}
-
-	if (!isIndex("glpi_devicesgraphiccards", "FK_interface")) {
-		$query="ALTER TABLE `glpi_devicesgraphiccards` ADD INDEX `FK_interface` ( `FK_interface` ) ";
-      $DB->query($query) or die("0.80 add interface index in glpi_devicesgraphiccards " . $LANG['update'][90] . $DB->error());
-	}
 	
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulescachesoftwares'); // Updating schema
 	

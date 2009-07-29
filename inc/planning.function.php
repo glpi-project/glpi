@@ -281,11 +281,11 @@ function showPlanning($who,$who_group,$when,$type){
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
 			$fup->getFromDB($data["id_followup"]);
-			$job->getFromDBwithData($fup->fields["tracking"],0);
+			$job->getFromDBwithData($fup->fields["tickets_id"],0);
 			if (haveAccessToEntity($job->fields["entities_id"])){
 				$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
 				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
-				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
+				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tickets_id"];
 				$interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
 				if (strcmp($begin,$data["begin"])>0){
@@ -745,10 +745,10 @@ function showPlanningCentral($who){
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
 			if ($fup->getFromDB($data["id_followup"])){
-				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
 					if (haveAccessToEntity($job->fields["entities_id"])){
 						$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
-						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
+						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tickets_id"];
 						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 						$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 						$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
@@ -913,7 +913,7 @@ function generateIcal($who){
 		while ($data=$DB->fetch_array($result)){
 
 			if ($fup->getFromDB($data["id_followup"])){
-				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
 					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}
@@ -928,7 +928,7 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["device"]="";
 
 			if ($fup->getFromDB($data["id_followup"])){
-				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
 					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}

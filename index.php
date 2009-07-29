@@ -89,7 +89,7 @@ else
 		echo "<input type='hidden' name='noAUTO' value='1' />";
 	}
 
-	// redirect to tracking
+	// redirect to ticket 
 	if (isset($_GET["redirect"])){
 		manageRedirect($_GET["redirect"]);
 		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';

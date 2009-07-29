@@ -106,7 +106,7 @@ class Bookmark extends CommonDBTM {
 
         function cleanDBonPurge($ID) {
 		global $DB;
-		$query="DELETE FROM glpi_bookmarks_users WHERE FK_bookmark='$ID'";
+		$query="DELETE FROM glpi_bookmarks_users WHERE bookmarks_id='$ID'";
 		$DB->query($query);
         }
 	
@@ -312,9 +312,9 @@ class Bookmark extends CommonDBTM {
 				if ($DB->numrows($result) > 0){
 					// already exists update it
 					$updateID=$DB->result($result,0,0);
-					$dd->update(array('ID'=>$updateID,'FK_bookmark'=>$ID));
+					$dd->update(array('ID'=>$updateID,'bookmarks_id'=>$ID));
 				} else {
-					$dd->add(array('FK_bookmark'=>$ID,'users_id'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
+					$dd->add(array('bookmarks_id'=>$ID,'users_id'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
 				}
 			}
 			
@@ -337,7 +337,7 @@ class Bookmark extends CommonDBTM {
 			$query="SELECT ID 
 				FROM glpi_bookmarks_users 
 				WHERE users_id='".$_SESSION['glpiID']."'
-					AND FK_bookmark='$ID'
+					AND bookmarks_id='$ID'
 					AND itemtype='".$this->fields['itemtype']."'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result) > 0){
@@ -367,7 +367,7 @@ class Bookmark extends CommonDBTM {
 		$query="SELECT `".$this->table."`.*, glpi_bookmarks_users.ID AS IS_DEFAULT 
 			FROM `".$this->table."` 
 			LEFT JOIN glpi_bookmarks_users ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype 
-							AND `".$this->table."`.ID = glpi_bookmarks_users.FK_bookmark) 
+							AND `".$this->table."`.ID = glpi_bookmarks_users.bookmarks_id) 
 			WHERE ";
 			
 		if ($private){

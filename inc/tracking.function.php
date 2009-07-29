@@ -1501,7 +1501,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	$FROM = " FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch();
 
 	if ($search!=""&&strpos($tosearch,"followup")!==false) {
-		$FROM.= " LEFT JOIN glpi_ticketsfollowups ON ( glpi_ticketsfollowups.tracking = glpi_tickets.ID)";
+		$FROM.= " LEFT JOIN glpi_ticketsfollowups ON ( glpi_ticketsfollowups.tickets_id = glpi_tickets.ID)";
 	}
 
 
@@ -1701,7 +1701,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			// Pager
 			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;users_id_assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;users_id=$users_id&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;itemtype=$itemtype&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;items_id=$items_id&amp;request_type=$request_type";
 			
-			// Specific case of showing tracking of an item
+			// Specific case of showing tickets of an item
 			if (isset($_GET["ID"])){
 				$parameters2.="&amp;ID=".$_GET["ID"];
 			}
@@ -1831,7 +1831,9 @@ function showFollowupsShort($ID) {
 
 	// Get Number of Followups
 
-	$query="SELECT * FROM glpi_ticketsfollowups WHERE tracking='$ID' $RESTRICT ORDER BY date DESC";
+	$query="SELECT * FROM glpi_ticketsfollowups
+         WHERE tickets_id = '$ID' $RESTRICT
+         ORDER BY date DESC";
 	$result=$DB->query($query);
 
 	$out="";
@@ -2230,21 +2232,21 @@ function showJobDetails ($target,$ID){
 		if ($numfiles>0){
 			$doc=new Document;
 			while ($data=$DB->fetch_array($result2)){
-				$doc->getFromDB($data["FK_doc"]);
+				$doc->getFromDB($data["documents_id"]);
 				
 				echo "<tr><td>";
 				
 				if (empty($doc->fields["filename"])){
 					if (haveRight("document","r")){
-						echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$data["FK_doc"]."'>".$doc->fields["name"]."</a>";
+						echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$data["documents_id"]."'>".$doc->fields["name"]."</a>";
 					} else {
 						echo $LANG['document'][37];
 					}
 				} else {
-					echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+					echo getDocumentLink($doc->fields["filename"],"&tickets_id=$ID");
 				}
 				if (haveRight("document","w"))
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."&amp;devtype=".TRACKING_TYPE."&amp;devid=".$ID."&amp;docid=".$data["FK_doc"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."&amp;devtype=".TRACKING_TYPE."&amp;devid=".$ID."&amp;docid=".$data["documents_id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'></a>";
 				echo "</td></tr>";
 			}
 		}
@@ -2299,7 +2301,7 @@ function showFollowupsSummary($tID){
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR users_id ='".$_SESSION["glpiID"]."' ) ";
 
-	$query = "SELECT * FROM glpi_ticketsfollowups WHERE (tracking = '$tID') $RESTRICT ORDER BY date DESC";
+	$query = "SELECT * FROM glpi_ticketsfollowups WHERE (tickets_id = '$tID') $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 	
 	$rand=mt_rand();
@@ -2573,7 +2575,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 	echo "</td></tr>";
 	echo "</table>";
 	if ($tID>0){
-		echo "<input type='hidden' name='tracking' value='$tID'>";
+		echo "<input type='hidden' name='tickets_id' value='$tID'>";
 		echo "</form>";
 	}
 	
@@ -2599,7 +2601,7 @@ function showUpdateFollowupForm($ID){
 		$canplan = haveRight("show_planning","1");
 
 		$job=new Job();
-		$job->getFromDB($fup->fields["tracking"]);
+		$job->getFromDB($fup->fields["tickets_id"]);
 
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
@@ -2729,7 +2731,7 @@ function showUpdateFollowupForm($ID){
 		echo "</table>";
 		if ($commentall){
 			echo "<input type='hidden' name='ID' value='".$fup->fields["ID"]."'>";
-			echo "<input type='hidden' name='tracking' value='".$fup->fields["tracking"]."'>";
+			echo "<input type='hidden' name='tickets_id' value='".$fup->fields["tickets_id"]."'>";
 			echo "</form>";
 		}
 		echo "</td></tr>";

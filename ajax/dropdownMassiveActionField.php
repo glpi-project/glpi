@@ -57,7 +57,7 @@ if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 	$search=$SEARCH_OPTION[$_POST["itemtype"]][$_POST["id_field"]];	
 	
 	// Specific budget case
-	if ($_POST["id_field"]==50) $search["linkfield"]="budget";
+	if ($_POST["id_field"]==50) $search["linkfield"]="budgets_id";
 
 	$FIELDNAME_PRINTED=false;
 
@@ -156,7 +156,7 @@ if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 				$FIELDNAME_PRINTED=true;
 			break;
 			case "glpi_budgets": // Infocoms budget
-				dropdown("glpi_budgets","budget");
+				dropdown("glpi_budgets","budgets_id");
 			break;
 			case "glpi_ocslinks": // auto_update ocs_link
 				dropdownYesNo("_auto_update_ocs");

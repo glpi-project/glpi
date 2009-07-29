@@ -1725,6 +1725,7 @@ function manageRedirect($where){
 							} 
 						break;
 						case "tracking":
+						case "ticket": ///TODO prepare update name : delete when tracking -> ticket
 							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
 						break;
 						case "prefs":

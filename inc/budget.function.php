@@ -41,15 +41,15 @@ if (!defined('GLPI_ROOT')){
 /**
  * Print the HTML array for contract on devices
  *
- * Print the HTML array for contract on devices $budgetID
+ * Print the HTML array for contract on devices $budgets_id
  *
- *@param $budgetID array : Contract identifier.
+ *@param $budgets_id array : Contract identifier.
  *
  *@return Nothing (display)
  *
  **/
 
-function showDeviceBudget($budgetID) {
+function showDeviceBudget($budgets_id) {
 
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
 
@@ -57,7 +57,7 @@ function showDeviceBudget($budgetID) {
 
 	$query = "SELECT DISTINCT itemtype
 		FROM glpi_infocoms
-		WHERE budget = '$budgetID'
+		WHERE budgets_id = '$budgets_id'
 		ORDER BY itemtype";
 
 	$result = $DB->query($query);
@@ -82,7 +82,7 @@ function showDeviceBudget($budgetID) {
 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* "
 				." FROM glpi_infocoms "
 				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id) "
-				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.budget = '$budgetID' "
+				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.budgets_id = '$budgets_id' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])
 				." ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 
@@ -94,7 +94,7 @@ function showDeviceBudget($budgetID) {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgetID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";
@@ -127,14 +127,14 @@ function showDeviceBudget($budgetID) {
 
 }
 
-function showDeviceBudgetValue($budgetID) {
+function showDeviceBudgetValue($budgets_id) {
   	global $DB,$LANG;
 
 	if (!haveRight("budget","r")) return false;
 
 	$query = "SELECT DISTINCT itemtype, SUM(value) as sumvalue
 		FROM glpi_infocoms
-		WHERE budget = '$budgetID'
+		WHERE budgets_id = '$budgets_id'
 		GROUP BY itemtype
       ORDER BY itemtype";
 
@@ -145,7 +145,7 @@ function showDeviceBudgetValue($budgetID) {
    
 	$ci=new CommonItem;
    $budget =  new Budget();
-   $budget->getFromDB($budgetID);
+   $budget->getFromDB($budgets_id);
 
    echo "<br><br><div class='center'><table class='tab_cadre'>";
 	echo "<tr>";

@@ -208,7 +208,7 @@ function showDeviceDocument($instID) {
 		// it's done for both directions in showDocumentAssociated
 		$query = "SELECT DISTINCT itemtype 
 			FROM glpi_documents_items 
-			WHERE glpi_documents_items.FK_doc = '$instID' AND glpi_documents_items.itemtype != ".DOCUMENT_TYPE." 
+			WHERE glpi_documents_items.documents_id = '$instID' AND glpi_documents_items.itemtype != ".DOCUMENT_TYPE." 
 			ORDER BY itemtype";
 		
 		$result = $DB->query($query);
@@ -242,7 +242,7 @@ function showDeviceDocument($instID) {
 					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$itemtype].".entities_id) ";
 				}
 				$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_documents_items.items_id
-						AND glpi_documents_items.itemtype='$itemtype' AND glpi_documents_items.FK_doc = '$instID' "
+						AND glpi_documents_items.itemtype='$itemtype' AND glpi_documents_items.documents_id = '$instID' "
 						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
 				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
@@ -341,7 +341,7 @@ function addDeviceDocument($docID,$itemtype,$ID){
 		if ($itemtype==DOCUMENT_TYPE && $ID == $docID){
 			return;
 		}
-		$query="INSERT INTO glpi_documents_items (FK_doc,items_id, itemtype) VALUES ('$docID','$ID','$itemtype');";
+		$query="INSERT INTO glpi_documents_items (documents_id,items_id, itemtype) VALUES ('$docID','$ID','$itemtype');";
 		$result = $DB->query($query);
 	}
 }
@@ -382,12 +382,12 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		$recursive=1;
 	}
 
-	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','entities_id','recursive');
+	$needed_fields=array('ID','name','filename','mime','documentscategories_id','link','deleted','entities_id','recursive');
 
 
 	$query = "SELECT glpi_documents_items.ID AS assocID, glpi_entities.ID AS entity, 
 			glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
-			LEFT JOIN glpi_documents ON (glpi_documents_items.FK_doc=glpi_documents.ID) 
+			LEFT JOIN glpi_documents ON (glpi_documents_items.documents_id=glpi_documents.ID) 
 			LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
 			WHERE glpi_documents_items.items_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 
@@ -405,7 +405,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 				glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
 				LEFT JOIN glpi_documents ON (glpi_documents_items.items_id=glpi_documents.ID)
 				LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
-				WHERE glpi_documents_items.FK_doc = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
+				WHERE glpi_documents_items.documents_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 		if (isset($_SESSION["glpiID"])){
 			$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
 		} else {
@@ -471,7 +471,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 				echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
 			else echo "&nbsp;";
 			echo "</td>";
-			echo "<td class='center'>".getDropdownName("glpi_documentscategories",$data["rubrique"])."</td>";
+			echo "<td class='center'>".getDropdownName("glpi_documentscategories",$data["documentscategories_id"])."</td>";
 			echo "<td class='center'>".$data["mime"]."</td>";
 	
 			if ($withtemplate<2) {
