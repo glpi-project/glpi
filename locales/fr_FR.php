@@ -1441,6 +1441,7 @@ $LANG['setup'][62]="Sélectionnez la catégorie à configurer";
 $LANG['setup'][63]="Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs éléments."; 
 $LANG['setup'][64]="Si vous confirmez la suppression, les éléments utilisant cet intitulé se verront attribuer un champs NULL"; 
 $LANG['setup'][65]="Vous pouvez aussi remplacer toutes les occurrences de cet intitulé par un autre :"; 
+$LANG['setup'][66]="Elément non modifiable en utilisant ce système.";
 $LANG['setup'][67]="Authentifications externes"; 
 $LANG['setup'][68]="Suivis par emails"; 
 $LANG['setup'][69]="Types de périphériques"; 
