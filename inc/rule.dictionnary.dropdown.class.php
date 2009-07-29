@@ -191,7 +191,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescacheprintersmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_PRINTER :
-				$this->item_table="glpi_type_printer";
+				$this->item_table="glpi_printerstypes";
 				$this->initCache("glpi_rulescacheprinterstypes");
 			break;
 			case RULE_DICTIONNARY_MODEL_PHONE :

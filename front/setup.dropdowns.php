@@ -164,7 +164,7 @@ if (isset($_POST['mass_delete'])){
 				"glpi_cartridgesitemstypes"=>$LANG['setup'][84],
 				"glpi_consumablesitemstypes"=>$LANG['setup'][92],
 				"glpi_contractstypes"=>$LANG['setup'][85],
-				"glpi_contactstypes"=>$LANG['setup'][82],	
+				"glpi_contactstypes"=>$LANG['setup'][82],
 				"glpi_devicesmemoriestypes"=>$LANG['setup'][86],
 				"glpi_supplierstypes"=>$LANG['setup'][80],
 				"glpi_interfaces"=>$LANG['setup'][93],
@@ -193,11 +193,11 @@ if (isset($_POST['mass_delete'])){
 					),
 
 			$LANG['Menu'][18]=>array(
-					"glpi_knowbaseitemscategories"=>$LANG['title'][5],	
+					"glpi_knowbaseitemscategories"=>$LANG['title'][5],
 					),
 
 			$LANG['setup'][145]=>array(
-					"glpi_operatingsystems"=>$LANG['setup'][5],	
+					"glpi_operatingsystems"=>$LANG['setup'][5],
 					"glpi_operatingsystemsversions"=>$LANG['computers'][52],
 					"glpi_operatingsystemsservicepacks"=>$LANG['computers'][53],
 					"glpi_autoupdatesystems"=>$LANG['computers'][51],
@@ -209,7 +209,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_netpoints"=>$LANG['setup'][73],
 					"glpi_domains"=>$LANG['setup'][89],
 					"glpi_networks"=>$LANG['setup'][88],
-					"glpi_vlans"=>$LANG['setup'][90],	
+					"glpi_vlans"=>$LANG['setup'][90],
 					),
 			
 			$LANG['Menu'][4]=>array(
@@ -254,7 +254,7 @@ if (isset($_POST['mass_delete'])){
 			}
 		}
 	}
-	
+
 	if (!strpos($_SERVER['PHP_SELF'],"popup")){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
@@ -311,6 +311,11 @@ if (isset($_POST['mass_delete'])){
 				$title=$val[$which];
 			}
 		}
+      if (empty($title)){
+         echo "<div class='center'><br><strong>".$LANG['setup'][66]."</strong><br>";
+         echo "<a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+         echo "</div>";
+      }
 		if (isset($_GET['mass_deletion'])){
 			showDropdownList($_SERVER['PHP_SELF'],$which,$entities_id);
 		} else {
