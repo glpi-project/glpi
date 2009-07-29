@@ -1021,10 +1021,10 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
  * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_ldap_auth($identificat,$login,$password, $auths_id = -1) {
+function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
 
 	//If no specific source is given, test all ldap directories
-	if ($auths_id == -1) {
+	if ($auths_id <= 0) {
 		foreach  ($identificat->authtypes["ldap"] as $ldap_method) {
 			if (!$identificat->auth_succeded) {
 				$identificat = ldap_auth($identificat, $login,$password,$ldap_method);
@@ -1073,8 +1073,8 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
  * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_mail_auth($identificat, $login,$password,$auths_id = -1) {
-	if ($auths_id == -1) {
+function try_mail_auth($identificat, $login,$password,$auths_id = 0) {
+	if ($auths_id <= 0) {
 		foreach ($identificat->authtypes["mail"] as $mail_method) {
 			if (!$identificat->auth_succeded) {
 				$identificat = mail_auth($identificat, $login,$password,$mail_method);

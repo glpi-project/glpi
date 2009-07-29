@@ -319,7 +319,7 @@
 	define("AUTH_EXTERNAL",4);
 	define("AUTH_CAS",5);
 	define("AUTH_X509",6);
-	define("NOT_YET_AUTHENTIFIED",-1);
+	define("NOT_YET_AUTHENTIFIED",0);
 
 	//Mail send methods
 	define("MAIL_MAIL",0);
