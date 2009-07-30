@@ -94,7 +94,7 @@ if (isset($_POST["update"]))
 		if ($_POST["profiles_id"]){
 			$ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
 		}
-		$ruleAction->addActionByAttributes("assign", $ruleid, "recursive", $_POST["recursive"]);
+		$ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
 	}
 		
 	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);

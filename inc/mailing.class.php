@@ -230,7 +230,7 @@ class Mailing
 									$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups_users 
 									INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-									WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$this->job->fields["groups_id_assign"]."'";
+									WHERE glpi_users.is_deleted=0 AND glpi_groups_users.groups_id='".$this->job->fields["groups_id_assign"]."'";
 				
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
@@ -376,7 +376,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 						FROM glpi_profiles_users 
 						INNER JOIN glpi_users ON (glpi_profiles_users.users_id = glpi_users.ID) $joinprofile 
-						WHERE glpi_users.deleted=0 AND glpi_profiles_users.profiles_id='".$data["items_id"]."' ".
+						WHERE glpi_users.is_deleted=0 AND glpi_profiles_users.profiles_id='".$data["items_id"]."' ".
 						getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",$this->job->fields['entities_id'],true);
 
 						if ($result2= $DB->query($query)){
@@ -390,7 +390,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_groups_users 
 							INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-							WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$data["items_id"]."'";
+							WHERE glpi_users.is_deleted=0 AND glpi_groups_users.groups_id='".$data["items_id"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -420,7 +420,7 @@ class Mailing
 		$body="";
 
 		if($format=="html"){
-			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+			if ($CFG_GLPI["show_link_in_mail"]&&!empty($CFG_GLPI["url_base"])){
 				$body.="URL: <a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
 
 			}
@@ -434,7 +434,7 @@ class Mailing
 
 		}else{ // text format
 
-			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+			if ($CFG_GLPI["show_link_in_mail"]&&!empty($CFG_GLPI["url_base"])){
 				$body.=$LANG['mailing'][1]."\n"; $body.="URL: ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
 
 			}
@@ -576,7 +576,7 @@ class Mailing
 	function send()
 	{
 		global $CFG_GLPI,$LANG;
-		if ($CFG_GLPI["mailing"])
+		if ($CFG_GLPI["use_mailing"])
 		{	
 			if (!is_null($this->job)&&in_array($this->type,array("new","update","followup","finish")))
 			{
@@ -940,7 +940,7 @@ class MailingResa{
 	function send()
 	{
 		global $CFG_GLPI,$LANG;
-		if ($CFG_GLPI["mailing"]&&isValidEmail($CFG_GLPI["admin_email"]))
+		if ($CFG_GLPI["use_mailing"]&&isValidEmail($CFG_GLPI["admin_email"]))
 		{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();
@@ -1195,7 +1195,7 @@ class MailingAlert
 	function send()
 	{
 		global $CFG_GLPI,$LANG;
-		if ($CFG_GLPI["mailing"])
+		if ($CFG_GLPI["use_mailing"])
 		{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();

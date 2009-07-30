@@ -108,7 +108,7 @@ class Printer  extends CommonDBTM {
 		
 		$ID  = $this->fields['ID'];
 
-		if ($ID<0 || !$this->fields['recursive']) {
+		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
 		}
 
@@ -242,7 +242,7 @@ class Printer  extends CommonDBTM {
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
-				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
+				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
 					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
@@ -518,7 +518,7 @@ class Printer  extends CommonDBTM {
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 				echo "<div class='center'>";
-				if (!$this->fields["deleted"])
+				if (!$this->fields["is_deleted"])
 					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 				else {
 					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";

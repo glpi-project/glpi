@@ -96,7 +96,7 @@ class RightAffectRule extends Rule {
 			dropdownValue("glpi_profiles","profiles_id");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['profiles'][28].":";
-			dropdownYesNo("recursive",0);
+			dropdownYesNo("is_recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
 			echo "<input type=hidden name='entities_id' value=\"-1\">";
@@ -217,7 +217,7 @@ class RightAffectRule extends Rule {
 		global $CFG_GLPI;
 		$entity='';
 		$right='';
-		$recursive = 0;
+		$is_recursive = 0;
 		$continue = true;
 		$output_src = $output;
 
@@ -233,8 +233,8 @@ class RightAffectRule extends Rule {
 							case "profiles_id":
 								$right = $action->fields["value"];
 								break;
-							case "recursive":
-								$recursive = $action->fields["value"];
+							case "is_recursive":
+								$is_recursive = $action->fields["value"];
 								break;
 							case "active":
 								$output["active"] = $action->fields["value"];
@@ -277,10 +277,10 @@ class RightAffectRule extends Rule {
 			//Nothing to be returned by the function :
 			//Store in session the entity and/or right
 			if ($entity != '' && $right != '') {
-				$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
+				$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$is_recursive);
 			}
 			elseif ($entity != '') { 
-				$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
+				$output["_ldap_rules"]["rules_entities"][]=array($entity,$is_recursive);
 			}
 			elseif ($right != '') { 
 				$output["_ldap_rules"]["rules_rights"][]=$right;
@@ -397,7 +397,7 @@ class RightRuleCollection extends RuleCollection {
 			{
 				$this->displayActionByName("entity",$val[0]);
 				if (isset($val[1]))
-					$this->displayActionByName("recursive",$val[1]);
+					$this->displayActionByName("is_recursive",$val[1]);
 			}
 		}
 
@@ -421,7 +421,7 @@ class RightRuleCollection extends RuleCollection {
 				if (isset($val[1]))
 					$this->displayActionByName("profile",$val[1]);
 				if (isset($val[2]))
-					$this->displayActionByName("recursive",$val[2]);
+					$this->displayActionByName("is_recursive",$val[2]);
 			}
 		}
 		
@@ -463,7 +463,7 @@ class RightRuleCollection extends RuleCollection {
 			 	echo  getDropdownName("glpi_profiles",$value);  
 			 	echo  "</td>"; 
 			break;			
-			case "recursive":
+			case "is_recursive":
 			 	echo "<td class='tab_bg_2' align='center'>".$LANG['profiles'][28]." </td>\n";
 			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
 			 	echo ((!$value)?$LANG['choice'][0]:$LANG['choice'][1]); 

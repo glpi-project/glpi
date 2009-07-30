@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')){
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE  (glpi_documents.documentscategories_id = '".$_POST['rubdoc']."' AND glpi_documents.deleted='0' ) ";
+$where=" WHERE  (glpi_documents.documentscategories_id = '".$_POST['rubdoc']."' AND glpi_documents.is_deleted='0' ) ";
 
 
 if (isset($_POST["entity_restrict"])){
@@ -97,7 +97,7 @@ if ($DB->numrows($result)) {
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		$output = $data["name"];
-		if($_SESSION["glpiview_ID"]||empty($output)){
+		if($_SESSION["glpiis_ids_visible"]||empty($output)){
 			$output.=" (".$data["ID"].")";
 		}
 		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";

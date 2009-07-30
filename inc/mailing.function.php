@@ -230,7 +230,7 @@ function isValidEmail($email="")
 function isAuthorMailingActivatedForHelpdesk(){
 	global $DB,$CFG_GLPI;
 
-	if ($CFG_GLPI['mailing']){
+	if ($CFG_GLPI['use_mailing']){
 		$query="SELECT COUNT(ID) FROM glpi_mailingsettings WHERE type IN ('new','followup','update','finish') 
 				AND item_type = '".USER_MAILING_TYPE."' AND items_id = '".AUTHOR_MAILING."' ;";
 		if ($result=$DB->query($query)){

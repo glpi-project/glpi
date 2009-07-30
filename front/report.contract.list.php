@@ -58,7 +58,7 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	$query=array();
 	foreach ($_POST["item_type"] as $key => $val)
 	if (in_array($val,$items)){
-		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".deleted AS itemdeleted, ";
+		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".is_deleted AS itemdeleted, ";
 		$query[$val].= " glpi_locations.completename AS location, glpi_contractstypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
 		$query[$val].= " FROM glpi_contracts_items ";
 		$query[$val].= " INNER JOIN glpi_contracts ON (glpi_contracts_items.contracts_id=glpi_contracts.ID) ";

@@ -760,8 +760,8 @@ function replaceDropDropDown($input) {
 			if ($table[0]!='_'){
 				if (!is_array($field)){
 					// Manage OCS lock for items - no need for array case
-					if ($table=="glpi_computers"&&$CFG_GLPI['ocs_mode']){
-						$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
+					if ($table=="glpi_computers"&&$CFG_GLPI['use_ocs_mode']){
+						$query="SELECT ID FROM `glpi_computers` WHERE is_ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)){
 							if (!function_exists('mergeOcsArray')){
@@ -970,7 +970,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
-			if ($_SESSION["glpiview_ID"]||empty($data["tplname"])){
+			if ($_SESSION["glpiis_ids_visible"]||empty($data["tplname"])){
             			$templname.= "(".$data["ID"].")";
 			}
 			echo "<tr>";
@@ -1305,7 +1305,7 @@ function showSystemInformations () {
 									  $LANG['setup'][154]=>'ldap_basedn',
 									  $LANG['setup'][159]=>'ldap_condition',
 									  $LANG['setup'][155]=>'ldap_rootdn',
-									  $LANG['setup'][180]=>'ldap_use_tls');
+									  $LANG['setup'][180]=>'use_tls');
 				$msg = '';
 				$first = true;
 				foreach($fields as $label => $field) {

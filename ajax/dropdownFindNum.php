@@ -61,7 +61,7 @@ if (empty($where)){
 	$where="WHERE 1 ";
 }
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
-	$where.=" AND deleted=0 ";
+	$where.=" AND is_deleted=0 ";
 }
 if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 	$where.=" AND is_template=0 ";		
@@ -113,7 +113,7 @@ if ($DB->numrows($result)) {
 				$output.=" - ".$data['otherserial'];
 			}
 		}
-		if (empty($output)||$_SESSION['glpiview_ID']) $output.=" (".$data['ID'].")";
+		if (empty($output)||$_SESSION['glpiis_ids_visible']) $output.=" (".$data['ID'].")";
 		echo "<option value=\"".$data['ID']."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 }

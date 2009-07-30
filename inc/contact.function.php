@@ -60,7 +60,7 @@ function showEnterpriseContact($instID) {
 
 	$query = "SELECT glpi_contacts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
 			glpi_suppliers.website as website, glpi_suppliers.fax as fax, glpi_suppliers.phonenumber as phone,
-			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
+			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.is_deleted, glpi_entities.ID AS entity"
 		. " FROM glpi_contacts_suppliers, glpi_suppliers "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
 		. " WHERE glpi_contacts_suppliers.contacts_id = '$instID' AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID"
@@ -95,7 +95,7 @@ function showEnterpriseContact($instID) {
 				if (!preg_match("?https*://?",$website)) $website="http://".$website;
 				$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 			}
-			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
 			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 			echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
@@ -110,7 +110,7 @@ function showEnterpriseContact($instID) {
 		}
 	}
 	if ($canedit){
-		if ($contact->fields["recursive"]) {
+		if ($contact->fields["is_recursive"]) {
          $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contact->fields["entities_id"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_suppliers",$contact->fields["entities_id"]);
@@ -118,7 +118,7 @@ function showEnterpriseContact($instID) {
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-			if ($contact->fields["recursive"]) {
+			if ($contact->fields["is_recursive"]) {
             dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contact->fields["entities_id"]),$used);
 			} else {
 				dropdown("glpi_suppliers","entID",1,$contact->fields["entities_id"],$used);

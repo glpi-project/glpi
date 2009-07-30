@@ -166,7 +166,7 @@ while ($event=$DB->fetch_array($res)) {
 			// TODO: to be done according to automatic link configuration
 			$input["ID"] = $event["items_id"];
 			$input["name"] = NULL;		// No name
-			$input["ocs_import"] = 0;	// No Ocs link
+			$input["is_ocs_import"] = 0;	// No Ocs link
 			$input["state"] = 5;		// Available
 			
 			// Unlink the computer

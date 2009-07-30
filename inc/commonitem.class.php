@@ -402,7 +402,7 @@ class CommonItem{
 		global $CFG_GLPI;
 		$toadd="";
 		if ($with_comments) $toadd="&nbsp;".$this->getComments();
-		if ($_SESSION['glpiview_ID']){
+		if ($_SESSION['glpiis_ids_visible']){
 			if ($this->itemtype==0)
 				return $this->getName().$toadd;
 			else return $this->getName()." (".$this->items_id.")".$toadd;

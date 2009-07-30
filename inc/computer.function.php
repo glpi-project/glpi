@@ -171,7 +171,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 							$used[] = $tID;
 							
-							echo "<tr ".($ci->getField('deleted')?"class='tab_bg_2_2'":"").">";
+							echo "<tr ".($ci->getField('is_deleted')?"class='tab_bg_2_2'":"").">";
 							echo "<td class='center'><strong>";
 							echo $ci->getLink();
 							echo "</strong>";

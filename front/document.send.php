@@ -39,8 +39,9 @@ $NEEDED_ITEMS=array("document","tracking");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if ($CFG_GLPI["public_faq"] == 0)
-checkLoginUser();
+if (!$CFG_GLPI["use_public_faq"]){
+   checkLoginUser();
+}
 
 if (isset($_GET["file"])){
 
@@ -111,7 +112,7 @@ if (isset($_GET["file"])){
 					if (isset($_SESSION["glpiID"])&&$doc->fields["users_id"]==$_SESSION["glpiID"]){
 						$send=true;
 					} else {
-						if (haveRight("faq","r")||$CFG_GLPI["public_faq"]){
+						if (haveRight("faq","r")||$CFG_GLPI["use_public_faq"]){
 							// Check if it is a FAQ document
 							$query = "SELECT * 
 								FROM glpi_documents_items 

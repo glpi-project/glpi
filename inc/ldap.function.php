@@ -59,7 +59,7 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
 	}
 	
 	//Connect to the directory
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'],$config_ldap->fields['ldap_opt_deref']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['use_tls'],$config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 		$group_infos = ldap_search_group_by_dn($ds, $config_ldap->fields['ldap_basedn'], stripslashes($group_dn),$config_ldap->fields["ldap_group_condition"]);
 		$group = new Group();
@@ -102,7 +102,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 	}
 	
 	//Connect to the directory
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'],$config_ldap->fields['ldap_opt_deref']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['use_tls'],$config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 		//Get the user's dn
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
@@ -260,7 +260,7 @@ function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC'){
 	$infos = array();
 	$groups = array();
 	
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 		
 		switch ($config_ldap->fields["ldap_search_for_groups"])
@@ -407,7 +407,7 @@ function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
 		$order="ASC";
 	}
 	
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 
 		//Search for ldap login AND modifyTimestamp, which indicates the last update of the object in directory
@@ -629,7 +629,7 @@ function testLDAPConnection($auths_id,$replicate_id=-1) {
 		$host = $config_ldap->fields['ldap_host'];
 		$port = $config_ldap->fields['ldap_port'];
 	}
-	$ds = connect_ldap($host, $port, $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
+	$ds = connect_ldap($host, $port, $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds)
 		return true;
 	else

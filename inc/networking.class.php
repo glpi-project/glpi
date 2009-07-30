@@ -185,7 +185,7 @@ class Netdevice extends CommonDBTM {
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
-				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
+				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
 					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
@@ -231,7 +231,7 @@ class Netdevice extends CommonDBTM {
 		
 		$ID  = $this->fields['ID'];
 
-		if ($ID<0 || !$this->fields['recursive']) {
+		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
 		}
 
@@ -462,7 +462,7 @@ class Netdevice extends CommonDBTM {
 				echo "<td class='tab_bg_2' valign='top' width='33%'>\n";
 
 				echo "<div class='center'>\n";
-				if (!$this->fields["deleted"])
+				if (!$this->fields["is_deleted"])
 					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>\n";
 				else {
 					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>\n";
@@ -504,6 +504,10 @@ class Netport extends CommonDBTM {
 	var $entities_id		= -1;
 	/// hardare data : locations_id
 	var $locations_id		= -1;
+	/// hardare data : is_recursive
+   var $is_recursive = 0;
+	/// hardare data : is_deleted
+   var $is_deleted = 0;
 
 	/**
 	 * Constructor
@@ -571,12 +575,12 @@ class Netport extends CommonDBTM {
 		{
 			$data = $DB->fetch_array($result);
 			$this->device_name = $data["name"];
-			$this->deleted = $data["deleted"];
+			$this->is_deleted = $data["is_deleted"];
 			$this->entities_id = $data["entities_id"];
 			$this->locations_id = $data["locations_id"];
 			$this->device_ID = $ID;
 			$this->itemtype = $itemtype;
-			$this->recursive = (isset($data["recursive"])?$data["recursive"]:0);
+			$this->is_recursive = (isset($data["is_recursive"])?$data["is_recursive"]:0);
 			return true;
 		}
 		else 

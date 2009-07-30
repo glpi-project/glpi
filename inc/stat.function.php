@@ -1041,7 +1041,7 @@ function showItemStats($target,$date1,$date2,$start){
 			if ($ci->getFromDB($data["itemtype"],$data["items_id"])){
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
 				echo displaySearchNewLine($output_type,$i%2);
-				echo displaySearchItem($output_type,$ci->getType()." - ".$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+				echo displaySearchItem($output_type,$ci->getType()." - ".$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("is_deleted")?" class='deleted' ":""));
 				if ($view_entities){
 					$ent=$ci->getField('entities_id');
 					if ($ent==0){
@@ -1049,9 +1049,9 @@ function showItemStats($target,$date1,$date2,$start){
 					} else {
 						$ent=$entities[$ent]['completename'];
 					}
-					echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+					echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"align='center'"." ".($ci->getField("is_deleted")?" class='deleted' ":""));
 				}	
-				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,"align='center'"." ".($ci->getField("is_deleted")?" class='deleted' ":""));
 			}
 			$i++;
 		}

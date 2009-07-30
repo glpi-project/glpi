@@ -500,7 +500,7 @@ function printReservationItems($target){
 			INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_reservationsitems.itemtype='$itemtype'
 								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$itemtype].".ID)
 			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$itemtype].".locations_id = glpi_locations.ID)
-			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$itemtype].".deleted ='0'
+			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$itemtype].".is_deleted ='0'
             ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype])."
          ORDER BY ".$LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 

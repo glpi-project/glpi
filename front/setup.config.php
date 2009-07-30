@@ -50,7 +50,7 @@ $config = new Config();
 
 if (!empty ($_POST["update"])) {
 	$config->update($_POST);
-	if (isset($_POST["ocs_mode"])&&$_POST["ocs_mode"] && !$CFG_GLPI["ocs_mode"])
+	if (isset($_POST["use_ocs_mode"])&&$_POST["use_ocs_mode"] && !$CFG_GLPI["use_ocs_mode"])
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.ocsng.php");
 	else
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.config.php");

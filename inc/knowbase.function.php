@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')){
 function searchFormKnowbase($target,$contains,$knowbaseitemscategories_id=0,$faq=0){
 	global $LANG,$CFG_GLPI;
 	
-	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
+	if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) return false;
 	
 	echo "<div>";
 	echo "<table  class='center-h'><tr><td>";
@@ -108,7 +108,7 @@ function showKbCategoriesFirstLevel($target,$knowbaseitemscategories_id=0,$faq=0
 	global $DB,$LANG,$CFG_GLPI;
 	
 	if($faq){
-		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) {
+		if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
 			return false;	
 		}
 		
@@ -234,7 +234,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$fa
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$where = "(glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.recursive=1) AND ";
+			$where = "(glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.is_recursive=1) AND ";
 		}
 	}	
 
@@ -425,7 +425,7 @@ function showKbRecentPopular($target,$type,$faq=0){
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$faq_limit .= " WHERE (glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.recursive=1)";
+			$faq_limit .= " WHERE (glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.is_recursive=1)";
 		} else {
 			$faq_limit .= " WHERE 1";
 		}
@@ -531,7 +531,7 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 
 	if ($ki->getFromDB($ID)){
 		if ($ki->fields["faq"]){
-			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")&&!haveRight("knowbase","r")) return false;	
+			if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) return false;
 		}
 		else 
 			if (!haveRight("knowbase","r")) return false;	

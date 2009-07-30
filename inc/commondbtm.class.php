@@ -272,7 +272,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE `".$this->table."` SET deleted='0' WHERE (ID = '$ID')";
+			$query = "UPDATE `".$this->table."` SET is_deleted='0' WHERE (ID = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -312,7 +312,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE `".$this->table."` SET deleted='1' WHERE ID = '$ID'";		
+			$query = "UPDATE `".$this->table."` SET is_deleted='1' WHERE ID = '$ID'";
 			$this->cleanDBonMarkDeleted($ID);
 
 			if ($result = $DB->query($query)){
@@ -1134,7 +1134,7 @@ class CommonDBTM {
 			$can_recu = haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"]);
 				
 		} else {
-			if ($this->fields["recursive"]) {
+			if ($this->fields["is_recursive"]) {
 				$can_edit = $can_edit && haveRecursiveAccessToEntity($this->fields["entities_id"]);
 				$can_recu = $can_edit;
 			}	
@@ -1194,7 +1194,7 @@ class CommonDBTM {
 			
 		$ID  = $this->fields['ID'];	
 		
-		if ($ID<0 || !$this->fields['recursive']) {
+		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
 		}
 		$entities = "('".$this->fields['entities_id']."'";
@@ -1334,15 +1334,15 @@ class CommonDBTM {
 			echo $LANG['entity'][9].":&nbsp;";
 		
 			if (!$this->can($ID,'recursive')) {
-				echo getYesNo($this->fields["recursive"]);
+				echo getYesNo($this->fields["is_recursive"]);
 				$comment=$LANG['common'][86];
 				$image="/pics/lock.png";
 			} else if (!$this->canUnrecurs()) {
-				echo getYesNo($this->fields["recursive"]);
+				echo getYesNo($this->fields["is_recursive"]);
 				$comment=$LANG['common'][84];
 				$image="/pics/lock.png";
 			} else {
-				dropdownYesNo("recursive",$this->fields["recursive"]);
+				dropdownYesNo("is_recursive",$this->fields["is_recursive"]);
 				$comment=$LANG['common'][85];
 				$image="/pics/aide.png";
 			}
@@ -1397,7 +1397,7 @@ class CommonDBTM {
 		switch ($right){
 			case 'r':
 				// Personnal item
-				if ($this->may_be_private && $this->fields['private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
+				if ($this->may_be_private && $this->fields['is_private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
 					return true;
 				} else {
 					// Check Global Right
@@ -1418,7 +1418,7 @@ class CommonDBTM {
 				break;
 			case 'w':
 				// Personnal item
-				if ($this->may_be_private && $this->fields['private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
+				if ($this->may_be_private && $this->fields['is_private'] && $this->fields['users_id']==$_SESSION["glpiID"]){
 					return true;
 				} else {
 					// Check Global Right
@@ -1514,8 +1514,8 @@ class CommonDBTM {
 	 * @return integer (0/1) 
 	**/
 	function isRecursive () {
-		if ($this->may_be_recursive && isset($this->fields["recursive"])) {
-			return $this->fields["recursive"];		
+		if ($this->may_be_recursive && isset($this->fields["is_recursive"])) {
+			return $this->fields["is_recursive"];		
 		} 
 		return 0;
 	}	

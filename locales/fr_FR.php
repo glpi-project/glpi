@@ -1724,8 +1724,8 @@ $LANG['software'][51]="Le nombre doit être 1 pour pouvoir affecter";
 
 $LANG['softwarecategories'][1]="Repliés"; 
 $LANG['softwarecategories'][2]="Dépliés"; 
-$LANG['softwarecategories'][3]="Logiciels non catégorisés"; 
-$LANG['softwarecategories'][4]="Logiciels catégorisés"; 
+$LANG['softwarecategories'][3]="Logiciels non catégorisés repliés"; 
+$LANG['softwarecategories'][4]="Logiciels catégorisés repliés"; 
 $LANG['softwarecategories'][5]="Catégorie de logiciels"; 
 
 $LANG['state'][0]="Statut"; 

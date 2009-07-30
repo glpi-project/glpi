@@ -485,7 +485,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 		$netport->getFromDB($contact->contact_id);
 		$device2->getFromDB($netport->fields["itemtype"], $netport->fields["items_id"]);
 
-		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr " . ($device2->obj->fields["deleted"] ? "class='tab_bg_2_2'" : "") . ">";
+		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr " . ($device2->obj->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
 		echo "<td><strong>";
 
 		if ($device2->obj->can($device2->obj->fields["ID"], 'r')) {
@@ -499,7 +499,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$netport->fields["itemtype"]] . "?ID=" . $device2->obj->fields["ID"] . "\">";
 
 			echo $device2->obj->fields["name"];
-			if ($_SESSION["glpiview_ID"])
+			if ($_SESSION["glpiis_ids_visible"])
 				echo " (" . $netport->device_ID . ")";
 			echo "</a></strong>";
 			if ($device1->obj->fields["entities_id"] != $device2->obj->fields["entities_id"]) {
@@ -531,7 +531,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 		if ($canedit) {
 			echo "<td class='left'>";
 			if ($withtemplate != 2 && $withtemplate != 1) {
-				if (isset ($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
+				if (isset ($device1->obj->fields["is_recursive"]) && $device1->obj->fields["is_recursive"]) {
                dropdownConnectPort($ID, "dport", getSonsOf("glpi_entities",$device1->obj->fields["entities_id"]));
 				} else {
 					dropdownConnectPort($ID, "dport", $device1->obj->fields["entities_id"]);
@@ -822,15 +822,15 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
 	$query = "SELECT gnp.items_id as ID, gnp.ID as portID, gnp.itemtype as itemtype 
 		FROM `glpi_networkports` as gnp
-		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.entities_id=$entity AND gc.deleted=0 
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.entities_id=$entity AND gc.is_deleted=0 
 							AND gc.is_template=0 AND itemtype=" . COMPUTER_TYPE . ") 
-		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.entities_id=$entity AND gp.deleted=0 
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.entities_id=$entity AND gp.is_deleted=0 
 							AND gp.is_template=0 AND itemtype=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.entities_id=$entity AND gn.deleted=0 
+		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.entities_id=$entity AND gn.is_deleted=0 
 							AND gn.is_template=0 AND itemtype=" . NETWORKING_TYPE . ")  
-		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.entities_id=$entity AND gph.deleted=0 
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.entities_id=$entity AND gph.is_deleted=0 
 							AND gph.is_template=0 AND itemtype=" . PHONE_TYPE . ") 
-		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.entities_id=$entity AND gpe.deleted=0 
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.entities_id=$entity AND gpe.is_deleted=0 
 							AND gpe.is_template=0 AND itemtype=" . PERIPHERAL_TYPE . ") 
 	 	WHERE gnp.$field='" . $value . "'";
 

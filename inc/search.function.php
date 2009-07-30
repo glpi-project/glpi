@@ -63,7 +63,7 @@ function cleanSearchOption($itemtype,$action='r'){
 		if (!haveRight('networking',$action)){
 			$todel=array_merge($todel,array('network',20,21,22,83,84,85));
 		}
-		if (!$CFG_GLPI['ocs_mode']||!haveRight('view_ocsng',$action)){
+		if (!$CFG_GLPI['use_ocs_mode']||!haveRight('view_ocsng',$action)){
 			$todel=array_merge($todel,array('ocsng',100,101,102,103));
 		}
 	}
@@ -98,7 +98,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
 
 	$default_values["start"]=0;
 	$default_values["order"]="ASC";
-	$default_values["deleted"]=0;
+	$default_values["is_deleted"]=0;
 	$default_values["distinct"]="N";
 	$default_values["link"]=array();
 	$default_values["field"]=array(0=>"view");
@@ -188,7 +188,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
  * 
  *
  *@param $itemtype type to display the form
- *@param $params parameters array may include field, contains, sort, deleted, link, link2, contains2, field2, type2
+ *@param $params parameters array may include field, contains, sort, is_deleted, link, link2, contains2, field2, type2
  *
  *@return nothing (diplays)
  *
@@ -201,7 +201,7 @@ function searchForm($itemtype,$params){
 	$default_values["field"]="";
 	$default_values["contains"]="";
 	$default_values["sort"]="";
-	$default_values["deleted"]=0;
+	$default_values["is_deleted"]=0;
 	$default_values["link2"]="";
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
@@ -439,7 +439,7 @@ function searchForm($itemtype,$params){
 	//	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
-		dropdownYesNo("deleted",$deleted);
+		dropdownYesNo("is_deleted",$is_deleted);
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3]."' title='".$LANG['common'][3]."'>";
 		//echo "</td></tr>";
 	}
@@ -484,7 +484,7 @@ function showList ($itemtype,$params){
 	$default_values["sort"]="1";
 	$default_values["order"]="ASC";
 	$default_values["start"]=0;
-	$default_values["deleted"]=0;
+	$default_values["is_deleted"]=0;
 	$default_values["export_all"]=0;
 	$default_values["link2"]="";
 	$default_values["contains2"]="";
@@ -648,7 +648,7 @@ function showList ($itemtype,$params){
 	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
-		$COMMONWHERE.= $LINK.$itemtable.".deleted='$deleted' ";
+		$COMMONWHERE.= $LINK.$itemtable.".is_deleted='$is_deleted' ";
 	}
 	// Remove template items
 	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
@@ -1329,7 +1329,7 @@ function showList ($itemtype,$params){
 										if (isset($split2[1])){
 											$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype2[$j]]."?ID=".$split2[1]."\">";
 											$out.= $split2[0].$unit;
-											if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
+											if ($_SESSION["glpiis_ids_visible"]||empty($split2[0])) {
 												$out.= " (".$split2[1].")";
 											}
 											$out.= "</a>";
@@ -1426,7 +1426,7 @@ function showList ($itemtype,$params){
 	
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td class='left' width='80%'>";
-					dropdownMassiveAction($itemtype,$deleted);
+					dropdownMassiveAction($itemtype,$is_deleted);
 					echo "</td>";
 					echo "</table>";
 	
@@ -1722,7 +1722,7 @@ function addDefaultSelect ($itemtype){
 		break;
 	}
 	if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-		$ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".recursive, ";
+		$ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".is_recursive, ";
 	}
 	return $ret;
 }
@@ -1827,14 +1827,14 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 			if ($itemtype==USER_TYPE){
 				return " GROUP_CONCAT( ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
-					GROUP_CONCAT( glpi_profiles_users.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
+					GROUP_CONCAT( glpi_profiles_users.is_recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} 
 		break;
 		case "glpi_entities.completename" :
 			if ($itemtype==USER_TYPE){
 				return " GROUP_CONCAT( ".$table.$addtable.".completename SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
-					GROUP_CONCAT( glpi_profiles_users.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
+					GROUP_CONCAT( glpi_profiles_users.is_recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} else {
 				return $table.$addtable.".completename AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 			}
@@ -2604,7 +2604,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 				if (!empty($data[$NAME.$num."_2"])){
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data[$NAME.$num."_2"]."\">";
 					$out.= $data[$NAME.$num].$unit;
-					if ($_SESSION["glpiview_ID"]||empty($data[$NAME.$num])) {
+					if ($_SESSION["glpiis_ids_visible"]||empty($data[$NAME.$num])) {
 						$out.= " (".$data[$NAME.$num."_2"].")";
 					}
 					$out.= "</a>";
@@ -2621,7 +2621,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 								$count_display++;
 								$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]]."?ID=".$split2[1]."\">";
 								$out.= $split2[0].$unit;
-								if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
+								if ($_SESSION["glpiis_ids_visible"]||empty($split2[0])) {
 									$out.= " (".$split2[1].")";
 								}
 								$out.= "</a>";

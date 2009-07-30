@@ -75,9 +75,9 @@ class Reminder extends CommonDBTM {
 			}
 		}	
 
-		if ($input['recursive']&&!$input['private']){
+		if ($input['is_recursive']&&!$input['is_private']){
 			if (!haveRecursiveAccessToEntity($input["entities_id"])){
-				unset($input['recursive']);
+				unset($input['is_recursive']);
 				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
 		}
@@ -110,9 +110,9 @@ class Reminder extends CommonDBTM {
 				addMessageAfterRedirect($LANG['planning'][1],false,ERROR);
 			}
 		}	
-		if ($input['recursive']&&!$input['private']){
+		if ($input['is_recursive']&&!$input['is_private']){
 			if (!haveRecursiveAccessToEntity($input["entities_id"])){
-				unset($input['recursive']);
+				unset($input['is_recursive']);
 				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
 		}
@@ -134,7 +134,7 @@ class Reminder extends CommonDBTM {
 		global $LANG;
 		$this->fields["name"]=$LANG['reminder'][6];
 		$this->fields["users_id"]=$_SESSION['glpiID'];
-		$this->fields["private"]=1;
+		$this->fields["is_private"]=1;
 		$this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
 	}
 
@@ -197,17 +197,17 @@ class Reminder extends CommonDBTM {
 		if($canedit&&haveRight("reminder_public","w")) { 
 
 			if (!$ID){
-				if (isset($_GET["private"])){
-					$this->fields["private"]=$_GET["private"];
+				if (isset($_GET["is_private"])){
+					$this->fields["is_private"]=$_GET["is_private"];
 				}
-				if (isset($_GET["recursive"])){
-					$this->fields["recursive"]=$_GET["recursive"];
+				if (isset($_GET["is_recursive"])){
+					$this->fields["is_recursive"]=$_GET["is_recursive"];
 				}
 			}
 
-			privatePublicSwitch($this->fields["private"],$this->fields["entities_id"],$this->fields["recursive"]);
+			privatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],$this->fields["is_recursive"]);
 		}else{
-			if ($this->fields["private"]){
+			if ($this->fields["is_private"]){
 				echo $LANG['common'][77];
 			} else {
 				echo $LANG['common'][76];

@@ -54,10 +54,10 @@ include (GLPI_ROOT."/inc/includes.php");
 	}
 	// Manage entity change
 	if (isset($_GET["active_entity"])){
-		if (!isset($_GET["recursive"])) {
-			$_GET["recursive"]=0;
+		if (!isset($_GET["is_recursive"])) {
+			$_GET["is_recursive"]=0;
 		}
-		changeActiveEntities($_GET["active_entity"],$_GET["recursive"]);
+		changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
 		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
 			glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
 		}

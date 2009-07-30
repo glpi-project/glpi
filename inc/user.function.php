@@ -115,7 +115,7 @@ function showDeviceUser($ID){
 				$query.=" AND is_template=0 ";
 			}
 			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
-				$query.=" AND deleted=0 ";
+				$query.=" AND is_deleted=0 ";
 			}
 
 			$result=$DB->query($query);
@@ -127,7 +127,7 @@ function showDeviceUser($ID){
 					$link=$data["name"];
 					if ($cansee) {
 						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".
-							$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
+							$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
 					}
 					$linktype="";
 					if ($data["users_id"]==$ID){
@@ -167,7 +167,7 @@ function showDeviceUser($ID){
 				$query.=" AND is_template=0 ";
 			}
 			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
-				$query.=" AND deleted=0 ";
+				$query.=" AND is_deleted=0 ";
 			}
 
 			$result=$DB->query($query);
@@ -177,7 +177,7 @@ function showDeviceUser($ID){
 				while ($data=$DB->fetch_array($result)){
 					$cansee=$ci->obj->can($data["ID"],"r");
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
 					if (isset($groups[$data["groups_id"]])){
 						$linktype=$LANG['common'][35]." ".$groups[$data["groups_id"]];
@@ -254,7 +254,7 @@ function showGroupAssociated($target,$ID){
 				echo "</td>";
 			}
 
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($_SESSION["glpiview_ID"]?" (".$data["ID"].")":"")."</a>";
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($_SESSION["glpiis_ids_visible"]?" (".$data["ID"].")":"")."</a>";
 			echo "&nbsp;";
 
 			echo "</td>";
@@ -343,7 +343,7 @@ function showUserRights($target,$ID){
 		dropdownUnderProfiles("profiles_id");
 		echo "</td><td class='center'>";
 		echo $LANG['profiles'][28].":";
-		dropdownYesNo("recursive",0);
+		dropdownYesNo("is_recursive",0);
 		echo "</td><td class='center'>";
 		echo "<input type='submit' name='addright' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</td></tr>";
@@ -353,7 +353,7 @@ function showUserRights($target,$ID){
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
-	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.recursive,
+	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.is_recursive,
 			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
 			FROM glpi_profiles_users 
 			LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
@@ -385,17 +385,17 @@ function showUserRights($target,$ID){
 			if ($canshowentity){
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["entities_id"]."'>";
 			}
-			echo $data["completename"].($_SESSION["glpiview_ID"]?" (".$data["entities_id"].")":"");
+			echo $data["completename"].($_SESSION["glpiis_ids_visible"]?" (".$data["entities_id"].")":"");
 			if ($canshowentity){
 				echo "</a>";
 			}
 			echo "</td>";
 			echo "<td>".$data["name"];
-			if ($data["dynamic"]||$data["recursive"]){
+			if ($data["dynamic"]||$data["is_recursive"]){
 				echo "<strong>&nbsp;(";
 				if ($data["dynamic"]) echo "D";
-				if ($data["dynamic"]&$data["recursive"]) echo ", ";
-				if ($data["recursive"]) echo "R";
+				if ($data["dynamic"]&$data["is_recursive"]) echo ", ";
+				if ($data["is_recursive"]) echo "R";
 				echo ")</strong>";
 			}
 
@@ -471,19 +471,19 @@ function generateUserVcard($ID){
 
 /**  Get entities for which a user have a right
 * @param $ID user ID
-* @param $recursive check also using recurisve rights
+* @param $is_recursive check also using recurisve rights
 */
-function getUserEntities($ID,$recursive=true){
+function getUserEntities($ID,$is_recursive=true){
 	global $DB;
 
-	$query="SELECT DISTINCT entities_id, recursive
+	$query="SELECT DISTINCT entities_id, is_recursive
 			FROM glpi_profiles_users 
 			WHERE users_id='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$entities=array();
 		while ($data=$DB->fetch_assoc($result)){
-			if ($data['recursive']&&$recursive){
+			if ($data['is_recursive']&&$is_recursive){
 				$tab=getSonsOf('glpi_entities',$data['entities_id']);
 				$entities=array_merge($tab,$entities);
 			} else {

@@ -103,7 +103,7 @@ class ReservationResa extends CommonDBTM {
 		if ($this->getFromDB($ID))
 			if (isset($this->fields["users_id"])&&($this->fields["users_id"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
 				// Processing Email
-				if ($CFG_GLPI["mailing"]){
+				if ($CFG_GLPI["use_mailing"]){
 					$mail = new MailingResa($this,"delete");
 					$mail->send();
 				}
@@ -148,7 +148,7 @@ class ReservationResa extends CommonDBTM {
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI;
-		if (count($updates) && $CFG_GLPI["mailing"]){
+		if (count($updates) && $CFG_GLPI["use_mailing"]){
 			$mail = new MailingResa($this,"update");
 			$mail->send();
 		}
@@ -186,7 +186,7 @@ class ReservationResa extends CommonDBTM {
 
 	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
-		if ($CFG_GLPI["mailing"]){
+		if ($CFG_GLPI["use_mailing"]){
 			$mail = new MailingResa($this,"new");
 			$mail->send();
 		}

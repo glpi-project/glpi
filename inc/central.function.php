@@ -84,7 +84,7 @@ function showCentralGlobalView(){
 	echo "</div>";
 
 
-	if ($_SESSION["glpijobs_at_login"]&&$showticket){
+	if ($_SESSION["glpishow_jobs_at_login"]&&$showticket){
 		echo "<br>";
 
 		echo "<div class='center'><strong>";

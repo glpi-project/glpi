@@ -265,7 +265,7 @@ function showDeviceDocument($instID) {
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
 							
-							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+							if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">"
 								.$data["name"]."$ID</a>";
 	
@@ -280,7 +280,7 @@ function showDeviceDocument($instID) {
 							}
 							echo "<td class='center'>".$ci->getType()."</td>";
 							
-							echo "<td ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td ".(isset($data['is_deleted'])&&$data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
@@ -297,7 +297,7 @@ function showDeviceDocument($instID) {
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			echo "<input type='hidden' name='right' value='doc'>";
-			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['entities_id']),$CFG_GLPI["doc_types"]);
+			dropdownAllItems("item",0,0,($doc->fields['is_recursive']?-1:$doc->fields['entities_id']),$CFG_GLPI["doc_types"]);
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";
@@ -377,12 +377,12 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 	$ci->getFromDB($itemtype,$ID);
 	$canread=$ci->obj->can($ID,'r');
 	$canedit=$ci->obj->can($ID,'w');
-	$recursive=0;
-	if ($ci->getField('recursive')){
-		$recursive=1;
+	$is_recursive=0;
+	if ($ci->getField('is_recursive')){
+		$is_recursive=1;
 	}
 
-	$needed_fields=array('ID','name','filename','mime','documentscategories_id','link','deleted','entities_id','recursive');
+	$needed_fields=array('ID','name','filename','mime','documentscategories_id','link','is_deleted','entities_id','is_recursive');
 
 
 	$query = "SELECT glpi_documents_items.ID AS assocID, glpi_entities.ID AS entity, 
@@ -450,16 +450,16 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			$used[$docID]=$docID;
 			$assocID=$data["assocID"];
 	
-			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
 			if ($withtemplate!=3 && $canread 
-				&& (in_array($data['entities_id'],$_SESSION['glpiactiveentities']) || $data["recursive"])
+				&& (in_array($data['entities_id'],$_SESSION['glpiactiveentities']) || $data["is_recursive"])
 			){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
-				if ($_SESSION["glpiview_ID"]) echo " (".$docID.")";
+				if ($_SESSION["glpiis_ids_visible"]) echo " (".$docID.")";
 				echo "</strong></a></td>";
 			} else {
 				echo "<td class='center'><strong>".$data["name"];
-				if ($_SESSION["glpiview_ID"]) echo " (".$docID.")";
+				if ($_SESSION["glpiis_ids_visible"]) echo " (".$docID.")";
 				echo "</strong></td>";
 			}
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
@@ -494,14 +494,14 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["entities_id"])) {		
 			$entity=$ci->getField('entities_id');
 			
-			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
+			if (isset($ci->obj->fields["is_recursive"]) && $ci->obj->fields["is_recursive"]) {
             $entities = getSonsOf("glpi_entities",$ci->obj->fields["entities_id"]);
 			} else {
 				$entities = $ci->obj->fields["entities_id"];
 			}
 		}
 		$limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
-		$q="SELECT count(*) FROM glpi_documents WHERE deleted='0' $limit";
+		$q="SELECT count(*) FROM glpi_documents WHERE is_deleted='0' $limit";
 			
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
@@ -511,7 +511,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
 				"<input type='hidden' name='entities_id' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
-				"<input type='hidden' name='recursive' value='$recursive'>" .
+				"<input type='hidden' name='is_recursive' value='$is_recursive'>" .
 				"<input type='hidden' name='itemtype' value='$itemtype'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .

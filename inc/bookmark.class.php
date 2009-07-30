@@ -99,8 +99,8 @@ class Bookmark extends CommonDBTM {
 	function post_getEmpty () {
 		global $LANG;
 		$this->fields["users_id"]=$_SESSION['glpiID'];
-		$this->fields["private"]=1;
-		$this->fields["recursive"]=0;
+		$this->fields["is_private"]=1;
+		$this->fields["is_recursive"]=0;
 		$this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
 	}
 
@@ -172,9 +172,9 @@ class Bookmark extends CommonDBTM {
 		echo "<td>";
 
 		if(haveRight("bookmark_public","w")) { 
-			privatePublicSwitch($this->fields["private"],$this->fields["entities_id"],$this->fields["recursive"]);
+			privatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],$this->fields["is_recursive"]);
 		}else{
-			if ($this->fields["private"]){
+			if ($this->fields["is_private"]){
 				echo $LANG['common'][77];
 			} else {
 				echo $LANG['common'][76];
@@ -354,13 +354,13 @@ class Bookmark extends CommonDBTM {
 	* Show bookmarks list
 	*
 	* @param $target target to use for links
-	* @param $private show private of public bookmarks ?
+	* @param $is_private show private of public bookmarks ?
 	* @return nothing
 	**/
-	function showBookmarkList($target,$private=1) {
+	function showBookmarkList($target,$is_private=1) {
 		global $DB,$LANG,$CFG_GLPI;
 
-		if (!$private && !haveRight('bookmark_public','r')){ 
+		if (!$is_private && !haveRight('bookmark_public','r')){
 			return false;
 		}
 	
@@ -370,10 +370,10 @@ class Bookmark extends CommonDBTM {
 							AND `".$this->table."`.ID = glpi_bookmarks_users.bookmarks_id) 
 			WHERE ";
 			
-		if ($private){
-			$query.="(`".$this->table."`.private=1 AND `".$this->table."`.users_id='".$_SESSION['glpiID']."') ";
+		if ($is_private){
+			$query.="(`".$this->table."`.is_private=1 AND `".$this->table."`.users_id='".$_SESSION['glpiID']."') ";
 		} else {
-			$query.="(`".$this->table."`.private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
+			$query.="(`".$this->table."`.is_private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
 			
 		$query.=" ORDER BY itemtype, name";

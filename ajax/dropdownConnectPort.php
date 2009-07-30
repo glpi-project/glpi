@@ -48,7 +48,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&isset($_POST["item"])){
 	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
 	$where="";		
-	$where.=" AND $table.deleted=0 ";
+	$where.=" AND $table.is_deleted=0 ";
 	$where.=" AND $table.is_template='0' ";		
 
 	$query =  "SELECT DISTINCT glpi_networkports_networkports.ID as WID, glpi_networkports.ID as DID, $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ifaddr as IP, glpi_networkports.ifmac as MAC";

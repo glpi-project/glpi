@@ -75,7 +75,7 @@ class Computer extends CommonDBTM {
 			}
 	
 			if(empty($withtemplate)){
-				if ($CFG_GLPI["ocs_mode"]){
+				if ($CFG_GLPI["use_ocs_mode"]){
 					$ong[14]=$LANG['title'][43];
 				}
 				if (haveRight("show_all_ticket","1")){
@@ -93,7 +93,7 @@ class Computer extends CommonDBTM {
 					
 				$ong[12]=$LANG['title'][38];
 	
-				if ($CFG_GLPI["ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
+				if ($CFG_GLPI["use_ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
 					$ong[13]=$LANG['Menu'][33];
 				}
 			}
@@ -137,7 +137,7 @@ class Computer extends CommonDBTM {
 		
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
-		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
+		if ($this->fields["is_ocs_import"]&&$history==1&&count($updates)>1){
 			mergeOcsArray($this->fields["ID"],$updates,"computer_update");
 		}
 
@@ -152,7 +152,7 @@ class Computer extends CommonDBTM {
 
 			// Update contact of attached items
 			
-			if (($updates[$i]=="contact" ||$updates[$i]=="contact_num")&&$CFG_GLPI["autoupdate_link_contact"]){
+			if (($updates[$i]=="contact" ||$updates[$i]=="contact_num")&&$CFG_GLPI["is_contact_autoupdate"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -190,7 +190,7 @@ class Computer extends CommonDBTM {
 			}
 
 			// Update users and groups of attached items
-			if (($updates[$i]=="users_id" && $this->fields["users_id"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="groups_id" && $this->fields["groups_id"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
+			if (($updates[$i]=="users_id" && $this->fields["users_id"]!=0 && $CFG_GLPI["is_user_autoupdate"])||($updates[$i]=="groups_id" && $this->fields["groups_id"]!=0 && $CFG_GLPI["is_group_autoupdate"])){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -213,10 +213,10 @@ class Computer extends CommonDBTM {
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('users_id')!=$this->fields["users_id"]||$ci->getField('groups_id')!=$this->fields["groups_id"]){
 										$tmp["ID"]=$ci->getField('ID');
-										if ($CFG_GLPI["autoupdate_link_user"]){
+										if ($CFG_GLPI["is_user_autoupdate"]){
 											$tmp["users_id"]=$this->fields["users_id"];
 										}
-										if ($CFG_GLPI["autoupdate_link_group"]){
+										if ($CFG_GLPI["is_group_autoupdate"]){
 											$tmp["groups_id"]=$this->fields["groups_id"];
 										}
 										$ci->obj->update($tmp);
@@ -272,7 +272,7 @@ class Computer extends CommonDBTM {
 
 
 			// Update loction of attached items
-			if ($updates[$i]=="locations_id" && $this->fields["locations_id"]!=0 && $CFG_GLPI["autoupdate_link_location"]){
+			if ($updates[$i]=="locations_id" && $this->fields["locations_id"]!=0 && $CFG_GLPI["is_location_autoupdate"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -446,7 +446,7 @@ class Computer extends CommonDBTM {
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
-				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
+				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
 					$query = "UPDATE glpi_tickets 
 						SET items_id = '0', itemtype='0'
 						WHERE ID='".$data["ID"]."';";
@@ -579,7 +579,7 @@ class Computer extends CommonDBTM {
       echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
       if (!$template&&!empty($this->fields['tplname']))
          echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
-      if ($this->fields["ocs_import"])
+      if ($this->fields["is_ocs_import"])
          echo "&nbsp;&nbsp;&nbsp;(".$LANG['ocsng'][7].")";
 
       echo "</th></tr>";
@@ -692,7 +692,7 @@ class Computer extends CommonDBTM {
 
       // Get OCS Datas :
       $dataocs=array();
-      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
+      if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")){
          $query="SELECT *
             FROM glpi_ocslinks
             WHERE computers_id='$ID'";
@@ -705,7 +705,7 @@ class Computer extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
+      if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
          echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33].":</td>";
          echo "<td >";
          dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
@@ -721,7 +721,7 @@ class Computer extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       
-      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
+      if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
          echo "<td colspan='2' align='center'>";
          echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
          echo "<br>";
@@ -777,7 +777,7 @@ class Computer extends CommonDBTM {
 				echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
 				echo "<input type='hidden' name='ID' value=$ID>";
 				echo "<div class='center'>";
-				if (!$this->fields["deleted"]){
+				if (!$this->fields["is_deleted"]){
 					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					}else {
 					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";

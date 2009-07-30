@@ -59,7 +59,7 @@ function showCentralContract(){
 	// contrats echus depuis moins de 30j
 	$query = "SELECT count(*)  
 		FROM glpi_contracts 
-		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+		WHERE glpi_contracts.is_deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")."
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
 	$result = $DB->query($query);
@@ -69,7 +69,7 @@ function showCentralContract(){
 	// contrats  echeance j-7
 	$query = "SELECT count(*) 
 		FROM glpi_contracts 
-		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+		WHERE glpi_contracts.is_deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")."
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
@@ -79,7 +79,7 @@ function showCentralContract(){
 	// contrats echeance j -30
 	$query = "SELECT count(*) 
 		FROM glpi_contracts 
-		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+		WHERE glpi_contracts.is_deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")."
 			AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
@@ -89,7 +89,7 @@ function showCentralContract(){
 	// contrats avec préavis echeance j-7
 	$query = "SELECT count(*) 
 		FROM glpi_contracts 
-		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+		WHERE glpi_contracts.is_deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")."
 			AND glpi_contracts.notice<>0 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
@@ -100,7 +100,7 @@ function showCentralContract(){
 	// contrats avec préavis echeance j -30
 	$query = "SELECT count(*) 
 		FROM glpi_contracts 
-		WHERE glpi_contracts.deleted='0'".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+		WHERE glpi_contracts.is_deleted='0'".getEntitiesRestrictRequest("AND","glpi_contracts")."
 			AND  glpi_contracts.notice<>0 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
@@ -117,13 +117,13 @@ function showCentralContract(){
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG['financial'][93]."</a> </td>";
 	echo "<td>$contract0</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][94]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0\">".$LANG['financial'][94]."</a></td>";
 	echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][95]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0\">".$LANG['financial'][95]."</a></td>";
 	echo "<td>".$contract30."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][96]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;is_deleted=0&amp;start=0\">".$LANG['financial'][96]."</a></td>";
 	echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$LANG['financial'][97]."</a></td>";
@@ -215,7 +215,7 @@ function showDeviceContract($instID) {
 					echo "<td>&nbsp;</td>";	
 				}
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0&amp;start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 				echo "<td class='center'>".$ci->getType()."<br>$nb</td>";
 				
@@ -224,7 +224,7 @@ function showDeviceContract($instID) {
 				$ci->setType($itemtype);
 				for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false){
 					$ID="";
-					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
@@ -235,7 +235,7 @@ function showDeviceContract($instID) {
 						echo "<td width='10'><input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel></td>";
 					} 
 
-					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center' ".(isset($data['is_deleted'])&&$data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 					if ($prem) {
 						echo "<td class='center' rowspan='$nb' valign='top'>".$ci->getType().
@@ -254,7 +254,7 @@ function showDeviceContract($instID) {
       if ($contract->fields['device_countmax']==0 || $contract->fields['device_countmax'] > $totalnb){
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          echo "<div class='software-instal'>";
-         dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
+         dropdownAllItems("item",0,0,($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
          echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "<input type='hidden' name='ID' value='$instID'>";
          echo "</td><td>&nbsp;</td>";
@@ -375,7 +375,7 @@ function showEnterpriseContract($instID) {
 		$entname=getDropdownName("glpi_suppliers",$entID);
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
-		if ($_SESSION["glpiview_ID"]||empty($entname)) echo " ($entID)";
+		if ($_SESSION["glpiis_ids_visible"]||empty($entname)) echo " ($entID)";
 		echo "</a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$entity)."</td>";
 		echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$DB->result($result, $i, "type"))."</td>";
@@ -389,7 +389,7 @@ function showEnterpriseContract($instID) {
 		$i++;
 	}
 	if ($canedit){
-		if ($contract->fields["recursive"]) {
+		if ($contract->fields["is_recursive"]) {
          $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contract->fields["entities_id"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_suppliers",$contract->fields["entities_id"]);
@@ -397,7 +397,7 @@ function showEnterpriseContract($instID) {
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-			if ($contract->fields["recursive"]) {
+			if ($contract->fields["is_recursive"]) {
             dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contract->fields["entities_id"]),$used);
 			} else {
 				dropdown("glpi_suppliers","entID",1,$contract->fields["entities_id"],$used);
@@ -532,9 +532,9 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
-		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
-		if ($_SESSION["glpiview_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+		if ($_SESSION["glpiis_ids_visible"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
 		echo "<td class='center'>".$con->fields["num"]."</td>";
@@ -561,7 +561,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	}
 	$q="SELECT * 
 		FROM glpi_contracts 
-		WHERE deleted='0' "
+		WHERE is_deleted='0' "
 		.getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$ci->obj->getEntityID(),true);;
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
@@ -630,9 +630,9 @@ function showContractAssociatedEnterprise($ID){
 		$cID=$data["ID"];
 		$used[$cID]=$cID;
 		$assocID=$data["assocID"];;
-		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$data["name"];
-		if ($_SESSION["glpiview_ID"]||empty($data["name"])) echo " (".$data["ID"].")";
+		if ($_SESSION["glpiis_ids_visible"]||empty($data["name"])) echo " (".$data["ID"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 		echo "<td class='center'>".$data["num"]."</td>";
@@ -653,7 +653,7 @@ function showContractAssociatedEnterprise($ID){
 		$i++;
 	}
 	if ($canedit){
-		if ($ent->fields["recursive"]) {
+		if ($ent->fields["is_recursive"]) {
          $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",$ent->fields["entities_id"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_contracts",$ent->fields["entities_id"]);
@@ -662,7 +662,7 @@ function showContractAssociatedEnterprise($ID){
 		if ($nb>count($used)){
 			echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
-			if ($ent->fields["recursive"]) {
+			if ($ent->fields["is_recursive"]) {
             dropdownContracts("conID",getSonsOf("glpi_entities",$ent->fields["entities_id"]),$used);
 			} else {
 				dropdownContracts("conID",$ent->fields['entities_id'],$used);
@@ -685,7 +685,7 @@ function showContractAssociatedEnterprise($ID){
 function cron_contract($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!$CFG_GLPI["mailing"]){
+	if (!$CFG_GLPI["use_mailing"]){
 		return false;
 	}
 
@@ -702,7 +702,7 @@ function cron_contract($display=false){
 					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_NOTICE."') 
 		WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 
-			AND glpi_contracts.deleted='0' 
+			AND glpi_contracts.is_deleted='0' 
 			AND glpi_contracts.begin_date IS NOT NULL 
 			AND glpi_contracts.duration <> '0' 
 			AND glpi_contracts.notice<>'0' 
@@ -731,7 +731,7 @@ function cron_contract($display=false){
 		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
-		WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='0' 
+		WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.is_deleted='0' 
 			AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' 
 			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 
 			AND glpi_alerts.date IS NULL;";

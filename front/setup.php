@@ -59,7 +59,7 @@ if (haveRight("config","w")){
 	$config["setup.mailing.php"]=$LANG['setup'][68];
 	$config["setup.auth.php"]=$LANG['setup'][67];
 	$config["mailgate.php"]=$LANG['Menu'][39];
-	if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
+	if ($CFG_GLPI["use_ocs_mode"]&&haveRight("ocsng","w"))
 		$config["setup.ocsng.php"]=$LANG['setup'][134];
 }
 

@@ -63,7 +63,7 @@ if (!isset($_POST["start"])) {
 					showEntityUser($_POST['target'],$_POST["ID"]);
 					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
 					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-					if ($CFG_GLPI["ocs_mode"]) {
+					if ($CFG_GLPI["use_ocs_mode"]) {
 					   $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 					}
 					displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
@@ -73,7 +73,7 @@ if (!isset($_POST["start"])) {
 					break;
 				case 3 :
 					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-					if ($CFG_GLPI["ocs_mode"]) {
+					if ($CFG_GLPI["use_ocs_mode"]) {
 						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 					}
 					break;

@@ -671,6 +671,154 @@ function update0721to080() {
       }
    }
 
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename bool values'); // Updating schema
+
+   $boolfields=array(
+   'glpi_authldaps' => array(array('from' => 'ldap_use_tls', 'to' => 'use_tls', 'default' =>0, 'noindex'=>true),//
+                           array('from' => 'use_dn', 'to' => 'use_dn', 'default' =>1, 'noindex'=>true),//
+                     ),
+   'glpi_bookmarks' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+                           array('from' => 'recursive','to' => 'is_recursive', 'default' =>0 ),//
+                     ),
+   'glpi_cartridgesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_computers' => array(array('from' => 'is_template', 'to' => 'is_template', 'default' =>0 ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                           array('from' => 'ocs_import', 'to' => 'is_ocs_import', 'default' =>0 ),//
+                     ),
+   'glpi_configs' => array(array('from' => 'jobs_at_login', 'to' => 'show_jobs_at_login', 'default' =>0, 'noindex'=>true),//
+                           array('from' => 'mailing', 'to' => 'use_mailing', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'permit_helpdesk', 'to' => 'use_anonymous_helpdesk', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'existing_auth_server_field_clean_domain', 'to' => 'existing_auth_server_field_clean_domain', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'auto_assign', 'to' => 'use_auto_assign_to_tech', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'public_faq', 'to' => 'use_public_faq', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'url_in_mail', 'to' => 'show_link_in_mail', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'use_ajax', 'to' => 'use_ajax', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'ajax_autocompletion', 'to' => 'use_ajax_autocompletion', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'auto_add_users', 'to' => 'is_users_auto_add', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'view_ID', 'to' => 'is_ids_visible', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'ocs_mode', 'to' => 'use_ocs_mode', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'followup_on_update_ticket', 'to' => 'add_followup_on_update_ticket', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'licenses_alert', 'to' => 'use_licenses_alert', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'keep_tracking_on_delete', 'to' => 'keep_tickets_on_delete', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'use_errorlog', 'to' => 'use_log_in_files', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'autoupdate_link_contact', 'to' => 'is_contact_autoupdate', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoupdate_link_user', 'to' => 'is_user_autoupdate', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoupdate_link_group', 'to' => 'is_group_autoupdate', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoupdate_link_location', 'to' => 'is_location_autoupdate', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_contact', 'to' => 'is_contact_autoclean', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_user', 'to' => 'is_user_autoclean', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_group', 'to' => 'is_group_autoclean', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_location', 'to' => 'is_location_autoclean', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'flat_dropdowntree', 'to' => 'use_flat_dropdowntree', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'autoname_entity', 'to' => 'use_autoname_by_entity', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'expand_soft_not_categorized', 'to' => 'is_not_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'dbreplicate_notify_desynchronization', 'to' => 'use_notification_on_dbreplicate_desync', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'ticket_title_mandatory', 'to' => 'is_ticket_title_mandatory', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'ticket_content_mandatory', 'to' => 'is_ticket_content_mandatory', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'ticket_category_mandatory', 'to' => 'is_ticket_category_mandatory', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'followup_private', 'to' => 'default_followup_private', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'software_helpdesk_visible', 'to' => 'default_software_helpdesk_visible', 'default' =>1, 'noindex'=>true ),//
+                     ),
+   'glpi_consumablesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_contacts' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_contracts' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_documents' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_groups' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                     ),
+   'glpi_knowbaseitems' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                     ),
+   'glpi_links' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                     ),
+   'glpi_monitors' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_networkequipments' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_peripherals' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                     ),
+   'glpi_phones' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                     ),
+   'glpi_printers' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_suppliers' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_profiles_users' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0),//
+                     ),
+   'glpi_ticketsfollowups' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+                     ),
+   'glpi_reminders' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+                           array('from' => 'recursive','to' => 'is_recursive', 'default' =>0 ),//
+                     ),
+   'glpi_softwares' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                     ),
+   'glpi_softwareslicenses' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+                     ),
+   'glpi_users' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                        array('from' => 'jobs_at_login', 'to' => 'show_jobs_at_login', 'default' =>0, 'noindex'=>true),//
+                        array('from' => 'followup_private', 'to' => 'default_followup_private', 'default' =>0, 'noindex'=>true ),//
+                     ),
+
+   );
+
+   foreach ($boolfields as $table => $tab) {
+      foreach ($tab as $update){
+         $newname=$update['to'];
+         $oldname=$update['from'];
+         $doindex=true;
+         if (isset($update['noindex']) && $update['noindex']){
+            $doindex=false;
+         }
+         // Rename field
+         if (FieldExists($table, $oldname)) {
+            $default_value=0;
+            if (isset($update['default']) ) {
+               $default_value=$update['default'];
+            }
+            // Manage NULL fields
+            $query="UPDATE `$table` SET `$oldname`=0 WHERE `$oldname` IS NULL ;";
+            $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+
+            // Manage not zero values
+            $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0; ";
+            $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TINYINT( 1 ) NOT NULL DEFAULT '$default_value';";
+            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+         } else {
+            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+         }
+         // If do index : delete old one / create new one
+         if ($doindex){
+            if (isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if (!isIndex($table, $newname)) {
+               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+   }
+
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+
+   /// TODO manage computer_update version in ocslinks to upgrade field names
+
    // Change defaults store values :
    if (FieldExists('glpi_softwares', 'sofwtares_id')) {
       $query="UPDATE glpi_softwares SET sofwtares_id=0 WHERE sofwtares_id < 0";
@@ -709,21 +857,40 @@ function update0721to080() {
          $news[$key]="&$val=";
       }
 
-   // Change mailgate search pref : add ative
-   $query="SELECT ID,query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
-   if ($result = $DB->query($query)){
-      if ($DB->numrows($result)>0){
-         while ($data = $DB->fetch_assoc($result)){
-            $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
-            $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
+      $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
+      if ($result = $DB->query($query)){
+         if ($DB->numrows($result)>0){
+            while ($data = $DB->fetch_assoc($result)){
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
+               $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
+            }
          }
       }
-   }
+      // All search
+      $olds = array("deleted",);
+   
+      $news   = array("is_deleted",);
+      foreach ($olds as $key => $val){
+         $olds[$key]="&$val=";
+      }
+      foreach ($news as $key => $val){
+         $news[$key]="&$val=";
+      }
+      $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." ;";
+      if ($result = $DB->query($query)){
+         if ($DB->numrows($result)>0){
+            while ($data = $DB->fetch_assoc($result)){
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
+               $DB->query($query2) or die("0.80 update all bookmarks " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+
    }
 
    //// Upgrade rules datas
    // For RULE_AFFECT_RIGHTS
-   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id');
+   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id','recursive'=>'is_recursive');
    // For RULE_OCS_AFFECT_COMPUTER
    $changes[RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
    // For RULE_SOFTWARE_CATEGORY
@@ -737,7 +904,6 @@ function update0721to080() {
    foreach ($changes as $ruletype => $tab){
       // Get rules
       $query = "SELECT GROUP_CONCAT(ID) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
-      echo $query."<br>";
       if ($result = $DB->query($query)){
          if ($DB->numrows($result)>0){
             // Get rule string
@@ -765,6 +931,7 @@ function update0721to080() {
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
+   // Change mailgate search pref : add active
 	if (!FieldExists("glpi_mailcollectors", "active")) {
 		$query = "ALTER TABLE `glpi_mailcollectors` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
       $DB->query($query) or die("0.80 add active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
@@ -837,9 +1004,9 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_configs","add_norights_users")){
-		$query = "ALTER TABLE `glpi_configs` ADD `add_norights_users` INT( 1 ) NOT NULL DEFAULT '1'";
-      $DB->query($query) or die("0.80 add add_norights_users index in glpi_configs " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_configs","use_noright_users_add")){
+		$query = "ALTER TABLE `glpi_configs` ADD `use_noright_users_add` tinyint( 1 ) NOT NULL DEFAULT '1'";
+      $DB->query($query) or die("0.80 add use_noright_users_add index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
 	displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
@@ -857,9 +1024,9 @@ function update0721to080() {
 	}
 
 
-   if (!FieldExists("glpi_budgets","recursive")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
-      $DB->query($query) or die("0.80 add recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_budgets","is_recursive")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
+      $DB->query($query) or die("0.80 add is_recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","entities_id")) {
          $query = "ALTER TABLE `glpi_budgets` ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`;";
@@ -870,9 +1037,13 @@ function update0721to080() {
       $DB->query($query) or die("0.80 create index entities_id in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists("glpi_budgets","deleted")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `deleted` tinyint(1) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 add deleted field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_budgets","is_deleted")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_deleted` tinyint(1) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add is_deleted field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex("glpi_budgets","is_deleted")) {
+      $query="ALTER TABLE `glpi_budgets` ADD INDEX `is_deleted` (`is_deleted`);";
+      $DB->query($query) or die("0.80 create index is_deleted in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","begin_date")) {
       $query = "ALTER TABLE `glpi_budgets` ADD `begin_date` DATE NULL";
