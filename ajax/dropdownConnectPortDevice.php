@@ -49,7 +49,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
 	$rand=mt_rand();
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
-	$where="WHERE deleted=0 ";
+	$where="WHERE is_deleted=0 ";
 	$where.=" AND is_template=0 ";		
 
 	if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
@@ -103,7 +103,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
 			}
 			$output = $data['name'];
 			$ID = $data['ID'];
-			if ($_SESSION["glpiview_ID"]||empty($output)) {
+			if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
 				$output="($ID)";
 			}
 			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";

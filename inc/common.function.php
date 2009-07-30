@@ -90,12 +90,12 @@ if (!defined('GLPI_ROOT')){
 	* Log a message in log file
 	* @param $name string: name of the log file
 	* @param $text string: text to log 
-	* @param $force boolean: force log in file not seeing use_errorlog config
+	* @param $force boolean: force log in file not seeing use_log_in_files config
 	* 
 	**/
 	function logInFile($name,$text,$force=false){
 		global $CFG_GLPI;
-		if (isset($CFG_GLPI["use_errorlog"])&&$CFG_GLPI["use_errorlog"]||$force){ 
+		if (isset($CFG_GLPI["use_log_in_files"])&&$CFG_GLPI["use_log_in_files"]||$force){ 
 			error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 		}
 	}

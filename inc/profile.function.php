@@ -63,12 +63,12 @@ function showProfileEntityUser($target,$ID,$prof){
 	}
 
   	$query="SELECT glpi_users.*, glpi_profiles_users.entities_id AS entity, glpi_profiles_users.ID AS linkID, 
-			glpi_profiles_users.dynamic as dynamic,glpi_profiles_users.recursive as recursive   
+			glpi_profiles_users.dynamic as dynamic,glpi_profiles_users.is_recursive
  		FROM glpi_profiles_users 
  		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_profiles_users.entities_id)
  		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_profiles_users.users_id)
  		WHERE glpi_profiles_users.profiles_id='".$ID."' 
-			AND glpi_users.deleted=0 ".getEntitiesRestrictRequest("AND","glpi_profiles_users")." 
+			AND glpi_users.is_deleted=0 ".getEntitiesRestrictRequest("AND","glpi_profiles_users")."
  		ORDER BY glpi_entities.completename";
 
  	echo "<div class='center'>";
@@ -154,11 +154,11 @@ function showProfileEntityUser($target,$ID,$prof){
 
 				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
 
-				if ($data["dynamic"]||$data["recursive"]){
+				if ($data["dynamic"]||$data["is_recursive"]){
 					echo "<strong>&nbsp;(";
 					if ($data["dynamic"]) echo "D";
-					if ($data["dynamic"]&&$data["recursive"]) echo ", ";
-						if ($data["recursive"]) echo "R";
+					if ($data["dynamic"]&&$data["is_recursive"]) echo ", ";
+						if ($data["is_recursive"]) echo "R";
 					echo ")</strong>";
 				}
 				echo "</td>\n";

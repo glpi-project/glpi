@@ -448,7 +448,7 @@ function checkLoginUser() {
 function checkFaqAccess() {
 	global $CFG_GLPI;
 
-	if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq", "r")) {
+	if ($CFG_GLPI["use_public_faq"] == 0 && !haveRight("faq", "r")) {
 		displayRightError();
 	}
 
@@ -540,7 +540,7 @@ function initEntityProfiles($userID) {
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
 			$query2 = "SELECT glpi_profiles_users.entities_id as eID, glpi_profiles_users.ID as kID, 
-					glpi_profiles_users.recursive as recursive, glpi_entities.* 
+					glpi_profiles_users.is_recursive, glpi_entities.*
 				FROM glpi_profiles_users 
 				LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
 				WHERE glpi_profiles_users.profiles_id='$key' AND glpi_profiles_users.users_id='$userID' 
@@ -551,7 +551,7 @@ function initEntityProfiles($userID) {
 					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['ID'] = $data['eID'];
 					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['name'] = $data['name'];
 //					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['completename'] = $data['completename'];
-					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['recursive'] = $data['recursive'];
+					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['is_recursive'] = $data['is_recursive'];
 				}
 			}
 		}
@@ -581,7 +581,7 @@ function changeProfile($ID) {
 			// Try to load default entity if it is a root entity
 			foreach ($data['entities'] as $key => $val){
 				if ($val['ID']==$_SESSION["glpidefault_entity"]){
-					if (changeActiveEntities($val['ID'],$val['recursive'])){
+					if (changeActiveEntities($val['ID'],$val['is_recursive'])){
 						$active_entity_done=true;
 					}
 				}
@@ -609,10 +609,10 @@ function changeProfile($ID) {
  * Reload groups related to this entity.
  *
  * @param $ID : ID of the new active entity ("all"=>load all possible entities)
- * @param $recursive : also display sub entities of the active entity ?
+ * @param $is_recursive : also display sub entities of the active entity ?
  * @return Nothing 
 **/
-function changeActiveEntities($ID="all",$recursive=false) {
+function changeActiveEntities($ID="all",$is_recursive=false) {
 	global $LANG;
 	$newentities=array();
 	$newroots=array();
@@ -620,9 +620,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$ancestors=array();
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
          $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val['ID']),$ancestors));
-			$newroots[$val['ID']]=$val['recursive'];
+			$newroots[$val['ID']]=$val['is_recursive'];
 			$newentities[$val['ID']] = $val['ID'];
-			if ($val['recursive']) {
+			if ($val['is_recursive']) {
 				$entities = getSonsOf("glpi_entities", $val['ID']);
 				if (count($entities)) {
 					foreach ($entities as $key2 => $val2) {
@@ -640,7 +640,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			
 			if ($val['ID']== $ID || in_array($val['ID'], $ancestors)){
 				// Not recursive or recursive and root entity is recursive
-				if (! $recursive || $val['recursive']){
+				if (! $is_recursive || $val['is_recursive']){
 					$ok=true;
 				}
 			}
@@ -649,9 +649,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			return false;
 		}
 
-		$newroots[$ID]=$recursive;
+		$newroots[$ID]=$is_recursive;
 		$newentities[$ID] = $ID;
-		if ($recursive){
+		if ($is_recursive){
 			$entities = getSonsOf("glpi_entities", $ID);
 			if (count($entities)) {
 				foreach ($entities as $key2 => $val2) {
@@ -676,7 +676,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$_SESSION["glpiactive_entity"] = $active;
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
 		$_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
-		if ($recursive){
+		if ($is_recursive){
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG['entity'][7].")";
 			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
 		}
@@ -740,7 +740,7 @@ function haveRecursiveAccessToEntity($ID) {
 	// Right by profile
 	foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
 		if ($val['ID']==$ID) {
-			return $val['recursive']; 		
+			return $val['is_recursive']; 		
 		}
 	}
 
@@ -756,16 +756,16 @@ function haveRecursiveAccessToEntity($ID) {
  * Check if you could access (read) to the entity of id = $ID
  *
  * @param $ID : ID of the entity
- * @param $recursive : boolean if resursive item
+ * @param $is_recursive : boolean if resursive item
  * 
  * @return Boolean : read access to entity
 **/
-function haveAccessToEntity($ID, $recursive=0) {
+function haveAccessToEntity($ID, $is_recursive=0) {
 	if (!isset ($_SESSION['glpiactiveentities'])) {
 		return false;
 	}
 	
-	if (!$recursive) {		
+	if (!$is_recursive) {		
 		return in_array($ID, $_SESSION['glpiactiveentities']);
 	}
 
@@ -808,10 +808,10 @@ function haveAccessToOneOfEntities($tab) {
  * @param $table : table where apply the limit (if needed, multiple tables queries)
  * @param $field : field where apply the limit (id != entities_id)
  * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
- * @param $recursive : need to use recursive process to find item (field need to be named recursive)
+ * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
  * @return String : the WHERE clause to restrict 
 **/
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',$recursive=false) {
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',$is_recursive=false) {
 
 	$query = $separator ." ( ";
 
@@ -849,7 +849,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		}
 	}
 
-	if ($recursive){
+	if ($is_recursive){
 		$ancestors=array();
 		if (is_array($value)){
 			foreach ($value as $val){
@@ -866,7 +866,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 			if ($table=='glpi_entities') {
 				$query.=" OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
 			} else {
-				$query.=" OR ( `$table`.`recursive`='1' AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
+				$query.=" OR ( `$table`.`is_recursive`='1' AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
 			}
 		}
 	}
@@ -1051,7 +1051,7 @@ function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
 **/
 function ldap_auth($identificat,$login,$password, $ldap_method) {
 
-	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"],$ldap_method["ldap_opt_deref"]);
+	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["use_tls"],$ldap_method["ldap_opt_deref"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;

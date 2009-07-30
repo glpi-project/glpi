@@ -93,14 +93,14 @@ function showInfocomEnterprise($instID) {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";		
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
-					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
@@ -110,7 +110,7 @@ function showInfocomEnterprise($instID) {
 					}
 					echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
 					
-					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center' ".(isset($data['is_deleted'])&&$data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "</tr>";
@@ -168,7 +168,7 @@ function showAssociatedContact($instID) {
 			$ID=$data["ID_ent"];
 			$used[$data["ID"]]=$data["ID"];
 			addToNavigateListItems(CONTACT_TYPE,$data["ID"]);
-			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
 			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 			echo "<td align='center'  width='100'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
@@ -188,7 +188,7 @@ function showAssociatedContact($instID) {
 
 	echo "</table><br>"    ;
 	if ($canedit){
-		if ($enterprise->fields["recursive"]) {
+		if ($enterprise->fields["is_recursive"]) {
          $nb=countElementsInTableForEntity("glpi_contacts",getSonsOf("glpi_entities",$enterprise->fields["entities_id"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_contacts",$enterprise->fields["entities_id"]);
@@ -198,7 +198,7 @@ function showAssociatedContact($instID) {
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='eID' value='$instID'>";
-			if ($enterprise->fields["recursive"]) {
+			if ($enterprise->fields["is_recursive"]) {
             dropdown("glpi_contacts","cID",1,getSonsOf("glpi_entities",$enterprise->fields["entities_id"]),$used);
 			} else {
 				dropdown("glpi_contacts","cID",1,$enterprise->fields["entities_id"],$used);

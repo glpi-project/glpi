@@ -61,7 +61,7 @@ $where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','entities_id',$_PO
 
 $query = "SELECT DISTINCT glpi_softwares.ID, glpi_softwares.name 
 		FROM glpi_softwares
-		WHERE glpi_softwares.deleted=0 
+		WHERE glpi_softwares.is_deleted=0 
 			AND glpi_softwares.is_template=0 
 			$where 
 		ORDER BY glpi_softwares.name";

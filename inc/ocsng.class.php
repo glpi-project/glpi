@@ -48,7 +48,7 @@ class DBocs extends DBmysql {
 		global $CFG_GLPI;
 			$this->ocsservers_id = $ID;
 			
-			if ($CFG_GLPI["ocs_mode"]) {
+			if ($CFG_GLPI["use_ocs_mode"]) {
 				$data = getOcsConf($ID);
 				$this->dbhost = $data["ocs_db_host"];
 				$this->dbuser = $data["ocs_db_user"];

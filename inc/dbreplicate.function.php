@@ -217,7 +217,7 @@ function cron_dbreplicate() {
 		$diff = getReplicateDelay();
 		
 		//If admin must be notified when slave is not synchronized with master
-		if ($CFG_GLPI["dbreplicate_notify_desynchronization"] && $diff > $CFG_GLPI["dbreplicate_maxdelay"]) {
+		if ($CFG_GLPI["use_notification_on_dbreplicate_desync"] && $diff > $CFG_GLPI["dbreplicate_maxdelay"]) {
 			$msg = $LANG['setup'][807] . " " . timestampToString($diff);
 			$mmail = new glpi_phpmailer();
 			$mmail->From = $CFG_GLPI["admin_email"];

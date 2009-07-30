@@ -151,7 +151,7 @@ class Config extends CommonDBTM {
 	
 
 		echo "<td class='center'> " . $LANG['setup'][185] . " </td><td>";
-		dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);
+		dropdownYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
 		echo "</td></tr>";								
 
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
@@ -176,22 +176,22 @@ class Config extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['title'][24] . "</strong></td></tr>";
 				
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
-		dropdownYesNo("auto_assign", $CFG_GLPI["auto_assign"]);
+		dropdownYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
 		echo "</td>";
 
 		echo "<td class='center'>" . $LANG['setup'][405] . "</td><td>";
-		dropdownYesNo("followup_on_update_ticket", $CFG_GLPI["followup_on_update_ticket"]);
+		dropdownYesNo("add_followup_on_update_ticket", $CFG_GLPI["add_followup_on_update_ticket"]);
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['tracking'][37] . "</td><td>";
-		dropdownYesNo("keep_tracking_on_delete", $CFG_GLPI["keep_tracking_on_delete"]);
+		dropdownYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
 		echo "</td>";
 		echo "<td class='center'>" . $LANG['setup'][409] . "</td><td>";
 		dropdownValue("glpi_documentscategories","documentscategories_id_forticket",$CFG_GLPI["documentscategories_id_forticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][608] . "</td><td>";
-		dropdownYesNo("software_helpdesk_visible", $CFG_GLPI["software_helpdesk_visible"]);
+		dropdownYesNo("default_software_helpdesk_visible", $CFG_GLPI["default_software_helpdesk_visible"]);
 		echo "</td>";
 		echo "<td class='center' colspan='2'></td>";
 		echo "</tr>";
@@ -328,7 +328,7 @@ class Config extends CommonDBTM {
 		echo "</td>";
 		
 		echo "<td class='center'>" . $LANG['setup'][127] . " </td><td>";
-		dropdownYesNo("ajax_autocompletion", $CFG_GLPI["ajax_autocompletion"]);
+		dropdownYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $CFG_GLPI["ajax_wildcard"] . "\"></td>";
@@ -397,35 +397,35 @@ class Config extends CommonDBTM {
 		echo "<tr><th colspan='2'>" . $LANG['setup'][134]. "</th><th colspan='2'></th></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][133] . " </td><td>";
-		dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
+		dropdownYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
 		echo "</td><td class='center'colspan='2'></tr>";
 
 		echo "<tr><th colspan='4' align='center'>" . $LANG['login'][10] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][124] . " </td><td>";
-		dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
+		dropdownYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
 		echo "</td>";
 
 		echo "<td class='center'> " . $LANG['setup'][613] . " </td><td class='center'>";
-		dropdownYesNo("add_norights_users", $CFG_GLPI["add_norights_users"]);
+		dropdownYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
 		echo " </td></tr>";
 	
 		echo "<tr><th colspan='4' align='center'>" . $LANG['Menu'][20] . "</th></tr>";	
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";
-		dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
+		dropdownYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
 		echo " </td><td class='center' colspan='2'></td></tr>";
 		
 		echo "<tr><th colspan='4' align='center'>" . $LANG['Menu'][31]. "</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";
-		dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
+		dropdownYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
 		echo "</td><td class='center'>" . $LANG['setup'][610] . "</td><td>";
-		dropdownYesNo("ticket_title_mandatory", $CFG_GLPI["ticket_title_mandatory"]);
+		dropdownYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][611] . " </td><td>";
-		dropdownYesNo("ticket_content_mandatory", $CFG_GLPI["ticket_content_mandatory"]);
+		dropdownYesNo("is_ticket_content_mandatory", $CFG_GLPI["is_ticket_content_mandatory"]);
 		echo "</td><td class='center'>" . $LANG['setup'][612] . "</td><td>";
-		dropdownYesNo("ticket_category_mandatory", $CFG_GLPI["ticket_category_mandatory"]);
+		dropdownYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['mailgate'][7] . " </td><td>";
 		echo "<input type=\"text\" size='15' name=\"mailgate_filesize_max\" value=\"" . $CFG_GLPI["mailgate_filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".getSize($CFG_GLPI["mailgate_filesize_max"]);
@@ -464,27 +464,27 @@ class Config extends CommonDBTM {
 		echo "<tr><th>&nbsp;</th><th>" . $LANG['setup'][281] . "</th><th>" . $LANG['setup'][282] . "</th><th>&nbsp;</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][18] . " </td><td>" . $LANG['setup'][283] . ":&nbsp;";
-		dropdownYesNo("autoupdate_link_contact", $CFG_GLPI["autoupdate_link_contact"]);
+		dropdownYesNo("is_contact_autoupdate", $CFG_GLPI["is_contact_autoupdate"]);
 		echo "</td><td>" . $LANG['setup'][284] . ":&nbsp;";
-		dropdownYesNo("autoclean_link_contact", $CFG_GLPI["autoclean_link_contact"]);
+		dropdownYesNo("is_contact_autoclean", $CFG_GLPI["is_contact_autoclean"]);
 		echo "</td><td>&nbsp;</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][34] . " </td><td>" . $LANG['setup'][283] . ":&nbsp;";
-		dropdownYesNo("autoupdate_link_user", $CFG_GLPI["autoupdate_link_user"]);
+		dropdownYesNo("is_user_autoupdate", $CFG_GLPI["is_user_autoupdate"]);
 		echo "</td><td>" . $LANG['setup'][284] . ":&nbsp;";
-		dropdownYesNo("autoclean_link_user", $CFG_GLPI["autoclean_link_user"]);
+		dropdownYesNo("is_user_autoclean", $CFG_GLPI["is_user_autoclean"]);
 		echo " </td><td>&nbsp;</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][35] . " </td><td>" . $LANG['setup'][283] . ":&nbsp;";
-		dropdownYesNo("autoupdate_link_group", $CFG_GLPI["autoupdate_link_group"]);
+		dropdownYesNo("is_group_autoupdate", $CFG_GLPI["is_group_autoupdate"]);
 		echo "</td><td>" . $LANG['setup'][284] . ":&nbsp;";
-		dropdownYesNo("autoclean_link_group", $CFG_GLPI["autoclean_link_group"]);
+		dropdownYesNo("is_group_autoclean", $CFG_GLPI["is_group_autoclean"]);
 		echo "</td><td>&nbsp;</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][15] . " </td><td>" . $LANG['setup'][283] . ":&nbsp;";
-		dropdownYesNo("autoupdate_link_location", $CFG_GLPI["autoupdate_link_location"]);
+		dropdownYesNo("is_location_autoupdate", $CFG_GLPI["is_location_autoupdate"]);
 		echo "</td><td>" . $LANG['setup'][284] . ":&nbsp;";
-		dropdownYesNo("autoclean_link_location", $CFG_GLPI["autoclean_link_location"]);
+		dropdownYesNo("is_location_autoclean", $CFG_GLPI["is_location_autoclean"]);
 		echo " </td><td>&nbsp;</td></tr>";
 															
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['state'][0] . " </td><td>";
@@ -545,7 +545,7 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][704] . "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][804] . " </td><td>";
-			dropdownYesNo("dbreplicate_notify_desynchronization", $CFG_GLPI["dbreplicate_notify_desynchronization"]);
+			dropdownYesNo("use_notification_on_dbreplicate_desync", $CFG_GLPI["use_notification_on_dbreplicate_desync"]);
 			echo " </td>";
 
 			echo "<td class='center'> " . $LANG['setup'][806] . " </td><td>";
@@ -638,7 +638,7 @@ class Config extends CommonDBTM {
 
 		if ($oncentral){			
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][129] . " </td><td>";
-			dropdownYesNo("view_ID", $data["view_ID"]);
+			dropdownYesNo("is_ids_visible", $data["is_ids_visible"]);
 			echo "</td>";
 			
 			echo "<td class='center'>" . $LANG['setup'][131] . "</td><td>";
@@ -696,7 +696,7 @@ class Config extends CommonDBTM {
 		if ($oncentral){
 
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
-			dropdownYesNo("jobs_at_login", $data["jobs_at_login"]);
+			dropdownYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
 			echo " </td><td>" . $LANG['setup'][40] . "</td><td>";
 			dropdownYesNo("tracking_order", $data["tracking_order"]);
 			echo "</td></tr>";
@@ -709,7 +709,7 @@ class Config extends CommonDBTM {
 
 		if ($oncentral){
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][39] . " </td><td>";
-			dropdownYesNo("followup_private", $data["followup_private"]);
+			dropdownYesNo("default_followup_private", $data["default_followup_private"]);
 			echo "</td>";
 			echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
 			dropdownRequestType("request_type", $data["request_type"]);
@@ -728,12 +728,10 @@ class Config extends CommonDBTM {
 	
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['softwarecategories'][5] . "</strong></td></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['softwarecategories'][4]."</td><td>";
-			$expand[0]=$LANG['softwarecategories'][1];
-			$expand[1]=$LANG['softwarecategories'][2];
-			dropdownArrayValues("expand_soft_categorized",$expand,$data["expand_soft_categorized"]);
+			dropdownYesNo("is_categorized_soft_expanded", $data["is_categorized_soft_expanded"]);
 			
 			echo "</td><td class='center'>" . $LANG['softwarecategories'][3] . "</td><td>";
-			dropdownArrayValues("expand_soft_not_categorized",$expand,$data["expand_soft_not_categorized"]);
+			dropdownYesNo("is_not_categorized_soft_expanded", $data["is_not_categorized_soft_expanded"]);
 	
 			echo "</td></tr>";
 		}
@@ -769,7 +767,7 @@ class Config extends CommonDBTM {
 			echo "<div class='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG['setup'][201] . "</th></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][202] . "</td><td>";
-			dropdownYesNo("mailing", $CFG_GLPI["mailing"]);
+			dropdownYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][203] . "</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"" . $CFG_GLPI["admin_email"] . "\">";
@@ -787,7 +785,7 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][204] . "</td><td><textarea   cols='60' rows='3'  name=\"mailing_signature\" >".$CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][226] . "</td><td>";
-			dropdownYesNo("url_in_mail", $CFG_GLPI["url_in_mail"]);
+			dropdownYesNo("show_link_in_mail", $CFG_GLPI["show_link_in_mail"]);
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][227] . "</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"" . $CFG_GLPI["url_base"] . "\"> </td></tr>";
@@ -815,7 +813,7 @@ class Config extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "</td><td>";
-			dropdownYesNo("licenses_alert", $CFG_GLPI["licenses_alert"]);
+			dropdownYesNo("use_licenses_alert", $CFG_GLPI["use_licenses_alert"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";

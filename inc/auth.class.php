@@ -329,7 +329,7 @@ class Identification {
 			$_SESSION["glpi_use_mode"] = NORMAL_MODE;
 			// Check ID exists and load complete user from DB (plugins...)
 			if (isset($this->user->fields['ID']) && $this->user->getFromDB($this->user->fields['ID'])){
-				if (!$this->user->fields['deleted']&&$this->user->fields['active']){
+				if (!$this->user->fields['is_deleted']&&$this->user->fields['active']){
 					$_SESSION["glpiID"] = $this->user->fields['ID'];
 					$_SESSION["glpiname"] = $this->user->fields['name'];
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
@@ -597,7 +597,7 @@ class AuthLDAP extends CommonDBTM {
 		$this->fields["ldap_port"]="389";
 		$this->fields['ldap_condition']='';
 		$this->fields["ldap_login"]="uid";
-		$this->fields['ldap_use_tls']=0;
+		$this->fields['use_tls']=0;
 		$this->fields['ldap_field_group']='';
 		$this->fields['ldap_group_condition']='';
 		$this->fields['ldap_search_for_groups']=0;
@@ -625,7 +625,7 @@ class AuthLDAP extends CommonDBTM {
 			$this->fields['ldap_port']="389";
 			$this->fields['ldap_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
 			$this->fields['ldap_login']='samaccountname';
-			$this->fields['ldap_use_tls']=0;
+			$this->fields['use_tls']=0;
 			$this->fields['ldap_field_group']='memberof';
 			$this->fields['ldap_group_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
 			$this->fields['ldap_search_for_groups']=0;
@@ -722,13 +722,13 @@ class AuthLDAP extends CommonDBTM {
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>" . $LANG['setup'][180] . "</td><td>";
 			if (function_exists("ldap_start_tls")) {
-				$ldap_use_tls = $this->fields["ldap_use_tls"];
-				echo "<select name='ldap_use_tls'>\n";
-				echo "<option value='0' " . (!$ldap_use_tls ? " selected " : "") . ">" . $LANG['choice'][0] . "</option>\n";
-				echo "<option value='1' " . ($ldap_use_tls ? " selected " : "") . ">" . $LANG['choice'][1] . "</option>\n";
+				$use_tls = $this->fields["use_tls"];
+				echo "<select name='use_tls'>\n";
+				echo "<option value='0' " . (!$use_tls ? " selected " : "") . ">" . $LANG['choice'][0] . "</option>\n";
+				echo "<option value='1' " . ($use_tls ? " selected " : "") . ">" . $LANG['choice'][1] . "</option>\n";
 				echo "</select>\n";
 			} else {
-				echo "<input type='hidden' name='ldap_use_tls' value='0'>";
+				echo "<input type='hidden' name='use_tls' value='0'>";
 				echo $LANG['setup'][181];
 
 			}

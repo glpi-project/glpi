@@ -225,7 +225,7 @@ class Enterprise extends CommonDBTM {
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				if (!$this->fields["deleted"])
+				if (!$this->fields["is_deleted"])
 					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 				else {
 					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";

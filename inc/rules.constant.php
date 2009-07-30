@@ -129,9 +129,9 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['profiles_id']['name']=$LANG['Menu'][35];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['profiles_id']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['profiles_id']['table']='glpi_profiles';
 
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['name']=$LANG['profiles'][28];
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['type']='yesno';
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['table']='';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['name']=$LANG['profiles'][28];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['type']='yesno';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['table']='';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['name']=$LANG['common'][60];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['type']='yesno';

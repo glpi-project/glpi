@@ -457,10 +457,10 @@ function getPluginSearchOption(){
  * @param $table table describing the device
  * @param $formpage Form page for the item
  * @param $typename string defining the name of the new type (used in CommonItem)
- * @param $recursive boolean
+ * @param $is_recursive boolean
  * 
  * @return nothing
-function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$recursive=false){
+function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$is_recursive=false){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
 
 	trigger_error("pluginNewType is deprecated, use registerPluginType instead");
@@ -475,7 +475,7 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 		$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
 		$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
 		
-		if ($recursive) {
+		if ($is_recursive) {
 			$CFG_GLPI["recursive_type"][$ID]=$table;
 		}
 	}

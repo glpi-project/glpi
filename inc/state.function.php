@@ -52,7 +52,7 @@ function showStateSummary($target){
 			unset($state_type[$key]);
 		} else {
 			$query= "SELECT states_id, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$itemtype]." ".
-				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])." AND deleted=0 AND is_template=0 GROUP BY states_id";
+				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])." AND is_deleted=0 AND is_template=0 GROUP BY states_id";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_array($result)){

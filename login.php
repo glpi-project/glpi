@@ -88,7 +88,7 @@ if (!isset ($_POST["noAUTO"]) && $authtype=checkAlternateAuthSystems()) {
 			if (isset($identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]])) {
 				$ldap_method = $identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]];
 				
-				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"],$ldap_method["ldap_opt_deref"]);
+				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["use_tls"],$ldap_method["ldap_opt_deref"]);
 				if ($ds) {
 					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
 					if ($user_dn) {
@@ -190,7 +190,7 @@ if (!isset ($_POST["noAUTO"]) && $authtype=checkAlternateAuthSystems()) {
 			$identificat->user->fields["_extauth"] = 1;			
 		}
 		// Need auto add user ?
-		if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
+		if (!$identificat->user_present && $CFG_GLPI["is_users_auto_add"]) {
 			$input = $identificat->user->fields;
 			unset ($identificat->user->fields);
 			$identificat->user->add($input);

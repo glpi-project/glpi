@@ -153,13 +153,13 @@ class User extends CommonDBTM {
 		$DB->query($query);
 
 		// Delete private reminder
-		$query = "DELETE FROM glpi_reminders WHERE users_id = '$ID' AND private=1";
+		$query = "DELETE FROM glpi_reminders WHERE users_id = '$ID' AND is_private=1";
 		$DB->query($query);
 		// Set no user to public reminder
 		$query = "UPDATE glpi_reminders SET users_id = 0 WHERE users_id = '$ID'";
 		$DB->query($query);
 		// Delete private bookmark
-		$query = "DELETE FROM glpi_bookmarks WHERE users_id = '$ID' AND private=1";
+		$query = "DELETE FROM glpi_bookmarks WHERE users_id = '$ID' AND is_private=1";
 		$DB->query($query);
 		// Set no user to public bookmark
 		$query = "UPDATE glpi_bookmarks SET users_id = 0 WHERE users_id = '$ID'";
@@ -225,8 +225,8 @@ class User extends CommonDBTM {
 			$input["active"]=1;
 		}
 
-		if (!isset($input["deleted"])){
-			$input["deleted"]=0;
+		if (!isset($input["is_deleted"])){
+			$input["is_deleted"]=0;
 		}
 
 		if (!isset($input["entities_id"])){
@@ -268,7 +268,7 @@ class User extends CommonDBTM {
 				}
 				$affectation["profiles_id"] = $DB->result($result,0,0);
 				$affectation["users_id"] = $input["ID"];
-				$affectation["recursive"] = 0;
+				$affectation["is_recursive"] = 0;
 				$affectation["dynamic"] = 0;
 				addUserProfileEntity($affectation);
 			}
@@ -382,7 +382,7 @@ class User extends CommonDBTM {
 			foreach($entities_rules as $entity){
 				$affectation["entities_id"] = $entity[0];
 				$affectation["profiles_id"] = $entity[1];
-				$affectation["recursive"] = $entity[2];
+				$affectation["is_recursive"] = $entity[2];
 				$affectation["users_id"] = $input["ID"];
 				$affectation["dynamic"] = 1;
 				addUserProfileEntity($affectation);
@@ -408,7 +408,7 @@ class User extends CommonDBTM {
 						$affectation["entities_id"] = $entity[0];
 						$affectation["profiles_id"] = $right;
 						$affectation["users_id"] = $input["ID"];
-						$affectation["recursive"] = $entity[1];
+						$affectation["is_recursive"] = $entity[1];
 						$affectation["dynamic"] = 1;
 						addUserProfileEntity($affectation);
 					}
@@ -714,7 +714,7 @@ class User extends CommonDBTM {
 				if (isset($this->fields["_stop_import"])
 					//or use matches no rules & do not import users with no rights 
 					|| (isset($this->fields["_no_rule_matches"])) 
-						&& !$CFG_GLPI["add_norights_users"]) {
+						&& !$CFG_GLPI["use_noright_users_add"]) {
 					return false;
 				}
 				//Hook to retrieve more informations for ldap
@@ -1079,7 +1079,7 @@ class User extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-					if (!$this->fields["deleted"]){
+					if (!$this->fields["is_deleted"]){
 						echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG['common'][50] . "')\" value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					 }else {
 						echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
@@ -1129,8 +1129,8 @@ class User extends CommonDBTM {
 
 
 			// No autocopletion : 
-			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
-			$CFG_GLPI["ajax_autocompletion"]=false;
+			$save_autocompletion=$CFG_GLPI["use_ajax_autocompletion"];
+			$CFG_GLPI["use_ajax_autocompletion"]=false;
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -1243,7 +1243,7 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
+			$CFG_GLPI["use_ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
 		

@@ -218,7 +218,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 				echo "</td></tr>";
 			}
 	
-			if ($CFG_GLPI['mailing']){
+			if ($CFG_GLPI['use_mailing']){
 				echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247].":		</td>";
 				echo "<td>";
 				echo dropdownAlertInfocoms("alert",$ic->fields["alert"]);
@@ -521,7 +521,7 @@ function showDisplayInfocomLink($itemtype,$device_id,$update=0){
 function cron_infocom($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!$CFG_GLPI["mailing"]){
+	if (!$CFG_GLPI["use_mailing"]){
 		return false;
 	}
 

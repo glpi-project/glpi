@@ -283,7 +283,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 		} else {
 			$where.=" AND ";
 		}
-		$where=" WHERE deleted='0'";
+		$where=" WHERE is_deleted='0'";
 	}
 	if (in_array($table,$CFG_GLPI["template_tables"])){
 		if (empty($where)){
@@ -369,7 +369,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		break;
 	}
 	
-	$where .= " AND glpi_users.deleted='0' AND glpi_users.active='1' ";
+	$where .= " AND glpi_users.is_deleted='0' AND glpi_users.active='1' ";
 	
 	if ($value || count($used)) {
 		$where .= " AND glpi_users.ID NOT IN (";
@@ -944,7 +944,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			if (isPossibleToAssignType($itemtype)){
 				$query="SELECT * 
 					FROM ".$LINK_ID_TABLE[$itemtype]." 
-					WHERE users_id='".$userID."' AND deleted='0' ";
+					WHERE users_id='".$userID."' AND is_deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
@@ -968,7 +968,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 								$output.=" - ".$data['otherserial'];
 							}
 						}
-						if (empty($output)||$_SESSION["glpiview_ID"]) {
+						if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
 							$output.=" (".$data['ID'].")";
 						}
 						$my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
@@ -1010,7 +1010,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					{
 						$query="SELECT * 
 							FROM `".$LINK_ID_TABLE[$itemtype]."` 
-							WHERE ($group_where) AND deleted='0' ";
+							WHERE ($group_where) AND is_deleted='0' ";
 						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -1029,7 +1029,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 									if (isset($data['otherserial'])) {
 										$output .= " - ".$data['otherserial'];
 									}
-									if (empty($output)||$_SESSION["glpiview_ID"]) {
+									if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
 										$output .= " (".$data['ID'].")";	
 									}
 									$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
@@ -1069,7 +1069,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 						LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_computers_items.items_id=".$LINK_ID_TABLE[$itemtype].".ID)
 						WHERE glpi_computers_items.itemtype='$itemtype' 
 							AND  ".str_replace("XXXX","glpi_computers_items.computers_id",$search_computer)."
-							AND ".$LINK_ID_TABLE[$itemtype].".deleted='0' ";
+							AND ".$LINK_ID_TABLE[$itemtype].".is_deleted='0' ";
 					if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
 					}
@@ -1086,7 +1086,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 								if ($itemtype!=SOFTWARE_TYPE){
 									$output.=" - ".$data['serial']." - ".$data['otherserial'];
 								}
-								if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
+								if (empty($output)||$_SESSION["glpiis_ids_visible"]) $output.=" (".$data['ID'].")";
 								$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
 								$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
 								$tmp_device.="</option>";
@@ -1117,7 +1117,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					if (!isset($already_add[SOFTWARE_TYPE])) $already_add[SOFTWARE_TYPE]=array();
 					while ($data=$DB->fetch_array($result)){
 						if (!in_array($data["ID"],$already_add[SOFTWARE_TYPE])){
-							$tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($_SESSION["glpiview_ID"]?" (".$data["ID"].")":"")."</option>";
+							$tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($_SESSION["glpiis_ids_visible"]?" (".$data["ID"].")":"")."</option>";
 							$already_add[SOFTWARE_TYPE][]=$data["ID"];
 						}
 					}
@@ -1315,7 +1315,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 
 	$rand=mt_rand();
 
-	$where=" WHERE glpi_documents.deleted='0' ";
+	$where=" WHERE glpi_documents.is_deleted='0' ";
 	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'',$entity_restrict,true);
 	if (count($used)) {
 		$where .= " AND ID NOT IN (0";
@@ -1437,7 +1437,7 @@ function dropdownSoftwareVersions($myname,$softwares_id,$value=0) {
 function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,$user_restrict=-1,$option=''){
 	global $CFG_GLPI;
 
-	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
+	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["use_ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 		$output = "<script type='text/javascript' >\n";
@@ -1552,9 +1552,9 @@ function device_selecter($target,$computers_id,$withtemplate='') {
  * Dropdown of actions for massive action
  *
  * @param $itemtype item type
- * @param $deleted massive action for deleted items ?
+ * @param $is_deleted massive action for deleted items ?
  */
-function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
+function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
 	$isadmin=haveTypeRight($itemtype,"w");
@@ -1572,7 +1572,7 @@ function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 		echo "<option value=\"update\">".$LANG['buttons'][14]."</option>";
 	}
 
-	if ($deleted){
+	if ($is_deleted){
 		if ($isadmin){
 			echo "<option value=\"purge\">".$LANG['buttons'][22]."</option>";
 			echo "<option value=\"restore\">".$LANG['buttons'][21]."</option>";
@@ -1617,7 +1617,7 @@ function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 				if ($isadmin){
 					echo "<option value=\"connect_to_computer\">".$LANG['buttons'][9]."</option>";
 					echo "<option value=\"install\">".$LANG['buttons'][4]."</option>";
-					if ($CFG_GLPI['ocs_mode']){
+					if ($CFG_GLPI['use_ocs_mode']){
 						if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")){
 							echo "<option value=\"force_ocsng_update\">".$LANG['ocsng'][24]."</option>";
 						}
@@ -1677,7 +1677,7 @@ function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 	echo "</select>";
 
 	$params=array('action'=>'__VALUE__',
-			'deleted'=>$deleted,
+			'is_deleted'=>$is_deleted,
 			'itemtype'=>$itemtype,
 			);
 	
@@ -2404,11 +2404,11 @@ function dropdownAlertInfocoms($name,$value=0){
 /**
  * Private / Public switch for items which may be assign to a user and/or an entity
  *
- * @param $private default is private ?
+ * @param $is_private default is private ?
  * @param $entity working entity ID
  * @param $recursive is the item recursive ?
  */
-function privatePublicSwitch($private,$entity,$recursive){
+function privatePublicSwitch($is_private,$entity,$recursive){
 	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
@@ -2417,7 +2417,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 	echo "function setPrivate$rand(){\n";
 		
 		$params=array(
-			'private'=>1,
+			'is_private'=>1,
 			'recursive'=>$recursive,
 			'entities_id'=>$entity,
 			'rand'=>$rand,
@@ -2428,7 +2428,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 	echo "function setPublic$rand(){\n";
 		
 		$params=array(
-			'private'=>0,
+			'is_private'=>0,
 			'recursive'=>$recursive,
 			'entities_id'=>$entity,
 			'rand'=>$rand,
@@ -2441,7 +2441,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 
 	echo "<span id='private_switch$rand'>";
 		$_POST['rand']=$rand;
-		$_POST['private']=$private;
+		$_POST['is_private']=$is_private;
 		$_POST['recursive']=$recursive;
 		$_POST['entities_id']=$entity;
 		include (GLPI_ROOT."/ajax/private_public.php");
@@ -2566,7 +2566,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$query = "SELECT glpi_contracts.*, glpi_entities.completename 
 		FROM glpi_contracts 
 		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id = glpi_entities.ID)
-		WHERE glpi_contracts.deleted = '0' $entrest $idrest 
+		WHERE glpi_contracts.is_deleted = '0' $entrest $idrest
 		ORDER BY glpi_entities.completename, glpi_contracts.name ASC, glpi_contracts.begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";

@@ -194,7 +194,7 @@ class ConsumableType extends CommonDBTM {
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<div class='center'>";
-					if (!$this->fields["deleted"])
+					if (!$this->fields["is_deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					else {
 						echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";

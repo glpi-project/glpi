@@ -116,7 +116,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			"ON glpi_manufacturers.ID=glpi_softwares.manufacturers_id ";
 
 			// Do not replay on trash and templates
-			$sql .= "WHERE glpi_softwares.deleted = 0 AND glpi_softwares.is_template = 0 ";
+			$sql .= "WHERE glpi_softwares.is_deleted = 0 AND glpi_softwares.is_template = 0 ";
 
 			if (isset ($params['manufacturer']) && $params['manufacturer'] > 0) {
 				$sql .= " AND manufacturers_id='" . $params['manufacturer'] . "'";
@@ -318,7 +318,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$res_countsoftinstall = $DB->query("SELECT glpi_softwares.ID as ID, count( glpi_softwaresversions.softwares_id ) AS cpt " .
 			"FROM `glpi_softwares` 
 									LEFT JOIN glpi_softwaresversions ON glpi_softwaresversions.softwares_id = glpi_softwares.ID " .
-			"WHERE glpi_softwares.ID IN ('" . $ids . "') AND deleted=0 GROUP BY glpi_softwares.ID HAVING cpt=0 ORDER BY cpt");
+			"WHERE glpi_softwares.ID IN ('" . $ids . "') AND is_deleted=0 GROUP BY glpi_softwares.ID HAVING cpt=0 ORDER BY cpt");
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {

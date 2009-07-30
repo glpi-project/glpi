@@ -55,7 +55,7 @@ class Connection {
 	//! ID of the computer
 	var $device_ID		= 0;
 	//! Is the computer Deleted
-	var $deleted ='0';
+	var $is_deleted ='0';
 	//! Is the computer a template
 	var $is_template ='0';
 

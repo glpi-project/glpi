@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if($CFG_GLPI["permit_helpdesk"]){
+if($CFG_GLPI["use_anonymous_helpdesk"]){
 	$id = new Identification();
 	$id->initSession();
 } else {
@@ -103,7 +103,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
 		FROM glpi_computers 
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
@@ -130,7 +130,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
 		FROM glpi_networkequipments 
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
@@ -157,7 +157,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
 		FROM glpi_printers 
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
@@ -184,7 +184,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
 		FROM glpi_monitors 
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
@@ -211,7 +211,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
 		FROM glpi_peripherals 
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
@@ -238,7 +238,7 @@ function fillidfield(Type,Id){
 
 	$query = "SELECT name, ID 
 		FROM glpi_softwares
-		WHERE is_template='0' AND deleted='0' 
+		WHERE is_template='0' AND is_deleted='0' 
 			AND (name LIKE '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))

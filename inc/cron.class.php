@@ -110,18 +110,18 @@ class Cron {
 			// la cle est la tache, la valeur le temps minimal, en secondes, entre
 			// deux memes taches ex $this->taches["test"]=30;
 
-			if ($CFG_GLPI["ocs_mode"]){
+			if ($CFG_GLPI["use_ocs_mode"]){
 				// Every 5 mns
 				$this->taches["ocsng"]=300;
 			}
 			// Mailing alerts if mailing activated
-			if ($CFG_GLPI["mailing"]){
+			if ($CFG_GLPI["use_mailing"]){
 				if ($CFG_GLPI["cartridges_alert"]>0)
 					$this->taches["cartridge"]=$CFG_GLPI["cartridges_alert"];
 				if ($CFG_GLPI["consumables_alert"]>0)
 					$this->taches["consumable"]=$CFG_GLPI["consumables_alert"];
 			}
-			if ($CFG_GLPI["licenses_alert"]>0){
+			if ($CFG_GLPI["use_licenses_alert"]>0){
 				$this->taches["software"]=DAY_TIMESTAMP;
 			}
 

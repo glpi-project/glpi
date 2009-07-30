@@ -94,14 +94,14 @@ function showDeviceBudget($budgets_id) {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
-					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
@@ -111,7 +111,7 @@ function showDeviceBudget($budgets_id) {
 					}
 					echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
 
-					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center' ".(isset($data['is_deleted'])&&$data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "</tr>";

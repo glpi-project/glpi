@@ -215,9 +215,9 @@ class kbitem extends CommonDBTM {
 	
 				echo "&nbsp;&nbsp;".$LANG['entity'][9].":	";
 				if ($canrecu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
+					dropdownYesNo("is_recursive",$this->fields["is_recursive"]);
 				} else {
-					echo getYesNo($this->fields["recursive"]);
+					echo getYesNo($this->fields["is_recursive"]);
 				}
 			}
 			

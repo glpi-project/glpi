@@ -232,7 +232,7 @@ class Job extends CommonDBTM{
 					addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 					// force update date_mod
 					$input["date_mod"]=$_SESSION["glpi_currenttime"];
-					if ($CFG_GLPI["followup_on_update_ticket"]){
+					if ($CFG_GLPI["add_followup_on_update_ticket"]){
 						$input['_doc_added']=stripslashes($doc->fields["name"]); 
 					}
 				}
@@ -252,7 +252,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Old values for add followup in change
-		if ($CFG_GLPI["followup_on_update_ticket"]){
+		if ($CFG_GLPI["add_followup_on_update_ticket"]){
 			$this->getFromDB($input["ID"]);
 			$input["_old_assign_name"]=getAssignName($this->fields["users_id_assign"],USER_TYPE);
 			$input["_old_assign"]=$this->fields["users_id_assign"];
@@ -365,7 +365,7 @@ class Job extends CommonDBTM{
 				}
 			}
 
-			if ($CFG_GLPI["followup_on_update_ticket"]&&count($updates)){
+			if ($CFG_GLPI["add_followup_on_update_ticket"]&&count($updates)){
 	
 	
 				foreach ($updates as $key)
@@ -520,7 +520,7 @@ class Job extends CommonDBTM{
 				$newinput=array();
 				$newinput["contents"]=addslashes($change_followup_content);
 				$newinput["users_id"]=$_SESSION['glpiID'];
-				$newinput["private"]=0;
+				$newinput["is_private"]=0;
 				$newinput["hour"]=$newinput["minute"]=0;
 				$newinput["tickets_id"]=$this->fields["ID"];
 				$newinput["type"]="update";
@@ -541,7 +541,7 @@ class Job extends CommonDBTM{
 			// Clean content to mail
 			$this->fields["contents"]=stripslashes($this->fields["contents"]);
 	
-			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["mailing"]){
+			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["use_mailing"]){
 				$user=new User;
 				$user->getFromDB($_SESSION["glpiID"]);
 				$mailtype="update";
@@ -569,15 +569,15 @@ class Job extends CommonDBTM{
 
 			$_SESSION["helpdeskSaved"]=$input;
 	
-			if ($CFG_GLPI["ticket_content_mandatory"]&&(!isset($input['contents'])||empty($input['contents']))){
+			if ($CFG_GLPI["is_ticket_content_mandatory"]&&(!isset($input['contents'])||empty($input['contents']))){
 				addMessageAfterRedirect($LANG['tracking'][8],false,ERROR);
 				$mandatory_ok=false;
 			}
-			if ($CFG_GLPI["ticket_title_mandatory"]&&(!isset($input['name'])||empty($input['name']))){
+			if ($CFG_GLPI["is_ticket_title_mandatory"]&&(!isset($input['name'])||empty($input['name']))){
 				addMessageAfterRedirect($LANG['help'][40],false,ERROR);
 				$mandatory_ok=false;
 			}
-			if ($CFG_GLPI["ticket_category_mandatory"]&&(!isset($input['ticketscategories_id'])||empty($input['ticketscategories_id']))){
+			if ($CFG_GLPI["is_ticket_category_mandatory"]&&(!isset($input['ticketscategories_id'])||empty($input['ticketscategories_id']))){
 				addMessageAfterRedirect($LANG['help'][41],false,ERROR);
 				$mandatory_ok=false;
 			}
@@ -638,7 +638,9 @@ class Job extends CommonDBTM{
 			}
 		}
 
-		if ($CFG_GLPI["auto_assign"]&&$input["users_id_assign"]==0&&isset($input["items_id"])&&$input["items_id"]>0&&isset($input["itemtype"])&&$input["itemtype"]>0){
+		if ($CFG_GLPI["use_auto_assign_to_tech"] && $input["users_id_assign"]==0
+            && isset($input["items_id"]) && $input["items_id"]>0
+            && isset($input["itemtype"]) && $input["itemtype"]>0){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["itemtype"],$input["items_id"]);
 			if ($tmp=$ci->getField('users_id_tech')){
@@ -756,8 +758,8 @@ class Job extends CommonDBTM{
 			if (isset($input["_followup"]['contents']) && strlen($input["_followup"]['contents']) > 0) {
             $toadd["contents"]=$input["_followup"]['contents'];
          }
-			if (isset($input["_followup"]['private'])) {
-            $toadd["private"]=$input["_followup"]['private'];
+			if (isset($input["_followup"]['is_private'])) {
+            $toadd["is_private"]=$input["_followup"]['is_private'];
          }
 			if (isset($input["plan"])) {
             $toadd["plan"]=$input["plan"];
@@ -767,7 +769,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Processing Email
-		if ($CFG_GLPI["mailing"]&&!$already_mail)
+		if ($CFG_GLPI["use_mailing"]&&!$already_mail)
 		{
 			$user=new User();
 			$user->getFromDB($input["users_id"]);
@@ -792,7 +794,7 @@ class Job extends CommonDBTM{
 	function numberOfFollowups($with_private=1){
 		global $DB;
 		$RESTRICT="";
-		if ($with_private!=1) $RESTRICT = " AND private='0'";
+		if ($with_private!=1) $RESTRICT = " AND is_private='0'";
 		// Set number of followups
 		$query = "SELECT count(*) FROM glpi_ticketsfollowups WHERE tickets_id = '".$this->fields["ID"]."' $RESTRICT";
 		$result = $DB->query($query);
@@ -844,7 +846,7 @@ class Job extends CommonDBTM{
 		global $DB,$LANG;
 
 		if (isset($this->fields["ID"])){
-			$query = "SELECT * FROM glpi_ticketsfollowups WHERE tickets_id = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
+			$query = "SELECT * FROM glpi_ticketsfollowups WHERE tickets_id = '".$this->fields["ID"]."' ".($sendprivate?"":" AND is_private = '0' ")." ORDER by date DESC";
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
@@ -854,7 +856,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getFromDB($data['ID']);
-						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG['common'][77]."</i>":"")."</strong>\n";
+						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"")."</strong>\n";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['job'][4].":</span> ".$fup->getAuthorName()."\n";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][3]."</span>:<br>".str_replace("\n","<br>",$fup->fields["contents"])."\n";
 						if ($fup->fields["realtime"]>0)
@@ -880,7 +882,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getFromDB($data['ID']);
-						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG['common'][77]:"")."\n";
+						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["is_private"]?"\t".$LANG['common'][77]:"")."\n";
 						$message .= $LANG['job'][4].": ".$fup->getAuthorName()."\n";
 						$message .= $LANG['mailing'][3].":\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)
@@ -1137,11 +1139,11 @@ class Followup  extends CommonDBTM {
 			
 			if (count($updates)){
 		
-				if ($CFG_GLPI["mailing"]&&
+				if ($CFG_GLPI["use_mailing"]&&
 				(in_array("contents",$updates)||isset($input['_need_send_mail']))){
 					$user=new User;
 					$user->getFromDB($_SESSION["glpiID"]);
-					$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
+					$mail = new Mailing("followup",$job,$user,(isset($input["is_private"]) && $input["is_private"]));
 					$mail->send();
 					$mailsend=true;
 				}
@@ -1287,14 +1289,14 @@ class Followup  extends CommonDBTM {
          $input["_job"]->updateInDB($updates);
       }
 
-		if ($CFG_GLPI["mailing"]){
+		if ($CFG_GLPI["use_mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
 			if (!isset($input['_auto_import'])&&isset($_SESSION["glpiID"])){ 
 				$user->getFromDB($_SESSION["glpiID"]);
 			}
 			$mail = new Mailing($input["_type"],$input["_job"],$user,
-						(isset($input["private"])&&$input["private"]));
+						(isset($input["is_private"])&&$input["is_private"]));
 			$mail->send();
 		}
 	}

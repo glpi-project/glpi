@@ -676,7 +676,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.=" AND $condition ";
 	}
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.=" AND `$table`.deleted='0' ";
+		$query.=" AND `$table`.is_deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.=" AND `$table`.is_template='0' ";	
 
@@ -750,7 +750,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	}
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.="AND `$table`.deleted='0'";
+		$query.="AND `$table`.is_deleted='0'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.="AND `$table`.is_template='0'";	
 
@@ -810,7 +810,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		$temp=$login;
 	}
 
-	if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiview_ID"])) {
+	if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiis_ids_visible"])) {
 		$viewID="&nbsp;($ID)";
 	}
 
@@ -1021,7 +1021,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
 						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code 
 							FROM $table 
 							WHERE $field LIKE '$like' 
-							AND deleted = '0' 
+							AND is_deleted = '0' 
 							AND is_template = '0'";
 							if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
 								$query.=" AND entities_id = '$entities_id' ";
@@ -1037,7 +1037,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
 					FROM $table 
 					WHERE $field LIKE '$like' ";
 				if ($itemtype != INFOCOM_TYPE){
-					$query .= " AND deleted = '0' AND is_template = '0'";
+					$query .= " AND is_deleted = '0' AND is_template = '0'";
 					if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
 						$query.=" AND entities_id = '$entities_id' ";
 					}

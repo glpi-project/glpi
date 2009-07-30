@@ -223,7 +223,7 @@ if (isset($_POST["itemtype"])){
 								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if ($link_entity_type<0
 										||$link_entity_type==$ci->obj->fields["entities_id"]
-										||($ent->fields["recursive"]
+										||($ent->fields["is_recursive"]
                                  && in_array($link_entity_type, getAncestorsOf("glpi_entities",$ci->obj->fields["entities_id"])))){
 										unset($ic->fields);
 										$ic->update(array("itemtype"=>$_POST["itemtype"],"items_id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
@@ -246,7 +246,7 @@ if (isset($_POST["itemtype"])){
 		
 							if ($ci2->getFromDB($_POST[$_POST["field"]])){
 								if (isset($ci2->fields["entities_id"])&&$ci2->fields["entities_id"]>=0){
-									if (isset($ci2->fields["recursive"])&&$ci2->fields["recursive"]){
+									if (isset($ci2->fields["is_recursive"])&&$ci2->fields["is_recursive"]){
                               $link_entity_type=getSonsOf("glpi_entities",$ci2->fields["entities_id"]);
 									} else {
 										$link_entity_type[]=$ci2->fields["entities_id"];
@@ -289,7 +289,7 @@ if (isset($_POST["itemtype"])){
 			case "add_userprofile":
 				$input['entities_id']=$_POST['entities_id'];
 				$input['profiles_id']=$_POST['profiles_id'];
-				$input['recursive']=$_POST['recursive'];
+				$input['is_recursive']=$_POST['is_recursive'];
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$input['users_id']=$key;
@@ -315,7 +315,7 @@ if (isset($_POST["itemtype"])){
 								}
 								if ($destentity<0
 								|| $ci->obj->fields["entities_id"]==$destentity
-                        || ($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
+                        || ($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addDeviceDocument($_POST['docID'],$_POST["itemtype"],$key);
 								}
 							}
@@ -341,7 +341,7 @@ if (isset($_POST["itemtype"])){
 								/// Entity security
 								if ($destentity<0
                            ||$ci->obj->fields["entities_id"]==$destentity
-                           ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
+                           ||($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addContactEnterprise($key,$_POST["conID"]);
 								}
 							}
@@ -367,7 +367,7 @@ if (isset($_POST["itemtype"])){
 								/// Entity security
 								if ($destentity<0
                            ||$ci->obj->fields["entities_id"]==$destentity
-                           ||($ci->obj->fields["recursive"]
+                           ||($ci->obj->fields["is_recursive"]
                               && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addDeviceContract($_POST['conID'],$_POST["itemtype"],$key);
 								}
@@ -388,7 +388,7 @@ if (isset($_POST["itemtype"])){
 								// Entity security
 								if (!isset($ci2->obj->fields["entities_id"])
 								||$ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]
-                        ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$ci2->obj->fields["entities_id"])))){
+                        ||($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$ci2->obj->fields["entities_id"])))){
 									addContactEnterprise($_POST["entID"],$key);
 								}
 							}

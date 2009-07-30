@@ -74,13 +74,13 @@ function showConnect($target,$ID,$itemtype) {
 
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
-				echo "<tr><td class='tab_bg_1".($computer['deleted']?"_2":"")."'><strong>".$LANG['help'][25].": ";
+				echo "<tr><td class='tab_bg_1".($computer['is_deleted']?"_2":"")."'><strong>".$LANG['help'][25].": ";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$computer['ID']."\">";
 				echo $computer['name'];
-				if ($_SESSION["glpiview_ID"]||empty($computer['name'])) echo " (".$computer['ID'].")";
+				if ($_SESSION["glpiis_ids_visible"]||empty($computer['name'])) echo " (".$computer['ID'].")";
 				echo "</a>";
 				echo "</strong></td>";
-				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";
+				echo "<td class='tab_bg_2".($computer['is_deleted']?"_2":"")."' align='center'><strong>";
 				if ($canedit){
 					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;computers_id=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
 				} else {
@@ -99,7 +99,7 @@ function showConnect($target,$ID,$itemtype) {
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='itemtype' value='$itemtype'>";				
-				if ($ci->getField('recursive')) {
+				if ($ci->getField('is_recursive')) {
                dropdownConnect(COMPUTER_TYPE,$itemtype,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$itemtype,"item",$ci->getField('entities_id'),0,$used);
@@ -121,7 +121,7 @@ function showConnect($target,$ID,$itemtype) {
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-				if ($ci->getField('recursive')) {
+				if ($ci->getField('is_recursive')) {
                dropdownConnect(COMPUTER_TYPE,$itemtype,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$itemtype,"item",$ci->getField('entities_id'),0,$used);
@@ -203,23 +203,23 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
 			if (!$device->getField('is_global')){
 				
 				$updates=array();
-				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('locations_id')){
+				if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')){
 					$updates[]="locations_id";
 					$device->obj->fields['locations_id']=0;
 				}
-				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('users_id')) {
+				if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
 					$updates[]="users_id";
 					$device->obj->fields['users_id']=0;	
 				}
-				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('groups_id')){
+				if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')){
 					$updates[]="groups_id";
 					$device->obj->fields['groups_id']=0;
 				}
-				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
+				if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')){
 					$updates[]="contact";
 					$device->obj->fields['contact']="";
 				}
-				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')){
+				if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')){
 					$updates[]="contact_num";
 					$device->obj->fields['contact_num']="";
 				}
@@ -260,7 +260,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
 					//Put periph in trash
 					else if($decoConf == "trash"){
 						$tmp["ID"]=$id_elem;
-						$tmp["deleted"]=1;
+						$tmp["is_deleted"]=1;
 						$device->obj->update($tmp,$dohistory);
 					}
 				}		
@@ -348,19 +348,19 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
 			historyLog ($sID,$itemtype,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
 		}
 		
-		if ($CFG_GLPI["autoupdate_link_location"]&&$comp->fields['locations_id']!=$dev->getField('locations_id')){
+		if ($CFG_GLPI["is_location_autoupdate"]&&$comp->fields['locations_id']!=$dev->getField('locations_id')){
 			$updates[0]="locations_id";
 			$dev->obj->fields['locations_id']=addslashes($comp->fields['locations_id']);
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][48],true);
 		}
-		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['users_id']!=$dev->getField('users_id'))
-		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['groups_id']!=$dev->getField('groups_id'))){
-			if ($CFG_GLPI["autoupdate_link_user"]){
+		if (($CFG_GLPI["is_user_autoupdate"]&&$comp->fields['users_id']!=$dev->getField('users_id'))
+		||($CFG_GLPI["is_group_autoupdate"]&&$comp->fields['groups_id']!=$dev->getField('groups_id'))){
+			if ($CFG_GLPI["is_user_autoupdate"]){
 				$updates[]="users_id";
 				$dev->obj->fields['users_id']=$comp->fields['users_id'];
 			}
-			if ($CFG_GLPI["autoupdate_link_group"]){
+			if ($CFG_GLPI["is_group_autoupdate"]){
 				$updates[]="groups_id";
 				$dev->obj->fields['groups_id']=$comp->fields['groups_id'];
 			}
@@ -368,7 +368,7 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
 			addMessageAfterRedirect($LANG['computers'][50],true);
 		}
 
-		if ($CFG_GLPI["autoupdate_link_contact"]
+		if ($CFG_GLPI["is_contact_autoupdate"]
 		&&($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num'))){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
@@ -405,7 +405,7 @@ function getNumberConnections($itemtype,$ID){
 		FROM glpi_computers_items 
 			INNER JOIN glpi_computers ON ( glpi_computers_items.computers_id=glpi_computers.ID )
 		WHERE glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
-			AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
+			AND glpi_computers.is_deleted='0' AND glpi_computers.is_template='0'";
 
 	$result = $DB->query($query);
 

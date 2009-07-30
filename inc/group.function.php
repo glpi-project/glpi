@@ -124,7 +124,7 @@ function showGroupUsers($target,$ID){
 	
 				$used[$data["ID"]]=$data["ID"];
 				
-				echo "<td class='tab_bg_1".($data["deleted"]=='1'?"_2":"")."'>";
+				echo "<td class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
 				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
 				echo "</td>";
 				$i++;
@@ -153,7 +153,7 @@ function showGroupUsers($target,$ID){
 			echo "</table>";
 			echo "</div>";
 
-			if ($group->fields["recursive"]) {
+			if ($group->fields["is_recursive"]) {
             $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",$group->fields["entities_id"]), 0, $used);
 			} else {
 				$res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
@@ -164,7 +164,7 @@ function showGroupUsers($target,$ID){
 				echo "<div class='center'>";
 				echo "<table  class='tab_cadre_fixe'>";
 				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-				if ($group->fields["recursive"]) {
+				if ($group->fields["is_recursive"]) {
                dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["entities_id"]),0,$used);
 				} else {
 					dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);

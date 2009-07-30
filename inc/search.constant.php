@@ -582,7 +582,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][103]['name']=$LANG['ocsng'][14];
 $SEARCH_OPTION[COMPUTER_TYPE][103]['datatype']='datetime';
 
 $SEARCH_OPTION[COMPUTER_TYPE][100]['table']='glpi_computers';
-$SEARCH_OPTION[COMPUTER_TYPE][100]['field']='ocs_import';
+$SEARCH_OPTION[COMPUTER_TYPE][100]['field']='is_ocs_import';
 $SEARCH_OPTION[COMPUTER_TYPE][100]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][100]['name']=$LANG['ocsng'][7];
 
@@ -735,8 +735,8 @@ $SEARCH_OPTION[NETWORKING_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[NETWORKING_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[NETWORKING_TYPE][86]['table']='glpi_networkequipments';
-$SEARCH_OPTION[NETWORKING_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[NETWORKING_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[NETWORKING_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[NETWORKING_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[NETWORKING_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[NETWORKING_TYPE][86]['datatype']='bool';
 
@@ -1077,8 +1077,8 @@ $SEARCH_OPTION[PRINTER_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[PRINTER_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[PRINTER_TYPE][86]['table']='glpi_printers';
-$SEARCH_OPTION[PRINTER_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[PRINTER_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[PRINTER_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[PRINTER_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[PRINTER_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[PRINTER_TYPE][86]['datatype']='bool';
 
@@ -2542,8 +2542,8 @@ $SEARCH_OPTION[BUDGET_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[BUDGET_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[BUDGET_TYPE][86]['table']='glpi_contacts';
-$SEARCH_OPTION[BUDGET_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[BUDGET_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[BUDGET_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[BUDGET_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[BUDGET_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[BUDGET_TYPE][86]['datatype']='bool';
 	 
@@ -2624,8 +2624,8 @@ $SEARCH_OPTION[CONTACT_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[CONTACT_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[CONTACT_TYPE][86]['table']='glpi_contacts';
-$SEARCH_OPTION[CONTACT_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[CONTACT_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[CONTACT_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[CONTACT_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[CONTACT_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[CONTACT_TYPE][86]['datatype']='bool';
 
@@ -2723,8 +2723,8 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][86]['table']='glpi_suppliers';
-$SEARCH_OPTION[ENTERPRISE_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[ENTERPRISE_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[ENTERPRISE_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[ENTERPRISE_TYPE][86]['datatype']='bool';
 
@@ -2836,8 +2836,8 @@ $SEARCH_OPTION[CONTRACT_TYPE][59]['linkfield']='alert';
 $SEARCH_OPTION[CONTRACT_TYPE][59]['name']=$LANG['common'][41];
 
 $SEARCH_OPTION[CONTRACT_TYPE][86]['table']='glpi_contracts';
-$SEARCH_OPTION[CONTRACT_TYPE][86]['field']='recursive';
-$SEARCH_OPTION[CONTRACT_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[CONTRACT_TYPE][86]['field']='is_recursive';
+$SEARCH_OPTION[CONTRACT_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[CONTRACT_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[CONTRACT_TYPE][86]['datatype']='bool';
 
@@ -3568,8 +3568,8 @@ $SEARCH_OPTION[GROUP_TYPE][5]['linkfield']='ldap_group_dn';
 $SEARCH_OPTION[GROUP_TYPE][5]['name']=$LANG['setup'][261];
 
 $SEARCH_OPTION[GROUP_TYPE][6]['table']='glpi_groups';
-$SEARCH_OPTION[GROUP_TYPE][6]['field']='recursive';
-$SEARCH_OPTION[GROUP_TYPE][6]['linkfield']='recursive';
+$SEARCH_OPTION[GROUP_TYPE][6]['field']='is_recursive';
+$SEARCH_OPTION[GROUP_TYPE][6]['linkfield']='is_recursive';
 $SEARCH_OPTION[GROUP_TYPE][6]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[GROUP_TYPE][6]['datatype']='bool';
 

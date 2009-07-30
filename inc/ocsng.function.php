@@ -518,7 +518,7 @@ function ocsImportComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -
 				$input = array ();
 				$input["entities_id"] = $data['entities_id'];
 				$input["name"] = $line["NAME"];
-				$input["ocs_import"] = 1;
+				$input["is_ocs_import"] = 1;
 				if ($cfg_ocs["states_id_default"]>0){
 					$input["states_id"] = $cfg_ocs["states_id_default"];
 				}
@@ -593,17 +593,17 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 			$comp = new Computer;
 			$comp->getFromDB($computers_id);
 			$input["ID"] = $computers_id;
-			$input["ocs_import"] = 1;
+			$input["is_ocs_import"] = 1;
 			
 			// Not already import from OCS / mark default state 
-			if ($link_auto || (!$comp->fields['ocs_import'] && $ocsConfig["states_id_default"]>0)) {
+			if ($link_auto || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0)) {
 				$input["states_id"] = $ocsConfig["states_id_default"];
 			}
 	
 			$comp->update($input);
 			
 			// Auto restore if deleted 
-			if ($comp->fields['deleted']){ 
+			if ($comp->fields['is_deleted']){ 
 				$comp->restore(array('ID'=>$computers_id));
 			}
 			
@@ -811,7 +811,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			$sql_where .= " AND glpi_computers.states_id='".$conf["states_id_linkif"]."'";
 		
 		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from " .
-			"WHERE $sql_where ORDER BY `glpi_computers`.`deleted` ASC";
+			"WHERE $sql_where ORDER BY `glpi_computers`.`is_deleted` ASC";
 		$result_glpi = $DB->query($sql_glpi);
 		
 		if ($DB->numrows($result_glpi) > 0){
@@ -2572,13 +2572,13 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 								addToOcsArray($computers_id, array ($connID => $checkMonitor), "import_monitor");
 								$count_monitor++;
 
- 								//Update column "deleted" set value to 0 and set status to default
+ 								//Update column "is_deleted" set value to 0 and set status to default
 								$input = array ();
 								
 								$old = new Monitor;
 								if ($old->getFromDB($id_monitor)) {
-									if ($old->fields["deleted"]) {
-										$input["deleted"] = 0;
+									if ($old->fields["is_deleted"]) {
+										$input["is_deleted"] = 0;
 									}		
 									if ($cfg_ocs["states_id_default"]>0 && $old->fields["states_id"]!=$cfg_ocs["states_id_default"]) {
 										$input["states_id"] = $cfg_ocs["states_id_default"];
@@ -2671,10 +2671,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 									addToOcsArray($computers_id, array (
 										$connID => $print["name"]
 									), "import_printers");
-									//Update column "deleted" set value to 0 and set status to default
+									//Update column "is_deleted" set value to 0 and set status to default
 									$input = array ();
 									$input["ID"] = $id_printer;
-									$input["deleted"] = 0;
+									$input["is_deleted"] = 0;
 									if ($cfg_ocs["states_id_default"]>0){
 										$input["states_id"] = $cfg_ocs["states_id_default"];
 									}
@@ -2752,10 +2752,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 								addToOcsArray($computers_id, array (
 									$connID => $periph["name"]
 								), "import_peripheral");
-								//Update column "deleted" set value to 0 and set status to default
+								//Update column "is_deleted" set value to 0 and set status to default
 								$input = array ();
 								$input["ID"] = $id_periph;
-								$input["deleted"] = 0;
+								$input["is_deleted"] = 0;
 								if ($cfg_ocs["states_id_default"]>0){
 									$input["states_id"] = $cfg_ocs["states_id_default"];
 								}

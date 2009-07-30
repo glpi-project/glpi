@@ -65,7 +65,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 	$where="WHERE 1 ";
 	
 	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
-		$where.=" AND deleted=0 ";
+		$where.=" AND is_deleted=0 ";
 	}
 	if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 		$where.=" AND is_template=0 ";
@@ -161,7 +161,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					// Completename for tree dropdown : keep right
 					$outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
 				}
-				if ($_SESSION["glpiview_ID"]||empty($outputval)){
+				if ($_SESSION["glpiis_ids_visible"]||empty($outputval)){
 					 $outputval.=" (".$_POST['value'].")";
 				}
 
@@ -210,7 +210,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					}
 				}
 				
-				if ($_SESSION["glpiview_ID"]||empty($output)){
+				if ($_SESSION["glpiis_ids_visible"]||empty($output)){
 					 $output.=" ($ID)";
 				}
 
@@ -307,7 +307,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		$output=getDropdownName($_POST['table'],$_POST['value']);
 		if (!empty($output)&&$output!="&nbsp;"){
 
-			if($_SESSION["glpiview_ID"]||empty($output)){
+			if($_SESSION["glpiis_ids_visible"]||empty($output)){
 				$output.=" (".$_POST['value'].")";
 			}
 
@@ -328,7 +328,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-				if ($_SESSION["glpiview_ID"]||empty($output)){
+				if ($_SESSION["glpiis_ids_visible"]||empty($output)){
 					 $output.=" ($ID)";
 				}
 				if ($multi && $data["entities_id"]!=$prev) {

@@ -649,7 +649,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$sixth_col.="</strong>";
 		} 
 
-		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$align." ".($ci->getField("deleted")?" class='deleted' ":""));
+		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$align." ".($ci->getField("is_deleted")?" class='deleted' ":""));
 
 		// Seventh column
 		echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,$row_num,$align);
@@ -738,7 +738,7 @@ function showJobVeryShort($ID) {
 
 		if (haveTypeRight($job->fields["itemtype"],"r")){
 			echo "<td align='center' ";
-			if ($job->hardwaredatas->getField("deleted")){
+			if ($job->hardwaredatas->getField("is_deleted")){
 				echo "class='tab_bg_1_2'";
 			}
 			echo ">";
@@ -1826,7 +1826,7 @@ function showFollowupsShort($ID) {
 	$showprivate=haveRight("show_full_ticket","1");
 	
 	$RESTRICT="";
-	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR users_id ='".$_SESSION["glpiID"]."' ) ";
+	if (!$showprivate)  $RESTRICT=" AND ( is_private='0' OR users_id ='".$_SESSION["glpiID"]."' ) ";
 
 
 	// Get Number of Followups
@@ -2191,7 +2191,7 @@ function showJobDetails ($target,$ID){
 
 		// Mailing ? Y or no ?
 
-		if ($CFG_GLPI["mailing"]==1){
+		if ($CFG_GLPI["use_mailing"]==1){
 			echo "<table><tr><td class='right'>";
 			echo $LANG['job'][19].":</td><td>";
 			if ($canupdate){
@@ -2299,7 +2299,7 @@ function showFollowupsSummary($tID){
 	$caneditall=haveRight("update_followups","1");
 	
 	$RESTRICT="";
-	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR users_id ='".$_SESSION["glpiID"]."' ) ";
+	if (!$showprivate)  $RESTRICT=" AND ( is_private='0' OR users_id ='".$_SESSION["glpiID"]."' ) ";
 
 	$query = "SELECT * FROM glpi_ticketsfollowups WHERE (tickets_id = '$tID') $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
@@ -2386,7 +2386,7 @@ function showFollowupsSummary($tID){
 			echo "<td>".getUserName($data["users_id"])."</td>";
 			if ($showprivate){
 				echo "<td>";
-				if ($data["private"])
+				if ($data["is_private"])
 					echo $LANG['choice'][1];
 				else echo $LANG['choice'][0];
 				echo "</td>";
@@ -2470,11 +2470,11 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 		echo "<td>".$LANG['common'][77].":</td>";
 		echo "<td>";
 
-		$default_private=$_SESSION['glpifollowup_private'];
-		if (isset($datas['private'])){
-			$default_private=$datas['private'];
+		$default_private=$_SESSION['glpidefault_followup_private'];
+		if (isset($datas['is_private'])){
+			$default_private=$datas['is_private'];
 		}
-		echo "<select name='".$prefix."private".$postfix."'>";
+		echo "<select name='".$prefix."is_private".$postfix."'>";
 		echo "<option value='0' ".(!$default_private?"selected":"").">".$LANG['choice'][0]."</option>";
 		echo "<option value='1' ".($default_private?"selected":"").">".$LANG['choice'][1]."</option>";
 		echo "</select>";
@@ -2634,9 +2634,9 @@ function showUpdateFollowupForm($ID){
 			echo "<tr>";
 			echo "<td>".$LANG['common'][77].":</td>";
 			echo "<td>";
-			echo "<select name='private'>";
-			echo "<option value='0' ".(!$fup->fields["private"]?" selected":"").">".$LANG['choice'][0]."</option>";
-			echo "<option value='1' ".($fup->fields["private"]?" selected":"").">".$LANG['choice'][1]."</option>";
+			echo "<select name='is_private'>";
+			echo "<option value='0' ".(!$fup->fields["is_private"]?" selected":"").">".$LANG['choice'][0]."</option>";
+			echo "<option value='1' ".($fup->fields["is_private"]?" selected":"").">".$LANG['choice'][1]."</option>";
 			echo "</select>";
 			echo "</td>";
 			echo "</tr>";

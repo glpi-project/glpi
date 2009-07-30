@@ -174,7 +174,7 @@ function showCartridges ($tID,$show_old=0) {
 				if (!is_null($date_use)){
 					if ($data["printID"]>0){
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$data["printID"]."'><strong>".$data["printname"];
-					if ($_SESSION['glpiview_ID']){
+					if ($_SESSION['glpiis_ids_visible']){
 						echo " (".$data["printID"].")";
 					}
 					echo "</strong></a>";
@@ -314,7 +314,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
 
-	$query = "SELECT glpi_cartridgesitems.ID as tID, glpi_cartridgesitems.deleted as deleted, glpi_cartridgesitems.ref as ref,
+	$query = "SELECT glpi_cartridgesitems.ID as tID, glpi_cartridgesitems.is_deleted, glpi_cartridgesitems.ref as ref,
 			glpi_cartridgesitems.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, 
 			glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0){
@@ -356,7 +356,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		$date_in=convDate($data["date_in"]);
 		$date_use=convDate($data["date_use"]);
 		$date_out=convDate($data["date_out"]);
-		echo "<tr  class='tab_bg_1".($data["deleted"]?"_2":"")."'><td class='center'>";
+		echo "<tr  class='tab_bg_1".($data["is_deleted"]?"_2":"")."'><td class='center'>";
 		echo $data["ID"]; 
 		echo "</td><td class='center'><strong>";
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?ID=".$data["tID"]."\">";
@@ -625,7 +625,7 @@ function getCartridgeStatus($date_use,$date_out){
 function cron_cartridge($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!$CFG_GLPI["mailing"]||!$CFG_GLPI["cartridges_alert"]){
+	if (!$CFG_GLPI["use_mailing"]||!$CFG_GLPI["cartridges_alert"]){
 		return false;
 	}
 
@@ -637,7 +637,7 @@ function cron_cartridge($display=false){
 			glpi_cartridgesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
 		FROM glpi_cartridgesitems 
 		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
-		WHERE glpi_cartridgesitems.deleted='0' AND glpi_cartridgesitems.alarm>='0' 
+		WHERE glpi_cartridgesitems.is_deleted='0' AND glpi_cartridgesitems.alarm>='0'
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) 
 		ORDER BY glpi_cartridgesitems.name;";
 

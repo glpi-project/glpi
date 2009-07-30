@@ -135,7 +135,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 			echo ".&nbsp;".$LANG['profiles'][22].":";
 			dropdownUnderProfiles("profiles_id");
 			echo ".&nbsp;".$LANG['profiles'][28].":";
-			dropdownYesNo("recursive",0);
+			dropdownYesNo("is_recursive",0);
 			
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;

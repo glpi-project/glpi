@@ -87,7 +87,7 @@ class Transfer extends CommonDBTM{
 	function moveItems($items,$to,$options){
 		global $CFG_GLPI;
 		// unset mailing
-		$CFG_GLPI["mailing"]=0;
+		$CFG_GLPI["use_mailing"]=0;
 		
 		$default_options=array(
 			'keep_tickets'=>0,
@@ -388,7 +388,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 
-			$query = "SELECT glpi_softwares.ID, glpi_softwares.entities_id, glpi_softwares.recursive, glpi_softwaresversions.ID AS vID
+			$query = "SELECT glpi_softwares.ID, glpi_softwares.entities_id, glpi_softwares.is_recursive, glpi_softwaresversions.ID AS vID
 				FROM glpi_computers_softwaresversions 
 				INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID)
 				INNER JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.softwares_id)
@@ -396,7 +396,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                  if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
 						} else {
 							$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
@@ -478,7 +478,7 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT contracts_id, glpi_contracts.entities_id, glpi_contracts.recursive" .
+				$query="SELECT contracts_id, glpi_contracts.entities_id, glpi_contracts.is_recursive" .
 						" FROM glpi_contracts_items" .
 						" LEFT JOIN glpi_contracts ON (glpi_contracts_items.contracts_id=glpi_contracts.ID)" .
 						" WHERE glpi_contracts_items.itemtype='$itemtype'
@@ -486,7 +486,7 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-                     if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                     if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(CONTRACT_TYPE,$data['contracts_id']);
 							} else {
 								$this->addToBeTransfer(CONTRACT_TYPE,$data['contracts_id']);
@@ -530,14 +530,14 @@ class Transfer extends CommonDBTM{
 			}
 
 			// Enterprise Contract
-			$query="SELECT DISTINCT suppliers_id, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
+			$query="SELECT DISTINCT suppliers_id, glpi_suppliers.is_recursive, glpi_suppliers.entities_id" .
 					" FROM glpi_contracts_suppliers " .
 					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_contracts_suppliers.suppliers_id) " .
 					" WHERE contracts_id IN ".$this->item_search[CONTRACT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                  if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id']);
@@ -546,14 +546,14 @@ class Transfer extends CommonDBTM{
 				}
 			}
 			// Ticket Enterprise
-			$query="SELECT DISTINCT suppliers_id_assign, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
+			$query="SELECT DISTINCT suppliers_id_assign, glpi_suppliers.is_recursive, glpi_suppliers.entities_id" .
 					" FROM glpi_tickets" .
 					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_tickets.suppliers_id_assign) " .
 					" WHERE suppliers_id_assign > 0 AND glpi_tickets.ID IN ".$this->item_search[TRACKING_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                  if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id_assign']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id_assign']);
@@ -582,14 +582,14 @@ class Transfer extends CommonDBTM{
 							}
 						}
 	
-						$query="SELECT DISTINCT suppliers_id, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
+						$query="SELECT DISTINCT suppliers_id, glpi_suppliers.is_recursive, glpi_suppliers.entities_id" .
 								" FROM glpi_infocoms" .
 								" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_infocoms.suppliers_id) " .
 								" WHERE suppliers_id > 0 AND itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
 								while ($data=$DB->fetch_array($result)){
-                           if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                           if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 										$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id']);
 									} else {
 										$this->addToBeTransfer(ENTERPRISE_TYPE,$data['suppliers_id']);
@@ -635,14 +635,14 @@ class Transfer extends CommonDBTM{
 
 
 			// Enterprise Contact
-			$query="SELECT DISTINCT contacts_id, glpi_contacts.recursive, glpi_contacts.entities_id " .
+			$query="SELECT DISTINCT contacts_id, glpi_contacts.is_recursive, glpi_contacts.entities_id " .
 					" FROM glpi_contacts_suppliers" .
 					" LEFT JOIN glpi_contacts ON (glpi_contacts.ID=glpi_contacts_suppliers.contacts_id) " .
 					" WHERE suppliers_id IN ".$this->item_search[ENTERPRISE_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                  if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(CONTACT_TYPE,$data['contacts_id']);
 						} else {
 							$this->addToBeTransfer(CONTACT_TYPE,$data['contacts_id']);
@@ -672,14 +672,14 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT documents_id, glpi_documents.recursive, glpi_documents.entities_id" .
+				$query="SELECT documents_id, glpi_documents.is_recursive, glpi_documents.entities_id" .
 						" FROM glpi_documents_items" .
 						" LEFT JOIN glpi_documents ON (glpi_documents.ID=glpi_documents_items.documents_id) " .
 						" WHERE itemtype='$itemtype' AND items_id IN ".$this->item_search[$itemtype];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-                     if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
+                     if ($data['is_recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['documents_id']);
 							} else {
 								$this->addToBeTransfer(DOCUMENT_TYPE,$data['documents_id']);
@@ -755,7 +755,7 @@ class Transfer extends CommonDBTM{
 				// Manage Ocs links 
 				$dataocslink=array();
 				$ocs_computer=false;
-				if ($itemtype==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
+				if ($itemtype==COMPUTER_TYPE && $CFG_GLPI['use_ocs_mode']){
 					$query="SELECT * FROM glpi_ocslinks WHERE computers_id='$ID'";
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)>0){
@@ -1127,7 +1127,7 @@ class Transfer extends CommonDBTM{
 		if ($soft->getFromDB($ID)) {
 			// error_log("copySingleSoftware: ".$soft->fields['name']);
 			
-			if ($soft->fields['recursive']
+			if ($soft->fields['is_recursive']
                && in_array($soft->fields['entities_id'],getAncestorsOf("glpi_entities",$this->to))) {
 				// no need to copy
 				$newsoftID = $ID;

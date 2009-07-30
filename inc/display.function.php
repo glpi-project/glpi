@@ -433,7 +433,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['utils']['content']['report']['page']='/front/report.php';
    }
 
-   if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+   if ($CFG_GLPI["use_ocs_mode"]&&haveRight("ocsng","w")){
       $menu['utils']['content']['ocsng']['title']=$LANG['Menu'][33];
       $menu['utils']['content']['ocsng']['page']='/front/ocsng.php';
       }
@@ -749,7 +749,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
    }
 
-   if ($CFG_GLPI["ocs_mode"]&&haveRight("config","w")){
+   if ($CFG_GLPI["use_ocs_mode"]&&haveRight("config","w")){
       $menu['config']['content']['ocsng']['title']=$LANG['setup'][134];
       $menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
       $menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';

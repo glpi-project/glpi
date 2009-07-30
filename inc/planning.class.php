@@ -105,10 +105,10 @@ class PlanningTracking extends CommonDBTM {
 		$job->updateRealTime($input["id_tracking"]);
 
 		if ((!isset($input["_nomail"])||$input["_nomail"]==0)
-		&&count($updates)>0 && $CFG_GLPI["mailing"]){
+		&&count($updates)>0 && $CFG_GLPI["use_mailing"]){
 			$user=new User;
 			$user->getFromDB($_SESSION["glpiID"]);
-			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
+			$mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
 			$mail->send();
 		}
 
@@ -167,10 +167,10 @@ class PlanningTracking extends CommonDBTM {
 			$job->updateRealTime($input["id_tracking"]);
 		}
 
-		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["mailing"]){
+		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["use_mailing"]){
 			$user=new User;
 			$user->getFromDB($_SESSION["glpiID"]);
-			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
+			$mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
 			$mail->send();
 		}
 

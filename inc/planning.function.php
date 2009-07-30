@@ -311,12 +311,12 @@ function showPlanning($who,$who_group,$when,$type){
 
 	// See public reminder ?
 	if (haveRight("reminder_public","r")) {
-		$readpub="(private=0 AND".getEntitiesRestrictRequest("","glpi_reminders",'','',true).")";
+		$readpub="(is_private=0 AND".getEntitiesRestrictRequest("","glpi_reminders",'','',true).")";
 	}
 	
 	// See my private reminder ?
 	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
-		$readpriv="(private=1 AND users_id='".$_SESSION["glpiID"]."')";		
+		$readpriv="(is_private=1 AND users_id='".$_SESSION["glpiID"]."')";
 	}
 	
 	if ($readpub && $readpriv) {
@@ -347,7 +347,7 @@ function showPlanning($who,$who_group,$when,$type){
 				$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
-				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
+				$interv[$data["begin"]."$$".$i]["is_private"]=$data["is_private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 	
 				$i++;
@@ -634,7 +634,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		}
 
 	}else{  // show Reminder
-		if (!$val["private"]){
+		if (!$val["is_private"]){
 			$users_id="<br>".$LANG['planning'][9]." : ".getUserName($val["users_id"]);
 			$img="rdv_public.png";
 		} 
@@ -768,7 +768,7 @@ function showPlanningCentral($who){
 
 	// reminder 
 	$read_public="";
-	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminders").") ";
+	if (haveRight("reminder_public","r")) $read_public=" OR ( is_private=0 ".getEntitiesRestrictRequest("AND","glpi_reminders").") ";
 
 	$query2="SELECT * 
 		FROM glpi_reminders 
@@ -794,7 +794,7 @@ function showPlanningCentral($who){
 				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
 				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
+				$interv[$data["begin"]."$$".$i]["is_private"]=$data["is_private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 				$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
@@ -942,7 +942,7 @@ function generateIcal($who){
 	$query2="SELECT * 
 		FROM glpi_reminders 
 		WHERE rv='1' 
-			AND (users_id='$who' OR private=0) 
+			AND (users_id='$who' OR is_private=0) 
 			AND end > '$begin' AND begin < '$end'";
 
 	$result2=$DB->query($query2);
