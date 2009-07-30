@@ -1046,6 +1046,24 @@ $SEARCH_OPTION[PRINTER_TYPE][10]['linkfield']='comments';
 $SEARCH_OPTION[PRINTER_TYPE][10]['name']=$LANG['common'][25];
 $SEARCH_OPTION[PRINTER_TYPE][10]['datatype']='text';
 
+$SEARCH_OPTION[PRINTER_TYPE][42]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][42]['field']='flags_serial';
+$SEARCH_OPTION[PRINTER_TYPE][42]['linkfield']='flags_serial';
+$SEARCH_OPTION[PRINTER_TYPE][42]['name']=$LANG['printers'][14];
+$SEARCH_OPTION[PRINTER_TYPE][42]['datatype']='bool';
+
+$SEARCH_OPTION[PRINTER_TYPE][43]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][43]['field']='flags_par';
+$SEARCH_OPTION[PRINTER_TYPE][43]['linkfield']='flags_par';
+$SEARCH_OPTION[PRINTER_TYPE][43]['name']=$LANG['printers'][15];
+$SEARCH_OPTION[PRINTER_TYPE][43]['datatype']='bool';
+
+$SEARCH_OPTION[PRINTER_TYPE][44]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][44]['field']='flags_usb';
+$SEARCH_OPTION[PRINTER_TYPE][44]['linkfield']='flags_usb';
+$SEARCH_OPTION[PRINTER_TYPE][44]['name']=$LANG['printers'][27];
+$SEARCH_OPTION[PRINTER_TYPE][44]['datatype']='bool';
+
 $SEARCH_OPTION[PRINTER_TYPE][90]['table']='glpi_printers';
 $SEARCH_OPTION[PRINTER_TYPE][90]['field']='notes';
 $SEARCH_OPTION[PRINTER_TYPE][90]['linkfield']='';
@@ -3258,6 +3276,18 @@ $SEARCH_OPTION[PHONE_TYPE][42]['table']='glpi_dropdown_phone_power';
 $SEARCH_OPTION[PHONE_TYPE][42]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][42]['linkfield']='power';
 $SEARCH_OPTION[PHONE_TYPE][42]['name']=$LANG['phones'][36];
+
+$SEARCH_OPTION[PHONE_TYPE][43]['table']='glpi_phones';
+$SEARCH_OPTION[PHONE_TYPE][43]['field']='flags_casque';
+$SEARCH_OPTION[PHONE_TYPE][43]['linkfield']='flags_casque';
+$SEARCH_OPTION[PHONE_TYPE][43]['name']=$LANG['phones'][38];
+$SEARCH_OPTION[PHONE_TYPE][43]['datatype']='bool';
+
+$SEARCH_OPTION[PHONE_TYPE][44]['table']='glpi_phones';
+$SEARCH_OPTION[PHONE_TYPE][44]['field']='flags_hp';
+$SEARCH_OPTION[PHONE_TYPE][44]['linkfield']='flags_hp';
+$SEARCH_OPTION[PHONE_TYPE][44]['name']=$LANG['phones'][39];
+$SEARCH_OPTION[PHONE_TYPE][44]['datatype']='bool';
 
 $SEARCH_OPTION[PHONE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PHONE_TYPE][80]['field']='completename';
