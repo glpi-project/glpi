@@ -104,7 +104,7 @@ class User extends CommonDBTM {
 	}
 
 	function post_getEmpty () {
-		$this->fields["active"]=1;
+		$this->fields["is_active"]=1;
 	}
 
 	function pre_deleteItem($ID){
@@ -221,8 +221,8 @@ class User extends CommonDBTM {
 		}
 
 		// Force DB default values : not really needed
-		if (!isset($input["active"])){
-			$input["active"]=1;
+		if (!isset($input["is_active"])){
+			$input["is_active"]=1;
 		}
 
 		if (!isset($input["is_deleted"])){
@@ -269,7 +269,7 @@ class User extends CommonDBTM {
 				$affectation["profiles_id"] = $DB->result($result,0,0);
 				$affectation["users_id"] = $input["ID"];
 				$affectation["is_recursive"] = 0;
-				$affectation["dynamic"] = 0;
+				$affectation["is_dynamic"] = 0;
 				addUserProfileEntity($affectation);
 			}
 		}
@@ -384,7 +384,7 @@ class User extends CommonDBTM {
 				$affectation["profiles_id"] = $entity[1];
 				$affectation["is_recursive"] = $entity[2];
 				$affectation["users_id"] = $input["ID"];
-				$affectation["dynamic"] = 1;
+				$affectation["is_dynamic"] = 1;
 				addUserProfileEntity($affectation);
 			}
 	
@@ -409,7 +409,7 @@ class User extends CommonDBTM {
 						$affectation["profiles_id"] = $right;
 						$affectation["users_id"] = $input["ID"];
 						$affectation["is_recursive"] = $entity[1];
-						$affectation["dynamic"] = 1;
+						$affectation["is_dynamic"] = 1;
 						addUserProfileEntity($affectation);
 					}
 				}
@@ -1026,7 +1026,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
          echo "<td class='center'>".$LANG['common'][60]."</td><td>";
-         dropdownYesNo('active',$this->fields['active']);
+         dropdownYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['users'][1] . "</td><td>";
@@ -1294,7 +1294,7 @@ class User extends CommonDBTM {
 						unset ($ret["email"]);
 					}
 					
-					unset ($ret["active"]);
+					unset ($ret["is_active"]);
 					unset ($ret["comments"]);
 				}
 				
@@ -1318,7 +1318,7 @@ class User extends CommonDBTM {
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
-			$sql = "DELETE FROM glpi_profiles_users WHERE users_id='".$this->fields["ID"]."' AND dynamic=1";
+			$sql = "DELETE FROM glpi_profiles_users WHERE users_id='".$this->fields["ID"]."' AND is_dynamic=1";
 			$DB->query($sql);
 		}
 	}

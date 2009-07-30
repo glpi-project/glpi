@@ -329,7 +329,7 @@ class Identification {
 			$_SESSION["glpi_use_mode"] = NORMAL_MODE;
 			// Check ID exists and load complete user from DB (plugins...)
 			if (isset($this->user->fields['ID']) && $this->user->getFromDB($this->user->fields['ID'])){
-				if (!$this->user->fields['is_deleted']&&$this->user->fields['active']){
+               if (!$this->user->fields['is_deleted']&&$this->user->fields['is_active']){
 					$_SESSION["glpiID"] = $this->user->fields['ID'];
 					$_SESSION["glpiname"] = $this->user->fields['name'];
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];

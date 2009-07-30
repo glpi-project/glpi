@@ -275,7 +275,7 @@ class Mailing
 
 							// AUTHOR SEND
 							case AUTHOR_MAILING :
-								if ($this->job->fields["emailupdates"]){
+								if ($this->job->fields["use_email_notification"]){
 									// Uemail = mail of the users_id ? -> use right of the users_id to see private followups
 									// Else not see private
 									$users_idsend=false;

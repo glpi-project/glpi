@@ -89,7 +89,7 @@ if ($DBocs->numrows($result_ocs)>0){
 		$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
 		$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
 	}
-	$WHERE="WHERE auto_update= '1'";
+	$WHERE="WHERE use_auto_update= '1'";
 	if ($all) $WHERE="";
 
 	$query_glpi = "SELECT * 

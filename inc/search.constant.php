@@ -587,7 +587,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][100]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][100]['name']=$LANG['ocsng'][7];
 
 $SEARCH_OPTION[COMPUTER_TYPE][101]['table']='glpi_ocslinks';
-$SEARCH_OPTION[COMPUTER_TYPE][101]['field']='auto_update';
+$SEARCH_OPTION[COMPUTER_TYPE][101]['field']='use_auto_update';
 $SEARCH_OPTION[COMPUTER_TYPE][101]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][101]['name']=$LANG['ocsng'][6]." ".$LANG['Menu'][33];
 
@@ -1046,6 +1046,24 @@ $SEARCH_OPTION[PRINTER_TYPE][10]['linkfield']='comments';
 $SEARCH_OPTION[PRINTER_TYPE][10]['name']=$LANG['common'][25];
 $SEARCH_OPTION[PRINTER_TYPE][10]['datatype']='text';
 
+$SEARCH_OPTION[PRINTER_TYPE][42]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][42]['field']='have_serial';
+$SEARCH_OPTION[PRINTER_TYPE][42]['linkfield']='have_serial';
+$SEARCH_OPTION[PRINTER_TYPE][42]['name']=$LANG['printers'][14];
+$SEARCH_OPTION[PRINTER_TYPE][42]['datatype']='bool';
+
+$SEARCH_OPTION[PRINTER_TYPE][43]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][43]['field']='have_parallel';
+$SEARCH_OPTION[PRINTER_TYPE][43]['linkfield']='have_parallel';
+$SEARCH_OPTION[PRINTER_TYPE][43]['name']=$LANG['printers'][15];
+$SEARCH_OPTION[PRINTER_TYPE][43]['datatype']='bool';
+
+$SEARCH_OPTION[PRINTER_TYPE][44]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][44]['field']='have_usb';
+$SEARCH_OPTION[PRINTER_TYPE][44]['linkfield']='have_usb';
+$SEARCH_OPTION[PRINTER_TYPE][44]['name']=$LANG['printers'][27];
+$SEARCH_OPTION[PRINTER_TYPE][44]['datatype']='bool';
+
 $SEARCH_OPTION[PRINTER_TYPE][90]['table']='glpi_printers';
 $SEARCH_OPTION[PRINTER_TYPE][90]['field']='notes';
 $SEARCH_OPTION[PRINTER_TYPE][90]['linkfield']='';
@@ -1396,38 +1414,38 @@ $SEARCH_OPTION[MONITOR_TYPE][11]['name']=$LANG['monitors'][21];
 $SEARCH_OPTION[MONITOR_TYPE][11]['datatype']='number';
 
 $SEARCH_OPTION[MONITOR_TYPE][41]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][41]['field']='flags_micro';
-$SEARCH_OPTION[MONITOR_TYPE][41]['linkfield']='flags_micro';
+$SEARCH_OPTION[MONITOR_TYPE][41]['field']='have_micro';
+$SEARCH_OPTION[MONITOR_TYPE][41]['linkfield']='have_micro';
 $SEARCH_OPTION[MONITOR_TYPE][41]['name']=$LANG['monitors'][14];
 $SEARCH_OPTION[MONITOR_TYPE][41]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][42]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][42]['field']='flags_speaker';
-$SEARCH_OPTION[MONITOR_TYPE][42]['linkfield']='flags_speaker';
+$SEARCH_OPTION[MONITOR_TYPE][42]['field']='have_speaker';
+$SEARCH_OPTION[MONITOR_TYPE][42]['linkfield']='have_speaker';
 $SEARCH_OPTION[MONITOR_TYPE][42]['name']=$LANG['monitors'][15];
 $SEARCH_OPTION[MONITOR_TYPE][42]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][43]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][43]['field']='flags_subd';
-$SEARCH_OPTION[MONITOR_TYPE][43]['linkfield']='flags_subd';
+$SEARCH_OPTION[MONITOR_TYPE][43]['field']='have_subd';
+$SEARCH_OPTION[MONITOR_TYPE][43]['linkfield']='have_subd';
 $SEARCH_OPTION[MONITOR_TYPE][43]['name']=$LANG['monitors'][19];
 $SEARCH_OPTION[MONITOR_TYPE][43]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][44]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][44]['field']='flags_bnc';
-$SEARCH_OPTION[MONITOR_TYPE][44]['linkfield']='flags_bnc';
+$SEARCH_OPTION[MONITOR_TYPE][44]['field']='have_bnc';
+$SEARCH_OPTION[MONITOR_TYPE][44]['linkfield']='have_bnc';
 $SEARCH_OPTION[MONITOR_TYPE][44]['name']=$LANG['monitors'][20];
 $SEARCH_OPTION[MONITOR_TYPE][44]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][45]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][45]['field']='flags_dvi';
-$SEARCH_OPTION[MONITOR_TYPE][45]['linkfield']='flags_dvi';
+$SEARCH_OPTION[MONITOR_TYPE][45]['field']='have_dvi';
+$SEARCH_OPTION[MONITOR_TYPE][45]['linkfield']='have_dvi';
 $SEARCH_OPTION[MONITOR_TYPE][45]['name']=$LANG['monitors'][32];
 $SEARCH_OPTION[MONITOR_TYPE][45]['datatype']='bool';
 
 $SEARCH_OPTION[MONITOR_TYPE][46]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][46]['field']='flags_pivot';
-$SEARCH_OPTION[MONITOR_TYPE][46]['linkfield']='flags_pivot';
+$SEARCH_OPTION[MONITOR_TYPE][46]['field']='have_pivot';
+$SEARCH_OPTION[MONITOR_TYPE][46]['linkfield']='have_pivot';
 $SEARCH_OPTION[MONITOR_TYPE][46]['name']=$LANG['monitors'][33];
 $SEARCH_OPTION[MONITOR_TYPE][46]['datatype']='bool';
 
@@ -2045,8 +2063,8 @@ $SEARCH_OPTION[SOFTWARE_TYPE][71]['linkfield']='groups_id';
 $SEARCH_OPTION[SOFTWARE_TYPE][71]['name']=$LANG['common'][35];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['table']='glpi_softwares';
-$SEARCH_OPTION[SOFTWARE_TYPE][61]['field']='helpdesk_visible';
-$SEARCH_OPTION[SOFTWARE_TYPE][61]['linkfield']='helpdesk_visible';
+$SEARCH_OPTION[SOFTWARE_TYPE][61]['field']='is_helpdesk_visible';
+$SEARCH_OPTION[SOFTWARE_TYPE][61]['linkfield']='is_helpdesk_visible';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['name']=$LANG['software'][46];
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['datatype']='bool';
 
@@ -2938,7 +2956,7 @@ $SEARCH_OPTION[TYPEDOC_TYPE][4]['linkfield']='mime';
 $SEARCH_OPTION[TYPEDOC_TYPE][4]['name']=$LANG['document'][4];
 
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['table']='glpi_documentstypes';
-$SEARCH_OPTION[TYPEDOC_TYPE][5]['field']='upload';
+$SEARCH_OPTION[TYPEDOC_TYPE][5]['field']='is_uploadable';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['name']=$LANG['document'][15];
 
@@ -3043,8 +3061,8 @@ $SEARCH_OPTION[USER_TYPE][7]['linkfield']='locations_id';
 $SEARCH_OPTION[USER_TYPE][7]['name']=$LANG['common'][15];
 
 $SEARCH_OPTION[USER_TYPE][8]['table']='glpi_users';
-$SEARCH_OPTION[USER_TYPE][8]['field']='active';
-$SEARCH_OPTION[USER_TYPE][8]['linkfield']='active';
+$SEARCH_OPTION[USER_TYPE][8]['field']='is_active';
+$SEARCH_OPTION[USER_TYPE][8]['linkfield']='is_active';
 $SEARCH_OPTION[USER_TYPE][8]['name']=$LANG['common'][60];
 $SEARCH_OPTION[USER_TYPE][8]['datatype']='bool';
 
@@ -3301,6 +3319,18 @@ $SEARCH_OPTION[PHONE_TYPE][42]['table']='glpi_phonespowersupplies';
 $SEARCH_OPTION[PHONE_TYPE][42]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][42]['linkfield']='phonespowersupplies_id';
 $SEARCH_OPTION[PHONE_TYPE][42]['name']=$LANG['phones'][36];
+
+$SEARCH_OPTION[PHONE_TYPE][43]['table']='glpi_phones';
+$SEARCH_OPTION[PHONE_TYPE][43]['field']='have_headset';
+$SEARCH_OPTION[PHONE_TYPE][43]['linkfield']='have_headset';
+$SEARCH_OPTION[PHONE_TYPE][43]['name']=$LANG['phones'][38];
+$SEARCH_OPTION[PHONE_TYPE][43]['datatype']='bool';
+
+$SEARCH_OPTION[PHONE_TYPE][44]['table']='glpi_phones';
+$SEARCH_OPTION[PHONE_TYPE][44]['field']='have_hp';
+$SEARCH_OPTION[PHONE_TYPE][44]['linkfield']='have_hp';
+$SEARCH_OPTION[PHONE_TYPE][44]['name']=$LANG['phones'][39];
+$SEARCH_OPTION[PHONE_TYPE][44]['datatype']='bool';
 
 $SEARCH_OPTION[PHONE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PHONE_TYPE][80]['field']='completename';
@@ -3884,8 +3914,8 @@ $SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[MAILGATE_TYPE][2]['table']='glpi_mailcollectors';
-$SEARCH_OPTION[MAILGATE_TYPE][2]['field']='active';
-$SEARCH_OPTION[MAILGATE_TYPE][2]['linkfield']='active';
+$SEARCH_OPTION[MAILGATE_TYPE][2]['field']='is_active';
+$SEARCH_OPTION[MAILGATE_TYPE][2]['linkfield']='is_active';
 $SEARCH_OPTION[MAILGATE_TYPE][2]['name']=$LANG['common'][60];
 $SEARCH_OPTION[MAILGATE_TYPE][2]['datatype']='bool';
 

@@ -354,7 +354,7 @@ function showUserRights($target,$ID){
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
 	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.is_recursive,
-			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
+			glpi_profiles_users.is_dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
 			FROM glpi_profiles_users 
 			LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
 			LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
@@ -391,10 +391,10 @@ function showUserRights($target,$ID){
 			}
 			echo "</td>";
 			echo "<td>".$data["name"];
-			if ($data["dynamic"]||$data["is_recursive"]){
+			if ($data["is_dynamic"]||$data["is_recursive"]){
 				echo "<strong>&nbsp;(";
-				if ($data["dynamic"]) echo "D";
-				if ($data["dynamic"]&$data["is_recursive"]) echo ", ";
+				if ($data["is_dynamic"]) echo "D";
+				if ($data["is_dynamic"]&$data["is_recursive"]) echo ", ";
 				if ($data["is_recursive"]) echo "R";
 				echo ")</strong>";
 			}

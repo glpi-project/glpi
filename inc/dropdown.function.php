@@ -369,7 +369,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		break;
 	}
 	
-	$where .= " AND glpi_users.is_deleted='0' AND glpi_users.active='1' ";
+	$where .= " AND glpi_users.is_deleted='0' AND glpi_users.is_active='1' ";
 	
 	if ($value || count($used)) {
 		$where .= " AND glpi_users.ID NOT IN (";
@@ -619,7 +619,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 							$name .= " (".getDropdownName("glpi_locations",$data["locations_id"]).")";
 							break;
 						case "glpi_softwares":
-							if ($data["operatingsystems_id"]!=0 && $data["helpdesk_visible"] != 0)
+							if ($data["operatingsystems_id"]!=0 && $data["is_helpdesk_visible"] != 0)
 								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
 							break;
 					}
@@ -1105,7 +1105,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_softwaresversions.name as version, glpi_softwares.name as name, 
 					glpi_softwares.ID as ID FROM glpi_computers_softwaresversions, glpi_softwares, glpi_softwaresversions ";
-				$query.= "WHERE glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID AND glpi_softwaresversions.softwares_id = glpi_softwares.ID AND ".str_replace("XXXX","glpi_computers_softwaresversions.computers_id",$search_computer)." AND  glpi_softwares.helpdesk_visible=1 ";
+				$query.= "WHERE glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID
+                  AND glpi_softwaresversions.softwares_id = glpi_softwares.ID
+                  AND ".str_replace("XXXX","glpi_computers_softwaresversions.computers_id",$search_computer)."
+                  AND  glpi_softwares.is_helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict);
 				$query.=" ORDER BY glpi_softwares.name";
 

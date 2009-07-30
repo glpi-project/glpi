@@ -2357,7 +2357,7 @@ class Transfer extends CommonDBTM{
 					if ($ID!=$newID){
 						$input['itemtype']=$itemtype;
 						$input['items_id']=$newID;
-						$input['active']=$ri->fields['active'];
+						$input['is_active']=$ri->fields['is_active'];
 						unset($ri->fields);
 						$ri->add($input);
 					}

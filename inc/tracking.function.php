@@ -974,7 +974,7 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $user
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$LANG['help'][8].":</td>";
 		echo "<td class='center'>";
-		dropdownYesNo('emailupdates',!empty($email));
+		dropdownYesNo('use_email_notification',!empty($email));
 		echo "</td>";
 		echo "<td class='center'>".$LANG['help'][11].":</td>";
 		echo "<td><span id='uemail_result'>";
@@ -2195,9 +2195,9 @@ function showJobDetails ($target,$ID){
 			echo "<table><tr><td class='right'>";
 			echo $LANG['job'][19].":</td><td>";
 			if ($canupdate){
-				dropdownYesNo('emailupdates',$job->fields["emailupdates"]);
+				dropdownYesNo('use_email_notification',$job->fields["use_email_notification"]);
 			} else {
-				if ($job->fields["emailupdates"]) echo $LANG['choice'][1];
+				if ($job->fields["use_email_notification"]) echo $LANG['choice'][1];
 				else $LANG['choice'][0];
 			}
 			echo "</td></tr>";

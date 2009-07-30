@@ -78,7 +78,7 @@ if (isset($_GET["action"])){
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$input['ID']=$key;
-						$input['active']=$_POST["activate_rule"];
+						$input['is_active']=$_POST["activate_rule"];
 						$rule->update($input);
 					}
 				}

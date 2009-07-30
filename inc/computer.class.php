@@ -143,7 +143,7 @@ class Computer extends CommonDBTM {
 
 		if (isset($input["_auto_update_ocs"])){
 			$query="UPDATE glpi_ocslinks 
-				SET auto_update='".$input["_auto_update_ocs"]."' 
+				SET use_auto_update='".$input["_auto_update_ocs"]."' 
 				WHERE computers_id='".$input["ID"]."'";
 			$DB->query($query);
 		}
@@ -708,7 +708,7 @@ class Computer extends CommonDBTM {
       if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
          echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33].":</td>";
          echo "<td >";
-         dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
+         dropdownYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
          echo "</td>";
       } else	{
          echo "<td colspan=2></td>";

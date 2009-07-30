@@ -236,8 +236,8 @@ class RightAffectRule extends Rule {
 							case "is_recursive":
 								$is_recursive = $action->fields["value"];
 								break;
-							case "active":
-								$output["active"] = $action->fields["value"];
+							case "is_active":
+								$output["is_active"] = $action->fields["value"];
 								break;
 							case "_ignore_user_import":
 								$continue = false;

@@ -158,7 +158,7 @@ class RuleCollection {
 			//Select all the rules of a different type
 			$sql = "SELECT ID 
 				FROM glpi_rules 
-				WHERE active=1 AND sub_type='".$this->sub_type."' 
+				WHERE is_active=1 AND sub_type='".$this->sub_type."' 
 				ORDER BY ".$this->orderby." ASC";
 			
 			 $result = $DB->query($sql);
@@ -496,7 +496,7 @@ class RuleCollection {
 
 			foreach ($this->RuleList->list as $rule){
 				//If the rule is active, process it
-				if ($rule->fields["active"]){
+				if ($rule->fields["is_active"]){
 					$output["_rule_process"]=false;
 					$rule->process($input,$output,$params);
 					if ($output["_rule_process"]&&$this->stop_on_first_match){
@@ -579,7 +579,7 @@ class RuleCollection {
 
 			foreach ($this->RuleList->list as $rule){
 				//If the rule is active, process it
-				if ($rule->fields["active"]){
+				if ($rule->fields["is_active"]){
 					$output["_rule_process"]=false;
 					$output["result"][$rule->fields["ID"]]["ID"]=$rule->fields["ID"];
 					
@@ -624,7 +624,10 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rulescriterias as grc, glpi_rules grd WHERE grd.active=1 AND grc.rules_id=grd.ID AND grd.sub_type='".$this->sub_type."'");
+		$res = $DB->query("SELECT DISTINCT glpi_rulescriterias.criteria 
+                        FROM glpi_rulescriterias, glpi_rules
+                        WHERE glpi_rules.is_active=1 AND glpi_rulescriterias.rules_id=glpi_rules.ID
+                           AND glpi_rules.sub_type='".$this->sub_type."'");
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
@@ -768,7 +771,7 @@ class Rule extends CommonDBTM{
 	}
 
 	function post_getEmpty () {
-		$this->fields['active']=0;
+		$this->fields['is_active']=0;
 	}
 
 	/**
@@ -834,7 +837,7 @@ class Rule extends CommonDBTM{
 			
 		echo "<td class='tab_bg_2'>".$LANG['common'][60]."</td>";
 		echo "<td class='tab_bg_2'>";
-		dropdownYesNo("active",$this->fields["active"]);
+		dropdownYesNo("is_active",$this->fields["is_active"]);
 		echo"</td></tr>";
 
 		echo "<tr>";
@@ -1502,10 +1505,7 @@ class Rule extends CommonDBTM{
 		echo "</td>";
 					
 		echo "<td>".$this->fields["description"]."</td>";
-		if ($this->fields["active"])
-			echo "<td>".$LANG['choice'][1]."</td>";
-		else
-			echo "<td>".$LANG['choice'][0]."</td>";
+		echo "<td>".getYesNo($this->fields["is_active"])."</td>";
 				
 		if ($this->can_sort && !$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";

@@ -67,7 +67,7 @@ class Reminder extends CommonDBTM {
 				&&$input['plan']["begin"]<$input['plan']["end"]){
 				$input['_plan']=$input['plan'];
 				unset($input['plan']);
-				$input['rv']="1";
+				$input['is_planned']=1;
 				$input["begin"] = $input['_plan']["begin"];
 				$input["end"] = $input['_plan']["end"];				
 			}else {
@@ -102,7 +102,7 @@ class Reminder extends CommonDBTM {
 				&&$input['plan']["begin"]<$input['plan']["end"]){
 				$input['_plan']=$input['plan'];
 				unset($input['plan']);
-				$input['rv']="1";
+				$input['is_planned']=1;
 				$input["begin"] = $input['_plan']["begin"];
 				$input["end"] = $input['_plan']["end"];
 				$input["state"] = $input['_plan']["state"];				
@@ -230,7 +230,7 @@ class Reminder extends CommonDBTM {
 			echo "function showPlan(){\n";
 				echo "Ext.get('plan').setDisplayed('none');";
 				$params=array('form'=>'remind');
-				if ($ID&&$this->fields["rv"]){
+				if ($ID&&$this->fields["is_planned"]){
 					$params['state']=$this->fields["state"];
 					$params['begin']=$this->fields["begin"];
 					$params['end']=$this->fields["end"];
@@ -241,7 +241,7 @@ class Reminder extends CommonDBTM {
 			echo "</script>\n";
 		}
 		
-		if(!$ID||$this->fields["rv"]==0){
+		if(!$ID||!$this->fields["is_planned"]){
 			if($canedit) { 
 				echo "<div id='plan'  onClick='showPlan()'>\n";
 				echo "<span class='showplan'>".$LANG['reminder'][12]."</span>";

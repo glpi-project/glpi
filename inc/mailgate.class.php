@@ -50,7 +50,7 @@ class Mailgate  extends CommonDBTM {
 	}
 
 	function post_getEmpty () {
-		$this->fields['active']=1;
+		$this->fields['is_active']=1;
 	}
 	function prepareInputForUpdate($input) {
 
@@ -118,7 +118,7 @@ class Mailgate  extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['common'][60].":	</td><td>";
-		dropdownYesNo("active", $this->fields["active"]);
+		dropdownYesNo("is_active", $this->fields["is_active"]);
 		echo "</td></tr>";
 
 
@@ -413,7 +413,7 @@ class MailCollect {
 		if ( ! isset($tkt['tickets_id']) ) {
 			// Mail followup
 			$tkt['uemail']=$head['from'];
-			$tkt['emailupdates']=1;
+			$tkt['use_email_notification']=1;
 			// Which entity ?
 			$tkt['entities_id']=$this->entity;
 	

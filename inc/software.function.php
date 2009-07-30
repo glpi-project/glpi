@@ -1269,7 +1269,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 		$input["entities_id"] = $entity;
 		// No comments
 		//$input["comments"] = $LANG['rulesengine'][88];
-		$input["helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+		$input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 		
 		//Process software's category rules
 		$softcatrule = new SoftwareCategoriesRuleCollection;

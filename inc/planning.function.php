@@ -329,7 +329,7 @@ function showPlanning($who,$who_group,$when,$type){
 	if ($ASSIGN) {
 		$query2="SELECT * 
 			FROM glpi_reminders 
-			WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' 
+			WHERE is_planned=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin'
 			ORDER BY begin";
 		$result2=$DB->query($query2);
 	
@@ -772,7 +772,7 @@ function showPlanningCentral($who){
 
 	$query2="SELECT * 
 		FROM glpi_reminders 
-		WHERE rv='1' 
+		WHERE is_planned='1'
 			AND (users_id='$who' $read_public)    
 			AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
 				OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) 
@@ -941,7 +941,7 @@ function generateIcal($who){
 
 	$query2="SELECT * 
 		FROM glpi_reminders 
-		WHERE rv='1' 
+		WHERE is_planned='1'
 			AND (users_id='$who' OR is_private=0) 
 			AND end > '$begin' AND begin < '$end'";
 

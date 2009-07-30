@@ -344,7 +344,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>";*/
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
-      dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
+      dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td>";
       echo "<td>$datestring</td><td>$date";
       if (!$template && !empty ($this->fields['tplname']))
@@ -426,7 +426,7 @@ class Software extends CommonDBTM {
 		global $CFG_GLPI;
 		
 		parent::getEmpty();
-		$this->fields["helpdesk_visible"]= $CFG_GLPI["default_software_helpdesk_visible"];
+		$this->fields["is_helpdesk_visible"]= $CFG_GLPI["default_software_helpdesk_visible"];
 	}
 }
 

@@ -45,7 +45,7 @@ function cron_mailgate(){
 	global $DB,$CFG_GLPI;
 	
 	$already_retrieve=0;
-	$query="SELECT * FROM glpi_mailcollectors WHERE active = 1";
+	$query="SELECT * FROM glpi_mailcollectors WHERE is_active = 1";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			$mc=new MailCollect();

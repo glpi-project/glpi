@@ -46,7 +46,7 @@ function showCentralReminder($entity = -1, $parent = false){
 	if ($entity < 0) {
 
 		$query = "SELECT * FROM glpi_reminders " .
-				"WHERE users_id='$users_id' AND is_private=1 AND (end>='$today' or rv='0') " .
+				"WHERE users_id='$users_id' AND is_private=1 AND (end>='$today' or is_planned='0') " .
 				"ORDER BY `name`";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][0]."</a>";	
 		$is_private  = 1;
@@ -98,7 +98,7 @@ function showCentralReminder($entity = -1, $parent = false){
 			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('content_reminder_".$data["ID"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$data["ID"].$rand."')\">";
 			echo "<div class='over_link' id='content_reminder_".$data["ID"].$rand."'>".$data["text"]."</div>";
 
-			if($data["rv"]=="1"){
+			if($data["is_planned"]){
 
 				$tab=explode(" ",$data["begin"]);
 				$date_url=$tab[0];
@@ -147,7 +147,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 		for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
 			$remind->getFromDB($data["ID"]);
 
-			if($data["rv"]==1){ //Un rdv on va trier sur la date begin
+			if($data["is_planned"]){ //Un rdv on va trier sur la date begin
 				$sort=$data["begin"];
 			}else{ // non programmé on va trier sur la date de modif...
 				$sort=$data["date"];
@@ -156,8 +156,8 @@ function showListReminder($is_private=1,$is_recursive=0){
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
 			$tabremind[$sort."$$".$i]["users_id"]=$remind->fields["users_id"];
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["entities_id"];
-			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
-			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
+			$tabremind[$sort."$$".$i]["begin"]=($data["is_planned"]?"".$data["begin"]."":"".$data["date"]."");
+			$tabremind[$sort."$$".$i]["end"]=($data["is_planned"]?"".$data["end"]."":"");
 			$tabremind[$sort."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
 			$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 		}
