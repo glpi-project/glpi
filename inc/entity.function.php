@@ -100,7 +100,7 @@ function showEntityUser($target,$ID){
 			while ($data=$DB->fetch_array($result)){
 				echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
-				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.is_recursive,glpi_profiles_users.dynamic
+				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.is_recursive,glpi_profiles_users.is_dynamic
 					FROM glpi_profiles_users 
 					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id) 
 					WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0 AND glpi_profiles_users.profiles_id='".$data['ID']."'
@@ -125,10 +125,10 @@ function showEntityUser($target,$ID){
 						echo "<td>";
 			
 						echo formatUserName($data2["ID"],$data2["name"],$data2["realname"],$data2["firstname"],$canshowuser);
-						if ($data2["dynamic"]||$data2["is_recursive"]){
+						if ($data2["is_dynamic"]||$data2["is_recursive"]){
 							echo "<strong>&nbsp;(";
-							if ($data2["dynamic"]) echo "D";
-							if ($data2["dynamic"]&&$data2["is_recursive"]) echo ", ";
+							if ($data2["is_dynamic"]) echo "D";
+							if ($data2["is_dynamic"]&&$data2["is_recursive"]) echo ", ";
 							if ($data2["is_recursive"]) echo "R";
 							echo ")</strong>";
 						}
@@ -175,7 +175,7 @@ function showEntityUser($target,$ID){
 /**
  * Add a right to a user 
  *
- * @param $input array : parameters : need entities_id / users_id / profiles_id optional : recurisve=0 / dynamic=0
+ * @param $input array : parameters : need entities_id / users_id / profiles_id optional : is_recursive=0 / is_dynamic=0
  * @return new glpi_profiles_users ID
  */
 function addUserProfileEntity($input){
@@ -188,12 +188,12 @@ function addUserProfileEntity($input){
 	if (!isset($input['is_recursive'])){
 		$input['is_recursive']=0;
 	}
-	if (!isset($input['dynamic'])){
-		$input['dynamic']=0;
+	if (!isset($input['is_dynamic'])){
+		$input['is_dynamic']=0;
 	}
 
-	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `profiles_id` , `entities_id` , `is_recursive` , `dynamic` )
-		VALUES ('".$input['users_id']."', '".$input['profiles_id']."', '".$input['entities_id']."', '".$input['is_recursive']."', '".$input['dynamic']."');";
+	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `profiles_id` , `entities_id` , `is_recursive` , `is_dynamic` )
+		VALUES ('".$input['users_id']."', '".$input['profiles_id']."', '".$input['entities_id']."', '".$input['is_recursive']."', '".$input['is_dynamic']."');";
 	
 	return $DB->query($query);
 }

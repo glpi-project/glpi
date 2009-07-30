@@ -1668,8 +1668,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$email = $DB->result($result,0,"email");
 
 	// Get saved data from a back system
-	$emailupdates = 1;
-	if ($email=="") $emailupdates=0;
+	$use_email_notification = 1;
+	if ($email=="") $use_email_notification=0;
 	$itemtype = 0;
 	$computer="";
 	$contents="";
@@ -1678,8 +1678,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$priority  = 3;
 
 
-	if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
-		$emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
+	if (isset($_SESSION["helpdeskSaved"]["use_email_notification"]))
+		$use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
 	if (isset($_SESSION["helpdeskSaved"]["email"]))
 		$email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
 	if (isset($_SESSION["helpdeskSaved"]["itemtype"]))
@@ -1717,11 +1717,11 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['help'][8].":</td>";
 		echo "<td>";
-		dropdownYesNo('emailupdates',$emailupdates);
+		dropdownYesNo('use_email_notification',$use_email_notification);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['help'][11].":</td>";
-		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"emailupdates.value='1'\">";
+		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"use_email_notification.value='1'\">";
 		echo "</td></tr>";
 	}
 

@@ -646,7 +646,7 @@ class Config extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][132] . "</td><td>";
-			dropdownYesNo('flat_dropdowntree', $data["flat_dropdowntree"]);
+			dropdownYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
 			echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
 			echo "</td></tr>";
 

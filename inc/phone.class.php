@@ -389,7 +389,7 @@ class Phone extends CommonDBTM {
       echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
       echo "<td>".$LANG['phones'][38]."</td>";
       echo "<td>";
-      dropdownYesNo("flags_casque",$this->fields["flags_casque"]);
+      dropdownYesNo("have_headset",$this->fields["have_headset"]);
       echo "</td>";
 
       echo "</tr>";
@@ -398,7 +398,7 @@ class Phone extends CommonDBTM {
       echo "<tr>";
       echo "<td>".$LANG['phones'][39]."</td>";
       echo "<td>";
-      dropdownYesNo("flags_hp",$this->fields["flags_hp"]);
+      dropdownYesNo("have_hp",$this->fields["have_hp"]);
       echo "</td>";
 
       echo "</tr></table>";

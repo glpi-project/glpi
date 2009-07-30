@@ -130,7 +130,7 @@ else
 
 
 	// Display FAQ is enable
-	if ($CFG_GLPI["public_faq"]){
+	if ($CFG_GLPI["use_public_faq"]){
 		echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a></div>';
 	}
 	

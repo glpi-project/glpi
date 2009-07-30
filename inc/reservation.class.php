@@ -78,8 +78,8 @@ class ReservationItem extends CommonDBTM {
 	}
 	function prepareInputForAdd($input) {
 		if (!$this->getFromDBbyItem($input['itemtype'],$input['items_id'])){ 
-			if (!isset($input['active'])){
-				$input['active']=1;
+			if (!isset($input['is_active'])){
+				$input['is_active']=1;
 			}
 			return $input;
 		}

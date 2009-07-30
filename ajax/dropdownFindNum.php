@@ -79,7 +79,7 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 }
 //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
 if (in_array($_POST['itemtype'],$CFG_GLPI["helpdesk_visible_types"])){
-	$where.= " AND helpdesk_visible=1 ";
+	$where.= " AND is_helpdesk_visible=1 ";
 }
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";

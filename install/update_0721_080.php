@@ -497,9 +497,9 @@ function update0721to080() {
                            'tables' => array('glpi_networkequipments')),
                      array('to' => 'peripheralsmodels_id',
                            'tables' => array('glpi_peripherals')),
-                     array('to' => 'phonesmodels_id_id',
+                     array('to' => 'phonesmodels_id',
                            'tables' => array('glpi_phones')),
-                     array('to' => 'printersmodels_id_id',
+                     array('to' => 'printersmodels_id',
                            'tables' => array('glpi_printers')),
                      ),
    'netpoint' => array(array('to' => 'netpoints_id',
@@ -733,6 +733,8 @@ function update0721to080() {
    'glpi_documents' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                      ),
+   'glpi_documentstypes' => array(array('from' => 'upload','to' => 'is_uploadable', 'default' =>1, ),//
+                     ),
    'glpi_groups' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                      ),
    'glpi_knowbaseitems' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
@@ -740,35 +742,76 @@ function update0721to080() {
    'glpi_links' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                      ),
    'glpi_monitors' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                        array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'is_global', 'to' => 'is_global', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_micro', 'to' => 'have_micro', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_speaker', 'to' => 'have_speaker', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_subd', 'to' => 'have_subd', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_bnc', 'to' => 'have_bnc', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_dvi', 'to' => 'have_dvi', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_pivot', 'to' => 'have_pivot', 'default' =>0,'noindex'=>true  ),//
+
                      ),
    'glpi_networkequipments' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                           array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                     ),
+   'glpi_ocslinks' => array(array('from' => 'auto_update','to' => 'use_auto_update', 'default' =>1),//
                      ),
    'glpi_peripherals' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                           array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'is_global', 'to' => 'is_global', 'default' =>0,'noindex'=>true  ),//
                      ),
    'glpi_phones' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                           array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'is_global', 'to' => 'is_global', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_hp', 'to' => 'have_hp', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_casque', 'to' => 'have_headset', 'default' =>0,'noindex'=>true  ),//
                      ),
    'glpi_printers' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                           array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'is_global', 'to' => 'is_global', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_usb', 'to' => 'have_usb', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_par', 'to' => 'have_parallel', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'flags_serial', 'to' => 'have_serial', 'default' =>0,'noindex'=>true  ),//
+                     ),
+   'glpi_profiles_users' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0),//
+                           array('from' => 'dynamic','to' => 'is_dynamic', 'default' =>0),//
+                     ),
+   'glpi_profiles' => array(array('from' => 'is_default','to' => 'is_default', 'default' =>0),//
+                     ),
+   'glpi_reminders' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+                           array('from' => 'recursive','to' => 'is_recursive', 'default' =>0 ),//
+                           array('from' => 'rv','to' => 'is_planned', 'default' =>0 ),//
+                     ),
+   'glpi_reservationsitems' => array(array('from' => 'active','to' => 'is_active', 'default' =>1),//
+                     ),
+   'glpi_rules' => array(array('from' => 'active','to' => 'is_active', 'default' =>1),//
                      ),
    'glpi_suppliers' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                      ),
-   'glpi_profiles_users' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0),//
-                     ),
-   'glpi_ticketsfollowups' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
-                     ),
-   'glpi_reminders' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
-                           array('from' => 'recursive','to' => 'is_recursive', 'default' =>0 ),//
-                     ),
    'glpi_softwares' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                           array('from' => 'helpdesk_visible', 'to' => 'is_helpdesk_visible', 'default' =>1 ),//
+                           array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
+                           array('from' => 'is_update', 'to' => 'is_update', 'default' =>0,'noindex'=>true ),//
                      ),
    'glpi_softwareslicenses' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                      ),
+   'glpi_tickets' => array(array('from' => 'emailupdates', 'to' => 'use_email_notification', 'default' =>0, 'noindex'=>true  ),//
+                     ),
+   'glpi_ticketsfollowups' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+                     ),
    'glpi_users' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
+                        array('from' => 'active','to' => 'is_active', 'default' =>1),//
                         array('from' => 'jobs_at_login', 'to' => 'show_jobs_at_login', 'default' =>0, 'noindex'=>true),//
                         array('from' => 'followup_private', 'to' => 'default_followup_private', 'default' =>0, 'noindex'=>true ),//
+                        array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
+                        array('from' => 'expand_soft_not_categorized', 'to' => 'is_not_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
+                        array('from' => 'flat_dropdowntree', 'to' => 'use_flat_dropdowntree', 'default' =>0, 'noindex'=>true ),//
+                        array('from' => 'view_ID', 'to' => 'is_ids_visible', 'default' =>0, 'noindex'=>true ),//
                      ),
 
    );
@@ -890,7 +933,10 @@ function update0721to080() {
 
    //// Upgrade rules datas
    // For RULE_AFFECT_RIGHTS
-   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id','recursive'=>'is_recursive');
+   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
+                        'recursive'=>'is_recursive','active'=>'is_active');
+   // For RULE_DICTIONNARY_SOFTWARE
+   $changes[RULE_DICTIONNARY_SOFTWARE]=array('helpdesk_visible'=>'is_helpdesk_visible');
    // For RULE_OCS_AFFECT_COMPUTER
    $changes[RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
    // For RULE_SOFTWARE_CATEGORY
@@ -932,9 +978,9 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
    // Change mailgate search pref : add active
-	if (!FieldExists("glpi_mailcollectors", "active")) {
-		$query = "ALTER TABLE `glpi_mailcollectors` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
-      $DB->query($query) or die("0.80 add active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_mailcollectors", "is_active")) {
+		$query = "ALTER TABLE `glpi_mailcollectors` ADD `is_active` tinyint( 1 ) NOT NULL DEFAULT '1' ;";
+      $DB->query($query) or die("0.80 add is_active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
 	}
 
    // Change mailgate search pref : add ative

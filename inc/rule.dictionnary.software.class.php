@@ -58,7 +58,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			"name" => "new_value",
 			"version" => "version",
 			"manufacturer" => "new_manufacturer",
-			"helpdesk_visible" => "helpdesk_visible",
+			"is_helpdesk_visible" => "is_helpdesk_visible",
 			"_ignore_ocs_import" => "ignore_ocs_import"
 		));
 	}
@@ -464,7 +464,7 @@ class DictionnarySoftwareRule extends RuleCached {
 			echo getYesNo($fields["ignore_ocs_import"]);
 		}
 		echo "</td>";
-		echo "<td class='tab_bg_2'>" . ((isset ($fields["helpdesk_visible"]) && $fields["helpdesk_visible"] != '') ? getYesNo($fields["helpdesk_visible"]) : getYesNo(0)) . "</td>";
+		echo "<td class='tab_bg_2'>" . ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '') ? getYesNo($fields["is_helpdesk_visible"]) : getYesNo(0)) . "</td>";
 	}
 }
 ?>

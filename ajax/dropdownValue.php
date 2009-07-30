@@ -193,7 +193,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					$raquo="";
 				}
 
-				if ($_SESSION['glpiflat_dropdowntree']){
+				if ($_SESSION['glpiuse_flat_dropdowntree']){
 					$output=$data['completename'];
 					if ($level>1){
 						$class="";
@@ -203,7 +203,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				}
 				
 				if (utf8_strlen($output)>$_POST["limit"]) {
-					if ($_SESSION['glpiflat_dropdowntree']){
+					if ($_SESSION['glpiuse_flat_dropdowntree']){
 						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
 					} else {
 						$output=utf8_substr($output,0,$_POST["limit"])."&hellip;";

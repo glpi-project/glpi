@@ -71,10 +71,10 @@ function showReservationForm($itemtype,$items_id){
 		
 		// Supprimer le materiel$LANG['reservation'][3]
 		echo "<br><div>";
-		if ($ri->fields["active"]){
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
+		if ($ri->fields["is_active"]){
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;is_active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
 		} else {
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;is_active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
 		}
 		echo "&nbsp;&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG['reservation'][6]."</a></div>";	
 
@@ -116,7 +116,7 @@ function printCalendrier($target,$ID=""){
 	if (!empty($ID)){
 		$m=new ReservationItem;
 		$m->getFromDB($ID);
-		if (!$m->fields['active']){
+		if (!$m->fields['is_active']){
 			echo "<div class='center'><strong>";
 			echo $LANG['reservation'][2]."<br>";
 			displayBackLink();
@@ -391,7 +391,7 @@ function printReservation($target,$ID,$date){
 		$query = "SELECT DISTINCT glpi_reservationsitems.ID 
 			FROM glpi_reservationsitems 
 			INNER JOIN glpi_reservations ON (glpi_reservationsitems.ID = glpi_reservations.reservationsitems_id )
-			WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin 
+			WHERE is_active='1' AND '".$debut."' < end AND '".$fin."' > begin
 			ORDER BY begin";
 //		echo $query;
 		$result=$DB->query($query);
@@ -500,7 +500,7 @@ function printReservationItems($target){
 			INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_reservationsitems.itemtype='$itemtype'
 								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$itemtype].".ID)
 			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$itemtype].".locations_id = glpi_locations.ID)
-			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$itemtype].".is_deleted ='0'
+			WHERE glpi_reservationsitems.is_active='1' AND ".$LINK_ID_TABLE[$itemtype].".is_deleted ='0'
             ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype])."
          ORDER BY ".$LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 
@@ -603,7 +603,7 @@ function showDeviceReservations($target,$itemtype,$ID){
 		$result=$DB->query($query);
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
-		if ($ri->fields["active"]){
+		if ($ri->fields["is_active"]){
 			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG['reservation'][35]."</a>";
 		} else {
 			echo $LANG['reservation'][35];
@@ -638,7 +638,7 @@ function showDeviceReservations($target,$itemtype,$ID){
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
 
-		if ($ri->fields["active"]){
+		if ($ri->fields["is_active"]){
 			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG['reservation'][36]."</a>";
 		} else {
 			echo $LANG['reservation'][36];

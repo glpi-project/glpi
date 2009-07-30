@@ -1341,11 +1341,11 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 
 	$query_glpi = "SELECT glpi_ocslinks.last_update as last_update,  glpi_ocslinks.computers_id as computers_id, 
 				glpi_ocslinks.ocsid as ocsid, glpi_computers.name as name, 
-				glpi_ocslinks.auto_update as auto_update, glpi_ocslinks.ID as ID 
+				glpi_ocslinks.use_auto_update, glpi_ocslinks.ID as ID
 			FROM glpi_ocslinks  
 			LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocslinks.computers_id) 
 			WHERE glpi_ocslinks.ocsservers_id='" . $ocsservers_id . "' 
-			ORDER BY glpi_ocslinks.auto_update DESC, glpi_ocslinks.last_update, glpi_computers.name";
+			ORDER BY glpi_ocslinks.use_auto_update DESC, glpi_ocslinks.last_update, glpi_computers.name";
 
 	$result_glpi = $DB->query($query_glpi);
 	if ($DBocs->numrows($result_ocs) > 0) {
@@ -1367,7 +1367,7 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 					$already_linked[$data["ocsid"]]["ID"] = $data["ID"];
 					$already_linked[$data["ocsid"]]["computers_id"] = $data["computers_id"];
 					$already_linked[$data["ocsid"]]["ocsid"] = $data["ocsid"];
-					$already_linked[$data["ocsid"]]["auto_update"] = $data["auto_update"];
+					$already_linked[$data["ocsid"]]["use_auto_update"] = $data["use_auto_update"];
 				}
 			}
 		}
@@ -1401,7 +1401,7 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 				echo "<tr align='center' class='tab_bg_2'>";
 				echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?ID=" . $tab["computers_id"] . "'>" . $tab["name"] . "</a></td>";
 				echo "<td>" . convDateTime($tab["date"]) . "</td><td>" . convDateTime($hardware[$tab["ocsid"]]["date"]) . "</td>";
-				echo "<td>" . $LANG['choice'][$tab["auto_update"]] . "</td>";
+				echo "<td>" . $LANG['choice'][$tab["use_auto_update"]] . "</td>";
 				echo "<td><input type='checkbox' name='toupdate[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				echo "</td></tr>";
 			}

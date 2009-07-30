@@ -501,8 +501,8 @@ class Job extends CommonDBTM{
 						$change_followup_content.=$LANG['mailing'][44].": ".formatNumber($input["_old_cost_material"])." -> ".formatNumber($this->fields["cost_material"])."\n";
 						$global_mail_change_count++;
 					break;
-					case "emailupdates":
-						if ($this->fields["emailupdates"]){
+					case "use_email_notification":
+						if ($this->fields["use_email_notification"]){
 							$change_followup_content.=$LANG['mailing'][101]."\n";
 						} else {
 							$change_followup_content.=$LANG['mailing'][102]."\n";
@@ -581,7 +581,7 @@ class Job extends CommonDBTM{
 				addMessageAfterRedirect($LANG['help'][41],false,ERROR);
 				$mandatory_ok=false;
 			}
-			if (isset($input['emailupdates'])&&$input['emailupdates']&&(!isset($input['uemail'])||empty($input['uemail']))){
+			if (isset($input['use_email_notification'])&&$input['use_email_notification']&&(!isset($input['uemail'])||empty($input['uemail']))){
 				addMessageAfterRedirect($LANG['help'][16],false,ERROR);
 				$mandatory_ok=false;
 			}
@@ -670,7 +670,7 @@ class Job extends CommonDBTM{
 
 		$input=$rules->processAllRules($input,$input);
 
-		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
+		if (isset($input["use_email_notification"])&&$input["use_email_notification"]&&empty($input["uemail"])){
 			$user=new User();
 			$user->getFromDB($input["users_id"]);
 			$input["uemail"]=$user->fields["email"];
@@ -981,7 +981,7 @@ class Job extends CommonDBTM{
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['joblist'][2].":</span> ".getPriorityName($this->fields["priority"])."\n";
 			if ($this->fields["itemtype"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][18].":</span> ".$contact."\n";
-			if (isset($this->fields["emailupdates"]) && $this->fields["emailupdates"]){
+			if (isset($this->fields["use_email_notification"]) && $this->fields["use_email_notification"]){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][103].":</span> ".$LANG['choice'][1]."\n";
 			} else {
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][103].":</span> ".$LANG['choice'][0]."\n";
@@ -1028,7 +1028,7 @@ class Job extends CommonDBTM{
 			$message.= mailRow($LANG['joblist'][2],getPriorityName($this->fields["priority"]));
 			if ($this->fields["itemtype"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= mailRow($LANG['common'][18],$contact);
-			if (isset($this->fields["emailupdates"]) && $this->fields["emailupdates"]){
+			if (isset($this->fields["use_email_notification"]) && $this->fields["use_email_notification"]){
 				$message.=mailRow($LANG['mailing'][103],$LANG['choice'][1]);
 			} else {
 				$message.=mailRow($LANG['mailing'][103],$LANG['choice'][0]);

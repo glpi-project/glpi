@@ -641,7 +641,7 @@ function isValidDoc($filename){
 	$splitter=explode(".",$filename);
 	$ext=end($splitter);
 
-	$query="SELECT * FROM glpi_documentstypes WHERE ext LIKE '$ext' AND upload='1'";
+	$query="SELECT * FROM glpi_documentstypes WHERE ext LIKE '$ext' AND is_uploadable='1'";
 	if ($result = $DB->query($query))
 		if ($DB->numrows($result)>0)
 			return strtoupper($ext);

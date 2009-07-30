@@ -133,9 +133,9 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['name']=$LANG['profiles'][28]
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['type']='yesno';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_recursive']['table']='';
 
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['name']=$LANG['common'][60];
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['type']='yesno';
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['table']='';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_active']['name']=$LANG['common'][60];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_active']['type']='yesno';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['is_active']['table']='';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_ignore_user_import']['name']=$LANG['rulesengine'][132];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_ignore_user_import']['type']='yesno';
@@ -284,9 +284,9 @@ $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG['common'
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']="glpi_manufacturers";
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['type']='dropdown';
 
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['name']=$LANG['software'][46];
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['table']='glpi_softwares';
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['type']='yesno';
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['is_helpdesk_visible']['name']=$LANG['software'][46];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['is_helpdesk_visible']['table']='glpi_softwares';
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['is_helpdesk_visible']['type']='yesno';
 
 //Dictionnary Manufacturer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['field']='name';

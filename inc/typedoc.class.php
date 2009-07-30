@@ -121,7 +121,7 @@ class Typedoc  extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['document'][11].":	</td><td>";
-		dropdownYesNo("upload",$this->fields["upload"]);
+		dropdownYesNo("is_uploadable",$this->fields["is_uploadable"]);
 		echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
 		if (haveRight("typedoc","w")) {
