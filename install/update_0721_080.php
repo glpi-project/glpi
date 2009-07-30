@@ -695,8 +695,8 @@ function update0721to080() {
                            array('from' => 'public_faq', 'to' => 'use_public_faq', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'url_in_mail', 'to' => 'show_link_in_mail', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'use_ajax', 'to' => 'use_ajax', 'default' =>0, 'noindex'=>true ),//
-                           array('from' => 'ajax_autocompletion', 'to' => 'use_ajax_autocompletion', 'default' =>0, 'noindex'=>true ),//
-                           array('from' => 'auto_add_users', 'to' => 'is_users_auto_add', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'ajax_autocompletion', 'to' => 'use_ajax_autocompletion', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'auto_add_users', 'to' => 'is_users_auto_add', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'view_ID', 'to' => 'is_ids_visible', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'ocs_mode', 'to' => 'use_ocs_mode', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'followup_on_update_ticket', 'to' => 'add_followup_on_update_ticket', 'default' =>1, 'noindex'=>true ),//
@@ -707,10 +707,10 @@ function update0721to080() {
                            array('from' => 'autoupdate_link_user', 'to' => 'is_user_autoupdate', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'autoupdate_link_group', 'to' => 'is_group_autoupdate', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'autoupdate_link_location', 'to' => 'is_location_autoupdate', 'default' =>1, 'noindex'=>true ),//
-                           array('from' => 'autoclean_link_contact', 'to' => 'is_contact_autoclean', 'default' =>1, 'noindex'=>true ),//
-                           array('from' => 'autoclean_link_user', 'to' => 'is_user_autoclean', 'default' =>1, 'noindex'=>true ),//
-                           array('from' => 'autoclean_link_group', 'to' => 'is_group_autoclean', 'default' =>1, 'noindex'=>true ),//
-                           array('from' => 'autoclean_link_location', 'to' => 'is_location_autoclean', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_contact', 'to' => 'is_contact_autoclean', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_user', 'to' => 'is_user_autoclean', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_group', 'to' => 'is_group_autoclean', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'autoclean_link_location', 'to' => 'is_location_autoclean', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'flat_dropdowntree', 'to' => 'use_flat_dropdowntree', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'autoname_entity', 'to' => 'use_autoname_by_entity', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
@@ -737,9 +737,9 @@ function update0721to080() {
                      ),
    'glpi_groups' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                      ),
-   'glpi_knowbaseitems' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+   'glpi_knowbaseitems' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>1, 'noindex'=>true ),//
                      ),
-   'glpi_links' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
+   'glpi_links' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>1, 'noindex'=>true ),//
                      ),
    'glpi_monitors' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                         array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
@@ -776,7 +776,7 @@ function update0721to080() {
                            array('from' => 'flags_par', 'to' => 'have_parallel', 'default' =>0,'noindex'=>true  ),//
                            array('from' => 'flags_serial', 'to' => 'have_serial', 'default' =>0,'noindex'=>true  ),//
                      ),
-   'glpi_profiles_users' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0),//
+   'glpi_profiles_users' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>1),//
                            array('from' => 'dynamic','to' => 'is_dynamic', 'default' =>0),//
                      ),
    'glpi_profiles' => array(array('from' => 'is_default','to' => 'is_default', 'default' =>0),//
@@ -802,7 +802,7 @@ function update0721to080() {
                      ),
    'glpi_tickets' => array(array('from' => 'emailupdates', 'to' => 'use_email_notification', 'default' =>0, 'noindex'=>true  ),//
                      ),
-   'glpi_ticketsfollowups' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
+   'glpi_ticketsfollowups' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>0 ),//
                      ),
    'glpi_users' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
                         array('from' => 'active','to' => 'is_active', 'default' =>1),//
