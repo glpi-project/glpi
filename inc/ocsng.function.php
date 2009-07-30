@@ -3299,7 +3299,7 @@ function ocsResetSoftwares($glpi_computer_id) {
 
 	$query = "SELECT * 
 		FROM glpi_inst_software 
-		WHERE cid = '" . $glpi_computer_id . "'";
+		WHERE cID = '" . $glpi_computer_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
@@ -3328,7 +3328,7 @@ function ocsResetSoftwares($glpi_computer_id) {
 		}
 
 		$query = "DELETE FROM glpi_inst_software 
-				WHERE cid = '" . $glpi_computer_id . "'";
+				WHERE cID = '" . $glpi_computer_id . "'";
 		$DB->query($query);
 	}
 
