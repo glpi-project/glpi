@@ -81,7 +81,7 @@ if (countElementsInTableForMyEntities("glpi_dropdown_netpoint")>0){
 	echo "<table class='tab_cadre'  width='500'>";
 	echo "<tr class='tab_bg_1'><td>".$LANG['reports'][42]."</td>";
 	echo "<td>";
-	dropdownNetpoint("prise",0,0,1,$_SESSION["glpiactive_entity"]);	
+	dropdownNetpoint("prise",0,-1,1,$_SESSION["glpiactive_entity"]);	
 	echo "</td><td align='center' width='120'>";
 	echo "<input type='submit' value='".$LANG['reports'][15]."' class='submit'>";
 	echo "</td></tr>";

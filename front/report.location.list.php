@@ -80,8 +80,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 			$mac2="";
 			$portordi="";
 
-			if ($end1){
-				$np->getFromDB($end1);
+			if ($end1 && $np->getFromDB($end1)){
 				$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
 				$ordi=$np->device_name;
 				$ip2=$np->fields['ifaddr'];
