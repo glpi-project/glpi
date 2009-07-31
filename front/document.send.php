@@ -82,7 +82,7 @@ if (isset($_GET["file"])){
 								LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device) 
 							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
 								AND glpi_documents_items.documents_id='".$doc->fields["ID"]."' 
-								AND glpi_knowbaseitems.faq='1'";
+								AND glpi_knowbaseitems.is_faq=1";
 
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0)
@@ -119,7 +119,7 @@ if (isset($_GET["file"])){
 									LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device)
 								WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
 									AND glpi_documents_items.documents_id='".$doc->fields["ID"]."'
-									AND glpi_knowbaseitems.faq='1'";
+									AND glpi_knowbaseitems.is_faq=1";
 
 							$result=$DB->query($query);
 							if ($DB->numrows($result)>0)

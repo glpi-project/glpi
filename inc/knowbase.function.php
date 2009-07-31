@@ -117,7 +117,7 @@ function showKbCategoriesFirstLevel($target,$knowbaseitemscategories_id=0,$faq=0
 			$_SESSION['glpi_faqcategories']=array();
 			$query="SELECT DISTINCT knowbaseitemscategories_id 
 				FROM glpi_knowbaseitems 
-				WHERE glpi_knowbaseitems.faq = '1'";
+				WHERE glpi_knowbaseitems.is_faq = 1";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					while ($data=$DB->fetch_array($result)){
@@ -239,7 +239,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$fa
 	}	
 
 	if ($faq){ // helpdesk
-		$where .= " (glpi_knowbaseitems.faq = '1') AND ";
+		$where .= " (glpi_knowbaseitems.is_faq = 1) AND ";
 	}
 	
 	// a search with $contains
@@ -315,7 +315,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$fa
 				$output_type=$_GET["display_type"];
 
 			// Pager
-			$parameters="start=$start&amp;knowbaseitemscategories_id=$knowbaseitemscategories_id&amp;contains=$contains&amp;faq=$faq";
+			$parameters="start=$start&amp;knowbaseitemscategories_id=$knowbaseitemscategories_id&amp;contains=$contains&amp;is_faq=$faq";
 			if ($output_type==HTML_OUTPUT){
 				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
 			}
@@ -342,7 +342,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$fa
 				echo displaySearchNewLine($output_type,$i%2);
 
 				if ($output_type==HTML_OUTPUT){
-					echo displaySearchItem($output_type,"<div class='kb'><a ".($data['faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></div><div class='kb_resume'>".resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
+					echo displaySearchItem($output_type,"<div class='kb'><a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></div><div class='kb_resume'>".resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
 				} else {
 					echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
 					echo displaySearchItem($output_type,html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],ENT_QUOTES,"UTF-8"))),$item_num,$row_num);
@@ -432,7 +432,7 @@ function showKbRecentPopular($target,$type,$faq=0){
 	}	
 
 	if($faq){ // FAQ
-		$faq_limit.=" AND (glpi_knowbaseitems.faq = '1')";
+		$faq_limit.=" AND (glpi_knowbaseitems.is_faq = '1')";
 	} 
 
 	$query = "SELECT  *  FROM glpi_knowbaseitems $faq_limit $orderby LIMIT 10";
@@ -446,7 +446,7 @@ function showKbRecentPopular($target,$type,$faq=0){
 		echo "<tr><th>".$title."</th></tr>";
 	
 		while ($data=$DB->fetch_array($result)) {
-			echo "<tr class='tab_bg_2'><td class='left'><a ".($data['faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='left'><a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
 		}
 		echo "</table>";
 	}
@@ -473,7 +473,7 @@ function kbItemMenu($ID)
 	}
 
 	$edit=$ki->can($ID,'w');
-	$isFAQ = $ki->fields["faq"];
+	$isFAQ = $ki->fields["is_faq"];
 
 	$editFAQ=haveRight("faq","w");
 
@@ -530,7 +530,7 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 	$ki= new kbitem;	
 
 	if ($ki->getFromDB($ID)){
-		if ($ki->fields["faq"]){
+		if ($ki->fields["is_faq"]){
 			if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) return false;
 		}
 		else 
@@ -548,14 +548,14 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?knowbaseitemscategories_id=$knowbaseitemscategories_id'>".$fullcategoryname."</a></th></tr>";
 	
       echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
-      echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
+      echo ($ki->fields["is_faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
       echo "</h2>";
    
       echo $ki->fields["question"];
    
       echo "</td></tr>\n";
       echo "<tr  class='tab_bg_3'><td class='left' colspan='2'><h2>";
-      echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
+      echo ($ki->fields["is_faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
       echo "</h2>\n";
    
       $answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
@@ -612,7 +612,7 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 function KbItemaddtofaq($ID)
 {
 	global $DB;
-	$DB->query("UPDATE glpi_knowbaseitems SET faq='1' WHERE ID='$ID'");
+	$DB->query("UPDATE glpi_knowbaseitems SET is_faq='1' WHERE ID='$ID'");
 }
 
 /**
@@ -627,7 +627,7 @@ function KbItemaddtofaq($ID)
 function KbItemremovefromfaq($ID)
 {
 	global $DB;
-	$DB->query("UPDATE glpi_knowbaseitems SET faq='0' WHERE ID='$ID'");
+	$DB->query("UPDATE glpi_knowbaseitems SET is_faq='0' WHERE ID='$ID'");
 }
 
 
@@ -647,7 +647,7 @@ function getFAQCategories()
 
 	global $DB;	
 
-	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_knowbaseitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_knowbaseitems.knowbaseitemscategories_id = glpi_knowbaseitemscategories.ID) WHERE (glpi_knowbaseitems.faq = '1')";
+	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_knowbaseitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_knowbaseitems.knowbaseitemscategories_id = glpi_knowbaseitemscategories.ID) WHERE (glpi_knowbaseitems.is_faq = 1)";
 	$toprocess=array();
 	$catNumbers = array();
 

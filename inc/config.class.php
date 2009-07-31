@@ -1019,9 +1019,9 @@ class ConfigOCS extends CommonDBTM {
 			$input["checksum"]=0;
 
 			if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-			if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
-			if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
-			if ($input["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
+			if ($input["import_device_port"]) $input["checksum"]|= pow(2,PORTS_FL);
+			if ($input["import_device_modem"]) $input["checksum"]|= pow(2,MODEMS_FL);
+			if ($input["import_device_drive"]) $input["checksum"]|= pow(2,STORAGES_FL);
 			if ($input["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
 			if ($input["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
 			if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
@@ -1029,11 +1029,11 @@ class ConfigOCS extends CommonDBTM {
 			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
 			if (	$input["import_device_processor"]
 					||$input["import_general_contact"]
-					||$input["import_general_comments"]
+					||$input["import_general_comment"]
 					||$input["import_general_domain"]
 					||$input["import_general_os"]
 					||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
-			if (	$input["import_general_enterprise"]
+			if (	$input["import_general_manufacturer"]
 					||$input["import_general_type"]
 					||$input["import_general_model"]
 					||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);

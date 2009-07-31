@@ -629,9 +629,9 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 				ocsResetDevices($computers_id, SND_DEVICE);
 			if ($cfg_ocs["import_device_gfxcard"])
 				ocsResetDevices($computers_id, GFX_DEVICE);
-			if ($cfg_ocs["import_device_drives"])
+			if ($cfg_ocs["import_device_drive"])
 				ocsResetDevices($computers_id, DRIVE_DEVICE);
-			if ($cfg_ocs["import_device_modems"] || $cfg_ocs["import_device_ports"])
+			if ($cfg_ocs["import_device_modem"] || $cfg_ocs["import_device_port"])
 				ocsResetDevices($computers_id, PCI_DEVICE);
 			if ($cfg_ocs["import_software"])
 				ocsResetSoftwares($computers_id);
@@ -700,31 +700,31 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 	$first = true;
 	$ocsParams = array();
 	
-	if ($conf["glpi_link_enabled"])	{
+	if ($conf["is_glpi_link_enabled"])	{
 		$ok=false;
 		//Build the request against OCS database to get the machine's informations
-		if ( $conf["link_ip"] || $conf["link_mac_address"]){
+		if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]){
 			$sql_from.=" LEFT JOIN networks ON (hardware.ID=networks.HARDWARE_ID) ";
 		}	
 
-		if ($conf["link_ip"]){
+		if ($conf["use_ip_to_link"]){
 			$sql_fields.=", networks.IPADDRESS";
 			$ocsParams["IPADDRESS"] = array();
 			$ok=true;
 		}
-		if ($conf["link_mac_address"]){
+		if ($conf["use_mac_to_link"]){
 			$sql_fields.=", networks.MACADDR";
 			$ocsParams["MACADDR"] = array();
 			$ok=true;
 		}
-		if ($conf["link_serial"]){
+		if ($conf["use_serial_to_link"]){
 			$sql_from.=" LEFT JOIN bios ON (bios.HARDWARE_ID=hardware.ID) ";
 
 			$sql_fields.=", bios.SSN";
 			$ocsParams["SSN"] = array();
 			$ok=true;
 		}
-		if ($conf["link_name"] > 0){
+		if ($conf["use_name_to_link"] > 0){
 			$sql_fields.=", hardware.NAME";
 			$ocsParams["NAME"] = array();
 			$ok=true;
@@ -744,16 +744,16 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 		//Get the list of parameters
 		
 		while ($dataOcs = $DB->fetch_array($result)){
-			if ($conf["link_ip"])
+			if ($conf["use_ip_to_link"])
 				if (!empty($dataOcs["IPADDRESS"]) && !in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
 					$ocsParams["IPADDRESS"][]= $dataOcs["IPADDRESS"];
-			if ($conf["link_mac_address"])
+			if ($conf["use_mac_to_link"])
 				if (!empty($dataOcs["MACADDR"]) && !in_array($dataOcs["MACADDR"],$ocsParams["MACADDR"]))
 					$ocsParams["MACADDR"][]= $dataOcs["MACADDR"];
-			if ($conf["link_name"] > 0)
+			if ($conf["use_name_to_link"] > 0)
 				if (!empty($dataOcs["NAME"]) && !in_array($dataOcs["NAME"],$ocsParams["NAME"]))
 					$ocsParams["NAME"][]= $dataOcs["NAME"];
-			if ($conf["link_serial"])
+			if ($conf["use_serial_to_link"])
 				if (!empty($dataOcs["SSN"]) && !in_array($dataOcs["SSN"],$ocsParams["SSN"]))
 					$ocsParams["SSN"][]= $dataOcs["SSN"];
 		}
@@ -766,11 +766,11 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			
 		$sql_where = " entities_id IN ($where_entity) AND is_template=0 ";
 		$sql_from = "glpi_computers";
-		if ( $conf["link_ip"] || $conf["link_mac_address"]){
+		if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]){
 			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.ID=glpi_networkports.items_id 
 								AND glpi_networkports.itemtype=".COMPUTER_TYPE.") ";
 		}	
-		if ($conf["link_ip"]){
+		if ($conf["use_ip_to_link"]){
 			if (empty($ocsParams["IPADDRESS"])){
 				return -1;
 			} else {	
@@ -780,7 +780,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 				$sql_where.=")";
 			}			
 		}
-		if ($conf["link_mac_address"]){
+		if ($conf["use_mac_to_link"]){
 			if (empty($ocsParams["MACADDR"])){
 				return -1;
 			} else {	
@@ -790,9 +790,9 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 				$sql_where.=")";
 			}
 		}
-		if ($conf["link_name"] > 0){
+		if ($conf["use_name_to_link"] > 0){
 			//Search only computers with blank name
-			if ($conf["link_name"] == 2){
+			if ($conf["use_name_to_link"] == 2){
 				$sql_where .= " AND (glpi_computers.name='' OR glpi_computers.name IS NULL) ";
 			} else {	
 				if (empty($ocsParams["NAME"]))
@@ -801,7 +801,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 					$sql_where .= " AND glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
 			}
 		}
-		if ($conf["link_serial"]){
+		if ($conf["use_serial_to_link"]){
 			if (empty($ocsParams["SSN"]))
 				return -1;
 			else
@@ -1105,7 +1105,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 			$compupdate["name"] = $line["NAME"];
 		}
 
-		if ($cfg_ocs["import_general_comments"] && !in_array("comments", $computer_updates)) {
+		if ($cfg_ocs["import_general_comment"] && !in_array("comments", $computer_updates)) {
 			$compupdate["comments"] = "";
 			;
 			if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != "N/A")
@@ -1160,7 +1160,7 @@ function ocsUpdateBios($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $compute
 			$compupdate["computersmodels_id"] = externalImportDropdown('glpi_computersmodels', $line["SMODEL"],-1,(isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
 		}
 
-		if ($cfg_ocs["import_general_enterprise"] && !in_array("manufacturers_id", $computer_updates)) {
+		if ($cfg_ocs["import_general_manufacturer"] && !in_array("manufacturers_id", $computer_updates)) {
 			$compupdate["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["SMANUFACTURER"]);
 		}
 
@@ -1955,7 +1955,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			break;
 		case DRIVE_DEVICE :
 			//lecteurs
-			if ($cfg_ocs["import_device_drives"]) {
+			if ($cfg_ocs["import_device_drive"]) {
 				$do_clean = true;
 
 				$query2 = "SELECT * 
@@ -1995,7 +1995,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			break;
 		case PCI_DEVICE :
 			//Modems
-			if ($cfg_ocs["import_device_modems"]) {
+			if ($cfg_ocs["import_device_modem"]) {
 				$do_clean = true;
 
 				$query2 = "SELECT * 
@@ -2026,7 +2026,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 				}
 			}
 			//Ports
-			if ($cfg_ocs["import_device_ports"]) {
+			if ($cfg_ocs["import_device_port"]) {
 
 				$query2 = "SELECT * 
 					FROM ports 
@@ -2497,7 +2497,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 
 							$mon["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["MANUFACTURER"]);
 							
-							if ($cfg_ocs["import_monitor_comments"])
+							if ($cfg_ocs["import_monitor_comment"])
 								$mon["comments"] = $line["DESCRIPTION"];
 							$id_monitor = 0;
 
