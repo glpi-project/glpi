@@ -817,7 +817,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 	$canedit=haveRight("software", "w");
 	$entities_id = $comp->fields["entities_id"];
 
-	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id as category_id,
+	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id,
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.is_deleted, glpi_states.name AS state,
 		glpi_softwaresversions.softwares_id, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_computers_softwaresversions 
@@ -828,7 +828,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)";
 	$query_cat .= " WHERE glpi_computers_softwaresversions.computers_id = '$computers_id' AND glpi_softwares.softwarescategories_id > 0";
 
-	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id as category_id,
+	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id,
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.is_deleted, glpi_states.name AS state,
 		glpi_softwaresversions.softwares_id, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 	    FROM glpi_computers_softwaresversions 
@@ -870,7 +870,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 	$installed=array();
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
-			if ($data["category_id"] != $cat) {
+			if ($data["softwarescategories_id"] != $cat) {
 				displayCategoryFooter($cat,$rand,$canedit);
 				$cat = displayCategoryHeader($computers_id, $data,$rand,$canedit);
 			}
@@ -977,8 +977,8 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
 		
 	$display = "none";
 
-	if (isset($data["category_id"])) {
-		$cat = $data["category_id"];
+	if (isset($data["softwarescategories_id"])) {
+		$cat = $data["softwarescategories_id"];
 		if ($cat) {
 			// Categorized
 			$catname = $data["category"];

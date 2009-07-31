@@ -44,7 +44,7 @@ if(strpos($_SERVER['PHP_SELF'],"private_public.php")){
 if (!defined('GLPI_ROOT')){
 	die("Can not acces directly to this file");
 	}
-	
+
 	if (isset($_POST['is_private'])){
 		checkLoginUser();
 		switch ($_POST['is_private']){

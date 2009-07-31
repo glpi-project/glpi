@@ -62,6 +62,7 @@
 	define("OCS_FIELD_SEPARATOR",'$$$$$');
 	define("OCS_IMPORT_TAG_070","_version_070_");
 	define("OCS_IMPORT_TAG_072","_version_072_");
+	define("OCS_IMPORT_TAG_080","_version_080_");
 
 
 	// ITEMS TYPE

@@ -938,12 +938,7 @@ function update0721to080() {
       }
    }
 
-
- 
-
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
-
-   /// TODO manage computer_update version in ocslinks to upgrade field names
 
    // Change defaults store values :
    if (FieldExists('glpi_softwares', 'sofwtares_id')) {

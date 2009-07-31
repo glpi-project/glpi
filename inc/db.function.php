@@ -1023,7 +1023,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
 							WHERE $field LIKE '$like' 
 							AND is_deleted = '0' 
 							AND is_template = '0'";
-							if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
+							if ($CFG_GLPI["use_autoname_by_entity"]&&$entities_id>=0){
 								$query.=" AND entities_id = '$entities_id' ";
 							}
 						$first = 0;
@@ -1038,7 +1038,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
 					WHERE $field LIKE '$like' ";
 				if ($itemtype != INFOCOM_TYPE){
 					$query .= " AND is_deleted = '0' AND is_template = '0'";
-					if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
+					if ($CFG_GLPI["use_autoname_by_entity"]&&$entities_id>=0){
 						$query.=" AND entities_id = '$entities_id' ";
 					}
 				}

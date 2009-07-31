@@ -824,7 +824,13 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 	return $found_computers; 
 		
 }
-
+/** Update a ocs computer
+* @param $ID integer : ID of ocslinks row
+* @param $ocsservers_id integer : ocs server ID
+* @param $dohistory bool : do history ?
+* @param $force bool : force update ?
+* @return action done
+*/
 function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 	global $DB, $DBocs, $CFG_GLPI;
 
@@ -832,9 +838,10 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 
 	$cfg_ocs = getOcsConf($ocsservers_id);
 
+   /// TODO is check on ocsservers_id needed ?
 	$query = "SELECT * 
 		FROM glpi_ocslinks 
-		WHERE ID='$ID' and ocsservers_id='".$ocsservers_id."'";
+		WHERE ID='$ID' AND ocsservers_id='".$ocsservers_id."'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
 
@@ -887,7 +894,12 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 			// Is an update to do ?
 			if ($mixed_checksum) {
 				// Get updates on computers :
+            
 				$computer_updates = importArrayFromDB($line["computer_update"]);
+            if (!in_array(OCS_IMPORT_TAG_080,$computer_updates)){
+                  $computer_updates=ocsMigrateComputerUpdates($line["computers_id"],$computer_updates);
+            }
+
 
 				// Update Administrative informations
 				ocsUpdateAdministrativeInfo($line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $computer_updates, $comp->fields['entities_id'], $dohistory);
@@ -1522,7 +1534,47 @@ function getOcsLockableFields(){
 		);
 }
 
-function ocsGetComputerUpdates(){
+function ocsMigrateComputerUpdates($computers_id,$computer_update){
+	global $DB;
+   $new_computer_update=array(OCS_IMPORT_TAG_080);
+
+   $updates=array('ID' => 'id',
+                  'FK_entities' => 'entities_id',
+                  'tech_num' => 'users_id_tech',
+                  'comments' => 'comment',
+                  'os' => 'operatingsystems_id',
+                  'os_version' => 'operatingsystemsversions_id',
+                  'os_sp' => 'operatingsystemsservicepacks_id',
+                  'os_license_id' => 'os_licenseid',
+                  'auto_update' => 'autoupdatesystems_id',
+                  'location' => 'locations_id',
+                  'domain' => 'domains_id',
+                  'network' => 'networks_id',
+                  'model' => 'computersmodels_id',
+                  'type' => 'computerstypes_id',
+                  'tplname' => 'template_name',
+                  'FK_glpi_enterprise' => 'manufacturers_id',
+                  'deleted' => 'is_deleted',
+                  'notes' => 'notepad',
+                  'ocs_import' => 'is_ocs_import',
+                  'FK_users' => 'users_id',
+                  'FK_groups' => 'groups_id',
+                  'state' => 'states_id',
+            );
+
+   if (count($computer_update)){
+      foreach ($computer_update as $field){
+         if (isset($updates[$field])){
+            $new_computer_update[]=$updates[$field];
+         } else {
+            $new_computer_update[]=$field;
+         }
+      }
+   }
+	//Add the new tag as the first occurence in the array
+	replaceOcsArray($computers_id,$new_computer_update,"computer_update");
+	return $new_computer_update;
+
 }
 
 function ocsUnlockItems($computers_id,$field){
@@ -1608,6 +1660,10 @@ function ocsEditLock($target, $ID) {
 
 		$lockable_fields = getOcsLockableFields();
 		$locked = importArrayFromDB($data["computer_update"]);
+      if (!in_array(OCS_IMPORT_TAG_080,$locked)){
+         $locked=ocsMigrateComputerUpdates($ID,$locked);
+      }
+
 		if (count($locked)>0){
 			foreach ($locked as $key => $val){
 				if (!isset($lockable_fields[$val])){
@@ -1726,7 +1782,7 @@ function ocsEditLock($target, $ID) {
 		$locked_ip = importArrayFromDB($data["import_ip"]);
 		
 		if (!in_array(OCS_IMPORT_TAG_072,$locked_ip))
-				$locked_ip=migrateImportIP($ID,$locked_ip);
+				$locked_ip=ocsMigrateImportIP($ID,$locked_ip);
 		
 		foreach ($locked_ip as $key => $val) {
 			if ($key>0)
@@ -2105,7 +2161,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 				$do_clean=true;
 				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
 				if (!in_array(OCS_IMPORT_TAG_072,$import_ip))
-					$import_ip=migrateImportIP($computers_id,$import_ip);
+					$import_ip=ocsMigrateImportIP($computers_id,$import_ip);
 				
 				$query2 = "SELECT * 
 					FROM networks 
@@ -3785,7 +3841,7 @@ function getOcsGeneralIpAddress($ocsservers_id,$computers_id)
 		return '';	
 }
 
-function migrateImportIP($computers_id,$import_ip)
+function ocsMigrateImportIP($computers_id,$import_ip)
 {
 	global $DB;
 	

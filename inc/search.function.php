@@ -1056,7 +1056,7 @@ function showList ($itemtype,$params){
 				} else {// Ref table case
 						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$itemtype].".ID AS refID, ".
                               $LINK_ID_TABLE[$ctype].".entities_id AS ENTITY ".$FROM.$WHERE;
-						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]."
+						$replace="FROM ".$LINK_ID_TABLE[$itemtype]." INNER JOIN ".$LINK_ID_TABLE[$ctype]."
                            ON (".$LINK_ID_TABLE[$itemtype].".items_id = ".$LINK_ID_TABLE[$ctype].".ID
                               AND ".$LINK_ID_TABLE[$itemtype].".itemtype='$ctype')";
 						$tmpquery=str_replace("FROM ".$CFG_GLPI["union_search_type"][$itemtype],$replace,$tmpquery);
@@ -1709,7 +1709,7 @@ function addDefaultSelect ($itemtype){
 	
 	switch ($itemtype){
 		case RESERVATION_TYPE:
-			$ret = "glpi_reservationsitems.active as ACTIVE, ";
+			$ret = "glpi_reservationsitems.is_active as ACTIVE, ";
 		break;
 		case CARTRIDGE_TYPE:
 			$ret = "glpi_cartridgesitems.alarm as ALARM, ";

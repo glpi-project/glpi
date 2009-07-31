@@ -97,7 +97,7 @@ class Software extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 
 		if (isset ($input['is_update']) && ! $input['is_update'])
-			$input['update_software'] = 0;
+			$input['softwares_id'] = 0;
 
 		return $input;
 	}
@@ -105,7 +105,7 @@ class Software extends CommonDBTM {
 	function prepareInputForAdd($input) {
 
 		if (isset ($input['is_update']) && !$input['is_update'])
-			$input['update_software'] = 0;
+			$input['softwares_id'] = 0;
 
 		if (isset($input["ID"])&&$input["ID"]>0){
 			$input["_oldID"]=$input["ID"];
@@ -336,7 +336,7 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][29] . ":</td><td colspan='3'>";
       dropdownYesNo("is_update",$this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
-      dropdownValue("glpi_softwares", "update_software", $this->fields["update_software"]);
+      dropdownValue("glpi_softwares", "softwares_id", $this->fields["softwares_id"]);
       echo "</td>";
 
       /*echo "<td>" . $LANG['state'][0] . ":</td><td>";

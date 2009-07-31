@@ -274,7 +274,7 @@ $RELATION=array(
 						"glpi_rulescacheoperatingsystemsversions"=>"rules_id"),
 	"glpi_softwares" =>array("glpi_softwareslicenses"=>"softwares_id",
 				"glpi_softwaresversions"=>"softwares_id",
-				"glpi_softwares"=>"update_software"),
+				"glpi_softwares"=>"softwares_id"),
 
 	"glpi_softwaresversions" =>array("glpi_computers_softwaresversions"=>"softwaresversions_id_buy",
 					"glpi_softwareslicenses"=>array("softwaresversions_id_buy","softwaresversions_id_use")),
