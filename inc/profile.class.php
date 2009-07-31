@@ -86,6 +86,13 @@ class Profile extends CommonDBTM{
 	}
 
 	function prepareInputForUpdate($input){
+
+      // Check for faq 
+      if (isset($input["interface"])&&$input["interface"]=='helpdesk'){
+         if (isset($input["faq"])&&$input["faq"]=='w'){
+               $input["faq"]=='r';
+         }
+      }
 		if (isset($input["helpdesk_hardware_type"])){
 			$types=$input["helpdesk_hardware_type"];
 			unset($input["helpdesk_hardware_type"]);
@@ -375,6 +382,9 @@ class Profile extends CommonDBTM{
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG['knowbase'][1].":</td><td>";
+      if ($this->fields["interface"]=="helpdesk" && $this->fields["faq"]=='w'){
+         $this->fields["faq"]='r';
+      }
 		dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,0);
 		echo "</td>";
 		echo "<td>".$LANG['Menu'][17].":</td><td>";
