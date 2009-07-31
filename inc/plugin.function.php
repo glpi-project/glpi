@@ -509,13 +509,13 @@ function registerPluginType($plugin,$name,$itemtype,$attrib){
 			$PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
 		}
 		if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
-			$INFOFORM_PAGES[$ID]="plugins/$plugin/".$attrib['formpage'];
+			$INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
 		}
 		if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
-			$SEARCH_PAGES[$ID]="plugins/$plugin/".$attrib['searchpage'];
+			$SEARCH_PAGES[$itemtype]="plugins/$plugin/".$attrib['searchpage'];
 		}
 		if (isset($attrib['tablename']) && !empty($attrib['tablename'])) {
-			$LINK_ID_TABLE[$ID] = $attrib['tablename'];
+			$LINK_ID_TABLE[$itemtype] = $attrib['tablename'];
 
 			if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
 				$CFG_GLPI["recursive_type"][$ID] = $attrib['tablename'];

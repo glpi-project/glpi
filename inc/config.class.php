@@ -166,7 +166,7 @@ class Config extends CommonDBTM {
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][360] . "</td><td>";
 		$tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
-		dropdownArrayValues('autoname_entity', $tab,$CFG_GLPI["autoname_entity"]);
+		dropdownArrayValues('use_autoname_by_entity', $tab,$CFG_GLPI["use_autoname_by_entity"]);
 		echo "</td>";
 	
 		echo "<td class='center'>&nbsp;</td><td>";

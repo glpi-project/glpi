@@ -2409,9 +2409,9 @@ function dropdownAlertInfocoms($name,$value=0){
  *
  * @param $is_private default is private ?
  * @param $entity working entity ID
- * @param $recursive is the item recursive ?
+ * @param $is_recursive is the item recursive ?
  */
-function privatePublicSwitch($is_private,$entity,$recursive){
+function privatePublicSwitch($is_private,$entity,$is_recursive){
 	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
@@ -2421,7 +2421,7 @@ function privatePublicSwitch($is_private,$entity,$recursive){
 		
 		$params=array(
 			'is_private'=>1,
-			'recursive'=>$recursive,
+			'is_recursive'=>$is_recursive,
 			'entities_id'=>$entity,
 			'rand'=>$rand,
 		);
@@ -2432,7 +2432,7 @@ function privatePublicSwitch($is_private,$entity,$recursive){
 		
 		$params=array(
 			'is_private'=>0,
-			'recursive'=>$recursive,
+			'is_recursive'=>$is_recursive,
 			'entities_id'=>$entity,
 			'rand'=>$rand,
 		);
@@ -2445,7 +2445,7 @@ function privatePublicSwitch($is_private,$entity,$recursive){
 	echo "<span id='private_switch$rand'>";
 		$_POST['rand']=$rand;
 		$_POST['is_private']=$is_private;
-		$_POST['recursive']=$recursive;
+		$_POST['is_recursive']=$is_recursive;
 		$_POST['entities_id']=$entity;
 		include (GLPI_ROOT."/ajax/private_public.php");
 	echo "</span>\n";

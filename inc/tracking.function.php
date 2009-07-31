@@ -181,7 +181,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")&&!haveRight("create_ticket","1")) return false;
 
-	$search_users_id=" (users_id = '".$_SESSION["glpiID"]."' AND (status = 'new' OR status = 'plan' OR status = 'assign' OR status = 'waiting')) OR ";
+	$search_users_id=" (glpi_tickets.users_id = '".$_SESSION["glpiID"]."' AND (status = 'new' OR status = 'plan' OR status = 'assign' OR status = 'waiting')) OR ";
 	$search_assign=" users_id_assign = '".$_SESSION["glpiID"]."' ";
 	if ($showgrouptickets){
 		$search_users_id = "";
@@ -449,7 +449,7 @@ function showJobListForUser($userID) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (users_id = '$userID') 
+			WHERE (glpi_tickets.users_id = '$userID') 
 				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
