@@ -1105,12 +1105,12 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 			$compupdate["name"] = $line["NAME"];
 		}
 
-		if ($cfg_ocs["import_general_comment"] && !in_array("comments", $computer_updates)) {
-			$compupdate["comments"] = "";
+		if ($cfg_ocs["import_general_comment"] && !in_array("comment", $computer_updates)) {
+			$compupdate["comment"] = "";
 			;
 			if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != "N/A")
-				$compupdate["comments"] .= $line["DESCRIPTION"] . "\r\n";
-			$compupdate["comments"] .= "Swap: " . $line["SWAP"];
+				$compupdate["comment"] .= $line["DESCRIPTION"] . "\r\n";
+			$compupdate["comment"] .= "Swap: " . $line["SWAP"];
 		}
 		if (count($compupdate)) {
 			$compupdate["ID"] = $computers_id;
@@ -1506,7 +1506,7 @@ function getOcsLockableFields(){
 			"computersmodels_id"=>$LANG['common'][22],
 			"serial"=>$LANG['common'][19],
 			"otherserial"=>$LANG['common'][20],
-			"comments"=>$LANG['common'][25],
+			"comment"=>$LANG['common'][25],
 			"contact"=>$LANG['common'][18],
 			"contact_num"=>$LANG['common'][21],
 			"domains_id"=>$LANG['setup'][89],
@@ -1520,6 +1520,9 @@ function getOcsLockableFields(){
 			"locations_id"=>$LANG['common'][15],
 			"groups_id"=>$LANG['common'][35],
 		);
+}
+
+function ocsGetComputerUpdates(){
 }
 
 function ocsUnlockItems($computers_id,$field){
@@ -2498,7 +2501,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 							$mon["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["MANUFACTURER"]);
 							
 							if ($cfg_ocs["import_monitor_comment"])
-								$mon["comments"] = $line["DESCRIPTION"];
+								$mon["comment"] = $line["DESCRIPTION"];
 							$id_monitor = 0;
 
 							if ($cfg_ocs["import_monitor"] == 1) {
@@ -2629,8 +2632,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 								// Clean printer object
 								$p->reset();
 
-								//$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
-								$print["comments"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
+								//$print["comment"] = $line["PORT"]."\r\n".$line["NAME"];
+								$print["comment"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
 								$id_printer = 0;
 
 								if ($cfg_ocs["import_printer"] == 1) {
@@ -2709,7 +2712,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 							if ($line["MANUFACTURER"] != "NULL")
 								$periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"] != "NULL")
-								$periph["comments"] = $line["INTERFACE"];
+								$periph["comment"] = $line["INTERFACE"];
 							$periph["peripheralstypes_id"] = externalImportDropdown("glpi_peripheralstypes", $line["TYPE"]);
 
 							$id_periph = 0;

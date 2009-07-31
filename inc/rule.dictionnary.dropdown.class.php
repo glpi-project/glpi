@@ -345,7 +345,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				}
 
 				//Replay Type dictionnary
-				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comments"]));
+				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comment"]));
 				
 				if ($data['ID'] != $ID) {
 					$tomove[$data['ID']]=$ID;
@@ -398,7 +398,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 		// Need to give manufacturer from item table
 		$Sql="SELECT DISTINCT glpi_manufacturers.ID AS idmanu, glpi_manufacturers.name AS manufacturer, 
-			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comments AS comments 
+			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comment
 			FROM `".$this->item_table."`, $model_table 
 			LEFT JOIN glpi_manufacturers ON ($model_table.manufacturers_id=glpi_manufacturers.ID) 
 			WHERE $model_table.$model_field=`".$this->item_table."`.ID ";
@@ -429,7 +429,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				}
 
 				//Replay Type dictionnary
-				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,addslashes($data["comments"]));
+				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,addslashes($data["comment"]));
 
 				if ($data['ID'] != $ID) {
 					$tocheck[$data["ID"]][]=$ID;

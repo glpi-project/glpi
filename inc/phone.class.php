@@ -411,7 +411,7 @@ class Phone extends CommonDBTM {
 
       echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
       echo $LANG['common'][25].":	</td>";
-      echo "<td class='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<td class='center'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr></table>";
 
       echo "</td>";

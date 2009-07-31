@@ -171,7 +171,7 @@ class ConsumableType extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td valign='top'>\n";
          echo $LANG['common'][25].":	</td>";
-         echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+         echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
          echo "</td></tr>\n";
 
 			if (haveRight("consumable","w"))

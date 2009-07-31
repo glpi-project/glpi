@@ -115,7 +115,7 @@ else if (isset($_POST["update_buy"])||isset($_POST["update_buy_x"])){
 else if (isset($_POST["move"])||isset($_POST["move"])){
 	if ($_POST["lID"]&&$lic->getFromDB($_POST["lID"])){
 		unset($lic->fields["ID"]);
-		unset($lic->fields["comments"]);
+		unset($lic->fields["comment"]);
 
 		foreach ($_POST as $key => $val){
 			$lic=array();

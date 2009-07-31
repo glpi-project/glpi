@@ -843,7 +843,7 @@ class Rule extends CommonDBTM{
 		echo "<tr>";
 		echo "<td class='tab_bg_2'>".$LANG['common'][25]."</td>";
 		echo "<td class='tab_bg_2' valign='middle' colspan='3'>";
-		echo "<textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "<textarea  cols='50' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
 		echo"</td></tr>";
 			
 		if ($canedit){
@@ -1498,9 +1498,9 @@ class Rule extends CommonDBTM{
 			echo "<td></td>";
 				
 		echo "<td><a href=\"".str_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
-		if (!empty($this->fields["comments"])) {
-			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_rules".$this->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_rules".$this->fields["ID"]."')\" >";
-			echo "<span class='over_link' id='comments_rules".$this->fields["ID"]."'>".nl2br($this->fields["comments"])."</span>";			
+		if (!empty($this->fields["comment"])) {
+			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_rules".$this->fields["ID"]."')\" onmouseover=\"cleandisplay('comment_rules".$this->fields["ID"]."')\" >";
+			echo "<span class='over_link' id='comment_rules".$this->fields["ID"]."'>".nl2br($this->fields["comment"])."</span>";
 		}
 		echo "</td>";
 					

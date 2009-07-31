@@ -497,7 +497,7 @@ if (isset($_POST["itemtype"])){
 						$soft->getFromDB($key);
 						$params["name"]=$soft->fields["name"];
 						$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
-						$params["comments"]=$soft->fields["comments"];
+						$params["comment"]=$soft->fields["comment"];
 						
 						//Process rules
 						$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));

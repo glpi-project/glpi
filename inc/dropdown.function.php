@@ -47,14 +47,14 @@ if (!defined('GLPI_ROOT')){
  *
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
- * @param $display_comments display the comments near the dropdown
+ * @param $display_comment display the comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $used Already used items : not to display in dropdown
  * @return nothing (display the select box)
  **/
-function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=array()) {
+function dropdown($table,$myname,$display_comment=1,$entity_restrict=-1,$used=array()) {
 
-	return dropdownValue($table,$myname,'',$display_comments,$entity_restrict,"",$used);
+	return dropdownValue($table,$myname,'',$display_comment,$entity_restrict,"",$used);
 }
 
 /**
@@ -64,21 +64,21 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=a
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
- * @param $display_comments display the comments near the dropdown
+ * @param $display_comment display the comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
  * @param $used Already used items : not to display in dropdown
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array(),$auto_submit=0) {
+function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,$update_item="",$used=array(),$auto_submit=0) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
 
 	$name="------";
-	$comments="";
+	$comment="";
 	$limit_length=$_SESSION["glpidropdown_limit"];
 	
 
@@ -91,7 +91,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		$tmpname=getDropdownName($table,$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
-			$comments=$tmpname["comments"];
+			$comment=$tmpname["comment"];
 
 			if (utf8_strlen($name) > $_SESSION["glpidropdown_limit"]) {
 				if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
@@ -132,7 +132,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			'table'=>$table,
 			'myname'=>$myname,
 			'limit'=>$limit_length,
-			'comments'=>$display_comments,
+			'comment'=>$display_comment,
 			'rand'=>$rand,
 			'entity_restrict'=>$entity_restrict,
 			'update_item'=>$update_item,
@@ -143,7 +143,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
-	// Display comments
+	// Display comment
 	$which="";
 
 	$dropdown_right=false;
@@ -159,8 +159,8 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		$which=$table;
 	}
 
-	if ($display_comments){
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
+	if ($display_comment){
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_$myname$rand')\" onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
 		if ($dropdown_right && !empty($which)) {
 			if (is_array($entity_restrict) && count($entity_restrict)==1) {
 				$entity_restrict=array_pop($entity_restrict);
@@ -170,7 +170,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			}
 		}
 		echo ">";
-		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
+		echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 	}
 	// Display specific Links
 	if ($table=="glpi_suppliers"){
@@ -187,27 +187,27 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
  * @param $locations_id default location ID for search
- * @param $display_comments display the comments near the dropdown
+ * @param $display_comment display the comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $devtype
  * @return nothing (display the select box)
  *
  */
-function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comments=1,$entity_restrict=-1,$devtype=-1) {
+function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$entity_restrict=-1,$devtype=-1) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
 
 	$name="------";
-	$comments="";
+	$comment="";
 	$limit_length=$_SESSION["glpidropdown_limit"];
 	if (empty($value)) $value=0;
 	if ($value>0){
 		$tmpname=getDropdownName("glpi_netpoints",$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
-			$comments=$tmpname["comments"];
+			$comment=$tmpname["comment"];
 			$limit_length=max(utf8_strlen($name),$_SESSION["glpidropdown_limit"]);
 		}
 	}
@@ -231,7 +231,7 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comments=1,
 			'locations_id'=>$locations_id,
 			'myname'=>$myname,
 			'limit'=>$limit_length,
-			'comments'=>$display_comments,
+			'comment'=>$display_comment,
 			'rand'=>$rand,
 			'entity_restrict'=>$entity_restrict,
 			'devtype'=>$devtype,
@@ -240,15 +240,15 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comments=1,
 	$default="<select name='$myname'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
 
-	// Display comments 
+	// Display comment 
 
-	if ($display_comments){
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
+	if ($display_comment){
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_$myname$rand')\" onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
 		if (haveRight("entity_dropdown","w")) {
 			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$locations_id"."&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
 		}
 		echo ">";
-		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
+		echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 	}
 
 	return $rand;
@@ -433,7 +433,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $value default value
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
  * @param $all Nobody or All display for none selected $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
- * @param $display_comments display comments near the dropdown
+ * @param $display_comment display comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
@@ -441,7 +441,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @return nothing (print out an HTML select box)
  *
  */
-function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
 	// Make a select box with all glpi users
 
 	global $DB,$CFG_GLPI,$LANG;
@@ -469,7 +469,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 			'myname'=>$myname,
 			'all'=>$all,
 			'right'=>$right,
-			'comments'=>$display_comments,
+			'comment'=>$display_comment,
 			'rand'=>$rand,
 			'helpdesk_ajax'=>$helpdesk_ajax,
 			'entity_restrict'=>$entity_restrict,
@@ -492,20 +492,20 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
 
-	// Display comments
+	// Display comment
 
-	if ($display_comments) {
+	if ($display_comment) {
 		if ($view_users){
 			if (empty($user["link"])){
 				$user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
 			}
-			echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
+			echo "<a id='comment_link_$myname$rand' href='".$user["link"]."'>";
 		}
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_$myname$rand')\" onmouseover=\"cleandisplay('comment_$myname$rand')\">";
 		if ($view_users){
 			echo "</a>";
 		}
-		echo "<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
+		echo "<span class='over_link' id='comment_$myname$rand'>".$user["comment"]."</span>";
 	}
 
 	return $rand;
@@ -518,7 +518,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
  *
  * @param $myname select name
  * @param $value default value
- * @param $display_comments display comments near the dropdown
+ * @param $display_comment display comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
@@ -526,8 +526,8 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
-	return dropdownUsers($myname,$value,"all",0,$display_comments,$entity_restrict,$helpdesk_ajax,$used);
+function dropdownAllUsers($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
+	return dropdownUsers($myname,$value,"all",0,$display_comment,$entity_restrict,$helpdesk_ajax,$used);
 }
 
 
@@ -540,13 +540,13 @@ function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=
  * @param $value default value
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
  * @param $entity_restrict Restrict to a defined entity
- * @param $display_comments display comments near the dropdown
+ * @param $display_comment display comment near the dropdown
  * @return nothing (print out an HTML select box)
  */
-function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restrict=-1) {
+function dropdownUsersID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
 	// Make a select box with all glpi users
 
-	return dropdownUsers($myname,$value,$right,0,$display_comments,$entity_restrict);
+	return dropdownUsers($myname,$value,$right,0,$display_comment,$entity_restrict);
 }
 
 /**
@@ -557,27 +557,27 @@ function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restr
  *
 * @param $table the dropdown table from witch we want values on the select
  * @param $id id of the element to get
- * @param $withcomments give array with name and comments
+ * @param $withcomment give array with name and comment
  * @return string the value of the dropdown or &nbsp; if not exists
  */
-function getDropdownName($table,$id,$withcomments=0) {
+function getDropdownName($table,$id,$withcomment=0) {
 	global $DB,$CFG_GLPI,$LANG;
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
-		return getTreeValueCompleteName($table,$id,$withcomments);
+		return getTreeValueCompleteName($table,$id,$withcomment);
 
 	} else	{
 
 		$name = "";
-		$comments = "";
+		$comment = "";
 		if ($id){
 			$query = "SELECT * FROM `". $table ."` WHERE ID = '". $id ."'";
 			if ($result = $DB->query($query)){
 				if($DB->numrows($result) != 0) {
 					$data=$DB->fetch_assoc($result);
 					$name = $data["name"];
-					if (isset($data["comments"])){
-						$comments = $data["comments"];
+					if (isset($data["comment"])){
+						$comment = $data["comment"];
 					}
 					switch ($table){
 						case "glpi_computers":
@@ -588,30 +588,30 @@ function getDropdownName($table,$id,$withcomments=0) {
 						case "glpi_contacts" :
 							$name .= " ".$data["firstname"];
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
+								$comment.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["phone2"])){
-								$comments.="<br><strong>".$LANG['help'][35]." 2:</strong> ".$data["phone2"];
+								$comment.="<br><strong>".$LANG['help'][35]." 2:</strong> ".$data["phone2"];
 							}
 							if (!empty($data["mobile"])){
-								$comments.="<br><strong>".$LANG['common'][42].":</strong> ".$data["mobile"];
+								$comment.="<br><strong>".$LANG['common'][42].":</strong> ".$data["mobile"];
 							}
 							if (!empty($data["fax"])){
-								$comments.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
+								$comment.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
 							}
 							if (!empty($data["email"])){
-								$comments.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
+								$comment.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
 							}
 							break;
 						case "glpi_suppliers" :
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
+								$comment.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["fax"])){
-								$comments.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
+								$comment.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
 							}
 							if (!empty($data["email"])){
-								$comments.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
+								$comment.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
 							}
 							break;
 
@@ -620,7 +620,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 							break;
 						case "glpi_softwares":
 							if ($data["operatingsystems_id"]!=0 && $data["is_helpdesk_visible"] != 0)
-								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
+								$comment.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
 							break;
 					}
 	
@@ -629,7 +629,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 		}
 	}
 	if (empty($name)) $name="&nbsp;";
-	if ($withcomments) return array("name"=>$name,"comments"=>$comments);
+	if ($withcomment) return array("name"=>$name,"comment"=>$comment);
 	else return $name;
 }
 
@@ -678,10 +678,10 @@ function getDropdownArrayNames($table,$ids) {
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
  * @param $field field of the glpi_tickets table to lookiup for possible users
- * @param $display_comments display the comments near the dropdown
+ * @param $display_comment display the comment near the dropdown
  * @return nothing (print out an HTML select box)
  */
-function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
+function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
 	global $CFG_GLPI,$LANG,$DB;
 
 	$rand=mt_rand();
@@ -711,22 +711,22 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 			'value'=>$value,
 			'field'=>$field,
 			'myname'=>$myname,
-			'comments'=>$display_comments,
+			'comment'=>$display_comment,
 			'rand'=>$rand
 			);
 
 	ajaxDropdown($use_ajax,"/ajax/dropdownUsersTracking.php",$params,$default,$rand);
 
-	// Display comments 
+	// Display comment 
 
-	if ($display_comments) {
+	if ($display_comment) {
 		if (empty($user["link"])){
 			$user["link"]='#';
 		}
 		echo "<a href='".$user["link"]."'>";
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_$myname$rand')\" onmouseover=\"cleandisplay('comment_$myname$rand')\">";
 		echo "</a>";
-		echo "<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
+		echo "<span class='over_link' id='comment_$myname$rand'>".$user["comment"]."</span>";
 	}
 
 	return $rand;

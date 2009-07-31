@@ -170,7 +170,7 @@ class Enterprise extends CommonDBTM {
 
       echo "<td valign='top' rowspan='4'>";
       echo $LANG['common'][25].":	</td>";
-      echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
 

@@ -315,7 +315,7 @@ function showHistory($itemtype,$items_id){
 			}
 
 			switch ($fieldname){
-				case "comments" : 
+				case "comment" :
 					$change =$LANG['log'][64];
 					break;
 				case "notes" : 

@@ -586,15 +586,15 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		if ($data['users_id']){
 			$userdata=getUserName($data['users_id'],2);
 	
-			$comments_display="";
+			$comment_display="";
 			if ($output_type==HTML_OUTPUT){
-				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackusers_id".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackusers_id".$data['ID']."')\">";
-				$comments_display.="</a>";
-				$comments_display.="<span class='over_link' id='comments_trackusers_id".$data['ID']."'>".$userdata["comments"]."</span>";
+				$comment_display="<a href='".$userdata["link"]."'>";
+				$comment_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_trackusers_id".$data['ID']."')\" onmouseover=\"cleandisplay('comment_trackusers_id".$data['ID']."')\">";
+				$comment_display.="</a>";
+				$comment_display.="<span class='over_link' id='comment_trackusers_id".$data['ID']."'>".$userdata["comment"]."</span>";
 			} 
 	
-			$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+			$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
 		}
 
 		if ($data["groups_id"])
@@ -607,15 +607,15 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		if ($data["users_id_assign"]>0){
 			$userdata=getUserName($data['users_id_assign'],2);
 
-			$comments_display="";
+			$comment_display="";
 			if ($output_type==HTML_OUTPUT){
-				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
-				$comments_display.="</a>";
-				$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
+				$comment_display="<a href='".$userdata["link"]."'>";
+				$comment_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comment_trackassign".$data['ID']."')\">";
+				$comment_display.="</a>";
+				$comment_display.="<span class='over_link' id='comment_trackassign".$data['ID']."'>".$userdata["comment"]."</span>";
 			}
 	
-			$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+			$fifth_col="<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
 		}
 
 		if ($data["groups_id_assign"]>0){
@@ -659,8 +659,8 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$eigth_column="<strong>".$data["name"]."</strong>&nbsp;";
 
 		if ($output_type==HTML_OUTPUT){
-			$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
-			$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
+			$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comment_tracking".$data["ID"]."')\" >";
+			$eigth_column.="<span class='over_link' id='comment_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
 		}
 		
 
@@ -719,13 +719,13 @@ function showJobVeryShort($ID) {
 		if ($viewusers){
 				$userdata=getUserName($job->fields['users_id'],2);
 	
-				$comments_display="";
-				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackusers_id".$ID."')\" onmouseover=\"cleandisplay('comments_trackusers_id".$ID."')\">";
-				$comments_display.="</a>";
-				$comments_display.="<span class='over_link' id='comments_trackusers_id".$ID."'>".$userdata["comments"]."</span>";
+				$comment_display="";
+				$comment_display="<a href='".$userdata["link"]."'>";
+				$comment_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_trackusers_id".$ID."')\" onmouseover=\"cleandisplay('comment_trackusers_id".$ID."')\">";
+				$comment_display.="</a>";
+				$comment_display.="<span class='over_link' id='comment_trackusers_id".$ID."'>".$userdata["comment"]."</span>";
 	
-				echo "<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+				echo "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
 		} else {
 			echo "<strong>".$job->getAuthorName()."</strong>";
 		}
@@ -761,8 +761,8 @@ function showJobVeryShort($ID) {
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\"><strong>";
 
 		echo $job->fields["name"];
-		echo "</strong>&nbsp;<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$job->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$job->fields["ID"]."')\" >";
-		echo "<span class='over_link' id='comments_tracking".$job->fields["ID"]."'>".nl2br($job->fields['contents'])."</span>";
+		echo "</strong>&nbsp;<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$job->fields["ID"]."')\" onmouseover=\"cleandisplay('comment_tracking".$job->fields["ID"]."')\" >";
+		echo "<span class='over_link' id='comment_tracking".$job->fields["ID"]."'>".nl2br($job->fields['contents'])."</span>";
 		echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
 
 		echo "</td>";
@@ -1191,7 +1191,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["glpi_devicesgraphiccards.designation"]			= $LANG['devices'][2];
 		$option["glpi_devicesmotherboards.designation"]			= $LANG['devices'][5];
 		$option["glpi_devicesharddrives.designation"]			= $LANG['computers'][36];
-		$option["comp.comments"]			= $LANG['common'][25];
+		$option["comp.comment"]			= $LANG['common'][25];
 		$option["comp.contact"]				= $LANG['common'][18];
 		$option["comp.contact_num"]		        = $LANG['common'][21];
 		$option["comp.date_mod"]			= $LANG['common'][26];

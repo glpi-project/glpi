@@ -79,7 +79,7 @@ function showVersions($softwares_id) {
 					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 					echo "<td align='right'>".$data['sname']."</td>";
 					echo "<td align='right'>$nb</td>";
-					echo "<td>".$data['comments']."</td></tr>";
+					echo "<td>".$data['comment']."</td></tr>";
 				}
 			}
 			echo "<tr class='tab_bg_1'><td></td><td align='right'>".$LANG['common'][33]."</td><td align='right'>$tot</td><td>";
@@ -1244,10 +1244,10 @@ function getNumberOfLicences($softwares_id) {
  * @param name the software's name
  * @param manufacturer the software's manufacturer
  * @param entity the entity in which the software must be added
- * @param comments
+ * @param comment
  * @return the software's ID
  */
-function addSoftware($name, $manufacturer, $entity, $comments = '') {
+function addSoftware($name, $manufacturer, $entity, $comment = '') {
 	global $LANG, $DB,$CFG_GLPI;
 	$software = new Software;
 
@@ -1267,8 +1267,8 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 		$input["name"] = $name;
 		$input["manufacturers_id"] = $manufacturer_id;
 		$input["entities_id"] = $entity;
-		// No comments
-		//$input["comments"] = $LANG['rulesengine'][88];
+		// No comment
+		//$input["comment"] = $LANG['rulesengine'][88];
 		$input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 		
 		//Process software's category rules
@@ -1288,9 +1288,9 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 /**
  * Put software in trash because it's been removed by GLPI software dictionnary
  * @param $ID  the ID of the software to put in trash
- * @param $comments the comments to add to the already existing software's comments
+ * @param $comment the comment to add to the already existing software's comment
  */
-function putSoftwareInTrash($ID, $comments = '') {
+function putSoftwareInTrash($ID, $comment = '') {
 	global $LANG,$CFG_GLPI;
 	$software = new Software;
 	//Get the software's fields
@@ -1308,8 +1308,8 @@ function putSoftwareInTrash($ID, $comments = '') {
 		$input["softwarescategories_id"] = $config->fields["softwarescategories_id_ondelete"];
    }
 		
-	//Add dictionnary comment to the current comments
-	$input["comments"] = ($software->fields["comments"] != '' ? "\n" : '') . $comments;
+	//Add dictionnary comment to the current comment
+	$input["comment"] = ($software->fields["comment"] != '' ? "\n" : '') . $comment;
 
 	$software->update($input);
 }
@@ -1340,9 +1340,9 @@ function removeSoftwareFromTrash($ID) {
  * @param name the software's name
  * @param manufacturer the software's manufacturer
  * @param entity the entity in which the software must be added
- * @param comments comments
+ * @param comment comment
  */
-function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='') {
+function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comment='') {
 	global $DB;
 	//Look for the software by his name in GLPI for a specific entity
 	$query_search = "SELECT glpi_softwares.ID as ID, glpi_softwares.is_deleted 
@@ -1362,7 +1362,7 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='')
 	}
 
 	if (!$ID) 
-		$ID = addSoftware($name, $manufacturer, $entity, $comments);
+		$ID = addSoftware($name, $manufacturer, $entity, $comment);
 	return $ID;	
 }
 

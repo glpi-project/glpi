@@ -142,7 +142,7 @@ class Budget extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'><td>";
       echo $LANG['common'][25].":	</td>";
-      echo "<td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<td class='center'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td><td colspan='2'></td>";
       echo "</td></tr></table>";
 

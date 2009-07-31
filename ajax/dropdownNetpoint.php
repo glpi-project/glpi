@@ -72,7 +72,7 @@ if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_
 	}
 }
 
-$query = "SELECT glpi_netpoints.comments as comments, glpi_netpoints.ID as ID, 
+$query = "SELECT glpi_netpoints.comment as comment, glpi_netpoints.ID as ID,
 		glpi_netpoints.name as netpname, glpi_locations.completename as loc 
 	FROM glpi_netpoints";
 $query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.locations_id = glpi_locations.ID)";
@@ -118,7 +118,7 @@ if ($DB->numrows($result)) {
 		$loc=$data['loc'];
 		$ID = $data['ID'];
 		$addcomment="";
-		if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+		if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\"";
 		//if ($ID==$_POST['value']) echo " selected ";
 		echo ">".$output." ($loc)</option>";
@@ -126,9 +126,9 @@ if ($DB->numrows($result)) {
 }
 echo "</select>";
 
-if (isset($_POST["comments"])&&$_POST["comments"]){
-	$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_netpoints");
-	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
+if (isset($_POST["comment"])&&$_POST["comment"]){
+	$paramscomment=array('value'=>'__VALUE__','table'=>"glpi_netpoints");
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
 }
 
 ?>

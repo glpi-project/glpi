@@ -164,7 +164,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		if ($ID>0) {
 			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
 			echo '<br>'; 
-			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
+			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $value["comment"] . "</textarea>";
 	
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//  on ajoute un bouton modifier
@@ -222,7 +222,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
 	echo "<tr><td colspan='2' align='center' class='tab_bg_1'>";
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' ></textarea>";
+	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' ></textarea>";
 	echo "</td></tr>"	;
 
 
@@ -278,12 +278,12 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 		if ($ID>0) {		
 			$query = "SELECT * FROM glpi_netpoints WHERE ID = '" . $ID . "'";
 			$result = $DB->query($query);
-			$value = $loc = $comments = "";
+			$value = $loc = $comment = "";
 			$entity = 0;
 			if ($DB->numrows($result) == 1) {
 				$value = $DB->result($result, 0, "name");
 				$loc = $DB->result($result, 0, "locations_id");
-				$comments = $DB->result($result, 0, "comments");
+				$comment = $DB->result($result, 0, "comment");
 			}
 			echo "<br>";
 			echo $LANG['common'][15] . ": ";
@@ -292,7 +292,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 			echo $LANG['networking'][52] . ": ";
 			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
 			echo "<br>"; 
-			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $comments . "</textarea>";
+			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $comment . "</textarea>";
 	
 			//
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
@@ -322,7 +322,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	echo $LANG['networking'][52] . ": ";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\''); 
 	echo "<br>"; 
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 
@@ -348,7 +348,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	dropdownInteger('to', 0, 0, 400);
 
 	echo "<input type='text' maxlength='100' size='5' name='after'><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "'></textarea>";
 	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 
 	echo "<input type='submit' name='several_add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
@@ -399,7 +399,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 		} else {
 			$value = array (
 				"name" => "",
-				"comments" => ""
+				"comment" => ""
 			);
 		}
 		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
@@ -411,7 +411,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 		if ($ID>0) {			
 			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\''); 
 			echo "<br>";
-			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
+			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $value["comment"] . "</textarea>";
 	
 			//
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
@@ -436,7 +436,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\'');
 	echo "<br>"; 
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
@@ -500,12 +500,12 @@ function updateDropdown($input) {
 	
 	if ($input["tablename"] == "glpi_netpoints") {
 		$query = "UPDATE `".$input["tablename"]."` 
-			SET name = '".$input["value"]."', locations_id = '".$input["value2"]."', comments='".$input["comments"]."' 
+			SET name = '".$input["value"]."', locations_id = '".$input["value2"]."', comment='".$input["comment"]."'
 			WHERE ID = '".$input["ID"]."'";
 
 	} else {
 		$query = "UPDATE `".$input["tablename"]."` 
-			SET name = '".$input["value"]."', comments='".$input["comments"]."' 
+			SET name = '".$input["value"]."', comment='".$input["comment"]."'
 			WHERE ID = '".$input["ID"]."'";
 	}
 
@@ -593,13 +593,13 @@ function getDropdownID($input){
  *@param $value string : Value of the new dropdown.
  *@param $entities_id int : entity in case of specific dropdown
  *@param $external_params
- *@param $comments
+ *@param $comment
  *@param $add if true, add it if not found. if false, just check if exists 
  *
  *@return integer : dropdown id.
  *
  **/
-function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_params=array(),$comments="",$add=true) {
+function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_params=array(),$comment="",$add=true) {
 	global $DB, $CFG_GLPI;
 
 	$value=trim($value);
@@ -610,7 +610,7 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
 	$input["tablename"] = $dpdTable;
 	$input["value"] = $value;
 	$input['type'] = "first";
-	$input["comments"] = $comments;
+	$input["comment"] = $comment;
 	$input["entities_id"] = $entities_id;
 
 
@@ -680,13 +680,13 @@ function addDropdown($input) {
 		}
 		$query="";
 		if ($input["tablename"] == "glpi_netpoints") {
-			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,locations_id,comments) 
-				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
+			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,locations_id,comment) 
+				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comment"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
             $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
-				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
-					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comment)
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comment"] . "')";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
@@ -702,12 +702,12 @@ function addDropdown($input) {
 							$level_up = $data["ID"];
 						}
 					} 
-					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
-					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
+					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comment)
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comment"] . "')";
 				}
 			} else {
-				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,comments) 
-					VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,comment) 
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comment"] . "')";
 			}
 		}
 

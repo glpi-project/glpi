@@ -80,7 +80,7 @@ function showReservationForm($itemtype,$items_id){
 
 	}else {
 		echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		echo "items_id=$items_id&amp;itemtype=$itemtype&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG['reservation'][7]."</a></div>";      
+		echo "items_id=$items_id&amp;itemtype=$itemtype&amp;comment=&amp;add=add\" class='icon_consol' >".$LANG['reservation'][7]."</a></div>";
 	}
 }
 
@@ -493,7 +493,7 @@ function printReservationItems($target){
 	
 	foreach ($CFG_GLPI["reservation_types"] as $itemtype){
 		$ci->setType($itemtype);
-		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comments as comments, 
+		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comment,
 				".$LINK_ID_TABLE[$itemtype].".name as name, ".$LINK_ID_TABLE[$itemtype].".entities_id as entities_id,
 				 glpi_locations.completename as location, glpi_reservationsitems.items_id as items_id	
 			FROM glpi_reservationsitems 
@@ -521,7 +521,7 @@ function printReservationItems($target){
 				
 				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>$typename - ".$row["name"]."</a></td>";
 				echo "<td>".$row["location"]."</td>";
-				echo "<td>".nl2br($row["comments"])."</td>";
+				echo "<td>".nl2br($row["comment"])."</td>";
 				if ($showentity){
 					echo "<td>".getDropdownName("glpi_entities",$row["entities_id"])."</td>";
 				}
@@ -567,7 +567,7 @@ function showReservationCommentForm($target,$ID){
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][25].":	</td>";
 		echo "<td>";
-		echo "<textarea name='comments' cols='30' rows='10' >".$r->fields["comments"]."</textarea>";
+		echo "<textarea name='comment' cols='30' rows='10' >".$r->fields["comment"]."</textarea>";
 		echo "</td></tr>";
 
 

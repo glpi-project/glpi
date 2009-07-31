@@ -254,9 +254,9 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['name']=$LANG['common'][5];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_manufacturers';
 
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['field']='comments';
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['name']=$LANG['common'][25];
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['table']='glpi_softwares';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['field']='comment';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['name']=$LANG['common'][25];
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['table']='glpi_softwares';
 
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarescategories_id']['name']=$LANG['common'][36];
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarescategories_id']['type']='dropdown';

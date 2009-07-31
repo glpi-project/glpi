@@ -192,7 +192,7 @@ function showKbCategoriesFirstLevel($target,$knowbaseitemscategories_id=0,$faq=0
 					echo "<td class='tdkb_result'>";
 				
 					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?knowbaseitemscategories_id=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
-					echo "<div class='kb_resume'>".resume_text($row['comments'],60)."</div>";
+					echo "<div class='kb_resume'>".resume_text($row['comment'],60)."</div>";
 			
 				if($i%3==2) { echo "</tr>\n"; }
 				

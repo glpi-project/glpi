@@ -353,7 +353,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td valign='top'>";
       echo $LANG['common'][25] . ":	</td>";
-      echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
+      echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
       echo "</td></tr>";
 
 		if ($canedit) {
@@ -540,7 +540,7 @@ class SoftwareVersion extends CommonDBTM {
 		// table commentaires
 		echo $LANG['common'][25].":	</td>";
 		echo "<td class='tab_bg_1'>";
-		echo "<textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "<textarea cols='70' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
 		echo "</td>";
 		echo "</tr>";
@@ -827,7 +827,7 @@ class SoftwareLicense extends CommonDBTM {
 		// table commentaires
 		echo $LANG['common'][25].":	</td>";
 		echo "<td class='tab_bg_1'>";
-		echo "<textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "<textarea cols='70' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
 		echo "</td>";
 		echo "</tr>";

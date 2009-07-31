@@ -1347,8 +1347,8 @@ class CommonDBTM {
 				$image="/pics/aide.png";
 			}
 			$rand=mt_rand();
-			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
-			echo "<span class='over_link' id='comments_recursive$rand'>$comment</span>";
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."' onmouseout=\"cleanhide('comment_recursive$rand')\" onmouseover=\"cleandisplay('comment_recursive$rand')\">";
+			echo "<span class='over_link' id='comment_recursive$rand'>$comment</span>";
 			
 		} else {
 			echo "&nbsp;";

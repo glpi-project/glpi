@@ -939,7 +939,7 @@ class Transfer extends CommonDBTM{
 							$input['tablename']='glpi_locations';
 							$input['entities_id']=$this->to;
 							$input['value']=$data['name'];
-							$input['comments']=$data['comments'];
+							$input['comment']=$data['comment'];
 							$input['type']="under";
 							$input['value2']=0; // locations_id
 							// if locations_id>0 : transfer parent ID
@@ -992,7 +992,7 @@ class Transfer extends CommonDBTM{
 							$input['tablename']='glpi_netpoints';
 							$input['entities_id']=$this->to;
 							$input['value']=$data['name'];
-							$input['comments']=$data['comments'];
+							$input['comment']=$data['comment'];
 							$input['type']="under";
 							$input['value2']=$locID; 
 							// add item

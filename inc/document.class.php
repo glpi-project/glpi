@@ -251,7 +251,7 @@ class Document extends CommonDBTM {
 
       // table commentaires
       echo $LANG['common'][25].":	</td>";
-      echo "<td class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<td class='tab_bg_1'><textarea cols='70' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
       echo "</td>";
       echo "</tr>";
