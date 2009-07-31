@@ -241,7 +241,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case CONTROL_DEVICE :
 			$type=$LANG['devices'][20];
 			$name=$device->fields["designation"];
-			if ($device->fields["raid"]) $entry[$LANG['device_control'][0]]=getYesNo($device->fields["raid"]);
+			if ($device->fields["is_raid"]) $entry[$LANG['device_control'][0]]=getYesNo($device->fields["is_raid"]);
 			if ($device->fields["interfaces_id"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interfaces_id"]);
 
 			break;
@@ -254,7 +254,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][23];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["power"])) $entry[$LANG['device_power'][0]]=$device->fields["power"];
-			if ($device->fields["atx"]) $entry[$LANG['device_power'][1]]=getYesNo($device->fields["atx"]);
+			if ($device->fields["is_atx"]) $entry[$LANG['device_power'][1]]=getYesNo($device->fields["is_atx"]);
 
 			break;
 		case CASE_DEVICE :
@@ -703,7 +703,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 			echo "</tr>";
 			echo "<tr><td>".$LANG['device_control'][0].":</td>";
 			echo "<td>";
-			dropdownYesNo("raid",$device->fields["raid"]);
+			dropdownYesNo("is_raid",$device->fields["is_raid"]);
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
@@ -745,7 +745,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG['device_power'][1].":</td>";
 			echo "<td>";
-			dropdownYesNo("atx",$device->fields["atx"]);
+			dropdownYesNo("is_atx",$device->fields["is_atx"]);
 			echo "</td>";
 			echo "</tr>";
 

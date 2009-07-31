@@ -59,7 +59,7 @@ class kbitem extends CommonDBTM {
 	 **/
 	function post_getEmpty () {
 		if (haveRight("faq","w") && !haveRight("knowbase","w")) {
-			$this->fields["faq"]=1;
+			$this->fields["is_faq"]=1;
 		}
 	}
 	
@@ -84,8 +84,8 @@ class kbitem extends CommonDBTM {
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$LANG['common'][30];
 
-		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]=1;
-		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]=0;
+		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["is_faq"]=1;
+		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["is_faq"]=0;
 
 		return $input;
 	}
@@ -223,9 +223,9 @@ class kbitem extends CommonDBTM {
 			
 			echo "<br /><br />" . $LANG['knowbase'][5].": ";
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){			
-				dropdownYesNo('faq',$this->fields["faq"]);
+				dropdownYesNo('is_faq',$this->fields["is_faq"]);
 			} else {
-				echo getYesNo($this->fields["faq"]);				
+				echo getYesNo($this->fields["is_faq"]);				
 			}
 			echo "<br /><br />\n";
 		

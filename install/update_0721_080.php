@@ -729,6 +729,14 @@ function update0721to080() {
                      ),
    'glpi_contracts' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+                           array('from' => 'monday', 'to' => 'use_monday', 'default' =>0 ),//
+                           array('from' => 'saturday', 'to' => 'use_saturday', 'default' =>0 ),//
+                     ),
+   'glpi_devicescontrols' => array(array('from' => 'raid','to' => 'is_raid', 'default' =>0, 'noindex'=>true ),//
+                     ),
+   'glpi_devicesdrives' => array(array('from' => 'is_writer','to' => 'is_writer', 'default' =>1, 'noindex'=>true ),//
+                     ),
+   'glpi_devicespowersupplies' => array(array('from' => 'atx','to' => 'is_atx', 'default' =>1, 'noindex'=>true ),//
                      ),
    'glpi_documents' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
@@ -738,6 +746,7 @@ function update0721to080() {
    'glpi_groups' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                      ),
    'glpi_knowbaseitems' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>1, 'noindex'=>true ),//
+                           array('from' => 'faq', 'to' => 'is_faq', 'default' =>0 ),//
                      ),
    'glpi_links' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>1, 'noindex'=>true ),//
                      ),
@@ -757,6 +766,38 @@ function update0721to080() {
                            array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
                      ),
    'glpi_ocslinks' => array(array('from' => 'auto_update','to' => 'use_auto_update', 'default' =>1),//
+                     ),
+   'glpi_ocsservers' => array(array('from' => 'import_periph','to' => 'import_periph', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_monitor','to' => 'import_monitor', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_software','to' => 'import_software', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_printer','to' => 'import_printer', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_name','to' => 'import_general_name', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_os','to' => 'import_general_os', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_serial','to' => 'import_general_serial', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_model','to' => 'import_general_model', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_enterprise','to' => 'import_general_manufacturer', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_type','to' => 'import_general_type', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_domain','to' => 'import_general_domain', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_contact','to' => 'import_general_contact', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_general_comments','to' => 'import_general_comment', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_processor','to' => 'import_device_processor', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_memory','to' => 'import_device_memory', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_hdd','to' => 'import_device_hdd', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_iface','to' => 'import_device_iface', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_gfxcard','to' => 'import_device_gfxcard', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_sound','to' => 'import_device_sound', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_drives','to' => 'import_device_drive', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_ports','to' => 'import_device_port', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_registry','to' => 'import_registry', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_os_serial','to' => 'import_os_serial', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_ip','to' => 'import_ip', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_disk','to' => 'import_disk', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_monitor_comments','to' => 'import_monitor_comment', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'glpi_link_enabled','to' => 'is_glpi_link_enabled', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'link_ip','to' => 'use_ip_to_link', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'link_name','to' => 'use_name_to_link', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'link_mac_address','to' => 'use_mac_to_link', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'link_serial','to' => 'use_serial_to_link', 'default' =>0,'noindex'=>true),//
                      ),
    'glpi_peripherals' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
                            array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//

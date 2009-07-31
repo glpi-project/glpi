@@ -147,7 +147,7 @@ class Ocsng extends CommonDBTM {
 		dropdownYesNo("import_general_model", $this->fields["import_general_model"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][5] . " </td><td>";
-		dropdownYesNo("import_general_enterprise", $this->fields["import_general_enterprise"]);
+		dropdownYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][17] . " </td><td>";
 		dropdownYesNo("import_general_type", $this->fields["import_general_type"]);
@@ -159,7 +159,7 @@ class Ocsng extends CommonDBTM {
 		dropdownYesNo("import_general_contact", $this->fields["import_general_contact"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . " </td><td>";
-		dropdownYesNo("import_general_comments", $this->fields["import_general_comments"]);
+		dropdownYesNo("import_general_comment", $this->fields["import_general_comment"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td colspan='2'>";
@@ -197,15 +197,15 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][19] . " </td><td>";
-		dropdownYesNo("import_device_drives", $this->fields["import_device_drives"]);
+		dropdownYesNo("import_device_drive", $this->fields["import_device_drive"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][36] . " </td><td>";
-		dropdownYesNo("import_device_modems", $this->fields["import_device_modems"]);
+		dropdownYesNo("import_device_modem", $this->fields["import_device_modem"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][37] . " </td><td>";
-		dropdownYesNo("import_device_ports", $this->fields["import_device_ports"]);
+		dropdownYesNo("import_device_port", $this->fields["import_device_port"]);
 		echo "</td></tr>";		
 
 		echo "</table></td><td  class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
@@ -249,14 +249,14 @@ class Ocsng extends CommonDBTM {
 		echo "</tr>";
 
 		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][3]. "</th><th>"; 
-		/* TODO import_software_comments : See Ticket 1234
+		/* TODO import_software_comment : See Ticket 1234
 		echo $LANG['ocsconfig'][27] ." ".$LANG['Menu'][4];
 		*/ 
 		echo "&nbsp;</th><th>&nbsp;</th></tr>";
 		
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG['common'][25] . " </td><td>";
-		dropdownYesNo("import_monitor_comments", $this->fields["import_monitor_comments"]);
+		dropdownYesNo("import_monitor_comment", $this->fields["import_monitor_comment"]);
 		echo "</td></tr>";
 		echo "</table></td>";
 		
@@ -264,7 +264,7 @@ class Ocsng extends CommonDBTM {
 		/*
 		echo "<table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG['common'][25] . " </td><td>";
-		dropdownYesNo("import_software_comments", $this->fields["import_software_comments"]);
+		dropdownYesNo("import_software_comment", $this->fields["import_software_comment"]);
 		echo "</td></tr></table>";
 		*/
 		echo "&nbsp;</td>";
@@ -365,22 +365,22 @@ class Ocsng extends CommonDBTM {
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 		echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][52] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][53] . " </td><td>";
-		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
+		dropdownYesNo("is_glpi_link_enabled", $this->fields["is_glpi_link_enabled"]);
 		echo "</td><td colspan='2'></td></tr>";
 		
 		echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][54] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['networking'][14] . " </td><td>";
-		dropdownYesNo("link_ip", $this->fields["link_ip"]);
+		dropdownYesNo("use_ip_to_link", $this->fields["use_ip_to_link"]);
 		echo "</td>";
 		echo "<td>" . $LANG['device_iface'][2] . " </td><td>";
-		dropdownYesNo("link_mac_address", $this->fields["link_mac_address"]);
+		dropdownYesNo("use_mac_to_link", $this->fields["use_mac_to_link"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][25] . " </td><td>";
 		$link_array=array("0"=>$LANG['choice'][0],"1"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][57],"2"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
-		dropdownArrayValues("link_name", $link_array,$this->fields["link_name"]);
+		dropdownArrayValues("use_name_to_link", $link_array,$this->fields["use_name_to_link"]);
 		echo "</td>";
 		echo "<td>" . $LANG['common'][19] . " </td><td>";
-		dropdownYesNo("link_serial", $this->fields["link_serial"]);
+		dropdownYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td><td>";
 		dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
@@ -505,9 +505,9 @@ class Ocsng extends CommonDBTM {
 		if ($this->fields["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
 
 		if ($this->fields["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-		if ($this->fields["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
-		if ($this->fields["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
-		if ($this->fields["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
+		if ($this->fields["import_device_port"]) $input["checksum"]|= pow(2,PORTS_FL);
+		if ($this->fields["import_device_modem"]) $input["checksum"]|= pow(2,MODEMS_FL);
+		if ($this->fields["import_device_drive"]) $input["checksum"]|= pow(2,STORAGES_FL);
 		if ($this->fields["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
 		if ($this->fields["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
 		if ($this->fields["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
@@ -515,11 +515,11 @@ class Ocsng extends CommonDBTM {
 		if ($this->fields["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
 		if (	$this->fields["import_device_processor"]
 				||$this->fields["import_general_contact"]
-				||$this->fields["import_general_comments"]
+				||$this->fields["import_general_comment"]
 				||$this->fields["import_general_domain"]
 				||$this->fields["import_general_os"]
 				||$this->fields["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
-		if (	$this->fields["import_general_enterprise"]
+		if (	$this->fields["import_general_manufacturer"]
 				||$this->fields["import_general_type"]
 				||$this->fields["import_general_model"]
 				||$this->fields["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
