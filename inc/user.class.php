@@ -1036,7 +1036,7 @@ class User extends CommonDBTM {
             dropdownValue("glpi_userscategories","userscategories_id",$this->fields["userscategories_id"],1,-1);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
+         echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comment' >" . $this->fields["comment"] . "</textarea></td>";
          echo "</tr>";
 
          //Authentications informations : auth method used and server used
@@ -1295,7 +1295,7 @@ class User extends CommonDBTM {
 					}
 					
 					unset ($ret["is_active"]);
-					unset ($ret["comments"]);
+					unset ($ret["comment"]);
 				}
 				
 				return array($input,$ret); 

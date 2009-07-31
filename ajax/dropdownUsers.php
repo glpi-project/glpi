@@ -117,12 +117,14 @@ echo "</select>";
 
 if (!$is_helpdesk_multientity)
 {
-	if (isset($_POST["comments"])&&$_POST["comments"]){
-		$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_users");
+	if (isset($_POST["comment"])&&$_POST["comment"]){
+		$paramscomment=array('value'=>'__VALUE__','table'=>"glpi_users");
 		if (isset($_POST['update_link'])){
-			$paramscomments['withlink']="comments_link_".$_POST["myname"].$_POST["rand"];
+			$paramscomment['withlink']="comment_link_".$_POST["myname"].$_POST["rand"];
 		}
-		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
+		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
+            "comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",
+            $paramscomment,false);
 	}
 }
 
@@ -130,15 +132,17 @@ if (!$is_helpdesk_multientity)
 if ($is_helpdesk_multientity){
 	if (!isMultiEntitiesMode())
 	{
-		$paramscomments=array('userID'=>'__VALUE__',
+		$paramscomment=array('userID'=>'__VALUE__',
 				'entity_restrict'=>$_POST["entity_restrict"],
 				'itemtype'=>0,
 				'users_id_field'=>"dropdown_users_id".$_POST["rand"]
 		);
 
-		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
-		$paramscomments=array('value'=>'__VALUE__');
-		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
+		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"tracking_my_devices",
+               $CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomment,false);
+		$paramscomment=array('value'=>'__VALUE__');
+		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"uemail_result",
+               $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomment,false);
 	}
 }
 ?>

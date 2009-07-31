@@ -1859,8 +1859,8 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_softwareslicenses.serial" :
 		case "glpi_softwareslicenses.otherserial" :
 		case "glpi_softwareslicenses.expire" :
-		case "glpi_softwareslicenses.comments" :
-		case "glpi_softwaresversions.comments" :
+		case "glpi_softwareslicenses.comment" :
+		case "glpi_softwaresversions.comment" :
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwares.name, ' - ',".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
@@ -2562,7 +2562,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 		case "glpi_auth_tables.name" :
 			return getAuthMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,$data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 			break;
-		case "glpi_reservationsitems.comments" :
+		case "glpi_reservationsitems.comment" :
 			if (empty($data[$NAME.$num])){
 				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49]."</a>";
 			}else{
@@ -2994,10 +2994,10 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 				$AS = "AS glpi_entities";
 			}
 			return " LEFT JOIN (
-                     SELECT ID, name, entities_id, completename, comments, level FROM glpi_entities
+                     SELECT ID, name, entities_id, completename, comment, level FROM glpi_entities
                      UNION
                      SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS entities_id,
-                        '".addslashes($LANG['entity'][2])."' AS completename, '' AS comments, -1 AS level)
+                        '".addslashes($LANG['entity'][2])."' AS completename, '' AS comment, -1 AS level)
 				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
 			break;
 		case "glpi_groups_users":

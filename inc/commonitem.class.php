@@ -366,10 +366,10 @@ class CommonItem{
 	}
 	/**
 	 * Get The Name of the Object
-	 * @param $with_comments add comments to name
+	 * @param $with_comment add comments to name
 	 * @return String: name of the object in the current language
 	 */
-	function getName($with_comments=0){
+	function getName($with_comment=0){
 		global $LANG;
 
 
@@ -378,7 +378,7 @@ class CommonItem{
 		}
 
 		$toadd="";
-		if ($with_comments) $toadd="&nbsp;".$this->getComments();
+		if ($with_comment) $toadd="&nbsp;".$this->getComments();
 
 		if ($this->itemtype==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
@@ -395,13 +395,13 @@ class CommonItem{
 	}
 	/**
 	 * Get The Name of the Object with the ID if the config is set
-	 * @param $with_comments add comments to name
+	 * @param $with_comment add comments to name
 	 * @return String: name of the object in the current language
 	 */
-	function getNameID($with_comments=0){
+	function getNameID($with_comment=0){
 		global $CFG_GLPI;
 		$toadd="";
-		if ($with_comments) $toadd="&nbsp;".$this->getComments();
+		if ($with_comment) $toadd="&nbsp;".$this->getComments();
 		if ($_SESSION['glpiis_ids_visible']){
 			if ($this->itemtype==0)
 				return $this->getName().$toadd;
@@ -410,10 +410,10 @@ class CommonItem{
 	}
 	/**
 	 * Get The link to the Object
-	 * @param $with_comments Display comments
+	 * @param $with_comment Display comments
 	 * @return String: link to the object type in the current language
 	 */
-	function getLink($with_comments=0){
+	function getLink($with_comment=0){
 
 		global $CFG_GLPI,$INFOFORM_PAGES;
 		$ID="";
@@ -421,10 +421,10 @@ class CommonItem{
 			case GENERAL_TYPE :
 			case CARTRIDGE_ITEM_TYPE :
 			case CONSUMABLE_ITEM_TYPE :
-				return $this->getName($with_comments);
+				return $this->getName($with_comment);
 				break;
 			default :
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?ID=".$this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comments)."</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?ID=".$this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comment)."</a>";
 				break;
 		}
 
@@ -480,11 +480,11 @@ class CommonItem{
 
 		if (!empty($comment)){
 			$rand=mt_rand();
-			$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
-			$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
+			$comment_display=" onmouseout=\"cleanhide('comment_commonitem$rand')\" onmouseover=\"cleandisplay('comment_commonitem$rand')\" ";
+			$comment_display2="<span class='over_link' id='comment_commonitem$rand'>".nl2br($comment)."</span>";
 	
-			$comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
-			$comment.=$comments_display2;
+			$comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comment_display> ";
+			$comment.=$comment_display2;
 		}
 
 		return $comment;

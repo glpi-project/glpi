@@ -167,10 +167,10 @@ class Entity extends CommonDBTM{
 		echo $this->fields["name"];
 		if ($ID!=0) echo " (".$this->fields["completename"].")";
 		echo "</td>";
-		if (isset($this->fields["comments"])){
+		if (isset($this->fields["comment"])){
 			echo "<td valign='top'>";
 			echo $LANG['common'][25].":	</td>";
-			echo "<td align='center' valign='top'>".nl2br($this->fields["comments"]);
+			echo "<td align='center' valign='top'>".nl2br($this->fields["comment"]);
 			echo "</td>";
 		} else {
 			echo "<td colspan='2'>&nbsp;</td>";

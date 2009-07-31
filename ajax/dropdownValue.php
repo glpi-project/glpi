@@ -216,7 +216,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 				$style=$class;
 				$addcomment="";
-				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+				if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
 
 				echo "<option value=\"$ID\" $style title=\"".cleanInputText($data['completename'].$addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
 			}
@@ -273,7 +273,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		switch ($_POST['table']){
 			case "glpi_contacts":
 				$query = "SELECT `".$_POST['table']."`.entities_id, CONCAT(name,' ',firstname) as $field, 
-						`".$_POST['table']."`.comments, `".$_POST['table']."`.ID 
+						`".$_POST['table']."`.comment, `".$_POST['table']."`.ID
 					FROM `".$_POST['table']."` 
 					$where";
 			break;
@@ -326,7 +326,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				}
 				$ID = $data['ID'];
 				$addcomment="";
-				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+				if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
 
 				if ($_SESSION["glpiis_ids_visible"]||empty($output)){
 					 $output.=" ($ID)";
@@ -347,9 +347,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		echo "</select>";
 	}
 
-if (isset($_POST["comments"])&&$_POST["comments"]){
-	$paramscomments=array('value'=>'__VALUE__','table'=>$_POST["table"]);
-	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
+if (isset($_POST["comment"])&&$_POST["comment"]){
+	$paramscomment=array('value'=>'__VALUE__','table'=>$_POST["table"]);
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
 }
 
 if (isset($_POST["update_item"])&&

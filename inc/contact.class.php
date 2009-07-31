@@ -212,7 +212,7 @@ class Contact extends CommonDBTM{
 
       echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
       echo $LANG['common'][25].":	</td></tr>";
-      echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<tr><td class='center'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
       if ($ID>0) {
          echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG['common'][46]."</a>";

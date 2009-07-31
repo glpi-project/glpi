@@ -54,11 +54,11 @@ if (isset($_POST["table"])&&isset($_POST["value"])){
 		case "glpi_users":
 			if ($_POST['value']==0){
 				$tmpname['link']=$CFG_GLPI['root_doc']."/front/user.php";
-				$tmpname['comments']="";
+				$tmpname['comment']="";
 			} else {
 				$tmpname=getUserName($_POST["value"],2);
 			}
-			echo $tmpname["comments"];
+			echo $tmpname["comment"];
 
 			if (isset($_POST['withlink'])){
 				echo "<script type='text/javascript' >\n";
@@ -69,7 +69,7 @@ if (isset($_POST["table"])&&isset($_POST["value"])){
 		default :
 			if ($_POST["value"]>0){
 				$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
-				echo $tmpname["comments"];
+				echo $tmpname["comment"];
 			} 
 			break;
 	}

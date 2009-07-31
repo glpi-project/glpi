@@ -200,7 +200,7 @@ function update0721to080() {
                      $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
                   }
                   echo "<p><b>$new_table table already exists. ";
-                  echo "A backup have been done to backup_NAME.</b></p>";
+                  echo "A backup have been done to backup_$new_table.</b></p>";
                   $backup_tables=true;
                   $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
                   $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
@@ -897,7 +897,49 @@ function update0721to080() {
          }
       }
    }
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : update text fields'); // Updating schema
 
+   $textfields=array(
+   'comments' => array('to' => 'comment',
+                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                                 'glpi_consumablesitems','glpi_contacts','glpi_contracts',
+                                 'glpi_documents','glpi_autoupdatesystems','glpi_budgets',
+                                 'glpi_cartridgesitemstypes','glpi_devicescasestypes','glpi_consumablesitemstypes',
+                                 'glpi_contactstypes','glpi_contractstypes','glpi_domains',
+                                 'glpi_supplierstypes','glpi_filesystems','glpi_networkequipmentsfirmwares',
+                                 'glpi_networkinterfaces','glpi_interfaces',
+                                 'glpi_knowbaseitemscategories','glpi_softwareslicensestypes','glpi_locations',
+                                 'glpi_manufacturers','glpi_computersmodels','glpi_monitorsmodels',
+                                 'glpi_networkequipmentsmodels','glpi_peripheralsmodels','glpi_phonesmodels',
+                                 'glpi_printersmodels','glpi_netpoints','glpi_networks',
+                                 'glpi_operatingsystems','glpi_operatingsystemsservicepacks','glpi_operatingsystemsversions',
+                                 'glpi_phonespowersupplies','glpi_devicesmemoriestypes','glpi_documentscategories',
+                                 'glpi_softwarescategories','glpi_states','glpi_ticketscategories',
+                                 'glpi_userstitles','glpi_userscategories','glpi_vlans',
+                                 'glpi_suppliers','glpi_entities','glpi_groups',
+                                 'glpi_infocoms','glpi_monitors','glpi_phones',
+                                 'glpi_printers','glpi_peripherals','glpi_networkequipments',
+                                 'glpi_reservationsitems','glpi_rules','glpi_softwares',
+                                 'glpi_softwareslicenses','glpi_softwaresversions','glpi_computerstypes',
+                                 'glpi_monitorstypes','glpi_networkequipmentstypes','glpi_peripheralstypes',
+                                 'glpi_phonestypes','glpi_printerstypes','glpi_users',),
+                     ));
+   foreach ($textfields as $oldname => $tab) {
+      $newname=$tab['to'];
+      foreach ($tab['tables'] as $table){
+         // Rename field
+         if (FieldExists($table, $oldname)) {
+
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TEXT NULL DEFAULT NULL  ";
+            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+         } else {
+            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+         }
+      }
+   }
+
+
+ 
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 
@@ -981,7 +1023,7 @@ function update0721to080() {
    // For RULE_OCS_AFFECT_COMPUTER
    $changes[RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
    // For RULE_SOFTWARE_CATEGORY
-   $changes[RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarescategories_id');
+   $changes[RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarescategories_id','comment'=>'comment');
    // For RULE_TRACKING_AUTO_ACTION
    $changes[RULE_TRACKING_AUTO_ACTION]=array('category'=>'ticketscategories_id',
                            'author'=>'users_id','author_location'=>'users_locations',

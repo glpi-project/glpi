@@ -168,7 +168,7 @@ function generateContactVcard($ID){
 
 	$vcard->setEmail($contact->fields["email"]);
 
-	$vcard->setNote($contact->fields["comments"]);
+	$vcard->setNote($contact->fields["comment"]);
 
 	$vcard->setURL($contact->GetWebsite(), "WORK");
 

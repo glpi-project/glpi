@@ -451,7 +451,7 @@ function generateUserVcard($ID){
 
 	$vcard->setEmail($user->fields["email"]);
 
-	$vcard->setNote($user->fields["comments"]);
+	$vcard->setNote($user->fields["comment"]);
 
 	// send the  VCard 
 
@@ -611,7 +611,7 @@ function getLDAPSyncFields($authtype_array){
  			'ldap_field_phone'=>'phone', 
  			'ldap_field_phone2'=>'phone2', 
  			'ldap_field_mobile'=>'mobile', 
- 			'ldap_field_comments'=>'comments', 
+ 			'ldap_field_comments'=>'comment', 
  			'ldap_field_title'=>'userstitles_id',
  			'ldap_field_type'=>'userscategories_id',
  			'ldap_field_language'=>'language'		

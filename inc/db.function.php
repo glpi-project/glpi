@@ -154,15 +154,15 @@ function getAllDatasFromTable($table,$condition=""){
  *
  * @param $table string: Dropdown Tree table
  * @param $ID integer: ID of the element
- * @param $withcomments boolean: 1 if you want to give the array with the comments
+ * @param $withcomment boolean: 1 if you want to give the array with the comments
  * @return string : name of the element
  * @see getTreeValueCompleteName
  */
-function getTreeLeafValueName($table,$ID,$withcomments=false){
+function getTreeLeafValueName($table,$ID,$withcomment=false){
 	global $DB,$LANG;
 
 	$name="";
-	$comments="";
+	$comment="";
 	if ($ID==0 && $table=="glpi_entities") {
 		$name = $LANG['entity'][2];
 		
@@ -176,13 +176,13 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)==1){
 				$name=$DB->result($result,0,"name");
-				$comments=$DB->result($result,0,"comments");
+				$comment=$DB->result($result,0,"comment");
 			}
 	
 		}
 	}
-	if ($withcomments){
-		return array("name"=>$name,"comments"=>$comments);
+	if ($withcomment){
+		return array("name"=>$name,"comment"=>$comment);
 	} else {
 		return $name;
 	}
@@ -193,14 +193,14 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
  *
  * @param $table string: Dropdown Tree table
  * @param $ID integer: ID of the element
- * @param $withcomments boolean: 1 if you want to give the array with the comments
+ * @param $withcomment boolean: 1 if you want to give the array with the comments
  * @return string : completename of the element
  * @see getTreeLeafValueName
  */
-function getTreeValueCompleteName($table,$ID,$withcomments=false){
+function getTreeValueCompleteName($table,$ID,$withcomment=false){
 	global $DB,$LANG;
 	$name="";
-	$comments="";
+	$comment="";
 
 	if ($ID==0 && $table=="glpi_entities") {
 		$name = $LANG['entity'][2];
@@ -215,8 +215,8 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)==1){
 				$name=$DB->result($result,0,"completename");
-				$comments=$name.":<br>";
-				$comments.=$DB->result($result,0,"comments");
+				$comment=$name.":<br>";
+				$comment.=$DB->result($result,0,"comment");
 			}
 	
 		}
@@ -224,8 +224,8 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 	if (empty($name)) {
 		$name="&nbsp;";
 	}
-	if ($withcomments) {
-		return array("name"=>$name,"comments"=>$comments);
+	if ($withcomment) {
+		return array("name"=>$name,"comment"=>$comment);
 	} else {
 		return $name;
 	}
@@ -840,7 +840,7 @@ function getUserName($ID,$link=0){
 
 	$user="";
 	if ($link==2){
-		$user=array("name"=>"","link"=>"","comments"=>"");
+		$user=array("name"=>"","link"=>"","comment"=>"");
 	}
 	if ($ID){
 		$query="SELECT * 
@@ -848,7 +848,7 @@ function getUserName($ID,$link=0){
 			WHERE ID='$ID'";
 		$result=$DB->query($query);
 		
-		if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
+		if ($link==2) $user=array("name"=>"","comment"=>"","link"=>"");
 		if ($DB->numrows($result)==1){
 			$data=$DB->fetch_assoc($result);
 			
@@ -856,21 +856,21 @@ function getUserName($ID,$link=0){
 			if ($link==2){
 				$user["name"]=$username;
 				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID;
-				$user["comments"]=$LANG['common'][16].": ".$username."<br>";
-				$user["comments"].=$LANG['setup'][18].": ".$data["name"]."<br>";
+				$user["comment"]=$LANG['common'][16].": ".$username."<br>";
+				$user["comment"].=$LANG['setup'][18].": ".$data["name"]."<br>";
 				if (!empty($data["email"]))
-					$user["comments"].=$LANG['setup'][14].": ".$data["email"]."<br>";
+					$user["comment"].=$LANG['setup'][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
-					$user["comments"].=$LANG['help'][35].": ".$data["phone"]."<br>";
+					$user["comment"].=$LANG['help'][35].": ".$data["phone"]."<br>";
 				if (!empty($data["mobile"]))
-					$user["comments"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
+					$user["comment"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
 				if ($data["locations_id"]>0){
-					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["locations_id"])."<br>";
+					$user["comment"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["locations_id"])."<br>";
 				}
 				if ($data["userstitles_id"]>0)
-					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
+					$user["comment"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
 				if ($data["userscategories_id"]>0)
-					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$data["userscategories_id"])."<br>";
+					$user["comment"].=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$data["userscategories_id"])."<br>";
 			} else {
 				$user=$username;
 			}

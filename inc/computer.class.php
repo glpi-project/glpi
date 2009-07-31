@@ -753,7 +753,7 @@ class Computer extends CommonDBTM {
       } else	{
          echo "<td colspan=2></td>";
       }
-      echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+      echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comment' >".$this->fields["comment"]."</textarea></td>";
       echo "</tr>";	
 
 		if (haveRight("computer","w")) {
