@@ -1497,7 +1497,7 @@ $LANG['setup'][165]="PHPにIMAPがインストールされていません";
 $LANG['setup'][166]="外部認証元でIMAP/POPで接続出来ません"; 
 $LANG['setup'][167]="GLPI/LDAPリンク先"; 
 $LANG['setup'][168]="接続オプション"; 
-$LANG['setup'][169]="E-mail （任意）"; 
+$LANG['setup'][169]="Mail folder (optional, often INBOX)"; 
 $LANG['setup'][170]="接続パラメータ"; 
 $LANG['setup'][171]="ポート（任意）"; 
 $LANG['setup'][172]="LDAPポート（default=389）"; 
@@ -1629,6 +1629,7 @@ $LANG['setup'][609]="追加できません。OCSサーバは既に存在しま�
 $LANG['setup'][610]="チケット必須タイトル"; 
 $LANG['setup'][611]="チケット必須項目"; 
 $LANG['setup'][612]="必須のチケットカテゴリ"; 
+$LANG['setup'][614]="Unable to update login. A user already exists."; 
 $LANG['setup'][620]="リンク"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 

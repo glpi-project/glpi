@@ -1497,7 +1497,7 @@ $LANG['setup'][165]="Twój interpreter PHP został skompilowany bez funkcji IMAP
 $LANG['setup'][166]="Niemożliwe użycie IMAP/POP jako zewnętrznego źródła połączenia"; 
 $LANG['setup'][167]="Linki GLPI/LDAP"; 
 $LANG['setup'][168]="Opcje połączenia"; 
-$LANG['setup'][169]="E-mail (opcje)"; 
+$LANG['setup'][169]="Folder Email (opcjonalnie,zazwyczaj INBOX)"; 
 $LANG['setup'][170]="Wynikowe parametry połączeniowe"; 
 $LANG['setup'][171]="Port (opcjonalnie)"; 
 $LANG['setup'][172]="Port LDAP (domyślnie=389)"; 
@@ -1629,6 +1629,7 @@ $LANG['setup'][609]="Dodanie nie możliwe. Serwer OCS już istnieje.";
 $LANG['setup'][610]="Obowiązkowy tytuł biletu"; 
 $LANG['setup'][611]="Obowiązkowa zawartość biletu"; 
 $LANG['setup'][612]="Obowiązkowa kategoria biletów"; 
+$LANG['setup'][614]="Aktualizacja niemożliwa. Użytkownik już istnieje."; 
 $LANG['setup'][620]="Link"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 
