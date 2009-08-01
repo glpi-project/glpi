@@ -349,9 +349,9 @@ function showJobListForItem($itemtype,$items_id) {
       ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
    
    $result = $DB->query($query);
-   
    $number = $DB->numrows($result);
    
+   // Ticket for the item
    echo "<div class='center'><table class='tab_cadre_fixe'>";
    if ($number > 0) {
       initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
@@ -363,6 +363,7 @@ function showJobListForItem($itemtype,$items_id) {
       echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
    }
    
+   // Link to open a new ticcket
    if ($items_id) {
       echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
@@ -371,6 +372,7 @@ function showJobListForItem($itemtype,$items_id) {
       echo "</td></tr>";
    }
    
+   // Ticket list
    if ($number > 0) {
       commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$items_id","","",true);
       
@@ -381,6 +383,7 @@ function showJobListForItem($itemtype,$items_id) {
    } 
    echo "</table></div><br>";
    
+   // Tickets for linked items
    if ($subquery = $ci->obj->getSelectLinkedItem()) {
       
       $query = "SELECT ".getCommonSelectForTrackingSearch()." 
@@ -391,7 +394,6 @@ function showJobListForItem($itemtype,$items_id) {
       
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      
       
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$LANG['joblist'][28]."</th></tr>";
