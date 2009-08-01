@@ -56,7 +56,7 @@ function initPlugins(){
 
 	$plugin->checkStates();
 	$plugins=$plugin->find('state='.PLUGIN_ACTIVATED);
-	
+
 	$_SESSION["glpi_plugins"]=array();
 
 	if (count($plugins)){
@@ -66,12 +66,12 @@ function initPlugins(){
 	}
 }
 /**
- * Init a plugin including setup.php file 
- * launching plugin_init_NAME function  after checking compatibility 
- * 
+ * Init a plugin including setup.php file
+ * launching plugin_init_NAME function  after checking compatibility
+ *
  * @param $name Name of hook to use
  * @param $withhook boolean to load hook functions
- * 
+ *
  * @return nothing
  */
 function usePlugin ($name, $withhook=false) {
@@ -83,7 +83,7 @@ function usePlugin ($name, $withhook=false) {
 			loadPluginLang($name);
 
 			$function = "plugin_init_$name";
-	
+
 			if (function_exists($function)) {
 				$function();
 				$LOADED_PLUGINS[$name]=$name;
@@ -108,7 +108,7 @@ function doHook ($name,$param=NULL) {
 	} else {
 		$data=$param;
 	}
-	
+
 	if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
 		foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
@@ -157,11 +157,11 @@ function doHookFunction($name,$parm=NULL) {
  * @param $plugname Name of the plugin
  * @param $suffixe_of_function to be called
  * @param other params passed to the function
- * 
+ *
  * @return mixed $data
  */
 function doOneHook() {
-	
+
 	$args=func_get_args();
 	$plugname = array_shift($args);
 	$function = "plugin_" . $plugname . "_" . array_shift($args);
@@ -171,7 +171,7 @@ function doOneHook() {
 	}
 	if (function_exists($function)) {
 		return call_user_func_array($function,$args);
-	}	
+	}
 }
 /**
  * Display plugin actions for a device type
@@ -198,7 +198,7 @@ function displayPluginAction($itemtype,$ID,$onglet,$withtemplate=0){
 							if (function_exists($action)){
 								echo "<br>";
 								$action($itemtype,$ID,$withtemplate);
-							}	
+							}
 
 						}
 				}
@@ -226,7 +226,7 @@ function displayPluginAction($itemtype,$ID,$onglet,$withtemplate=0){
 						$function=$actions[$ID_onglet];
 						$function($itemtype,$ID,$withtemplate);
 						return true;
-					}	
+					}
 				}
 			}
 
@@ -278,16 +278,16 @@ function displayPluginHeadings($target,$itemtype,$withtemplate,$actif){
 
 		}
 
-	} 
+	}
 
 }
 
 /**
  * Display plugin headgsin for a device type
- * @param $target page to link 
+ * @param $target page to link
  * @param $itemtype ID of the device type or "central" or "prefs"
  * @param $ID ID of the device
- * @param $withtemplate is the item display like a template ? 
+ * @param $withtemplate is the item display like a template ?
  * @return Array of tabs (sorted)
  */
 function getPluginTabs($target,$itemtype,$ID,$withtemplate){
@@ -362,15 +362,15 @@ function getPluginTabs($target,$itemtype,$ID,$withtemplate){
  *
  * @return Array containing plugin cron jobs
  */
-function getPluginsCronJobs(){ 
-	global $PLUGIN_HOOKS; 
-	$tasks=array(); 
-	if (isset($PLUGIN_HOOKS["cron"]) && is_array($PLUGIN_HOOKS["cron"])) { 
-		foreach ($PLUGIN_HOOKS["cron"] as $plug => $time) { 
-			$tasks["plugin_".$plug]=$time; 
-		} 
-	} 
-	return $tasks; 
+function getPluginsCronJobs(){
+	global $PLUGIN_HOOKS;
+	$tasks=array();
+	if (isset($PLUGIN_HOOKS["cron"]) && is_array($PLUGIN_HOOKS["cron"])) {
+		foreach ($PLUGIN_HOOKS["cron"] as $plug => $time) {
+			$tasks["plugin_".$plug]=$time;
+		}
+	}
+	return $tasks;
 }
 
 /**
@@ -378,30 +378,30 @@ function getPluginsCronJobs(){
  *
  * @return Array containing plugin dropdowns
  */
-function getPluginsDropdowns(){ 
+function getPluginsDropdowns(){
 	$dps=array();
-	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
-		foreach ($_SESSION["glpi_plugins"] as  $plug) { 
-			
+	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
+		foreach ($_SESSION["glpi_plugins"] as  $plug) {
+
 			$tab = doOneHook($plug,'getDropdown');
-			if (is_array($tab)){ 
-				$function="plugin_version_$plug";			
+			if (is_array($tab)){
+				$function="plugin_version_$plug";
 				$name=$function();
 				$dps=array_merge($dps,array($name['name']=>$tab));
 			}
-		} 
-	} 
+		}
+	}
 	return $dps;
-} 
+}
 /**
  * Get database relations for plugins
  *
  * @return Array containing plugin database relations
  */
-function getPluginsDatabaseRelations(){ 
+function getPluginsDatabaseRelations(){
 	$dps=array();
-	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
-		foreach ($_SESSION["glpi_plugins"] as $plug) { 
+	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
+		foreach ($_SESSION["glpi_plugins"] as $plug) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
@@ -410,8 +410,8 @@ function getPluginsDatabaseRelations(){
 			if (function_exists($function2)) {
 				$dps=array_merge($dps,$function2());
 			}
-		} 
-	} 
+		}
+	}
 	return $dps;
 }
 
@@ -420,8 +420,8 @@ function getPluginsDatabaseRelations(){
  *
  * @return Array containing plugin search options
  */
-function getPluginSearchOption(){ 
-	global $PLUGIN_HOOKS; 
+function getPluginSearchOption(){
+	global $PLUGIN_HOOKS;
 	$sopt=array();
 	if (isset($PLUGIN_HOOKS['plugin_types'])&&count($PLUGIN_HOOKS['plugin_types'])){
 		$tab=array_unique($PLUGIN_HOOKS['plugin_types']);
@@ -448,7 +448,7 @@ function getPluginSearchOption(){
 }
 /**
  * DEPRECATED Define a new item type used in a plugin
- * 
+ *
  * TODO : to delete ASAP (all plugin switch to registerPluginType)
  * @param $plugin plugin of the device type
  * @param $name name of the itemtype to define the constant
@@ -458,13 +458,13 @@ function getPluginSearchOption(){
  * @param $formpage Form page for the item
  * @param $typename string defining the name of the new type (used in CommonItem)
  * @param $is_recursive boolean
- * 
+ *
  * @return nothing
 function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$is_recursive=false){
-	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
+	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI;
 
 	trigger_error("pluginNewType is deprecated, use registerPluginType instead");
-	
+
 	if (!defined($name)) {
 		define($name,$ID);
 		$LINK_ID_TABLE[$ID]=$table;
@@ -474,7 +474,7 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
 		$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
 		$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
-		
+
 		if ($is_recursive) {
 			$CFG_GLPI["recursive_type"][$ID]=$table;
 		}
@@ -484,24 +484,24 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 
 /**
  * Define a new item type used in a plugin
- * 
+ *
  * @param $plugin plugin of the device type
  * @param $name name of the itemtype to define the constant
  * @param $itemtype number used as constant
  * @param $attrib Array of attributes, a hashtable with index in
  * 	(classname, tablename, typename, formpage, searchpage, reservation_types,
  *   deleted_tables, specif_entities_tables, recursive_type, template_tables)
- * 
+ *
  * @return nothing
  */
 function registerPluginType($plugin,$name,$itemtype,$attrib){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
-	
+
 	if (!defined($name)) {
 
 		define($name,$itemtype);
 		$PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
-		
+
 		if (isset($attrib['classname']) && !empty($attrib['classname'])) {
 			$PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];
 		}
@@ -518,7 +518,7 @@ function registerPluginType($plugin,$name,$itemtype,$attrib){
 			$LINK_ID_TABLE[$itemtype] = $attrib['tablename'];
 
 			if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
-				$CFG_GLPI["recursive_type"][$ID] = $attrib['tablename'];
+				$CFG_GLPI["recursive_type"][$itemtype] = $attrib['tablename'];
 			}
 			if (isset($attrib['deleted_tables']) && $attrib['deleted_tables']) {
 				array_push($CFG_GLPI["deleted_tables"], $attrib['tablename']);
@@ -530,22 +530,22 @@ function registerPluginType($plugin,$name,$itemtype,$attrib){
 				array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
 			}
 		} // is set tablename
-		
+
 		foreach (array('reservation_types','infocom_types','linkuser_types','linkgroup_types',
 					'massiveaction_noupdate_types','massiveaction_nodelete_types', 'doc_types', 'contract_types',
                                         'helpdesk_visible_types') as $att) {
 			if (isset($attrib[$att]) && $attrib[$att]) {
-				array_push($CFG_GLPI[$att], $ID);
+				array_push($CFG_GLPI[$att], $itemtype);
 			}
 		}
 	} // not already defined
 	//} // not already defined
-} 
+}
 
 function loadPluginLang($name){
 	global $CFG_GLPI,$LANG;
 
-	if (isset($_SESSION['glpilanguage']) 
+	if (isset($_SESSION['glpilanguage'])
 		&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][1])){
 		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][1]);
 	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])){
