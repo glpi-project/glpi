@@ -1518,7 +1518,16 @@ class CommonDBTM {
 			return $this->fields["is_recursive"];		
 		} 
 		return 0;
-	}	
+	}
+	
+	/*
+	 * Return the SQL command to retrieve linked object
+	 * 
+	 * @return a SQL command which return a set of (itemtype, items_id)
+	 */
+	function getSelectLinkedItem () {
+	   return '';
+	}
 }
 
 ?>

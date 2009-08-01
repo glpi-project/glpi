@@ -658,7 +658,7 @@ $LANG['job'][3]="Receveur";
 $LANG['job'][4]="Demandeur"; 
 $LANG['job'][5]="Attribué à"; 
 $LANG['job'][6]="Technicien"; 
-$LANG['job'][8]="dernier(s) tickets"; 
+$LANG['job'][8]="dernier(s) ticket(s)"; 
 $LANG['job'][11]="Description de la demande ou de l'incident"; 
 $LANG['job'][12]="Pas de suivi pour ce ticket."; 
 $LANG['job'][13]="Ouvrir un ticket"; 
@@ -705,6 +705,7 @@ $LANG['joblist'][24]="Non fermé";
 $LANG['joblist'][25]="Fermé"; 
 $LANG['joblist'][26]="En attente"; 
 $LANG['joblist'][27]="Email pour le suivi"; 
+$LANG['joblist'][28]="Tickets sur les éléments liés";
 
 $LANG['knowbase'][1]="Foire aux questions"; 
 $LANG['knowbase'][3]="Question"; 
