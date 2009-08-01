@@ -450,6 +450,16 @@ class Monitor extends CommonDBTM {
 		return true;
 	}
 
+   /*
+    * Return the SQL command to retrieve linked object
+    * 
+    * @return a SQL command which return a set of (itemtype, items_id)
+    */
+   function getSelectLinkedItem () {
+      return "SELECT '".COMPUTER_TYPE."', `computers_id` 
+         FROM glpi_computers_items 
+         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['ID']."'";
+   }
 }
 
 ?>

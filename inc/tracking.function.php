@@ -321,73 +321,93 @@ function showCentralJobCount(){
 }
 
 
-
-
+/*
+ * Display tickets for an item
+ * 
+ * Will also display tickets of linked items
+ * 
+ * @param $itemtype
+ * @param $tems_id
+ * 
+ * @return nothing (display a table)
+ */
 function showJobListForItem($itemtype,$items_id) {
-	// $items_id is required
-	//affiche toutes les vielles intervention pour un $items_id donn� 
-
-	global $DB,$CFG_GLPI, $LANG;
-
-	if (!haveRight("show_all_ticket","1")) return false;
-
-	$where = "";	
-
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
-			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (items_id = '$items_id' and itemtype= '$itemtype')
-				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
-
-	$result = $DB->query($query);
-
-	$number = $DB->numrows($result);
-
-	if ($number > 0)
-	{
-		$ci = new CommonItem();
-		$ci->getFromDB($itemtype,$items_id);
-		initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
-
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8].": &nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
-		echo "</th></tr>";
-
-		if ($items_id)
-		{
-			echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
-			echo $LANG['joblist'][7];
-			echo "</strong></a>";
-			echo "</td></tr>";
-		}
-		
-		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$items_id","","",true);
-
-		while ($data=$DB->fetch_assoc($result)){
-			addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
-			showJobShort($data, 0);
-		}
-		echo "</table></div>";
-	} 
-	else
-	{
-		echo "<div class='center'>";
-		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
-
-		if ($items_id)
-		{
-
-			echo "<tr><td align='center' class='tab_bg_2'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
-			echo $LANG['joblist'][7];
-			echo "</strong></a>";
-			echo "</td></tr>";
-		}
-		echo "</table>";
-		echo "</div><br>";
-	}
+   
+   global $DB,$CFG_GLPI, $LANG;
+   
+   if (!haveRight("show_all_ticket","1")) {
+      return false;
+   }
+   $ci = new CommonItem();
+   if (!$ci->getFromDB($itemtype,$items_id)) {
+      return false;
+   }
+   
+   $query = "SELECT ".getCommonSelectForTrackingSearch()." 
+      FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
+      WHERE (items_id = '$items_id' and itemtype= '$itemtype')
+      ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+   
+   $result = $DB->query($query);
+   
+   $number = $DB->numrows($result);
+   
+   echo "<div class='center'><table class='tab_cadre_fixe'>";
+   if ($number > 0) {
+      initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
+      
+      echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8].": &nbsp;";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
+      echo "</th></tr>";
+   } else {
+      echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+   }
+   
+   if ($items_id) {
+      echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=$itemtype\"><strong>";
+      echo $LANG['joblist'][7];
+      echo "</strong></a>";
+      echo "</td></tr>";
+   }
+   
+   if ($number > 0) {
+      commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$items_id","","",true);
+      
+      while ($data=$DB->fetch_assoc($result)){
+         addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
+         showJobShort($data, 0);
+      }
+   } 
+   echo "</table></div><br>";
+   
+   if ($subquery = $ci->obj->getSelectLinkedItem()) {
+      
+      $query = "SELECT ".getCommonSelectForTrackingSearch()." 
+         FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
+         WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")
+         " . getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
+         ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+      
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      
+      
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='10'>".$LANG['joblist'][28]."</th></tr>";
+      if ($number > 0) {
+         commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$items_id","","",true);
+         
+         while ($data=$DB->fetch_assoc($result)){
+            // addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
+            showJobShort($data, 0);
+         }
+      } else {
+         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+      }
+      echo "</table></div><br>";
+      
+   } // Subquery for linked item
 }
 
 function showJobListForEnterprise($entID) {

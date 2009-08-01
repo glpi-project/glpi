@@ -800,6 +800,16 @@ class Computer extends CommonDBTM {
 		return true;
 	}
 
+   /*
+    * Return the SQL command to retrieve linked object
+    * 
+    * @return a SQL command which return a set of (itemtype, items_id)
+    */
+   function getSelectLinkedItem () {
+      return "SELECT `itemtype`, `items_id` 
+         FROM glpi_computers_items 
+         WHERE `computers_id`='" . $this->fields['ID']."'";
+   }
 }
 
 
