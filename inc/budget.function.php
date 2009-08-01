@@ -89,7 +89,7 @@ function showDeviceBudget($budgets_id) {
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
 			$ci->setType($itemtype);
-			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype)) {
+			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
