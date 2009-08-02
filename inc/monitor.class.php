@@ -209,21 +209,22 @@ class Monitor extends CommonDBTM {
 	 *
 	 *@return boolean item found
 	 **/
-	function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($target,$ID,$withtemplate='') {
 
-		global $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
-		if (!haveRight("monitor","r")) return false;
+      if (!haveRight("monitor","r")) return false;
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
-		} 
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item 
+         $this->check(-1,'w');
+         $this->getEmpty();
+      } 
 
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate);
 
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
@@ -234,38 +235,10 @@ class Monitor extends CommonDBTM {
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} else {
-			$datestring = $LANG['common'][26]." : ";
+			$datestring = $LANG['common'][26].": ";
 			$date = convDateTime($this->fields["date_mod"]);
 			$template = false;
 		}
-
-		echo "<div class='center' id='tabsbody'><form method='post' name=form action=\"$target\">";
-		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
-		}
-
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-
-		echo "<table  class='tab_cadre_fixe' cellpadding='2'>";
-
-		echo "<tr><th align='center' >";
-		if(!$template) {
-			echo $LANG['common'][2]." ".$this->fields["ID"];
-		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG['monitors'][30].": ".$this->fields["tplname"];
-			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $LANG['common'][6]."&nbsp;: ";
-			autocompletionTextField("tplname","glpi_monitors","tplname",$this->fields["tplname"],40,$this->fields["entities_id"]);	
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
-		}
-
-		echo "</th><th  align='center'>".$datestring.$date;
-		if (!$template&&!empty($this->fields['tplname']))
-			echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
-		echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -311,6 +284,10 @@ class Monitor extends CommonDBTM {
       dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>";
       
+      echo "<tr><td>".$datestring."</td><td>".$date;
+      if (!$template&&!empty($this->fields['tplname']))
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      echo "</td></tr>";
       echo "</table>";
 
       echo "</td>\n";
@@ -405,50 +382,13 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-		if (haveRight("monitor","w")){
+      $this->showFormButtons($ID,$withtemplate);
 
-			echo "<tr>";
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-			if ($template) {
-
-				if (empty($ID)||$withtemplate==2){
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-					echo "</td>\n";
-				}
-			} else {
-
-				echo "<td class='tab_bg_2' valign='top' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-				else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
-				}
-				echo "</div>";
-				echo "</td>";
-			}
-			echo "</tr>";
-		}
-
-		echo "</table></form></div>";
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-		return true;
-	}
+      return true;
+   }
 
    /*
     * Return the SQL command to retrieve linked object
