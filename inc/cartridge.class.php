@@ -182,93 +182,47 @@ class CartridgeType extends CommonDBTM {
 		} 
 
 
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">\n";
-		if (empty($ID)){
-			echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
-		}
-
-      echo "<table class='tab_cadre_fixe' >\n";
-      echo "<tr><th colspan='3'>\n";
-      if (!$ID) {
-         echo $LANG['cartridges'][6];
-      } else {
-         echo $LANG['common'][2]." $ID";
-      }
-
-      if (isMultiEntitiesMode()){
-         echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
-      }
-
-      echo "</th></tr>\n";
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
-      echo "<td colspan='2'>";
+      echo "<td>";
       autocompletionTextField("name","glpi_cartridgesitems","name",$this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
-      echo "<td colspan='2'>";
+      echo "<td>";
       autocompletionTextField("ref","glpi_cartridgesitems","ref",$this->fields["ref"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td>\n";
       dropdownValue("glpi_cartridgesitemstypes","cartridgesitemstypes_id",$this->fields["cartridgesitemstypes_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td>\n";
       dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td>\n";
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td>\n";
       dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td>";
       dropdownInteger('alarm',$this->fields["alarm"],-1,100);
       echo "</td></tr>\n";
 
 
       echo "<tr class='tab_bg_1'><td valign='top'>\n";
       echo $LANG['common'][25].":	</td>";
-      echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td><textarea cols='60' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
-		if (haveRight("cartridge","w"))
-			if (!$ID) {
+      $this->showFormButtons($ID,$withtemplate);
 
-				echo "<tr>\n";
-				echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>\n";
-			} else {
-
-				echo "<tr>\n";
-				echo "<td class='tab_bg_2'></td>";
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
-				echo "</td>";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-				else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>\n";
-				}
-				echo "</div>";
-				echo "</td>";
-				echo "</tr>\n";
-			}
-
-		echo "</table></form></div>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
