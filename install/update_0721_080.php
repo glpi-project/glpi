@@ -1151,6 +1151,10 @@ function update0721to080() {
    if (!FieldExists("glpi_budgets","is_recursive")) {
       $query = "ALTER TABLE `glpi_budgets` ADD `is_recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
       $DB->query($query) or die("0.80 add is_recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+
+      // budgets in 0.72 were global
+      $query = "UPDATE `glpi_budgets` SET `is_recursive` = '1';";
+      $DB->query($query) or die("0.80 set is_recursive to true in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","entities_id")) {
          $query = "ALTER TABLE `glpi_budgets` ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`;";
