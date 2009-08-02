@@ -1289,20 +1289,91 @@ class CommonDBTM {
 		return true;
 	}
 
+   /*
+    * Display a 2 columns Footer for Form buttons
+    * Close the form is user can edit
+    * 
+    * @param $ID ID of the item (-1 if new item)
+    * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
+    * @param $colspan for each column
+    * 
+    */
+   function showFormButtons ($ID, $withtemplate='', $colspan=1) {
+      global $LANG, $CFG_GLPI;
+      
+      if (!$this->can($ID,'w')) {
+         echo "</table></div>";
+         return false;
+      }
+      echo "<tr>\n";
+
+      if ($withtemplate || $ID<=0) {
+         echo "<td class='tab_bg_2' align='center' colspan='".($colspan*2)."'>\n";
+         echo "<input type='hidden' name='ID' value='$ID'>";
+         if ($ID<=0||$withtemplate==2){
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         } else {
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         }
+         echo "</td>\n";
+      } else {
+         echo "<td class='tab_bg_2' colspan='".$colspan."' align='center' valign='top'>\n";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "</td>\n";
+         echo "<td class='tab_bg_2' colspan='".$colspan."'  align='center'>\n";
+         echo "<input type='hidden' name='ID' value=$ID>";
+
+         // Can delete an object with Infocom only if can write Infocom
+         if (!in_array($this->type,$CFG_GLPI["infocom_types"]) || haveRight('infocom','w')) {
+            $candel = true;
+         } else {
+            $infocom = new InfoCom();
+            $candel = !$infocom->getFromDBforDevice($this->type,$ID);
+         }
+         
+         if ($candel) {
+            if (isset($this->fields['is_deleted']) && $this->fields['is_deleted']){
+               echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
+               echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
+            }else {
+               // TODO : change message for "destroy" / "send in trash" ?
+               // TODO : add javascript to confirm when no trash ??
+               echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+            }
+         } else {
+            // TODO : add a "no right to delete" message ?
+            echo "&nbsp;";
+         }
+         echo "</td>";
+      }
+      echo "</tr>\n";
+      
+      // Close for Form
+      echo "</table></div></form>";
+   }
 	/**
 	 * 
 	 * Display a 2 columns Header 1 for ID, 1 for recursivity menu
+    * Open the form is user can edit
 	 * 
+    * @param $target for the Form
 	 * @param $ID ID of the item (-1 if new item)
 	 * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
 	 * @param $colspan for each column
 	 * 
 	 */
-	 function showFormHeader ($ID, $withtemplate='', $colspan=1) {
+	 function showFormHeader ($target, $ID, $withtemplate='', $colspan=1) {
 	 	
 	 	global $LANG, $CFG_GLPI;
 	 	
-		echo "<tr><th colspan='$colspan'>";
+      if ($this->can($ID,'w')) {
+         echo "<form name='form' method='post' action=\"$target\">";
+         echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+      }
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe' >";
+
+      echo "<tr><th colspan='$colspan'>";
 
 		if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
 			

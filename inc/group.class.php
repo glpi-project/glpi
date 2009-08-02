@@ -110,22 +110,8 @@ class Group extends CommonDBTM{
 			$this->getEmpty();
 		} 
 
-
-		$canedit=$this->can($ID,'w');
-
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-		if ($canedit) {
-			
-			echo "<form method='post' name=form action=\"$target\">";
-			if (empty($ID)){
-				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
-		}
-		echo "<div class='center' id='tabsbody' >";
-		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-
-		$this->showFormHeader($ID);
+		$this->showFormHeader($target,$ID,$withtemplate);
 
 		echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -181,33 +167,8 @@ class Group extends CommonDBTM{
 		echo "</td>";
 		echo "</tr>";
 
-		if ($canedit) {
-			if ($ID=="") {
+      $this->showFormButtons($ID,$withtemplate);
 
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-
-			} else {
-
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
-				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-
-				echo "</td>";
-				echo "</tr>";
-
-			}
-			echo "</table></div></form>";
-		} else {
-			echo "</table></div>";
-		}
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		

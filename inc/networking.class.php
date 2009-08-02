@@ -297,11 +297,6 @@ class Netdevice extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
-		$canedit=$this->can($ID,'w');
-		$canrecu=$this->can($ID,'recursive');
-
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
@@ -316,16 +311,8 @@ class Netdevice extends CommonDBTM {
 			$template = false;
 		}
 
-
-		echo "<div class='center'  id='tabsbody'>";
-		
-		if ($canedit) {
-			echo "<form name='form' method='post' action=\"$target\">\n";
-			echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-		}
-		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
-
-		$this->showFormHeader($ID, $withtemplate);
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID, $withtemplate);
 
       echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
@@ -438,46 +425,7 @@ class Netdevice extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-		if ($canedit) {
-			echo "<tr class='tab_bg_2'>\n";
-			if ($template) {
-
-				if (empty($ID)||$withtemplate==2){
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-					echo "</td>\n";
-				}
-
-			} else {
-
-				echo "<td class='tab_bg_2' valign='top' width='33%'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div></td>";
-				echo "<td class='tab_bg_2' valign='top' width='33%'>\n";
-
-				echo "<div class='center'>\n";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>\n";
-				else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>\n";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>\n";
-				}
-				echo "</div>\n";
-				echo "</td>\n";
-			}
-			echo "</tr>\n";
-			echo "</table></form></div>\n";
-
-		}else { // ! $canedit
-			echo "</table></div>\n";
-		}
+      $this->showFormButtons($ID,$withtemplate);
 
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";

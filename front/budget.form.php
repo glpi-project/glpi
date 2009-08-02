@@ -37,7 +37,8 @@ $NEEDED_ITEMS=array("budget","enterprise","link","document");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["ID"])) $_GET["ID"] = -1;
+if(empty($_GET["ID"])) $_GET["ID"] = '';
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = '';
 
 $budget=new Budget;
 if (isset($_POST["add"])) {
@@ -79,7 +80,7 @@ else if (isset($_POST["update"])) {
 else {
 	commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
-	$budget->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'');
+	$budget->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["withtemplate"]);
 		
 	commonFooter();
 }

@@ -536,8 +536,6 @@ class Computer extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
@@ -552,37 +550,8 @@ class Computer extends CommonDBTM {
 			$template = false;
 		}
 
-		echo "<form name='form' method='post' action=\"$target\">";
-		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
-		}
-
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-
-		echo "<div class='center' id='tabsbody'>";
-		echo "<table class='tab_cadre_fixe' >";
-
-		echo "<tr><th colspan ='2' align='center' >";
-		if(!$template) {
-			echo $LANG['common'][2]." ".$this->fields["ID"];
-		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG['computers'][12].": ".$this->fields["tplname"];
-			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $LANG['common'][6].": ";
-			autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],40,$this->fields["entities_id"]);	
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
-		}
-
-      echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
-      if (!$template&&!empty($this->fields['tplname']))
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
-      if ($this->fields["is_ocs_import"])
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['ocsng'][7].")";
-
-      echo "</th></tr>";
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target, $ID, $withtemplate, 2);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].($template?"*":"").":		</td>";
 
@@ -721,8 +690,12 @@ class Computer extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       
+      echo "<td colspan='2' align='center'>".$datestring.$date;
+      if (!$template && !empty($this->fields['tplname'])) {
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      }
       if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
-         echo "<td colspan='2' align='center'>";
+         echo "<br>";
          echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
          echo "<br>";
          echo $LANG['ocsng'][13].": ".convDateTime($dataocs["last_update"]);
@@ -750,49 +723,13 @@ class Computer extends CommonDBTM {
             echo "</td>";
          }
          
-      } else	{
-         echo "<td colspan=2></td>";
       }
+      echo "</td>";
       echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comment' >".$this->fields["comment"]."</textarea></td>";
       echo "</tr>";	
 
-		if (haveRight("computer","w")) {
-			echo "<tr>\n";
-			if ($template) {
-				if (empty($ID)||$withtemplate==2){
-					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-					echo "</td>\n";
-				}
-			} else {
-				echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td>\n";
-				echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
-				echo "<input type='hidden' name='ID' value=$ID>";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"]){
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-					}else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
+      $this->showFormButtons($ID,$withtemplate,2);
 
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
-				}
-				echo "</div>";
-				echo "</td>";
-			}
-			echo "</tr>\n";
-		}
-
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

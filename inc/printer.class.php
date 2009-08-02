@@ -317,10 +317,6 @@ class Printer  extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
-		$canedit=$this->can($ID,'w');
-
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
@@ -335,15 +331,8 @@ class Printer  extends CommonDBTM {
 			$template = false;
 		}
 
-
-		echo "<div align='center' id='tabsbody'>";
-		
-		if ($canedit) {
-			echo "<form method='post' name='form' action=\"$target\">\n";
-			echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";		
-		}
-		echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
-		$this->showFormHeader($ID,$withtemplate);
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate);
 
       echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
@@ -469,7 +458,7 @@ class Printer  extends CommonDBTM {
 
 
       echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
-      if ($canedit) {
+      if ($this->can($ID,'w')) {
          globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
       } else {
          // Use printers_management_restrict to disallow change this
@@ -493,47 +482,7 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-		if ($canedit){
-			echo "<tr>\n";
-
-			if ($template) {
-
-				if (empty($ID)||$withtemplate==2){
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-					echo "</td>\n";
-				}
-
-			} else {
-
-				echo "<td class='tab_bg_2' valign='top' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-				else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
-				}
-				echo "</div>";
-				echo "</td>";
-
-			}
-			echo "</tr>";
-			echo "</table></form></div>\n";
-		}else { // ! $canedit
-			echo "</table></div>\n";
-		}
+      $this->showFormButtons($ID,$withtemplate);
 
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";

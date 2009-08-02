@@ -97,16 +97,8 @@ class Link extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
-		$canedit=$this->can($ID,'w');
-		$canrecu=$this->can($ID,'recursive');
-
 		$this->showTabs($ID, '',$_SESSION['glpi_tab']);
-		
-		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-
-		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		
-		$this->showFormHeader($ID, '');
+		$this->showFormHeader($target,$ID);
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['links'][6].":	</td>";
 		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td>";
@@ -127,35 +119,8 @@ class Link extends CommonDBTM {
 		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
 		echo "</td></tr>";
 
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+      $this->showFormButtons($ID);
 
-
-		if ($canedit)
-			if ($ID=="") {
-
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-
-			} else {
-
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
-				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit' ></div>";
-				echo "</td>";
-				echo "</tr>";
-
-
-
-			}
-		echo "</table></div></form>";
 		return true;
 	}
 

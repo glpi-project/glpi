@@ -938,7 +938,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 			break;
 		case SOFTWARE_TYPE :
 			$title = $LANG['Menu'][4];
-			$query = "SELECT * FROM glpi_softwaresWHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_softwares WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case PHONE_TYPE :
 			$title = $LANG['Menu'][34];
@@ -948,6 +948,10 @@ function listTemplates($itemtype, $target, $add = 0) {
 			$title = $LANG['Menu'][33];
 			$query = "SELECT * FROM glpi_ocsservers WHERE is_template = '1' ORDER by tplname";
 			break;
+      case BUDGET_TYPE :
+         $title = $LANG['financial'][87];
+         $query = "SELECT * FROM glpi_budgets WHERE is_template = '1' ORDER by tplname";
+         break;
 
 	}
 	if ($result = $DB->query($query)) {
