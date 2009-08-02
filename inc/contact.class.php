@@ -148,19 +148,8 @@ class Contact extends CommonDBTM{
 			$this->getEmpty();
 		} 
 
-		$canedit=$this->can($ID,'w');
-
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		
-		if ($canedit) {
-			echo "<form method='post' name=form action=\"$target\">";
-			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
-		}
-		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe' cellpadding='2' >";
-
-		$this->showFormHeader($ID);
+		$this->showFormHeader($target,$ID,$withtemplate);
 		
       echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -222,39 +211,7 @@ class Contact extends CommonDBTM{
       echo "</td>";
       echo "</tr>";
 
-		if ($canedit) {
-			
-			echo "<tr>";
-			
-			if ($ID>0){
-				
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
-				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				if (!$this->fields["is_deleted"])
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-				else {
-					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'></div>";
-				}
-				echo "</td>";
-
-			} else {
-
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td>";
-
-			}
-			echo "</tr>";
-			echo "</table></div></form>";
-			
-		}else { // canedit
-			echo "</table></div>";
-		}
+      $this->showFormButtons($ID,$withtemplate);
 
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";

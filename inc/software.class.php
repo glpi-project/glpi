@@ -265,7 +265,6 @@ class Software extends CommonDBTM {
 		} 
 		$canedit=$this->can($ID,'w');
 
-		$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 		if (!empty ($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14] . ": ";
@@ -280,21 +279,9 @@ class Software extends CommonDBTM {
 			$date = convDateTime($this->fields["date_mod"]);
 			$template = false;
 		}
-
-		echo "<div class='center' id='tabsbody'>";
-		
-		if ($canedit) {
-			echo "<form method='post' action=\"$target\">";
-		}
-		if (strcmp($template, "newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
-		}
-
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-
-		echo "<table class='tab_cadre_fixe'>";
 	
-		$this->showFormHeader($ID, $withtemplate, 2);
+      $this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
+      $this->showFormHeader($target, $ID, $withtemplate, 2);
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
       echo "<td>";
@@ -356,46 +343,7 @@ class Software extends CommonDBTM {
       echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
       echo "</td></tr>";
 
-		if ($canedit) {
-			echo "<tr>";
-
-			if ($template) {
-
-				if (empty ($ID) || $withtemplate == 2) {
-					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
-					echo "</td>\n";
-				}
-			} else {
-
-				echo "<td class='tab_bg_2'>&nbsp;</td>";
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'></div>";
-				echo "</td>";
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
-				else {
-					echo "<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'>";
-				}
-				echo "</div>";
-				echo "</td>";
-
-			}
-			echo "</tr>";
-			echo "</table></form></div>";
-		}else { // ! $canedit 
-			echo "</table></div>";
-		}
+      $this->showFormButtons($ID,$withtemplate,2);
 
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -750,12 +698,8 @@ class SoftwareLicense extends CommonDBTM {
 		//$soft->getFromDB($this->fields['softwares_id']);
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"softwares_id=".$this->fields['softwares_id']);
-		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+		$this->showFormHeader($target,$ID);
 
-		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
-		
-		$this->showFormHeader($ID);
 		if ($ID>0){
 			$softwares_id=$this->fields["softwares_id"];
 		} else {
@@ -834,24 +778,8 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr  class='tab_bg_2'>";
 
-		if ($ID>0) {
+      $this->showFormButtons($ID);
 
-			echo "<td>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
-			echo "</td>\n\n";
-			echo "<td>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-			echo "</td>\n\n";
-		} else {
-
-			echo "<td colspan='2'>";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-			echo "</td></tr>";
-
-		}
-		echo "</table></div></form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 				
