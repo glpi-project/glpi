@@ -483,7 +483,7 @@ function update0721to080() {
                            'tables' => array('glpi_ocsservers')),
                      ),
    'location' => array(array('to' => 'locations_id',
-                           'noindex' => array(''),
+                           'noindex' => array('glpi_netpoints'),
                            'tables' => array('glpi_cartridgesitems','glpi_computers',
                               'glpi_consumablesitems','glpi_netpoints','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
@@ -993,6 +993,11 @@ function update0721to080() {
                      ),
       'glpi_events' => array(array('from' => 'itemtype', 'to' => 'type', 'noindex'=>true),//
                      ),
+      'glpi_infocoms' => array(array('from' => 'num_commande', 'to' => 'order_number', 'noindex'=>true),//
+                        array('from' => 'bon_livraison', 'to' => 'delivery_number', 'noindex'=>true),//
+                        array('from' => 'num_immo', 'to' => 'immo_number', 'noindex'=>true),//
+                        array('from' => 'facture', 'to' => 'bill', 'noindex'=>true),//
+                     ),
       'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
@@ -1148,12 +1153,18 @@ function update0721to080() {
                               ),
       'glpi_events' => array(array('from' => 'level', 'to' => 'level', 'default' =>0,),//
                               ),
+      'glpi_infocoms' => array(array('from' => 'warranty_duration', 'to' => 'warranty_duration', 'default' =>0, 'noindex'=>true,),//
+                        array('from' => 'amort_time', 'to' => 'sink_time', 'default' =>0, 'noindex'=>true,),//
+                        array('from' => 'amort_type', 'to' => 'sink_type', 'default' =>0, 'noindex'=>true,),//
+                        array('from' => 'alert', 'to' => 'alert', 'default' =>0),//
+                              ),
+      'glpi_logs' => array(array('from' => 'linked_action', 'to' => 'linked_action', 'default' =>0,'comments'=>'see define.php HISTORY_* constant'),//
+                     ),
+      'glpi_mailingsettings' => array(array('from' => 'item_type', 'to' => 'mailingtype', 'default' =>0,'noindex'=>true,'comments'=>'see define.php *_MAILING_TYPE constant'),//
+                     ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               ),
-
-
-
                      );
    foreach ($intfields as $table => $tab) {
       foreach ($tab as $update) {
@@ -1264,6 +1275,11 @@ function update0721to080() {
    if (FieldExists('glpi_contracts', 'bill_type')) {
       $query="ALTER TABLE `glpi_contracts` DROP `bill_type`";
       $DB->query($query) or die("0.80 drop bill_type field in glpi_contracts " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_infocoms', 'amort_coeff')) {
+      $query="ALTER TABLE `glpi_infocoms` CHANGE `amort_coeff` `sink_coeff` FLOAT NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 alter amort_coeff field in glpi_infocoms " . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists('glpi_users', 'nextprev_item')) {
@@ -1383,6 +1399,29 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add item index in glpi_events " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!isIndex('glpi_logs', 'item')) {
+      $query=" ALTER TABLE `glpi_logs` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_logs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_infocoms', 'unicity')) {
+      $query=" ALTER TABLE `glpi_infocoms` ADD UNIQUE `unicity` (`itemtype`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_knowbaseitems', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_knowbaseitems` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_knowbaseitems " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_links_itemtypes', 'unicity')) {
+      $query=" ALTER TABLE `glpi_links_itemtypes` ADD UNIQUE `unicity` (`itemtype`,`links_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_links_itemtypes " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_mailingsettings', 'unicity')) {
+      $query=" ALTER TABLE `glpi_mailingsettings` ADD UNIQUE `unicity` (`type`,`items_id`,`mailingtype`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_mailingsettings " . $LANG['update'][90] . $DB->error());
+   }
+
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
@@ -1395,12 +1434,17 @@ function update0721to080() {
          'glpi_displayprefs' => array('display','FK_users'),
          'glpi_bookmarks_users' => array('FK_users'),
          'glpi_documents_items' => array('FK_doc_device','device_type','FK_device'),
-         'glpi_knowbaseitemscategories' => array('parentID'),
+         'glpi_knowbaseitemscategories' => array('parentID_2','parentID'),
          'glpi_locations' => array('FK_entities'),
          'glpi_netpoints' => array('FK_entities','location'),
          'glpi_entities' => array('name','parentID'),
          'glpi_entitiesdatas' => array('FK_entities'),
          'glpi_events' => array('comp','itemtype'),
+         'glpi_logs' => array('FK_glpi_device'),
+         'glpi_infocoms' => array('FK_device'),
+         'glpi_computers_softwaresversions' => array('sID'),
+         'glpi_links_itemtypes' => array('link'),
+         'glpi_mailingsettings' => array('mailings','FK_item'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-08-04 00:16
+#GLPI Dump database on 2009-08-04 01:01
 
 ### Dump table glpi_alerts
 
@@ -317,7 +317,6 @@ CREATE TABLE `glpi_computers_softwaresversions` (
   `computers_id` int(11) NOT NULL default '0',
   `softwaresversions_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY `sID` (`softwaresversions_id`),
   KEY `computers_id` (`computers_id`),
   KEY `softwaresversions_id` (`softwaresversions_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1231,7 +1230,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-23 17:50:02','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 00:16:32','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 01:01:35','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1310,23 +1309,23 @@ CREATE TABLE `glpi_infocoms` (
   `itemtype` int(11) NOT NULL default '0',
   `buy_date` date default NULL,
   `use_date` date default NULL,
-  `warranty_duration` smallint(6) NOT NULL default '0',
+  `warranty_duration` int(11) NOT NULL default '0',
   `warranty_info` varchar(255) collate utf8_unicode_ci default NULL,
   `suppliers_id` int(11) NOT NULL default '0',
-  `num_commande` varchar(255) collate utf8_unicode_ci default NULL,
-  `bon_livraison` varchar(255) collate utf8_unicode_ci default NULL,
-  `num_immo` varchar(255) collate utf8_unicode_ci default NULL,
+  `order_number` varchar(255) collate utf8_unicode_ci default NULL,
+  `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
+  `immo_number` varchar(255) collate utf8_unicode_ci default NULL,
   `value` decimal(20,4) NOT NULL default '0.0000',
   `warranty_value` decimal(20,4) NOT NULL default '0.0000',
-  `amort_time` smallint(6) NOT NULL default '0',
-  `amort_type` smallint(6) NOT NULL default '0',
-  `amort_coeff` float NOT NULL default '0',
+  `sink_time` int(11) NOT NULL default '0',
+  `sink_type` int(11) NOT NULL default '0',
+  `sink_coeff` float NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
-  `facture` varchar(255) collate utf8_unicode_ci default NULL,
+  `bill` varchar(255) collate utf8_unicode_ci default NULL,
   `budgets_id` int(11) NOT NULL default '0',
-  `alert` smallint(6) NOT NULL default '0',
+  `alert` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_device` (`items_id`,`itemtype`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),
   KEY `alert` (`alert`),
   KEY `budgets_id` (`budgets_id`),
@@ -1374,6 +1373,7 @@ CREATE TABLE `glpi_knowbaseitems` (
   KEY `knowbaseitemscategories_id` (`knowbaseitemscategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_faq` (`is_faq`),
+  KEY `date_mod` (`date_mod`),
   FULLTEXT KEY `fulltext` (`question`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1389,7 +1389,6 @@ CREATE TABLE `glpi_knowbaseitemscategories` (
   `comment` text collate utf8_unicode_ci,
   `level` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `parentID_2` (`knowbaseitemscategories_id`,`name`),
   UNIQUE KEY `unicity` (`knowbaseitemscategories_id`,`name`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1418,7 +1417,7 @@ CREATE TABLE `glpi_links_itemtypes` (
   `links_id` int(11) NOT NULL default '0',
   `itemtype` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `link` (`itemtype`,`links_id`),
+  UNIQUE KEY `unicity` (`itemtype`,`links_id`),
   KEY `links_id` (`links_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1449,17 +1448,18 @@ CREATE TABLE `glpi_logs` (
   `items_id` int(11) NOT NULL default '0',
   `itemtype` int(11) NOT NULL default '0',
   `devicetype` int(11) NOT NULL default '0',
-  `linked_action` smallint(6) NOT NULL default '0' COMMENT 'see define.php HISTORY_* constant',
+  `linked_action` int(11) NOT NULL default '0' COMMENT 'see define.php HISTORY_* constant',
   `user_name` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
   `id_search_option` int(11) NOT NULL default '0' COMMENT 'see search.constant.php for value',
   `old_value` varchar(255) collate utf8_unicode_ci default NULL,
   `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
-  KEY `FK_glpi_device` (`items_id`),
   KEY `device_type` (`itemtype`),
   KEY `date_mod` (`date_mod`),
-  KEY `devicetype` (`devicetype`)
+  KEY `devicetype` (`devicetype`),
+  KEY `linked_action` (`linked_action`),
+  KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1486,11 +1486,10 @@ CREATE TABLE `glpi_mailingsettings` (
   `ID` int(11) NOT NULL auto_increment,
   `type` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'VALUE in (new, followup, finish, update, resa, alertconsumable, alertcartdridge, alertinfocom, alertlicense)',
   `items_id` int(11) NOT NULL default '0',
-  `item_type` int(11) NOT NULL default '0' COMMENT 'see define.php *_MAILING_TYPE constant',
+  `mailingtype` int(11) NOT NULL default '0' COMMENT 'see define.php *_MAILING_TYPE constant',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `mailings` (`type`,`items_id`,`item_type`),
-  KEY `FK_item` (`items_id`),
-  KEY `items` (`item_type`,`items_id`)
+  UNIQUE KEY `unicity` (`type`,`items_id`,`mailingtype`),
+  KEY `items` (`mailingtype`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_mailingsettings` VALUES ('1','resa','3','1');
@@ -1605,7 +1604,6 @@ CREATE TABLE `glpi_netpoints` (
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
-  KEY `locations_id` (`locations_id`),
   KEY `complete` (`entities_id`,`locations_id`,`name`),
   KEY `location_name` (`locations_id`,`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3044,7 +3042,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 00:16:32','2009-08-04 00:16:32','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 01:01:35','2009-08-04 01:01:35','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);

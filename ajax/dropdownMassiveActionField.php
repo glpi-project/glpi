@@ -135,11 +135,11 @@ if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 						showDateFormItem($search["field"]);
 						echo "&nbsp;&nbsp;";
 					break;
-					case "amort_type" :
-						dropdownAmortType("amort_type");
+					case "sink_type" :
+						dropdownAmortType("sink_type");
 					break;
-					case "amort_time" :
-						dropdownInteger("amort_time",0,0,15);
+					case "sink_time" :
+						dropdownInteger("sink_time",0,0,15);
 					break;
 					case "warranty_duration" :
 						dropdownInteger("warranty_duration",0,0,120);

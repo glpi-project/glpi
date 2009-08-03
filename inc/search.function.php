@@ -2080,7 +2080,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
 			}
 			break;
-		case "glpi_infocoms.amort_time":
+		case "glpi_infocoms.sink_time":
 		case "glpi_infocoms.warranty_duration":
 			$ADD="";
 			if ($nott&&$val!="NULL") {
@@ -2095,7 +2095,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 				}
 			}
 			break;
-		case "glpi_infocoms.amort_type":
+		case "glpi_infocoms.sink_type":
 			$ADD="";
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
@@ -2497,7 +2497,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 			} else {
 				return "&nbsp;"; 
 			}
-		case "glpi_infocoms.amort_time":
+		case "glpi_infocoms.sink_time":
 			if (!empty($data[$NAME.$num])){
 				return $data[$NAME.$num]." ".$LANG['financial'][9];
 			} else { 
@@ -2511,7 +2511,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 				return "&nbsp;";
 			}
 			break;
-		case "glpi_infocoms.amort_type":
+		case "glpi_infocoms.sink_type":
 			return getAmortTypeName($data[$NAME.$num]);
 			break;
 		case "glpi_infocoms.alert":

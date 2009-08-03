@@ -176,7 +176,7 @@ class Mailing
 			}
 
 			while ($data=$DB->fetch_assoc($result)){
-				switch ($data["item_type"]){
+				switch ($data["mailingtype"]){
 					case USER_MAILING_TYPE :
 						switch($data["items_id"]){
 							// ADMIN SEND
@@ -720,7 +720,7 @@ class MailingResa{
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
-				switch ($data["item_type"]){
+				switch ($data["mailingtype"]){
 					case USER_MAILING_TYPE :
 						switch ($data["items_id"]){
 							// ADMIN SEND
@@ -1042,7 +1042,7 @@ class MailingAlert
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
-				switch ($data["item_type"]){
+				switch ($data["mailingtype"]){
 					case USER_MAILING_TYPE :
 						switch($data["items_id"]){
 							// ADMIN SEND
