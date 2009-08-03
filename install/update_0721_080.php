@@ -989,6 +989,8 @@ function update0721to080() {
       'glpi_configs' => array(array('from' => 'helpdeskhelp_url', 'to' => 'helpdesk_doc_url', 'noindex'=>true),//
                         array('from' => 'centralhelp_url', 'to' => 'central_doc_url', 'noindex'=>true),//
                      ),
+      'glpi_contracts' => array(array('from' => 'compta_num', 'to' => 'accounting_number', 'noindex'=>true),//
+                     ),
       'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
@@ -1131,6 +1133,14 @@ function update0721to080() {
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
+      'glpi_contracts' => array(array('from' => 'duration', 'to' => 'duration', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'notice', 'to' => 'notice', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'periodicity', 'to' => 'periodicity', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'facturation', 'to' => 'billing', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'device_countmax', 'to' => 'max_links_allowed', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'alert', 'to' => 'alert', 'default' =>0),//
+                              array('from' => 'renewal', 'to' => 'renewal', 'default' =>0, 'noindex'=>true),//
+                              ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               ),
@@ -1244,6 +1254,11 @@ function update0721to080() {
       $DB->query($query) or die("0.80 drop tracking_order field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_contracts', 'bill_type')) {
+      $query="ALTER TABLE `glpi_contracts` DROP `bill_type`";
+      $DB->query($query) or die("0.80 drop bill_type field in glpi_contracts " . $LANG['update'][90] . $DB->error());
+   }
+
    if (FieldExists('glpi_users', 'nextprev_item')) {
       $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
@@ -1276,12 +1291,35 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add unicity index in glpi_computers_items " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!isIndex('glpi_contacts_suppliers', 'unicity')) {
+      $query=" ALTER TABLE `glpi_contacts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contacts_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_contacts_suppliers " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_contracts_items', 'unicity')) {
+      $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `unicity` ( `contracts_id` ,  `itemtype` , `items_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_contracts_items', 'item')) {
+      $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `item` ( `itemtype` , `items_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_contracts_suppliers', 'unicity')) {
+      $query=" ALTER TABLE `glpi_contracts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_suppliers " . $LANG['update'][90] . $DB->error());
+   }
+
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
          'glpi_computers_devices' => array('FK_device'),
          'glpi_computers_items' => array('connect','type'),
          'glpi_consumables' => array('FK_glpi_cartridges_type'),
+         'glpi_contacts_suppliers' => array('FK_enterprise'),
+         'glpi_contracts_items' => array('FK_contract_device','device_type'),
+         'glpi_contracts_suppliers' => array('FK_enterprise'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {

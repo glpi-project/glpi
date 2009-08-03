@@ -2469,7 +2469,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 		case "glpi_contracts.duration":
 		case "glpi_contracts.notice":
 		case "glpi_contracts.periodicity":
-		case "glpi_contracts.facturation":
+		case "glpi_contracts.billing":
 			if (!empty($data[$NAME.$num])){
 				$split=explode('$$$$', $data[$NAME.$num]);
 				$output = "";
