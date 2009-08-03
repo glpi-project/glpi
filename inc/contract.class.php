@@ -175,7 +175,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
 
       echo "<td>".$LANG['financial'][13].":		</td><td>";
-      autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],40,$this->fields["entities_id"]);
+      autocompletionTextField("accounting_number","glpi_contracts","accounting_number",$this->fields["accounting_number"],40,$this->fields["entities_id"]);
 
       echo "</td></tr>";
 
@@ -200,12 +200,12 @@ class Contract extends CommonDBTM {
 
       echo "<td>".$LANG['financial'][11].":		</td>";
       echo "<td>";
-      dropdownInteger("facturation",$this->fields["facturation"],12,60,12,array(0=>"-----",1=>"1",2=>"2",3=>"3",6=>"6"));
+      dropdownInteger("billing",$this->fields["billing"],12,60,12,array(0=>"-----",1=>"1",2=>"2",3=>"3",6=>"6"));
       echo " ".$LANG['financial'][57];
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83].":		</td><td>";
-      dropdownInteger("device_countmax",$this->fields["device_countmax"],0,200);
+      dropdownInteger("max_links_allowed",$this->fields["max_links_allowed"],0,200);
       echo "</td>";
 
 

@@ -251,7 +251,7 @@ function showDeviceContract($instID) {
 		$i++;
 	}
 	if ($canedit){
-      if ($contract->fields['device_countmax']==0 || $contract->fields['device_countmax'] > $totalnb){
+      if ($contract->fields['max_links_allowed']==0 || $contract->fields['max_links_allowed'] > $totalnb){
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          echo "<div class='software-instal'>";
          dropdownAllItems("item",0,0,($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-08-03 23:09
+#GLPI Dump database on 2009-08-03 23:48
 
 ### Dump table glpi_alerts
 
@@ -494,7 +494,6 @@ CREATE TABLE `glpi_consumables` (
   `date_out` date default NULL,
   `users_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY `FK_glpi_cartridges_type` (`consumablesitems_id`),
   KEY `date_in` (`date_in`),
   KEY `date_out` (`date_out`),
   KEY `consumablesitems_id` (`consumablesitems_id`),
@@ -576,7 +575,7 @@ CREATE TABLE `glpi_contacts_suppliers` (
   `suppliers_id` int(11) NOT NULL default '0',
   `contacts_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_enterprise` (`suppliers_id`,`contacts_id`),
+  UNIQUE KEY `unicity` (`suppliers_id`,`contacts_id`),
   KEY `contacts_id` (`contacts_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -605,13 +604,12 @@ CREATE TABLE `glpi_contracts` (
   `cost` decimal(20,4) NOT NULL default '0.0000',
   `contractstypes_id` int(11) NOT NULL default '0',
   `begin_date` date default NULL,
-  `duration` smallint(6) NOT NULL default '0',
-  `notice` smallint(6) NOT NULL default '0',
-  `periodicity` smallint(6) NOT NULL default '0',
-  `facturation` smallint(6) NOT NULL default '0',
-  `bill_type` int(11) NOT NULL default '0',
+  `duration` int(11) NOT NULL default '0',
+  `notice` int(11) NOT NULL default '0',
+  `periodicity` int(11) NOT NULL default '0',
+  `billing` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
-  `compta_num` varchar(255) collate utf8_unicode_ci default NULL,
+  `accounting_number` varchar(255) collate utf8_unicode_ci default NULL,
   `is_deleted` tinyint(1) NOT NULL default '0',
   `week_begin_hour` time NOT NULL default '00:00:00',
   `week_end_hour` time NOT NULL default '00:00:00',
@@ -621,19 +619,19 @@ CREATE TABLE `glpi_contracts` (
   `monday_begin_hour` time NOT NULL default '00:00:00',
   `monday_end_hour` time NOT NULL default '00:00:00',
   `use_monday` tinyint(1) NOT NULL default '0',
-  `device_countmax` int(11) NOT NULL default '0',
+  `max_links_allowed` int(11) NOT NULL default '0',
   `notepad` longtext collate utf8_unicode_ci,
-  `alert` smallint(6) NOT NULL default '0',
-  `renewal` smallint(6) NOT NULL default '0',
+  `alert` int(11) NOT NULL default '0',
+  `renewal` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY `begin_date` (`begin_date`),
-  KEY `bill_type` (`bill_type`),
   KEY `name` (`name`),
   KEY `contractstypes_id` (`contractstypes_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `use_monday` (`use_monday`),
-  KEY `use_saturday` (`use_saturday`)
+  KEY `use_saturday` (`use_saturday`),
+  KEY `alert` (`alert`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -646,9 +644,9 @@ CREATE TABLE `glpi_contracts_items` (
   `items_id` int(11) NOT NULL default '0',
   `itemtype` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_contract_device` (`contracts_id`,`itemtype`,`items_id`),
-  KEY `FK_device` (`items_id`,`itemtype`),
-  KEY `device_type` (`itemtype`)
+  UNIQUE KEY `unicity` (`contracts_id`,`itemtype`,`items_id`),
+  UNIQUE KEY `item` (`itemtype`,`items_id`),
+  KEY `FK_device` (`items_id`,`itemtype`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -660,7 +658,7 @@ CREATE TABLE `glpi_contracts_suppliers` (
   `suppliers_id` int(11) NOT NULL default '0',
   `contracts_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_enterprise` (`suppliers_id`,`contracts_id`),
+  UNIQUE KEY `unicity` (`suppliers_id`,`contracts_id`),
   KEY `contracts_id` (`contracts_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1235,7 +1233,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-23 17:50:02','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-03 23:09:31','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-03 23:48:28','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -3047,7 +3045,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-03 23:09:31','2009-08-03 23:09:31','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-03 23:48:28','2009-08-03 23:48:28','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
