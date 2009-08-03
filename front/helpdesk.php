@@ -116,7 +116,7 @@ else $priority=$_SESSION["helpdeskSaved"]["priority"];
 
 if (!$post_ticket && isset($_POST["request_type"]))
 	$request_type=$_POST["request_type"];
-elseif (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=$_SESSION["glpirequest_type"];
+elseif (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=$_SESSION["glpidefault_request_type"];
 else $request_type=$_SESSION["helpdeskSaved"]["request_type"];
 
 if (!$post_ticket && isset($_POST["name"]))

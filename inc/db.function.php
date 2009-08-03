@@ -794,7 +794,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		$temp=$realname;
 		
 		if (strlen($firstname)>0){
-			if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+			if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE){
 				$temp=$firstname." ".$temp;
 			} else {
 				$temp.=" ".$firstname;

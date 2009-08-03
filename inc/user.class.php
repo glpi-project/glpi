@@ -67,7 +67,6 @@ class User extends CommonDBTM {
 		$this->dohistory = true;
 		$this->history_blacklist = array('last_login');
 
-		$this->fields['tracking_order'] = 0;
 		if (isset ($CFG_GLPI["language"])){
 			$this->fields['language'] = $CFG_GLPI["language"];
 		} else {

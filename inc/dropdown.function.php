@@ -410,7 +410,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		}
 		$query .= " WHERE $where ";
 
-		if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+		if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE){
 			$query.=" ORDER BY glpi_users.firstname,glpi_users.realname,glpi_users.name ";
 			} else {
 			$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name ";

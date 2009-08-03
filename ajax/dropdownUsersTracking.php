@@ -70,7 +70,7 @@ $query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users
 				FROM glpi_tickets 
 				".getEntitiesRestrictRequest("WHERE","glpi_tickets").") ";
 
-if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE){
 	$query.=" ORDER BY glpi_users.firstname,glpi_users.realname,glpi_users.name ";
 	} else {
 	$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name ";
