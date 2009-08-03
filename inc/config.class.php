@@ -157,7 +157,7 @@ class Config extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";
-		dropdownInteger('cartridges_alarm', $CFG_GLPI["cartridges_alarm"], -1, 100);
+		dropdownInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
 		echo "</td>";
 	
 		echo "<td class='center'>" . $LANG['setup'][221] . "</td><td>";

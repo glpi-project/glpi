@@ -1712,10 +1712,10 @@ function addDefaultSelect ($itemtype){
 			$ret = "glpi_reservationsitems.is_active as ACTIVE, ";
 		break;
 		case CARTRIDGE_TYPE:
-			$ret = "glpi_cartridgesitems.alarm as ALARM, ";
+			$ret = "glpi_cartridgesitems.alarm_threshold as ALARM, ";
 		break;
 		case CONSUMABLE_TYPE:
-			$ret = "glpi_consumablesitems.alarm as ALARM, ";
+			$ret = "glpi_consumablesitems.alarm_threshold as ALARM, ";
 		break;
 		default :
 			$ret = "";
