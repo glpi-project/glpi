@@ -285,8 +285,8 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
       
       echo "<tr><td>".$datestring."</td><td>".$date;
-      if (!$template&&!empty($this->fields['tplname']))
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      if (!$template&&!empty($this->fields['template_name']))
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
       echo "</td></tr>";
       echo "</table>";
 

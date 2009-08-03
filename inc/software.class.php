@@ -334,8 +334,8 @@ class Software extends CommonDBTM {
       dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td>";
       echo "<td>$datestring</td><td>$date";
-      if (!$template && !empty ($this->fields['tplname']))
-         echo "&nbsp;&nbsp;&nbsp;(" . $LANG['common'][13] . ": " . $this->fields['tplname'] . ")";
+      if (!$template && !empty ($this->fields['template_name']))
+         echo "&nbsp;&nbsp;&nbsp;(" . $LANG['common'][13] . ": " . $this->fields['template_name'] . ")";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td valign='top'>";

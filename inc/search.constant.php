@@ -123,8 +123,8 @@ $SEARCH_OPTION[COMPUTER_TYPE][43]['linkfield']='os_license_number';
 $SEARCH_OPTION[COMPUTER_TYPE][43]['name']=$LANG['computers'][10];
 
 $SEARCH_OPTION[COMPUTER_TYPE][44]['table']='glpi_computers';
-$SEARCH_OPTION[COMPUTER_TYPE][44]['field']='os_license_id';
-$SEARCH_OPTION[COMPUTER_TYPE][44]['linkfield']='os_license_id';
+$SEARCH_OPTION[COMPUTER_TYPE][44]['field']='os_licenseid';
+$SEARCH_OPTION[COMPUTER_TYPE][44]['linkfield']='os_licenseid';
 $SEARCH_OPTION[COMPUTER_TYPE][44]['name']=$LANG['computers'][11];
 
 $SEARCH_OPTION[COMPUTER_TYPE][8]['table']='glpi_computers';

@@ -385,8 +385,8 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>$datestring</td><td>$date\n";
-      if (!$template&&!empty($this->fields['tplname'])) {
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      if (!$template&&!empty($this->fields['template_name'])) {
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
       }
       echo "</td></tr>\n";
 

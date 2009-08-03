@@ -652,7 +652,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][11]."</td><td>";
-      autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["entities_id"]);
+      autocompletionTextField("os_licenseid","glpi_computers","os_licenseid",$this->fields["os_licenseid"],40,$this->fields["entities_id"]);
       echo"</td>";
       
       echo "<td>".$LANG['state'][0].":</td><td>";
@@ -691,8 +691,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       
       echo "<td colspan='2' align='center'>".$datestring.$date;
-      if (!$template && !empty($this->fields['tplname'])) {
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      if (!$template && !empty($this->fields['template_name'])) {
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
       }
       if (!empty($ID)&&$this->fields["is_ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
          echo "<br>";
