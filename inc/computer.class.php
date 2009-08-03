@@ -234,7 +234,7 @@ class Computer extends CommonDBTM {
 			}
 
 			// Update state of attached items
-			if ($updates[$i]=="states_id" && $CFG_GLPI["autoupdate_link_state"]<0){
+			if ($updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;

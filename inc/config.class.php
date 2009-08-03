@@ -201,13 +201,13 @@ class Config extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['common'][41] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][246] . " (" . $LANG['common'][44] . ")</td><td>";
-		dropdownContractAlerting("contract_alerts", $CFG_GLPI["contract_alerts"]);
+		dropdownContractAlerting("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
 		echo "</td>";
 	
 		echo "<td class='center'>" . $LANG['setup'][247] . " (" . $LANG['common'][44] . ")</td><td>";
-		echo "<select name=\"infocom_alerts\">";
-		echo "<option value=\"0\" " . ($CFG_GLPI["infocom_alerts"] == 0 ? " selected " : "") . " >-----</option>";
-		echo "<option value=\"" . pow(2, ALERT_END) . "\" " . ($CFG_GLPI["infocom_alerts"] == pow(2, ALERT_END) ? " selected " : "") . " >" . $LANG['financial'][80] . " </option>";
+		echo "<select name=\"default_infocom_alert\">";
+		echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") . " >-----</option>";
+		echo "<option value=\"" . pow(2, ALERT_END) . "\" " . ($CFG_GLPI["default_infocom_alert"] == pow(2, ALERT_END) ? " selected " : "") . " >" . $LANG['financial'][80] . " </option>";
 		echo "</select>";
 		echo "</td></tr>";
 	
@@ -318,8 +318,8 @@ class Config extends CommonDBTM {
 		echo $CFG_GLPI["text_login"];
 		echo "</textarea>";
 		echo "</td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
-		echo "<td class='center'>" . $LANG['setup'][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdesk_doc_url\" value=\"" . $CFG_GLPI["helpdesk_doc_url"] . "\"></td>";
+		echo "<td class='center'>" . $LANG['setup'][408] . "</td><td> <input size='30' type=\"text\" name=\"central_doc_url\" value=\"" . $CFG_GLPI["central_doc_url"] . "\"></td></tr>";
 
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['setup'][147] . "</strong></td></tr>";
 		
@@ -384,15 +384,6 @@ class Config extends CommonDBTM {
 		adminManagementDropdown("printers_management_restrict",$CFG_GLPI["printers_management_restrict"]);
 		echo "</td></tr>";
 
-		/* TODO : to remove and clean DB schema
-		echo "<tr class='tab_bg_2'>";
-		echo "<td class='center'> " . $LANG['setup'][276] . " </td><td>";
-		adminManagementDropdown("licenses_management_restrict",$CFG_GLPI["licenses_management_restrict"],1);				
-
-		echo "</td><td class='center'>".$LANG['setup'][277]."</td><td>";
-		dropdownYesNo("license_deglobalisation",$CFG_GLPI["license_deglobalisation"]);
-		echo"</td></tr>";
-		*/
 
 		echo "<tr><th colspan='2'>" . $LANG['setup'][134]. "</th><th colspan='2'></th></tr>";
 
@@ -488,9 +479,9 @@ class Config extends CommonDBTM {
 		echo " </td><td>&nbsp;</td></tr>";
 															
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['state'][0] . " </td><td>";
-		dropdownStateBehaviour("autoupdate_link_state", $LANG['setup'][197], $CFG_GLPI["autoupdate_link_state"]);
+		dropdownStateBehaviour("state_autoupdate_mode", $LANG['setup'][197], $CFG_GLPI["state_autoupdate_mode"]);
 		echo "</td><td>";
-		dropdownStateBehaviour("autoclean_link_state", $LANG['setup'][196], $CFG_GLPI["autoclean_link_state"]);
+		dropdownStateBehaviour("state_autoclean_mode", $LANG['setup'][196], $CFG_GLPI["state_autoclean_mode"]);
 		echo " </td><td>&nbsp;</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
@@ -771,20 +762,20 @@ class Config extends CommonDBTM {
 			}
 		
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
-			echo "<select name='cartridges_alert'> ";
-			echo "<option value='0' " . ($CFG_GLPI["cartridges_alert"] == 0 ? "selected" : "") . " >" . $LANG['setup'][307] . "</option>";
-			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][305] . "</option>";
-			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][308] . "</option>";
-			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][309] . "</option>";
+			echo "<select name='cartridges_alert_repeat'> ";
+			echo "<option value='0' " . ($CFG_GLPI["cartridges_alert_repeat"] == 0 ? "selected" : "") . " >" . $LANG['setup'][307] . "</option>";
+			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][305] . "</option>";
+			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][308] . "</option>";
+			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][309] . "</option>";
 			echo "</select>";
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
-			echo "<select name='consumables_alert'> ";
-			echo "<option value='0' " . ($CFG_GLPI["consumables_alert"] == 0 ? "selected" : "") . " >" . $LANG['setup'][307] . "</option>";
-			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][305] . "</option>";
-			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][308] . "</option>";
-			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][309] . "</option>";
+			echo "<select name='consumables_alert_repeat'> ";
+			echo "<option value='0' " . ($CFG_GLPI["consumables_alert_repeat"] == 0 ? "selected" : "") . " >" . $LANG['setup'][307] . "</option>";
+			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][305] . "</option>";
+			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][308] . "</option>";
+			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG['setup'][309] . "</option>";
 			echo "</select>";
 			echo "</td></tr>";
 

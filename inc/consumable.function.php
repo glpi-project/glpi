@@ -474,7 +474,7 @@ function showConsumableSummary(){
 function cron_consumable($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!$CFG_GLPI["use_mailing"]||!$CFG_GLPI["consumables_alert"]){
+	if (!$CFG_GLPI["use_mailing"]||!$CFG_GLPI["consumables_alert_repeat"]){
 		return false;
 	}
 
@@ -487,7 +487,7 @@ function cron_consumable($display=false){
 		FROM glpi_consumablesitems 
 		LEFT JOIN glpi_alerts ON (glpi_consumablesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CONSUMABLE_TYPE."') 
 		WHERE glpi_consumablesitems.is_deleted='0' AND glpi_consumablesitems.alarm_threshold>='0'
-			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
+			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert_repeat"].") < CURRENT_TIMESTAMP());";
 
 	$result=$DB->query($query);
 	$message=array();

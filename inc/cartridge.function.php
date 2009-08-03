@@ -625,7 +625,7 @@ function getCartridgeStatus($date_use,$date_out){
 function cron_cartridge($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!$CFG_GLPI["use_mailing"]||!$CFG_GLPI["cartridges_alert"]){
+	if (!$CFG_GLPI["use_mailing"]||!$CFG_GLPI["cartridges_alert_repeat"]){
 		return false;
 	}
 
@@ -638,7 +638,7 @@ function cron_cartridge($display=false){
 		FROM glpi_cartridgesitems 
 		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
 		WHERE glpi_cartridgesitems.is_deleted='0' AND glpi_cartridgesitems.alarm_threshold>='0'
-			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) 
+			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert_repeat"].") < CURRENT_TIMESTAMP())
 		ORDER BY glpi_cartridgesitems.name;";
 
 	$result=$DB->query($query);

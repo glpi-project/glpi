@@ -986,6 +986,9 @@ function update0721to080() {
       'glpi_computers' => array(array('from' => 'os_license_id', 'to' => 'os_licenseid', 'noindex'=>true),//
                         array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
+      'glpi_configs' => array(array('from' => 'helpdeskhelp_url', 'to' => 'helpdesk_doc_url', 'noindex'=>true),//
+                        array('from' => 'centralhelp_url', 'to' => 'central_doc_url', 'noindex'=>true),//
+                     ),
       'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
@@ -1113,6 +1116,17 @@ function update0721to080() {
                               array('from' => 'auto_update_check', 'to' => 'auto_update_check', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'dateformat', 'to' => 'date_format', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'proxy_port', 'to' => 'proxy_port', 'default' =>8080, 'noindex'=>true,'checkdatas'=>true),//
+                              array('from' => 'contract_alerts', 'to' => 'default_contract_alert', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'infocom_alerts', 'to' => 'default_infocom_alert', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'cartridges_alert', 'to' => 'cartridges_alert_repeat', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
+                              array('from' => 'consumables_alert', 'to' => 'consumables_alert_repeat', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
+                              array('from' => 'monitors_management_restrict', 'to' => 'monitors_management_restrict', 'default' =>2, 'noindex'=>true),//
+                              array('from' => 'phones_management_restrict', 'to' => 'phones_management_restrict', 'default' =>2, 'noindex'=>true),//
+                              array('from' => 'peripherals_management_restrict', 'to' => 'peripherals_management_restrict', 'default' =>2, 'noindex'=>true),//
+                              array('from' => 'printers_management_restrict', 'to' => 'printers_management_restrict', 'default' =>2, 'noindex'=>true),//
+                              array('from' => 'autoupdate_link_state', 'to' => 'state_autoupdate_mode', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'autoclean_link_state', 'to' => 'state_autoclean_mode', 'default' =>0, 'noindex'=>true),//
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
@@ -1201,7 +1215,14 @@ function update0721to080() {
       $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
       $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
-
+   if (FieldExists('glpi_configs', 'show_admin_doc')) {
+      $query="ALTER TABLE `glpi_configs` DROP `show_admin_doc`";
+      $DB->query($query) or die("0.80 drop show_admin_doc field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_configs', 'licenses_management_restrict')) {
+      $query="ALTER TABLE `glpi_configs` DROP `licenses_management_restrict`";
+      $DB->query($query) or die("0.80 drop licenses_management_restrict field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
    if (FieldExists('glpi_configs', 'nextprev_item')) {
       $query="ALTER TABLE `glpi_configs` DROP `nextprev_item`";
       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_configs " . $LANG['update'][90] . $DB->error());
