@@ -261,11 +261,11 @@ if (!defined('GLPI_ROOT')){
 		global $CFG_GLPI,$DB;
 
 		// Expire Event Log
-		if ($CFG_GLPI["expire_events"] > 0) {
-			$secs = $CFG_GLPI["expire_events"] * DAY_TIMESTAMP;
+		if ($CFG_GLPI["events_lifetime"] > 0) {
+			$secs = $CFG_GLPI["events_lifetime"] * DAY_TIMESTAMP;
 			$query_exp = "DELETE FROM glpi_events WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 			$DB->query($query_exp);
-			logInFile("cron","Cleaning log events passed from more than ".$CFG_GLPI["expire_events"]." days\n");
+			logInFile("cron","Cleaning log events passed from more than ".$CFG_GLPI["events_lifetime"]." days\n");
 		}
 	}
 
@@ -948,12 +948,12 @@ function html_clean($value){
 function convDateTime($time) { 
 	if (is_null($time)) return $time;
 
-	if (!isset($_SESSION["glpidateformat"])){
-		$_SESSION["glpidateformat"]=0;
+	if (!isset($_SESSION["glpidate_format"])){
+		$_SESSION["glpidate_format"]=0;
 	}
 
 	
-	switch ($_SESSION['glpidateformat']){
+	switch ($_SESSION['glpidate_format']){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day 
 			$date .= substr($time,5,2)."-";  // month
@@ -987,11 +987,11 @@ function convDate($time) {
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
 
-	if (!isset($_SESSION["glpidateformat"])){
-		$_SESSION["glpidateformat"]=0;
+	if (!isset($_SESSION["glpidate_format"])){
+		$_SESSION["glpidate_format"]=0;
 	}
 
-	switch ($_SESSION['glpidateformat']){
+	switch ($_SESSION['glpidate_format']){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day
 			$date .= substr($time,5,2)."-";  // month
@@ -1043,7 +1043,7 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 	}
 
 	// Display : clean display
-	switch ($_SESSION['glpinumberformat']){
+	switch ($_SESSION['glpinumber_format']){
 		case 2: // Other French
 			return number_format($number,$decimal,',',' ');
 			break;

@@ -390,49 +390,64 @@
 	define("PLUGIN_TOBECLEANED",5);
 
 	//DEVICE ARRAY.
-	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers","glpi_monitors","glpi_peripherals",
-		"glpi_softwares","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_suppliers","glpi_documents","glpi_phones",
-		"glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
+	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers",
+            "glpi_monitors","glpi_peripherals","glpi_softwares","glpi_cartridgesitems",
+            "glpi_contracts","glpi_contacts","glpi_suppliers","glpi_documents","glpi_phones",
+            "glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
 	
-	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers","glpi_monitors","glpi_peripherals","glpi_softwares",
-												  "glpi_phones","state_types","reservation_types","glpi_budgets");
+	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers",
+            "glpi_monitors","glpi_peripherals","glpi_softwares","glpi_phones","state_types",
+            "reservation_types","glpi_budgets");
 	
-	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_locations","glpi_knowbaseitemscategories","glpi_ticketscategories");
-	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
-	$CFG_GLPI["doc_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,
-		ENTERPRISE_TYPE,ENTITY_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,CONTRACT_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,
-		BUDGET_TYPE);
-	$CFG_GLPI["contract_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,
-		SOFTWARE_TYPE);
-	$CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,
-		SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,CONSUMABLE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
-	$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-	$CFG_GLPI["linkuser_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-	$CFG_GLPI["linkgroup_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-	$CFG_GLPI["helpdesk_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-	$CFG_GLPI["link_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,
-											SOFTWARE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE, CONTRACT_TYPE, BUDGET_TYPE);
+	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_locations",
+            "glpi_knowbaseitemscategories","glpi_ticketscategories");
+	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE);
+	$CFG_GLPI["doc_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,ENTERPRISE_TYPE,ENTITY_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,
+            CONTRACT_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,BUDGET_TYPE);
+	$CFG_GLPI["contract_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	$CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,CONSUMABLE_TYPE,
+            CARTRIDGE_TYPE,CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
+	$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	$CFG_GLPI["linkuser_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	$CFG_GLPI["linkgroup_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	$CFG_GLPI["helpdesk_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	$CFG_GLPI["link_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,
+            ENTERPRISE_TYPE,CONTACT_TYPE, CONTRACT_TYPE, BUDGET_TYPE);
 	$CFG_GLPI["helpdesk_visible_types"]=array(SOFTWARE_TYPE);
  	$CFG_GLPI["netport_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
  	$CFG_GLPI["massiveaction_noupdate_types"]=array(OCSNG_TYPE,ENTITY_TYPE,PROFILE_TYPE);
 	$CFG_GLPI["massiveaction_nodelete_types"]=array(ENTITY_TYPE);
 
-	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumablesitems",
-		"glpi_contacts","glpi_contracts","glpi_documents",
-		"glpi_locations","glpi_netpoints","glpi_suppliers","glpi_groups",
-		"glpi_mailcollectors","glpi_monitors","glpi_networkequipments","glpi_peripherals","glpi_phones","glpi_printers","glpi_softwares",
-		"glpi_softwareslicenses", "glpi_tickets","state_types","reservation_types","glpi_links","glpi_budgets");
+	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers",
+      "glpi_consumablesitems","glpi_contacts","glpi_contracts","glpi_documents","glpi_locations",
+      "glpi_netpoints","glpi_suppliers","glpi_groups","glpi_mailcollectors","glpi_monitors",
+      "glpi_networkequipments","glpi_peripherals","glpi_phones","glpi_printers","glpi_softwares",
+      "glpi_softwareslicenses", "glpi_tickets","state_types","reservation_types","glpi_links",
+      "glpi_budgets");
 
-	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
+	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",
+                                       STATE_TYPE=>"state_types");
 
-	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_suppliers", CONTRACT_TYPE=>"glpi_contracts", 
-		DOCUMENT_TYPE=>"glpi_documents", KNOWBASE_TYPE=>"glpi_knowbaseitems", NETWORKING_TYPE => "glpi_networkequipments", GROUP_TYPE => "glpi_groups",
-		SOFTWARE_TYPE => "glpi_softwares", SOFTWARELICENSE_TYPE => "glpi_softwareslicenses", PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links",
-		BUDGET_TYPE => "glpi_budgets");
+	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts",
+            ENTERPRISE_TYPE=>"glpi_suppliers", CONTRACT_TYPE=>"glpi_contracts",
+            DOCUMENT_TYPE=>"glpi_documents", KNOWBASE_TYPE=>"glpi_knowbaseitems",
+            NETWORKING_TYPE => "glpi_networkequipments", GROUP_TYPE => "glpi_groups",
+            SOFTWARE_TYPE => "glpi_softwares", SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
+            PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links",
+            BUDGET_TYPE => "glpi_budgets");
 		
 	// New config options which can be missing during migration
-	$CFG_GLPI["numberformat"]=0;
+	$CFG_GLPI["number_format"]=0;
 	$CFG_GLPI["decimal_number"]=2;
 
 	// Default debug options : may be locally overriden
@@ -440,7 +455,11 @@
 
 	
 	// User Prefs fields which override $CFG_GLPI config
-	$CFG_GLPI['user_pref_field']=array("language","list_limit","dateformat","numberformat","is_ids_visible","dropdown_limit","use_flat_dropdowntree","num_of_events","nextprev_item","show_jobs_at_login","priority_1","priority_2","priority_3","priority_4","priority_5","is_categorized_soft_expanded","is_not_categorized_soft_expanded","tracking_order","default_followup_private","request_type");
+	$CFG_GLPI['user_pref_field']=array("language","list_limit","date_format","number_format",
+               "is_ids_visible","dropdown_limit","use_flat_dropdowntree","nextprev_item",
+               "show_jobs_at_login","priority_1","priority_2","priority_3","priority_4",
+               "priority_5","is_categorized_soft_expanded","is_not_categorized_soft_expanded",
+               "tracking_order","default_followup_private","request_type");
 
 
 ?>
