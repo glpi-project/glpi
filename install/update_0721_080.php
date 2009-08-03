@@ -376,7 +376,7 @@ function update0721to080() {
                               'glpi_cartridges_printersmodels')),
                      ),
    'FK_glpi_consumables_type' => array(array('to' => 'consumablesitems_id',
-                           'noindex' => array('glpi_consumables'),
+                           'noindex' => array(''),
                            'tables' => array('glpi_consumables',)),
                      ),
    'FK_glpi_device' => array(array('to' => 'items_id',
@@ -1127,6 +1127,7 @@ function update0721to080() {
                               array('from' => 'printers_management_restrict', 'to' => 'printers_management_restrict', 'default' =>2, 'noindex'=>true),//
                               array('from' => 'autoupdate_link_state', 'to' => 'state_autoupdate_mode', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'autoclean_link_state', 'to' => 'state_autoclean_mode', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'name_display_order', 'to' => 'names_format', 'default' =>0, 'noindex'=>true,'comments'=>'see *NAME_BEFORE constant in define.php'),//
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
@@ -1227,10 +1228,6 @@ function update0721to080() {
       $query="ALTER TABLE `glpi_configs` DROP `nextprev_item`";
       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
-   if (FieldExists('glpi_users', 'nextprev_item')) {
-      $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
-      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
-   }
 
    if (FieldExists('glpi_configs', 'logotxt')) {
       $query="ALTER TABLE `glpi_configs` DROP `logotxt`";
@@ -1242,9 +1239,24 @@ function update0721to080() {
       $DB->query($query) or die("0.80 drop num_of_events field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_configs', 'tracking_order')) {
+      $query="ALTER TABLE `glpi_configs` DROP `tracking_order`";
+      $DB->query($query) or die("0.80 drop tracking_order field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_users', 'nextprev_item')) {
+      $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
+      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+
    if (FieldExists('glpi_users', 'num_of_events')) {
       $query="ALTER TABLE `glpi_users` DROP `num_of_events`";
       $DB->query($query) or die("0.80 drop num_of_events field in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_users', 'tracking_order')) {
+      $query="ALTER TABLE `glpi_users` DROP `tracking_order`";
+      $DB->query($query) or die("0.80 drop tracking_order field in glpi_users " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
@@ -1259,10 +1271,17 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add unicity index in glpi_cartridges_printersmodels " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!isIndex('glpi_computers_items', 'unicity')) {
+      $query=" ALTER TABLE `glpi_computers_items` ADD UNIQUE `unicity` ( `itemtype` , `items_id`, `computers_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_computers_items " . $LANG['update'][90] . $DB->error());
+   }
+
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
          'glpi_computers_devices' => array('FK_device'),
+         'glpi_computers_items' => array('connect','type'),
+         'glpi_consumables' => array('FK_glpi_cartridges_type'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {
@@ -1465,14 +1484,14 @@ function update0721to080() {
       $DB->query($query) or die("0.80 drop cache_max_size in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-	if (!FieldExists("glpi_configs","request_type")) {
-		$query = "ALTER TABLE `glpi_configs` ADD `request_type` INT( 1 ) NOT NULL DEFAULT 1";
-      $DB->query($query) or die("0.80 add request_type index in glpi_configs " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_configs","default_request_type")) {
+		$query = "ALTER TABLE `glpi_configs` ADD `default_request_type` INT( 11 ) NOT NULL DEFAULT 1";
+      $DB->query($query) or die("0.80 add default_request_type index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_users","request_type")) {
-		$query = "ALTER TABLE `glpi_users` ADD `request_type` INT( 1 ) NULL";
-      $DB->query($query) or die("0.80 add request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_users","default_request_type")) {
+		$query = "ALTER TABLE `glpi_users` ADD `default_request_type` INT( 11 ) NULL";
+      $DB->query($query) or die("0.80 add default_request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_configs","use_noright_users_add")) {

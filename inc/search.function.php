@@ -1770,7 +1770,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 	switch ($table.".".$field){
 		case "glpi_contacts.completename":
 			// Contact for display in the enterprise item
-			if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+			if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
 				$name1='firstname';
 				$name2='name';					
 			} else {
@@ -2028,7 +2028,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 					$ADD=" OR $table$linkfield.$field IS NULL";
 				}
 
-            if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+            if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
                $name1='firstname';
                $name2='realname';
             } else {
@@ -2116,7 +2116,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 			}
 			break;
 		case "glpi_contacts.completename":
-         if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+         if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
             $name1='firstname';
             $name2='name';
          } else {

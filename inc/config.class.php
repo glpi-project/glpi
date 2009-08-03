@@ -304,9 +304,9 @@ class Config extends CommonDBTM {
 			REALNAME_BEFORE=>$LANG['common'][48]." ".$LANG['common'][43],
 			FIRSTNAME_BEFORE=>$LANG['common'][43]." ".$LANG['common'][48]
 		);
-		echo "<select name='name_display_order'>";
+		echo "<select name='names_format'>";
 		foreach ($values as $key=>$val) {
-			echo "<option value='$key'" . ($CFG_GLPI["name_display_order"] == $key ? " selected " : "") . ">$val</option>";
+			echo "<option value='$key'" . ($CFG_GLPI["names_format"] == $key ? " selected " : "") . ">$val</option>";
 		}			
 		echo "</select>";
 		echo "</td></tr>";
@@ -664,14 +664,8 @@ class Config extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
 			dropdownYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
-			echo " </td><td>" . $LANG['setup'][40] . "</td><td>";
-			dropdownYesNo("tracking_order", $data["tracking_order"]);
-			echo "</td></tr>";
+			echo " </td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 			
-		} else {
-			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][40] . " </td><td>";
-			dropdownYesNo("tracking_order", $data["tracking_order"]);
-			echo "</td><td colspan='2'>&nbsp;</td></tr>";
 		}
 
 		if ($oncentral){

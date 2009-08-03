@@ -94,22 +94,6 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	echo displaySearchEndLine($output_type);
 }
 
-function getTrackingOrderPrefs ($ID) {
-	// Returns users preference settings for job tracking
-	// Currently only supports sort order
-
-
-	if($_SESSION["glpitracking_order"])
-	{
-		return "DESC";
-	} 
-	else
-	{
-		return "ASC";
-	}
-
-}
-
 function showCentralJobList($target,$start,$status="process",$showgrouptickets=true) {
 	
 
@@ -134,13 +118,13 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tickets " .
 				" WHERE ($search_assign) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tickets").
-				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+				" ORDER BY date_mod DESC";
 		
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
 		$query = "SELECT ID FROM glpi_tickets " .
 				" WHERE  ($search_users_id  (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tickets").
-				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+				" ORDER BY date_mod DESC";
 		
 	}
 
@@ -1636,8 +1620,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!in_array($sort,getTrackingSortOptions())) {
 		$sort="glpi_tickets.date_mod";
 	}
-	if ($order!="ASC" && $order!="DESC") {
-		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);		
+	if ($order!="ASC") {
+		$order=" DESC";		
 	}
 
 
