@@ -1187,6 +1187,7 @@ function update0721to080() {
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
+
    if (FieldExists('glpi_alerts', 'date')) {
       $query="ALTER TABLE `glpi_alerts` CHANGE `date` `date` DATETIME NOT NULL";
       $DB->query($query) or die("0.80 alter date field in glpi_alerts " . $LANG['update'][90] . $DB->error());
@@ -1199,6 +1200,15 @@ function update0721to080() {
    if (FieldExists('glpi_configs', 'sendexpire')) {
       $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
       $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_configs', 'nextprev_item')) {
+      $query="ALTER TABLE `glpi_configs` DROP `nextprev_item`";
+      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_users', 'nextprev_item')) {
+      $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
+      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists('glpi_configs', 'logotxt')) {

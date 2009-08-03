@@ -45,6 +45,7 @@ class Device extends CommonDBTM {
 	function __construct($dev_type) {
 		$this->devtype=$dev_type;
 		$this->table=getDeviceTable($dev_type);
+      $this->type=DEVICE_TYPE;
 	}
 
 

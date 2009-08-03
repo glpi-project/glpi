@@ -863,19 +863,6 @@ class CommonDBTM {
 	}
 
 	/**
-	 * Define onglets to display / WILL BE DELETED : use defineTabs instead
- 	 * Can define 'no_all_tab' item in array in order to not show all tab
-	 * 
-	 *@param $withtemplate is a template view ?
-	 * 
-	 *@return array containing the onglets
-	 * 
-	**/
-	function defineOnglets($withtemplate){
-		return array();
-	}
-
-	/**
 	 * Define tabs to display
 	 *
 	 *@param $withtemplate is a template view ?
@@ -887,67 +874,6 @@ class CommonDBTM {
 		return array();
 	}
 
-	/**
-	 * Show onglets / WILL BE DELETED : use showTabs instead
-	 *
-	 *@param $ID ID of the item to display
-	 *@param $withtemplate is a template view ?
-	 *@param $actif active onglet
-	 *@param $nextprevcondition condition used to find next/previous items
-	 *@param $nextprev_item field used to define next/previous items
-	 *@param $addurlparam parameters to add to the URLs 
-	 * 
-	 *@return Nothing () 
-	 *  
-	**/
-	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
-		global $LANG,$CFG_GLPI;
-
-		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
-	
-		$template="";
-		if(!empty($withtemplate)){
-			$template="&amp;withtemplate=$withtemplate";
-		}
-	
-		echo "<div id='barre_onglets'><ul id='onglet'>";
-	
-		if (count($onglets=$this->defineOnglets($withtemplate))){
-			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
-			//	$onglets[11]=$LANG['Menu'][17];
-			//	ksort($onglets);
-			//}
-			foreach ($onglets as $key => $val ) {
-				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template$addurlparam'>".$val."</a></li>";
-			}
-			if(empty($withtemplate)){
-				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG['common'][66]."</a></li>";
-			}
-		}
-	
-	
-	
-		displayPluginHeadings($target,$this->type,$withtemplate,$actif);
-	
-		echo "<li class='invisible'>&nbsp;</li>";
-	
-		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-			$ID=$ereg[1];
-			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) {
-				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
-			}
-			if ($next>0) {
-				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
-			}
-		}
-	
-		echo "</ul></div>";
-	} 
-
 
 	/**
 	 * Show onglets 
@@ -956,13 +882,11 @@ class CommonDBTM {
 	 *@param $withtemplate is a template view ?
 	 *@param $actif active onglet
 	 *@param $addparams array of parameters to add to URLs and ajax
-	 *@param $nextprevcondition condition used to find next/previous items
-	 *@param $nextprev_item field used to define next/previous items
-	 * 
+	 *
 	 *@return Nothing () 
 	 *  
 	**/
-	function showTabs($ID,$withtemplate,$actif,$addparams=array(),$nextprevcondition="",$nextprev_item=""){
+	function showTabs($ID,$withtemplate,$actif,$addparams=array()){
 		global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
 
 		$target=$_SERVER['PHP_SELF'];
@@ -981,16 +905,8 @@ class CommonDBTM {
 			}
 		}
 
-
 		if (empty($withtemplate) && $ID && $this->type>0){
 			echo "<div id='menu_navigate'>";
-			//$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			//$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-
-//			if ($this->type==TRACKING_TYPE && !haveRight("show_all_ticket","1")){
-//				$next=0;
-//				$prev=0;
-//			}
 
 			if (isset($this->sub_type)) {
 				$glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->sub_type];
@@ -1023,7 +939,7 @@ class CommonDBTM {
 					}
 				}
 			}
-			
+
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			echo "<ul>";
 			echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";

@@ -652,28 +652,6 @@ class Config extends CommonDBTM {
 
 		}
 	
-		if ($oncentral){
-
-			$nextprev_item = $data["nextprev_item"];
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][130] . " </td><td><select name=\"nextprev_item\">";
-			echo "<option value=\"ID\"";
-			if ($nextprev_item == "ID") {
-				echo " selected";
-			}
-			echo ">" . $LANG['common'][2] . " </option>";
-			echo "<option value=\"name\"";
-			if ($nextprev_item == "name") {
-				echo " selected";
-			}
-			echo ">" . $LANG['common'][16] . "</option>";
-			echo "</select></td>";
-	
-			echo "<td class='center'>&nbsp;</td><td>&nbsp;</td></tr>";
-		}
-
-
-
-	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
 		dropdownInteger("list_limit",$data["list_limit"],5,200,5);
