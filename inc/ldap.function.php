@@ -439,7 +439,7 @@ function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
 					if (in_array($config_ldap->fields['login_field'],$info[$ligne]))
 					{
 						$ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] = $info[$ligne][$config_ldap->fields['login_field']][0];
-						$user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+						$user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['time_offset']);
 					}
 				}
 				else
@@ -447,8 +447,8 @@ function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
 				//If ldap synchronisation
 					if (in_array($config_ldap->fields['login_field'],$info[$ligne]))
 					{
-						$ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-						$user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+						$ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['time_offset']);
+						$user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['time_offset']);
 					}
 				}
 			}	
@@ -797,11 +797,10 @@ function getAuthMethodFromDB($ID) {
 /** Converts LDAP timestamps over to Unix timestamps
  *
  * @param   $ldapstamp LDAP timestamp
- * @param   $timezone timezone used
- * @param   $addtimezone use timezone ?
+ * @param   $ldap_time_offset time offset 
  * @return unix timestamp
  */
-function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=false) {
+function ldapStamp2UnixStamp($ldapstamp,$ldap_time_offset=0) {
 	global $CFG_GLPI;
 	
 	$year=substr($ldapstamp,0,4);
@@ -811,23 +810,12 @@ function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=false) {
 	$minute=substr($ldapstamp,10,2);
 	$seconds=substr($ldapstamp,12,2);
 	$stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
-	//Add timezone delay
-	if ($addtimezone){
-			$stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
-	}
+
+	$stamp+= $CFG_GLPI["time_offset"]-$ldap_time_offset;
 	
 	return $stamp;
 }
 
-/** Computer delay between 2 timezones
- *
- * @param   $first first timestamp
- * @param   $second second timestamp
- * @return timestamp delay
- */
-function computeTimeZoneDelay($first,$second){
-	return ($first - $second) * HOUR_TIMESTAMP; 
-}
 
 /** Display LDAP filter
  *

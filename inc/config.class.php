@@ -145,7 +145,7 @@ class Config extends CommonDBTM {
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'> " . $LANG['setup'][186] . " </td><td>";
-		dropdownGMT("glpi_timezone", $CFG_GLPI["glpi_timezone"]);
+		dropdownGMT("time_offset", $CFG_GLPI["time_offset"]);
 		echo "</td>";								
 
 	

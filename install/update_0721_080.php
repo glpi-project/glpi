@@ -871,6 +871,7 @@ function update0721to080() {
             if (isset($update['default']) ) {
                $default_value=$update['default'];
             }
+
             // Manage NULL fields
             $query="UPDATE `$table` SET `$oldname`=0 WHERE `$oldname` IS NULL ;";
             $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -1043,9 +1044,12 @@ function update0721to080() {
       'glpi_authldaps' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true,'checkdatas'=>true),//
                      array('from' => 'ldap_search_for_groups', 'to' => 'group_search_type', 'default' =>0, 'noindex'=>true),//
                      array('from' => 'ldap_opt_deref', 'to' => 'deref_option', 'default' =>0, 'noindex'=>true),//
+                     array('from' => 'timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               ),
       'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true),//
                      ),
+      'glpi_configs' => array(array('from' => 'glpi_timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
+                              ),
 
 
 
@@ -1066,13 +1070,18 @@ function update0721to080() {
          if (isset($update['checkdatas']) ) {
             $check_datas=$update['checkdatas'];
          }
+         $addcomment="";
+         if (isset($update['comments']) ) {
+            $addcomment="COMMENT '".$update['comments']."'";
+         }
 
          // Rename field
          if (FieldExists($table, $oldname)) {
             if ($check_datas){
                /// TODO check datas : get data and make a intval of the retrieved data
+               /// Mysql will do automatically
             }
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value'  ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
@@ -1118,6 +1127,17 @@ function update0721to080() {
 
    
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+
+   // Update timezone values
+   if (FieldExists('glpi_configs', 'time_offset')) {
+      $query="UPDATE glpi_configs SET time_offset=time_offset*3600";
+      $DB->query($query) or die("0.80 update time_offset value in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_authldaps', 'time_offset')) {
+      $query="UPDATE glpi_authldaps SET time_offset=time_offset*3600";
+      $DB->query($query) or die("0.80 update time_offset value in glpi_authldaps " . $LANG['update'][90] . $DB->error());
+   }
+
 
    // Change defaults store values :
    if (FieldExists('glpi_softwares', 'sofwtares_id')) {
