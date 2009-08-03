@@ -946,7 +946,7 @@ function update0721to080() {
                         array('from' => 'ldap_basedn', 'to' => 'basedn', 'noindex'=>true),//
                         array('from' => 'ldap_rootdn', 'to' => 'rootdn', 'noindex'=>true),//
                         array('from' => 'ldap_pass', 'to' => 'rootdn_password', 'noindex'=>true),//
-                        array('from' => 'ldap_login', 'to' => 'login_field', 'noindex'=>true,''),//
+                        array('from' => 'ldap_login', 'to' => 'login_field', 'default'=>'uid','noindex'=>true,''),//
                         array('from' => 'ldap_field_group', 'to' => 'group_field', 'noindex'=>true),//
                         array('from' => 'ldap_group_condition', 'to' => 'group_condition', 'noindex'=>true),//
                         array('from' => 'ldap_field_group_member', 'to' => 'group_member_field', 'noindex'=>true),//
@@ -972,9 +972,14 @@ function update0721to080() {
          if (isset($update['noindex']) && $update['noindex']){
             $doindex=false;
          }
+         $default="DEFAULT NULL";
+         if (isset($update['default']) && !is_null($update['default'])){
+            $default="DEFAULT '".$update['default']."'";
+         }         
+
          // Rename field
          if (FieldExists($table, $oldname)) {
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` VARCHAR( 255 ) NULL DEFAULT NULL  ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` VARCHAR( 255 ) NULL $default  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
