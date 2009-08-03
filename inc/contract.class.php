@@ -53,7 +53,7 @@ class Contract extends CommonDBTM {
 
 	function post_getEmpty () {
 		global $CFG_GLPI;
-		$this->fields["alert"]=$CFG_GLPI["contract_alerts"];
+		$this->fields["alert"]=$CFG_GLPI["default_contract_alert"];
 	}
 
 	function cleanDBonPurge($ID) {

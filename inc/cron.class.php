@@ -116,10 +116,10 @@ class Cron {
 			}
 			// Mailing alerts if mailing activated
 			if ($CFG_GLPI["use_mailing"]){
-				if ($CFG_GLPI["cartridges_alert"]>0)
-					$this->taches["cartridge"]=$CFG_GLPI["cartridges_alert"];
-				if ($CFG_GLPI["consumables_alert"]>0)
-					$this->taches["consumable"]=$CFG_GLPI["consumables_alert"];
+				if ($CFG_GLPI["cartridges_alert_repeat"]>0)
+					$this->taches["cartridge"]=$CFG_GLPI["cartridges_alert_repeat"];
+				if ($CFG_GLPI["consumables_alert_repeat"]>0)
+					$this->taches["consumable"]=$CFG_GLPI["consumables_alert_repeat"];
 			}
 			if ($CFG_GLPI["use_licenses_alert"]>0){
 				$this->taches["software"]=DAY_TIMESTAMP;
