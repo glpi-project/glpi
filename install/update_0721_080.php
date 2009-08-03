@@ -658,13 +658,13 @@ function update0721to080() {
             }
             // If do index : delete old one / create new one
             if ($doindex){
-               if (isIndex($table, $oldname)) {
-                  $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-                  $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
-               }
                if (!isIndex($table, $newname)) {
                   $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                   $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+               }
+               if ($oldname!=$newname && isIndex($table, $oldname)) {
+                  $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+                  $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
                }
             }
          }
@@ -683,7 +683,7 @@ function update0721to080() {
                      ),
    'glpi_cartridgesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                      ),
-   'glpi_computers' => array(array('from' => 'is_template', 'to' => 'is_template', 'default' =>0 ),//
+   'glpi_computers' => array(array('from' => 'is_template', 'to' => 'is_template', 'default' =>0),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                            array('from' => 'ocs_import', 'to' => 'is_ocs_import', 'default' =>0 ),//
                      ),
@@ -886,13 +886,13 @@ function update0721to080() {
          }
          // If do index : delete old one / create new one
          if ($doindex){
-            if (isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
-            }
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if ($newname!=$oldname && isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
             }
          }
       }
@@ -989,13 +989,13 @@ function update0721to080() {
          }
          // If do index : delete old one / create new one
          if ($doindex){
-            if (isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
-            }
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if ($newname!=$oldname && isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
             }
          }
       }
@@ -1028,13 +1028,13 @@ function update0721to080() {
          }
          // If do index : delete old one / create new one
          if ($doindex){
-            if (isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
-            }
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if ($oldname!=$newname && isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
             }
          }
       }
@@ -1046,6 +1046,7 @@ function update0721to080() {
                               ),
       'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true),//
                      ),
+
 
 
                      );
@@ -1078,20 +1079,44 @@ function update0721to080() {
          }
          // If do index : delete old one / create new one
          if ($doindex){
-            if (isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
-            }
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if ($newname!=$oldname && isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
             }
          }
       }
    }
 
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
+   if (FieldExists('glpi_alerts', 'date')) {
+      $query="ALTER TABLE `glpi_alerts` CHANGE `date` `date` DATETIME NOT NULL";
+      $DB->query($query) or die("0.80 alter date field in glpi_alerts " . $LANG['update'][90] . $DB->error());
+   }
 
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
+   if (!isIndex('glpi_alerts', 'unicity')) {
+      $query=" ALTER TABLE `glpi_alerts` ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_alerts " . $LANG['update'][90] . $DB->error());
+   }
+
+   $indextodrop=array(
+         'glpi_alerts' => array('alert','FK_device'),
+      );
+   foreach ($indextodrop as $table => $tab){
+      foreach ($tab as $indexname){
+         if (isIndex($table, $indexname)) {
+            $query="ALTER TABLE `$table` DROP INDEX `$indexname`";
+            $DB->query($query) or die("0.80 alter $indexname index in $table " . $LANG['update'][90] . $DB->error());
+         }
+      }
+   }
+
+   
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 
    // Change defaults store values :

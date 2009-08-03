@@ -47,6 +47,14 @@ class Alert extends CommonDBTM {
 		$this->table="glpi_alerts";
 		$this->type=0;
 	}
+
+	function prepareInputForAdd($input) {
+      if (!isset($input['date']) || empty($input['date'])){
+         $input['date']=date("Y-m-d H:i:s");;
+      }
+		return $input;
+	}
+
 	/**
 	 * Retrieve an item from the database
 	 *
