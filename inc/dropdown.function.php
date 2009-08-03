@@ -2323,7 +2323,8 @@ function dropdownGMT($name,$value=''){
 		if ($element != 0)
 			$display_value = $LANG['gmt'][0].($element > 0?" +":" ").$element." ".$LANG['gmt'][1];
 		else $display_value = $LANG['gmt'][0];
-		echo "<option value='".($element*HOUR_TIMESTAMP)."'".($element==$value?" selected ":"").">".$display_value."</option>";
+      $eltvalue=$element*HOUR_TIMESTAMP;
+		echo "<option value='$eltvalue'".($eltvalue==$value?" selected ":"").">".$display_value."</option>";
 	}
 
 	echo "</select>";	
