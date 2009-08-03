@@ -88,11 +88,11 @@ if (!isset ($_POST["noAUTO"]) && $authtype=checkAlternateAuthSystems()) {
 			if (isset($identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]])) {
 				$ldap_method = $identificat->authtypes["ldap"][$identificat->user->fields["auths_id"]];
 				
-				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["use_tls"],$ldap_method["ldap_opt_deref"]);
+				$ds = connect_ldap($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"], $ldap_method["rootdn_password"], $ldap_method["use_tls"],$ldap_method["deref_option"]);
 				if ($ds) {
-					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
+					$user_dn = ldap_search_user_dn($ds, $ldap_method["basedn"], $ldap_method["login_field"], $user, $ldap_method["condition"]);
 					if ($user_dn) {
-						$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+						$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["rootdn"], $ldap_method["rootdn_password"]);
 					}
 				}
 			}

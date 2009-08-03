@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-07-31 09:38
+#GLPI Dump database on 2009-08-03 12:01
 
 ### Dump table glpi_alerts
 
@@ -23,31 +23,31 @@ DROP TABLE IF EXISTS `glpi_authldaps`;
 CREATE TABLE `glpi_authldaps` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_host` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_basedn` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_rootdn` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_pass` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_port` varchar(255) collate utf8_unicode_ci default '389',
-  `ldap_condition` text collate utf8_unicode_ci,
-  `ldap_login` varchar(255) collate utf8_unicode_ci default 'uid',
+  `host` varchar(255) collate utf8_unicode_ci default NULL,
+  `basedn` varchar(255) collate utf8_unicode_ci default NULL,
+  `rootdn` varchar(255) collate utf8_unicode_ci default NULL,
+  `rootdn_password` varchar(255) collate utf8_unicode_ci default NULL,
+  `port` int(11) NOT NULL default '389',
+  `condition` text collate utf8_unicode_ci,
+  `login_field` varchar(255) collate utf8_unicode_ci default NULL,
   `use_tls` tinyint(1) NOT NULL default '0',
-  `ldap_field_group` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_group_condition` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_search_for_groups` int(11) NOT NULL default '0',
-  `ldap_field_group_member` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_email` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_realname` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_firstname` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_phone` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_phone2` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_mobile` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_comments` text collate utf8_unicode_ci,
+  `group_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `group_condition` varchar(255) collate utf8_unicode_ci default NULL,
+  `group_search_type` int(11) NOT NULL default '0',
+  `group_member_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `email_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `realname_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `firstname_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `phone_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `phone2_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `mobile_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment_field` varchar(255) collate utf8_unicode_ci default NULL,
   `use_dn` tinyint(1) NOT NULL default '1',
   `timezone` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_opt_deref` int(1) NOT NULL default '0',
-  `ldap_field_title` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_type` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_language` varchar(255) collate utf8_unicode_ci default NULL,
+  `deref_option` int(11) NOT NULL default '0',
+  `title_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `category_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `language_field` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -58,8 +58,8 @@ DROP TABLE IF EXISTS `glpi_authldapsreplicates`;
 CREATE TABLE `glpi_authldapsreplicates` (
   `ID` int(11) NOT NULL auto_increment,
   `authldaps_id` int(11) NOT NULL default '0',
-  `ldap_host` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_port` int(11) NOT NULL default '389',
+  `host` varchar(255) collate utf8_unicode_ci default NULL,
+  `port` int(11) NOT NULL default '389',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `authldaps_id` (`authldaps_id`)
@@ -1242,9 +1242,8 @@ CREATE TABLE `glpi_events` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-03 12:01:49','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-23 17:50:02','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-07-31 09:38:10','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -2217,7 +2216,7 @@ CREATE TABLE `glpi_profiles` (
   `check_update` char(1) collate utf8_unicode_ci default NULL,
   `profile` char(1) collate utf8_unicode_ci default NULL,
   `user` char(1) collate utf8_unicode_ci default NULL,
-  `user_auth_method` char(1) collate utf8_unicode_ci default NULL,
+  `user_authtype` char(1) collate utf8_unicode_ci default NULL,
   `group` char(1) collate utf8_unicode_ci default NULL,
   `entity` char(1) collate utf8_unicode_ci default NULL,
   `transfer` char(1) collate utf8_unicode_ci default NULL,
@@ -3059,7 +3058,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'0','1','2009-07-31 09:38:10','2009-07-31 09:38:10','0','0','0','0','0',NULL,NULL,'0',NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'0','1','2009-08-03 12:01:49','2009-08-03 12:01:49','0','0','0','0','0',NULL,NULL,'0',NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);

@@ -945,10 +945,10 @@ function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password
 	//If connection is not successfull on this directory, try replicates (if replicates exists)
 	if (!$ds && $id>0){
 		foreach (getAllReplicateForAMaster($id) as $replicate){
-			$ds = connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$deref_options);
+			$ds = connect_ldap($replicate["host"], $replicate["port"], $rdn, $rpass, $use_tls,$deref_options);
 			// Test with login and password of the user
 			if (!$ds && !empty($login)) {
-				$ds = connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $login, $password, $use_tls,$deref_options);
+				$ds = connect_ldap($replicate["host"], $replicate["port"], $login, $password, $use_tls,$deref_options);
 			} 
 			if ($ds){
 				return $ds;
@@ -1051,7 +1051,7 @@ function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
 **/
 function ldap_auth($identificat,$login,$password, $ldap_method) {
 
-	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["use_tls"],$ldap_method["ldap_opt_deref"]);
+	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["host"], $ldap_method["port"], $ldap_method["basedn"], $ldap_method["rootdn"], $ldap_method["rootdn_password"], $ldap_method["login_field"],$login, $password, $ldap_method["condition"], $ldap_method["use_tls"],$ldap_method["deref_option"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
@@ -1251,7 +1251,7 @@ function showReplicatesList($target,$master_id){
 			echo "<input type='checkbox' name='item[" . $ldap_replicate["ID"] . "]' value='1' $sel>";
 			echo "</td>";
 			echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
-			echo "<td class='center'>".$ldap_replicate["ldap_host"]." : ".$ldap_replicate["ldap_port"] . "</td>"; 
+			echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"] . "</td>"; 
 			echo "<td align='center' colspan=4>"; 
 			echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["ID"]."]\" class=\"submit\" value=\"" . $LANG['buttons'][50] . "\" ></td>";
 			echo"</tr>";
@@ -1290,8 +1290,8 @@ function addNewReplicateForm($target, $master_id){
 	echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td><td class='center'>".$LANG['common'][52]."</td><td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
 	echo "<tr class='tab_bg_1'>"; 
 	echo "<td class='center'><input type='text' name='name'></td>";
-	echo "<td class='center'><input type='text' name='ldap_host'></td>"; 
-	echo "<td class='center'><input type='text' name='ldap_port'></td>";
+	echo "<td class='center'><input type='text' name='host'></td>"; 
+	echo "<td class='center'><input type='text' name='port'></td>";
 	echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
 	echo "<input type='hidden' name='authldaps_id' value=\"".$master_id."\">";
 	echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . $LANG['buttons'][2] . "\" class='submit'></td></tr>";
@@ -1311,15 +1311,15 @@ function getAllReplicateForAMaster($master_id){
 	global $DB;
 	
 	$replicates = array();
-	$query="SELECT ID, ldap_host, ldap_port 
+	$query="SELECT ID, host, port 
 		FROM glpi_authldapsreplicates 
 		WHERE authldaps_id = '".$master_id."'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($replicate = $DB->fetch_array($result)){
 			$replicates[] = array("ID"=>$replicate["ID"], 
-					"ldap_host"=>$replicate["ldap_host"], 
-					"ldap_port"=>$replicate["ldap_port"]);
+					"host"=>$replicate["host"], 
+					"port"=>$replicate["port"]);
 		}
 	}
 	return $replicates;
@@ -1335,7 +1335,7 @@ function getAllReplicatesNamesForAMaster($master_id){
 	$replicates = getAllReplicateForAMaster($master_id);
 	$str = "";
 	foreach ($replicates as $replicate){
-		$str.= ($str!=''?',':'')."&nbsp;".$replicate["ldap_host"].":".$replicate["ldap_port"];
+		$str.= ($str!=''?',':'')."&nbsp;".$replicate["host"].":".$replicate["port"];
 	}
 	return $str;	
 }

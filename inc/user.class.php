@@ -444,7 +444,7 @@ class User extends CommonDBTM {
 	
 	
 					$WHERE = "";
-					switch ($authtype["ldap_search_for_groups"]) {
+					switch ($authtype["group_search_type"]) {
 						case 0 : // user search
 							$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
 							break;
@@ -530,7 +530,7 @@ class User extends CommonDBTM {
 			for ($i=0;$i<count($v['count']);$i++) {
 				
 				//Try to find is DN in present and needed: if yes, then extract only the OU from it
-				if (($ldap_method["ldap_field_group"]=='dn' || in_array('ou',$group_fields)) 
+				if (($ldap_method["group_field"]=='dn' || in_array('ou',$group_fields)) 
 					&& isset($v[$i]['dn'])) {
 	                $v[$i]['ou'] = array();
 					for ($tmp=$v[$i]['dn'] ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
@@ -538,7 +538,7 @@ class User extends CommonDBTM {
 					}
 
 					// Search in DB for group with ldap_group_dn
-					if ($ldap_method["ldap_field_group"]=='dn' && count($v[$i]['ou'])>0) {
+					if ($ldap_method["group_field"]=='dn' && count($v[$i]['ou'])>0) {
 						
 						$query="SELECT ID FROM `glpi_groups`
 							WHERE `ldap_group_dn` IN ('".implode("','",$v[$i]['ou'])."')";
@@ -588,21 +588,21 @@ class User extends CommonDBTM {
 		if ($ldap_method["use_dn"]) {
 			$user_tmp = $userdn;					
 		} else {
-			//$user_tmp = $ldap_method["ldap_login"]."=".$login;
-			//Don't add $ldap_method["ldap_login"]."=", because sometimes it may not work (for example with posixGroup)
+			//$user_tmp = $ldap_method["login_field"]."=".$login;
+			//Don't add $ldap_method["login_field"]."=", because sometimes it may not work (for example with posixGroup)
 			$user_tmp = $login;
 		}
 			
-		$v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
+		$v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["basedn"], $user_tmp, $ldap_method["group_condition"], $ldap_method["group_member_field"],$ldap_method["use_dn"],$ldap_method["login_field"]);
 		//logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
 		
 		foreach ($v as $result) {
-			if (isset($result[$ldap_method["ldap_field_group_member"]]) 
-				&& is_array($result[$ldap_method["ldap_field_group_member"]])
-				&& count($result[$ldap_method["ldap_field_group_member"]])>0) {
+			if (isset($result[$ldap_method["group_member_field"]]) 
+				&& is_array($result[$ldap_method["group_member_field"]])
+				&& count($result[$ldap_method["group_member_field"]])>0) {
 			
 					$query="SELECT ID FROM `glpi_groups`
-						WHERE `ldap_group_dn` IN ('".implode("','",$result[$ldap_method["ldap_field_group_member"]])."')";
+						WHERE `ldap_group_dn` IN ('".implode("','",$result[$ldap_method["group_member_field"]])."')";
 						
 					foreach ($DB->request($query) as $group) {
 						$this->fields["_groups"][]=$group['ID'];										
@@ -626,7 +626,7 @@ class User extends CommonDBTM {
 		global $DB,$CFG_GLPI;
 
 		// we prevent some delay...
-		if (empty ($ldap_method["ldap_host"])) {
+		if (empty ($ldap_method["host"])) {
 			return false;
 		}
 
@@ -684,15 +684,15 @@ class User extends CommonDBTM {
 			}
 
 			///The groups are retrieved by looking into an ldap user object
-			if ($ldap_method["ldap_search_for_groups"] == 0 
-				|| $ldap_method["ldap_search_for_groups"] == 2) {
+			if ($ldap_method["group_search_type"] == 0 
+				|| $ldap_method["group_search_type"] == 2) {
 					$this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password);
 			}
 			
 					
 			///The groups are retrived by looking into an ldap group object
-			if ($ldap_method["ldap_search_for_groups"] == 1 
-				|| $ldap_method["ldap_search_for_groups"] == 2) {
+			if ($ldap_method["group_search_type"] == 1 
+				|| $ldap_method["group_search_type"] == 2) {
 					$this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
 			}
 
@@ -733,11 +733,11 @@ class User extends CommonDBTM {
 	 * @param $ldap_base_dn Basedn used
 	 * @param $user_dn Basedn of the user
 	 * @param $group_condition group search condition
-	 * @param $group_field_member group field member in a user object
+	 * @param $group_member_field group field member in a user object
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member,$use_dn,$login_field) {
+	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_member_field,$use_dn,$login_field) {
 
 		$groups = array ();
 		$listgroups = array ();
@@ -748,9 +748,9 @@ class User extends CommonDBTM {
 		);
 
 		if (!$use_dn)		
-			$filter = "(& $group_condition (|($group_field_member=$user_dn)($group_field_member=$login_field=$user_dn)))";
+			$filter = "(& $group_condition (|($group_member_field=$user_dn)($group_member_field=$login_field=$user_dn)))";
 		else
-			$filter = "(& $group_condition ($group_field_member=$user_dn))";
+			$filter = "(& $group_condition ($group_member_field=$user_dn))";
 
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
@@ -765,7 +765,7 @@ class User extends CommonDBTM {
 		}
 
 		//Create an array with the list of groups of the user
-		$groups[0][$group_field_member] = $listgroups;
+		$groups[0][$group_member_field] = $listgroups;
 		//Return the groups of the user
 		return $groups;
 	}
@@ -1149,7 +1149,7 @@ class User extends CommonDBTM {
 			}
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][48] . "</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_email']) && !empty ($authtype['ldap_field_realname'])) {
+			if ($extauth && isset ($authtype['email_field']) && !empty ($authtype['realname_field'])) {
 				echo $this->fields["realname"];
 			} else {
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
@@ -1157,7 +1157,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][43] . "</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_firstname']) && !empty ($authtype['ldap_field_firstname'])) {
+			if ($extauth && isset ($authtype['firstname_field']) && !empty ($authtype['firstname_field'])) {
 				echo $this->fields["firstname"];
 			} else {
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
@@ -1165,7 +1165,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][14] . "</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_email']) && !empty ($authtype['ldap_field_email'])) {
+			if ($extauth && isset ($authtype['email_field']) && !empty ($authtype['email_field'])) {
 				echo $this->fields["email"];
 			} else {
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
@@ -1177,7 +1177,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . "</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_phone']) && !empty ($authtype['ldap_field_phone'])) {
+			if ($extauth && isset ($authtype['phone_field']) && !empty ($authtype['phone_field'])) {
 				echo $this->fields["phone"];
 			} else {
 				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
@@ -1185,7 +1185,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . " 2</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_phone2']) && !empty ($authtype['ldap_field_phone2'])) {
+			if ($extauth && isset ($authtype['phone2_field']) && !empty ($authtype['phone2_field'])) {
 				echo $this->fields["phone2"];
 			} else {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
@@ -1193,7 +1193,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][42] . "</td><td>";
-			if ($extauth && isset ($authtype['ldap_field_mobile']) && !empty ($authtype['ldap_field_mobile'])) {
+			if ($extauth && isset ($authtype['mobile_field']) && !empty ($authtype['mobile_field'])) {
 				echo $this->fields["mobile"];
 			} else {
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);

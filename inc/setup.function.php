@@ -1029,7 +1029,7 @@ function showLdapAuthList($target) {
 		if ($DB->numrows($result)) {
 			while ($ldap_method = $DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-				"</td><td class='center'>" . $LANG['ldap'][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
+				"</td><td class='center'>" . $LANG['ldap'][21]." : ".$ldap_method["host"].":".$ldap_method["port"];
 				$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
 				if (!empty($replicates)){
 					echo "<br>".$LANG['ldap'][22]." : ".$replicates. "</td>";
@@ -1304,11 +1304,11 @@ function showSystemInformations () {
 		echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
 		foreach ($ldap_servers as $ID => $value) {
-				$fields = array ($LANG['common'][52]=>'ldap_host',
-									  $LANG['setup'][172]=>'ldap_port',
-									  $LANG['setup'][154]=>'ldap_basedn',
-									  $LANG['setup'][159]=>'ldap_condition',
-									  $LANG['setup'][155]=>'ldap_rootdn',
+				$fields = array ($LANG['common'][52]=>'host',
+									  $LANG['setup'][172]=>'port',
+									  $LANG['setup'][154]=>'basedn',
+									  $LANG['setup'][159]=>'condition',
+									  $LANG['setup'][155]=>'rootdn',
 									  $LANG['setup'][180]=>'use_tls');
 				$msg = '';
 				$first = true;
