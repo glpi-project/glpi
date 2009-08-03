@@ -459,7 +459,7 @@
                "is_ids_visible","dropdown_limit","use_flat_dropdowntree","nextprev_item",
                "show_jobs_at_login","priority_1","priority_2","priority_3","priority_4",
                "priority_5","is_categorized_soft_expanded","is_not_categorized_soft_expanded",
-               "tracking_order","default_followup_private","request_type");
+               "tracking_order","followup_private","request_type");
 
 
 ?>

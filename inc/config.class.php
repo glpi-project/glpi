@@ -707,7 +707,7 @@ class Config extends CommonDBTM {
 
 		if ($oncentral){
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][39] . " </td><td>";
-			dropdownYesNo("default_followup_private", $data["default_followup_private"]);
+			dropdownYesNo("followup_private", $data["followup_private"]);
 			echo "</td>";
 			echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
 			dropdownRequestType("request_type", $data["request_type"]);
