@@ -136,8 +136,8 @@ class Netdevice extends CommonDBTM {
 					$np= new Netport();
 					$np->getFromDB($data["ID"]);
 					unset($np->fields["ID"]);
-					unset($np->fields["ifaddr"]);
-					unset($np->fields["ifmac"]);
+					unset($np->fields["ip"]);
+					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();
@@ -403,11 +403,11 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
-      autocompletionTextField("ifaddr","glpi_networkequipments","ifaddr",$this->fields["ifaddr"],40,$this->fields["entities_id"]);
+      autocompletionTextField("ip","glpi_networkequipments","ip",$this->fields["ip"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
-      autocompletionTextField("ifmac","glpi_networkequipments","ifmac",$this->fields["ifmac"],40,$this->fields["entities_id"]);
+      autocompletionTextField("mac","glpi_networkequipments","mac",$this->fields["mac"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "</table>\n";
@@ -466,8 +466,8 @@ class Netport extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1){
-		//$tomatch=array("netpoints_id","ifaddr","ifmac");
-		// Only netpoint updates : ifaddr and ifmac may be different.
+		//$tomatch=array("netpoints_id","ip","mac");
+		// Only netpoint updates : ip and mac may be different.
 		$tomatch=array("netpoints_id");
 		$updates=array_intersect($updates,$tomatch);
 		if (count($updates)){
@@ -483,7 +483,7 @@ class Netport extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		// Is a preselected mac adress selected ?
 		if (isset($input['pre_mac'])&&!empty($input['pre_mac'])){
-			$input['ifmac']=$input['pre_mac'];
+			$input['mac']=$input['pre_mac'];
 			unset($input['pre_mac']);
 		}
 		return $input;

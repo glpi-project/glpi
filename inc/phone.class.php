@@ -133,8 +133,8 @@ class Phone extends CommonDBTM {
 					$np= new Netport();
 					$np->getFromDB($data["ID"]);
 					unset($np->fields["ID"]);
-					unset($np->fields["ifaddr"]);
-					unset($np->fields["ifmac"]);
+					unset($np->fields["ip"]);
+					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
 					$np->fields["items_id"]=$newID;
 					$np->addToDB();

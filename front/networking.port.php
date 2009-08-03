@@ -65,7 +65,7 @@ if(isset($_POST["add"])){
 	// Is a preselected mac adress selected ?
 	if (isset($_POST['pre_mac'])){
 		if (!empty($_POST['pre_mac']))
-			$_POST['ifmac']=$_POST['pre_mac'];
+			$_POST['mac']=$_POST['pre_mac'];
 		unset($_POST['pre_mac']);
 
 	}

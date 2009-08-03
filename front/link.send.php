@@ -99,15 +99,15 @@ if (isset($_GET["lID"])){
 		$ipmac=array();
 		$i=0;
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
-			$query2 = "SELECT ifaddr, ifmac 
+			$query2 = "SELECT ip, mac
 				FROM glpi_networkports 
 				WHERE (items_id = '".$_GET["ID"]."' AND itemtype = '".$_GET["itemtype"]."') 
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){
 				$data2=$DB->fetch_array($result2);
-				$ipmac[$i]['ifaddr']=$data2["ifaddr"];
-				$ipmac[$i]['ifmac']=$data2["ifmac"];
+				$ipmac[$i]['ip']=$data2["ip"];
+				$ipmac[$i]['mac']=$data2["mac"];
 			}
 		}
 
@@ -115,8 +115,8 @@ if (isset($_GET["lID"])){
 
 			if (count($ipmac)>0){
 				foreach ($ipmac as $key => $val){
-					$file=str_replace("[IP]",$val['ifaddr'],$file);
-					$file=str_replace("[MAC]",$val['ifmac'],$file);
+					$file=str_replace("[IP]",$val['ip'],$file);
+					$file=str_replace("[MAC]",$val['mac'],$file);
 				}
 			}
 		}

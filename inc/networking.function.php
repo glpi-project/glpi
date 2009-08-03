@@ -116,8 +116,8 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 				echo "</strong></td>";
 				echo "<td>" . $netport->fields["name"] . "</td>";
 				echo "<td>" . getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"]) . "</td>";
-				echo "<td>" . $netport->fields["ifaddr"] . "<br>";
-				echo $netport->fields["ifmac"] . "</td>";
+				echo "<td>" . $netport->fields["ip"] . "<br>";
+				echo $netport->fields["mac"] . "</td>";
 				echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;";
 				echo $netport->fields["subnet"] . "<br>";
 				echo $netport->fields["gateway"] . "</td>";
@@ -133,8 +133,8 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 				echo "<td class='tab_bg_2'>";
 				
 				if ($netport->getContact($netport->fields["ID"])) {
-					echo $netport->fields["ifaddr"] . "<br>";
-					echo $netport->fields["ifmac"];
+					echo $netport->fields["ip"] . "<br>";
+					echo $netport->fields["mac"];
 				}
 				
 				echo "</td></tr>";
@@ -342,7 +342,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . ":</td><td colspan='2'>";
-	autocompletionTextField("ifaddr", "glpi_networkports", "ifaddr", $netport->fields["ifaddr"], 40);
+	autocompletionTextField("ip", "glpi_networkports", "ip", $netport->fields["ip"], 40);
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
@@ -382,7 +382,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . ":</td><td colspan='2'>";
-	autocompletionTextField("ifmac", "glpi_networkports", "ifmac", $netport->fields["ifmac"], 40);
+	autocompletionTextField("mac", "glpi_networkports", "mac", $netport->fields["mac"], 40);
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . ":</td><td colspan='2'>";
@@ -571,8 +571,8 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	}
 
 /*	$items_to_check = array (
-		'ifmac' => $LANG['networking'][15],
-		'ifaddr' => $LANG['networking'][14],
+		'mac' => $LANG['networking'][15],
+		'ip' => $LANG['networking'][14],
 		'netpoints_id' => $LANG['networking'][51],
 		'subnet' => $LANG['networking'][61],
 		'netmask' => $LANG['networking'][60],
@@ -705,7 +705,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		}
 
 		if ($addmsg) {
-			echo "<br><div class='center'><strong>" . $LANG['networking'][44] . " " . $source->getName() . " - " . $ps->fields['logical_number'] . "  (" . $ps->fields['ifaddr'] . " - " . $ps->fields['ifmac'] . ") " . $LANG['networking'][45] . " " . $dest->getName() . " - " . $pd->fields['logical_number'] . " (" . $pd->fields['ifaddr'] . " - " . $pd->fields['ifmac'] . ") </strong></div>";
+			echo "<br><div class='center'><strong>" . $LANG['networking'][44] . " " . $source->getName() . " - " . $ps->fields['logical_number'] . "  (" . $ps->fields['ip'] . " - " . $ps->fields['mac'] . ") " . $LANG['networking'][45] . " " . $dest->getName() . " - " . $pd->fields['logical_number'] . " (" . $pd->fields['ip'] . " - " . $pd->fields['mac'] . ") </strong></div>";
 		}
 		return true;
 	} else {
@@ -751,12 +751,12 @@ function removeConnector($ID, $dohistory = true) {
 				/*
 				if ($npnet != -1 && $npdev != -1) {
 					// Unset MAC and IP from networking device
-					if ($np1->fields["ifmac"] == $np2->fields["ifmac"]) {
-						$query = "UPDATE glpi_networkports SET ifmac='' WHERE ID='$npnet'";
+					if ($np1->fields["mac"] == $np2->fields["mac"]) {
+						$query = "UPDATE glpi_networkports SET mac='' WHERE ID='$npnet'";
 						$DB->query($query);
 					}
-					if ($np1->fields["ifaddr"] == $np2->fields["ifaddr"]) {
-						$query = "UPDATE glpi_networkports SET ifaddr='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";
+					if ($np1->fields["ip"] == $np2->fields["ip"]) {
+						$query = "UPDATE glpi_networkports SET ip='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";
 						$DB->query($query);
 					}
 					// Unset netpoint from common device
@@ -812,10 +812,10 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	switch ($type) {
 		default :
 		case "IP" :
-			$field = "ifaddr";
+			$field = "ip";
 			break;
 		case "MAC" :
-			$field = "ifmac";
+			$field = "mac";
 			break;
 	}
 

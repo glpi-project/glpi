@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-08-04 01:01
+#GLPI Dump database on 2009-08-04 01:15
 
 ### Dump table glpi_alerts
 
@@ -1230,7 +1230,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-23 17:50:02','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 01:01:35','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 01:15:24','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1532,7 +1532,7 @@ CREATE TABLE `glpi_monitors` (
   `comment` text collate utf8_unicode_ci,
   `serial` varchar(255) collate utf8_unicode_ci default NULL,
   `otherserial` varchar(255) collate utf8_unicode_ci default NULL,
-  `size` int(3) NOT NULL default '0',
+  `size` int(11) NOT NULL default '0',
   `have_micro` tinyint(1) NOT NULL default '0',
   `have_speaker` tinyint(1) NOT NULL default '0',
   `have_subd` tinyint(1) NOT NULL default '0',
@@ -1635,8 +1635,8 @@ CREATE TABLE `glpi_networkequipments` (
   `is_deleted` tinyint(1) NOT NULL default '0',
   `is_template` tinyint(1) NOT NULL default '0',
   `template_name` varchar(255) collate utf8_unicode_ci default NULL,
-  `ifmac` varchar(255) collate utf8_unicode_ci default NULL,
-  `ifaddr` varchar(255) collate utf8_unicode_ci default NULL,
+  `mac` varchar(255) collate utf8_unicode_ci default NULL,
+  `ip` varchar(255) collate utf8_unicode_ci default NULL,
   `notepad` longtext collate utf8_unicode_ci,
   `users_id` int(11) NOT NULL default '0',
   `groups_id` int(11) NOT NULL default '0',
@@ -1718,8 +1718,8 @@ CREATE TABLE `glpi_networkports` (
   `itemtype` int(11) NOT NULL default '0',
   `logical_number` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `ifaddr` varchar(255) collate utf8_unicode_ci default NULL,
-  `ifmac` varchar(255) collate utf8_unicode_ci default NULL,
+  `ip` varchar(255) collate utf8_unicode_ci default NULL,
+  `mac` varchar(255) collate utf8_unicode_ci default NULL,
   `networkinterfaces_id` int(11) NOT NULL default '0',
   `netpoints_id` int(11) NOT NULL default '0',
   `netmask` varchar(255) collate utf8_unicode_ci default NULL,
@@ -3042,7 +3042,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 01:01:35','2009-08-04 01:01:35','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 01:15:24','2009-08-04 01:15:24','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);

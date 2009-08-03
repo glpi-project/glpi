@@ -1628,7 +1628,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0){
 				return " ORDER BY ".$table.$linkfield.".realname $order, ".$table.$linkfield.".firstname $order, ".$table.$linkfield.".name $order";
 			}
 			break;
-		case "glpi_networkports.ifaddr" :
+		case "glpi_networkports.ip" :
             		return " ORDER BY INET_ATON($table.$field) $order ";
             	break;
 	}
@@ -1818,7 +1818,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_tickets.count" :
 			return " COUNT(DISTINCT glpi_tickets$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
-		case "glpi_networkports.ifmac" :
+		case "glpi_networkports.mac" :
 			if ($itemtype==COMPUTER_TYPE)
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
@@ -2043,7 +2043,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 			}
 			break;
 
-		case "glpi_networkports.ifmac" :
+		case "glpi_networkports.mac" :
 			$ADD="";
 			if ($itemtype==COMPUTER_TYPE){
 				if ($nott) {
@@ -2425,7 +2425,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 		case "glpi_devicesprocessors.specif_default" :
 			return $data[$NAME.$num];
 			break;
-		case "glpi_networkports.ifmac" :
+		case "glpi_networkports.mac" :
 			$out="";
 			if ($itemtype==COMPUTER_TYPE){
 				$displayed=array();

@@ -774,7 +774,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			if (empty($ocsParams["IPADDRESS"])){
 				return -1;
 			} else {	
-				$sql_where.=" AND glpi_networkports.ifaddr IN ";
+				$sql_where.=" AND glpi_networkports.ip IN ";
 				for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
 					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
 				$sql_where.=")";
@@ -784,7 +784,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			if (empty($ocsParams["MACADDR"])){
 				return -1;
 			} else {	
-				$sql_where.=" AND glpi_networkports.ifmac IN ";
+				$sql_where.=" AND glpi_networkports.mac IN ";
 				for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
 					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
 				$sql_where.=")";
@@ -1603,7 +1603,7 @@ function ocsUnlockItems($computers_id,$field){
 							break;
 						case "import_ip":
 							$querySearchLocked = "SELECT * FROM glpi_networkports 
-								WHERE items_id='$computers_id' AND itemtype='".COMPUTER_TYPE."' AND ifaddr='$val'";
+								WHERE items_id='$computers_id' AND itemtype='".COMPUTER_TYPE."' AND ip='$val'";
 							break;
 						case "import_disk":
 							$querySearchLocked = "SELECT ID FROM glpi_computersdisks WHERE ID='$key'";
@@ -1791,7 +1791,7 @@ function ocsEditLock($target, $ID) {
 				$querySearchLockedIP = "SELECT * 
 					FROM glpi_networkports 
 					WHERE items_id='$ID' AND itemtype='".COMPUTER_TYPE."' 
-						AND ifaddr='".$tmp[0]."' AND ifmac='".$tmp[1]."'";
+						AND ip='".$tmp[0]."' AND mac='".$tmp[1]."'";
 				$resultSearchIP = $DB->query($querySearchLockedIP);
 				if ($DB->numrows($resultSearchIP) == 0) {
 			
@@ -2207,24 +2207,24 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 							//if never imported in 0.70, insert id in the array
 							if ($count_ip == 1) {
 								//get old IP in DB							
-								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networkports
+								$querySelectIDandIP = "SELECT ID,ip FROM glpi_networkports
 											WHERE itemtype='" . COMPUTER_TYPE . "' 
 											AND items_id='$computers_id' 
-											AND ifmac='" . $line2["MACADDR"] . "'" . "
+											AND mac='" . $line2["MACADDR"] . "'" . "
 											AND name='" . $line2["DESCRIPTION"] . "'";
 								$result = $DB->query($querySelectIDandIP);
 								if ($DB->numrows($result) > 0) {
 									while ($data = $DB->fetch_array($result)) {
 										//Upate import_ip column and import_ip array										
 										addToOcsArray($computers_id, array (
-											$data["ID"] => $data["ifaddr"].OCS_FIELD_SEPARATOR.$line2["MACADDR"]
+											$data["ID"] => $data["ip"].OCS_FIELD_SEPARATOR.$line2["MACADDR"]
 										), "import_ip");
-										$import_ip[$data["ID"]] = $data["ifaddr"];
+										$import_ip[$data["ID"]] = $data["ip"];
 									}
 								}
 							}
 							$netport=array();
-							$netport["ifmac"] = $line2["MACADDR"];
+							$netport["mac"] = $line2["MACADDR"];
 							$netport["networkinterfaces_id"] = externalImportDropdown("glpi_networkinterfaces", $line2["TYPE"]);
 							$netport["name"] = $line2["DESCRIPTION"];
 							$netport["items_id"] = $computers_id;
@@ -2266,7 +2266,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 								
 								//Update already in DB
 								if ($id_ip>0) {
-									$netport["ifaddr"] = $ocs_ips[$j];
+									$netport["ip"] = $ocs_ips[$j];
 									$netport["logical_number"] = $j;
 									$netport["ID"] = $id_ip;
 									$np->update($netport);
@@ -2278,7 +2278,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 									unset ($np->fields["netpoints_id"]);
 									unset ($netport["ID"]);
 									unset ($np->fields["ID"]);
-									$netport["ifaddr"] = $ocs_ips[$j];
+									$netport["ip"] = $ocs_ips[$j];
 									$netport["logical_number"] = $j;
 									$newID = $np->add($netport);
 									//ADD to array
@@ -3858,11 +3858,11 @@ function ocsMigrateImportIP($computers_id,$import_ip)
 				//Delete old value in the array (ID => IP)
 				deleteInOcsArray($computers_id,$importip_ID,"import_ip");
 				unset($import_ip[$importip_ID]);
-				$query="SELECT ifmac, ifaddr FROM glpi_networkports WHERE ID='$importip_ID'";
+				$query="SELECT mac, ip FROM glpi_networkports WHERE ID='$importip_ID'";
 				$result = $DB->query($query);
 				$datas = $DB->fetch_array($result);
-				$new_ip = (isset($datas["ifaddr"])?$datas["ifaddr"]:"");
-				$new_mac = (isset($datas["ifmac"])?$datas["ifmac"]:"");
+				$new_ip = (isset($datas["ip"])?$datas["ip"]:"");
+				$new_mac = (isset($datas["mac"])?$datas["mac"]:"");
 							
 				//Add new value (ID => IP.$$$$$.MAC)
 				addToOcsArray($computers_id,array($importip_ID=>$new_ip.OCS_FIELD_SEPARATOR.$new_mac),"import_ip");

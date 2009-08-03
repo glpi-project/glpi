@@ -341,13 +341,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][155]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE]['network']=$LANG['setup'][88];
 
 $SEARCH_OPTION[COMPUTER_TYPE][20]['table']='glpi_networkports';
-$SEARCH_OPTION[COMPUTER_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[COMPUTER_TYPE][20]['field']='ip';
 $SEARCH_OPTION[COMPUTER_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][20]['name']=$LANG['networking'][14];
 $SEARCH_OPTION[COMPUTER_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][21]['table']='glpi_networkports';
-$SEARCH_OPTION[COMPUTER_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[COMPUTER_TYPE][21]['field']='mac';
 $SEARCH_OPTION[COMPUTER_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][21]['name']=$LANG['networking'][15];
 $SEARCH_OPTION[COMPUTER_TYPE][21]['forcegroupby']=true;
@@ -700,13 +700,13 @@ $SEARCH_OPTION[NETWORKING_TYPE][14]['name']=$LANG['networking'][5];
 $SEARCH_OPTION[NETWORKING_TYPE][14]['datatype']='number';
 
 $SEARCH_OPTION[NETWORKING_TYPE][12]['table']='glpi_networkequipments';
-$SEARCH_OPTION[NETWORKING_TYPE][12]['field']='ifaddr';
-$SEARCH_OPTION[NETWORKING_TYPE][12]['linkfield']='ifaddr';
+$SEARCH_OPTION[NETWORKING_TYPE][12]['field']='ip';
+$SEARCH_OPTION[NETWORKING_TYPE][12]['linkfield']='ip';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['name']=$LANG['networking'][14]." ".$LANG['help'][26];
 
 $SEARCH_OPTION[NETWORKING_TYPE][13]['table']='glpi_networkequipments';
-$SEARCH_OPTION[NETWORKING_TYPE][13]['field']='ifmac';
-$SEARCH_OPTION[NETWORKING_TYPE][13]['linkfield']='ifmac';
+$SEARCH_OPTION[NETWORKING_TYPE][13]['field']='mac';
+$SEARCH_OPTION[NETWORKING_TYPE][13]['linkfield']='mac';
 $SEARCH_OPTION[NETWORKING_TYPE][13]['name']=$LANG['networking'][15]." ".$LANG['help'][26];
 
 $SEARCH_OPTION[NETWORKING_TYPE][32]['table']='glpi_networks';
@@ -744,13 +744,13 @@ $SEARCH_OPTION[NETWORKING_TYPE][86]['datatype']='bool';
 $SEARCH_OPTION[NETWORKING_TYPE]['network']=$LANG['setup'][88];
 
 $SEARCH_OPTION[NETWORKING_TYPE][20]['table']='glpi_networkports';
-$SEARCH_OPTION[NETWORKING_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[NETWORKING_TYPE][20]['field']='ip';
 $SEARCH_OPTION[NETWORKING_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][20]['name']=$LANG['networking'][14];
 $SEARCH_OPTION[NETWORKING_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][21]['table']='glpi_networkports';
-$SEARCH_OPTION[NETWORKING_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[NETWORKING_TYPE][21]['field']='mac';
 $SEARCH_OPTION[NETWORKING_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][21]['name']=$LANG['networking'][15];
 $SEARCH_OPTION[NETWORKING_TYPE][21]['forcegroupby']=true;
@@ -1103,13 +1103,13 @@ $SEARCH_OPTION[PRINTER_TYPE][86]['datatype']='bool';
 $SEARCH_OPTION[PRINTER_TYPE]['network']=$LANG['setup'][88];
 
 $SEARCH_OPTION[PRINTER_TYPE][20]['table']='glpi_networkports';
-$SEARCH_OPTION[PRINTER_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PRINTER_TYPE][20]['field']='ip';
 $SEARCH_OPTION[PRINTER_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][20]['name']=$LANG['networking'][14];
 $SEARCH_OPTION[PRINTER_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][21]['table']='glpi_networkports';
-$SEARCH_OPTION[PRINTER_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PRINTER_TYPE][21]['field']='mac';
 $SEARCH_OPTION[PRINTER_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][21]['name']=$LANG['networking'][15];
 $SEARCH_OPTION[PRINTER_TYPE][21]['forcegroupby']=true;
@@ -1757,13 +1757,13 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][80]['name']=$LANG['entity'][0];
 $SEARCH_OPTION[PERIPHERAL_TYPE]['network']=$LANG['setup'][88];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['table']='glpi_networkports';
-$SEARCH_OPTION[PERIPHERAL_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['field']='ip';
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['name']=$LANG['networking'][14];
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['table']='glpi_networkports';
-$SEARCH_OPTION[PERIPHERAL_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['field']='mac';
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['name']=$LANG['networking'][15];
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['forcegroupby']=true;
@@ -3525,13 +3525,13 @@ $SEARCH_OPTION[PHONE_TYPE][122]['datatype']='text';
 $SEARCH_OPTION[PHONE_TYPE]['network']=$LANG['setup'][88];
 
 $SEARCH_OPTION[PHONE_TYPE][20]['table']='glpi_networkports';
-$SEARCH_OPTION[PHONE_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PHONE_TYPE][20]['field']='ip';
 $SEARCH_OPTION[PHONE_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][20]['name']=$LANG['networking'][14];
 $SEARCH_OPTION[PHONE_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][21]['table']='glpi_networkports';
-$SEARCH_OPTION[PHONE_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PHONE_TYPE][21]['field']='mac';
 $SEARCH_OPTION[PHONE_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][21]['name']=$LANG['networking'][15];
 $SEARCH_OPTION[PHONE_TYPE][21]['forcegroupby']=true;

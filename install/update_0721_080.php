@@ -1001,6 +1001,11 @@ function update0721to080() {
       'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+               array('from' => 'ifmac', 'to' => 'mac', 'noindex'=>true),//
+               array('from' => 'ifaddr', 'to' => 'ip', 'noindex'=>true),//
+                     ),
+      'glpi_networkports' => array(array('from' => 'ifmac', 'to' => 'mac', 'noindex'=>true),//
+               array('from' => 'ifaddr', 'to' => 'ip', 'noindex'=>true),//
                      ),
       'glpi_peripherals' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
@@ -1161,6 +1166,8 @@ function update0721to080() {
       'glpi_logs' => array(array('from' => 'linked_action', 'to' => 'linked_action', 'default' =>0,'comments'=>'see define.php HISTORY_* constant'),//
                      ),
       'glpi_mailingsettings' => array(array('from' => 'item_type', 'to' => 'mailingtype', 'default' =>0,'noindex'=>true,'comments'=>'see define.php *_MAILING_TYPE constant'),//
+                     ),
+      'glpi_monitors' => array(array('from' => 'size', 'to' => 'size', 'default' =>0,'noindex'=>true),//
                      ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//

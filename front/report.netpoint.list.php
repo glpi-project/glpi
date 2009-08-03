@@ -51,7 +51,7 @@ checkRight("reports","r");
 		// Titre
 		echo "<div align='center'><h2>".$LANG['reports'][51]." $name</h2></div><br><br>";
 		$query="SELECT a.name as bureau, a.ID as ID, glpi_netpoints.name as prise, c.name as port, 
-				c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
+				c.ip,c.mac,c.ID AS IDport
 			FROM glpi_netpoints
 			LEFT JOIN glpi_locations a ON a.id=glpi_netpoints.locations_id
 			LEFT JOIN glpi_networkports c ON c.netpoints_id=glpi_netpoints.id
@@ -97,8 +97,8 @@ checkRight("reports","r");
 					$np->getFromDB($networkports_id_1);
 					$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 					$ordi=$np->device_name;
-					$ip2=$np->fields['ifaddr'];
-					$mac2=$np->fields['ifmac'];
+					$ip2=$np->fields['ip'];
+					$mac2=$np->fields['mac'];
 					$portordi=$np->fields['name'];
 				}
 

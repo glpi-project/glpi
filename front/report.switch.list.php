@@ -50,7 +50,7 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 	$name=getDropdownName("glpi_networkequipments",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
 
-	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networkequipments.name as switch
+	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.ID AS IDport, glpi_networkequipments.name as switch
 		FROM glpi_networkequipments
 		INNER JOIN glpi_networkports c ON c.itemtype=".NETWORKING_TYPE." AND c.items_id=glpi_networkequipments.ID
 		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
@@ -85,8 +85,8 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 				$np->getFromDB($networkports_id_1);
 				$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 				$ordi=$np->device_name;
-				$ip2=$np->fields['ifaddr'];
-				$mac2=$np->fields['ifmac'];
+				$ip2=$np->fields['ip'];
+				$mac2=$np->fields['mac'];
 				$portordi=$np->fields['name'];
 			} 
 			$ip=$ligne['ip'];
