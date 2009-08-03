@@ -634,17 +634,17 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
  * @param $nextprev_item field used to sort
  * @return the next ID, -1 if not exist
  */
-function getNextItem($table,$ID,$condition="",$nextprev_item=""){
+function getNextItem($table,$ID,$condition="",$nextprev_item="name"){
 	global $DB,$CFG_GLPI;
 
 	if (empty($nextprev_item)){
-		$nextprev_item=$_SESSION["glpinextprev_item"];
+		return false;
 	}
 
 	$search=$ID;
 
 	if ($nextprev_item!="ID"){
-		$query="SELECT `".$nextprev_item."` 
+		$query="SELECT `".$nextprev_item."`
 			FROM `$table` 
 			WHERE ID='$ID'";
 		if ($result=$DB->query($query)){
@@ -708,11 +708,11 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
  * @param $nextprev_item field used to sort
  * @return the previous ID, -1 if not exist
  */
-function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
+function getPreviousItem($table,$ID,$condition="",$nextprev_item="name"){
 	global $DB,$CFG_GLPI;
 
 	if (empty($nextprev_item)){
-		$nextprev_item=$_SESSION["glpinextprev_item"];
+		return false;
 	}
 
 	$search=$ID;

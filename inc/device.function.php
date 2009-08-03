@@ -527,6 +527,7 @@ function showDevicesList($devicetype,$target) {
 		$numrows_limit = $numrows;
 		$result_limit = $result;
 		if ($numrows_limit>0) {
+         initNavigateListItems(DEVICE_TYPE);
 			// Produce headline
 			echo "<div class='center'><table class='tab_cadre'><tr>";
 
@@ -541,10 +542,10 @@ function showDevicesList($devicetype,$target) {
 			echo "</tr>";
 
 			while ($data=$DB->fetch_array($result)) {
-				$ID = $data["ID"];
+            addToNavigateListItems(DEVICE_TYPE,$data["ID"]);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><strong>";
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;devicetype=$devicetype\">";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$data["ID"]."&amp;devicetype=$devicetype\">";
 				echo $data["designation"];
 				if ($_SESSION["glpiis_ids_visible"]) echo " (".$data["ID"].")";
 				echo "</a></strong></td>";
@@ -599,7 +600,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 
 
 	echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";
-	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("devicetype"=>$devicetype,"referer"=>$REFERER),"","designation");
+	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("devicetype"=>$devicetype,"referer"=>$REFERER));
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<div class='center' id='tabsbody'>";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
