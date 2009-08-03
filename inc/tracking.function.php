@@ -2492,7 +2492,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 		echo "<td>".$LANG['common'][77].":</td>";
 		echo "<td>";
 
-		$default_private=$_SESSION['glpidefault_followup_private'];
+		$default_private=$_SESSION['glpifollowup_private'];
 		if (isset($datas['is_private'])){
 			$default_private=$datas['is_private'];
 		}

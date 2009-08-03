@@ -212,7 +212,7 @@ function update0721to080() {
             }
       }
    }
-   if ($backup_tables){
+   if ($backup_tables) {
       echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
@@ -630,11 +630,11 @@ function update0721to080() {
 
 
    foreach ($foreignkeys as $oldname => $newnames) {
-      foreach ($newnames as $tab){
+      foreach ($newnames as $tab) {
          $newname=$tab['to'];
-         foreach ($tab['tables'] as $table){
+         foreach ($tab['tables'] as $table) {
             $doindex=true;
-            if (isset($tab['noindex'])&&in_array($table,$tab['noindex'])){
+            if (isset($tab['noindex'])&&in_array($table,$tab['noindex'])) {
                $doindex=false;
             }
             // Rename field
@@ -657,7 +657,7 @@ function update0721to080() {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
             // If do index : delete old one / create new one
-            if ($doindex){
+            if ($doindex) {
                if (!isIndex($table, $newname)) {
                   $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                   $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -719,7 +719,7 @@ function update0721to080() {
                            array('from' => 'ticket_title_mandatory', 'to' => 'is_ticket_title_mandatory', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'ticket_content_mandatory', 'to' => 'is_ticket_content_mandatory', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'ticket_category_mandatory', 'to' => 'is_ticket_category_mandatory', 'default' =>0, 'noindex'=>true ),//
-                           array('from' => 'followup_private', 'to' => 'default_followup_private', 'default' =>0, 'noindex'=>true ),//
+                           array('from' => 'followup_private', 'to' => 'followup_private', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'software_helpdesk_visible', 'to' => 'default_software_helpdesk_visible', 'default' =>1, 'noindex'=>true ),//
                      ),
    'glpi_consumablesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
@@ -847,29 +847,34 @@ function update0721to080() {
                      ),
    'glpi_users' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
                         array('from' => 'active','to' => 'is_active', 'default' =>1),//
-                        array('from' => 'jobs_at_login', 'to' => 'show_jobs_at_login', 'default' =>0, 'noindex'=>true),//
-                        array('from' => 'followup_private', 'to' => 'default_followup_private', 'default' =>0, 'noindex'=>true ),//
-                        array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
-                        array('from' => 'expand_soft_not_categorized', 'to' => 'is_not_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
-                        array('from' => 'flat_dropdowntree', 'to' => 'use_flat_dropdowntree', 'default' =>0, 'noindex'=>true ),//
-                        array('from' => 'view_ID', 'to' => 'is_ids_visible', 'default' =>0, 'noindex'=>true ),//
+                        array('from' => 'jobs_at_login', 'to' => 'show_jobs_at_login', 'default' =>NULL,'maybenull'=>true, 'noindex'=>true),//
+                        array('from' => 'followup_private', 'to' => 'followup_private', 'default' =>NULL, 'maybenull'=>true, 'noindex'=>true ),//
+                        array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>NULL, 'maybenull'=>true, 'noindex'=>true ),//
+                        array('from' => 'expand_soft_not_categorized', 'to' => 'is_not_categorized_soft_expanded', 'default' =>NULL, 'maybenull'=>true, 'noindex'=>true ),//
+                        array('from' => 'flat_dropdowntree', 'to' => 'use_flat_dropdowntree', 'default' =>NULL, 'maybenull'=>true,'noindex'=>true ),//
+                        array('from' => 'view_ID', 'to' => 'is_ids_visible', 'default' =>NULL, 'maybenull'=>true, 'noindex'=>true ),//
                      ),
 
    );
 
    foreach ($boolfields as $table => $tab) {
-      foreach ($tab as $update){
+      foreach ($tab as $update) {
          $newname=$update['to'];
          $oldname=$update['from'];
          $doindex=true;
-         if (isset($update['noindex']) && $update['noindex']){
+         if (isset($update['noindex']) && $update['noindex']) {
             $doindex=false;
          }
          // Rename field
          if (FieldExists($table, $oldname)) {
-            $default_value=0;
-            if (isset($update['default']) ) {
-               $default_value=$update['default'];
+            $NULL="NOT NULL";
+            if (isset($update['maybenull']) && $update['maybenull']) {
+               $NULL="NULL";
+            }
+
+            $default="DEFAULT NULL";
+            if (isset($update['default']) && !is_null($update['default'])) {
+               $default="DEFAULT ".$update['default'];
             }
 
             // Manage NULL fields
@@ -880,13 +885,13 @@ function update0721to080() {
             $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0; ";
             $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
 
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TINYINT( 1 ) NOT NULL DEFAULT '$default_value';";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default;";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
-         if ($doindex){
+         if ($doindex) {
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -941,7 +946,7 @@ function update0721to080() {
       if (isset($tab['long']) && $tab['long']) {
          $type="LONGTEXT";
       }
-      foreach ($tab['tables'] as $table){
+      foreach ($tab['tables'] as $table) {
          // Rename field
          if (FieldExists($table, $oldname)) {
 
@@ -995,15 +1000,15 @@ function update0721to080() {
                      ),
                   );
    foreach ($varcharfields as $table => $tab) {
-      foreach ($tab as $update){
+      foreach ($tab as $update) {
          $newname=$update['to'];
          $oldname=$update['from'];
          $doindex=true;
-         if (isset($update['noindex']) && $update['noindex']){
+         if (isset($update['noindex']) && $update['noindex']) {
             $doindex=false;
          }
          $default="DEFAULT NULL";
-         if (isset($update['default']) && !is_null($update['default'])){
+         if (isset($update['default']) && !is_null($update['default'])) {
             $default="DEFAULT '".$update['default']."'";
          }         
 
@@ -1015,7 +1020,7 @@ function update0721to080() {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
-         if ($doindex){
+         if ($doindex) {
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -1041,19 +1046,26 @@ function update0721to080() {
                array('from' => 'priority_5', 'to' => 'priority_5', 'length'=>20,'default' =>'#ffadad', 'noindex'=>true),//
                array('from' => 'founded_new_version', 'to' => 'founded_new_version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
                         ),
+      'glpi_users' => array(array('from' => 'language', 'to' => 'language', 'length'=>10,'default' =>NULL, 'noindex'=>true, 'comments'=>'see define.php CFG_GLPI[language] array'),//
+               array('from' => 'priority_1', 'to' => 'priority_1', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'priority_2', 'to' => 'priority_2', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'priority_3', 'to' => 'priority_3', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'priority_4', 'to' => 'priority_4', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'priority_5', 'to' => 'priority_5', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
+                        ),
 
                      );
    foreach ($charfields as $table => $tab) {
-      foreach ($tab as $update){
+      foreach ($tab as $update) {
          $newname=$update['to'];
          $oldname=$update['from'];
          $length=$update['length'];
          $doindex=true;
-         if (isset($update['noindex']) && $update['noindex']){
+         if (isset($update['noindex']) && $update['noindex']) {
             $doindex=false;
          }
          $default="DEFAULT NULL";
-         if (isset($update['default']) && !is_null($update['default'])){
+         if (isset($update['default']) && !is_null($update['default'])) {
             $default="DEFAULT '".$update['default']."'";
          }
          $addcomment="";
@@ -1069,7 +1081,7 @@ function update0721to080() {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
-         if ($doindex){
+         if ($doindex) {
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -1104,25 +1116,27 @@ function update0721to080() {
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
-      'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>0, 'noindex'=>true, 'maybenull'=>true),//
-                              array('from' => 'numberformat', 'to' => 'number_format', 'default' =>0, 'noindex'=>true, 'maybenull'=>true),//
+      'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
+                              array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               ),
 
 
 
                      );
    foreach ($intfields as $table => $tab) {
-      foreach ($tab as $update){
+      foreach ($tab as $update) {
          $newname=$update['to'];
          $oldname=$update['from'];
          $doindex=true;
-         if (isset($update['noindex']) && $update['noindex']){
+         if (isset($update['noindex']) && $update['noindex']) {
             $doindex=false;
          }
-         $default_value=0;
-         if (isset($update['default']) ) {
-            $default_value=$update['default'];
-         }
+
+         $default="DEFAULT NULL";
+         if (isset($update['default']) && !is_null($update['default'])) {
+            $default="DEFAULT ".$update['default']."";
+         }         
+
          $NULL="NOT NULL";
          if (isset($update['maybenull']) && $update['maybenull']) {
             $NULL="NULL";
@@ -1138,13 +1152,13 @@ function update0721to080() {
 
          // Rename field
          if (FieldExists($table, $oldname)) {
-            if ($check_datas){
+            if ($check_datas) {
                $query="SELECT ID, $oldname FROM $table;";
-               if ($result=$DB->query($query)){
-                  if ($DB->numrows($result)>0){
-                     while ($data = $DB->fetch_assoc($result)){
-                        if (empty($data[$oldname])){
-                           $data[$oldname]=$default_value;
+               if ($result=$DB->query($query)) {
+                  if ($DB->numrows($result)>0) {
+                     while ($data = $DB->fetch_assoc($result)) {
+                        if (empty($data[$oldname]) && isset($update['default'])) {
+                           $data[$oldname]=$update['default'];
                         }
                         $query="UPDATE $table SET $oldname='".intval($data[$oldname])."' WHERE ID = ".$data['ID'].";";
                         $DB->query($query);
@@ -1152,13 +1166,14 @@ function update0721to080() {
                   }
                }
             }
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) $NULL DEFAULT '$default_value' $addcomment ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment ";
+
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
-         if ($doindex){
+         if ($doindex) {
             if (!isIndex($table, $newname)) {
                $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
                $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
@@ -1218,8 +1233,8 @@ function update0721to080() {
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
          'glpi_computers_devices' => array('FK_device'),
       );
-   foreach ($indextodrop as $table => $tab){
-      foreach ($tab as $indexname){
+   foreach ($indextodrop as $table => $tab) {
+      foreach ($tab as $indexname) {
          if (isIndex($table, $indexname)) {
             $query="ALTER TABLE `$table` DROP INDEX `$indexname`";
             $DB->query($query) or die("0.80 alter $indexname index in $table " . $LANG['update'][90] . $DB->error());
@@ -1272,17 +1287,17 @@ function update0721to080() {
       $news   = array("ticketscategories_id", "itemtype", "ice users_id","users_id_assign",
                "groups_id_assign","suppliers_id_assign","users_id_recipient");
 
-      foreach ($olds as $key => $val){
+      foreach ($olds as $key => $val) {
          $olds[$key]="&$val=";
       }
-      foreach ($news as $key => $val){
+      foreach ($news as $key => $val) {
          $news[$key]="&$val=";
       }
 
       $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
-      if ($result = $DB->query($query)){
-         if ($DB->numrows($result)>0){
-            while ($data = $DB->fetch_assoc($result)){
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
                $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
                $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
             }
@@ -1292,16 +1307,16 @@ function update0721to080() {
       $olds = array("deleted",);
    
       $news   = array("is_deleted",);
-      foreach ($olds as $key => $val){
+      foreach ($olds as $key => $val) {
          $olds[$key]="&$val=";
       }
-      foreach ($news as $key => $val){
+      foreach ($news as $key => $val) {
          $news[$key]="&$val=";
       }
       $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." ;";
-      if ($result = $DB->query($query)){
-         if ($DB->numrows($result)>0){
-            while ($data = $DB->fetch_assoc($result)){
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
                $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
                $DB->query($query2) or die("0.80 update all bookmarks " . $LANG['update'][90] . $DB->error());
             }
@@ -1326,20 +1341,20 @@ function update0721to080() {
                            'FK_group'=>'groups_id','assign'=>'users_id_assign',
                            'assign_group'=>'groups_id_assign','device_type'=>'itemtype',
                            'FK_entities'=>'entities_id');
-   foreach ($changes as $ruletype => $tab){
+   foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(ID) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
-      if ($result = $DB->query($query)){
-         if ($DB->numrows($result)>0){
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
             // Get rule string
             $rules=$DB->result($result,0,0);
             // Update actions
-            foreach ($tab as $old => $new){
+            foreach ($tab as $old => $new) {
                $query = "UPDATE glpi_rulesactions SET field='$new' WHERE field='$old' AND rules_id IN ($rules);";
                $DB->query($query) or die("0.80 update datas for rules actions " . $LANG['update'][90] . $DB->error());
             }
             // Update criterias
-            foreach ($tab as $old => $new){
+            foreach ($tab as $old => $new) {
                $query = "UPDATE glpi_rulescriterias SET criteria='$new' WHERE criteria='$old' AND rules_id IN ($rules);";
                $DB->query($query) or die("0.80 update datas for rules criterias " . $LANG['update'][90] . $DB->error());
             }
@@ -1364,16 +1379,16 @@ function update0721to080() {
 
    // Change mailgate search pref : add ative
 	$query="SELECT DISTINCT users_id FROM glpi_displayprefs WHERE itemtype=".MAILGATE_TYPE.";";
-	if ($result = $DB->query($query)){
-		if ($DB->numrows($result)>0){
-			while ($data = $DB->fetch_assoc($result)){
+	if ($result = $DB->query($query)) {
+		if ($DB->numrows($result)>0) {
+			while ($data = $DB->fetch_assoc($result)) {
 				$query="SELECT max(rank) FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND itemtype=".MAILGATE_TYPE.";";
 				$result=$DB->query($query);
 				$rank=$DB->result($result,0,0);
 				$rank++;
 				$query="SELECT * FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND num=2 AND itemtype=".MAILGATE_TYPE.";";
-				if ($result2=$DB->query($query)){
-					if ($DB->numrows($result2)==0){
+				if ($result2=$DB->query($query)) {
+					if ($DB->numrows($result2)==0) {
 						$query="INSERT INTO glpi_displayprefs (itemtype ,`num` ,`rank` ,users_id) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['users_id']."');";
 						$DB->query($query);
 					}
@@ -1385,23 +1400,23 @@ function update0721to080() {
 	
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulescachesoftwares'); // Updating schema
 	
-	if (FieldExists("glpi_rulescachesoftwares","ignore_ocs_import")){
+	if (FieldExists("glpi_rulescachesoftwares","ignore_ocs_import")) {
 		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
       $DB->query($query) or die("0.80 alter table glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
-	if (!FieldExists("glpi_rulescachesoftwares","helpdesk_visible")){
+	if (!FieldExists("glpi_rulescachesoftwares","helpdesk_visible")) {
 		$query = "ALTER TABLE `glpi_rulescachesoftwares` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
       $DB->query($query) or die("0.80 add helpdesk_visible index in glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
    
-   if (!FieldExists("glpi_entities","cache_sons")){
+   if (!FieldExists("glpi_entities","cache_sons")) {
       $query = "ALTER TABLE `glpi_entities` ADD `cache_sons` LONGTEXT NOT NULL ; ";
       $DB->query($query) or die("0.80 add cache_sons field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
    
-   if (!FieldExists("glpi_entities","cache_ancestors")){
+   if (!FieldExists("glpi_entities","cache_ancestors")) {
       $query = "ALTER TABLE `glpi_entities` ADD `cache_ancestors` LONGTEXT NOT NULL ; ";
       $DB->query($query) or die("0.80 add cache_ancestors field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
@@ -1409,27 +1424,27 @@ function update0721to080() {
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
 
-   if (FieldExists("glpi_configs","use_cache")){
+   if (FieldExists("glpi_configs","use_cache")) {
       $query = "ALTER TABLE `glpi_configs`  DROP `use_cache`;";
       $DB->query($query) or die("0.80 drop use_cache in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-   if (FieldExists("glpi_configs","cache_max_size")){
+   if (FieldExists("glpi_configs","cache_max_size")) {
       $query = "ALTER TABLE `glpi_configs`  DROP `cache_max_size`;";
       $DB->query($query) or die("0.80 drop cache_max_size in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-	if (!FieldExists("glpi_configs","request_type")){
+	if (!FieldExists("glpi_configs","request_type")) {
 		$query = "ALTER TABLE `glpi_configs` ADD `request_type` INT( 1 ) NOT NULL DEFAULT 1";
       $DB->query($query) or die("0.80 add request_type index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_users","request_type")){
+	if (!FieldExists("glpi_users","request_type")) {
 		$query = "ALTER TABLE `glpi_users` ADD `request_type` INT( 1 ) NULL";
       $DB->query($query) or die("0.80 add request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_configs","use_noright_users_add")){
+	if (!FieldExists("glpi_configs","use_noright_users_add")) {
 		$query = "ALTER TABLE `glpi_configs` ADD `use_noright_users_add` tinyint( 1 ) NOT NULL DEFAULT '1'";
       $DB->query($query) or die("0.80 add use_noright_users_add index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
