@@ -923,7 +923,10 @@ function update0721to080() {
                                  'glpi_softwareslicenses','glpi_softwaresversions','glpi_computerstypes',
                                  'glpi_monitorstypes','glpi_networkequipmentstypes','glpi_peripheralstypes',
                                  'glpi_phonestypes','glpi_printerstypes','glpi_users',),
-                     ));
+                     ),
+      'ldap_condition' =>  array('to' => 'condition',
+                           'tables' => array('glpi_authldaps')),
+);
    foreach ($textfields as $oldname => $tab) {
       $newname=$tab['to'];
       foreach ($tab['tables'] as $table){
@@ -937,6 +940,149 @@ function update0721to080() {
          }
       }
    }
+
+   $varcharfields=array(
+      'glpi_authldaps' => array(array('from' => 'ldap_host', 'to' => 'host', 'noindex'=>true),//
+                        array('from' => 'ldap_basedn', 'to' => 'basedn', 'noindex'=>true),//
+                        array('from' => 'ldap_rootdn', 'to' => 'rootdn', 'noindex'=>true),//
+                        array('from' => 'ldap_pass', 'to' => 'rootdn_password', 'noindex'=>true),//
+                        array('from' => 'ldap_login', 'to' => 'login_field', 'noindex'=>true,''),//
+                        array('from' => 'ldap_field_group', 'to' => 'group_field', 'noindex'=>true),//
+                        array('from' => 'ldap_group_condition', 'to' => 'group_condition', 'noindex'=>true),//
+                        array('from' => 'ldap_field_group_member', 'to' => 'group_member_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_email', 'to' => 'email_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_realname', 'to' => 'realname_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_firstname', 'to' => 'firstname_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_phone', 'to' => 'phone_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_phone2', 'to' => 'phone2_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_mobile', 'to' => 'mobile_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_comments', 'to' => 'comment_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_title', 'to' => 'title_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_type', 'to' => 'category_field', 'noindex'=>true),//
+                        array('from' => 'ldap_field_language', 'to' => 'language_field', 'noindex'=>true),//
+                     ),
+      'glpi_authldapsreplicates' => array(array('from' => 'ldap_host', 'to' => 'host', 'noindex'=>true),//
+                     ),
+                  );
+   foreach ($varcharfields as $table => $tab) {
+      foreach ($tab as $update){
+         $newname=$update['to'];
+         $oldname=$update['from'];
+         $doindex=true;
+         if (isset($update['noindex']) && $update['noindex']){
+            $doindex=false;
+         }
+         // Rename field
+         if (FieldExists($table, $oldname)) {
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` VARCHAR( 255 ) NULL DEFAULT NULL  ";
+            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+         } else {
+            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+         }
+         // If do index : delete old one / create new one
+         if ($doindex){
+            if (isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if (!isIndex($table, $newname)) {
+               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+   }
+
+   $charfields=array(
+      'glpi_profiles' => array(array('from' => 'user_auth_method', 'to' => 'user_authtype', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
+                        ),
+
+                     );
+   foreach ($charfields as $table => $tab) {
+      foreach ($tab as $update){
+         $newname=$update['to'];
+         $oldname=$update['from'];
+         $length=$update['length'];
+         $doindex=true;
+         if (isset($update['noindex']) && $update['noindex']){
+            $doindex=false;
+         }
+         $default="DEFAULT NULL";
+         if (isset($update['default']) && !is_null($update['default'])){
+            $default="DEFAULT '".$update['default']."'";
+         }         
+         // Rename field
+         if (FieldExists($table, $oldname)) {
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` CHAR( $length ) NULL $default  ";
+            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+         } else {
+            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+         }
+         // If do index : delete old one / create new one
+         if ($doindex){
+            if (isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if (!isIndex($table, $newname)) {
+               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+   }
+   $intfields=array(
+      'glpi_authldaps' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true,'checkdatas'=>true),//
+                     array('from' => 'ldap_search_for_groups', 'to' => 'group_search_type', 'default' =>0, 'noindex'=>true),//
+                     array('from' => 'ldap_opt_deref', 'to' => 'deref_option', 'default' =>0, 'noindex'=>true),//
+                              ),
+      'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true),//
+                     ),
+
+
+                     );
+   foreach ($intfields as $table => $tab) {
+      foreach ($tab as $update){
+         $newname=$update['to'];
+         $oldname=$update['from'];
+         $doindex=true;
+         if (isset($update['noindex']) && $update['noindex']){
+            $doindex=false;
+         }
+         $default_value=0;
+         if (isset($update['default']) ) {
+            $default_value=$update['default'];
+         }
+         $check_datas=false;
+         if (isset($update['checkdatas']) ) {
+            $check_datas=$update['checkdatas'];
+         }
+
+         // Rename field
+         if (FieldExists($table, $oldname)) {
+            if ($check_datas){
+               /// TODO check datas : get data and make a intval of the retrieved data
+            }
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value'  ";
+            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+         } else {
+            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+         }
+         // If do index : delete old one / create new one
+         if ($doindex){
+            if (isIndex($table, $oldname)) {
+               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+            }
+            if (!isIndex($table, $newname)) {
+               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+   }
+
+
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 

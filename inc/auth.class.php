@@ -594,22 +594,22 @@ class AuthLDAP extends CommonDBTM {
 	}
 	
 	function post_getEmpty () {
-		$this->fields["ldap_port"]="389";
-		$this->fields['ldap_condition']='';
-		$this->fields["ldap_login"]="uid";
+		$this->fields["port"]="389";
+		$this->fields['condition']='';
+		$this->fields["login_field"]="uid";
 		$this->fields['use_tls']=0;
-		$this->fields['ldap_field_group']='';
-		$this->fields['ldap_group_condition']='';
-		$this->fields['ldap_search_for_groups']=0;
-		$this->fields['ldap_field_group_member']='';
-		$this->fields["ldap_field_email"]="mail";
-		$this->fields["ldap_field_realname"]="cn";
-		$this->fields['ldap_field_firstname']='givenname';
-		$this->fields["ldap_field_phone"]="telephonenumber";
-		$this->fields['ldap_field_phone2']='';
-		$this->fields['ldap_field_mobile']='';
-		$this->fields['ldap_field_comments']='';
-		$this->fields['ldap_field_title']='';
+		$this->fields['group_field']='';
+		$this->fields['group_condition']='';
+		$this->fields['group_search_type']=0;
+		$this->fields['group_member_field']='';
+		$this->fields["email_field"]="mail";
+		$this->fields["realname_field"]="cn";
+		$this->fields['firstname_field']='givenname';
+		$this->fields["phone_field"]="telephonenumber";
+		$this->fields['phone2_field']='';
+		$this->fields['mobile_field']='';
+		$this->fields['comment_field']='';
+		$this->fields['title_field']='';
 		$this->fields['use_dn']=0;
 	}
 	
@@ -622,23 +622,23 @@ class AuthLDAP extends CommonDBTM {
 	
 		switch($type){
 			case 'AD':
-			$this->fields['ldap_port']="389";
-			$this->fields['ldap_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
-			$this->fields['ldap_login']='samaccountname';
+			$this->fields['port']="389";
+			$this->fields['condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
+			$this->fields['login_field']='samaccountname';
 			$this->fields['use_tls']=0;
-			$this->fields['ldap_field_group']='memberof';
-			$this->fields['ldap_group_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
-			$this->fields['ldap_search_for_groups']=0;
-			$this->fields['ldap_field_group_member']='';
-			$this->fields['ldap_field_email']='mail';
-			$this->fields['ldap_field_realname']='sn';
-			$this->fields['ldap_field_firstname']='givenname';
-			$this->fields['ldap_field_phone']='telephonenumber';
-			$this->fields['ldap_field_phone2']='othertelephone';
-			$this->fields['ldap_field_mobile']='mobile';
-			$this->fields['ldap_field_comments']='info';
-			$this->fields['ldap_field_title']='title';			
-			$this->fields['ldap_field_language']='preferredlanguage';
+			$this->fields['group_field']='memberof';
+			$this->fields['group_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
+			$this->fields['group_search_type']=0;
+			$this->fields['group_member_field']='';
+			$this->fields['email_field']='mail';
+			$this->fields['realname_field']='sn';
+			$this->fields['firstname_field']='givenname';
+			$this->fields['phone_field']='telephonenumber';
+			$this->fields['phone2_field']='othertelephone';
+			$this->fields['mobile_field']='mobile';
+			$this->fields['comment_field']='info';
+			$this->fields['title_field']='title';			
+			$this->fields['language_field']='preferredlanguage';
 			$this->fields['use_dn']=1;
 			break;
 			default:
@@ -649,8 +649,8 @@ class AuthLDAP extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input){
-		if (isset($input["ldap_pass"])&&empty($input["ldap_pass"])){
-			unset($input["ldap_pass"]);
+		if (isset($input["rootdn_password"])&&empty($input["rootdn_password"])){
+			unset($input["rootdn_password"]);
 		}
 		return $input;
 	}
@@ -708,16 +708,16 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "<td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["ID"] . "</strong></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
-			echo "<td class='center'>" . $LANG['setup'][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input type=\"text\" name=\"host\" value=\"" . $this->fields["host"] . "\"></td>";
+			echo "<td class='center'>" . $LANG['setup'][172] . "</td><td><input id='port' type=\"text\" name=\"port\" value=\"" . $this->fields["port"] . "\"></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['setup'][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][154] . "</td><td><input type=\"text\" name=\"basedn\" value=\"" . $this->fields["basedn"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][155] . "</td><td><input type=\"text\" name=\"rootdn\" value=\"" . $this->fields["rootdn"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"\" ></td>";
-			echo "<td class='center'>" . $LANG['setup'][228] . "</td><td><input type=\"text\" name=\"ldap_login\" value=\"" . $this->fields["ldap_login"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][156] . "</td><td><input type=\"password\" name=\"rootdn_password\" value=\"\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][228] . "</td><td><input type=\"text\" name=\"login_field\" value=\"" . $this->fields["login_field"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][159] . "</td><td colspan='3'><input type=\"text\" name=\"ldap_condition\" value=\"" . $this->fields["ldap_condition"] . "\" size='100'></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][159] . "</td><td colspan='3'><input type=\"text\" name=\"condition\" value=\"" . $this->fields["condition"] . "\" size='100'></td></tr>";
 
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>" . $LANG['setup'][180] . "</td><td>";
@@ -743,26 +743,26 @@ class AuthLDAP extends CommonDBTM {
 			$alias_options[LDAP_DEREF_ALWAYS] = $LANG['ldap'][32];
 			$alias_options[LDAP_DEREF_SEARCHING] = $LANG['ldap'][33];
 			$alias_options[LDAP_DEREF_FINDING] = $LANG['ldap'][34];
-			dropdownArrayValues("ldap_opt_deref",$alias_options,$this->fields["ldap_opt_deref"]);
+			dropdownArrayValues("deref_option",$alias_options,$this->fields["deref_option"]);
 			echo"</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG['setup'][259] . "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][254] . "</td><td>";
-			$ldap_search_for_groups = $this->fields["ldap_search_for_groups"];
+			$group_search_type = $this->fields["group_search_type"];
 
-			echo "<select name='ldap_search_for_groups'>\n";
-			echo "<option value='0' " . (($ldap_search_for_groups == 0) ? " selected " : "") . ">" . $LANG['setup'][256] . "</option>\n";
-			echo "<option value='1' " . (($ldap_search_for_groups == 1) ? " selected " : "") . ">" . $LANG['setup'][257] . "</option>\n";
-			echo "<option value='2' " . (($ldap_search_for_groups == 2) ? " selected " : "") . ">" . $LANG['setup'][258] . "</option>\n";
+			echo "<select name='group_search_type'>\n";
+			echo "<option value='0' " . (($group_search_type == 0) ? " selected " : "") . ">" . $LANG['setup'][256] . "</option>\n";
+			echo "<option value='1' " . (($group_search_type == 1) ? " selected " : "") . ">" . $LANG['setup'][257] . "</option>\n";
+			echo "<option value='2' " . (($group_search_type == 2) ? " selected " : "") . ">" . $LANG['setup'][258] . "</option>\n";
 			echo "</select>\n";
 			echo "</td>";
-			echo "<td class='center'>" . $LANG['setup'][260] . "</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"" . $this->fields["ldap_field_group"] . "\" ></td></tr>";
+			echo "<td class='center'>" . $LANG['setup'][260] . "</td><td><input type=\"text\" name=\"group_field\" value=\"" . $this->fields["group_field"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][253] . "</td><td>";
-			echo "<input type=\"text\" name=\"ldap_group_condition\" value=\"" . $this->fields["ldap_group_condition"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['setup'][255] . "</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"" . $this->fields["ldap_field_group_member"] . "\" ></td></tr>";
+			echo "<input type=\"text\" name=\"group_condition\" value=\"" . $this->fields["group_condition"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][255] . "</td><td><input type=\"text\" name=\"group_member_field\" value=\"" . $this->fields["group_member_field"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][262] . "</td>";
 			echo "<td>";
@@ -772,20 +772,20 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG['setup'][167] . "</th></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['common'][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][48] . "</td><td><input type=\"text\" name=\"realname_field\" value=\"" . $this->fields["realname_field"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['common'][43] . "</td><td><input type=\"text\" name=\"firstname_field\" value=\"" . $this->fields["firstname_field"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['setup'][14] . "</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"" . $this->fields["ldap_field_email"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . "</td><td><input type=\"text\" name=\"comment_field\" value=\"" . $this->fields["comment_field"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][14] . "</td><td><input type=\"text\" name=\"email_field\" value=\"" . $this->fields["email_field"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['help'][35] . "</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"" . $this->fields["ldap_field_phone"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['help'][35] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['help'][35] . "</td><td><input type=\"text\" name=\"phone_field\" value=\"" . $this->fields["phone_field"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['help'][35] . " 2</td><td><input type=\"text\" name=\"phone2_field\" value=\"" . $this->fields["phone2_field"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['users'][1] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][42] . "</td><td><input type=\"text\" name=\"mobile_field\" value=\"" . $this->fields["mobile_field"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['users'][1] . " </td><td><input type=\"text\" name=\"title_field\" value=\"" . $this->fields["title_field"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['users'][2] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['setup'][41] . " </td><td><input type=\"text\" name=\"ldap_field_language\" value=\"" . $this->fields["ldap_field_language"] . "\" ></td></tr>";			
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['users'][2] . "</td><td><input type=\"text\" name=\"category_field\" value=\"" . $this->fields["category_field"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][41] . " </td><td><input type=\"text\" name=\"language_field\" value=\"" . $this->fields["language_field"] . "\" ></td></tr>";			
 			
 			//echo "<td colspan='2'></td></tr>";
 
@@ -842,15 +842,15 @@ class AuthLdapReplicate extends CommonDBTM{
 	}
 	
 	function prepareInputForAdd($input){
-		if (isset($input["ldap_port"])&&intval($input["ldap_port"])==0){
-			$input["ldap_port"]=389;
+		if (isset($input["port"])&&intval($input["port"])==0){
+			$input["port"]=389;
 		}
 		return $input;
 	}
 	
 	function prepareInputForUpdate($input){
-		if (isset($input["ldap_port"])&&intval($input["ldap_port"])==0){
-			$input["ldap_port"]=389;
+		if (isset($input["port"])&&intval($input["port"])==0){
+			$input["port"]=389;
 		}
 		return $input;
 	}

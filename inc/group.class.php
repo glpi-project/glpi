@@ -61,7 +61,7 @@ class Group extends CommonDBTM{
 
 	function post_getEmpty () {
 		global $CFG_GLPI;
-		//$this->fields["ldap_field"]=$CFG_GLPI["ldap_field_group"];
+		//$this->fields["ldap_field"]=$CFG_GLPI["group_field"];
 	}
 
 

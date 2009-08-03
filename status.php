@@ -115,8 +115,8 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 		foreach ($ldap_methods as $method){
 			echo " ".$method['name'];
 
-			if (try_connect_ldap($method['ldap_host'],$method['ldap_port'], 
-				 $method["ldap_rootdn"], $method["ldap_pass"], $method["use_tls"],"","",$method["ldap_opt_deref"],$method['ID'])){
+			if (try_connect_ldap($method['host'],$method['port'], 
+				 $method["rootdn"], $method["rootdn_password"], $method["use_tls"],"","",$method["deref_option"],$method['ID'])){
 				echo "_OK";
 			} else {
 				echo "_PROBLEM";

@@ -604,17 +604,17 @@ function getLDAPSyncFields($authtype_array){
 
 	$ret=array(); 
       
-	$fields=array('ldap_login'=>'name', 
-			'ldap_field_email'=>'email', 
-			'ldap_field_realname'=>'realname', 
- 			'ldap_field_firstname'=>'firstname', 
- 			'ldap_field_phone'=>'phone', 
- 			'ldap_field_phone2'=>'phone2', 
- 			'ldap_field_mobile'=>'mobile', 
- 			'ldap_field_comments'=>'comment', 
- 			'ldap_field_title'=>'userstitles_id',
- 			'ldap_field_type'=>'userscategories_id',
- 			'ldap_field_language'=>'language'		
+	$fields=array('login_field'=>'name', 
+			'email_field'=>'email', 
+			'realname_field'=>'realname', 
+ 			'firstname_field'=>'firstname', 
+ 			'phone_field'=>'phone', 
+ 			'phone2_field'=>'phone2', 
+ 			'mobile_field'=>'mobile', 
+ 			'comment_field'=>'comment', 
+ 			'title_field'=>'userstitles_id',
+ 			'category_field'=>'userscategories_id',
+ 			'language_field'=>'language'		
  		); 
  	foreach ($fields as $key => $val){ 
  		if (isset($authtype_array[$key])){ 
