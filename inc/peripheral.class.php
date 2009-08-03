@@ -270,19 +270,19 @@ class Peripheral  extends CommonDBTM  {
 		if(!$template) {
 			echo $LANG['common'][2]." ".$this->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG['peripherals'][30].": ".$this->fields["tplname"];
-			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+			echo $LANG['peripherals'][30].": ".$this->fields["template_name"];
+			echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $LANG['common'][6]."&nbsp;: ";
-			autocompletionTextField("tplname","glpi_peripherals","tplname",$this->fields["tplname"],40,$this->fields["entities_id"]);
+			autocompletionTextField("template_name","glpi_peripherals","template_name",$this->fields["template_name"],40,$this->fields["entities_id"]);
 		}
 		if (isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
 		}
 
 		echo "</th><th  align='center'>".$datestring.$date;
-		if (!$template&&!empty($this->fields['tplname']))
-			echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+		if (!$template&&!empty($this->fields['template_name']))
+			echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
 		echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1' valign='top'>";

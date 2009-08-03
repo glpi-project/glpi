@@ -1476,8 +1476,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$query = "SHOW COLUMNS FROM glpi_computers";
 			$result = $DB->query($query);
 			$i = 0;
-         /// TODO delete os_license_id after db clean
-         $exclude_fields=array('entities_id','users_id_tech','users_id','os_license_id','domains_id','networks_id','states_id');
+
+         $exclude_fields=array('entities_id','users_id_tech','users_id','domains_id','networks_id','states_id');
 			while($line = $DB->fetch_array($result)) {
             if (!in_array($line["Field"],$exclude_fields)){
                if($i != 0) {

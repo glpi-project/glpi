@@ -1061,7 +1061,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 			if (!empty ($line["WINPRODKEY"]))
 				$compupdate["os_license_number"] = $line["WINPRODKEY"];
 			if (!empty ($line["WINPRODID"]))
-				$compupdate["os_license_id"] = $line["WINPRODID"];
+				$compupdate["os_licenseid"] = $line["WINPRODID"];
 		}
 
 		$sql_computer = "SELECT glpi_operatingsystems.name as os_name, glpi_operatingsystemsservicepacks.name as os_sp" .
@@ -1527,7 +1527,7 @@ function getOcsLockableFields(){
 			"operatingsystemsservicepacks_id"=>$LANG['computers'][53],
 			"operatingsystemsversions_id"=>$LANG['computers'][52],
 			"os_license_number"=>$LANG['computers'][10],
-			"os_license_id"=>$LANG['computers'][11],
+			"os_licenseid"=>$LANG['computers'][11],
 			"users_id"=>$LANG['common'][34],
 			"locations_id"=>$LANG['common'][15],
 			"groups_id"=>$LANG['common'][35],

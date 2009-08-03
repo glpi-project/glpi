@@ -978,6 +978,21 @@ function update0721to080() {
       'glpi_authmails' => array(array('from' => 'imap_auth_server', 'to' => 'connect_string', 'noindex'=>true),//
                         array('from' => 'imap_host', 'to' => 'host', 'noindex'=>true),//
                      ),
+      'glpi_computers' => array(array('from' => 'os_license_id', 'to' => 'os_licenseid', 'noindex'=>true),//
+                        array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_peripherals' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_phones' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_printers' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
+      'glpi_softwares' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     ),
                   );
    foreach ($varcharfields as $table => $tab) {
       foreach ($tab as $update){
@@ -1139,6 +1154,7 @@ function update0721to080() {
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
+         'glpi_computers_devices' => array('FK_device'),
       );
    foreach ($indextodrop as $table => $tab){
       foreach ($tab as $indexname){

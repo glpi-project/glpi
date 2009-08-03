@@ -1377,14 +1377,14 @@ class CommonDBTM {
 
 		if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
 			
-			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-			echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . ": " . $this->fields["tplname"];
+			echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
+			echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . ": " . $this->fields["template_name"];
 			
 		} else if (!empty($withtemplate) && $withtemplate == 1) {
 			
 			echo "<input type='hidden' name='is_template' value='1' />\n";
 			echo $LANG['common'][6].": "; 
-			autocompletionTextField("tplname",$this->table,"tplname",$this->fields["tplname"],25,$this->fields["entities_id"]); 			
+			autocompletionTextField("template_name",$this->table,"template_name",$this->fields["template_name"],25,$this->fields["entities_id"]);
 		
 		} else if (empty($ID)||$ID<0){
 

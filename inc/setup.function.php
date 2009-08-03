@@ -918,39 +918,39 @@ function listTemplates($itemtype, $target, $add = 0) {
 	switch ($itemtype) {
 		case COMPUTER_TYPE :
 			$title = $LANG['Menu'][0];
-			$query = "SELECT * FROM glpi_computers WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_computers WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case NETWORKING_TYPE :
 			$title = $LANG['Menu'][1];
-			$query = "SELECT * FROM glpi_networkequipments WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_networkequipments WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case MONITOR_TYPE :
 			$title = $LANG['Menu'][3];
-			$query = "SELECT * FROM glpi_monitors WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_monitors WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case PRINTER_TYPE :
 			$title = $LANG['Menu'][2];
-			$query = "SELECT * FROM glpi_printers WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_printers WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case PERIPHERAL_TYPE :
 			$title = $LANG['Menu'][16];
-			$query = "SELECT * FROM glpi_peripherals WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_peripherals WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case SOFTWARE_TYPE :
 			$title = $LANG['Menu'][4];
-			$query = "SELECT * FROM glpi_softwares WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_softwares WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case PHONE_TYPE :
 			$title = $LANG['Menu'][34];
-			$query = "SELECT * FROM glpi_phones WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_phones WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by template_name";
 			break;
 		case OCSNG_TYPE :
 			$title = $LANG['Menu'][33];
-			$query = "SELECT * FROM glpi_ocsservers WHERE is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_ocsservers WHERE is_template = '1' ORDER by template_name";
 			break;
       case BUDGET_TYPE :
          $title = $LANG['financial'][87];
-         $query = "SELECT * FROM glpi_budgets WHERE is_template = '1' ORDER by tplname";
+         $query = "SELECT * FROM glpi_budgets WHERE is_template = '1' ORDER by template_name";
          break;
 
 	}
@@ -973,8 +973,8 @@ function listTemplates($itemtype, $target, $add = 0) {
 	
 		while ($data = $DB->fetch_array($result)) {
 
-			$templname = $data["tplname"];
-			if ($_SESSION["glpiis_ids_visible"]||empty($data["tplname"])){
+			$templname = $data["template_name"];
+			if ($_SESSION["glpiis_ids_visible"]||empty($data["template_name"])){
             			$templname.= "(".$data["ID"].")";
 			}
 			echo "<tr>";
