@@ -102,16 +102,16 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			echo "</td>";
 			echo "<td>".$LANG['financial'][82].":		</td>";
 			echo "<td >";
-			autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,-1,$option);	
+			autocompletionTextField("bill","glpi_infocoms","bill",$ic->fields["bill"],40,-1,-1,$option);
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][18].":		</td>";
 			echo "<td >";
-			autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,-1,$option);	
+			autocompletionTextField("order_number","glpi_infocoms","order_number",$ic->fields["order_number"],40,-1,-1,$option);
 			echo "</td>";
 	
 			echo "<td>".$LANG['financial'][19].":		</td><td>";
-			autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,-1,$option);	
+			autocompletionTextField("delivery_number","glpi_infocoms","delivery_number",$ic->fields["delivery_number"],40,-1,-1,$option);
 			echo "</td></tr>";
 	
 			// Can edit calendar ?
@@ -171,7 +171,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			if ($show_immo){
 				echo "<td>".$LANG['financial'][81]." :</td><td>";
 	
-				echo  formatNumber(TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_tax,"n"));
+				echo  formatNumber(TableauAmort($ic->fields["sink_type"],$ic->fields["value"],$ic->fields["sink_time"],$ic->fields["sink_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_tax,"n"));
 	
 				echo "</td>";
 			}
@@ -180,32 +180,32 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			if ($show_immo){
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][20]."*:		</td>";
 				echo "<td >";
-				$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('entities_id'));
-				autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option); 
+				$objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('entities_id'));
+				autocompletionTextField("immo_number","glpi_infocoms","immo_number",$objectName,40,-1,-1,$option);
 	
 				echo "</td>";
 	
 				echo "<td>".$LANG['financial'][22].":		</td><td >";
 				if ($withtemplate==2){
-					echo getAmortTypeName($ic->fields["amort_type"]);
+					echo getAmortTypeName($ic->fields["sink_type"]);
 				} else {
-					dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+					dropdownAmortType("sink_type",$ic->fields["sink_type"]);
 				}
 	
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][23].":		</td><td>";
 				if ($withtemplate==2){
-					echo $ic->fields["amort_time"];
+					echo $ic->fields["sink_time"];
 				} else {
-					dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
+					dropdownInteger("sink_time",$ic->fields["sink_time"],0,15);
 				}
 				echo " ".$LANG['financial'][9];
 				echo "</td>";
 	
 				echo "<td>".$LANG['financial'][77].":		</td>";
 				echo "<td >";
-				autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,-1,$option);	
+				autocompletionTextField("sink_coeff","glpi_infocoms","sink_coeff",$ic->fields["sink_coeff"],10,-1,-1,$option);
 				echo "</td></tr>";
 			}
 			//TCO

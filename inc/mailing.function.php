@@ -60,7 +60,7 @@ function testMail(){
 		// Get User mailing
 		$query = "SELECT glpi_mailingsettings.items_id , glpi_mailingsettings.ID as ID
 				FROM glpi_mailingsettings 
-				WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . USER_MAILING_TYPE . "' 
+				WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . USER_MAILING_TYPE . "'
 				ORDER BY glpi_mailingsettings.items_id;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
@@ -115,7 +115,7 @@ function testMail(){
 		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_profiles.name as prof
 			FROM glpi_mailingsettings 
 			LEFT JOIN glpi_profiles ON (glpi_mailingsettings.items_id = glpi_profiles.ID) 
-			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . PROFILE_MAILING_TYPE . "' 
+			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . PROFILE_MAILING_TYPE . "'
 			ORDER BY glpi_profiles.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
@@ -130,7 +130,7 @@ function testMail(){
 		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_groups.name as name
 			FROM glpi_mailingsettings 
 			LEFT JOIN glpi_groups ON (glpi_mailingsettings.items_id = glpi_groups.ID) 
-			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.item_type='" . GROUP_MAILING_TYPE . "' 
+			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . GROUP_MAILING_TYPE . "'
 			ORDER BY glpi_groups.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
@@ -146,7 +146,7 @@ function testMail(){
 			echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
 		
 			foreach ($profiles as $key => $val) {
-				list ($item_type, $items_id) = explode("_", $key);
+				list ($mailingtype, $items_id) = explode("_", $key);
 				echo "<option value='$key'>" . $val . "</option>\n";
 			}
 			echo "</select>";			
@@ -191,8 +191,8 @@ function testMail(){
 			foreach ($input["mailing_to_" . $action . "_" . $type] as $val) {
 				switch ($action) {
 					case "add" :
-						list ($item_type, $items_id) = explode("_", $val);
-						$query = "INSERT INTO glpi_mailingsettings (type,items_id,item_type) VALUES ('$type','$items_id','$item_type')";
+						list ($mailingtype, $items_id) = explode("_", $val);
+						$query = "INSERT INTO glpi_mailingsettings (type,items_id,mailingtype) VALUES ('$type','$items_id','$mailingtype')";
 						$DB->query($query);
 						break;
 					case "delete" :
@@ -232,7 +232,7 @@ function isAuthorMailingActivatedForHelpdesk(){
 
 	if ($CFG_GLPI['use_mailing']){
 		$query="SELECT COUNT(ID) FROM glpi_mailingsettings WHERE type IN ('new','followup','update','finish') 
-				AND item_type = '".USER_MAILING_TYPE."' AND items_id = '".AUTHOR_MAILING."' ;";
+				AND mailingtype = '".USER_MAILING_TYPE."' AND items_id = '".AUTHOR_MAILING."' ;";
 		if ($result=$DB->query($query)){
 			if ($DB->result($result,0,0)>0){
 				return true;

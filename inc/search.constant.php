@@ -465,22 +465,22 @@ $SEARCH_OPTION[COMPUTER_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[COMPUTER_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[COMPUTER_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[COMPUTER_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[COMPUTER_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[COMPUTER_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[COMPUTER_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[COMPUTER_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[COMPUTER_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[COMPUTER_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[COMPUTER_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][28]['field']='facture';
+$SEARCH_OPTION[COMPUTER_TYPE][28]['field']='bill';
 $SEARCH_OPTION[COMPUTER_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -541,17 +541,17 @@ $SEARCH_OPTION[COMPUTER_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[COMPUTER_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[COMPUTER_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[COMPUTER_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[COMPUTER_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[COMPUTER_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[COMPUTER_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[COMPUTER_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[COMPUTER_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[COMPUTER_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[COMPUTER_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -867,22 +867,22 @@ $SEARCH_OPTION[NETWORKING_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[NETWORKING_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[NETWORKING_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[NETWORKING_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[NETWORKING_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[NETWORKING_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[NETWORKING_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[NETWORKING_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[NETWORKING_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[NETWORKING_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[NETWORKING_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[NETWORKING_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][28]['field']='facture';
+$SEARCH_OPTION[NETWORKING_TYPE][28]['field']='bill';
 $SEARCH_OPTION[NETWORKING_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -941,17 +941,17 @@ $SEARCH_OPTION[NETWORKING_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[NETWORKING_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[NETWORKING_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[NETWORKING_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[NETWORKING_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[NETWORKING_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[NETWORKING_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[NETWORKING_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[NETWORKING_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[NETWORKING_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[NETWORKING_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -1225,22 +1225,22 @@ $SEARCH_OPTION[PRINTER_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[PRINTER_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[PRINTER_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[PRINTER_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[PRINTER_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[PRINTER_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[PRINTER_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[PRINTER_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[PRINTER_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[PRINTER_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[PRINTER_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[PRINTER_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][28]['field']='facture';
+$SEARCH_OPTION[PRINTER_TYPE][28]['field']='bill';
 $SEARCH_OPTION[PRINTER_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -1299,17 +1299,17 @@ $SEARCH_OPTION[PRINTER_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[PRINTER_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[PRINTER_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[PRINTER_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[PRINTER_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[PRINTER_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[PRINTER_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[PRINTER_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[PRINTER_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[PRINTER_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[PRINTER_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -1552,22 +1552,22 @@ $SEARCH_OPTION[MONITOR_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[MONITOR_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[MONITOR_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[MONITOR_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[MONITOR_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[MONITOR_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[MONITOR_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[MONITOR_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[MONITOR_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[MONITOR_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[MONITOR_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[MONITOR_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][28]['field']='facture';
+$SEARCH_OPTION[MONITOR_TYPE][28]['field']='bill';
 $SEARCH_OPTION[MONITOR_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -1626,17 +1626,17 @@ $SEARCH_OPTION[MONITOR_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[MONITOR_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[MONITOR_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[MONITOR_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[MONITOR_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[MONITOR_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[MONITOR_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[MONITOR_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[MONITOR_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[MONITOR_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[MONITOR_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -1879,22 +1879,22 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[PERIPHERAL_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[PERIPHERAL_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[PERIPHERAL_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[PERIPHERAL_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[PERIPHERAL_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[PERIPHERAL_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[PERIPHERAL_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][28]['field']='facture';
+$SEARCH_OPTION[PERIPHERAL_TYPE][28]['field']='bill';
 $SEARCH_OPTION[PERIPHERAL_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -1953,17 +1953,17 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[PERIPHERAL_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[PERIPHERAL_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[PERIPHERAL_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[PERIPHERAL_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[PERIPHERAL_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[PERIPHERAL_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[PERIPHERAL_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -2238,22 +2238,22 @@ $SEARCH_OPTION[SOFTWARE_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[SOFTWARE_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[SOFTWARE_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[SOFTWARE_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[SOFTWARE_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[SOFTWARE_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][28]['field']='facture';
+$SEARCH_OPTION[SOFTWARE_TYPE][28]['field']='bill';
 $SEARCH_OPTION[SOFTWARE_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -2312,17 +2312,17 @@ $SEARCH_OPTION[SOFTWARE_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[SOFTWARE_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[SOFTWARE_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[SOFTWARE_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[SOFTWARE_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[SOFTWARE_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[SOFTWARE_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[SOFTWARE_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -2396,22 +2396,22 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['name']=$LANG['common'][25];
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['datatype']='text';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][28]['field']='facture';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][28]['field']='bill';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -2471,17 +2471,17 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][55]['width']=100;
 
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][58]['name']=$LANG['financial'][77];
 
@@ -3423,22 +3423,22 @@ $SEARCH_OPTION[PHONE_TYPE][138]['forcegroupby']=true;
 $SEARCH_OPTION[PHONE_TYPE]['financial']=$LANG['financial'][3];
 
 $SEARCH_OPTION[PHONE_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[PHONE_TYPE][25]['field']='immo_number';
 $SEARCH_OPTION[PHONE_TYPE][25]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][25]['name']=$LANG['financial'][20];
 
 $SEARCH_OPTION[PHONE_TYPE][26]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][26]['field']='num_commande';
+$SEARCH_OPTION[PHONE_TYPE][26]['field']='order_number';
 $SEARCH_OPTION[PHONE_TYPE][26]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][26]['name']=$LANG['financial'][18];
 
 $SEARCH_OPTION[PHONE_TYPE][27]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][27]['field']='bon_livraison';
+$SEARCH_OPTION[PHONE_TYPE][27]['field']='delivery_number';
 $SEARCH_OPTION[PHONE_TYPE][27]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][27]['name']=$LANG['financial'][19];
 
 $SEARCH_OPTION[PHONE_TYPE][28]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][28]['field']='facture';
+$SEARCH_OPTION[PHONE_TYPE][28]['field']='bill';
 $SEARCH_OPTION[PHONE_TYPE][28]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][28]['name']=$LANG['financial'][82];
 
@@ -3497,17 +3497,17 @@ $SEARCH_OPTION[PHONE_TYPE][55]['datatype']='decimal';
 $SEARCH_OPTION[PHONE_TYPE][55]['width']=100;
 
 $SEARCH_OPTION[PHONE_TYPE][56]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][56]['field']='amort_time';
+$SEARCH_OPTION[PHONE_TYPE][56]['field']='sink_time';
 $SEARCH_OPTION[PHONE_TYPE][56]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][56]['name']=$LANG['financial'][23];
 
 $SEARCH_OPTION[PHONE_TYPE][57]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][57]['field']='amort_type';
+$SEARCH_OPTION[PHONE_TYPE][57]['field']='sink_type';
 $SEARCH_OPTION[PHONE_TYPE][57]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][57]['name']=$LANG['financial'][22];
 
 $SEARCH_OPTION[PHONE_TYPE][58]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][58]['field']='amort_coeff';
+$SEARCH_OPTION[PHONE_TYPE][58]['field']='sink_coeff';
 $SEARCH_OPTION[PHONE_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][58]['name']=$LANG['financial'][77];
 

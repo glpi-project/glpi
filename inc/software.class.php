@@ -138,8 +138,8 @@ class Software extends CommonDBTM {
 			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
 				$ic->fields["items_id"] = $newID;
 				unset ($ic->fields["ID"]);
-				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['entities_id']);
+				if (isset($ic->fields["immo_number"])) {
+					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
 				if (empty($ic->fields['use_date'])){
 					unset($ic->fields['use_date']);
@@ -620,8 +620,8 @@ class SoftwareLicense extends CommonDBTM {
 		if ($ic->getFromDBforDevice($itemtype, $dupid)) {
 			unset ($ic->fields["ID"]);
 			$ic->fields["items_id"] = $newID;
-			if (isset($ic->fields["num_immo"])) {
-				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['entities_id']);
+			if (isset($ic->fields["immo_number"])) {
+				$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 			}
 			if (empty($ic->fields['use_date'])){
 				unset($ic->fields['use_date']);
