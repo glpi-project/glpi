@@ -1146,7 +1146,7 @@ function showImapAuthList($target) {
 					
 			while ($mail_method = $DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
-				"</td><td class='center'>" . $mail_method["imap_host"] . "</td></tr>";
+				"</td><td class='center'>" . $mail_method["host"] . "</td></tr>";
 			}
 		}
 		echo "</table>";
@@ -1166,7 +1166,6 @@ function showImapAuthList($target) {
 
 		if (!haveRight("config", "w"))
 			return false;
-
 		if (strstr($value,":")) {
 			$addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
 			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));

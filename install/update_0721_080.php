@@ -963,6 +963,9 @@ function update0721to080() {
                      ),
       'glpi_authldapsreplicates' => array(array('from' => 'ldap_host', 'to' => 'host', 'noindex'=>true),//
                      ),
+      'glpi_authmails' => array(array('from' => 'imap_auth_server', 'to' => 'connect_string', 'noindex'=>true),//
+                        array('from' => 'imap_host', 'to' => 'host', 'noindex'=>true),//
+                     ),
                   );
    foreach ($varcharfields as $table => $tab) {
       foreach ($tab as $update){

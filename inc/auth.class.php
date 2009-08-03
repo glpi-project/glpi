@@ -491,7 +491,7 @@ class AuthMail extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		if (isset ($input['mail_server']) && !empty ($input['mail_server'])){
-			$input["imap_auth_server"] = constructMailServerConfig($input);
+			$input["connect_string"] = constructMailServerConfig($input);
 		}
 		return $input;
 	}
@@ -499,7 +499,7 @@ class AuthMail extends CommonDBTM {
 	function prepareInputForAdd($input) {
 
 		if (isset ($input['mail_server']) && !empty ($input['mail_server'])){
-			$input["imap_auth_server"] = constructMailServerConfig($input);
+			$input["connect_string"] = constructMailServerConfig($input);
 		}
 		return $input;
 	}
@@ -543,9 +543,9 @@ class AuthMail extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG['login'][3] . "</th></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][164] . "</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"" . $this->fields["imap_host"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][164] . "</td><td><input size='30' type=\"text\" name=\"host\" value=\"" . $this->fields["host"] . "\" ></td></tr>";
 
-			showMailServerConfig($this->fields["imap_auth_server"]);
+			showMailServerConfig($this->fields["connect_string"]);
 
 			if (empty ($ID)){
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr></table>";

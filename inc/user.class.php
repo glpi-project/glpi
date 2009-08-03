@@ -780,7 +780,7 @@ class User extends CommonDBTM {
 		global $DB;
 		
 		// we prevent some delay..
-		if (empty ($mail_method["imap_host"])) {
+		if (empty ($mail_method["host"])) {
 			return false;
 		}
 
@@ -790,7 +790,7 @@ class User extends CommonDBTM {
 		if (strpos($name,"@")){
 			$this->fields['email'] = $name;
 		} else {
-			$this->fields['email'] = $name . "@" . $mail_method["imap_host"];
+			$this->fields['email'] = $name . "@" . $mail_method["host"];
 		}
 
 		$this->fields['name'] = $name;

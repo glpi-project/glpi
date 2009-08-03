@@ -1099,8 +1099,8 @@ function try_mail_auth($identificat, $login,$password,$auths_id = 0) {
 **/
 function mail_auth($identificat, $login,$password,$mail_method) {
 
-	if (isset($mail_method["imap_auth_server"])&&!empty ($mail_method["imap_auth_server"])) {
-		$identificat->auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($login), utf8_decode($password));
+	if (isset($mail_method["connect_string"])&&!empty ($mail_method["connect_string"])) {
+		$identificat->auth_succeded = $identificat->connection_imap($mail_method["connect_string"], utf8_decode($login), utf8_decode($password));
 		if ($identificat->auth_succeded) {
 			$identificat->extauth = 1;
 			$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
@@ -1118,14 +1118,14 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 
 /**
  * Test a connexion to the IMAP/POP server
- * @param $imap_auth_server : mail server
+ * @param $connect_string : mail server
  * @param $login : user login
  * @param $password : user password
  * @return authentification succeeded ?
 **/
-function test_auth_mail($imap_auth_server,$login,$password){
+function test_auth_mail($connect_string,$login,$password){
 	$identificat = new Identification();
-	return $identificat->connection_imap($imap_auth_server, utf8_decode($login), utf8_decode($password));
+	return $identificat->connection_imap($connect_string, utf8_decode($login), utf8_decode($password));
 }
 
 /**
