@@ -140,7 +140,7 @@ class Config extends CommonDBTM {
 		echo "</select></td>";
 	
 		echo "<td class='center'>" . $LANG['setup'][109] . " </td><td>";
-		dropdownInteger('expire_events', $CFG_GLPI["expire_events"], 0, 365,10);
+		dropdownInteger('events_lifetime', $CFG_GLPI["events_lifetime"], 0, 365,10);
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_2'>";
@@ -161,7 +161,7 @@ class Config extends CommonDBTM {
 		echo "</td>";
 	
 		echo "<td class='center'>" . $LANG['setup'][221] . "</td><td>";
-		showDateFormItem("date_fiscale",$CFG_GLPI["date_fiscale"],false);
+		showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][360] . "</td><td>";
@@ -602,35 +602,35 @@ class Config extends CommonDBTM {
 
 		echo "<tr><th colspan='4'>" . $LANG['setup'][119] . "</th></tr>";
 	
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][128] . " </td><td><select name=\"dateformat\">";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][128] . " </td><td><select name=\"date_format\">";
 
-		$dateformats=array(
+		$date_formats=array(
 			0 => "YYYY-MM-DD",
 			1 => "DD-MM-YYYY",
 			2 => "MM-DD-YYYY"
 		);
-		foreach ($dateformats as $key => $val){
+		foreach ($date_formats as $key => $val){
 			echo "<option value=\"$key\"";
-			if ($data["dateformat"] == $key) {
+			if ($data["date_format"] == $key) {
 				echo " selected";
 			}
 			echo ">$val</option>";
 		}
 		echo "</select></td>";
 		
-		echo "<td class='center'>" . $LANG['setup'][150] . " </td><td><select name=\"numberformat\">";
+		echo "<td class='center'>" . $LANG['setup'][150] . " </td><td><select name=\"number_format\">";
 		echo "<option value=\"0\"";
-		if ($data["numberformat"] == 0) {
+		if ($data["number_format"] == 0) {
 			echo " selected";
 		}
 		echo ">1 234.56</option>";
 		echo "<option value=\"1\"";
-		if ($data["numberformat"] == 1) {
+		if ($data["number_format"] == 1) {
 			echo " selected";
 		}
 		echo ">1,234.56</option>";
 		echo "<option value=\"2\"";
-		if ($data["numberformat"] == 2) {
+		if ($data["number_format"] == 2) {
 			echo " selected";
 		}
 		echo ">1 234,56</option>";
@@ -668,9 +668,7 @@ class Config extends CommonDBTM {
 			echo ">" . $LANG['common'][16] . "</option>";
 			echo "</select></td>";
 	
-			echo "<td class='center'>" . $LANG['setup'][108] . "</td><td>";
-			dropdownInteger('num_of_events', $data["num_of_events"], 5, 100,5);
-			echo "</td></tr>";
+			echo "<td class='center'>&nbsp;</td><td>&nbsp;</td></tr>";
 		}
 
 

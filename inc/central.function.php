@@ -67,14 +67,8 @@ function showCentralGlobalView(){
 	if (haveRight("logs","r")){
 		echo "<td class='top' width='450px'>";
 		
-		if ($_SESSION["glpinum_of_events"]>0){
-
-			//Show last add events
-			showAddEvents($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-
-		} else {
-			echo "&nbsp;";
-		}
+		//Show last add events
+		showAddEvents($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	
 		echo "</td>";
 	}

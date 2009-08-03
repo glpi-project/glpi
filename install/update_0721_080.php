@@ -1031,6 +1031,16 @@ function update0721to080() {
    $charfields=array(
       'glpi_profiles' => array(array('from' => 'user_auth_method', 'to' => 'user_authtype', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
                         ),
+      'glpi_configs' => array(array('from' => 'version', 'to' => 'version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'version', 'to' => 'version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
+               array('from' => 'language', 'to' => 'language', 'length'=>10,'default' =>'en_GB', 'noindex'=>true, 'comments'=>'see define.php CFG_GLPI[language] array'),//
+               array('from' => 'priority_1', 'to' => 'priority_1', 'length'=>20,'default' =>'#fff2f2', 'noindex'=>true),//
+               array('from' => 'priority_2', 'to' => 'priority_2', 'length'=>20,'default' =>'#ffe0e0', 'noindex'=>true),//
+               array('from' => 'priority_3', 'to' => 'priority_3', 'length'=>20,'default' =>'#ffcece', 'noindex'=>true),//
+               array('from' => 'priority_4', 'to' => 'priority_4', 'length'=>20,'default' =>'#ffbfbf', 'noindex'=>true),//
+               array('from' => 'priority_5', 'to' => 'priority_5', 'length'=>20,'default' =>'#ffadad', 'noindex'=>true),//
+               array('from' => 'founded_new_version', 'to' => 'founded_new_version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
+                        ),
 
                      );
    foreach ($charfields as $table => $tab) {
@@ -1045,10 +1055,15 @@ function update0721to080() {
          $default="DEFAULT NULL";
          if (isset($update['default']) && !is_null($update['default'])){
             $default="DEFAULT '".$update['default']."'";
-         }         
+         }
+         $addcomment="";
+         if (isset($update['comments']) ) {
+            $addcomment="COMMENT '".$update['comments']."'";
+         }
+
          // Rename field
          if (FieldExists($table, $oldname)) {
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` CHAR( $length ) NULL $default  ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` CHAR( $length ) NULL $default $addcomment ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
@@ -1080,8 +1095,17 @@ function update0721to080() {
                               ),
       'glpi_configs' => array(array('from' => 'glpi_timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               array('from' => 'cartridges_alarm', 'to' => 'default_alarm_threshold', 'default' =>10, 'noindex'=>true),//
+                              array('from' => 'expire_events', 'to' => 'events_lifetime', 'default' =>30, 'noindex'=>true,'comments'=>'in days'),//
+                              array('from' => 'event_loglevel', 'to' => 'event_loglevel', 'default' =>5, 'noindex'=>true),//
+                              array('from' => 'cas_port', 'to' => 'cas_port', 'default' =>443, 'noindex'=>true,'checkdatas'=>true),//
+                              array('from' => 'auto_update_check', 'to' => 'auto_update_check', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'dateformat', 'to' => 'date_format', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'numberformat', 'to' => 'number_format', 'default' =>0, 'noindex'=>true),//
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
+                              ),
+      'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>0, 'noindex'=>true, 'maybenull'=>true),//
+                              array('from' => 'numberformat', 'to' => 'number_format', 'default' =>0, 'noindex'=>true, 'maybenull'=>true),//
                               ),
 
 
@@ -1099,6 +1123,10 @@ function update0721to080() {
          if (isset($update['default']) ) {
             $default_value=$update['default'];
          }
+         $NULL="NOT NULL";
+         if (isset($update['maybenull']) && $update['maybenull']) {
+            $NULL="NULL";
+         }
          $check_datas=false;
          if (isset($update['checkdatas']) ) {
             $check_datas=$update['checkdatas'];
@@ -1111,10 +1139,20 @@ function update0721to080() {
          // Rename field
          if (FieldExists($table, $oldname)) {
             if ($check_datas){
-               /// TODO check datas : get data and make a intval of the retrieved data
-               /// Mysql will do automatically
+               $query="SELECT ID, $oldname FROM $table;";
+               if ($result=$DB->query($query)){
+                  if ($DB->numrows($result)>0){
+                     while ($data = $DB->fetch_assoc($result)){
+                        if (empty($data[$oldname])){
+                           $data[$oldname]=$default_value;
+                        }
+                        $query="UPDATE $table SET $oldname='".intval($data[$oldname])."' WHERE ID = ".$data['ID'].";";
+                        $DB->query($query);
+                     }
+                  }
+               }
             }
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) $NULL DEFAULT '$default_value' $addcomment ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
@@ -1137,6 +1175,30 @@ function update0721to080() {
    if (FieldExists('glpi_alerts', 'date')) {
       $query="ALTER TABLE `glpi_alerts` CHANGE `date` `date` DATETIME NOT NULL";
       $DB->query($query) or die("0.80 alter date field in glpi_alerts " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_configs', 'date_fiscale')) {
+      $query="ALTER TABLE `glpi_configs` CHANGE `date_fiscale` `date_tax` DATE NOT NULL DEFAULT '2005-12-31' ";
+      $DB->query($query) or die("0.80 alter date_fiscale field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+ 
+   if (FieldExists('glpi_configs', 'sendexpire')) {
+      $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
+      $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_configs', 'logotxt')) {
+      $query="ALTER TABLE `glpi_configs` DROP `logotxt`";
+      $DB->query($query) or die("0.80 drop logotxt field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_configs', 'num_of_events')) {
+      $query="ALTER TABLE `glpi_configs` DROP `num_of_events`";
+      $DB->query($query) or die("0.80 drop num_of_events field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_users', 'num_of_events')) {
+      $query="ALTER TABLE `glpi_users` DROP `num_of_events`";
+      $DB->query($query) or die("0.80 drop num_of_events field in glpi_users " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema

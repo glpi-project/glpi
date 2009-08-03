@@ -1363,7 +1363,6 @@ function nullHeader($title,$url='') {
 		$globaldir=preg_replace("/\?.*/","",$globaldir);
 		$CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
 		$CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
-		$CFG_GLPI["logotxt"]="";
 	}
 
 	// Send UTF8 Headers
@@ -2063,7 +2062,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		$output .= "}
 		";
 
-		switch ($_SESSION['glpidateformat']){
+		switch ($_SESSION['glpidate_format']){
 			case 1:
 				$output .= ",dateFormat: 'd-m-Y'
 				,dateConfig: {
@@ -2126,7 +2125,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 		,id: '_date$rand'
 		,submitFormat:'Y-m-d'";
 
-		switch ($_SESSION['glpidateformat']){
+		switch ($_SESSION['glpidate_format']){
 			case 1:
 				$output .= ",format: 'd-m-Y'";
 				break;

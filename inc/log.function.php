@@ -491,7 +491,7 @@ function showAddEvents($target,$user="") {
 	$query = "SELECT * 
 		FROM glpi_events 
 		WHERE message LIKE '".$usersearch.addslashes($LANG['log'][20])."%' 
-		ORDER BY date DESC LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
+		ORDER BY date DESC LIMIT 0,".intval($_SESSION['glpilist_limit']);
 
 	// Get results
 	$result = $DB->query($query);
@@ -514,7 +514,7 @@ function showAddEvents($target,$user="") {
 	$i = 0;
 
 	echo "<br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG['central'][2]." ".$_SESSION["glpinum_of_events"]." ".$LANG['central'][8]."</a></th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG['central'][2]." ".$_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a></th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>".$LANG['event'][0]."</th>";

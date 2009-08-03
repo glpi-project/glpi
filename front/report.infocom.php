@@ -125,8 +125,8 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 			if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
-			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
-			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
+			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"n");
+			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"all");
 
 			if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){

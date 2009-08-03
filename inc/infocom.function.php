@@ -50,7 +50,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 
 	global $CFG_GLPI,$LANG;
 	if (!haveRight("infocom","r")) return false;
-	$date_fiscale=$CFG_GLPI["date_fiscale"];
+	$date_tax=$CFG_GLPI["date_tax"];
 
 	$ic = new Infocom;
 	$ci=new CommonItem();
@@ -171,7 +171,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			if ($show_immo){
 				echo "<td>".$LANG['financial'][81]." :</td><td>";
 	
-				echo  formatNumber(TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n"));
+				echo  formatNumber(TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_tax,"n"));
 	
 				echo "</td>";
 			}
@@ -273,13 +273,13 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
  *@param $coef coefficient d'amortissement
  *@param $date_achat Date d'achat
  *@param $date_use Date d'utilisation
- *@param $date_fiscale date du debut de l'annee fiscale
+ *@param $date_tax date du debut de l'annee fiscale
  *@param $view  "n" pour l'annee en cours ou "all" pour le tableau complet
  *
  *@return float or array
  *
  **/
-function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
+function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_tax,$view="n") {
 	// By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
 	global $CFG_GLPI;
 
@@ -302,7 +302,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 
 	// un traitement sur la date mysql pour les infos necessaires
 	$date_Y2 = $date_m2 = $date_d2 = $date_H2 = $date_i2 = $date_s2=0;	
-	sscanf($date_fiscale, "%4s-%2s-%2s %2s:%2s:%2s",
+	sscanf($date_tax, "%4s-%2s-%2s %2s:%2s:%2s",
 			$date_Y2, $date_m2, $date_d2,
 			$date_H2, $date_i2, $date_s2); 
 	$date_Y2=date("Y");
