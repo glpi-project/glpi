@@ -483,7 +483,7 @@ function update0721to080() {
                            'tables' => array('glpi_ocsservers')),
                      ),
    'location' => array(array('to' => 'locations_id',
-                           'noindex' => array('glpi_netpoints'),
+                           'noindex' => array(''),
                            'tables' => array('glpi_cartridgesitems','glpi_computers',
                               'glpi_consumablesitems','glpi_netpoints','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
@@ -991,6 +991,8 @@ function update0721to080() {
                      ),
       'glpi_contracts' => array(array('from' => 'compta_num', 'to' => 'accounting_number', 'noindex'=>true),//
                      ),
+      'glpi_events' => array(array('from' => 'itemtype', 'to' => 'type', 'noindex'=>true),//
+                     ),
       'glpi_monitors' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_networkequipments' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
@@ -1140,6 +1142,11 @@ function update0721to080() {
                               array('from' => 'device_countmax', 'to' => 'max_links_allowed', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'alert', 'to' => 'alert', 'default' =>0),//
                               array('from' => 'renewal', 'to' => 'renewal', 'default' =>0, 'noindex'=>true),//
+                              ),
+      'glpi_displayprefs' => array(array('from' => 'num', 'to' => 'num', 'default' =>0,),//
+                              array('from' => 'rank', 'to' => 'rank', 'default' =>0,),//
+                              ),
+      'glpi_events' => array(array('from' => 'level', 'to' => 'level', 'default' =>0,),//
                               ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
@@ -1303,12 +1310,77 @@ function update0721to080() {
 
    if (!isIndex('glpi_contracts_items', 'item')) {
       $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `item` ( `itemtype` , `items_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add item index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
    }
 
    if (!isIndex('glpi_contracts_suppliers', 'unicity')) {
       $query=" ALTER TABLE `glpi_contracts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)  ";
       $DB->query($query) or die("0.80 add unicity index in glpi_contracts_suppliers " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_displayprefs', 'unicity')) {
+      $query=" ALTER TABLE `glpi_displayprefs` ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_displayprefs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_bookmarks_users', 'unicity')) {
+      $query=" ALTER TABLE `glpi_bookmarks_users` ADD UNIQUE `unicity` ( `users_id` , `itemtype`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_bookmarks_users " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_documents_items', 'unicity')) {
+      $query=" ALTER TABLE `glpi_documents_items` ADD UNIQUE `unicity` ( `documents_id` , `itemtype`, `items_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_documents_items', 'item')) {
+      $query=" ALTER TABLE `glpi_documents_items` ADD UNIQUE `item` (  `itemtype`, `items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_knowbaseitemscategories', 'unicity')) {
+      $query=" ALTER TABLE `glpi_knowbaseitemscategories` ADD UNIQUE `unicity` ( `knowbaseitemscategories_id` , `name`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_knowbaseitemscategories " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_locations', 'unicity')) {
+      $query=" ALTER TABLE `glpi_locations` ADD UNIQUE `unicity` ( `entities_id`, `locations_id` , `name`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_locations " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (isIndex('glpi_locations', 'name')) {
+      $query=" ALTER TABLE `glpi_locations` DROP INDEX `name`";
+      $DB->query($query) or die("0.80 drop name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_locations', 'name')) {
+      $query=" ALTER TABLE `glpi_locations` ADD INDEX `name` (`name`)";
+      $DB->query($query) or die("0.80 add name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_netpoints', 'complete')) {
+      $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `complete` (`entities_id`,`locations_id`,`name`)";
+      $DB->query($query) or die("0.80 add complete index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_netpoints', 'location_name')) {
+      $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `location_name` (`locations_id`,`name`)";
+      $DB->query($query) or die("0.80 add location_name index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_entities', 'unicity')) {
+      $query=" ALTER TABLE `glpi_entities` ADD UNIQUE `unicity` (`entities_id`,`name`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_entities " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_entitiesdatas', 'unicity')) {
+      $query=" ALTER TABLE `glpi_entitiesdatas` ADD UNIQUE `unicity` (`entities_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_entitiesdatas " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_events', 'item')) {
+      $query=" ALTER TABLE `glpi_events` ADD INDEX `item` (`type`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_events " . $LANG['update'][90] . $DB->error());
    }
 
    $indextodrop=array(
@@ -1320,6 +1392,15 @@ function update0721to080() {
          'glpi_contacts_suppliers' => array('FK_enterprise'),
          'glpi_contracts_items' => array('FK_contract_device','device_type'),
          'glpi_contracts_suppliers' => array('FK_enterprise'),
+         'glpi_displayprefs' => array('display','FK_users'),
+         'glpi_bookmarks_users' => array('FK_users'),
+         'glpi_documents_items' => array('FK_doc_device','device_type','FK_device'),
+         'glpi_knowbaseitemscategories' => array('parentID'),
+         'glpi_locations' => array('FK_entities'),
+         'glpi_netpoints' => array('FK_entities','location'),
+         'glpi_entities' => array('name','parentID'),
+         'glpi_entitiesdatas' => array('FK_entities'),
+         'glpi_events' => array('comp','itemtype'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {

@@ -44,12 +44,12 @@ if (!defined('GLPI_ROOT')){
  * 
  *
  * @param $items_id
- * @param $itemtype
+ * @param $type
  * @param $changes
  * @param $devicetype
  * @param $linked_action
  **/
-function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action='0') {
+function historyLog ($items_id,$type,$changes,$devicetype='0',$linked_action='0') {
 
 	global $DB;
 
@@ -68,9 +68,9 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
 			$username="";
 
 		// Build query
-		$query = "INSERT INTO glpi_logs (items_id, itemtype, devicetype, linked_action, user_name, date_mod,
+		$query = "INSERT INTO glpi_logs (items_id, type, devicetype, linked_action, user_name, date_mod,
 		id_search_option, old_value, new_value)  
-		VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
+		VALUES ('$items_id', '$type', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
 		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
 	}
@@ -83,11 +83,11 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
  * 
  *
  * @param $items_id ID of the device
- * @param $itemtype ID of the device type
+ * @param $type ID of the device type
  * @param $oldvalues old values updated
  * @param $values all values of the item
  **/
-function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
+function constructHistory($items_id,$type,&$oldvalues,&$values) {
 
 	global $LINK_ID_TABLE, $LANG ;
 
@@ -98,12 +98,12 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 		foreach ($oldvalues as $key => $oldval){
 			$changes=array();
 			// Parsing $SEARCH_OPTIONS to find infocom 
-			if ($itemtype==INFOCOM_TYPE) {
+			if ($type==INFOCOM_TYPE) {
 				$ic=new Infocom();
 				if ($ic->getFromDB($values['ID'])){
-					$real_itemtype=$ic->fields['itemtype'];
+					$real_type=$ic->fields['itemtype'];
 					$items_id=$ic->fields['items_id'];
-					if (isset($SEARCH_OPTION[$real_itemtype])) foreach($SEARCH_OPTION[$real_itemtype] as $key2 => $val2){
+					if (isset($SEARCH_OPTION[$real_type])) foreach($SEARCH_OPTION[$real_type] as $key2 => $val2){
 						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
 							($key=='budgets_id'&&$val2['table']=='glpi_budgets') ||
 							($key=='suppliers_id'&&$val2['table']=='glpi_suppliers_infocoms')) {
@@ -123,17 +123,17 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 					}
 				}
 			} else {
-				$real_itemtype=$itemtype;
+				$real_type=$type;
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-				if (isset($SEARCH_OPTION[$itemtype])){
-					foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
+				if (isset($SEARCH_OPTION[$type])){
+					foreach($SEARCH_OPTION[$type] as $key2 => $val2){
 				
 						// Linkfield or standard field not massive action enable
 						if($val2["linkfield"]==$key 
 							|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 				
-							if($val2["table"]==$LINK_ID_TABLE[$itemtype]){
+							if($val2["table"]==$LINK_ID_TABLE[$type]){
 								// 1st case : text field -> keep datas
 								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
 							}else {
@@ -147,7 +147,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 			}
 		
 			if (count($changes)){
-				historyLog ($items_id,$real_itemtype,$changes);
+				historyLog ($items_id,$real_type,$changes);
 			}
 
 		}
@@ -162,9 +162,9 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
  * Show history for a device 
  *
  * @param $items_id
- * @param $itemtype
+ * @param $type
  **/
-function showHistory($itemtype,$items_id){
+function showHistory($type,$items_id){
 
 	global $DB, $LINK_ID_TABLE,$LANG;	
 	
@@ -177,7 +177,7 @@ function showHistory($itemtype,$items_id){
 	}
 
 	// Total Number of events
-	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
+	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND type=$type");
 
 	// No Events in database
 	if ($number < 1) {
@@ -194,7 +194,7 @@ function showHistory($itemtype,$items_id){
 
 	$query="SELECT * 
 		FROM glpi_logs 
-		WHERE items_id='".$items_id."' AND itemtype='".$itemtype."'
+		WHERE items_id='".$items_id."' AND type='".$type."'
 		ORDER BY  ID DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
 	//echo $query;
@@ -306,7 +306,7 @@ function showHistory($itemtype,$items_id){
 		}else{
 			$fieldname="";
 			// It's not an internal device
-			foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
+			foreach($SEARCH_OPTION[$type] as $key2 => $val2){
 
 				if($key2==$data["id_search_option"]){
 					$field= $val2["name"];
@@ -349,17 +349,17 @@ function showHistory($itemtype,$items_id){
  * $level is above or equal to setting from configuration.
  *
  * @param $items_id 
- * @param $itemtype
+ * @param $type
  * @param $level
  * @param $service
  * @param $event
  **/
-function logEvent ($items_id, $itemtype, $level, $service, $event) {
+function logEvent ($items_id, $type, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 	
 	global $DB,$CFG_GLPI, $LANG;
 	if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) { 
-		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($items_id)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
+		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($items_id)."', '".addslashes($type)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 		$result = $DB->query($query);    
 
 	}
@@ -422,19 +422,19 @@ function logArray(){
 
 }
 
-function displayItemLogID($itemtype,$items_id){
+function displayItemLogID($type,$items_id){
 	global $CFG_GLPI;
 
 	if ($items_id=="-1" || $items_id=="0") {
 		echo "&nbsp;";//$item;
 	} else {
-		if ($itemtype=="infocom"){
+		if ($type=="infocom"){
 			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
 		} else {
 			if ($items_id=="-1" || $items_id=="0") {
 				echo "&nbsp;";//$item;
 			} else {
-				switch ($itemtype){
+				switch ($type){
 					case "rules" :
 						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$items_id."\">".$items_id."</a>";
 						break;
@@ -448,9 +448,9 @@ function displayItemLogID($itemtype,$items_id){
 						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$items_id."\">$items_id</a>";
 						break;
 					default :
-					if ($itemtype[strlen($itemtype)-1]=='s'){
-						$show=substr($itemtype,0,strlen($itemtype)-1);
-					}else $show=$itemtype;
+					if ($type[strlen($type)-1]=='s'){
+						$show=substr($type,0,strlen($type)-1);
+					}else $show=$type;
 						
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
 					echo $items_id;
@@ -528,16 +528,16 @@ function showAddEvents($target,$user="") {
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
 		$items_id = $DB->result($result, $i, "items_id");
-		$itemtype = $DB->result($result, $i, "itemtype");
+		$type = $DB->result($result, $i, "type");
 		$date = $DB->result($result, $i, "date");
 		$service = $DB->result($result, $i, "service");
 		//$level = $DB->result($result, $i, "level");
 		$message = $DB->result($result, $i, "message");
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$logItemtype[$itemtype].":</td><td class='center'>";
+		echo "<td>".$logItemtype[$type].":</td><td class='center'>";
 
-		displayItemLogID($itemtype,$items_id);
+		displayItemLogID($type,$items_id);
 		echo "</td><td  class='center'>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
@@ -623,15 +623,15 @@ function showEvents($target,$order,$sort,$start=0) {
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
 		$items_id = $DB->result($result, $i, "items_id");
-		$itemtype = $DB->result($result, $i, "itemtype");
+		$type = $DB->result($result, $i, "type");
 		$date = $DB->result($result, $i, "date");
 		$service = $DB->result($result, $i, "service");
 		$level = $DB->result($result, $i, "level");
 		$message = $DB->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td class='center'><strong>"; 
-		displayItemLogID($itemtype,$items_id);	
+		echo "<td>".(isset($logItemtype[$type])?$logItemtype[$type]:"&nbsp;").":</td><td class='center'><strong>";
+		displayItemLogID($type,$items_id);
 		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td><td class='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
