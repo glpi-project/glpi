@@ -734,7 +734,7 @@ class AuthLDAP extends CommonDBTM {
 			}
 			echo "</td>";
 			echo "<td class='center'>" . $LANG['setup'][186] . "</td><td>";
-			dropdownGMT("timezone",$this->fields["timezone"]);
+			dropdownGMT("time_offset",$this->fields["time_offset"]);
 			echo"</td></tr>";			
 
 			echo "<tr class='tab_bg_2'>";
