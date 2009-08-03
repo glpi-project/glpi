@@ -1137,8 +1137,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["comp.contact"]				= $LANG['common'][18];
 		$option["comp.contact_num"]		        = $LANG['common'][21];
 		$option["comp.date_mod"]			= $LANG['common'][26];
-		$option["glpi_networkports.ifaddr"] 	= $LANG['networking'][14];
-		$option["glpi_networkports.ifmac"] 		= $LANG['networking'][15];
+		$option["glpi_networkports.ip"] 	= $LANG['networking'][14];
+		$option["glpi_networkports.mac"] 		= $LANG['networking'][15];
 		$option["glpi_netpoints.name"]		= $LANG['networking'][51];
 		$option["glpi_suppliers.name"]		= $LANG['common'][5];
 		$option["resptech.name"]			=$LANG['common'][10];
@@ -1422,8 +1422,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$wherecomp .= " OR glpi_devicesmemories.designation $SEARCH";
 			$wherecomp .= " OR glpi_devicessoundcards.designation $SEARCH";
 
-			$wherecomp .= " OR glpi_networkports.ifaddr $SEARCH";
-			$wherecomp .= " OR glpi_networkports.ifmac $SEARCH";
+			$wherecomp .= " OR glpi_networkports.ip $SEARCH";
+			$wherecomp .= " OR glpi_networkports.mac $SEARCH";
 			$wherecomp .= " OR glpi_netpoints.name $SEARCH";
 			$wherecomp .= " OR glpi_suppliers.name $SEARCH";
 			$wherecomp .= " OR resptech.name $SEARCH";

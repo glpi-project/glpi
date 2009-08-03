@@ -51,7 +51,9 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&isset($_POST["item"])){
 	$where.=" AND $table.is_deleted=0 ";
 	$where.=" AND $table.is_template='0' ";		
 
-	$query =  "SELECT DISTINCT glpi_networkports_networkports.ID as WID, glpi_networkports.ID as DID, $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ifaddr as IP, glpi_networkports.ifmac as MAC";
+	$query =  "SELECT DISTINCT glpi_networkports_networkports.ID as WID, glpi_networkports.ID as DID,
+      $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ip,
+      glpi_networkports.mac";
 	$query.= " FROM $table ";
 	$query.= " LEFT JOIN glpi_networkports
                   ON (glpi_networkports.items_id='".$_POST['item']."'
@@ -74,11 +76,11 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&isset($_POST["item"])){
 		while ($data = $DB->fetch_array($result)) {
 			$output = $data['CNAME'];
 			$output_long="";
-			if (!empty($data['IP'])) $output.= " - ".$data['IP'];
-			if (!empty($data['MAC'])) $output_long.= " - ".$data['MAC'];
+			if (!empty($data['ip'])) $output.= " - ".$data['ip'];
+			if (!empty($data['mac'])) $output_long.= " - ".$data['mac'];
 			if (!empty($data['NNAME'])) $output_long.= utf8_substr(" - ".$data['NNAME'],0,$_SESSION["glpidropdown_limit"]);
 			$ID = $data['DID'];
-			if (empty($data["IP"])) {
+			if (empty($data["ip"])) {
 				$output.=$output_long;
 				$output_long="";
 			}

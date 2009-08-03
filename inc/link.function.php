@@ -226,15 +226,15 @@ function showLinkOnDevice($itemtype,$ID){
 				$ipmac=array();
 				$i=0;
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
-					$query2 = "SELECT ifaddr, ifmac, logical_number 
+					$query2 = "SELECT ip, mac, logical_number
 						FROM glpi_networkports 
 						WHERE items_id = '$ID' AND itemtype = '$itemtype' 
 						ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
 						while ($data2=$DB->fetch_array($result2)){
-							$ipmac[$i]['ifaddr']=$data2["ifaddr"];
-							$ipmac[$i]['ifmac']=$data2["ifmac"];
+							$ipmac[$i]['ip']=$data2["ip"];
+							$ipmac[$i]['mac']=$data2["mac"];
 							$ipmac[$i]['number']=$data2["logical_number"];
 							$i++;
 						}
@@ -244,8 +244,8 @@ function showLinkOnDevice($itemtype,$ID){
 					// Add IP/MAC internal switch
 					if ($itemtype==NETWORKING_TYPE){
 						$tmplink=$link;
-						$tmplink=str_replace("[IP]",$ci->getField('ifaddr'),$tmplink);
-						$tmplink=str_replace("[MAC]",$ci->getField('ifmac'),$tmplink);
+						$tmplink=str_replace("[IP]",$ci->getField('ip'),$tmplink);
+						$tmplink=str_replace("[MAC]",$ci->getField('mac'),$tmplink);
 						echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$name - $tmplink</a></td></tr>";
 					}
 
@@ -254,17 +254,17 @@ function showLinkOnDevice($itemtype,$ID){
 							$tmplink=$link;
 							$disp=1;
 							if (strstr($link,"[IP]")) {
-								if (empty($val['ifaddr'])) {
+								if (empty($val['ip'])) {
 									$disp=0;
 								} else {
-									$tmplink=str_replace("[IP]",$val['ifaddr'],$tmplink);
+									$tmplink=str_replace("[IP]",$val['ip'],$tmplink);
 								}
 							}
 							if (strstr($link,"[MAC]")) {
-								if (empty($val['ifmac'])) {
+								if (empty($val['mac'])) {
 									$disp=0;
 								} else {
-									$tmplink=str_replace("[MAC]",$val['ifmac'],$tmplink);
+									$tmplink=str_replace("[MAC]",$val['mac'],$tmplink);
 								}
 							}
 							if ($disp) {
