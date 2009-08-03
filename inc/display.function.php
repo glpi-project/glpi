@@ -2286,7 +2286,7 @@ function showNotesForm($target,$itemtype,$id){
 	echo "<tr><th align='center' >";
 	echo $LANG['title'][37];
 	echo "</th></tr>";
-	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->getField('notes')."</textarea></td></tr>";
+	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notepad' >".$ci->getField('notepad')."</textarea></td></tr>";
 	echo "<tr><td class='tab_bg_2' align='center' >\n";
 	echo "<input type='hidden' name='ID' value=$id>";
 	if ($canedit) {

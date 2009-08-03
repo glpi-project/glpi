@@ -447,13 +447,13 @@ function showCartridgeInstalled($instID,$old=0) {
  * Print the cartridge count HTML array for the cartridge item $tID
  *
  *@param $tID integer: cartridge item identifier.
- *@param $alarm integer: threshold alarm value.
+ *@param $alarm_threshold integer: threshold alarm value.
  *@param $nohtml integer: Return value without HTML tags.
  *
  *@return string to display
  *
  **/
-function countCartridges($tID,$alarm,$nohtml=0) {
+function countCartridges($tID,$alarm_threshold,$nohtml=0) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	// Get total
@@ -465,7 +465,7 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 		$old=getOldCartridgesNumber($tID);
 
 		$highlight="";
-		if ($unused<=$alarm)
+		if ($unused<=$alarm_threshold)
 			$highlight="class='tab_bg_1_2'";
 
 		if (!$nohtml)
@@ -634,10 +634,10 @@ function cron_cartridge($display=false){
 	// Get cartridges type with alarm activated and last warning > X days depending on config
 	$query="SELECT glpi_cartridgesitems.ID AS cartID, glpi_cartridgesitems.entities_id as entity, 
 			glpi_cartridgesitems.ref as cartref, glpi_cartridgesitems.name AS cartname, 
-			glpi_cartridgesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
+			glpi_cartridgesitems.alarm_threshold AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date
 		FROM glpi_cartridgesitems 
 		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
-		WHERE glpi_cartridgesitems.is_deleted='0' AND glpi_cartridgesitems.alarm>='0'
+		WHERE glpi_cartridgesitems.is_deleted='0' AND glpi_cartridgesitems.alarm_threshold>='0'
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) 
 		ORDER BY glpi_cartridgesitems.name;";
 

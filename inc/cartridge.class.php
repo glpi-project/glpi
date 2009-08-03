@@ -72,7 +72,7 @@ class CartridgeType extends CommonDBTM {
 
 	function post_getEmpty () {
 		global $CFG_GLPI;
-		$this->fields["alarm"]=$CFG_GLPI["cartridges_alarm"];
+		$this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
 	}
 
 	function defineTabs($ID,$withtemplate){
@@ -212,7 +212,7 @@ class CartridgeType extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td>";
-      dropdownInteger('alarm',$this->fields["alarm"],-1,100);
+      dropdownInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
       echo "</td></tr>\n";
 
 

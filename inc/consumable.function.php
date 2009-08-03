@@ -225,13 +225,13 @@ function showConsumables ($tID,$show_old=0) {
  * Print the consumable count HTML array for the consumable item $tID
  *
  *@param $tID integer: consumable item identifier.
- *@param $alarm integer: threshold alarm value.
+ *@param $alarm_threshold integer: threshold alarm value.
  *@param $nohtml integer: Return value without HTML tags.
  *
  *@return string to display
  *
  **/
-function countConsumables($tID,$alarm,$nohtml=0) {
+function countConsumables($tID,$alarm_threshold,$nohtml=0) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -245,7 +245,7 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 		$old=getOldConsumablesNumber($tID);
 
 		$highlight="";
-		if ($unused<=$alarm)
+		if ($unused<=$alarm_threshold)
 			$highlight="class='tab_bg_1_2'";
 		if (!$nohtml)
 			$out.= "<div $highlight>".$LANG['common'][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$LANG['consumables'][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$LANG['consumables'][15].": $old</div>";			
@@ -483,10 +483,10 @@ function cron_consumable($display=false){
 	// Get cartridges type with alarm activated and last warning > config
 	$query="SELECT glpi_consumablesitems.ID AS consID, glpi_consumablesitems.entities_id as entity, 
 			glpi_consumablesitems.ref as consref, glpi_consumablesitems.name AS consname, 
-			glpi_consumablesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
+			glpi_consumablesitems.alarm_threshold AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date
 		FROM glpi_consumablesitems 
 		LEFT JOIN glpi_alerts ON (glpi_consumablesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CONSUMABLE_TYPE."') 
-		WHERE glpi_consumablesitems.is_deleted='0' AND glpi_consumablesitems.alarm>='0'
+		WHERE glpi_consumablesitems.is_deleted='0' AND glpi_consumablesitems.alarm_threshold>='0'
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
 
 	$result=$DB->query($query);

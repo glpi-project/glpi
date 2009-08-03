@@ -925,16 +925,27 @@ function update0721to080() {
                                  'glpi_monitorstypes','glpi_networkequipmentstypes','glpi_peripheralstypes',
                                  'glpi_phonestypes','glpi_printerstypes','glpi_users',),
                      ),
+      'notes' =>  array('to' => 'notepad', 'long'=>true,
+                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                              'glpi_consumablesitems','glpi_contacts','glpi_contracts',
+                              'glpi_documents','glpi_suppliers','glpi_entitiesdatas',
+                              'glpi_printers','glpi_monitors','glpi_phones','glpi_peripherals',
+                              'glpi_networkequipments','glpi_softwares')),
+      
       'ldap_condition' =>  array('to' => 'condition',
                            'tables' => array('glpi_authldaps')),
 );
    foreach ($textfields as $oldname => $tab) {
       $newname=$tab['to'];
+      $type="TEXT";
+      if (isset($tab['long']) && $tab['long']) {
+         $type="LONGTEXT";
+      }
       foreach ($tab['tables'] as $table){
          // Rename field
          if (FieldExists($table, $oldname)) {
 
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TEXT NULL DEFAULT NULL  ";
+            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` $type NULL DEFAULT NULL  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
@@ -1046,9 +1057,16 @@ function update0721to080() {
                      array('from' => 'ldap_opt_deref', 'to' => 'deref_option', 'default' =>0, 'noindex'=>true),//
                      array('from' => 'timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               ),
-      'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true),//
+      'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true,'checkdatas'=>true),//
                      ),
+      'glpi_bookmarks' => array(array('from' => 'type', 'to' => 'type', 'default' =>0, 'noindex'=>true,'comments'=>'see define.php BOOKMARK_* constant'),//
+                     ),
+      'glpi_cartridgesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
+                              ),
       'glpi_configs' => array(array('from' => 'glpi_timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
+                              array('from' => 'cartridges_alarm', 'to' => 'default_alarm_threshold', 'default' =>10, 'noindex'=>true),//
+                              ),
+      'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
 
 
@@ -1113,8 +1131,14 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add unicity index in glpi_alerts " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!isIndex('glpi_cartridges_printersmodels', 'unicity')) {
+      $query=" ALTER TABLE `glpi_cartridges_printersmodels` ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_cartridges_printersmodels " . $LANG['update'][90] . $DB->error());
+   }
+
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
+         'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
       );
    foreach ($indextodrop as $table => $tab){
       foreach ($tab as $indexname){

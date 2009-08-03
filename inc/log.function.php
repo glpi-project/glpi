@@ -318,7 +318,7 @@ function showHistory($itemtype,$items_id){
 				case "comment" :
 					$change =$LANG['log'][64];
 					break;
-				case "notes" : 
+				case "notepad" : 
 					$change =$LANG['log'][67];
 					break;
 				default :
