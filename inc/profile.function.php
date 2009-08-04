@@ -62,11 +62,11 @@ function showProfileEntityUser($target,$ID,$prof){
 		return false;
 	}
 
-  	$query="SELECT glpi_users.*, glpi_profiles_users.entities_id AS entity, glpi_profiles_users.ID AS linkID, 
+  	$query="SELECT glpi_users.*, glpi_profiles_users.entities_id AS entity, glpi_profiles_users.id AS linkID, 
 			glpi_profiles_users.is_dynamic,glpi_profiles_users.is_recursive
  		FROM glpi_profiles_users 
- 		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_profiles_users.entities_id)
- 		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_profiles_users.users_id)
+ 		LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_profiles_users.entities_id)
+ 		LEFT JOIN glpi_users ON (glpi_users.id=glpi_profiles_users.users_id)
  		WHERE glpi_profiles_users.profiles_id='".$ID."' 
 			AND glpi_users.is_deleted=0 ".getEntitiesRestrictRequest("AND","glpi_profiles_users")."
  		ORDER BY glpi_entities.completename";
@@ -102,9 +102,9 @@ function showProfileEntityUser($target,$ID,$prof){
 						if ($canedit){
 							echo "<div class='center'>";
 							echo "<table width='100%' class='tab_glpi'>";
-							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 							
-							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 							echo "</td><td align='left' width='80%'>";
 							dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
 							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\"
@@ -152,7 +152,7 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "</td>";
 				}
 
-				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
+				echo "<td class='tab_bg_1'>".formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
 
 				if ($data["is_dynamic"]||$data["is_recursive"]){
 					echo "<strong>&nbsp;(";
@@ -186,9 +186,9 @@ function showProfileEntityUser($target,$ID,$prof){
 				if ($canedit){
 					echo "<div class='center'>";
 					echo "<table width='100%' class='tab_glpi'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					
-					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
 					dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
 					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\" class='submit'>";

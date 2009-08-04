@@ -60,8 +60,8 @@ function showGroupDevice($ID){
 			$type_name=$ci->getType();
 			$cansee=haveTypeRight($itemtype,"r");
 			while ($data=$DB->fetch_array($result)){
-				$link=($data["name"] ? $data["name"] : "(".$data["ID"].")");
-				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link."</a>";
+				$link=($data["name"] ? $data["name"] : "(".$data["id"].")");
+				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."'>".$link."</a>";
 				$linktype="";
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
 				echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
@@ -97,9 +97,9 @@ function showGroupUsers($target,$ID){
 		}
 	
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
-		$query="SELECT glpi_users.*, glpi_groups_users.ID as linkID 
+		$query="SELECT glpi_users.*, glpi_groups_users.id as linkID 
 			FROM glpi_groups_users 
-			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups_users.users_id) 
+			LEFT JOIN glpi_users ON (glpi_users.id = glpi_groups_users.users_id) 
 			WHERE glpi_groups_users.groups_id='$ID'
 			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
@@ -122,10 +122,10 @@ function showGroupUsers($target,$ID){
 					echo "</td>";
 				}
 	
-				$used[$data["ID"]]=$data["ID"];
+				$used[$data["id"]]=$data["id"];
 				
 				echo "<td class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
-				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
+				echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
 				echo "</td>";
 				$i++;
 			}
@@ -143,9 +143,9 @@ function showGroupUsers($target,$ID){
 
 			echo "<div class='center'>";
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='hidden' name='groups_id' value='$ID'>";
 			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
@@ -205,7 +205,7 @@ function addUserGroup($uID,$gID){
 function deleteUserGroup($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_groups_users WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_groups_users WHERE id = '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -218,9 +218,9 @@ function deleteUserGroup($ID){
 function isGroupVisibleInEntity($group,$entity_restrict)
 {
 	global $DB;
-	$query = "SELECT ID 
+	$query = "SELECT id 
 		FROM glpi_groups 
-		WHERE ID='$group' ".
+		WHERE id='$group' ".
 		getEntitiesRestrictRequest(" AND","glpi_groups","entities_id",$entity_restrict,true);
 	$result = $DB->query($query);
 	$found = false;

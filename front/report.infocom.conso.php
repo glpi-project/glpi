@@ -86,17 +86,17 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 	$query="SELECT glpi_infocoms.* 
 		FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."') ";
+		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."') ";
 	
 	switch ($itemtype){
 		case CONSUMABLE_ITEM_TYPE :
-			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.consumablesitems_id = glpi_consumablesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
+			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.consumablesitems_id = glpi_consumablesitems.id) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
 		break;
 		case CARTRIDGE_ITEM_TYPE :
-			$query.=" INNER JOIN glpi_cartridgesitems ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
+			$query.=" INNER JOIN glpi_cartridgesitems ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.id) ".getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
 		break;
 		case SOFTWARELICENSE_TYPE :
-			$query.=" INNER JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.ID) ".getEntitiesRestrictRequest("WHERE","glpi_softwares");
+			$query.=" INNER JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id) ".getEntitiesRestrictRequest("WHERE","glpi_softwares");
 		break;
 	
 	}

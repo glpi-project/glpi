@@ -68,11 +68,11 @@ if ((strpos($_SERVER['PHP_SELF'],"popup")&&$itemtype>0)/*||$itemtype=$setupdispl
 	
 	$tabs[1]=array('title'=>$LANG['central'][13],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
-	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=1&itemtype=$itemtype");
+	'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=1&itemtype=$itemtype");
 		
 	$tabs[2]=array('title'=>$LANG['central'][12],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
-	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2&itemtype=$itemtype");
+	'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=2&itemtype=$itemtype");
 						
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);

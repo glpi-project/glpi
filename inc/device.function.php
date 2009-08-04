@@ -277,10 +277,10 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 
 	if (haveRight("device","w")) {
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$device->devtype."'>$type</a></td>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;devicetype=".$device->devtype."'>&nbsp;$name&nbsp;".($_SESSION["glpiis_ids_visible"]?" (".$device->fields['ID'].")":"")."</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?id=".$device->fields['id']."&amp;devicetype=".$device->devtype."'>&nbsp;$name&nbsp;".($_SESSION["glpiis_ids_visible"]?" (".$device->fields['id'].")":"")."</a></td>";
 	}  else {
 		echo "<td class='center'>$type</td>";
-		echo "<td class='center'>&nbsp;$name&nbsp;".($_SESSION["glpiis_ids_visible"]?" (".$device->fields['ID'].")":"")."</td>";
+		echo "<td class='center'>&nbsp;$name&nbsp;".($_SESSION["glpiis_ids_visible"]?" (".$device->fields['id'].")":"")."</td>";
 	}
 
 	if (count($entry)>0){
@@ -329,7 +329,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 		
 	$query ="SELECT * 
 		FROM glpi_computers_devices 
-		WHERE ID = '".$compDevID."'";
+		WHERE id = '".$compDevID."'";
 
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
@@ -382,7 +382,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 					AND computers_id = '".$data["computers_id"]."' 
 					AND devicetype = '".$data["devicetype"]."'
 					AND specificity='".$data["specificity"]."'";
-				if ($strict) $WHERE=" WHERE ID='$compDevID'";
+				if ($strict) $WHERE=" WHERE id='$compDevID'";
 				
 				$query2 = "UPDATE glpi_computers_devices SET specificity = '".$newValue."' $WHERE";
 				if($DB->query($query2)){
@@ -411,11 +411,11 @@ function update_device_quantity($newNumber,$compDevID){
 	global $DB;
 	$query ="SELECT * 
 		FROM glpi_computers_devices 
-		WHERE ID = '".$compDevID."'";
+		WHERE id = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = addslashes_deep($DB->fetch_array($result));
 
-		$query2 = "SELECT ID 
+		$query2 = "SELECT id 
 			FROM glpi_computers_devices 
 			WHERE devices_id = '".$data["devices_id"]."' AND computers_id = '".$data["computers_id"]."'
 				AND devicetype = '".$data["devicetype"]."' AND specificity='".$data["specificity"]."'";
@@ -426,7 +426,7 @@ function update_device_quantity($newNumber,$compDevID){
 			if ($number>$newNumber){
 				for ($i=$newNumber;$i<$number;$i++){
 					$data2 = $DB->fetch_array($result2);
-					unlink_device_computer($data2["ID"],1);
+					unlink_device_computer($data2["id"],1);
 				}
 				// Add devices
 			} else if ($number<$newNumber){
@@ -453,12 +453,12 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	global $DB;
 	$query ="SELECT * 
 		FROM glpi_computers_devices 
-		WHERE ID = '".$compDevID."'";
+		WHERE id = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = $DB->fetch_array($result);
 	} 
 
-	$query2 = "DELETE FROM glpi_computers_devices where ID = '".$compDevID."'";
+	$query2 = "DELETE FROM glpi_computers_devices WHERE id = '".$compDevID."'";
 	if($DB->query($query2)){
 		
 		if ($dohistory){
@@ -516,9 +516,9 @@ function showDevicesList($devicetype,$target) {
 	global $DB,$CFG_GLPI, $LANG;
 
 
-	$query = "SELECT device.ID, device.designation, glpi_manufacturers.name as manufacturer 
+	$query = "SELECT device.id, device.designation, glpi_manufacturers.name as manufacturer 
 		FROM ".getDeviceTable($devicetype)." as device ";
-	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.ID = device.manufacturers_id ) ";
+	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.id = device.manufacturers_id ) ";
 	$query .= " ORDER by device.designation ASC";
 	
 	// Get it from database	
@@ -542,12 +542,12 @@ function showDevicesList($devicetype,$target) {
 			echo "</tr>";
 
 			while ($data=$DB->fetch_array($result)) {
-            addToNavigateListItems(DEVICE_TYPE,$data["ID"]);
+            addToNavigateListItems(DEVICE_TYPE,$data["id"]);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><strong>";
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$data["ID"]."&amp;devicetype=$devicetype\">";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?id=".$data["id"]."&amp;devicetype=$devicetype\">";
 				echo $data["designation"];
-				if ($_SESSION["glpiis_ids_visible"]) echo " (".$data["ID"].")";
+				if ($_SESSION["glpiis_ids_visible"]) echo " (".$data["id"].")";
 				echo "</a></strong></td>";
 				echo "<td>". $data["manufacturer"]."</td>";
 				echo "</tr>";
@@ -771,7 +771,7 @@ function showDevicesForm ($target,$ID,$devicetype) {
 	echo "<tr>";
 	if(!empty($ID)) {
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<input type='hidden' name='id' value=\"$ID\">\n";
 		echo "<input type='hidden' name='devicetype' value=\"$devicetype\">\n";
 		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 		echo "</td>";

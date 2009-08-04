@@ -43,7 +43,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if (!isset($_POST['ID'])) {
+if (!isset($_POST['id'])) {
 	exit();
 }
 
@@ -55,20 +55,20 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 		switch($_POST['glpi_tab']){
 			case -1:
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["ID"]);
-				displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
+				displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 				break;
 			case 4 :
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["ID"]);
+				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
 				break;
 			case 5 :
-					showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+					showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
 					break;
 			case 12 :
-				showHistory(SOFTWARELICENSE_TYPE,$_POST["ID"]);
+				showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
 				break;
 			default :
-				if (!displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+				if (!displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 				}
 				break;
 		}

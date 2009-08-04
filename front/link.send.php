@@ -37,9 +37,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("link","r");
 
 if (isset($_GET["lID"])){
-	$query="SELECT glpi_links.ID as ID, glpi_links.link as link,glpi_links.data as data 
+	$query="SELECT glpi_links.id, glpi_links.link as link,glpi_links.data as data
 		FROM glpi_links 
-		WHERE glpi_links.ID='".$_GET["lID"]."'";
+		WHERE glpi_links.id='".$_GET["lID"]."'";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==1){
@@ -48,7 +48,7 @@ if (isset($_GET["lID"])){
 
 		$ci=new CommonItem;
 
-		$ci->getFromDB($_GET["itemtype"],$_GET["ID"]);
+		$ci->getFromDB($_GET["itemtype"],$_GET["id"]);
 
 		// Manage Filename
 		if (strstr($link,"[NAME]")){
@@ -56,7 +56,7 @@ if (isset($_GET["lID"])){
 		}
 
 		if (strstr($link,"[ID]")){
-			$link=str_replace("[ID]",$_GET["ID"],$link);
+			$link=str_replace("[ID]",$_GET["id"],$link);
 		}
 
 
@@ -67,7 +67,7 @@ if (isset($_GET["lID"])){
 		}
 
 		if (strstr($file,"[ID]")){
-			$file=str_replace("[ID]",$_GET["ID"],$file);
+			$file=str_replace("[ID]",$_GET["id"],$file);
 		}
 
 		if (strstr($file,"[SERIAL]")){
@@ -101,7 +101,7 @@ if (isset($_GET["lID"])){
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ip, mac
 				FROM glpi_networkports 
-				WHERE (items_id = '".$_GET["ID"]."' AND itemtype = '".$_GET["itemtype"]."') 
+				WHERE (items_id = '".$_GET["id"]."' AND itemtype = '".$_GET["itemtype"]."') 
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){

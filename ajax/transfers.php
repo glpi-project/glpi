@@ -44,9 +44,9 @@
 	header_nocache();
 	
 	checkRight("transfer","r");
-	if (isset($_POST["ID"])&& $_POST["ID"]>0){
+	if (isset($_POST["id"])&& $_POST["id"]>0){
 		$transfer=new Transfer();
-		$transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["ID"]);
+		$transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["id"]);
 	}
 	ajaxFooter();
 ?>

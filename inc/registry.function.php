@@ -50,7 +50,7 @@ function showRegistry($ID){
 	"HKEY_DYN_DATA");
 
 
-	$query = "SELECT ID 
+	$query = "SELECT id 
 		FROM glpi_registrykeys 
 		WHERE computers_id='".$ID."'";
 	

@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
@@ -50,34 +50,34 @@ checkRight("cartridge","r");
 	
 	switch($_POST['glpi_tab']){
 		case -1 :	
-			showCompatiblePrinters($_POST["ID"]);
-			showCartridgesAdd($_POST["ID"]);
-			showCartridges($_POST["ID"]);
-			showCartridges($_POST["ID"],1);
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["ID"],1);
-			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["ID"]);
-			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["ID"]);
-			displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_POST['glpi_tab']);
+			showCompatiblePrinters($_POST["id"]);
+			showCartridgesAdd($_POST["id"]);
+			showCartridges($_POST["id"]);
+			showCartridges($_POST["id"],1);
+			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
+			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
+			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
+			displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_POST['glpi_tab']);
 			break;
 		case 4 :
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["ID"],1);
+			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
 			break;
 
 		case 5 :
-			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["ID"]);
+			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
 			break;			
 		case 7 : 
-			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["ID"]);
+			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
 			break;
 		case 10 :
-			showNotesForm($_POST['target'],CARTRIDGE_TYPE,$_POST["ID"]);
+			showNotesForm($_POST['target'],CARTRIDGE_TYPE,$_POST["id"]);
 			break;
 		default :
-			if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-				showCompatiblePrinters($_POST["ID"]);
-				showCartridgesAdd($_POST["ID"]);
-				showCartridges($_POST["ID"]);
-				showCartridges($_POST["ID"],1);
+			if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+				showCompatiblePrinters($_POST["id"]);
+				showCartridgesAdd($_POST["id"]);
+				showCartridges($_POST["id"]);
+				showCartridges($_POST["id"],1);
 			}
 			break;
 	}

@@ -115,7 +115,7 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 
 	if($result){
 		while($row = $DB->fetch_assoc($result)) {
-			if (isset($row["ID"])) {
+			if (isset($row["id"])) {
 				$insert = "UPDATE $table SET ";
 				foreach ($row as $key => $val) {
 					$insert.=" `".$key."`=";
@@ -132,7 +132,7 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 					else $insert .= "'',";
 				}
 				$insert = preg_replace("/,$/","",$insert);
-				$insert.=" WHERE ID = '".$row["ID"]."' ";
+				$insert.=" WHERE id = '".$row["id"]."' ";
 				$insert .= ";\n";
 				$content .= $insert;
 			}
@@ -304,7 +304,7 @@ $complete_utf8=true;
 if(!FieldExists("glpi_configs","utf8_conv")) {
 	$conv_utf8=true;
 } else {
-	$query="SELECT utf8_conv FROM glpi_configs WHERE ID='1'";
+	$query="SELECT utf8_conv FROM glpi_configs WHERE id='1'";
 	$result=$DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	if ($data["utf8_conv"]){
@@ -343,7 +343,7 @@ if ($conv_utf8){
 
 if ($complete_utf8){
 	$DB->query("ALTER DATABASE `".$DB->dbdefault."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
-	$DB->query("UPDATE glpi_configs SET utf8_conv='1' WHERE ID='1'");
+	$DB->query("UPDATE glpi_configs SET utf8_conv='1' WHERE id='1'");
 }
 
 ?>

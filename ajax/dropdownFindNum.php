@@ -75,7 +75,7 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 		$WWHERE=" OR contact ".$search." OR serial ".$search." OR otherserial ".$search;
 	} 
 	 	
-	$where.=" AND (name ".$search." OR ID = '".$_POST['searchText']."' $WWHERE)";
+	$where.=" AND (name ".$search." OR id = '".$_POST['searchText']."' $WWHERE)";
 }
 //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
 if (in_array($_POST['itemtype'],$CFG_GLPI["helpdesk_visible_types"])){
@@ -113,8 +113,8 @@ if ($DB->numrows($result)) {
 				$output.=" - ".$data['otherserial'];
 			}
 		}
-		if (empty($output)||$_SESSION['glpiis_ids_visible']) $output.=" (".$data['ID'].")";
-		echo "<option value=\"".$data['ID']."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+		if (empty($output)||$_SESSION['glpiis_ids_visible']) $output.=" (".$data['id'].")";
+		echo "<option value=\"".$data['id']."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 	}
 }
 echo "</select>";

@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
 if (isset($_SERVER['HTTP_REFERER'])) $REFERER=$_SERVER['HTTP_REFERER'];
 if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
@@ -70,19 +70,19 @@ if (isset($_POST["add"])) {
 else if (isset($_POST["delete"])) {
 	$device=new Device($_POST["devicetype"]);	
 	$device->delete($_POST);
-	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
 }
 else if (isset($_POST["update"])) {
 	$device=new Device($_POST["devicetype"]);	
 	$device->update($_POST);
-	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
 }
 else {
 
 	commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
-	showDevicesForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["devicetype"]);
+	showDevicesForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["devicetype"]);
 	commonFooter();
 }
 

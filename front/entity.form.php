@@ -49,7 +49,7 @@ if (isset($_POST["update"]))
 
 	$entitydata->update($_POST);
 
-	logEvent($_POST["ID"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["adduser"]))
 {
@@ -124,7 +124,7 @@ if (isset($_POST["update"]))
 		
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){	
-			$rule->delete(array('ID'=>$key));
+			$rule->delete(array('id'=>$key));
 		}
 	}
 
@@ -134,7 +134,7 @@ if (isset($_POST["update"]))
 
 commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 
-$entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+$entity->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
 ?>

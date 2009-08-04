@@ -40,7 +40,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(empty($_GET["id"])) $_GET["id"] = "";
 
 $link=new Link();
 
@@ -54,18 +54,18 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$link->check($_POST["ID"],'w');
+	$link->check($_POST["id"],'w');
 
 	$link->delete($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["update"]))
 {
-	$link->check($_POST["ID"],'w');
+	$link->check($_POST["id"],'w');
 
 	$link->update($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adddevice"])){
@@ -73,12 +73,12 @@ else if (isset($_POST["adddevice"])){
 
 	addLinkDevice($_POST["itemtype"],$_POST["lID"]);
 	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?ID=".$_POST["lID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
 	$link->check($_GET["lID"],'w');
 
-	deleteLinkDevice($_GET["ID"]);
+	deleteLinkDevice($_GET["id"]);
 	logEvent($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -93,8 +93,8 @@ else
 
 	commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
-	if ($link->showForm($_SERVER['PHP_SELF'],$_GET["ID"])&&!empty($_GET["ID"]))
-		showLinkDevice($_GET["ID"]);
+	if ($link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]))
+		showLinkDevice($_GET["id"]);
 	commonFooter();
 }
 

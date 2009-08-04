@@ -81,7 +81,7 @@ function showDeviceBudget($budgets_id) {
 		if (haveTypeRight($itemtype,"r")&&$itemtype!=CONSUMABLE_ITEM_TYPE&&$itemtype!=CARTRIDGE_ITEM_TYPE&&$itemtype!=SOFTWARELICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* "
 				." FROM glpi_infocoms "
-				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id) "
+				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id) "
 				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.budgets_id = '$budgets_id' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])
 				." ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
@@ -101,8 +101,8 @@ function showDeviceBudget($budgets_id) {
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
-					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["id"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					if ($prem) {

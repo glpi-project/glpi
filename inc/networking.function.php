@@ -56,7 +56,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 
 	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
 
-	$query = "SELECT ID FROM glpi_networkports 
+	$query = "SELECT id FROM glpi_networkports 
 		WHERE (items_id = '$device' AND itemtype = '$itemtype') 
 		ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
@@ -101,15 +101,15 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 			while ($devid = $DB->fetch_row($result)) {
 				$netport = new Netport;
 				$netport->getFromDB(current($devid));
-				addToNavigateListItems(NETWORKING_PORT_TYPE,$netport->fields["ID"]);
+				addToNavigateListItems(NETWORKING_PORT_TYPE,$netport->fields["id"]);
 
 				echo "<tr class='tab_bg_1'>";
 				if ($withtemplate != 2 && $canedit) {
-					echo "<td align='center' width='20'><input type='checkbox' name='del_port[" . $netport->fields["ID"] . "]' value='1'></td>";
+					echo "<td align='center' width='20'><input type='checkbox' name='del_port[" . $netport->fields["id"] . "]' value='1'></td>";
 				}
 				echo "<td class='center'><strong>";
 				if ($canedit && $withtemplate != 2)
-					echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?ID=" . $netport->fields["ID"] . "\">";
+					echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?id=" . $netport->fields["id"] . "\">";
 				echo $netport->fields["logical_number"];
 				if ($canedit && $withtemplate != 2)
 					echo "</a>";
@@ -123,7 +123,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 				echo $netport->fields["gateway"] . "</td>";
 				// VLANs
 				echo "<td>";
-				showPortVLAN($netport->fields["ID"], $withtemplate);
+				showPortVLAN($netport->fields["id"], $withtemplate);
 				echo "</td>";
 				echo "<td>" . getDropdownName("glpi_networkinterfaces", $netport->fields["networkinterfaces_id"]) . "</td>";
 				echo "<td width='300' class='tab_bg_2'>";
@@ -132,7 +132,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 				
 				echo "<td class='tab_bg_2'>";
 				
-				if ($netport->getContact($netport->fields["ID"])) {
+				if ($netport->getContact($netport->fields["id"])) {
 					echo $netport->fields["ip"] . "<br>";
 					echo $netport->fields["mac"];
 				}
@@ -145,9 +145,9 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 			if ($canedit && $withtemplate != 2) {
 				echo "<div class='center'>";
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('networking_ports$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$device&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
+				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('networking_ports$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$device&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('networking_ports$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$device&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('networking_ports$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$device&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 
 				//				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><span class='pointer' id='networking_ports_markall$rand'>".$LANG['buttons'][18]."</span></td>";
 
@@ -186,7 +186,7 @@ function showPortVLAN($ID, $withtemplate) {
 			echo "<tr><td>" . getDropdownName("glpi_vlans", $line["vlans_id"]);
 			echo "</td><td>";
 			if ($canedit) {
-				echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=unassigned&amp;ID=" . $line["ID"] . "'>";
+				echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=unassigned&amp;id=" . $line["id"] . "'>";
 				echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt='" . $LANG['buttons'][6] . "' title='" . $LANG['buttons'][6] . "'></a>";
 			} else
 				echo "&nbsp;";
@@ -206,7 +206,7 @@ function showPortVLANForm ($ID) {
 		echo "<div class='center'>";
 		echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php'>";
 		//echo "<input type='hidden' name='referer' value='$REFERER'>";
-		echo "<input type='hidden' name='ID' value='$ID'>";
+		echo "<input type='hidden' name='id' value='$ID'>";
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th>" . $LANG['setup'][90] . "</th></tr>";
@@ -245,12 +245,12 @@ function assignVlan($port, $vlan) {
 function unassignVlanbyID($ID) {
 	global $DB;
 
-	$query = "SELECT * FROM glpi_networkports_vlans WHERE ID='$ID'";
+	$query = "SELECT * FROM glpi_networkports_vlans WHERE id='$ID'";
 	if ($result = $DB->query($query)) {
 		$data = $DB->fetch_array($result);
 
 		// Delete VLAN
-		$query = "DELETE FROM glpi_networkports_vlans WHERE ID='$ID'";
+		$query = "DELETE FROM glpi_networkports_vlans WHERE id='$ID'";
 		$DB->query($query);
 
 		// Delete Contact VLAN if set
@@ -295,7 +295,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	// Ajout des infos d��remplies
 	if (isset ($_POST) && !empty ($_POST)) {
 		foreach ($netport->fields as $key => $val)
-			if ($key != 'ID' && isset ($_POST[$key]))
+			if ($key != 'id' && isset ($_POST[$key]))
 				$netport->fields[$key] = $_POST[$key];
 	}
 
@@ -413,7 +413,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 		echo "</td>";
 
 		echo "<td class='center'>";
-		echo "<input type='hidden' name='ID' value=" . $netport->fields["ID"] . ">";
+		echo "<input type='hidden' name='id' value=" . $netport->fields["id"] . ">";
 		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' " .
 		"OnClick='return window.confirm(\"" . $LANG['common'][50] . "\");'>";
 		echo "</td></tr>\n";
@@ -472,14 +472,14 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 
 	global $CFG_GLPI, $LANG, $INFOFORM_PAGES;
 
-	if (!$device1->obj->can($device1->obj->fields["ID"], 'r'))
+	if (!$device1->obj->can($device1->obj->fields["id"], 'r'))
 		return false;
 
 	$contact = new Netport;
 	$device2 = new CommonItem();
 
-	$canedit = $device1->obj->can($device1->obj->fields["ID"], 'w');
-	$ID = $netport->fields["ID"];
+	$canedit = $device1->obj->can($device1->obj->fields["id"], 'w');
+	$ID = $netport->fields["id"];
 
 	if ($contact->getContact($ID)) {
 		$netport->getFromDB($contact->contact_id);
@@ -488,15 +488,15 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr " . ($device2->obj->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
 		echo "<td><strong>";
 
-		if ($device2->obj->can($device2->obj->fields["ID"], 'r')) {
-			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?ID=" . $netport->fields["ID"] . "\">";
+		if ($device2->obj->can($device2->obj->fields["id"], 'r')) {
+			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?id=" . $netport->fields["id"] . "\">";
 			if (rtrim($netport->fields["name"]) != "")
 				echo $netport->fields["name"];
 			else
 				echo $LANG['common'][0];
 			echo "</a></strong> " . $LANG['networking'][25] . " <strong>";
 
-			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$netport->fields["itemtype"]] . "?ID=" . $device2->obj->fields["ID"] . "\">";
+			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$netport->fields["itemtype"]] . "?id=" . $device2->obj->fields["id"] . "\">";
 
 			echo $device2->obj->fields["name"];
 			if ($_SESSION["glpiis_ids_visible"])
@@ -507,10 +507,10 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			}
 
 			// 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
-			if ($canedit || $device2->obj->can($device2->obj->fields["ID"], 'w')) {
+			if ($canedit || $device2->obj->can($device2->obj->fields["id"], 'w')) {
 				echo "</td><td class='right'><strong>";
 				if ($withtemplate != 2)
-					echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">" . $LANG['buttons'][10] . "</a>";
+					echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?disconnect=disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
 				else
 					"&nbsp;";
 				echo "</strong>";
@@ -752,15 +752,15 @@ function removeConnector($ID, $dohistory = true) {
 				if ($npnet != -1 && $npdev != -1) {
 					// Unset MAC and IP from networking device
 					if ($np1->fields["mac"] == $np2->fields["mac"]) {
-						$query = "UPDATE glpi_networkports SET mac='' WHERE ID='$npnet'";
+						$query = "UPDATE glpi_networkports SET mac='' WHERE id='$npnet'";
 						$DB->query($query);
 					}
 					if ($np1->fields["ip"] == $np2->fields["ip"]) {
-						$query = "UPDATE glpi_networkports SET ip='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";
+						$query = "UPDATE glpi_networkports SET ip='',netmask='', subnet='',gateway='' WHERE id='$npnet'";
 						$DB->query($query);
 					}
 					// Unset netpoint from common device
-					$query = "UPDATE glpi_networkports SET netpoints_id=0 WHERE ID='$npdev'";
+					$query = "UPDATE glpi_networkports SET netpoints_id=0 WHERE id='$npdev'";
 					$DB->query($query);
 				}
 				*/
@@ -820,17 +820,17 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	}
 
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
-	$query = "SELECT gnp.items_id as ID, gnp.ID as portID, gnp.itemtype as itemtype 
+	$query = "SELECT gnp.items_id, gnp.id as portID, gnp.itemtype as itemtype
 		FROM `glpi_networkports` as gnp
-		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.entities_id=$entity AND gc.is_deleted=0 
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.id AND gc.entities_id=$entity AND gc.is_deleted=0 
 							AND gc.is_template=0 AND itemtype=" . COMPUTER_TYPE . ") 
-		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.entities_id=$entity AND gp.is_deleted=0 
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.id AND gp.entities_id=$entity AND gp.is_deleted=0 
 							AND gp.is_template=0 AND itemtype=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.entities_id=$entity AND gn.is_deleted=0 
+		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.id AND gn.entities_id=$entity AND gn.is_deleted=0 
 							AND gn.is_template=0 AND itemtype=" . NETWORKING_TYPE . ")  
-		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.entities_id=$entity AND gph.is_deleted=0 
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.id AND gph.entities_id=$entity AND gph.is_deleted=0 
 							AND gph.is_template=0 AND itemtype=" . PHONE_TYPE . ") 
-		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.entities_id=$entity AND gpe.is_deleted=0 
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.id AND gpe.entities_id=$entity AND gpe.is_deleted=0 
 							AND gpe.is_template=0 AND itemtype=" . PERIPHERAL_TYPE . ") 
 	 	WHERE gnp.$field='" . $value . "'";
 
@@ -843,11 +843,11 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	switch ($DB->numrows($result)) {
 		case 0 :
 			//No result found with the previous request. Try to look for IP in the glpi_networkequipments table directly
-			$query = "SELECT ID FROM glpi_networkequipments WHERE UPPER($field)=UPPER('$value') AND entities_id='$entity'";
+			$query = "SELECT id FROM glpi_networkequipments WHERE UPPER($field)=UPPER('$value') AND entities_id='$entity'";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) == 1)
 				return array (
-					"ID" => $DB->result($result, 0, "ID"),
+					"id" => $DB->result($result, 0, "id"),
 					"itemtype" => NETWORKING_TYPE
 				);
 			else
@@ -855,7 +855,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 		case 1 :
 			$port = $DB->fetch_array($result);
 			return array (
-				"ID" => $port["ID"],
+				"id" => $port["items_id"],
 				"itemtype" => $port["itemtype"]
 			);
 
@@ -877,13 +877,13 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			//If one port is connected on a network device
 			if ($network_port != -1) {
 				//If the 2 ports are linked each others
-				$query = "SELECT ID FROM glpi_networkports_networkports 
+				$query = "SELECT id FROM glpi_networkports_networkports 
 					WHERE (networkports_id_1='".$port1["portID"]."' AND networkports_id_2='".$port2["portID"]."')
 						OR (networkports_id_1='".$port2["portID"]."' AND networkports_id_2='".$port1["portID"]."')";
 				$query = $DB->query($query);
 				if ($DB->numrows($query) == 1)
 					return array (
-						"ID" => ($network_port == 1 ? $port2["ID"] : $port1["ID"]),
+						"id" => ($network_port == 1 ? $port2["items_id"] : $port1["items_id"]),
 						"itemtype" => ($network_port == 1 ? $port2["itemtype"] : $port1["itemtype"])
 					);
 			}
@@ -927,16 +927,16 @@ function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
 	$commonitem = new CommonItem;
 	$commonitem->setType($itemtype, true);
 
-	$query = "SELECT obj.ID AS ID
+	$query = "SELECT obj.id
 		FROM " . $commonitem->obj->table . " AS obj, glpi_domains AS gdd
-		WHERE obj.entities_id='$entity' AND obj.domains_id = gdd.ID
+		WHERE obj.entities_id='$entity' AND obj.domains_id = gdd.id
 			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
 
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
 		$datas = $DB->fetch_array($result);
 		return array (
-			"ID" => $datas["ID"],
+			"id" => $datas["id"],
 			"itemtype" => $type
 		);
 	} else

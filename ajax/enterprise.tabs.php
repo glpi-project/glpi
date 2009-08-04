@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
@@ -54,42 +54,42 @@ if (!isset($_POST["start"])) {
 if (!isset($_POST["sort"])) $_POST["sort"]="";
 if (!isset($_POST["order"])) $_POST["order"]="";
 
-	$ent->check($_POST["ID"],'r');
+	$ent->check($_POST["id"],'r');
 
-		if ($_POST["ID"]>0){
+		if ($_POST["id"]>0){
 			switch($_POST['glpi_tab']){
 				case -1:
-					showAssociatedContact($_POST["ID"]);
-					showContractAssociatedEnterprise($_POST["ID"]);
-					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"]);
-					showJobListForEnterprise($_POST["ID"]);
-					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
-					displayPluginAction(ENTERPRISE_TYPE,$_POST["ID"],$_POST['glpi_tab']);
+					showAssociatedContact($_POST["id"]);
+					showContractAssociatedEnterprise($_POST["id"]);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"]);
+					showJobListForEnterprise($_POST["id"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
+					displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_POST['glpi_tab']);
 					break;
 				case 1 :
-					showAssociatedContact($_POST["ID"]);
+					showAssociatedContact($_POST["id"]);
 					break;
 				case 4 :
-					showContractAssociatedEnterprise($_POST["ID"]);
+					showContractAssociatedEnterprise($_POST["id"]);
 					break;
 				case 5 :
-					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"],0);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"],0);
 					break;
 				case 6 :
-					showJobListForEnterprise($_POST["ID"]);
+					showJobListForEnterprise($_POST["id"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
 					break;
 				case 10 :
-					showNotesForm($_POST['target'],ENTERPRISE_TYPE,$_POST["ID"]);
+					showNotesForm($_POST['target'],ENTERPRISE_TYPE,$_POST["id"]);
 					break;	
 				case 15 :
-					showInfocomEnterprise($_POST["ID"]);
+					showInfocomEnterprise($_POST["id"]);
 					break;	
 				default : 
-					if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
-						showAssociatedContact($_POST["ID"]);
+					if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_POST['glpi_tab'])){
+						showAssociatedContact($_POST["id"]);
 					}
 					break;
 			}

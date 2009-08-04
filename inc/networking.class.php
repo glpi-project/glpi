@@ -93,10 +93,10 @@ class Netdevice extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		return $input;
@@ -111,7 +111,7 @@ class Netdevice extends CommonDBTM {
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(NETWORKING_TYPE,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE ,$input['entities_id']);
 				}
@@ -126,7 +126,7 @@ class Netdevice extends CommonDBTM {
 			}
 	
 			// ADD Ports
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_networkports 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
@@ -134,8 +134,8 @@ class Netdevice extends CommonDBTM {
 	
 				while ($data=$DB->fetch_array($result)){
 					$np= new Netport();
-					$np->getFromDB($data["ID"]);
-					unset($np->fields["ID"]);
+					$np->getFromDB($data["id"]);
+					unset($np->fields["id"]);
 					unset($np->fields["ip"]);
 					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
@@ -186,15 +186,15 @@ class Netdevice extends CommonDBTM {
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='".$data["id"]."';";
 					$DB->query($query);
-				} else $job->delete(array("ID"=>$data["ID"]));
+				} else $job->delete(array("id"=>$data["id"]));
 			}
 
-		$query = "SELECT ID FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
+		$query = "SELECT id FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networkports_networkports WHERE networkports_id_1 = '".$data["ID"]."' OR networkports_id_2 = '".$data["ID"]."'";
+			$q = "DELETE FROM glpi_networkports_networkports WHERE networkports_id_1 = '".$data["id"]."' OR networkports_id_2 = '".$data["id"]."'";
 			$result2 = $DB->query($q);				
 		}
 
@@ -212,7 +212,7 @@ class Netdevice extends CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
+				$rr->delete(array("id"=>$DB->result($result,0,"id")));
 			}
 		}
 	}
@@ -229,7 +229,7 @@ class Netdevice extends CommonDBTM {
 
 		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
 		
-		$ID  = $this->fields['ID'];
+		$ID  = $this->fields['id'];
 
 		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
@@ -251,8 +251,8 @@ class Netdevice extends CommonDBTM {
 			
 			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
 				"FROM glpi_networkports_networkports, glpi_networkports " .
-				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.ID " .
-				"AND   glpi_networkports_networkports.$enda IN (SELECT ID FROM glpi_networkports 
+				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.id " .
+				"AND   glpi_networkports_networkports.$enda IN (SELECT id FROM glpi_networkports 
 									WHERE itemtype=".NETWORKING_TYPE." AND items_id='$ID') " .
 				"GROUP BY itemtype;";
 
@@ -263,7 +263,7 @@ class Netdevice extends CommonDBTM {
 				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
 					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
 	
-					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
+					if (countElementsInTable("$table", "id IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
 							return false;						
 					}
 				}			
@@ -471,12 +471,12 @@ class Netport extends CommonDBTM {
 		$tomatch=array("netpoints_id");
 		$updates=array_intersect($updates,$tomatch);
 		if (count($updates)){
-			$save_ID=$this->fields["ID"];
+			$save_ID=$this->fields["id"];
 			$n=new Netwire;
-			if ($this->fields["ID"]=$n->getOppositeContact($save_ID)){
+			if ($this->fields["id"]=$n->getOppositeContact($save_ID)){
 				$this->updateInDB($updates);
 			}
-			$this->fields["ID"]=$save_ID;
+			$this->fields["id"]=$save_ID;
 		}
 	}
 
@@ -518,7 +518,7 @@ class Netport extends CommonDBTM {
 
 		$table = $LINK_ID_TABLE[$itemtype];
 
-		$query = "SELECT * FROM $table WHERE ID = '$ID'";
+		$query = "SELECT * FROM $table WHERE id = '$ID'";
 		if ($result=$DB->query($query))
 		{
 			$data = $DB->fetch_array($result);

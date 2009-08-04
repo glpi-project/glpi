@@ -41,22 +41,22 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 	
-		if ($_POST["ID"]>0){
+		if ($_POST["id"]>0){
 			switch($_POST['glpi_tab']){
 				case 1:
-					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
-					showFollowupsSummary($_POST["ID"]);
+					showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+					showFollowupsSummary($_POST["id"]);
 					break;
 				case 2 :
-					showAddFollowupForm($_POST["ID"]);
+					showAddFollowupForm($_POST["id"]);
 					break;
 				default :
-					if (!displayPluginAction(TRACKING_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						showJobDetails($_POST['target'],$_POST["ID"]);
+					if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+						showJobDetails($_POST['target'],$_POST["id"]);
 					}
 					break;
 			}

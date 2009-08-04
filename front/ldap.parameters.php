@@ -44,7 +44,7 @@ if (isset($_POST["delete"])){
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
-			$input["ID"]=$key;
+			$input["id"]=$key;
 			$criteria->delete($input);
 		}
 	glpi_header($_SERVER['HTTP_REFERER']);

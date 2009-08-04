@@ -85,7 +85,7 @@ class Plugin extends CommonDBTM {
 		$db_plugins=array();
 		if (count($pluglist)){
 			foreach ($pluglist as $plug){
-				$db_plugins[$plug['directory']]=$plug['ID'];
+				$db_plugins[$plug['directory']]=$plug['id'];
 			}
 		}
 		
@@ -115,13 +115,13 @@ class Plugin extends CommonDBTM {
 			$install_ok=true;
 			// Check file
 			if (!isset($file_plugins[$plug])){
-				$this->update(array('ID'=>$ID,'state'=>PLUGIN_TOBECLEANED));
+				$this->update(array('id'=>$ID,'state'=>PLUGIN_TOBECLEANED));
 				$install_ok=false;
 			} else {
 				// Check version
 				if ($file_plugins[$plug]['version']!=$pluglist[$ID]['version']){
 					$input=$file_plugins[$plug];
-					$input['ID']=$ID;
+					$input['id']=$ID;
 					$input['state']=PLUGIN_NOTINSTALLED;
 					$this->update($input);
 					$install_ok=false;
@@ -146,7 +146,7 @@ class Plugin extends CommonDBTM {
 				}
 				if (!$usage_ok){
 					$input=$file_plugins[$plug];
-					$input['ID']=$ID;
+					$input['id']=$ID;
 					$this->update($input);					
 				}
 			}
@@ -248,10 +248,10 @@ class Plugin extends CommonDBTM {
 			switch ($plug['state']){
 				case PLUGIN_ACTIVATED :
 					echo "<td>";
-					echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=unactivate'>".$LANG['buttons'][42]."</a>";
+					echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=unactivate'>".$LANG['buttons'][42]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
 						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -268,7 +268,7 @@ class Plugin extends CommonDBTM {
 							$do_install=$function();
 						}
 						if ($do_install){
-							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG['buttons'][4]."</a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=install'>".$LANG['buttons'][4]."</a>";
 						}
 					} else {
 						echo $LANG['plugins'][5].":";
@@ -282,7 +282,7 @@ class Plugin extends CommonDBTM {
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
 						if (function_exists("plugin_".$plug['directory']."_check_config")) {
-							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 						} else {
 							// This is an incompatible plugin (0.71), uninstall fonction could crash
 							echo "&nbsp;";
@@ -297,7 +297,7 @@ class Plugin extends CommonDBTM {
 						$function = 'plugin_' . $plug['directory'] . '_check_config';
 						if (function_exists($function)){
 							if ($function(true)){
-								$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
+								$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
 								glpi_header($_SERVER['PHP_SELF']);
 							}
 						} else {
@@ -306,7 +306,7 @@ class Plugin extends CommonDBTM {
 
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
 						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -314,10 +314,10 @@ class Plugin extends CommonDBTM {
 					break;
 				case PLUGIN_NOTACTIVATED :
 					echo "<td>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=activate'>".$LANG['buttons'][41]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=activate'>".$LANG['buttons'][41]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
 						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -327,7 +327,7 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_TOBECLEANED :
 				default:
 					echo "<td colspan='2'>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=clean'>".$LANG['buttons'][53]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=clean'>".$LANG['buttons'][53]."</a>";
 					echo "</td>";
 					break;
 			}
@@ -352,7 +352,7 @@ class Plugin extends CommonDBTM {
 			if (function_exists($function)) {
 				$function();
 			}
-			$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTINSTALLED,'version'=>''));
+			$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTINSTALLED,'version'=>''));
 			$this->removeFromSession($this->fields['directory']);
 		}
 	}
@@ -373,9 +373,9 @@ class Plugin extends CommonDBTM {
 					$function = 'plugin_' . $this->fields['directory'] . '_check_config';
 					if (function_exists($function)) {
 						if ($function()){
-							$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
+							$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
 						} else {
-							$this->update(array('ID'=>$ID,'state'=>PLUGIN_TOBECONFIGURED));
+							$this->update(array('id'=>$ID,'state'=>PLUGIN_TOBECONFIGURED));
 						}
 					}
 				}
@@ -404,7 +404,7 @@ class Plugin extends CommonDBTM {
 			$function = 'plugin_' . $this->fields['directory'] . '_check_config';
 			if (function_exists($function)) {
 				if ($function()){
-					$this->update(array('ID'=>$ID,'state'=>PLUGIN_ACTIVATED));
+					$this->update(array('id'=>$ID,'state'=>PLUGIN_ACTIVATED));
 					$_SESSION['glpi_plugins'][]=$this->fields['directory'];
 					
 // Initialize session for the plugin
@@ -429,7 +429,7 @@ class Plugin extends CommonDBTM {
 	**/	
 	function unactivate($ID){
 		if ($this->getFromDB($ID)){
-			$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
+			$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
 			$this->removeFromSession($this->fields['directory']);
 		}
 	}
@@ -453,7 +453,7 @@ class Plugin extends CommonDBTM {
 	**/	
 	function clean($ID){
 		if ($this->getFromDB($ID)){
-			$this->delete(array('ID'=>$ID));
+			$this->delete(array('id'=>$ID));
 			$this->removeFromSession($this->fields['directory']);
 		}
 	}

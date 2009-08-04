@@ -41,45 +41,45 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
-	$_POST["ID"] = "";
+if(!isset($_POST["id"])) {
+	$_POST["id"] = "";
 }
 
 $prof=new Profile();
 
 checkRight("profile","r");
 	
-		if ($_POST["ID"]>0){
+		if ($_POST["id"]>0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					$prof->showForm($_POST['target'],$_POST["ID"]);
-					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
-					displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					$prof->showForm($_POST['target'],$_POST["id"]);
+					showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
+					displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
 					break;
 				case 1:
-					$prof->showForm($_POST['target'],$_POST["ID"]);
+					$prof->showForm($_POST['target'],$_POST["id"]);
 					break;
 				case 2 : 
-					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
+					showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
 					break;
 				default :
-					if (!displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						$prof->showForm($_POST['target'],$_POST["ID"]);
+					if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+						$prof->showForm($_POST['target'],$_POST["id"]);
 					}
 					break;
 			}
 		} else	{
 		switch($_POST['glpi_tab']){
 				case -1 :	
-					$prof->showForm($_POST['target'],$_POST["ID"]);
-					displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					$prof->showForm($_POST['target'],$_POST["id"]);
+					displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
 					break;
 				case 1:
-					$prof->showForm($_POST['target'],$_POST["ID"]);
+					$prof->showForm($_POST['target'],$_POST["id"]);
 					break;
 				default :
-					if (!displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						$prof->showForm($_POST['target'],$_POST["ID"]);
+					if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+						$prof->showForm($_POST['target'],$_POST["id"]);
 					}
 					break;
 			}

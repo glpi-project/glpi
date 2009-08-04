@@ -51,7 +51,7 @@ class PlanningTracking extends CommonDBTM {
 
 
 	function prepareInputForUpdate($input) {
-		$this->getFromDB($input["ID"]);
+		$this->getFromDB($input["id"]);
 		// Save fields
 		$oldfields=$this->fields;
 
@@ -206,8 +206,8 @@ class PlanningTracking extends CommonDBTM {
 
 		// When modify a planning do not itself take into account 
 		$ID_where="";
-		if(isset($this->fields["ID"]))
-			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
+		if(isset($this->fields["id"]))
+			$ID_where=" (id <> '".$this->fields["id"]."') AND ";
 
 		$query = "SELECT * FROM glpi_ticketsplannings".
 			" WHERE $ID_where (users_id = '".$this->fields["users_id"]."') AND ".

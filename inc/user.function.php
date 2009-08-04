@@ -82,7 +82,7 @@ function showDeviceUser($ID){
 	$groups=array();
 	$query="SELECT glpi_groups_users.groups_id, glpi_groups.name 
 		FROM glpi_groups_users 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
+		LEFT JOIN glpi_groups ON (glpi_groups.id = glpi_groups_users.groups_id) 
 		WHERE glpi_groups_users.users_id='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -123,11 +123,11 @@ function showDeviceUser($ID){
 				$ci->setType($itemtype,true);
 				$type_name=$ci->getType();
 				while ($data=$DB->fetch_array($result)){
-					$cansee=$ci->obj->can($data["ID"],"r");
+					$cansee=$ci->obj->can($data["id"],"r");
 					$link=$data["name"];
 					if ($cansee) {
-						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".
-							$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
+						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."'>".
+							$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["id"].")":"")."</a>";	
 					}
 					$linktype="";
 					if ($data["users_id"]==$ID){
@@ -175,9 +175,9 @@ function showDeviceUser($ID){
 				$ci->setType($itemtype,true);
 				$type_name=$ci->getType();
 				while ($data=$DB->fetch_array($result)){
-					$cansee=$ci->obj->can($data["ID"],"r");
+					$cansee=$ci->obj->can($data["id"],"r");
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."'>".$link.(($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["id"].")":"")."</a>";
 					$linktype="";
 					if (isset($groups[$data["groups_id"]])){
 						$linktype=$LANG['common'][35]." ".$groups[$data["groups_id"]];
@@ -228,9 +228,9 @@ function showGroupAssociated($target,$ID){
 	}
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
-	$query="SELECT glpi_groups.*, glpi_groups_users.ID AS IDD, glpi_groups_users.ID as linkID 
+	$query="SELECT glpi_groups.*, glpi_groups_users.id AS IDD, glpi_groups_users.id as linkID 
 		FROM glpi_groups_users 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
+		LEFT JOIN glpi_groups ON (glpi_groups.id = glpi_groups_users.groups_id) 
 		WHERE glpi_groups_users.users_id='$ID' 
 		ORDER BY glpi_groups.name";
 
@@ -240,7 +240,7 @@ function showGroupAssociated($target,$ID){
 		$i=0;
 
 		while ($data=$DB->fetch_array($result)){
-			$used[]=$data["ID"];
+			$used[]=$data["id"];
 			if ($i%$nb_per_line==0) {
 				if ($i!=0) echo "</tr>";
 				echo "<tr class='tab_bg_1'>";
@@ -254,7 +254,7 @@ function showGroupAssociated($target,$ID){
 				echo "</td>";
 			}
 
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($_SESSION["glpiis_ids_visible"]?" (".$data["ID"].")":"")."</a>";
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".$data["name"].($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"")."</a>";
 			echo "&nbsp;";
 
 			echo "</td>";
@@ -279,9 +279,9 @@ function showGroupAssociated($target,$ID){
 		
 		if (count($used)) {	
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deletegroup' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td></tr>";
@@ -353,11 +353,11 @@ function showUserRights($target,$ID){
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
-	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.is_recursive,
+	$query="SELECT DISTINCT glpi_profiles_users.id as linkID, glpi_profiles.id, glpi_profiles.name, glpi_profiles_users.is_recursive,
 			glpi_profiles_users.is_dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
 			FROM glpi_profiles_users 
-			LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
-			LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
+			LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.id)
+			LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.id)
 			WHERE glpi_profiles_users.users_id='$ID'
 			ORDER BY glpi_profiles.name, glpi_entities.completename;";
 
@@ -383,7 +383,7 @@ function showUserRights($target,$ID){
 			}
 			echo "<td>";
 			if ($canshowentity){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["entities_id"]."'>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?id=".$data["entities_id"]."'>";
 			}
 			echo $data["completename"].($_SESSION["glpiis_ids_visible"]?" (".$data["entities_id"].")":"");
 			if ($canshowentity){
@@ -410,9 +410,9 @@ function showUserRights($target,$ID){
 	if ($canedit){
 		echo "<div class='center'>";
 		echo "<table width='80%' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
 		echo "<input type='submit' name='deleteright' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</td></tr>";
@@ -512,16 +512,16 @@ function getAuthMethodsByID($authtype, $auths_id) {
 		case AUTH_CAS :
 			if ($auths_id>0){
 				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$auths_id."'";
+				$sql = "SELECT * FROM glpi_authldaps WHERE id='".$auths_id."'";
 			}
 			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$auths_id."'";
+			$sql = "SELECT * FROM glpi_authldaps WHERE id='".$auths_id."'";
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_authmails WHERE ID='".$auths_id."'";
+			$sql = "SELECT * FROM glpi_authmails WHERE id='".$auths_id."'";
 			break;
 	}
 
@@ -556,7 +556,7 @@ function getAuthMethodName($authtype, $auths_id, $link=0,$name=''){
 			}
 			$out= $LANG['login'][2];
 			if ($link && haveRight("config", "w")){
-				return  $out."&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&amp;ID=" . $auths_id . "\">" . $name . "</a>";
+				return  $out."&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&amp;id=" . $auths_id . "\">" . $name . "</a>";
 			} else {
 				return  $out."&nbsp " . $LANG['common'][52] . " " . $name;
 			}
@@ -574,7 +574,7 @@ function getAuthMethodName($authtype, $auths_id, $link=0,$name=''){
 			}
 			$out= $LANG['login'][3];
 			if ($link && haveRight("config", "w")){
-				return  $out. "&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&amp;ID=" . $auths_id . "\">" . $name . "</a>";
+				return  $out. "&nbsp " . $LANG['common'][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&amp;id=" . $auths_id . "\">" . $name . "</a>";
 			} else {
 				return  $out. "&nbsp " . $LANG['common'][52] . " " . $name;
 			}
@@ -646,7 +646,7 @@ function changeUserAuthMethod($IDs=array(),$authtype=1,$server=-1)
 	if (!empty($IDs) && in_array($authtype,array(AUTH_DB_GLPI,AUTH_LDAP,AUTH_MAIL,AUTH_EXTERNAL)))
 	{
 		$where = implode(',',$IDs);
-		$query="UPDATE glpi_users SET authtype=".$authtype.", auths_id=".$server." WHERE ID IN (".$where.")";
+		$query="UPDATE glpi_users SET authtype=".$authtype.", auths_id=".$server." WHERE id IN (".$where.")";
 		$DB->query($query);
 	}
 }

@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"]) || !isset($_POST["itemtype"])) {
+if(!isset($_POST["id"]) || !isset($_POST["itemtype"])) {
 	exit();
 }
 
@@ -49,7 +49,7 @@ $setupdisplay=new SetupSearchDisplay();
 
 	checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
-		if ($_POST["ID"]<0){
+		if ($_POST["id"]<0){
 			switch($_POST['glpi_tab']){
 				case 1 :
 					$setupdisplay->showFormGlobal($_POST['target'],$_POST["itemtype"]);

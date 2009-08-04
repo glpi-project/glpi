@@ -45,7 +45,7 @@ class Profile extends CommonDBTM{
 	var $helpdesk_rights=array("faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
 
 	/// Common fields used for all profiles type
-	var $common_fields=array("ID","name","interface","is_default");
+	var $common_fields=array("id","name","interface","is_default");
 	/// Fields not related to a basic right
 	var $noright_fields=array("helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware","own_ticket");
 
@@ -72,7 +72,7 @@ class Profile extends CommonDBTM{
 		global $DB;
 
 		if (isset($input["is_default"])&&$input["is_default"]==1){
-			$query="UPDATE glpi_profiles SET `is_default`='0' WHERE ID <> '".$input['ID']."'";
+			$query="UPDATE glpi_profiles SET `is_default`='0' WHERE id <> '".$input['id']."'";
 			$DB->query($query);
 		}
 	}
@@ -200,7 +200,7 @@ class Profile extends CommonDBTM{
 		$query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
 		$result=$DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
-			$under_profiles[$data['ID']]=$data['ID'];
+			$under_profiles[$data['id']]=$data['id'];
 		}
 		foreach ($IDs as $ID){
 			if (!isset($under_profiles[$ID])){
@@ -395,7 +395,7 @@ class Profile extends CommonDBTM{
 		if ($canedit){
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='2' align='center'>";
-			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='hidden' name='id' value=$ID>";
 			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
 			echo "</td><td colspan='2' align='center'>";
@@ -772,7 +772,7 @@ class Profile extends CommonDBTM{
 		if ($canedit){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td colspan='3' align='center'>";
-			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='hidden' name='id' value=$ID>";
 			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 			echo "</td><td colspan='3' align='center'>";
 			echo "<input type='submit' name='delete'  onclick=\"return confirm('".$LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";

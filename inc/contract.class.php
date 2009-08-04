@@ -95,7 +95,7 @@ class Contract extends CommonDBTM {
 			&& ($oldvalues['duration'] < $this->fields['duration'] ))
 		){
 			$alert=new Alert();
-			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+			$alert->clear($this->type,$this->fields['id'],ALERT_END);
 		}
 
 		// Clean notice alert if begin_date is after old one
@@ -109,7 +109,7 @@ class Contract extends CommonDBTM {
 			&& ($oldvalues['notice'] > $this->fields['notice'] ))
 		){
 			$alert=new Alert();
-			$alert->clear($this->type,$this->fields['ID'],ALERT_NOTICE);
+			$alert->clear($this->type,$this->fields['id'],ALERT_NOTICE);
 		}
 		return array($input,$updates);
 	}

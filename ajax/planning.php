@@ -49,8 +49,8 @@
 	$split=explode(":",$CFG_GLPI["planning_end"]);
 	$global_end=$split[0].":".$split[1];
 	
-	if (isset($_POST["ID"])&&$_POST["ID"]>0){
-		echo "<input type='hidden' name='plan[ID]' value='".$_POST["ID"]."'>";
+	if (isset($_POST["id"])&&$_POST["id"]>0){
+		echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
 	}
 
 	if (isset($_POST["begin"])&&!empty($_POST["begin"])){

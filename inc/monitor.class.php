@@ -94,14 +94,14 @@ class Monitor extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
 		
 		if (isset($input["size"]) && $input["size"] == '')
 			unset($input["size"]);
 			
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		return $input;
@@ -117,7 +117,7 @@ class Monitor extends CommonDBTM {
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(MONITOR_TYPE,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE, $input['entities_id']);
 				}
@@ -169,9 +169,9 @@ class Monitor extends CommonDBTM {
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='".$data["id"]."';";
 					$DB->query($query);
-				} else $job->delete(array("ID"=>$data["ID"]));
+				} else $job->delete(array("id"=>$data["id"]));
 			}
 
 		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".MONITOR_TYPE."')";
@@ -181,7 +181,7 @@ class Monitor extends CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
+				$rr->delete(array("id"=>$DB->result($result,0,"id")));
 			}
 		}
 
@@ -190,7 +190,7 @@ class Monitor extends CommonDBTM {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
 					// Disconnect without auto actions
-					Disconnect($data["ID"],1,false);
+					Disconnect($data["id"],1,false);
 				}
 			}
 		}
@@ -296,7 +296,7 @@ class Monitor extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'";
 
       echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
-      globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["monitors_management_restrict"]);
+      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],$CFG_GLPI["monitors_management_restrict"]);
       echo "</td></tr>";
          
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
@@ -398,7 +398,7 @@ class Monitor extends CommonDBTM {
    function getSelectLinkedItem () {
       return "SELECT '".COMPUTER_TYPE."', `computers_id` 
          FROM glpi_computers_items 
-         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['ID']."'";
+         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['id']."'";
    }
 }
 

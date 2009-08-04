@@ -113,16 +113,16 @@ class Computer extends CommonDBTM {
 		global $DB;
 
 		if ($this->getFromDB($ID)){
-			$query = "SELECT count(*) AS NB, ID, devicetype, devices_id, specificity
+			$query = "SELECT count(*) AS NB, id, devicetype, devices_id, specificity
 				FROM glpi_computers_devices 
 				WHERE computers_id = '$ID' 
 				GROUP BY devicetype, devices_id, specificity
-				ORDER BY devicetype, ID";
+				ORDER BY devicetype, id";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) {
 					$i = 0;
 					while($data = $DB->fetch_array($result)) {
-						$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["devicetype"],"devID"=>$data["devices_id"],"specificity"=>$data["specificity"],"quantity"=>$data["NB"]);
+						$this->devices[$i] = array("compDevID"=>$data["id"],"devType"=>$data["devicetype"],"devID"=>$data["devices_id"],"specificity"=>$data["specificity"],"quantity"=>$data["NB"]);
 						$i++;
 					}
 				}
@@ -138,13 +138,13 @@ class Computer extends CommonDBTM {
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
 		if ($this->fields["is_ocs_import"]&&$history==1&&count($updates)>1){
-			mergeOcsArray($this->fields["ID"],$updates,"computer_update");
+			mergeOcsArray($this->fields["id"],$updates,"computer_update");
 		}
 
 		if (isset($input["_auto_update_ocs"])){
 			$query="UPDATE glpi_ocslinks 
 				SET use_auto_update='".$input["_auto_update_ocs"]."' 
-				WHERE computers_id='".$input["ID"]."'";
+				WHERE computers_id='".$input["id"]."'";
 			$DB->query($query);
 		}
 
@@ -162,7 +162,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["id"]."' AND itemtype='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 						if ($resultnum>0) {
@@ -171,7 +171,7 @@ class Computer extends CommonDBTM {
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('contact')!=$this->fields['contact']||$ci->getField('contact_num')!=$this->fields['contact_num']){
-										$tmp["ID"]=$ci->getField('ID');
+										$tmp["id"]=$ci->getField('id');
 										$tmp['contact']=$this->fields['contact'];
 										$tmp['contact_num']=$this->fields['contact_num'];
 										$ci->obj->update($tmp);
@@ -200,7 +200,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["id"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -212,7 +212,7 @@ class Computer extends CommonDBTM {
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('users_id')!=$this->fields["users_id"]||$ci->getField('groups_id')!=$this->fields["groups_id"]){
-										$tmp["ID"]=$ci->getField('ID');
+										$tmp["id"]=$ci->getField('id');
 										if ($CFG_GLPI["is_user_autoupdate"]){
 											$tmp["users_id"]=$this->fields["users_id"];
 										}
@@ -242,7 +242,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["id"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -254,7 +254,7 @@ class Computer extends CommonDBTM {
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('states_id')!=$this->fields["states_id"]){
-										$tmp["ID"]=$ci->getField('ID');
+										$tmp["id"]=$ci->getField('id');
 										$tmp["states_id"]=$this->fields["states_id"];
 										$ci->obj->update($tmp);
 										$update_done=true;
@@ -281,7 +281,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE computers_id='".$this->fields["ID"]."' AND itemtype='".$t."'";
+						WHERE computers_id='".$this->fields["id"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -293,7 +293,7 @@ class Computer extends CommonDBTM {
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('locations_id')!=$this->fields["locations_id"]){
-										$tmp["ID"]=$ci->getField('ID');
+										$tmp["id"]=$ci->getField('id');
 										$tmp["locations_id"]=$this->fields["locations_id"];
 										$ci->obj->update($tmp);
 										$update_done=true;
@@ -317,10 +317,10 @@ class Computer extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		return $input;
@@ -342,7 +342,7 @@ class Computer extends CommonDBTM {
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
@@ -356,15 +356,15 @@ class Computer extends CommonDBTM {
 			}
 
        			// ADD volumes
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_computersdisks 
 				WHERE computers_id='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
                                   $disk=new ComputerDisk();
-                                  $disk->getfromDB($data['ID']);
-                                  unset($disk->fields["ID"]);
+                                  $disk->getfromDB($data['id']);
+                                  unset($disk->fields["id"]);
                                   $disk->fields["computers_id"]=$newID;
                                   $disk->addToDB();
                                 }
@@ -402,15 +402,15 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Ports
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_networkports 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
 					$np= new Netport();
-					$np->getFromDB($data["ID"]);
-					unset($np->fields["ID"]);
+					$np->getFromDB($data["id"]);
+					unset($np->fields["id"]);
 					unset($np->fields["ip"]);
 					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
@@ -449,9 +449,9 @@ class Computer extends CommonDBTM {
 				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
 					$query = "UPDATE glpi_tickets 
 						SET items_id = '0', itemtype='0'
-						WHERE ID='".$data["ID"]."';";
+						WHERE id='".$data["id"]."';";
 					$DB->query($query);
-				} else $job->delete(array("ID"=>$data["ID"]));
+				} else $job->delete(array("id"=>$data["id"]));
 			}
 
 		$query = "DELETE FROM glpi_computers_softwaresversions WHERE (computers_id = '$ID')";
@@ -465,12 +465,12 @@ class Computer extends CommonDBTM {
                WHERE (items_id = '$ID' AND itemtype='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
-		$query = "SELECT ID FROM glpi_networkports
+		$query = "SELECT id FROM glpi_networkports
             WHERE (items_id = '$ID' AND itemtype = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networkports_networkports
-            WHERE (networkports_id_1 = '".$data["ID"]."' OR networkports_id_2 = '".$data["ID"]."')";
+            WHERE (networkports_id_1 = '".$data["id"]."' OR networkports_id_2 = '".$data["id"]."')";
 			$result2 = $DB->query($q);					
 		}	
 
@@ -484,7 +484,7 @@ class Computer extends CommonDBTM {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
 					// Disconnect without auto actions
-					Disconnect($data["ID"],1,false);
+					Disconnect($data["id"],1,false);
 				}
 			}
 		}
@@ -497,7 +497,7 @@ class Computer extends CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
+				$rr->delete(array("id"=>$DB->result($result,0,"id")));
 			}
 		}
 
@@ -701,7 +701,7 @@ class Computer extends CommonDBTM {
          echo $LANG['ocsng'][13].": ".convDateTime($dataocs["last_update"]);
          echo "<br>";
          if (haveRight("ocsng","r")){
-            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?id=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
             $query = "SELECT ocs_agent_version, ocsid FROM glpi_ocslinks WHERE (computers_id = '$ID')";
             $result_agent_version = $DB->query($query);
             $data_version = $DB->fetch_array($result_agent_version);
@@ -745,7 +745,7 @@ class Computer extends CommonDBTM {
    function getSelectLinkedItem () {
       return "SELECT `itemtype`, `items_id` 
          FROM glpi_computers_items 
-         WHERE `computers_id`='" . $this->fields['ID']."'";
+         WHERE `computers_id`='" . $this->fields['id']."'";
    }
 }
 
@@ -815,11 +815,11 @@ class ComputerDisk extends CommonDBTM {
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='4'>".$LANG['common'][2]." $ID";
-			echo " - <a href='computer.form.php?ID=".$this->fields["computers_id"]."'>".getDropdownName("glpi_computers",$this->fields["computers_id"])."</a>";
+			echo " - <a href='computer.form.php?id=".$this->fields["computers_id"]."'>".getDropdownName("glpi_computers",$this->fields["computers_id"])."</a>";
 			echo "</th></tr>";
 		} else {
 			echo "<tr><th colspan='4'>".$LANG['computers'][7];
-			echo " - <a href='computer.form.php?ID=".$computers_id."'>".getDropdownName("glpi_computers",$computers_id)."</a>";
+			echo " - <a href='computer.form.php?id=".$computers_id."'>".getDropdownName("glpi_computers",$computers_id)."</a>";
 
 			echo "</th></tr>";
 			echo "<input type='hidden' name='computers_id' value='$computers_id'>";
@@ -863,11 +863,11 @@ class ComputerDisk extends CommonDBTM {
 		if ($ID>0) {
 
 			echo "<td colspan='2'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='hidden' name='id' value=\"$ID\">\n";
 			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 			echo "</td>\n\n";
 			echo "<td colspan='2'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='hidden' name='id' value=\"$ID\">\n";
 			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 			echo "</td>\n\n";
 		} else {

@@ -58,7 +58,7 @@ elseif (isset ($_POST["add_mail"])) {
 	//If no name has been given to this configuration, then go back to the page without adding
 	if ($_POST["name"] != ""){
 		if ($newID=$config_mail->add($_POST)){
-			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&ID=".$newID);
+			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&id=".$newID);
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -78,8 +78,8 @@ elseif (isset ($_POST["delete_mail"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-if (!isset($_GET["ID"])){
-	$_GET["ID"]="";	
+if (!isset($_GET["id"])){
+	$_GET["id"]="";	
 }
 
 if (!isset($_GET["next"])){
@@ -90,7 +90,7 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap")
 	
 switch($_GET['next']){
 	case "extauth_mail" :
-		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
 		break;
 	default :
 		showImapAuthList($_SERVER['PHP_SELF']);

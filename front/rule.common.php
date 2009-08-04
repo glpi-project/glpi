@@ -39,13 +39,13 @@ if (!defined('GLPI_ROOT')){
 
 $rule = $rulecollection->getRuleClass();;
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
 checkRight($rulecollection->right,"r");
 
 if (isset($_GET["action"])){
 	checkRight($rulecollection->right,"w");
-	$rulecollection->changeRuleOrder($_GET["ID"],$_GET["action"]);
+	$rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["action"])){
 	checkRight($rulecollection->right,"w");	
@@ -56,9 +56,9 @@ if (isset($_GET["action"])){
 			if (isset($_POST["item"])&&count($_POST["item"])){
 				foreach ($_POST["item"] as $key => $val){
 					$rule->getFromDB($key);
-					$input["ID"]=$key;
+					$input["id"]=$key;
 					$rulecollection->deleteRuleOrder($rule->fields["ranking"]);
-					$rule->delete(array('ID'=>$key));
+					$rule->delete(array('id'=>$key));
 				}
 				logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 				glpi_header($_SERVER['HTTP_REFERER']);
@@ -77,7 +77,7 @@ if (isset($_GET["action"])){
 				$rule = new Rule();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$input['ID']=$key;
+						$input['id']=$key;
 						$input['is_active']=$_POST["activate_rule"];
 						$rule->update($input);
 					}

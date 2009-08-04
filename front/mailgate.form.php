@@ -40,7 +40,7 @@ $NEEDED_ITEMS=array("mailgate","setup","tracking","rulesengine","rule.tracking",
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
 $mailgate=new Mailgate();
 
@@ -54,31 +54,31 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	$mailgate->check($_POST['ID'],'w');
+	$mailgate->check($_POST['id'],'w');
 	$mailgate->delete($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
 }
 else if (isset($_POST["update"]))
 {
-	$mailgate->check($_POST['ID'],'w');
+	$mailgate->check($_POST['id'],'w');
 	$mailgate->update($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["get_mails"]))
 {
-	$mailgate->check($_POST['ID'],'w');
+	$mailgate->check($_POST['id'],'w');
 
 	$mc=new MailCollect();
-	$mc->collect($_POST["ID"],1);
+	$mc->collect($_POST["id"],1);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
 	commonHeader($LANG['Menu'][39],$_SERVER['PHP_SELF'],"config","mailgate");
-	$mailgate->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$mailgate->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 	commonFooter();
 }
 

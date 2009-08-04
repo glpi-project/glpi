@@ -40,7 +40,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(empty($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["sort"])) $_GET["sort"] = "";
 if(!isset($_GET["order"])) $_GET["order"] = "";
 
@@ -58,13 +58,13 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$phone->check($_POST["ID"],'w');
+	$phone->check($_POST["id"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$phone->delete($_POST,1);
 	else $phone->delete($_POST);
 
-	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
@@ -72,45 +72,45 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	$phone->check($_POST["ID"],'w');
+	$phone->check($_POST["id"],'w');
 
 	$phone->restore($_POST);
-	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	$phone->check($_POST["ID"],'w');
+	$phone->check($_POST["id"],'w');
 		
 	if (isset($_POST["purge"]))
-		$input["ID"]=$_POST["ID"];
+		$input["id"]=$_POST["id"];
 	else
-		$input["ID"] = $_GET["ID"];	
+		$input["id"] = $_GET["id"];	
 
 	$phone->delete($input,1);
-	logEvent($input["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($input["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 }
 else if (isset($_POST["update"]))
 {
-	$phone->check($_POST["ID"],'w');
+	$phone->check($_POST["id"],'w');
 
 	$phone->update($_POST);
-	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["unglobalize"]))
 {
-	$phone->check($_GET["ID"],'w');
+	$phone->check($_GET["id"],'w');
 
-	unglobalizeDevice(PHONE_TYPE,$_GET["ID"]);
-	logEvent($_GET["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?ID=".$_GET["ID"]);
+	unglobalizeDevice(PHONE_TYPE,$_GET["id"]);
+	logEvent($_GET["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 }
-else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["ID"]))
+else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["id"]))
 {
 	$phone->check($_GET["dID"],"w");
-	Disconnect($_GET["ID"]);
+	Disconnect($_GET["id"]);
 	logEvent(0, "phones", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -121,7 +121,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 
 	Connect($_POST["sID"],$_POST["item"],PHONE_TYPE);
 	logEvent($_POST["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][26]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?ID=".$_POST["sID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_POST["sID"]);
 
 
 }
@@ -129,7 +129,7 @@ else
 {
 	commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
-	$phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
+	$phone->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
 	
 	commonFooter();
 }

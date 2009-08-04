@@ -194,10 +194,10 @@ class Bookmark extends CommonDBTM {
 			echo "<tr>";
 
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='hidden' name='id' value=\"$ID\">\n";
 			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='hidden' name='id' value=\"$ID\">\n";
 
 			echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 
@@ -304,7 +304,7 @@ class Bookmark extends CommonDBTM {
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this itemtype already exists ?
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_bookmarks_users 
 				WHERE users_id='".$_SESSION['glpiID']."'
 					AND itemtype='".$this->fields['itemtype']."'";
@@ -312,7 +312,7 @@ class Bookmark extends CommonDBTM {
 				if ($DB->numrows($result) > 0){
 					// already exists update it
 					$updateID=$DB->result($result,0,0);
-					$dd->update(array('ID'=>$updateID,'bookmarks_id'=>$ID));
+					$dd->update(array('id'=>$updateID,'bookmarks_id'=>$ID));
 				} else {
 					$dd->add(array('bookmarks_id'=>$ID,'users_id'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
 				}
@@ -334,7 +334,7 @@ class Bookmark extends CommonDBTM {
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this itemtype already exists ?
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_bookmarks_users 
 				WHERE users_id='".$_SESSION['glpiID']."'
 					AND bookmarks_id='$ID'
@@ -343,7 +343,7 @@ class Bookmark extends CommonDBTM {
 				if ($DB->numrows($result) > 0){
 					// already exists delete it
 					$deleteID=$DB->result($result,0,0);
-					$dd->delete(array('ID'=>$deleteID));
+					$dd->delete(array('id'=>$deleteID));
 				} 
 			}
 			
@@ -364,10 +364,10 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT `".$this->table."`.*, glpi_bookmarks_users.ID AS IS_DEFAULT 
+		$query="SELECT `".$this->table."`.*, glpi_bookmarks_users.id AS IS_DEFAULT 
 			FROM `".$this->table."` 
 			LEFT JOIN glpi_bookmarks_users ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype 
-							AND `".$this->table."`.ID = glpi_bookmarks_users.bookmarks_id) 
+							AND `".$this->table."`.id = glpi_bookmarks_users.bookmarks_id) 
 			WHERE ";
 			
 		if ($is_private){
@@ -402,33 +402,33 @@ class Bookmark extends CommonDBTM {
 						$ci->setType($current_type);
 						$current_type_name=$ci->getType();
 					}
-					$canedit=$this->can($this->fields["ID"],"w");
+					$canedit=$this->can($this->fields["id"],"w");
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td width='10px'>";
 					if ($canedit) {
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='bookmark[" . $this->fields["ID"] . "]' " . $sel . ">";
+						echo "<input type='checkbox' name='bookmark[" . $this->fields["id"] . "]' " . $sel . ">";
 					} else {
 						echo "&nbsp;";
 					}
 					echo "</td>";
 					echo "<td>$current_type_name</td>";
 					echo "<td>";
-					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;ID=".$this->fields["ID"]."\">".$this->fields["name"]."</a>";
+					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;id=".$this->fields["id"]."\">".$this->fields["name"]."</a>";
 					echo "</td>";
 					if ($canedit) {
-						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$this->fields["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG['buttons'][14]."'></a></td>";
+						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".$this->fields["id"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG['buttons'][14]."'></a></td>";
 					} else {
 						echo "<td>&nbsp;</td>";					
 					}
 					echo "<td align='center'>";
 					if ($this->fields['type']==BOOKMARK_SEARCH){
 						if (is_null($this->fields['IS_DEFAULT'])){
-							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=1&amp;ID=".$this->fields["ID"]."\">".$LANG['choice'][0]."</a>";;
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=1&amp;id=".$this->fields["id"]."\">".$LANG['choice'][0]."</a>";;
 						} else {
-							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=0&amp;ID=".$this->fields["ID"]."\">".$LANG['choice'][1]."</a>";;
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=0&amp;id=".$this->fields["id"]."\">".$LANG['choice'][1]."</a>";;
 						}
 					}
 					echo "</td>";

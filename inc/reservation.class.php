@@ -123,7 +123,7 @@ class ReservationResa extends CommonDBTM {
 			$item=$_POST['_item'];
 		}
 
-		$this->getFromDB($input["ID"]);
+		$this->getFromDB($input["id"]);
 		// Save fields
 		$oldfields=$this->fields;
 		// Needed for test already planned
@@ -206,8 +206,8 @@ class ReservationResa extends CommonDBTM {
 
 		// When modify a reservation do not itself take into account 
 		$ID_where="";
-		if(isset($this->fields["ID"]))
-			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
+		if(isset($this->fields["id"]))
+			$ID_where=" (id <> '".$this->fields["id"]."') AND ";
 
 		$query = "SELECT * FROM glpi_reservations".
 			" WHERE $ID_where (reservationsitems_id = '".$this->fields["reservationsitems_id"]."') 
@@ -251,7 +251,7 @@ class ReservationResa extends CommonDBTM {
 			echo "Unknown error";
 			break;
 		}
-		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$LANG['reservation'][20]."</a>";
+		echo "<br><a href='".$target."?show=resa&amp;id=$ID'>".$LANG['reservation'][20]."</a>";
 		echo "</div>";
 	}
 	/**
@@ -314,7 +314,7 @@ class ReservationResa extends CommonDBTM {
 			// Add reservation - TODO should also check commonitem->can(r)
 			return haveRight("reservation_helpdesk","1");
 		}
-		if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
+		if (!isset($this->fields['id'])||$this->fields['id']!=$ID){
 			// Item not found : no right
 			if (!$this->getFromDB($ID)){
 				return false;

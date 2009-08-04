@@ -59,7 +59,7 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 $where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','entities_id',$_POST["entity_restrict"],true);
 
 
-$query = "SELECT DISTINCT glpi_softwares.ID, glpi_softwares.name 
+$query = "SELECT DISTINCT glpi_softwares.id, glpi_softwares.name 
 		FROM glpi_softwares
 		WHERE glpi_softwares.is_deleted=0 
 			AND glpi_softwares.is_template=0 
@@ -71,7 +71,7 @@ echo "<select name='softwares_id' id='item_type$rand'>\n";
 echo "<option value='0'>-----</option>\n";
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
-		$softwares_id = $data["ID"];
+		$softwares_id = $data["id"];
 		$output=$data["name"];
 		echo  "<option value='$softwares_id' title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 	}	

@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("consumable","printer","infocom","link","document","enterpri
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
 $constype=new ConsumableType();
 
@@ -53,40 +53,40 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	$constype->check($_POST["ID"],'w');
+	$constype->check($_POST["id"],'w');
 
 	$constype->delete($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["restore"]))
 {
-	$constype->check($_POST["ID"],'w');
+	$constype->check($_POST["id"],'w');
 
 	$constype->restore($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["purge"]))
 {
-	$constype->check($_POST["ID"],'w');
+	$constype->check($_POST["id"],'w');
 
 	$constype->delete($_POST,1);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["update"]))
 {
-	$constype->check($_POST["ID"],'w');
+	$constype->check($_POST["id"],'w');
 
 	$constype->update($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
 	commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
-	$constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$constype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 	commonFooter();
 }
 

@@ -516,7 +516,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path."/".$_GET["file"]
 		optimize_tables();
 		// Compatiblity for old version for utf8 complete conversion
 		$cnf=new Config();
-		$input['ID']=1;
+		$input['id']=1;
 		$input['utf8_conv']=1;
 		$cnf->update($input);
 	}

@@ -66,7 +66,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0&&(isPossible
 	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$paramstrackingdt,false);
 
 	echo "<span id='results_ID$rand'>";
-	echo "<select name='ID'><option value='0'>------</option></select>";
+	echo "<select name='id'><option value='0'>------</option></select>";
 	echo "</span>";	
 }		
 ?>

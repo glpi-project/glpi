@@ -64,8 +64,8 @@ if (isset($_GET["value2"]))$value2=$_GET["value2"];
 else if (isset($_POST["value2"]))$value2=$_POST["value2"];
 else $value2="";
 // Selected Item
-if (isset($_POST["ID"])) $ID=$_POST["ID"];
-elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
+if (isset($_POST["id"])) $ID=$_POST["id"];
+elseif (isset($_GET["id"])) $ID=$_GET["id"];
 else $ID="";
 
 if (isset($_POST["move"])) {
@@ -77,12 +77,12 @@ if (isset($_POST["move"])) {
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
-	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
+	if(dropdownUsed($_POST["tablename"], $_POST["id"]) && empty($_POST["forcedelete"])) {
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 		else 	
 			commonHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
-		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["entities_id"]);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["id"],$_POST["entities_id"]);
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popFooter();
 		else 
@@ -96,7 +96,7 @@ if (isset($_POST["move"])) {
 } else if (isset($_POST["update"])) {
 	updateDropdown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&id=$ID");
 } else if (isset($_POST["replace"])) {
 	replaceDropDropDown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);

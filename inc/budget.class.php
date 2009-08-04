@@ -150,10 +150,10 @@ class Budget extends CommonDBTM{
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["ID"])&&$input["ID"]>0){
-         $input["_oldID"]=$input["ID"];
+      if (isset($input["id"])&&$input["id"]>0){
+         $input["_oldID"]=$input["id"];
       }
-      unset($input['ID']);
+      unset($input['id']);
       unset($input['withtemplate']);
 
       return $input;

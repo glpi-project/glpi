@@ -58,10 +58,10 @@ foreach ( $relations as $totable => $rels){
 			$fromtable=substr($fromtable,1);
 		}
 		if (!is_array($fromfield)){
-			$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$fromfield."` FOREIGN KEY (`$fromfield`) REFERENCES `$totable` (`ID`) ";
+			$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$fromfield."` FOREIGN KEY (`$fromfield`) REFERENCES `$totable` (`id`) ";
 		} else {
 			foreach ($fromfield as $f){
-				$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$f."` FOREIGN KEY (`$f`) REFERENCES `$totable` (`ID`) ";
+				$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$f."` FOREIGN KEY (`$f`) REFERENCES `$totable` (`id`) ";
 			}
 		}
 	}

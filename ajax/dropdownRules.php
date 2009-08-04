@@ -56,7 +56,7 @@ if (!isset($_POST["limit"])) {
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
-$sql = "SELECT ID,name,ranking 
+$sql = "SELECT id,name,ranking 
 	FROM glpi_rules 
 	WHERE sub_type='".$_POST["type"]."'";
 
@@ -80,7 +80,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 
 if ($DB->numrows($result)) {
 	while ($data =$DB->fetch_array($result)) {
-		$ID = $data['ID'];
+		$ID = $data['id'];
 		$name = $data['name'];
 		echo "<option value='$ID' title=\"".cleanInputText($name)."\">".utf8_substr($name,0,$_POST["limit"])."</option>";
 	}

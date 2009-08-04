@@ -70,14 +70,14 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if (!empty($ID)){
       echo "<div class='center'>";
       echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
-      echo "<input type='hidden' name='ID' value='$ID'>";
+      echo "<input type='hidden' name='id' value='$ID'>";
       echo "<input type='hidden' name='device_action' value='$ID'>";
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr><th colspan='65'>".$LANG['title'][30]."</th></tr>";
       foreach($comp->devices as $key => $val) {
          $device = new Device($val["devType"]);
          $device->getFromDB($val["devID"]);
-         printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
+         printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["id"],$val["compDevID"],$withtemplate);
 
       }
 		
@@ -87,7 +87,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 
 		echo "</form>";
 		//ADD a new device form.
-		device_selecter($target,$comp->fields["ID"],$withtemplate);
+		device_selecter($target,$comp->fields["id"],$withtemplate);
 		echo "</div><br>";
 	}
 
@@ -166,7 +166,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						echo "<table width='100%'>";
 						for ($i=0; $i < $resultnum; $i++) {
 							$tID = $DB->result($result, $i, "items_id");
-							$connID = $DB->result($result, $i, "ID");
+							$connID = $DB->result($result, $i, "id");
 							$ci->getFromDB($itemtype,$tID);
 	
 							$used[] = $tID;
@@ -181,7 +181,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "</td><td>".$ci->getField('otherserial');
 							echo "</td><td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?computers_id=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
+								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
 								echo $LANG['buttons'][10];
 								echo "</strong></a></td>";
 							}
@@ -253,7 +253,7 @@ function showComputerDisks($ID,$withtemplate='') {
 
 	$query = "SELECT glpi_filesystems.name as fsname, glpi_computersdisks.* 
 		FROM glpi_computersdisks
-		LEFT JOIN glpi_filesystems ON (glpi_computersdisks.filesystems_id = glpi_filesystems.ID)
+		LEFT JOIN glpi_filesystems ON (glpi_computersdisks.filesystems_id = glpi_filesystems.id)
 		WHERE (computers_id = '$ID')";
 
 	if ($result=$DB->query($query)){
@@ -275,9 +275,9 @@ function showComputerDisks($ID,$withtemplate='') {
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
-					echo "<td><a href='computerdisk.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+					echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".$data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
 				} else {
-						echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+						echo "<td>".$data['name'].(empty($data['name'])?$data['id']:"")."</td>";
 				}
 				echo "<td>".$data['device']."</td>";
 				echo "<td>".$data['mountpoint']."</td>";
@@ -285,7 +285,7 @@ function showComputerDisks($ID,$withtemplate='') {
 				echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".$LANG['common'][82]."</td>";
 				echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".$LANG['common'][82]."</td>";
 
-				addToNavigateListItems(COMPUTERDISK_TYPE,$data['ID']);
+				addToNavigateListItems(COMPUTERDISK_TYPE,$data['id']);
 			}
 			//echo "</table>";
 		} else {

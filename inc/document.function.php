@@ -233,15 +233,15 @@ function showDeviceDocument($instID) {
 			$itemtype=$DB->result($result, $i, "itemtype");
 			if (haveTypeRight($itemtype,"r")){
 				$column="name";
-				if ($itemtype==TRACKING_TYPE) $column="ID";
+				if ($itemtype==TRACKING_TYPE) $column="id";
 				if ($itemtype==KNOWBASE_TYPE) $column="question";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_documents_items.ID AS IDD, glpi_entities.ID AS entity
+				$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_documents_items.id AS IDD, glpi_entities.id AS entity
 							FROM glpi_documents_items, ".$LINK_ID_TABLE[$itemtype];
 				if ($itemtype != ENTITY_TYPE) {
-					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$itemtype].".entities_id) ";
+					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.id=".$LINK_ID_TABLE[$itemtype].".entities_id) ";
 				}
-				$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_documents_items.items_id
+				$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".id = glpi_documents_items.items_id
 						AND glpi_documents_items.itemtype='$itemtype' AND glpi_documents_items.documents_id = '$instID' "
 						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
 				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
@@ -258,15 +258,15 @@ function showDeviceDocument($instID) {
 						$ci->setType($itemtype);
 						while ($data=$DB->fetch_assoc($result_linked)){
 							$ID="";
-							if ($itemtype==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
+							if ($itemtype==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["id"];
 							if ($itemtype==KNOWBASE_TYPE) $data["name"]=$data["question"];
                      if ($itemtype==SOFTWARELICENSE_TYPE) {
                         $soft->getFromDB($data['softwares_id']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
 							
-							if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">"
+							if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["id"].")";
+							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."\">"
 								.$data["name"]."$ID</a>";
 	
 							echo "<tr class='tab_bg_1'>";
@@ -307,9 +307,9 @@ function showDeviceDocument($instID) {
 			
 			echo "<div class='center'>";
 			echo "<table width='950px' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 		
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
@@ -353,7 +353,7 @@ function addDeviceDocument($docID,$itemtype,$ID){
 function deleteDeviceDocument($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_documents_items WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_documents_items WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -382,13 +382,13 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		$is_recursive=1;
 	}
 
-	$needed_fields=array('ID','name','filename','mime','documentscategories_id','link','is_deleted','entities_id','is_recursive');
+	$needed_fields=array('id','name','filename','mime','documentscategories_id','link','is_deleted','entities_id','is_recursive');
 
 
-	$query = "SELECT glpi_documents_items.ID AS assocID, glpi_entities.ID AS entity, 
+	$query = "SELECT glpi_documents_items.id AS assocID, glpi_entities.id AS entity, 
 			glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
-			LEFT JOIN glpi_documents ON (glpi_documents_items.documents_id=glpi_documents.ID) 
-			LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
+			LEFT JOIN glpi_documents ON (glpi_documents_items.documents_id=glpi_documents.id) 
+			LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.id)
 			WHERE glpi_documents_items.items_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 
 	if (isset($_SESSION["glpiID"])){
@@ -401,10 +401,10 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 	// Document : search links in both order using union
 	if ($itemtype==DOCUMENT_TYPE){
 		$query .= "UNION 
-			SELECT glpi_documents_items.ID as assocID, glpi_entities.ID AS entity, 
+			SELECT glpi_documents_items.id as assocID, glpi_entities.id AS entity, 
 				glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
-				LEFT JOIN glpi_documents ON (glpi_documents_items.items_id=glpi_documents.ID)
-				LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
+				LEFT JOIN glpi_documents ON (glpi_documents_items.items_id=glpi_documents.id)
+				LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.id)
 				WHERE glpi_documents_items.documents_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 		if (isset($_SESSION["glpiID"])){
 			$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
@@ -443,7 +443,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		}
 
 		while ($data=$DB->fetch_assoc($result)) {
-			$docID=$data["ID"];
+			$docID=$data["id"];
 			if ($itemtype!=DOCUMENT_TYPE) {
 				addToNavigateListItems(DOCUMENT_TYPE,$docID);
 			}
@@ -454,7 +454,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			if ($withtemplate!=3 && $canread 
 				&& (in_array($data['entities_id'],$_SESSION['glpiactiveentities']) || $data["is_recursive"])
 			){
-				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
+				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?id=$docID'><strong>".$data["name"];
 				if ($_SESSION["glpiis_ids_visible"]) echo " (".$docID.")";
 				echo "</strong></a></td>";
 			} else {
@@ -477,7 +477,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			if ($withtemplate<2) {
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;devtype=$itemtype&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;devtype=$itemtype&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
 				else echo "&nbsp;";
 				echo "</td>";
 			}

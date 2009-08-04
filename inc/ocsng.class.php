@@ -121,7 +121,7 @@ class Ocsng extends CommonDBTM {
 		echo "<br>";		
 		echo "<div class='center'>"; 
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
-		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+		echo "<input type='hidden' name='id' value='" . $ID . "'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][0]. "</th><th>" . $LANG['title'][30] . "</th><th>" . $LANG['ocsconfig'][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
@@ -283,7 +283,7 @@ class Ocsng extends CommonDBTM {
 		echo "<div class='center'>";
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<table class='tab_cadre'>";
-		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+		echo "<input type='hidden' name='id' value='" . $ID . "'>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][59] . " </td><td> <input type=\"text\" size='30' name=\"ocs_url\" value=\"" . $this->fields["ocs_url"] . "\"></td></tr>";
 
 		echo "<tr><th colspan='2'>" . $LANG['ocsconfig'][5] . "</th></tr>";
@@ -362,7 +362,7 @@ class Ocsng extends CommonDBTM {
 		echo "<div class='center'>";
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<table class='tab_cadre'>";
-		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+		echo "<input type='hidden' name='id' value='" . $ID . "'>";
 		echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][52] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][53] . " </td><td>";
 		dropdownYesNo("is_glpi_link_enabled", $this->fields["is_glpi_link_enabled"]);
@@ -419,7 +419,7 @@ class Ocsng extends CommonDBTM {
 		$out  = "<div class='center' id='tabsbody'>";	
 		$out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";
 		$out .= "<table class='tab_cadre_fixe'>";
-		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["ID"] . "</strong></td></tr>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["id"] . "</strong></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
@@ -430,7 +430,7 @@ class Ocsng extends CommonDBTM {
 			$out .= "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
 		else
 		{
-			$out .= "<input type='hidden' name='ID' value='$ID'>";
+			$out .= "<input type='hidden' name='id' value='$ID'>";
 			$out .= "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" >";
 			$out .= "&nbsp;<input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG['buttons'][6] . "\" ></td></tr>";
 			
@@ -569,11 +569,11 @@ class Ocsng extends CommonDBTM {
 		|| isset ($tab["import_group"])||isset ($tab["import_network"])
 		|| isset ($tab["import_contact_num"])){
 			$adm = new AdminInfo();	
-			$adm->cleanDBonPurge($tab["ID"]);		
+			$adm->cleanDBonPurge($tab["id"]);		
 			if (isset ($tab["import_location"])){
 				if($tab["import_location"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocsservers_id"] = $tab["ID"];							
+					$adm->fields["ocsservers_id"] = $tab["id"];							
 					$adm->fields["glpi_column"] = "locations_id";	
 					$adm->fields["ocs_column"] = $tab["import_location"];				
 					$isNewAdm = $adm->addToDB(); 
@@ -582,7 +582,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_otherserial"])){
 				if($tab["import_otherserial"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocsservers_id"] =  $tab["ID"];			
+					$adm->fields["ocsservers_id"] =  $tab["id"];			
 					$adm->fields["glpi_column"] = "otherserial";	
 					$adm->fields["ocs_column"] = $tab["import_otherserial"];		
 					$isNewAdm = $adm->addToDB();
@@ -591,7 +591,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_group"])){			
 				if($tab["import_group"]!=""){
 					$adm = new AdminInfo();			
-					$adm->fields["ocsservers_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["id"];		
 					$adm->fields["glpi_column"] = "groups_id";	
 					$adm->fields["ocs_column"] = $tab["import_group"];				
 					$isNewAdm = $adm->addToDB();
@@ -600,7 +600,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_network"])){
 				if($tab["import_network"]!=""){			
 					$adm = new AdminInfo();			
-					$adm->fields["ocsservers_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["id"];		
 					$adm->fields["glpi_column"] = "networks_id";	
 					$adm->fields["ocs_column"] = $tab["import_network"];				
 					$isNewAdm = $adm->addToDB();
@@ -609,7 +609,7 @@ class Ocsng extends CommonDBTM {
 			if (isset ($tab["import_contact_num"])){
 				if($tab["import_contact_num"]!=""){			
 					$adm = new AdminInfo();			
-					$adm->fields["ocsservers_id"] = $tab["ID"];		
+					$adm->fields["ocsservers_id"] = $tab["id"];		
 					$adm->fields["glpi_column"] = "contact_num";	
 					$adm->fields["ocs_column"] = $tab["import_contact_num"];				
 					$isNewAdm = $adm->addToDB(); 

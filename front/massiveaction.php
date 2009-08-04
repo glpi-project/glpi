@@ -164,7 +164,7 @@ if (isset($_POST["itemtype"])){
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							while ($data=$DB->fetch_assoc($result)){
-								Disconnect($data["ID"]);
+								Disconnect($data["id"]);
 							}
 						}
 					}
@@ -175,7 +175,7 @@ if (isset($_POST["itemtype"])){
 				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$ci->obj->delete(array("ID"=>$key));
+						$ci->obj->delete(array("id"=>$key));
 					}
 				}
 			break;
@@ -184,7 +184,7 @@ if (isset($_POST["itemtype"])){
 				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$ci->obj->delete(array("ID"=>$key),1);
+						$ci->obj->delete(array("id"=>$key),1);
 					}
 				}
 			break;
@@ -193,7 +193,7 @@ if (isset($_POST["itemtype"])){
 				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$ci->obj->restore(array("ID"=>$key));
+						$ci->obj->restore(array("id"=>$key));
 					}
 				}
 			break;
@@ -261,7 +261,7 @@ if (isset($_POST["itemtype"])){
 								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if (count($link_entity_type)==0
 										|| in_array($ci->obj->fields["entities_id"], $link_entity_type)){
-										$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+										$ci->obj->update(array("id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
 								}
 							}
@@ -307,7 +307,7 @@ if (isset($_POST["itemtype"])){
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								/// Entity security
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["ID"];
+								   $destentity = $ci2->obj->fields["id"];
 								} else if (isset($ci2->obj->fields["entities_id"])) {
 								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
@@ -332,7 +332,7 @@ if (isset($_POST["itemtype"])){
 							/// Items exists ?
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["ID"];
+								   $destentity = $ci2->obj->fields["id"];
 								} else if (isset($ci2->obj->fields["entities_id"])) {
 								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
@@ -358,7 +358,7 @@ if (isset($_POST["itemtype"])){
 							/// Items exists ?
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["ID"];
+								   $destentity = $ci2->obj->fields["id"];
 								} else if (isset($ci2->obj->fields["entities_id"])) {
 								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
@@ -467,7 +467,7 @@ if (isset($_POST["itemtype"])){
 					if (count($_SESSION['glpi_massiveaction']['items'])>0){
 						$key=array_pop($_SESSION['glpi_massiveaction']['items']);
 						//Try to get the OCS server whose machine belongs
-						$query = "SELECT ocsservers_id, ID
+						$query = "SELECT ocsservers_id, id
 							FROM glpi_ocslinks
 							WHERE computers_id='".$key."'";
 						$result = $DB->query($query);
@@ -475,7 +475,7 @@ if (isset($_POST["itemtype"])){
 							$data = $DB->fetch_assoc($result);
 							if ($data['ocsservers_id'] != -1){
 							//Force update of the machine
-							ocsUpdateComputer($data['ID'],$data['ocsservers_id'],1,1);
+							ocsUpdateComputer($data['id'],$data['ocsservers_id'],1,1);
 							}
 						}
 						glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');

@@ -157,7 +157,7 @@ class kbitem extends CommonDBTM {
 		
 		
 			if (!empty($ID)) {
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='hidden' name='id' value=\"$ID\">\n";
 			}
 		
 		

@@ -72,13 +72,13 @@ if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_
 	}
 }
 
-$query = "SELECT glpi_netpoints.comment as comment, glpi_netpoints.ID as ID,
+$query = "SELECT glpi_netpoints.comment as comment, glpi_netpoints.id,
 		glpi_netpoints.name as netpname, glpi_locations.completename as loc 
 	FROM glpi_netpoints";
-$query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.locations_id = glpi_locations.ID)";
+$query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.locations_id = glpi_locations.id)";
 
 if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
-	$query .= " LEFT JOIN glpi_networkports ON (glpi_netpoints.ID = glpi_networkports.netpoints_id";
+	$query .= " LEFT JOIN glpi_networkports ON (glpi_netpoints.id = glpi_networkports.netpoints_id";
 
 	if ($_POST["devtype"]==NETWORKING_TYPE){
 		$query .= " AND  glpi_networkports.itemtype =" . NETWORKING_TYPE .")";
@@ -116,7 +116,7 @@ if ($DB->numrows($result)) {
 	while ($data =$DB->fetch_array($result)) {
 		$output = $data['netpname'];
 		$loc=$data['loc'];
-		$ID = $data['ID'];
+		$ID = $data['id'];
 		$addcomment="";
 		if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\"";

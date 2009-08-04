@@ -347,9 +347,9 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				//Replay Type dictionnary
 				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comment"]));
 				
-				if ($data['ID'] != $ID) {
-					$tomove[$data['ID']]=$ID;
-					$send["oldID"] = $data['ID'];
+				if ($data['id'] != $ID) {
+					$tomove[$data['id']]=$ID;
+					$send["oldID"] = $data['id'];
 					$send["newID"] = $ID;
 					replaceDropDropDown($send);
 				}		
@@ -397,11 +397,11 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
       $model_field=getForeignKeyFieldForTable($this->item_table);
 
 		// Need to give manufacturer from item table
-		$Sql="SELECT DISTINCT glpi_manufacturers.ID AS idmanu, glpi_manufacturers.name AS manufacturer, 
-			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comment
+		$Sql="SELECT DISTINCT glpi_manufacturers.id AS idmanu, glpi_manufacturers.name AS manufacturer, 
+			".$this->item_table.".id, `".$this->item_table."`.name AS name, `".$this->item_table."`.comment
 			FROM `".$this->item_table."`, $model_table 
-			LEFT JOIN glpi_manufacturers ON ($model_table.manufacturers_id=glpi_manufacturers.ID) 
-			WHERE $model_table.$model_field=`".$this->item_table."`.ID ";
+			LEFT JOIN glpi_manufacturers ON ($model_table.manufacturers_id=glpi_manufacturers.id) 
+			WHERE $model_table.$model_field=`".$this->item_table."`.id ";
 		if ($offset) {
 			$Sql .= " LIMIT ".intval($offset).",999999999";
 		} 
@@ -431,9 +431,9 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				//Replay Type dictionnary
 				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,addslashes($data["comment"]));
 
-				if ($data['ID'] != $ID) {
-					$tocheck[$data["ID"]][]=$ID;
-					$sql = "UPDATE $model_table SET model=".$ID." WHERE $model_field=".$data['ID'];
+				if ($data['id'] != $ID) {
+					$tocheck[$data["id"]][]=$ID;
+					$sql = "UPDATE $model_table SET model=".$ID." WHERE $model_field=".$data['id'];
 					if (empty($data['idmanu'])){
 						$sql .= " AND (manufacturers_id IS NULL OR manufacturers_id = 0)";
 					} else {
@@ -458,7 +458,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$deletecartmodel=false;
 				// No item left : delete old item
 				if ($result && $DB->result($result,0,0)==0) {
-					$Sql = "DELETE FROM `".$this->item_table."` WHERE ID='$ID'";
+					$Sql = "DELETE FROM `".$this->item_table."` WHERE id='$ID'";
 					$resdel = $DB->query($Sql);
 					$deletecartmodel=true;
 				} 
@@ -475,7 +475,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 							// Delete cartrodges_assoc
 							if ($deletecartmodel){
 								$sql="DELETE FROM glpi_cartridges_printersmodels 
-									WHERE printersmodels_id = 'ID'";
+									WHERE printersmodels_id = 'id'";
 								$DB->query($sql);
 							}
 							// Add new assoc

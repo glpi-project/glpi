@@ -118,7 +118,7 @@ class RightAffectRule extends Rule {
 			initNavigateListItems(RULE_TYPE,$LANG['entity'][0]."=".getDropdownName("glpi_entities",$ID),$this->sub_type);
 
 			foreach ($rules as $rule) {
-				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->sub_type);
+				addToNavigateListItems(RULE_TYPE,$rule->fields["id"],$this->sub_type);
 
 				echo "<tr class='tab_bg_1'>";
 
@@ -127,12 +127,12 @@ class RightAffectRule extends Rule {
 					$sel = "";
 					if (isset ($_GET["select"]) && $_GET["select"] == "all")
 						$sel = "checked";
-					echo "<input type='checkbox' name='item[" . $rule->fields["ID"] . "]' value='1' $sel>";
+					echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1' $sel>";
 					echo "</td>";
 				}
 
 				if ($canedit)
-					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.right.form.php?ID=" . $rule->fields["ID"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
+					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.right.form.php?id=" . $rule->fields["id"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
 				else
 					echo "<td>" . $rule->fields["name"] . "</td>";
 
@@ -144,9 +144,9 @@ class RightAffectRule extends Rule {
 
 		if ($canedit) {
 			echo "<table class='tab_glpi' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 			echo "</td>";
@@ -182,7 +182,7 @@ class RightAffectRule extends Rule {
 	 */
 	function filterActions($actions){
 			$RuleAction = new RuleAction;
-			$this->actions = $RuleAction->getRuleActions($this->fields["ID"]);
+			$this->actions = $RuleAction->getRuleActions($this->fields["id"]);
 			foreach($this->actions as $action)
 			{
 				switch ($action->fields["field"])
@@ -310,13 +310,13 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
 		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
-		WHERE gra.rules_id=grd.ID AND gra.field='entities_id' 
+		WHERE gra.rules_id=grd.id AND gra.field='entities_id' 
 			AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
 		$affect_rule = new Rule;
-		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
+		$affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
 		$ldap_affect_user_rules[] = $affect_rule;
 	}
 
@@ -481,7 +481,7 @@ class RightRuleCollection extends RuleCollection {
 		$sql = "SELECT DISTINCT value 
 			FROM glpi_rules, glpi_rulescriterias, glpi_rulesldapparameters 
 			WHERE glpi_rules.sub_type='".$this->sub_type."' 
-				AND glpi_rulescriterias.rules_id=glpi_rules.ID 
+				AND glpi_rulescriterias.rules_id=glpi_rules.id 
 				AND glpi_rulescriterias.criteria=glpi_rulesldapparameters.value";
 		
 		$result = $DB->query($sql);

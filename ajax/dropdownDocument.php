@@ -63,7 +63,7 @@ if (isset($_POST['used'])) {
 			$used=unserialize(stripslashes($_POST['used']));
 		}
 	if (count($used)) {
-		$where .=" AND ID NOT IN ('".implode("','",$used)."') ";	
+		$where .=" AND id NOT IN ('".implode("','",$used)."') ";	
 	}
 }
 
@@ -98,9 +98,9 @@ if ($DB->numrows($result)) {
 		}
 		$output = $data["name"];
 		if($_SESSION["glpiis_ids_visible"]||empty($output)){
-			$output.=" (".$data["ID"].")";
+			$output.=" (".$data["id"].")";
 		}
-		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+		echo "<option value=\"".$data["id"]."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 	}
 	if ($prev>=0) {
 		echo "</optgroup>";

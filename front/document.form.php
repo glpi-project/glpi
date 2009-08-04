@@ -38,8 +38,8 @@ $NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","netw
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) {
-	$_GET["ID"] = -1;
+if(!isset($_GET["id"])) {
+	$_GET["id"] = -1;
 }
 
 $doc= new Document();
@@ -62,35 +62,35 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	$doc->check($_POST["ID"],'w');
+	$doc->check($_POST["id"],'w');
 
 	$doc->delete($_POST);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["restore"]))
 {
-	$doc->check($_POST["ID"],'w');
+	$doc->check($_POST["id"],'w');
 
 	$doc->restore($_POST);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["purge"]))
 {
-	$doc->check($_POST["ID"],'w');
+	$doc->check($_POST["id"],'w');
 
 	$doc->delete($_POST,1);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 
 else if (isset($_POST["update"]))
 {
-	$doc->check($_POST["ID"],'w');
+	$doc->check($_POST["id"],'w');
 
 	$doc->update($_POST);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["additem"])){
@@ -121,13 +121,13 @@ else if (isset($_POST["deleteitem"])){
 	logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["devtype"]) && isset($_GET["devid"]) && isset($_GET["ID"])){
+else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["devtype"]) && isset($_GET["devid"]) && isset($_GET["id"])){
 
 	$ci=new CommonItem();
 	$ci->getFromDB($_GET["devtype"], $_GET["devid"]);
 	$ci->obj->check($_GET["devid"],'w');
 
-	deleteDeviceDocument($_GET["ID"]);
+	deleteDeviceDocument($_GET["id"]);
 
 	logEvent($_GET["docid"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -135,7 +135,7 @@ else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["dev
 else
 {
 	commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
-	$doc->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$doc->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 	commonFooter();
 }
 

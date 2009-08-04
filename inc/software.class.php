@@ -107,10 +107,10 @@ class Software extends CommonDBTM {
 		if (isset ($input['is_update']) && !$input['is_update'])
 			$input['softwares_id'] = 0;
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		//If category was not set by user (when manually adding a user)
@@ -137,7 +137,7 @@ class Software extends CommonDBTM {
 			$ic = new Infocom();
 			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
 				$ic->fields["items_id"] = $newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
@@ -183,11 +183,11 @@ class Software extends CommonDBTM {
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='" . $data["ID"] . "';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='" . $data["id"] . "';";
 					$DB->query($query);
 				} else
 					$job->delete(array (
-						"ID" => $data["ID"]
+						"id" => $data["id"]
 					));
 			}
 
@@ -202,13 +202,13 @@ class Software extends CommonDBTM {
 			if ($DB->numrows($result) > 0) {
 				$rr = new ReservationItem();
 				$rr->delete(array (
-					"ID" => $DB->result($result,0,"ID")
+					"id" => $DB->result($result,0,"id")
 				));
 			}
 		}
 
 		// Delete all licenses
-		$query2 = "SELECT ID FROM glpi_softwareslicenses WHERE (softwares_id = '$ID')";
+		$query2 = "SELECT id FROM glpi_softwareslicenses WHERE (softwares_id = '$ID')";
 
 		if ($result2 = $DB->query($query2)) {
 			if ($DB->numrows($result2)) {
@@ -216,14 +216,14 @@ class Software extends CommonDBTM {
 
 				while ($data = $DB->fetch_array($result2)) {
 					$lic->delete(array (
-						"ID" => $data["ID"]
+						"id" => $data["id"]
 					));
 				}
 			}
 		}
 
 		// Delete all versions
-		$query2 = "SELECT ID FROM glpi_softwaresversions WHERE (softwares_id = '$ID')";
+		$query2 = "SELECT id FROM glpi_softwaresversions WHERE (softwares_id = '$ID')";
 
 		if ($result2 = $DB->query($query2)) {
 			if ($DB->numrows($result2)) {
@@ -231,7 +231,7 @@ class Software extends CommonDBTM {
 
 				while ($data = $DB->fetch_array($result2)) {
 					$vers->delete(array (
-						"ID" => $data["ID"]
+						"id" => $data["id"]
 					));
 				}
 			}
@@ -360,7 +360,7 @@ class Software extends CommonDBTM {
 	*/
 	function countInstallations() {
 		global $DB;
-		$query = "SELECT * FROM glpi_computers_softwaresversions WHERE (softwares_id = '".$this->fields["ID"]."')";
+		$query = "SELECT * FROM glpi_computers_softwaresversions WHERE (softwares_id = '".$this->fields["id"]."')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;
@@ -471,7 +471,7 @@ class SoftwareVersion extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
-		echo "<a href='software.form.php?ID=".$softwares_id."'>".getDropdownName("glpi_softwares",$softwares_id)."</a>";
+		echo "<a href='software.form.php?id=".$softwares_id."'>".getDropdownName("glpi_softwares",$softwares_id)."</a>";
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
@@ -501,16 +501,16 @@ class SoftwareVersion extends CommonDBTM {
 				if (countLicensesForVersion($ID)>0    // Only count softwaresversions_id_buy (don't care of softwaresversions_id_use if no installation) 
 					|| countInstallationsForVersion($ID)>0){
 					echo "<td  colspan='2'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<input type='hidden' name='id' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 				} else {
 					echo "<td>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<input type='hidden' name='id' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 					echo "<td>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<input type='hidden' name='id' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 					echo "</td>\n\n";
 	
@@ -566,7 +566,7 @@ class SoftwareLicense extends CommonDBTM {
 			&& ($oldvalues['expire'] < $this->fields['expire'] ))
 		){
 			$alert=new Alert();
-			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+			$alert->clear($this->type,$this->fields['id'],ALERT_END);
 		}
 		return array($input,$updates);
 	}
@@ -618,7 +618,7 @@ class SoftwareLicense extends CommonDBTM {
 		// Add infocoms if exists for the licence
 		$ic = new Infocom();
 		if ($ic->getFromDBforDevice($itemtype, $dupid)) {
-			unset ($ic->fields["ID"]);
+			unset ($ic->fields["id"]);
 			$ic->fields["items_id"] = $newID;
 			if (isset($ic->fields["immo_number"])) {
 				$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
@@ -708,7 +708,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
-		echo "<a href='software.form.php?ID=".$softwares_id."'>".getDropdownName("glpi_softwares",$softwares_id)."</a>";
+		echo "<a href='software.form.php?id=".$softwares_id."'>".getDropdownName("glpi_softwares",$softwares_id)."</a>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";

@@ -63,7 +63,7 @@ else if (isset($_POST["add_several"]))
 	$cartype->check($_POST["tID"],'w');
 
 	for ($i=0;$i<$_POST["to_add"];$i++){
-		unset($cart->fields["ID"]);
+		unset($cart->fields["id"]);
 		$cart->add($_POST);
 	}
 	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][88].": ".$_POST["to_add"]);
@@ -92,12 +92,12 @@ else if (isset($_POST["install"]))
 	$cart->install($_POST["pID"],$_POST["tID"]);
 	logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][95]);
 
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$_POST["pID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
 }
 else if (isset($_GET["uninstall"]))
 {
 	$cartype->check($_GET["tID"],'w');
-	$cart->uninstall($_GET["ID"]);
+	$cart->uninstall($_GET["id"]);
 	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][96]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

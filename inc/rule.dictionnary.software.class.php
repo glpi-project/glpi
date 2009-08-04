@@ -113,7 +113,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$sql = "SELECT DISTINCT glpi_softwares.name, glpi_manufacturers.name AS manufacturer," .
 			" glpi_softwares.manufacturers_id AS manufacturers_id " .
 			"FROM glpi_softwares LEFT JOIN glpi_manufacturers " .
-			"ON glpi_manufacturers.ID=glpi_softwares.manufacturers_id ";
+			"ON glpi_manufacturers.id=glpi_softwares.manufacturers_id ";
 
 			// Do not replay on trash and templates
 			$sql .= "WHERE glpi_softwares.is_deleted = 0 AND glpi_softwares.is_template = 0 ";
@@ -152,14 +152,14 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				if ((isset ($res_rule["name"]) && $res_rule["name"] != $input["name"]) || (isset ($res_rule["version"])) && $res_rule["version"] != '') {
 					$IDs = array ();
 					//Find all the softwares in the database with the same name and manufacturer
-					$sql = "SELECT ID 
+					$sql = "SELECT id 
 											FROM `glpi_softwares` 
 											WHERE name='" . $input["name"] . "' AND manufacturers_id='" . $input["manufacturers_id"] . "'";
 					$res_soft = $DB->query($sql);
 					if ($DB->numrows($res_soft) > 0) {
 						//Store all the software's IDs in an array
 						while ($result = $DB->fetch_array($res_soft))
-							$IDs[] = $result["ID"];
+							$IDs[] = $result["id"];
 
 						//Replay dictionnary on all the softwares
 						$this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
@@ -204,10 +204,10 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$delete_ids = array ();
 
 		foreach ($IDs as $ID) {
-			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.entities_id AS entities_id, gm.name AS manufacturer
+			$res_soft = $DB->query("SELECT gs.id, gs.name AS name, gs.entities_id AS entities_id, gm.name AS manufacturer
 									FROM glpi_softwares AS gs 
-									LEFT JOIN glpi_manufacturers AS gm ON gs.manufacturers_id = gm.ID 
-									WHERE gs.is_template=0 AND gs.ID ='" . $ID . "'");
+									LEFT JOIN glpi_manufacturers AS gm ON gs.manufacturers_id = gm.id 
+									WHERE gs.is_template=0 AND gs.id ='" . $ID . "'");
 
 			if ($DB->numrows($res_soft)) {
 				$soft = $DB->fetch_array($res_soft);
@@ -261,7 +261,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		} else {
 			$new_software_id = $ID;
-			$res_rule["ID"] = $ID;
+			$res_rule["id"] = $ID;
 			
 			if (isset($res_rule["manufacturer"]))
 			{
@@ -294,7 +294,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			}
 
 			if ($ID != $new_software_id || $new_version_name != $old_version_name) {
-				$this->moveVersions($ID, $new_software_id, $version["ID"], $old_version_name, $new_version_name, $entity);
+				$this->moveVersions($ID, $new_software_id, $version["id"], $old_version_name, $new_version_name, $entity);
 			}
 
 		}
@@ -315,14 +315,14 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$ids = implode("','", $soft_ids);
 
 			//Try to delete all the software that are not used anymore (which means that don't have version associated anymore)
-			$res_countsoftinstall = $DB->query("SELECT glpi_softwares.ID as ID, count( glpi_softwaresversions.softwares_id ) AS cpt " .
+			$res_countsoftinstall = $DB->query("SELECT glpi_softwares.id, count( glpi_softwaresversions.softwares_id ) AS cpt " .
 			"FROM `glpi_softwares` 
-									LEFT JOIN glpi_softwaresversions ON glpi_softwaresversions.softwares_id = glpi_softwares.ID " .
-			"WHERE glpi_softwares.ID IN ('" . $ids . "') AND is_deleted=0 GROUP BY glpi_softwares.ID HAVING cpt=0 ORDER BY cpt");
+									LEFT JOIN glpi_softwaresversions ON glpi_softwaresversions.softwares_id = glpi_softwares.id " .
+			"WHERE glpi_softwares.id IN ('" . $ids . "') AND is_deleted=0 GROUP BY glpi_softwares.id HAVING cpt=0 ORDER BY cpt");
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-				putSoftwareInTrash($soft["ID"], $LANG['rulesengine'][87]);
+				putSoftwareInTrash($soft["id"], $LANG['rulesengine'][87]);
 			}
 		}
 	}
@@ -348,7 +348,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				//Transfer versions from old software to new software for a specific version
 				$DB->query("UPDATE glpi_softwaresversions 
 									SET name='$new_version', softwares_id='$new_software_id'
-									WHERE ID='$version_id';");
+									WHERE id='$version_id';");
 			} else {
 				//Change ID of the version in glpi_computers_softwaresversions
 				$DB->query("UPDATE glpi_computers_softwaresversions
@@ -366,7 +366,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				//Delete old version
 				$old_version = new SoftwareVersion;
 				$old_version->delete(array (
-					"ID" => $version_id
+					"id" => $version_id
 				));
 			}
 
@@ -404,7 +404,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$sql = "SELECT * FROM glpi_softwaresversions WHERE softwares_id='$software_id' AND name='$version'";
 
 		$res_version = $DB->query($sql);
-		return (!$DB->numrows($res_version) ? -1 : $DB->result($res_version, 0, "ID"));
+		return (!$DB->numrows($res_version) ? -1 : $DB->result($res_version, 0, "id"));
 	}
 
 }

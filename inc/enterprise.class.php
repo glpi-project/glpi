@@ -105,7 +105,7 @@ class Enterprise extends CommonDBTM {
 	// NOT_USED
 	function countContacts() {
 		global $DB;
-		$query = "SELECT * FROM glpi_contacts_suppliers WHERE (suppliers_id = '".$this->fields["ID"]."')";
+		$query = "SELECT * FROM glpi_contacts_suppliers WHERE (suppliers_id = '".$this->fields["id"]."')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;

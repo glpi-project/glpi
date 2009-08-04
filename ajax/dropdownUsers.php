@@ -79,8 +79,8 @@ $result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $
 $users=array();
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
-		$users[$data["ID"]]=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
-		$logins[$data["ID"]]=$data["name"];
+		$users[$data["id"]]=formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"]);
+		$logins[$data["id"]]=$data["name"];
 	}
 }	
 

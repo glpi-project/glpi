@@ -90,10 +90,10 @@ class Phone extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		return $input;
@@ -108,7 +108,7 @@ class Phone extends CommonDBTM {
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(PHONE_TYPE,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
@@ -123,7 +123,7 @@ class Phone extends CommonDBTM {
 			}
 	
 			// ADD Ports
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_networkports 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
@@ -131,8 +131,8 @@ class Phone extends CommonDBTM {
 	
 				while ($data=$DB->fetch_array($result)){
 					$np= new Netport();
-					$np->getFromDB($data["ID"]);
-					unset($np->fields["ID"]);
+					$np->getFromDB($data["id"]);
+					unset($np->fields["id"]);
 					unset($np->fields["ip"]);
 					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
@@ -182,9 +182,9 @@ class Phone extends CommonDBTM {
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='".$data["id"]."';";
 					$DB->query($query);
-				} else $job->delete(array("ID"=>$data["ID"]));
+				} else $job->delete(array("id"=>$data["id"]));
 			}
 
 		$query="SELECT * 
@@ -193,7 +193,7 @@ class Phone extends CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
+				$rr->delete(array("id"=>$DB->result($result,0,"id")));
 			}
 		}
 
@@ -208,7 +208,7 @@ class Phone extends CommonDBTM {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
 					// Disconnect without auto actions
-					Disconnect($data["ID"],1,false);
+					Disconnect($data["id"],1,false);
 				}
 			}
 		}
@@ -273,7 +273,7 @@ class Phone extends CommonDBTM {
 
 
 		if(!$template) {
-			echo $LANG['common'][2]." ".$this->fields["ID"];
+			echo $LANG['common'][2]." ".$this->fields["id"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $LANG['phones'][30].": ".$this->fields["template_name"];
 			echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
@@ -342,7 +342,7 @@ class Phone extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'>";
 
       echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
-      globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["phones_management_restrict"]);
+      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],$CFG_GLPI["phones_management_restrict"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['phones'][36].":</td><td>";
@@ -425,19 +425,19 @@ class Phone extends CommonDBTM {
 
 				if (empty($ID)||$withtemplate==2){
 					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
+					echo "<input type='hidden' name='id' value=$ID>";
 					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 					echo "</td>\n";
 				} else {
 					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=$ID>";
+					echo "<input type='hidden' name='id' value=$ID>";
 					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 					echo "</td>\n";
 				}
 			} else {
 
 				echo "<td class='tab_bg_2' valign='top' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='hidden' name='id' value=\"$ID\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>";
 				echo "<td class='tab_bg_2' valign='top'>\n";
@@ -469,7 +469,7 @@ class Phone extends CommonDBTM {
    function getSelectLinkedItem () {
       return "SELECT '".COMPUTER_TYPE."', `computers_id` 
          FROM glpi_computers_items 
-         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['ID']."'";
+         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['id']."'";
    }
 }
 

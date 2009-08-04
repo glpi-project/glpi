@@ -82,11 +82,11 @@ function showLinkDevice($instID) {
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
-		$ID=$DB->result($result, $i, "ID");
+		$ID=$DB->result($result, $i, "id");
 		$ci->setType($DB->result($result, $i, "itemtype"));
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$ci->getType()."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID&amp;lID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;id=$ID&amp;lID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if ($canedit){
@@ -114,7 +114,7 @@ function showLinkDevice($instID) {
 function deleteLinkDevice($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_links_itemtypes WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_links_itemtypes WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -147,9 +147,9 @@ function showLinkOnDevice($itemtype,$ID){
 	
 	if (!haveRight("link","r")) return false;
 
-	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
+	$query="SELECT glpi_links.id, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data
 		FROM glpi_links 
-		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.links_id
+		INNER JOIN glpi_links_itemtypes ON glpi_links.id= glpi_links_itemtypes.links_id
 		WHERE glpi_links_itemtypes.itemtype='$itemtype' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","entities_id",$commonitem->obj->fields["entities_id"],true).
 		" ORDER BY glpi_links.name";
@@ -291,10 +291,10 @@ function showLinkOnDevice($itemtype,$ID){
 				}
 
 				if (strstr($link,"[ID]")){
-					$link=str_replace("[ID]",$_GET["ID"],$link);
+					$link=str_replace("[ID]",$_GET["id"],$link);
 				}
 
-				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&amp;itemtype=$itemtype&amp;ID=$ID' target='_blank'>".$name."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id']."&amp;itemtype=$itemtype&amp;id=$ID' target='_blank'>".$name."</a></td></tr>";
 			}
 
 

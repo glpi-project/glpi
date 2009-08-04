@@ -43,7 +43,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if (!isset($_POST['ID'])) {
+if (!isset($_POST['id'])) {
 	exit();
 }
 
@@ -55,18 +55,18 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 		switch($_POST['glpi_tab']){
 			case -1:
-				showInstallations($_POST["ID"], "ID");
-				displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+				showInstallations($_POST["id"], "id");
+				displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 				break;
 			case 2 :
-				showInstallations($_POST["ID"], "ID");
+				showInstallations($_POST["id"], "id");
 				break;
 			case 12 :
-				showHistory(SOFTWAREVERSION_TYPE,$_POST["ID"]);
+				showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
 				break;
 			default :
-				if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-					showInstallationsByEntity($_POST["ID"]);
+				if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+					showInstallationsByEntity($_POST["id"]);
 				}
 				break;
 		}

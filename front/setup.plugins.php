@@ -46,9 +46,9 @@ $plugin=new Plugin();
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
 
-if (isset($_GET['action'])&& isset($_GET['ID'])){
+if (isset($_GET['action'])&& isset($_GET['id'])){
 	if (method_exists($plugin,$_GET['action'])){
-		$plugin->$_GET['action']($_GET['ID']);
+		$plugin->$_GET['action']($_GET['id']);
 	} else {
 		echo "Action ".$_GET['action']." undefined";
 	}

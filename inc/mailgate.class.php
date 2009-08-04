@@ -103,7 +103,7 @@ class Mailgate  extends CommonDBTM {
 		if (empty($ID)){
 			echo $LANG['mailgate'][1];
 		} else {
-			echo $LANG['mailgate'][0].": ".$this->fields["ID"];
+			echo $LANG['mailgate'][0].": ".$this->fields["id"];
 		}
 
 		echo "</th></tr>";
@@ -152,7 +152,7 @@ class Mailgate  extends CommonDBTM {
 			} else {
 
 				echo "<td valign='top' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='hidden' name='id' value=\"$ID\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>";
 				echo "<td valign='top'>\n";
@@ -325,12 +325,12 @@ class MailCollect {
 
 		//  Who is the user ?
 		$tkt['users_id']=0;
-		$query="SELECT ID 
+		$query="SELECT id 
 			FROM glpi_users 
 			WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
 		if ($result&&$DB->numrows($result)){
-			$tkt['users_id']=$DB->result($result,0,"ID");
+			$tkt['users_id']=$DB->result($result,0,"id");
 		}
 
 		// AUto_import

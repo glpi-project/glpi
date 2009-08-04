@@ -338,7 +338,7 @@ function getPluginTabs($target,$itemtype,$ID,$withtemplate){
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&itemtype=".$itemtype."&glpi_tab=$key&ID=$ID$template");
+						'params'=>"target=$target&itemtype=".$itemtype."&glpi_tab=$key&id=$ID$template");
 						$order[$key]=$val;
 					}
 				}

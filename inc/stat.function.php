@@ -107,13 +107,13 @@ function getStatsItems($date1,$date2,$type){
 		$device_table = getDeviceTable($type);
 
 		//select devices IDs (table row)
-		$query = "SELECT ID, designation FROM ".$device_table." ORDER BY designation";
+		$query = "SELECT id, designation FROM ".$device_table." ORDER BY designation";
 		$result = $DB->query($query);
 
 		if($DB->numrows($result) >=1) {
 			$i = 0;
 			while($line = $DB->fetch_assoc($result)) {
-				$val[$i]['ID'] = $line['ID'];
+				$val[$i]['id'] = $line['id'];
 				$val[$i]['link'] = $line['designation'];
 				$i++;
 			}
@@ -171,8 +171,8 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			if ($output_type==HTML_OUTPUT){ // HTML display
 				
 				$link="";
-				if ($value[$i]['ID']>0){
-					$link="<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>";
+				if ($value[$i]['id']>0){
+					$link="<a href='stat.graph.php?id=".$value[$i]['id']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>";
 				}
 				echo displaySearchItem($output_type,$link,$item_num,$row_num);
 			}
@@ -180,17 +180,17 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			//le nombre d'intervention
 			//the number of intervention
 
-			$opened=constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			$opened=constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["id"],$value2);
 			$nb_opened=array_sum($opened);
 			echo displaySearchItem($output_type,$nb_opened,$item_num,$row_num);
 			//le nombre d'intervention resolues
 			//the number of resolved intervention
-			$solved=constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			$solved=constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["id"],$value2);
 			$nb_solved=array_sum($solved);
 			echo displaySearchItem($output_type,$nb_solved,$item_num,$row_num);
 			//Le temps moyen de resolution
 			//The average time to resolv
-			$data=constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			$data=constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
 			foreach ($data as $key2 => $val2){
 				$data[$key2]*=$solved[$key2];
 			}
@@ -205,7 +205,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps moyen de l'intervention r�lle
 			//The average realtime to resolv
-			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["id"],$value2);
 			
 			foreach ($data as $key2 => $val2){
 				if (isset($solved[$key2])){
@@ -233,7 +233,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
 			//The average time to take a ticket into account
-			$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["id"],$value2);
 
 			foreach ($data as $key2 => $val2){
 				$data[$key2]*=$solved[$key2];
@@ -269,7 +269,7 @@ function getNbIntervTech($date1,$date2){
 	global $DB;
 	$query = "SELECT distinct glpi_tickets.users_id_assign, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tickets ";
-	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tickets.users_id_assign) ";
+	$query.= " LEFT JOIN glpi_users  ON (glpi_users.id=glpi_tickets.users_id_assign) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
@@ -280,7 +280,7 @@ function getNbIntervTech($date1,$date2){
 
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["users_id_assign"];
+			$tmp['id']= $line["users_id_assign"];
 			$tmp['link']=formatUserName($line["users_id_assign"],$line["name"],$line["realname"],$line["firstname"],1);
 			$tab[]=$tmp;
 		}
@@ -297,8 +297,8 @@ function getNbIntervTechFollowup($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT glpi_ticketsfollowups.users_id as users_id, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tickets ";
-	$query.= " LEFT JOIN glpi_ticketsfollowups ON (glpi_tickets.ID = glpi_ticketsfollowups.tickets_id) ";
-	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_ticketsfollowups.users_id) ";
+	$query.= " LEFT JOIN glpi_ticketsfollowups ON (glpi_tickets.id = glpi_ticketsfollowups.tickets_id) ";
+	$query.= " LEFT JOIN glpi_users  ON (glpi_users.id=glpi_ticketsfollowups.users_id) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
@@ -312,7 +312,7 @@ function getNbIntervTechFollowup($date1,$date2){
 
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["users_id"];
+			$tmp['id']= $line["users_id"];
 			$tmp['link']=formatUserName($line["users_id"],$line["name"],$line["realname"],$line["firstname"],1);
 			$tab[]=$tmp;
 		}
@@ -330,7 +330,7 @@ function getNbIntervEnterprise($date1,$date2){
 	global $DB,$CFG_GLPI;
 	$query = "SELECT distinct glpi_tickets.suppliers_id_assign as suppliers_id_assign, glpi_suppliers.name as name";
 	$query.= " FROM glpi_tickets ";
-	$query.= " LEFT JOIN glpi_suppliers  ON (glpi_suppliers.ID=glpi_tickets.suppliers_id_assign) ";
+	$query.= " LEFT JOIN glpi_suppliers  ON (glpi_suppliers.id=glpi_tickets.suppliers_id_assign) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
@@ -342,8 +342,8 @@ function getNbIntervEnterprise($date1,$date2){
 	if($DB->numrows($result) >0) {
 
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp["ID"]=$line["suppliers_id_assign"];
-			$tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$line["suppliers_id_assign"]."'>";
+			$tmp["id"]=$line["suppliers_id_assign"];
+			$tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$line["suppliers_id_assign"]."'>";
 			$tmp["link"].=$line["name"];
 			$tmp["link"].="</a>";
 			$tab[]=$tmp;
@@ -376,7 +376,7 @@ function getNbIntervDropdown($dropdown){
 	$result = $DB->query($query);
 	if($DB->numrows($result) >0) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
+			$tmp['id']= $line["id"];
 			$tmp['link']=$line[$field];
 			$tab[]=$tmp;
 		}
@@ -393,7 +393,7 @@ function getNbIntervDropdown($dropdown){
 */
 function getNbIntervAuthor($date1,$date2){	
 	global $DB;
-	$query = "SELECT DISTINCT glpi_tickets.users_id as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tickets INNER JOIN glpi_users ON (glpi_users.ID=glpi_tickets.users_id)";
+	$query = "SELECT DISTINCT glpi_tickets.users_id, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tickets INNER JOIN glpi_users ON (glpi_users.id=glpi_tickets.users_id)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -403,8 +403,8 @@ function getNbIntervAuthor($date1,$date2){
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
-			$tmp['link']=formatUserName($line["ID"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tmp['id']= $line["users_id"];
+			$tmp['link']=formatUserName($line["users_id"],$line["name"],$line["realname"],$line["firstname"],1);
 			$tab[]=$tmp;
 		}
 	}
@@ -432,8 +432,8 @@ function getNbIntervTitleOrType($date1,$date2,$title=true){
 		$field = "userscategories_id";
 	}
 	
-	$query = "SELECT DISTINCT glpi_users.$field FROM glpi_tickets INNER JOIN glpi_users ON (glpi_users.ID=glpi_tickets.users_id)
-		LEFT JOIN  $table ON ($table.ID=glpi_users.$field)";
+	$query = "SELECT DISTINCT glpi_users.$field FROM glpi_tickets INNER JOIN glpi_users ON (glpi_users.id=glpi_tickets.users_id)
+		LEFT JOIN  $table ON ($table.id=glpi_users.$field)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -443,7 +443,7 @@ function getNbIntervTitleOrType($date1,$date2,$title=true){
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line[$field];
+			$tmp['id']= $line[$field];
 			$tmp['link']=getDropdownName($table,$line[$field]);
 			$tab[]=$tmp;
 		}
@@ -459,7 +459,7 @@ function getNbIntervTitleOrType($date1,$date2,$title=true){
 */
 function getNbIntervRecipient($date1,$date2){	
 	global $DB;
-	$query = "SELECT DISTINCT glpi_tickets.users_id_recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tickets LEFT JOIN glpi_users ON (glpi_users.ID=glpi_tickets.users_id_recipient)";
+	$query = "SELECT DISTINCT glpi_tickets.users_id_recipient, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tickets LEFT JOIN glpi_users ON (glpi_users.id=glpi_tickets.users_id_recipient)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -469,8 +469,8 @@ function getNbIntervRecipient($date1,$date2){
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
-			$tmp['link']=formatUserName($line["ID"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tmp['id']= $line["users_id_recipient"];
+			$tmp['link']=formatUserName($line["users_id_recipient"],$line["name"],$line["realname"],$line["firstname"],1);
 			$tab[]=$tmp;
 		}
 	}
@@ -497,7 +497,7 @@ function getNbIntervPriority($date1,$date2){
 	if($DB->numrows($result) >=1) {
 		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["priority"];
+			$tmp['id']= $line["priority"];
 			$tmp['link']=getPriorityName($line["priority"]);
 			$tab[]=$tmp;
 		}
@@ -522,7 +522,7 @@ function getNbIntervRequestType($date1,$date2){
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["request_type"];
+			$tmp['id']= $line["request_type"];
 			$tmp['link']=getRequestTypeName($line["request_type"]);
 			$tab[]=$tmp;
 		}
@@ -541,12 +541,12 @@ function getNbIntervCategory($date1,$date2){
 	
 	// Get all ticket categories for tree merge management
 
-	$query="SELECT DISTINCT glpi_ticketscategories.ID,   glpi_ticketscategories.completename AS category
+	$query="SELECT DISTINCT glpi_ticketscategories.id,   glpi_ticketscategories.completename AS category
 		FROM glpi_ticketscategories ";
 
-/*	$query = "SELECT DISTINCT glpi_ticketscategories.ID,   glpi_ticketscategories.completename AS category
+/*	$query = "SELECT DISTINCT glpi_ticketscategories.id,   glpi_ticketscategories.completename AS category
 		FROM glpi_tickets 
-		LEFT JOIN glpi_ticketscategories ON (glpi_tickets.ticketscategories_id = glpi_ticketscategories.ID) ";
+		LEFT JOIN glpi_ticketscategories ON (glpi_tickets.ticketscategories_id = glpi_ticketscategories.id) ";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -557,7 +557,7 @@ function getNbIntervCategory($date1,$date2){
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
+			$tmp['id']= $line["id"];
 			$tmp['link']=$line["category"];
 			$tab[]=$tmp;
 		}
@@ -573,8 +573,8 @@ function getNbIntervCategory($date1,$date2){
 */
 function getNbIntervGroup($date1,$date2){	
 	global $DB;
-	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tickets 
-		LEFT JOIN  glpi_groups ON (glpi_tickets.groups_id = glpi_groups.ID)";
+	$query = "SELECT DISTINCT glpi_groups.id, glpi_groups.name FROM glpi_tickets
+		LEFT JOIN  glpi_groups ON (glpi_tickets.groups_id = glpi_groups.id)";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -585,7 +585,7 @@ function getNbIntervGroup($date1,$date2){
 
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
+			$tmp['id']= $line["id"];
 			$tmp['link']=$line["name"];
 			
 			$tab[]=$tmp;
@@ -602,8 +602,8 @@ function getNbIntervGroup($date1,$date2){
 */
 function getNbIntervAssignGroup($date1,$date2){	
 	global $DB;
-	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tickets 
-		LEFT JOIN  glpi_groups ON (glpi_tickets.groups_id_assign = glpi_groups.ID)";
+	$query = "SELECT DISTINCT glpi_groups.id, glpi_groups.name FROM glpi_tickets
+		LEFT JOIN  glpi_groups ON (glpi_tickets.groups_id_assign = glpi_groups.id)";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 	if (!empty($date1)) $query.= " AND glpi_tickets.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -614,7 +614,7 @@ function getNbIntervAssignGroup($date1,$date2){
 
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
+			$tmp['id']= $line["id"];
 			$tmp['link']=$line["name"];
 			
 			$tab[]=$tmp;
@@ -641,7 +641,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "technicien_followup":
 			$WHERE.=" AND glpi_ticketsfollowups.users_id='$value'";
-			$LEFTJOIN= "LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.ID)";
+			$LEFTJOIN= "LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.id)";
 		break;	
 		case "enterprise":
 			$WHERE.=" AND glpi_tickets.suppliers_id_assign='$value'";
@@ -675,22 +675,22 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			$WHERE.=" AND glpi_tickets.request_type='$value'";
 		break;
 		case "userstitles_id":
-			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.ID = glpi_tickets.users_id AND glpi_users.userstitles_id=$value)";
+			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.id = glpi_tickets.users_id AND glpi_users.userstitles_id=$value)";
 		break;
 		case "userscategories_id":
-			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.ID = glpi_tickets.users_id AND glpi_users.userscategories_id=$value)";
+			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.id = glpi_tickets.users_id AND glpi_users.userscategories_id=$value)";
 		break;
 
 		case "device":
 			//select computers IDs that are using this device;
 
-			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."') INNER JOIN glpi_computers_devices ON ( glpi_computers.ID = glpi_computers_devices.computers_id AND glpi_computers_devices.devicetype = '".$value2."' AND glpi_computers_devices.devices_id = '".$value."' )";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.id = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."') INNER JOIN glpi_computers_devices ON ( glpi_computers.id = glpi_computers_devices.computers_id AND glpi_computers_devices.devicetype = '".$value2."' AND glpi_computers_devices.devices_id = '".$value."' )";
 
 			$WHERE.=" AND glpi_computers.is_template <> '1' ";
 
 		break;
 		case "comp_champ":
-			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."')";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.id = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."')";
 
 			$WHERE.=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
 		break;
@@ -701,7 +701,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($begin)) $WHERE.= " AND glpi_tickets.date >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tickets.date <= adddate('$end' , INTERVAL 1 DAY )";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.date),'%Y-%m') AS date_unix, COUNT(glpi_tickets.ID) AS total_visites  FROM glpi_tickets ".$LEFTJOIN.$WHERE.
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.date),'%Y-%m') AS date_unix, COUNT(glpi_tickets.id) AS total_visites  FROM glpi_tickets ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tickets.date";
 		break;
 		case "inter_solved": 
@@ -709,7 +709,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($begin)) $WHERE.= " AND glpi_tickets.closedate >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tickets.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tickets.ID) AS total_visites  FROM glpi_tickets ".$LEFTJOIN.$WHERE.
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tickets.id) AS total_visites  FROM glpi_tickets ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tickets.closedate";
 		break;
 		case "inter_avgsolvedtime" :
@@ -739,11 +739,11 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($begin)) $WHERE.= " AND glpi_tickets.closedate >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tickets.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
-			$query="SELECT glpi_tickets.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tickets.closedate)-UNIX_TIMESTAMP(glpi_tickets.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_ticketsfollowups.date)-UNIX_TIMESTAMP(glpi_tickets.date)) AS FIRST FROM glpi_tickets LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.ID) ";
+			$query="SELECT glpi_tickets.id, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tickets.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tickets.closedate)-UNIX_TIMESTAMP(glpi_tickets.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_ticketsfollowups.date)-UNIX_TIMESTAMP(glpi_tickets.date)) AS FIRST FROM glpi_tickets LEFT JOIN glpi_ticketsfollowups ON (glpi_ticketsfollowups.tickets_id = glpi_tickets.id) ";
 			if (!strstr($LEFTJOIN,"glpi_ticketsfollowups")){
 				$query.=$LEFTJOIN;
 			}
-				$query.=$WHERE." GROUP BY glpi_tickets.ID";
+				$query.=$WHERE." GROUP BY glpi_tickets.id";
 			break;
 
 

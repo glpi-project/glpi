@@ -96,7 +96,7 @@ class Typedoc  extends CommonDBTM {
 		if (empty($ID)){
 			echo $LANG['document'][17];
 		} else {
-			echo $LANG['common'][2]." ".$this->fields["ID"];
+			echo $LANG['common'][2]." ".$this->fields["id"];
 		}
 
 		echo "</th><th  align='center'  colspan='2'>".$LANG['common'][26]." : ".convDateTime($this->fields["date_mod"]);
@@ -135,7 +135,7 @@ class Typedoc  extends CommonDBTM {
 			} else {
 
 				echo "<td class='tab_bg_2' colspan='2' valign='top' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='hidden' name='id' value=\"$ID\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>";
 				echo "<td class='tab_bg_2' colspan='2' valign='top'>\n";

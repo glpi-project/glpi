@@ -56,7 +56,7 @@ function showVersions($softwares_id) {
 	echo "<div class='center'>";
 	
 	$query = "SELECT glpi_softwaresversions.*,glpi_states.name AS sname FROM glpi_softwaresversions 
-				LEFT JOIN glpi_states ON (glpi_states.ID=glpi_softwaresversions.states_id)
+				LEFT JOIN glpi_states ON (glpi_states.id=glpi_softwaresversions.states_id)
 				WHERE (softwares_id = '$softwares_id') ORDER BY name";
 		
 	initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG['help'][31] ." = ". $soft->fields["name"]);
@@ -70,13 +70,13 @@ function showVersions($softwares_id) {
 			echo "<th>".$LANG['common'][25]."</th>";
 			echo "</tr>";
 			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
-				addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['ID']);
-				$nb=countInstallationsForVersion($data['ID']);
+				addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['id']);
+				$nb=countInstallationsForVersion($data['id']);
 
 				// Show version if canedit (to update/delete) or if nb (to see installations)
 				if ($canedit || $nb) {				
 					echo "<tr class='tab_bg_2'>";
-					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+					echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>".$data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
 					echo "<td align='right'>".$data['sname']."</td>";
 					echo "<td align='right'>$nb</td>";
 					echo "<td>".$data['comment']."</td></tr>";
@@ -128,7 +128,7 @@ function showInstallationsByEntity($softwaresversions_id) {
 			$tot+=$nb;
 		}
 	}	
-	$sql = "SELECT ID,completename FROM glpi_entities " . 
+	$sql = "SELECT id,completename FROM glpi_entities " . 
 		getEntitiesRestrictRequest('WHERE', 'glpi_entities') .
 		" ORDER BY completename";	
 	foreach ($DB->request($sql) as $ID => $data) {
@@ -160,10 +160,10 @@ function showSoftwareMergeCandidates($ID) {
 	$rand=mt_rand();
 		
 	echo "<div class='center'>";
-	$sql = "SELECT glpi_softwares.ID, glpi_softwares.name, glpi_entities.completename AS entity " .
+	$sql = "SELECT glpi_softwares.id, glpi_softwares.name, glpi_entities.completename AS entity " .
 			"FROM glpi_softwares " .
-			"LEFT JOIN glpi_entities ON (glpi_softwares.entities_id=glpi_entities.ID) " .
-			"WHERE glpi_softwares.ID!=$ID AND glpi_softwares.name='".addslashes($soft->fields["name"])."'".
+			"LEFT JOIN glpi_entities ON (glpi_softwares.entities_id=glpi_entities.id) " .
+			"WHERE glpi_softwares.id!=$ID AND glpi_softwares.name='".addslashes($soft->fields["name"])."'".
 				"AND glpi_softwares.is_deleted=0 AND glpi_softwares.is_template=0 " .
          getEntitiesRestrictRequest('AND', 'glpi_softwares','entities_id',getSonsOf("glpi_entities",$soft->fields["entities_id"]),false).
 			"ORDER BY glpi_entities.completename";
@@ -179,11 +179,11 @@ function showSoftwareMergeCandidates($ID) {
 		
 		foreach($req as $data) {
 			echo "<tr class='tab_bg_2'>";
-			echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
-			echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?ID=".$data["ID"]."'>".$data["name"]."</a></td>";
+			echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+			echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?id=".$data["id"]."'>".$data["name"]."</a></td>";
 			echo "<td>".$data["entity"]."</td>";
-			echo "<td align='right'>".countInstallationsForSoftware($data["ID"])."</td>";
-			echo "<td align='right'>".getNumberOfLicences($data["ID"])."</td></tr>\n";
+			echo "<td align='right'>".countInstallationsForSoftware($data["id"])."</td>";
+			echo "<td align='right'>".getNumberOfLicences($data["id"])."</td></tr>\n";
 		}
 				
 		echo "</table>";
@@ -192,7 +192,7 @@ function showSoftwareMergeCandidates($ID) {
 		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
 		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td class='left' width='80%'>";
-		echo "<input type='hidden' name='ID' value=$ID><input type='submit' name='mergesoftware' value=\"".$LANG['software'][48]."\" class='submit'>";
+		echo "<input type='hidden' name='id' value=$ID><input type='submit' name='mergesoftware' value=\"".$LANG['software'][48]."\" class='submit'>";
 		echo "</td></table>";
 		echo "</form>";
 	} else {
@@ -233,21 +233,21 @@ function mergeSoftware($ID, $item) {
 			$found=false;
 			foreach ($DB->request("glpi_softwaresversions", array("softwares_id"=>$ID, "name"=>$from["name"])) as $dest) {
 				// Update version ID on License
-				$sql="UPDATE glpi_softwareslicenses SET softwaresversions_id_buy='".$dest["ID"]."' WHERE softwaresversions_id_buy='".$from["ID"]."'";
+				$sql="UPDATE glpi_softwareslicenses SET softwaresversions_id_buy='".$dest["id"]."' WHERE softwaresversions_id_buy='".$from["id"]."'";
 				$DB->query($sql);
-				$sql="UPDATE glpi_softwareslicenses SET softwaresversions_id_use='".$dest["ID"]."' WHERE softwaresversions_id_use='".$from["ID"]."'";
+				$sql="UPDATE glpi_softwareslicenses SET softwaresversions_id_use='".$dest["id"]."' WHERE softwaresversions_id_use='".$from["id"]."'";
 				$DB->query($sql);
 
 				// Move installation to existing version in destination software
-				$sql="UPDATE glpi_computers_softwaresversions SET softwaresversions_id='".$dest["ID"]."' WHERE softwaresversions_id='".$from["ID"]."'";
+				$sql="UPDATE glpi_computers_softwaresversions SET softwaresversions_id='".$dest["id"]."' WHERE softwaresversions_id='".$from["id"]."'";
 				$found=$DB->query($sql);
 			}
 			if ($found) {
 				// Installation has be moved, delete the source version
-				$sql="DELETE FROM glpi_softwaresversions WHERE ID='".$from["ID"]."'";
+				$sql="DELETE FROM glpi_softwaresversions WHERE id='".$from["id"]."'";
 			} else {
 				// Move version to destination software
-				$sql="UPDATE glpi_softwaresversions SET softwares_id='$ID' WHERE ID='".$from["ID"]."'";
+				$sql="UPDATE glpi_softwaresversions SET softwares_id='$ID' WHERE id='".$from["id"]."'";
 			}
 			if ($DB->query($sql)) $i++;
 			changeProgressBarPosition($i,$nb+1);
@@ -328,10 +328,10 @@ function showLicenses($softwares_id) {
 	$rand=mt_rand();
 	$query = "SELECT glpi_softwareslicenses.*, buyvers.name as buyname, usevers.name AS usename, glpi_entities.completename AS entity, glpi_softwareslicensestypes.name AS typename
 		FROM glpi_softwareslicenses
-		LEFT JOIN glpi_softwaresversions AS buyvers ON (buyvers.ID = glpi_softwareslicenses.softwaresversions_id_buy)
-		LEFT JOIN glpi_softwaresversions AS usevers ON (usevers.ID = glpi_softwareslicenses.softwaresversions_id_use)
-		LEFT JOIN glpi_entities ON (glpi_entities.ID = glpi_softwareslicenses.entities_id)
-		LEFT JOIN glpi_softwareslicensestypes ON (glpi_softwareslicensestypes.ID = glpi_softwareslicenses.softwareslicensestypes_id)
+		LEFT JOIN glpi_softwaresversions AS buyvers ON (buyvers.id = glpi_softwareslicenses.softwaresversions_id_buy)
+		LEFT JOIN glpi_softwaresversions AS usevers ON (usevers.id = glpi_softwareslicenses.softwaresversions_id_use)
+		LEFT JOIN glpi_entities ON (glpi_entities.id = glpi_softwareslicenses.entities_id)
+		LEFT JOIN glpi_softwareslicensestypes ON (glpi_softwareslicensestypes.id = glpi_softwareslicenses.softwareslicensestypes_id)
 		WHERE (glpi_softwareslicenses.softwares_id = '$softwares_id') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwareslicenses', '', '', true) .
 		"ORDER BY " . $sort." ".$order . " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
@@ -365,16 +365,16 @@ function showLicenses($softwares_id) {
 			//echo "<th>".$LANG['financial'][3]."</th>";
 			echo "</tr>";
 			for ($tot=0;$data=$DB->fetch_assoc($result);){
-				addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['ID']);
+				addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['id']);
 
 				echo "<tr class='tab_bg_2'>";
 
-				if ($license->can($data['ID'],"w")){
-					echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
-					echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				if ($license->can($data['id'],"w")){
+					echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+					echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
 				} else {
 					echo "<td>&nbsp;</td>";
-					echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+					echo "<td>".$data['name'].(empty($data['name'])?$data['id']:"")."</td>";
 				}
 				if ($software->isRecursive()) {
 					echo "<td>".$data['entity']."</td>";
@@ -388,12 +388,12 @@ function showLicenses($softwares_id) {
 				if ($data['computers_id']>0 && $computer->getFromDB($data['computers_id'])) {
 					$link = $computer->fields['name'];
 					if (empty($link) || $_SESSION['glpiis_ids_visible']) {
-						$link .= " (".$computer->fields['ID'].")";
+						$link .= " (".$computer->fields['id'].")";
 					}
 					if ($computer->fields['is_deleted']) {
 						$link .= " (".$LANG['common'][28].")"; 
 					}
-					echo "<td><a href='computer.form.php?ID=".$data['computers_id']."'>".$link."</a>";
+					echo "<td><a href='computer.form.php?id=".$data['computers_id']."'>".$link."</a>";
 
 					
 					// search installed version name
@@ -401,7 +401,7 @@ function showLicenses($softwares_id) {
 					$sql = "SELECT glpi_softwaresversions.name " .
 							"FROM glpi_softwaresversions, glpi_computers_softwaresversions " .
 							"WHERE glpi_softwaresversions.softwares_id='$softwares_id' " .
-							"  AND glpi_computers_softwaresversions.softwaresversions_id=glpi_softwaresversions.ID" .
+							"  AND glpi_computers_softwaresversions.softwaresversions_id=glpi_softwaresversions.id" .
 							"  AND glpi_computers_softwaresversions.computers_id='".$data['computers_id']."' " .
 							"ORDER BY name";
 							
@@ -416,7 +416,7 @@ function showLicenses($softwares_id) {
 				}
 				
 				/*echo "<td>";
-				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
+				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['id'], 1);
 				echo "</td>";*/
 				echo "</tr>";
 				
@@ -496,15 +496,15 @@ function showInstallations($searchID, $crit="softwares_id") {
 	if ($crit=="softwares_id") {
 		// Software ID
 		$number = countElementsInTable("glpi_computers_softwaresversions,glpi_computers,glpi_softwaresversions", 
-			"glpi_computers_softwaresversions.computers_id = glpi_computers.ID
-         AND glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID
+			"glpi_computers_softwaresversions.computers_id = glpi_computers.id
+         AND glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.id
          AND glpi_softwaresversions.softwares_id=$searchID" .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.is_deleted=0 AND glpi_computers.is_template=0");
 	} else {
 		//SoftwareVersion ID
 		$number = countElementsInTable("glpi_computers_softwaresversions,glpi_computers", 
-			"glpi_computers_softwaresversions.computers_id = glpi_computers.ID
+			"glpi_computers_softwaresversions.computers_id = glpi_computers.id
          AND glpi_computers_softwaresversions.softwaresversions_id = $searchID" .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.is_deleted=0 AND glpi_computers.is_template=0");
@@ -522,20 +522,20 @@ function showInstallations($searchID, $crit="softwares_id") {
 	// Display the pager
 	printAjaxPager($LANG['software'][19],$start,$number);
 	
-	$query = "SELECT glpi_computers_softwaresversions.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
+	$query = "SELECT glpi_computers_softwaresversions.*,glpi_computers.name AS compname, glpi_computers.id AS cID,
 			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_users.name AS username,
-			glpi_softwaresversions.name as version, glpi_softwaresversions.ID as vID, glpi_softwaresversions.softwares_id as sID, glpi_softwaresversions.name as vername,
+			glpi_softwaresversions.name as version, glpi_softwaresversions.id as vID, glpi_softwaresversions.softwares_id as sID, glpi_softwaresversions.name as vername,
 			glpi_entities.completename AS entity, glpi_locations.completename AS location, glpi_states.name AS state, glpi_groups.name AS groupe,
-			glpi_softwareslicenses.name AS lname, glpi_softwareslicenses.ID AS lID 
+			glpi_softwareslicenses.name AS lname, glpi_softwareslicenses.id AS lID 
 		FROM glpi_computers_softwaresversions
-		INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID)
-		INNER JOIN glpi_computers ON (glpi_computers_softwaresversions.computers_id = glpi_computers.ID)
-		LEFT JOIN glpi_entities ON (glpi_computers.entities_id=glpi_entities.ID)
-		LEFT JOIN glpi_locations ON (glpi_computers.locations_id=glpi_locations.ID)
-		LEFT JOIN glpi_states ON (glpi_computers.states_id=glpi_states.ID)
-		LEFT JOIN glpi_groups ON (glpi_computers.groups_id=glpi_groups.ID)
-		LEFT JOIN glpi_users ON (glpi_computers.users_id=glpi_users.ID)
-		LEFT JOIN glpi_softwareslicenses ON (glpi_softwareslicenses.softwares_id=glpi_softwaresversions.softwares_id AND glpi_softwareslicenses.computers_id=glpi_computers.ID)
+		INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.id)
+		INNER JOIN glpi_computers ON (glpi_computers_softwaresversions.computers_id = glpi_computers.id)
+		LEFT JOIN glpi_entities ON (glpi_computers.entities_id=glpi_entities.id)
+		LEFT JOIN glpi_locations ON (glpi_computers.locations_id=glpi_locations.id)
+		LEFT JOIN glpi_states ON (glpi_computers.states_id=glpi_states.id)
+		LEFT JOIN glpi_groups ON (glpi_computers.groups_id=glpi_groups.id)
+		LEFT JOIN glpi_users ON (glpi_computers.users_id=glpi_users.id)
+		LEFT JOIN glpi_softwareslicenses ON (glpi_softwareslicenses.softwares_id=glpi_softwaresversions.softwares_id AND glpi_softwareslicenses.computers_id=glpi_computers.id)
 		WHERE (glpi_softwaresversions.$crit = '$searchID') " .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.is_deleted=0 AND glpi_computers.is_template=0 " .
@@ -552,7 +552,7 @@ function showInstallations($searchID, $crit="softwares_id") {
 			$showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
 
 			$title=$LANG['help'][31] ." = ". $soft->fields["name"];
-			if ($crit=="ID") {
+			if ($crit=="id") {
 				$title .= " - " . $data["vername"];
 			}
 			initNavigateListItems(COMPUTER_TYPE,$title);
@@ -588,17 +588,17 @@ function showInstallations($searchID, $crit="softwares_id") {
 
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
-					echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
+					echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
 				}
 				if ($crit=="softwares_id") {
-					echo "<td><a href='softwareversion.form.php?ID=".$data['vID']."'>".$data['version']."</a></td>";
+					echo "<td><a href='softwareversion.form.php?id=".$data['vID']."'>".$data['version']."</a></td>";
 				}
 				$compname=$data['compname'];
 				if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
 					$compname .= " (".$data['cID'].")";
 				}
 				if ($canshowcomputer){
-					echo "<td><a href='computer.form.php?ID=".$data['cID']."'>$compname</a></td>";
+					echo "<td><a href='computer.form.php?id=".$data['cID']."'>$compname</a></td>";
 				} else {
 					echo "<td>".$compname."</td>";
 				}
@@ -612,7 +612,7 @@ function showInstallations($searchID, $crit="softwares_id") {
 				echo "<td>".$data['groupe']."</td>";
 				echo "<td>".$data['username']."</td>";
 				if ($data['lID']>0) {
-					echo "<td><a href='softwarelicense.form.php?ID=".$data['lID']."'>".$data['lname']."</a></td>";
+					echo "<td><a href='softwarelicense.form.php?id=".$data['lID']."'>".$data['lname']."</a></td>";
 				} else {
 					echo "<td>&nbsp;</td>";
 				}
@@ -625,8 +625,8 @@ function showInstallations($searchID, $crit="softwares_id") {
 			if ($canedit){
 				echo "<table width='80%' class='tab_glpi'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-				echo "<td class='left' width='100%'><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$softwares_id&amp;select=all'>".$LANG['buttons'][18]."</a>";
-				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$softwares_id&amp;select=none'>".$LANG['buttons'][19]."</a>";
+				echo "<td class='left' width='100%'><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$softwares_id&amp;select=all'>".$LANG['buttons'][18]."</a>";
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$softwares_id&amp;select=none'>".$LANG['buttons'][19]."</a>";
 
 				dropdownSoftwareVersions("versionID",$softwares_id);
 				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG['buttons'][20]."\"
@@ -661,12 +661,12 @@ function installSoftwareVersion($computers_id, $softwaresversions_id, $dohistory
 
 	if (!empty ($softwaresversions_id) && $softwaresversions_id > 0) {
 
-		$query_exists = "SELECT ID FROM glpi_computers_softwaresversions
+		$query_exists = "SELECT id FROM glpi_computers_softwaresversions
             WHERE computers_id='".$computers_id."'
                AND softwaresversions_id='".$softwaresversions_id."'";
 		$result = $DB->query($query_exists);
 		if ($DB->numrows($result) > 0){
-			return $DB->result($result, 0, "ID");
+			return $DB->result($result, 0, "id");
 		} else {
 			$query = "INSERT INTO glpi_computers_softwaresversions
                      (`computers_id`,`softwaresversions_id`)
@@ -723,7 +723,7 @@ function installSoftwareVersion($computers_id, $softwaresversions_id, $dohistory
 function updateInstalledVersion($instID, $newvID, $dohistory=1) {
 	global $DB;
 	
-	$query_exists = "SELECT * FROM glpi_computers_softwaresversions WHERE ID='".$instID."'";
+	$query_exists = "SELECT * FROM glpi_computers_softwaresversions WHERE id='".$instID."'";
 	$result = $DB->query($query_exists);
 	if ($DB->numrows($result) > 0){
 		$computers_id=$DB->result($result, 0, "computers_id");
@@ -748,13 +748,13 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 
 	global $DB;
 
-	$query2 = "SELECT * FROM glpi_computers_softwaresversions WHERE (ID = '$ID')";
+	$query2 = "SELECT * FROM glpi_computers_softwaresversions WHERE (id = '$ID')";
 	$result2 = $DB->query($query2);
 	$data = $DB->fetch_array($result2);
 	// Not found => nothing to do
 	if (!$data) return false;
 	
-	$query = "DELETE FROM glpi_computers_softwaresversions WHERE (ID = '$ID')";
+	$query = "DELETE FROM glpi_computers_softwaresversions WHERE (id = '$ID')";
 
 	if ($result = $DB->query($query)) {
 		$vers = new SoftwareVersion();
@@ -764,7 +764,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 			$DB->query("UPDATE glpi_softwareslicenses SET softwaresversions_id_use=0 
 				WHERE softwares_id='".$vers->fields["softwares_id"]."'
 				  AND computers_id='".$data["computers_id"]."'
-				  AND softwaresversions_id_use='".$vers->fields["ID"]."'");
+				  AND softwaresversions_id_use='".$vers->fields["id"]."'");
 			
 			if ($dohistory) {
 				$soft = new Software();
@@ -818,25 +818,25 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 	$entities_id = $comp->fields["entities_id"];
 
 	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id,
-		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.is_deleted, glpi_states.name AS state,
+		glpi_softwares.name as softname, glpi_computers_softwaresversions.id, glpi_softwares.is_deleted, glpi_states.name AS state,
 		glpi_softwaresversions.softwares_id, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_computers_softwaresversions 
-		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID )
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
+		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.id )
+		LEFT JOIN glpi_states ON ( glpi_states.id = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.softwares_id = glpi_softwareslicenses.softwares_id AND glpi_softwareslicenses.computers_id = '$computers_id')
-		LEFT JOIN glpi_softwares ON (glpi_softwaresversions.softwares_id = glpi_softwares.ID)
-		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)";
+		LEFT JOIN glpi_softwares ON (glpi_softwaresversions.softwares_id = glpi_softwares.id)
+		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.id = glpi_softwares.softwarescategories_id)";
 	$query_cat .= " WHERE glpi_computers_softwaresversions.computers_id = '$computers_id' AND glpi_softwares.softwarescategories_id > 0";
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.softwarescategories_id,
-		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.is_deleted, glpi_states.name AS state,
+		glpi_softwares.name as softname, glpi_computers_softwaresversions.id, glpi_softwares.is_deleted, glpi_states.name AS state,
 		glpi_softwaresversions.softwares_id, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 	    FROM glpi_computers_softwaresversions 
-		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.ID )
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
+		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.id )
+		LEFT JOIN glpi_states ON ( glpi_states.id = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.softwares_id = glpi_softwareslicenses.softwares_id AND glpi_softwareslicenses.computers_id = '$computers_id')
-	    LEFT JOIN glpi_softwares ON (glpi_softwaresversions.softwares_id = glpi_softwares.ID)
-	    LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)";
+	    LEFT JOIN glpi_softwares ON (glpi_softwaresversions.softwares_id = glpi_softwares.id)
+	    LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.id = glpi_softwares.softwarescategories_id)";
 	$query_nocat .= " WHERE glpi_computers_softwaresversions.computers_id = '$computers_id' AND (glpi_softwares.softwarescategories_id <= 0 OR glpi_softwares.softwarescategories_id IS NULL )";
 
 	$query = "( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, softwarescategories_id, softname, version";
@@ -865,7 +865,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 
 	$cat = -1;
 
-	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
+	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["id"].")":$comp->fields["name"]));
 
 	$installed=array();
 	if ($DB->numrows($result)) {
@@ -893,10 +893,10 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 	$query = "SELECT glpi_softwares.name as softname, glpi_softwares.is_deleted, glpi_states.name AS state, glpi_softwareslicenses.softwaresversions_id_buy,
 		glpi_softwareslicenses.softwares_id, glpi_softwaresversions.name AS version, glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_softwareslicenses 
-		INNER JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.ID)
-		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.softwarescategories_id)
-		LEFT JOIN glpi_softwaresversions ON ( glpi_softwareslicenses.softwaresversions_id_buy = glpi_softwaresversions.ID )
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
+		INNER JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id)
+		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.id = glpi_softwares.softwarescategories_id)
+		LEFT JOIN glpi_softwaresversions ON ( glpi_softwareslicenses.softwaresversions_id_buy = glpi_softwaresversions.id )
+		LEFT JOIN glpi_states ON ( glpi_states.id = glpi_softwaresversions.states_id )
 		WHERE glpi_softwareslicenses.computers_id = '$computers_id' ";
 	if (count($installed)) {
 		$query .= " AND glpi_softwareslicenses.softwares_id NOT IN (".implode(',',$installed).")";
@@ -936,8 +936,8 @@ function displayCategoryFooter($cat,$rand,$canedit) {
 		
 		if ($canedit) {
 			echo "<table width='950px'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td class='left' width='80%'>";
 	
 			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
@@ -1029,14 +1029,14 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
 function displaySoftsByCategory($data, $computers_ID, $withtemplate,$canedit) {
 	global $LANG, $CFG_GLPI;
 
-	$ID = $data["ID"];
+	$ID = $data["id"];
 	$multiple = false;
 
 	echo "<tr class='tab_bg_1'>";
 	if ($canedit) {
-		echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
+		echo "<td><input type='checkbox' name='license_".$data['id']."'></td>";
 	}
-	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['softwares_id'] . "\">";
+	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?id=" . $data['softwares_id'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiis_ids_visible"] ? " (" . $data['softwares_id'] . ")" : "") . "</a>";
 	echo "</strong></td>";
 	echo "<td>" . $data["state"] . "</td>";
@@ -1046,7 +1046,7 @@ function displaySoftsByCategory($data, $computers_ID, $withtemplate,$canedit) {
 		echo " - <strong>". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]) . "</strong>";
 	}
 	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
-		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;computers_ID=$computers_ID\">";
+		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;id=$ID&amp;computers_ID=$computers_ID\">";
 		echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
 	}
 	echo "</td>";
@@ -1071,7 +1071,7 @@ function displaySoftsByLicense($data, $computers_ID, $withtemplate,$canedit) {
 	if ($canedit) {
 		echo "<td><input type='checkbox' name='version_$ID'></td>";
 	}
-	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['softwares_id'] . "\">";
+	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?id=" . $data['softwares_id'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiis_ids_visible"] ? " (" . $data['softwares_id'] . ")" : "") . "</a>";
 	echo "</strong></td>";
 	echo "<td>" . $data["state"] . "</td>";
@@ -1136,10 +1136,10 @@ function countInstallations($softwares_id, $nohtml = 0) {
  */
 function countInstallationsForSoftware($softwares_id) {
 	global $DB;
-	$query = "SELECT count(glpi_computers_softwaresversions.ID) 
+	$query = "SELECT count(glpi_computers_softwaresversions.id) 
 			FROM glpi_softwaresversions
-			INNER JOIN glpi_computers_softwaresversions ON (glpi_softwaresversions.ID = glpi_computers_softwaresversions.softwaresversions_id)
-			INNER JOIN glpi_computers ON ( glpi_computers_softwaresversions.computers_id=glpi_computers.ID)
+			INNER JOIN glpi_computers_softwaresversions ON (glpi_softwaresversions.id = glpi_computers_softwaresversions.softwaresversions_id)
+			INNER JOIN glpi_computers ON ( glpi_computers_softwaresversions.computers_id=glpi_computers.id)
 			WHERE glpi_softwaresversions.softwares_id='$softwares_id'
 				AND glpi_computers.is_deleted=0 AND glpi_computers.is_template=0 " .
 				getEntitiesRestrictRequest('AND', 'glpi_computers');
@@ -1161,10 +1161,10 @@ function countInstallationsForSoftware($softwares_id) {
  */
 function countInstallationsForVersion($softwaresversions_id, $entity='') {
 	global $DB;
-	$query = "SELECT count(glpi_computers_softwaresversions.ID) 
+	$query = "SELECT count(glpi_computers_softwaresversions.id) 
 			FROM glpi_computers_softwaresversions
 			INNER JOIN glpi_computers
-            ON ( glpi_computers_softwaresversions.computers_id = glpi_computers.ID)
+            ON ( glpi_computers_softwaresversions.computers_id = glpi_computers.id)
 			WHERE glpi_computers_softwaresversions.softwaresversions_id='$softwaresversions_id'
 				AND glpi_computers.is_deleted=0 AND glpi_computers.is_template=0 " .
 				getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
@@ -1211,7 +1211,7 @@ function countLicensesForVersion($softwaresversions_id, $entity='') {
 /*
 function getLicenceToBuy($softwares_id) {
 	global $DB;
-	$query = "SELECT ID FROM glpi_licenses WHERE (softwares_id = '$softwares_id' AND buy ='0'  AND serial <> 'free' AND serial <> 'global')";
+	$query = "SELECT id FROM glpi_licenses WHERE (softwares_id = '$softwares_id' AND buy ='0'  AND serial <> 'free' AND serial <> 'global')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -1225,7 +1225,7 @@ function getLicenceToBuy($softwares_id) {
 function getNumberOfLicences($softwares_id) {
 	global $DB;
 	
-	$query = "SELECT ID FROM glpi_softwareslicenses WHERE (softwares_id = '$softwares_id' AND number='-1') " .
+	$query = "SELECT id FROM glpi_softwareslicenses WHERE (softwares_id = '$softwares_id' AND number='-1') " .
 		getEntitiesRestrictRequest('AND', 'glpi_softwareslicenses', '', '', true);
 	$result = $DB->query($query);
 	if ($DB->numrows($result)){
@@ -1256,13 +1256,13 @@ function addSoftware($name, $manufacturer, $entity, $comment = '') {
 		$manufacturer_id = externalImportDropdown("glpi_manufacturers", $manufacturer);
 	}									
 
-	$sql = "SELECT ID FROM glpi_softwares ".
+	$sql = "SELECT id FROM glpi_softwares ".
 		"WHERE manufacturers_id='$manufacturer_id' AND name='".$name."' " .
 		getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id', $entity, true);
 
 	$res_soft = $DB->query($sql);
 	if ($soft = $DB->fetch_array($res_soft)) {
-		$id = $soft["ID"];
+		$id = $soft["id"];
 	} else {
 		$input["name"] = $name;
 		$input["manufacturers_id"] = $manufacturer_id;
@@ -1296,11 +1296,11 @@ function putSoftwareInTrash($ID, $comment = '') {
 	//Get the software's fields
 	$software->getFromDB($ID);
 
-	$input["ID"] = $ID;
+	$input["id"] = $ID;
 	$input["is_deleted"] = 1;
 	
 	$config = new Config;
-	$config->getFromDB($CFG_GLPI["ID"]);
+	$config->getFromDB($CFG_GLPI["id"]);
 	
 	//change category of the software on deletion (if defined in glpi_configs)
 	if (isset($config->fields["softwarescategories_id_ondelete"])
@@ -1332,7 +1332,7 @@ function removeSoftwareFromTrash($ID) {
    }
 
 	$s->restore(array (
-		"ID" => $ID
+		"id" => $ID
 	));
 }
 /**
@@ -1345,14 +1345,14 @@ function removeSoftwareFromTrash($ID) {
 function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comment='') {
 	global $DB;
 	//Look for the software by his name in GLPI for a specific entity
-	$query_search = "SELECT glpi_softwares.ID as ID, glpi_softwares.is_deleted 
+	$query_search = "SELECT glpi_softwares.id, glpi_softwares.is_deleted
 			FROM glpi_softwares
 			WHERE name = '".$name."' AND is_template='0' AND entities_id='".$entity."'";
 	$result_search = $DB->query($query_search);
 	if ($DB->numrows($result_search) > 0) {
 		//Software already exists for this entity, get his ID
 		$data = $DB->fetch_array($result_search);
-		$ID = $data["ID"];
+		$ID = $data["id"];
 
 		// restore software
 		if ($data['is_deleted'])
@@ -1389,10 +1389,10 @@ function cron_software($display=false){
 	// Check notice
 	$query="SELECT glpi_softwareslicenses.*, glpi_softwareslicenses.entities_id, glpi_softwares.name as softname
 		FROM glpi_softwareslicenses 
-		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.ID = glpi_alerts.items_id 
+		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.id = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".SOFTWARELICENSE_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
-		LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.ID)
+		LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id)
 		WHERE glpi_alerts.date IS NULL
 			AND glpi_softwareslicenses.expire IS NOT NULL 
 			AND glpi_softwareslicenses.expire < CURDATE()
@@ -1414,7 +1414,7 @@ function cron_software($display=false){
 			if (strstr($message[$data["entities_id"]],$name)===false){
 				$message[$data["entities_id"]].=$LANG['mailing'][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
 			}
-			$items[$data["entities_id"]][]=$data["ID"];
+			$items[$data["entities_id"]][]=$data["id"];
 		}
 
 
@@ -1438,7 +1438,7 @@ function cron_software($display=false){
 					foreach ($items[$entity] as $ID){
 						$input["items_id"]=$ID;
 						$alert->add($input);
-						unset($alert->fields['ID']);
+						unset($alert->fields['id']);
 					}
 				}
 			} else {

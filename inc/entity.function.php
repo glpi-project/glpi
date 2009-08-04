@@ -88,10 +88,10 @@ function showEntityUser($target,$ID){
 
 
 
-		$query="SELECT DISTINCT glpi_profiles.ID, glpi_profiles.name 
+		$query="SELECT DISTINCT glpi_profiles.id, glpi_profiles.name 
 				FROM glpi_profiles_users 
-				LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.ID)
-				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id)
+				LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.id)
+				LEFT JOIN glpi_users ON (glpi_users.id = glpi_profiles_users.users_id)
 				WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0;";
 	
 		$result=$DB->query($query);
@@ -100,10 +100,10 @@ function showEntityUser($target,$ID){
 			while ($data=$DB->fetch_array($result)){
 				echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
-				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.is_recursive,glpi_profiles_users.is_dynamic
+				$query="SELECT glpi_users.*,glpi_profiles_users.id as linkID,glpi_profiles_users.is_recursive,glpi_profiles_users.is_dynamic
 					FROM glpi_profiles_users 
-					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id) 
-					WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0 AND glpi_profiles_users.profiles_id='".$data['ID']."'
+					LEFT JOIN glpi_users ON (glpi_users.id = glpi_profiles_users.users_id) 
+					WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0 AND glpi_profiles_users.profiles_id='".$data['id']."'
 					ORDER BY glpi_profiles_users.profiles_id, glpi_users.name, glpi_users.realname, glpi_users.firstname";
 				$result2=$DB->query($query);
 				if ($DB->numrows($result2)>0){
@@ -124,7 +124,7 @@ function showEntityUser($target,$ID){
 			
 						echo "<td>";
 			
-						echo formatUserName($data2["ID"],$data2["name"],$data2["realname"],$data2["firstname"],$canshowuser);
+						echo formatUserName($data2["id"],$data2["name"],$data2["realname"],$data2["firstname"],$canshowuser);
 						if ($data2["is_dynamic"]||$data2["is_recursive"]){
 							echo "<strong>&nbsp;(";
 							if ($data2["is_dynamic"]) echo "D";
@@ -157,9 +157,9 @@ function showEntityUser($target,$ID){
 		if ($canedit){
 			echo "<div class='center'>";
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
@@ -207,11 +207,11 @@ function deleteUserProfileEntity($ID){
 
 	global $DB;
 
-	$query="SELECT users_id FROM glpi_profiles_users WHERE ID = '$ID';";
+	$query="SELECT users_id FROM glpi_profiles_users WHERE id = '$ID';";
 	$result = $DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	
-	$query="DELETE FROM glpi_profiles_users WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_profiles_users WHERE id = '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -224,7 +224,7 @@ function deleteUserProfileEntity($ID){
 function moveUserProfileEntity($ID,$entities_id){
 
 	global $DB;
-	$query="UPDATE glpi_profiles_users SET entities_id='$entities_id' WHERE ID = '$ID';";
+	$query="UPDATE glpi_profiles_users SET entities_id='$entities_id' WHERE id = '$ID';";
 	return $DB->query($query);
 }
 

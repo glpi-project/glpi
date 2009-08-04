@@ -78,9 +78,9 @@ if (!isset($_GET["filter"])) $_GET["filter"]='';
 
 //Get the ldap server's id by his name
 if ($_GET["server_id"] != '')
-	$sql = "SELECT ID, name from glpi_auth_ldap WHERE ID=" . $_GET["server_id"];
+	$sql = "SELECT id, name from glpi_auth_ldap WHERE id=" . $_GET["server_id"];
 else
-	$sql = "SELECT ID, name from glpi_auth_ldap";
+	$sql = "SELECT id, name from glpi_auth_ldap";
 
 $result = $DB->query($sql);
 if ($DB->numrows($result) == 0 && $_GET["server_id"] != '')
@@ -100,7 +100,7 @@ else
 function import($action, $datas,$filter='')
 {
 	//The ldap server id is passed in the script url (parameter server_id)
-	$server_id = $datas["ID"];
+	$server_id = $datas["id"];
 	$users = getAllLdapUsers($server_id, $action,$filter);
 	
 	foreach ($users as $user) {

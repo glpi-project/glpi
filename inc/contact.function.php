@@ -58,12 +58,12 @@ function showEnterpriseContact($instID) {
 	$contact=new Contact();
 	$canedit=$contact->can($instID,'w');
 
-	$query = "SELECT glpi_contacts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
+	$query = "SELECT glpi_contacts_suppliers.id, glpi_suppliers.id as entID, glpi_suppliers.name as name,
 			glpi_suppliers.website as website, glpi_suppliers.fax as fax, glpi_suppliers.phonenumber as phone,
-			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.is_deleted, glpi_entities.ID AS entity"
+			glpi_suppliers.supplierstypes_id as type, glpi_suppliers.is_deleted, glpi_entities.id AS entity"
 		. " FROM glpi_contacts_suppliers, glpi_suppliers "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
-		. " WHERE glpi_contacts_suppliers.contacts_id = '$instID' AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID"
+		. " LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_suppliers.entities_id) "
+		. " WHERE glpi_contacts_suppliers.contacts_id = '$instID' AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.id"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) 
 		. " ORDER BY glpi_entities.completename,name";
 	
@@ -86,7 +86,7 @@ function showEnterpriseContact($instID) {
 	if ($number>0){
 		initNavigateListItems(ENTERPRISE_TYPE,$LANG['common'][18]." = ".$contact->fields['name']);
 		while ($data= $DB->fetch_array($result)) {
-			$ID=$data["ID"];
+			$ID=$data["id"];
 			addToNavigateListItems(ENTERPRISE_TYPE,$data["entID"]);
 			$used[$data["entID"]]=$data["entID"];
 			$website=$data["website"];
@@ -96,7 +96,7 @@ function showEnterpriseContact($instID) {
 				$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 			}
 			echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$data["entID"]."'>".getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 			echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
 			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
@@ -104,7 +104,7 @@ function showEnterpriseContact($instID) {
 			echo "<td class='center'>".$website."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) 
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;id=$ID&amp;cID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 		}

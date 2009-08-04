@@ -40,35 +40,35 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
 
-if(!isset($_POST["ID"])) {
-	$_POST["ID"] = -1;
+if(!isset($_POST["id"])) {
+	$_POST["id"] = -1;
 }
 
 $doc= new Document();
 
-$doc->check($_POST["ID"],'r');
+$doc->check($_POST["id"],'r');
 
 		switch ($_POST['glpi_tab']){
 			case -1 :
-				showDeviceDocument($_POST["ID"]);
-				showDocumentAssociated(DOCUMENT_TYPE,$_POST["ID"]);
-				displayPluginAction(DOCUMENT_TYPE,$_POST["ID"],$_POST['glpi_tab']);
+				showDeviceDocument($_POST["id"]);
+				showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+				displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab']);
 				break;
 			case 5 :
-				showDocumentAssociated(DOCUMENT_TYPE,$_POST["ID"]);
+				showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
 				break;
 			case 10 :
-				showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["ID"]);
+				showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
 				break;
 			default :
-				if ($_POST["ID"]){
-					if (!displayPluginAction(DOCUMENT_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
-						showDeviceDocument($_POST["ID"]);
+				if ($_POST["id"]){
+					if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab'])){
+						showDeviceDocument($_POST["id"]);
 					}
 				}
 				break;

@@ -43,7 +43,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
@@ -55,33 +55,33 @@ if (!isset($_POST["start"])) {
 	$_POST["start"]=0;
 }
 
-	$entity->check($_POST["ID"],'r');
+	$entity->check($_POST["id"],'r');
 
-		if ($_POST["ID"]>=0){
+		if ($_POST["id"]>=0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					showEntityUser($_POST['target'],$_POST["ID"]);
-					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
-					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+					showEntityUser($_POST['target'],$_POST["id"]);
+					showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
 					if ($CFG_GLPI["use_ocs_mode"]) {
-					   $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+					   $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
 					}
-					displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
 					break;
 				case 2 : 
-					showEntityUser($_POST['target'],$_POST["ID"]);
+					showEntityUser($_POST['target'],$_POST["id"]);
 					break;
 				case 3 :
-					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
 					if ($CFG_GLPI["use_ocs_mode"]) {
-						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
 					}
 					break;
 				case 5 :
-					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
+					showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
 					break;
 				default :
-					if (!displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
+					if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
 						
 					}
 				break;

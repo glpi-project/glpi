@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!isset($_POST['ID'])) exit();
+if (!isset($_POST['id'])) exit();
 if(!isset($_POST["sort"])) $_POST["sort"] = "";
 if(!isset($_POST["order"])) $_POST["order"] = "";
 
@@ -51,21 +51,21 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	if (!empty($_POST["withtemplate"])) {
 
-			if ($_POST["ID"]>0){
+			if ($_POST["id"]>0){
 
 				switch($_POST['glpi_tab']){
 					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
-						showContractAssociated(PERIPHERAL_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
+						showContractAssociated(PERIPHERAL_TYPE,$_POST["id"],$_POST["withtemplate"]);
 						break;
 					case 5 :
-						showDocumentAssociated(PERIPHERAL_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+						showDocumentAssociated(PERIPHERAL_TYPE,$_POST["id"],$_POST["withtemplate"]);
 						break;
 
 					default :
-						if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-							if ($_POST["withtemplate"]!=2)	showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
-							showPorts($_POST["ID"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+						if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+							if ($_POST["withtemplate"]!=2)	showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
+							showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
 						}
 
 						break;
@@ -76,43 +76,43 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 			switch($_POST['glpi_tab']){
 				case -1:
-					showConnect($_POST['target'],$_POST["ID"],PERIPHERAL_TYPE);
-					showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
-					showPorts($_POST["ID"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"]);
-					showContractAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
-					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
-					showJobListForItem(PERIPHERAL_TYPE,$_POST["ID"]);
-					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["ID"]);
-					displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+					showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
+					showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
+					showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["id"]);
+					showContractAssociated(PERIPHERAL_TYPE,$_POST["id"]);
+					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["id"]);
+					showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
+					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
+					displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
 				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"]);
-					showContractAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["id"]);
+					showContractAssociated(PERIPHERAL_TYPE,$_POST["id"]);
 					break;
 				case 5 :
-					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
+					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["id"]);
 					break;
 				case 6 :
-					showJobListForItem(PERIPHERAL_TYPE,$_POST["ID"]);
+					showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
 					break;
 				case 7 :
-					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["ID"]);
+					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
 					break;	
 				case 10 :
-					showNotesForm($_POST['target'],PERIPHERAL_TYPE,$_POST["ID"]);
+					showNotesForm($_POST['target'],PERIPHERAL_TYPE,$_POST["id"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_POST['target'],PERIPHERAL_TYPE,$_POST["ID"]);
+					showDeviceReservations($_POST['target'],PERIPHERAL_TYPE,$_POST["id"]);
 					break;
 				case 12 :
-					showHistory(PERIPHERAL_TYPE,$_POST["ID"]);
+					showHistory(PERIPHERAL_TYPE,$_POST["id"]);
 					break;		
 				default :
-					if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-						showConnect($_POST['target'],$_POST["ID"],PERIPHERAL_TYPE);
-						showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
-						showPorts($_POST["ID"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+					if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+						showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
+						showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
+						showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
 					}
 					break;
 			}

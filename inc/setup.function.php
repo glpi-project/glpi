@@ -90,7 +90,7 @@ function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 				if ($i%2){
 					$class=" class='tab_bg_1' ";
 				} 
-				echo "<tr $class><td width='10'><input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel></td><td>".$data[$field]."</td></tr>";
+				echo "<tr $class><td width='10'><input type='checkbox' name='item[".$data["id"]."]' value='1' $sel></td><td>".$data[$field]."</td></tr>";
 				$i++;
 			}
 			echo "</table>";
@@ -156,7 +156,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 		$value = getTreeLeafValueName($tablename, $ID, 1);
 
-		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
+		dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
@@ -270,13 +270,13 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
 
-		dropdownNetpoint("ID", $ID, $locations_id, 0, $entity_restrict);
+		dropdownNetpoint("id", $ID, $locations_id, 0, $entity_restrict);
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 		if ($ID>0) {		
-			$query = "SELECT * FROM glpi_netpoints WHERE ID = '" . $ID . "'";
+			$query = "SELECT * FROM glpi_netpoints WHERE id = '" . $ID . "'";
 			$result = $DB->query($query);
 			$value = $loc = $comment = "";
 			$entity = 0;
@@ -402,7 +402,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 				"comment" => ""
 			);
 		}
-		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
+		dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
@@ -466,7 +466,7 @@ function moveTreeUnder($table, $to_move, $where) {
 		$current_ID = $where;
 		while ($current_ID != 0 && $impossible_move == false) {
 
-			$query = "SELECT * FROM `$table` WHERE ID='$current_ID'";
+			$query = "SELECT * FROM `$table` WHERE id='$current_ID'";
 			$result = $DB->query($query);
 			$current_ID = $DB->result($result, 0, "$parentIDfield");
 			if ($current_ID == $to_move){
@@ -475,7 +475,7 @@ function moveTreeUnder($table, $to_move, $where) {
 		}
 		if (!$impossible_move) {
 			// Move Location
-			$query = "UPDATE `$table` SET $parentIDfield='$where' WHERE ID='$to_move'";
+			$query = "UPDATE `$table` SET $parentIDfield='$where' WHERE id='$to_move'";
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
          // Clean sons / ancestors if needed
@@ -501,17 +501,17 @@ function updateDropdown($input) {
 	if ($input["tablename"] == "glpi_netpoints") {
 		$query = "UPDATE `".$input["tablename"]."` 
 			SET name = '".$input["value"]."', locations_id = '".$input["value2"]."', comment='".$input["comment"]."'
-			WHERE ID = '".$input["ID"]."'";
+			WHERE id = '".$input["id"]."'";
 
 	} else {
 		$query = "UPDATE `".$input["tablename"]."` 
 			SET name = '".$input["value"]."', comment='".$input["comment"]."'
-			WHERE ID = '".$input["ID"]."'";
+			WHERE id = '".$input["id"]."'";
 	}
 
 	if ($result = $DB->query($query)) {
 		if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
+			regenerateTreeCompleteNameUnderID($input["tablename"], $input["id"]);
 
 		}
       // Clean sons / ancestors if needed
@@ -541,18 +541,18 @@ function getDropdownID($input){
 		$query="";
 		$query_twin="";
 		if ($input["tablename"] == "glpi_netpoints") {
-			$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+			$query_twin="SELECT id FROM `".$input["tablename"]."` 
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND locations_id = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
             $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 
-				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+				$query_twin="SELECT id FROM `".$input["tablename"]."` 
 					WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='0'";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
-					$query = "SELECT * FROM `".$input["tablename"]."` WHERE ID='" . $input["value2"] . "'";
+					$query = "SELECT * FROM `".$input["tablename"]."` WHERE id='" . $input["value2"] . "'";
 					
 					$result = $DB->query($query);
 					
@@ -561,14 +561,14 @@ function getDropdownID($input){
 						$data = $DB->fetch_array($result);
 						$level_up = $data[$parentIDfield];
 						if ($input["type"] == "under") {
-							$level_up = $data["ID"];
+							$level_up = $data["id"];
 						}
 					} 
-					$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+					$query_twin="SELECT id FROM `".$input["tablename"]."` 
 						WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='$level_up'";
 				}
 			} else {
-				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+				$query_twin="SELECT id FROM `".$input["tablename"]."` 
 					WHERE $add_entity_field_twin name= '".$input["value"]."' ";
 			}
 		}
@@ -576,7 +576,7 @@ function getDropdownID($input){
 		// Check twin :
 		if ($result_twin = $DB->query($query_twin) ) {
 			if ($DB->numrows($result_twin) > 0){
-				return $DB->result($result_twin,0,"ID");
+				return $DB->result($result_twin,0,"id");
 			}
 		}
 		return -1;
@@ -690,7 +690,7 @@ function addDropdown($input) {
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
-					$query = "SELECT * FROM `".$input["tablename"]."` WHERE ID='" . $input["value2"] . "'";
+					$query = "SELECT * FROM `".$input["tablename"]."` WHERE id='" . $input["value2"] . "'";
 					
 					$result = $DB->query($query);
 					
@@ -699,7 +699,7 @@ function addDropdown($input) {
 						$data = $DB->fetch_array($result);
 						$level_up = $data["$parentIDfield"];
 						if ($input["type"] == "under") {
-							$level_up = $data["ID"];
+							$level_up = $data["id"];
 						}
 					} 
 					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comment)
@@ -738,7 +738,7 @@ function deleteDropdown($input) {
 	global $DB;
 	$send = array ();
 	$send["tablename"] = $input["tablename"];
-	$send["oldID"] = $input["ID"];
+	$send["oldID"] = $input["id"];
 	$send["newID"] = 0;
 	replaceDropDropDown($send);
 }
@@ -761,14 +761,14 @@ function replaceDropDropDown($input) {
 				if (!is_array($field)){
 					// Manage OCS lock for items - no need for array case
 					if ($table=="glpi_computers"&&$CFG_GLPI['use_ocs_mode']){
-						$query="SELECT ID FROM `glpi_computers` WHERE is_ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
+						$query="SELECT id FROM `glpi_computers` WHERE is_ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)){
 							if (!function_exists('mergeOcsArray')){
 								include_once (GLPI_ROOT . "/inc/ocsng.function.php");
 							}
 							while ($data=$DB->fetch_array($result)){
-								mergeOcsArray($data['ID'],array($field),"computer_update");
+								mergeOcsArray($data['id'],array($field),"computer_update");
 							}
 						}
 					}
@@ -785,7 +785,7 @@ function replaceDropDropDown($input) {
 			}
 		}
 
-	$query = "DELETE  FROM `".$input["tablename"]."` WHERE `ID` = '" . $input["oldID"] . "'";
+	$query = "DELETE  FROM `".$input["tablename"]."` WHERE `id` = '" . $input["oldID"] . "'";
 	$DB->query($query);
 
 	// Need to be done on entity class
@@ -845,7 +845,7 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 		echo "<p>" . $LANG['setup'][64] . "</p>";
 		echo "<form action=\"" . $target . "\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
-		echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
+		echo "<input type=\"hidden\" name=\"id\" value=\"" . $ID . "\"  />";
 		echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 		echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
 		echo "<input type=\"hidden\" name=\"entities_id\" value=\"$entities_id\" />";
@@ -967,7 +967,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			echo "<a href=\"$target?ID=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
+			echo "<a href=\"$target?id=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "</tr>";
 		}
 	
@@ -975,19 +975,19 @@ function listTemplates($itemtype, $target, $add = 0) {
 
 			$templname = $data["template_name"];
 			if ($_SESSION["glpiis_ids_visible"]||empty($data["template_name"])){
-            			$templname.= "(".$data["ID"].")";
+            			$templname.= "(".$data["id"].")";
 			}
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
 			
 			if (haveTypeRight($itemtype, "w") && !$add) {
-				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+				echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
 				echo "<td align='center' class='tab_bg_2'>";
-				echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG['buttons'][6] . "</a></strong>";
+				echo "<strong><a href=\"$target?id=" . $data["id"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG['buttons'][6] . "</a></strong>";
 				echo "</td>";
 			} else {
-				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+				echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 			}
 
 			echo "</tr>";
@@ -1028,9 +1028,9 @@ function showLdapAuthList($target) {
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 			while ($ldap_method = $DB->fetch_array($result)){
-				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
+				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;id=" . $ldap_method["id"] . "' >" . $ldap_method["name"] . "</a>" .
 				"</td><td class='center'>" . $LANG['ldap'][21]." : ".$ldap_method["host"].":".$ldap_method["port"];
-				$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
+				$replicates=getAllReplicatesNamesForAMaster($ldap_method["id"]);
 				if (!empty($replicates)){
 					echo "<br>".$LANG['ldap'][22]." : ".$replicates. "</td>";
 				}
@@ -1058,7 +1058,7 @@ function showOtherAuthList($target) {
 		return false;
 		
 	echo "<form name=cas action=\"$target\" method=\"post\">";
-	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+	echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 	echo "<div class='center'>";
 	
@@ -1145,7 +1145,7 @@ function showImapAuthList($target) {
 		if ($DB->numrows($result)) {
 					
 			while ($mail_method = $DB->fetch_array($result)){
-				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
+				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;id=" . $mail_method["id"] . "' >" . $mail_method["name"] . "</a>" .
 				"</td><td class='center'>" . $mail_method["host"] . "</td></tr>";
 			}
 		}
