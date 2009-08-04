@@ -418,8 +418,8 @@ class Config extends CommonDBTM {
 		echo "</td><td class='center'>" . $LANG['setup'][612] . "</td><td>";
 		dropdownYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
 		echo "</td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['mailgate'][7] . " </td><td>";
-		echo "<input type=\"text\" size='15' name=\"mailgate_filesize_max\" value=\"" . $CFG_GLPI["mailgate_filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".getSize($CFG_GLPI["mailgate_filesize_max"]);
+		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['mailgate'][7] . " (".$LANG['common'][44].")</td><td>";
+		echo "<input type=\"text\" size='15' name=\"default_mailcollector_filesize_max\" value=\"" . $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
 		echo "</td><td class='center' colspan='2'>&nbsp;";
 		echo "</td></tr>";
 

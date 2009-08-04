@@ -1178,8 +1178,8 @@ function showImapAuthList($target) {
 		}
 		$mailbox = preg_replace("/.*}/", "", $value);
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][168] . "</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . ":</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][168] . ":</td><td>";
 		echo "<select name='server_type'>";
 		echo "<option value=''>&nbsp;</option>";
 		echo "<option value='/imap' " . (strstr($value,"/imap") ? " selected " : "") . ">IMAP</option>";
@@ -1205,11 +1205,11 @@ function showImapAuthList($target) {
 		echo "<input type=hidden name=imap_string value='".$value."'>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][169] . ":</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][171] . ":</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
 		if (empty ($value))
 			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][170] . "</td><td><strong>$value</strong></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][170] . ":</td><td><strong>$value</strong></td></tr>";
 
 	}
 	function constructMailServerConfig($input) {
