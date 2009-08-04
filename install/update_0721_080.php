@@ -1236,6 +1236,7 @@ function update0721to080() {
                               ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
+                              array('from' => 'use_mode', 'to' => 'use_mode', 'default' =>0, 'noindex'=>true),//
                               ),
                      );
    foreach ($intfields as $table => $tab) {
@@ -1589,6 +1590,22 @@ function update0721to080() {
       $query=" ALTER TABLE `glpi_documentstypes` ADD UNIQUE `unicity` (`ext`)  ";
       $DB->query($query) or die("0.80 add unicity index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
    }
+   if (!isIndex('glpi_users', 'unicity')) {
+      $query=" ALTER TABLE `glpi_users` ADD UNIQUE `unicity` (`name`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_users', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_users` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_users', 'authitem')) {
+      $query=" ALTER TABLE `glpi_users` ADD INDEX `authitem` (`authtype`,`auths_id`)  ";
+      $DB->query($query) or die("0.80 add authitem index in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_groups_users', 'unicity')) {
+      $query=" ALTER TABLE `glpi_groups_users` ADD UNIQUE `unicity` (`users_id`,`groups_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_groups_users " . $LANG['update'][90] . $DB->error());
+   }
 
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
@@ -1621,6 +1638,8 @@ function update0721to080() {
          'glpi_reservationsitems' => array('reservationitem'),
          'glpi_tickets' => array('computer','device_type'),
          'glpi_documentstypes' => array('extension'),
+         'glpi_users' => array('name'),
+         'glpi_groups_users' => array('usergroup'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {
