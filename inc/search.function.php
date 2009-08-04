@@ -3234,7 +3234,7 @@ function getMultiSearchItemForLink($name,$array){
 	if (is_array($array)&&count($array)>0){
 		foreach($array as $key => $val){
 			//		if ($name!="link"||$key!=0)
-			$out.="&amp;".$name."[$key]=".$val;
+			$out.="&amp;".$name."[$key]=".urlencode(stripslashes($val));
 		}
 	}
 	return $out;
