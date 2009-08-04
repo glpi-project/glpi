@@ -209,7 +209,6 @@ if (!isset ($_POST["noAUTO"]) && $authtype=checkAlternateAuthSystems()) {
 	// GET THE IP OF THE CLIENT
 	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
-
 	$identificat->initSession();
 
 	// now we can continue with the process...

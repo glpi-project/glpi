@@ -205,13 +205,11 @@ class User extends CommonDBTM {
 			if (empty ($input["password"])) {
 				unset ($input["password"]);
 			} else {
-				$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-				$input["password"] = "";
+				$input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 			}
 		}
 		if (isset ($input["_extauth"])) {
 			$input["password"] = "";
-			$input["password_md5"] = "";
 		}
 		// change email_form to email (not to have a problem with preselected email)
 		if (isset ($input["email_form"])) {
@@ -287,8 +285,7 @@ class User extends CommonDBTM {
 				if (isset($input['ID']) && 
 					((isset($_SESSION['glpiID']) && $input['ID']==$_SESSION['glpiID']) 
 						|| $this->currentUserHaveMoreRightThan($input['ID']) )){
-					$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-					$input["password"] = "";
+					$input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 				} else {
 					unset($input["password"]);
 				}
@@ -632,7 +629,6 @@ class User extends CommonDBTM {
 		if ($ldap_connection) {
 			//Set all the search fields
 			$this->fields['password'] = "";
-			$this->fields['password_md5'] = "";
 			
 			$fields=getLDAPSyncFields($ldap_method);
 	
@@ -785,7 +781,6 @@ class User extends CommonDBTM {
 
 		// some defaults...
 		$this->fields['password'] = "";
-		$this->fields['password_md5'] = "";
 		if (strpos($name,"@")){
 			$this->fields['email'] = $name;
 		} else {
@@ -819,7 +814,7 @@ class User extends CommonDBTM {
 		global $DB;
 		if (!empty ($this->fields["name"])) {
 
-			$query = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='" . $this->fields["name"] . "'";
+			$query = "UPDATE glpi_users SET password='' WHERE name='" . $this->fields["name"] . "'";
 			$DB->query($query);
 		}
 	}
@@ -934,8 +929,7 @@ class User extends CommonDBTM {
 		
 			$extauth = ! ($this->fields["authtype"]==AUTH_DB_GLPI 
 				|| ($this->fields["authtype"]==NOT_YET_AUTHENTIFIED 
-						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
-				);
+						&& !empty ($this->fields["password"]) ) );
 		
 			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 			
@@ -958,7 +952,7 @@ class User extends CommonDBTM {
 				echo "</td>";
 				// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 			} else {
-				if (!empty ($this->fields["password_md5"])||$this->fields["authtype"]==AUTH_DB_GLPI) {
+				if (!empty ($this->fields["password"])||$this->fields["authtype"]==AUTH_DB_GLPI) {
 					echo "<td>";
 					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 40);
 				} else {
@@ -1123,9 +1117,7 @@ class User extends CommonDBTM {
 
 			$extauth = ! ($this->fields["authtype"]==AUTH_DB_GLPI 
 				|| ($this->fields["authtype"]==NOT_YET_AUTHENTIFIED 
-						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
-				);
-
+						&& !empty ($this->fields["password"])));
 
 			// No autocopletion : 
 			$save_autocompletion=$CFG_GLPI["use_ajax_autocompletion"];
