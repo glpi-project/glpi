@@ -384,16 +384,15 @@ function update0681to07() {
 	// Clean state_item -> add a field from tables
 	if (TableExists("glpi_state_item")) {
 		$state_type = array (
-			SOFTWARE_TYPE,
-			COMPUTER_TYPE,
-			PRINTER_TYPE,
-			MONITOR_TYPE,
-			PERIPHERAL_TYPE,
-			NETWORKING_TYPE,
-			PHONE_TYPE
+			SOFTWARE_TYPE => 'glpi_software',
+			COMPUTER_TYPE => 'glpi_computers',
+			PRINTER_TYPE => 'glpi_printers',
+			MONITOR_TYPE => 'glpi_monitors',
+			PERIPHERAL_TYPE => 'glpi_peripherals',
+			NETWORKING_TYPE => 'glpi_networking',
+			PHONE_TYPE => 'glpi_phones'
 		);
-		foreach ($state_type as $type) {
-			$table = $LINK_ID_TABLE[$type];
+		foreach ($state_type as $type => $table) {
 			if (!FieldExists($table, "state")) {
 				$query = "ALTER TABLE `$table` ADD `state` INT NOT NULL DEFAULT '0';";
 				$DB->query($query) or die("0.7 add state field to $table " . $LANG['update'][90] . $DB->error());
@@ -420,18 +419,17 @@ function update0681to07() {
 
 	// Add ticket_tco for hardwares
 	$tco_tbl = array (
-		COMPUTER_TYPE,
-		NETWORKING_TYPE,
-		PRINTER_TYPE,
-		MONITOR_TYPE,
-		PERIPHERAL_TYPE,
-		SOFTWARE_TYPE,
-		PHONE_TYPE
+      SOFTWARE_TYPE => 'glpi_software',
+      COMPUTER_TYPE => 'glpi_computers',
+      PRINTER_TYPE => 'glpi_printers',
+      MONITOR_TYPE => 'glpi_monitors',
+      PERIPHERAL_TYPE => 'glpi_peripherals',
+      NETWORKING_TYPE => 'glpi_networking',
+      PHONE_TYPE => 'glpi_phones'
 	);
 	include (GLPI_ROOT . "/inc/tracking.function.php");
 
-	foreach ($tco_tbl as $type) {
-		$table = $LINK_ID_TABLE[$type];
+	foreach ($tco_tbl as $type => $table) {
 		if (!FieldExists($table, "ticket_tco")) {
 			$query = "ALTER TABLE `$table` ADD `ticket_tco` DECIMAL( 20, 4 ) DEFAULT '0.0000';";
 			$DB->query($query) or die("0.7 alter $table add ticket_tco" . $LANG['update'][90] . $DB->error());

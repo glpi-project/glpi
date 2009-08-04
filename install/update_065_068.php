@@ -347,13 +347,11 @@ function update065to068(){
 		if(!FieldExists($t,"level")) {	
 			$query="ALTER TABLE `$t` ADD `level` INT(11)";
 			$DB->query($query) or die("0.68 add level to $t ".$LANG['update'][90].$DB->error());
-			regenerateTreeCompleteName($t);
 		}
 
 	if(FieldExists("glpi_config","root_doc")) {	
 		$query="ALTER TABLE `glpi_config` DROP  `root_doc`";
 		$DB->query($query) or die("0.68 drop root_doc ".$LANG['update'][90].$DB->error());
-		regenerateTreeCompleteName($t);
 	}
 	// add smtp config
 	if(!FieldExists("glpi_config","smtp_mode")) {	
@@ -476,7 +474,6 @@ function update065to068(){
 			ADD `completename` TEXT NULL AFTER `name`,
 			ADD `level` INT NULL AFTER `comments` "; 
 				$DB->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$LANG['update'][90].$DB->error());
-		regenerateTreeCompleteName("glpi_dropdown_tracking_category");
 	}
 	// User to Document
 	if(!FieldExists("glpi_docs","FK_users")) {	

@@ -1629,7 +1629,7 @@ function update0721to080() {
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
          'glpi_computers_devices' => array('FK_device'),
-         'glpi_computers_items' => array('connect','type'),
+         'glpi_computers_items' => array('connect','type','end1','end1_2'),
          'glpi_consumables' => array('FK_glpi_cartridges_type'),
          'glpi_contacts_suppliers' => array('FK_enterprise'),
          'glpi_contracts_items' => array('FK_contract_device','device_type'),
@@ -1650,7 +1650,7 @@ function update0721to080() {
          'glpi_mailingsettings' => array('mailings','FK_item'),
          'glpi_networkports' => array('device_type'),
          'glpi_networkports_vlans' => array('portvlan'),
-         'glpi_networkports_networkports' => array('netwire'),
+         'glpi_networkports_networkports' => array('netwire','end1','end1_2'),
          'glpi_ocslinks' => array('ocs_server_id'),
          'glpi_plugins' => array('name'),
          'glpi_reservationsitems' => array('reservationitem'),
@@ -1670,6 +1670,11 @@ function update0721to080() {
 
    
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+
+   // For compatiblity with updates from past versions
+   regenerateTreeCompleteName("glpi_locations");
+   regenerateTreeCompleteName("glpi_knowbaseitemscategories");
+   regenerateTreeCompleteName("glpi_ticketscategories");
 
    // Update timezone values
    if (FieldExists('glpi_configs', 'time_offset')) {
@@ -1838,12 +1843,12 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
    
    if (!FieldExists("glpi_entities","cache_sons")) {
-      $query = "ALTER TABLE `glpi_entities` ADD `cache_sons` LONGTEXT NOT NULL ; ";
+      $query = "ALTER TABLE `glpi_entities` ADD `cache_sons` LONGTEXT NULL ; ";
       $DB->query($query) or die("0.80 add cache_sons field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
    
    if (!FieldExists("glpi_entities","cache_ancestors")) {
-      $query = "ALTER TABLE `glpi_entities` ADD `cache_ancestors` LONGTEXT NOT NULL ; ";
+      $query = "ALTER TABLE `glpi_entities` ADD `cache_ancestors` LONGTEXT NULL ; ";
       $DB->query($query) or die("0.80 add cache_ancestors field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
 
@@ -1878,7 +1883,7 @@ function update0721to080() {
 	displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
 
 	if (!FieldExists("glpi_profiles","budget")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `budget` VARCHAR( 1 ) NULL ";
+		$query = "ALTER TABLE `glpi_profiles` ADD `budget` CHAR( 1 ) NULL ";
 		$DB->query($query) or die("0.80 add budget index in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
 		$query = "UPDATE `glpi_profiles` SET `budget`='w' WHERE `name` IN ('super-admin','admin')";

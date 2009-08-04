@@ -194,8 +194,6 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
 					} else if (preg_match("/^text/i",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
-					} else if (preg_match("/^tinyint/i",$val["Type"])){
-						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["Default"]."'");
 					}
 	
 				}
