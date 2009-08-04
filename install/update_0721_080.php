@@ -798,6 +798,7 @@ function update0721to080() {
                         array('from' => 'link_name','to' => 'use_name_to_link', 'default' =>0,'noindex'=>true),//
                         array('from' => 'link_mac_address','to' => 'use_mac_to_link', 'default' =>0,'noindex'=>true),//
                         array('from' => 'link_serial','to' => 'use_serial_to_link', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'use_soft_dict','to' => 'use_soft_dict', 'default' =>0,'noindex'=>true),//
                      ),
    'glpi_peripherals' => array(array('from' => 'deleted','to' => 'is_deleted', 'default' =>0),//
                            array('from' => 'is_template', 'to' => 'is_template', 'default' =>0,'noindex'=>true  ),//
@@ -939,6 +940,8 @@ function update0721to080() {
       
       'ldap_condition' =>  array('to' => 'condition',
                            'tables' => array('glpi_authldaps')),
+      'import_printers' =>  array('to' => 'import_printer','long'=>true,
+                           'tables' => array('glpi_ocslinks')),
 );
    foreach ($textfields as $oldname => $tab) {
       $newname=$tab['to'];
@@ -1012,6 +1015,12 @@ function update0721to080() {
       'glpi_phones' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
       'glpi_printers' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
+                     array('from' => 'ramSize', 'to' => 'memory_size', 'noindex'=>true),//
+                     ),
+      'glpi_registrykeys' => array(array('from' => 'registry_hive', 'to' => 'hive', 'noindex'=>true),//
+                     array('from' => 'registry_path', 'to' => 'path', 'noindex'=>true),//
+                     array('from' => 'registry_value', 'to' => 'value', 'noindex'=>true),//
+                     array('from' => 'registry_ocs_name', 'to' => 'ocs_name', 'noindex'=>true),//
                      ),
       'glpi_softwares' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
@@ -1052,6 +1061,10 @@ function update0721to080() {
 
    $charfields=array(
       'glpi_profiles' => array(array('from' => 'user_auth_method', 'to' => 'user_authtype', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
+                  array('from' => 'rule_tracking', 'to' => 'rule_ticket', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
+                  array('from' => 'rule_softwarecategories', 'to' => 'rule_softwarescategories', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
+                  array('from' => 'rule_dictionnary_software', 'to' => 'rule_dictionnary_software', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
+                  array('from' => 'rule_dictionnary_dropdown', 'to' => 'rule_dictionnary_dropdown', 'length'=>1,'default' =>NULL, 'noindex'=>true),//
                         ),
       'glpi_configs' => array(array('from' => 'version', 'to' => 'version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
                array('from' => 'version', 'to' => 'version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
@@ -1062,6 +1075,8 @@ function update0721to080() {
                array('from' => 'priority_4', 'to' => 'priority_4', 'length'=>20,'default' =>'#ffbfbf', 'noindex'=>true),//
                array('from' => 'priority_5', 'to' => 'priority_5', 'length'=>20,'default' =>'#ffadad', 'noindex'=>true),//
                array('from' => 'founded_new_version', 'to' => 'founded_new_version', 'length'=>10,'default' =>NULL, 'noindex'=>true),//
+                        ),
+      'glpi_rules' => array(array('from' => 'match', 'to' => 'match', 'length'=>10,'default' =>NULL, 'noindex'=>true,'comments'=>'see define.php *_MATCHING constant'),//
                         ),
       'glpi_users' => array(array('from' => 'language', 'to' => 'language', 'length'=>10,'default' =>NULL, 'noindex'=>true, 'comments'=>'see define.php CFG_GLPI[language] array'),//
                array('from' => 'priority_1', 'to' => 'priority_1', 'length'=>20,'default' =>NULL, 'noindex'=>true),//
@@ -1168,6 +1183,22 @@ function update0721to080() {
       'glpi_mailingsettings' => array(array('from' => 'item_type', 'to' => 'mailingtype', 'default' =>0,'noindex'=>true,'comments'=>'see define.php *_MAILING_TYPE constant'),//
                      ),
       'glpi_monitors' => array(array('from' => 'size', 'to' => 'size', 'default' =>0,'noindex'=>true),//
+                     ),
+      'glpi_printers' => array(array('from' => 'initial_pages', 'to' => 'init_pages_counter', 'default' =>0,'noindex'=>true,'checkdatas'=>true),//
+                     ),
+      'glpi_profiles' => array(array('from' => 'helpdesk_hardware', 'to' => 'helpdesk_hardware', 'default' =>0,'noindex'=>true),//
+                     ),
+      'glpi_plugins' => array(array('from' => 'state', 'to' => 'state', 'default' =>0,'comments'=>'see define.php PLUGIN_* constant'),//
+                     ),
+      'glpi_reminders' => array(array('from' => 'state', 'to' => 'state', 'default' =>0,),//
+                     ),
+      'glpi_ticketsplannings' => array(array('from' => 'state', 'to' => 'state', 'default' =>1,),//
+                     ),
+      'glpi_rulescriterias' => array(array('from' => 'condition', 'to' => 'condition', 'default' =>0,'comments'=>'see define.php PATTERN_* and REGEX_* constant'),//
+                     ),
+      'glpi_rules' => array(array('from' => 'sub_type', 'to' => 'sub_type', 'default' =>0,'comments'=>'see define.php RULE_* constant'),//
+                     ),
+      'glpi_tickets' => array(array('from' => 'request_type', 'to' => 'request_type', 'default' =>0,),//
                      ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
@@ -1289,6 +1320,11 @@ function update0721to080() {
       $DB->query($query) or die("0.80 alter amort_coeff field in glpi_infocoms " . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_ocsservers', 'import_software_comments')) {
+      $query="ALTER TABLE `glpi_ocsservers` DROP `import_software_comments`";
+      $DB->query($query) or die("0.80 drop import_software_comments field in glpi_ocsservers " . $LANG['update'][90] . $DB->error());
+   }
+
    if (FieldExists('glpi_users', 'nextprev_item')) {
       $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
@@ -1302,6 +1338,16 @@ function update0721to080() {
    if (FieldExists('glpi_users', 'tracking_order')) {
       $query="ALTER TABLE `glpi_users` DROP `tracking_order`";
       $DB->query($query) or die("0.80 drop tracking_order field in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_rulesldapparameters', 'sub_type')) {
+      $query="ALTER TABLE `glpi_rulesldapparameters` DROP `sub_type`";
+      $DB->query($query) or die("0.80 drop sub_type field in glpi_rulesldapparameters " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_softwares', 'oldstate')) {
+      $query="ALTER TABLE `glpi_softwares` DROP `oldstate`";
+      $DB->query($query) or die("0.80 drop oldstate field in glpi_softwares " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
@@ -1419,6 +1465,12 @@ function update0721to080() {
       $query=" ALTER TABLE `glpi_knowbaseitems` ADD INDEX `date_mod` (`date_mod`)  ";
       $DB->query($query) or die("0.80 add date_mod index in glpi_knowbaseitems " . $LANG['update'][90] . $DB->error());
    }
+
+   if (!isIndex('glpi_networkequipments', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_networkequipments` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_networkequipments " . $LANG['update'][90] . $DB->error());
+   }
+
    if (!isIndex('glpi_links_itemtypes', 'unicity')) {
       $query=" ALTER TABLE `glpi_links_itemtypes` ADD UNIQUE `unicity` (`itemtype`,`links_id`)  ";
       $DB->query($query) or die("0.80 add unicity index in glpi_links_itemtypes " . $LANG['update'][90] . $DB->error());
@@ -1427,6 +1479,59 @@ function update0721to080() {
    if (!isIndex('glpi_mailingsettings', 'unicity')) {
       $query=" ALTER TABLE `glpi_mailingsettings` ADD UNIQUE `unicity` (`type`,`items_id`,`mailingtype`)  ";
       $DB->query($query) or die("0.80 add unicity index in glpi_mailingsettings " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_networkports', 'item')) {
+      $query=" ALTER TABLE `glpi_networkports` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_networkports " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_networkports_vlans', 'unicity')) {
+      $query=" ALTER TABLE `glpi_networkports_vlans` ADD UNIQUE `unicity` (`networkports_id`,`vlans_id`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_networkports_vlans " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_networkports_networkports', 'unicity')) {
+      $query=" ALTER TABLE `glpi_networkports_networkports` ADD UNIQUE `unicity` (`networkports_id_1`,`networkports_id_2`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_networkports_networkports " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_ocslinks', 'unicity')) {
+      $query=" ALTER TABLE `glpi_ocslinks` ADD UNIQUE `unicity` (`ocsservers_id`,`ocsid`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_ocslinks " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_peripherals', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_peripherals` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_peripherals " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_phones', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_phones` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_phones " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_plugins', 'unicity')) {
+      $query=" ALTER TABLE `glpi_plugins` ADD UNIQUE `unicity` (`directory`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_plugins " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_printers', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_printers` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_printers " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_reminders', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_reminders` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_reminders " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_reservationsitems', 'item')) {
+      $query=" ALTER TABLE `glpi_reservationsitems` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_reservationsitems " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_tickets', 'item')) {
+      $query=" ALTER TABLE `glpi_tickets` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+      $DB->query($query) or die("0.80 add item index in glpi_tickets " . $LANG['update'][90] . $DB->error());
    }
 
    $indextodrop=array(
@@ -1452,6 +1557,13 @@ function update0721to080() {
          'glpi_computers_softwaresversions' => array('sID'),
          'glpi_links_itemtypes' => array('link'),
          'glpi_mailingsettings' => array('mailings','FK_item'),
+         'glpi_networkports' => array('device_type'),
+         'glpi_networkports_vlans' => array('portvlan'),
+         'glpi_networkports_networkports' => array('netwire'),
+         'glpi_ocslinks' => array('ocs_server_id'),
+         'glpi_plugins' => array('name'),
+         'glpi_reservationsitems' => array('reservationitem'),
+         'glpi_tickets' => array('computer','device_type'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {
@@ -1624,9 +1736,9 @@ function update0721to080() {
 		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
       $DB->query($query) or die("0.80 alter table glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
-	if (!FieldExists("glpi_rulescachesoftwares","helpdesk_visible")) {
-		$query = "ALTER TABLE `glpi_rulescachesoftwares` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
-      $DB->query($query) or die("0.80 add helpdesk_visible index in glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_rulescachesoftwares","is_helpdesk_visible")) {
+		$query = "ALTER TABLE `glpi_rulescachesoftwares` ADD `is_helpdesk_visible` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.80 add is_helpdesk_visible index in glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema

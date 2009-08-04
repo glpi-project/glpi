@@ -46,7 +46,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 		$this->sub_type = RULE_SOFTWARE_CATEGORY;
 		$this->rule_class_name = 'SoftwareCategoriesRule';
 		$this->stop_on_first_match=true;
-		$this->right="rule_softwarecategories";
+		$this->right="rule_softwarescategories";
 	}
 
 	function getTitle(){
@@ -88,7 +88,7 @@ class SoftwareCategoriesRule extends Rule {
 	function __construct() {
 		parent::__construct(RULE_SOFTWARE_CATEGORY);
 
-		$this->right="rule_softwarecategories";
+		$this->right="rule_softwarescategories";
 		$this->can_sort=true;
 	}
 

@@ -710,12 +710,12 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("rule_ocs",$this->fields["rule_ocs"],1,1,1);
 		echo "</td>";
 		echo "<td class='tab_bg_4'>".$LANG['rulesengine'][28].":</td><td>";
-		dropdownNoneReadWrite("rule_tracking",$this->fields["rule_tracking"],1,1,1);
+		dropdownNoneReadWrite("rule_ticket",$this->fields["rule_ticket"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
 		echo "<tr class='tab_bg_4'>";
 		echo "<td class='tab_bg_4'>".$LANG['rulesengine'][37].":</td><td>";
-		dropdownNoneReadWrite("rule_softwarecategories",$this->fields["rule_softwarecategories"],1,1,1);
+		dropdownNoneReadWrite("rule_softwarescategories",$this->fields["rule_softwarescategories"],1,1,1);
 		echo "</td>";
 
 		echo "<td class='tab_bg_4'>".$LANG['rulesengine'][33].":</td><td>";

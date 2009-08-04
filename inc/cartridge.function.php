@@ -145,7 +145,7 @@ function showCartridges ($tID,$show_old=0) {
 			$ORDER=" glpi_cartridges.date_out ASC, glpi_cartridges.date_use ASC,  glpi_cartridges.date_in";
 		}
 		$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, 
-				glpi_printers.initial_pages as initial_pages 
+				glpi_printers.init_pages_counter
 			FROM glpi_cartridges 
 			LEFT JOIN glpi_printers ON (glpi_cartridges.printers_id = glpi_printers.ID) 
 			WHERE (glpi_cartridges.cartridgesitems_id = '$tID') $where 
@@ -202,7 +202,7 @@ function showCartridges ($tID,$show_old=0) {
 				if ($show_old){
 					// Get initial counter page
 					if (!isset($pages[$printer])){
-						$pages[$printer]=$data['initial_pages'];
+						$pages[$printer]=$data['init_pages_counter'];
 					}
 					echo "<td class='center'>";
 					if ($pages[$printer]<$data['pages']){
@@ -334,7 +334,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	$i = 0;
 	$p=new Printer;
 	$p->getFromDB($instID);
-	$pages=$p->fields['initial_pages'];
+	$pages=$p->fields['init_pages_counter'];
 
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	if ($old==0)

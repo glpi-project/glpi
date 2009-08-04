@@ -525,7 +525,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
    }
 
-   if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")|| haveRight("rule_softwarecategories","r")){
+   if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_ticket","r")|| haveRight("rule_softwarescategories","r")){
       $menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
       $menu['admin']['content']['rule']['shortcut']='r';
       $menu['admin']['content']['rule']['page']='/front/rule.php';
@@ -544,13 +544,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
             break;
          case RULE_TRACKING_AUTO_ACTION :
             $menu['admin']['content']['rule']['links']['search']='/front/rule.tracking.php';
-            if (haveRight("rule_tracking","w")){
+            if (haveRight("rule_ticket","w")){
                $menu['admin']['content']['rule']['links']['add']='/front/rule.tracking.form.php';
             }
             break;
          case RULE_SOFTWARE_CATEGORY :
             $menu['admin']['content']['rule']['links']['search']='/front/rule.softwarecategories.php';
-            if (haveRight("rule_softwarecategories","w")){
+            if (haveRight("rule_softwarescategories","w")){
                $menu['admin']['content']['rule']['links']['add']='/front/rule.softwarecategories.form.php';
             }
             break;

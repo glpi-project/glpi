@@ -155,7 +155,7 @@ elseif(isset($_POST["unlock_printer"])){
 
 	if (isset($_POST["lockprinter"])&&count($_POST["lockprinter"])){
 		foreach ($_POST["lockprinter"] as $key => $val)
-			deleteInOcsArray($_POST["ID"],$key,"import_printers");
+			deleteInOcsArray($_POST["ID"],$key,"import_printer");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }

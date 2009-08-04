@@ -595,13 +595,13 @@ $SEARCH_OPTION[COMPUTER_TYPE]['registry']=$LANG['title'][43];
 
 // REGISTRY_TYPE
 $SEARCH_OPTION[COMPUTER_TYPE][110]['table']='glpi_registrykeys';
-$SEARCH_OPTION[COMPUTER_TYPE][110]['field']='registry_value';
+$SEARCH_OPTION[COMPUTER_TYPE][110]['field']='value';
 $SEARCH_OPTION[COMPUTER_TYPE][110]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][110]['name']=$LANG['title'][43]." : ".$LANG['registry'][3];
 $SEARCH_OPTION[COMPUTER_TYPE][110]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][111]['table']='glpi_registrykeys';
-$SEARCH_OPTION[COMPUTER_TYPE][111]['field']='registry_ocs_name';
+$SEARCH_OPTION[COMPUTER_TYPE][111]['field']='ocs_name';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['name']=$LANG['title'][43]." : ".$LANG['registry'][6];
 $SEARCH_OPTION[COMPUTER_TYPE][111]['forcegroupby']=true;

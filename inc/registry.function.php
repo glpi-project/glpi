@@ -74,10 +74,10 @@ function showRegistry($ID){
 				$reg = new Registry;
 				$reg->getFromDB(current($regid));	
 				echo "<tr class='tab_bg_1'>";								
-				echo "<td>".$reg->fields["registry_ocs_name"]."</td>";
-				echo "<td>".$REGISTRY_HIVE[$reg->fields["registry_hive"]]."</td>";
-				echo "<td>".$reg->fields["registry_path"]."</td>";
-				echo "<td>".$reg->fields["registry_value"]."</td>";		
+				echo "<td>".$reg->fields["ocs_name"]."</td>";
+				echo "<td>".$REGISTRY_HIVE[$reg->fields["hive"]]."</td>";
+				echo "<td>".$reg->fields["path"]."</td>";
+				echo "<td>".$reg->fields["value"]."</td>";
 				echo "</tr>";	
 			
 			}

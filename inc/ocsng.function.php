@@ -940,7 +940,7 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
-					$import_printer = importArrayFromDB($line["import_printers"]);
+					$import_printer = importArrayFromDB($line["import_printer"]);
 					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["entities_id"], $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
@@ -1579,7 +1579,7 @@ function ocsMigrateComputerUpdates($computers_id,$computer_update){
 
 function ocsUnlockItems($computers_id,$field){
 	global $DB;
-	if (!in_array($field,array("import_monitor","import_printers","import_peripheral","import_ip","import_software","import_disk"))){
+	if (!in_array($field,array("import_monitor","import_printer","import_peripheral","import_ip","import_software","import_disk"))){
 		return false;
 	}
 	$query = "SELECT `$field` 
@@ -1594,7 +1594,7 @@ function ocsUnlockItems($computers_id,$field){
 				if ($val != "_version_070_") {
 					switch ($field){
 						case "import_monitor":
-						case "import_printers":
+						case "import_printer":
 						case "import_peripheral":
 							$querySearchLocked = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 							break;
@@ -1723,7 +1723,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked_printer = importArrayFromDB($data["import_printers"]);
+		$locked_printer = importArrayFromDB($data["import_printer"]);
 		foreach ($locked_printer as $key => $val) {
 			$querySearchLockedPrinter = "SELECT items_id FROM glpi_computers_items WHERE ID='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPrinter);
@@ -2729,7 +2729,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 									$connID = Connect($id_printer, $computers_id, PRINTER_TYPE, $dohistory);
 									addToOcsArray($computers_id, array (
 										$connID => $print["name"]
-									), "import_printers");
+									), "import_printer");
 									//Update column "is_deleted" set value to 0 and set status to default
 									$input = array ();
 									$input["ID"] = $id_printer;
@@ -2843,7 +2843,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 					break;
 				case PRINTER_TYPE :
 					Disconnect($key, $dohistory, $ocsservers_id);
-					deleteInOcsArray($computers_id, $key, "import_printers");
+					deleteInOcsArray($computers_id, $key, "import_printer");
 					break;
 				case PERIPHERAL_TYPE :
 					Disconnect($key, $dohistory, $ocsservers_id);
@@ -2953,10 +2953,10 @@ function ocsUpdateRegistry($computers_id, $ocsid, $ocsservers_id, $cfg_ocs) {
 				$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 				$input = array ();
 				$input["computers_id"] = $computers_id;
-				$input["registry_hive"] = $data["regtree"];
-				$input["registry_value"] = $data["regvalue"];
-				$input["registry_path"] = $data["regkey"];
-				$input["registry_ocs_name"] = $data["NAME"];
+				$input["hive"] = $data["regtree"];
+				$input["value"] = $data["regvalue"];
+				$input["path"] = $data["regkey"];
+				$input["ocs_name"] = $data["NAME"];
 				$isNewReg = $reg->add($input);
 				unset($reg->fields);
 			}
