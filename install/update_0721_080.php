@@ -1443,7 +1443,7 @@ function update0721to080() {
    }
 
    if (!isIndex('glpi_contracts_items', 'item')) {
-      $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `item` ( `itemtype` , `items_id`)  ";
+      $query=" ALTER TABLE `glpi_contracts_items` ADD INDEX `item` ( `itemtype` , `items_id`)  ";
       $DB->query($query) or die("0.80 add item index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
    }
 
@@ -1468,7 +1468,7 @@ function update0721to080() {
    }
 
    if (!isIndex('glpi_documents_items', 'item')) {
-      $query=" ALTER TABLE `glpi_documents_items` ADD UNIQUE `item` (  `itemtype`, `items_id`)  ";
+      $query=" ALTER TABLE `glpi_documents_items` ADD INDEX `item` (  `itemtype`, `items_id`)  ";
       $DB->query($query) or die("0.80 add item index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
    }
 
