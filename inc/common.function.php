@@ -1268,7 +1268,7 @@ function optimize_tables ($progress_fct=NULL){
 * @param $Str string: string to analyze
 * @return  boolean 
 **/
-function seems_utf8($Str) {
+function seems_utf8($str) {
    return mb_check_encoding($str,"UTF-8");
 /*
 	for ($i=0; $i<strlen($Str); $i++) {

@@ -479,10 +479,20 @@ function update0713to072() {
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes table" . $LANG['update'][90] . $DB->error());
 
-		$oemtype=externalImportDropdown("glpi_dropdown_licensetypes", $LANG['software'][28]); // Add OEM as type of license
 
-		$query="UPDATE `glpi_softwarelicenses` SET type=$oemtype WHERE FK_computers>0";
-		$DB->query($query) or die("0.72 affect OEM as licensetype" . $LANG['update'][90] . $DB->error());
+      $input["tablename"] = "glpi_dropdown_licensetypes";
+      $input["value"] = $LANG['software'][28];
+      $input['type'] = "first";
+      $input["comment"] = "";
+      $input["entities_id"] = -1;
+
+      $query = "INSERT INTO `glpi_dropdown_licensetypes` (name)
+					VALUES ('" . addslashes($LANG['software'][28]) . "')";
+      if ($result = $DB->query($query)) {
+			$oemtype = $DB->insert_id();
+         $query="UPDATE `glpi_softwarelicenses` SET type=$oemtype WHERE FK_computers>0";
+         $DB->query($query) or die("0.72 affect OEM as licensetype" . $LANG['update'][90] . $DB->error());
+      }
 	}	
 
 	displayMigrationMessage("072", $LANG['Menu'][14]); // User

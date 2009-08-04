@@ -558,12 +558,19 @@ function updateTreeDropdown(){
 	if(TableExists("glpi_dropdown_locations") && !FieldExists("glpi_dropdown_locations","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());	
-		regenerateTreeCompleteName("glpi_dropdown_locations");
 	}
 	if(TableExists("glpi_dropdown_kbcategories")&& !FieldExists("glpi_dropdown_kbcategories","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());	
-		regenerateTreeCompleteName("glpi_dropdown_kbcategories");
+	}
+
+	if(TableExists("glpi_locations") && !FieldExists("glpi_locations","completename")) {
+		$query= "ALTER TABLE `glpi_locations` ADD `completename` TEXT NOT NULL ;";
+		$DB->query($query) or die("0.6 add completename in glpi_locations ".$LANG['update'][90].$DB->error());
+	}
+	if(TableExists("glpi_knowbaseitemscategories")&& !FieldExists("glpi_knowbaseitemscategories","completename")) {
+		$query= "ALTER TABLE `glpi_knowbaseitemscategories` ADD `completename` TEXT NOT NULL ;";
+		$DB->query($query) or die("0.6 add completename in glpi_knowbaseitemscategories ".$LANG['update'][90].$DB->error());
 	}
 }
 
