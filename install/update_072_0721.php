@@ -54,7 +54,10 @@ function update072to0721() {
       $DB->query($query) or die("0.72.1 add index on ldap_value in glpi_groups" . $LANG['update'][90] . $DB->error());
    }
 
-
+   if (!isIndex('glpi_tracking', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_tracking` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.72.1 add date_mod index in glpi_tracking " . $LANG['update'][90] . $DB->error());
+   }
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("0721"); // End
 } // fin 0.72.1 #####################################################################################
