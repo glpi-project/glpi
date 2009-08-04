@@ -74,42 +74,42 @@ $transfer->showTransferList();
 commonFooter();
 /*
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
-$options['keep_networklinks']=0;
+$options['keep_networklink']=0;
 
 // Tickets : 0 : delete 1 : keep and clean ref 2 : keep and move
-$options['keep_tickets']=2;
+$options['keep_ticket']=2;
 
 // Reservations : 0 : delete 1 : keep
-$options['keep_reservations']=1;
+$options['keep_reservation']=1;
 
 // Devices : 0 : delete 1 : keep
-$options['keep_devices']=1;
+$options['keep_device']=1;
 
 // History : 0 : delete 1 : keep
 $options['keep_history']=1;
 
 // Infocoms : 0 : delete 1 : keep
-$options['keep_infocoms']=1;
+$options['keep_infocom']=1;
 
 // enterprises : 0 : delete 1 : keep
-$options['keep_enterprises']=1;
-$options['clean_enterprises']=1;
+$options['keep_supplier']=1;
+$options['clean_supplier']=1;
 
 // Contacts for enterprises : 0 : delete 1 : keep
-$options['keep_contacts']=1;
-$options['clean_contacts']=1;
+$options['keep_contact']=1;
+$options['clean_contact']=1;
 
 // Softwares : 0 : delete 1 : keep
-$options['keep_softwares']=1;
-$options['clean_softwares']=1;
+$options['keep_software']=1;
+$options['clean_software']=1;
 
 // Contracts : 0 : delete 1 : keep
-$options['keep_contracts']=1;
-$options['clean_contracts']=1;
+$options['keep_contract']=1;
+$options['clean_contract']=1;
 
 // Documents : 0 : delete 1 : keep
-$options['keep_documents']=1;
-$options['clean_documents']=1;
+$options['keep_document']=1;
+$options['clean_document']=1;
 
 // Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
 $options['keep_dc_monitor']=1;
@@ -127,12 +127,12 @@ $options['clean_dc_peripheral']=1;
 $options['keep_dc_printer']=1;
 $options['clean_dc_printer']=1;
 
-$options['keep_cartridges_type']=1;
-$options['clean_cartridges_type']=1;
-$options['keep_cartridges']=1;
+$options['keep_cartridgesitem']=1;
+$options['clean_cartridgesitem']=1;
+$options['keep_cartridge']=1;
 
-//$options['keep_consumables_type']=1; // Not needed
-$options['keep_consumables']=1;
+//$options['keep_consumablesitem']=1; // Not needed
+$options['keep_consumable']=1;
 
 //$entity_id=4;
 //$items[COMPUTER_TYPE]=array(403);

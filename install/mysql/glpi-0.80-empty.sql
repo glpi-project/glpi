@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-08-04 12:04
+#GLPI Dump database on 2009-08-04 12:26
 
 ### Dump table glpi_alerts
 
@@ -1230,7 +1230,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-08-04 02:11:50','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 12:04:48','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-08-04 12:25:59','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -2959,34 +2959,34 @@ DROP TABLE IF EXISTS `glpi_transfers`;
 CREATE TABLE `glpi_transfers` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `keep_tickets` smallint(6) NOT NULL default '0',
-  `keep_networklinks` smallint(6) NOT NULL default '0',
-  `keep_reservations` smallint(6) NOT NULL default '0',
-  `keep_history` smallint(6) NOT NULL default '0',
-  `keep_devices` smallint(6) NOT NULL default '0',
-  `keep_infocoms` smallint(6) NOT NULL default '0',
-  `keep_dc_monitor` smallint(6) NOT NULL default '0',
-  `clean_dc_monitor` smallint(6) NOT NULL default '0',
-  `keep_dc_phone` smallint(6) NOT NULL default '0',
-  `clean_dc_phone` smallint(6) NOT NULL default '0',
-  `keep_dc_peripheral` smallint(6) NOT NULL default '0',
-  `clean_dc_peripheral` smallint(6) NOT NULL default '0',
-  `keep_dc_printer` smallint(6) NOT NULL default '0',
-  `clean_dc_printer` smallint(6) NOT NULL default '0',
-  `keep_enterprises` smallint(6) NOT NULL default '0',
-  `clean_enterprises` smallint(6) NOT NULL default '0',
-  `keep_contacts` smallint(6) NOT NULL default '0',
-  `clean_contacts` smallint(6) NOT NULL default '0',
-  `keep_contracts` smallint(6) NOT NULL default '0',
-  `clean_contracts` smallint(6) NOT NULL default '0',
-  `keep_softwares` smallint(6) NOT NULL default '0',
-  `clean_softwares` smallint(6) NOT NULL default '0',
-  `keep_documents` smallint(6) NOT NULL default '0',
-  `clean_documents` smallint(6) NOT NULL default '0',
-  `keep_cartridges_type` smallint(6) NOT NULL default '0',
-  `clean_cartridges_type` smallint(6) NOT NULL default '0',
-  `keep_cartridges` smallint(6) NOT NULL default '0',
-  `keep_consumables` smallint(6) NOT NULL default '0',
+  `keep_ticket` int(11) NOT NULL default '0',
+  `keep_networklink` int(11) NOT NULL default '0',
+  `keep_reservation` int(11) NOT NULL default '0',
+  `keep_history` int(11) NOT NULL default '0',
+  `keep_devices` int(11) NOT NULL default '0',
+  `keep_infocom` int(11) NOT NULL default '0',
+  `keep_dc_monitor` int(11) NOT NULL default '0',
+  `clean_dc_monitor` int(11) NOT NULL default '0',
+  `keep_dc_phone` int(11) NOT NULL default '0',
+  `clean_dc_phone` int(11) NOT NULL default '0',
+  `keep_dc_peripheral` int(11) NOT NULL default '0',
+  `clean_dc_peripheral` int(11) NOT NULL default '0',
+  `keep_dc_printer` int(11) NOT NULL default '0',
+  `clean_dc_printer` int(11) NOT NULL default '0',
+  `keep_supplier` int(11) NOT NULL default '0',
+  `clean_supplier` int(11) NOT NULL default '0',
+  `keep_contact` int(11) NOT NULL default '0',
+  `clean_contact` int(11) NOT NULL default '0',
+  `keep_contract` int(11) NOT NULL default '0',
+  `clean_contract` int(11) NOT NULL default '0',
+  `keep_software` int(11) NOT NULL default '0',
+  `clean_software` int(11) NOT NULL default '0',
+  `keep_document` int(11) NOT NULL default '0',
+  `clean_document` int(11) NOT NULL default '0',
+  `keep_cartridgesitem` int(11) NOT NULL default '0',
+  `clean_cartridgesitem` int(11) NOT NULL default '0',
+  `keep_cartridge` int(11) NOT NULL default '0',
+  `keep_consumable` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -3049,7 +3049,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 12:04:48','2009-08-04 12:04:48','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-08-04 12:25:59','2009-08-04 12:25:59','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);

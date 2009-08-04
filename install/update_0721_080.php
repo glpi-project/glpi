@@ -1205,6 +1205,35 @@ function update0721to080() {
       'glpi_tickets' => array(array('from' => 'request_type', 'to' => 'request_type', 'default' =>0,'noindex'=>true,),//
                         array('from' => 'priority', 'to' => 'priority', 'default' =>1,'noindex'=>true,),//
                      ),
+      'glpi_transfers' => array(array('from' => 'keep_tickets', 'to' => 'keep_ticket', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_networklinks', 'to' => 'keep_networklink', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_reservations', 'to' => 'keep_reservation', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_history', 'to' => 'keep_history', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_devices', 'to' => 'keep_devices', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_infocoms', 'to' => 'keep_infocom', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_dc_monitor', 'to' => 'keep_dc_monitor', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_dc_monitor', 'to' => 'clean_dc_monitor', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_dc_phone', 'to' => 'keep_dc_phone', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_dc_phone', 'to' => 'clean_dc_phone', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_dc_peripheral', 'to' => 'keep_dc_peripheral', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_dc_peripheral', 'to' => 'clean_dc_peripheral', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_dc_printer', 'to' => 'keep_dc_printer', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_dc_printer', 'to' => 'clean_dc_printer', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_enterprises', 'to' => 'keep_supplier', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_enterprises', 'to' => 'clean_supplier', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_contacts', 'to' => 'keep_contact', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_contacts', 'to' => 'clean_contact', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_contracts', 'to' => 'keep_contract', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_contracts', 'to' => 'clean_contract', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_softwares', 'to' => 'keep_software', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_softwares', 'to' => 'clean_software', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_documents', 'to' => 'keep_document', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_documents', 'to' => 'clean_document', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_cartridges_type', 'to' => 'keep_cartridgesitem', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_cartridges_type', 'to' => 'clean_cartridgesitem', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_cartridges', 'to' => 'keep_cartridge', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_consumables', 'to' => 'keep_consumable', 'default' =>0, 'noindex'=>true),//
+                              ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               ),
