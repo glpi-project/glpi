@@ -50,6 +50,8 @@ class Mailgate  extends CommonDBTM {
 	}
 
 	function post_getEmpty () {
+      global $CFG_GLPI;
+      $this->fields['filesize_max']=$CFG_GLPI['default_mailcollector_filesize_max'];
 		$this->fields['is_active']=1;
 	}
 	function prepareInputForUpdate($input) {
@@ -66,6 +68,7 @@ class Mailgate  extends CommonDBTM {
 
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
 			$input["host"] = constructMailServerConfig($input);
+
 		return $input;
 	}
 
@@ -109,27 +112,31 @@ class Mailgate  extends CommonDBTM {
 			echo $LANG['mailgate'][4];
 			echo "</td></tr>";
 		}
-		echo "<tr class='tab_bg_2'><td>".$LANG['common'][16].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][16].":	</td><td>";
 		autocompletionTextField("name","glpi_mailcollectors","name",$this->fields["name"],40);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG['entity'][0].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['entity'][0].":	</td><td>";
 		dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,$_SESSION['glpiactiveentities']);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG['common'][60].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][60].":	</td><td>";
 		dropdownYesNo("is_active", $this->fields["is_active"]);
 		echo "</td></tr>";
 
 
 		showMailServerConfig($this->fields["host"]);
 
-		echo "<tr class='tab_bg_2'><td>".$LANG['login'][6].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['login'][6].":	</td><td>";
 		autocompletionTextField("login","glpi_mailcollectors","login",$this->fields["login"],40);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG['login'][7].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['login'][7].":	</td><td>";
 		echo "<input type='password' name='password' value='' size='20'>";
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td width='200px'  class='center'> " . $LANG['mailgate'][7] . ":</td><td>";
+		echo "<input type=\"text\" size='15' name=\"filesize_max\" value=\"" . $this->fields["filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".getSize($this->fields["filesize_max"]);
 		echo "</td></tr>";
 
 
@@ -203,6 +210,8 @@ class MailCollect {
 	var $addtobody; 
 	/// Number of ferchs emails
 	var $fetch_emails=0;
+	/// Max size for attached files
+	var $filesize_max=0;
 
 	/**
 	* Constructor
@@ -224,6 +233,7 @@ class MailCollect {
 			$this->server	=	$mailgate->fields['host'];
 			$this->username	=	$mailgate->fields['login'];
 			$this->password	=	$mailgate->fields['password'];
+			$this->filesize_max	=	$mailgate->fields['filesize_max'];
 			$this->mid	= -1;
 	
 			$this->fetch_emails = 0;
@@ -305,9 +315,9 @@ class MailCollect {
 		$tkt= array ();
 
 		// max size = 0 : no import attachments
-		if ($CFG_GLPI['mailgate_filesize_max']>0){
+		if ($this->filesize_max>0){
 			if (is_writable(GLPI_DOC_DIR."/_tmp/")){
-				$_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$CFG_GLPI['mailgate_filesize_max']);
+				$_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$this->filesize_max);
 			} else {
 				logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
 			}

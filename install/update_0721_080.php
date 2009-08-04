@@ -1161,6 +1161,7 @@ function update0721to080() {
                               array('from' => 'name_display_order', 'to' => 'names_format', 'default' =>0, 'noindex'=>true,'comments'=>'see *NAME_BEFORE constant in define.php'),//
                               array('from' => 'dropdown_limit', 'to' => 'dropdown_chars_limit', 'default' =>50, 'noindex'=>true),//
                               array('from' => 'smtp_mode', 'to' => 'smtp_mode', 'default' =>0, 'noindex'=>true,'comments'=>'see define.php MAIL_* constant'),//
+                              array('from' => 'mailgate_filesize_max', 'to' => 'default_mailcollector_filesize_max', 'default' =>2097152, 'noindex'=>true),//
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
@@ -1395,6 +1396,17 @@ function update0721to080() {
       $DB->query($query) or die("0.80 alter password_md5 field in glpi_users " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_mailcollectors', 'filesize_max')) {
+      $query="ALTER TABLE `glpi_mailcollectors` ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
+      $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
+      $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE ID=1";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $query="UPDATE glpi_mailcollectors SET filesize_max='".$DB->result($result,0,0)."';";
+            $DB->query($query);
+         }
+      }
+   }
  
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
