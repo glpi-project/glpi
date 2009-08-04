@@ -92,7 +92,7 @@ class Device extends CommonDBTM {
 	function computer_link($compID,$devicetype,$specificity='') {
 		global $DB;
 		$query = "INSERT INTO glpi_computers_devices (devicetype,devices_id,computers_id,specificity)
-			VALUES ('".$devicetype."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
+			VALUES ('".$devicetype."','".$this->fields["id"]."','".$compID."','".$specificity."')";
 		if($DB->query($query)) {
 			return $DB->insert_id();
 		} else { 

@@ -88,8 +88,8 @@ class Contact extends CommonDBTM{
 		$query = "SELECT  glpi_suppliers.name, glpi_suppliers.address, glpi_suppliers.postcode, 
 				glpi_suppliers.town, glpi_suppliers.state, glpi_suppliers.country 
 			FROM glpi_suppliers,glpi_contacts_suppliers 
-			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID";
+			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["id"]."' 
+				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.id";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){
@@ -112,8 +112,8 @@ class Contact extends CommonDBTM{
 
 		$query = "SELECT  glpi_suppliers.website as website 
 			FROM glpi_suppliers,glpi_contacts_suppliers 
-			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.ID";
+			WHERE glpi_contacts_suppliers.contacts_id = '".$this->fields["id"]."' 
+				AND glpi_contacts_suppliers.suppliers_id = glpi_suppliers.id";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){
@@ -204,7 +204,7 @@ class Contact extends CommonDBTM{
       echo "<tr><td class='center'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
       if ($ID>0) {
-         echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG['common'][46]."</a>";
+         echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?id=$ID'>".$LANG['common'][46]."</a>";
       }
       echo "</td></tr></table>";
 

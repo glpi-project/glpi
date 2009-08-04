@@ -84,9 +84,9 @@ $valeurgraphtot=array();
 function display_infocoms_report($itemtype,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.ID as entID FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
-	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id = glpi_entities.ID) ";
+	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms 
+		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
+	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id = glpi_entities.id) ";
 
 	$query.= " WHERE ".$LINK_ID_TABLE[$itemtype].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype]);
 

@@ -80,7 +80,7 @@ function showInfocomEnterprise($instID) {
 		if (haveTypeRight($itemtype,"r")&&$itemtype!=CONSUMABLE_ITEM_TYPE&&$itemtype!=CARTRIDGE_ITEM_TYPE&&$itemtype!=SOFTWARELICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* "
 				." FROM glpi_infocoms "
-				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id) "
+				." INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id) "
 				." WHERE glpi_infocoms.itemtype='$itemtype' AND glpi_infocoms.suppliers_id = '$instID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype]) 
 				." ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
@@ -100,8 +100,8 @@ function showInfocomEnterprise($instID) {
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
-					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["id"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					if ($prem) {
@@ -141,10 +141,10 @@ function showAssociatedContact($instID) {
 	}
 	$canedit=$enterprise->can($instID,'w');
 
-	$query = "SELECT glpi_contacts.*, glpi_contacts_suppliers.ID as ID_ent, glpi_entities.ID as entity "
+	$query = "SELECT glpi_contacts.*, glpi_contacts_suppliers.id as ID_ent, glpi_entities.id as entity "
 		. " FROM glpi_contacts_suppliers, glpi_contacts "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.entities_id) "
-		. " WHERE glpi_contacts_suppliers.contacts_id=glpi_contacts.ID AND glpi_contacts_suppliers.suppliers_id = '$instID' "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_contacts.entities_id) "
+		. " WHERE glpi_contacts_suppliers.contacts_id=glpi_contacts.id AND glpi_contacts_suppliers.suppliers_id = '$instID' "
 		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contacts.name";
 
@@ -166,10 +166,10 @@ function showAssociatedContact($instID) {
 
 		while ($data=$DB->fetch_array($result)) {
 			$ID=$data["ID_ent"];
-			$used[$data["ID"]]=$data["ID"];
-			addToNavigateListItems(CONTACT_TYPE,$data["ID"]);
+			$used[$data["id"]]=$data["id"];
+			addToNavigateListItems(CONTACT_TYPE,$data["id"]);
 			echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 			echo "<td align='center'  width='100'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 			echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
@@ -179,7 +179,7 @@ function showAssociatedContact($instID) {
 			echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["contactstypes_id"])."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;id=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 			$i++;
@@ -235,7 +235,7 @@ function addContactEnterprise($eID,$cID){
 function deleteContactEnterprise($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contacts_suppliers WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_contacts_suppliers WHERE id = '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -261,7 +261,7 @@ function getEnterpriseLinks($value,$withname=false){
 			$ret.= "<a href='".formatOutputWebLink($ent->fields['website'])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".$LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
+		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$ent->fields['id']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".$LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
 	}
 
 	return $ret;

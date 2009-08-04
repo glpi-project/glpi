@@ -38,7 +38,7 @@ $NEEDED_ITEMS=array("group","user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(empty($_GET["id"])) $_GET["id"] = "";
 
 $group=new Group;
 if (isset($_POST["add"]))
@@ -51,18 +51,18 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$group->check($_POST["ID"],'w');
+	$group->check($_POST["id"],'w');
 
 	$group->delete($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/group.php");
 }
 else if (isset($_POST["update"]))
 {
-	$group->check($_POST["ID"],'w');
+	$group->check($_POST["id"],'w');
 
 	$group->update($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adduser"]))
@@ -94,7 +94,7 @@ else
 
 	commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
 
-	$group->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);	
+	$group->showForm($_SERVER['PHP_SELF'],$_GET["id"]);	
 
 	commonFooter();
 }

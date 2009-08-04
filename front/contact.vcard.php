@@ -38,7 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
-if (empty($_GET["ID"])) {
+if (empty($_GET["id"])) {
 
 	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
@@ -46,7 +46,7 @@ if (empty($_GET["ID"])) {
 
 	checkRight("contact_enterprise","r");
 
-	generateContactVcard($_GET["ID"]);
+	generateContactVcard($_GET["id"]);
 
 }
 

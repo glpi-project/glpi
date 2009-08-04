@@ -101,15 +101,15 @@ function showStateSummary($target){
 
 		while ($data=$DB->fetch_array($result)){
 			$tot=0;
-			echo "<tr class='tab_bg_2'><td class='center'><strong><a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=$$$$".$data["ID"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></strong></td>";
+			echo "<tr class='tab_bg_2'><td class='center'><strong><a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=$$$$".$data["id"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></strong></td>";
 	
 			foreach ($state_type as $itemtype){
 				echo "<td class='center'>";
 	
-				if (isset($states[$data["ID"]][$itemtype])) {
-					echo $states[$data["ID"]][$itemtype];
-					$total[$itemtype]+=$states[$data["ID"]][$itemtype];
-					$tot+=$states[$data["ID"]][$itemtype];
+				if (isset($states[$data["id"]][$itemtype])) {
+					echo $states[$data["id"]][$itemtype];
+					$total[$itemtype]+=$states[$data["id"]][$itemtype];
+					$tot+=$states[$data["id"]][$itemtype];
 				}
 				else echo "&nbsp;";
 				echo "</td>";

@@ -86,7 +86,7 @@ if(isset($_POST["add"])){
 			if ($i<10)	$add="0";
 			$input["logical_number"]=$i;
 			$input["name"]=$_POST["name"].$add.$i;
-			unset($np->fields["ID"]);
+			unset($np->fields["id"]);
 			$np->add($input);	
 		}
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
@@ -106,7 +106,7 @@ else if(isset($_POST["delete_several"]))
 	checkRight("networking","w");
 	if (isset($_POST["del_port"])&&count($_POST["del_port"]))
 		foreach ($_POST["del_port"] as $port_id => $val){
-			$np->delete(array("ID"=>$port_id));
+			$np->delete(array("id"=>$port_id));
 		}
 
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
@@ -119,7 +119,7 @@ else if(isset($_POST["move"]))
 		foreach ($_POST["del_port"] as $port_id => $val){
 			if ($np->getFromDB($port_id)){
 				$input=array();
-				$input['ID']=$port_id;
+				$input['id']=$port_id;
 				$input['items_id']=$_POST["device"];
 				$np->update($input);
 			}
@@ -146,8 +146,8 @@ else if (isset($_POST["connect"])){
 }
 else if (isset($_GET["disconnect"])){
 	checkRight("networking","w");
-	if (isset($_GET["ID"])){
-		removeConnector($_GET["ID"]);
+	if (isset($_GET["id"])){
+		removeConnector($_GET["id"]);
 		$fin="";
 		if (isset($_GET["sport"])) $fin="?sport=".$_GET["sport"];
 
@@ -173,7 +173,7 @@ else if (isset($_POST['assign_vlan'])){
 	checkRight("networking","w");
 
 	if (isset($_POST["vlan"])&&$_POST["vlan"]>0){
-		assignVlan($_POST["ID"],$_POST["vlan"]);	
+		assignVlan($_POST["id"],$_POST["vlan"]);	
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
@@ -194,7 +194,7 @@ else if(isset($_POST["unassign_vlan_several"]))
 else if (isset($_GET['unassign_vlan'])){
 	checkRight("networking","w");
 
-	unassignVlanbyID($_GET['ID']);
+	unassignVlanbyID($_GET['id']);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
@@ -207,9 +207,9 @@ else
 	checkRight("networking","w");
 	commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory");
 
-	if(isset($_GET["ID"]))
+	if(isset($_GET["id"]))
 	{
-		showNetportForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
 	}
 	else
 	{

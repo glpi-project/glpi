@@ -106,7 +106,7 @@ class Printer  extends CommonDBTM {
 
 		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
 		
-		$ID  = $this->fields['ID'];
+		$ID  = $this->fields['id'];
 
 		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
@@ -128,8 +128,8 @@ class Printer  extends CommonDBTM {
 			
 			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
 				"FROM glpi_networkports_networkports, glpi_networkports " .
-				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.ID " .
-				"AND   glpi_networkports_networkports.$enda IN (SELECT ID FROM glpi_networkports 
+				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.id " .
+				"AND   glpi_networkports_networkports.$enda IN (SELECT id FROM glpi_networkports 
 									WHERE itemtype=".PRINTER_TYPE." AND items_id='$ID') " .
 				"GROUP BY itemtype;";
 
@@ -140,7 +140,7 @@ class Printer  extends CommonDBTM {
 				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
 					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
 	
-					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
+					if (countElementsInTable("$table", "id IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
 							return false;						
 					}
 				}			
@@ -153,10 +153,10 @@ class Printer  extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		if (isset($input["ID"])&&$input["ID"]>0){
-			$input["_oldID"]=$input["ID"];
+		if (isset($input["id"])&&$input["id"]>0){
+			$input["_oldID"]=$input["id"];
 		}
-		unset($input['ID']);
+		unset($input['id']);
 		unset($input['withtemplate']);
 
 		return $input;
@@ -171,7 +171,7 @@ class Printer  extends CommonDBTM {
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(PRINTER_TYPE,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["ID"]);
+				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
 					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE,$input['entities_id']);
 				}
@@ -186,7 +186,7 @@ class Printer  extends CommonDBTM {
 			}
 	
 			// ADD Ports
-			$query="SELECT ID 
+			$query="SELECT id 
 				FROM glpi_networkports 
 				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PRINTER_TYPE."';";
 			$result=$DB->query($query);
@@ -194,8 +194,8 @@ class Printer  extends CommonDBTM {
 	
 				while ($data=$DB->fetch_array($result)){
 					$np= new Netport();
-					$np->getFromDB($data["ID"]);
-					unset($np->fields["ID"]);
+					$np->getFromDB($data["id"]);
+					unset($np->fields["id"]);
 					unset($np->fields["ip"]);
 					unset($np->fields["mac"]);
 					unset($np->fields["netpoints_id"]);
@@ -243,20 +243,20 @@ class Printer  extends CommonDBTM {
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='".$data["id"]."';";
 					$DB->query($query);
-				} else $job->delete(array("ID"=>$data["ID"]));
+				} else $job->delete(array("id"=>$data["id"]));
 			}
 
 
-		$query = "SELECT ID 
+		$query = "SELECT id 
 			FROM glpi_networkports 
 			WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networkports_networkports
-               WHERE networkports_id_1 = '".$data["ID"]."'
-                  OR networkports_id_2 = '".$data["ID"]."'";
+               WHERE networkports_id_1 = '".$data["id"]."'
+                  OR networkports_id_2 = '".$data["id"]."'";
 			$result2 = $DB->query($q);					
 		}
 
@@ -270,7 +270,7 @@ class Printer  extends CommonDBTM {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
 					// Disconnect without auto actions
-					Disconnect($data["ID"],1,false);
+					Disconnect($data["id"],1,false);
 				}
 			}
 		}
@@ -280,7 +280,7 @@ class Printer  extends CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
+				$rr->delete(array("id"=>$DB->result($result,0,"id")));
 			}
 		}
 
@@ -459,10 +459,10 @@ class Printer  extends CommonDBTM {
 
       echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
       if ($this->can($ID,'w')) {
-         globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
+         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
       } else {
          // Use printers_management_restrict to disallow change this
-         globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$this->fields["is_global"]);
+         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],$this->fields["is_global"]);
       }
       echo "</td></tr>";
 
@@ -500,7 +500,7 @@ class Printer  extends CommonDBTM {
    function getSelectLinkedItem () {
       return "SELECT '".COMPUTER_TYPE."', `computers_id` 
          FROM glpi_computers_items 
-         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['ID']."'";
+         WHERE `itemtype`='".$this->type."' AND `items_id`='" . $this->fields['id']."'";
    }
 }
 

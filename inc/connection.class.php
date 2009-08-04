@@ -70,9 +70,9 @@ class Connection {
 	 */
 	function getComputersContact ($itemtype,$ID) {
 		global $DB;
-		$query = "SELECT glpi_computers_items.ID as connectID, glpi_computers_items.computers_id, glpi_computers.*
+		$query = "SELECT glpi_computers_items.id as connectID, glpi_computers_items.computers_id, glpi_computers.*
 			FROM glpi_computers_items 
-			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_computers_items.computers_id)
+			INNER JOIN glpi_computers ON (glpi_computers.id = glpi_computers_items.computers_id)
 			 WHERE (glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 				AND glpi_computers.is_template = '0')" .
 				getEntitiesRestrictRequest(" AND", "glpi_computers");
@@ -101,7 +101,7 @@ class Connection {
 
 		global $DB;
 
-		$query = "DELETE FROM glpi_computers_items WHERE (ID = '$ID')";
+		$query = "DELETE FROM glpi_computers_items WHERE (id = '$ID')";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {

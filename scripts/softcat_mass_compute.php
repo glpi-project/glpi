@@ -51,7 +51,7 @@ $ONLY_UNDEFINED=true;
 $softcatrule = new SoftwareCategoriesRuleCollection;
 $soft = new Software;
 
-$query="SELECT ID, ticketscategories_id FROM glpi_softwares";
+$query="SELECT id, ticketscategories_id FROM glpi_softwares";
 
 if ($result=$DB->query($query)){
 	if ($DB->numrows($result)>0){
@@ -59,7 +59,7 @@ if ($result=$DB->query($query)){
 			if (!$ONLY_UNDEFINED||$data['ticketscategories_id']==0){
 				$params = array();
 				//Get software name and manufacturer
-				$soft->getFromDB($data['ID']);
+				$soft->getFromDB($data['id']);
 				$params["name"]=$soft->fields["name"];
 				$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
 								

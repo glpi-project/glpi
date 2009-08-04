@@ -41,7 +41,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["softwares_id"])) $_GET["softwares_id"] = "";
 
 $license=new SoftwareLicense();
@@ -59,16 +59,16 @@ else if (isset($_POST["delete"]))
 
 	$license->delete($_POST);
 
-	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['softwares_id']);
+	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["id"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$license->fields['softwares_id']);
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("software","w");
 
 	$license->update($_POST);
-	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["ID"]);
-	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['softwares_id']);
+	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["id"]);
+	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$license->fields['softwares_id']);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
@@ -76,7 +76,7 @@ else
 	checkRight("software","r");
 
 	commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
-	$license->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["softwares_id"]);
+	$license->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["softwares_id"]);
 
 	commonFooter();
 }

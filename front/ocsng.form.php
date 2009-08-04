@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("ocsng", "w");
 $ocs = new Ocsng();
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
@@ -60,7 +60,7 @@ elseif (isset ($_POST["update"])) {
 //Update server
 elseif (isset ($_POST["update_server"])) {
 	$ocs->update($_POST);
-	//$ocs->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	//$ocs->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 	glpi_header($_SERVER["HTTP_REFERER"]);	
 }
 //Add new server
@@ -70,7 +70,7 @@ elseif (isset ($_POST["add"])) {
 }
 //Other
 else
-	$ocs->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+	$ocs->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
 
 commonFooter();
 ?>

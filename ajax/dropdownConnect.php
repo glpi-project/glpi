@@ -70,7 +70,7 @@ if (in_array($table,$CFG_GLPI["template_tables"])){
 }
 
 if (!empty($used)){
-	$where.=" AND $table.ID NOT IN ('".implode("','",$used)."')";
+	$where.=" AND $table.id NOT IN ('".implode("','",$used)."')";
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
@@ -106,15 +106,15 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 	if ($_POST["idtable"]==COMPUTER_TYPE)
 		$CONNECT_SEARCH=" WHERE 1 ";
 	else {
-		$CONNECT_SEARCH=" WHERE (glpi_computers_items.ID IS NULL OR $table.is_global='1' )";	
+		$CONNECT_SEARCH=" WHERE (glpi_computers_items.id IS NULL OR $table.is_global='1' )";	
 	}
 }	
 
 $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
-	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.ID = glpi_computers_items.items_id AND glpi_computers_items.itemtype = '".$_POST['idtable']."')";
+	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.id = glpi_computers_items.items_id AND glpi_computers_items.itemtype = '".$_POST['idtable']."')";
 }
-$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
+$query = "SELECT DISTINCT $table.id,$table.name AS name,
 		$table.serial AS serial,$table.otherserial AS otherserial,
 		$table.entities_id as entities_id 
 	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH 
@@ -143,7 +143,7 @@ if ($DB->numrows($result)) {
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
 
-		$ID = $data['ID'];
+		$ID = $data['id'];
 
 		if ($_SESSION["glpiis_ids_visible"]||empty($output)){
 			 $output.=" ($ID)";

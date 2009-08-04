@@ -39,10 +39,10 @@ $NEEDED_ITEMS=array("entity","rulesengine","rule.right","rule.ocs","rule.trackin
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_GET["ID"]))
+if (isset($_GET["id"]))
 {
 	$generic_rule = new Rule;
-	$generic_rule->getFromDB($_GET["ID"]);
+	$generic_rule->getFromDB($_GET["id"]);
 	checkRight($generic_rule->right,"r");
 	
 	$rulecollection=getRuleCollectionClass($generic_rule->fields["sub_type"]);

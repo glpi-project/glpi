@@ -413,7 +413,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['utils']['content']['knowbase']['links']['search']='/front/knowbase.php';
 
       if (haveRight("knowbase","w")||haveRight("faq","w")){
-         $menu['utils']['content']['knowbase']['links']['add']='/front/knowbase.form.php?ID=new';
+         $menu['utils']['content']['knowbase']['links']['add']='/front/knowbase.form.php?id=new';
       }
 
    }
@@ -421,13 +421,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
       $menu['utils']['content']['reservation']['title']=$LANG['Menu'][17];
       $menu['utils']['content']['reservation']['page']='/front/reservation.php';
       $menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
-      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;ID';
+      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;id';
    }
    if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
       $menu['utils']['content']['reservation']['title']=$LANG['Menu'][17];
       $menu['utils']['content']['reservation']['page']='/front/reservation.php';
       $menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
-      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;ID';
+      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;id';
    }
    if (haveRight("reports","r")){
       $menu['utils']['content']['report']['title']=$LANG['Menu'][6];
@@ -1663,7 +1663,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if (!haveRight("create_ticket","1")) return false;
 
 	$query = "SELECT email, realname, firstname, name 
-		FROM glpi_users WHERE (ID = '$ID')";
+		FROM glpi_users WHERE (id = '$ID')";
 	$result=$DB->query($query);
 	$email = $DB->result($result,0,"email");
 
@@ -2287,7 +2287,7 @@ function showNotesForm($target,$itemtype,$id){
 	echo "</th></tr>";
 	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notepad' >".$ci->getField('notepad')."</textarea></td></tr>";
 	echo "<tr><td class='tab_bg_2' align='center' >\n";
-	echo "<input type='hidden' name='ID' value=$id>";
+	echo "<input type='hidden' name='id' value=$id>";
 	if ($canedit) {
 		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 	}
@@ -2386,7 +2386,7 @@ function showProfileSelecter($target){
 		echo '<li><form name="form" method="post" action="'.$target.'">';
 		echo '<select name="newprofile" onChange="submit()">';
 		foreach ($_SESSION["glpiprofiles"] as $key => $val){
-			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["ID"]==$key?'selected':'').'>'.$val['name'].'</option>';
+			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["id"]==$key?'selected':'').'>'.$val['name'].'</option>';
 		}
 		echo '</select>';
 		echo '</form>';

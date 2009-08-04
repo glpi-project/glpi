@@ -1629,7 +1629,7 @@ function checkNewVersionAvailable($auto=true){
 
 		if ($cur_version < $lat_version){
 			$config_object=new Config();
-			$input["ID"]=1;
+			$input["id"]=1;
 			$input["founded_new_version"]=$latest_version;
 			$config_object->update($input);
 			if (!$auto) {
@@ -1719,14 +1719,14 @@ function manageRedirect($where){
 					switch ($data[0]){
 						case "plugin":
 							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
-								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?ID=".$data[2]);
+								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
 							} else {
 								glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 							} 
 						break;
 						case "tracking":
 						case "ticket": ///TODO prepare update name : delete when tracking -> ticket
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$data[1]);
 						break;
 						case "prefs":
 							glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
@@ -1742,7 +1742,7 @@ function manageRedirect($where){
 					switch ($data[0]){
 						case "plugin":
 							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
-								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?ID=".$data[2]);
+								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
 							} else {
 								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 							} 
@@ -1752,7 +1752,7 @@ function manageRedirect($where){
 						break;
 						default : 
 							if (!empty($data[0])&&$data[1]>0){
-								glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?ID=".$data[1]);
+								glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".$data[1]);
 							} else {
 								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 							}

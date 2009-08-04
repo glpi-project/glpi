@@ -95,7 +95,7 @@ class Entity extends CommonDBTM{
 			$buttons["entity.tree.php"]=$LANG['entity'][1];
 			$title="";
 		}
-		$buttons["entity.form.php?ID=0"]=$LANG['entity'][2];
+		$buttons["entity.form.php?id=0"]=$LANG['entity'][2];
 		
 		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
 	}
@@ -243,7 +243,7 @@ class Entity extends CommonDBTM{
 			echo "<tr>";
 			echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
 			echo "<input type='hidden' name='entities_id' value=\"$ID\">\n";
-			echo "<input type='hidden' name='ID' value=\"".$entdata->fields["ID"]."\">\n";
+			echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">\n";
 			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
 			echo "</td>\n\n";
 			echo "</tr>";
@@ -268,8 +268,8 @@ class Entity extends CommonDBTM{
 	 * @return ID of the entity 
 	**/
 	function getEntityID () {
-		if (isset($this->fields["ID"])) {
-			return $this->fields["ID"];		
+		if (isset($this->fields["id"])) {
+			return $this->fields["id"];		
 		} 
 		return  -1;
 	}	

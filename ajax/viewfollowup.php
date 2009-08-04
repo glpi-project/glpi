@@ -42,8 +42,8 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 	checkLoginUser();
-	if (isset($_POST["ID"])){
-		showUpdateFollowupForm($_POST["ID"]);
+	if (isset($_POST["id"])){
+		showUpdateFollowupForm($_POST["id"]);
 	}
 
 	ajaxFooter();

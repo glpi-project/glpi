@@ -102,7 +102,7 @@ if ($DBocs->numrows($result_ocs)>0){
 		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
 		if (isset($hardware[$data["ocsid"]])){ 
-			ocsUpdateComputer($data["ID"],$ocsservers_id,1);
+			ocsUpdateComputer($data["id"],$ocsservers_id,1);
 			if ($limit&&$done>=$limit) exit();
 			echo ".";
 			$done++;

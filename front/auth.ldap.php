@@ -63,7 +63,7 @@ elseif (isset ($_POST["add_ldap"])) {
 			} else{
 				addMessageAfterRedirect($LANG['login'][23],false,ERROR);	
 			}
-			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&ID=".$newID);
+			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&id=".$newID);
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -75,9 +75,9 @@ elseif (isset ($_POST["delete_ldap"])) {
 }
 elseif (isset ($_POST["test_ldap"])) {
 	$ldap = new AuthLDAP;
-	$ldap->getFromDB($_POST["ID"]);
+	$ldap->getFromDB($_POST["id"]);
 	
-	if (testLDAPConnection($_POST["ID"])){
+	if (testLDAPConnection($_POST["id"])){
 		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;
 	} else{
 		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;	
@@ -90,7 +90,7 @@ elseif (isset ($_POST["test_ldap_replicate"])) {
 		$replicate = new AuthLdapReplicate;
 		$replicate->getFromDB($replicate_id);
 
-		if (testLDAPConnection($_POST["ID"],$replicate_id)){
+		if (testLDAPConnection($_POST["id"],$replicate_id)){
 			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
 		} else{
 			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";	
@@ -102,21 +102,21 @@ elseif (isset($_POST["delete_replicate"]))
 {
 	$replicate = new AuthLdapReplicate;
 	foreach ($_POST["item"] as $index=>$val)
-		$replicate->delete(array("ID"=>$index));
+		$replicate->delete(array("id"=>$index));
 	glpi_header($_SERVER['HTTP_REFERER']);		
 }
 elseif (isset($_POST["add_replicate"]))
 {
 	$replicate = new AuthLdapReplicate;
 	unset($_POST["next"]);
-	unset($_POST["ID"]);
+	unset($_POST["id"]);
 	$replicate->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 
 
-if (!isset($_GET["ID"])){
-	$_GET["ID"]="";	
+if (!isset($_GET["id"])){
+	$_GET["id"]="";	
 }
 
 if (!isset($_GET["next"])){
@@ -131,7 +131,7 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","ldap")
 
 switch($_GET['next']){
 	case "extauth_ldap" :
-		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
 		break;
 	default :
 		showLdapAuthList($_SERVER['PHP_SELF']);

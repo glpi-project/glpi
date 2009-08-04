@@ -105,7 +105,7 @@ class CartridgeType extends CommonDBTM {
 	 **/
 	function countCartridges() {
 		global $DB;
-		$query = "SELECT * FROM glpi_cartridges WHERE cartridgesitems_id = '".$this->fields["ID"]."'";
+		$query = "SELECT * FROM glpi_cartridges WHERE cartridgesitems_id = '".$this->fields["id"]."'";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;
@@ -146,7 +146,7 @@ class CartridgeType extends CommonDBTM {
 	function deleteCompatibleType($ID){
 
 		global $DB;
-		$query="DELETE FROM glpi_cartridges_printersmodels WHERE ID= '$ID';";
+		$query="DELETE FROM glpi_cartridges_printersmodels WHERE id= '$ID';";
 		$result = $DB->query($query);
 	}
 
@@ -268,7 +268,7 @@ class Cartridge extends CommonDBTM {
 		$ic=new Infocom();
 
 		if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["cartridgesitems_id"])){
-			unset($ic->fields["ID"]);
+			unset($ic->fields["id"]);
 			$ic->fields["items_id"]=$newID;
 			$ic->fields["itemtype"]=CARTRIDGE_ITEM_TYPE;
 			if (empty($ic->fields['use_date'])){
@@ -286,7 +286,7 @@ class Cartridge extends CommonDBTM {
 		global $DB;
 		$query = "UPDATE glpi_cartridges 
 			SET date_out = NULL, date_use = NULL, printers_id= 0 
-			WHERE ID='".$input["ID"]."'";
+			WHERE id='".$input["id"]."'";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {
@@ -304,7 +304,7 @@ class Cartridge extends CommonDBTM {
 	 **/
 	function updatePages($ID,$pages){
 		global $DB;
-		$query="UPDATE glpi_cartridges SET pages='$pages' WHERE ID='$ID'";
+		$query="UPDATE glpi_cartridges SET pages='$pages' WHERE id='$ID'";
 		$DB->query($query);
 	}
 
@@ -323,7 +323,7 @@ class Cartridge extends CommonDBTM {
 		global $DB,$LANG;
 
 		// Get first unused cartridge
-		$query = "SELECT ID 
+		$query = "SELECT id 
 			FROM glpi_cartridges 
 			WHERE cartridgesitems_id = '$tID' AND date_use IS NULL";
 		$result = $DB->query($query);
@@ -331,7 +331,7 @@ class Cartridge extends CommonDBTM {
 			// Mise a jour cartouche en prenant garde aux insertion multiples	
 			$query = "UPDATE glpi_cartridges 
 				SET date_use = '".date("Y-m-d")."', printers_id = '$pID' 
-				WHERE ID='".$DB->result($result,0,0)."' AND date_use IS NULL";
+				WHERE id='".$DB->result($result,0,0)."' AND date_use IS NULL";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -358,7 +358,7 @@ class Cartridge extends CommonDBTM {
 		global $DB;
 		$query = "UPDATE glpi_cartridges 
 			SET date_out = '".date("Y-m-d")."' 
-			WHERE ID='$ID'";
+			WHERE id='$ID'";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {

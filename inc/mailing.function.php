@@ -58,7 +58,7 @@ function testMail(){
 	
 		$options="";
 		// Get User mailing
-		$query = "SELECT glpi_mailingsettings.items_id , glpi_mailingsettings.ID as ID
+		$query = "SELECT glpi_mailingsettings.items_id , glpi_mailingsettings.id
 				FROM glpi_mailingsettings 
 				WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . USER_MAILING_TYPE . "'
 				ORDER BY glpi_mailingsettings.items_id;";
@@ -109,33 +109,33 @@ function testMail(){
 						$name="&nbsp;";
 						break;
 				}
-				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>\n";
+				$options.= "<option value='" . $data["id"] . "'>" . $name . "</option>\n";
 			}
 		// Get Profile mailing
-		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_profiles.name as prof
+		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.id, glpi_profiles.name as prof
 			FROM glpi_mailingsettings 
-			LEFT JOIN glpi_profiles ON (glpi_mailingsettings.items_id = glpi_profiles.ID) 
+			LEFT JOIN glpi_profiles ON (glpi_mailingsettings.items_id = glpi_profiles.id) 
 			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . PROFILE_MAILING_TYPE . "'
 			ORDER BY glpi_profiles.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['profiles'][22] . " " . $data["prof"] . "</option>\n";
+				$options.= "<option value='" . $data["id"] . "'>" . $LANG['profiles'][22] . " " . $data["prof"] . "</option>\n";
 				if (isset($profiles[PROFILE_MAILING_TYPE."_".$data["items_id"]])) {
 					unset($profiles[PROFILE_MAILING_TYPE."_".$data["items_id"]]);
 				}
 			}
 	
 		// Get Group mailing
-		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.ID as ID, glpi_groups.name as name
+		$query = "SELECT glpi_mailingsettings.items_id, glpi_mailingsettings.id, glpi_groups.name as name
 			FROM glpi_mailingsettings 
-			LEFT JOIN glpi_groups ON (glpi_mailingsettings.items_id = glpi_groups.ID) 
+			LEFT JOIN glpi_groups ON (glpi_mailingsettings.items_id = glpi_groups.id) 
 			WHERE glpi_mailingsettings.type='$type' AND glpi_mailingsettings.mailingtype='" . GROUP_MAILING_TYPE . "'
 			ORDER BY glpi_groups.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['common'][35] . " " . $data["name"] . "</option>\n";
+				$options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " . $data["name"] . "</option>\n";
 				if (isset($profiles[GROUP_MAILING_TYPE."_".$data["items_id"]])) {
 					unset($profiles[GROUP_MAILING_TYPE."_".$data["items_id"]]);
 				}
@@ -196,7 +196,7 @@ function testMail(){
 						$DB->query($query);
 						break;
 					case "delete" :
-						$query = "DELETE FROM glpi_mailingsettings WHERE ID='$val'";
+						$query = "DELETE FROM glpi_mailingsettings WHERE id='$val'";
 						$DB->query($query);
 						break;
 				}
@@ -231,7 +231,7 @@ function isAuthorMailingActivatedForHelpdesk(){
 	global $DB,$CFG_GLPI;
 
 	if ($CFG_GLPI['use_mailing']){
-		$query="SELECT COUNT(ID) FROM glpi_mailingsettings WHERE type IN ('new','followup','update','finish') 
+		$query="SELECT COUNT(id) FROM glpi_mailingsettings WHERE type IN ('new','followup','update','finish')
 				AND mailingtype = '".USER_MAILING_TYPE."' AND items_id = '".AUTHOR_MAILING."' ;";
 		if ($result=$DB->query($query)){
 			if ($DB->result($result,0,0)>0){

@@ -55,7 +55,7 @@
 		if ($_REQUEST['node']== -1){
 			$pos=0;
 			foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity){
-				$ID=$entity['ID'];
+				$ID=$entity['id'];
 				$is_recursive=$entity['is_recursive'];
 				$path['text']		= getDropdownName("glpi_entities",$ID);;
 				$path['id']		= $ID;
@@ -69,7 +69,7 @@
 				$path['cls']	= 'file';
 
 				if ($is_recursive){
-					$query2="SELECT COUNT(ID) FROM glpi_entities WHERE entities_id='".$ID."';";
+					$query2="SELECT COUNT(id) FROM glpi_entities WHERE entities_id='".$ID."';";
 					$result2=$DB->query($query2);
 					if ($DB->result($result2,0,0) >0){
 						$path['leaf']	= false;
@@ -87,19 +87,19 @@
 					$pos=0;
 					while ($row = $DB->fetch_array($result)) {
 						$path['text']		= $row['name'];
-						$path['id']		= $row['ID'];
+						$path['id']		= $row['id'];
 						$path['position']	= $pos;
 						$pos++;
 						$path['draggable']	= false;
 							
-						$path['href']	= $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$row['ID'];
+						$path['href']	= $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$row['id'];
 						// Check if node is a leaf or a folder.
-						$query2="SELECT COUNT(ID) FROM glpi_entities WHERE entities_id='".$row['ID']."';";
+						$query2="SELECT COUNT(id) FROM glpi_entities WHERE entities_id='".$row['id']."';";
 						$result2=$DB->query($query2);
 						if ($DB->result($result2,0,0) >0){
 							$path['leaf']	= false;
 							$path['cls']	= 'folder';
-							$path['text'] .= "<a title=\"".$LANG['buttons'][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$row['ID']."&amp;is_recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+							$path['text'] .= "<a title=\"".$LANG['buttons'][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$row['id']."&amp;is_recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
 						} else {
 							$path['leaf']	= true;
 							$path['cls']	= 'file';

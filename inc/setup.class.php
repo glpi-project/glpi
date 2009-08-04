@@ -75,7 +75,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
-				unset($data["ID"]);
+				unset($data["id"]);
 				$data["users_id"]=$input["users_id"];
 				$this->fields=$data;
 				$this->addToDB();
@@ -105,7 +105,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	/**
 	 * Move up an item
 	 *
-	 *@param $input parameter array (ID,itemtype,users_id)
+	 *@param $input parameter array (id,itemtype,users_id)
 	 *
 	 **/
 	function up($input){
@@ -113,32 +113,32 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Get current item
 		$query="SELECT rank 
 			FROM glpi_displayprefs 
-			WHERE ID='".$input['ID']."';";
+			WHERE id='".$input['id']."';";
 		$result=$DB->query($query);
 		$rank1=$DB->result($result,0,0);
 		// Get previous item
-		$query="SELECT ID, rank 
+		$query="SELECT id, rank 
 			FROM glpi_displayprefs 
 			WHERE itemtype='".$input['itemtype']."' AND users_id='".$input["users_id"]."' AND rank<'$rank1'
 			ORDER BY rank DESC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
-		$ID2=$DB->result($result,0,"ID");
+		$ID2=$DB->result($result,0,"id");
 		// Update items
 		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank2' 
-			WHERE ID ='".$input['ID']."'";
+			WHERE id ='".$input['id']."'";
 		$DB->query($query);
 		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank1' 
-			WHERE ID ='$ID2'";
+			WHERE id ='$ID2'";
 		$DB->query($query);
 	}
 
 	/**
 	 * Move down an item
 	 *
-	 *@param $input parameter array (ID,itemtype,users_id)
+	 *@param $input parameter array (id,itemtype,users_id)
 	 *
 	 **/
 	function down($input){
@@ -147,25 +147,25 @@ class SetupSearchDisplay extends CommonDBTM{
 		// Get current item
 		$query="SELECT rank 
 			FROM glpi_displayprefs 
-			WHERE ID='".$input['ID']."';";
+			WHERE id='".$input['id']."';";
 		$result=$DB->query($query);
 		$rank1=$DB->result($result,0,0);
 		// Get next item
-		$query="SELECT ID, rank 
+		$query="SELECT id, rank 
 			FROM glpi_displayprefs 
 			WHERE itemtype='".$input['itemtype']."' AND users_id='".$input["users_id"]."' AND rank>'$rank1'
 			ORDER BY rank ASC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
-		$ID2=$DB->result($result,0,"ID");
+		$ID2=$DB->result($result,0,"id");
 		// Update items
 		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank2' 
-			WHERE ID ='".$input['ID']."'";
+			WHERE id ='".$input['id']."'";
 		$DB->query($query);
 		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank1' 
-			WHERE ID ='$ID2'";
+			WHERE id ='$ID2'";
 		$DB->query($query);
 	}
 
@@ -251,7 +251,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						if ($i!=0){
 							echo "<td align='center' valign='middle'>";
 							echo "<form method='post' action=\"$target\">";
-							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+							echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -262,7 +262,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						if ($i!=$numrows-1){
 							echo "<td align='center' valign='middle'>";
 							echo "<form method='post' action=\"$target\">";
-							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+							echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -273,7 +273,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 						echo "<td align='center' valign='middle'>";
 						echo "<form method='post' action=\"$target\">";
-						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+						echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 						echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 						echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -365,7 +365,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						if ($i!=0){
 							echo "<td align='center' valign='middle'>";
 							echo "<form method='post' action=\"$target\">";
-							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+							echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -376,7 +376,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						if ($i!=$numrows-1){
 							echo "<td align='center' valign='middle'>";
 							echo "<form method='post' action=\"$target\">";
-							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+							echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 							echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 							echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -387,7 +387,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 						echo "<td align='center' valign='middle'>";
 						echo "<form method='post' action=\"$target\">";
-						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+						echo "<input type='hidden' name='id' value='".$data["id"]."'>";
 						echo "<input type='hidden' name='users_id' value='$IDuser'>";
 
 						echo "<input type='hidden' name='itemtype' value='$itemtype'>";

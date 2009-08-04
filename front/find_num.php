@@ -101,7 +101,7 @@ function fillidfield(Type,Id){
 	echo " </tr>";
 
 
-	$query = "SELECT name, ID, contact, serial, otherserial 
+	$query = "SELECT name, id, contact, serial, otherserial
 		FROM glpi_computers 
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
@@ -109,7 +109,7 @@ function fillidfield(Type,Id){
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Contact = $ligne['contact'];
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
@@ -128,7 +128,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, ID, contact, serial, otherserial 
+	$query = "SELECT name, id, contact, serial, otherserial
 		FROM glpi_networkequipments 
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
@@ -136,7 +136,7 @@ function fillidfield(Type,Id){
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Contact = $ligne['contact'];
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
@@ -155,7 +155,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, ID, contact, serial, otherserial 
+	$query = "SELECT name, id, contact, serial, otherserial
 		FROM glpi_printers 
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
@@ -163,7 +163,7 @@ function fillidfield(Type,Id){
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Contact = $ligne['contact'];
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
@@ -182,7 +182,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, ID, contact, serial, otherserial 
+	$query = "SELECT name, id, contact, serial, otherserial
 		FROM glpi_monitors 
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
@@ -190,7 +190,7 @@ function fillidfield(Type,Id){
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Contact = $ligne['contact'];
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
@@ -209,7 +209,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, ID, contact, serial, otherserial 
+	$query = "SELECT name, id, contact, serial, otherserial
 		FROM glpi_peripherals 
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
@@ -217,7 +217,7 @@ function fillidfield(Type,Id){
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Contact = $ligne['contact'];
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
@@ -236,14 +236,14 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, ID 
+	$query = "SELECT name, id 
 		FROM glpi_softwares
 		WHERE is_template='0' AND is_deleted='0' 
 			AND (name LIKE '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
-		$Comp_num = $ligne['ID'];
+		$Comp_num = $ligne['id'];
 		$Computer = $ligne['name'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'>&nbsp;</td>";

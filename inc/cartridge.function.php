@@ -144,10 +144,10 @@ function showCartridges ($tID,$show_old=0) {
 		if (!$show_old){
 			$ORDER=" glpi_cartridges.date_out ASC, glpi_cartridges.date_use ASC,  glpi_cartridges.date_in";
 		}
-		$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, 
+		$query = "SELECT glpi_cartridges.*, glpi_printers.id as printID, glpi_printers.name as printname, 
 				glpi_printers.init_pages_counter
 			FROM glpi_cartridges 
-			LEFT JOIN glpi_printers ON (glpi_cartridges.printers_id = glpi_printers.ID) 
+			LEFT JOIN glpi_printers ON (glpi_cartridges.printers_id = glpi_printers.id) 
 			WHERE (glpi_cartridges.cartridgesitems_id = '$tID') $where 
 			ORDER BY $ORDER";
 	
@@ -163,7 +163,7 @@ function showCartridges ($tID,$show_old=0) {
 				$page=$data["pages"];
 	
 				echo "<tr  class='tab_bg_1'><td class='center'>";
-				echo $data["ID"]; 
+				echo $data["id"]; 
 				echo "</td><td class='center'>";
 				echo getCartridgeStatus($data["date_use"],$data["date_out"]);
 				echo "</td><td class='center'>";
@@ -173,7 +173,7 @@ function showCartridges ($tID,$show_old=0) {
 				echo "</td><td class='center'>";
 				if (!is_null($date_use)){
 					if ($data["printID"]>0){
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$data["printID"]."'><strong>".$data["printname"];
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$data["printID"]."'><strong>".$data["printname"];
 					if ($_SESSION['glpiis_ids_visible']){
 						echo " (".$data["printID"].")";
 					}
@@ -214,17 +214,17 @@ function showCartridges ($tID,$show_old=0) {
 					echo "</td>";
 				} 
 				echo "<td class='center'>";
-				showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+				showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["id"],1);
 				echo "</td>";
 				echo "<td class='center'>";
 				if (!is_null($date_use)&&$canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";		
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;id=".$data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";		
 				else echo "&nbsp;";
 	
 				echo "</td>";
 				echo "<td class='center'>";
 				if ($canedit){
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;id=".$data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
 				} else echo "&nbsp;";
 				echo "</td></tr>";
 			}	
@@ -260,9 +260,9 @@ function showCompatiblePrinters($instID) {
 	if (!haveRight("cartridge","r")) return false;
 	
 	if ($instID > 0){
-		$query = "SELECT glpi_printersmodels.name as type, glpi_cartridges_printersmodels.ID as ID 
+		$query = "SELECT glpi_printersmodels.name as type, glpi_cartridges_printersmodels.id 
 			FROM glpi_cartridges_printersmodels, glpi_printersmodels 
-			WHERE glpi_cartridges_printersmodels.printersmodels_id=glpi_printersmodels.ID 
+			WHERE glpi_cartridges_printersmodels.printersmodels_id=glpi_printersmodels.id 
 				AND glpi_cartridges_printersmodels.cartridgesitems_id = '$instID' 
 			ORDER BY glpi_printersmodels.name";
 	
@@ -276,11 +276,11 @@ function showCompatiblePrinters($instID) {
 		echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 	
 		while ($i < $number) {
-			$ID=$DB->result($result, $i, "ID");
+			$ID=$DB->result($result, $i, "id");
 			$type=$DB->result($result, $i, "type");
 			echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
 			echo "<td class='center'>$type</td>";
-			echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+			echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
 			$i++;
 		}
 		if (haveRight("cartridge","w")){
@@ -314,18 +314,18 @@ function showCartridgeInstalled($instID,$old=0) {
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
 
-	$query = "SELECT glpi_cartridgesitems.ID as tID, glpi_cartridgesitems.is_deleted, glpi_cartridgesitems.ref as ref,
-			glpi_cartridgesitems.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, 
+	$query = "SELECT glpi_cartridgesitems.id as tID, glpi_cartridgesitems.is_deleted, glpi_cartridgesitems.ref as ref,
+			glpi_cartridgesitems.name as type, glpi_cartridges.id, glpi_cartridges.pages as pages,
 			glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0){
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
 			WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.printers_id= '$instID' 
-				AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.ID 
+				AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.id 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	} else {
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
 			WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.printers_id= '$instID' 
-			AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.ID 
+			AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.id 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	}
 	
@@ -357,9 +357,9 @@ function showCartridgeInstalled($instID,$old=0) {
 		$date_use=convDate($data["date_use"]);
 		$date_out=convDate($data["date_out"]);
 		echo "<tr  class='tab_bg_1".($data["is_deleted"]?"_2":"")."'><td class='center'>";
-		echo $data["ID"]; 
+		echo $data["id"]; 
 		echo "</td><td class='center'><strong>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?ID=".$data["tID"]."\">";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?id=".$data["tID"]."\">";
 		echo $data["type"]." - ".$data["ref"];
 		echo "</a>";
 		echo "</strong></td><td class='center'>";
@@ -392,7 +392,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		if ($old!=0){
 			if ($canedit){
 				echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
-				echo "<input type='hidden' name='cID' value='".$data['ID']."'>";
+				echo "<input type='hidden' name='cID' value='".$data['id']."'>";
 			}
 			echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
 			if ($canedit){
@@ -409,8 +409,8 @@ function showCartridgeInstalled($instID,$old=0) {
 		}
 		if ($canedit)
 			if (is_null($date_out))
-				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
-			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;id=".$data["id"]."&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
+			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;id=".$data["id"]."&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
 			echo "</td></tr>";
 
 	}	
@@ -492,7 +492,7 @@ function countCartridges($tID,$alarm_threshold,$nohtml=0) {
  **/
 function getCartridgesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_cartridges WHERE ( cartridgesitems_id = '$tID')";
+	$query = "SELECT id FROM glpi_cartridges WHERE ( cartridgesitems_id = '$tID')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -509,7 +509,7 @@ function getCartridgesNumber($tID){
  **/
 function getUsedCartridgesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_cartridges 
+	$query = "SELECT id FROM glpi_cartridges 
 		WHERE ( cartridgesitems_id = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
@@ -527,7 +527,7 @@ function getUsedCartridgesNumber($tID){
  **/
 function getOldCartridgesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_cartridges 
+	$query = "SELECT id FROM glpi_cartridges 
 		WHERE ( cartridgesitems_id = '$tID'  AND date_out IS NOT NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
@@ -544,7 +544,7 @@ function getOldCartridgesNumber($tID){
  **/
 function getUnusedCartridgesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_cartridges 
+	$query = "SELECT id FROM glpi_cartridges 
 		WHERE ( cartridgesitems_id = '$tID' AND date_use IS NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
@@ -568,15 +568,15 @@ function dropdownCompatibleCartridges($pID) {
 	$p->getFromDB($pID);
 
 	$query = "SELECT COUNT(*) AS cpt, glpi_locations.completename as location, glpi_cartridgesitems.ref as ref,
-			glpi_cartridgesitems.name as name, glpi_cartridgesitems.ID as tID 
+			glpi_cartridgesitems.name as name, glpi_cartridgesitems.id as tID 
 		FROM glpi_cartridgesitems 
-		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.ID = glpi_cartridges_printersmodels.cartridgesitems_id )
-		INNER JOIN glpi_cartridges ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.ID 
+		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.id = glpi_cartridges_printersmodels.cartridgesitems_id )
+		INNER JOIN glpi_cartridges ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.id 
 						AND glpi_cartridges.date_use IS NULL)
-		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.locations_id)
+		LEFT JOIN glpi_locations ON (glpi_locations.id = glpi_cartridgesitems.locations_id)
 		WHERE  glpi_cartridges_printersmodels.printersmodels_id = '".$p->fields["printersmodels_id"]."' 
 		AND glpi_cartridgesitems.entities_id='".$p->fields["entities_id"]."' 
-		GROUP BY glpi_cartridgesitems.ID 
+		GROUP BY glpi_cartridgesitems.id 
 		ORDER BY glpi_cartridgesitems.name, glpi_cartridgesitems.ref";
 	if ($result = $DB->query($query)){
 		if ($DB->numrows($result)){
@@ -632,11 +632,11 @@ function cron_cartridge($display=false){
 	loadLanguage($CFG_GLPI["language"]);
 
 	// Get cartridges type with alarm activated and last warning > X days depending on config
-	$query="SELECT glpi_cartridgesitems.ID AS cartID, glpi_cartridgesitems.entities_id as entity, 
+	$query="SELECT glpi_cartridgesitems.id AS cartID, glpi_cartridgesitems.entities_id as entity, 
 			glpi_cartridgesitems.ref as cartref, glpi_cartridgesitems.name AS cartname, 
-			glpi_cartridgesitems.alarm_threshold AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date
+			glpi_cartridgesitems.alarm_threshold AS threshold, glpi_alerts.id AS alertID, glpi_alerts.date
 		FROM glpi_cartridgesitems 
-		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
+		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.id = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
 		WHERE glpi_cartridgesitems.is_deleted='0' AND glpi_cartridgesitems.alarm_threshold>='0'
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert_repeat"].") < CURRENT_TIMESTAMP())
 		ORDER BY glpi_cartridgesitems.name;";
@@ -663,7 +663,7 @@ function cron_cartridge($display=false){
 
 				// if alert exists -> delete 
 				if (!empty($data["alertID"])){
-					$alert->delete(array("ID"=>$data["alertID"]));
+					$alert->delete(array("id"=>$data["alertID"]));
 				}
 			}
 		}
@@ -685,7 +685,7 @@ function cron_cartridge($display=false){
 					foreach ($items[$entity] as $ID){
 						$input["items_id"]=$ID;
 						$alert->add($input);
-						unset($alert->fields['ID']);
+						unset($alert->fields['id']);
 					}
 
 				} else {

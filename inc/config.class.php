@@ -102,7 +102,7 @@ class Config extends CommonDBTM {
 		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
@@ -255,7 +255,7 @@ class Config extends CommonDBTM {
 		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 
@@ -365,7 +365,7 @@ class Config extends CommonDBTM {
 		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 								
@@ -446,7 +446,7 @@ class Config extends CommonDBTM {
 		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 								
@@ -507,7 +507,7 @@ class Config extends CommonDBTM {
 		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 		$active = isDBSlaveActive();
@@ -587,7 +587,7 @@ class Config extends CommonDBTM {
 			
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
-		echo "<input type='hidden' name='ID' value='" . $data["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
 
 		echo "<table class='tab_cadre_fixe'>";
 
@@ -721,7 +721,7 @@ class Config extends CommonDBTM {
 			return false;
 	
 		echo "<form action=\"$target\" method=\"post\">";
-		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 		switch ($tabs){
 			case 1:
@@ -828,20 +828,20 @@ class Config extends CommonDBTM {
 				
 			asort($profiles);
 
-			$query = "SELECT ID, name 
+			$query = "SELECT id, name 
 				FROM glpi_profiles 
 				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
-				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG['profiles'][22] . " " . $data["name"];
+				$profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " . $data["name"];
 			}
 
-			$query = "SELECT ID, name 
+			$query = "SELECT id, name 
 				FROM glpi_groups 
 				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
-				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG['common'][35] . " " . $data["name"];
+				$profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " . $data["name"];
 			}
 	
 			echo "<div class='center'>";
@@ -886,20 +886,20 @@ class Config extends CommonDBTM {
 		case 3:
 			$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
 			$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG['setup'][237]." ".$LANG['entity'][0];
-			$query = "SELECT ID, name 
+			$query = "SELECT id, name 
 				FROM glpi_profiles 
 				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
-				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG['profiles'][22] . " " . $data["name"];
+				$profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " . $data["name"];
 			}
 	
-			$query = "SELECT ID, name 
+			$query = "SELECT id, name 
 				FROM glpi_groups 
 				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
-				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG['common'][35] . " " . $data["name"];
+				$profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " . $data["name"];
 			}
 	
 			ksort($profiles);
@@ -1017,7 +1017,7 @@ class ConfigOCS extends CommonDBTM {
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		if (count($updates)){
-			$CACHE_CFG->remove("CFG_OCSGLPI_".$input["ID"],"GLPI_CFG",true);
+			$CACHE_CFG->remove("CFG_OCSGLPI_".$input["id"],"GLPI_CFG",true);
 		}
 	}
 

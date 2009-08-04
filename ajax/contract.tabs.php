@@ -40,39 +40,39 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
 
-if(!isset($_POST["ID"])) $_POST["ID"] = -1;
+if(!isset($_POST["id"])) $_POST["id"] = -1;
 
 $contract=new Contract();
 
-		if ($_POST['ID']>0){
+		if ($_POST['id']>0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					showEnterpriseContract($_POST["ID"]);
-					showDeviceContract($_POST["ID"]);
-					showDocumentAssociated(CONTRACT_TYPE,$_POST["ID"]);
-					showLinkOnDevice(CONTACT_TYPE,$_POST["ID"]);
-					displayPluginAction(CONTRACT_TYPE,$_POST["ID"],$_POST['glpi_tab']);
+					showEnterpriseContract($_POST["id"]);
+					showDeviceContract($_POST["id"]);
+					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
+					showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
+					displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
 					break;
 				case 2 :
-					showDeviceContract($_POST["ID"]);
+					showDeviceContract($_POST["id"]);
 					break;
 				case 5 : 
-					showDocumentAssociated(CONTRACT_TYPE,$_POST["ID"]);
+					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(CONTRACT_TYPE,$_POST["ID"]);
+					showLinkOnDevice(CONTRACT_TYPE,$_POST["id"]);
 					break;
 				case 10 :
-					showNotesForm($_POST['target'],CONTRACT_TYPE,$_POST["ID"]);
+					showNotesForm($_POST['target'],CONTRACT_TYPE,$_POST["id"]);
 					break;
 				default :
-					if (!displayPluginAction(CONTRACT_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
-						showEnterpriseContract($_POST["ID"]);
+					if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab'])){
+						showEnterpriseContract($_POST["id"]);
 					}
 					break;
 			}

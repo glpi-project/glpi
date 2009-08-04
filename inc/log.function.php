@@ -100,7 +100,7 @@ function constructHistory($items_id,$type,&$oldvalues,&$values) {
 			// Parsing $SEARCH_OPTIONS to find infocom 
 			if ($type==INFOCOM_TYPE) {
 				$ic=new Infocom();
-				if ($ic->getFromDB($values['ID'])){
+				if ($ic->getFromDB($values['id'])){
 					$real_type=$ic->fields['itemtype'];
 					$items_id=$ic->fields['items_id'];
 					if (isset($SEARCH_OPTION[$real_type])) foreach($SEARCH_OPTION[$real_type] as $key2 => $val2){
@@ -195,7 +195,7 @@ function showHistory($type,$items_id){
 	$query="SELECT * 
 		FROM glpi_logs 
 		WHERE items_id='".$items_id."' AND type='".$type."'
-		ORDER BY  ID DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+		ORDER BY id DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
 	//echo $query;
 
@@ -208,7 +208,7 @@ function showHistory($type,$items_id){
 	echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][27]."</th><th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th><th>".$LANG['event'][19]."</th></tr>";
 	while ($data =$DB->fetch_array($result)){ 
 		$display_history = true;
-		$ID = $data["ID"];
+		$ID = $data["id"];
 		$date_mod=convDateTime($data["date_mod"]);
 		$user_name = $data["user_name"];
 		$field="";
@@ -429,30 +429,30 @@ function displayItemLogID($type,$items_id){
 		echo "&nbsp;";//$item;
 	} else {
 		if ($type=="infocom"){
-			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
+			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
 		} else {
 			if ($items_id=="-1" || $items_id=="0") {
 				echo "&nbsp;";//$item;
 			} else {
 				switch ($type){
 					case "rules" :
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$items_id."\">".$items_id."</a>";
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?id=".$items_id."\">".$items_id."</a>";
 						break;
 					case "infocom" :
-						echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
+						echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
 						break;
 					case "devices":
 						echo $items_id;
 						break;
 					case "reservation":
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$items_id."\">$items_id</a>";
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".$items_id."\">$items_id</a>";
 						break;
 					default :
 					if ($type[strlen($type)-1]=='s'){
 						$show=substr($type,0,strlen($type)-1);
 					}else $show=$type;
 						
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=";
 					echo $items_id;
 					echo "\">$items_id</a>";
 					break;
@@ -526,7 +526,7 @@ function showAddEvents($target,$user="") {
 	echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
 
 	while ($i < $number) {
-		$ID = $DB->result($result, $i, "ID");
+		$ID = $DB->result($result, $i, "id");
 		$items_id = $DB->result($result, $i, "items_id");
 		$type = $DB->result($result, $i, "type");
 		$date = $DB->result($result, $i, "date");
@@ -621,7 +621,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	echo "</tr>";
 
 	while ($i < $number) {
-		$ID = $DB->result($result, $i, "ID");
+		$ID = $DB->result($result, $i, "id");
 		$items_id = $DB->result($result, $i, "items_id");
 		$type = $DB->result($result, $i, "type");
 		$date = $DB->result($result, $i, "date");

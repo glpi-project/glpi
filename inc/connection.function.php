@@ -75,19 +75,19 @@ function showConnect($target,$ID,$itemtype) {
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
 				echo "<tr><td class='tab_bg_1".($computer['is_deleted']?"_2":"")."'><strong>".$LANG['help'][25].": ";
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$computer['ID']."\">";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$computer['id']."\">";
 				echo $computer['name'];
-				if ($_SESSION["glpiis_ids_visible"]||empty($computer['name'])) echo " (".$computer['ID'].")";
+				if ($_SESSION["glpiis_ids_visible"]||empty($computer['name'])) echo " (".$computer['id'].")";
 				echo "</a>";
 				echo "</strong></td>";
 				echo "<td class='tab_bg_2".($computer['is_deleted']?"_2":"")."' align='center'><strong>";
 				if ($canedit){
-					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;computers_id=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
+					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;computers_id=".$computer['id']."&amp;id=".$key."\">".$LANG['buttons'][10]."</a>";
 				} else {
 					echo "&nbsp;";
 				}
 				echo "</strong>";
-				$used[] = $computer['ID'];
+				$used[] = $computer['id'];
 			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><strong>".$LANG['help'][25].": </strong>";
@@ -156,7 +156,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
 	//Get info about the periph
 	$query = "SELECT items_id,computers_id, itemtype
 		FROM glpi_computers_items 
-		WHERE ID='$ID'";		
+		WHERE id='$ID'";		
 	$res = $DB->query($query);
 
 	if($DB->numrows($res)>0){
@@ -259,7 +259,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
 								
 					//Put periph in trash
 					else if($decoConf == "trash"){
-						$tmp["ID"]=$id_elem;
+						$tmp["id"]=$id_elem;
 						$tmp["is_deleted"]=1;
 						$device->obj->update($tmp,$dohistory);
 					}
@@ -294,26 +294,26 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
 
 	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
-		$query = "SELECT ID, computers_id 
+		$query = "SELECT id, computers_id 
 			FROM glpi_computers_items 
 			WHERE glpi_computers_items.items_id = '$sID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result = $DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
-			Disconnect($data["ID"],$dohistory);
+			Disconnect($data["id"],$dohistory);
 
 			// As we come from OCS, do not lock the device
 			switch ($itemtype) {
 				case MONITOR_TYPE:
-					deleteInOcsArray($data["computers_id"],$data["ID"],"import_monitor");
+					deleteInOcsArray($data["computers_id"],$data["id"],"import_monitor");
 					break;
 				case DEVICE_TYPE:
-					deleteInOcsArray($data["computers_id"],$data["ID"],"import_device");
+					deleteInOcsArray($data["computers_id"],$data["id"],"import_device");
 					break;
 				case PERIPHERAL_TYPE:
-					deleteInOcsArray($data["computers_id"],$data["ID"],"import_peripheral");
+					deleteInOcsArray($data["computers_id"],$data["id"],"import_peripheral");
 					break;
 				case PRINTER_TYPE:
-					deleteInOcsArray($data["computers_id"],$data["ID"],"import_printer");
+					deleteInOcsArray($data["computers_id"],$data["id"],"import_printer");
 					break;
 			}
 		}
@@ -403,7 +403,7 @@ function getNumberConnections($itemtype,$ID){
 	global $DB;
 	$query = "SELECT count(*) 
 		FROM glpi_computers_items 
-			INNER JOIN glpi_computers ON ( glpi_computers_items.computers_id=glpi_computers.ID )
+			INNER JOIN glpi_computers ON ( glpi_computers_items.computers_id=glpi_computers.id )
 		WHERE glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'
 			AND glpi_computers.is_deleted='0' AND glpi_computers.is_template='0'";
 
@@ -427,11 +427,11 @@ function unglobalizeDevice($itemtype,$ID){
 	// Update item to unit management :
 	$ci->getFromDB($itemtype,$ID);
 	if ($ci->getField('is_global')){
-		$input=array("ID"=>$ID,"is_global"=>"0");
+		$input=array("id"=>$ID,"is_global"=>"0");
 		$ci->obj->update($input);
 
 		// Get connect_wire for this connection
-		$query = "SELECT glpi_computers_items.ID AS connectID 
+		$query = "SELECT glpi_computers_items.id AS connectID 
 			FROM glpi_computers_items 
 			WHERE glpi_computers_items.items_id = '$ID' AND glpi_computers_items.itemtype = '$itemtype'";
 		$result=$DB->query($query);
@@ -440,12 +440,12 @@ function unglobalizeDevice($itemtype,$ID){
 				// Get ID of the computer
 				if ($data=$DB->fetch_array($result)){
 					// Add new Item
-					unset($ci->obj->fields['ID']);
-					if ($newID=$ci->obj->add(array("ID"=>$ID))){
+					unset($ci->obj->fields['id']);
+					if ($newID=$ci->obj->add(array("id"=>$ID))){
 						// Update Connection
 						$query2="UPDATE glpi_computers_items 
 							SET items_id='$newID'
-							WHERE ID='".$data["connectID"]."'";
+							WHERE id='".$data["connectID"]."'";
 						$DB->query($query2);
 					}
 

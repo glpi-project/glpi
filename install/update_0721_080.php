@@ -192,24 +192,29 @@ function update0721to080() {
 	foreach ($glpi_tables as $original_table => $new_table) {
       if (strcmp($original_table,$new_table)!=0) {
          // Original table exists ?
-            if (TableExists($original_table)) {
-               // rename new tables if exists ?
-               if (TableExists($new_table)) {
-                  if (TableExists("backup_$new_table")) {
-                     $query="DROP TABLE `backup_".$new_table."`";
-                     $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
-                  }
-                  echo "<p><b>$new_table table already exists. ";
-                  echo "A backup have been done to backup_$new_table.</b></p>";
-                  $backup_tables=true;
-                  $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
-                  $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
-
+         if (TableExists($original_table)) {
+            // rename new tables if exists ?
+            if (TableExists($new_table)) {
+               if (TableExists("backup_$new_table")) {
+                  $query="DROP TABLE `backup_".$new_table."`";
+                  $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
                }
-               // rename original table
-               $query="RENAME TABLE `$original_table` TO `$new_table`";
-               $DB->query($query) or die("0.80 rename $original_table to $new_table " . $LANG['update'][90] . $DB->error());
+               echo "<p><b>$new_table table already exists. ";
+               echo "A backup have been done to backup_$new_table.</b></p>";
+               $backup_tables=true;
+               $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
+               $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
+
             }
+            // rename original table
+            $query="RENAME TABLE `$original_table` TO `$new_table`";
+            $DB->query($query) or die("0.80 rename $original_table to $new_table " . $LANG['update'][90] . $DB->error());
+         }
+      }
+      if (FieldExists($new_table,'ID')){
+         // ALTER ID -> id
+         $query=" ALTER TABLE `$new_table` CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT";
+         $DB->query($query) or die("0.80 rename ID to id in $new_table " . $LANG['update'][90] . $DB->error());
       }
    }
    if ($backup_tables) {
@@ -1238,6 +1243,7 @@ function update0721to080() {
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'use_mode', 'to' => 'use_mode', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'dropdown_limit', 'to' => 'dropdown_chars_limit', 'default' =>NULL, 'maybenull'=>true, 'noindex'=>true),//
                               ),
                      );
    foreach ($intfields as $table => $tab) {
@@ -1270,14 +1276,14 @@ function update0721to080() {
          // Rename field
          if (FieldExists($table, $oldname)) {
             if ($check_datas) {
-               $query="SELECT ID, $oldname FROM $table;";
+               $query="SELECT id, $oldname FROM $table;";
                if ($result=$DB->query($query)) {
                   if ($DB->numrows($result)>0) {
                      while ($data = $DB->fetch_assoc($result)) {
                         if (empty($data[$oldname]) && isset($update['default'])) {
                            $data[$oldname]=$update['default'];
                         }
-                        $query="UPDATE $table SET $oldname='".intval($data[$oldname])."' WHERE ID = ".$data['ID'].";";
+                        $query="UPDATE $table SET $oldname='".intval($data[$oldname])."' WHERE id = ".$data['id'].";";
                         $DB->query($query);
                      }
                   }
@@ -1399,7 +1405,7 @@ function update0721to080() {
    if (!FieldExists('glpi_mailcollectors', 'filesize_max')) {
       $query="ALTER TABLE `glpi_mailcollectors` ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
       $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
-      $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE ID=1";
+      $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE id=1";
       if ($result=$DB->query($query)){
          if ($DB->numrows($result)>0){
             $query="UPDATE glpi_mailcollectors SET filesize_max='".$DB->result($result,0,0)."';";
@@ -1714,11 +1720,11 @@ function update0721to080() {
          $news[$key]="&$val=";
       }
 
-      $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
+      $query="SELECT id, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE id=".$data['id'].";";
                $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
             }
          }
@@ -1733,11 +1739,11 @@ function update0721to080() {
       foreach ($news as $key => $val) {
          $news[$key]="&$val=";
       }
-      $query="SELECT ID, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." ;";
+      $query="SELECT id, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." ;";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE ID=".$data['ID'].";";
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE id=".$data['id'].";";
                $DB->query($query2) or die("0.80 update all bookmarks " . $LANG['update'][90] . $DB->error());
             }
          }
@@ -1763,7 +1769,7 @@ function update0721to080() {
                            'FK_entities'=>'entities_id');
    foreach ($changes as $ruletype => $tab) {
       // Get rules
-      $query = "SELECT GROUP_CONCAT(ID) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
+      $query = "SELECT GROUP_CONCAT(id) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             // Get rule string

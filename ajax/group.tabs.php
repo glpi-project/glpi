@@ -42,7 +42,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
@@ -50,20 +50,20 @@ $group=new Group;
 
 	checkRight("group","r");
 
-		if ($_POST["ID"]>0){
+		if ($_POST["id"]>0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					showGroupUsers($_POST['target'],$_POST["ID"]);
-					showGroupDevice($_POST["ID"]);
-					displayPluginAction(GROUP_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					showGroupUsers($_POST['target'],$_POST["id"]);
+					showGroupDevice($_POST["id"]);
+					displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
 					break;
 				case 2 : 
-					showGroupDevice($_POST["ID"]);
+					showGroupDevice($_POST["id"]);
 					break;
 
 				default :
-					if (!displayPluginAction(GROUP_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						showGroupUsers($_POST['target'],$_POST["ID"]);
+					if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+						showGroupUsers($_POST['target'],$_POST["id"]);
 					}
 					break;
 			}

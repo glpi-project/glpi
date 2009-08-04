@@ -198,7 +198,7 @@ class Consumable extends CommonDBTM {
 		$ic=new Infocom();
 
 		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])){
-			unset($ic->fields["ID"]);
+			unset($ic->fields["id"]);
 			$ic->fields["items_id"]=$newID;
 			$ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
 			if (empty($ic->fields['use_date'])){
@@ -213,7 +213,7 @@ class Consumable extends CommonDBTM {
 
 	function restore($input,$history=1){
 		global $DB;
-		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='".$input["ID"]."'";
+		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE id='".$input["id"]."'";
 
 		if ($result = $DB->query($query)) {
 			return true;
@@ -236,7 +236,7 @@ class Consumable extends CommonDBTM {
 	function out($ID,$users_id=0) {
 
 		global $DB;
-		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', users_id='$users_id' WHERE ID='$ID'";
+		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', users_id='$users_id' WHERE id='$ID'";
 
 		if ($result = $DB->query($query)) {
 			return true;

@@ -86,13 +86,13 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 
 	// Check OCS connections
-	$query = "SELECT ID, name FROM glpi_ocsservers";
+	$query = "SELECT id, name FROM glpi_ocsservers";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "Check OCS servers:";
 			while ($data = $DB->fetch_assoc($result)){
 				echo " ".$data['name'];
-				if (checkOCSconnection($data['ID'])){
+				if (checkOCSconnection($data['id'])){
 					echo "_OK";
 				} else {
 					echo "_PROBLEM";
@@ -116,7 +116,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 			echo " ".$method['name'];
 
 			if (try_connect_ldap($method['host'],$method['port'], 
-				 $method["rootdn"], $method["rootdn_password"], $method["use_tls"],"","",$method["deref_option"],$method['ID'])){
+				 $method["rootdn"], $method["rootdn_password"], $method["use_tls"],"","",$method["deref_option"],$method['id'])){
 				echo "_OK";
 			} else {
 				echo "_PROBLEM";

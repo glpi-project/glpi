@@ -43,18 +43,18 @@ checkRight("reports","r");
 
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-if (!isset($_GET["ID"])) $_GET["ID"]=0;
+if (!isset($_GET["id"])) $_GET["id"]=0;
 
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"report.reservation.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' align='center'>";
-dropdownAllUsers("ID",$_GET["ID"],"reservation_helpdesk");
+dropdownAllUsers("id",$_GET["id"],"reservation_helpdesk");
 echo "</td>";
 echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
 echo "</table></form></div>";
 
-if ($_GET["ID"]>0)
-showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
+if ($_GET["id"]>0)
+showUserReservations($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
 

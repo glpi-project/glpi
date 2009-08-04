@@ -62,7 +62,7 @@ if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_P
 }
 
 $cleantarget=preg_replace("/[&]date[12]=[0-9-]*/","",$_SERVER['QUERY_STRING']);
-$cleantarget=preg_replace("/[&]*ID=([0-9]+[&]{0,1})/","",$cleantarget);
+$cleantarget=preg_replace("/[&]*id=([0-9]+[&]{0,1})/","",$cleantarget);
 $cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 
 $job=new Job();
@@ -71,130 +71,130 @@ $prev=0;
 $title="";
 switch($_GET["type"]){
 	case "technicien":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_users",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG['stats'][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
+		$next=getNextItem("glpi_users",$_GET["id"]);
+		$prev=getPreviousItem("glpi_users",$_GET["id"]);
+		$title=$LANG['stats'][16].": ".getAssignName($_GET["id"],USER_TYPE,1);
 		break;
 	case "technicien_followup":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_users",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG['stats'][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
+		$next=getNextItem("glpi_users",$_GET["id"]);
+		$prev=getPreviousItem("glpi_users",$_GET["id"]);
+		$title=$LANG['stats'][16].": ".getAssignName($_GET["id"],USER_TYPE,1);
 		break;
 	case "enterprise":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_suppliers",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_suppliers",$_GET["ID"]);
-		$title=$LANG['stats'][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1);
+		$next=getNextItem("glpi_suppliers",$_GET["id"]);
+		$prev=getPreviousItem("glpi_suppliers",$_GET["id"]);
+		$title=$LANG['stats'][44].": ".getAssignName($_GET["id"],ENTERPRISE_TYPE,1);
 		break;
 	case "user":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
-		$job->fields["users_id"]=$_GET["ID"];
+		$job->fields["users_id"]=$_GET["id"];
 	
-		$next=getNextItem("glpi_users",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
+		$next=getNextItem("glpi_users",$_GET["id"]);
+		$prev=getPreviousItem("glpi_users",$_GET["id"]);
 		$title=$LANG['stats'][20].": ".$job->getAuthorName(1);
 		break;	
 	case "users_id_recipient":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
-		$job->fields["users_id"]=$_GET["ID"];
+		$job->fields["users_id"]=$_GET["id"];
 	
-		$next=getNextItem("glpi_users",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
+		$next=getNextItem("glpi_users",$_GET["id"]);
+		$prev=getPreviousItem("glpi_users",$_GET["id"]);
 		$title=$LANG['stats'][20].": ".$job->getAuthorName(1);
 		break;	
 	case "ticketscategories_id":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_ticketscategories",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_ticketscategories",$_GET["ID"]);
-		$title=$LANG['common'][36].": ".getDropdownName("glpi_ticketscategories",$_GET["ID"]);
+		$next=getNextItem("glpi_ticketscategories",$_GET["id"]);
+		$prev=getPreviousItem("glpi_ticketscategories",$_GET["id"]);
+		$title=$LANG['common'][36].": ".getDropdownName("glpi_ticketscategories",$_GET["id"]);
 		break;	
 	case "group":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_groups",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
-		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
+		$next=getNextItem("glpi_groups",$_GET["id"]);
+		$prev=getPreviousItem("glpi_groups",$_GET["id"]);
+		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["id"]);
 		break;	
 	case "groups_id_assign":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 	
-		$next=getNextItem("glpi_groups",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
-		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
+		$next=getNextItem("glpi_groups",$_GET["id"]);
+		$prev=getPreviousItem("glpi_groups",$_GET["id"]);
+		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["id"]);
 		break;	
 	case "priority":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 		$next=$prev=0;
 		if ($val1<5) $next=$val1+1;
 		if ($val1>1) $prev=$val1-1;
-		$title=$LANG['joblist'][2].": ".getPriorityName($_GET["ID"]);
+		$title=$LANG['joblist'][2].": ".getPriorityName($_GET["id"]);
 		break;	
 	case "userstitles_id":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 		$next=$prev=0;
-		$next=getNextItem("glpi_userstitles",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_userstitles",$_GET["ID"]);
-		$title=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$_GET["ID"]);
+		$next=getNextItem("glpi_userstitles",$_GET["id"]);
+		$prev=getPreviousItem("glpi_userstitles",$_GET["id"]);
+		$title=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$_GET["id"]);
 		break;	
 	case "userscategories_id":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 		$next=$prev=0;
-		$next=getNextItem("glpi_userscategories",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_userscategories",$_GET["ID"]);
-		$title=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$_GET["ID"]);
+		$next=getNextItem("glpi_userscategories",$_GET["id"]);
+		$prev=getPreviousItem("glpi_userscategories",$_GET["id"]);
+		$title=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$_GET["id"]);
 		break;	
 	case "request_type":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2="";
 		$next=$prev=0;
 		if ($val1<6) $next=$val1+1;
 		if ($val1>0) $prev=$val1-1;
-		$title=$LANG['job'][44].": ".getRequestTypeName($_GET["ID"]);
+		$title=$LANG['job'][44].": ".getRequestTypeName($_GET["id"]);
 		break;	
 	case "device":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2=$_GET["champ"];
 	
 		$device_table = getDeviceTable($_GET["champ"]);
 	
-		$next=getNextItem($device_table,$_GET["ID"]);
-		$prev=getPreviousItem($device_table,$_GET["ID"]);
+		$next=getNextItem($device_table,$_GET["id"]);
+		$prev=getPreviousItem($device_table,$_GET["id"]);
 	
 		$query = "SELECT designation 
 			FROM ".$device_table." 
-			WHERE ID='".$_GET['ID']."'";
+			WHERE id='".$_GET['id']."'";
 		$result=$DB->query($query);
 	
 		$title=$LANG['Menu'][13].": ".$DB->result($result,0,"designation");
 
 		break;
 	case "comp_champ":
-		$val1=$_GET["ID"];
+		$val1=$_GET["id"];
 		$val2=$_GET["champ"];
 	
 		$table=getTableNameForForeignKeyField($_GET["champ"]);
 	
 	
-		$next=getNextItem($table,$_GET["ID"]);
-		$prev=getPreviousItem($table,$_GET["ID"]);
-		$title=$LANG['stats'][26].": ".getDropdownName($table,$_GET["ID"]);
+		$next=getNextItem($table,$_GET["id"]);
+		$prev=getPreviousItem($table,$_GET["id"]);
+		$title=$LANG['stats'][26].": ".getDropdownName($table,$_GET["id"]);
 	break;
 
 }
@@ -204,12 +204,12 @@ switch($_GET["type"]){
 	echo "<table class='tab_cadre_navigation'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;id=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a>";
 	echo "</td>";
 	
 	echo "<td width='400' align='center'><b>$title</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;id=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a>";
 	echo "</td>";
 	
 	echo "</tr>";

@@ -46,9 +46,9 @@ popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 
 $ci=new CommonItem();
 
-if (isset($_GET["ID"])){
+if (isset($_GET["id"])){
 	$ic=new Infocom();
-	$ic->getFromDB($_GET["ID"]);
+	$ic->getFromDB($_GET["id"]);
 	$_GET["itemtype"]=$ic->fields["itemtype"];
 	$_GET["device_id"]=$ic->fields["items_id"];
 }

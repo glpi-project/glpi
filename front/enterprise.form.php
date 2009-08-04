@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","use
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = -1;
+if(!isset($_GET["id"])) $_GET["id"] = -1;
 
 if (!isset($_GET["start"])) {
 	$_GET["start"]=0;
@@ -59,34 +59,34 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	$ent->check($_POST["ID"],'w');
+	$ent->check($_POST["id"],'w');
 
 	$ent->delete($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["restore"]))
 {
-	$ent->check($_POST["ID"],'w');
+	$ent->check($_POST["id"],'w');
 
 	$ent->restore($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["purge"]))
 {
-	$ent->check($_POST["ID"],'w');
+	$ent->check($_POST["id"],'w');
 
 	$ent->delete($_POST,1);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["update"]))
 {
-	$ent->check($_POST["ID"],'w');
+	$ent->check($_POST["id"],'w');
 
 	$ent->update($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["addcontact"]))
@@ -101,7 +101,7 @@ else if (isset($_GET["deletecontact"]))
 {
 	$ent->check($_GET["eID"],'w');
 
-	deleteContactEnterprise($_GET["ID"]);
+	deleteContactEnterprise($_GET["id"]);
 	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -117,15 +117,15 @@ else if (isset($_GET["deletecontract"]))
 {
 	$ent->check($_GET["entID"],'w');
 
-	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
+	deleteEnterpriseContract($_GET["id"]);
+	logEvent($_GET["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
 	commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
-	$ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$ent->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 		
 	commonFooter();
 }

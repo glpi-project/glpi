@@ -39,43 +39,43 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
    exit();
 }
 
-if(empty($_POST["ID"])) {
-   $_POST["ID"] = -1;
+if(empty($_POST["id"])) {
+   $_POST["id"] = -1;
 }
 
-if ($_POST['ID']>0) {
+if ($_POST['id']>0) {
    switch($_POST['glpi_tab']) {
       case -1 :
-         //showDeviceBudgetValue($_POST["ID"]);
-         showDeviceBudget($_POST["ID"]);
-         showDocumentAssociated(BUDGET_TYPE,$_POST["ID"]);
-         showLinkOnDevice(BUDGET_TYPE,$_POST["ID"]);
-         displayPluginAction(BUDGET_TYPE,$_POST["ID"],$_POST['glpi_tab']);
+         //showDeviceBudgetValue($_POST["id"]);
+         showDeviceBudget($_POST["id"]);
+         showDocumentAssociated(BUDGET_TYPE,$_POST["id"]);
+         showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
+         displayPluginAction(BUDGET_TYPE,$_POST["id"],$_POST['glpi_tab']);
          break;
       case 1 :
-         showDeviceBudgetValue($_POST["ID"]);
+         showDeviceBudgetValue($_POST["id"]);
          break;
       case 2 :
-         showDeviceBudget($_POST["ID"]);
+         showDeviceBudget($_POST["id"]);
          break;
       case 5 :
-         showDocumentAssociated(BUDGET_TYPE,$_POST["ID"]);
+         showDocumentAssociated(BUDGET_TYPE,$_POST["id"]);
          break;
       case 7 :
-         showLinkOnDevice(BUDGET_TYPE,$_POST["ID"]);
+         showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
          break;
       case 10 :
-         showNotesForm($_POST['target'],BUDGET_TYPE,$_POST["ID"]);
+         showNotesForm($_POST['target'],BUDGET_TYPE,$_POST["id"]);
          break;
       case 12 :
-         showHistory(BUDGET_TYPE,$_POST["ID"]);
+         showHistory(BUDGET_TYPE,$_POST["id"]);
          break;
       default :
-         if (!displayPluginAction(BUDGET_TYPE,$_POST["ID"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(BUDGET_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
          }
          break;
    }

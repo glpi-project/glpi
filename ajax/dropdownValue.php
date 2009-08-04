@@ -95,7 +95,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 			$field='entities_id';
 			$add_order=" entities_id, ";
 			if ($_POST['table']=='glpi_entities'){
-				$field='ID';
+				$field='id';
 				$add_order=" ";
 
 			}
@@ -173,7 +173,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 			$prev=-1;
 			while ($data =$DB->fetch_array($result)) {
 
-				$ID = $data['ID'];
+				$ID = $data['id'];
 				$level = $data['level'];
 	
 				$output=$data['name'];
@@ -225,7 +225,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 		echo "</select>";
 
 	} else { // Not dropdowntree_tables
-		$where .=" AND `".$_POST['table']."`.ID NOT IN ('".$_POST['value']."'";
+		$where .=" AND `".$_POST['table']."`.id NOT IN ('".$_POST['value']."'";
 		if (isset($_POST['used'])) {
 			if (is_array($_POST['used'])) {
 				$used=$_POST['used'];
@@ -273,13 +273,13 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 		switch ($_POST['table']){
 			case "glpi_contacts":
 				$query = "SELECT `".$_POST['table']."`.entities_id, CONCAT(name,' ',firstname) as $field, 
-						`".$_POST['table']."`.comment, `".$_POST['table']."`.ID
+						`".$_POST['table']."`.comment, `".$_POST['table']."`.id
 					FROM `".$_POST['table']."` 
 					$where";
 			break;
 			case "glpi_softwareslicenses":
 				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_softwares.name,' - ',glpi_softwareslicenses.name) as $field
-					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.ID)
+					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id)
 					$where";
 
 			break;
@@ -324,7 +324,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 				if (isset($_POST['withotherserial'])&&isset($data["otherserial"]) && !empty($data["otherserial"])) {
 					$output.=" - ".$data["otherserial"];
 				}
-				$ID = $data['ID'];
+				$ID = $data['id'];
 				$addcomment="";
 				if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
 

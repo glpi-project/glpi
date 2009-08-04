@@ -81,7 +81,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 				//echo "</div>";
 			}
 		} else { // getFromDBforDevice
-			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
+			$canedit = ($ic->can($ic->fields['id'], "w") && $withtemplate!=2); 
 			
 			if ($canedit) {
 				echo "<form name='form_ic' method='post' action=\"$target\">";
@@ -241,7 +241,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 				echo "<tr>";
 	
 				echo "<td class='tab_bg_2' colspan='2' align='center'>";
-				echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
+				echo "<input type='hidden' name='id' value=\"".$ic->fields['id']."\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
@@ -533,7 +533,7 @@ function cron_infocom($display=false){
 	// Check notice
 	$query="SELECT glpi_infocoms.* 
 		FROM glpi_infocoms 
-		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.items_id 
+		LEFT JOIN glpi_alerts ON (glpi_infocoms.id = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".INFOCOM_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
@@ -567,7 +567,7 @@ function cron_infocom($display=false){
 				// define message alert / Not for template items
 				if (!$ci->getField('is_template')){
 					$message[$entity].=$LANG['mailing'][40]." ".$ci->getType()." - ".$ci->getName().": ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>\n";
-					$items[$entity][]=$data["ID"];
+					$items[$entity][]=$data["id"];
 				}
 			} 
 
@@ -592,7 +592,7 @@ function cron_infocom($display=false){
 					foreach ($items[$entity] as $ID){
 						$input["items_id"]=$ID;
 						$alert->add($input);
-						unset($alert->fields['ID']);
+						unset($alert->fields['id']);
 					}
 
 				} else {

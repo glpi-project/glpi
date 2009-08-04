@@ -50,9 +50,9 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 	$name=getDropdownName("glpi_networkequipments",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
 
-	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.ID AS IDport, glpi_networkequipments.name as switch
+	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.id AS IDport, glpi_networkequipments.name as switch
 		FROM glpi_networkequipments
-		INNER JOIN glpi_networkports c ON c.itemtype=".NETWORKING_TYPE." AND c.items_id=glpi_networkequipments.ID
+		INNER JOIN glpi_networkports c ON c.itemtype=".NETWORKING_TYPE." AND c.items_id=glpi_networkequipments.id
 		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
 
 

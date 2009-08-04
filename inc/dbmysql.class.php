@@ -317,12 +317,12 @@ class DBmysql {
 	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
 	 * 
 	 * @param $tableorsql table name, array of names or SQL query
-	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
+	 * @param $crit string or array of filed/values, ex array("id"=>1), if empty => all rows
 	 * 
 	 * Examples =
-	 *   array("ID"=>NULL)
-	 *   array("OR"=>array("ID"=>1, "NOT"=>array("state"=>3)));
-	 *   array("AND"=>array("ID"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
+	 *   array("id"=>NULL)
+	 *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
+	 *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
 	 * 
 	 * @param $field name or array of field names
 	 * @param $orderby filed name or array of field names
@@ -354,7 +354,7 @@ class DBmysqlIterator  implements Iterator {
 	 * 
 	 * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
 	 * @param $tableorsql table name, array of names or SQL query
-	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
+	 * @param $crit string or array of filed/values, ex array("id"=>1), if empty => all rows
 	 *
 	 **/
 	function __construct ($dbconnexion, $table, $crit="") {
@@ -508,7 +508,7 @@ class DBmysqlIterator  implements Iterator {
   	}
 
   	public function key() {
-  		return (isset($this->row["ID"]) ? $this->row["ID"] : 0);
+  		return (isset($this->row["id"]) ? $this->row["id"] : 0);
   	}
 
   	public function next() {

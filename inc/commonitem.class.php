@@ -424,7 +424,7 @@ class CommonItem{
 				return $this->getName($with_comment);
 				break;
 			default :
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?ID=".$this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comment)."</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?id=".$this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comment)."</a>";
 				break;
 		}
 

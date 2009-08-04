@@ -41,7 +41,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["sort"])) $_GET["sort"] = "";
 if(!isset($_GET["order"])) $_GET["order"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
@@ -57,13 +57,13 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$soft->check($_POST["ID"],'w');
+	$soft->check($_POST["id"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$soft->delete($_POST,1);
 	else $soft->delete($_POST);
 
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
@@ -71,41 +71,41 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	$soft->check($_POST["ID"],'w');
+	$soft->check($_POST["id"],'w');
 
 	$soft->restore($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	if (isset($_POST["purge"]))
-		$input["ID"]=$_POST["ID"];
+		$input["id"]=$_POST["id"];
 	else
-		$input["ID"] = $_GET["ID"];	
+		$input["id"] = $_GET["id"];	
 
-	$soft->check($input["ID"],'w');
+	$soft->check($input["id"],'w');
 
 	$soft->delete($input,1);
-	logEvent($input["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($input["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["update"]))
 {
-	$soft->check($_POST["ID"],'w');
+	$soft->check($_POST["id"],'w');
 
 	$soft->update($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["mergesoftware"]))
 {
-	$soft->check($_POST["ID"],'w');
+	$soft->check($_POST["id"],'w');
 
 	popHeader($LANG['Menu'][4]);
 
-	if (isset($_POST["ID"]) && isset($_POST["item"]) && is_array($_POST["item"]) && count($_POST["item"])) {
-		mergeSoftware($_POST["ID"], $_POST["item"]);		
+	if (isset($_POST["id"]) && isset($_POST["item"]) && is_array($_POST["item"]) && count($_POST["item"])) {
+		mergeSoftware($_POST["id"], $_POST["item"]);		
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -115,7 +115,7 @@ else
 
 	commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 
-	$soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["withtemplate"]);
+	$soft->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
 
 	commonFooter();
 }

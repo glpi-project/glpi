@@ -50,8 +50,8 @@ checkRight("reports","r");
 
 		// Titre
 		echo "<div align='center'><h2>".$LANG['reports'][51]." $name</h2></div><br><br>";
-		$query="SELECT a.name as bureau, a.ID as ID, glpi_netpoints.name as prise, c.name as port, 
-				c.ip,c.mac,c.ID AS IDport
+		$query="SELECT a.name as bureau, a.id, glpi_netpoints.name as prise, c.name as port,
+				c.ip,c.mac,c.id AS IDport
 			FROM glpi_netpoints
 			LEFT JOIN glpi_locations a ON a.id=glpi_netpoints.locations_id
 			LEFT JOIN glpi_networkports c ON c.netpoints_id=glpi_netpoints.id
@@ -81,7 +81,7 @@ checkRight("reports","r");
 			while( $ligne = $DB->fetch_array($result))
 			{
 				$prise=$ligne['prise'];
-				$ID=$ligne['ID'];
+				$ID=$ligne['id'];
 				$lieu=getDropdownName("glpi_locations",$ID);
 				//$etage=$ligne['etage'];
 				$nw=new NetWire();

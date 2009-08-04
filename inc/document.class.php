@@ -58,7 +58,7 @@ class Document extends CommonDBTM {
 	**/	
 	function getFromDBbyFilename($filename){
 		global $DB;
-		$query="SELECT ID FROM glpi_documents WHERE filename='$filename'";
+		$query="SELECT id FROM glpi_documents WHERE filename='$filename'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==1){
 			return $this->getFromDB($DB->result($result,0,0));

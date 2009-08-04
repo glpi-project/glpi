@@ -92,7 +92,7 @@ if (!$maxid) {
 // Computer from OCS : New, ID Changed, Linked 
 $sql = "SELECT *  FROM glpi_logs " .
 		"WHERE date_mod >= '$maxti' AND itemtype=1 AND linked_action IN (8,10,11) " .
-		"ORDER BY ID DESC";
+		"ORDER BY id DESC";
 
 $res = $DB->query($sql);
 if (!$res) {
@@ -122,7 +122,7 @@ while ($event=$DB->fetch_array($res)) {
 		if ($event["linked_action"]==10) {// ID Changed
 			
 			$tabres[$comp->fields["entities_id"]][] = 
-				"ID:".$comp->fields["ID"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
+				"ID:".$comp->fields["id"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
 				") => rollback lien";
 			
 			// Search the old Device_ID in OCS
@@ -160,11 +160,11 @@ while ($event=$DB->fetch_array($res)) {
 		} else { // $event["linked_action"]==8 (New) or 11 (linked)
 			
 			$tabres[$comp->fields["entities_id"]][] = 
-				"ID:".$comp->fields["ID"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
+				"ID:".$comp->fields["id"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
 				") => retour stock";
 			
 			// TODO: to be done according to automatic link configuration
-			$input["ID"] = $event["items_id"];
+			$input["id"] = $event["items_id"];
 			$input["name"] = NULL;		// No name
 			$input["is_ocs_import"] = 0;	// No Ocs link
 			$input["state"] = 5;		// Available

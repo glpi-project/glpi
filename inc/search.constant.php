@@ -73,7 +73,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[COMPUTER_TYPE][1]['itemlink_type']=COMPUTER_TYPE;
 
 $SEARCH_OPTION[COMPUTER_TYPE][2]['table']='glpi_computers';
-$SEARCH_OPTION[COMPUTER_TYPE][2]['field']='ID';
+$SEARCH_OPTION[COMPUTER_TYPE][2]['field']='id';
 $SEARCH_OPTION[COMPUTER_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][2]['name']=$LANG['common'][2];
 
@@ -617,7 +617,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[NETWORKING_TYPE][1]['itemlink_type']=NETWORKING_TYPE;
 
 $SEARCH_OPTION[NETWORKING_TYPE][2]['table']='glpi_networkequipments';
-$SEARCH_OPTION[NETWORKING_TYPE][2]['field']='ID';
+$SEARCH_OPTION[NETWORKING_TYPE][2]['field']='id';
 $SEARCH_OPTION[NETWORKING_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][2]['name']=$LANG['common'][2];
 
@@ -980,7 +980,7 @@ $SEARCH_OPTION[PRINTER_TYPE][1]['itemlink_type']=PRINTER_TYPE;
 
 
 $SEARCH_OPTION[PRINTER_TYPE][2]['table']='glpi_printers';
-$SEARCH_OPTION[PRINTER_TYPE][2]['field']='ID';
+$SEARCH_OPTION[PRINTER_TYPE][2]['field']='id';
 $SEARCH_OPTION[PRINTER_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][2]['name']=$LANG['common'][2];
 
@@ -1336,7 +1336,7 @@ $SEARCH_OPTION[MONITOR_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[MONITOR_TYPE][1]['itemlink_type']=MONITOR_TYPE;
 
 $SEARCH_OPTION[MONITOR_TYPE][2]['table']='glpi_monitors';
-$SEARCH_OPTION[MONITOR_TYPE][2]['field']='ID';
+$SEARCH_OPTION[MONITOR_TYPE][2]['field']='id';
 $SEARCH_OPTION[MONITOR_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][2]['name']=$LANG['common'][2];
 
@@ -1663,7 +1663,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[PERIPHERAL_TYPE][1]['itemlink_type']=PERIPHERAL_TYPE;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][2]['table']='glpi_peripherals';
-$SEARCH_OPTION[PERIPHERAL_TYPE][2]['field']='ID';
+$SEARCH_OPTION[PERIPHERAL_TYPE][2]['field']='id';
 $SEARCH_OPTION[PERIPHERAL_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][2]['name']=$LANG['common'][2];
 
@@ -1990,7 +1990,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['itemlink_type']=SOFTWARE_TYPE;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['table']='glpi_softwares';
-$SEARCH_OPTION[SOFTWARE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[SOFTWARE_TYPE][2]['field']='id';
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2582,7 +2582,7 @@ $SEARCH_OPTION[CONTACT_TYPE][11]['linkfield']='firstname';
 $SEARCH_OPTION[CONTACT_TYPE][11]['name']=$LANG['common'][43];
 
 $SEARCH_OPTION[CONTACT_TYPE][2]['table']='glpi_contacts';
-$SEARCH_OPTION[CONTACT_TYPE][2]['field']='ID';
+$SEARCH_OPTION[CONTACT_TYPE][2]['field']='id';
 $SEARCH_OPTION[CONTACT_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CONTACT_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2659,7 +2659,7 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[ENTERPRISE_TYPE][1]['itemlink_type']=ENTERPRISE_TYPE;
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][2]['table']='glpi_suppliers';
-$SEARCH_OPTION[ENTERPRISE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[ENTERPRISE_TYPE][2]['field']='id';
 $SEARCH_OPTION[ENTERPRISE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[ENTERPRISE_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2758,7 +2758,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[CONTRACT_TYPE][1]['itemlink_type']=CONTRACT_TYPE;
 
 $SEARCH_OPTION[CONTRACT_TYPE][2]['table']='glpi_contracts';
-$SEARCH_OPTION[CONTRACT_TYPE][2]['field']='ID';
+$SEARCH_OPTION[CONTRACT_TYPE][2]['field']='id';
 $SEARCH_OPTION[CONTRACT_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CONTRACT_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2872,7 +2872,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['itemlink_type']=CARTRIDGE_TYPE;
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[CARTRIDGE_TYPE][2]['field']='id';
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2936,7 +2936,7 @@ $SEARCH_OPTION[TYPEDOC_TYPE][1]['itemlink_type']=TYPEDOC_TYPE;
 
 
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['table']='glpi_documentstypes';
-$SEARCH_OPTION[TYPEDOC_TYPE][2]['field']='ID';
+$SEARCH_OPTION[TYPEDOC_TYPE][2]['field']='id';
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['name']=$LANG['common'][2];
 
@@ -2973,7 +2973,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['itemlink_type']=DOCUMENT_TYPE;
 
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['table']='glpi_documents';
-$SEARCH_OPTION[DOCUMENT_TYPE][2]['field']='ID';
+$SEARCH_OPTION[DOCUMENT_TYPE][2]['field']='id';
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3035,7 +3035,7 @@ $SEARCH_OPTION[USER_TYPE][1]['itemlink_type']=USER_TYPE;
 $SEARCH_OPTION[USER_TYPE][1]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][2]['table']='glpi_users';
-$SEARCH_OPTION[USER_TYPE][2]['field']='ID';
+$SEARCH_OPTION[USER_TYPE][2]['field']='id';
 $SEARCH_OPTION[USER_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3144,7 +3144,7 @@ $SEARCH_OPTION[CONSUMABLE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['itemlink_type']=CONSUMABLE_TYPE;
 
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[CONSUMABLE_TYPE][2]['field']='id';
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3207,7 +3207,7 @@ $SEARCH_OPTION[LINK_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[LINK_TYPE][1]['itemlink_type']=LINK_TYPE;
 
 $SEARCH_OPTION[LINK_TYPE][2]['table']='glpi_links';
-$SEARCH_OPTION[LINK_TYPE][2]['field']='ID';
+$SEARCH_OPTION[LINK_TYPE][2]['field']='id';
 $SEARCH_OPTION[LINK_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[LINK_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3229,7 +3229,7 @@ $SEARCH_OPTION[PHONE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[PHONE_TYPE][1]['itemlink_type']=PHONE_TYPE;
 
 $SEARCH_OPTION[PHONE_TYPE][2]['table']='glpi_phones';
-$SEARCH_OPTION[PHONE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[PHONE_TYPE][2]['field']='id';
 $SEARCH_OPTION[PHONE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3572,7 +3572,7 @@ $SEARCH_OPTION[GROUP_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[GROUP_TYPE][1]['itemlink_type']=GROUP_TYPE;
 
 $SEARCH_OPTION[GROUP_TYPE][2]['table']='glpi_groups';
-$SEARCH_OPTION[GROUP_TYPE][2]['field']='ID';
+$SEARCH_OPTION[GROUP_TYPE][2]['field']='id';
 $SEARCH_OPTION[GROUP_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[GROUP_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3615,7 +3615,7 @@ $SEARCH_OPTION[ENTITY_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[ENTITY_TYPE][1]['itemlink_type']=ENTITY_TYPE;
 
 $SEARCH_OPTION[ENTITY_TYPE][2]['table']='glpi_entities';
-$SEARCH_OPTION[ENTITY_TYPE][2]['field']='ID';
+$SEARCH_OPTION[ENTITY_TYPE][2]['field']='id';
 $SEARCH_OPTION[ENTITY_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][2]['name']=$LANG['common'][2];
 
@@ -3695,8 +3695,8 @@ $SEARCH_OPTION[STATE_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[STATE_TYPE][1]['datatype']='itemlink';
 
 $SEARCH_OPTION[STATE_TYPE][2]['table']='state_types';
-$SEARCH_OPTION[STATE_TYPE][2]['field']='ID';
-$SEARCH_OPTION[STATE_TYPE][2]['linkfield']='ID';
+$SEARCH_OPTION[STATE_TYPE][2]['field']='id';
+$SEARCH_OPTION[STATE_TYPE][2]['linkfield']='id';
 $SEARCH_OPTION[STATE_TYPE][2]['name']=$LANG['common'][2];
 
 $SEARCH_OPTION[STATE_TYPE][31]['table']='glpi_states';
@@ -3774,8 +3774,8 @@ $SEARCH_OPTION[RESERVATION_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[RESERVATION_TYPE][1]['datatype']='itemlink';
 
 $SEARCH_OPTION[RESERVATION_TYPE][2]['table']='reservation_types';
-$SEARCH_OPTION[RESERVATION_TYPE][2]['field']='ID';
-$SEARCH_OPTION[RESERVATION_TYPE][2]['linkfield']='ID';
+$SEARCH_OPTION[RESERVATION_TYPE][2]['field']='id';
+$SEARCH_OPTION[RESERVATION_TYPE][2]['linkfield']='id';
 $SEARCH_OPTION[RESERVATION_TYPE][2]['name']=$LANG['common'][2];
 
 $SEARCH_OPTION[RESERVATION_TYPE][31]['table']='glpi_states';

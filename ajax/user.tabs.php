@@ -42,7 +42,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["id"])) {
 	exit();
 }
 
@@ -54,51 +54,51 @@ if (!isset($_POST["start"])) {
 
 if (!isset($_POST["sort"])) $_POST["sort"]="";
 if (!isset($_POST["order"])) $_POST["order"]="";
-if (empty($_POST["ID"])&&isset($_POST["name"])){
+if (empty($_POST["id"])&&isset($_POST["name"])){
 
 	$user->getFromDBbyName($_POST["name"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
+	glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
 }
 if(empty($_POST["name"])) $_POST["name"] = "";
 
 	checkRight("user","r");
 
-		if ($_POST["ID"]>0){
+		if ($_POST["id"]>0){
 			switch($_POST['glpi_tab']){
 				case -1:
-					showUserRights($_POST['target'],$_POST["ID"]);
-					showGroupAssociated($_POST['target'],$_POST["ID"]);
-					showDeviceUser($_POST["ID"]);
-					showUserReservations($_POST['target'],$_POST["ID"]);
+					showUserRights($_POST['target'],$_POST["id"]);
+					showGroupAssociated($_POST['target'],$_POST["id"]);
+					showDeviceUser($_POST["id"]);
+					showUserReservations($_POST['target'],$_POST["id"]);
 					if (haveRight("show_all_ticket", "1")){
-						showJobListForUser($_POST["ID"]);
+						showJobListForUser($_POST["id"]);
 					}
-					displayPluginAction(USER_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
 					break;
 				case 1 :
-					showUserRights($_POST['target'],$_POST["ID"]);
+					showUserRights($_POST['target'],$_POST["id"]);
 					break;
 				case 2 :
-					showDeviceUser($_POST["ID"]);
+					showDeviceUser($_POST["id"]);
 					break;
 				case 3 :
-					showJobListForUser($_POST["ID"]);
+					showJobListForUser($_POST["id"]);
 					break;
 				case 4 :
-					showGroupAssociated($_POST['target'],$_POST["ID"]);
+					showGroupAssociated($_POST['target'],$_POST["id"]);
 					break;
 				case 11 :
-					showUserReservations($_POST['target'],$_POST["ID"]);
+					showUserReservations($_POST['target'],$_POST["id"]);
 					break;
 				case 12:
-					showSynchronizationForm($_POST['target'],$_POST["ID"]);
+					showSynchronizationForm($_POST['target'],$_POST["id"]);
 					break;
 				case 13:
-					showHistory(USER_TYPE,$_POST["ID"]);
+					showHistory(USER_TYPE,$_POST["id"]);
 					break;
 				default : 
-					if (!displayPluginAction(USER_TYPE,$_POST["ID"],$_SESSION['glpi_tab']))
-						showGroupAssociated($_POST['target'],$_POST["ID"]);
+					if (!displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']))
+						showGroupAssociated($_POST['target'],$_POST["id"]);
 					break;
 			}
 		}

@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("transfer","r");
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(empty($_GET["id"])) $_GET["id"] = "";
 
 $transfer=new Transfer();
 
@@ -54,17 +54,17 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$transfer->check($_POST["ID"],'w');
+	$transfer->check($_POST["id"],'w');
 
 	$transfer->delete($_POST);
-	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/transfer.php");
 }else if (isset($_POST["update"]))
 {
-	$transfer->check($_POST["ID"],'w');
+	$transfer->check($_POST["id"],'w');
 
 	$transfer->update($_POST);
-	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
@@ -75,8 +75,8 @@ if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
 }
 
-$transfer->showTabs($_GET["ID"], '',$_SESSION['glpi_tab']);
-$transfer->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+$transfer->showTabs($_GET["id"], '',$_SESSION['glpi_tab']);
+$transfer->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
 ?>

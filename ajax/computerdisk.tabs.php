@@ -39,10 +39,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(isset($_POST["ID"]) && $_POST['ID']>0) {
+if(isset($_POST["id"]) && $_POST['id']>0) {
 	switch($_POST['glpi_tab']){
 		default :
-			if (!displayPluginAction(COMPUTERDISK_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
+			if (!displayPluginAction(COMPUTERDISK_TYPE,$_POST["id"],$_POST['glpi_tab'])){
 			}
 			break;
 	}	

@@ -127,7 +127,7 @@ class TrackingBusinessRule extends Rule {
 						if (!empty($result))
 						{
 							$output["itemtype"]=$result["itemtype"];
-							$output["items_id"]=$result["ID"];
+							$output["items_id"]=$result["id"];
 						}
 					break;
 				}

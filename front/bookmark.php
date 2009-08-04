@@ -59,34 +59,34 @@ if (isset($_POST["add"])){
 
 } elseif (isset($_POST["update"])){
 
-	$bookmark->check($_POST["ID"],'w');	
+	$bookmark->check($_POST["id"],'w');	
 
 	$bookmark->update($_POST);
 	$_GET["action"]="load";
 	
-} elseif ($_GET["action"]=="edit" && isset($_GET['mark_default']) && isset($_GET["ID"])){
+} elseif ($_GET["action"]=="edit" && isset($_GET['mark_default']) && isset($_GET["id"])){
 	
 	if ($_GET["mark_default"]>0){
-		$bookmark->mark_default($_GET["ID"]);
+		$bookmark->mark_default($_GET["id"]);
 	} elseif ($_GET["mark_default"]==0){
-		$bookmark->unmark_default($_GET["ID"]);
+		$bookmark->unmark_default($_GET["id"]);
 	}
 	$_GET["action"]="load";
 
-} elseif ($_GET["action"]=="load" && isset($_GET["ID"]) && $_GET["ID"]>0){
+} elseif ($_GET["action"]=="load" && isset($_GET["id"]) && $_GET["id"]>0){
 	
-	$bookmark->load($_GET["ID"]);
+	$bookmark->load($_GET["id"]);
 
 } elseif (isset($_POST["delete"])){
 	
-	$bookmark->check($_POST["ID"],'w');	
+	$bookmark->check($_POST["id"],'w');	
 	$bookmark->delete($_POST);
 	$_GET["action"]="load";
 
 } elseif (isset($_POST["delete_several"])){
 	foreach ($_POST["bookmark"] as $ID=>$value){
 		if ($bookmark->can($ID,'w')){
-			$bookmark->delete(array("ID"=>$ID));
+			$bookmark->delete(array("id"=>$ID));
 		}
 		
 	}
@@ -96,9 +96,9 @@ if (isset($_POST["add"])){
 
 if ($_GET["action"]=="edit") {
 	
-	if (isset($_GET['ID']) && $_GET['ID']>0){
+	if (isset($_GET['id']) && $_GET['id']>0){
 		// Modify
-		$bookmark->showForm($_SERVER['PHP_SELF'],$_GET['ID']);
+		$bookmark->showForm($_SERVER['PHP_SELF'],$_GET['id']);
 	} else {
 		// Create
 		$bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["itemtype"]);	

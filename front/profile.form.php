@@ -42,8 +42,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("profile","r");
 
-if (!isset($_GET['ID'])) {
-	$_GET['ID']="";
+if (!isset($_GET['id'])) {
+	$_GET['id']="";
 }
 
 
@@ -56,7 +56,7 @@ if (isset($_POST["add"])){
 	$ID=$prof->add($_POST);
 
 	// We need to redirect to form to enter rights
-	glpi_header($CFG_GLPI["root_doc"]."/front/profile.form.php?ID=$ID");
+	glpi_header($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 }else  if (isset($_POST["delete"])){
 	checkRight("profile","w");
@@ -97,7 +97,7 @@ if (isset($_GET['onglet'])) {
 }	
 
 
-	$prof->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
+	$prof->showTabs($_GET["id"],'',$_SESSION['glpi_tab']); 
 	echo "<div id='tabcontent'></div>";
 
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";

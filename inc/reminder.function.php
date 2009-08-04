@@ -94,9 +94,9 @@ function showCentralReminder($entity = -1, $parent = false){
 		$rand=mt_rand(); 
 		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["name"]."</a>";
-			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('content_reminder_".$data["ID"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$data["ID"].$rand."')\">";
-			echo "<div class='over_link' id='content_reminder_".$data["ID"].$rand."'>".$data["text"]."</div>";
+			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."\">".$data["name"]."</a>";
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('content_reminder_".$data["id"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$data["id"].$rand."')\">";
+			echo "<div class='over_link' id='content_reminder_".$data["id"].$rand."'>".$data["text"]."</div>";
 
 			if($data["is_planned"]){
 
@@ -145,7 +145,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 
 	if ($DB->numrows($result)>0)
 		for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
-			$remind->getFromDB($data["ID"]);
+			$remind->getFromDB($data["id"]);
 
 			if($data["is_planned"]){ //Un rdv on va trier sur la date begin
 				$sort=$data["begin"];
@@ -153,7 +153,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 				$sort=$data["date"];
 			}
 
-			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
+			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["id"];
 			$tabremind[$sort."$$".$i]["users_id"]=$remind->fields["users_id"];
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["entities_id"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["is_planned"]?"".$data["begin"]."":"".$data["date"]."");
@@ -188,7 +188,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 				echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["users_id"]) . "</td>";
 			}
-			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["name"]."</a>" .
+			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["id_reminder"]."\">".$val["name"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
 				
 			echo "</div></td>";

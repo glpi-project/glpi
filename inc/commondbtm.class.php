@@ -117,7 +117,7 @@ class CommonDBTM {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)){
 				while ($line = $DB->fetch_assoc($result)){
-					$data[$line['ID']]=$line;
+					$data[$line['id']]=$line;
 				}
 			} 
 		} 
@@ -132,7 +132,7 @@ class CommonDBTM {
 	 *
 	 **/
 	function getIndexName(){
-		return "ID";
+		return "id";
 	}
 	/**
 	 * Get an empty item
@@ -187,8 +187,8 @@ class CommonDBTM {
 					$query .= " = '";
 					$query .= $this->fields[$field]."'";
 				}
-				$query .= " WHERE ID ='";
-				$query .= $this->fields["ID"];	
+				$query .= " WHERE id ='";
+				$query .= $this->fields["id"];	
 				$query .= "'";
 
 				if (!$DB->query($query)){
@@ -205,7 +205,7 @@ class CommonDBTM {
 		}
 
 		if(count($oldvalues)){
-			constructHistory($this->fields["ID"],$this->type,$oldvalues,$this->fields);
+			constructHistory($this->fields["id"],$this->type,$oldvalues,$this->fields);
 		}
 
       return true;
@@ -220,7 +220,7 @@ class CommonDBTM {
 	function addToDB() {
 
 		global $DB;
-		//unset($this->fields["ID"]);
+		//unset($this->fields["id"]);
 		$nb_fields=count($this->fields);
 		if ($nb_fields>0){		
 
@@ -252,8 +252,8 @@ class CommonDBTM {
 			}
 			$query .= ")";
 			if ($result=$DB->query($query)) {
-				$this->fields["ID"]=$DB->insert_id();
-				return $this->fields["ID"];
+				$this->fields["id"]=$DB->insert_id();
+				return $this->fields["id"];
 			} else {
 				return false;
 			}
@@ -272,7 +272,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE `".$this->table."` SET is_deleted='0' WHERE (ID = '$ID')";
+			$query = "UPDATE `".$this->table."` SET is_deleted='0' WHERE (id = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -303,7 +303,7 @@ class CommonDBTM {
 
 			$this->cleanRelationData($ID);
 
-			$query = "DELETE FROM `".$this->table."` WHERE ID = '$ID'";
+			$query = "DELETE FROM `".$this->table."` WHERE id = '$ID'";
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
@@ -312,7 +312,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE `".$this->table."` SET is_deleted='1' WHERE ID = '$ID'";
+			$query = "UPDATE `".$this->table."` SET is_deleted='1' WHERE id = '$ID'";
 			$this->cleanDBonMarkDeleted($ID);
 
 			if ($result = $DB->query($query)){
@@ -446,7 +446,7 @@ class CommonDBTM {
 			if ($newID= $this->addToDB()){
 				$this->addMessageOnAddAction($input);
 				$this->post_addItem($newID,$input);
-				doHook("item_add",array("type"=>$this->type, "ID" => $newID, "input" => $input));
+				doHook("item_add",array("type"=>$this->type, "id" => $newID, "input" => $input));
 				return $newID;
 			} else {
 				return false;
@@ -480,8 +480,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG['common'][70] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['id'].")") . "</a>");
 		} 
 	}
 
@@ -549,7 +549,7 @@ class CommonDBTM {
 					}
 					
 					if ( $this->fields[$key] != stripslashes($input[$key])) {
-						if ($key!="ID"){
+						if ($key!="id"){
 							// Store old values
 							if (!in_array($key,$this->history_blacklist)){
 								$oldvalues[$key]=$this->fields[$key];
@@ -579,7 +579,7 @@ class CommonDBTM {
 
 				if ($this->updateInDB($updates,$oldvalues)){
 					$this->addMessageOnUpdateAction($input);
-					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"], "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
+					doHook("item_update",array("type"=>$this->type, "id" => $input["id"], "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
@@ -612,8 +612,8 @@ class CommonDBTM {
 		
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
+			addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['id'].")") . "</a>");
 		} 
 	}
 
@@ -689,11 +689,11 @@ class CommonDBTM {
 		}
 
 		if ($this->getFromDB($input[$this->getIndexName()])){
-			if ($this->pre_deleteItem($this->fields["ID"])){
-				if ($this->deleteFromDB($this->fields["ID"],$force)){
+			if ($this->pre_deleteItem($this->fields["id"])){
+				if ($this->deleteFromDB($this->fields["id"],$force)){
 					if ($force){
 						$this->addMessageOnPurgeAction($input);
-						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"], "input" => $input));
+						doHook("item_purge",array("type"=>$this->type, "id" => $this->fields["id"], "input" => $input));
 					} else {
 						$this->addMessageOnDeleteAction($input);
 
@@ -701,10 +701,10 @@ class CommonDBTM {
 							$changes[0] = 0;
 							$changes[1] = $changes[2] = "";
 				
-							historyLog ($this->fields["ID"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
+							historyLog ($this->fields["id"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
 						}
 
-						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"], "input" => $input));
+						doHook("item_delete",array("type"=>$this->type, "id" => $this->fields["id"], "input" => $input));
 					}
 				}
 				return true;
@@ -744,8 +744,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG['common'][72] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['id'].")") . "</a>");
 		} 
 	}
 
@@ -771,7 +771,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
+			addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['id'].")"));
 		} 
 	}
 
@@ -810,17 +810,17 @@ class CommonDBTM {
 		$input=doHookFunction("pre_item_restore",$input);
 
 		if ($this->getFromDB($input[$this->getIndexName()])){
-			if ($this->restoreInDB($input["ID"])){
+			if ($this->restoreInDB($input["id"])){
 				$this->addMessageOnRestoreAction($input);
 
 				if ($this->dohistory&&$history){
 					$changes[0] = 0;
 					$changes[1] = $changes[2] = "";
 	
-					historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
+					historyLog ($input["id"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
 				}
 	
-				doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"], "input" => $input));
+				doHook("item_restore",array("type"=>$this->type, "id" => $input["id"], "input" => $input));
 			}
 		}
 	}
@@ -848,8 +848,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG['common'][74] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['id'].")") . "</a>");
 		} 
 	}
 
@@ -940,7 +940,7 @@ class CommonDBTM {
 				}
 			}
 
-			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+			$cleantarget=preg_replace("/\?id=([0-9]+)/","",$target);
 			echo "<ul>";
 			echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
 			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
@@ -963,13 +963,13 @@ class CommonDBTM {
 
 
 			if ($first>0) {
-				echo "<li><a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></a></li>";
+				echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></a></li>";
 			} else {
 				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/first_off.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></li>";
 			}
 			
 			if ($prev>0) {
-				echo "<li><a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
+				echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
 			} else {
 				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/left_off.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></li>";
 			}
@@ -980,13 +980,13 @@ class CommonDBTM {
 			}
 			
 			if ($next>0) {
-				echo "<li><a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
+				echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
 			} else {
 				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/right_off.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></li>";
 			}
 		
 			if ($last>0) {
-				echo "<li><a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></a></li>";
+				echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></a></li>";
 			} else {
 				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></li>";
 			}
@@ -1017,7 +1017,7 @@ class CommonDBTM {
 			foreach ($onglets as $key => $val ) {
 				$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=$key&ID=$ID$template$extraparam");
+						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=$key&id=$ID$template$extraparam");
 			}			
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
@@ -1025,7 +1025,7 @@ class CommonDBTM {
 			if($display_all && empty($withtemplate) && count($tabs)>1){
 				$tabs[-1]=array('title'=>$LANG['common'][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
+						'params'=>"target=$target&itemtype=".$this->type."&glpi_tab=-1&id=$ID$template$extraparam");
 			}
 
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
@@ -1046,7 +1046,7 @@ class CommonDBTM {
 		if (!isset($CFG_GLPI["recursive_type"][$this->type])) {
 			$can_recu = false;
 			
-		} else if (!isset($this->fields["ID"])) {
+		} else if (!isset($this->fields["id"])) {
 			$can_recu = haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"]);
 				
 		} else {
@@ -1108,7 +1108,7 @@ class CommonDBTM {
 
 		global $DB, $LINK_ID_TABLE, $CFG_GLPI;
 			
-		$ID  = $this->fields['ID'];	
+		$ID  = $this->fields['id'];	
 		
 		if ($ID<0 || !$this->fields['is_recursive']) {
 			return true;
@@ -1158,7 +1158,7 @@ class CommonDBTM {
 									if (countElementsInTable("$tablename, $device", 
 										"`$tablename`.`$field`='$ID' 
 										AND `$tablename`.`$typefield`='$itemtype' 
-										AND `$tablename`.`$devfield`=`$device`.ID 
+										AND `$tablename`.`$devfield`=`$device`.id 
 										AND `$device`.entities_id NOT IN $entities")>0) {
 											return false;											
 									}
@@ -1174,7 +1174,7 @@ class CommonDBTM {
 								foreach ($rel[$tablename] as $otherfield){
 									if (countElementsInTable("$tablename, $othertable",
 										"`$tablename`.`$field`='$ID' 
-										AND `$tablename`.`$otherfield`=`$othertable`.ID 
+										AND `$tablename`.`$otherfield`=`$othertable`.id 
 										AND `$othertable`.entities_id NOT IN $entities")>0) {
 										return false;
 									}
@@ -1183,7 +1183,7 @@ class CommonDBTM {
 								$otherfield = $rel[$tablename];							
 								if (countElementsInTable("$tablename, $othertable", 
 									"`$tablename`.`$field`=$ID 
-									AND `$tablename`.`$otherfield`=`$othertable`.ID 
+									AND `$tablename`.`$otherfield`=`$othertable`.id 
 									AND `$othertable`.entities_id NOT IN $entities")>0) {
 									return false;
 								}
@@ -1197,7 +1197,7 @@ class CommonDBTM {
 		// Doc links to this item
 		if ($this->type > 0
 			&& countElementsInTable("glpi_documents_items, glpi_documents",
-				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.documents_id=glpi_documents.ID AND glpi_documents.entities_id NOT IN $entities")>0) {
+				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.documents_id=glpi_documents.id AND glpi_documents.entities_id NOT IN $entities")>0) {
 					return false;                       
 		} 
 		// TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
@@ -1225,7 +1225,7 @@ class CommonDBTM {
 
       if ($withtemplate || $ID<=0) {
          echo "<td class='tab_bg_2' align='center' colspan='".($colspan*2)."'>\n";
-         echo "<input type='hidden' name='ID' value='$ID'>";
+         echo "<input type='hidden' name='id' value='$ID'>";
          if ($ID<=0||$withtemplate==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
@@ -1237,7 +1237,7 @@ class CommonDBTM {
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td>\n";
          echo "<td class='tab_bg_2' colspan='".$colspan."'  align='center'>\n";
-         echo "<input type='hidden' name='ID' value=$ID>";
+         echo "<input type='hidden' name='id' value=$ID>";
 
          // Can delete an object with Infocom only if can write Infocom
          if (!in_array($this->type,$CFG_GLPI["infocom_types"]) || haveRight('infocom','w')) {
@@ -1365,7 +1365,7 @@ class CommonDBTM {
 				$entity_to_check=$entity;
 			}
 		} else {
-			if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
+			if (!isset($this->fields['id'])||$this->fields['id']!=$ID){
 				// Item not found : no right
 				if (!$this->getFromDB($ID)){
 					return false;

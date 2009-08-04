@@ -68,10 +68,10 @@ if (isset($_GET["redirect"])){
 	if(!isset($_GET["knowbaseitemscategories_id"])) $_GET["knowbaseitemscategories_id"] = 0;
 
 
-	if (isset($_GET["ID"])){
+	if (isset($_GET["id"])){
 
-		if (ShowKbItemFull($_GET["ID"],0)){
-			showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
+		if (ShowKbItemFull($_GET["id"],0)){
+			showDocumentAssociated(KNOWBASE_TYPE,$_GET["id"],3);
 		}
 
 	} else {

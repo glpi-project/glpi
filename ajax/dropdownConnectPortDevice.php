@@ -102,7 +102,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
 				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 			}
 			$output = $data['name'];
-			$ID = $data['ID'];
+			$ID = $data['id'];
 			if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
 				$output="($ID)";
 			}

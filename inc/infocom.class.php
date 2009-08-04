@@ -101,9 +101,9 @@ class InfoCom extends CommonDBTM {
 	} 
 
 	function prepareInputForUpdate($input) {
-		if (isset($input["ID"])){
+		if (isset($input["id"])){
 
-			$this->getFromDB($input["ID"]);
+			$this->getFromDB($input["id"]);
 		} else {
 			if (!$this->getFromDBforDevice($input["itemtype"],$input["items_id"])){
 				$input2["items_id"]=$input["items_id"];
@@ -111,7 +111,7 @@ class InfoCom extends CommonDBTM {
 				$this->add($input2);
 				$this->getFromDBforDevice($input["itemtype"],$input["items_id"]);
 			}
-			$input["ID"]=$this->fields["ID"];
+			$input["id"]=$this->fields["id"];
 		}
 
 		if (isset($input['warranty_duration'])){
@@ -131,7 +131,7 @@ class InfoCom extends CommonDBTM {
 			&& ($oldvalues['warranty_duration'] < $this->fields['warranty_duration'] ))
 		){
 			$alert=new Alert();
-			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+			$alert->clear($this->type,$this->fields['id'],ALERT_END);
 //			exit();
 		}
 

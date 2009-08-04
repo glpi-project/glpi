@@ -57,7 +57,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
 			if ($rr->update($_POST)){
-				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&id=".$_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
 			}
 		}
 	}
@@ -67,7 +67,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	if (isset($_POST["clear_resa"])){
 		$reservationsitems_id=key($_POST["items"]);
 		if ($rr->delete($_POST)){
-			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+			logEvent($_POST["id"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 		}
 
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
@@ -108,7 +108,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 				$_POST["end"]=date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
 	
 				if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["users_id"]) {
-					unset($rr->fields["ID"]);
+					unset($rr->fields["id"]);
 					$_POST['_ok']=$rr->add($_POST);
 				}
 	
@@ -124,15 +124,15 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			if ($all_ok){
 				// Several reservations
 				if (count($_POST['items'])>1){
-					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=");
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&id=");
 				} else { // Only one reservation
-					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=$reservationsitems_id");
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&id=$reservationsitems_id");
 				}
 			}
 		}
 		
-	} else if (isset($_GET["ID"])){
-		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
+	} else if (isset($_GET["id"])){
+		printCalendrier($_SERVER['PHP_SELF'],$_GET["id"]);
 	}else {
 		manageGetValuesInSearch(RESERVATION_TYPE);
 
@@ -162,13 +162,13 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->delete($_GET);
-			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+			logEvent($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		} else if (isset($_GET["is_active"]))
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_GET);
-			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+			logEvent($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		}
 
@@ -176,7 +176,7 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_POST);
-			logEvent($_POST['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+			logEvent($_POST['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 		} 
 
 		checkRight("reservation_central","r");

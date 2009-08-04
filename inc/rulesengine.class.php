@@ -156,7 +156,7 @@ class RuleCollection {
 		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
-			$sql = "SELECT ID 
+			$sql = "SELECT id 
 				FROM glpi_rules 
 				WHERE is_active=1 AND sub_type='".$this->sub_type."' 
 				ORDER BY ".$this->orderby." ASC";
@@ -167,7 +167,7 @@ class RuleCollection {
 			 	while ($rule=$DB->fetch_array($result)) {
 				 	//For each rule, get a Rule object with all the criterias and actions
 					$tempRule= $this->getRuleClass();
-					if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
+					if ($tempRule->getRuleWithCriteriasAndActions($rule["id"],$retrieve_criteria,$retrieve_action)){
 						//Add the object to the list of rules
 						$this->RuleList->list[] = $tempRule;
 					}
@@ -279,7 +279,7 @@ class RuleCollection {
 		initNavigateListItems(RULE_TYPE,"",$this->sub_type);
 		for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
 			$this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
-			addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['ID'],$this->sub_type);
+			addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['id'],$this->sub_type);
 		}
 		echo "</table>";
 		echo "</div>";
@@ -345,12 +345,12 @@ class RuleCollection {
 		global $DB;
 		$rules = array();
 		$i=0;
-		$sql ="SELECT ID FROM glpi_rules WHERE sub_type = '".$this->sub_type."' ORDER BY ranking ASC";
+		$sql ="SELECT id FROM glpi_rules WHERE sub_type = '".$this->sub_type."' ORDER BY ranking ASC";
 		
 		if ($result = $DB->query($sql)){
 			//Reorder rules : we reaffect ranking for each rule of type $type
 			while ($data=$DB->fetch_array($result)){
-				$sql = "UPDATE glpi_rules SET ranking='".$i."' WHERE ID='".$data["ID"]."'";
+				$sql = "UPDATE glpi_rules SET ranking='".$i."' WHERE id='".$data["id"]."'";
 				$DB->query($sql);				
 				$i++;
 			}
@@ -366,7 +366,7 @@ class RuleCollection {
 	function changeRuleOrder($ID,$action){
 		global $DB;
 
-		$sql ="SELECT ranking FROM glpi_rules WHERE ID ='$ID'";
+		$sql ="SELECT ranking FROM glpi_rules WHERE id ='$ID'";
 		if ($result = $DB->query($sql)){
 			if ($DB->numrows($result)==1){
 				
@@ -375,10 +375,10 @@ class RuleCollection {
 				$sql2="";
 				switch ($action){
 					case "up":
-						$sql2 ="SELECT ID,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
+						$sql2 ="SELECT id,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
 					break;
 					case "down":
-						$sql2="SELECT ID,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
+						$sql2="SELECT id,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
 					break;
 					default :
 						return false;
@@ -387,8 +387,8 @@ class RuleCollection {
 				if ($result2 = $DB->query($sql2)){
 					if ($DB->numrows($result2)==1){
 						list($other_ID,$new_rank)=$DB->fetch_array($result2);
-						$query="UPDATE glpi_rules SET ranking='$new_rank' WHERE ID ='$ID'";
-						$query2="UPDATE glpi_rules SET ranking='$current_rank' WHERE ID ='$other_ID'";
+						$query="UPDATE glpi_rules SET ranking='$new_rank' WHERE id ='$ID'";
+						$query2="UPDATE glpi_rules SET ranking='$current_rank' WHERE id ='$other_ID'";
 						return ($DB->query($query)&&$DB->query($query2));
 					}
 				}
@@ -473,7 +473,7 @@ class RuleCollection {
 		// Move the rule
 		if ($result && $old_rank != $rank) {	
 			$query = "UPDATE glpi_rules SET ranking='$rank' " .
-					" WHERE ID='$ID' ";
+					" WHERE id='$ID' ";
 			$result = $DB->query($query);
 		} 
 		return ($result ? true : false);
@@ -501,7 +501,7 @@ class RuleCollection {
 					$rule->process($input,$output,$params);
 					if ($output["_rule_process"]&&$this->stop_on_first_match){
 						unset($output["_rule_process"]);
-						$output["_ruleid"]=$rule->fields["ID"];
+						$output["_ruleid"]=$rule->fields["id"];
 						return $output;
 					}
 				}
@@ -581,22 +581,22 @@ class RuleCollection {
 				//If the rule is active, process it
 				if ($rule->fields["is_active"]){
 					$output["_rule_process"]=false;
-					$output["result"][$rule->fields["ID"]]["ID"]=$rule->fields["ID"];
+					$output["result"][$rule->fields["id"]]["id"]=$rule->fields["id"];
 					
 					$rule->process($input,$output,$params);
 					if ($output["_rule_process"]&&$this->stop_on_first_match){
 						unset($output["_rule_process"]);
-						$output["result"][$rule->fields["ID"]]["result"]=1;
-						$output["_ruleid"]=$rule->fields["ID"];
+						$output["result"][$rule->fields["id"]]["result"]=1;
+						$output["_ruleid"]=$rule->fields["id"];
 						return $output;
 					}elseif ($output["_rule_process"]){
-						$output["result"][$rule->fields["ID"]]["result"]=1;
+						$output["result"][$rule->fields["id"]]["result"]=1;
 					}else{
-						$output["result"][$rule->fields["ID"]]["result"]=0;
+						$output["result"][$rule->fields["id"]]["result"]=0;
 					}
 				}else{
 					//Rule is inactive
-					$output["result"][$rule->fields["ID"]]["result"]=2;
+					$output["result"][$rule->fields["id"]]["result"]=2;
 				}
 			}
 		}
@@ -626,7 +626,7 @@ class RuleCollection {
 		
 		$res = $DB->query("SELECT DISTINCT glpi_rulescriterias.criteria 
                         FROM glpi_rulescriterias, glpi_rules
-                        WHERE glpi_rules.is_active=1 AND glpi_rulescriterias.rules_id=glpi_rules.ID
+                        WHERE glpi_rules.is_active=1 AND glpi_rulescriterias.rules_id=glpi_rules.id
                            AND glpi_rules.sub_type='".$this->sub_type."'");
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
@@ -855,7 +855,7 @@ class Rule extends CommonDBTM{
 				
 			} else {
 				echo "<tr><td class='tab_bg_2' align='center' colspan='2'>";
-				echo "<input type='hidden' name='ID' value='".$ID."'>";
+				echo "<input type='hidden' name='id' value='".$ID."'>";
 				echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
 				echo "<input type='submit' name='update_rule' value=\"" . $LANG['buttons'][7] . "\" class='submit'></td>";
 				echo "<td class='tab_bg_2' align='center' colspan='2'>";
@@ -863,7 +863,7 @@ class Rule extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rules_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>"; 
+				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>"; 
 				echo "</td></tr>";
 			}
 		}			
@@ -1026,7 +1026,7 @@ class Rule extends CommonDBTM{
 		echo "</span>\n";	
 
 		echo "</td><td>";
-		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["ID"] . "\">";
+		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["id"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		
@@ -1060,7 +1060,7 @@ class Rule extends CommonDBTM{
 
 
 			
-		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["ID"] . "\">";
+		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["id"] . "\">";
 		echo "<input type='submit' name='add_criteria' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		echo "</td></tr>";
@@ -1117,9 +1117,9 @@ class Rule extends CommonDBTM{
 		if ($canedit&&$maxsize>0) {
 			echo "<div class='center'>\n";
 			echo "<table width='950px' class='tab_glpi'>\n";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=".$this->fields["id"]."&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=".$this->fields["id"]."&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 			echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
@@ -1312,7 +1312,7 @@ class Rule extends CommonDBTM{
 	
 				//Hook 
 				$hook_params["sub_type"]=$this->sub_type; 
-				$hook_params["ruleid"]=$this->fields["ID"]; 
+				$hook_params["ruleid"]=$this->fields["id"]; 
 				$hook_params["input"]=$input; 
 				$hook_params["output"]=$output; 
 				doHook("rule_matched",$hook_params); 
@@ -1363,10 +1363,10 @@ class Rule extends CommonDBTM{
 		foreach ($this->criterias as $criteria){
 			$result = $this->checkCriteria($criteria,$input,$regex_result);
 			
-			$check_results[$criteria->fields["ID"]]["name"]=$criteria->fields["criteria"];
-			$check_results[$criteria->fields["ID"]]["value"]=$criteria->fields["pattern"];
-			$check_results[$criteria->fields["ID"]]["result"]=((!$result)?0:1);
-			$check_results[$criteria->fields["ID"]]["ID"]=$criteria->fields["ID"];
+			$check_results[$criteria->fields["id"]]["name"]=$criteria->fields["criteria"];
+			$check_results[$criteria->fields["id"]]["value"]=$criteria->fields["pattern"];
+			$check_results[$criteria->fields["id"]]["result"]=((!$result)?0:1);
+			$check_results[$criteria->fields["id"]]["id"]=$criteria->fields["id"];
 		}
 	}
 
@@ -1491,16 +1491,16 @@ class Rule extends CommonDBTM{
 			if (isset ($_GET["select"]) && $_GET["select"] == "all"){
 				$sel = "checked";
 			}
-			echo "<input type='checkbox' name='item[" . $this->fields["ID"] . "]' value='1' $sel>";
+			echo "<input type='checkbox' name='item[" . $this->fields["id"] . "]' value='1' $sel>";
 			echo "</td>";
 		}
 		else
 			echo "<td></td>";
 				
-		echo "<td><a href=\"".str_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
+		echo "<td><a href=\"".str_replace(".php",".form.php",$target)."?id=".$this->fields["id"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
 		if (!empty($this->fields["comment"])) {
-			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_rules".$this->fields["ID"]."')\" onmouseover=\"cleandisplay('comment_rules".$this->fields["ID"]."')\" >";
-			echo "<span class='over_link' id='comment_rules".$this->fields["ID"]."'>".nl2br($this->fields["comment"])."</span>";
+			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_rules".$this->fields["id"]."')\" onmouseover=\"cleandisplay('comment_rules".$this->fields["id"]."')\" >";
+			echo "<span class='over_link' id='comment_rules".$this->fields["id"]."'>".nl2br($this->fields["comment"])."</span>";
 		}
 		echo "</td>";
 					
@@ -1508,12 +1508,12 @@ class Rule extends CommonDBTM{
 		echo "<td>".getYesNo($this->fields["is_active"])."</td>";
 				
 		if ($this->can_sort && !$first && $canedit){
-			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;id=".$this->fields["id"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
 		if ($this->can_sort && !$last && $canedit){
-			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;id=".$this->fields["id"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
@@ -1559,7 +1559,7 @@ class Rule extends CommonDBTM{
 			if (isset ($_GET["select"]) && $_GET["select"] == "all"){
 				$sel = "checked";
 			}
-			echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
+			echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
 			echo "</td>";
 		}
 			
@@ -1605,7 +1605,7 @@ class Rule extends CommonDBTM{
 
 		foreach ($check_results as $ID=>$criteria_result){
 			echo "<tr  class='tab_bg_2'>";
-			$criteria->getFromDB($criteria_result["ID"]);
+			$criteria->getFromDB($criteria_result["id"]);
 			$this->showMinimalCriteria($criteria->fields);
 			echo "<td class='tab_bg_2'>";
 			echo "<strong>".getYesNo($criteria_result["result"])."</strong>";
@@ -1671,7 +1671,7 @@ class Rule extends CommonDBTM{
 			if (isset ($_GET["select"]) && $_GET["select"] == "all"){
 				$sel = "checked";
 			}
-			echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
+			echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
 			echo "</td>";
 		}
 		$this->showMinimalCriteria($fields);	
@@ -2173,7 +2173,7 @@ class RuleCached extends Rule{
 	}
 	function post_updateItem($input,$updates,$history=1) {
 		if(isset($updates['match']))
-			$this->deleteCacheByRuleId($input["ID"]);
+			$this->deleteCacheByRuleId($input["id"]);
 	}
 	
 	/**
@@ -2189,8 +2189,8 @@ class RuleCached extends Rule{
 		
 		$query="SELECT *
 			FROM `".$rulecollection->cache_table."`, glpi_rules
-			WHERE `".$rulecollection->cache_table."`.rules_id=glpi_rules.ID 
-			AND `".$rulecollection->cache_table."`.rules_id='".$this->fields["ID"]."' 
+			WHERE `".$rulecollection->cache_table."`.rules_id=glpi_rules.id 
+			AND `".$rulecollection->cache_table."`.rules_id='".$this->fields["id"]."' 
 			ORDER BY name";
 
 		$res_count=$DB->query($query);
@@ -2308,7 +2308,7 @@ class RuleCachedCollection extends RuleCollection{
 
 		$query="SELECT name, rules_id, count(rules_id) as cpt
 				FROM `".$this->cache_table."`, glpi_rules
-				WHERE `".$this->cache_table."`.rules_id=glpi_rules.ID GROUP BY rules_id
+				WHERE `".$this->cache_table."`.rules_id=glpi_rules.id GROUP BY rules_id
 				ORDER BY name";
 		$res_count=$DB->query($query);
 

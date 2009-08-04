@@ -47,7 +47,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!isset ($_POST["ID"])) {
+if (!isset ($_POST["id"])) {
 	exit ();
 }
 
@@ -56,23 +56,23 @@ checkRight("ocsng", "w");
 $ocs = new Ocsng();
 switch ($_POST['glpi_tab']) {
 	case -1 :
-			$ocs->showDBConnectionStatus($_POST["ID"]);
-			$ocs->ocsFormImportOptions($_POST['target'], $_POST["ID"]);
-			$ocs->ocsFormConfig($_POST['target'], $_POST["ID"]);
-			$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
+			$ocs->showDBConnectionStatus($_POST["id"]);
+			$ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
+			$ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
+			$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
 		break;	
 	case 1:
-		$ocs->ocsFormImportOptions($_POST['target'], $_POST["ID"]);
+		$ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
 		break;	
 	case 2:
-		$ocs->ocsFormConfig($_POST['target'], $_POST["ID"]);
+		$ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
 		break;
 	case 3 :
-		$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
+		$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
 		break;	
 	default:
-		if (!displayPluginAction(OCSNG_TYPE,$_POST["ID"],$_POST['glpi_tab'],"")){
-			$ocs->showDBConnectionStatus($_POST["ID"]);
+		if (!displayPluginAction(OCSNG_TYPE,$_POST["id"],$_POST['glpi_tab'],"")){
+			$ocs->showDBConnectionStatus($_POST["id"]);
 		}
 		break;
 }

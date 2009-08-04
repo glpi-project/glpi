@@ -38,7 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
-if (empty($_GET["ID"])) {
+if (empty($_GET["id"])) {
 
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
@@ -46,7 +46,7 @@ if (empty($_GET["ID"])) {
 
 	checkRight("user","r");
 
-	generateUserVcard($_GET["ID"]);
+	generateUserVcard($_GET["id"]);
 
 }
 

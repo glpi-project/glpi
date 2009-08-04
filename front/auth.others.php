@@ -55,8 +55,8 @@ if (isset ($_POST["update"])) {
 }
 
 
-if (!isset($_GET["ID"])){
-	$_GET["ID"]="";	
+if (!isset($_GET["id"])){
+	$_GET["id"]="";	
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");

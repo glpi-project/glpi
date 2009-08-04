@@ -71,7 +71,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
 				
 	$sql = "SELECT name 
 		FROM glpi_ocsservers 
-		WHERE ID='".$_SESSION["ocsservers_id"]."'";
+		WHERE id='".$_SESSION["ocsservers_id"]."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {
 		$datas = $DB->fetch_array($result);

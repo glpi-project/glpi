@@ -37,7 +37,7 @@ $NEEDED_ITEMS=array("budget","enterprise","link","document");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["ID"])) $_GET["ID"] = '';
+if(empty($_GET["id"])) $_GET["id"] = '';
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = '';
 
 $budget=new Budget;
@@ -49,38 +49,38 @@ if (isset($_POST["add"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"])) {
-	$budget->check($_POST["ID"],'w');
+	$budget->check($_POST["id"],'w');
 
 	$budget->delete($_POST);
-	logEvent($_POST["ID"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
 }
 else if (isset($_POST["restore"])) {
-	$budget->check($_POST["ID"],'w');
+	$budget->check($_POST["id"],'w');
 
 	$budget->restore($_POST);
-	logEvent($_POST["ID"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
 }
 else if (isset($_POST["purge"])) {
-	$budget->check($_POST["ID"],'w');
+	$budget->check($_POST["id"],'w');
 
 	$budget->delete($_POST,1);
-	logEvent($_POST["ID"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
 }
 else if (isset($_POST["update"])) {
-	$budget->check($_POST["ID"],'w');
+	$budget->check($_POST["id"],'w');
 
 	$budget->update($_POST);
-	logEvent($_POST["ID"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 else {
 	commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
-	$budget->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["withtemplate"]);
+	$budget->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
 		
 	commonFooter();
 }

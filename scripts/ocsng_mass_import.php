@@ -94,7 +94,7 @@ if ($ocsid){
 
 $query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
 	FROM hardware 
-INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
+INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 	$WHERE 
 	ORDER BY hardware.NAME";
 	$result_ocs = $DBocs->query($query_ocs);
@@ -111,7 +111,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 		$hardware=array();
 		while($data=$DBocs->fetch_array($result_ocs)){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-			$hardware[$data["ID"]]["ID"]=$data["ID"];
+			$hardware[$data["ID"]]["id"]=$data["ID"];
 		}
 
 		// Get all links between glpi and OCS

@@ -314,9 +314,9 @@ class Identification {
 			// Normal mode for this request
 			$_SESSION["glpi_use_mode"] = NORMAL_MODE;
 			// Check ID exists and load complete user from DB (plugins...)
-			if (isset($this->user->fields['ID']) && $this->user->getFromDB($this->user->fields['ID'])){
+			if (isset($this->user->fields['id']) && $this->user->getFromDB($this->user->fields['id'])){
                if (!$this->user->fields['is_deleted']&&$this->user->fields['is_active']){
-					$_SESSION["glpiID"] = $this->user->fields['ID'];
+					$_SESSION["glpiID"] = $this->user->fields['id'];
 					$_SESSION["glpiname"] = $this->user->fields['name'];
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
 					$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
@@ -425,7 +425,7 @@ class Identification {
 
 			//Store in an array all the directories
 			while ($ldap_method = $DB->fetch_array($result)){
-				$authtypes_ldap[$ldap_method["ID"]] = $ldap_method;
+				$authtypes_ldap[$ldap_method["id"]] = $ldap_method;
 			}
 		}
 
@@ -437,7 +437,7 @@ class Identification {
 
 			//Store all in an array
 			while ($mail_method = $DB->fetch_array($result)){
-				$authtypes_mail[$mail_method["ID"]] = $mail_method;
+				$authtypes_mail[$mail_method["id"]] = $mail_method;
 			}
 		}
 		//Return all the authentication methods in an array
@@ -522,7 +522,7 @@ class AuthMail extends CommonDBTM {
 
 			echo "<form action=\"$target\" method=\"post\">";
 			if (!empty ($ID)){
-				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+				echo "<input type='hidden' name='id' value='" . $ID . "'>";
 			}
 
 			echo "<div class='center'>";
@@ -678,7 +678,7 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "<form action=\"$target\" method=\"post\">";
 			if (!empty($ID)){
-				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+				echo "<input type='hidden' name='id' value='" . $ID . "'>";
 			}
 
 			echo "<div class='center'>";
@@ -692,7 +692,7 @@ class AuthLDAP extends CommonDBTM {
 			}
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
 
-			echo "<td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["ID"] . "</strong></td></tr>";
+			echo "<td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["id"] . "</strong></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input type=\"text\" name=\"host\" value=\"" . $this->fields["host"] . "\"></td>";
 			echo "<td class='center'>" . $LANG['setup'][172] . "</td><td><input id='port' type=\"text\" name=\"port\" value=\"" . $this->fields["port"] . "\"></td></tr>";

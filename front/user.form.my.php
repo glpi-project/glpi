@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
-if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
+if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
 	$user->update($_POST);
 	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
 	glpi_header($_SERVER['HTTP_REFERER']);

@@ -253,7 +253,7 @@ function showPlanning($who,$who_group,$when,$type){
 	if (empty($ASSIGN)){
 		$ASSIGN=" users_id IN (SELECT DISTINCT glpi_profiles_users.users_id 
 					FROM glpi_profiles 
-					LEFT JOIN glpi_profiles_users ON (glpi_profiles.ID = glpi_profiles_users.profiles_id)
+					LEFT JOIN glpi_profiles_users ON (glpi_profiles.id = glpi_profiles_users.profiles_id)
 					WHERE glpi_profiles.interface='central' ";
 
 		$ASSIGN.=getEntitiesRestrictRequest("AND","glpi_profiles_users", '',$_SESSION["glpiactive_entity"],1);	
@@ -287,7 +287,7 @@ function showPlanning($who,$who_group,$when,$type){
 				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
 				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tickets_id"];
 				$interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
-				$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
+				$interv[$data["begin"]."$$$".$i]["id"]=$data["id"];
 				if (strcmp($begin,$data["begin"])>0){
 					$interv[$data["begin"]."$$$".$i]["begin"]=$begin;
 				} else {
@@ -336,7 +336,7 @@ function showPlanning($who,$who_group,$when,$type){
 		if ($DB->numrows($result2)>0) {	
 			while ($data=$DB->fetch_array($result2)){
 	
-				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
+				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["id"];
 				if (strcmp($begin,$data["begin"])>0)
 					$interv[$data["begin"]."$$".$i]["begin"]=$begin;
 				else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
@@ -591,9 +591,9 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".$LANG['planning'][8]."'>&nbsp;";
 		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
 
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."' style='$styleText'";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$val["id_tracking"]."' style='$styleText'";
 		if (!$complete){
-			echo "onmouseout=\"cleanhide('content_tracking_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["ID"].$rand."')\"";
+			echo "onmouseout=\"cleanhide('content_tracking_".$val["id"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["id"].$rand."')\"";
 		}
 		echo ">";
 		switch ($type){
@@ -627,7 +627,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			echo "<strong>".$LANG['joblist'][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$LANG['joblist'][6].":</strong><br>".$val["content"];
 		} else {
-			echo "<div class='over_link' id='content_tracking_".$val["ID"].$rand."'>";
+			echo "<div class='over_link' id='content_tracking_".$val["id"].$rand."'>";
 			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
 			echo "<strong>".$LANG['joblist'][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$LANG['joblist'][6].":</strong><br>".$val["content"]."</div>";
@@ -639,7 +639,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			$img="rdv_public.png";
 		} 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37]."'>&nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["id_reminder"]."'";
 			if (!$complete){
 			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
 		}
@@ -756,7 +756,7 @@ function showPlanningCentral($who){
 						$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 						$interv[$data["begin"]."$$".$i]["status"]=$job->fields['status'];
 						$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
-						$interv[$data["begin"]."$$".$i]["ID"]=$job->fields['ID'];
+						$interv[$data["begin"]."$$".$i]["id"]=$job->fields['id'];
 						$interv[$data["begin"]."$$".$i]["name"]=$job->fields['name'];
 						$interv[$data["begin"]."$$".$i]["priority"]=$job->fields['priority'];
 						$i++;
@@ -790,8 +790,8 @@ function showPlanningCentral($who){
 
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
-			if ($remind->getFromDB($data["ID"])){
-				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
+			if ($remind->getFromDB($data["id"])){
+				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["id"];
 				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 				$interv[$data["begin"]."$$".$i]["is_private"]=$data["is_private"];
@@ -921,7 +921,7 @@ function generateIcal($who){
 
 			$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['ticketsfollowups_id'];
 			$interv[$data["begin"]."$$".$i]["users_id"]=$data['users_id'];
-			$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
+			$interv[$data["begin"]."$$".$i]["id"]=$data['id'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
 			$interv[$data["begin"]."$$".$i]["content"]="";
@@ -953,10 +953,10 @@ function generateIcal($who){
 	$i=0;
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
-			$remind->getFromDB($data["ID"]);
+			$remind->getFromDB($data["id"]);
 
 
-			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["id"];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 			$interv[$data["begin"]."$$".$i]["name"]=$remind->fields["name"];

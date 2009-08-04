@@ -190,12 +190,12 @@ function showDeviceContract($instID) {
 		$itemtype=$DB->result($result, $i, "itemtype");
 
 		if (haveTypeRight($itemtype,"r")){
- 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
+ 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_contracts_items.id AS IDD, glpi_entities.id AS entity
 						FROM glpi_contracts_items, " .$LINK_ID_TABLE[$itemtype];
 			if ($itemtype != ENTITY_TYPE) {
-				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id=glpi_entities.ID) ";
+				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id=glpi_entities.id) ";
 			}
-			$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_contracts_items.items_id
+			$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".id = glpi_contracts_items.items_id
 								AND glpi_contracts_items.itemtype='$itemtype' 
 								AND glpi_contracts_items.contracts_id = '$instID'";
 						
@@ -224,8 +224,8 @@ function showDeviceContract($instID) {
 				$ci->setType($itemtype);
 				for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false){
 					$ID="";
-					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($_SESSION["glpiis_ids_visible"]||empty($data["name"])) $ID= " (".$data["id"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					
@@ -256,7 +256,7 @@ function showDeviceContract($instID) {
          echo "<div class='software-instal'>";
          dropdownAllItems("item",0,0,($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
          echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "<input type='hidden' name='ID' value='$instID'>";
+         echo "<input type='hidden' name='id' value='$instID'>";
          echo "</td><td>&nbsp;</td>";
          echo "</tr>";
       }
@@ -264,9 +264,9 @@ function showDeviceContract($instID) {
 		
 		echo "<div class='center'>";
 		echo "<table width='950px' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
       echo "<input type='hidden' name='conID' value='$instID'>";
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
@@ -316,7 +316,7 @@ function addDeviceContract($conID,$itemtype,$ID){
 function deleteDeviceContract($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contracts_items WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_contracts_items WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -337,12 +337,12 @@ function showEnterpriseContract($instID) {
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	
-	$query = "SELECT glpi_contracts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
+	$query = "SELECT glpi_contracts_suppliers.id, glpi_suppliers.id as entID, glpi_suppliers.name as name,
 			glpi_suppliers.website as website, glpi_suppliers.phonenumber as phone, glpi_suppliers.supplierstypes_id as type,
-			glpi_entities.ID AS entity"
+			glpi_entities.id AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_suppliers "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
-		. " WHERE glpi_contracts_suppliers.contracts_id = '$instID' AND glpi_contracts_suppliers.suppliers_id = glpi_suppliers.ID"
+		. " LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_suppliers.entities_id) "
+		. " WHERE glpi_contracts_suppliers.contracts_id = '$instID' AND glpi_contracts_suppliers.suppliers_id = glpi_suppliers.id"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true)
 		. " ORDER BY glpi_entities.completename,name";
 		
@@ -362,7 +362,7 @@ function showEnterpriseContract($instID) {
 
 	$used=array();
 	while ($i < $number) {
-		$ID=$DB->result($result, $i, "ID");
+		$ID=$DB->result($result, $i, "id");
 		$website=$DB->result($result, $i, "glpi_suppliers.website");
 		if (!empty($website)){
 			$website=$DB->result($result, $i, "website");
@@ -374,7 +374,7 @@ function showEnterpriseContract($instID) {
 		$used[$entID]=$entID;
 		$entname=getDropdownName("glpi_suppliers",$entID);
 		echo "<tr class='tab_bg_1'>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=$entID'>".$entname;
 		if ($_SESSION["glpiis_ids_visible"]||empty($entname)) echo " ($entID)";
 		echo "</a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$entity)."</td>";
@@ -383,7 +383,7 @@ function showEnterpriseContract($instID) {
 		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;conID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;id=$ID&amp;conID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -446,7 +446,7 @@ function addEnterpriseContract($conID,$ID){
 function deleteEnterpriseContract($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contracts_suppliers WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_contracts_suppliers WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -465,11 +465,11 @@ function getContractEnterprises($ID){
 
 	$query = "SELECT glpi_suppliers.* 
 			FROM glpi_contracts_suppliers, glpi_suppliers 
-			WHERE glpi_contracts_suppliers.suppliers_id = glpi_suppliers.ID AND glpi_contracts_suppliers.contracts_id = '$ID'";
+			WHERE glpi_contracts_suppliers.suppliers_id = glpi_suppliers.id AND glpi_contracts_suppliers.contracts_id = '$ID'";
 	$result = $DB->query($query);
 	$out="";
 	while ($data=$DB->fetch_array($result)){
-		$out.= getDropdownName("glpi_suppliers",$data['ID'])."<br>";
+		$out.= getDropdownName("glpi_suppliers",$data['id'])."<br>";
 	}
 	return $out;
 }
@@ -497,8 +497,8 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 
 	$query = "SELECT glpi_contracts_items.* 
 		FROM glpi_contracts_items, glpi_contracts 
-		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id=glpi_entities.ID)
-		WHERE glpi_contracts.ID=glpi_contracts_items.contracts_id AND glpi_contracts_items.items_id = '$ID' 
+		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id=glpi_entities.id)
+		WHERE glpi_contracts.id=glpi_contracts_items.contracts_id AND glpi_contracts_items.items_id = '$ID' 
 			AND glpi_contracts_items.itemtype = '$itemtype' 
 		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
 		ORDER BY glpi_contracts.name";
@@ -529,12 +529,12 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		addToNavigateListItems(CONTRACT_TYPE,$cID);
 
 		$contracts[]=$cID;
-		$assocID=$DB->result($result, $i, "ID");
+		$assocID=$DB->result($result, $i, "id");
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
-		if ($_SESSION["glpiis_ids_visible"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'><strong>".$con->fields["name"];
+		if ($_SESSION["glpiis_ids_visible"]||empty($con->fields["name"])) echo " (".$con->fields["id"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
 		echo "<td class='center'>".$con->fields["num"]."</td>";
@@ -550,7 +550,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) {
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;conID=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;conID=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			} else {
 				echo "&nbsp;";
 			}
@@ -601,10 +601,10 @@ function showContractAssociatedEnterprise($ID){
 	$ent=new Enterprise();
 	$canedit=$ent->can($ID,'w');
 
-	$query = "SELECT glpi_contracts.*, glpi_contracts_suppliers.ID AS assocID, glpi_entities.ID AS entity"
+	$query = "SELECT glpi_contracts.*, glpi_contracts_suppliers.id AS assocID, glpi_entities.id AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_contracts "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contracts.entities_id) "	
-		. " WHERE glpi_contracts_suppliers.suppliers_id = '$ID' AND glpi_contracts_suppliers.contracts_id=glpi_contracts.ID"
+		. " LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_contracts.entities_id) "	
+		. " WHERE glpi_contracts_suppliers.suppliers_id = '$ID' AND glpi_contracts_suppliers.contracts_id=glpi_contracts.id"
 		. getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contracts.name";
 
@@ -627,12 +627,12 @@ function showContractAssociatedEnterprise($ID){
 
 	$used=array();
 	while ($data=$DB->fetch_array($result)) {
-		$cID=$data["ID"];
+		$cID=$data["id"];
 		$used[$cID]=$cID;
 		$assocID=$data["assocID"];;
 		echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$data["name"];
-		if ($_SESSION["glpiis_ids_visible"]||empty($data["name"])) echo " (".$data["ID"].")";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'><strong>".$data["name"];
+		if ($_SESSION["glpiis_ids_visible"]||empty($data["name"])) echo " (".$data["id"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 		echo "<td class='center'>".$data["num"]."</td>";
@@ -647,7 +647,7 @@ function showContractAssociatedEnterprise($ID){
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontract=deletecontract&amp;ID=$assocID&amp;entID=$ID'><strong>".$LANG['buttons'][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontract=deletecontract&amp;id=$assocID&amp;entID=$ID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -698,7 +698,7 @@ function cron_contract($display=false){
 	// Check notice
 	$query="SELECT glpi_contracts.* 
 		FROM glpi_contracts 
-		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.items_id 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.id = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_NOTICE."') 
 		WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 
@@ -721,14 +721,14 @@ function cron_contract($display=false){
 			}
 			// define message alert
 			$message[$data["entities_id"]].=$LANG['mailing'][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
-			$items_notice[$data["entities_id"]][]=$data["ID"];
+			$items_notice[$data["entities_id"]][]=$data["id"];
 		}
 	}
 
 	// Check end
 	$query="SELECT glpi_contracts.* 
 		FROM glpi_contracts 
-		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.items_id 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.id = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.is_deleted='0' 
@@ -748,7 +748,7 @@ function cron_contract($display=false){
 
 			// define message alert
 			$message[$data["entities_id"]].=$LANG['mailing'][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
-			$items_end[$data["entities_id"]][]=$data["ID"];
+			$items_end[$data["entities_id"]][]=$data["id"];
 		}
 
 
@@ -772,7 +772,7 @@ function cron_contract($display=false){
 					foreach ($items_notice[$entity] as $ID){
 						$input["items_id"]=$ID;
 						$alert->add($input);
-						unset($alert->fields['ID']);
+						unset($alert->fields['id']);
 					}
 				}
 				$input["type"]=ALERT_END;
@@ -780,7 +780,7 @@ function cron_contract($display=false){
 					foreach ($items_end[$entity] as $ID){
 						$input["items_id"]=$ID;
 						$alert->add($input);
-						unset($alert->fields['ID']);
+						unset($alert->fields['id']);
 					}
 				}
 			} else {

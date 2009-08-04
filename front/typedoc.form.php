@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("typedoc");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(empty($_GET["id"])) $_GET["id"] = "";
 
 
 $typedoc=new TypeDoc();
@@ -53,26 +53,26 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	$typedoc->check($_POST["ID"],'w');
+	$typedoc->check($_POST["id"],'w');
 
 	$typedoc->delete($_POST,1);
 
-	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	logEvent($_POST["id"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/typedoc.php");
 
 }
 else if (isset($_POST["update"]))
 {
-	$typedoc->check($_POST["ID"],'w');
+	$typedoc->check($_POST["id"],'w');
 
 	$typedoc->update($_POST);
-	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	logEvent($_POST["id"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
 	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","typedoc");
-	$typedoc->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$typedoc->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 	commonFooter();
 }
 

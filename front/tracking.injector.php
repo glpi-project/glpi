@@ -176,7 +176,7 @@ elseif (isset($_POST["use_email_notification"]) && $_POST["use_email_notificatio
 
 		} else {
 			echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
-			echo $LANG['help'][18]." (".$LANG['job'][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
+			echo $LANG['help'][18]." (".$LANG['job'][38]." <a class='b' href='helpdesk.public.php?show=user&amp;id=$newID'>$newID</a>)<br>";
 			echo $LANG['help'][19];
 			echo "</b></div>";
 		}

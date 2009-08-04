@@ -47,7 +47,7 @@ class User extends CommonDBTM {
 	**/
 	function computePreferences (){
 		global $CFG_GLPI;
-		if (isset($this->fields['ID'])){
+		if (isset($this->fields['id'])){
 			foreach ($CFG_GLPI['user_pref_field'] as $f){
 				if (is_null($this->fields[$f]) ){
 					$this->fields[$f]=$CFG_GLPI[$f];
@@ -245,14 +245,14 @@ class User extends CommonDBTM {
 	function post_addItem($newID, $input) {
 		global $DB;
 
-		$input["ID"]=$newID;
+		$input["id"]=$newID;
 
 		$this->syncLdapGroups($input);
 		$rulesplayed = $this->applyRightRules($input);
 
 		// Add default profile
 		if (!$rulesplayed){
-			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+			$sql_default_profile = "SELECT id FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
 				$right=$DB->result($result,0,0);
@@ -264,7 +264,7 @@ class User extends CommonDBTM {
 					$affectation["entities_id"] = 0;
 				}
 				$affectation["profiles_id"] = $DB->result($result,0,0);
-				$affectation["users_id"] = $input["ID"];
+				$affectation["users_id"] = $input["id"];
 				$affectation["is_recursive"] = 0;
 				$affectation["is_dynamic"] = 0;
 				addUserProfileEntity($affectation);
@@ -282,9 +282,9 @@ class User extends CommonDBTM {
 				unset($input["password"]);
 			} else {
 				// Check right : my password of user with lesser rights
-				if (isset($input['ID']) && 
-					((isset($_SESSION['glpiID']) && $input['ID']==$_SESSION['glpiID']) 
-						|| $this->currentUserHaveMoreRightThan($input['ID']) )){
+				if (isset($input['id']) && 
+					((isset($_SESSION['glpiID']) && $input['id']==$_SESSION['glpiID']) 
+						|| $this->currentUserHaveMoreRightThan($input['id']) )){
 					$input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 				} else {
 					unset($input["password"]);
@@ -301,18 +301,18 @@ class User extends CommonDBTM {
 		}
 
 		// Update User in the database
-		if (!isset ($input["ID"]) && isset ($input["name"])) {
+		if (!isset ($input["id"]) && isset ($input["name"])) {
 			if ($this->getFromDBbyName($input["name"]))
-				$input["ID"] = $this->fields["ID"];
+				$input["id"] = $this->fields["id"];
 		}
 
 		
-		if (isset ($_SESSION["glpiID"]) && isset ($input["entities_id"]) && $_SESSION["glpiID"] == $input['ID']) {
+		if (isset ($_SESSION["glpiID"]) && isset ($input["entities_id"]) && $_SESSION["glpiID"] == $input['id']) {
 			$_SESSION["glpidefault_entity"] = $input["entities_id"];
 		}
 
 		// Manage preferences fields
-		if (isset ($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
+		if (isset ($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['id']) {
 			if (isset($input['use_mode']) && $_SESSION['glpi_use_mode']!=$input['use_mode']){
 				$_SESSION['glpi_use_mode']=$input['use_mode'];
 				//loadLanguage();
@@ -351,7 +351,7 @@ class User extends CommonDBTM {
 	function applyRightRules($input){
 		global $DB;
 		if (isset($input["authtype"])&&($input["authtype"] == AUTH_LDAP || $input["authtype"]== AUTH_MAIL|| isAlternateAuthWithLdap($input["authtype"])))
-		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
+		if (isset ($input["id"]) &&$input["id"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
 			
@@ -379,17 +379,17 @@ class User extends CommonDBTM {
 				$affectation["entities_id"] = $entity[0];
 				$affectation["profiles_id"] = $entity[1];
 				$affectation["is_recursive"] = $entity[2];
-				$affectation["users_id"] = $input["ID"];
+				$affectation["users_id"] = $input["id"];
 				$affectation["is_dynamic"] = 1;
 				addUserProfileEntity($affectation);
 			}
 	
 			if (count($entities)>0&&count($rights)==0){
 				//If no dynamics profile is provided : get the profil by default if not existing profile
-				$exist_profile = "SELECT ID FROM glpi_profiles_users WHERE users_id='".$input["ID"]."'";
+				$exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$input["id"]."'";
 				$result = $DB->query($exist_profile);
 				if ($DB->numrows($result)==0){
-					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+					$sql_default_profile = "SELECT id FROM glpi_profiles WHERE is_default=1";
 					$result = $DB->query($sql_default_profile);
 					if ($DB->numrows($result))
 					{
@@ -403,7 +403,7 @@ class User extends CommonDBTM {
 					foreach($rights as $right){
 						$affectation["entities_id"] = $entity[0];
 						$affectation["profiles_id"] = $right;
-						$affectation["users_id"] = $input["ID"];
+						$affectation["users_id"] = $input["id"];
 						$affectation["is_recursive"] = $entity[1];
 						$affectation["is_dynamic"] = 1;
 						addUserProfileEntity($affectation);
@@ -428,7 +428,7 @@ class User extends CommonDBTM {
 		global $DB;
 
 		if (isset($input["authtype"])&&($input["authtype"]==AUTH_LDAP || isAlternateAuthWithLdap($input['authtype']))){
-			if (isset ($input["ID"]) && $input["ID"]>0) {
+			if (isset ($input["id"]) && $input["id"]>0) {
 				$authtype = getAuthMethodsByID($input["authtype"], $input["auths_id"]);
 				
 				if (count($authtype)){
@@ -455,16 +455,16 @@ class User extends CommonDBTM {
 	
 					}
 					// Delete not available groups like to LDAP
-					$query = "SELECT glpi_groups_users.ID, glpi_groups_users.groups_id 
+					$query = "SELECT glpi_groups_users.id, glpi_groups_users.groups_id 
 						FROM glpi_groups_users 
-						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
-						WHERE glpi_groups_users.users_id='" . $input["ID"] . "' $WHERE";
+						LEFT JOIN glpi_groups ON (glpi_groups.id = glpi_groups_users.groups_id) 
+						WHERE glpi_groups_users.users_id='" . $input["id"] . "' $WHERE";
 	
 					$result = $DB->query($query);
 					if ($DB->numrows($result) > 0) {
 						while ($data = $DB->fetch_array($result)){
 							if (!in_array($data["groups_id"], $input["_groups"])) {
-								deleteUserGroup($data["ID"]);
+								deleteUserGroup($data["id"]);
 							} else {
 								// Delete found item in order not to add it again
 								unset($input["_groups"][array_search($data["groups_id"], $input["_groups"])]);
@@ -476,7 +476,7 @@ class User extends CommonDBTM {
 					if (count($input["_groups"])>0)
 					{
 						foreach ($input["_groups"] as $group) {
-							addUserGroup($input["ID"], $group);
+							addUserGroup($input["id"], $group);
 						}
 						unset ($input["_groups"]);
 					}
@@ -490,7 +490,7 @@ class User extends CommonDBTM {
 	 * @return string containing name of the user
 	**/	
 	function getName() {
-		return formatUserName($this->fields["ID"],$this->fields["name"],$this->fields["realname"],$this->fields["firstname"]);
+		return formatUserName($this->fields["id"],$this->fields["name"],$this->fields["realname"],$this->fields["firstname"]);
 	}
 
 	/**
@@ -536,11 +536,11 @@ class User extends CommonDBTM {
 					// Search in DB for group with ldap_group_dn
 					if ($ldap_method["group_field"]=='dn' && count($v[$i]['ou'])>0) {
 						
-						$query="SELECT ID FROM `glpi_groups`
+						$query="SELECT id FROM `glpi_groups`
 							WHERE `ldap_group_dn` IN ('".implode("','",$v[$i]['ou'])."')";
 							
 						foreach ($DB->request($query) as $group) {
-							$this->fields["_groups"][]=$group['ID'];										
+							$this->fields["_groups"][]=$group['id'];										
 						}
 					}
 
@@ -553,12 +553,12 @@ class User extends CommonDBTM {
 				foreach ($group_fields as $field) {
 					if (isset($v[$i][$field]) && isset($v[$i][$field]['count']) && $v[$i][$field]['count']>0) {
 						unset($v[$i][$field]['count']);
-						$query="SELECT ID FROM `glpi_groups`
+						$query="SELECT id FROM `glpi_groups`
 							WHERE `ldap_field`='$field'
 							  AND `ldap_value` IN ('".implode("','",$v[$i][$field])."')";
 							  
 						foreach ($DB->request($query) as $group) {
-							$this->fields["_groups"][]=$group['ID'];										
+							$this->fields["_groups"][]=$group['id'];										
 						}
 					}
 				}
@@ -597,11 +597,11 @@ class User extends CommonDBTM {
 				&& is_array($result[$ldap_method["group_member_field"]])
 				&& count($result[$ldap_method["group_member_field"]])>0) {
 			
-					$query="SELECT ID FROM `glpi_groups`
+					$query="SELECT id FROM `glpi_groups`
 						WHERE `ldap_group_dn` IN ('".implode("','",$result[$ldap_method["group_member_field"]])."')";
 						
 					foreach ($DB->request($query) as $group) {
-						$this->fields["_groups"][]=$group['ID'];										
+						$this->fields["_groups"][]=$group['id'];										
 					}
 			}
 		}
@@ -704,7 +704,7 @@ class User extends CommonDBTM {
 				} else {
 					$groups = array();	
 				}
-				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ldap_connection,"userdn"=>$userdn));
+				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["id"],"connection"=>$ldap_connection,"userdn"=>$userdn));
 				//If rule  action is ignore import  
 				if (isset($this->fields["_stop_import"])
 					//or use matches no rules & do not import users with no rights 
@@ -800,7 +800,7 @@ class User extends CommonDBTM {
 				$groups = $this->fields["_groups"];
 			else
 				$groups = array();	
-			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["ID"],"email"=>$this->fields["email"]));
+			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["id"],"email"=>$this->fields["email"]));
 		}
 		return true;
 
@@ -942,7 +942,7 @@ class User extends CommonDBTM {
 			}
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG['common'][34] . " : " . $this->fields["name"] . "&nbsp;";
-			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG['common'][46] . "</a>";
+			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?id=$ID'>" . $LANG['common'][46] . "</a>";
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td class='center'>" . $LANG['setup'][18] . "</td>";
@@ -960,7 +960,7 @@ class User extends CommonDBTM {
 					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 				}
 
-				echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
+				echo "<input type='hidden' name='id' value=\"" . $this->fields["id"] . "\">";
 
 				echo "</td>";
 			}
@@ -1131,7 +1131,7 @@ class User extends CommonDBTM {
 			echo "<td class='center'>" . $LANG['setup'][18] . "</td>";
 			echo "<td class='center'><strong>" . $this->fields["name"] . "</strong>";
 			echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
-			echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
+			echo "<input type='hidden' name='id' value=\"" . $this->fields["id"] . "\">";
 			echo "</td></tr>";
 
 			//do some rights verification
@@ -1252,7 +1252,7 @@ class User extends CommonDBTM {
       
       if (($key=array_search('name',$updates))!==false){
          /// Check if user does not exists
-         $query="SELECT * FROM glpi_users WHERE name='".$input['name']."' AND ID <> '".$input['ID']."';";
+         $query="SELECT * FROM glpi_users WHERE name='".$input['name']."' AND id <> '".$input['id']."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0){
             unset($updates[$key]);
@@ -1264,7 +1264,7 @@ class User extends CommonDBTM {
       
 		/// Security system except for login update
 		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
-			if ($_SESSION["glpiID"] == $input['ID']) { 
+			if ($_SESSION["glpiID"] == $input['id']) { 
 				$ret = $updates;
 				
 				if (isset($this->fields["authtype"])){
@@ -1309,7 +1309,7 @@ class User extends CommonDBTM {
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
-			$sql = "DELETE FROM glpi_profiles_users WHERE users_id='".$this->fields["ID"]."' AND is_dynamic=1";
+			$sql = "DELETE FROM glpi_profiles_users WHERE users_id='".$this->fields["id"]."' AND is_dynamic=1";
 			$DB->query($sql);
 		}
 	}

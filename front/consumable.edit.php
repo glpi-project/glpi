@@ -49,7 +49,7 @@ if (isset($_POST["add_several"]))
 	$constype->check($_POST["tID"],'w');
 
 	for ($i=0;$i<$_POST["to_add"];$i++){
-		unset($con->fields["ID"]);
+		unset($con->fields["id"]);
 		$con->add($_POST);
 	}
 	logEvent($_POST["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][89].": ".$_POST["to_add"]);

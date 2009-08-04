@@ -63,10 +63,10 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname 
+$query = "SELECT glpi_users.id, glpi_users.name, glpi_users.realname, glpi_users.firstname 
 		FROM glpi_users 
 		WHERE $where 
-			AND ID IN (SELECT DISTINCT `".$_POST['field']."` 
+			AND id IN (SELECT DISTINCT `".$_POST['field']."` 
 				FROM glpi_tickets 
 				".getEntitiesRestrictRequest("WHERE","glpi_tickets").") ";
 
@@ -83,8 +83,8 @@ $result = $DB->query($query);
 $users=array();
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
-		$users[$data["ID"]]=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
-		$logins[$data["ID"]]=$data["name"];
+		$users[$data["id"]]=formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"]);
+		$logins[$data["id"]]=$data["name"];
 	}
 }	
 
