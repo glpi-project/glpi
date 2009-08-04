@@ -972,7 +972,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 							$output.=" (".$data['id'].")";
 						}
 						$my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["id"]."' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
-						$my_devices.="$itemtype_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
+						$my_devices.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
 						$my_devices.="</option>";
 
 						$already_add[$itemtype][]=$data["id"];
