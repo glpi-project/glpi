@@ -90,12 +90,12 @@ class Transfer extends CommonDBTM{
 		$CFG_GLPI["use_mailing"]=0;
 		
 		$default_options=array(
-			'keep_tickets'=>0,
-			'keep_networklinks'=>0,
-			'keep_reservations'=>0,
+			'keep_ticket'=>0,
+			'keep_networklink'=>0,
+			'keep_reservation'=>0,
 			'keep_history'=>0,
-			'keep_devices'=>0,
-			'keep_infocoms'=>0,
+			'keep_device'=>0,
+			'keep_infocom'=>0,
 
 			'keep_dc_monitor'=>0,
 			'clean_dc_monitor'=>0,
@@ -106,25 +106,25 @@ class Transfer extends CommonDBTM{
 			'keep_dc_printer'=>0,
 			'clean_dc_printer'=>0,
 
-			'keep_enterprises'=>0,
-			'clean_enterprises'=>0,
-			'keep_contacts'=>0,
-			'clean_contacts'=>0,
+			'keep_supplier'=>0,
+			'clean_supplier'=>0,
+			'keep_contact'=>0,
+			'clean_contact'=>0,
 
-			'keep_contracts'=>0,
-			'clean_contracts'=>0,
+			'keep_contract'=>0,
+			'clean_contract'=>0,
 
-			'keep_softwares'=>0,
-			'clean_softwares'=>0,
+			'keep_software'=>0,
+			'clean_software'=>0,
 
-			'keep_documents'=>0,
-			'clean_documents'=>0,
+			'keep_document'=>0,
+			'clean_document'=>0,
 			
-			'keep_cartridges_type' =>0,
-			'clean_cartridges_type' =>0,
-			'keep_cartridges' =>0,
+			'keep_cartridgesitem' =>0,
+			'clean_cartridgesitem' =>0,
+			'keep_cartridge' =>0,
 
-			'keep_consumables' =>0,
+			'keep_consumable' =>0,
 		);
 		$ci=new CommonItem();
 
@@ -342,7 +342,7 @@ class Transfer extends CommonDBTM{
 		} // End of direct connections	
 
 		// Licence / Software :  keep / delete + clean unused / keep unused 
-		if ($this->options['keep_softwares']){
+		if ($this->options['keep_software']){
 			// Clean DB
 			$query="SELECT glpi_computers_softwaresversions.ID 
 				FROM glpi_computers_softwaresversions 
@@ -444,7 +444,7 @@ class Transfer extends CommonDBTM{
 		$this->item_search[NETWORKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[NETWORKING_TYPE]);
 
 		// Tickets
-		if ($this->options['keep_tickets']){
+		if ($this->options['keep_ticket']){
 			foreach ($this->TICKETS_TYPES as $itemtype)
 			if(isset($this->item_search[$itemtype])){
 				$query="SELECT DISTINCT ID FROM glpi_tickets
@@ -461,7 +461,7 @@ class Transfer extends CommonDBTM{
 		$this->item_search[TRACKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[TRACKING_TYPE]);
 
 		// Contract : keep / delete + clean unused / keep unused
-		if ($this->options['keep_contracts']){
+		if ($this->options['keep_contract']){
 			foreach ($this->CONTRACTS_TYPES as $itemtype)
 			if (isset($this->item_search[$itemtype])){
 				// Clean DB
@@ -500,7 +500,7 @@ class Transfer extends CommonDBTM{
 		$this->item_recurs[CONTRACT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[CONTRACT_TYPE]);
 		// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 		
-		if ($this->options['keep_enterprises']){
+		if ($this->options['keep_supplier']){
 			// Clean DB
 			$query="SELECT glpi_contracts_suppliers.ID FROM glpi_contracts_suppliers 
 				LEFT JOIN glpi_contracts ON (glpi_contracts_suppliers.contracts_id = glpi_contracts.ID ) 
@@ -565,7 +565,7 @@ class Transfer extends CommonDBTM{
 
 
 			// Enterprise infocoms
-			if ($this->options['keep_infocoms']){
+			if ($this->options['keep_infocom']){
 				foreach ($this->INFOCOMS_TYPES as $itemtype){
 					if (isset($this->item_search[$itemtype])){
 						// Clean DB
@@ -605,7 +605,7 @@ class Transfer extends CommonDBTM{
 		$this->item_recurs[ENTERPRISE_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[ENTERPRISE_TYPE]);
 
 		// Contact / Enterprise : keep / delete + clean unused / keep unused
-		if ($this->options['keep_contacts']){
+		if ($this->options['keep_contact']){
 			// Clean DB
 			$query="SELECT glpi_contacts_suppliers.ID FROM glpi_contacts_suppliers 
 				LEFT JOIN glpi_contacts ON (glpi_contacts_suppliers.contacts_id = glpi_contacts.ID ) 
@@ -655,7 +655,7 @@ class Transfer extends CommonDBTM{
 		$this->item_recurs[CONTACT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[CONTACT_TYPE]);
 
 		// Document : keep / delete + clean unused / keep unused
-		if ($this->options['keep_documents']){
+		if ($this->options['keep_document']){
 			foreach ($this->DOCUMENTS_TYPES as $itemtype)
 			if (isset($this->item_search[$itemtype])){
 				// Clean DB
@@ -693,7 +693,7 @@ class Transfer extends CommonDBTM{
 		$this->item_recurs[DOCUMENT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[DOCUMENT_TYPE]);
 
 		// printer -> cartridges : keep / delete + clean
-		if ($this->options['keep_cartridges_type']){
+		if ($this->options['keep_cartridgesitem']){
 			if (isset($this->item_search[PRINTER_TYPE])){
 				$query="SELECT cartridgesitems_id FROM glpi_cartridges
 				WHERE printers_id IN ".$this->item_search[PRINTER_TYPE];
@@ -1028,7 +1028,7 @@ class Transfer extends CommonDBTM{
 					$need_clean_process=false;
 					// Foreach cartridges
 					// if keep 
-					if ($this->options['keep_cartridges_type']){ 
+					if ($this->options['keep_cartridgesitem']){ 
 						$newcartID=-1;
 						$newcarttypeID=-1;
 						// 1 - Search carttype destination ?
@@ -1088,17 +1088,17 @@ class Transfer extends CommonDBTM{
 						$need_clean_process=true;
 					}
 					// CLean process
-					if ($need_clean_process&&$this->options['clean_cartridges_type']){
+					if ($need_clean_process&&$this->options['clean_cartridgesitem']){
 						// Clean carttype
 						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_cartridges 
 								WHERE cartridgesitems_id = '" . $data['cartridgesitems_id'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 'CPT') == 0) {
-							if ($this->options['clean_cartridges_type']==1){ // delete
+							if ($this->options['clean_cartridgesitem']==1){ // delete
 								$carttype->delete(array ("ID" => $data['cartridgesitems_id']));
 							}
-							if ($this->options['clean_cartridges_type']==2){ // purge
+							if ($this->options['clean_cartridgesitem']==2){ // purge
 								$carttype->delete(array ("ID" => $data['cartridgesitems_id']),1);
 							}
 						}
@@ -1210,7 +1210,7 @@ class Transfer extends CommonDBTM{
 			
 		foreach ($DB->request($query) AS $data) {
 			
-			if ($this->options['keep_softwares']){
+			if ($this->options['keep_software']){
 
 				$newversID = $this->copySingleVersion($data['softwaresversions_id']);
 				
@@ -1234,7 +1234,7 @@ class Transfer extends CommonDBTM{
 		} // each installed version
 
 		// Affected licenses 
-		if ($this->options['keep_softwares']){
+		if ($this->options['keep_software']){
 			$query = "SELECT *	FROM glpi_softwareslicenses
 				WHERE computers_id = '$ID'";
 			
@@ -1342,10 +1342,10 @@ class Transfer extends CommonDBTM{
 
 				// if ($soft->getFromDB($old)) error_log("cleanSoftwares: ".$soft->fields['name']);
 
-				if ($this->options['clean_softwares']==1){ // delete
+				if ($this->options['clean_software']==1){ // delete
 					$soft->delete(array("ID" => $old),0);
 				}
-				else if ($this->options['clean_softwares']==2){ // purge
+				else if ($this->options['clean_software']==2){ // purge
 					$soft->delete(array("ID" => $old),1);
 				}
 			}
@@ -1370,7 +1370,7 @@ class Transfer extends CommonDBTM{
 					$need_clean_process=false;
 					// Foreach licenses
 					// if keep 
-					if ($this->options['keep_softwares']){ 
+					if ($this->options['keep_software']){
 						if (!empty($data['softID'])&&$data['softID']>0
 						&&!empty($data['versID'])&&$data['versID']>0
 						&&!empty($data['instID'])&&$data['instID']>0){
@@ -1487,7 +1487,7 @@ class Transfer extends CommonDBTM{
 						}
 					}
 					// CLean process
-					if ($need_clean_process&&$this->options['clean_softwares']){
+					if ($need_clean_process&&$this->options['clean_software']){
 						// Clean license
 						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_computers_softwaresversions 
@@ -1504,10 +1504,10 @@ class Transfer extends CommonDBTM{
 								WHERE softwares_id = '" . $data['softID'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 'CPT') == 0) {
-							if ($this->options['clean_softwares']==1){ // delete
+							if ($this->options['clean_software']==1){ // delete
 								$soft->delete(array ("ID" => $data['softID']));
 							}
-							if ($this->options['clean_softwares']==2){ // purge
+							if ($this->options['clean_software']==2){ // purge
 								$soft->delete(array ("ID" => $data['softID']),1);
 							}
 						}
@@ -1530,7 +1530,7 @@ class Transfer extends CommonDBTM{
 		$need_clean_process=false;
 
 		// if keep 
-		if ($this->options['keep_contracts']){
+		if ($this->options['keep_contract']){
 			$contract=new Contract();
 			// Get contracts for the item
 			$query="SELECT * FROM glpi_contracts_items" .
@@ -1621,16 +1621,16 @@ class Transfer extends CommonDBTM{
 							}
 						}
 						// If clean and unused -> 
-						if ($need_clean_process&&$this->options['clean_contracts']){
+						if ($need_clean_process&&$this->options['clean_contract']){
 							$query = "SELECT COUNT(*) AS CPT 
 								FROM glpi_contracts_items 
 								WHERE contracts_id='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($this->options['clean_contracts']==1){
+									if ($this->options['clean_contract']==1){
 										$contract->delete(array('ID'=>$item_ID));
 									} 
-									if ($this->options['clean_contracts']==2) { // purge
+									if ($this->options['clean_contract']==2) { // purge
 										$contract->delete(array('ID'=>$item_ID),1);
 									}
 								}
@@ -1658,7 +1658,7 @@ class Transfer extends CommonDBTM{
 		$need_clean_process=false;
 
 		// if keep 
-		if ($this->options['keep_documents']){
+		if ($this->options['keep_document']){
 			$document=new Document();
 			// Get contracts for the item
 			$query="SELECT * FROM glpi_documents_items WHERE items_id = '$ID' AND itemtype = '$itemtype' AND documents_id NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
@@ -1750,16 +1750,16 @@ class Transfer extends CommonDBTM{
 							}
 						}
 						// If clean and unused -> 
-						if ($need_clean_process&&$this->options['clean_documents']){
+						if ($need_clean_process&&$this->options['clean_document']){
 							$query = "SELECT COUNT(*) AS CPT 
 								FROM glpi_documents_items 
 								WHERE documents_id='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($this->options['clean_documents']==1){
+									if ($this->options['clean_document']==1){
 										$document->delete(array('ID'=>$item_ID));
 									} 
-									if ($this->options['clean_documents']==2) { // purge
+									if ($this->options['clean_document']==2) { // purge
 										$document->delete(array('ID'=>$item_ID),1);
 									}
 								}
@@ -1978,7 +1978,7 @@ class Transfer extends CommonDBTM{
 			WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
-				switch ($this->options['keep_tickets']){
+				switch ($this->options['keep_ticket']){
 					// Transfer
 					case 2: 
 						// Same Item / Copy Item -> update entity
@@ -2102,7 +2102,7 @@ class Transfer extends CommonDBTM{
 
 		$ic=new Infocom();
 		if ($ic->getFromDBforDevice($itemtype,$ID)){
-			switch ($this->options['keep_infocoms']){
+			switch ($this->options['keep_infocom']){
 				// delete
 				case 0 :  
 					// Same item -> delete
@@ -2150,7 +2150,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		// TODO clean system : needed ?
 		$ent=new Enterprise();
-		if ($this->options['keep_enterprises']&&$ent->getFromDB($ID)){
+		if ($this->options['keep_supplier']&&$ent->getFromDB($ID)){
 			if (isset($this->noneedtobe_transfer[ENTERPRISE_TYPE][$ID])) {
 				// recursive enterprise
 				return $ID;
@@ -2169,7 +2169,7 @@ class Transfer extends CommonDBTM{
 
 				if ($links_remaining==0){
 					// Search for infocoms
-					if ($this->options['keep_infocoms']){
+					if ($this->options['keep_infocom']){
 						foreach ($this->INFOCOMS_TYPES as $itemtype){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
 								WHERE suppliers_id='$ID' AND itemtype='$itemtype' AND items_id NOT IN ".$this->item_search[$itemtype];
@@ -2222,7 +2222,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		$need_clean_process=false;
 		// if keep 
-		if ($this->options['keep_contacts']){
+		if ($this->options['keep_contact']){
 			$contact=new Contact();
 			// Get contracts for the item
 			$query="SELECT * FROM glpi_contacts_suppliers" .
@@ -2302,16 +2302,16 @@ class Transfer extends CommonDBTM{
 							}
 						}
 						// If clean and unused -> 
-						if ($need_clean_process&&$this->options['clean_contacts']){
+						if ($need_clean_process&&$this->options['clean_contact']){
 							$query = "SELECT COUNT(*) AS CPT
 								FROM glpi_contacts_suppliers 
 								WHERE contacts_id='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($this->options['clean_contacts']==1){
+									if ($this->options['clean_contact']==1){
 										$contact->delete(array('ID'=>$item_ID));
 									} 
-									if ($this->options['clean_contacts']==2) { // purge
+									if ($this->options['clean_contact']==2) { // purge
 										$contact->delete(array('ID'=>$item_ID),1);
 									}
 								}
@@ -2341,7 +2341,7 @@ class Transfer extends CommonDBTM{
 		$ri=new ReservationItem();
 
 		if ($ri->getFromDBbyItem($itemtype,$ID)){
-			switch ($this->options['keep_reservations']){
+			switch ($this->options['keep_reservation']){
 				// delete
 				case 0 :  
 					// Same item -> delete
@@ -2377,7 +2377,7 @@ class Transfer extends CommonDBTM{
 	function transferDevices($itemtype,$ID,$ocs_computer=false){
 		global $DB;
 		// Only same case because no duplication of computers
-		switch ($this->options['keep_devices']){
+		switch ($this->options['keep_device']){
 			// delete devices
 			case 0 :  
 				$query = "DELETE FROM glpi_computers_devices 
@@ -2414,7 +2414,7 @@ class Transfer extends CommonDBTM{
 			WHERE items_id = '$ID' AND itemtype = '$itemtype'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
-				switch ($this->options['keep_networklinks']){
+				switch ($this->options['keep_networklink']){
 					// Delete netport
 					case 0 : 
 						// Not a copy -> delete
@@ -2573,13 +2573,13 @@ class Transfer extends CommonDBTM{
       $options=array(0=>$LANG['buttons'][6],
             1=>$LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
             2=>$LANG['buttons'][49]." - ".$LANG['buttons'][9] );
-      $fctdropdown('keep_networklinks',$options,$this->fields['keep_networklinks']);
+      $fctdropdown('keep_networklink',$options,$this->fields['keep_networklink']);
       echo "</td>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][28].":	</td><td>";
       $options=array(0=>$LANG['buttons'][6],
             1=>$LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
             2=>$LANG['buttons'][49]." - ".$LANG['buttons'][48] );
-      $fctdropdown('keep_tickets',$options,$this->fields['keep_tickets']);
+      $fctdropdown('keep_ticket',$options,$this->fields['keep_ticket']);
       echo "</td>";
       echo "</tr>";
 
@@ -2587,43 +2587,43 @@ class Transfer extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG["Menu"][0]." -> ".$LANG["Menu"][4].":	</td><td>";
-      $fctdropdown('keep_softwares',$keep,$this->fields['keep_softwares']);
+      $fctdropdown('keep_software',$keep,$this->fields['keep_software']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][4].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_softwares',$clean,$this->fields['clean_softwares']);
+      $fctdropdown('clean_software',$clean,$this->fields['clean_software']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][17].":	</td><td>";
-      $fctdropdown('keep_reservations',$keep,$this->fields['keep_reservations']);
+      $fctdropdown('keep_reservation',$keep,$this->fields['keep_reservation']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][0]." -> ".$LANG['title'][30].":	</td><td>";
-      $fctdropdown('keep_devices',$keep,$this->fields['keep_devices']);
+      $fctdropdown('keep_device',$keep,$this->fields['keep_device']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG['cartridges'][12].":	</td><td>";
-      $fctdropdown('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
+      $fctdropdown('keep_cartridgesitem',$keep,$this->fields['keep_cartridgesitem']);
       echo "</td>";
       echo "<td>".$LANG['cartridges'][12].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_cartridges_type',$clean,$this->fields['clean_cartridges_type']);
+      $fctdropdown('clean_cartridgesitem',$clean,$this->fields['clean_cartridgesitem']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['cartridges'][12]." -> ".$LANG["Menu"][21].":	</td><td>";
-      $fctdropdown('keep_cartridges',$keep,$this->fields['keep_cartridges']);
+      $fctdropdown('keep_cartridge',$keep,$this->fields['keep_cartridge']);
       echo "</td>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG['financial'][3].":	</td><td>";
-      $fctdropdown('keep_infocoms',$keep,$this->fields['keep_infocoms']);
+      $fctdropdown('keep_infocom',$keep,$this->fields['keep_infocom']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][92]." -> ".$LANG["Menu"][32].":	</td><td>";
-      $fctdropdown('keep_consumables',$keep,$this->fields['keep_consumables']);
+      $fctdropdown('keep_consumable',$keep,$this->fields['keep_consumable']);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
@@ -2674,37 +2674,37 @@ class Transfer extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][23].":	</td><td>";
-      $fctdropdown('keep_enterprises',$keep,$this->fields['keep_enterprises']);
+      $fctdropdown('keep_supplier',$keep,$this->fields['keep_supplier']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][23].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_enterprises',$clean,$this->fields['clean_enterprises']);
+      $fctdropdown('clean_supplier',$clean,$this->fields['clean_supplier']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG["Menu"][23]." -> ".$LANG["Menu"][22].":	</td><td>";
-      $fctdropdown('keep_contacts',$keep,$this->fields['keep_contacts']);
+      $fctdropdown('keep_contact',$keep,$this->fields['keep_contact']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][22].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_contacts',$clean,$this->fields['clean_contacts']);
+      $fctdropdown('clean_contact',$clean,$this->fields['clean_contact']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][27].":	</td><td>";
-      $fctdropdown('keep_documents',$keep,$this->fields['keep_documents']);
+      $fctdropdown('keep_document',$keep,$this->fields['keep_document']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][27].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_documents',$clean,$this->fields['clean_documents']);
+      $fctdropdown('clean_document',$clean,$this->fields['clean_document']);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][25].":	</td><td>";
-      $fctdropdown('keep_contracts',$keep,$this->fields['keep_contracts']);
+      $fctdropdown('keep_contract',$keep,$this->fields['keep_contract']);
       echo "</td>";
       echo "<td>".$LANG["Menu"][25].": ".$LANG['transfer'][3]."	</td><td>";
-      $fctdropdown('clean_contracts',$clean,$this->fields['clean_contracts']);
+      $fctdropdown('clean_contract',$clean,$this->fields['clean_contract']);
       echo "</td>";
       echo "</tr>";
 
