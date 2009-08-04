@@ -1384,6 +1384,18 @@ function update0721to080() {
       $DB->query($query) or die("0.80 drop oldstate field in glpi_softwares " . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_users', 'password')) {
+      $query="ALTER TABLE `glpi_users` DROP `password`";
+      $DB->query($query) or die("0.80 drop password field in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists('glpi_users', 'password_md5')) {
+      $query="ALTER TABLE `glpi_users` CHANGE `password_md5` `password` CHAR( 32 )  NULL DEFAULT NULL";
+      $DB->query($query) or die("0.80 alter password_md5 field in glpi_users " . $LANG['update'][90] . $DB->error());
+   }
+
+ 
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
    if (!isIndex('glpi_alerts', 'unicity')) {
@@ -1568,6 +1580,16 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add item index in glpi_tickets " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!isIndex('glpi_documentstypes', 'date_mod')) {
+      $query=" ALTER TABLE `glpi_documentstypes` ADD INDEX `date_mod` (`date_mod`)  ";
+      $DB->query($query) or die("0.80 add date_mod index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex('glpi_documentstypes', 'unicity')) {
+      $query=" ALTER TABLE `glpi_documentstypes` ADD UNIQUE `unicity` (`ext`)  ";
+      $DB->query($query) or die("0.80 add unicity index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+   }
+
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
@@ -1598,6 +1620,7 @@ function update0721to080() {
          'glpi_plugins' => array('name'),
          'glpi_reservationsitems' => array('reservationitem'),
          'glpi_tickets' => array('computer','device_type'),
+         'glpi_documentstypes' => array('extension'),
       );
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {

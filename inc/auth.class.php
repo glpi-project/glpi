@@ -88,11 +88,11 @@ class Identification {
 			return 0;
 		} else {
 			$pwd = $DB->result($result, 0, "password");
-			$pwdmd5 = $DB->result($result, 0, "password_md5");
-			if (empty ($pwd) && empty ($pwdmd5))
+			if (empty ($pwd)) {
 				return 2;
-			else
+			} else {
 				return 1;
+         }
 		}
 
 	}
@@ -202,7 +202,7 @@ class Identification {
 			return false;
 		}
 
-		$query = "SELECT password, password_md5 FROM glpi_users WHERE name = '" . $name . "'";
+		$query = "SELECT password FROM glpi_users WHERE name = '" . $name . "'";
 		$result = $DB->query($query);
 		if (!$result) {
 			$this->addToError($LANG['login'][14]);
@@ -210,25 +210,11 @@ class Identification {
 		}
 		if ($result) {
 			if ($DB->numrows($result) == 1) {
-				$password_md5_db = $DB->result($result, 0, "password_md5");
+				$password_md5_db = $DB->result($result, 0, "password");
 				$password_md5_post = md5($password);
 
 				if (strcmp($password_md5_db, $password_md5_post) == 0) {
 					return true;
-				} else {
-
-					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') AS password";
-					$result2 = $DB->query($query2);
-					if (!$result2 || $DB->numrows($result2) != 1) {
-						$this->addToError($LANG['login'][12]);
-						return false;
-					}
-					$pass1 = $DB->result($result, 0, "password");
-					$pass2 = $DB->result($result2, 0, "password");
-
-					if (!empty($pass1)&&strcmp($pass1, $pass2) == 0) {
-						return true;
-					}
 				}
 				$this->addToError($LANG['login'][12]);
 				return false;
