@@ -1024,6 +1024,8 @@ function update0721to080() {
                      ),
       'glpi_softwares' => array(array('from' => 'tplname', 'to' => 'template_name', 'noindex'=>true),//
                      ),
+      'glpi_tickets' => array(array('from' => 'uemail', 'to' => 'user_email', 'noindex'=>true),//
+                     ),
                   );
    foreach ($varcharfields as $table => $tab) {
       foreach ($tab as $update) {
@@ -1157,6 +1159,8 @@ function update0721to080() {
                               array('from' => 'autoupdate_link_state', 'to' => 'state_autoupdate_mode', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'autoclean_link_state', 'to' => 'state_autoclean_mode', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'name_display_order', 'to' => 'names_format', 'default' =>0, 'noindex'=>true,'comments'=>'see *NAME_BEFORE constant in define.php'),//
+                              array('from' => 'dropdown_limit', 'to' => 'dropdown_chars_limit', 'default' =>50, 'noindex'=>true),//
+                              array('from' => 'smtp_mode', 'to' => 'smtp_mode', 'default' =>0, 'noindex'=>true,'comments'=>'see define.php MAIL_* constant'),//
                               ),
       'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
@@ -1198,7 +1202,8 @@ function update0721to080() {
                      ),
       'glpi_rules' => array(array('from' => 'sub_type', 'to' => 'sub_type', 'default' =>0,'comments'=>'see define.php RULE_* constant'),//
                      ),
-      'glpi_tickets' => array(array('from' => 'request_type', 'to' => 'request_type', 'default' =>0,),//
+      'glpi_tickets' => array(array('from' => 'request_type', 'to' => 'request_type', 'default' =>0,'noindex'=>true,),//
+                        array('from' => 'priority', 'to' => 'priority', 'default' =>1,'noindex'=>true,),//
                      ),
       'glpi_users' => array(array('from' => 'dateformat', 'to' => 'date_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//
                               array('from' => 'numberformat', 'to' => 'number_format', 'default' =>NULL, 'noindex'=>true, 'maybenull'=>true),//

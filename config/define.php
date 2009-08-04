@@ -456,7 +456,7 @@
 	
 	// User Prefs fields which override $CFG_GLPI config
 	$CFG_GLPI['user_pref_field']=array("language","list_limit","date_format","number_format",
-               "is_ids_visible","dropdown_limit","use_flat_dropdowntree",
+               "is_ids_visible","dropdown_chars_limit","use_flat_dropdowntree",
                "show_jobs_at_login","priority_1","priority_2","priority_3","priority_4",
                "priority_5","is_categorized_soft_expanded","is_not_categorized_soft_expanded",
                "followup_private","default_request_type");

@@ -50,13 +50,13 @@
 			$email=$DB->result($result,0,"email");
 		}
 	}
-	echo "<input type='text' size='30' name='uemail' value='$email'>";
+	echo "<input type='text' size='30' name='user_email' value='$email'>";
 
 	echo "<script type='text/javascript' >\n";
 	if (!empty($email)){
-		echo "window.document.getElementById('dropdownyesno_emailupdates').value='1';";
+		echo "window.document.getElementById('dropdownyesno_use_email_notification').value='1';";
 	} else {
-		echo "window.document.getElementById('dropdownyesno_emailupdates').value='0';";
+		echo "window.document.getElementById('dropdownyesno_use_email_notification').value='0';";
 	}
 	echo "</script>\n";
 

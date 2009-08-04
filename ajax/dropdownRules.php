@@ -50,7 +50,7 @@ checkLoginUser();
 
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {
-	$_POST["limit"]=$_SESSION["glpidropdown_limit"];	
+	$_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];	
 }
 
 $NBMAX=$CFG_GLPI["dropdown_max"];

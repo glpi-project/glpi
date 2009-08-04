@@ -50,7 +50,7 @@ checkLoginUser();
 
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {
-	$_POST["limit"]=$_SESSION["glpidropdown_limit"];
+	$_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {

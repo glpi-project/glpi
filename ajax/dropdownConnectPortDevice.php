@@ -106,7 +106,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
 			if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
 				$output="($ID)";
 			}
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 		}
 		if ($multi && $prev>=0) {
 			echo "</optgroup>";

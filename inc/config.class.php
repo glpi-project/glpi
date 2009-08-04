@@ -633,7 +633,7 @@ class Config extends CommonDBTM {
 			echo "</td>";
 			
 			echo "<td class='center'>" . $LANG['setup'][131] . "</td><td>";
-			dropdownInteger('dropdown_limit', $data["dropdown_limit"], 20, 100);
+			dropdownInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][132] . "</td><td>";

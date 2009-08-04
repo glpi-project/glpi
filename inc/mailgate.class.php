@@ -374,7 +374,7 @@ class MailCollect {
 			// Check if ticket  exists and users_id exists in GLPI
 			/// TODO check if users_id have right to add a followup to the ticket
 			if ( $job->getFromDB($tkt['tickets_id']) 
-				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['uemail'],$head['from']))) {
+				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'],$head['from']))) {
 		
 				$content=explode("\n",$tkt['contents']);
 				$tkt['contents']="";
@@ -412,7 +412,7 @@ class MailCollect {
 
 		if ( ! isset($tkt['tickets_id']) ) {
 			// Mail followup
-			$tkt['uemail']=$head['from'];
+			$tkt['user_email']=$head['from'];
 			$tkt['use_email_notification']=1;
 			// Which entity ?
 			$tkt['entities_id']=$this->entity;
