@@ -1681,7 +1681,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if (isset($_SESSION["helpdeskSaved"]["use_email_notification"]))
 		$use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
 	if (isset($_SESSION["helpdeskSaved"]["email"]))
-		$email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
+		$email = stripslashes($_SESSION["helpdeskSaved"]["user_email"]);
 	if (isset($_SESSION["helpdeskSaved"]["itemtype"]))
 		$itemtype = stripslashes($_SESSION["helpdeskSaved"]["itemtype"]);
 	if (isset($_SESSION["helpdeskSaved"]["contents"]))
@@ -1721,7 +1721,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['help'][11].":</td>";
-		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"use_email_notification.value='1'\">";
+		echo "<td>	<input name='user_email' value=\"$email\" size='50' onchange=\"use_email_notification.value='1'\">";
 		echo "</td></tr>";
 	}
 

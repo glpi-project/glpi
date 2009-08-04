@@ -284,14 +284,14 @@ class Mailing
 										$users_idsend=true;
 									} 
 
-									// Is the user have the same mail that uemail ?
+									// Is the user have the same mail that user_email ?
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG   
 									FROM glpi_users $join 
 									WHERE glpi_users.ID = '".$this->job->fields["users_id"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if ($row['EMAIL']==$this->job->fields["uemail"]){
+											if ($row['EMAIL']==$this->job->fields["user_email"]){
 												$users_idsend=true;
 												$users_idlang=$row['LANG'];
 											}
@@ -299,7 +299,7 @@ class Mailing
 									}
 
 									if ($users_idsend){
-										$this->addToEmailList($emails,$this->job->fields["uemail"],$users_idlang);
+										$this->addToEmailList($emails,$this->job->fields["user_email"],$users_idlang);
 									}
 								}
 								break;
@@ -549,8 +549,8 @@ class Mailing
 		// No specific config
 		switch ($this->type){
 			case "new":
-				if (isset($this->job->fields["uemail"]) && isValidEmail($this->job->fields["uemail"])) {
-					$replyto=$this->job->fields["uemail"];
+				if (isset($this->job->fields["user_email"]) && isValidEmail($this->job->fields["user_email"])) {
+					$replyto=$this->job->fields["user_email"];
 				} else {
 					$replyto=$sender;
 				}

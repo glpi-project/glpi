@@ -60,7 +60,7 @@ if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!i
 	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
 // Make a select box with preselected values
-if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
+if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
 
 	$where="WHERE 1 ";
 	

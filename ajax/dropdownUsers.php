@@ -110,7 +110,7 @@ if (isset($_POST['value'])){
 if (count($users)) {
 	foreach ($users as $ID => $output){
 			
-		echo "<option value=\"".$ID."\" title=\"".cleanInputText($output." - ".$logins[$ID])."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option value=\"".$ID."\" title=\"".cleanInputText($output." - ".$logins[$ID])."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 	}
 }
 echo "</select>";
@@ -141,7 +141,7 @@ if ($is_helpdesk_multientity){
 		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"tracking_my_devices",
                $CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomment,false);
 		$paramscomment=array('value'=>'__VALUE__');
-		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"uemail_result",
+		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"user_email_result",
                $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomment,false);
 	}
 }

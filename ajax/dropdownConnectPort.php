@@ -78,7 +78,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&isset($_POST["item"])){
 			$output_long="";
 			if (!empty($data['ip'])) $output.= " - ".$data['ip'];
 			if (!empty($data['mac'])) $output_long.= " - ".$data['mac'];
-			if (!empty($data['NNAME'])) $output_long.= utf8_substr(" - ".$data['NNAME'],0,$_SESSION["glpidropdown_limit"]);
+			if (!empty($data['NNAME'])) $output_long.= utf8_substr(" - ".$data['NNAME'],0,$_SESSION["glpidropdown_chars_limit"]);
 			$ID = $data['DID'];
 			if (empty($data["ip"])) {
 				$output.=$output_long;

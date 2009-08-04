@@ -919,8 +919,8 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $user
 		dropdownYesNo('use_email_notification',!empty($email));
 		echo "</td>";
 		echo "<td class='center'>".$LANG['help'][11].":</td>";
-		echo "<td><span id='uemail_result'>";
-		echo "<input type='text' size='30' name='uemail' value='$email'>";
+		echo "<td><span id='user_email_result'>";
+		echo "<input type='text' size='30' name='user_email' value='$email'>";
 		echo "</span>";
 
 		echo "</td></tr>";
@@ -2148,12 +2148,12 @@ function showJobDetails ($target,$ID){
 			echo $LANG['joblist'][27].":";
 			echo "</td><td>";
 			if ($canupdate){
-				autocompletionTextField("uemail","glpi_tickets","uemail",$job->fields["uemail"],15,$job->fields["entities_id"]);
+				autocompletionTextField("user_email","glpi_tickets","user_email",$job->fields["user_email"],15,$job->fields["entities_id"]);
 
-				if (!empty($job->fields["uemail"]))
-					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-			} else if (!empty($job->fields["uemail"]))
-				echo "<a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a>";
+				if (!empty($job->fields["user_email"]))
+					echo "<a href='mailto:".$job->fields["user_email"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
+			} else if (!empty($job->fields["user_email"]))
+				echo "<a href='mailto:".$job->fields["user_email"]."'>".$job->fields["user_email"]."</a>";
 			else echo "&nbsp;";
 			echo "</td></tr></table>";
 

@@ -79,7 +79,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
 
 	$name="------";
 	$comment="";
-	$limit_length=$_SESSION["glpidropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_chars_limit"];
 	
 
 	if (strlen($value)==0) {
@@ -93,10 +93,10 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
 			$name=$tmpname["name"];
 			$comment=$tmpname["comment"];
 
-			if (utf8_strlen($name) > $_SESSION["glpidropdown_limit"]) {
+			if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
 				if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
 					$pos = strrpos($name,">");
-					$limit_length=max(utf8_strlen($name)-$pos,$_SESSION["glpidropdown_limit"]);
+					$limit_length=max(utf8_strlen($name)-$pos,$_SESSION["glpidropdown_chars_limit"]);
 					if (utf8_strlen($name)>$limit_length) {
 						$name = "&hellip;".utf8_substr($name,-$limit_length);
 					}
@@ -104,7 +104,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
 					$limit_length = utf8_strlen($name);
 				}
 			} else {
-				$limit_length = $_SESSION["glpidropdown_limit"];
+				$limit_length = $_SESSION["glpidropdown_chars_limit"];
 			}
 		}
 	}
@@ -201,14 +201,14 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$
 
 	$name="------";
 	$comment="";
-	$limit_length=$_SESSION["glpidropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_chars_limit"];
 	if (empty($value)) $value=0;
 	if ($value>0){
 		$tmpname=getDropdownName("glpi_netpoints",$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
 			$comment=$tmpname["comment"];
-			$limit_length=max(utf8_strlen($name),$_SESSION["glpidropdown_limit"]);
+			$limit_length=max(utf8_strlen($name),$_SESSION["glpidropdown_chars_limit"]);
 		}
 	}
 	
@@ -460,7 +460,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_r
 	$default_display="";
 
 	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'>";
-	$default_display.="<option value='$value'>".utf8_substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
+	$default_display.="<option value='$value'>".utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"])."</option></select>\n";
 
 	$view_users=(haveRight("user","r"));
 
@@ -702,7 +702,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
 
 	$default="";
 	$user=getUserName($value,2);
-	$default="<select name='$myname'><option value='$value'>".utf8_substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
+	$default="<select name='$myname'><option value='$value'>".utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"])."</option></select>\n";
 	if (empty($value)||$value==0){
 			$default= "<select name='$myname'><option value='0'>[ ".$LANG['common'][66]." ]</option></select>\n";
 	}
@@ -972,7 +972,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 							$output.=" (".$data['ID'].")";
 						}
 						$my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
-						$my_devices.="$itemtype_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
+						$my_devices.="$itemtype_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
 						$my_devices.="</option>";
 
 						$already_add[$itemtype][]=$data["ID"];
@@ -1033,7 +1033,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 										$output .= " (".$data['ID'].")";	
 									}
 									$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
-									$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
+									$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
 									$tmp_device.="</option>";
 									$already_add[$itemtype][]=$data["ID"];
 								}
@@ -1088,7 +1088,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 								}
 								if (empty($output)||$_SESSION["glpiis_ids_visible"]) $output.=" (".$data['ID'].")";
 								$tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["ID"]."' ".($my_item==$itemtype."_".$data["ID"]?"selected":"").">";
-								$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_limit"]);
+								$tmp_device.="$type_name - ".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
 								$tmp_device.="</option>";
 
 								$already_add[$itemtype][]=$data["ID"];
@@ -2340,7 +2340,7 @@ function dropdownRules ($sub_type, $myname){
 	global $DB, $CFG_GLPI, $LANG;
 
 	$rand=mt_rand();
-	$limit_length=$_SESSION["glpidropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_chars_limit"];
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
@@ -2587,7 +2587,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 				echo "<optgroup label=\"". $data["completename"] ."\">";
 			}
 			echo "<option value='".$data["ID"]."'>";
-			echo utf8_substr($data["name"]." - #".$data["num"]." - ".convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_limit"]);
+			echo utf8_substr($data["name"]." - #".$data["num"]." - ".convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_chars_limit"]);
 			echo "</option>";
 		}
 	}

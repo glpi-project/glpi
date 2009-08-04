@@ -330,8 +330,8 @@ class Job extends CommonDBTM{
 			$user=new User;
 			$user->getFromDB($input["users_id"]);
 			if (!empty($user->fields["email"])){
-				$updates[]="uemail";
-				$this->fields["uemail"]=$user->fields["email"];
+				$updates[]="user_email";
+				$this->fields["user_email"]=$user->fields["email"];
 			}
 		}
 		
@@ -581,7 +581,7 @@ class Job extends CommonDBTM{
 				addMessageAfterRedirect($LANG['help'][41],false,ERROR);
 				$mandatory_ok=false;
 			}
-			if (isset($input['use_email_notification'])&&$input['use_email_notification']&&(!isset($input['uemail'])||empty($input['uemail']))){
+			if (isset($input['use_email_notification'])&&$input['use_email_notification']&&(!isset($input['user_email'])||empty($input['user_email']))){
 				addMessageAfterRedirect($LANG['help'][16],false,ERROR);
 				$mandatory_ok=false;
 			}
@@ -670,10 +670,10 @@ class Job extends CommonDBTM{
 
 		$input=$rules->processAllRules($input,$input);
 
-		if (isset($input["use_email_notification"])&&$input["use_email_notification"]&&empty($input["uemail"])){
+		if (isset($input["use_email_notification"])&&$input["use_email_notification"]&&empty($input["user_email"])){
 			$user=new User();
 			$user->getFromDB($input["users_id"]);
-			$input["uemail"]=$user->fields["email"];
+			$input["user_email"]=$user->fields["email"];
 		}
 
 		if (((isset($input["users_id_assign"])&&$input["users_id_assign"]>0)
