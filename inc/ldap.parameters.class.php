@@ -53,7 +53,6 @@ class LdapCriteria extends CommonDBTM {
 		global $DB;
 		$sql = "SELECT * 
 			FROM `".$this->table."` 
-			WHERE sub_type='".RULE_AFFECT_RIGHTS."' 
 			ORDER BY name ASC";
 		$result = $DB->query($sql);
 		$parameters = array ();
@@ -86,7 +85,6 @@ class LdapCriteria extends CommonDBTM {
 			autocompletionTextField("name", $this->table, "name", "", 40);
 			echo $LANG['setup'][601] . ":";
 			autocompletionTextField("value", $this->table, "value", "", 40);
-			echo "<input type=hidden name='sub_type' value=\"" . RULE_AFFECT_RIGHTS . "\">";
 			echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 			echo "</td></tr>";
 			

@@ -50,10 +50,10 @@ commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","rule",-1);
 	if (haveRight("rule_ldap","r")){
 		echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.right.php\"><strong>" .$LANG['rulesengine'][19] . "</strong></a></td> </tr>";
 	}
-	if (haveRight("rule_tracking","r")){
+	if (haveRight("rule_ticket","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.tracking.php\"><strong>" . $LANG['rulesengine'][28] . "</strong></a></td></tr>";
 	}
-	if (haveRight("rule_softwarecategories","r")){
+	if (haveRight("rule_softwarescategories","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.softwarecategories.php\"><strong>" . $LANG['rulesengine'][37] . "</strong></a></td></tr>";
 	}
 

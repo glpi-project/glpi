@@ -431,7 +431,7 @@ if (isset($_POST["itemtype"])){
 								ocsUnlockItems($key,"import_monitor");
 								break;
 							case "unlock_ocsng_printer":
-								ocsUnlockItems($key,"import_printers");
+								ocsUnlockItems($key,"import_printer");
 								break;
 							case "unlock_ocsng_peripheral":
 								ocsUnlockItems($key,"import_peripheral");

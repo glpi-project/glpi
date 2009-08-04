@@ -197,7 +197,7 @@ function haveTypeRight($itemtype, $right) {
 			return haveRight("config",$right);
 			break;	
 		case RULE_TYPE :
-			return haveRight("rule_tracking",$right)||haveRight("rule_ocs",$right)||haveRight("rule_ldap",$right)||haveRight("rule_softwarecategories",$right);
+			return haveRight("rule_ticket",$right)||haveRight("rule_ocs",$right)||haveRight("rule_ldap",$right)||haveRight("rule_softwarescategories",$right);
 			break;	
 		case TRANSFER_TYPE :
 			return haveRight("transfer",$right);

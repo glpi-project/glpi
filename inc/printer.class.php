@@ -449,11 +449,11 @@ class Printer  extends CommonDBTM {
 
       // Ram ?
       echo "<tr><td>".$LANG['devices'][6].":</td><td>\n";
-      autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],40,$this->fields["entities_id"]);
+      autocompletionTextField("memory_size","glpi_printers","memory_size",$this->fields["memory_size"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
       // Initial count pages ?
       echo "<tr><td>".$LANG['printers'][30].":</td><td>\n";
-      autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],40,$this->fields["entities_id"]);
+      autocompletionTextField("init_pages_counter","glpi_printers","init_pages_counter",$this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
 

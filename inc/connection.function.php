@@ -313,7 +313,7 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
 					deleteInOcsArray($data["computers_id"],$data["ID"],"import_peripheral");
 					break;
 				case PRINTER_TYPE:
-					deleteInOcsArray($data["computers_id"],$data["ID"],"import_printers");
+					deleteInOcsArray($data["computers_id"],$data["ID"],"import_printer");
 					break;
 			}
 		}
