@@ -1215,7 +1215,7 @@ function update0721to080() {
                               array('from' => 'keep_networklinks', 'to' => 'keep_networklink', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_reservations', 'to' => 'keep_reservation', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_history', 'to' => 'keep_history', 'default' =>0, 'noindex'=>true),//
-                              array('from' => 'keep_devices', 'to' => 'keep_devices', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_devices', 'to' => 'keep_device', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_infocoms', 'to' => 'keep_infocom', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_dc_monitor', 'to' => 'keep_dc_monitor', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'clean_dc_monitor', 'to' => 'clean_dc_monitor', 'default' =>0, 'noindex'=>true),//
@@ -1941,9 +1941,9 @@ function update0721to080() {
       $DB->query($query) or die("0.80 create index is_template in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists("glpi_budgets","tplname")) {
-      $query = "ALTER TABLE `glpi_budgets`  ADD `tplname` varchar(255) default NULL";
-      $DB->query($query) or die("0.80 add tplname field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_budgets","template_name")) {
+      $query = "ALTER TABLE `glpi_budgets`  ADD `template_name` varchar(255) default NULL";
+      $DB->query($query) or die("0.80 add template_name field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
 
 	// Display "Work ended." message - Keep this as the last action.

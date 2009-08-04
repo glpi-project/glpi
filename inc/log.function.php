@@ -44,12 +44,12 @@ if (!defined('GLPI_ROOT')){
  * 
  *
  * @param $items_id
- * @param $type
+ * @param $itemtype
  * @param $changes
  * @param $devicetype
  * @param $linked_action
  **/
-function historyLog ($items_id,$type,$changes,$devicetype='0',$linked_action='0') {
+function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action='0') {
 
 	global $DB;
 
@@ -68,9 +68,9 @@ function historyLog ($items_id,$type,$changes,$devicetype='0',$linked_action='0'
 			$username="";
 
 		// Build query
-		$query = "INSERT INTO glpi_logs (items_id, type, devicetype, linked_action, user_name, date_mod,
+		$query = "INSERT INTO glpi_logs (items_id, itemtype, devicetype, linked_action, user_name, date_mod,
 		id_search_option, old_value, new_value)  
-		VALUES ('$items_id', '$type', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
+		VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
 		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
 	}
@@ -83,11 +83,11 @@ function historyLog ($items_id,$type,$changes,$devicetype='0',$linked_action='0'
  * 
  *
  * @param $items_id ID of the device
- * @param $type ID of the device type
+ * @param $itemtype ID of the device type
  * @param $oldvalues old values updated
  * @param $values all values of the item
  **/
-function constructHistory($items_id,$type,&$oldvalues,&$values) {
+function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 
 	global $LINK_ID_TABLE, $LANG ;
 
@@ -98,7 +98,7 @@ function constructHistory($items_id,$type,&$oldvalues,&$values) {
 		foreach ($oldvalues as $key => $oldval){
 			$changes=array();
 			// Parsing $SEARCH_OPTIONS to find infocom 
-			if ($type==INFOCOM_TYPE) {
+			if ($itemtype==INFOCOM_TYPE) {
 				$ic=new Infocom();
 				if ($ic->getFromDB($values['id'])){
 					$real_type=$ic->fields['itemtype'];
@@ -123,17 +123,17 @@ function constructHistory($items_id,$type,&$oldvalues,&$values) {
 					}
 				}
 			} else {
-				$real_type=$type;
+				$real_type=$itemtype;
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-				if (isset($SEARCH_OPTION[$type])){
-					foreach($SEARCH_OPTION[$type] as $key2 => $val2){
+				if (isset($SEARCH_OPTION[$itemtype])){
+					foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
 				
 						// Linkfield or standard field not massive action enable
 						if($val2["linkfield"]==$key 
 							|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 				
-							if($val2["table"]==$LINK_ID_TABLE[$type]){
+							if($val2["table"]==$LINK_ID_TABLE[$itemtype]){
 								// 1st case : text field -> keep datas
 								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
 							}else {
@@ -162,9 +162,9 @@ function constructHistory($items_id,$type,&$oldvalues,&$values) {
  * Show history for a device 
  *
  * @param $items_id
- * @param $type
+ * @param $itemtype
  **/
-function showHistory($type,$items_id){
+function showHistory($itemtype,$items_id){
 
 	global $DB, $LINK_ID_TABLE,$LANG;	
 	
@@ -177,7 +177,7 @@ function showHistory($type,$items_id){
 	}
 
 	// Total Number of events
-	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND type=$type");
+	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
 
 	// No Events in database
 	if ($number < 1) {
@@ -194,7 +194,7 @@ function showHistory($type,$items_id){
 
 	$query="SELECT * 
 		FROM glpi_logs 
-		WHERE items_id='".$items_id."' AND type='".$type."'
+		WHERE items_id='".$items_id."' AND itemtype='".$itemtype."'
 		ORDER BY id DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
 	//echo $query;
@@ -306,7 +306,7 @@ function showHistory($type,$items_id){
 		}else{
 			$fieldname="";
 			// It's not an internal device
-			foreach($SEARCH_OPTION[$type] as $key2 => $val2){
+			foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
 
 				if($key2==$data["id_search_option"]){
 					$field= $val2["name"];

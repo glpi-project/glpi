@@ -163,7 +163,7 @@ class RightAffectRule extends Rule {
 	{
 		global $DB,$RULES_CRITERIAS;
 
-			$sql = "SELECT name,value,sub_type FROM glpi_rulesldapparameters ";
+			$sql = "SELECT name,value FROM glpi_rulesldapparameters ";
 			$result = $DB->query($sql);
 			while ($datas = $DB->fetch_array($result)) {
 					$RULES_CRITERIAS[$this->sub_type][$datas["value"]]['name']=$datas["name"];
