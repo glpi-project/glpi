@@ -237,53 +237,22 @@ class Peripheral  extends CommonDBTM  {
 			$this->getEmpty();
 		} 
 
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
-			$datestring = $LANG['computers'][14].": ";
+			$datestring = $LANG['computers'][14];
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 			$template = "newtemplate";
-			$datestring = $LANG['computers'][14].": ";
+			$datestring = $LANG['computers'][14];
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} else {
-			$datestring = $LANG['common'][26].": ";
+			$datestring = $LANG['common'][26];
 			$date = convDateTime($this->fields["date_mod"]);
 			$template = false;
 		}
 
-
-		echo "<div class='center' id='tabsbody'>";
-		echo "<form method='post' name=form action=\"$target\">";
-		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
-		}
-
-		echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-
-		echo "<table  class='tab_cadre_fixe' cellpadding='2'>";
-
-		echo "<tr><th align='center' >";
-
-
-
-		if(!$template) {
-			echo $LANG['common'][2]." ".$this->fields["id"];
-		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG['peripherals'][30].": ".$this->fields["template_name"];
-			echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
-		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $LANG['common'][6]."&nbsp;: ";
-			autocompletionTextField("template_name","glpi_peripherals","template_name",$this->fields["template_name"],40,$this->fields["entities_id"]);
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
-		}
-
-		echo "</th><th  align='center'>".$datestring.$date;
-		if (!$template&&!empty($this->fields['template_name']))
-			echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
-		echo "</th></tr>";
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate);
 
       echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -319,7 +288,10 @@ class Peripheral  extends CommonDBTM  {
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
-      
+      echo "<tr><td>".$datestring.":   </td><td>".$date;
+      if (!$template&&!empty($this->fields['template_name']))
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
+      echo "</td></tr>";
 
       echo "</table>";
 
@@ -380,44 +352,8 @@ class Peripheral  extends CommonDBTM  {
       echo "</td>";
       echo "</tr>";
 
-		if (haveRight("peripheral","w")){
-			echo "<tr>";
+      $this->showFormButtons($ID,$withtemplate);
 
-			if ($template) {
-
-				if (empty($ID)||$withtemplate==2){
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='id' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-					echo "</td>\n";
-				} else {
-					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-					echo "<input type='hidden' name='id' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-					echo "</td>\n";
-				}
-
-
-			} else {
-
-				echo "<td class='tab_bg_2' valign='top' align='center'>";
-				echo "<input type='hidden' name='id' value=\"$ID\">\n";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td>";
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<div class='center'>";
-				if (!$this->fields["is_deleted"])
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-				else {
-					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
-				}
-				echo "</div>";
-				echo "</td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table></form></div>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
