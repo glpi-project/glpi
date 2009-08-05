@@ -153,7 +153,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 				$sort=$data["date"];
 			}
 
-			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["id"];
+			$tabremind[$sort."$$".$i]["reminders_id"]=$remind->fields["id"];
 			$tabremind[$sort."$$".$i]["users_id"]=$remind->fields["users_id"];
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["entities_id"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["is_planned"]?"".$data["begin"]."":"".$data["date"]."");
@@ -188,7 +188,7 @@ function showListReminder($is_private=1,$is_recursive=0){
 				echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["users_id"]) . "</td>";
 			}
-			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["id_reminder"]."\">".$val["name"]."</a>" .
+			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."\">".$val["name"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
 				
 			echo "</div></td>";

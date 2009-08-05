@@ -62,20 +62,20 @@ if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1","show_assign_ticket"=>"1"));
 	$newID=$fup->add($_POST);
 
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tracking"]."&glpi_tab=1");
+	logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]."&glpi_tab=1");
 
 } else if (isset($_POST["update_followup"])){
 	checkRight("comment_all_ticket","1");
 	$fup->update($_POST);
 
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tracking"]);
+	logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]);
 } else if (isset($_POST["delete_followup"])){
 	checkRight("comment_all_ticket","1");
 	$fup->delete($_POST);
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tracking"]);
+	logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]);
 }
 
 // Manage All case which does not exist

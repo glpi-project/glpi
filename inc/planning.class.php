@@ -80,7 +80,8 @@ class PlanningTracking extends CommonDBTM {
 
 		// Auto update Status
 		$job=new Job();
-		$job->getFromDB($input["id_tracking"]);
+
+		$job->getFromDB($input["tickets_id"]);
 		if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
 			$job->fields["status"]="plan";
 			$updates[]="status";
@@ -102,7 +103,7 @@ class PlanningTracking extends CommonDBTM {
 		$updates2[]="realtime";
 		$fup->fields["realtime"]=$dateDiff/60/60;
 		$fup->updateInDB($updates2);
-		$job->updateRealTime($input["id_tracking"]);
+		$job->updateRealTime($input["tickets_id"]);
 
 		if ((!isset($input["_nomail"])||$input["_nomail"]==0)
 		&&count($updates)>0 && $CFG_GLPI["use_mailing"]){
@@ -140,7 +141,7 @@ class PlanningTracking extends CommonDBTM {
 		
 		// Auto update Status
 		$job=new Job();
-		$job->getFromDB($input["id_tracking"]);
+		$job->getFromDB($input["tickets_id"]);
 		if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
 			$job->fields["status"]="plan";
 			$updates[]="status";
@@ -164,7 +165,7 @@ class PlanningTracking extends CommonDBTM {
 			$updates2[]="realtime";
 			$fup->fields["realtime"]=$dateDiff/60/60;
 			$fup->updateInDB($updates2);
-			$job->updateRealTime($input["id_tracking"]);
+			$job->updateRealTime($input["tickets_id"]);
 		}
 
 		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["use_mailing"]){
