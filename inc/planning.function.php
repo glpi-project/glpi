@@ -285,7 +285,7 @@ function showPlanning($who,$who_group,$when,$type){
 			if (haveAccessToEntity($job->fields["entities_id"])){
 				$interv[$data["begin"]."$$$".$i]["ticketsfollowups_id"]=$data["ticketsfollowups_id"];
 				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
-				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tickets_id"];
+				$interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
 				$interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
 				$interv[$data["begin"]."$$$".$i]["id"]=$data["id"];
 				if (strcmp($begin,$data["begin"])>0){
@@ -336,7 +336,7 @@ function showPlanning($who,$who_group,$when,$type){
 		if ($DB->numrows($result2)>0) {	
 			while ($data=$DB->fetch_array($result2)){
 	
-				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["id"];
+				$interv[$data["begin"]."$$".$i]["reminders_id"]=$data["id"];
 				if (strcmp($begin,$data["begin"])>0)
 					$interv[$data["begin"]."$$".$i]["begin"]=$begin;
 				else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
@@ -586,12 +586,12 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			$val["type"]=$type;
 			$function($val);
 		}
-	} else if(isset($val["id_tracking"])){  // show tracking
+	} else if(isset($val["tickets_id"])){  // show tracking
 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".$LANG['planning'][8]."'>&nbsp;";
 		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
 
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$val["id_tracking"]."' style='$styleText'";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$val["tickets_id"]."' style='$styleText'";
 		if (!$complete){
 			echo "onmouseout=\"cleanhide('content_tracking_".$val["id"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["id"].$rand."')\"";
 		}
@@ -610,7 +610,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				break;
 
 		}
-		echo "<br>- #".$val["id_tracking"]." ";
+		echo "<br>- #".$val["tickets_id"]." ";
 		echo  resume_text($val["name"],80). " ";
 		if (!empty($val["device"])){
 			echo "<br>- ".$val["device"];
@@ -639,9 +639,9 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			$img="rdv_public.png";
 		} 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37]."'>&nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["id_reminder"]."'";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'";
 			if (!$complete){
-			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
+			echo "onmouseout=\"cleanhide('content_reminder_".$val["reminders_id"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["reminders_id"].$rand."')\"";
 		}
 		echo ">";
 
@@ -666,7 +666,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			echo "<br><strong>".getPlanningState($val["state"])."</strong><br>";
 			echo $val["text"];
 		} else {
-			echo "<div class='over_link' id='content_reminder_".$val["id_reminder"].$rand."'><strong>".getPlanningState($val["state"])."</strong><br>".$val["text"]."</div>";
+			echo "<div class='over_link' id='content_reminder_".$val["reminders_id"].$rand."'><strong>".getPlanningState($val["state"])."</strong><br>".$val["text"]."</div>";
 		}
 
 		echo "";
@@ -748,7 +748,7 @@ function showPlanningCentral($who){
 				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
 					if (haveAccessToEntity($job->fields["entities_id"])){
 						$interv[$data["begin"]."$$".$i]["ticketsfollowups_id"]=$data["ticketsfollowups_id"];
-						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tickets_id"];
+						$interv[$data["begin"]."$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
 						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 						$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 						$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
@@ -791,7 +791,7 @@ function showPlanningCentral($who){
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
 			if ($remind->getFromDB($data["id"])){
-				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["id"];
+				$interv[$data["begin"]."$$".$i]["reminders_id"]=$data["id"];
 				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 				$interv[$data["begin"]."$$".$i]["is_private"]=$data["is_private"];
@@ -919,7 +919,7 @@ function generateIcal($who){
 				}
 			}
 
-			$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['ticketsfollowups_id'];
+			$interv[$data["begin"]."$$".$i]["tickets_id"]=$data['ticketsfollowups_id'];
 			$interv[$data["begin"]."$$".$i]["users_id"]=$data['users_id'];
 			$interv[$data["begin"]."$$".$i]["id"]=$data['id'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
@@ -956,7 +956,7 @@ function generateIcal($who){
 			$remind->getFromDB($data["id"]);
 
 
-			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["id"];
+			$interv[$data["begin"]."$$".$i]["reminders_id"]=$remind->fields["id"];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 			$interv[$data["begin"]."$$".$i]["name"]=$remind->fields["name"];
@@ -979,10 +979,10 @@ function generateIcal($who){
 
 			$vevent = new vevent(); //initiate EVENT 
 			
-			if(isset($val["id_tracking"])){
-				$vevent->setProperty("uid","Job#".$val["id_tracking"]);
-			}else if (isset($val["id_reminder"])){
-				$vevent->setProperty("uid","Event#".$val["id_reminder"]);
+			if(isset($val["tickets_id"])){
+				$vevent->setProperty("uid","Job#".$val["tickets_id"]);
+			}else if (isset($val["reminders_id"])){
+				$vevent->setProperty("uid","Event#".$val["reminders_id"]);
 			} else if (isset($val['planningID'])){ // Specify the ID (for plugins)
 				$vevent->setProperty("uid","Plugin#".$val['planningID']);
 			} else {				
@@ -992,8 +992,8 @@ function generateIcal($who){
 			$vevent->setProperty( "dtstart" , $val["begin"] ); 
 			$vevent->setProperty( "dtend" , $val["end"] ); 
 			
-			if(isset($val["id_tracking"])){
-				$vevent->setProperty( "summary" , $LANG['planning'][8]." # ".$val["id_tracking"]." ".$LANG['common'][1]." # ".$val["device"] ); 
+			if(isset($val["tickets_id"])){
+				$vevent->setProperty( "summary" , $LANG['planning'][8]." # ".$val["tickets_id"]." ".$LANG['common'][1]." # ".$val["device"] );
 			}else if (isset($val["name"])){
 				$vevent->setProperty( "summary" , $val["name"] ); 
 			}
@@ -1004,8 +1004,8 @@ function generateIcal($who){
 				$vevent->setProperty( "description" , $val["name"] ); 
 			}
 
-			if(isset($val["id_tracking"])){
-				$vevent->setProperty( "url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"] );
+			if(isset($val["tickets_id"])){
+				$vevent->setProperty( "url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["tickets_id"] );
 			} 
 
 			$v->setComponent( $vevent );
