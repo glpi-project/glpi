@@ -45,6 +45,7 @@ function update0721to080() {
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
 
+   $changes=array();
    $glpi_tables=array(
       'glpi_alerts'                       => 'glpi_alerts',
       'glpi_auth_ldap'                    => 'glpi_authldaps',
@@ -213,8 +214,10 @@ function update0721to080() {
       }
       if (FieldExists($new_table,'ID')){
          // ALTER ID -> id
-         $query=" ALTER TABLE `$new_table` CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT";
-         $DB->query($query) or die("0.80 rename ID to id in $new_table " . $LANG['update'][90] . $DB->error());
+//          $query=" ALTER TABLE `$new_table` CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT";
+//          $DB->query($query) or die("0.80 rename ID to id in $new_table " . $LANG['update'][90] . $DB->error());
+         $changes[$new_table][]="CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT";
+
       }
    }
    if ($backup_tables) {
@@ -656,20 +659,23 @@ function update0721to080() {
                $query="UPDATE `$table` SET `$oldname`='$default_value' WHERE `$oldname` IS NULL ";
                $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
 
-               $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
-               $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+//                $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
+//                $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="CHANGE COLUMN `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
             } else {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
             // If do index : delete old one / create new one
             if ($doindex) {
                if (!isIndex($table, $newname)) {
-                  $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
-                  $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+                  //$query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+                  //$DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+                  $changes[$table][]="ADD INDEX `$newname` (`$newname`)";
                }
                if ($oldname!=$newname && isIndex($table, $oldname)) {
-                  $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-                  $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+                  //$query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+                  //$DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+                  $changes[$table][]="DROP INDEX `$oldname`";
                }
             }
          }
@@ -891,20 +897,25 @@ function update0721to080() {
             $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0; ";
             $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
 
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default;";
-            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+//            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default;";
+//            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+            $changes[$table][]="CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default";
+
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
          if ($doindex) {
             if (!isIndex($table, $newname)) {
-               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
-               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+//               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="ADD INDEX `$newname` (`$newname`)";
             }
             if ($newname!=$oldname && isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+//               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="DROP INDEX `$oldname`";
+
             }
          }
       }
@@ -1055,12 +1066,14 @@ function update0721to080() {
          // If do index : delete old one / create new one
          if ($doindex) {
             if (!isIndex($table, $newname)) {
-               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
-               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+//               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+            $changes[$table][]="ADD INDEX `$newname` (`$newname`)";
             }
             if ($newname!=$oldname && isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+//               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="DROP INDEX `$oldname`";
             }
          }
       }
@@ -1122,12 +1135,14 @@ function update0721to080() {
          // If do index : delete old one / create new one
          if ($doindex) {
             if (!isIndex($table, $newname)) {
-               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
-               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+//               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="ADD INDEX `$newname` (`$newname`)";
             }
             if ($oldname!=$newname && isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+//               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="DROP INDEX `$oldname`";
             }
          }
       }
@@ -1289,21 +1304,24 @@ function update0721to080() {
                   }
                }
             }
-            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment ";
+//            $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment ";
+//            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+            $changes[$table][]="CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment";
 
-            $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
             echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
          }
          // If do index : delete old one / create new one
          if ($doindex) {
             if (!isIndex($table, $newname)) {
-               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
-               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+//               $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="ADD INDEX `$newname` (`$newname`)";
             }
             if ($newname!=$oldname && isIndex($table, $oldname)) {
-               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+//               $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+//               $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+               $changes[$table][]="DROP INDEX `$oldname`";
             }
          }
       }
@@ -1312,317 +1330,369 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
 
    if (FieldExists('glpi_alerts', 'date')) {
-      $query="ALTER TABLE `glpi_alerts` CHANGE `date` `date` DATETIME NOT NULL";
-      $DB->query($query) or die("0.80 alter date field in glpi_alerts " . $LANG['update'][90] . $DB->error());
+//      $query="ALTER TABLE `glpi_alerts` CHANGE `date` `date` DATETIME NOT NULL";
+//      $DB->query($query) or die("0.80 alter date field in glpi_alerts " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_alerts'][]="CHANGE `date` `date` DATETIME NOT NULL";
    }
    if (FieldExists('glpi_configs', 'date_fiscale')) {
-      $query="ALTER TABLE `glpi_configs` CHANGE `date_fiscale` `date_tax` DATE NOT NULL DEFAULT '2005-12-31' ";
-      $DB->query($query) or die("0.80 alter date_fiscale field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//      $query="ALTER TABLE `glpi_configs` CHANGE `date_fiscale` `date_tax` DATE NOT NULL DEFAULT '2005-12-31' ";
+//      $DB->query($query) or die("0.80 alter date_fiscale field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="CHANGE `date_fiscale` `date_tax` DATE NOT NULL DEFAULT '2005-12-31'";
    }
  
    if (FieldExists('glpi_configs', 'sendexpire')) {
-      $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
-      $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//      $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
+//      $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `sendexpire`";
    }
    if (FieldExists('glpi_configs', 'show_admin_doc')) {
-      $query="ALTER TABLE `glpi_configs` DROP `show_admin_doc`";
-      $DB->query($query) or die("0.80 drop show_admin_doc field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `show_admin_doc`";
+//       $DB->query($query) or die("0.80 drop show_admin_doc field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `show_admin_doc`";
    }
    if (FieldExists('glpi_configs', 'licenses_management_restrict')) {
-      $query="ALTER TABLE `glpi_configs` DROP `licenses_management_restrict`";
-      $DB->query($query) or die("0.80 drop licenses_management_restrict field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `licenses_management_restrict`";
+//       $DB->query($query) or die("0.80 drop licenses_management_restrict field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `licenses_management_restrict`";
    }
    if (FieldExists('glpi_configs', 'nextprev_item')) {
-      $query="ALTER TABLE `glpi_configs` DROP `nextprev_item`";
-      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `nextprev_item`";
+//       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `nextprev_item`";
    }
 
    if (FieldExists('glpi_configs', 'logotxt')) {
-      $query="ALTER TABLE `glpi_configs` DROP `logotxt`";
-      $DB->query($query) or die("0.80 drop logotxt field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `logotxt`";
+//       $DB->query($query) or die("0.80 drop logotxt field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `logotxt`";
    }
 
    if (FieldExists('glpi_configs', 'num_of_events')) {
-      $query="ALTER TABLE `glpi_configs` DROP `num_of_events`";
-      $DB->query($query) or die("0.80 drop num_of_events field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `num_of_events`";
+//       $DB->query($query) or die("0.80 drop num_of_events field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `num_of_events`";
    }
 
    if (FieldExists('glpi_configs', 'tracking_order')) {
-      $query="ALTER TABLE `glpi_configs` DROP `tracking_order`";
-      $DB->query($query) or die("0.80 drop tracking_order field in glpi_configs " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_configs` DROP `tracking_order`";
+//       $DB->query($query) or die("0.80 drop tracking_order field in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_configs'][]="DROP `tracking_order`";
    }
 
    if (FieldExists('glpi_contracts', 'bill_type')) {
-      $query="ALTER TABLE `glpi_contracts` DROP `bill_type`";
-      $DB->query($query) or die("0.80 drop bill_type field in glpi_contracts " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_contracts` DROP `bill_type`";
+//       $DB->query($query) or die("0.80 drop bill_type field in glpi_contracts " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_contracts'][]="DROP `bill_type`";
    }
 
    if (FieldExists('glpi_infocoms', 'amort_coeff')) {
-      $query="ALTER TABLE `glpi_infocoms` CHANGE `amort_coeff` `sink_coeff` FLOAT NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter amort_coeff field in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_infocoms` CHANGE `amort_coeff` `sink_coeff` FLOAT NOT NULL DEFAULT '0'";
+//       $DB->query($query) or die("0.80 alter amort_coeff field in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_infocoms'][]="CHANGE `amort_coeff` `sink_coeff` FLOAT NOT NULL DEFAULT '0'";
    }
 
    if (FieldExists('glpi_ocsservers', 'import_software_comments')) {
-      $query="ALTER TABLE `glpi_ocsservers` DROP `import_software_comments`";
-      $DB->query($query) or die("0.80 drop import_software_comments field in glpi_ocsservers " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_ocsservers` DROP `import_software_comments`";
+//       $DB->query($query) or die("0.80 drop import_software_comments field in glpi_ocsservers " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_ocsservers'][]="DROP `import_software_comments`";
    }
 
    if (FieldExists('glpi_users', 'nextprev_item')) {
-      $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
-      $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_users` DROP `nextprev_item`";
+//       $DB->query($query) or die("0.80 drop nextprev_item field in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="DROP `nextprev_item`";
    }
 
    if (FieldExists('glpi_users', 'num_of_events')) {
-      $query="ALTER TABLE `glpi_users` DROP `num_of_events`";
-      $DB->query($query) or die("0.80 drop num_of_events field in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_users` DROP `num_of_events`";
+//       $DB->query($query) or die("0.80 drop num_of_events field in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="DROP `num_of_events`";
    }
 
    if (FieldExists('glpi_users', 'tracking_order')) {
-      $query="ALTER TABLE `glpi_users` DROP `tracking_order`";
-      $DB->query($query) or die("0.80 drop tracking_order field in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_users` DROP `tracking_order`";
+//       $DB->query($query) or die("0.80 drop tracking_order field in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="DROP `tracking_order`";
    }
 
    if (FieldExists('glpi_rulesldapparameters', 'sub_type')) {
-      $query="ALTER TABLE `glpi_rulesldapparameters` DROP `sub_type`";
-      $DB->query($query) or die("0.80 drop sub_type field in glpi_rulesldapparameters " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_rulesldapparameters` DROP `sub_type`";
+//       $DB->query($query) or die("0.80 drop sub_type field in glpi_rulesldapparameters " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_rulesldapparameters'][]="DROP `sub_type`";
    }
 
    if (FieldExists('glpi_softwares', 'oldstate')) {
-      $query="ALTER TABLE `glpi_softwares` DROP `oldstate`";
-      $DB->query($query) or die("0.80 drop oldstate field in glpi_softwares " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_softwares` DROP `oldstate`";
+//       $DB->query($query) or die("0.80 drop oldstate field in glpi_softwares " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_softwares'][]="DROP `oldstate`";
    }
 
    if (FieldExists('glpi_users', 'password')) {
-      $query="ALTER TABLE `glpi_users` DROP `password`";
-      $DB->query($query) or die("0.80 drop password field in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_users` DROP `password`";
+//       $DB->query($query) or die("0.80 drop password field in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="DROP `password`";
    }
 
    if (FieldExists('glpi_users', 'password_md5')) {
-      $query="ALTER TABLE `glpi_users` CHANGE `password_md5` `password` CHAR( 32 )  NULL DEFAULT NULL";
-      $DB->query($query) or die("0.80 alter password_md5 field in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query="ALTER TABLE `glpi_users` CHANGE `password_md5` `password` CHAR( 32 )  NULL DEFAULT NULL";
+//       $DB->query($query) or die("0.80 alter password_md5 field in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="CHANGE `password_md5` `password` CHAR( 32 )  NULL DEFAULT NULL";
    }
 
    if (!FieldExists('glpi_mailcollectors', 'filesize_max')) {
-      $query="ALTER TABLE `glpi_mailcollectors` ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
-      $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
-      $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE id=1";
-      if ($result=$DB->query($query)){
-         if ($DB->numrows($result)>0){
-            $query="UPDATE glpi_mailcollectors SET filesize_max='".$DB->result($result,0,0)."';";
-            $DB->query($query);
-         }
-      }
+//       $query="ALTER TABLE `glpi_mailcollectors` ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
+//       $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
    }
  
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
    if (!isIndex('glpi_alerts', 'unicity')) {
-      $query=" ALTER TABLE `glpi_alerts` ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_alerts " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_alerts` ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_alerts " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_alerts'][]="ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )";
    }
 
    if (!isIndex('glpi_cartridges_printersmodels', 'unicity')) {
-      $query=" ALTER TABLE `glpi_cartridges_printersmodels` ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_cartridges_printersmodels " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_cartridges_printersmodels` ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_cartridges_printersmodels " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_cartridges_printersmodels'][]="ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)";
    }
 
    if (!isIndex('glpi_computers_items', 'unicity')) {
-      $query=" ALTER TABLE `glpi_computers_items` ADD UNIQUE `unicity` ( `itemtype` , `items_id`, `computers_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_computers_items " . $LANG['update'][90] . $DB->error());
-   }
+//       $query=" ALTER TABLE `glpi_computers_items` ADD UNIQUE `unicity` ( `itemtype` , `items_id`, `computers_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_computers_items " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_computers_items'][]="ADD UNIQUE `unicity` ( `itemtype` , `items_id`, `computers_id`)";
+  }
 
    if (!isIndex('glpi_contacts_suppliers', 'unicity')) {
-      $query=" ALTER TABLE `glpi_contacts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contacts_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_contacts_suppliers " . $LANG['update'][90] . $DB->error());
-   }
+//       $query=" ALTER TABLE `glpi_contacts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contacts_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_contacts_suppliers " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_contacts_suppliers'][]="ADD UNIQUE `unicity` ( `suppliers_id` , `contacts_id`)";
+  }
 
    if (!isIndex('glpi_contracts_items', 'unicity')) {
-      $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `unicity` ( `contracts_id` ,  `itemtype` , `items_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_contracts_items` ADD UNIQUE `unicity` ( `contracts_id` ,  `itemtype` , `items_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_contracts_items'][]="ADD UNIQUE `unicity` ( `contracts_id` ,  `itemtype` , `items_id`)";
    }
 
    if (!isIndex('glpi_contracts_items', 'item')) {
-      $query=" ALTER TABLE `glpi_contracts_items` ADD INDEX `item` ( `itemtype` , `items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_contracts_items` ADD INDEX `item` ( `itemtype` , `items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_contracts_items " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_contracts_items'][]="ADD INDEX `item` ( `itemtype` , `items_id`)";
    }
 
    if (!isIndex('glpi_contracts_suppliers', 'unicity')) {
-      $query=" ALTER TABLE `glpi_contracts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_contracts_suppliers " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_contracts_suppliers` ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_contracts_suppliers " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_contracts_suppliers'][]="ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)";
    }
 
    if (!isIndex('glpi_displayprefs', 'unicity')) {
-      $query=" ALTER TABLE `glpi_displayprefs` ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_displayprefs " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_displayprefs` ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_displayprefs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_displayprefs'][]="ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)";
    }
 
    if (!isIndex('glpi_bookmarks_users', 'unicity')) {
-      $query=" ALTER TABLE `glpi_bookmarks_users` ADD UNIQUE `unicity` ( `users_id` , `itemtype`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_bookmarks_users " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_bookmarks_users` ADD UNIQUE `unicity` ( `users_id` , `itemtype`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_bookmarks_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_bookmarks_users'][]="ADD UNIQUE `unicity` ( `users_id` , `itemtype`)";
    }
 
    if (!isIndex('glpi_documents_items', 'unicity')) {
-      $query=" ALTER TABLE `glpi_documents_items` ADD UNIQUE `unicity` ( `documents_id` , `itemtype`, `items_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_documents_items` ADD UNIQUE `unicity` ( `documents_id` , `itemtype`, `items_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_documents_items'][]="ADD UNIQUE `unicity` ( `documents_id` , `itemtype`, `items_id`)";
    }
 
    if (!isIndex('glpi_documents_items', 'item')) {
-      $query=" ALTER TABLE `glpi_documents_items` ADD INDEX `item` (  `itemtype`, `items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+//      $query=" ALTER TABLE `glpi_documents_items` ADD INDEX `item` (  `itemtype`, `items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_documents_items " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_documents_items'][]="ADD INDEX `item` (  `itemtype`, `items_id`)";
    }
 
    if (!isIndex('glpi_knowbaseitemscategories', 'unicity')) {
-      $query=" ALTER TABLE `glpi_knowbaseitemscategories` ADD UNIQUE `unicity` ( `knowbaseitemscategories_id` , `name`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_knowbaseitemscategories " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_knowbaseitemscategories` ADD UNIQUE `unicity` ( `knowbaseitemscategories_id` , `name`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_knowbaseitemscategories " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_knowbaseitemscategories'][]="ADD UNIQUE `unicity` ( `knowbaseitemscategories_id` , `name`) ";
    }
 
    if (!isIndex('glpi_locations', 'unicity')) {
-      $query=" ALTER TABLE `glpi_locations` ADD UNIQUE `unicity` ( `entities_id`, `locations_id` , `name`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_locations " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_locations` ADD UNIQUE `unicity` ( `entities_id`, `locations_id` , `name`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_locations " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_locations'][]="ADD UNIQUE `unicity` ( `entities_id`, `locations_id` , `name`) ";
    }
 
    if (isIndex('glpi_locations', 'name')) {
-      $query=" ALTER TABLE `glpi_locations` DROP INDEX `name`";
-      $DB->query($query) or die("0.80 drop name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_locations` DROP INDEX `name`";
+//       $DB->query($query) or die("0.80 drop name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_locations'][]="DROP INDEX `name` ";
    }
 
-   if (!isIndex('glpi_locations', 'name')) {
-      $query=" ALTER TABLE `glpi_locations` ADD INDEX `name` (`name`)";
-      $DB->query($query) or die("0.80 add name index in glpi_locations " . $LANG['update'][90] . $DB->error());
-   }
 
    if (!isIndex('glpi_netpoints', 'complete')) {
-      $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `complete` (`entities_id`,`locations_id`,`name`)";
-      $DB->query($query) or die("0.80 add complete index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `complete` (`entities_id`,`locations_id`,`name`)";
+//       $DB->query($query) or die("0.80 add complete index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_netpoints'][]="ADD INDEX `complete` (`entities_id`,`locations_id`,`name`) ";
    }
 
    if (!isIndex('glpi_netpoints', 'location_name')) {
-      $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `location_name` (`locations_id`,`name`)";
-      $DB->query($query) or die("0.80 add location_name index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_netpoints` ADD INDEX `location_name` (`locations_id`,`name`)";
+//       $DB->query($query) or die("0.80 add location_name index in glpi_netpoints " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_netpoints'][]="ADD INDEX `location_name` (`locations_id`,`name`)";
    }
 
    if (!isIndex('glpi_entities', 'unicity')) {
-      $query=" ALTER TABLE `glpi_entities` ADD UNIQUE `unicity` (`entities_id`,`name`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_entities " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_entities` ADD UNIQUE `unicity` (`entities_id`,`name`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_entities " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_entities'][]="ADD UNIQUE `unicity` (`entities_id`,`name`)  ";
    }
 
    if (!isIndex('glpi_entitiesdatas', 'unicity')) {
-      $query=" ALTER TABLE `glpi_entitiesdatas` ADD UNIQUE `unicity` (`entities_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_entitiesdatas " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_entitiesdatas` ADD UNIQUE `unicity` (`entities_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_entitiesdatas " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_entitiesdatas'][]="ADD UNIQUE `unicity` (`entities_id`) ";
    }
 
    if (!isIndex('glpi_events', 'item')) {
-      $query=" ALTER TABLE `glpi_events` ADD INDEX `item` (`type`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_events " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_events` ADD INDEX `item` (`type`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_events " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_events'][]="ADD INDEX `item` (`type`,`items_id`) ";
    }
 
    if (!isIndex('glpi_logs', 'item')) {
-      $query=" ALTER TABLE `glpi_logs` ADD INDEX `item` (`itemtype`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_logs " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_logs` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_logs " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_logs'][]="ADD INDEX `item` (`itemtype`,`items_id`)";
    }
 
    if (!isIndex('glpi_infocoms', 'unicity')) {
-      $query=" ALTER TABLE `glpi_infocoms` ADD UNIQUE `unicity` (`itemtype`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_infocoms` ADD UNIQUE `unicity` (`itemtype`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_infocoms'][]="ADD UNIQUE `unicity` (`itemtype`,`items_id`)  ";
    }
    if (!isIndex('glpi_knowbaseitems', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_knowbaseitems` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_knowbaseitems " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_knowbaseitems` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_knowbaseitems " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_knowbaseitems'][]="ADD INDEX `date_mod` (`date_mod`) ";
    }
 
    if (!isIndex('glpi_networkequipments', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_networkequipments` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_networkequipments " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_networkequipments` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_networkequipments " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_networkequipments'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
 
    if (!isIndex('glpi_links_itemtypes', 'unicity')) {
-      $query=" ALTER TABLE `glpi_links_itemtypes` ADD UNIQUE `unicity` (`itemtype`,`links_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_links_itemtypes " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_links_itemtypes` ADD UNIQUE `unicity` (`itemtype`,`links_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_links_itemtypes " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_links_itemtypes'][]="ADD UNIQUE `unicity` (`itemtype`,`links_id`)   ";
    }
 
    if (!isIndex('glpi_mailingsettings', 'unicity')) {
-      $query=" ALTER TABLE `glpi_mailingsettings` ADD UNIQUE `unicity` (`type`,`items_id`,`mailingtype`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_mailingsettings " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_mailingsettings` ADD UNIQUE `unicity` (`type`,`items_id`,`mailingtype`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_mailingsettings " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_mailingsettings'][]="ADD UNIQUE `unicity` (`type`,`items_id`,`mailingtype`)  ";
    }
 
    if (!isIndex('glpi_networkports', 'item')) {
-      $query=" ALTER TABLE `glpi_networkports` ADD INDEX `item` (`itemtype`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_networkports " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_networkports` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_networkports " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_networkports'][]="ADD INDEX `item` (`itemtype`,`items_id`) ";
    }
 
    if (!isIndex('glpi_networkports_vlans', 'unicity')) {
-      $query=" ALTER TABLE `glpi_networkports_vlans` ADD UNIQUE `unicity` (`networkports_id`,`vlans_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_networkports_vlans " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_networkports_vlans` ADD UNIQUE `unicity` (`networkports_id`,`vlans_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_networkports_vlans " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_networkports_vlans'][]="ADD UNIQUE `unicity` (`networkports_id`,`vlans_id`) ";
    }
 
    if (!isIndex('glpi_networkports_networkports', 'unicity')) {
-      $query=" ALTER TABLE `glpi_networkports_networkports` ADD UNIQUE `unicity` (`networkports_id_1`,`networkports_id_2`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_networkports_networkports " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_networkports_networkports` ADD UNIQUE `unicity` (`networkports_id_1`,`networkports_id_2`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_networkports_networkports " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_networkports_networkports'][]="ADD UNIQUE `unicity` (`networkports_id_1`,`networkports_id_2`)  ";
    }
 
    if (!isIndex('glpi_ocslinks', 'unicity')) {
-      $query=" ALTER TABLE `glpi_ocslinks` ADD UNIQUE `unicity` (`ocsservers_id`,`ocsid`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_ocslinks " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_ocslinks` ADD UNIQUE `unicity` (`ocsservers_id`,`ocsid`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_ocslinks " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_ocslinks'][]="ADD UNIQUE `unicity` (`ocsservers_id`,`ocsid`)   ";
    }
 
    if (!isIndex('glpi_peripherals', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_peripherals` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_peripherals " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_peripherals` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_peripherals " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_peripherals'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
 
    if (!isIndex('glpi_phones', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_phones` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_phones " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_phones` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_phones " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_phones'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
 
    if (!isIndex('glpi_plugins', 'unicity')) {
-      $query=" ALTER TABLE `glpi_plugins` ADD UNIQUE `unicity` (`directory`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_plugins " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_plugins` ADD UNIQUE `unicity` (`directory`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_plugins " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_plugins'][]="ADD UNIQUE `unicity` (`directory`)   ";
    }
 
    if (!isIndex('glpi_printers', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_printers` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_printers " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_printers` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_printers " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_printers'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
    if (!isIndex('glpi_reminders', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_reminders` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_reminders " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_reminders` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_reminders " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_reminders'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
    if (!isIndex('glpi_reservationsitems', 'item')) {
-      $query=" ALTER TABLE `glpi_reservationsitems` ADD INDEX `item` (`itemtype`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_reservationsitems " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_reservationsitems` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_reservationsitems " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_reservationsitems'][]="ADD INDEX `item` (`itemtype`,`items_id`)   ";
+
    }
 
    if (!isIndex('glpi_tickets', 'item')) {
-      $query=" ALTER TABLE `glpi_tickets` ADD INDEX `item` (`itemtype`,`items_id`)  ";
-      $DB->query($query) or die("0.80 add item index in glpi_tickets " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_tickets` ADD INDEX `item` (`itemtype`,`items_id`)  ";
+//       $DB->query($query) or die("0.80 add item index in glpi_tickets " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_tickets'][]="ADD INDEX `item` (`itemtype`,`items_id`)  ";
    }
 
    if (!isIndex('glpi_documentstypes', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_documentstypes` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_documentstypes` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_documentstypes'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
 
    if (!isIndex('glpi_documentstypes', 'unicity')) {
-      $query=" ALTER TABLE `glpi_documentstypes` ADD UNIQUE `unicity` (`ext`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_documentstypes` ADD UNIQUE `unicity` (`ext`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_documentstypes " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_documentstypes'][]="ADD UNIQUE `unicity` (`ext`)  ";
    }
    if (!isIndex('glpi_users', 'unicity')) {
-      $query=" ALTER TABLE `glpi_users` ADD UNIQUE `unicity` (`name`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_users` ADD UNIQUE `unicity` (`name`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="ADD UNIQUE `unicity` (`name`)  ";
    }
    if (!isIndex('glpi_users', 'date_mod')) {
-      $query=" ALTER TABLE `glpi_users` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.80 add date_mod index in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_users` ADD INDEX `date_mod` (`date_mod`)  ";
+//       $DB->query($query) or die("0.80 add date_mod index in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="ADD INDEX `date_mod` (`date_mod`)  ";
    }
    if (!isIndex('glpi_users', 'authitem')) {
-      $query=" ALTER TABLE `glpi_users` ADD INDEX `authitem` (`authtype`,`auths_id`)  ";
-      $DB->query($query) or die("0.80 add authitem index in glpi_users " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_users` ADD INDEX `authitem` (`authtype`,`auths_id`)  ";
+//       $DB->query($query) or die("0.80 add authitem index in glpi_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_users'][]="ADD INDEX `authitem` (`authtype`,`auths_id`) ";
    }
    if (!isIndex('glpi_groups_users', 'unicity')) {
-      $query=" ALTER TABLE `glpi_groups_users` ADD UNIQUE `unicity` (`users_id`,`groups_id`)  ";
-      $DB->query($query) or die("0.80 add unicity index in glpi_groups_users " . $LANG['update'][90] . $DB->error());
+//       $query=" ALTER TABLE `glpi_groups_users` ADD UNIQUE `unicity` (`users_id`,`groups_id`)  ";
+//       $DB->query($query) or die("0.80 add unicity index in glpi_groups_users " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_groups_users'][]="ADD UNIQUE `unicity` (`users_id`,`groups_id`)  ";
    }
 
    $indextodrop=array(
@@ -1640,7 +1710,7 @@ function update0721to080() {
          'glpi_knowbaseitemscategories' => array('parentID_2','parentID'),
          'glpi_locations' => array('FK_entities'),
          'glpi_netpoints' => array('FK_entities','location'),
-         'glpi_entities' => array('name','parentID'),
+         'glpi_entities' => array('name'/*,'parentID'*/),
          'glpi_entitiesdatas' => array('FK_entities'),
          'glpi_events' => array('comp','itemtype'),
          'glpi_logs' => array('FK_glpi_device'),
@@ -1662,14 +1732,39 @@ function update0721to080() {
    foreach ($indextodrop as $table => $tab) {
       foreach ($tab as $indexname) {
          if (isIndex($table, $indexname)) {
-            $query="ALTER TABLE `$table` DROP INDEX `$indexname`";
-            $DB->query($query) or die("0.80 alter $indexname index in $table " . $LANG['update'][90] . $DB->error());
+//            $query="ALTER TABLE `$table` DROP INDEX `$indexname`";
+//            $DB->query($query) or die("0.80 alter $indexname index in $table " . $LANG['update'][90] . $DB->error());
+            $changes[$table][]="DROP INDEX `$indexname`";
          }
       }
    }
 
+   foreach ($changes as $table => $tab){
+      $query="ALTER TABLE `$table` ".implode($tab," ,\n").";";
+//      echo $query.'<br><br>';
+      $DB->query($query) or die("0.80 multiple alter in $table " . $LANG['update'][90] . $DB->error());
+   }
+
+
+
    
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+
+   if (!isIndex('glpi_locations', 'name')) {
+      $query=" ALTER TABLE `glpi_locations` ADD INDEX `name` (`name`)";
+      $DB->query($query) or die("0.80 add name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+   }
+
+
+   // Update values of mailcollectors
+   $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE id=1";
+   if ($result=$DB->query($query)){
+      if ($DB->numrows($result)>0){
+         $query="UPDATE glpi_mailcollectors SET filesize_max='".$DB->result($result,0,0)."';";
+         $DB->query($query);
+      }
+   }
+
 
    // For compatiblity with updates from past versions
    regenerateTreeCompleteName("glpi_locations");
