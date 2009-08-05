@@ -2,3 +2,4 @@ See the Installation Guide found on GLPI-PROJECT.ORG for installation steps of G
  
 http://www.glpi-project.org/README
 
+test
