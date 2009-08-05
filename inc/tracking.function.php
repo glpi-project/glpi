@@ -653,7 +653,7 @@ function showJobVeryShort($ID) {
 	if ($job->getFromDBwithData($ID,0))
 	{
 		$bgcolor=$_SESSION["glpipriority_".$job->fields["priority"]];
-		
+		$rand=mt_rand();
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["id"]."</td>";
 		echo "<td class='center'>";
@@ -663,9 +663,9 @@ function showJobVeryShort($ID) {
 	
 				$comment_display="";
 				$comment_display="<a href='".$userdata["link"]."'>";
-				$comment_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_trackusers_id".$ID."')\" onmouseover=\"cleandisplay('comment_trackusers_id".$ID."')\">";
+				$comment_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_trackusers_id".$rand.$ID."')\" onmouseover=\"cleandisplay('comment_trackusers_id".$rand.$ID."')\">";
 				$comment_display.="</a>";
-				$comment_display.="<span class='over_link' id='comment_trackusers_id".$ID."'>".$userdata["comment"]."</span>";
+				$comment_display.="<span class='over_link' id='comment_trackusers_id".$rand.$ID."'>".$userdata["comment"]."</span>";
 	
 				echo "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
 		} else {
@@ -703,8 +703,8 @@ function showJobVeryShort($ID) {
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;id=".$job->fields["id"]."\"><strong>";
 
 		echo $job->fields["name"];
-		echo "</strong>&nbsp;<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$job->fields["id"]."')\" onmouseover=\"cleandisplay('comment_tracking".$job->fields["id"]."')\" >";
-		echo "<span class='over_link' id='comment_tracking".$job->fields["id"]."'>".nl2br($job->fields['contents'])."</span>";
+		echo "</strong>&nbsp;<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$rand.$job->fields["id"]."')\" onmouseover=\"cleandisplay('comment_tracking".$rand.$job->fields["id"]."')\" >";
+		echo "<span class='over_link' id='comment_tracking".$rand.$job->fields["id"]."'>".nl2br($job->fields['contents'])."</span>";
 		echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
 
 		echo "</td>";
