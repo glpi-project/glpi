@@ -84,7 +84,14 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"]))
 {
-	$contract->check($_POST['conID'],'w');
+   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+      // error_log("update from contract form");
+      $contract->check($_POST['conID'],'w');
+   } else {
+      // error_log("update from infocom form of an equipement");
+      // TODO check write on object
+      checkRight('contract','r');
+   }
 
 	if ($_POST['itemtype']>0&&$_POST['items_id']>0){
 		addDeviceContract($_POST["conID"],$_POST['itemtype'],$_POST['items_id']);
@@ -107,8 +114,15 @@ else if (isset($_POST["deleteitem"]))
 else if (isset($_GET["deleteitem"]))
 {
 	// delete single item from url on list
+   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+      //error_log("delete from contract form");
+      $contract->check($_GET['conID'],'w');
+   } else {
+      // error_log("delete from infocom form of an equipement");
+      // TODO check write on object
+      checkRight('contract','r');
+   }
 	
-	$contract->check($_GET['conID'],'w');
 
 	deleteDeviceContract($_GET["id"]);
 
