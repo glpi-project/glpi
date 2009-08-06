@@ -101,6 +101,7 @@ else if (isset($_POST["additem"]))
 }
 else if (isset($_POST["deleteitem"]))
 {
+   // delete item from massive action menu
    $contract->check($_POST['conID'],'w');
 
 	if (count($_POST["item"]))
