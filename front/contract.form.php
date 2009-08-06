@@ -84,7 +84,14 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"]))
 {
-	$contract->check($_POST['conID'],'w');
+   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+      // error_log("update from contract form");
+      $contract->check($_POST['conID'],'w');
+   } else {
+      // error_log("update from infocom form of an equipement");
+      // TODO check write on object
+      checkRight("contract","r");
+   }
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
@@ -94,8 +101,7 @@ else if (isset($_POST["additem"]))
 }
 else if (isset($_POST["deleteitem"]))
 {
-	// delete item from massive action menu
-	$contract->check($_POST['conID'],'w');
+   $contract->check($_POST['conID'],'w');
 
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
@@ -107,9 +113,15 @@ else if (isset($_POST["deleteitem"]))
 else if (isset($_GET["deleteitem"]))
 {
 	// delete single item from url on list
+   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+      //error_log("delete from contract form");
+      $contract->check($_GET['conID'],'w');
+   } else {
+      // error_log("delete from infocom form of an equipement");
+      // TODO check write on object
+      checkRight("contract","r");
+   }
 	
-	$contract->check($_GET['conID'],'w');
-
 	deleteDeviceContract($_GET["ID"]);
 
 	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
