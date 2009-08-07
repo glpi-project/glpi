@@ -49,7 +49,7 @@ $peripheral=new Peripheral();
 
 if (isset($_POST["add"]))
 {
-	$peripheral->check(-1,'w',$_POST['entities_id']);
+	$peripheral->check(-1,'w',$_POST);
 
 	$newID=$peripheral->add($_POST);
 	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

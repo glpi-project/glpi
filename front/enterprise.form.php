@@ -51,7 +51,7 @@ if (!isset($_GET["order"])) $_GET["order"]="";
 $ent=new Enterprise();
 if (isset($_POST["add"]))
 {
-	$ent->check(-1,'w',$_POST['entities_id']);
+	$ent->check(-1,'w',$_POST);
 
 	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

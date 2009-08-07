@@ -46,7 +46,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $monitor=new Monitor();
 if (isset($_POST["add"]))
 {
-	$monitor->check(-1,'w',$_POST['entities_id']);
+	$monitor->check(-1,'w',$_POST);
 
 	$newID=$monitor->add($_POST);
 	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

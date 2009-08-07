@@ -41,7 +41,7 @@ if(empty($_GET["id"])) $_GET["id"] = -1;
 
 $contact=new Contact;
 if (isset($_POST["add"])){
-	$contact->check(-1,'w',$_POST['entities_id']);
+	$contact->check(-1,'w',$_POST);
 
 	$newID=$contact->add($_POST);
 	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
