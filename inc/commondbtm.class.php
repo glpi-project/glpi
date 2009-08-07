@@ -1353,6 +1353,7 @@ class CommonDBTM {
 	 * @return boolean
 	**/
 	function can($ID,$right,&$input=NULL){
+      //logInFile('php-errors',"can(".$this->type.",$ID,$right)\n");
 
 		$entity_to_check=-1;
 		$recursive_state_to_check=0;
@@ -1517,4 +1518,61 @@ class CommonDBTM {
 	}
 }
 
+/// Common DataBase Relation Table Manager Class
+abstract class CommonDBRelation extends CommonDBTM {
+   
+   // Mapping between DB fields
+   var $itemtype_1; // Type ref or field name
+   var $items_id_1; // Field name
+   var $itemtype_2; // Type ref or field name
+   var $items_id_2; // Field name
+
+   /**
+    * Check right on an item
+    *
+    * @param $ID ID of the item (-1 if new item)
+    * @param $right Right to check : r / w / recursive
+    * @param $input array of input data (used for adding item)
+    *
+    * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+      //logInFile('php-errors',"can(relation,$ID,$right):".print_r($input,true)."\n");
+            
+      if ($ID>0) {
+         if (!isset($this->fields['id']) || $this->fields['id']!=$ID){
+            // Item not found : no right
+            if (!$this->getFromDB($ID)){
+               return false;
+            }
+         }
+         $input = &$this->fields;
+      }
+      
+      // Must can read first Item of the relation
+      $ci1 = new CommonItem();
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $input[$this->itemtype_1], true);
+      if (!$ci1->obj->can($input[$this->items_id_1],'r')) {
+         return false;
+      }
+      // Must can read second Item of the relation
+      $ci2 = new CommonItem();
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $input[$this->itemtype_2], true);
+      if (!$ci2->obj->can($input[$this->items_id_2],'r')) {
+         return false;
+      }
+      
+      // Read right checked on both item
+      if ($right=='r') {
+         return true;
+      }
+      
+      // can write one item is enough
+      if ($ci1->obj->can($input[$this->items_id_1],'w')
+         || $ci2->obj->can($input[$this->items_id_2],'w')) {
+         return true;
+      }
+      return false;
+   }
+}
 ?>

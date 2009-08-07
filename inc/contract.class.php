@@ -258,4 +258,20 @@ class Contract extends CommonDBTM {
 	
 }
 
+class ContractItem extends CommonDBRelation{
+
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table="glpi_contracts_items";
+      $this->type=-1;
+      
+      $this->itemtype_1 = CONTRACT_TYPE;
+      $this->items_id_1 = 'contracts_id';
+      
+      $this->itemtype_2 = 'itemtype';
+      $this->items_id_2 = 'items_id';
+   }
+}
 ?>
