@@ -80,6 +80,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
       $nolink=true;
    }
 
+
 	foreach (getTrackingSortOptions() as $key => $val){
 		$issort=0;
 		$link="";
@@ -269,8 +270,8 @@ function showJobListForItem($itemtype,$items_id) {
    
    $query = "SELECT ".getCommonSelectForTrackingSearch()." 
       FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-      WHERE (items_id = '$items_id' and itemtype= '$itemtype')
-      ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+      WHERE (items_id = '$items_id' and itemtype= '$itemtype') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+       " ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
    
    $result = $DB->query($query);
    $number = $DB->numrows($result);
@@ -346,8 +347,8 @@ function showJobListForEnterprise($entID) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (suppliers_id_assign = '$entID') 
-				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+			WHERE (suppliers_id_assign = '$entID') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -395,8 +396,8 @@ function showJobListForUser($userID) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (glpi_tickets.users_id = '$userID') 
-				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+			WHERE (glpi_tickets.users_id = '$userID') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -411,6 +412,52 @@ function showJobListForUser($userID) {
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8].": &nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;users_id=$userID'>".$LANG['buttons'][40]."</a>";
+		echo "</th></tr>";
+
+		
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
+
+		while ($data=$DB->fetch_assoc($result)){
+			addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+			showJobShort($data, 0);
+		}
+		echo "</table></div>";
+	} 
+	else
+	{
+		echo "<div class='center'>";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+
+		echo "</table>";
+		echo "</div><br>";
+	}
+}
+
+function showNewJobList() {
+
+	global $DB,$CFG_GLPI, $LANG;
+
+	if (!haveRight("show_all_ticket","1")) return false;
+
+	$where = "";	
+
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
+			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()."
+			WHERE (status = 'new') ".getEntitiesRestrictRequest("AND","glpi_tickets").
+				" ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+
+	$result = $DB->query($query);
+
+	$number = $DB->numrows($result);
+
+	if ($number > 0)
+	{
+		initNavigateListItems(TRACKING_TYPE);
+
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number): &nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=new'>".$LANG['buttons'][40]."</a>";
 		echo "</th></tr>";
 
 		
