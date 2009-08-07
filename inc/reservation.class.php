@@ -308,7 +308,7 @@ class ReservationResa extends CommonDBTM {
 
 	}
 
-	function can($ID,$right,$entity=-1){
+	function can($ID,$right,&$input=NULL){
 
 		if (empty($ID)||$ID<=0){
 			// Add reservation - TODO should also check commonitem->can(r)

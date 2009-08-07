@@ -49,7 +49,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $soft=new Software();
 if (isset($_POST["add"]))
 {
-	$soft->check(-1,'w',$_POST['entities_id']);
+	$soft->check(-1,'w',$_POST);
 
 	$newID=$soft->add($_POST);
 	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

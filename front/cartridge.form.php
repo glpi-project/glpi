@@ -45,7 +45,7 @@ $cartype=new CartridgeType();
 
 if (isset($_POST["add"]))
 {
-	$cartype->check(-1,'w',$_POST['entities_id']);
+	$cartype->check(-1,'w',$_POST);
 
 	$newID=$cartype->add($_POST);
 	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

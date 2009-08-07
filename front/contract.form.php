@@ -44,7 +44,7 @@ $contract=new Contract();
 
 if (isset($_POST["add"]))
 {
-	$contract->check(-1,'w',$_POST['entities_id']);
+	$contract->check(-1,'w',$_POST);
 	
 	$newID=$contract->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");

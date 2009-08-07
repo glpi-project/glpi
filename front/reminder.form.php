@@ -48,7 +48,7 @@ if (isset($_POST["add"]))
 {
 	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...) 
 	$remind->getEmpty();
-	$remind->check(-1,'w',$_POST['entities_id']);
+	$remind->check(-1,'w',$_POST);
 
 	$newID=$remind->add($_POST);
 	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");

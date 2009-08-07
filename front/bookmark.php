@@ -52,7 +52,7 @@ $bookmark = new Bookmark;
 if (isset($_POST["add"])){
 
 	$bookmark->getEmpty();
-	$bookmark->check(-1,'w',$_POST['entities_id']);
+	$bookmark->check(-1,'w',$_POST);
 
 	$bookmark->add($_POST);
 	$_GET["action"]="load";

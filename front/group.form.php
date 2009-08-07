@@ -43,7 +43,7 @@ if(empty($_GET["id"])) $_GET["id"] = "";
 $group=new Group;
 if (isset($_POST["add"]))
 {
-	$group->check(-1,'w',$_POST['entities_id']);
+	$group->check(-1,'w',$_POST);
 
 	$newID=$group->add($_POST);
 	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

@@ -1348,21 +1348,21 @@ class CommonDBTM {
 	 *
 	 * @param $ID ID of the item (-1 if new item)
 	 * @param $right Right to check : r / w / recursive
-	 * @param $entity entity to check right (used for adding item)
+	 * @param $input array of input data (used for adding item)
 	 *
 	 * @return boolean
 	**/
-	function can($ID,$right,$entity=-1){
+	function can($ID,$right,&$input=NULL){
 
 		$entity_to_check=-1;
 		$recursive_state_to_check=0;
 		// Get item if not already loaded
 		if (empty($ID)||$ID<=0){
 			// No entity define : adding process : use active entity
-			if ($entity==-1){
-				$entity_to_check=$_SESSION["glpiactive_entity"];
-			} else { 
-				$entity_to_check=$entity;
+         if (isset($input['entities_id'])) {
+            $entity_to_check = $input['entities_id'];
+         } else {
+            $entity_to_check = $_SESSION["glpiactive_entity"];
 			}
 		} else {
 			if (!isset($this->fields['id'])||$this->fields['id']!=$ID){
@@ -1437,10 +1437,10 @@ class CommonDBTM {
 	 *
 	 * @param $ID ID of the item (-1 if new item)
 	 * @param $right Right to check : r / w / recursive
-	 * @param $entity entity to check right (used for adding item)
+    * @param $input array of input data (used for adding item)
 	 * @return nothing
 	**/
-	function check($ID,$right,$entity=-1) {
+	function check($ID,$right,&$input=NULL) {
 		global $CFG_GLPI;
 	
 		// Check item exists
@@ -1454,7 +1454,7 @@ class CommonDBTM {
 			displayNotFoundError();			
 	
 		} else {
-			if (!$this->can($ID,$right,$entity)) {
+			if (!$this->can($ID,$right,$input)) {
 				// Gestion timeout session
 				if (!isset ($_SESSION["glpiID"])) {
 					glpi_header($CFG_GLPI["root_doc"] . "/index.php");
