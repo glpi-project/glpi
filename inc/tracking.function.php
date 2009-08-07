@@ -139,6 +139,10 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	// $show_sort if 
 	$header_num=1;
 
+   // Force nolink on ajax :
+   if (strpos($target,'ajax')>0){
+      $nolink=true;
+   }
 
 	foreach (getTrackingSortOptions() as $key => $val){
 		$issort=0;
