@@ -321,7 +321,7 @@ function addDeviceContract($conID,$itemtype,$ID){
 function deleteDeviceContract($ID){
 
    global $DB;
-   $query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
+   $query="DELETE FROM glpi_contracts_items WHERE id= '$ID'";
    $result = $DB->query($query);
 }
  **/
