@@ -254,9 +254,9 @@ function showDeviceContract($instID) {
       if ($contract->fields['max_links_allowed']==0 || $contract->fields['max_links_allowed'] > $totalnb){
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          echo "<div class='software-instal'>";
-         dropdownAllItems("item",0,0,($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
+         dropdownAllItems("items_id",0,0,($contract->fields['is_recursive']?-1:$contract->fields['entities_id']),$CFG_GLPI["contract_types"]);
          echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "<input type='hidden' name='id' value='$instID'>";
+         //echo "<input type='hidden' name='id' value='$instID'>";
          echo "</td><td>&nbsp;</td>";
          echo "</tr>";
       }
@@ -268,7 +268,7 @@ function showDeviceContract($instID) {
 	
 		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
-      echo "<input type='hidden' name='conID' value='$instID'>";
+      echo "<input type='hidden' name='contracts_id' value='$instID'>";
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
@@ -296,15 +296,21 @@ function showDeviceContract($instID) {
 function addDeviceContract($conID,$itemtype,$ID){
 	global $DB;
 
-	if ($ID>0&&$conID>0){
-
-		$query="INSERT INTO glpi_contracts_items (contracts_id,items_id, itemtype ) VALUES ('$conID','$ID','$itemtype');";
-		$result = $DB->query($query);
+   // TODO : to remove this function (stil used when cloning a template)
+   if ($ID>0&&$conID>0){
+      $contractitem=new ContractItem();
+      $contractitem->add(array(
+         'contracts_id' => $conID,
+         'itemtype' => $itemtype,
+         'items_id' => $ID
+         )); 
 	}
 }
 
 /**
- * Delete a contract device
+ * TODO remove this unused function.
+ * 
+ * Delete a contract device 
  *
  * Delete the contract device $ID
  *
@@ -312,13 +318,14 @@ function addDeviceContract($conID,$itemtype,$ID){
  *
  *@return Nothing ()
  *
- **/
 function deleteDeviceContract($ID){
 
-	global $DB;
-	$query="DELETE FROM glpi_contracts_items WHERE id= '$ID';";
-	$result = $DB->query($query);
+   global $DB;
+   $query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
+   $result = $DB->query($query);
 }
+ **/
+
 
 /**
  * Print the HTML array for contract on entreprises
@@ -550,7 +557,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) {
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;conID=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;contracts_id=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			} else {
 				echo "&nbsp;";
 			}
@@ -570,7 +577,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 		if ($withtemplate!=2 && $nb>count($contracts)){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='3'>";
 			echo "<div class='software-instal'><input type='hidden' name='items_id' value='$ID'><input type='hidden' name='itemtype' value='$itemtype'>";
-			dropdownContracts("conID",$ci->obj->getEntityID(),$contracts);
+			dropdownContracts("contracts_id",$ci->obj->getEntityID(),$contracts);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td>";

@@ -41,6 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_GET["id"])) $_GET["id"] = -1;
 
 $contract=new Contract();
+$contractitem=new ContractItem();
 
 if (isset($_POST["add"]))
 {
@@ -84,49 +85,29 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"]))
 {
-   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
-      // error_log("update from contract form");
-      $contract->check($_POST['conID'],'w');
-   } else {
-      // error_log("update from infocom form of an equipement");
-      // TODO check write on object
-      checkRight('contract','r');
+   $contractitem->check(-1,'w',$_POST);
+   if ($contractitem->add($_POST)) {
+      logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-
-	if ($_POST['itemtype']>0&&$_POST['items_id']>0){
-		addDeviceContract($_POST["conID"],$_POST['itemtype'],$_POST['items_id']);
-		logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][32]);
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deleteitem"]))
 {
-	// delete item from massive action menu
-	$contract->check($_POST['conID'],'w');
-
 	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-			deleteDeviceContract($key);
-
-	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+		foreach ($_POST["item"] as $key => $val) {
+         if ($contractitem->can($key,'w')) {
+            $contractitem->delete(array('id' => $key));
+         }
+		}
+	logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"]))
 {
-	// delete single item from url on list
-   if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
-      //error_log("delete from contract form");
-      $contract->check($_GET['conID'],'w');
-   } else {
-      // error_log("delete from infocom form of an equipement");
-      // TODO check write on object
-      checkRight('contract','r');
+   $contractitem->check($_GET["id"], 'w');
+   if ($contractitem->delete($_GET)) {
+      logEvent($_GET["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
-	
-
-	deleteDeviceContract($_GET["id"]);
-
-	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"]))
