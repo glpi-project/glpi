@@ -87,11 +87,7 @@ function showCentralGlobalView(){
 	if ($_SESSION["glpijobs_at_login"]&&$showticket){
 		echo "<br>";
 
-		echo "<div class='center'><strong>";
-		echo $LANG['central'][10];
-		echo "</strong></div>";
-
-		showTrackingList($_SERVER['PHP_SELF'],0,"","","new");
+		showNewJobList();
 	}
 
 }
