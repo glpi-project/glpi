@@ -314,6 +314,7 @@
 			CONTRACT_TYPE => "front/contract.php",
 			DOCUMENT_TYPE => "front/document.php",
 			BUDGET_TYPE => "front/budget.php",
+         OCSNG_TYPE => "front/setup.ocsng.php",
 		);
 
 	define("AUTH_DB_GLPI",1);
