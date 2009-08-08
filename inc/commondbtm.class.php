@@ -1574,5 +1574,77 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
       return false;
    }
+
+   /**
+    * Actions done after the ADD of the item in the database
+    * 
+    *@param $newID ID of the new item 
+    *@param $input datas used to add the item
+    *
+    * @return nothing 
+    * 
+   **/
+   function post_addItem($newID,$inpt) {
+      //logInFile('php-errors',"post_addItem(relation,$newID):".print_r($this->fields,true)."\n");
+      
+      $ci1 = new CommonItem();
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $this->fields[$this->itemtype_1], true);
+      if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
+         return false;
+      }
+      $ci2 = new CommonItem();
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $this->fields[$this->itemtype_2], true);
+      if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
+         return false;
+      }
+      
+      if ($ci1->obj->dohistory) {
+         $changes[0]='0';
+         $changes[1]="";
+         $changes[2]=addslashes($ci2->getNameID());
+         historyLog ($ci1->obj->fields["id"],$ci1->obj->type,$changes,$ci2->obj->type,HISTORY_ADD_RELATION);
+      }
+      if ($ci2->obj->dohistory) {
+         $changes[0]='0';
+         $changes[1]="";
+         $changes[2]=addslashes($ci1->getNameID());
+         historyLog ($ci2->obj->fields["id"],$ci2->obj->type,$changes,$ci1->obj->type,HISTORY_ADD_RELATION);
+      }
+   }
+   /**
+    * Actions done after the DELETE of the item in the database
+    *
+    *@param $ID ID of the item
+    *
+    *@return nothing
+    *
+    **/
+   function post_deleteFromDB($ID){
+      //logInFile('php-errors',"post_deleteFromDB(relation,$ID):".print_r($this->fields,true)."\n");
+      
+      $ci1 = new CommonItem();
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $this->fields[$this->itemtype_1], true);
+      if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
+         return false;
+      }
+      $ci2 = new CommonItem();
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $this->fields[$this->itemtype_2], true);
+      if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
+         return false;
+      }
+      
+      if ($ci1->obj->dohistory) {
+         $changes[0]='0';
+         $changes[1]=addslashes($ci2->getNameID());
+         $changes[2]="";
+         historyLog ($ci1->obj->fields["id"],$ci1->obj->type,$changes,$ci2->obj->type,HISTORY_DEL_RELATION);
+      }
+      if ($ci2->obj->dohistory) {
+         $changes[0]='0';
+         $changes[1]=addslashes($ci1->getNameID());
+         $changes[2]="";
+         historyLog ($ci2->obj->fields["id"],$ci2->obj->type,$changes,$ci1->obj->type,HISTORY_DEL_RELATION);
+      }
+   }
 }
 ?>
