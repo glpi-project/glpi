@@ -302,6 +302,20 @@ function showHistory($itemtype,$items_id){
 					$field="";
 					$change = $data["new_value"];	
 					break;			
+
+            case HISTORY_ADD_RELATION :
+               $ci=new CommonItem();
+               $ci->setType($data["devicetype"]);
+               $field=$ci->getType();
+               $change =$LANG['log'][32].": ".$data["new_value"];
+               break;            
+
+            case HISTORY_DEL_RELATION :
+               $ci=new CommonItem();
+               $ci->setType($data["devicetype"]);
+               $field=$ci->getType();
+               $change =$LANG['log'][33].": ".$data["old_value"];
+               break;            
 			}
 		}else{
 			$fieldname="";
