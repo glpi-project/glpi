@@ -3925,8 +3925,9 @@ function exportOcsArrayToDB($TAB) {
  *
  **/
 function importOcsArrayFromDB($DATA) {
-   //   Old storage : begin by a number
-   if (isset($DATA[0]) && is_numeric($DATA[0])){
+   $TAB=json_decode($DATA,true);
+   // Use olf scheme to decode
+   if (!is_array($TAB)){
       $TAB = array();
 
       foreach(explode(" ", $DATA) as $ITEM) {
@@ -3934,16 +3935,8 @@ function importOcsArrayFromDB($DATA) {
          if (strlen($A[0])>0 && isset($A[1]))
             $TAB[urldecode($A[0])] = urldecode($A[1]);
       }
-      return $TAB;
-   } else {
-      $TAB=json_decode($DATA,true);
-      // no datas
-      if (empty($TAB) || !is_array($TAB)){
-         return array();
-      } else {
-         return $TAB;
-      }
    }
+   return $TAB;
 }
 
 
