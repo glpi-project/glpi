@@ -106,11 +106,11 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
 		$hardware = array ();
 		while ($data = $DBocs->fetch_array($result_ocs)) {
 			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
-			$hardware[$data["id"]]["date"] = $data["LASTDATE"];
-			$hardware[$data["id"]]["name"] = $data["NAME"];
-			$hardware[$data["id"]]["TAG"] = $data["TAG"];
-			$hardware[$data["id"]]["id"] = $data["ID"];
-			$hardware[$data["id"]]["serial"] = $data["SERIAL"];
+			$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
+			$hardware[$data["ID"]]["name"] = $data["NAME"];
+			$hardware[$data["ID"]]["TAG"] = $data["TAG"];
+			$hardware[$data["ID"]]["id"] = $data["ID"];
+			$hardware[$data["ID"]]["serial"] = $data["SERIAL"];
 		}
 
 		// Get all links between glpi and OCS
@@ -524,14 +524,14 @@ function ocsImportComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -
 				}
 				$computers_id = $comp->add($input);
 	
-				$ocsid = $line['id'];
+				$ocsid = $line['ID'];
 	
 				$changes[0]='0';
 				$changes[1]="";
 				$changes[2]=$ocsid;
 				historyLog ($computers_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_IMPORT);
 				
-				if ($idlink = ocsLink($line['id'], $ocsservers_id, $computers_id)) {
+				if ($idlink = ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
 					ocsUpdateComputer($idlink, $ocsservers_id, 0);
 				}
 	
@@ -895,7 +895,7 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 			if ($mixed_checksum) {
 				// Get updates on computers :
             
-				$computer_updates = importArrayFromDB($line["computer_update"]);
+				$computer_updates = importOcsArrayFromDB($line["computer_update"]);
             if (!in_array(OCS_IMPORT_TAG_080,$computer_updates)){
                   $computer_updates=ocsMigrateComputerUpdates($line["computers_id"],$computer_updates);
             }
@@ -910,7 +910,7 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 				if ($mixed_checksum & pow(2, BIOS_FL))
 					ocsUpdateBios($line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $computer_updates, $dohistory);
 				// Get import devices
-				$import_device = importArrayFromDB($line["import_device"]);
+				$import_device = importOcsArrayFromDB($line["import_device"]);
 				if ($mixed_checksum & pow(2, MEMORIES_FL))
 					ocsUpdateDevices(RAM_DEVICE, $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_device, '', $dohistory);
 				if ($mixed_checksum & pow(2, STORAGES_FL)) {
@@ -926,7 +926,7 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 					ocsUpdateDevices(SND_DEVICE, $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_device, '', $dohistory);
 
 				if ($mixed_checksum & pow(2, NETWORKS_FL)) {
-					$import_ip = importArrayFromDB($line["import_ip"]);
+					$import_ip = importOcsArrayFromDB($line["import_ip"]);
 					ocsUpdateDevices(NETWORK_DEVICE, $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_device, $import_ip, $dohistory);
 				}
 				if ($mixed_checksum & pow(2, MODEMS_FL) || $mixed_checksum & pow(2, PORTS_FL))
@@ -934,29 +934,29 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
-					$import_monitor = importArrayFromDB($line["import_monitor"]);
+					$import_monitor = importOcsArrayFromDB($line["import_monitor"]);
 					ocsUpdatePeripherals(MONITOR_TYPE, $comp->fields["entities_id"], $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_monitor, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
-					$import_printer = importArrayFromDB($line["import_printer"]);
+					$import_printer = importOcsArrayFromDB($line["import_printer"]);
 					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["entities_id"], $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import peripheral
-					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
+					$import_peripheral = importOcsArrayFromDB($line["import_peripheral"]);
 					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["entities_id"], $line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_peripheral, $dohistory);
 				}
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import software
-					$import_software = importArrayFromDB($line["import_software"]);
+					$import_software = importOcsArrayFromDB($line["import_software"]);
 					ocsUpdateSoftware($line['computers_id'], $comp->fields["entities_id"], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
 				}
 				if ($mixed_checksum & pow(2, DRIVES_FL)) {
 					// Get import drives
-					$import_disk = importArrayFromDB($line["import_disk"]);
+					$import_disk = importOcsArrayFromDB($line["import_disk"]);
 					ocsUpdateDisk($line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs, $import_disk);
 				}
 				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
@@ -1441,11 +1441,11 @@ function mergeOcsArray($computers_id, $tomerge, $field) {
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)){
 		if ($DB->numrows($result)){
-			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			$newtab = array_merge($tomerge, $tab);
 			$newtab = array_unique($newtab);
 			$query = "UPDATE glpi_ocslinks 
-				SET `$field`='" . exportArrayToDB($newtab) . "' 
+				SET `$field`='" . exportOcsArrayToDB($newtab) . "' 
 				WHERE computers_id='$computers_id'";
 			$DB->query($query);
 		}
@@ -1458,14 +1458,14 @@ function deleteInOcsArray($computers_id, $todel, $field,$is_value_to_del=false) 
 	$query = "SELECT `$field` FROM glpi_ocslinks WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
-			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			if ($is_value_to_del){
 				$todel=array_search($todel,$tab);
 			}
 			if (isset($tab[$todel])){
 				unset ($tab[$todel]);
 				$query = "UPDATE glpi_ocslinks 
-					SET `$field`='" . exportArrayToDB($tab) . "' 
+					SET `$field`='" . exportOcsArrayToDB($tab) . "' 
 					WHERE computers_id='$computers_id'";
 				$DB->query($query);
 			}
@@ -1476,7 +1476,7 @@ function deleteInOcsArray($computers_id, $todel, $field,$is_value_to_del=false) 
 function replaceOcsArray($computers_id, $newArray, $field) {
 	global $DB;
 	
-	$newArray = exportArrayToDB($newArray);
+	$newArray = exportOcsArrayToDB($newArray);
 	$query = "SELECT `$field` FROM glpi_ocslinks WHERE computers_id='".$computers_id."'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
@@ -1495,12 +1495,12 @@ function addToOcsArray($computers_id, $toadd, $field) {
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
-			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			foreach ($toadd as $key => $val) {
 				$tab[$key] = $val;
 			}
 			$query = "UPDATE glpi_ocslinks 
-				SET `$field`='" . exportArrayToDB($tab) . "' 
+				SET `$field`='" . exportOcsArrayToDB($tab) . "' 
 				WHERE computers_id='$computers_id'";
 			$DB->query($query);
 		}
@@ -1587,7 +1587,7 @@ function ocsUnlockItems($computers_id,$field){
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
-			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			$update_done=false;
 			
 			foreach ($tab as $key => $val) {
@@ -1621,7 +1621,7 @@ function ocsUnlockItems($computers_id,$field){
 			
 			if ($update_done){
 				$query = "UPDATE glpi_ocslinks 
-						SET `$field`='" . exportArrayToDB($tab) . "' 
+						SET `$field`='" . exportOcsArrayToDB($tab) . "' 
 						WHERE computers_id='$computers_id'";
 				$DB->query($query);
 			}
@@ -1659,7 +1659,8 @@ function ocsEditLock($target, $ID) {
 		// Print lock fields for OCSNG
 
 		$lockable_fields = getOcsLockableFields();
-		$locked = importArrayFromDB($data["computer_update"]);
+		$locked = importOcsArrayFromDB($data["computer_update"]);
+
       if (!in_array(OCS_IMPORT_TAG_080,$locked)){
          $locked=ocsMigrateComputerUpdates($ID,$locked);
       }
@@ -1693,7 +1694,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div width='50%'>";
-		$locked_monitor = importArrayFromDB($data["import_monitor"]);
+		$locked_monitor = importOcsArrayFromDB($data["import_monitor"]);
 		foreach ($locked_monitor as $key => $val) {
 			if ($val != "_version_070_") {
 				$querySearchLockedMonitor = "SELECT items_id FROM glpi_computers_items WHERE id='$key'";
@@ -1723,7 +1724,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked_printer = importArrayFromDB($data["import_printer"]);
+		$locked_printer = importOcsArrayFromDB($data["import_printer"]);
 		foreach ($locked_printer as $key => $val) {
 			$querySearchLockedPrinter = "SELECT items_id FROM glpi_computers_items WHERE id='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPrinter);
@@ -1751,7 +1752,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked_printer = importArrayFromDB($data["import_peripheral"]);
+		$locked_printer = importOcsArrayFromDB($data["import_peripheral"]);
 		foreach ($locked_printer as $key => $val) {
 			$querySearchLockedPeriph = "SELECT items_id FROM glpi_computers_items WHERE id='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPeriph);
@@ -1779,7 +1780,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked_ip = importArrayFromDB($data["import_ip"]);
+		$locked_ip = importOcsArrayFromDB($data["import_ip"]);
 		
 		if (!in_array(OCS_IMPORT_TAG_072,$locked_ip))
 				$locked_ip=ocsMigrateImportIP($ID,$locked_ip);
@@ -1819,7 +1820,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked_software = importArrayFromDB($data["import_software"]);
+		$locked_software = importOcsArrayFromDB($data["import_software"]);
 		foreach ($locked_software as $key => $val) {
 			if ($val != "_version_070_") {
 				$querySearchLockedSoft = "SELECT id FROM glpi_computers_softwaresversions WHERE id='$key'";
@@ -1850,7 +1851,7 @@ function ocsEditLock($target, $ID) {
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
-		$locked = importArrayFromDB($data["import_disk"]);
+		$locked = importOcsArrayFromDB($data["import_disk"]);
 		foreach ($locked as $key => $val) {
 			$querySearchLocked = "SELECT id FROM glpi_computersdisks WHERE id='$key'";
 			$resultSearch = $DB->query($querySearchLocked);
@@ -3021,7 +3022,7 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 			if ($DB->numrows($result))
 			{
 				$tmp = $DB->fetch_array($result);
-				$import_software = importArrayFromDB($tmp["import_software"]);
+				$import_software = importOcsArrayFromDB($tmp["import_software"]);
 			}
 					
 		}
@@ -3896,4 +3897,54 @@ function getComputerLinkToOcsConsole ($ocsservers_id,$ocsid,$todisplay)
 	else
 		return $url;
 }
+
+/**
+ * Export an array to be stored in a simple field in the database
+ *
+ * @param $TAB Array to export / encode (one level depth)
+ *
+ * @return string containing encoded array
+ *
+ **/
+function exportOcsArrayToDB($TAB) {
+   return json_encode($TAB);
+	/*$EXPORT = "";
+	while (list($KEY,$VALUE) = each($TAB)) {
+		$EXPORT .= urlencode($KEY)."=>".(is_array($VALUE)?" ".exportOcsArrayToDB($VALUE):urlencode($VALUE))." ";
+	}
+	return $EXPORT;
+   */
+}
+
+/**
+ * Import an array encoded in a simple field in the database
+ *
+ * @param $DATA data readed in DB to import
+ *
+ * @return array containing datas
+ *
+ **/
+function importOcsArrayFromDB($DATA) {
+   //   Old storage : begin by a number
+   if (isset($DATA[0]) && is_numeric($DATA[0])){
+      $TAB = array();
+
+      foreach(explode(" ", $DATA) as $ITEM) {
+         $A = explode("=>", $ITEM);
+         if (strlen($A[0])>0 && isset($A[1]))
+            $TAB[urldecode($A[0])] = urldecode($A[1]);
+      }
+      return $TAB;
+   } else {
+      $TAB=json_decode($DATA,true);
+      // no datas
+      if (empty($TAB) || !is_array($TAB)){
+         return array();
+      } else {
+         return $TAB;
+      }
+   }
+}
+
+
 ?>
