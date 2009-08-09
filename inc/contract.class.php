@@ -273,5 +273,32 @@ class ContractItem extends CommonDBRelation{
       $this->itemtype_2 = 'itemtype';
       $this->items_id_2 = 'items_id';
    }
+
+   /**
+    * Check right on an contract - overloaded to check max_links_allowed
+    *
+    * @param $ID ID of the item (-1 if new item)
+    * @param $right Right to check : r / w / recursive
+    * @param $input array of input data (used for adding item)
+    *
+    * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+
+      if ($ID<0) {
+         // Ajout
+         $contract = new Contract();
+         
+         if (!$contract->getFromDB($input['contracts_id'])) {
+            return false;
+         }
+         if ($contract->fields['max_links_allowed'] > 0
+            && countElementsInTable($this->table, "`contracts_id`='".$input['contracts_id']."'") >= $contract->fields['max_links_allowed']) {
+               return false;
+         }
+      }
+      return parent::can($ID,$right,$input);
+   }
+
 }
 ?>
