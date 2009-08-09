@@ -1225,19 +1225,16 @@ class CommonDBTM {
 
       if ($withtemplate || $ID<=0) {
          echo "<td class='tab_bg_2' align='center' colspan='".($colspan*2)."'>\n";
-         echo "<input type='hidden' name='id' value='$ID'>";
          if ($ID<=0||$withtemplate==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
-         echo "</td>\n";
       } else {
          echo "<td class='tab_bg_2' colspan='".$colspan."' align='center' valign='top'>\n";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td>\n";
          echo "<td class='tab_bg_2' colspan='".$colspan."'  align='center'>\n";
-         echo "<input type='hidden' name='id' value=$ID>";
 
          // Can delete an object with Infocom only if can write Infocom
          if (!in_array($this->type,$CFG_GLPI["infocom_types"]) || haveRight('infocom','w')) {
@@ -1260,8 +1257,11 @@ class CommonDBTM {
             // TODO : add a "no right to delete" message ?
             echo "&nbsp;";
          }
-         echo "</td>";
       }
+      if ($ID>0) {
+         echo "<input type='hidden' name='id' value='$ID'>";
+      }
+      echo "</td>";
       echo "</tr>\n";
       
       // Close for Form
@@ -1567,6 +1567,23 @@ abstract class CommonDBRelation extends CommonDBTM {
          return true;
       }
       
+      // Check entity compatibility
+      if ($ci1->obj->isEntityAssign() && $ci2->obj->isEntityAssign()) {
+         if ($ci1->obj->getEntityID() == $ci2->obj->getEntityID()) {
+               $checkentity = true;
+         } else if ($ci1->obj->isRecursive() 
+            && in_array($ci1->obj->getEntityID(), getAncestorsOf("glpi_entities",$ci2->obj->getEntityID()))) {
+               $checkentity = true;
+         } else if ($ci2->obj->isRecursive() 
+            && in_array($ci2->obj->getEntityID(), getAncestorsOf("glpi_entities",$ci1->obj->getEntityID()))) {
+               $checkentity = true;
+         } else {
+            // $checkentity is false => return
+            return false;
+         }
+      } else {
+         $checkentity = true;
+      }
       // can write one item is enough
       if ($ci1->obj->can($input[$this->items_id_1],'w')
          || $ci2->obj->can($input[$this->items_id_2],'w')) {
