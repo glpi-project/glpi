@@ -62,10 +62,15 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
 		$old_value=$changes[1];
 		$new_value=$changes[2];
 
-		if (isset($_SESSION["glpiID"]))
-			$username = getUserName($_SESSION["glpiID"],$link=0);
-		else
+		if (isset($_SESSION["glpiID"])){
+         if (is_numeric($_SESSION["glpiID"])) {
+			   $username = getUserName($_SESSION["glpiID"],$link=0);
+         } else { // For cron management
+            $username=$_SESSION["glpiID"];
+         }
+		} else {
 			$username="";
+      }
 
 		// Build query
 		$query = "INSERT INTO glpi_logs (items_id, itemtype, devicetype, linked_action, user_name, date_mod,

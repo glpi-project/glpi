@@ -222,6 +222,12 @@ class Cron {
 				// la fonction a été inclus ou la fonction existe
 				// l'appeler
 				logInFile("cron","Launch $tache\n");
+            $saveglpiid="";
+            // Save glpiID
+            if (isset($_SESSION["glpiID"])){
+               $saveglpiid=$_SESSION["glpiID"];
+            }
+            $_SESSION["glpiID"]="cron_".$tache;
 				$code_de_retour = $fonction($last);
 
 				// si la tache a eu un effet : log
@@ -242,7 +248,11 @@ class Cron {
 			} else {
 				logInFile("cron","Can't run task ($tache: missing function $fonction)\n");
 			}
-
+         if (empty($saveglpiid)){
+            unset($_SESSION["glpiID"]);
+         } else {
+            $_SESSION["glpiID"]=$saveglpiid;
+         }
 
 		} // touch
 
