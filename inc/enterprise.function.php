@@ -213,12 +213,12 @@ function showAssociatedContact($instID) {
 
 }
 
-/**
+/* TODO : to clean no more used
+ * 
  * Add a contact to an enterprise
  *
  * @param $eID enterprise ID
  * @param $cID contact ID
- */
 function addContactEnterprise($eID,$cID){
 	global $DB;
 	if ($eID>0&&$cID>0){
@@ -227,17 +227,18 @@ function addContactEnterprise($eID,$cID){
 		$result = $DB->query($query);
 	}
 }
-/**
+ */
+/* TODO : to clean no more used
  * Delete a contact to an enterprise
  *
  * @param $ID contact_enterprise ID
- */
 function deleteContactEnterprise($ID){
 
 	global $DB;
 	$query="DELETE FROM glpi_contacts_suppliers WHERE id = '$ID';";
 	$result = $DB->query($query);
 }
+ */
 
 /**
  * Get links for an enterprise (website / edit)
