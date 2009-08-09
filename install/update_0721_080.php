@@ -799,6 +799,7 @@ function update0721to080() {
                         array('from' => 'import_device_sound','to' => 'import_device_sound', 'default' =>0,'noindex'=>true),//
                         array('from' => 'import_device_drives','to' => 'import_device_drive', 'default' =>0,'noindex'=>true),//
                         array('from' => 'import_device_ports','to' => 'import_device_port', 'default' =>0,'noindex'=>true),//
+                        array('from' => 'import_device_modems','to' => 'import_device_modem', 'default' =>0,'noindex'=>true),//
                         array('from' => 'import_registry','to' => 'import_registry', 'default' =>0,'noindex'=>true),//
                         array('from' => 'import_os_serial','to' => 'import_os_serial', 'default' =>0,'noindex'=>true),//
                         array('from' => 'import_ip','to' => 'import_ip', 'default' =>0,'noindex'=>true),//
