@@ -293,7 +293,7 @@ function getAncestorsOf($table,$IDf){
       if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
          $ancestors=trim($DB->result($result,0,0));
          if (!empty($ancestors)){
-            return json_decode($ancestors);
+            return json_decode($ancestors,true);
          }
       }
    }
@@ -348,7 +348,7 @@ function getSonsOf($table,$IDf){
       if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
          $sons=trim($DB->result($result,0,0));
          if (!empty($sons)){
-            return json_decode($sons);
+            return json_decode($sons,true);
          }
       }
    }
