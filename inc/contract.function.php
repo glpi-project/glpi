@@ -390,7 +390,7 @@ function showEnterpriseContract($instID) {
 		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;id=$ID&amp;conID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deletecontractsupplier=1&amp;id=$ID&amp;contracts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -403,14 +403,14 @@ function showEnterpriseContract($instID) {
 		}
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
-			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+			echo "<div class='software-instal'><input type='hidden' name='contracts_id' value='$instID'>";
 			if ($contract->fields["is_recursive"]) {
-            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contract->fields["entities_id"]),$used);
+            dropdown("glpi_suppliers","suppliers_id",1,getSonsOf("glpi_entities",$contract->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_suppliers","entID",1,$contract->fields["entities_id"],$used);
+				dropdown("glpi_suppliers","suppliers_id",1,$contract->fields["entities_id"],$used);
 			}
 			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+			echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 			echo "</tr>";
 		}
@@ -420,7 +420,8 @@ function showEnterpriseContract($instID) {
 
 }
 
-/**
+/* TODO : to be clean, not used
+ * 
  * Link a contract to an entreprise
  *
  * Link the contract $conID to the entreprise $ID .
@@ -430,7 +431,6 @@ function showEnterpriseContract($instID) {
  *
  *@return Nothing ()
  *
- **/
 function addEnterpriseContract($conID,$ID){
 	global $DB;
 	if ($conID>0&&$ID>0){
@@ -439,8 +439,10 @@ function addEnterpriseContract($conID,$ID){
 		$result = $DB->query($query);
 	}
 }
+ */
 
-/**
+/* TODO : to be clean, not used
+ * 
  * Delete a contract entreprise
  *
  * Delete the contract entreprise $ID
@@ -449,13 +451,13 @@ function addEnterpriseContract($conID,$ID){
  *
  *@return Nothing ()
  *
- **/
 function deleteEnterpriseContract($ID){
 
 	global $DB;
 	$query="DELETE FROM glpi_contracts_suppliers WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
+ */
 
 /**
  * Get the entreprise identifier from a contract
@@ -619,7 +621,7 @@ function showContractAssociatedEnterprise($ID){
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$LANG['financial'][66].":</th></tr>";
 	echo "<tr><th>".$LANG['common'][16]."</th>";
@@ -654,7 +656,7 @@ function showContractAssociatedEnterprise($ID){
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontract=deletecontract&amp;id=$assocID&amp;entID=$ID'><strong>".$LANG['buttons'][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deletecontractsupplier=1&amp;id=$assocID&amp;contracts_id=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -668,14 +670,14 @@ function showContractAssociatedEnterprise($ID){
 
 		if ($nb>count($used)){
 			echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
+			echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";
 			if ($ent->fields["is_recursive"]) {
-            dropdownContracts("conID",getSonsOf("glpi_entities",$ent->fields["entities_id"]),$used);
+            dropdownContracts("contracts_id",getSonsOf("glpi_entities",$ent->fields["entities_id"]),$used,true);
 			} else {
-				dropdownContracts("conID",$ent->fields['entities_id'],$used);
+            dropdownContracts("contracts_id",$ent->fields['entities_id'],$used,true);
 			}
 			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='addcontract' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+			echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "<td>&nbsp;</td></tr>";
