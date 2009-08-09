@@ -222,4 +222,21 @@ class Contact extends CommonDBTM{
 
 }
 
+class ContactSupplier extends CommonDBRelation{
+
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table = 'glpi_contacts_suppliers';
+      $this->type = CONTACTSUPPLIER_TYPE;
+      
+      $this->itemtype_1 = CONTACT_TYPE;
+      $this->items_id_1 = 'contacts_id';
+      
+      $this->itemtype_2 = ENTERPRISE_TYPE;
+      $this->items_id_2 = 'suppliers_id';
+   }
+
+}
 ?>

@@ -89,22 +89,6 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else if (isset($_POST["addcontact"]))
-{
-	$ent->check($_POST["eID"],'w');
-
-	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($_POST["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][36]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deletecontact"]))
-{
-	$ent->check($_GET["eID"],'w');
-
-	deleteContactEnterprise($_GET["id"]);
-	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][37]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
 else if (isset($_POST["addcontract"]))
 {
 	$ent->check($_POST["entID"],'w');

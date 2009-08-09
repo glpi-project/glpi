@@ -179,7 +179,7 @@ function showAssociatedContact($instID) {
 			echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["contactstypes_id"])."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;id=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=".$data["id"]."'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 			$i++;
@@ -194,17 +194,17 @@ function showAssociatedContact($instID) {
 			$nb=countElementsInTableForEntity("glpi_contacts",$enterprise->fields["entities_id"]);
 		}
 		if ($nb>count($used)) {
-			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
+			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr><tr><td class='tab_bg_2' align='center'>";
-			echo "<input type='hidden' name='eID' value='$instID'>";
+			echo "<input type='hidden' name='suppliers_id' value='$instID'>";
 			if ($enterprise->fields["is_recursive"]) {
-            dropdown("glpi_contacts","cID",1,getSonsOf("glpi_entities",$enterprise->fields["entities_id"]),$used);
+            dropdown("glpi_contacts","contacts_id",1,getSonsOf("glpi_entities",$enterprise->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_contacts","cID",1,$enterprise->fields["entities_id"],$used);
+				dropdown("glpi_contacts","contacts_id",1,$enterprise->fields["entities_id"],$used);
 			}
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='addcontact' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+			echo "<input type='submit' name='addcontactsupplier' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 		}
 		echo "</table></form>";

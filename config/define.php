@@ -111,6 +111,8 @@
 	define("NETWORKING_PORT_TYPE",42);
 	define("FOLLOWUP_TYPE",43);
 	define("BUDGET_TYPE",44);
+   define("CONTRACTITEM_TYPE",45);
+   define("CONTACTSUPPLIER_TYPE",46);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
