@@ -479,12 +479,12 @@ function moveTreeUnder($table, $to_move, $where) {
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
          // Clean sons / ancestors if needed
-         if (FieldExists($table,"cache_sons")){
-            $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+         if (FieldExists($table,"sons_cache")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `sons_cache` = '';";
             $DB->query($query);
          }
-         if (FieldExists($table,"cache_ancestors")){
-            $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+         if (FieldExists($table,"ancestors_cache")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
             $DB->query($query);
          }         
 		}
@@ -515,12 +515,12 @@ function updateDropdown($input) {
 
 		}
       // Clean sons / ancestors if needed
-      if (FieldExists($input["tablename"],"cache_sons")){
-         $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+      if (FieldExists($input["tablename"],"sons_cache")){
+         $query = "UPDATE `".$input["tablename"]."` SET  `sons_cache` = '';";
          $DB->query($query);
       }
-      if (FieldExists($input["tablename"],"cache_ancestors")){
-         $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+      if (FieldExists($input["tablename"],"ancestors_cache")){
+         $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
          $DB->query($query);
       }
 		return true;
@@ -718,12 +718,12 @@ function addDropdown($input) {
 			}
 			
          // Clean sons / ancestors if needed
-         if (FieldExists($input["tablename"],"cache_sons")){
-            $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+         if (FieldExists($input["tablename"],"sons_cache")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `sons_cache` = '';";
             $DB->query($query);
          }
-         if (FieldExists($input["tablename"],"cache_ancestors")){
-            $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+         if (FieldExists($input["tablename"],"ancestors_cache")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
             $DB->query($query);
          }
 			return $ID;
@@ -794,12 +794,12 @@ function replaceDropDropDown($input) {
 		$DB->query($query);
    }
    // Clean sons / ancestors if needed
-   if (FieldExists($input["tablename"],"cache_sons")){
-      $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+   if (FieldExists($input["tablename"],"sons_cache")){
+      $query = "UPDATE `".$input["tablename"]."` SET  `sons_cache` = '';";
       $DB->query($query);
    }
-   if (FieldExists($input["tablename"],"cache_ancestors")){
-      $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+   if (FieldExists($input["tablename"],"ancestors_cache")){
+      $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
       $DB->query($query);
    }
    

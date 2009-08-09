@@ -1937,14 +1937,14 @@ function update0721to080() {
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
    
-   if (!FieldExists("glpi_entities","cache_sons")) {
-      $query = "ALTER TABLE `glpi_entities` ADD `cache_sons` LONGTEXT NULL ; ";
-      $DB->query($query) or die("0.80 add cache_sons field in glpi_entities " . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_entities","sons_cache")) {
+      $query = "ALTER TABLE `glpi_entities` ADD `sons_cache` LONGTEXT NULL ; ";
+      $DB->query($query) or die("0.80 add sons_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
    
-   if (!FieldExists("glpi_entities","cache_ancestors")) {
-      $query = "ALTER TABLE `glpi_entities` ADD `cache_ancestors` LONGTEXT NULL ; ";
-      $DB->query($query) or die("0.80 add cache_ancestors field in glpi_entities " . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_entities","ancestors_cache")) {
+      $query = "ALTER TABLE `glpi_entities` ADD `ancestors_cache` LONGTEXT NULL ; ";
+      $DB->query($query) or die("0.80 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
 
 
