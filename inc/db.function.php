@@ -948,41 +948,6 @@ function isIndex($table, $field) {
 }
 
 
-/**
- * Export an array to be stored in a simple field in the database
- *
- * @param $TAB Array to export / encode (one level depth)
- *
- * @return string containing encoded array
- *
- **/
-function exportArrayToDB($TAB) {
-	$EXPORT = "";
-	while (list($KEY,$VALUE) = each($TAB)) {
-		$EXPORT .= urlencode($KEY)."=>".(is_array($VALUE)?" ".exportArrayToDB($VALUE):urlencode($VALUE))." ";
-	}
-	return $EXPORT;
-}
-
-/**
- * Import an array encoded in a simple field in the database
- *
- * @param $DATA data readed in DB to import
- *
- * @return array containing datas
- *
- **/
-function importArrayFromDB($DATA) {
-	$TAB = array();
-
-	foreach(explode(" ", $DATA) as $ITEM) {
-		$A = explode("=>", $ITEM);
-		if (strlen($A[0])>0 && isset($A[1]))
-			$TAB[urldecode($A[0])] = urldecode($A[1]);
-	}
-	return $TAB;
-}
-
 
 /**
  * Create a new name using a autoname field defined in a template
