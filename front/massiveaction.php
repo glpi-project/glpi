@@ -350,6 +350,19 @@ if (isset($_POST["itemtype"])){
 				}
 			break;
 			case "add_contract":
+         logInFile('php-errors',"MassiveAction: ".print_r($_POST,true));
+            $contractitem=new ContractItem();
+            foreach ($_POST["item"] as $key => $val){
+               $input=array(
+                  'itemtype' => $_POST["itemtype"],
+                  'items_id' => $key,
+                  'contracts_id' => $_POST['conID']
+               );
+               if ($contractitem->can(-1,'w',$input)) {
+                  $contractitem->add($input);
+               }
+            }
+/*
 				$ci=new CommonItem();
 				$ci2=new CommonItem();
 				if ($ci->getFromDB(CONTRACT_TYPE,$_POST['conID'])){
@@ -375,7 +388,7 @@ if (isset($_POST["itemtype"])){
 						}
 					}
 				}
-	
+*/	
 			break;
 			case "add_enterprise":
 				$ci=new CommonItem();
