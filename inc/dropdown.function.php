@@ -2548,11 +2548,12 @@ function dropdownAuthMethods($name)
  * @param $name string : HTML select name
  * @param $entity_restrict Restrict to a defined entity
  * @param $alreadyused : already used contract, do not add to dropdown
+ * @param $nochecklimit : true to disable limit for nomber of device (for supplier)
  *
  *@return Nothing (display)
  *
  **/
-function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
+function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false){
 
 	global $DB;
 
@@ -2578,7 +2579,9 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)){
 
-		if ($data["max_links_allowed"]==0||$data["max_links_allowed"]>countElementsInTable("glpi_contracts_items","contracts_id = '".$data['id']."'" )){
+		if ($nochecklimit 
+         || $data["max_links_allowed"]==0
+         || $data["max_links_allowed"]>countElementsInTable("glpi_contracts_items","contracts_id = '".$data['id']."'" )){
 			if ($data["entities_id"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";

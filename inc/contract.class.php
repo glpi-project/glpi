@@ -258,6 +258,7 @@ class Contract extends CommonDBTM {
 	
 }
 
+// Relation between Contracts and Items
 class ContractItem extends CommonDBRelation{
 
    /**
@@ -298,6 +299,25 @@ class ContractItem extends CommonDBRelation{
          }
       }
       return parent::can($ID,$right,$input);
+   }
+
+}
+
+// Relation between Contracts and Suppliers
+class ContractSupplier extends CommonDBRelation{
+
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table = 'glpi_contracts_suppliers';
+      $this->type = CONTRACTSUPPLIER_TYPE;
+      
+      $this->itemtype_1 = CONTRACT_TYPE;
+      $this->items_id_1 = 'contracts_id';
+      
+      $this->itemtype_2 = ENTERPRISE_TYPE;
+      $this->items_id_2 = 'suppliers_id';
    }
 
 }

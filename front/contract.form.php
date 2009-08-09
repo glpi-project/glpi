@@ -42,6 +42,7 @@ if(!isset($_GET["id"])) $_GET["id"] = -1;
 
 $contract=new Contract();
 $contractitem=new ContractItem();
+$contractsupplier=new ContractSupplier();
 
 if (isset($_POST["add"]))
 {
@@ -110,20 +111,20 @@ else if (isset($_GET["deleteitem"]))
    }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"]))
+else if (isset($_POST["addcontractsupplier"]))
 {
-	$contract->check($_POST['conID'],'w');
-
-	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][34]);
+   $contractsupplier->check(-1,'w',$POST);
+   if ($contractsupplier->add($_POST)) {
+      logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][34]);
+   }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteenterprise"]))
+else if (isset($_GET["deletecontractsupplier"]))
 {
-	$contract->check($_GET['conID'],'w');
-
-	deleteEnterpriseContract($_GET["id"]);
-	logEvent($_GET["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
+	$contractsupplier->check($_GET['id'],'w');
+   if ($contractsupplier->delete($_GET)) {
+      logEvent($_GET["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
+   }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
