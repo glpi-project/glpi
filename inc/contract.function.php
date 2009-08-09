@@ -668,9 +668,9 @@ function showContractAssociatedEnterprise($ID){
 			echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
 			if ($ent->fields["recursive"]) {
-				dropdownContracts("conID",getEntitySons($ent->fields["FK_entities"]),$used);
+				dropdownContracts("conID",getEntitySons($ent->fields["FK_entities"]),$used,true);
 			} else {
-				dropdownContracts("conID",$ent->fields['FK_entities'],$used);
+				dropdownContracts("conID",$ent->fields['FK_entities'],$used,true);
 			}
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='addcontract' value=\"".$LANG['buttons'][8]."\" class='submit'>";
