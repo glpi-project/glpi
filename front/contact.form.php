@@ -39,7 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(empty($_GET["id"])) $_GET["id"] = -1;
 
-$contact=new Contact;
+$contact = new Contact();
+$contactsupplier = new ContactSupplier();
+
 if (isset($_POST["add"])){
 	$contact->check(-1,'w',$_POST);
 
@@ -79,21 +81,21 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"]))
+else if (isset($_POST["addcontactsupplier"]))
 {
-	$contact->check($_POST["conID"],'w');
-
-	addContactEnterprise($_POST["entID"],$_POST["conID"]);
-	logEvent($_POST["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][34]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$_POST["conID"]);
+   $contactsupplier->check(-1,'w',$_POST);
+   if ($contactsupplier->add($_POST)) {
+      logEvent($_POST["contacts_id"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][34]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteenterprise"]))
+else if (isset($_GET["deletecontactsupplier"]))
 {
-	$contact->check($_GET["cID"],'w');
-
-	deleteContactEnterprise($_GET["id"]);
-	logEvent($_GET["cID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][35]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $contactsupplier->check($_GET["id"],'w');
+   if ($contactsupplier->delete($_GET)) {
+      logEvent($_GET["contacts_id"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][35]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 else

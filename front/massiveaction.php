@@ -323,34 +323,21 @@ if (isset($_POST["itemtype"])){
 					}
 				}
 			break;
-			case "add_contact":
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
-				if ($ci->getFromDB(CONTACT_TYPE,$_POST['conID'])){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1) {
-							/// Items exists ?
-							if ($ci2->getFromDB($_POST["itemtype"],$key)){
-								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["id"];
-								} else if (isset($ci2->obj->fields["entities_id"])) {
-								   $destentity = $ci2->obj->fields["entities_id"];
-								} else {
-								   $destentity = -1;
-								}
-								/// Entity security
-								if ($destentity<0
-                           ||$ci->obj->fields["entities_id"]==$destentity
-                           ||($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
-									addContactEnterprise($key,$_POST["conID"]);
-								}
-							}
-						}
-					}
-				}
-			break;
-			case "add_contract":
-         logInFile('php-errors',"MassiveAction: ".print_r($_POST,true));
+         case "add_contact":
+            if ($_POST["itemtype"] == ENTERPRISE_TYPE) {
+               $contactsupplier=new ContactSupplier();
+               foreach ($_POST["item"] as $key => $val){
+                  $input=array(
+                     'suppliers_id' => $key,
+                     'contacts_id' => $_POST['conID']
+                  );
+                  if ($contactsupplier->can(-1,'w',$input)) {
+                     $contactsupplier->add($input);
+                  }
+               }
+            }
+            break;
+         case "add_contract":
             $contractitem=new ContractItem();
             foreach ($_POST["item"] as $key => $val){
                $input=array(
@@ -362,53 +349,21 @@ if (isset($_POST["itemtype"])){
                   $contractitem->add($input);
                }
             }
-/*
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
-				if ($ci->getFromDB(CONTRACT_TYPE,$_POST['conID'])){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1) {
-							/// Items exists ?
-							if ($ci2->getFromDB($_POST["itemtype"],$key)){
-								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["id"];
-								} else if (isset($ci2->obj->fields["entities_id"])) {
-								   $destentity = $ci2->obj->fields["entities_id"];
-								} else {
-								   $destentity = -1;
-								}
-								/// Entity security
-								if ($destentity<0
-                           ||$ci->obj->fields["entities_id"]==$destentity
-                           ||($ci->obj->fields["is_recursive"]
-                              && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
-									addDeviceContract($_POST['conID'],$_POST["itemtype"],$key);
-								}
-							}
-						}
-					}
-				}
-*/	
-			break;
-			case "add_enterprise":
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
-				if ($ci->getFromDB(ENTERPRISE_TYPE,$_POST['entID'])){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1) {
-							// Items exists ?
-							if ($ci2->getFromDB($_POST["itemtype"],$key)){
-								// Entity security
-								if (!isset($ci2->obj->fields["entities_id"])
-								||$ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]
-                        ||($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$ci2->obj->fields["entities_id"])))){
-									addContactEnterprise($_POST["entID"],$key);
-								}
-							}
-						}
-					}
-				}
-			break;
+            break;
+         case "add_enterprise":
+            if ($_POST["itemtype"] == CONTACT_TYPE) {
+               $contactsupplier=new ContactSupplier();
+               foreach ($_POST["item"] as $key => $val){
+                  $input=array(
+                     'suppliers_id' => $_POST['entID'],
+                     'contacts_id' => $key
+                  );
+                  if ($contactsupplier->can(-1,'w',$input)) {
+                     $contactsupplier->add($input);
+                  }
+               }
+            }
+            break;
 			case "change_authtype":
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) 

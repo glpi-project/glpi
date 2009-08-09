@@ -104,7 +104,7 @@ function showEnterpriseContact($instID) {
 			echo "<td class='center'>".$website."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) 
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;id=$ID&amp;cID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 		}
@@ -117,13 +117,13 @@ function showEnterpriseContact($instID) {
 		}		
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
-			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+			echo "<div class='software-instal'><input type='hidden' name='contacts_id' value='$instID'>";
 			if ($contact->fields["is_recursive"]) {
-            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contact->fields["entities_id"]),$used);
+            dropdown("glpi_suppliers","suppliers_id",1,getSonsOf("glpi_entities",$contact->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_suppliers","entID",1,$contact->fields["entities_id"],$used);
+				dropdown("glpi_suppliers","suppliers_id",1,$contact->fields["entities_id"],$used);
 			}
-			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</div>";
 			echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
 			echo "</tr>";

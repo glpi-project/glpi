@@ -264,8 +264,8 @@ class ContractItem extends CommonDBRelation{
     * Constructor
     **/
    function __construct () {
-      $this->table="glpi_contracts_items";
-      $this->type=-1;
+      $this->table = 'glpi_contracts_items';
+      $this->type = CONTRACTITEM_TYPE;
       
       $this->itemtype_1 = CONTRACT_TYPE;
       $this->items_id_1 = 'contracts_id';
