@@ -1289,7 +1289,7 @@ class CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe' >";
 
-      echo "<tr><th colspan='$colspan'>";
+      echo "<tr><th colspan='".($colspan==2 ? 3 : $colspan)."'>";
 
 		if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
 			
@@ -1315,7 +1315,7 @@ class CommonDBTM {
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
 		}
 		
-		echo "</th><th colspan='$colspan'>";
+		echo "</th><th colspan='".($colspan==2 ? 1 : $colspan)."'>";
 
 		if ($this->may_be_recursive && isMultiEntitiesMode()){
 			echo $LANG['entity'][9].":&nbsp;";
