@@ -270,7 +270,7 @@ function showJobListForItem($itemtype,$items_id) {
    
    $query = "SELECT ".getCommonSelectForTrackingSearch()." 
       FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-      WHERE (items_id = '$items_id' and itemtype= '$itemtype') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+      WHERE (items_id = '$items_id' and itemtype= '$itemtype') ".getEntitiesRestrictRequest("AND","glpi_tickets").
        " ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
    
    $result = $DB->query($query);
@@ -347,7 +347,7 @@ function showJobListForEnterprise($entID) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (suppliers_id_assign = '$entID') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+			WHERE (suppliers_id_assign = '$entID') ".getEntitiesRestrictRequest("AND","glpi_tickets").
 				" ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
@@ -396,7 +396,7 @@ function showJobListForUser($userID) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (glpi_tickets.users_id = '$userID') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+			WHERE (glpi_tickets.users_id = '$userID') ".getEntitiesRestrictRequest("AND","glpi_tickets").
 				" ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
