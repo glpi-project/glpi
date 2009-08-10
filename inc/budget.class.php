@@ -100,47 +100,34 @@ class Budget extends CommonDBTM{
       }
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-      $this->showFormHeader($target,$ID,$withtemplate);
-
-      echo "<tr class='tab_bg_1'><td class='tab_bg_1' valign='top'>";
-      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-      echo "<tr>";
-
-      echo "<td>".$LANG['common'][16].":	</td>";
-      echo "<td>";
-      autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],40,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['financial'][21]."</td><td>";
-      echo "<input type='text' name='value' value=\"".formatNumber($this->fields["value"],true)."\" size='10'>";
-      echo "</td></tr>";
+      $this->showFormHeader($target,$ID,$withtemplate,2);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['search'][8].":	</td>";
+      echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
-      showDateFormItem("begin_date",$this->fields["begin_date"]);
-      echo "</td></tr>";
+      autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],
+      40,$this->fields["entities_id"])."</td>";
+      echo "<td rowspan='4' valign='center' align='right'>".$LANG['common'][25].
+      " : </td>";
+      echo "<td class='center' rowspan='4' valign='center'>.<textarea cols='45' 
+      rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][21]." :</td>";
+      echo "<td><input type='text' class='x-form-text' name='value' 
+      value=\"".formatNumber($this->fields["value"],true)."\" size='14'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['search'][9].":	</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['search'][8]." : </td>";
       echo "<td>";
-      showDateFormItem("end_date",$this->fields["end_date"]);
-      echo "</td></tr>";
-      echo "</table>";
+      showDateFormItem("begin_date",$this->fields["begin_date"])."</td></tr>";
 
-      echo "<td class='tab_bg_1' valign='top'>";
-      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['search'][9]." : </td>";
+      echo "<td>";
+      showDateFormItem("end_date",$this->fields["end_date"])."</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>";
-      echo $LANG['common'][25].":	</td>";
-      echo "<td class='center'><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td><td colspan='2'></td>";
-      echo "</td></tr></table>";
-
-      echo "</td>";
-      echo "</tr>";
-
-      $this->showFormButtons($ID,$withtemplate);
+      $this->showFormButtons($ID,$withtemplate,2);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
