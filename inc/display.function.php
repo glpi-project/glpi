@@ -1883,7 +1883,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		$split=explode("&amp;",$parameters);
 		for ($i=0;$i<count($split);$i++){
 			$pos=strpos($split[$i],'=');
-			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
+			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".urldecode(substr($split[$i],$pos+1))."\">";
 		}
 		echo "<select name='display_type'>";
 		echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][27]." ".$LANG['common'][68]."</option>";
