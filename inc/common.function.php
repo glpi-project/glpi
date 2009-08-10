@@ -230,7 +230,22 @@ if (!defined('GLPI_ROOT')){
 	* @return substring
 	**/
 	function utf8_substr($str,$start,$length=-1){
+      if ($length==-1){
+         $length=utf8_strlen($str)-$start;
+      }
       return mb_substr($str,$start,$length,"UTF-8");
+	}
+
+	/**
+	* substr function for utf8 string
+	* @param $str string: string
+	* @param $tofound string: string to found
+   * @param $offset integer: The search offset. If it is not specified, 0 is used. 
+	*
+	* @return substring
+	**/
+	function utf8_strpos($str,$tofound,$offset=0){
+      return mb_strpos($str,$tofound,$offset,"UTF-8");
 	}
 
 	/**
