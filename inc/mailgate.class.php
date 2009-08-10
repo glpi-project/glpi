@@ -348,13 +348,13 @@ class MailCollect {
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
 		if (!seems_utf8($body)){
-			$tkt['contents']= utf8_encode($body);	
+			$tkt['content']= utf8_encode($body);
 		}else{
-			$tkt['contents']= $body;
+			$tkt['content']= $body;
 		}
 		// Add message from getAttached
 		if ($this->addtobody) {
-			$tkt['contents'] .= $this->addtobody;
+			$tkt['content'] .= $this->addtobody;
 		}
 		
 		//// Detect if it is a mail reply
@@ -386,8 +386,8 @@ class MailCollect {
 			if ( $job->getFromDB($tkt['tickets_id']) 
 				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'],$head['from']))) {
 		
-				$content=explode("\n",$tkt['contents']);
-				$tkt['contents']="";
+				$content=explode("\n",$tkt['content']);
+				$tkt['content']="";
 				$first_comment=true;
 				$to_keep=array();
 				foreach($content as $ID => $val){
@@ -413,7 +413,7 @@ class MailCollect {
 					}
 				}
 				foreach($to_keep as $ID ){
-					$tkt['contents'].=$content[$ID]."\n";
+					$tkt['content'].=$content[$ID]."\n";
 				}
 			} else {
 				unset($tkt['tickets_id']);
@@ -440,7 +440,7 @@ class MailCollect {
 			$tkt['add_reopen']=1;
 		}
 
-		$tkt['contents']=clean_cross_side_scripting_deep(html_clean($tkt['contents']));
+		$tkt['content']=clean_cross_side_scripting_deep(html_clean($tkt['content']));
 
 		$tkt=addslashes_deep($tkt);
 

@@ -95,7 +95,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		if (!isset($_GET["status"])) $_GET["status"]="all";
 		if (!isset($_GET["sort"])) $_GET["sort"]="";
 		if (!isset($_GET["search"])) $_GET["search"]="";
-		if (!isset($_GET["tosearch"])) $_GET["tosearch"]="name_contents";
+		if (!isset($_GET["tosearch"])) $_GET["tosearch"]="name_content";
 		if (!isset($_GET["order"])) $_GET["order"]="DESC";
 		if (!isset($_GET["group"])) $_GET["group"]=0;
 		if (!isset($_GET["ticketscategories_id"])) $_GET["ticketscategories_id"]=0;

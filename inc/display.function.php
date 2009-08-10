@@ -1672,7 +1672,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if ($email=="") $use_email_notification=0;
 	$itemtype = 0;
 	$computer="";
-	$contents="";
+	$content="";
 	$title="";
 	$ticketscategories_id = 0;
 	$priority  = 3;
@@ -1684,8 +1684,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$email = stripslashes($_SESSION["helpdeskSaved"]["user_email"]);
 	if (isset($_SESSION["helpdeskSaved"]["itemtype"]))
 		$itemtype = stripslashes($_SESSION["helpdeskSaved"]["itemtype"]);
-	if (isset($_SESSION["helpdeskSaved"]["contents"]))
-		$contents = cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
+	if (isset($_SESSION["helpdeskSaved"]["content"]))
+		$content = cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
 	if (isset($_SESSION["helpdeskSaved"]["name"]))
 		$title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
 	if (isset($_SESSION["helpdeskSaved"]["ticketscategories_id"]))
@@ -1748,7 +1748,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'><textarea name='contents' cols='80' rows='14' >$contents</textarea>";
+	echo "<td colspan='2' align='center'><textarea name='content' cols='80' rows='14' >$content</textarea>";
 	echo "</td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
@@ -2401,7 +2401,7 @@ function showProfileSelecter($target){
 		echo "<li>";
 
 		echo "<script  type='text/javascript'>";
-		echo "cleanhide('modal_entity_contents');";
+		echo "cleanhide('modal_entity_content');";
 		echo "
 			var entity_window=new Ext.Window({
 				layout:'fit',
@@ -2416,7 +2416,7 @@ function showProfileSelecter($target){
 		";
 		echo "</script>";
 
-		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_contents' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_content' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
 
 		
 

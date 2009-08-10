@@ -91,7 +91,7 @@ class Job extends CommonDBTM{
 		if ($this->getFromDB($ID)){
 
 			if (!$purecontent) {
-				$this->fields["contents"] = nl2br(preg_replace("/\r\n\r\n/","\r\n",$this->fields["contents"]));
+				$this->fields["content"] = nl2br(preg_replace("/\r\n\r\n/","\r\n",$this->fields["content"]));
 			}
 
 			$this->getHardwareData();
@@ -179,10 +179,10 @@ class Job extends CommonDBTM{
 			if (isset($input["groups_id_assign"])){
 				$ret["groups_id_assign"]=$input["groups_id_assign"];
 			}
-			// Can only update contents if no followups already added
+			// Can only update content if no followups already added
 			$ret["id"]=$input["id"];
-			if (isset($input["contents"])){
-				$ret["contents"]=$input["contents"];
+			if (isset($input["content"])){
+				$ret["content"]=$input["content"];
 			}
 			if (isset($input["name"])){
 				$ret["name"]=$input["name"];
@@ -374,7 +374,7 @@ class Job extends CommonDBTM{
 						$change_followup_content.=$LANG['mailing'][45]."\n";
 						$global_mail_change_count++;
 						break;
-					case "contents":
+					case "content":
 						$change_followup_content.=$LANG['mailing'][46]."\n";
 						$global_mail_change_count++;
 					break;
@@ -518,7 +518,7 @@ class Job extends CommonDBTM{
 	
 			if (!empty($change_followup_content)){ // Add followup if not empty
 				$newinput=array();
-				$newinput["contents"]=addslashes($change_followup_content);
+				$newinput["content"]=addslashes($change_followup_content);
 				$newinput["users_id"]=$_SESSION['glpiID'];
 				$newinput["is_private"]=0;
 				$newinput["hour"]=$newinput["minute"]=0;
@@ -539,7 +539,7 @@ class Job extends CommonDBTM{
 	
 			
 			// Clean content to mail
-			$this->fields["contents"]=stripslashes($this->fields["contents"]);
+			$this->fields["content"]=stripslashes($this->fields["content"]);
 	
 			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["use_mailing"]){
 				$user=new User;
@@ -569,7 +569,7 @@ class Job extends CommonDBTM{
 
 			$_SESSION["helpdeskSaved"]=$input;
 	
-			if ($CFG_GLPI["is_ticket_content_mandatory"]&&(!isset($input['contents'])||empty($input['contents']))){
+			if ($CFG_GLPI["is_ticket_content_mandatory"]&&(!isset($input['content'])||empty($input['content']))){
 				addMessageAfterRedirect($LANG['tracking'][8],false,ERROR);
 				$mandatory_ok=false;
 			}
@@ -701,7 +701,7 @@ class Job extends CommonDBTM{
 		
 		// No name set name
                 if (empty($input["name"])) {
-                        $input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
+                        $input["name"]=preg_replace('/\r\n/',' ',$input['content']);
                         $input["name"]=preg_replace('/\n/',' ',$input['name']);
                         $input["name"]=utf8_substr($input['name'],0,70);
                 }
@@ -738,7 +738,7 @@ class Job extends CommonDBTM{
 
 		$already_mail=false;
 		if (((isset($input["_followup"]) && is_array($input["_followup"])
-            && strlen($input["_followup"]['contents']) > 0 )
+            && strlen($input["_followup"]['content']) > 0 )
          || isset($input["plan"]))
 			|| (isset($input["_hour"]) && isset($input["_minute"])
             && isset($input["realtime"]) && $input["realtime"]>0)){
@@ -755,8 +755,8 @@ class Job extends CommonDBTM{
 			if (isset($input["_minute"])) {
             $toadd["minute"]=$input["_minute"];
          }
-			if (isset($input["_followup"]['contents']) && strlen($input["_followup"]['contents']) > 0) {
-            $toadd["contents"]=$input["_followup"]['contents'];
+			if (isset($input["_followup"]['content']) && strlen($input["_followup"]['content']) > 0) {
+            $toadd["content"]=$input["_followup"]['content'];
          }
 			if (isset($input["_followup"]['is_private'])) {
             $toadd["is_private"]=$input["_followup"]['is_private'];
@@ -842,7 +842,7 @@ class Job extends CommonDBTM{
 	* @param $sendprivate true if both public and private followups have to be printed in the email
 	 */
 	function textFollowups($format="text", $sendprivate=false) {
-		// get the last followup for this job and give its contents as
+		// get the last followup for this job and give its content as
 		global $DB,$LANG;
 
 		if (isset($this->fields["id"])){
@@ -858,7 +858,7 @@ class Job extends CommonDBTM{
 						$fup->getFromDB($data['id']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"")."</strong>\n";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['job'][4].":</span> ".$fup->getAuthorName()."\n";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][3]."</span>:<br>".str_replace("\n","<br>",$fup->fields["contents"])."\n";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][3]."</span>:<br>".str_replace("\n","<br>",$fup->fields["content"])."\n";
 						if ($fup->fields["realtime"]>0)
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][104].":</span> ".getRealtime($fup->fields["realtime"])."\n";
 
@@ -884,7 +884,7 @@ class Job extends CommonDBTM{
 						$fup->getFromDB($data['id']);
 						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["is_private"]?"\t".$LANG['common'][77]:"")."\n";
 						$message .= $LANG['job'][4].": ".$fup->getAuthorName()."\n";
-						$message .= $LANG['mailing'][3].":\n".$fup->fields["contents"]."\n";
+						$message .= $LANG['mailing'][3].":\n".$fup->fields["content"]."\n";
 						if ($fup->fields["realtime"]>0)
 							$message .= $LANG['mailing'][104].": ".getRealtime($fup->fields["realtime"])."\n";
 
@@ -992,7 +992,7 @@ class Job extends CommonDBTM{
 				$message.= getDropdownName("glpi_ticketscategories",$this->fields["ticketscategories_id"]);
 			} else $message.=$LANG['mailing'][100];
 			$message.= "\n";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['mailing'][3].":</span><br>".str_replace("\n","<br>",$this->fields["contents"])."<br>\n";	
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['mailing'][3].":</span><br>".str_replace("\n","<br>",$this->fields["content"])."<br>\n";
 
 		}else{ //text format
 			$message = $LANG['mailing'][1]."\n*".$LANG['mailing'][5]."*\n".$LANG['mailing'][1]."\n";
@@ -1039,7 +1039,7 @@ class Job extends CommonDBTM{
 				$message.= mailRow($LANG['common'][36],getDropdownName("glpi_ticketscategories",$this->fields["ticketscategories_id"]));
 			} else $message.=mailRow($LANG['common'][36],$LANG['mailing'][100]);
 			$message.= "--\n";
-			$message.= $LANG['mailing'][3]." : \n".$this->fields["contents"]."\n";	
+			$message.= $LANG['mailing'][3]." : \n".$this->fields["content"]."\n";
 			$message.="\n\n";
 
 		}
@@ -1140,7 +1140,7 @@ class Followup  extends CommonDBTM {
 			if (count($updates)){
 		
 				if ($CFG_GLPI["use_mailing"]&&
-				(in_array("contents",$updates)||isset($input['_need_send_mail']))){
+				(in_array("content",$updates)||isset($input['_need_send_mail']))){
 					$user=new User;
 					$user->getFromDB($_SESSION["glpiID"]);
 					$mail = new Mailing("followup",$job,$user,(isset($input["is_private"]) && $input["is_private"]));

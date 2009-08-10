@@ -959,6 +959,8 @@ function update0721to080() {
                            'tables' => array('glpi_authldaps')),
       'import_printers' =>  array('to' => 'import_printer','long'=>true,
                            'tables' => array('glpi_ocslinks')),
+      'contents' =>  array('to' => 'content','long'=>true,
+                           'tables' => array('glpi_tickets','glpi_ticketsfollowups')),
 );
    foreach ($textfields as $oldname => $tab) {
       $newname=$tab['to'];
@@ -1809,10 +1811,10 @@ function update0721to080() {
    // Update tracking bookmarks for new columns fields
    if (FieldExists('glpi_bookmarks', 'query')) {
       $olds = array("category", "type", "author","assign",
-               "assign_group","assign_ent","recipient");
+               "assign_group","assign_ent","recipient","contents","name_contents");
    
       $news   = array("ticketscategories_id", "itemtype", "ice users_id","users_id_assign",
-               "groups_id_assign","suppliers_id_assign","users_id_recipient");
+               "groups_id_assign","suppliers_id_assign","users_id_recipient","content","name_content";
 
       foreach ($olds as $key => $val) {
          $olds[$key]="&$val=";
@@ -1867,7 +1869,7 @@ function update0721to080() {
                            'author'=>'users_id','author_location'=>'users_locations',
                            'FK_group'=>'groups_id','assign'=>'users_id_assign',
                            'assign_group'=>'groups_id_assign','device_type'=>'itemtype',
-                           'FK_entities'=>'entities_id');
+                           'FK_entities'=>'entities_id','contents'=>'content',);
    foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(id) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";

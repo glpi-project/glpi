@@ -653,7 +653,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		if ($output_type==HTML_OUTPUT){
 			$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$data["id"]."')\" onmouseover=\"cleandisplay('comment_tracking".$data["id"]."')\" >";
-			$eigth_column.="<span class='over_link' id='comment_tracking".$data["id"]."'>".nl2br($data['contents'])."</span>";
+			$eigth_column.="<span class='over_link' id='comment_tracking".$data["id"]."'>".nl2br($data['content'])."</span>";
 		}
 		
 
@@ -755,7 +755,7 @@ function showJobVeryShort($ID) {
 
 		echo $job->fields["name"];
 		echo "</strong>&nbsp;<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comment_tracking".$rand.$job->fields["id"]."')\" onmouseover=\"cleandisplay('comment_tracking".$rand.$job->fields["id"]."')\" >";
-		echo "<span class='over_link' id='comment_tracking".$rand.$job->fields["id"]."'>".nl2br($job->fields['contents'])."</span>";
+		echo "<span class='over_link' id='comment_tracking".$rand.$job->fields["id"]."'>".nl2br($job->fields['content'])."</span>";
 		echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
 
 		echo "</td>";
@@ -769,7 +769,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $users_id_assign=0, $groups_id_assign=0, $name='',$contents='',$ticketscategories_id=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
+function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $users_id_assign=0, $groups_id_assign=0, $name='',$content='',$ticketscategories_id=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
 	/// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -989,7 +989,7 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $user
 	echo "<tr><th colspan='4' align='center'>".$LANG['job'][11].":";
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='contents'>$contents</textarea></td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='content'>$content</textarea></td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
 	$max_size/=1024*1024;
@@ -1031,7 +1031,7 @@ function getTrackingFormFields($_POST)
 	"group"=>0,"itemtype"=>0,
 	"users_id_assign"=>0,"groups_id_assign"=>0,"ticketscategories_id"=>0,
 	"priority"=>3,"hour"=>0,"minute"=>0,"request_type"=>1,
-	"name"=>'',"contents"=>'',"target"=>"");
+	"name"=>'',"content"=>'',"target"=>"");
 	
 	$params_ajax = array();
 	foreach ($params as $param => $default_value)
@@ -1110,10 +1110,10 @@ global $CFG_GLPI,  $LANG;
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td class='center' colspan='2'>";
 		$elts=array("name"=>$LANG['common'][57],
-			"contents"=>$LANG['joblist'][6],
+			"content"=>$LANG['joblist'][6],
 			"followup"=>$LANG['Menu'][5],
-			"name_contents"=>$LANG['common'][57]." / ".$LANG['joblist'][6],
-			"name_contents_followup"=>$LANG['common'][57]." / ".$LANG['joblist'][6]." / ".$LANG['Menu'][5],
+			"name_content"=>$LANG['common'][57]." / ".$LANG['joblist'][6],
+			"name_content_followup"=>$LANG['common'][57]." / ".$LANG['joblist'][6]." / ".$LANG['Menu'][5],
 			"id"=>"id");
 		echo "<select name='tosearch'>";
 		foreach ($elts as $key => $val){
@@ -1340,10 +1340,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
 	echo "<td class='center' colspan='2'>";
 	$elts=array("name"=>$LANG['common'][57],
-		    "contents"=>$LANG['joblist'][6],
+		    "content"=>$LANG['joblist'][6],
 		    "followup"=>$LANG['Menu'][5],
-		    "name_contents"=>$LANG['common'][57]." / ".$LANG['joblist'][6],
-		    "name_contents_followup"=>$LANG['common'][57]." / ".$LANG['joblist'][6]." / ".$LANG['Menu'][5],
+		    "name_content"=>$LANG['common'][57]." / ".$LANG['joblist'][6],
+		    "name_content_followup"=>$LANG['common'][57]." / ".$LANG['joblist'][6]." / ".$LANG['Menu'][5],
 		    "id"=>"id");
 	echo "<select name='tosearch'>";
 	foreach ($elts as $key => $val){
@@ -1616,7 +1616,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			} else {
 				$TMPWHERE.= " OR ";
 			}
-			$TMPWHERE.= "glpi_ticketsfollowups.contents $SEARCH2 ";
+			$TMPWHERE.= "glpi_ticketsfollowups.content $SEARCH2 ";
 		}
 		if (strpos($tosearch,"name")!== false){
 			if ($first){
@@ -1626,13 +1626,13 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			}
 			$TMPWHERE.= "glpi_tickets.name $SEARCH2 ";
 		}
-		if (strpos($tosearch,"contents")!== false){
+		if (strpos($tosearch,"content")!== false){
 			if ($first){
 				$first=false;
 			} else {
 				$TMPWHERE.= " OR ";
 			}
-			$TMPWHERE.= "glpi_tickets.contents $SEARCH2 ";
+			$TMPWHERE.= "glpi_tickets.content $SEARCH2 ";
 		}
 
 		if (!empty($TMPWHERE)){
@@ -1839,7 +1839,7 @@ function showFollowupsShort($ID) {
 			$out.="<tr class='tab_bg_3'>";
 			$out.="<td class='center'>".convDateTime($data["date"])."</td>";
 			$out.="<td class='center'>".getUserName($data["users_id"],1)."</td>";
-			$out.="<td width='70%'><strong>".resume_text($data["contents"],$CFG_GLPI["cut"])."</strong></td>";
+			$out.="<td width='70%'><strong>".resume_text($data["content"],$CFG_GLPI["cut"])."</strong></td>";
 			$out.="</tr>";
 		}		
 
@@ -2156,23 +2156,23 @@ function showJobDetails ($target,$ID){
 				echo "Ext.get('desc$rand').setDisplayed('none');";
 				$params=array('rows'=>6,
 					'cols'=>60,
-					'name'=>'contents',
-					'data'=>rawurlencode($job->fields["contents"]),
+					'name'=>'content',
+					'data'=>rawurlencode($job->fields["content"]),
 				);
 				ajaxUpdateItemJsCode("viewdesc$rand",$CFG_GLPI["root_doc"]."/ajax/textarea.php",$params,false);
 
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
-			if (!empty($job->fields["contents"]))
-				echo nl2br($job->fields["contents"]);
+			if (!empty($job->fields["content"]))
+				echo nl2br($job->fields["content"]);
 			else echo $LANG['job'][33];
 
 			echo "</div>\n";	
 
 			echo "<div id='viewdesc$rand'>\n";
 			echo "</div>\n";	
-		} else echo nl2br($job->fields["contents"]);
+		} else echo nl2br($job->fields["content"]);
 
 		echo "</td>";
 		echo "</tr>";
@@ -2338,7 +2338,7 @@ function showFollowupsSummary($tID){
 
 
 			echo convDateTime($data["date"])."</td>";
-			echo "<td class='left'>".nl2br($data["contents"])."</td>";
+			echo "<td class='left'>".nl2br($data["content"])."</td>";
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
@@ -2446,9 +2446,9 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 	echo "<tr class='tab_bg_2'><td width='$width_left'>";
 	echo "<table width='100%'>";
 	echo "<tr><td>".$LANG['joblist'][6]."</td>";
-	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='12' cols='$cols'>";
-	if (isset($datas['contents'])){
-		echo cleanPostForTextArea($datas['contents']);
+	echo "<td><textarea name='".$prefix."content".$postfix."' rows='12' cols='$cols'>";
+	if (isset($datas['content'])){
+		echo cleanPostForTextArea($datas['content']);
 	}
 	echo "</textarea>";
 	echo "</td></tr>";
@@ -2611,8 +2611,8 @@ function showUpdateFollowupForm($ID){
 		echo "<td width='90%'>";
 
 		if ($commentall){
-			echo "<textarea name='contents' cols='50' rows='6'>".$fup->fields["contents"]."</textarea>";
-		} else echo nl2br($fup->fields["contents"]);
+			echo "<textarea name='content' cols='50' rows='6'>".$fup->fields["content"]."</textarea>";
+		} else echo nl2br($fup->fields["content"]);
 
 
 		echo "</td></tr>";
