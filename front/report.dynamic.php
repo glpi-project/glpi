@@ -117,6 +117,16 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 					} 
 				} 
 			}
+         // Decode datas
+         foreach ($_GET as $key => $val){
+            if (is_array($val)){
+               foreach ($val as $key2 => $val2){
+                  $_GET[$key][$key2]=urldecode($val2);
+               }
+            } else {
+               $_GET[$key]=urldecode($val);
+            }
+         }
 
 
 			manageGetValuesInSearch($_GET["item_type"]);
