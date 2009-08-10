@@ -1814,7 +1814,7 @@ function update0721to080() {
                "assign_group","assign_ent","recipient","contents","name_contents");
    
       $news   = array("ticketscategories_id", "itemtype", "ice users_id","users_id_assign",
-               "groups_id_assign","suppliers_id_assign","users_id_recipient","content","name_content";
+               "groups_id_assign","suppliers_id_assign","users_id_recipient","content","name_content");
 
       foreach ($olds as $key => $val) {
          $olds[$key]="&$val=";
