@@ -148,10 +148,10 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['name']=$LANG['common'][57];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['linkfield']='name';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['table']='glpi_tickets';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['field']='contents';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['name']=$LANG['joblist'][6];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['linkfield']='contents';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['table']='glpi_tickets';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['field']='content';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['name']=$LANG['joblist'][6];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['linkfield']='content';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['table']='glpi_ticketscategories';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['field']='name';

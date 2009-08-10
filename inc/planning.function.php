@@ -299,7 +299,7 @@ function showPlanning($who,$who_group,$when,$type){
 					$interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
 				}
 				$interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
-				$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["content"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
 				$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
 				$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
@@ -752,7 +752,7 @@ function showPlanningCentral($who){
 						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 						$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 						$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
-						$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+						$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["content"],$CFG_GLPI["cut"]);
 						$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 						$interv[$data["begin"]."$$".$i]["status"]=$job->fields['status'];
 						$interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
@@ -914,7 +914,7 @@ function generateIcal($who){
 
 			if ($fup->getFromDB($data["ticketsfollowups_id"])){
 				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
-					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}
 			}
@@ -929,7 +929,7 @@ function generateIcal($who){
 
 			if ($fup->getFromDB($data["ticketsfollowups_id"])){
 				if ($job->getFromDBwithData($fup->fields["tickets_id"],0)){
-					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}
 			}

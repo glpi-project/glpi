@@ -124,11 +124,11 @@ if (!$post_ticket && isset($_POST["name"]))
 elseif (!isset($_SESSION["helpdeskSaved"]["name"])) $name='';
 else $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
 
-if (!$post_ticket && isset($_POST["contents"]))
-	$contents=$_POST["contents"];
-elseif (!isset($_SESSION["helpdeskSaved"]["contents"])) $contents='';
+if (!$post_ticket && isset($_POST["content"]))
+	$content=$_POST["content"];
+elseif (!isset($_SESSION["helpdeskSaved"]["content"])) $content='';
 else {
-	$contents=cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
+	$content=cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
 }
 
 if (!$post_ticket && isset($_POST["_followup"]))
@@ -158,7 +158,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$users_id_assign,$groups_id_assign,$name,$contents,$ticketscategories_id,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
+	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$users_id_assign,$groups_id_assign,$name,$content,$ticketscategories_id,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
 }
 
 commonFooter();
