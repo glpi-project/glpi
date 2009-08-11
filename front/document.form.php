@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","networking","software","contract","knowbase","cartridge","consumable","phone","enterprise","contact","tracking");
+$NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","networking",
+   "software","contract","knowbase","cartridge","consumable","phone","enterprise","contact",
+   "tracking",'budget','entity');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -42,7 +44,8 @@ if(!isset($_GET["id"])) {
 	$_GET["id"] = -1;
 }
 
-$doc= new Document();
+$doc = new Document();
+$documentitem = new DocumentItem();
 
 if (isset($_POST["add"]))
 {
@@ -93,44 +96,33 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else if (isset($_POST["additem"])){
 
-	if ($_POST["right"]=="doc") {
-		$doc->check($_POST["conID"],'w');
-	} else { // $_POST["right"]=="item"
-		$ci=new CommonItem();
-		$ci->getFromDB($_POST['itemtype'], $_POST['item']);
-		$ci->obj->check($_POST['item'],'w');
-	}
-
-	if ($_POST['itemtype']>0&&$_POST['item']>0){
-		addDeviceDocument($_POST["conID"],$_POST['itemtype'],$_POST['item']);
-		logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+else if (isset($_POST["adddocumentitem"])){
+   $documentitem->check(-1,'w',$_POST);
+   if ($documentitem->add($_POST)) {
+      logEvent($_POST["documents_id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);      
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["deleteitem"])){
+else if (isset($_POST["deletedocumentitem"])){
 
-	$doc->check($_POST["conID"],'w');
-
-	if (count($_POST["item"])){
-		foreach ($_POST["item"] as $key => $val){
-			deleteDeviceDocument($key);
-		}
-	}
-	logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if (count($_POST["item"])){
+      foreach ($_POST["item"] as $key => $val){
+         if ($documentitem->can($key, 'w')) {
+            $documentitem->delete(array('id'=>$key));
+         }
+      }
+   }
+   logEvent($_POST["documents_id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["devtype"]) && isset($_GET["devid"]) && isset($_GET["id"])){
+else if (isset($_GET["deletedocumentitem"]) && isset($_GET["documents_id"]) && isset($_GET["id"])){
 
-	$ci=new CommonItem();
-	$ci->getFromDB($_GET["devtype"], $_GET["devid"]);
-	$ci->obj->check($_GET["devid"],'w');
-
-	deleteDeviceDocument($_GET["id"]);
-
-	logEvent($_GET["docid"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $documentitem->check($_GET["id"],'w');
+   if ($documentitem->delete(array('id'=>$_GET["id"]))) {
+      logEvent($_GET["documents_id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {

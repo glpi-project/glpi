@@ -114,6 +114,7 @@
    define("CONTRACTITEM_TYPE",45);
    define("CONTACTSUPPLIER_TYPE",46);
    define("CONTRACTSUPPLIER_TYPE",47);
+   define("DOCUMENTITEM_TYPE",48);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
