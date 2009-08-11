@@ -52,11 +52,11 @@ class Budget extends CommonDBTM{
       $ong=array();
       $ong[1]=$LANG['title'][26];
 
-      if ($ID>0){
+      if ($ID>0) {
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if(empty($withtemplate)){
+         if(empty($withtemplate)) {
             $ong[2]=$LANG['common'][1];
             if (haveRight("link","r")) {
                $ong[7]=$LANG['title'][34];
@@ -90,7 +90,7 @@ class Budget extends CommonDBTM{
 
       $use_cache=true;
 
-      if ($ID > 0){
+      if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
@@ -107,15 +107,15 @@ class Budget extends CommonDBTM{
       echo "<td>";
       autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],
       40,$this->fields["entities_id"])."</td>";
-      echo "<td rowspan='4' valign='center' align='right'>".$LANG['common'][25].
-      " : </td>";
-      echo "<td class='center' rowspan='4' valign='center'>.<textarea cols='45' 
+      echo "<td rowspan='4' class='middle right'>".$LANG['common'][25].
+      "&nbsp;: </td>";
+      echo "<td class='center' rowspan='4' class='middle'>.<textarea cols='45' 
       rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][21]." :</td>";
-      echo "<td><input type='text' class='x-form-text' name='value' 
-      value=\"".formatNumber($this->fields["value"],true)."\" size='14'></td></tr>";
+      echo "<td><input type='text' name='value' size='14'
+      value=\"".formatNumber($this->fields["value"],true)."\" ></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['search'][8]." : </td>";
@@ -150,15 +150,17 @@ class Budget extends CommonDBTM{
       global $DB;
 
       // Manage add from template
-      if (isset($input["_oldID"])){
+      if (isset($input["_oldID"])) {
          // ADD Documents
          $query="SELECT documents_id 
-            FROM glpi_documents_items 
-            WHERE items_id='".$input["_oldID"]."' AND itemtype='".COMPUTER_TYPE."';";
+                 FROM glpi_documents_items 
+                 WHERE items_id='".$input["_oldID"]."' 
+                       AND itemtype='".COMPUTER_TYPE."';";
          $result=$DB->query($query);
-         if ($DB->numrows($result)>0){
-            while ($data=$DB->fetch_array($result))
+         if ($DB->numrows($result)>0) {
+            while ($data=$DB->fetch_array($result)) {
                addDeviceDocument($data["documents_id"],COMPUTER_TYPE,$newID);
+            }
          }
       }
    }
