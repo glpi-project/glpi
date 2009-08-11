@@ -106,26 +106,29 @@ class Budget extends CommonDBTM{
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
       autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],
-      40,$this->fields["entities_id"])."</td>";
+         40,$this->fields["entities_id"]);
+      echo "</td>";
       echo "<td rowspan='4' class='middle right'>".$LANG['common'][25].
-      "&nbsp;: </td>";
-      echo "<td class='center' rowspan='4' class='middle'>.<textarea cols='45' 
+         "&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='4'>.<textarea cols='45' 
       rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][21]." :</td>";
       echo "<td><input type='text' name='value' size='14'
-      value=\"".formatNumber($this->fields["value"],true)."\" ></td></tr>";
+         value=\"".formatNumber($this->fields["value"],true)."\" ></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['search'][8]." : </td>";
       echo "<td>";
-      showDateFormItem("begin_date",$this->fields["begin_date"])."</td></tr>";
+      showDateFormItem("begin_date",$this->fields["begin_date"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['search'][9]." : </td>";
       echo "<td>";
-      showDateFormItem("end_date",$this->fields["end_date"])."</td></tr>";
+      showDateFormItem("end_date",$this->fields["end_date"]);
+      echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
 
