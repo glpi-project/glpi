@@ -669,10 +669,11 @@ function ocsProcessComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = 
 
 	$comp = new Computer;
 	
-	//Check it machine is already present AND was imported by OCS
-	$query = "SELECT id, computers_id, ocsid 
+	//Check it machine is already present AND was imported by OCS AND still present in GLPI
+	$query = "SELECT glpi_ocslinks.id, computers_id, ocsid 
 		FROM glpi_ocslinks 
-		WHERE ocsid = '$ocsid' AND ocsservers_id='" . $ocsservers_id . "';";
+      LEFT JOIN glpi_computers ON glpi_computers.id=glpi_ocslinks.computers_id 
+		WHERE glpi_computers.id IS NOT NULL AND ocsid = '$ocsid' AND ocsservers_id='" . $ocsservers_id . "';";
 	$result_glpi_ocslinks = $DB->query($query);
 	if ($DB->numrows($result_glpi_ocslinks)) {
 		$datas = $DB->fetch_array($result_glpi_ocslinks);
