@@ -298,31 +298,18 @@ if (isset($_POST["itemtype"])){
 				}
 			break;
 			case "add_document":
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
-				if ($ci->getFromDB(DOCUMENT_TYPE,$_POST['docID'])){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1) {
-							/// Items exists ?
-							if ($ci2->getFromDB($_POST["itemtype"],$key)){
-								/// Entity security
-								if ($_POST["itemtype"]==ENTITY_TYPE) {
-								   $destentity = $ci2->obj->fields["id"];
-								} else if (isset($ci2->obj->fields["entities_id"])) {
-								   $destentity = $ci2->obj->fields["entities_id"];
-								} else {
-								   $destentity = -1;
-								}
-								if ($destentity<0
-								|| $ci->obj->fields["entities_id"]==$destentity
-                        || ($ci->obj->fields["is_recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
-									addDeviceDocument($_POST['docID'],$_POST["itemtype"],$key);
-								}
-							}
-						}
-					}
-				}
-			break;
+            $documentitem=new DocumentItem();
+            foreach ($_POST["item"] as $key => $val){
+               $input=array(
+                  'itemtype' => $_POST["itemtype"],
+                  'items_id' => $key,
+                  'documents_id' => $_POST['docID']
+               );
+               if ($documentitem->can(-1,'w',$input)) {
+                  $documentitem->add($input);
+               }
+            }
+            break;
          case "add_contact":
             if ($_POST["itemtype"] == ENTERPRISE_TYPE) {
                $contactsupplier=new ContactSupplier();

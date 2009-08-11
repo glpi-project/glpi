@@ -131,16 +131,19 @@ class Document extends CommonDBTM {
 		}
 	}
 
-	function post_addItem($newID,$input) {
-		global $LANG;
-		if (isset($input["item"])&&isset($input["itemtype"])&&$input["item"]>0&&$input["itemtype"]>0){
+   function post_addItem($newID,$input) {
+      global $LANG;
+      if (isset($input["items_id"])&&isset($input["itemtype"])&&$input["items_id"]>0&&$input["itemtype"]>0){
 
-			addDeviceDocument($newID,$input['itemtype'],$input['item']);
-			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
-		}
-
-
-	}
+         $docitem=new DocumentItem();
+         $docitem->add(array(
+            'documents_id' => $newID,
+            'itemtype' => $input["itemtype"],
+            'items_id' => $input["items_id"]
+            )); 
+         logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+      }
+   }
 
 	function prepareInputForUpdate($input) {
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
@@ -256,4 +259,22 @@ class Document extends CommonDBTM {
 
 }
 
+// Relation between Documents and Items
+class DocumentItem extends CommonDBRelation{
+
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table = 'glpi_documents_items';
+      $this->type = DOCUMENTITEM_TYPE;
+      
+      $this->itemtype_1 = DOCUMENT_TYPE;
+      $this->items_id_1 = 'documents_id';
+      
+      $this->itemtype_2 = 'itemtype';
+      $this->items_id_2 = 'items_id';
+   }
+
+}
 ?>

@@ -295,13 +295,12 @@ function showDeviceDocument($instID) {
 		if ($canedit)	{
 			echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
 	
-			echo "<input type='hidden' name='conID' value='$instID'>";
-			echo "<input type='hidden' name='right' value='doc'>";
-			dropdownAllItems("item",0,0,($doc->fields['is_recursive']?-1:$doc->fields['entities_id']),$CFG_GLPI["doc_types"]);
+			echo "<input type='hidden' name='documents_id' value='$instID'>";
+			dropdownAllItems("items_id",0,0,($doc->fields['is_recursive']?-1:$doc->fields['entities_id']),$CFG_GLPI["doc_types"]);
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";
-			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+			echo "<input type='submit' name='adddocumentitem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</table></div>" ;
 			
@@ -311,7 +310,7 @@ function showDeviceDocument($instID) {
 		
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+			echo "<input type='submit' name='deletedocumentitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 		
@@ -336,26 +335,34 @@ function showDeviceDocument($instID) {
  **/
 function addDeviceDocument($docID,$itemtype,$ID){
 	global $DB;
-	if ($docID>0&&$ID>0&&$itemtype>0){
-		// Do not insert auto link for document
-		if ($itemtype==DOCUMENT_TYPE && $ID == $docID){
-			return;
-		}
-		$query="INSERT INTO glpi_documents_items (documents_id,items_id, itemtype) VALUES ('$docID','$ID','$itemtype');";
-		$result = $DB->query($query);
-	}
+
+   // TODO : to remove this function (stil used when cloning a template)
+
+   // Do not insert circular link for document
+   if ($itemtype==DOCUMENT_TYPE && $ID == $docID){
+      return;
+   }
+   if ($docID>0 && $ID>0 && $itemtype>0){
+      $docitem=new DocumentItem();
+      $docitem->add(array(
+         'documents_id' => $docID,
+         'itemtype' => $itemtype,
+         'items_id' => $ID
+         )); 
+   }
 }
-/**
+/* TODO : clean unused function
+ * 
  * Delete a document to an item
  *
  * @param $ID doc_device ID
- **/
 function deleteDeviceDocument($ID){
 
 	global $DB;
 	$query="DELETE FROM glpi_documents_items WHERE id= '$ID';";
 	$result = $DB->query($query);
 }
+*/
 
 /**
  * Show documents associated to an item
@@ -477,7 +484,9 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			if ($withtemplate<2) {
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;devtype=$itemtype&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deletedocumentitem=1&amp;"
+                  ."id=$assocID&amp;itemtype=$itemtype&amp;items_id=$ID&amp;documents_id=$docID'><strong>"
+                  .$LANG['buttons'][6]."</strong></a>";
 				else echo "&nbsp;";
 				echo "</td>";
 			}
@@ -488,16 +497,15 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 
 	if ($canedit){
 		// Restrict entity for knowbase
-		$ci=new CommonItem();
 		$entities="";
 		$entity=$_SESSION["glpiactive_entity"];
-		if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["entities_id"])) {		
-			$entity=$ci->getField('entities_id');
+		if ($ci->obj->isEntityAssign()) {		
+			$entity=$ci->obj->getEntityID();
 			
-			if (isset($ci->obj->fields["is_recursive"]) && $ci->obj->fields["is_recursive"]) {
-            $entities = getSonsOf("glpi_entities",$ci->obj->fields["entities_id"]);
+			if ($ci->obj->isRecursive()) {
+            $entities = getSonsOf('glpi_entities',$entity);
 			} else {
-				$entities = $ci->obj->fields["entities_id"];
+				$entities = $entity;
 			}
 		}
 		$limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
@@ -510,9 +518,9 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 	
 			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
 				"<input type='hidden' name='entities_id' value='$entity'>" .
-				"<input type='hidden' name='item' value='$ID'>" .
 				"<input type='hidden' name='is_recursive' value='$is_recursive'>" .
 				"<input type='hidden' name='itemtype' value='$itemtype'>" .
+            "<input type='hidden' name='items_id' value='$ID'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .
 				"</td>";
@@ -524,10 +532,9 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			if ($nb>count($used)) {
 				echo "<td align='left' colspan='2'>";
 				echo "<div class='software-instal'>";
-				echo "<input type='hidden' name='right' value='item'>";
-				dropdownDocument("conID",$entities,$used);
+				dropdownDocument("documents_id",$entities,$used);
 				echo "</div></td><td class='center'>";
-				echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+				echo "<input type='submit' name='adddocumentitem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 				echo "</td><td>&nbsp;</td>";
 			}
 			else {
