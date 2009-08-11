@@ -204,47 +204,53 @@ class CartridgeType extends CommonDBTM {
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
       autocompletionTextField("name","glpi_cartridgesitems","name",
-      $this->fields["name"],40,$this->fields["entities_id"])."</td>";
+         $this->fields["name"],40,$this->fields["entities_id"]);
+      echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
       "&nbsp;: </td>";
-      echo "<td class='center' rowspan='7' class='middle'>.<textarea cols='45' 
-      rows='9' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >"
+         .$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]." : </td>";
       echo "<td>";
       autocompletionTextField("ref","glpi_cartridgesitems","ref",
-      $this->fields["ref"],40,$this->fields["entities_id"])."</td></tr>";
+         $this->fields["ref"],40,$this->fields["entities_id"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]." : </td>";
       echo "<td>";
       dropdownValue("glpi_cartridgesitemstypes","cartridgesitemstypes_id",
-      $this->fields["cartridgesitemstypes_id"])."</td></tr>";
+         $this->fields["cartridgesitemstypes_id"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]." : </td>";
       echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id",
-      $this->fields["manufacturers_id"])."</td></tr>";
+         $this->fields["manufacturers_id"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]." : </td>";
       echo "<td>";
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],
-      "interface",1,$this->fields["entities_id"])."</td></tr>";
+         "interface",1,$this->fields["entities_id"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]." : </td>";
       echo "<td>";
       dropdownValue("glpi_locations","locations_id",
-      $this->fields["locations_id"],1,$this->fields["entities_id"])."</td></tr>";
+         $this->fields["locations_id"],1,$this->fields["entities_id"]);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][38]." : </td>";
       echo "<td>";
-      dropdownInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100).
-      "</td></tr>";
+      dropdownInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
+      echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
 
