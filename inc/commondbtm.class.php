@@ -1172,13 +1172,12 @@ class CommonDBTM {
          }
       }
       // Doc links to this item
-      if ($this->type > 0 && countElementsInTable("glpi_documents_items, glpi_documents",
-                                                  "glpi_documents_items.items_id=$ID 
-                                                  AND glpi_documents_items.itemtype=".$this->type." 
-                                                  AND glpi_documents_items.documents_id=
-                                                      glpi_documents.id 
-                                                  AND glpi_documents.entities_id 
-                                                      NOT IN $entities")>0) {
+      if ($this->type > 0 
+         && countElementsInTable("glpi_documents_items, glpi_documents",
+                                 "glpi_documents_items.items_id=$ID 
+                                  AND glpi_documents_items.itemtype=".$this->type." 
+                                  AND glpi_documents_items.documents_id=glpi_documents.id 
+                                  AND glpi_documents.entities_id NOT IN $entities")>0) {
          return false;
       }
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
@@ -1193,9 +1192,10 @@ class CommonDBTM {
     * @param $ID ID of the item (-1 if new item)
     * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
     * @param $colspan for each column
+    * @param $candel : set to false to hide "delete" button
     * 
     */
-   function showFormButtons ($ID, $withtemplate='', $colspan=1) {
+   function showFormButtons ($ID, $withtemplate='', $colspan=1, $candel=true) {
       global $LANG, $CFG_GLPI;
 
       if (!$this->can($ID,'w')) {
@@ -1205,27 +1205,24 @@ class CommonDBTM {
       echo "<tr>\n";
 
       if ($withtemplate || $ID<=0) {
-         echo "<td class='tab_bg_2' class='center' colspan='".($colspan*2)."'>\n";
+         echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
          if ($ID<=0||$withtemplate==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
       } else {
-         echo "<td class='tab_bg_2' colspan='".$colspan."' class='center top'>\n";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-         echo "</td>\n";
-         echo "<td class='tab_bg_2' colspan='".$colspan."' class='center'>\n";
-
          // Can delete an object with Infocom only if can write Infocom
-         if (!in_array($this->type,$CFG_GLPI["infocom_types"]) || haveRight('infocom','w')) {
-            $candel = true;
-         } else {
+         if (in_array($this->type,$CFG_GLPI["infocom_types"]) & !haveRight('infocom','w')) {
             $infocom = new InfoCom();
             $candel = !$infocom->getFromDBforDevice($this->type,$ID);
          }
 
          if ($candel) {
+            echo "<td class='tab_bg_2 center' colspan='".$colspan."'>\n";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "</td>\n";
+            echo "<td class='tab_bg_2 center' colspan='".$colspan."' >\n";
             if (isset($this->fields['is_deleted']) && $this->fields['is_deleted']){
                echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21].
                       "\" class='submit'>";
@@ -1238,8 +1235,9 @@ class CommonDBTM {
                       "\" class='submit'>";
             }
          } else {
+            echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
             // TODO : add a "no right to delete" message ?
-            echo "&nbsp;";
          }
       }
       if ($ID>0) {
@@ -1296,7 +1294,7 @@ class CommonDBTM {
       }
       echo "</th><th colspan='$colspan'>";
 
-      if ($this->may_be_recursive && isMultiEntitiesMode()) {
+      if (isset($this->fields["is_recursive"]) && isMultiEntitiesMode()) {
          echo $LANG['entity'][9].":&nbsp;";
 
          if (!$this->can($ID,'recursive')) {

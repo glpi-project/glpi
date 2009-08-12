@@ -441,98 +441,62 @@ class SoftwareVersion extends CommonDBTM {
 	 *
 	 *@return true if displayed  false if item not found or not right to display
 	 **/	
-	function showForm($target,$ID,$softwares_id=-1){
-		global $CFG_GLPI,$LANG;
+   function showForm($target,$ID,$softwares_id=-1){
+      global $CFG_GLPI,$LANG;
 
-		if (!haveRight("software","r"))	return false;
+      if (!haveRight("software","r")) {
+         return false;
+      }
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
-		} 
-		$canedit=$this->can($ID,'w');
+      if ($ID > 0){
+         $this->check($ID,'r');
+      } else {
+         // Create item 
+         $this->check(-1,'w');
+         $this->getEmpty();
+      } 
 
+      $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),
+                     "softwares_id=".$this->fields['softwares_id']);
+      $this->showFormHeader($target,$ID,'',2);
 
-		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"softwares_id=".$this->fields['softwares_id']);
-		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+      if ($ID>0){
+         $softwares_id=$this->fields["softwares_id"];
+      } else {
+         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
+      }
 
-		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
-		if ($ID>0){
-			echo "<tr><th colspan='2'>".$LANG['common'][2]." $ID";
-			$softwares_id=$this->fields["softwares_id"];
-		} else {
-			echo "<tr><th colspan='2'>".$LANG['software'][7];
-			echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-		}
-		echo "</th></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";
+      echo "<td>";
+      echo "<a href='software.form.php?id=".$softwares_id."'>".
+         getDropdownName("glpi_softwares",$softwares_id)."</a>";
+      echo "</td>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
-		echo "<td>";
-		echo "<a href='software.form.php?id=".$softwares_id."'>".getDropdownName("glpi_softwares",$softwares_id)."</a>";
-		echo "</td></tr>";
+      echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='3'>";
+      echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>";
 	
-		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
-		echo "<td>";
-		autocompletionTextField("name","glpi_softwaresversions","name",$this->fields["name"],80);
-		echo "</td></tr>";
-	
-		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
-		dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("name","glpi_softwaresversions","name",$this->fields["name"],40);
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
+      dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
+      echo "</td></tr>";
 
-		echo "<tr  class='tab_bg_1'><td valign='top'>";
+      $candel = true;
+      if (countLicensesForVersion($ID)>0    // Only count softwaresversions_id_buy (don't care of softwaresversions_id_use if no installation) 
+          || countInstallationsForVersion($ID)>0) {
+             $candel = false;
+      } 
+      $this->showFormButtons($ID,'',2,$candel);
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-		// table commentaires
-		echo $LANG['common'][25].":	</td>";
-		echo "<td class='tab_bg_1'>";
-		echo "<textarea cols='70' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-
-		echo "</td>";
-		echo "</tr>";
-
-		if ($canedit) {			
-			echo "<tr  class='tab_bg_2'>";
-
-			if ($ID>0) {
-	
-				if (countLicensesForVersion($ID)>0    // Only count softwaresversions_id_buy (don't care of softwaresversions_id_use if no installation) 
-					|| countInstallationsForVersion($ID)>0){
-					echo "<td  colspan='2'>";
-					echo "<input type='hidden' name='id' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
-					echo "</td>\n\n";
-				} else {
-					echo "<td>";
-					echo "<input type='hidden' name='id' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
-					echo "</td>\n\n";
-					echo "<td>";
-					echo "<input type='hidden' name='id' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-					echo "</td>\n\n";
-	
-				}
-		
-	
-			} else {
-	
-				echo "<td colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td></tr>";
-	
-			}
-		}
-		echo "</table></div></form>";
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-				
-		return true;
-
-	}
-
+      return true;
+   }
 }
 /// License class
 class SoftwareLicense extends CommonDBTM {
@@ -547,18 +511,6 @@ class SoftwareLicense extends CommonDBTM {
 		$this->may_be_recursive=true;
 		$this->dohistory = true;
 	}
-
-/*	function prepareInputForUpdate($input) {
-		if (isset($input['expire'])&&empty ($input['expire'])){
-			$input['expire'] = "NULL";
-		}
-
-		if (isset ($input['oem']) && !$input['oem'])
-			$input['oem_computer'] = -1;
-
-		return $input;
-	}
-*/
 
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		// Clean end alert if expire is after old one
