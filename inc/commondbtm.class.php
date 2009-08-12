@@ -1284,7 +1284,9 @@ class CommonDBTM {
 	 	
       if ($this->can($ID,'w')) {
          echo "<form name='form' method='post' action=\"$target\">";
-         echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+         if (isset($this->fields["entities_id"])){
+            echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+         }
       }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe' >";
@@ -1311,7 +1313,7 @@ class CommonDBTM {
 			echo $LANG['common'][2]." $ID";
 		}
 		
-		if (isMultiEntitiesMode()){
+      if (isset($this->fields["entities_id"]) && isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
 		}
 		
