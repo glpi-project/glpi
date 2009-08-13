@@ -136,10 +136,10 @@ class CartridgeType extends CommonDBTM {
    *@return nothing ()
    *
    **/
-   function addCompatibleType($tID,$printersmodels_id) {
+   function addCompatibleType($cartridgesitems_id,$printersmodels_id) {
       global $DB;
       
-      if ($tID>0&&$type>0){
+      if ($cartridgesitems_id>0 && $printersmodels_id>0) {
          $query="INSERT 
                  INTO glpi_cartridges_printersmodels 
                       (cartridgesitems_id,printersmodels_id ) 
