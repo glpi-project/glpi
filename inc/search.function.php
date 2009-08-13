@@ -678,6 +678,7 @@ function showList ($type,$params){
 	$WHERE="";
 	$HAVING="";
 
+
 	/// TODO do also having here / simplify view - all cases : duplicates
 	// Add search conditions
 	// If there is search items
@@ -756,7 +757,8 @@ function showList ($type,$params){
 					$first2=true;
 					foreach ($toview as $key2 => $val2){
 						// Add Where clause if not to be done in HAVING CLAUSE
-						if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"])){
+                  if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"]) &&
+                      !isset($SEARCH_OPTION[$type][$val2]["nosearch"])){
 							$tmplink=$LINK;
 							if ($first2) {
 								$tmplink=" ";
@@ -810,7 +812,7 @@ function showList ($type,$params){
 					foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
 						if (is_array($val2)){
 							// Add Where clause if not to be done ine HAVING CLAUSE
-						if (!isset($val2["usehaving"])){
+                     if (!isset($val2["usehaving"]) && !isset($val2["nosearch"])){
 								$tmplink=$LINK;
 								if ($first2) {
 									$tmplink=" ";
