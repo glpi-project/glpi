@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -36,7 +35,7 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
 
 /**
@@ -48,38 +47,26 @@ if (!defined('GLPI_ROOT')) {
  * @return Boolean : session variable have more than the right specified for the module
 **/
 function haveRight($module, $right) {
-	global $DB;
-	
-	//If GLPI is using the slave DB -> read only mode
-	if ($DB->isSlave() && $right == "w")
-		return false;
-		
-	$matches = array (
-		"" => array (
-			"",
-			"r",
-			"w"
-		), // ne doit pas arriver normalement
-		"r" => array (
-			"r",
-			"w"
-		),
-		"w" => array (
-			"w"
-		),
-		"1" => array (
-			"1"
-		),
-		"0" => array (
-			"0",
-			"1"
-		), // ne doit pas arriver non plus
-	);
+   global $DB;
 
-	if (isset ($_SESSION["glpiactiveprofile"][$module]) && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right]))
-		return true;
-	else
-		return false;
+   //If GLPI is using the slave DB -> read only mode
+   if ($DB->isSlave() && $right == "w") {
+      return false;
+   }
+
+   $matches = array ("" => array ("","r","w"), // ne doit pas arriver normalement
+                     "r" => array ("r","w"),
+                     "w" => array ("w"),
+                     "1" => array ("1"),
+                     "0" => array ("0","1"), // ne doit pas arriver non plus
+                     );
+
+   if (isset ($_SESSION["glpiactiveprofile"][$module]) 
+       && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
+      return true;
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -91,138 +78,175 @@ function haveRight($module, $right) {
  * @return Boolean : session variable have more than the right specified for the module type
 **/
 function haveTypeRight($itemtype, $right) {
-	global $LANG,$PLUGIN_HOOKS;
+   global $LANG,$PLUGIN_HOOKS;
 
-	switch ($itemtype) {
-		case GENERAL_TYPE :
-			return true;
-			break;
-		case COMPUTERDISK_TYPE:
-		case COMPUTER_TYPE :
-			return haveRight("computer", $right);
-			break;
-		case NETWORKING_TYPE :
-			return haveRight("networking", $right);
-			break;
-		case PRINTER_TYPE :
-			return haveRight("printer", $right);
-			break;
-		case MONITOR_TYPE :
-			return haveRight("monitor", $right);
-			break;
-		case PERIPHERAL_TYPE :
-			return haveRight("peripheral", $right);
-			break;
-		case SOFTWARE_TYPE :
-		case SOFTWAREVERSION_TYPE :
-		case SOFTWARELICENSE_TYPE :
-			return haveRight("software", $right);
-			break;
-		case CONTACT_TYPE :
-			return haveRight("contact_enterprise", $right);
-			break;
-		case ENTERPRISE_TYPE :
-			return haveRight("contact_enterprise", $right);
-			break;
-		case INFOCOM_TYPE :
-			return haveRight("infocom", $right);
-			break;
-		case CONTRACT_TYPE :
-			return haveRight("contract", $right);
-			break;
-		case CARTRIDGE_TYPE :
-			return haveRight("cartridge", $right);
-			break;
-		case TYPEDOC_TYPE :
-			return haveRight("typedoc", $right);
-			break;
-		case DOCUMENT_TYPE :
-			return haveRight("document", $right);
-			break;
-		case KNOWBASE_TYPE :
-			return (haveRight("knowbase", $right)||haveRight("faq", $right));
-			break;
-		case USER_TYPE :
-			return haveRight("user", $right);
-			break;
-		case TRACKING_TYPE :
-			if ($right=='r'){
-				return haveRight("show_all_ticket", 1);
-			} else  if ($right=='w'){
-				return haveRight("update_ticket", 1);
-			} else {
-				return haveRight("show_all_ticket", $right);
-			}
-			break;
-		case CONSUMABLE_TYPE :
-			return haveRight("consumable", $right);
-			break;
-		case CARTRIDGE_ITEM_TYPE :
-			return haveRight("cartridge", $right);
-			break;
-		case CONSUMABLE_ITEM_TYPE :
-			return haveRight("consumable", $right);
-			break;
-		case LINK_TYPE :
-			return haveRight("link", $right);
-			break;
-		case PHONE_TYPE :
-			return haveRight("phone", $right);
-			break;
-		case REMINDER_TYPE :
-			return haveRight("reminder_public", $right);
-			break;
-		case GROUP_TYPE :
-			return haveRight("group", $right);
-			break;
-		case ENTITY_TYPE :
-			return haveRight("entity", $right);
-			break;
-		case AUTH_MAIL_TYPE :
-			return haveRight("config",$right);
-			break;	
-		case AUTH_LDAP_TYPE :
-			return haveRight("config",$right);
-			break;	
-		case OCSNG_TYPE :
-			return haveRight("ocsng",$right);
-			break;	
-		case REGISTRY_TYPE :
-			return haveRight("ocsng",$right);
-			break;	
-		case PROFILE_TYPE :
-			return haveRight("profile",$right);
-			break;	
-		case MAILGATE_TYPE :
-			return haveRight("config",$right);
-			break;	
-		case RULE_TYPE :
-			return haveRight("rule_ticket",$right)||haveRight("rule_ocs",$right)||haveRight("rule_ldap",$right)||haveRight("rule_softwarescategories",$right);
-			break;	
-		case TRANSFER_TYPE :
-			return haveRight("transfer",$right);
-			break;	
-		case BOOKMARK_TYPE :
-			return haveRight("bookmark_public",$right);
-			break;	
-		case BUDGET_TYPE :
-			return haveRight("budget",$right);
-			break;
-		default :
-			// Plugin case
-			if ($itemtype>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
-					if (function_exists($function)){
-						return $function($itemtype,$right);
-					} 
-				} 
-			}
-			
-			break;
+   switch ($itemtype) {
+      case GENERAL_TYPE :
+         return true;
+         break;
 
-	}
-	return false;
+      case COMPUTERDISK_TYPE:
+
+      case COMPUTER_TYPE :
+         return haveRight("computer", $right);
+         break;
+
+      case NETWORKING_TYPE :
+         return haveRight("networking", $right);
+         break;
+
+      case PRINTER_TYPE :
+         return haveRight("printer", $right);
+         break;
+
+      case MONITOR_TYPE :
+         return haveRight("monitor", $right);
+         break;
+
+      case PERIPHERAL_TYPE :
+         return haveRight("peripheral", $right);
+         break;
+
+      case SOFTWARE_TYPE :
+
+      case SOFTWAREVERSION_TYPE :
+
+      case SOFTWARELICENSE_TYPE :
+         return haveRight("software", $right);
+         break;
+
+      case CONTACT_TYPE :
+         return haveRight("contact_enterprise", $right);
+         break;
+
+      case ENTERPRISE_TYPE :
+         return haveRight("contact_enterprise", $right);
+         break;
+
+      case INFOCOM_TYPE :
+         return haveRight("infocom", $right);
+         break;
+
+      case CONTRACT_TYPE :
+         return haveRight("contract", $right);
+         break;
+
+      case CARTRIDGE_TYPE :
+         return haveRight("cartridge", $right);
+         break;
+
+      case TYPEDOC_TYPE :
+         return haveRight("typedoc", $right);
+         break;
+
+      case DOCUMENT_TYPE :
+         return haveRight("document", $right);
+         break;
+
+      case KNOWBASE_TYPE :
+         return (haveRight("knowbase", $right)||haveRight("faq", $right));
+         break;
+
+      case USER_TYPE :
+         return haveRight("user", $right);
+         break;
+
+      case TRACKING_TYPE :
+         if ($right=='r') {
+            return haveRight("show_all_ticket", 1);
+         } else if ($right=='w') {
+            return haveRight("update_ticket", 1);
+         } else {
+            return haveRight("show_all_ticket", $right);
+         }
+         break;
+
+      case CONSUMABLE_TYPE :
+         return haveRight("consumable", $right);
+         break;
+
+      case CARTRIDGE_ITEM_TYPE :
+         return haveRight("cartridge", $right);
+         break;
+
+      case CONSUMABLE_ITEM_TYPE :
+         return haveRight("consumable", $right);
+         break;
+
+      case LINK_TYPE :
+         return haveRight("link", $right);
+         break;
+
+      case PHONE_TYPE :
+         return haveRight("phone", $right);
+         break;
+
+      case REMINDER_TYPE :
+      return haveRight("reminder_public", $right);
+      break;
+
+      case GROUP_TYPE :
+         return haveRight("group", $right);
+         break;
+
+      case ENTITY_TYPE :
+         return haveRight("entity", $right);
+         break;
+
+      case AUTH_MAIL_TYPE :
+         return haveRight("config",$right);
+         break;	
+
+      case AUTH_LDAP_TYPE :
+         return haveRight("config",$right);
+         break;	
+
+      case OCSNG_TYPE :
+         return haveRight("ocsng",$right);
+         break;	
+
+      case REGISTRY_TYPE :
+         return haveRight("ocsng",$right);
+         break;	
+
+      case PROFILE_TYPE :
+         return haveRight("profile",$right);
+         break;	
+
+      case MAILGATE_TYPE :
+         return haveRight("config",$right);
+         break;	
+
+      case RULE_TYPE :
+         return haveRight("rule_ticket",$right) || haveRight("rule_ocs",$right)
+                ||haveRight("rule_ldap",$right) || haveRight("rule_softwarescategories",$right);
+         break;	
+
+      case TRANSFER_TYPE :
+         return haveRight("transfer",$right);
+         break;	
+
+      case BOOKMARK_TYPE :
+         return haveRight("bookmark_public",$right);
+         break;	
+
+      case BUDGET_TYPE :
+         return haveRight("budget",$right);
+         break;
+
+      default :
+         // Plugin case
+         if ($itemtype>1000) {
+            if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
+               $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
+               if (function_exists($function)) {
+                  return $function($itemtype,$right);
+               }
+            }
+         }
+         break;
+   }
+   return false;
 }
 
 /**
@@ -231,24 +255,26 @@ function haveTypeRight($itemtype, $right) {
  * @return Nothing
 **/
 function displayRightError() {
-	global $LANG, $CFG_GLPI, $HEADER_LOADED;
-	if (!$HEADER_LOADED) {
-		if (!isset ($_SESSION["glpiactiveprofile"]["interface"])){
-			nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-		} else {
-			if ($_SESSION["glpiactiveprofile"]["interface"] == "central"){
-				commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-			} else {
-				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-					helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-				}
-			}
-		}
-	}
-	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<strong>" . $LANG['common'][83] . "</strong></div>";
-	nullFooter();
-	exit ();
+   global $LANG, $CFG_GLPI, $HEADER_LOADED;
+
+   if (!$HEADER_LOADED) {
+      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      } else {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         } else {
+            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+               helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+            }
+         }
+      }
+   }
+   echo "<div class='center'><br><br>";
+   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<strong>" . $LANG['common'][83] . "</strong></div>";
+   nullFooter();
+   exit ();
 }
 
 /**
@@ -257,24 +283,26 @@ function displayRightError() {
  * @return Nothing
 **/
 function displayNotFoundError() {
-	global $LANG, $CFG_GLPI, $HEADER_LOADED;
-	if (!$HEADER_LOADED) {
-		if (!isset ($_SESSION["glpiactiveprofile"]["interface"])){
-			nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-		} else {
-			if ($_SESSION["glpiactiveprofile"]["interface"] == "central"){
-				commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-			} else {
-				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-					helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-				}
-			}
-		}
-	}
-	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<strong>" . $LANG['common'][54] . "</strong></div>";
-	nullFooter();
-	exit ();
+   global $LANG, $CFG_GLPI, $HEADER_LOADED;
+
+   if (!$HEADER_LOADED) {
+      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      } else {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         } else {
+            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+               helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+            }
+         }
+      }
+   }
+   echo "<div class='center'><br><br>";
+   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<strong>" . $LANG['common'][54] . "</strong></div>";
+   nullFooter();
+   exit ();
 }
 
 /**
@@ -286,17 +314,16 @@ function displayNotFoundError() {
  * @return Nothing : display error if not permit
 **/
 function checkRight($module, $right) {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
-	if (!haveRight($module, $right)) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-
-		displayRightError();
-	}
+   if (!haveRight($module, $right)) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 
 /**
@@ -307,30 +334,29 @@ function checkRight($module, $right) {
  * @return Nothing : display error if not permit
 **/
 function checkSeveralRightsOr($modules) {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
-	$valid = false;
-	if (count($modules)){
-		foreach ($modules as $mod => $right){
-			if (is_numeric($mod)){
-				if (haveTypeRight($mod, $right)){
-					$valid = true;
-				}
-			} else if (haveRight($mod, $right)){
-				$valid = true;
-			}
-		}
-	}
+   $valid = false;
+   if (count($modules)) {
+      foreach ($modules as $mod => $right) {
+         if (is_numeric($mod)){
+            if (haveTypeRight($mod, $right)) {
+               $valid = true;
+            }
+         } else if (haveRight($mod, $right)) {
+            $valid = true;
+         }
+      }
+   }
 
-	if (!$valid) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-
-		displayRightError();
-	}
+   if (!$valid) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 
 /**
@@ -341,29 +367,29 @@ function checkSeveralRightsOr($modules) {
  * @return Nothing : display error if not permit
 **/
 function checkSeveralRightsAnd($modules) {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
-	$valid = true;
-	if (count($modules)){
-		foreach ($modules as $mod => $right){
-			if (is_numeric($mod)){
-				if (!haveTypeRight($mod, $right)){
-					$valid = false;
-				}
-			} else if (!haveRight($mod, $right)){
-				$valid = false;
-			}
-		}
-	}
+   $valid = true;
+   if (count($modules)) {
+      foreach ($modules as $mod => $right) {
+         if (is_numeric($mod)) {
+            if (!haveTypeRight($mod, $right)) {
+               $valid = false;
+            }
+         } else if (!haveRight($mod, $right)) {
+            $valid = false;
+         }
+      }
+   }
 
-	if (!$valid) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-		displayRightError();
-	}
+   if (!$valid) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 /**
  * Check if I have the right $right to module type $itemtype (conpare to session variable)
@@ -374,15 +400,16 @@ function checkSeveralRightsAnd($modules) {
  * @return Nothing : display error if not permit
 **/
 function checkTypeRight($itemtype, $right) {
-	global $CFG_GLPI;
-	if (!haveTypeRight($itemtype, $right)) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-		displayRightError();
-	}
+   global $CFG_GLPI;
+
+   if (!haveTypeRight($itemtype, $right)) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 /**
  * Check if I have access to the central interface
@@ -390,17 +417,17 @@ function checkTypeRight($itemtype, $right) {
  * @return Nothing : display error if not permit
 **/
 function checkCentralAccess() {
+   global $CFG_GLPI;
 
-	global $CFG_GLPI;
-
-	if (!isset ($_SESSION["glpiactiveprofile"]) || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-		displayRightError();
-	}
+   if (!isset ($_SESSION["glpiactiveprofile"]) 
+       || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 /**
  * Check if I have access to the helpdesk interface
@@ -408,17 +435,17 @@ function checkCentralAccess() {
  * @return Nothing : display error if not permit
 **/
 function checkHelpdeskAccess() {
+   global $CFG_GLPI;
 
-	global $CFG_GLPI;
-
-	if (!isset ($_SESSION["glpiactiveprofile"]) || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-		displayRightError();
-	}
+   if (!isset ($_SESSION["glpiactiveprofile"]) 
+       || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 
 /**
@@ -427,17 +454,16 @@ function checkHelpdeskAccess() {
  * @return Nothing : display error if not permit
 **/
 function checkLoginUser() {
+   global $CFG_GLPI;
 
-	global $CFG_GLPI;
-
-	if (!isset ($_SESSION["glpiname"])) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-		displayRightError();
-	}
+   if (!isset ($_SESSION["glpiname"])) {
+      // Gestion timeout session
+      if (!isset ($_SESSION["glpiID"])) {
+         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         exit ();
+      }
+      displayRightError();
+   }
 }
 
 /**
@@ -446,12 +472,11 @@ function checkLoginUser() {
  * @return Nothing : display error if not permit
 **/
 function checkFaqAccess() {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
-	if ($CFG_GLPI["use_public_faq"] == 0 && !haveRight("faq", "r")) {
-		displayRightError();
-	}
-
+   if ($CFG_GLPI["use_public_faq"] == 0 && !haveRight("faq", "r")) {
+      displayRightError();
+   }
 }
 
 /**
@@ -465,51 +490,50 @@ function checkFaqAccess() {
  *
 **/
 function loadLanguage($forcelang='') {
+   global $LANG, $CFG_GLPI;
 
-	global $LANG, $CFG_GLPI;
-	$file = "";
+   $file = "";
 
-	if (!isset($_SESSION["glpilanguage"])){
-		if (isset($CFG_GLPI["language"])) {
-			// Default config in GLPI >= 0.72
-			$_SESSION["glpilanguage"]=$CFG_GLPI["language"];
-			
-		} else if (isset($CFG_GLPI["default_language"])) {
-			// Default config in GLPI < 0.72 : keep it for upgrade process
-			$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
-		}
-	}
+   if (!isset($_SESSION["glpilanguage"])) {
+      if (isset($CFG_GLPI["language"])) {
+         // Default config in GLPI >= 0.72
+         $_SESSION["glpilanguage"]=$CFG_GLPI["language"];
+      } else if (isset($CFG_GLPI["default_language"])) {
+         // Default config in GLPI < 0.72 : keep it for upgrade process
+         $_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
+      }
+   }
+   $trytoload=$_SESSION["glpilanguage"];
+   // Force to load a specific lang
+   if (!empty($forcelang)) {
+      $trytoload=$forcelang;
+   }
+   // If not set try default lang file
+   if (empty($trytoload)) {
+      $trytoload=$CFG_GLPI["language"];
+   }
 
-	$trytoload=$_SESSION["glpilanguage"];
-	// Force to load a specific lang
-	if (!empty($forcelang)){
-		$trytoload=$forcelang;
-	}
-	// If not set try default lang file
-	if (empty($trytoload)){
-		$trytoload=$CFG_GLPI["language"];
-	}
+   if (isset ($CFG_GLPI["languages"][$trytoload][1])) {
+      $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+   }
 
-	if (isset ($CFG_GLPI["languages"][$trytoload][1])) {
-		$file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
-	}
+   if (empty ($file) || !is_file(GLPI_ROOT . $file)) {
+      $trytoload='en_GB';
+      $file = "/locales/en_GB.php";
+   }
 
-	if (empty ($file) || !is_file(GLPI_ROOT . $file)) {
-		$trytoload='en_GB';
-		$file = "/locales/en_GB.php";
-	}
-	
    include (GLPI_ROOT . $file);
 
-	// Debug display lang element with item
-	if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
-		foreach ($LANG as $module => $tab) {
-			foreach ($tab as $num => $val) {
-				$LANG[$module][$num] = "".$LANG[$module][$num]."/<span style='font-size:12px; color:red;'>$module/$num</span>";
-			}
-		}
-	}
-	return $trytoload;
+   // Debug display lang element with item
+   if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
+      foreach ($LANG as $module => $tab) {
+         foreach ($tab as $num => $val) {
+            $LANG[$module][$num] = "".$LANG[$module][$num].
+                                   "/<span style='font-size:12px; color:red;'>$module/$num</span>";
+         }
+      }
+   }
+   return $trytoload;
 }
 
 /**
@@ -519,43 +543,38 @@ function loadLanguage($forcelang='') {
  * @return Nothing 
 **/
 function initEntityProfiles($userID) {
-	global $DB;
+   global $DB;
 
-//	$profile = new Profile;
-
-	$query = "SELECT DISTINCT glpi_profiles.* 
-		FROM glpi_profiles_users 
-			INNER JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.id)
-		WHERE glpi_profiles_users.users_id='$userID' 
-		ORDER BY glpi_profiles.name";
-	$result = $DB->query($query);
-	$_SESSION['glpiprofiles'] = array ();
-	if ($DB->numrows($result)) {
-		while ($data = $DB->fetch_assoc($result)) {
-//			$profile->fields = array ();
-//			$profile->getFromDB($data['id']);
-//			$profile->cleanProfile();
-			$_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
-		}
-
-		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-			$query2 = "SELECT glpi_profiles_users.entities_id as eID, glpi_profiles_users.id as kID, 
-					glpi_profiles_users.is_recursive, glpi_entities.*
-				FROM glpi_profiles_users 
-				LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.id)
-				WHERE glpi_profiles_users.profiles_id='$key' AND glpi_profiles_users.users_id='$userID' 
-				ORDER BY glpi_entities.completename";
-			$result2 = $DB->query($query2);
-			if ($DB->numrows($result2)) {
-				while ($data = $DB->fetch_array($result2)) {
-					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['id'] = $data['eID'];
-					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['name'] = $data['name'];
-//					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['completename'] = $data['completename'];
-					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['is_recursive'] = $data['is_recursive'];
-				}
-			}
-		}
-	}
+   $query = "SELECT DISTINCT glpi_profiles.* 
+             FROM glpi_profiles_users 
+             INNER JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.id)
+             WHERE glpi_profiles_users.users_id='$userID' 
+             ORDER BY glpi_profiles.name";
+   $result = $DB->query($query);
+   $_SESSION['glpiprofiles'] = array ();
+   if ($DB->numrows($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
+         $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
+      }
+      foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
+         $query2 = "SELECT glpi_profiles_users.entities_id as eID, glpi_profiles_users.id as kID, 
+                           glpi_profiles_users.is_recursive, glpi_entities.*
+                    FROM glpi_profiles_users 
+                    LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.id)
+                    WHERE glpi_profiles_users.profiles_id='$key' 
+                          AND glpi_profiles_users.users_id='$userID' 
+                    ORDER BY glpi_entities.completename";
+         $result2 = $DB->query($query2);
+         if ($DB->numrows($result2)) {
+            while ($data = $DB->fetch_array($result2)) {
+               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['id'] = $data['eID'];
+               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['name'] = $data['name'];
+               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['is_recursive'] 
+                 = $data['is_recursive'];
+            }
+         }
+      }
+   }
 }
 
 /**
@@ -565,42 +584,41 @@ function initEntityProfiles($userID) {
  * @return Nothing 
 **/
 function changeProfile($ID) {
-	global $CFG_GLPI,$LANG;
-	if (isset ($_SESSION['glpiprofiles'][$ID]) && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
-		$profile=new Profile();
-		// glpiactiveprofile -> active profile
-		if ($profile->getFromDB($ID)){
-			$profile->cleanProfile();
-			$data = $profile->fields;
-			$data['entities']=$_SESSION['glpiprofiles'][$ID]['entities'];
+   global $CFG_GLPI,$LANG;
 
-			$_SESSION['glpiactiveprofile'] = $data;
-			$_SESSION['glpiactiveentities'] = array ();
-	
-			$active_entity_done=false;
-			// Try to load default entity if it is a root entity
-			foreach ($data['entities'] as $key => $val){
-				if ($val['id']==$_SESSION["glpidefault_entity"]){
-					if (changeActiveEntities($val['id'],$val['is_recursive'])){
-						$active_entity_done=true;
-					}
-				}
-			}
-			if (!$active_entity_done){
-				// Try to load default entity 
-				if (!changeActiveEntities($_SESSION["glpidefault_entity"],true)){
-					// Load all entities
-					changeActiveEntities("all");
-				} 
-			}
-			doHook("change_profile");
-		}
-	}
+   if (isset ($_SESSION['glpiprofiles'][$ID]) && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
+      $profile=new Profile();
+      if ($profile->getFromDB($ID)) {
+         $profile->cleanProfile();
+         $data = $profile->fields;
+         $data['entities']=$_SESSION['glpiprofiles'][$ID]['entities'];
 
-	// Clean specific datas
-	if (isset($_SESSION['glpi_faqcategories'])){
-		unset($_SESSION['glpi_faqcategories']);
-	}
+         $_SESSION['glpiactiveprofile'] = $data;
+         $_SESSION['glpiactiveentities'] = array ();
+
+         $active_entity_done=false;
+         // Try to load default entity if it is a root entity
+         foreach ($data['entities'] as $key => $val) {
+            if ($val['id']==$_SESSION["glpidefault_entity"]) {
+               if (changeActiveEntities($val['id'],$val['is_recursive'])) {
+                  $active_entity_done=true;
+               }
+            }
+         }
+         if (!$active_entity_done) {
+            // Try to load default entity 
+            if (!changeActiveEntities($_SESSION["glpidefault_entity"],true)) {
+               // Load all entities
+               changeActiveEntities("all");
+            }
+         }
+         doHook("change_profile");
+      }
+   }
+   // Clean specific datas
+   if (isset($_SESSION['glpi_faqcategories'])) {
+      unset($_SESSION['glpi_faqcategories']);
+   }
 }
 
 
@@ -613,97 +631,92 @@ function changeProfile($ID) {
  * @return Nothing 
 **/
 function changeActiveEntities($ID="all",$is_recursive=false) {
-	global $LANG;
-	$newentities=array();
-	$newroots=array();
-	if ($ID=="all"){
-		$ancestors=array();
-		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+   global $LANG;
+
+   $newentities=array();
+   $newroots=array();
+   if ($ID=="all") {
+      $ancestors=array();
+      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
          $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val['id']),$ancestors));
-			$newroots[$val['id']]=$val['is_recursive'];
-			$newentities[$val['id']] = $val['id'];
-			if ($val['is_recursive']) {
-				$entities = getSonsOf("glpi_entities", $val['id']);
-				if (count($entities)) {
-					foreach ($entities as $key2 => $val2) {
-						$newentities[$key2] = $key2;
-					}
-				}
-			}
-		}
-	} else {
-
-		/// Check entity validity
+         $newroots[$val['id']]=$val['is_recursive'];
+         $newentities[$val['id']] = $val['id'];
+         if ($val['is_recursive']) {
+            $entities = getSonsOf("glpi_entities", $val['id']);
+            if (count($entities)) {
+               foreach ($entities as $key2 => $val2) {
+                  $newentities[$key2] = $key2;
+               }
+            }
+         }
+      }
+   } else {
+      /// Check entity validity
       $ancestors=getAncestorsOf("glpi_entities",$ID);
-		$ok=false;
-		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-			
-			if ($val['id']== $ID || in_array($val['id'], $ancestors)){
-				// Not recursive or recursive and root entity is recursive
-				if (! $is_recursive || $val['is_recursive']){
-					$ok=true;
-				}
-			}
-		}
-		if (!$ok){
-			return false;
-		}
+      $ok=false;
+      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+         if ($val['id']== $ID || in_array($val['id'], $ancestors)) {
+            // Not recursive or recursive and root entity is recursive
+            if (! $is_recursive || $val['is_recursive']) {
+               $ok=true;
+            }
+         }
+      }
+      if (!$ok) {
+         return false;
+      }
 
-		$newroots[$ID]=$is_recursive;
-		$newentities[$ID] = $ID;
-		if ($is_recursive){
-			$entities = getSonsOf("glpi_entities", $ID);
-			if (count($entities)) {
-				foreach ($entities as $key2 => $val2) {
-					$newentities[$key2] = $key2;
-				}
-			}
+      $newroots[$ID]=$is_recursive;
+      $newentities[$ID] = $ID;
+      if ($is_recursive) {
+         $entities = getSonsOf("glpi_entities", $ID);
+         if (count($entities)) {
+            foreach ($entities as $key2 => $val2) {
+               $newentities[$key2] = $key2;
+            }
+         }
+      }
+   }
 
-		}
-	}
-
-	if (count($newentities)>0){
-		$_SESSION['glpiactiveentities']=$newentities;
-		$_SESSION['glpiactiveentities_string']="'".implode("','",$newentities)."'";
-		$active = reset($newentities);
-		$_SESSION['glpiparententities']=$ancestors;
-		$_SESSION['glpiparententities_string']=implode("','",$ancestors);
-		if (!empty($_SESSION['glpiparententities_string'])){
-			$_SESSION['glpiparententities_string']="'".$_SESSION['glpiparententities_string']."'";
-		}
-		// Active entity loading
-		
-		$_SESSION["glpiactive_entity"] = $active;
-		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
-		$_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
-		if ($is_recursive){
-			$_SESSION["glpiactive_entity_name"] .= " (".$LANG['entity'][7].")";
-			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
-		}
-		if ($ID=="all"){
-			$_SESSION["glpiactive_entity_name"] .= " (".$LANG['buttons'][40].")";
-			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
-		}
-		if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])){
-			$_SESSION['glpishowallentities']=1;
-		} else {
-			$_SESSION['glpishowallentities']=0;
-		}
-		
-		// Clean session variable to search system
-		if (isset($_SESSION['glpisearch'])&&count($_SESSION['glpisearch'])){
-			foreach ($_SESSION['glpisearch'] as $itemtype => $tab){
-				if (isset($tab['start'])&&$tab['start']>0){
-					$_SESSION['glpisearch'][$itemtype]['start']=0;
-				}
-			}
-		}
-
-		loadGroups();
-		doHook("change_entity");
-		return true;
-	}
-	return false;
+   if (count($newentities)>0) {
+      $_SESSION['glpiactiveentities']=$newentities;
+      $_SESSION['glpiactiveentities_string']="'".implode("','",$newentities)."'";
+      $active = reset($newentities);
+      $_SESSION['glpiparententities']=$ancestors;
+      $_SESSION['glpiparententities_string']=implode("','",$ancestors);
+      if (!empty($_SESSION['glpiparententities_string'])) {
+         $_SESSION['glpiparententities_string']="'".$_SESSION['glpiparententities_string']."'";
+      }
+      // Active entity loading
+      $_SESSION["glpiactive_entity"] = $active;
+      $_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
+      $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
+      if ($is_recursive) {
+         $_SESSION["glpiactive_entity_name"] .= " (".$LANG['entity'][7].")";
+         $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
+      }
+      if ($ID=="all") {
+         $_SESSION["glpiactive_entity_name"] .= " (".$LANG['buttons'][40].")";
+         $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
+      }
+      if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])) {
+         $_SESSION['glpishowallentities']=1;
+      } else {
+         $_SESSION['glpishowallentities']=0;
+      }
+      // Clean session variable to search system
+      if (isset($_SESSION['glpisearch']) && count($_SESSION['glpisearch'])) {
+         foreach ($_SESSION['glpisearch'] as $itemtype => $tab) {
+            if (isset($tab['start'])&&$tab['start']>0) {
+               $_SESSION['glpisearch'][$itemtype]['start']=0;
+            }
+         }
+      }
+      loadGroups();
+      doHook("change_entity");
+      return true;
+   }
+   return false;
 }
 
 /**
@@ -711,22 +724,22 @@ function changeActiveEntities($ID="all",$is_recursive=false) {
  * @return Nothing 
 **/
 function loadGroups() {
-	global $DB;
+   global $DB;
 
-	$_SESSION["glpigroups"] = array ();
+   $_SESSION["glpigroups"] = array ();
 
-	$query_gp = "SELECT groups_id 
-			FROM glpi_groups_users 
-			LEFT JOIN glpi_groups ON (glpi_groups_users.groups_id = glpi_groups.id) 
-			WHERE glpi_groups_users.users_id='" . $_SESSION['glpiID'] . "' " .
-			getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",$_SESSION['glpiactiveentities'],true);
-
-	$result_gp = $DB->query($query_gp);
-	if ($DB->numrows($result_gp)) {
-		while ($data = $DB->fetch_array($result_gp)) {
-			$_SESSION["glpigroups"][] = $data["groups_id"];
-		}
-	}
+   $query_gp = "SELECT groups_id 
+                FROM glpi_groups_users 
+                LEFT JOIN glpi_groups ON (glpi_groups_users.groups_id = glpi_groups.id) 
+                WHERE glpi_groups_users.users_id='" . $_SESSION['glpiID'] . "' " .
+                      getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",
+                                                 $_SESSION['glpiactiveentities'],true);
+   $result_gp = $DB->query($query_gp);
+   if ($DB->numrows($result_gp)) {
+      while ($data = $DB->fetch_array($result_gp)) {
+         $_SESSION["glpigroups"][] = $data["groups_id"];
+      }
+   }
 }
 
 /**
@@ -736,20 +749,17 @@ function loadGroups() {
  * @return Boolean : 
 **/
 function haveRecursiveAccessToEntity($ID) {
-
-	// Right by profile
-	foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-		if ($val['id']==$ID) {
-			return $val['is_recursive']; 		
-		}
-	}
-
-	// Right is from a recursive profile
-	if (isset ($_SESSION['glpiactiveentities'])) {
-		return in_array($ID, $_SESSION['glpiactiveentities']);
-	} 
-
-	return false;
+   // Right by profile
+   foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+      if ($val['id']==$ID) {
+         return $val['is_recursive'];
+      }
+   }
+   // Right is from a recursive profile
+   if (isset ($_SESSION['glpiactiveentities'])) {
+      return in_array($ID, $_SESSION['glpiactiveentities']);
+   }
+   return false;
 }
 
 /**
@@ -761,26 +771,26 @@ function haveRecursiveAccessToEntity($ID) {
  * @return Boolean : read access to entity
 **/
 function haveAccessToEntity($ID, $is_recursive=0) {
-	if (!isset ($_SESSION['glpiactiveentities'])) {
-		return false;
-	}
-	
-	if (!$is_recursive) {		
-		return in_array($ID, $_SESSION['glpiactiveentities']);
-	}
+   if (!isset ($_SESSION['glpiactiveentities'])) {
+      return false;
+   }
 
-	if (in_array($ID, $_SESSION['glpiactiveentities'])) {
-		return true;
-	}
-		
-	/// Recursive object
-	foreach ($_SESSION['glpiactiveentities'] as $ent) {
+   if (!$is_recursive) {
+      return in_array($ID, $_SESSION['glpiactiveentities']);
+   }
+
+   if (in_array($ID, $_SESSION['glpiactiveentities'])) {
+      return true;
+   }
+
+   /// Recursive object
+   foreach ($_SESSION['glpiactiveentities'] as $ent) {
       if (in_array($ID, getAncestorsOf("glpi_entities",$ent))) {
-			return true;		
-		}
-	}
+         return true;
+      }
+   }
 
-	return false;
+   return false;
 }
 
 /**
@@ -790,15 +800,15 @@ function haveAccessToEntity($ID, $is_recursive=0) {
  * @return Boolean : 
 **/
 function haveAccessToOneOfEntities($tab) {
-	$access=false;
-	if (is_array($tab)&&count($tab)){
-		foreach ($tab as $val){
-			if (haveAccessToEntity($val)){
-				return true;
-			}
-		}
-	}
-	return $access;
+   $access=false;
+   if (is_array($tab)&&count($tab)) {
+      foreach ($tab as $val) {
+         if (haveAccessToEntity($val)) {
+            return true;
+         }
+      }
+   }
+   return $access;
 }
 
 /**
@@ -811,69 +821,69 @@ function haveAccessToOneOfEntities($tab) {
  * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
  * @return String : the WHERE clause to restrict 
 **/
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',$is_recursive=false) {
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',
+                                    $is_recursive=false) {
+   $query = $separator ." ( ";
 
-	$query = $separator ." ( ";
+   // !='0' needed because consider as empty 
+   if ($value!='0' && empty($value) && isset($_SESSION['glpishowallentities'])
+       && $_SESSION['glpishowallentities']) {
+      // Not ADD "AND 1" if not needed
+      if (trim($separator)=="AND") {
+         return "";
+      } else {
+         return $query." 1 ) ";
+      }
+   }
 
-	// !='0' needed because consider as empty 
-	if ($value!='0'&&empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
-		// Not ADD "AND 1" if not needed
-		if (trim($separator)=="AND"){
-			return "";
-		} else {
-			return $query." 1 ) ";
-		}
-	}
+   if (!empty ($table)) {
+      $query .= $table . ".";
+   }
+   if (empty($field)) {
+      if ($table=='glpi_entities') {
+         $field="id";
+      } else {
+         $field="entities_id";
+      }
+   }
 
+   $query.=$field;
 
-	if (!empty ($table)) {
-		$query .= $table . ".";
-	}
-	if (empty($field)){
-		if ($table=='glpi_entities') {
-			$field="id";
-		} else {
-			$field="entities_id";
-		}
-	}
+   if (is_array($value)) {
+      $query .= " IN ('" . implode("','",$value) . "') ";
+   } else {
+      if (strlen($value)==0) {
+         $query.=" IN (".$_SESSION['glpiactiveentities_string'].") ";
+      } else {
+         $query.= " = '$value' ";
+      }
+   }
 
-	$query.=$field;
-
-	if (is_array($value)){
-		$query .= " IN ('" . implode("','",$value) . "') ";
-	} else {
-		if (strlen($value)==0){
-			$query.=" IN (".$_SESSION['glpiactiveentities_string'].") ";
-		} else {
-			$query.= " = '$value' ";
-		}
-	}
-
-	if ($is_recursive){
-		$ancestors=array();
-		if (is_array($value)){
-			foreach ($value as $val){
+   if ($is_recursive) {
+      $ancestors=array();
+      if (is_array($value)) {
+         foreach ($value as $val) {
             $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val),$ancestors));
-			}
-			$ancestors=array_diff($ancestors,$value);
-		} else if (strlen($value)==0){
-			$ancestors=$_SESSION['glpiparententities'];
-		} else {
+         }
+         $ancestors=array_diff($ancestors,$value);
+      } else if (strlen($value)==0) {
+         $ancestors=$_SESSION['glpiparententities'];
+      } else {
          $ancestors=getAncestorsOf("glpi_entities",$value);
-		}
-		
-		if (count($ancestors)){
-			if ($table=='glpi_entities') {
-				$query.=" OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
-			} else {
-				$query.=" OR ( `$table`.`is_recursive`='1' AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
-			}
-		}
-	}
+      }
 
-	$query.=" ) ";
+      if (count($ancestors)) {
+         if ($table=='glpi_entities') {
+            $query.=" OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
+         } else {
+            $query.=" OR ( `$table`.`is_recursive`='1' 
+                          AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
+         }
+      }
+   }
+   $query.=" ) ";
 
-	return $query;
+   return $query;
 }
 
 /**
@@ -888,36 +898,33 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * @return link to the LDAP server : false if connection failed
 **/
 function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false,$deref_options) {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
-	
-	$ds = @ldap_connect($host, intval($port));
-	if ($ds) {
-
-		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-		@ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
-		if ($use_tls) {
-			if (!@ldap_start_tls($ds)) {
-				return false;
-			}
-		}
-		// Auth bind
-		if ($login != '') {
-			$b = @ldap_bind($ds, $login, $password);
-		} else { // Anonymous bind
-			$b = @ldap_bind($ds);
-		}
-		if ($b) {
-			return $ds;
-		} else {
-			return false;
-		}
-	} else {
-		return false;
-	}
+   $ds = @ldap_connect($host, intval($port));
+   if ($ds) {
+      @ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+      @ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+      @ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
+      if ($use_tls) {
+         if (!@ldap_start_tls($ds)) {
+            return false;
+         }
+      }
+      // Auth bind
+      if ($login != '') {
+         $b = @ldap_bind($ds, $login, $password);
+      } else { // Anonymous bind
+         $b = @ldap_bind($ds);
+      }
+      if ($b) {
+         return $ds;
+      } else {
+         return false;
+      }
+   } else {
+      return false;
+   }
 }
-
 
 /**
  * Try to connect to a ldap server
@@ -934,29 +941,31 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
  * @return link to the LDAP server : false if connection failed
 **/
 function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options,$id){
-	// TODO try to pass array of connection config to minimise parameters
 
-	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
-	// Test with login and password of the user if exists
-	if (!$ds && !empty($login)) {
-		$ds = connect_ldap($host, $port, $login, $password, $use_tls,$deref_options);
-	}
+   // TODO try to pass array of connection config to minimise parameters
 
-	//If connection is not successfull on this directory, try replicates (if replicates exists)
-	if (!$ds && $id>0){
-		foreach (getAllReplicateForAMaster($id) as $replicate){
-			$ds = connect_ldap($replicate["host"], $replicate["port"], $rdn, $rpass, $use_tls,$deref_options);
-			// Test with login and password of the user
-			if (!$ds && !empty($login)) {
-				$ds = connect_ldap($replicate["host"], $replicate["port"], $login, $password, $use_tls,$deref_options);
-			} 
-			if ($ds){
-				return $ds;
-			}
-		}
-	}
+   $ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
+   // Test with login and password of the user if exists
+   if (!$ds && !empty($login)) {
+      $ds = connect_ldap($host, $port, $login, $password, $use_tls,$deref_options);
+   }
 
-	return $ds;		
+   //If connection is not successfull on this directory, try replicates (if replicates exists)
+   if (!$ds && $id>0) {
+      foreach (getAllReplicateForAMaster($id) as $replicate) {
+         $ds = connect_ldap($replicate["host"], $replicate["port"], $rdn, $rpass, $use_tls,
+                            $deref_options);
+         // Test with login and password of the user
+         if (!$ds && !empty($login)) {
+            $ds = connect_ldap($replicate["host"], $replicate["port"], $login, $password, $use_tls,
+                               $deref_options);
+         }
+         if ($ds) {
+            return $ds;
+         }
+      }
+   }
+   return $ds;
 }
 
 /**
@@ -969,14 +978,16 @@ function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password
  * @return group infos if found, else false
 **/
 function ldap_search_group_by_dn($ds, $basedn, $group_dn,$condition) {
-	if($result =  @ ldap_read($ds, $group_dn, "objectClass=*", array("cn"))){
-		$info = ldap_get_entries($ds, $result);
-		if (is_array($info) AND $info['count'] == 1)
-			return $info[0];
-		else
-			return false;
-	}
-	return false;
+
+   if($result = @ ldap_read($ds, $group_dn, "objectClass=*", array("cn"))) {
+      $info = ldap_get_entries($ds, $result);
+      if (is_array($info) AND $info['count'] == 1) {
+         return $info[0];
+      } else {
+         return false;
+      }
+   }
+   return false;
 }
 
 /**
@@ -991,26 +1002,23 @@ function ldap_search_group_by_dn($ds, $basedn, $group_dn,$condition) {
 **/
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
-	// Tenter une recherche pour essayer de retrouver le DN
-	$filter = "($login_attr=$login)";
-	
-	if (!empty ($condition)){
-		$filter = "(& $filter $condition)";
-	}
-	if ($result = ldap_search($ds, $basedn, $filter, 
-		array ("dn", $login_attr),0,0)
-	){
-	
-		$info = ldap_get_entries($ds, $result);
-		if (is_array($info) AND $info['count'] == 1) {
-			return $info[0]['dn'];
-		} else { // Si echec, essayer de deviner le DN / Flat LDAP
-			$dn = "$login_attr=$login," . $basedn;
-			return $dn;
-		}
-	} else {
-		return false;
-	}
+   // Tenter une recherche pour essayer de retrouver le DN
+   $filter = "($login_attr=$login)";
+
+   if (!empty ($condition)) {
+      $filter = "(& $filter $condition)";
+   }
+   if ($result = ldap_search($ds, $basedn, $filter, array ("dn", $login_attr),0,0)){
+      $info = ldap_get_entries($ds, $result);
+      if (is_array($info) AND $info['count'] == 1) {
+         return $info[0]['dn'];
+      } else { // Si echec, essayer de deviner le DN / Flat LDAP
+         $dn = "$login_attr=$login," . $basedn;
+         return $dn;
+      }
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -1023,22 +1031,22 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 **/
 function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
 
-	//If no specific source is given, test all ldap directories
-	if ($auths_id <= 0) {
-		foreach  ($identificat->authtypes["ldap"] as $ldap_method) {
-			if (!$identificat->auth_succeded) {
-				$identificat = ldap_auth($identificat, $login,$password,$ldap_method);
-			} else {
-				break;
-			}
-		}
-	//Check if the ldap server indicated as the last good one still exists !
-	} else if(array_key_exists($auths_id,$identificat->authtypes["ldap"])){ 
-		
-		//A specific ldap directory is given, test it and only this one !
-		$identificat = ldap_auth($identificat, $login,$password,$identificat->authtypes["ldap"][$auths_id]);
-	}
-	return $identificat;
+   //If no specific source is given, test all ldap directories
+   if ($auths_id <= 0) {
+      foreach  ($identificat->authtypes["ldap"] as $ldap_method) {
+         if (!$identificat->auth_succeded) {
+            $identificat = ldap_auth($identificat, $login,$password,$ldap_method);
+         } else {
+            break;
+         }
+      }
+   //Check if the ldap server indicated as the last good one still exists !
+   } else if(array_key_exists($auths_id,$identificat->authtypes["ldap"])) {
+      //A specific ldap directory is given, test it and only this one !
+      $identificat = ldap_auth($identificat, $login,$password,
+                               $identificat->authtypes["ldap"][$auths_id]);
+   }
+   return $identificat;
 }
 
 /**
@@ -1051,18 +1059,23 @@ function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
 **/
 function ldap_auth($identificat,$login,$password, $ldap_method) {
 
-	$user_dn = $identificat->connection_ldap($ldap_method["id"],$ldap_method["host"], $ldap_method["port"], $ldap_method["basedn"], $ldap_method["rootdn"], $ldap_method["rootdn_password"], $ldap_method["login_field"],$login, $password, $ldap_method["condition"], $ldap_method["use_tls"],$ldap_method["deref_option"]);
-	if ($user_dn) {
-		$identificat->auth_succeded = true;
-		$identificat->extauth = 1;
-		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
-		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
-		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
-		$identificat->auth_parameters = $ldap_method;
-		$identificat->user->fields["authtype"] = AUTH_LDAP;
-		$identificat->user->fields["auths_id"] = $ldap_method["id"];
-	}
-	return $identificat;
+   $user_dn = $identificat->connection_ldap($ldap_method["id"],$ldap_method["host"], 
+                                            $ldap_method["port"], $ldap_method["basedn"], 
+                                            $ldap_method["rootdn"], $ldap_method["rootdn_password"], 
+                                            $ldap_method["login_field"],$login, $password, 
+                                            $ldap_method["condition"], $ldap_method["use_tls"],
+                                            $ldap_method["deref_option"]);
+   if ($user_dn) {
+      $identificat->auth_succeded = true;
+      $identificat->extauth = 1;
+      $identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
+      $identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, 
+                                                                    $password);
+      $identificat->auth_parameters = $ldap_method;
+      $identificat->user->fields["authtype"] = AUTH_LDAP;
+      $identificat->user->fields["auths_id"] = $ldap_method["id"];
+   }
+   return $identificat;
 }
 
 /**
@@ -1074,19 +1087,20 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
  * @return identification object
 **/
 function try_mail_auth($identificat, $login,$password,$auths_id = 0) {
-	if ($auths_id <= 0) {
-		foreach ($identificat->authtypes["mail"] as $mail_method) {
-			if (!$identificat->auth_succeded) {
-				$identificat = mail_auth($identificat, $login,$password,$mail_method);
-			}
-			else {
-				break;
-			}
-		}
-	} else if(array_key_exists($auths_id,$identificat->authtypes["mail"])){ //Check if the mail server indicated as the last good one still exists !
-		$identificat = mail_auth($identificat, $login,$password,$identificat->authtypes["mail"][$auths_id]);
-	}
-	return $identificat;
+   if ($auths_id <= 0) {
+      foreach ($identificat->authtypes["mail"] as $mail_method) {
+         if (!$identificat->auth_succeded) {
+            $identificat = mail_auth($identificat, $login,$password,$mail_method);
+         } else {
+            break;
+         }
+      }
+   } else if(array_key_exists($auths_id,$identificat->authtypes["mail"])){ 
+      //Check if the mail server indicated as the last good one still exists !
+      $identificat = mail_auth($identificat, $login,$password,
+                               $identificat->authtypes["mail"][$auths_id]);
+   }
+   return $identificat;
 }
 
 /**
@@ -1099,21 +1113,22 @@ function try_mail_auth($identificat, $login,$password,$auths_id = 0) {
 **/
 function mail_auth($identificat, $login,$password,$mail_method) {
 
-	if (isset($mail_method["connect_string"])&&!empty ($mail_method["connect_string"])) {
-		$identificat->auth_succeded = $identificat->connection_imap($mail_method["connect_string"], utf8_decode($login), utf8_decode($password));
-		if ($identificat->auth_succeded) {
-			$identificat->extauth = 1;
-			$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
-			$identificat->auth_parameters = $mail_method;
-		
-			$identificat->user->getFromIMAP($mail_method, utf8_decode($login));
+   if (isset($mail_method["connect_string"]) && !empty ($mail_method["connect_string"])) {
+      $identificat->auth_succeded = $identificat->connection_imap($mail_method["connect_string"], 
+                                                                  utf8_decode($login), 
+                                                                  utf8_decode($password));
+      if ($identificat->auth_succeded) {
+         $identificat->extauth = 1;
+         $identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
+         $identificat->auth_parameters = $mail_method;
+         $identificat->user->getFromIMAP($mail_method, utf8_decode($login));
 
-			//Update the authentication method for the current user
-			$identificat->user->fields["authtype"] = AUTH_MAIL;
-			$identificat->user->fields["auths_id"] = $mail_method["id"];
-		}
-	}
-	return $identificat;
+         //Update the authentication method for the current user
+         $identificat->user->fields["authtype"] = AUTH_MAIL;
+         $identificat->user->fields["auths_id"] = $mail_method["id"];
+      }
+   }
+   return $identificat;
 }
 
 /**
@@ -1123,9 +1138,9 @@ function mail_auth($identificat, $login,$password,$mail_method) {
  * @param $password : user password
  * @return authentification succeeded ?
 **/
-function test_auth_mail($connect_string,$login,$password){
-	$identificat = new Identification();
-	return $identificat->connection_imap($connect_string, utf8_decode($login), utf8_decode($password));
+function test_auth_mail($connect_string,$login,$password) {
+   $identificat = new Identification();
+   return $identificat->connection_imap($connect_string, utf8_decode($login), utf8_decode($password));
 }
 
 /**
@@ -1133,30 +1148,29 @@ function test_auth_mail($connect_string,$login,$password){
  * Check all the directories. When the user is found, then import it
  * @param $login : user login
 **/
-function import_user_from_ldap_servers($login){
-	global $LANG;
+function import_user_from_ldap_servers($login) {
+   global $LANG;
 
-	$identificat = new Identification;
-	$identificat->user_present = $identificat->userExists($login);
+   $identificat = new Identification;
+   $identificat->user_present = $identificat->userExists($login);
 
-	//If the user does not exists
-	if ($identificat->user_present == 0){
-		$identificat->getAuthMethods();
-		$ldap_methods = $identificat->authtypes["ldap"];
-		$userid = -1;
-		
-		foreach ($ldap_methods as $ldap_method){
-			$result=ldapImportUserByServerId($login, 0,$ldap_method["id"],true);
-			if ($result != false){
-				return $result;
-			}  
-		}
-		addMessageAfterRedirect($LANG['login'][15],false,ERROR);
-	} else {
-		addMessageAfterRedirect($LANG['setup'][606],false,ERROR);
-	}
-	return false;
-	
+   //If the user does not exists
+   if ($identificat->user_present == 0) {
+      $identificat->getAuthMethods();
+      $ldap_methods = $identificat->authtypes["ldap"];
+      $userid = -1;
+
+      foreach ($ldap_methods as $ldap_method) {
+         $result=ldapImportUserByServerId($login, 0,$ldap_method["id"],true);
+         if ($result != false) {
+            return $result;
+         }
+      }
+      addMessageAfterRedirect($LANG['login'][15],false,ERROR);
+   } else {
+      addMessageAfterRedirect($LANG['setup'][606],false,ERROR);
+   }
+   return false;
 }
 
 /**
@@ -1164,16 +1178,17 @@ function import_user_from_ldap_servers($login){
  * 
  * @return boolean
 **/
-function useAuthMail(){
-	global $DB;	
+function useAuthMail() {
+   global $DB;	
 
-	//Get all the pop/imap servers
-	$sql = "SELECT count(*) FROM glpi_authmails";
-	$result = $DB->query($sql);
-	if ($DB->result($result,0,0) > 0) {
-		return true;
-	}
-	return false;
+   //Get all the pop/imap servers
+   $sql = "SELECT count(*) 
+           FROM glpi_authmails";
+   $result = $DB->query($sql);
+   if ($DB->result($result,0,0) > 0) {
+      return true;
+   }
+   return false;
 }
 
 /**
@@ -1181,16 +1196,17 @@ function useAuthMail(){
  * 
  * @return boolean
 **/
-function useAuthLdap(){
-	global $DB;	
+function useAuthLdap() {
+   global $DB;	
 
-	//Get all the ldap directories
-	$sql = "SELECT count(*) FROM glpi_authldaps";
-	$result = $DB->query($sql);
-	if ($DB->result($result,0,0) > 0) {
-		return true;
-	}
-	return false;
+   //Get all the ldap directories
+   $sql = "SELECT count(*) 
+           FROM glpi_authldaps";
+   $result = $DB->query($sql);
+   if ($DB->result($result,0,0) > 0) {
+      return true;
+   }
+   return false;
 }
 
 
@@ -1199,20 +1215,19 @@ function useAuthLdap(){
  * 
  * @return boolean
 **/
-function useAuthExt(){
-	global $DB;	
+function useAuthExt() {
+   global $DB;	
 
-	//Get all the ldap directories
-	if (useAuthLdap()){
-		return true;
-	}
+   //Get all the ldap directories
+   if (useAuthLdap()) {
+      return true;
+   }
 
-	if (useAuthMail()){
-		return true;
-	}
-	return false;
+   if (useAuthMail()) {
+      return true;
+   }
+   return false;
 }
-
 
 /**
  * Show replicate list for a ldap server
@@ -1220,57 +1235,64 @@ function useAuthExt(){
  * @param $target : target page for add new replicate
  * @param $master_id : master ldap server ID
 **/
-function showReplicatesList($target,$master_id){
-	global $DB,$LANG,$CFG_GLPI;
+function showReplicatesList($target,$master_id) {
+   global $DB,$LANG,$CFG_GLPI;
 
-	addNewReplicateForm($target, $master_id);
-	
-	$sql = "SELECT * FROM glpi_authldapsreplicates 
-		WHERE authldaps_id = '".$master_id."'
-		ORDER BY name";
-	$result = $DB->query($sql);
-	if ($DB->numrows($result)>0){
-		echo "<br>";
-		$canedit = haveRight("config", "w");
+   addNewReplicateForm($target, $master_id);
 
-		echo "<form action=\"$target\" method=\"post\" name=\"ldap_replicates_form\" id=\"ldap_replicates_form\">";
-		echo"<input type=\"hidden\" name=\"id\" value=\"" . $master_id . "\" ></td>";
-		echo "<div class='center'>";
-		echo "<table class='tab_cadre_fixe'>";
-	
-		echo "<tr><th colspan='4'><div class='relative'><span><strong>" . $LANG['ldap'][18] . "</strong></span></th></tr>";
-		echo "<tr class='tab_bg_1'><td class='center'></td><td class='center'>".$LANG['common'][16]."</td><td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td>";
-		while ($ldap_replicate = $DB->fetch_array($result)){
-			echo "<tr class='tab_bg_2'><td class='center'>";
-				
-			if (isset ($_GET["select"]) && $_GET["select"] == "all"){
-				$sel = "checked";
-			} else {
-				$sel="";
-			}	
-			echo "<input type='checkbox' name='item[" . $ldap_replicate["id"] . "]' value='1' $sel>";
-			echo "</td>";
-			echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
-			echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"] . "</td>"; 
-			echo "<td align='center' colspan=4>"; 
-			echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["id"]."]\" class=\"submit\" value=\"" . $LANG['buttons'][50] . "\" ></td>";
-			echo"</tr>";
-				
-		}
-				
-		echo "<div class='center'>";
-		echo "<table width='950px' class='tab_glpi'>";
-				
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=all'>" . $LANG['buttons'][18] . "</a></td>";
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=none'>" . $LANG['buttons'][19] . "</a>";
-		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\" class='submit'></td>";
-		echo "</tr>";
-				
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
-	}
+   $sql = "SELECT * 
+           FROM glpi_authldapsreplicates 
+           WHERE authldaps_id = '".$master_id."'
+           ORDER BY name";
+   $result = $DB->query($sql);
+   if ($DB->numrows($result)>0) {
+      echo "<br>";
+      $canedit = haveRight("config", "w");
+      echo "<form action=\"$target\" method=\"post\" name=\"ldap_replicates_form\" 
+             id=\"ldap_replicates_form\">";
+      echo"<input type=\"hidden\" name=\"id\" value=\"" . $master_id . "\" ></td>";
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'><div class='relative'><span>";
+      echo "<strong>" . $LANG['ldap'][18] . "</strong></span></th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'></td>";
+      echo "<td class='center'>".$LANG['common'][16]."</td>";
+      echo "<td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td>";
+      while ($ldap_replicate = $DB->fetch_array($result)) {
+         echo "<tr class='tab_bg_2'><td class='center'>";
+         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+            $sel = "checked";
+         } else {
+            $sel="";
+         }
+         echo "<input type='checkbox' name='item[" . $ldap_replicate["id"] . "]' 
+                value='1' $sel>";
+         echo "</td>";
+         echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
+         echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"] . "</td>";
+         echo "<td class='center' colspan=4>";
+         echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["id"]."]\" 
+               class=\"submit\" value=\"" . $LANG['buttons'][50] . "\" ></td>";
+         echo"</tr>";
+      }
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
+      echo "<td class='center'>";
+      echo "<a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\" 
+             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=all'>" . 
+             $LANG['buttons'][18] . "</a></td>";
+      echo "<td>/</td><td class='center'>";
+      echo "<a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\" 
+             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=none'>" . 
+             $LANG['buttons'][19] . "</a>";
+      echo "</td><td class='left' width='80%'>";
+      echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\" 
+             class='submit'></td>";
+      echo "</tr></table></div></form>";
+   }
 }
 
 /**
@@ -1279,26 +1301,28 @@ function showReplicatesList($target,$master_id){
  * @param $target : target page for add new replicate
  * @param $master_id : master ldap server ID
 **/
-function addNewReplicateForm($target, $master_id){
-	global $LANG;
-	
-	echo "<form action=\"$target\" method=\"post\" name=\"add_replicate_form\" id=\"add_replicate_form\">";
-	echo "<div class='center'>";
-	echo "<table class='tab_cadre_fixe'>";
-	
-	echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG['ldap'][20] . "</strong></span></th></tr>";
-	echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td><td class='center'>".$LANG['common'][52]."</td><td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
-	echo "<tr class='tab_bg_1'>"; 
-	echo "<td class='center'><input type='text' name='name'></td>";
-	echo "<td class='center'><input type='text' name='host'></td>"; 
-	echo "<td class='center'><input type='text' name='port'></td>";
-	echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
-	echo "<input type='hidden' name='authldaps_id' value=\"".$master_id."\">";
-	echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . $LANG['buttons'][2] . "\" class='submit'></td></tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "</form>";
-	
+function addNewReplicateForm($target, $master_id) {
+   global $LANG;
+
+   echo "<form action=\"$target\" method=\"post\" name=\"add_replicate_form\" 
+          id=\"add_replicate_form\">";
+   echo "<div class='center'>";
+   echo "<table class='tab_cadre_fixe'>";
+
+   echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG['ldap'][20] . "</strong>";
+   echo "</span></th></tr>";
+   echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td>";
+   echo "<td class='center'>".$LANG['common'][52]."</td>";
+   echo "<td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
+   echo "<tr class='tab_bg_1'>"; 
+   echo "<td class='center'><input type='text' name='name'></td>";
+   echo "<td class='center'><input type='text' name='host'></td>"; 
+   echo "<td class='center'><input type='text' name='port'></td>";
+   echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
+   echo "<input type='hidden' name='authldaps_id' value=\"".$master_id."\">";
+   echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . 
+                             $LANG['buttons'][2] . "\" class='submit'></td>";
+   echo "</tr></table></div></form>";
 }
 
 /**
@@ -1307,22 +1331,22 @@ function addNewReplicateForm($target, $master_id){
  * @param $master_id : master ldap server ID
  * @return array of the replicate servers
 **/
-function getAllReplicateForAMaster($master_id){
-	global $DB;
-	
-	$replicates = array();
-	$query="SELECT id, host, port 
-		FROM glpi_authldapsreplicates 
-		WHERE authldaps_id = '".$master_id."'";
-	$result = $DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($replicate = $DB->fetch_array($result)){
-			$replicates[] = array("id"=>$replicate["id"], 
-					"host"=>$replicate["host"], 
-					"port"=>$replicate["port"]);
-		}
-	}
-	return $replicates;
+function getAllReplicateForAMaster($master_id) {
+   global $DB;
+
+   $replicates = array();
+   $query="SELECT id, host, port 
+           FROM glpi_authldapsreplicates 
+           WHERE authldaps_id = '".$master_id."'";
+   $result = $DB->query($query);
+   if ($DB->numrows($result)>0) {
+      while ($replicate = $DB->fetch_array($result)) {
+         $replicates[] = array("id"=>$replicate["id"], 
+                               "host"=>$replicate["host"], 
+                               "port"=>$replicate["port"]);
+      }
+   }
+   return $replicates;
 }
 
 /**
@@ -1331,13 +1355,14 @@ function getAllReplicateForAMaster($master_id){
  * @param $master_id : master ldap server ID
  * @return string containing names of the replicate servers
 **/
-function getAllReplicatesNamesForAMaster($master_id){
-	$replicates = getAllReplicateForAMaster($master_id);
-	$str = "";
-	foreach ($replicates as $replicate){
-		$str.= ($str!=''?',':'')."&nbsp;".$replicate["host"].":".$replicate["port"];
-	}
-	return $str;	
+function getAllReplicatesNamesForAMaster($master_id) {
+
+   $replicates = getAllReplicateForAMaster($master_id);
+   $str = "";
+   foreach ($replicates as $replicate) {
+      $str.= ($str!=''?',':'')."&nbsp;".$replicate["host"].":".$replicate["port"];
+   }
+   return $str;	
 }
 
 /**
@@ -1347,48 +1372,45 @@ function getAllReplicatesNamesForAMaster($master_id){
  * @param $redirect_string : redirect string if exists
  * @return nothing if redirect is true, else Auth system ID
 **/
-function checkAlternateAuthSystems($redirect=false,$redirect_string=''){
-	global $CFG_GLPI;
-	if (isset($_GET["noAUTO"])||isset($_POST["noAUTO"])){
-		return false;
-	}
+function checkAlternateAuthSystems($redirect=false,$redirect_string='') {
+   global $CFG_GLPI;
 
-	$redir_string="";
-	if (!empty($redirect_string)){
-		$redir_string="?redirect=".$redirect_string;
-	}
+   if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
+      return false;
+   }
 
-	// Using x509 server
-	if (!empty($CFG_GLPI["x509_email_field"])
-		&&isset($_SERVER['SSL_CLIENT_S_DN'])
-		&&strstr($_SERVER['SSL_CLIENT_S_DN'],$CFG_GLPI["x509_email_field"])) {
-		if ($redirect){
-			glpi_header("login.php".$redir_string);
-		} else {
-			return AUTH_X509;
-		}
-	}
-
-	// Existing auth method
-	if (!empty($CFG_GLPI["existing_auth_server_field"])
-		&&isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])&&!empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
-		if ($redirect){
-			glpi_header("login.php".$redir_string);
-		} else {
-			return AUTH_EXTERNAL;
-		}
-	}
-
-	// Using CAS server
-	if (!empty($CFG_GLPI["cas_host"])) {
-		if ($redirect){
-			glpi_header("login.php".$redir_string);
-		} else {
-			return AUTH_CAS;
-		}
-	}
-
-	return false;
+   $redir_string="";
+   if (!empty($redirect_string)) {
+      $redir_string="?redirect=".$redirect_string;
+   }
+   // Using x509 server
+   if (!empty($CFG_GLPI["x509_email_field"]) && isset($_SERVER['SSL_CLIENT_S_DN'])
+       && strstr($_SERVER['SSL_CLIENT_S_DN'],$CFG_GLPI["x509_email_field"])) {
+      if ($redirect) {
+         glpi_header("login.php".$redir_string);
+      } else {
+         return AUTH_X509;
+      }
+   }
+   // Existing auth method
+   if (!empty($CFG_GLPI["existing_auth_server_field"]) 
+       && isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])
+       && !empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
+      if ($redirect) {
+         glpi_header("login.php".$redir_string);
+      } else {
+         return AUTH_EXTERNAL;
+      }
+   }
+   // Using CAS server
+   if (!empty($CFG_GLPI["cas_host"])) {
+      if ($redirect) {
+         glpi_header("login.php".$redir_string);
+      } else {
+         return AUTH_CAS;
+      }
+   }
+return false;
 }
 
 /**
@@ -1397,8 +1419,8 @@ function checkAlternateAuthSystems($redirect=false,$redirect_string=''){
  * @param $auths_id auth type
  * @return boolean
 **/
-function isAlternateAuth($auths_id){
-	return  in_array($auths_id,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
+function isAlternateAuth($auths_id) {
+   return  in_array($auths_id,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
 }
 
 /**
@@ -1407,12 +1429,13 @@ function isAlternateAuth($auths_id){
  * @param $auths_id auth type
  * @return boolean
 **/
-function isAlternateAuthWithLdap($auths_id){
-	global $CFG_GLPI;
-	return (isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
+function isAlternateAuthWithLdap($auths_id) {
+   global $CFG_GLPI;
+   
+   return (isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
 }
 
 function getLdapServers () {
-	return getAllDatasFromTable('glpi_authldaps');
+   return getAllDatasFromTable('glpi_authldaps');
 }
 ?>

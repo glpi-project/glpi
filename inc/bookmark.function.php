@@ -30,9 +30,8 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
-
 
 /**
  * Display bookmark buttons
@@ -40,11 +39,17 @@ if (!defined('GLPI_ROOT')) {
  * @param $type bookmark type to use
  * @param $itemtype device type of item where is the bookmark
  **/
-function showSaveBookmarkButton($type,$itemtype=0){
-	global $CFG_GLPI,$LANG;
-	echo "  <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
-	echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png' title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"  class='calendrier' >"; 
-	echo "	</a>";
+function showSaveBookmarkButton($type,$itemtype=0) {
+   global $CFG_GLPI,$LANG;
+
+   echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
+           "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
+           rawurlencode($_SERVER["REQUEST_URI"]).
+           "' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
+   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png' 
+          title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" 
+          alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" class='calendrier'>";
+   echo "</a>";
 }
 
 ?>
