@@ -1788,7 +1788,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", MIN($table$addtable.$field) AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_inst_software.count" :
-			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
+         return "";
+//			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
@@ -2332,6 +2333,10 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
 
 	switch ($table.'.'.$field){
+		case "glpi_inst_software.count" :
+            
+            return countInstallationsForSoftware($data['ID']);
+
 		case "glpi_users.name" :		
 			// USER search case
 			if (!empty($linkfield)){
@@ -3024,8 +3029,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_inst_software":
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_softwareversions",$linkfield,$device_type,$meta,$meta_type);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_softwareversions$addmetanum.ID = $nt.vID) ";
+//			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_softwareversions",$linkfield,$device_type,$meta,$meta_type);
+//		return $out." LEFT JOIN $new_table $AS ON (glpi_softwareversions$addmetanum.ID = $nt.vID) ";
+      return "";
 		break;
 		case "glpi_computer_device":
 			if ($device_type==0){
