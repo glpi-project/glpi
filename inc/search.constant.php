@@ -2078,6 +2078,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][72]['field']='count';
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['name']=$LANG['tracking'][29]." - ".$LANG['software'][19];
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][72]['nosearch']=true;
 //$SEARCH_OPTION[SOFTWARE_TYPE][72]['usehaving']=true;
 //$SEARCH_OPTION[SOFTWARE_TYPE][72]['datatype']='number';
 

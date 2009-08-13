@@ -301,9 +301,11 @@ function searchForm($type,$params){
 				else $first_group=false;
 				echo "<optgroup label=\"$val\">";
 			}else {
-				echo "<option value=\"".$key."\"";
-				if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-				echo ">". utf8_substr($val["name"],0,32) ."</option>\n";
+            if (!isset($val["nosearch"]) || !$val["nosearch"]){
+               echo "<option value=\"".$key."\"";
+               if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
+               echo ">". utf8_substr($val["name"],0,32) ."</option>\n";
+            }
 			}
 		}
 		if (!$first_group)
@@ -1185,8 +1187,12 @@ function showList ($type,$params){
 
 			// Display column Headers for toview items
 			foreach ($toview as $key => $val){
-				$linkto="$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
-				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num,$linkto,$sort==$val,$order);
+            if (isset($SEARCH_OPTION[$type][$val]["nosearch"]) && $SEARCH_OPTION[$type][$val]["nosearch"]){
+              echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num);	
+            } else {
+				  $linkto="$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
+				  echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num,$linkto,$sort==$val,$order);
+            }
 			}
 
 			// Display columns Headers for meta items
