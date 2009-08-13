@@ -338,7 +338,8 @@ class Phone extends CommonDBTM {
       echo "<tr><td>".$LANG['phones'][39]."</td>";
       echo "<td>";
       dropdownYesNo("have_hp",$this->fields["have_hp"]);
-      echo "</td></tr></table></td>";
+      echo "</td></tr>";
+      echo "</table></td>";
       
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][22].": 	</td><td>";
       dropdownValue("glpi_phonesmodels", "phonesmodels_id", $this->fields["phonesmodels_id"]);
