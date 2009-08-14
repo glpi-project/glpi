@@ -34,10 +34,8 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
-
+   die("Sorry. You can't access directly to this file");
+}
 
 //!  ConsumableType Class
 /**
@@ -47,66 +45,76 @@ if (!defined('GLPI_ROOT')){
  */
 class ConsumableType extends CommonDBTM {
 
-	/**
-	 * Constructor
-	 **/
-	function __construct () {
-		$this->table="glpi_consumablesitems";
-		$this->type=CONSUMABLE_TYPE;
-		$this->entity_assign=true;
-	}
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table="glpi_consumablesitems";
+      $this->type=CONSUMABLE_TYPE;
+      $this->entity_assign=true;
+   }
 
-	function cleanDBonPurge($ID) {
-		global $DB;
-		// Delete cartridconsumablesges
-		$query = "DELETE FROM glpi_consumables WHERE (consumablesitems_id = '$ID')";
-		$DB->query($query);
-	}
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-	function post_getEmpty () {
-		global $CFG_GLPI;
-		$this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
-	}
+      // Delete cartridconsumablesges
+      $query = "DELETE 
+                FROM `glpi_consumables` 
+                WHERE (`consumablesitems_id` = '$ID')";
+      $DB->query($query);
+   }
 
-	function defineTabs($ID,$withtemplate){
-		global $LANG;
-			$ong=array();
-		if ($ID>0){
-			$ong[1]=$LANG['Menu'][32];
-			if (haveRight("contract","r") || haveRight("infocom","r"))
-				$ong[4]=$LANG['Menu'][26];
-			if (haveRight("document","r"))	
-				$ong[5]=$LANG['Menu'][27];
-			if (haveRight("link","r"))	
-				$ong[7]=$LANG['title'][34];
-			if (haveRight("notes","r"))
-				$ong[10]=$LANG['title'][37];
-		} else { // New item
-			$ong[1]=$LANG['title'][26];
-		}
-		return $ong;
-	}
+   function post_getEmpty () {
+      global $CFG_GLPI;
 
-	/**
-	 * Print the consumable type form
-	 *
-	 *
-	 * Print g��al consumable type form
-	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the consumable type
-	 *@param $withtemplate='' boolean : template or basic item
-	 *
-	 *
-	 *@return Nothing (display)
-	 *
-	 **/
-	function showForm ($target,$ID,$withtemplate='') {
-		// Show ConsumableType or blank form
+      $this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
+   }
 
-		global $CFG_GLPI,$LANG;
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
 
-		if (!haveRight("consumable","r")) return false;
+      $ong=array();
+      if ($ID>0) {
+         $ong[1]=$LANG['Menu'][32];
+         if (haveRight("contract","r") || haveRight("infocom","r")) {
+            $ong[4]=$LANG['Menu'][26];
+         }
+         if (haveRight("document","r")) {
+            $ong[5]=$LANG['Menu'][27];
+         }
+         if (haveRight("link","r")) {
+            $ong[7]=$LANG['title'][34];
+         }
+         if (haveRight("notes","r")) {
+            $ong[10]=$LANG['title'][37];
+         }
+      } else { // New item
+         $ong[1]=$LANG['title'][26];
+      }
+      return $ong;
+   }
+
+   /**
+    * Print the consumable type form
+    *
+    *
+    * Print g��al consumable type form
+    *
+    *@param $target filename : where to go when done.
+    *@param $ID Integer : Id of the consumable type
+    *@param $withtemplate='' boolean : template or basic item
+    *
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showForm ($target,$ID,$withtemplate='') {
+      // Show ConsumableType or blank form
+      global $CFG_GLPI,$LANG;
+
+      if (!haveRight("consumable","r")) {
+         return false;
+      }
 
       if ($ID > 0){
          $this->check($ID,'r');
@@ -117,50 +125,65 @@ class ConsumableType extends CommonDBTM {
       } 
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-      $this->showFormHeader($target,$ID,$withtemplate);
+      $this->showFormHeader($target,$ID,$withtemplate,2);
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_consumablesitems","name",$this->fields["name"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
+      autocompletionTextField("name","glpi_consumablesitems","name",
+                              $this->fields["name"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
+      "&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >"
+         .$this->fields["comment"]."</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['consumables'][2]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
+      autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td>\n";
-      dropdownValue("glpi_consumablesitemstypes","consumablesitemstypes_id",$this->fields["consumablesitemstypes_id"]);
-      echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownValue("glpi_consumablesitemstypes","consumablesitemstypes_id",
+                    $this->fields["consumablesitemstypes_id"]);
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
+      echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td>\n";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][10]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
+                      $this->fields["entities_id"]);
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td>\n";
-      dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['consumables'][36]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
+                    $this->fields["entities_id"]);
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['consumables'][38]."&nbsp;:</td>";
+      echo "<td>";
       dropdownInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td valign='top'>\n";
-      echo $LANG['common'][25].":	</td>";
-      echo "<td><textarea cols='60' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      $this->showFormButtons($ID,$withtemplate);
+      $this->showFormButtons($ID,$withtemplate,2);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
       return true;
-	}
-
+   }
 }
 
 //!  Consumable Class
@@ -171,91 +194,103 @@ class ConsumableType extends CommonDBTM {
  */
 class Consumable extends CommonDBTM {
 
-	/**
-	 * Constructor
-	 **/
-	function __construct () {
-		$this->table="glpi_consumables";
-		$this->type=CONSUMABLE_ITEM_TYPE;
-		// by the Consumable type
-		$this->entity_assign=true;
-	}
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      $this->table="glpi_consumables";
+      $this->type=CONSUMABLE_ITEM_TYPE;
+      // by the Consumable type
+      $this->entity_assign=true;
+   }
 
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-	function cleanDBonPurge($ID) {
-		global $DB;
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".CONSUMABLE_ITEM_TYPE."')";
-		$result = $DB->query($query);
-	}
+      $query = "DELETE 
+                FROM `glpi_infocoms` 
+                WHERE (`items_id` = '$ID' 
+                       AND `itemtype`='".CONSUMABLE_ITEM_TYPE."')";
+      $result = $DB->query($query);
+   }
 
-	function prepareInputForAdd($input) {
-		return array("consumablesitems_id"=>$input["tID"],
-				"date_in"=>date("Y-m-d"));
-	}
+   function prepareInputForAdd($input) {
+      return array("consumablesitems_id"=>$input["tID"],
+                   "date_in"=>date("Y-m-d"));
+   }
 
-	function post_addItem($newID,$input) {
-		// Add infocoms if exists for the licence
-		$ic=new Infocom();
+   function post_addItem($newID,$input) {
 
-		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])){
-			unset($ic->fields["id"]);
-			$ic->fields["items_id"]=$newID;
-			$ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
-			if (empty($ic->fields['use_date'])){
-				unset($ic->fields['use_date']);
-			}
-			if (empty($ic->fields['buy_date'])){
-				unset($ic->fields['buy_date']);
-			}
-			$ic->addToDB();
-		}
-	}
+      // Add infocoms if exists for the licence
+      $ic=new Infocom();
 
-	function restore($input,$history=1){
-		global $DB;
-		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE id='".$input["id"]."'";
+      if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])) {
+         unset($ic->fields["id"]);
+         $ic->fields["items_id"]=$newID;
+         $ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
+         if (empty($ic->fields['use_date'])) {
+            unset($ic->fields['use_date']);
+         }
+         if (empty($ic->fields['buy_date'])) {
+            unset($ic->fields['buy_date']);
+         }
+         $ic->addToDB();
+      }
+   }
 
-		if ($result = $DB->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+   function restore($input,$history=1) {
+      global $DB;
 
-	/**
-	 * UnLink a consumable linked to a printer
-	 *
-	 * UnLink the consumable identified by $ID
-	 *
-	 *@param $ID : consumable identifier
-	 *@param $users_id : ID of the user giving the consumable
-	 *
-	 *@return boolean
-	 *
-	 **/
-	function out($ID,$users_id=0) {
+      $query = "UPDATE 
+                `glpi_consumables` 
+                SET `date_out` = NULL 
+                WHERE `id`='".$input["id"]."'";
 
-		global $DB;
-		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', users_id='$users_id' WHERE id='$ID'";
+      if ($result = $DB->query($query)) {
+         return true;
+      } else {
+         return false;
+      }
+   }
 
-		if ($result = $DB->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+   /**
+    * UnLink a consumable linked to a printer
+    *
+    * UnLink the consumable identified by $ID
+    *
+    *@param $ID : consumable identifier
+    *@param $users_id : ID of the user giving the consumable
+    *
+    *@return boolean
+    *
+    **/
+   function out($ID,$users_id=0) {
+      global $DB;
 
-	/**
-	 * Get the ID of entity assigned to the Consumable
-	 * 
-	 * @return ID of the entity 
-	**/
-	function getEntityID () {
-		$ci=new ConsumableType();
-		$ci->getFromDB($this->fields["consumablesitems_id"]);
+      $query = "UPDATE 
+                `glpi_consumables` 
+                SET `date_out` = '".date("Y-m-d")."', 
+                    `users_id` = '$users_id' 
+                WHERE `id` = '$ID'";
 
-		return $ci->getEntityID();
-	}	
+      if ($result = $DB->query($query)) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   /**
+    * Get the ID of entity assigned to the Consumable
+    * 
+    * @return ID of the entity 
+   **/
+   function getEntityID () {
+      $ci=new ConsumableType();
+      $ci->getFromDB($this->fields["consumablesitems_id"]);
+
+      return $ci->getEntityID();
+   }
 
 }
 
