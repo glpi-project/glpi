@@ -954,8 +954,8 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
  *@return clean value
  **/
 function cleanPostForTextArea($value){
-	$order   = array('\r\n', '\n', "\\'", '\"');
-	$replace = array("\n",   "\n", "'",   '"');
+   $order   = array('\r\n', '\n', "\\'", '\"', '\\\\');
+   $replace = array("\n",   "\n", "'",   '"',  "\\");
 	//echo rawurldecode($_POST["data"]);
 	return str_replace($order,$replace,$value);
 
