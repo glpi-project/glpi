@@ -79,7 +79,7 @@ class Connection {
                 WHERE (`glpi_computers_items`.`items_id` = '$ID' 
                        AND `glpi_computers_items`.`itemtype` = '$itemtype'
                        AND `glpi_computers`.`is_template` = '0')" .
-                       getEntitiesRestrictRequest(" AND", "`glpi_computers`");
+                       getEntitiesRestrictRequest(" AND", "glpi_computers");
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)==0) {

@@ -406,7 +406,7 @@ function showConsumableSummary(){
                    AND `consumablesitems_id` IN (SELECT `id` 
                                                  FROM `glpi_consumablesitems` 
                                                  ".getEntitiesRestrictRequest(
-                                                 "WHERE","`glpi_consumablesitems`").") 
+                                                 "WHERE","glpi_consumablesitems").") 
              GROUP BY `users_id`, `consumablesitems_id`";
    $used=array();
 
@@ -438,7 +438,7 @@ function showConsumableSummary(){
    $types=array();
    $query="SELECT * 
            FROM `glpi_consumablesitems` 
-           ".getEntitiesRestrictRequest("WHERE","`glpi_consumablesitems`");
+           ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
