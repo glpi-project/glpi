@@ -3003,6 +3003,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					//Software dictionnary
 					$rulecollection = new DictionnarySoftwareCollection;
 					$res_rule = $rulecollection->processAllRules(array("name"=>$name,"manufacturer"=>$manufacturer,"old_version"=>$version), array (), array());
+               $res_rule = addslashes_deep($res_rule);
 					
 					if (isset($res_rule["name"]))
 						$modified_name = $res_rule["name"];
