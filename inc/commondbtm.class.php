@@ -1259,13 +1259,14 @@ class CommonDBTM {
    * @param $ID ID of the item (-1 if new item)
    * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
    * @param $colspan for each column
+   * @param $formoptions string (javascript p.e.)
    * 
    */
-   function showFormHeader ($target, $ID, $withtemplate='', $colspan=1) {
+   function showFormHeader ($target, $ID, $withtemplate='', $colspan=1, $formoptions='') {
       global $LANG, $CFG_GLPI;
 
       if ($this->can($ID,'w')) {
-         echo "<form name='form' method='post' action=\"$target\">";
+         echo "<form name='form' method='post' action=\"$target\" $formoptions>";
          if (isset($this->fields["entities_id"])) {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
