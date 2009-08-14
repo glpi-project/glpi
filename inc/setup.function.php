@@ -1250,7 +1250,7 @@ function showSystemInformations () {
 	echo "<div class='center' id='tabsbody'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
-	echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+	echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
  	
  	echo "GLPI ".$CFG_GLPI['version']."  (".$CFG_GLPI['root_doc']." => ".dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
@@ -1381,7 +1381,7 @@ function showSystemInformations () {
       echo wordwrap($msg."\n", $width, "\n\t\t");
    }
 
-	echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
+	echo "\n[/code]\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
 	echo "</tr>"; 
 	
 	
