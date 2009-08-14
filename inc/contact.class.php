@@ -214,11 +214,12 @@ class Contact extends CommonDBTM{
       echo "<td>";
       dropdownValue("glpi_contactstypes","contactstypes_id",$this->fields["contactstypes_id"]);
       echo "</td>";
+      echo "<td></td><td class='center'>";
       if ($ID>0) { 
-         echo "<td></td><td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?id=$ID'>".
-                           $LANG['common'][46]."</a>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?id=$ID'>".
+                $LANG['common'][46]."</a>";
       }
-      echo "</tr>";
+      echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
 
