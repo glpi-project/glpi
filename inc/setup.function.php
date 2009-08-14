@@ -1274,7 +1274,8 @@ function showSystemInformations () {
    if (isset($_SERVER["SERVER_SIGNATURE"])) {
       $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')'; 
    }
-   echo $msg."\n";
+   echo wordwrap($msg."\n", $width, "\n\t");
+
    if (isset($_SERVER["HTTP_USER_AGENT"])) {
       echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n"; 
    }
