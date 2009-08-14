@@ -3190,7 +3190,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
 					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.items_id=glpi_printers.id  AND conn_mon_$to_type.itemtype='".PRINTER_TYPE."') ".
-						" $LINK glpi_computers ON (conn_mon_$to_type.computers_id=glpi_computers.id) ";
+						" $LINK glpi_computers ON (conn_mon_$to_type.computers_id=glpi_computers.id ".getEntitiesRestrictRequest("AND",'glpi_computers').") ";
 
 					break;
 			}
@@ -3221,7 +3221,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
 					return " $LINK glpi_softwaresversions as glpi_softwaresversions_$to_type ON ( glpi_softwaresversions_$to_type.softwares_id = glpi_softwares.id ) ".
 						" $LINK glpi_computers_softwaresversions as inst_$to_type ON (inst_$to_type.softwaresversions_id = glpi_softwaresversions_$to_type.id) ".
-						" $LINK glpi_computers ON (inst_$to_type.computers_id = glpi_computers.id)";
+						" $LINK glpi_computers ON (inst_$to_type.computers_id = glpi_computers.id ".getEntitiesRestrictRequest("AND",'glpi_computers').")";
 
 					break;
 			}
