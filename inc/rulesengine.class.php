@@ -2381,7 +2381,8 @@ class RuleCachedCollection extends RuleCollection{
 		$into_old="";
 		foreach($this->cache_params["input_value"] as $param => $value){
 			$into_old.="`".$value."`, ";
-			$old_values.="\"".$input[$param]."\", ";
+         // Input are slashes protected...
+         $old_values.="'".$input[$param]."', ";
 		}
 		
 		$into_new="";
@@ -2391,7 +2392,8 @@ class RuleCachedCollection extends RuleCollection{
 				$output[$param]="";
 			}
 			$into_new.=", `".$value."`";
-			$new_values.=" ,\"".$output[$param]."\"";
+         // Output are not slashes protected...
+         $new_values.=" ,'".addslashes($output[$param])."'";
 		}
 		$sql="INSERT INTO `".$this->cache_table."` (".$into_old."`rule_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
 		$DB->query($sql);
