@@ -1026,9 +1026,8 @@ class Rule extends CommonDBTM{
 		echo "</span>\n";	
 
 		echo "</td><td>";
-		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["id"] . "\">";
+		echo "<input type='hidden' name='rules_id' value=\"" . $this->fields["id"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		
 		echo "</td></tr>";
 
@@ -1060,9 +1059,8 @@ class Rule extends CommonDBTM{
 
 
 			
-		echo "<input type=hidden name='rules_id' value=\"" . $this->fields["id"] . "\">";
+		echo "<input type='hidden' name='rules_id' value=\"" . $this->fields["id"] . "\">";
 		echo "<input type='submit' name='add_criteria' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-		echo "<input type='hidden' name='rules_id' value='" . $rules_id . "'>";
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
