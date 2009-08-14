@@ -1475,6 +1475,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `login` varchar(255) collate utf8_unicode_ci default NULL,
   `password` varchar(255) collate utf8_unicode_ci default NULL,
   `is_active` tinyint(1) NOT NULL default '1',
+  `filesize_max` int(11) NOT NULL default '2097152',
   PRIMARY KEY  (`id`),
   KEY `entities_id` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3035,7 +3036,6 @@ CREATE TABLE `glpi_users` (
   `is_categorized_soft_expanded` tinyint(1) default NULL,
   `is_not_categorized_soft_expanded` tinyint(1) default NULL,
   `followup_private` tinyint(1) default NULL,
-  `filesize_max` int(11) NOT NULL default '2097152',
   `default_request_type` int(11) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`name`),
