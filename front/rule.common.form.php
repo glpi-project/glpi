@@ -97,7 +97,6 @@ elseif (isset($_POST["add_criteria"]))
 		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
 	
-	unset($_POST["rules_id"]);
 	$rulecriteria->add($_POST);
 
 
@@ -111,8 +110,6 @@ elseif (isset($_POST["add_action"]))
 	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
-
-	unset($_POST["rules_id"]);
 
 	$ruleaction->add($_POST);
 
