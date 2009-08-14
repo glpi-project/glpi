@@ -1445,7 +1445,7 @@ function update0721to080() {
    if (!FieldExists('glpi_mailcollectors', 'filesize_max')) {
 //       $query="ALTER TABLE `glpi_mailcollectors` ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
 //       $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
-      $changes['glpi_users'][]="ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
+      $changes['glpi_mailcollectors'][]="ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
    }
  
 
@@ -1743,8 +1743,8 @@ function update0721to080() {
    }
 
    foreach ($changes as $table => $tab){
+      displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $table); // Updating schema
       $query="ALTER TABLE `$table` ".implode($tab," ,\n").";";
-//      echo $query.'<br><br>';
       $DB->query($query) or die("0.80 multiple alter in $table " . $LANG['update'][90] . $DB->error());
    }
 
