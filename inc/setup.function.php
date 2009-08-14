@@ -1252,14 +1252,49 @@ function showSystemInformations () {
 	echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
 	echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
  	
- 	echo "GLPI ".$CFG_GLPI['version']."\n";
+ 	echo "GLPI ".$CFG_GLPI['version']."  (".$CFG_GLPI['root_doc']." => ".dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
-	echo $LANG['plugins'][0].":\n";
+   echo "\n</pre></td></tr><tr><th>" . $LANG['common'][52] . "</th></tr>";
+   echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+   echo wordwrap($LANG['setup'][5].": ".php_uname()."\n", $width, "\n\t");
+   $exts = get_loaded_extensions();
+   sort($exts);
+   echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
+   $msg = $LANG['common'][12].": ";
+   foreach (array('memory_limit', 'max_execution_time','safe_mode') as $key) {
+      $msg.= $key.'="'.ini_get($key).'" ';
+   }
+   echo wordwrap($msg."\n", $width, "\n\t");
+
+   $msg = $LANG['Menu'][4].": "; 
+   if (isset($_SERVER["SERVER_SOFTWARE"])) {
+      $msg .= $_SERVER["SERVER_SOFTWARE"]; 
+   }
+   if (isset($_SERVER["SERVER_SIGNATURE"])) {
+      $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')'; 
+   }
+   echo $msg."\n";
+   if (isset($_SERVER["HTTP_USER_AGENT"])) {
+      echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n"; 
+   }
+
+   $version = "???";
+   foreach($DB->request('SELECT VERSION() as ver') as $data) {
+      $version = $data['ver'];      
+   }
+   echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";   
+
+   echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['plugins'][0] . "</th></tr>";
+   echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
 	$plug = new Plugin();
 	$pluglist=$plug->find("","name, directory");
 	foreach ($pluglist as $plugin) {
-		$msg  = $plugin['directory']."\t".$LANG['common'][16].":".$plugin['name']."\t";
-		$msg .= $LANG['rulesengine'][78].":".$plugin['version']."\t";
+		$msg = 
+         substr(str_pad($plugin['directory'],30),0,16)." ".$LANG['common'][16].":".
+         utf8_substr(str_pad($plugin['name'],40),0,30)." ";
+		$msg .= $LANG['rulesengine'][78].":".str_pad($plugin['version'],10)." ";
 		$msg .= $LANG['joblist'][0].":";
 		switch ($plugin['state']){
 			case PLUGIN_NEW :
@@ -1284,22 +1319,12 @@ function showSystemInformations () {
 		}
 		echo wordwrap("\t".$msg."\n", $width, "\n\t\t");
 	} 	
- 	echo wordwrap($LANG['setup'][5].": ".php_uname()."\n", $width, "\n\t");
- 	$exts = get_loaded_extensions();
- 	sort($exts);
- 	echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
-
-	$version = "???";
-	foreach($DB->request('SELECT VERSION() as ver') as $data) {
-		$version = $data['ver'];		
-	}
-	echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";	
 	echo "\n</pre></td></tr>";
 
 	$ldap_servers = getLdapServers ();
 	
 	if (!empty($ldap_servers)) {
-		echo "<tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>";
+		echo "\n</pre></td><tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>";
 		echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
 		foreach ($ldap_servers as $ID => $value) {
@@ -1317,11 +1342,45 @@ function showSystemInformations () {
 				}
 				echo wordwrap($msg."\n", $width, "\n\t\t");
 		}
-		
-		echo "\n</pre></td>";
 	}
 
-	echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
+   echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][704] .
+      " / ". $LANG['mailgate'][0] ."</th></tr>";
+   echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+   $msg = $LANG['setup'][231].": ";
+   switch($CFG_GLPI['smtp_mode']) {
+      case MAIL_MAIL:
+         $msg .= $LANG['setup'][650];
+         break;
+      case MAIL_SMTP:
+         $msg .= $LANG['setup'][651];
+         break;
+      case MAIL_SMTPSSL:
+         $msg .= $LANG['setup'][652];
+         break;
+      case MAIL_SMTPTLS:
+         $msg .= $LANG['setup'][653];
+         break;
+      default:
+   }
+   if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
+      $msg .= "  (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").$CFG_GLPI['smtp_host'].")";
+   }
+   echo wordwrap($msg."\n", $width, "\n\t\t");
+   
+   echo $LANG['mailgate'][0]."\n";
+   foreach ($DB->request('glpi_mailcollectors') as $mc) {
+      
+      $msg = "\t".$LANG['common'][16].':"'.$mc['name'].'"  ';
+      $msg .= " ".$LANG['common'][52].':'.$mc['host'];
+      $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
+      $msg .= " ".$LANG['login'][7].':'.(empty($mc['password'])?$LANG['choice'][0]:$LANG['choice'][1]);
+      $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
+      echo wordwrap($msg."\n", $width, "\n\t\t");
+   }
+
+	echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
 	echo "</tr>"; 
 	
 	
