@@ -50,7 +50,8 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
 	}
 
 	// Trim for remove keyboard errors
-	$field=trim($field);
+   // Input are slashed protected, not output.
+	$field=stripslashes(trim($field));
 	$pattern=trim($pattern);
 	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH){
 		//Perform comparison with fields in lower case
