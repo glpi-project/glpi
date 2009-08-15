@@ -38,7 +38,6 @@ $NEEDED_ITEMS=array("device","enterprise");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
 checkRight("device","w");
 
 commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
@@ -51,8 +50,9 @@ if (!empty($_GET["devicetype"])) {
 }
 
 echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
-echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
-echo $LANG['devices'][17]."&nbsp;: </th></tr><tr class='tab_bg_1'><td><select name='devicetype'>";
+echo "<table class='tab_cadre'><tr><th colspan='2'>";
+echo "&nbsp;".$LANG['devices'][17]."&nbsp;:&nbsp;</th></tr>";
+echo "<tr class='tab_bg_1'><td><select name='devicetype'>";
 
 $dp=getDictDeviceLabel();
 
