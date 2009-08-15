@@ -2005,6 +2005,4 @@ function addToNavigateListItems($itemtype,$ID,$sub_type=-1){
 	}
 }
 
-
-
 ?>

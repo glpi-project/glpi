@@ -255,12 +255,13 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit
 			}
 		}
 
-		$field="name";
-		if (strstr($_POST['table'],"glpi_device")) {
-			$field="designation";
-		}
+      $field="name";
+      if (strstr($_POST['table'],"glpi_device")
+         && !strstr($_POST['table'],"types")) {
+         $field="designation";
+      }
 
-		
+
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
          $search=makeTextSearch($_POST['searchText']);
          $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;

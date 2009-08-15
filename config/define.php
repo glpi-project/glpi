@@ -288,7 +288,7 @@
 			LINK_TYPE => "front/link.form.php",
 //			STATE_TYPE => "??",
 			PHONE_TYPE => "front/phone.form.php",
-//			DEVICE_TYPE => "???",
+			DEVICE_TYPE => "front/device.form.php",
 			REMINDER_TYPE => "front/reminder.form.php",
 //			STAT_TYPE => "???",
 			GROUP_TYPE => "front/group.form.php",
