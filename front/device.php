@@ -43,10 +43,10 @@ checkRight("device","w");
 
 commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
 
-if(!isset($_GET["devicetype"])) {
+if (!isset($_GET["devicetype"])) {
    $_GET["devicetype"] = "0";
 }
-if(!empty($_GET["devicetype"])) {
+if (!empty($_GET["devicetype"])) {
    titleDevices($_GET["devicetype"]);
 }
 
