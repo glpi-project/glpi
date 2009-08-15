@@ -67,7 +67,7 @@ echo "</select></td>";
 echo "<td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 echo "</table></form>";
 
-if(!empty($_GET["devicetype"])) {
+if (!empty($_GET["devicetype"])) {
    showDevicesList($_GET["devicetype"],$_SERVER['PHP_SELF']);
 }
 
