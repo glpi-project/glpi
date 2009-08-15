@@ -200,11 +200,14 @@ function current_time() {
 function get_content($DB, $table,$from,$limit){
 	$content="";
 	$result = $DB->query("SELECT * FROM `$table` LIMIT ".intval($from).",".intval($limit));
-	if($result)
+	if($result) {
+      $num_fields=$DB->num_fields($result);
+      if(get_magic_quotes_runtime()) $gmqr=TRUE;
+      
 		while($row = $DB->fetch_row($result)) {
-			if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
+			if ($gmqr) $row=addslashes_deep($row);
 			$insert = "INSERT INTO `$table` VALUES (";
-			for($j=0; $j<$DB->num_fields($result);$j++) {
+			for($j=0; $j<$num_fields;$j++) {
 				if(is_null($row[$j])) $insert .= "NULL,";
 				else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
 				else $insert .= "'',";
@@ -213,6 +216,7 @@ function get_content($DB, $table,$from,$limit){
 			$insert .= ");\n";
 			$content .= $insert;
 		}
+   }
 	return $content;
 }
 
