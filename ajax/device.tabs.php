@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: contact.tabs.php 8624 2009-08-04 12:45:43Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,47 +29,22 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS=array("device","enterprise");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-
-checkRight("device","w");
-
-commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
-
-if(!isset($_GET["devicetype"])) {
-   $_GET["devicetype"] = "0";
-}
-if(!empty($_GET["devicetype"])) {
-   titleDevices($_GET["devicetype"]);
+if(!isset($_POST["id"])) {
+	exit();
 }
 
-echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
-echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
-echo $LANG['devices'][17]."&nbsp;: </th></tr><tr class='tab_bg_1'><td><select name='devicetype'>";
-
-$dp=getDictDeviceLabel();
-
-foreach ($dp as $key=>$val) {
-   $sel="";
-   if ($_GET["devicetype"]==$key) {
-      $sel="selected";
-   }
-   echo "<option value='$key' $sel>".$val."</option>";	
+if ($_POST['id']>0){
+   //displayPluginAction(DEVICE_TYPE,$_POST["id"],$_POST['glpi_tab']);
 }
-echo "</select></td>";
-echo "<td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
-echo "</table></form>";
+ajaxFooter();
 
-if(!empty($_GET["devicetype"])) {
-   showDevicesList($_GET["devicetype"],$_SERVER['PHP_SELF']);
-}
-
-commonFooter();
 ?>
