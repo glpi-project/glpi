@@ -29,76 +29,79 @@
  */
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+   die("Sorry. You can't access directly to this file");
+}
 
 ///Class Devices
 class Device extends CommonDBTM {
-	/// Current device type
-	var $devtype=0;
+   /// Current device type
+   var $devtype=0;
 
-	/**
-	 * Constructor
-	 * @param $dev_type device type
-	**/
-	function __construct($dev_type) {
-		$this->devtype=$dev_type;
-		$this->table=getDeviceTable($dev_type);
+   /**
+    * Constructor
+    * @param $dev_type device type
+   **/
+   function __construct($dev_type) {
+      $this->devtype=$dev_type;
+      $this->table=getDeviceTable($dev_type);
       $this->type=DEVICE_TYPE;
-	}
+   }
 
+   function prepareInputForAdd($input) {
 
-	function prepareInputForAdd($input) {
-		if (isset($input['devicetype'])){
-			switch ($input['devicetype']){
-				case PROCESSOR_DEVICE :
-					if (isset($input['frequence'])){
-						if (!is_numeric($input['frequence'])){
-							$input['frequence']=0;
-						}
-					}
-					break;
-			}
-		}
+      if (isset($input['devicetype'])) {
+         switch ($input['devicetype']) {
+            case PROCESSOR_DEVICE :
+               if (isset($input['frequence'])) {
+                  if (!is_numeric($input['frequence'])) {
+                     $input['frequence']=0;
+                  }
+               }
+               break;
+         }
+      }
+      return $input;
+   }
 
-		return $input;
-	}
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-	function cleanDBonPurge($ID) {
-		global $DB;
-		
-      $query2 = "DELETE FROM glpi_computers_devices
-			WHERE devices_id = '$ID' AND devicetype='".$this->devtype."'";
-		$DB->query($query2);
-	}
+      $query2 = "DELETE 
+                 FROM `glpi_computers_devices` 
+                 WHERE `devices_id` = '$ID' 
+                       AND `devicetype`='".$this->devtype."'";
+      $DB->query($query2);
+   }
 
-	function canView () {
-		return haveRight("device","r");
-	}
+   function canView() {
+      return haveRight("device","r");
+   }
 
-	function canCreate () {
-		return haveRight("device","w");
-	}
-	// SPECIFIC FUNCTIONS
-	/**
-	 * Connect the current device to a computer
-	 *
-	 *@param $compID computer ID
-	 *@param $devicetype device type
-	 *@param $specificity value of the specificity
-	 *@return boolean : success ?
-	**/
-	function computer_link($compID,$devicetype,$specificity='') {
-		global $DB;
-		$query = "INSERT INTO glpi_computers_devices (devicetype,devices_id,computers_id,specificity)
-			VALUES ('".$devicetype."','".$this->fields["id"]."','".$compID."','".$specificity."')";
-		if($DB->query($query)) {
-			return $DB->insert_id();
-		} else { 
-			return false;
-		}
-	}
+   function canCreate() {
+      return haveRight("device","w");
+   }
+
+   // SPECIFIC FUNCTIONS
+   /**
+    * Connect the current device to a computer
+    *
+    *@param $compID computer ID
+    *@param $devicetype device type
+    *@param $specificity value of the specificity
+    *@return boolean : success ?
+   **/
+   function computer_link($compID,$devicetype,$specificity='') {
+      global $DB;
+
+      $query = "INSERT INTO 
+                `glpi_computers_devices` (`devicetype`, `devices_id`, `computers_id`, `specificity`)
+                VALUES ('".$devicetype."','".$this->fields["id"]."','".$compID."','".$specificity."')";
+      if($DB->query($query)) {
+         return $DB->insert_id();
+      } else { 
+         return false;
+      }
+   }
 
 }
 ?>
