@@ -279,17 +279,19 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
  * Get the ancestors of an item in a tree dropdown
  *
  * @param $table string: table name
- * @param $IDf integer: The ID of the item
+ * @param $items_id integer: The ID of the item
  * @return array of IDs of the ancestors
  */
-function getAncestorsOf($table,$IDf){
+function getAncestorsOf($table,$items_id){
    global $DB;
 
    $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"ancestors_cache");
    if ($use_cache){
-      $query="SELECT ancestors_cache FROM `$table` WHERE id = '$IDf'";
+      $query="SELECT `ancestors_cache` 
+              FROM `$table` 
+              WHERE `id` = '$items_id'";
       if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
          $ancestors=trim($DB->result($result,0,0));
          if (!empty($ancestors)){
@@ -298,32 +300,31 @@ function getAncestorsOf($table,$IDf){
       }
    }
    
-	// IDs to be present in the final array
+   // IDs to be present in the final array
    $id_found=array();
-	
-	// Get the leafs of previous founded item
-   while ($IDf>0){
+
+   if ($items_id>0) {
+      // Get the leafs of previous founded item
       // Get next elements
       $query="SELECT $parentIDfield
-               FROM `$table`
-               WHERE id = '$IDf'";
+              FROM `$table`
+              WHERE id = '$items_id'";
 
       $result=$DB->query($query);
       if ($DB->numrows($result)>0){
-         $IDf=$DB->result($result,0,0);
-      } else {
-         $IDf=0;
-      }
-      if (!isset($id_found[$IDf])){
-         $id_found[$IDf]=$IDf;
-      } else {
-         $IDf=0;
+         $parent=$DB->result($result,0,0);
+
+         // Recursive search, will also populate cache for parent 
+         if ($parent>0) {
+            $id_found = getAncestorsOf($table,$parent);
+         }
+         $id_found[$parent]=$parent;
       }
    }
 
    // Store cache datas in DB
    if ($use_cache){
-      $query="UPDATE `$table` SET ancestors_cache='".json_encode($id_found)."' WHERE id='$IDf';";
+      $query="UPDATE `$table` SET `ancestors_cache`='".json_encode($id_found)."' WHERE id='$items_id';";
       $DB->query($query);
    }
    return $id_found;
