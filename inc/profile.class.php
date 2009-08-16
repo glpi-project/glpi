@@ -184,32 +184,35 @@ class Profile extends CommonDBTM{
 		return $query;
 	}
 
-	/**
-	 * Is the current user have more right than all profiles in parameters
-	 *
-	 *@param $IDs array of profile ID to test
-	 *@return boolean true if have more right
-	 **/	
-	function currentUserHaveMoreRightThan($IDs=array()){
-		global $DB;
-
-		if (count($IDs)==0) {
-			return false;
-		}
-		$under_profiles=array();
-		$query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
-		$result=$DB->query($query);
-		while ($data=$DB->fetch_assoc($result)){
-			$under_profiles[$data['id']]=$data['id'];
-		}
-		foreach ($IDs as $ID){
-			if (!isset($under_profiles[$ID])){
-				return false;
-			}
-		}
-		return true;
-
-	}
+   /**
+    * Is the current user have more right than all profiles in parameters
+    *
+    *@param $IDs array of profile ID to test
+    *@return boolean true if have more right
+    **/	
+   function currentUserHaveMoreRightThan($IDs=array()){
+      global $DB;
+      
+      if (count($IDs)==0) {
+         // Check all profiles (means more right than all possible profiles) 
+         return (countElementsInTable($this->table)
+            == countElementsInTable($this->table, $this->getUnderProfileRetrictRequest('')));
+         // return false;
+      }
+      $under_profiles=array();
+      $query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
+      $result=$DB->query($query);
+      while ($data=$DB->fetch_assoc($result)) {
+         $under_profiles[$data['id']]=$data['id'];
+      }
+      foreach ($IDs as $ID) {
+         if (!isset($under_profiles[$ID])) {
+            return false;
+         }
+      }
+      return true;
+      
+   }
 
 	/**
 	 * Print the profile form configuration
