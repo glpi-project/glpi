@@ -584,11 +584,30 @@ function compdevice_add($computers_id,$devicetype,$dID,$specificity='',$dohistor
 function showDevicesList($devicetype,$target) {
    global $DB,$CFG_GLPI, $LANG;
 
+   if (isset($_REQUEST['start'])) {
+      $start = $_REQUEST['start'];
+   } else {
+      $start = 0;
+   }
+   $params = 'devicetype='.$devicetype;
+   $where = '';
+   if (isset($_REQUEST['name']) && !empty($_REQUEST['name'])) {
+      $params .= '&name='.urlencode(stripslashes($_REQUEST['name']));
+      $where = "`designation`" . makeTextSearch($_REQUEST['name']);
+   }
+   $number = countElementsInTable(getDeviceTable($devicetype), $where);
+   
+   printPager($start,$number,$_SERVER['PHP_SELF'],$params);
+
    // Lists Device from a devicetype
    $query = "SELECT `device`.`id`, `device`.`designation`, `glpi_manufacturers`.`name` as manufacturer 
              FROM `".getDeviceTable($devicetype)."` as device 
-             LEFT JOIN `glpi_manufacturers` ON (`glpi_manufacturers`.`id` = `device`.`manufacturers_id`) 
-             ORDER by `device`.`designation` ASC";
+             LEFT JOIN `glpi_manufacturers` ON (`glpi_manufacturers`.`id` = `device`.`manufacturers_id`) ";
+   if ($where) {
+      $query .= " WHERE $where ";
+   }
+   $query .= "ORDER by `device`.`designation` ASC 
+             LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
    // Get it from database	
    if ($result = $DB->query($query)) {
