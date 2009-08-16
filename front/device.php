@@ -42,17 +42,19 @@ checkRight("device","w");
 
 commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
 
-if (!isset($_GET["devicetype"])) {
-   $_GET["devicetype"] = "0";
+if (!isset($_GET['devicetype'])) {
+   $_GET['devicetype'] = "0";
+}
+if (!isset($_GET['name'])) {
+   $_GET['name'] = '';
 }
 if (!empty($_GET["devicetype"])) {
    titleDevices($_GET["devicetype"]);
 }
 
 echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
-echo "<table class='tab_cadre'><tr><th colspan='2'>";
-echo "&nbsp;".$LANG['devices'][17]."&nbsp;:&nbsp;</th></tr>";
-echo "<tr class='tab_bg_1'><td><select name='devicetype'>";
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr class='tab_bg_1'><td><strong>".$LANG['devices'][17]."</strong>&nbsp;: <select name='devicetype'>";
 
 $dp=getDictDeviceLabel();
 
@@ -64,7 +66,8 @@ foreach ($dp as $key=>$val) {
    echo "<option value='$key' $sel>".$val."</option>";	
 }
 echo "</select></td>";
-echo "<td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
+echo "<td>".$LANG['common'][16]."&nbsp;: <input  type='text' size='20' name='name' value='".$_GET['name']."'></td>";
+echo "<td class='tab_bg_2'><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
 echo "</table></form>";
 
 if (!empty($_GET["devicetype"])) {
