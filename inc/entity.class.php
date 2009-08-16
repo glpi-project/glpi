@@ -283,6 +283,68 @@ class Entity extends CommonDBTM{
 	function isRecursive () {
 		return true;
 	}	
+
+   /**
+   * Check right on an entity
+   *
+   * @param $ID ID of the entity (-1 if new item)
+   * @param $right Right to check : r / w / recursive
+   * @param $input array of input data (used for adding item)
+   *
+   * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+      global $LANG;
+
+      // Get item ID 
+      if ($ID<0) {
+         // No entity define : adding process : use active entity
+         if (isset($input['entities_id'])) {
+            // this is the parent entity
+            $entity_to_check = $input['entities_id'];
+         } else {
+            $entity_to_check = $_SESSION["glpiactive_entity"];
+         }
+         // To add, need a recursive right on parent
+         // to get a right on new entity
+         $right = 'recursive';
+      } else {
+         if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+            // Item not found : no right
+            if (!$ID) {
+               // Hack for 'root' entity which is not stored
+               $this->fields=array('id'=>$ID,
+                                   'name'=>$LANG['entity'][2]);
+            } else if (!$this->getFromDB($ID)) {
+               return false;
+            }
+         }
+         $entity_to_check=$ID;
+      }
+
+      switch ($right) {
+         case 'r':
+            if ($this->canView()) {
+               return haveAccessToEntity($entity_to_check, true);
+            } 
+            break;
+
+         case 'w':
+            if ($this->canCreate()) {
+               return haveAccessToEntity($entity_to_check);
+            }
+            break;
+         case 'recursive':
+            // Always check 
+            if ($this->canCreate() && haveAccessToEntity($entity_to_check)) {
+               // Can make recursive if recursive access to entity
+               return haveRecursiveAccessToEntity($entity_to_check);
+            }
+            break;
+      }
+      return false;
+   }
+
 }
 
 ?>
