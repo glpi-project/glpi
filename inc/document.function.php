@@ -236,18 +236,27 @@ function showDeviceDocument($instID) {
 				if ($itemtype==TRACKING_TYPE) $column="id";
 				if ($itemtype==KNOWBASE_TYPE) $column="question";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_documents_items.id AS IDD, glpi_entities.id AS entity
-							FROM glpi_documents_items, ".$LINK_ID_TABLE[$itemtype];
-				if ($itemtype != ENTITY_TYPE) {
-					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.id=".$LINK_ID_TABLE[$itemtype].".entities_id) ";
-				}
-				$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".id = glpi_documents_items.items_id
-						AND glpi_documents_items.itemtype='$itemtype' AND glpi_documents_items.documents_id = '$instID' "
-						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
-				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
-					$query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
-				}
-				$query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$itemtype].".$column";
+				$query = "SELECT `".$LINK_ID_TABLE[$itemtype]."`.*, `glpi_documents_items`.`id` AS IDD, 
+							";
+            if ($itemtype == ENTITY_TYPE) {
+               // Left join because root entity not storeed
+               $query .= "`glpi_documents_items`.`items_id` AS entity
+                          FROM `glpi_documents_items`
+                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_documents_items`.`items_id`) 
+                          WHERE ";
+            } else {
+               $query .= "`glpi_entities`.`id` AS entity
+                          FROM `glpi_documents_items`, `".$LINK_ID_TABLE[$itemtype]."` 
+                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`)
+                          WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_documents_items`.`items_id`
+                          AND ";
+            }
+            $query .= "`glpi_documents_items`.`itemtype`='$itemtype' AND `glpi_documents_items`.`documents_id` = '$instID' "
+               . getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
+            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
+               $query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
+            }
+            $query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$itemtype].".$column";
 
             if ($itemtype==SOFTWARELICENSE_TYPE) {
                $soft=new Software();
@@ -258,8 +267,16 @@ function showDeviceDocument($instID) {
 						$ci->setType($itemtype);
 						while ($data=$DB->fetch_assoc($result_linked)){
 							$ID="";
-							if ($itemtype==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["id"];
-							if ($itemtype==KNOWBASE_TYPE) $data["name"]=$data["question"];
+                     if ($itemtype==ENTITY_TYPE && !$data['entity']) {
+                        $data['name']=$LANG['entity']['2'];
+                        $data['id']=0;
+                     }
+                     if ($itemtype==TRACKING_TYPE) {
+                        $data["name"]=$LANG['job'][38]." ".$data["id"];
+                     }
+                     if ($itemtype==KNOWBASE_TYPE) {
+                        $data["name"]=$data["question"];
+                     }
                      if ($itemtype==SOFTWARELICENSE_TYPE) {
                         $soft->getFromDB($data['softwares_id']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
