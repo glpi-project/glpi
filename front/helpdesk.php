@@ -120,12 +120,12 @@ elseif (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=1;
 else $request_type=$_SESSION["helpdeskSaved"]["request_type"];
 
 if (!$post_ticket && isset($_POST["name"]))
-	$name=$_POST["name"];
+	$name=stripslashes($_POST["name"]);
 elseif (!isset($_SESSION["helpdeskSaved"]["name"])) $name='';
 else $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
 
 if (!$post_ticket && isset($_POST["contents"]))
-	$contents=$_POST["contents"];
+	$contents=cleanPostForTextArea($_POST["contents"]);
 elseif (!isset($_SESSION["helpdeskSaved"]["contents"])) $contents='';
 else {
 	$contents=cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
