@@ -119,16 +119,20 @@ if (!$post_ticket && isset($_POST["request_type"]))
 elseif (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=$_SESSION["glpidefault_request_type"];
 else $request_type=$_SESSION["helpdeskSaved"]["request_type"];
 
-if (!$post_ticket && isset($_POST["name"]))
-	$name=$_POST["name"];
-elseif (!isset($_SESSION["helpdeskSaved"]["name"])) $name='';
-else $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
+if (!$post_ticket && isset($_POST["name"])) {
+   $name=stripslashes($_POST["name"]);
+} else if (!isset($_SESSION["helpdeskSaved"]["name"])) {
+   $name='';
+} else {
+   $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
+}
 
-if (!$post_ticket && isset($_POST["content"]))
-	$content=$_POST["content"];
-elseif (!isset($_SESSION["helpdeskSaved"]["content"])) $content='';
-else {
-	$content=cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
+if (!$post_ticket && isset($_POST["content"])) {
+   $content=cleanPostForTextArea($_POST["content"]);
+} else if (!isset($_SESSION["helpdeskSaved"]["content"])) {
+   $content='';
+} else {
+   $content=cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
 }
 
 if (!$post_ticket && isset($_POST["_followup"]))
