@@ -192,9 +192,12 @@ class Profile extends CommonDBTM{
 	function currentUserHaveMoreRightThan($IDs=array()){
 		global $DB;
 
-		if (count($IDs)==0) {
-			return false;
-		}
+      if (count($IDs)==0) {
+         // Check all profiles (means more right than all possible profiles) 
+         return (countElementsInTable($this->table)
+              == countElementsInTable($this->table, $this->getUnderProfileRetrictRequest('')));
+      }
+
 		$under_profiles=array();
 		$query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
 		$result=$DB->query($query);
