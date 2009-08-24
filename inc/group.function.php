@@ -33,43 +33,45 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
  * Show devices of a group
  *
  * @param $ID integer : group ID
  */
-function showGroupDevice($ID){
-	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
+function showGroupDevice($ID) {
+   global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
-	$ci=new CommonItem();
-	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['common'][17]."</th>" .
-			"<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
-	foreach ($CFG_GLPI["linkgroup_types"] as $itemtype){
-		$query="SELECT * 
-			FROM ".$LINK_ID_TABLE[$itemtype]." 
-			WHERE groups_id='$ID' " .
-			getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '', isset($CFG_GLPI["recursive_type"][$itemtype]));
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$ci->setType($itemtype);
-			$type_name=$ci->getType();
-			$cansee=haveTypeRight($itemtype,"r");
-			while ($data=$DB->fetch_array($result)){
-				$link=($data["name"] ? $data["name"] : "(".$data["id"].")");
-				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".$data["id"]."'>".$link."</a>";
-				$linktype="";
-				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
-				echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
-			}
-		}
-
-	}
-	echo "</table></div>";
+   $ci=new CommonItem();
+   echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG['common'][17]."</th>";
+   echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
+   foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+      $query="SELECT *
+              FROM ".$LINK_ID_TABLE[$itemtype]."
+              WHERE `groups_id`='$ID' " .
+                    getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '',
+                                               isset($CFG_GLPI["recursive_type"][$itemtype]));
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         $ci->setType($itemtype);
+         $type_name=$ci->getType();
+         $cansee=haveTypeRight($itemtype,"r");
+         while ($data=$DB->fetch_array($result)) {
+            $link=($data["name"] ? $data["name"] : "(".$data["id"].")");
+            if ($cansee) {
+               $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
+                        $data["id"]."'>".$link."</a>";
+            }
+            $linktype="";
+            echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
+            echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
+         }
+      }
+   }
+   echo "</table></div>";
 }
 
 /**
@@ -78,156 +80,169 @@ function showGroupDevice($ID){
  * @param $target string : where to go on action
  * @param $ID integer : group ID
  */
-function showGroupUsers($target,$ID){
-	global $DB,$CFG_GLPI, $LANG;
+function showGroupUsers($target,$ID) {
+   global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
+   if (!haveRight("user","r") || !haveRight("group","r")) {
+      return false;
+   }
 
-	$group=new Group();
-	$rand=mt_rand();
-	if ($group->getFromDB($ID)){
-		$canedit=$group->can($ID,"w");
-	
-		$nb_per_line=3;
-		if ($canedit) {
-			$headerspan=$nb_per_line*2;	
-			echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
-		} else {
-			$headerspan=$nb_per_line;
-		}
-	
-		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
-		$query="SELECT glpi_users.*, glpi_groups_users.id as linkID 
-			FROM glpi_groups_users 
-			LEFT JOIN glpi_users ON (glpi_users.id = glpi_groups_users.users_id) 
-			WHERE glpi_groups_users.groups_id='$ID'
-			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
-	
-		$used = array();
+   $group=new Group();
+   $rand=mt_rand();
+   if ($group->getFromDB($ID)) {
+      $canedit=$group->can($ID,"w");
+      $nb_per_line=3;
+      if ($canedit) {
+         $headerspan=$nb_per_line*2;
+         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
+      } else {
+         $headerspan=$nb_per_line;
+      }
 
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$i=0;
-	
-			while ($data=$DB->fetch_array($result)){
-				if ($i%$nb_per_line==0) {
-					if ($i!=0) echo "</tr>";
-					echo "<tr class='tab_bg_1'>";
-				}
-				if ($canedit){
-					echo "<td width='10'>";
-					$sel="";
-					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-					echo "</td>";
-				}
-	
-				$used[$data["id"]]=$data["id"];
-				
-				echo "<td class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
-				echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
-				echo "</td>";
-				$i++;
-			}
-			while ($i%$nb_per_line!=0){
-				echo "<td>&nbsp;</td>";
-				if ($canedit) echo "<td>&nbsp;</td>";
-				$i++;
-			}
-			echo "</tr>";
-		}
-	
-		echo "</table></div>";
-	
-		if ($canedit){
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
+      $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID
+              FROM `glpi_groups_users`
+              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
+              WHERE `glpi_groups_users`.`groups_id`='$ID'
+              ORDER BY `glpi_users`.`name`, `glpi_users`.`realname`, `glpi_users`.`firstname`";
 
-			echo "<div class='center'>";
-			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-			echo "</td><td align='left' width='80%'>";
-			echo "<input type='hidden' name='groups_id' value='$ID'>";
-			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-			echo "</td>";
-			echo "</table>";
-			echo "</div>";
+      $used = array();
 
-			if ($group->fields["is_recursive"]) {
-            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",$group->fields["entities_id"]), 0, $used);
-			} else {
-				$res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
-			}		
-			$nb=($res ? $DB->result($res,0,"CPT") : 0);
-			
-			if ($nb) {		
-				echo "<div class='center'>";
-				echo "<table  class='tab_cadre_fixe'>";
-				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-				if ($group->fields["is_recursive"]) {
-               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["entities_id"]),0,$used);
-				} else {
-					dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);
-				}
-				//dropdownAllUsers("users_id",0,1,$group->fields["entities_id"],0,$used);
-				echo "</td><td align='center' class='tab_bg_2'>";
-				echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-				echo "</td></tr>";
-		
-				echo "</table></div><br>";
-			}
-	
-			echo "</form>";
-		}
-	}
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         $i=0;
+         while ($data=$DB->fetch_array($result)) {
+            if ($i%$nb_per_line==0) {
+               if ($i!=0) {
+                  echo "</tr>";
+               }
+               echo "<tr class='tab_bg_1'>";
+            }
+            if ($canedit) {
+               echo "<td width='10'>";
+               $sel="";
+               if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  $sel="checked";
+               }
+               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               echo "</td>";
+            }
+
+            $used[$data["id"]]=$data["id"];
+            echo "<td".($data["is_deleted"]=='1'?"_2":"")."'>";
+            echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
+            echo "</td>";
+            $i++;
+         }
+         while ($i%$nb_per_line!=0) {
+            echo "<td>&nbsp;</td>";
+            if ($canedit) {
+               echo "<td>&nbsp;</td>";
+            }
+            $i++;
+         }
+         echo "</tr>";
+      }
+      echo "</table></div>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<table width='80%' class='tab_glpi'>";
+         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+         echo "<td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') )
+                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
+                $LANG['buttons'][18]."</a></td>";
+         echo "<td>/</td>";
+         echo "<td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') )
+                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
+                $LANG['buttons'][19]."</a>";
+         echo "</td><td class='left' width='80%'>";
+         echo "<input type='hidden' name='groups_id' value='$ID'>";
+         echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         echo "</td>";
+         echo "</table></div>";
+
+         if ($group->fields["is_recursive"]) {
+            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",
+                                      $group->fields["entities_id"]), 0, $used);
+         } else {
+            $res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
+         }
+         $nb=($res ? $DB->result($res,0,"CPT") : 0);
+
+         if ($nb) {
+            echo "<div class='center'>";
+            echo "<table  class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
+            echo "<tr><td class='tab_bg_2 center'>";
+            if ($group->fields["is_recursive"]) {
+               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",
+                                                        $group->fields["entities_id"]),0,$used);
+            } else {
+               dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);
+            }
+            echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "</td></tr>";
+            echo "</table></div>";
+         }
+         echo "</form>";
+      }
+   }
 }
 
 /**
- * Add a group to a user 
+ * Add a group to a user
  *
  * @param $uID integer : user ID
  * @param $gID integer : group ID
  */
-function addUserGroup($uID,$gID){
-	global $DB;
-	if ($uID>0&&$gID>0){
+function addUserGroup($uID,$gID) {
+   global $DB;
 
-		$query="INSERT INTO glpi_groups_users (users_id,groups_id ) VALUES ('$uID','$gID');";
-		$result = $DB->query($query);
-	}
+   if ($uID>0 && $gID>0) {
+      $query="INSERT
+              INTO `glpi_groups_users` (`users_id`, `groups_id`)
+              VALUES ('$uID','$gID');";
+      $result = $DB->query($query);
+   }
 }
 
 /**
- * Delete a group to a user 
+ * Delete a group to a user
  *
  * @param $ID integer : glpi_groups_users ID
  */
-function deleteUserGroup($ID){
+function deleteUserGroup($ID) {
+   global $DB;
 
-	global $DB;
-	$query="DELETE FROM glpi_groups_users WHERE id = '$ID';";
-	$result = $DB->query($query);
+   $query="DELETE
+           FROM `glpi_groups_users`
+           WHERE `id` = '$ID';";
+   $result = $DB->query($query);
 }
 
 /**
  * Indicates if a group is present in an entity
  * @param group the group ID to look for
  * @param entity_request the entity to search into
- * @return true if group was found, false is not 
+ * @return true if group was found, false is not
  */
-function isGroupVisibleInEntity($group,$entity_restrict)
-{
-	global $DB;
-	$query = "SELECT id 
-		FROM glpi_groups 
-		WHERE id='$group' ".
-		getEntitiesRestrictRequest(" AND","glpi_groups","entities_id",$entity_restrict,true);
-	$result = $DB->query($query);
-	$found = false;
+function isGroupVisibleInEntity($group,$entity_restrict) {
+   global $DB;
 
-	if ($DB->numrows($result) ==1)
-		return true;
-	else
-		return false;	
+   $query = "SELECT `id`
+             FROM `glpi_groups`
+             WHERE `id`='$group' ".
+                   getEntitiesRestrictRequest(" AND","glpi_groups","entities_id",$entity_restrict,true);
+   $result = $DB->query($query);
+   $found = false;
+
+   if ($DB->numrows($result) ==1) {
+      return true;
+   } else {
+      return false;
+   }
 }
 ?>
