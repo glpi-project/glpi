@@ -44,7 +44,9 @@ class SetupDefaultDisplay extends CommonDBTM{
    }
 }
 
-/// Bookmark class
+/**
+ *  Bookmark class
+ */
 class Bookmark extends CommonDBTM {
 
    /**
@@ -87,7 +89,7 @@ class Bookmark extends CommonDBTM {
 
    function pre_updateInDB($input,$updates,$oldvalues=array()) {
 
-      // Set new user if initial user have been deleted 
+      // Set new user if initial user have been deleted
       if ($this->fields['users_id']==0) {
          $input['users_id']=$_SESSION["glpiID"];
          $this->fields['users_id']=$_SESSION["glpiID"];
@@ -108,8 +110,8 @@ class Bookmark extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query="DELETE 
-              FROM glpi_bookmarks_users 
+      $query="DELETE
+              FROM glpi_bookmarks_users
               WHERE bookmarks_id='$ID'";
       $DB->query($query);
    }
@@ -158,16 +160,16 @@ class Bookmark extends CommonDBTM {
       }
       echo "</th></tr>";
 
-      echo "<tr><td class='tab_bg_1'>".$LANG['common'][16]."&nbsp;:</td>"; 
+      echo "<tr><td class='tab_bg_1'>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td class='tab_bg_1'>";
       autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,
                               $this->fields["users_id"]);
-      echo "</td></tr>"; 
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
 
-      if (haveRight("bookmark_public","w")) { 
+      if (haveRight("bookmark_public","w")) {
          privatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
                              $this->fields["is_recursive"]);
       } else {
@@ -183,10 +185,10 @@ class Bookmark extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">";
-         echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" 
+         echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\"
                                     class='submit'></div>";
          echo "</td></tr>";
-      } else { 
+      } else {
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value=\"$ID\">";
@@ -284,7 +286,7 @@ class Bookmark extends CommonDBTM {
    *
    * @param $ID ID of the bookmark
    * @return nothing
-   **/	
+   **/
    function mark_default($ID) {
       global $DB;
 
@@ -292,8 +294,8 @@ class Bookmark extends CommonDBTM {
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
          $dd=new SetupDefaultDisplay();
          // Is default view for this itemtype already exists ?
-         $query="SELECT id 
-                 FROM glpi_bookmarks_users 
+         $query="SELECT id
+                 FROM glpi_bookmarks_users
                  WHERE users_id='".$_SESSION['glpiID']."'
                        AND itemtype='".$this->fields['itemtype']."'";
          if ($result=$DB->query($query)) {
@@ -315,7 +317,7 @@ class Bookmark extends CommonDBTM {
    *
    * @param $ID ID of the bookmark
    * @return nothing
-   **/	
+   **/
    function unmark_default($ID) {
       global $DB;
 
@@ -323,8 +325,8 @@ class Bookmark extends CommonDBTM {
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
          $dd=new SetupDefaultDisplay();
          // Is default view for this itemtype already exists ?
-         $query="SELECT id 
-                 FROM glpi_bookmarks_users 
+         $query="SELECT id
+                 FROM glpi_bookmarks_users
                  WHERE users_id='".$_SESSION['glpiID']."'
                        AND bookmarks_id='$ID'
                        AND itemtype='".$this->fields['itemtype']."'";
@@ -352,15 +354,15 @@ class Bookmark extends CommonDBTM {
          return false;
       }
 
-      $query="SELECT `".$this->table."`.*, glpi_bookmarks_users.id AS IS_DEFAULT 
-              FROM `".$this->table."` 
-              LEFT JOIN glpi_bookmarks_users 
-                        ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype 
-                            AND `".$this->table."`.id = glpi_bookmarks_users.bookmarks_id) 
+      $query="SELECT `".$this->table."`.*, glpi_bookmarks_users.id AS IS_DEFAULT
+              FROM `".$this->table."`
+              LEFT JOIN glpi_bookmarks_users
+                        ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype
+                            AND `".$this->table."`.id = glpi_bookmarks_users.bookmarks_id)
               WHERE ";
 
       if ($is_private) {
-         $query.="(`".$this->table."`.is_private=1 
+         $query.="(`".$this->table."`.is_private=1
                    AND `".$this->table."`.users_id='".$_SESSION['glpiID']."') ";
       } else {
          $query.="(`".$this->table."`.is_private=0  ".
@@ -400,7 +402,7 @@ class Bookmark extends CommonDBTM {
                   if (isset($_GET["select"]) && $_GET["select"]=="all") {
                      $sel="checked";
                   }
-                  echo "<input type='checkbox' name='bookmark[" . $this->fields["id"] . "]' " . 
+                  echo "<input type='checkbox' name='bookmark[" . $this->fields["id"] . "]' " .
                          $sel . ">";
                } else {
                   echo "&nbsp;";
@@ -435,13 +437,13 @@ class Bookmark extends CommonDBTM {
             echo "<table class='tab_cadre_report'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
             echo "<td class='center'>";
-            echo "<a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\" 
+            echo "<a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\"
                    href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
             echo "<td>/</td><td class='center'>";
-            echo "<a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\" 
+            echo "<a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\"
                    href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
             echo "</td><td class='left' width='80%'>";
-            echo "<input type='submit' name='delete_several' value=\"".$LANG['buttons'][6]."\" 
+            echo "<input type='submit' name='delete_several' value=\"".$LANG['buttons'][6]."\"
                    class='submit'>";
             echo "</td></tr>";
             echo "</table>";

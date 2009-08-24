@@ -39,9 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 //!  ConsumableType Class
 /**
-  This class is used to manage the various types of consumables.
-  @see Consumable
-  @author Julien Dombre
+ * This class is used to manage the various types of consumables.
+ * @see Consumable
+ * @author Julien Dombre
  */
 class ConsumableType extends CommonDBTM {
 
@@ -58,8 +58,8 @@ class ConsumableType extends CommonDBTM {
       global $DB;
 
       // Delete cartridconsumablesges
-      $query = "DELETE 
-                FROM `glpi_consumables` 
+      $query = "DELETE
+                FROM `glpi_consumables`
                 WHERE (`consumablesitems_id` = '$ID')";
       $DB->query($query);
    }
@@ -119,10 +119,10 @@ class ConsumableType extends CommonDBTM {
       if ($ID > 0){
          $this->check($ID,'r');
       } else {
-         // Create item 
+         // Create item
          $this->check(-1,'w');
          $this->getEmpty();
-      } 
+      }
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
       $this->showFormHeader($target,$ID,$withtemplate,2);
@@ -207,9 +207,9 @@ class Consumable extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query = "DELETE 
-                FROM `glpi_infocoms` 
-                WHERE (`items_id` = '$ID' 
+      $query = "DELETE
+                FROM `glpi_infocoms`
+                WHERE (`items_id` = '$ID'
                        AND `itemtype`='".CONSUMABLE_ITEM_TYPE."')";
       $result = $DB->query($query);
    }
@@ -241,9 +241,9 @@ class Consumable extends CommonDBTM {
    function restore($input,$history=1) {
       global $DB;
 
-      $query = "UPDATE 
-                `glpi_consumables` 
-                SET `date_out` = NULL 
+      $query = "UPDATE
+                `glpi_consumables`
+                SET `date_out` = NULL
                 WHERE `id`='".$input["id"]."'";
 
       if ($result = $DB->query($query)) {
@@ -267,10 +267,10 @@ class Consumable extends CommonDBTM {
    function out($ID,$users_id=0) {
       global $DB;
 
-      $query = "UPDATE 
-                `glpi_consumables` 
-                SET `date_out` = '".date("Y-m-d")."', 
-                    `users_id` = '$users_id' 
+      $query = "UPDATE
+                `glpi_consumables`
+                SET `date_out` = '".date("Y-m-d")."',
+                    `users_id` = '$users_id'
                 WHERE `id` = '$ID'";
 
       if ($result = $DB->query($query)) {
@@ -282,8 +282,8 @@ class Consumable extends CommonDBTM {
 
    /**
     * Get the ID of entity assigned to the Consumable
-    * 
-    * @return ID of the entity 
+    *
+    * @return ID of the entity
    **/
    function getEntityID () {
       $ci=new ConsumableType();

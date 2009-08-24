@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// Contact class
+/**
+ * Contact class
+ */
 class Contact extends CommonDBTM{
 
    /**
@@ -53,8 +55,8 @@ class Contact extends CommonDBTM{
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query = "DELETE 
-                FROM `glpi_contacts_suppliers` 
+      $query = "DELETE
+                FROM `glpi_contacts_suppliers`
                 WHERE `contacts_id` = '$ID'";
       $DB->query($query);
    }
@@ -89,11 +91,11 @@ class Contact extends CommonDBTM{
    function GetAddress() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`name`, `glpi_suppliers`.`address`, 
-                       `glpi_suppliers`.`postcode`, `glpi_suppliers`.`town`, 
-                       `glpi_suppliers`.`state`, `glpi_suppliers`.`country` 
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers` 
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."' 
+      $query = "SELECT `glpi_suppliers`.`name`, `glpi_suppliers`.`address`,
+                       `glpi_suppliers`.`postcode`, `glpi_suppliers`.`town`,
+                       `glpi_suppliers`.`state`, `glpi_suppliers`.`country`
+                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
+                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
                       AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
 
       if ($result = $DB->query($query)) {
@@ -115,9 +117,9 @@ class Contact extends CommonDBTM{
    function GetWebsite() {
       global $DB;
 
-      $query = "SELECT `glpi_suppliers`.`website` as website 
-                FROM `glpi_suppliers`, `glpi_contacts_suppliers` 
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."' 
+      $query = "SELECT `glpi_suppliers`.`website` as website
+                FROM `glpi_suppliers`, `glpi_contacts_suppliers`
+                WHERE `glpi_contacts_suppliers`.`contacts_id` = '".$this->fields["id"]."'
                       AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`";
 
       if ($result = $DB->query($query)) {
@@ -149,7 +151,7 @@ class Contact extends CommonDBTM{
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         // Create item 
+         // Create item
          $this->check(-1,'w');
          $this->getEmpty();
       }
@@ -215,7 +217,7 @@ class Contact extends CommonDBTM{
       dropdownValue("glpi_contactstypes","contactstypes_id",$this->fields["contactstypes_id"]);
       echo "</td>";
       echo "<td></td><td class='center'>";
-      if ($ID>0) { 
+      if ($ID>0) {
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?id=$ID'>".
                 $LANG['common'][46]."</a>";
       }
@@ -238,10 +240,10 @@ class ContactSupplier extends CommonDBRelation{
    function __construct () {
       $this->table = 'glpi_contacts_suppliers';
       $this->type = CONTACTSUPPLIER_TYPE;
-      
+
       $this->itemtype_1 = CONTACT_TYPE;
       $this->items_id_1 = 'contacts_id';
-      
+
       $this->itemtype_2 = ENTERPRISE_TYPE;
       $this->items_id_2 = 'suppliers_id';
    }

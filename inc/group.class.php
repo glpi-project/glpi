@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES contact
+/**
+ * Group class
+ */
 class Group extends CommonDBTM {
 
    /**

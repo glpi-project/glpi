@@ -32,7 +32,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Common DataBase Table Manager Class
+/**
+ *  Common DataBase Table Manager Class
+ */
 class CommonDBTM {
 
    /// Data of the Item
@@ -69,14 +71,14 @@ class CommonDBTM {
    function getFromDB ($ID) {
       // Make new database object and fill variables
       global $DB;
-      
+
       // != 0 because 0 is consider as empty
       if (strlen($ID)==0) {
          return false;
       }
 
-      $query = "SELECT * 
-                FROM `".$this->table."` 
+      $query = "SELECT *
+                FROM `".$this->table."`
                 WHERE ".$this->getIndexName()." = '$ID'";
 
       if ($result = $DB->query($query)) {
@@ -87,7 +89,7 @@ class CommonDBTM {
       }
       return false;;
    }
-   
+
    /**
    * Retrieve all items from the database
    *
@@ -100,7 +102,7 @@ class CommonDBTM {
       // Make new database object and fill variables
       global $DB;
 
-      $query = "SELECT * 
+      $query = "SELECT *
                 FROM `".$this->table."`";
       if (!empty($condition)) {
          $query.=" WHERE $condition";
@@ -133,7 +135,7 @@ class CommonDBTM {
    function getIndexName() {
       return "id";
    }
-   
+
    /**
    * Get an empty item
    *
@@ -143,7 +145,7 @@ class CommonDBTM {
    function getEmpty () {
       //make an empty database object
       global $DB;
-      
+
       if ($fields = $DB->list_fields($this->table)) {
          foreach ($fields as $key => $val) {
             $this->fields[$key] = "";
@@ -157,7 +159,7 @@ class CommonDBTM {
       $this->post_getEmpty();
       return true;
    }
-   
+
    /**
    * Actions done at the end of the getEmpty function
    *
@@ -166,7 +168,7 @@ class CommonDBTM {
    **/
    function post_getEmpty () {
    }
-   
+
    /**
    * Update the item in the database
    *
@@ -177,11 +179,11 @@ class CommonDBTM {
    **/
    function updateInDB($updates,$oldvalues=array()) {
       global $DB,$CFG_GLPI;
-      
+
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
             $query  = "UPDATE `".
-                       $this->table."` 
+                       $this->table."`
                        SET `";
             $query .= $field."`";
 
@@ -193,7 +195,7 @@ class CommonDBTM {
                $query .= $this->fields[$field]."'";
             }
             $query .= " WHERE id ='";
-            $query .= $this->fields["id"];	
+            $query .= $this->fields["id"];
             $query .= "'";
 
             if (!$DB->query($query)) {
@@ -224,7 +226,7 @@ class CommonDBTM {
    **/
    function addToDB() {
       global $DB;
-      
+
       //unset($this->fields["id"]);
       $nb_fields=count($this->fields);
       if ($nb_fields>0) {
@@ -275,11 +277,11 @@ class CommonDBTM {
    **/
    function restoreInDB($ID) {
       global $DB,$CFG_GLPI;
-      
+
       if (in_array($this->table,$CFG_GLPI["deleted_tables"])) {
          $query = "UPDATE `".
-                   $this->table."` 
-                   SET is_deleted='0' 
+                   $this->table."`
+                   SET is_deleted='0'
                    WHERE (id = '$ID')";
          if ($result = $DB->query($query)) {
             return true;
@@ -290,7 +292,7 @@ class CommonDBTM {
          return false;
       }
    }
-   
+
    /**
    * Mark deleted or purge an item in the database
    *
@@ -308,8 +310,8 @@ class CommonDBTM {
          $this->cleanHistory($ID);
          $this->cleanRelationData($ID);
 
-         $query = "DELETE 
-                   FROM `".$this->table."` 
+         $query = "DELETE
+                   FROM `".$this->table."`
                    WHERE id = '$ID'";
 
          if ($result = $DB->query($query)) {
@@ -320,8 +322,8 @@ class CommonDBTM {
          }
       }else {
          $query = "UPDATE `".
-                   $this->table."` 
-                   SET is_deleted='1' 
+                   $this->table."`
+                   SET is_deleted='1'
                    WHERE id = '$ID'";
          $this->cleanDBonMarkDeleted($ID);
 
@@ -344,11 +346,11 @@ class CommonDBTM {
    **/
    function cleanHistory($ID){
       global $DB;
-      
+
       if ($this->dohistory) {
-         $query = "DELETE 
-                   FROM glpi_logs 
-                   WHERE (itemtype = '".$this->type."' 
+         $query = "DELETE
+                   FROM glpi_logs
+                   WHERE (itemtype = '".$this->type."'
                           AND items_id = '$ID')";
          $DB->query($query);
       }
@@ -370,16 +372,16 @@ class CommonDBTM {
          foreach ($RELATION[$this->table] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {
-                  $query="UPDATE 
-                          `$tablename` 
-                          SET `$field` = 0 
+                  $query="UPDATE
+                          `$tablename`
+                          SET `$field` = 0
                           WHERE `$field`='$ID' ";
                   $DB->query($query);
                } else {
                   foreach ($field as $f) {
-                     $query="UPDATE 
-                             `$tablename` 
-                             SET `$f` = 0 
+                     $query="UPDATE
+                             `$tablename`
+                             SET `$f` = 0
                              WHERE `$f`='$ID' ";
                      $DB->query($query);
                   }
@@ -388,7 +390,7 @@ class CommonDBTM {
          }
       }
    }
-   
+
    /**
    * Actions done after the DELETE of the item in the database
    *
@@ -453,7 +455,7 @@ class CommonDBTM {
 
          // fill array for add
          foreach ($input as $key => $val) {
-            // TEST -> TO DELETE Not needed for add process : always copy data 
+            // TEST -> TO DELETE Not needed for add process : always copy data
             // && (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])
             if ($key[0]!='_' && isset($table_fields[$key])) {
                $this->fields[$key] = $input[$key];
@@ -501,10 +503,10 @@ class CommonDBTM {
 
       if ($addMessAfterRedirect) {
          addMessageAfterRedirect($LANG['common'][70] . ": <a href='" . $CFG_GLPI["root_doc"].
-                                 "/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . 
+                                 "/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] .
                                  (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"]) 
-                                 ? stripslashes($this->fields["name"]) 
+                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
+                                 ? stripslashes($this->fields["name"])
                                  : "(".$this->fields['id'].")") . "</a>");
       }
    }
@@ -520,15 +522,15 @@ class CommonDBTM {
    function prepareInputForAdd($input) {
       return $input;
    }
-   
+
    /**
    * Actions done after the ADD of the item in the database
-   * 
-   *@param $newID ID of the new item 
+   *
+   *@param $newID ID of the new item
    *@param $input datas used to add the item
    *
-   * @return nothing 
-   * 
+   * @return nothing
+   *
    **/
    function post_addItem($newID,$input) {
    }
@@ -600,7 +602,7 @@ class CommonDBTM {
 
             if ($this->updateInDB($updates,$oldvalues)) {
                $this->addMessageOnUpdateAction($input);
-               doHook("item_update",array("type"=>$this->type, "id" => $input["id"], 
+               doHook("item_update",array("type"=>$this->type, "id" => $input["id"],
                       "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
             }
          }
@@ -635,8 +637,8 @@ class CommonDBTM {
       if ($addMessAfterRedirect) {
          addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".
                                  $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"]) 
-                                 ? stripslashes($this->fields["name"]) 
+                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
+                                 ? stripslashes($this->fields["name"])
                                  : "(".$this->fields['id'].")") . "</a>");
       }
    }
@@ -646,7 +648,7 @@ class CommonDBTM {
    *
    *@param $input datas used to update the item
    *
-   *@return the modified $input array 
+   *@return the modified $input array
    *
    **/
    function prepareInputForUpdate($input) {
@@ -657,10 +659,10 @@ class CommonDBTM {
    * Actions done after the UPDATE of the item in the database
    *
    *@param $input datas used to update the item
-   *@param $updates array of the updated fields 
-   *@param $history store changes history ? 
+   *@param $updates array of the updated fields
+   *@param $history store changes history ?
    *
-   *@return nothing 
+   *@return nothing
    *
    **/
    function post_updateItem($input,$updates,$history=1) {
@@ -717,7 +719,7 @@ class CommonDBTM {
             if ($this->deleteFromDB($this->fields["id"],$force)) {
                if ($force) {
                   $this->addMessageOnPurgeAction($input);
-                  doHook("item_purge",array("type"=>$this->type, "id" => $this->fields["id"], 
+                  doHook("item_purge",array("type"=>$this->type, "id" => $this->fields["id"],
                          "input" => $input));
                } else {
                   $this->addMessageOnDeleteAction($input);
@@ -727,7 +729,7 @@ class CommonDBTM {
 
                      historyLog ($this->fields["id"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
                   }
-                  doHook("item_delete",array("type"=>$this->type, "id" => $this->fields["id"], 
+                  doHook("item_delete",array("type"=>$this->type, "id" => $this->fields["id"],
                          "input" => $input));
                }
             }
@@ -766,8 +768,8 @@ class CommonDBTM {
       if ($addMessAfterRedirect) {
          addMessageAfterRedirect($LANG['common'][72] . ": <a href='" . $CFG_GLPI["root_doc"]."/".
                                  $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"]) 
-                                 ? stripslashes($this->fields["name"]) 
+                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
+                                 ? stripslashes($this->fields["name"])
                                  : "(".$this->fields['id'].")") . "</a>");
       }
    }
@@ -793,14 +795,14 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) && 
-                                 !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) 
+         addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) &&
+                                 !empty($this->fields["name"]) ? stripslashes($this->fields["name"])
                                  : "(".$this->fields['id'].")"));
       }
    }
 
    /**
-   * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion 
+   * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion
    *
    *@param $ID ID of the item to delete
    *
@@ -810,14 +812,14 @@ class CommonDBTM {
    function pre_deleteItem($ID) {
       return true;
    }
-   
+
    /**
-   * Restore an item trashed in the database. 
+   * Restore an item trashed in the database.
    *
-   *@param $input array : the _POST vars returned bye the item form when press restore 
+   *@param $input array : the _POST vars returned bye the item form when press restore
    *@param $history boolean : do history log ?
    *
-   *@return Nothing () 
+   *@return Nothing ()
    *@todo specific ones : cartridges / consumables : more reuse than restore
    *
    **/
@@ -839,7 +841,7 @@ class CommonDBTM {
                $changes[1] = $changes[2] = "";
                historyLog ($input["id"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
             }
-            doHook("item_restore",array("type"=>$this->type, "id" => $input["id"], 
+            doHook("item_restore",array("type"=>$this->type, "id" => $input["id"],
                    "input" => $input));
          }
       }
@@ -868,14 +870,14 @@ class CommonDBTM {
       if ($addMessAfterRedirect) {
          addMessageAfterRedirect($LANG['common'][74] . ": <a href='" . $CFG_GLPI["root_doc"]."/".
                                  $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"]) 
-                                 ? stripslashes($this->fields["name"]) 
+                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
+                                 ? stripslashes($this->fields["name"])
                                  : "(".$this->fields['id'].")") . "</a>");
       }
    }
 
    /**
-   * Reset fields of the item 
+   * Reset fields of the item
    *
    **/
    function reset() {
@@ -895,14 +897,14 @@ class CommonDBTM {
    }
 
    /**
-   * Show onglets 
+   * Show onglets
    *
    *@param $ID ID of the item to display
    *@param $withtemplate is a template view ?
    *@param $actif active onglet
    *@param $addparams array of parameters to add to URLs and ajax
    *
-   *@return Nothing () 
+   *@return Nothing ()
    *
    **/
    function showTabs($ID,$withtemplate,$actif,$addparams=array()) {
@@ -965,7 +967,7 @@ class CommonDBTM {
          echo "<li><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
             if (utf8_strlen($glpilisttitle)>$_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = utf8_substr($glpilisttitle, 0, $_SESSION['glpidropdown_chars_limit']) 
+               $glpilisttitle = utf8_substr($glpilisttitle, 0, $_SESSION['glpidropdown_chars_limit'])
                                             . "&hellip;";
             }
             echo $glpilisttitle;
@@ -1041,7 +1043,7 @@ class CommonDBTM {
          $plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
          $tabs+=$plug_tabs;
          // Not all tab for templates and if only 1 tab
-         if($display_all && empty($withtemplate) 
+         if($display_all && empty($withtemplate)
             && count($tabs)>1) {
             $tabs[-1]=array('title'=>$LANG['common'][66],
                             'url'=>$CFG_GLPI['root_doc']."/$tabpage",
@@ -1085,7 +1087,7 @@ class CommonDBTM {
    function canUnrecurs() {
       global $DB, $LINK_ID_TABLE, $CFG_GLPI;
 
-      $ID  = $this->fields['id'];	
+      $ID  = $this->fields['id'];
       if ($ID<0 || !$this->fields['is_recursive']) {
          return true;
       }
@@ -1103,13 +1105,13 @@ class CommonDBTM {
                // 1->N Relation
                if (is_array($field)) {
                   foreach ($field as $f) {
-                     if (countElementsInTable($tablename, "`$f`='$ID' AND entities_id 
+                     if (countElementsInTable($tablename, "`$f`='$ID' AND entities_id
                          NOT IN $entities")>0) {
                         return false;
                      }
                   }
                } else {
-                  if (countElementsInTable($tablename, "`$field`='$ID' AND entities_id 
+                  if (countElementsInTable($tablename, "`$field`='$ID' AND entities_id
                       NOT IN $entities")>0) {
                      return false;
                   }
@@ -1121,8 +1123,8 @@ class CommonDBTM {
                      $devfield  = $rel[$tablename][0]; // items_id...
                      $typefield = $rel[$tablename][1]; // itemtype...
 
-                     $sql = "SELECT DISTINCT `$typefield` AS itemtype 
-                             FROM `$tablename` 
+                     $sql = "SELECT DISTINCT `$typefield` AS itemtype
+                             FROM `$tablename`
                              WHERE `$field`='$ID'";
                      $res = $DB->query($sql);
 
@@ -1130,14 +1132,14 @@ class CommonDBTM {
                      if ($res) {
                         while ($data = $DB->fetch_assoc($res)) {
                            $itemtype=$data["itemtype"];
-                           if (isset($LINK_ID_TABLE[$itemtype]) && 
-                               in_array($device=$LINK_ID_TABLE[$itemtype], 
+                           if (isset($LINK_ID_TABLE[$itemtype]) &&
+                               in_array($device=$LINK_ID_TABLE[$itemtype],
                                $CFG_GLPI["specif_entities_tables"])) {
 
-                              if (countElementsInTable("$tablename, $device", 
-                                  "`$tablename`.`$field`='$ID' 
-                                  AND `$tablename`.`$typefield`='$itemtype' 
-                                  AND `$tablename`.`$devfield`=`$device`.id 
+                              if (countElementsInTable("$tablename, $device",
+                                  "`$tablename`.`$field`='$ID'
+                                  AND `$tablename`.`$typefield`='$itemtype'
+                                  AND `$tablename`.`$devfield`=`$device`.id
                                   AND `$device`.entities_id NOT IN $entities")>0) {
                                  return false;
                               }
@@ -1145,23 +1147,23 @@ class CommonDBTM {
                         }
                      }
                   // Search for another N->N Relation
-                  } else if ($othertable != $this->table && isset($rel[$tablename]) 
+                  } else if ($othertable != $this->table && isset($rel[$tablename])
                              && in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
 
                      if (is_array($rel[$tablename])) {
                         foreach ($rel[$tablename] as $otherfield) {
                            if (countElementsInTable("$tablename, $othertable",
-                               "`$tablename`.`$field`='$ID' 
-                               AND `$tablename`.`$otherfield`=`$othertable`.id 
+                               "`$tablename`.`$field`='$ID'
+                               AND `$tablename`.`$otherfield`=`$othertable`.id
                                AND `$othertable`.entities_id NOT IN $entities")>0) {
                               return false;
                            }
                         }
                      } else {
                         $otherfield = $rel[$tablename];
-                        if (countElementsInTable("$tablename, $othertable", 
-                            "`$tablename`.`$field`=$ID 
-                            AND `$tablename`.`$otherfield`=`$othertable`.id 
+                        if (countElementsInTable("$tablename, $othertable",
+                            "`$tablename`.`$field`=$ID
+                            AND `$tablename`.`$otherfield`=`$othertable`.id
                             AND `$othertable`.entities_id NOT IN $entities")>0) {
                            return false;
                         }
@@ -1172,11 +1174,11 @@ class CommonDBTM {
          }
       }
       // Doc links to this item
-      if ($this->type > 0 
+      if ($this->type > 0
          && countElementsInTable("glpi_documents_items, glpi_documents",
-                                 "glpi_documents_items.items_id=$ID 
-                                  AND glpi_documents_items.itemtype=".$this->type." 
-                                  AND glpi_documents_items.documents_id=glpi_documents.id 
+                                 "glpi_documents_items.items_id=$ID
+                                  AND glpi_documents_items.itemtype=".$this->type."
+                                  AND glpi_documents_items.documents_id=glpi_documents.id
                                   AND glpi_documents.entities_id NOT IN $entities")>0) {
          return false;
       }
@@ -1188,12 +1190,12 @@ class CommonDBTM {
    /*
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
-    * 
+    *
     * @param $ID ID of the item (-1 if new item)
     * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
     * @param $colspan for each column
     * @param $candel : set to false to hide "delete" button
-    * 
+    *
     */
    function showFormButtons ($ID, $withtemplate='', $colspan=1, $candel=true) {
       global $LANG, $CFG_GLPI;
@@ -1245,7 +1247,7 @@ class CommonDBTM {
       }
       echo "</td>";
       echo "</tr>\n";
-      
+
       // Close for Form
       echo "</table></div></form>";
    }
@@ -1260,7 +1262,7 @@ class CommonDBTM {
    * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
    * @param $colspan for each column
    * @param $formoptions string (javascript p.e.)
-   * 
+   *
    */
    function showFormHeader ($target, $ID, $withtemplate='', $colspan=1, $formoptions='') {
       global $LANG, $CFG_GLPI;
@@ -1281,7 +1283,7 @@ class CommonDBTM {
          echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . "&nbsp;: " . $this->fields["template_name"];
       } else if (!empty($withtemplate) && $withtemplate == 1) {
          echo "<input type='hidden' name='is_template' value='1' />\n";
-         echo $LANG['common'][6]."&nbsp;: "; 
+         echo $LANG['common'][6]."&nbsp;: ";
          autocompletionTextField("template_name",$this->table,"template_name",
                                  $this->fields["template_name"],25,$this->fields["entities_id"]);
       } else if (empty($ID)||$ID<0) {
@@ -1312,8 +1314,8 @@ class CommonDBTM {
             $image="/pics/aide.png";
          }
          $rand=mt_rand();
-         echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."' 
-                      onmouseout=\"cleanhide('comment_recursive$rand')\" 
+         echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."'
+                      onmouseout=\"cleanhide('comment_recursive$rand')\"
                       onmouseover=\"cleandisplay('comment_recursive$rand')\">";
          echo "<span class='over_link' id='comment_recursive$rand'>$comment</span>";
       } else {
@@ -1361,7 +1363,7 @@ class CommonDBTM {
       switch ($right) {
          case 'r':
             // Personnal item
-            if ($this->may_be_private && $this->fields['is_private'] 
+            if ($this->may_be_private && $this->fields['is_private']
                 && $this->fields['users_id']==$_SESSION["glpiID"]) {
                return true;
             } else {
@@ -1369,7 +1371,7 @@ class CommonDBTM {
                if ($this->canView()) {
                   // Is an item assign to an entity
                   if ($this->isEntityAssign()) {
-                     // Can be recursive check 
+                     // Can be recursive check
                      if ($this->maybeRecursive()) {
                         return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
                      } else { // Non recursive item
@@ -1384,7 +1386,7 @@ class CommonDBTM {
 
          case 'w':
             // Personnal item
-            if ($this->may_be_private && $this->fields['is_private'] 
+            if ($this->may_be_private && $this->fields['is_private']
                 && $this->fields['users_id']==$_SESSION["glpiID"]){
                return true;
             } else {
@@ -1412,7 +1414,7 @@ class CommonDBTM {
       }
       return false;
    }
-   
+
    /**
    * Check right on an item with block
    *
@@ -1443,10 +1445,10 @@ class CommonDBTM {
          }
       }
    }
-   
+
    /**
    * Is the object assigned to an entity
-   * 
+   *
    * @return boolean
    **/
    function isEntityAssign() {
@@ -1455,14 +1457,14 @@ class CommonDBTM {
 
    /**
    * Get the ID of entity assigned to the object
-   * 
+   *
    * Can be overloaded (ex : infocom)
-   * 
-   * @return ID of the entity 
+   *
+   * @return ID of the entity
    **/
    function getEntityID() {
       if ($this->entity_assign && isset($this->fields["entities_id"])) {
-         return $this->fields["entities_id"];		
+         return $this->fields["entities_id"];
       }
       return  -1;
    }
@@ -1481,7 +1483,7 @@ class CommonDBTM {
    *
    * Can be overloaded (ex : infocom)
    *
-    * @return integer (0/1) 
+    * @return integer (0/1)
    **/
    function isRecursive() {
       if ($this->may_be_recursive && isset($this->fields["is_recursive"])) {
@@ -1532,14 +1534,14 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Must can read first Item of the relation
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $input[$this->itemtype_1], 
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $input[$this->itemtype_1],
                     true);
       if (!$ci1->obj->can($input[$this->items_id_1],'r')) {
          return false;
       }
       // Must can read second Item of the relation
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $input[$this->itemtype_2], 
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $input[$this->itemtype_2],
                     true);
       if (!$ci2->obj->can($input[$this->items_id_2],'r')) {
          return false;
@@ -1554,12 +1556,12 @@ abstract class CommonDBRelation extends CommonDBTM {
       if ($ci1->obj->isEntityAssign() && $ci2->obj->isEntityAssign()) {
          if ($ci1->obj->getEntityID() == $ci2->obj->getEntityID()) {
             $checkentity = true;
-         } else if ($ci1->obj->isRecursive() 
-                    && in_array($ci1->obj->getEntityID(), 
+         } else if ($ci1->obj->isRecursive()
+                    && in_array($ci1->obj->getEntityID(),
                                  getAncestorsOf("glpi_entities",$ci2->obj->getEntityID()))) {
             $checkentity = true;
-         } else if ($ci2->obj->isRecursive() 
-                    && in_array($ci2->obj->getEntityID(), 
+         } else if ($ci2->obj->isRecursive()
+                    && in_array($ci2->obj->getEntityID(),
                                 getAncestorsOf("glpi_entities",$ci1->obj->getEntityID()))) {
             $checkentity = true;
          } else {
@@ -1570,7 +1572,7 @@ abstract class CommonDBRelation extends CommonDBTM {
          $checkentity = true;
       }
       // can write one item is enough
-      if ($ci1->obj->can($input[$this->items_id_1],'w') 
+      if ($ci1->obj->can($input[$this->items_id_1],'w')
           || $ci2->obj->can($input[$this->items_id_2],'w')) {
          return true;
       }
@@ -1579,23 +1581,23 @@ abstract class CommonDBRelation extends CommonDBTM {
 
    /**
     * Actions done after the ADD of the item in the database
-    * 
-    *@param $newID ID of the new item 
+    *
+    *@param $newID ID of the new item
     *@param $input datas used to add the item
     *
-    * @return nothing 
-    * 
+    * @return nothing
+    *
    **/
    function post_addItem($newID,$inpt) {
-      
+
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : 
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :
                     $this->fields[$this->itemtype_1], true);
       if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : 
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 :
                     $this->fields[$this->itemtype_2], true);
       if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
          return false;
@@ -1627,13 +1629,13 @@ abstract class CommonDBRelation extends CommonDBTM {
    function post_deleteFromDB($ID) {
 
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : 
+      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :
                     $this->fields[$this->itemtype_1], true);
       if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : 
+      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 :
                     $this->fields[$this->itemtype_2], true);
       if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
          return false;

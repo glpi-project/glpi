@@ -32,7 +32,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-///Class Devices
+/**
+ * Class Devices
+ */
 class Device extends CommonDBTM {
    /// Current device type
    var $devtype=0;
@@ -67,9 +69,9 @@ class Device extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query2 = "DELETE 
-                 FROM `glpi_computers_devices` 
-                 WHERE `devices_id` = '$ID' 
+      $query2 = "DELETE
+                 FROM `glpi_computers_devices`
+                 WHERE `devices_id` = '$ID'
                        AND `devicetype`='".$this->devtype."'";
       $DB->query($query2);
    }
@@ -94,12 +96,12 @@ class Device extends CommonDBTM {
    function computer_link($compID,$devicetype,$specificity='') {
       global $DB;
 
-      $query = "INSERT INTO 
+      $query = "INSERT INTO
                 `glpi_computers_devices` (`devicetype`, `devices_id`, `computers_id`, `specificity`)
                 VALUES ('".$devicetype."','".$this->fields["id"]."','".$compID."','".$specificity."')";
       if($DB->query($query)) {
          return $DB->insert_id();
-      } else { 
+      } else {
          return false;
       }
    }
@@ -114,33 +116,33 @@ class Device extends CommonDBTM {
 
    /**
     * Show Device Form
-    * 
+    *
     * @param $target where to go on action
     * @param $ID device ID
-    * 
+    *
     **/
    function showForm ($target,$ID) {
       global $CFG_GLPI,$LANG,$REFERER;
-   
+
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         // Create item 
+         // Create item
          $this->check(-1,'w');
          $this->getEmpty();
       }
-   
+
       echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";
       $this->showTabs($ID, "",$_SESSION['glpi_tab'],array("devicetype"=>$this->devtype,
                                                           "referer"=>$REFERER));
       $this->showFormHeader($target,$ID,'',2);
-   
+
       echo "<tr class='tab_bg_1'>";
       // table commune
-      
+
       echo "<td>".$LANG['common'][16]."&nbsp;: </td>";
       echo "<td>";
-      echo "<input type='hidden' name='referer' value='$REFERER'>"; 
+      echo "<input type='hidden' name='referer' value='$REFERER'>";
       echo "<input type='hidden' name='devicetype' value='".$this->devtype."'>";
       autocompletionTextField("designation",$this->table,"designation",
                               $this->fields["designation"],40);
@@ -162,10 +164,10 @@ class Device extends CommonDBTM {
          echo "</td></tr>";
       }
       // fin table Commune
-   
+
       // table particuliere
       switch($this->table) {
-         case "glpi_devicesmotherboards" : 
+         case "glpi_devicesmotherboards" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_moboard'][0]."&nbsp;:</td>";
             echo "<td>";
