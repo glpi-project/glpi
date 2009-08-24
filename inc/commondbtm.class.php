@@ -79,7 +79,7 @@ class CommonDBTM {
 
       $query = "SELECT *
                 FROM `".$this->table."`
-                WHERE ".$this->getIndexName()." = '$ID'";
+                WHERE `".$this->getIndexName()."` = '$ID'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)==1) {
@@ -194,7 +194,7 @@ class CommonDBTM {
                $query .= " = '";
                $query .= $this->fields[$field]."'";
             }
-            $query .= " WHERE id ='";
+            $query .= " WHERE `id` ='";
             $query .= $this->fields["id"];
             $query .= "'";
 
@@ -281,8 +281,8 @@ class CommonDBTM {
       if (in_array($this->table,$CFG_GLPI["deleted_tables"])) {
          $query = "UPDATE `".
                    $this->table."`
-                   SET is_deleted='0'
-                   WHERE (id = '$ID')";
+                   SET `is_deleted`='0'
+                   WHERE `id` = '$ID'";
          if ($result = $DB->query($query)) {
             return true;
          } else {
@@ -312,7 +312,7 @@ class CommonDBTM {
 
          $query = "DELETE
                    FROM `".$this->table."`
-                   WHERE id = '$ID'";
+                   WHERE `id` = '$ID'";
 
          if ($result = $DB->query($query)) {
             $this->post_deleteFromDB($ID);
@@ -323,8 +323,8 @@ class CommonDBTM {
       }else {
          $query = "UPDATE `".
                    $this->table."`
-                   SET is_deleted='1'
-                   WHERE id = '$ID'";
+                   SET `is_deleted`='1'
+                   WHERE `id` = '$ID'";
          $this->cleanDBonMarkDeleted($ID);
 
          if ($result = $DB->query($query)) {
@@ -349,9 +349,9 @@ class CommonDBTM {
 
       if ($this->dohistory) {
          $query = "DELETE
-                   FROM glpi_logs
-                   WHERE (itemtype = '".$this->type."'
-                          AND items_id = '$ID')";
+                   FROM `glpi_logs`
+                   WHERE (`itemtype` = '".$this->type."'
+                          AND `items_id` = '$ID')";
          $DB->query($query);
       }
    }
@@ -374,14 +374,14 @@ class CommonDBTM {
                if (!is_array($field)) {
                   $query="UPDATE
                           `$tablename`
-                          SET `$field` = 0
+                          SET `$field` = '0'
                           WHERE `$field`='$ID' ";
                   $DB->query($query);
                } else {
                   foreach ($field as $f) {
                      $query="UPDATE
                              `$tablename`
-                             SET `$f` = 0
+                             SET `$f` = '0'
                              WHERE `$f`='$ID' ";
                      $DB->query($query);
                   }
@@ -455,8 +455,6 @@ class CommonDBTM {
 
          // fill array for add
          foreach ($input as $key => $val) {
-            // TEST -> TO DELETE Not needed for add process : always copy data
-            // && (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])
             if ($key[0]!='_' && isset($table_fields[$key])) {
                $this->fields[$key] = $input[$key];
             }
@@ -1140,7 +1138,7 @@ class CommonDBTM {
                                   "`$tablename`.`$field`='$ID'
                                   AND `$tablename`.`$typefield`='$itemtype'
                                   AND `$tablename`.`$devfield`=`$device`.id
-                                  AND `$device`.entities_id NOT IN $entities")>0) {
+                                  AND `$device`.`entities_id` NOT IN $entities")>'0') {
                                  return false;
                               }
                            }
@@ -1155,7 +1153,7 @@ class CommonDBTM {
                            if (countElementsInTable("$tablename, $othertable",
                                "`$tablename`.`$field`='$ID'
                                AND `$tablename`.`$otherfield`=`$othertable`.id
-                               AND `$othertable`.entities_id NOT IN $entities")>0) {
+                               AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
                               return false;
                            }
                         }
@@ -1164,7 +1162,7 @@ class CommonDBTM {
                         if (countElementsInTable("$tablename, $othertable",
                             "`$tablename`.`$field`=$ID
                             AND `$tablename`.`$otherfield`=`$othertable`.id
-                            AND `$othertable`.entities_id NOT IN $entities")>0) {
+                            AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
                            return false;
                         }
                      }
@@ -1175,11 +1173,11 @@ class CommonDBTM {
       }
       // Doc links to this item
       if ($this->type > 0
-         && countElementsInTable("glpi_documents_items, glpi_documents",
-                                 "glpi_documents_items.items_id=$ID
-                                  AND glpi_documents_items.itemtype=".$this->type."
-                                  AND glpi_documents_items.documents_id=glpi_documents.id
-                                  AND glpi_documents.entities_id NOT IN $entities")>0) {
+         && countElementsInTable("`glpi_documents_items`, `glpi_documents`",
+                                 "`glpi_documents_items`.`items_id`='$ID'
+                                  AND `glpi_documents_items`.`itemtype`=".$this->type."
+                                  AND `glpi_documents_items`.`documents_id`=`glpi_documents`.`id`
+                                  AND `glpi_documents`.`entities_id` NOT IN $entities")>'0') {
          return false;
       }
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
