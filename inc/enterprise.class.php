@@ -34,182 +34,177 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
-
+   die("Sorry. You can't access directly to this file");
+}
 
 class Enterprise extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_suppliers";
-		$this->type=ENTERPRISE_TYPE;
-		$this->entity_assign=true;
-		$this->may_be_recursive=true;
-	}
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_suppliers";
+      $this->type=ENTERPRISE_TYPE;
+      $this->entity_assign=true;
+      $this->may_be_recursive=true;
+   }
 
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-	function cleanDBonPurge($ID) {
+      $job=new Job;
 
-		global $DB;
+      // Delete all enterprises associations from infocoms and contract
+      $query3 = "DELETE
+                 FROM `glpi_contracts_suppliers`
+                 WHERE `suppliers_id` = '$ID'";
+      $result3 = $DB->query($query3);
 
-		$job=new Job;
+      // Delete all contact enterprise associations
+      $query2 = "DELETE
+                 FROM `glpi_contacts_suppliers`
+                 WHERE `suppliers_id` = '$ID'";
+      $result2 = $DB->query($query2);
+   }
 
-		// Delete all enterprises associations from infocoms and contract
-		$query3 = "DELETE FROM glpi_contracts_suppliers WHERE (suppliers_id = '$ID')";
-		$result3 = $DB->query($query3);
+   function defineTabs($ID,$withtemplate) {
+      global $LANG,$CFG_GLPI;
 
-		// Delete all contact enterprise associations
-		$query2 = "DELETE FROM glpi_contacts_suppliers WHERE (suppliers_id = '$ID')";
-		$result2 = $DB->query($query2);
-	}
+      $ong=array();
+      if ($ID>0) {
+         if (haveRight("contact_enterprise","r")) {
+            $ong[1] = $LANG['Menu'][22];
+         }
+         if (haveRight("contract","r")) {
+            $ong[4] = $LANG['Menu'][26];
+         }
+         $ong[15] = $LANG['financial'][104];
+         if (haveRight("document","r")) {
+            $ong[5] = $LANG['Menu'][27];
+         }
+         if (haveRight("show_all_ticket","1")) {
+            $ong[6] = $LANG['title'][28];
+         }
+         if (haveRight("link","r")) {
+            $ong[7] = $LANG['title'][34];
+         }
+         if (haveRight("notes","r")) {
+            $ong[10] = $LANG['title'][37];
+         }
+      } else { // New item
+         $ong[1]=$LANG['title'][26];
+      }
 
-	function defineTabs($ID,$withtemplate){
-		global $LANG,$CFG_GLPI;
+      return $ong;
+   }
 
-		$ong=array();
-		if ($ID>0){
-			if(haveRight("contact_enterprise","r")){
-				$ong[1] = $LANG['Menu'][22];
-			}
-			if (haveRight("contract","r")){
-				$ong[4] = $LANG['Menu'][26];
-			}
-			$ong[15] = $LANG['financial'][104];
-			if (haveRight("document","r")){
-				$ong[5] = $LANG['Menu'][27];
-			}
-			if (haveRight("show_all_ticket","1")){
-				$ong[6] = $LANG['title'][28];
-			}
-			if (haveRight("link","r")){
-				$ong[7] = $LANG['title'][34];
-			}
-			if (haveRight("notes","r")){
-				$ong[10] = $LANG['title'][37];
-			}
-		} else { // New item
-			$ong[1]=$LANG['title'][26];
-		}
+   /**
+    * Print the enterprise form
+    *
+    *@param $target form target
+    *@param $ID Integer : Id of the computer or the template to print
+    *@param $withtemplate='' boolean : template or basic computer
+    *
+    *@return Nothing (display)
+    **/
+   function showForm ($target,$ID,$withtemplate='') {
+      global $CFG_GLPI,$LANG;
 
-		return $ong;
-	}
+      // Show Enterprise or blank form
+      if (!haveRight("contact_enterprise","r")) {
+         return false;
+      }
 
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
 
-	// SPECIFIC FUNCTION
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate,2);
 
-/*
-	// NOT_USED
-	function countContacts() {
-		global $DB;
-		$query = "SELECT * FROM glpi_contacts_suppliers WHERE (suppliers_id = '".$this->fields["id"]."')";
-		if ($result = $DB->query($query)) {
-			$number = $DB->numrows($result);
-			return $number;
-		} else {
-			return false;
-		}
-	}
-*/
-	/**
-	 * Print the enterprise form
-	 *
-	 *@param $target form target
-	 *@param $ID Integer : Id of the computer or the template to print
-	 *@param $withtemplate='' boolean : template or basic computer
-	 *
-	 *@return Nothing (display)
-	 **/
-	function showForm ($target,$ID,$withtemplate='') {
-		// Show Enterprise or blank form
-
-		global $CFG_GLPI,$LANG;
-
-		if (!haveRight("contact_enterprise","r")) return false;
-
-
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
-		} 
-
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		$this->showFormHeader($target,$ID,$withtemplate,2);
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_suppliers","name",$this->fields["name"],40,$this->fields["entities_id"]);
+      autocompletionTextField("name","glpi_suppliers","name",$this->fields["name"],40,
+                              $this->fields["entities_id"]);
       echo "</td>";
-
-      echo "<td>".$LANG['financial'][79].":		</td><td>";
+      echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
+      echo "<td>";
       dropdownValue("glpi_supplierstypes", "supplierstypes_id", $this->fields["supplierstypes_id"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("phonenumber","glpi_suppliers","phonenumber",$this->fields["phonenumber"],40,$this->fields["entities_id"]);
+      autocompletionTextField("phonenumber","glpi_suppliers","phonenumber",
+                              $this->fields["phonenumber"],40,$this->fields["entities_id"]);
       echo "</td>";
-
-      echo "<td valign='top' rowspan='4'>";
-      echo $LANG['common'][25].":	</td>";
-      echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
+      echo "<td rowspan='8' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='8'><textarea cols='45' rows='13' name='comment' >".
+            $this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30].":		</td><td>";
-      autocompletionTextField("fax","glpi_suppliers","fax",$this->fields["fax"],40,$this->fields["entities_id"]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
+      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("website","glpi_suppliers","website",$this->fields["website"],40,$this->fields["entities_id"]);
+      autocompletionTextField("fax","glpi_suppliers","fax",$this->fields["fax"],40,
+                              $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][14].":		</td><td>";
-      autocompletionTextField("email","glpi_suppliers","email",$this->fields["email"],40,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-
-      echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG['financial'][44].":		</td>";
-      echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
-      echo "<td>".$LANG['financial'][100]."</td>";
+      echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("postcode","glpi_suppliers","postcode",$this->fields["postcode"],40,$this->fields["entities_id"]);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][101].":		</td><td>";
-      autocompletionTextField("town","glpi_suppliers","town",$this->fields["town"],40,$this->fields["entities_id"]);
+      autocompletionTextField("website","glpi_suppliers","website",$this->fields["website"],40,
+                              $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102].":		</td><td>";
-      autocompletionTextField("state","glpi_suppliers","state",$this->fields["state"],40,$this->fields["entities_id"]);
+      echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("email","glpi_suppliers","email",$this->fields["email"],40,
+                              $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103].":		</td><td>";
-      autocompletionTextField("country","glpi_suppliers","country",$this->fields["country"],40,$this->fields["entities_id"]);
+      echo "<td class='middle'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td class='middle'><textarea cols='45' rows='3' name='address'>".
+             $this->fields["address"]."</textarea></td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("postcode","glpi_suppliers","postcode",$this->fields["postcode"],7,
+                              $this->fields["entities_id"]);
+      echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
+      autocompletionTextField("town","glpi_suppliers","town",$this->fields["town"],25,
+                              $this->fields["entities_id"]);
       echo "</td></tr>";
-	
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("state","glpi_suppliers","state",$this->fields["state"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("country","glpi_suppliers","country",$this->fields["country"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
       $this->showFormButtons($ID,$withtemplate,2);
 
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-		return true;
+      return true;
 
-	}
+   }
 
 }
 
