@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
  * Show users of an entity
@@ -43,176 +43,191 @@ if (!defined('GLPI_ROOT')){
  * @param $target string : where to go on action
  * @param $ID integer : entity ID
  */
-function showEntityUser($target,$ID){
-	global $DB,$CFG_GLPI, $LANG;
-	
-	if (!haveRight("entity","r")||!haveRight("user","r"))	return false;
+function showEntityUser($target,$ID) {
+   global $DB,$CFG_GLPI, $LANG;
 
-	$entity=new Entity();
+   if (!haveRight("entity","r") || !haveRight("user","r")) {
+      return false;
+   }
 
-	//$canedit=haveRight("entity","w");
-	$canedit = $entity->can($ID,"w");
-	$canshowuser=haveRight("user","r");
-	$nb_per_line=3;
-	if ($canedit) $headerspan=$nb_per_line*2;
-	else $headerspan=$nb_per_line;
-	$rand=mt_rand();
-	echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action=\"$target\">";
+   $entity=new Entity();
 
-	if ($entity->getFromDB($ID)||$ID==0){
-		if ($canedit){
-	
-			echo "<div class='center'>";
-			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-			echo "<input type='hidden' name='entities_id' value='$ID'>";
-			dropdownAllUsers("users_id",0,1);
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG['profiles'][22].":";
-			dropdownUnderProfiles("profiles_id");
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG['profiles'][28].":";
-			dropdownYesNo("is_recursive",0);
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-			echo "</td></tr>";
-	
-			echo "</table></div><br>";
-	
-		}
-	
-	
-	
-		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
+   $canedit = $entity->can($ID,"w");
+   $canshowuser=haveRight("user","r");
+   $nb_per_line=3;
+   if ($canedit) {
+      $headerspan=$nb_per_line*2;
+   } else {
+      $headerspan=$nb_per_line;
+   }
+   $rand=mt_rand();
+   echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action=\"$target\">";
 
+   if ($entity->getFromDB($ID) || $ID==0) {
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr>";
+         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+         dropdownAllUsers("users_id",0,1);
+         echo "</td><td class='tab_bg_2 center'>";
+         echo $LANG['profiles'][22]."&nbsp;:&nbsp;";
+         dropdownUnderProfiles("profiles_id");
+         echo "</td><td class='tab_bg_2 center'>";
+         echo $LANG['profiles'][28]."&nbsp;:&nbsp;";
+         dropdownYesNo("is_recursive",0);
+         echo "</td><td class='tab_bg_2 center'>";
+         echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table></div><br>";
+      }
+      echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".
+             $LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
+      $query="SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
+              FROM `glpi_profiles_users`
+              LEFT JOIN `glpi_profiles` ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
+              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+              WHERE `glpi_profiles_users`.`entities_id`='$ID'
+                    AND `glpi_users`.`is_deleted`='0'";
 
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_array($result)) {
+            echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
-		$query="SELECT DISTINCT glpi_profiles.id, glpi_profiles.name 
-				FROM glpi_profiles_users 
-				LEFT JOIN glpi_profiles ON (glpi_profiles_users.profiles_id = glpi_profiles.id)
-				LEFT JOIN glpi_users ON (glpi_users.id = glpi_profiles_users.users_id)
-				WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0;";
-	
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-	
-			while ($data=$DB->fetch_array($result)){
-				echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
+            $query="SELECT `glpi_users`.*, `glpi_profiles_users`.`id` AS linkID,
+                           `glpi_profiles_users`.`is_recursive`, `glpi_profiles_users`.`is_dynamic`
+                    FROM `glpi_profiles_users`
+                    LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+                    WHERE `glpi_profiles_users`.`entities_id`='$ID'
+                          AND `glpi_users`.`is_deleted`='0'
+                          AND `glpi_profiles_users`.`profiles_id`='".$data['id']."'
+                    ORDER BY `glpi_profiles_users`.`profiles_id`, `glpi_users`.`name`,
+                             `glpi_users`.`realname`, `glpi_users`.`firstname`";
+            $result2=$DB->query($query);
+            if ($DB->numrows($result2)>0) {
+               $i=0;
+               while ($data2=$DB->fetch_array($result2)) {
+                  if ($i%$nb_per_line==0) {
+                     if ($i!=0) {
+                        echo "</tr>";
+                     }
+                     echo "<tr class='tab_bg_1'>";
+                  }
+                  if ($canedit) {
+                     echo "<td width='10'>";
+                     $sel="";
+                     if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                        $sel="checked";
+                     }
+                     echo "<input type='checkbox' name='item[".$data2["linkID"]."]' value='1' $sel>";
+                     echo "</td>";
+                  }
+                  echo "<td>";
 
-				$query="SELECT glpi_users.*,glpi_profiles_users.id as linkID,glpi_profiles_users.is_recursive,glpi_profiles_users.is_dynamic
-					FROM glpi_profiles_users 
-					LEFT JOIN glpi_users ON (glpi_users.id = glpi_profiles_users.users_id) 
-					WHERE glpi_profiles_users.entities_id='$ID' AND glpi_users.is_deleted=0 AND glpi_profiles_users.profiles_id='".$data['id']."'
-					ORDER BY glpi_profiles_users.profiles_id, glpi_users.name, glpi_users.realname, glpi_users.firstname";
-				$result2=$DB->query($query);
-				if ($DB->numrows($result2)>0){
-					$i=0;
-					while ($data2=$DB->fetch_array($result2)){
-	
-						if ($i%$nb_per_line==0) {
-							if ($i!=0) echo "</tr>";
-							echo "<tr class='tab_bg_1'>";
-						}
-						if ($canedit){
-							echo "<td width='10'>";
-							$sel="";
-							if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-							echo "<input type='checkbox' name='item[".$data2["linkID"]."]' value='1' $sel>";
-							echo "</td>";
-						}
-			
-						echo "<td>";
-			
-						echo formatUserName($data2["id"],$data2["name"],$data2["realname"],$data2["firstname"],$canshowuser);
-						if ($data2["is_dynamic"]||$data2["is_recursive"]){
-							echo "<strong>&nbsp;(";
-							if ($data2["is_dynamic"]) echo "D";
-							if ($data2["is_dynamic"]&&$data2["is_recursive"]) echo ", ";
-							if ($data2["is_recursive"]) echo "R";
-							echo ")</strong>";
-						}
-						echo "</td>";
-						$i++;
-					}
-					while ($i%$nb_per_line!=0){
-						echo "<td>&nbsp;</td>";
-						if ($canedit) echo "<td>&nbsp;</td>";
-						$i++;
-					}
-					echo "</tr>";
+                  echo formatUserName($data2["id"],$data2["name"],$data2["realname"],
+                                      $data2["firstname"],$canshowuser);
+                  if ($data2["is_dynamic"] || $data2["is_recursive"]) {
+                     echo "<strong>&nbsp;(";
+                     if ($data2["is_dynamic"]) {
+                        echo "D";
+                     }
+                     if ($data2["is_dynamic"] && $data2["is_recursive"]) {
+                        echo ", ";
+                     }
+                     if ($data2["is_recursive"]) {
+                        echo "R";
+                     }
+                     echo ")</strong>";
+                  }
+                  echo "</td>";
+                  $i++;
+               }
+               while ($i%$nb_per_line!=0) {
+                  echo "<td>&nbsp;</td>";
+                  if ($canedit) {
+                     echo "<td>&nbsp;</td>";
+                  }
+                  $i++;
+               }
+               echo "</tr>";
+            } else {
+               echo "<tr colspan='$headerspan'>".$LANG['common'][54]."</tr>";
+            }
+         }
+      }
+      echo "</table></div>";
 
-				} else {
-					echo "<tr colspan='$headerspan'>".$LANG['common'][54]."</tr>";
-				}
-
-
-
-			}
-
-		}
-	
-		echo "</table></div>";
-	
-		if ($canedit){
-			echo "<div class='center'>";
-			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-			echo "</td>";
-			echo "</table>";
-	
-			echo "</div>";
-	
-		}
-		echo "</form>";
-	}
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<table width='80%' class='tab_glpi'>";
+         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+         echo "<td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') )
+                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
+                $LANG['buttons'][18]."</a></td>";
+         echo "<td>/</td><td class='center'>
+               <a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".
+                  $_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+         echo "</td><td class='left' width='80%'>";
+         echo "<input type='submit' name='deleteuser' value=\"".
+                $LANG['buttons'][6]."\" class='submit'>";
+         echo "</td>";
+         echo "</table></div>";
+      }
+      echo "</form>";
+   }
 }
 
 /**
- * Add a right to a user 
+ * Add a right to a user
  *
  * @param $input array : parameters : need entities_id / users_id / profiles_id optional : is_recursive=0 / is_dynamic=0
  * @return new glpi_profiles_users ID
  */
-function addUserProfileEntity($input){
-	global $DB;
-	if (!isset($input['entities_id'])||$input['entities_id']<0
-		||!isset($input['users_id'])||$input['users_id']==0
-		||!isset($input['profiles_id'])||$input['profiles_id']==0) {
-		return false;
-	}
-	if (!isset($input['is_recursive'])){
-		$input['is_recursive']=0;
-	}
-	if (!isset($input['is_dynamic'])){
-		$input['is_dynamic']=0;
-	}
+function addUserProfileEntity($input) {
+   global $DB;
 
-	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `profiles_id` , `entities_id` , `is_recursive` , `is_dynamic` )
-		VALUES ('".$input['users_id']."', '".$input['profiles_id']."', '".$input['entities_id']."', '".$input['is_recursive']."', '".$input['is_dynamic']."');";
-	
-	return $DB->query($query);
+   if (!isset($input['entities_id']) || $input['entities_id']<0 || !isset($input['users_id'])
+       || $input['users_id']==0 || !isset($input['profiles_id']) || $input['profiles_id']==0) {
+      return false;
+   }
+   if (!isset($input['is_recursive'])) {
+      $input['is_recursive']=0;
+   }
+   if (!isset($input['is_dynamic'])) {
+      $input['is_dynamic']=0;
+   }
+
+   $query="INSERT
+           INTO `glpi_profiles_users` (`users_id`, `profiles_id`, `entities_id`, `is_recursive`,
+                                       `is_dynamic` )
+           VALUES ('".$input['users_id']."', '".$input['profiles_id']."', '".
+                   $input['entities_id']."', '".$input['is_recursive']."', '".
+                   $input['is_dynamic']."')";
+
+   return $DB->query($query);
 }
 
 /**
- * Delete a right to a user 
+ * Delete a right to a user
  *
  * @param $ID integer : glpi_profiles_users ID
  */
-function deleteUserProfileEntity($ID){
+function deleteUserProfileEntity($ID) {
+   global $DB;
 
-	global $DB;
+   $query="SELECT `users_id`
+           FROM `glpi_profiles_users`
+           WHERE `id` = '$ID';";
+   $result = $DB->query($query);
+   $data=$DB->fetch_assoc($result);
 
-	$query="SELECT users_id FROM glpi_profiles_users WHERE id = '$ID';";
-	$result = $DB->query($query);
-	$data=$DB->fetch_assoc($result);
-	
-	$query="DELETE FROM glpi_profiles_users WHERE id = '$ID';";
-	$result = $DB->query($query);
+   $query="DELETE
+           FROM `glpi_profiles_users`
+           WHERE `id` = '$ID';";
+   $result = $DB->query($query);
 }
 
 /**
@@ -221,35 +236,37 @@ function deleteUserProfileEntity($ID){
  * @param $ID integer : glpi_profiles_users ID
  * @param $entities_id integer : new entity ID
  */
-function moveUserProfileEntity($ID,$entities_id){
+function moveUserProfileEntity($ID,$entities_id) {
+   global $DB;
 
-	global $DB;
-	$query="UPDATE glpi_profiles_users SET entities_id='$entities_id' WHERE id = '$ID';";
-	return $DB->query($query);
+   $query="UPDATE
+           `glpi_profiles_users`
+           SET `entities_id`='$entities_id'
+           WHERE `id` = '$ID';";
+   return $DB->query($query);
 }
 
+function getEntityIDByField($field,$value) {
+   global $DB;
 
+   $sql = "SELECT `entities_id`
+           FROM `glpi_entitiesdatas`
+           WHERE ".$field."='".$value."'";
 
-function getEntityIDByField($field,$value)
-{
-	global $DB;
-	$sql = "SELECT entities_id FROM glpi_entitiesdatas WHERE ".$field."='".$value."'";
-	
-	$result = $DB->query($sql);
-	if ($DB->numrows($result)==1)
-		return $DB->result($result,0,"entities_id");
-	else
-		return "";	
+   $result = $DB->query($sql);
+   if ($DB->numrows($result)==1) {
+      return $DB->result($result,0,"entities_id");
+   } else {
+      return "";
+   }
 }
 
-function getEntityIDByDN($value)
-{
-	return getEntityIDByField("ldap_dn",$value);
+function getEntityIDByDN($value) {
+   return getEntityIDByField("ldap_dn",$value);
 }
 
-function getEntityIDByTag($value)
-{
-	return getEntityIDByField("tag",$value);
+function getEntityIDByTag($value) {
+   return getEntityIDByField("tag",$value);
 }
 
 ?>
