@@ -34,156 +34,157 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
-
+   die("Sorry. You can't access directly to this file");
+}
 
 class InfoCom extends CommonDBTM {
 
+   /**
+    * Constructor
+   **/
+   function __construct() {
+      $this->table="glpi_infocoms";
+      $this->type=INFOCOM_TYPE;
+      $this->dohistory=true;
+      $this->auto_message_on_action=false;
+   }
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_infocoms";
-		$this->type=INFOCOM_TYPE;
-		$this->dohistory=true;
-		$this->auto_message_on_action=false;
-	}
+   function post_getEmpty() {
+      global $CFG_GLPI;
 
-	function post_getEmpty () {
-		global $CFG_GLPI;
-		$this->fields["alert"]=$CFG_GLPI["default_infocom_alert"];
-	}
+   $this->fields["alert"]=$CFG_GLPI["default_infocom_alert"];
+   }
 
+   /**
+    * Retrieve an item from the database for a device
+    *
+    *@param $ID ID of the device to retrieve infocom
+    *@param $itemtype type of the device to retrieve infocom
+    *@return true if succeed else false
+   **/
+   function getFromDBforDevice ($itemtype,$ID) {
+      global $DB;
 
-	/**
-	 * Retrieve an item from the database for a device
-	 *
-	 *@param $ID ID of the device to retrieve infocom
-	 *@param $itemtype type of the device to retrieve infocom
-	 *@return true if succeed else false
-	**/
-	function getFromDBforDevice ($itemtype,$ID) {
+      $query = "SELECT *
+                FROM `glpi_infocoms`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype`='$itemtype'";
 
-		global $DB;
-		$query = "SELECT * 
-			FROM glpi_infocoms 
-			WHERE items_id = '$ID' AND itemtype='$itemtype'";
-	
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)==1){	
-				$data = $DB->fetch_assoc($result);
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)==1) {
+            $data = $DB->fetch_assoc($result);
+            foreach ($data as $key => $val) {
+               $this->fields[$key] = $val;
+            }
+            return true;
+         } else {
+            $this->getEmpty();
+            $this->fields["items_id"]=$ID;
+            $this->fields["itemtype"]=$itemtype;
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
 
-				foreach ($data as $key => $val) {
-					$this->fields[$key] = $val;
-				}
-				return true;
-			} else {
-				$this->getEmpty();
-				$this->fields["items_id"]=$ID;
-				$this->fields["itemtype"]=$itemtype;
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
+   function prepareInputForAdd($input) {
+      global $CFG_GLPI;
 
-	function prepareInputForAdd($input) { 
-		global $CFG_GLPI;
-		if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])){
-			$input['alert']=$CFG_GLPI["default_infocom_alert"];
-			return $input; 
-		} 
-		return false; 
-	} 
+      if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
+         $input['alert']=$CFG_GLPI["default_infocom_alert"];
+         return $input;
+      }
+      return false;
+   }
 
-	function prepareInputForUpdate($input) {
-		if (isset($input["id"])){
+   function prepareInputForUpdate($input) {
 
-			$this->getFromDB($input["id"]);
-		} else {
-			if (!$this->getFromDBforDevice($input["itemtype"],$input["items_id"])){
-				$input2["items_id"]=$input["items_id"];
-				$input2["itemtype"]=$input["itemtype"];
-				$this->add($input2);
-				$this->getFromDBforDevice($input["itemtype"],$input["items_id"]);
-			}
-			$input["id"]=$this->fields["id"];
-		}
+      if (isset($input["id"])) {
+         $this->getFromDB($input["id"]);
+      } else {
+         if (!$this->getFromDBforDevice($input["itemtype"],$input["items_id"])) {
+            $input2["items_id"]=$input["items_id"];
+            $input2["itemtype"]=$input["itemtype"];
+            $this->add($input2);
+            $this->getFromDBforDevice($input["itemtype"],$input["items_id"]);
+         }
+         $input["id"]=$this->fields["id"];
+      }
 
-		if (isset($input['warranty_duration'])){
-			$input['_warranty_duration']=$this->fields['warranty_duration'];
-		}
-		return $input;
-	}
+      if (isset($input['warranty_duration'])) {
+         $input['_warranty_duration']=$this->fields['warranty_duration'];
+      }
+      return $input;
+   }
 
+   function pre_updateInDB($input,$updates,$oldvalues=array()) {
 
-	function pre_updateInDB($input,$updates,$oldvalues=array()) {
+      // Clean end alert if buy_date is after old one
+      // Or if duration is greater than old one
+      if ((isset($oldvalues['buy_date']) && ($oldvalues['buy_date'] < $this->fields['buy_date']))
+          || (isset($oldvalues['warranty_duration'])
+          && ($oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
-		// Clean end alert if buy_date is after old one
-		// Or if duration is greater than old one
-		if ((isset($oldvalues['buy_date'])
-			&& ($oldvalues['buy_date'] < $this->fields['buy_date'] ))
-		|| ( isset($oldvalues['warranty_duration'])
-			&& ($oldvalues['warranty_duration'] < $this->fields['warranty_duration'] ))
-		){
-			$alert=new Alert();
-			$alert->clear($this->type,$this->fields['id'],ALERT_END);
-//			exit();
-		}
+         $alert=new Alert();
+         $alert->clear($this->type,$this->fields['id'],ALERT_END);
+      }
+      return array($input,$updates);
+   }
 
-		return array($input,$updates);
-	}
+   /**
+    * Is the object assigned to an entity
+    *
+    * @return boolean
+   **/
+   function isEntityAssign() {
 
-	/**
-	 * Is the object assigned to an entity
-	 * 
-	 * @return boolean
-	**/
-	function isEntityAssign () {
-		$ci=new CommonItem();
-		$ci->setType($this->fields["itemtype"], true);
-		
-		return $ci->obj->isEntityAssign();
-	}
-	/**
-	 * Get the ID of entity assigned to the object
-	 * 
-	 * @return ID of the entity 
-	**/
-	function getEntityID () {
-		$ci=new CommonItem();
-		$ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+      $ci=new CommonItem();
+      $ci->setType($this->fields["itemtype"], true);
 
-		return $ci->obj->getEntityID();
-	}	
-	/**
-	 * Is the object may be recursive
-	 * 
-	 * @return boolean
-	**/
-	function maybeRecursive () {
-		$ci=new CommonItem();
-		$ci->setType($this->fields["itemtype"], true);
-		
-		return $ci->obj->maybeRecursive();
-	}
-	/**
-	 * Is the object recursive
-	 * 
-	 * Can be overloaded (ex : infocom)
-	 * 
-	 * @return integer (0/1) 
-	**/
-	function isRecursive () {
-		$ci=new CommonItem();
-		$ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+      return $ci->obj->isEntityAssign();
+   }
 
-		return $ci->obj->isRecursive();
-	}	
+   /**
+    * Get the ID of entity assigned to the object
+    *
+    * @return ID of the entity
+   **/
+   function getEntityID () {
+
+      $ci=new CommonItem();
+      $ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+
+      return $ci->obj->getEntityID();
+   }
+
+   /**
+    * Is the object may be recursive
+    *
+    * @return boolean
+   **/
+   function maybeRecursive() {
+
+      $ci=new CommonItem();
+      $ci->setType($this->fields["itemtype"], true);
+
+      return $ci->obj->maybeRecursive();
+   }
+
+   /**
+    * Is the object recursive
+    *
+    * Can be overloaded (ex : infocom)
+    *
+    * @return integer (0/1)
+   **/
+   function isRecursive() {
+
+      $ci=new CommonItem();
+      $ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+
+      return $ci->obj->isRecursive();
+   }
 }
 
 ?>
