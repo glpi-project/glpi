@@ -52,10 +52,10 @@ function showDeviceBudget($budgets_id) {
       return false;
    }
 
-   $query = "SELECT DISTINCT itemtype
-             FROM glpi_infocoms
-             WHERE budgets_id = '$budgets_id'
-             ORDER BY itemtype";
+   $query = "SELECT DISTINCT `itemtype`
+             FROM `glpi_infocoms`
+             WHERE `budgets_id` = '$budgets_id'
+             ORDER BY `itemtype`";
 
    $result = $DB->query($query);
    $number = $DB->numrows($result);
@@ -77,14 +77,14 @@ function showDeviceBudget($budgets_id) {
       $itemtype=$DB->result($result, $i, "itemtype");
       if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLE_ITEM_TYPE
           && $itemtype!=CARTRIDGE_ITEM_TYPE && $itemtype!=SOFTWARELICENSE_TYPE) {
-         $query = "SELECT ".$LINK_ID_TABLE[$itemtype].".* 
-                   FROM glpi_infocoms 
-                   INNER JOIN ".$LINK_ID_TABLE[$itemtype]." 
-                              ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id) 
-                   WHERE glpi_infocoms.itemtype='$itemtype' 
-                         AND glpi_infocoms.budgets_id = '$budgets_id' ".
+         $query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*
+                   FROM `glpi_infocoms`
+                   INNER JOIN ".$LINK_ID_TABLE[$itemtype]."
+                              ON (".$LINK_ID_TABLE[$itemtype].".`id` = `glpi_infocoms`.`items_id`)
+                   WHERE `glpi_infocoms`.`itemtype`='$itemtype'
+                         AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                            getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])."
-                   ORDER BY entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
+                   ORDER BY `entities_id`, ".$LINK_ID_TABLE[$itemtype].".`name`";
 
          $result_linked=$DB->query($query);
          $nb=$DB->numrows($result_linked);
@@ -93,9 +93,9 @@ function showDeviceBudget($budgets_id) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
             echo "<td class='center' colspan='2'>";
-            echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . 
-                   rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" . 
-                   rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0". "'>" . 
+            echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" .
+                   rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
+                   rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                    $LANG['reports'][57]."</a></td>";
             echo "<td class='center'>-</td><td class='center'>-</td></tr>";
          } else if ($nb) {
@@ -104,17 +104,17 @@ function showDeviceBudget($budgets_id) {
                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                   $ID= " (".$data["id"].")";
                }
-               $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."
-                        ?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+               $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype].
+                        "?id=".$data["id"]."\">".$data["name"]."$ID</a>";
                echo "<tr class='tab_bg_1'>";
                if ($prem) {
                   echo "<td class='center top' rowspan='$nb'>".$ci->getType()
                         .($nb>1?"<br />$nb</td>":"</td>");
                }
                echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"]);
-               echo "</td><td class='center' ".(isset($data['is_deleted'])
-                                                && $data['is_deleted']?"class='tab_bg_2_2'":"").">".
-                           $name."</td>";
+               echo "</td><td class='center";
+               echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+               echo ">".$name."</td>";
                echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-");
                echo "</td><td class='center'>".
                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
@@ -144,10 +144,10 @@ function showDeviceBudgetValue($budgets_id) {
       return false;
    }
 
-   $query = "SELECT DISTINCT itemtype, SUM(value) as sumvalue
-             FROM glpi_infocoms
-             WHERE budgets_id = '$budgets_id'
-             GROUP BY itemtype";
+   $query = "SELECT DISTINCT `itemtype`, SUM(`value`) AS sumvalue
+             FROM `glpi_infocoms`
+             WHERE `budgets_id` = '$budgets_id'
+             GROUP BY `itemtype`";
 
    $result = $DB->query($query);
    $number = $DB->numrows($result);

@@ -34,72 +34,81 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
  * Alert class
  */
 class Alert extends CommonDBTM {
 
-	/**
-	 * Constructor
-	 **/
-	function  __construct () {
-		$this->table="glpi_alerts";
-		$this->type=0;
-	}
+   /**
+    * Constructor
+    **/
+   function  __construct () {
+      $this->table="glpi_alerts";
+      $this->type=0;
+   }
 
-	function prepareInputForAdd($input) {
-      if (!isset($input['date']) || empty($input['date'])){
+   function prepareInputForAdd($input) {
+      if (!isset($input['date']) || empty($input['date'])) {
          $input['date']=date("Y-m-d H:i:s");;
       }
-		return $input;
-	}
+      return $input;
+   }
 
-	/**
-	 * Retrieve an item from the database
-	 *
-	 *@param $ID ID of the item to get
-	 *@param $type ID of the type to get
-	 *@return true if succeed else false
-	 *
-	**/
-	function getFromDBForDevice ($type,$ID) {
+   /**
+    * Retrieve an item from the database
+    *
+    *@param $ID ID of the item to get
+    *@param $type ID of the type to get
+    *@return true if succeed else false
+    *
+   **/
+   function getFromDBForDevice ($type,$ID) {
+      global $DB;
 
-		// Make new database object and fill variables
-		global $DB;
-		if (empty($ID)) return false;
+      // Make new database object and fill variables
+      if (empty($ID)) {
+         return false;
+      }
 
-		$query = "SELECT *
-			FROM `".$this->table."`
-			WHERE itemtype='$type' AND items_id = '$ID'";
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE `itemtype` = '$type'
+                      AND `items_id` = '$ID'";
 
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)==1){
-				$this->fields = $DB->fetch_assoc($result);
-				return true;
-			} else return false;
-		} else {
-			return false;
-		}
-	}
-	/**
-	 * Clear all alerts of an alert type for an item
-	 *
-	 *@param $ID ID of the item to clear
-	 *@param $itemtype ID of the type to clear
-	 *@param $alert_type ID of the alert type to clear
-	 *@return nothing
-	 *
-	**/
-	function clear($itemtype,$ID,$alert_type){
-		global $DB;
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)==1) {
+            $this->fields = $DB->fetch_assoc($result);
+            return true;
+         } else {
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
 
-		$query="DELETE FROM `".$this->table."`
-			WHERE itemtype='$itemtype' AND items_id = '$ID' AND type='$alert_type'";
-		$DB->query($query);
-	}
+   /**
+    * Clear all alerts of an alert type for an item
+    *
+    *@param $ID ID of the item to clear
+    *@param $itemtype ID of the type to clear
+    *@param $alert_type ID of the alert type to clear
+    *@return nothing
+    *
+   **/
+   function clear($itemtype,$ID,$alert_type) {
+      global $DB;
+
+      $query="DELETE
+              FROM `".$this->table."`
+              WHERE `itemtype` = '$itemtype'
+                    AND `items_id` = '$ID'
+                    AND `type` = '$alert_type'";
+      $DB->query($query);
+   }
 
 }
 

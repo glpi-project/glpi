@@ -45,7 +45,7 @@ class SetupDefaultDisplay extends CommonDBTM{
 }
 
 /**
- *  Bookmark class
+ * Bookmark class
  */
 class Bookmark extends CommonDBTM {
 
@@ -82,7 +82,8 @@ class Bookmark extends CommonDBTM {
          parse_str($taburl["query"],$query_tab);
       }
 
-      $input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,$input['itemtype']));
+      $input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,
+                                                               $input['itemtype']));
 
       return $input;
    }
@@ -111,8 +112,8 @@ class Bookmark extends CommonDBTM {
       global $DB;
 
       $query="DELETE
-              FROM glpi_bookmarks_users
-              WHERE bookmarks_id='$ID'";
+              FROM `glpi_bookmarks_users`
+              WHERE `bookmarks_id`='$ID'";
       $DB->query($query);
    }
 
@@ -185,8 +186,8 @@ class Bookmark extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">";
-         echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\"
-                                    class='submit'></div>";
+         echo "<div class='center'><input type='submit' name='add' value=\"".
+                                    $LANG['buttons'][8]."\" class='submit'></div>";
          echo "</td></tr>";
       } else {
          echo "<tr>";
@@ -294,10 +295,10 @@ class Bookmark extends CommonDBTM {
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
          $dd=new SetupDefaultDisplay();
          // Is default view for this itemtype already exists ?
-         $query="SELECT id
-                 FROM glpi_bookmarks_users
-                 WHERE users_id='".$_SESSION['glpiID']."'
-                       AND itemtype='".$this->fields['itemtype']."'";
+         $query="SELECT `id`
+                 FROM `glpi_bookmarks_users`
+                 WHERE `users_id` = '".$_SESSION['glpiID']."'
+                       AND `itemtype` = '".$this->fields['itemtype']."'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists update it
@@ -325,11 +326,11 @@ class Bookmark extends CommonDBTM {
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
          $dd=new SetupDefaultDisplay();
          // Is default view for this itemtype already exists ?
-         $query="SELECT id
-                 FROM glpi_bookmarks_users
-                 WHERE users_id='".$_SESSION['glpiID']."'
-                       AND bookmarks_id='$ID'
-                       AND itemtype='".$this->fields['itemtype']."'";
+         $query="SELECT `id`
+                 FROM `glpi_bookmarks_users`
+                 WHERE `users_id` = '".$_SESSION['glpiID']."'
+                       AND `bookmarks_id` = '$ID'
+                       AND `itemtype` = '".$this->fields['itemtype']."'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists delete it
@@ -354,22 +355,22 @@ class Bookmark extends CommonDBTM {
          return false;
       }
 
-      $query="SELECT `".$this->table."`.*, glpi_bookmarks_users.id AS IS_DEFAULT
+      $query="SELECT `".$this->table."`.*, `glpi_bookmarks_users`.`id` AS IS_DEFAULT
               FROM `".$this->table."`
-              LEFT JOIN glpi_bookmarks_users
-                        ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype
-                            AND `".$this->table."`.id = glpi_bookmarks_users.bookmarks_id)
+              LEFT JOIN `glpi_bookmarks_users`
+                        ON (`".$this->table."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
+                            AND `".$this->table."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
               WHERE ";
 
       if ($is_private) {
-         $query.="(`".$this->table."`.is_private=1
-                   AND `".$this->table."`.users_id='".$_SESSION['glpiID']."') ";
+         $query.="(`".$this->table."`.`is_private`='1'
+                   AND `".$this->table."`.`users_id`='".$_SESSION['glpiID']."') ";
       } else {
-         $query.="(`".$this->table."`.is_private=0  ".
+         $query.="(`".$this->table."`.`is_private`='0' ".
                    getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
       }
 
-      $query.=" ORDER BY itemtype, name";
+      $query.=" ORDER BY `itemtype`, `name`";
 
       if ($result = $DB->query($query)) {
          $rand=mt_rand();
@@ -380,8 +381,7 @@ class Bookmark extends CommonDBTM {
          echo "<tr>";
          echo "<th class='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
          echo "<th width='20px'>&nbsp;</th>";
-         echo "<th>".$LANG['bookmark'][6]."</th>";
-         echo "</tr>";
+         echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
          if( $DB->numrows($result)) {
             $ci=new CommonItem();
@@ -402,8 +402,7 @@ class Bookmark extends CommonDBTM {
                   if (isset($_GET["select"]) && $_GET["select"]=="all") {
                      $sel="checked";
                   }
-                  echo "<input type='checkbox' name='bookmark[" . $this->fields["id"] . "]' " .
-                         $sel . ">";
+                  echo "<input type='checkbox' name='bookmark[".$this->fields["id"]."]'". $sel.">";
                } else {
                   echo "&nbsp;";
                }

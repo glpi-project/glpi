@@ -33,9 +33,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
 /**
- *  Budget class
+ * Budget class
  */
 class Budget extends CommonDBTM{
 
@@ -158,10 +157,10 @@ class Budget extends CommonDBTM{
       // Manage add from template
       if (isset($input["_oldID"])) {
          // ADD Documents
-         $query="SELECT documents_id
-                 FROM glpi_documents_items
-                 WHERE items_id='".$input["_oldID"]."'
-                       AND itemtype='".COMPUTER_TYPE."';";
+         $query="SELECT `documents_id`
+                 FROM `glpi_documents_items`
+                 WHERE `items_id` = '".$input["_oldID"]."'
+                       AND `itemtype` = '".COMPUTER_TYPE."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {

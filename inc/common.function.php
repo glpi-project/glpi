@@ -35,288 +35,311 @@
 
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
-//******************************************************************************************************
-//******************************************************************************************************
-//********************************  Fonctions diverses ************************************
-//******************************************************************************************************
-//******************************************************************************************************
+//*************************************************************************************************
+//*************************************************************************************************
+//********************************  Fonctions diverses ********************************************
+//*************************************************************************************************
+//*************************************************************************************************
 
-	/**
-	* Set the directory where are store the session file
-	*
-	**/
-	function setGlpiSessionPath(){
-		if (ini_get("session.save_handler")=="files") {
-			session_save_path(GLPI_SESSION_DIR);
-	       }
-	}
-	/**
-	* Start the GLPI php session 
-	*
-	**/
-	function startGlpiSession(){
-		if(!session_id()){@session_start();}
-		// Define current time for sync of action timing
-		$_SESSION["glpi_currenttime"]=date("Y-m-d H:i:s");	
-	}
+/**
+* Set the directory where are store the session file
+*
+**/
+function setGlpiSessionPath() {
 
-	/**
-	* Is GLPI used in mutli-entities mode ?
-	*@return boolean
-	* 
-	**/
-	function isMultiEntitiesMode(){
-		if (!isset($_SESSION['glpi_multientitiesmode'])){
-			if (countElementsInTable("glpi_entities")>0){
-				$_SESSION['glpi_multientitiesmode']=1;
-			} else {
-				$_SESSION['glpi_multientitiesmode']=0;
-			}
-		}
-		return $_SESSION['glpi_multientitiesmode'];
-	}
-	/**
-	* Is the user have right to see all entities ?
-	* @return boolean
-	* 
-	**/
-	function isViewAllEntities(){
-		return ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"]));
-	}
-	/**
-	* Log a message in log file
-	* @param $name string: name of the log file
-	* @param $text string: text to log 
-	* @param $force boolean: force log in file not seeing use_log_in_files config
-	* 
-	**/
-	function logInFile($name,$text,$force=false){
-		global $CFG_GLPI;
-		if (isset($CFG_GLPI["use_log_in_files"])&&$CFG_GLPI["use_log_in_files"]||$force){ 
-			error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
-		}
-	}
-	
-	/**
-	* Specific error handler in Normal mode
-	* @param $errno integer: level of the error raised.
-	* @param $errmsg string: error message.
-	* @param $filename string: filename that the error was raised in.
-	* @param $linenum integer: line number the error was raised at. 
-	* @param $vars array: that points to the active symbol table at the point the error occurred.
-	*
-	**/
-	function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars){
-		global $CFG_GLPI;
-      
-		// Date et heure de l'erreur
-		//$dt = date("Y-m-d H:i:s (T)");
-		$errortype = array (
-			E_ERROR              => 'Error',
-			E_WARNING            => 'Warning',
-			E_PARSE              => 'Parsing Error',
-			E_NOTICE             => 'Notice',
-			E_CORE_ERROR         => 'Core Error',
-			E_CORE_WARNING       => 'Core Warning',
-			E_COMPILE_ERROR      => 'Compile Error',
-			E_COMPILE_WARNING    => 'Compile Warning',
-			E_USER_ERROR         => 'User Error',
-			E_USER_WARNING       => 'User Warning',
-			E_USER_NOTICE        => 'User Notice',
-			E_STRICT             => 'Runtime Notice',
-			// Need php 5.2.0
-			4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-			// Need php 5.3.0
-			8192 /* E_DEPRECATED */ => 'Deprecated function',
-			16384 /* E_USER_DEPRECATED */ => 'User deprecated function'
-			);			
-		// Les niveaux qui seront enregistrés
-		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
-			
-		$err = $errortype[$errno] . "($errno): $errmsg\n";
-		if (in_array($errno, $user_errors)) {
-			$err .= "Variables:".wddx_serialize_value($vars,"Variables")."\n";
-		}
-		if (function_exists("debug_backtrace")) {
-			$err .= "Backtrace :\n";
-			$traces=debug_backtrace();
-			foreach ($traces as $trace) {
-				if (isset($trace["file"]) && isset($trace["line"])) {
-					$err .= $trace["file"] . ":" . $trace["line"] . "\t\t"
-						. (isset($trace["class"]) ? $trace["class"] : "")
-						. (isset($trace["type"]) ? $trace["type"] : "")
-						. (isset($trace["function"]) ? $trace["function"]."()" : "")
-						. "\n";
-				}
-			}
-		} else {
-			$err .= "Script: $filename, Line: $linenum\n" ; 
-		}
-		
-		// sauvegarde de l'erreur, et mail si c'est critique
-		logInFile("php-errors",$err."\n");
-		
-      return $errortype[$errno];
-	}
-   /**
-   * Specific error handler in Debug mode
-   * @param $errno integer: level of the error raised.
-   * @param $errmsg string: error message.
-   * @param $filename string: filename that the error was raised in.
-   * @param $linenum integer: line number the error was raised at. 
-   * @param $vars array: that points to the active symbol table at the point the error occurred.
-   *
-   **/
-   function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars){
-      global $CFG_GLPI;
+   if (ini_get("session.save_handler")=="files") {
+      session_save_path(GLPI_SESSION_DIR);
+   }
+}
 
-      // For file record
-      $type = userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars);       
-      
-      // Display
-      if (!isCommandLine()){
-         echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP '.$type.': </strong>';
-         echo $errmsg.' in '.$filename.' at line '.$linenum;
-         echo '</div>';
+/**
+* Start the GLPI php session
+*
+**/
+function startGlpiSession() {
+
+   if(!session_id()) {
+      @session_start();
+   }
+   // Define current time for sync of action timing
+   $_SESSION["glpi_currenttime"]=date("Y-m-d H:i:s");
+}
+
+/**
+* Is GLPI used in mutli-entities mode ?
+*@return boolean
+*
+**/
+function isMultiEntitiesMode() {
+
+   if (!isset($_SESSION['glpi_multientitiesmode'])) {
+      if (countElementsInTable("glpi_entities")>0) {
+         $_SESSION['glpi_multientitiesmode']=1;
       } else {
-         echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
+         $_SESSION['glpi_multientitiesmode']=0;
       }
    }
-	/**
-	* Is the script launch in Command line ?
-	* @return boolean
-	*
-	**/
-	function isCommandLine(){
-		return (!isset($_SERVER["SERVER_NAME"]));
-	}
+   return $_SESSION['glpi_multientitiesmode'];
+}
 
-   
-	/**
-	* Encode string to UTF-8
-	* @param $string string: string to convert
-	* @param $from_charset string: original charset (if 'auto' try to autodetect)
-	*
-	* @return utf8 string
-	**/
-   function encodeInUtf8($string,$from_charset="ISO-8859-1"){
-      if (strcmp($from_charset,"auto")==0){
-         $from_charset=mb_detect_encoding($string);
-      }
-      return mb_convert_encoding($string,"UTF-8",$from_charset);
+/**
+* Is the user have right to see all entities ?
+* @return boolean
+*
+**/
+function isViewAllEntities() {
+   return ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"]));
+}
+
+/**
+* Log a message in log file
+* @param $name string: name of the log file
+* @param $text string: text to log
+* @param $force boolean: force log in file not seeing use_log_in_files config
+*
+**/
+function logInFile($name,$text,$force=false) {
+   global $CFG_GLPI;
+
+   if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
+      error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
    }
+}
 
-	/**
-	* Decode string from UTF-8 to specified charset
-	* @param $string string: string to convert
-	* @param $from_charset string: destination charset (default is ISO-8859-1)
-	*
-	* @return converted string
-	**/
-   function decodeFromUtf8($string,$to_charset="ISO-8859-1"){
-      return mb_convert_encoding($string,$to_charset,"UTF-8");
+/**
+* Specific error handler in Normal mode
+* @param $errno integer: level of the error raised.
+* @param $errmsg string: error message.
+* @param $filename string: filename that the error was raised in.
+* @param $linenum integer: line number the error was raised at.
+* @param $vars array: that points to the active symbol table at the point the error occurred.
+*
+**/
+function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
+   global $CFG_GLPI;
+
+   // Date et heure de l'erreur
+   $errortype = array (E_ERROR           => 'Error',
+                       E_WARNING         => 'Warning',
+                       E_PARSE           => 'Parsing Error',
+                       E_NOTICE          => 'Notice',
+                       E_CORE_ERROR      => 'Core Error',
+                       E_CORE_WARNING    => 'Core Warning',
+                       E_COMPILE_ERROR   => 'Compile Error',
+                       E_COMPILE_WARNING => 'Compile Warning',
+                       E_USER_ERROR      => 'User Error',
+                       E_USER_WARNING    => 'User Warning',
+                       E_USER_NOTICE     => 'User Notice',
+                       E_STRICT          => 'Runtime Notice',
+                       // Need php 5.2.0
+                       4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
+                       // Need php 5.3.0
+                       8192 /* E_DEPRECATED */ => 'Deprecated function',
+                       16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+   // Les niveaux qui seront enregistrés
+   $user_errors = array(E_USER_ERROR,
+                        E_USER_WARNING,
+                        E_USER_NOTICE);
+
+   $err = $errortype[$errno] . "($errno): $errmsg\n";
+   if (in_array($errno, $user_errors)) {
+      $err .= "Variables:".wddx_serialize_value($vars,"Variables")."\n";
    }
-
-
-	/**
-	* substr function for utf8 string
-	* @param $str string: string
-	* @param $start integer: start of the result substring
-   * @param $length integer: The maximum length of the returned string if > 0
-	*
-	* @return substring
-	**/
-	function utf8_substr($str,$start,$length=-1){
-      if ($length==-1){
-         $length=utf8_strlen($str)-$start;
+   if (function_exists("debug_backtrace")) {
+      $err .= "Backtrace :\n";
+      $traces=debug_backtrace();
+      foreach ($traces as $trace) {
+         if (isset($trace["file"]) && isset($trace["line"])) {
+            $err .= $trace["file"] . ":" . $trace["line"] . "\t\t"
+                    . (isset($trace["class"]) ? $trace["class"] : "")
+                    . (isset($trace["type"]) ? $trace["type"] : "")
+                    . (isset($trace["function"]) ? $trace["function"]."()" : ""). "\n";
+         }
       }
-      return mb_substr($str,$start,$length,"UTF-8");
-	}
+   } else {
+      $err .= "Script: $filename, Line: $linenum\n" ;
+   }
+   // sauvegarde de l'erreur, et mail si c'est critique
+   logInFile("php-errors",$err."\n");
 
-	/**
-	* substr function for utf8 string
-	* @param $str string: string
-	* @param $tofound string: string to found
-   * @param $offset integer: The search offset. If it is not specified, 0 is used. 
-	*
-	* @return substring
-	**/
-	function utf8_strpos($str,$tofound,$offset=0){
-      return mb_strpos($str,$tofound,$offset,"UTF-8");
-	}
+   return $errortype[$errno];
+}
 
-	/**
-	* strlen function for utf8 string
-	* @param $str string: string 
-	* @return length of the string
-	**/
-	function utf8_strlen($str){
-      return mb_strlen($str,"UTF-8");
-	}
+/**
+* Specific error handler in Debug mode
+* @param $errno integer: level of the error raised.
+* @param $errmsg string: error message.
+* @param $filename string: filename that the error was raised in.
+* @param $linenum integer: line number the error was raised at.
+* @param $vars array: that points to the active symbol table at the point the error occurred.
+*
+**/
+function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars) {
+   global $CFG_GLPI;
 
-	/** Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
-	* @param $num integer: character code
-	*/
-	function code2utf($num){
-	    if ($num < 128) return chr($num);
-	    if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
-	    if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-	    if ($num < 2097152) return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-	    return '';
-	}
+   // For file record
+   $type = userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars);
 
-	/**
- 	* Clean log cron function
- 	*
- 	**/
-	function cron_logs(){
-		global $CFG_GLPI,$DB;
+   // Display
+   if (!isCommandLine()) {
+      echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP '.
+             $type.': </strong>';
+      echo $errmsg.' in '.$filename.' at line '.$linenum.'</div>';
+   } else {
+      echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
+   }
+}
 
-		// Expire Event Log
-		if ($CFG_GLPI["events_lifetime"] > 0) {
-			$secs = $CFG_GLPI["events_lifetime"] * DAY_TIMESTAMP;
-			$query_exp = "DELETE FROM glpi_events WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-			$DB->query($query_exp);
-			logInFile("cron","Cleaning log events passed from more than ".$CFG_GLPI["events_lifetime"]." days\n");
-		}
-	}
+/**
+* Is the script launch in Command line ?
+* @return boolean
+*
+**/
+function isCommandLine() {
+   return (!isset($_SERVER["SERVER_NAME"]));
+}
 
-	/**
- 	* Clean log cron function
- 	*
- 	**/
-	function cron_optimize(){
-		global $CFG_GLPI,$DB;
+/**
+* Encode string to UTF-8
+* @param $string string: string to convert
+* @param $from_charset string: original charset (if 'auto' try to autodetect)
+*
+* @return utf8 string
+**/
+function encodeInUtf8($string,$from_charset="ISO-8859-1") {
 
-		logInFile("cron","Start optimize tables\n");
-		optimize_tables();
-		logInFile("cron","Optimize tables done\n");
-	}
+   if (strcmp($from_charset,"auto")==0) {
+      $from_charset=mb_detect_encoding($string);
+   }
+   return mb_convert_encoding($string,"UTF-8",$from_charset);
+}
 
-	/**
-	 * Garbage collector for expired file session
-	 *
-	 **/
-	function cron_session(){
-		global $CFG_GLPI;
-		// max time to keep the file session
-		$maxlifetime = session_cache_expire();
-		$do=false;			
-		foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
-			if (filemtime($filename) + $maxlifetime < time()) {
-				// Delete session file if not delete before
-				@unlink($filename);
-				$do=true;
-			}
-		}
-		if ($do){
-			logInFile("cron","Clean session files created since more than $maxlifetime seconds\n");
-		}
-		return true;
-	}
+/**
+* Decode string from UTF-8 to specified charset
+* @param $string string: string to convert
+* @param $from_charset string: destination charset (default is ISO-8859-1)
+*
+* @return converted string
+**/
+function decodeFromUtf8($string,$to_charset="ISO-8859-1") {
+   return mb_convert_encoding($string,$to_charset,"UTF-8");
+}
+
+/**
+* substr function for utf8 string
+* @param $str string: string
+* @param $start integer: start of the result substring
+* @param $length integer: The maximum length of the returned string if > 0
+*
+* @return substring
+**/
+function utf8_substr($str,$start,$length=-1) {
+
+   if ($length==-1) {
+      $length=utf8_strlen($str)-$start;
+   }
+   return mb_substr($str,$start,$length,"UTF-8");
+}
+
+/**
+* substr function for utf8 string
+* @param $str string: string
+* @param $tofound string: string to found
+* @param $offset integer: The search offset. If it is not specified, 0 is used.
+*
+* @return substring
+**/
+function utf8_strpos($str,$tofound,$offset=0) {
+   return mb_strpos($str,$tofound,$offset,"UTF-8");
+}
+
+/**
+* strlen function for utf8 string
+* @param $str string: string
+* @return length of the string
+**/
+function utf8_strlen($str) {
+   return mb_strlen($str,"UTF-8");
+}
+
+/** Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
+* @param $num integer: character code
+*/
+function code2utf($num) {
+
+   if ($num < 128) {
+      return chr($num);
+   }
+   if ($num < 2048) {
+      return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+   }
+   if ($num < 65536) {
+      return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+   }
+   if ($num < 2097152) {
+      return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) .
+             chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+   }
+   return '';
+}
+
+/**
+* Clean log cron function
+*
+**/
+function cron_logs() {
+   global $CFG_GLPI,$DB;
+
+   // Expire Event Log
+   if ($CFG_GLPI["events_lifetime"] > 0) {
+      $secs = $CFG_GLPI["events_lifetime"] * DAY_TIMESTAMP;
+
+      $query_exp = "DELETE
+                    FROM `glpi_events`
+                    WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+      $DB->query($query_exp);
+      logInFile("cron","Cleaning log events passed from more than ".
+                $CFG_GLPI["events_lifetime"]." days\n");
+   }
+}
+
+/**
+* Clean log cron function
+*
+**/
+function cron_optimize() {
+   global $CFG_GLPI,$DB;
+
+   logInFile("cron","Start optimize tables\n");
+   optimize_tables();
+   logInFile("cron","Optimize tables done\n");
+}
+
+/**
+ * Garbage collector for expired file session
+ *
+ **/
+function cron_session() {
+   global $CFG_GLPI;
+
+   // max time to keep the file session
+   $maxlifetime = session_cache_expire();
+   $do=false;
+   foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
+      if (filemtime($filename) + $maxlifetime < time()) {
+         // Delete session file if not delete before
+         @unlink($filename);
+         $do=true;
+      }
+   }
+   if ($do) {
+      logInFile("cron","Clean session files created since more than $maxlifetime seconds\n");
+   }
+   return true;
+}
 
 /**
  * Get the filesize of a complete directory (from php.net)
@@ -324,47 +347,46 @@ if (!defined('GLPI_ROOT')){
  * @param $path string: directory or file to get size
  * @return size of the $path
  **/
-function filesizeDirectory($path){
-	if(!is_dir($path)){
-		return filesize($path);
-	}
-   	if ($handle = opendir($path)) {
-       	$size = 0;
-       	while (false !== ($file = readdir($handle))) {
-	    	if($file!='.' && $file!='..'){
-	        	$size += filesize($path.'/'.$file);
-	            $size += filesizeDirectory($path.'/'.$file);
-	        }
-	    }
-	    closedir($handle);
-       	return $size;
-   	}
+function filesizeDirectory($path) {
+
+   if(!is_dir($path)) {
+      return filesize($path);
+   }
+   if ($handle = opendir($path)) {
+      $size = 0;
+      while (false !== ($file = readdir($handle))) {
+         if($file!='.' && $file!='..') {
+            $size += filesize($path.'/'.$file);
+            $size += filesizeDirectory($path.'/'.$file);
+         }
+      }
+      closedir($handle);
+      return $size;
+   }
 }
 
 /**
- * Get the SEARCH_OPTION array 
+ * Get the SEARCH_OPTION array
  *
  * @return the SEARCH_OPTION array
  **/
-function getSearchOptions(){
-	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
-	
+function getSearchOptions() {
+   global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
+
    include (GLPI_ROOT . "/inc/search.constant.php");
-	
-	$plugsearch=getPluginSearchOption();
-	if (count($plugsearch)){
-		foreach ($plugsearch as $key => $val){
-			if (!isset($SEARCH_OPTION[$key])){
-				$SEARCH_OPTION[$key]=array();
-			} else {
-				$SEARCH_OPTION[$key]+=array('plugins'=>$LANG['common'][29]);
-			}
 
-			$SEARCH_OPTION[$key]+=$val;
-		}
-	}
-
-	return $SEARCH_OPTION;
+   $plugsearch=getPluginSearchOption();
+   if (count($plugsearch)) {
+      foreach ($plugsearch as $key => $val) {
+         if (!isset($SEARCH_OPTION[$key])) {
+            $SEARCH_OPTION[$key]=array();
+         } else {
+            $SEARCH_OPTION[$key]+=array('plugins'=>$LANG['common'][29]);
+         }
+         $SEARCH_OPTION[$key]+=$val;
+      }
+   }
+   return $SEARCH_OPTION;
 }
 
 /**
@@ -372,18 +394,17 @@ function getSearchOptions(){
  *
  * @return the $RELATION array
  **/
-function getDbRelations(){
-	global $CFG_GLPI;
-		
-	include (GLPI_ROOT . "/inc/relation.constant.php");
+function getDbRelations() {
+   global $CFG_GLPI;
 
-	// Add plugins relations
-	$plug_rel=getPluginsDatabaseRelations();
-	if (count($plug_rel)>0){
-		$RELATION=array_merge_recursive($RELATION,$plug_rel);
-	}
-	
-	return $RELATION;
+   include (GLPI_ROOT . "/inc/relation.constant.php");
+
+   // Add plugins relations
+   $plug_rel=getPluginsDatabaseRelations();
+   if (count($plug_rel)>0) {
+      $RELATION=array_merge_recursive($RELATION,$plug_rel);
+   }
+   return $RELATION;
 }
 
 /**
@@ -392,34 +413,32 @@ function getDbRelations(){
  * @param $dir string: directory to check
  * @return 2 : creation error 1 : delete error 0: OK
  **/
-function testWriteAccessToDirectory($dir){
+function testWriteAccessToDirectory($dir) {
 
-	$rand=rand();
-	// Check directory creation which can be denied by SElinux
-	$sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
-	if (!mkdir($sdir)) {
-		return 4;
-	}
-	else if (!rmdir($sdir)) {
-		return 3;
-	}
+   $rand=rand();
 
-	// Check file creation
-	$path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
-	$fp = fopen($path,'w');
+   // Check directory creation which can be denied by SElinux
+   $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
+   if (!mkdir($sdir)) {
+      return 4;
+   } else if (!rmdir($sdir)) {
+      return 3;
+   }
 
-	if (empty($fp)) {
-		return 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink($path);
-		if (!$delete) {
-			return 1;
-		}
-	}
-	return 0;
+   // Check file creation
+   $path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
+   $fp = fopen($path,'w');
+   if (empty($fp)) {
+      return 2;
+   } else {
+      $fw = fwrite($fp,"This file was created for testing reasons. ");
+      fclose($fp);
+      $delete = unlink($path);
+      if (!$delete) {
+         return 1;
+      }
+   }
+   return 0;
 }
 
 /**
@@ -428,27 +447,32 @@ function testWriteAccessToDirectory($dir){
 * @return memory limit
 **/
 function getMemoryLimit () {
-	
-	$mem=ini_get("memory_limit");
 
-	preg_match("/([-0-9]+)([KMG]*)/",$mem,$matches);
+   $mem=ini_get("memory_limit");
+   preg_match("/([-0-9]+)([KMG]*)/",$mem,$matches);
+   $mem="";
+   // no K M or G
+   if (isset($matches[1])) {
+      if (!isset($matches[2])) {
+         $mem=$matches[1];
+      } else {
+         $mem=$matches[1];
+         switch ($matches[2]) {
+            case "G" :
+               $mem*=1024;
+               break;
 
-	$mem="";
-	// no K M or G
-	if (isset($matches[1])){ 
-		if (!isset($matches[2])){
-			$mem=$matches[1];
-		} else {
-			$mem=$matches[1];
-			switch ($matches[2]){
-				case "G" : $mem*=1024;
-				case "M" : $mem*=1024;
-				case "K" : $mem*=1024;
-				break;
-			}
-		}
-	}
-	return $mem;
+            case "M" :
+               $mem*=1024;
+               break;
+
+            case "K" :
+               $mem*=1024;
+               break;
+         }
+      }
+   }
+   return $mem;
 }
 
 /**
@@ -456,140 +480,149 @@ function getMemoryLimit () {
 *
 * @return 2 : creation error 1 : delete error 0: OK
 **/
-function commonCheckForUseGLPI(){
-	global $LANG;
+function commonCheckForUseGLPI() {
+   global $LANG;
 
-	$error = 0;
+   $error = 0;
 
-	// Title
-	echo "<tr><th>".$LANG['install'][6]."</th><th >".$LANG['install'][7]."</th></tr>";
+   // Title
+   echo "<tr><th>".$LANG['install'][6]."</th><th >".$LANG['install'][7]."</th></tr>";
 
-	// Parser test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][8]."</b></td>";
-	// PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-	if (substr(phpversion(),0,1) == "5") {
-		// PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
-		if(ini_get("zend.ze1_compatibility_mode") == 1) {
-			$error = 2;
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][10]."</td></tr>";
-		}else{
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][11]."' title='".$LANG['install'][11]."'></td></tr>";
-		}
-	} else { // PHP <5
-		$error = 2;
-		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][9]."</td></tr>";
-	}	
+   // Parser test
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][8]."</b></td>";
 
-	// Check for mysql extension ni php
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][71]."</b></td>";
-	if(!function_exists("mysql_query")) {
-		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][72]."</td></tr>";
-		$error = 2;
-	} else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][73]."' title='".$LANG['install'][73]."'></td></tr>";
-	}
+   // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
+   if (substr(phpversion(),0,1) == "5") {
+      // PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
+      if (ini_get("zend.ze1_compatibility_mode") == 1) {
+         $error = 2;
+         echo "<td class='red'>
+               <img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][10]."</td></tr>";
+      } else {
+         echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                    $LANG['install'][11]."' title='".$LANG['install'][11]."'></td></tr>";
+      }
+   } else { // PHP <5
+      $error = 2;
+      echo "<td class='red'>
+            <img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][9]."</td></tr>";
+   }
 
-	// session test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][12]."</b></td>";
-	// check whether session are enabled at all!!
-	if (!extension_loaded('session')) {
-		$error = 2;
-		echo "<td  class='red'><b>".$LANG['install'][13]."</b></td></tr>";
-	} else {
-		if ((isset($_SESSION["Test_session_GLPI"])&&$_SESSION["Test_session_GLPI"] == 1)			// From install
-			|| isset($_SESSION["glpi_currenttime"])) { 	// From Update
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][14]."' title='".$LANG['install'][14]."'></td></tr>";
-		}
-		else {
-			if($error != 2) $error = 1;
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][15]."</td></tr>";
-		}
-	}
+   // Check for mysql extension ni php
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][71]."</b></td>";
+   if (!function_exists("mysql_query")) {
+      echo "<td class='red'>";
+      echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][72]."</td></tr>";
+      $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][73]."' title='".$LANG['install'][73]."'></td></tr>";
+   }
 
-	//Test for session auto_start
-	if(ini_get('session.auto_start')==1) {
-		echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][68]."</b></td>";
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][69]."</td></tr>";
-		$error = 2;
-	}
+   // session test
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][12]."</b></td>";
 
-	//Test for option session use trans_id loaded or not.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][74]."</b></td>";
-	//if(ini_get('session.use_trans_sid')) {
-	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][75]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][76]."' title='".$LANG['install'][76]."'></td></tr>";
-	}
+   // check whether session are enabled at all!!
+   if (!extension_loaded('session')) {
+      $error = 2;
+      echo "<td class='red'><b>".$LANG['install'][13]."</b></td></tr>";
+   } else if ((isset($_SESSION["Test_session_GLPI"]) && $_SESSION["Test_session_GLPI"] == 1) // From install
+              || isset($_SESSION["glpi_currenttime"])) { // From Update
 
-	//Test for sybase extension loaded or not.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][65]."</b></td>";
-	if(ini_get('magic_quotes_sybase')) {
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][66]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][67]."' title='".$LANG['install'][67]."'></td></tr>";
-	}
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][14]."' title='".$LANG['install'][14]."'></td></tr>";
+   } else if ($error != 2) {
+      $error = 1;
+   }
+   echo "<td class='red'>";
+   echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][15]."</td></tr>";
 
-	//Test for utf8_encode function.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][83]."</b></td>";
-	if(!function_exists('utf8_encode')||!function_exists('utf8_decode')) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][84]."></td></tr>";
-		$error = 2;
-	}
-	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
+   //Test for session auto_start
+   if (ini_get('session.auto_start')==1) {
+      echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][68]."</b></td>";
+      echo "<td class='red'>";
+      echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][69]."</td></tr>";
+      $error = 2;
+   }
 
-	}
+   //Test for option session use trans_id loaded or not.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][74]."</b></td>";
+   if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
+      echo "<td class='red'>";
+      echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][75]."</td></tr>";
+      $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][76]."' title='".$LANG['install'][76]."'></td></tr>";
+   }
 
-	//Test for json_encode function.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][102]."</b></td>";
-	if (!function_exists('json_encode')|!function_exists('json_decode')) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][103]."></td></tr>";
-		$error = 2;
-	}
-	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
+   //Test for sybase extension loaded or not.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][65]."</b></td>";
+   if (ini_get('magic_quotes_sybase')) {
+      echo "<td class='red'>";
+      echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][66]."</td></tr>";
+      $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][67]."' title='".$LANG['install'][67]."'></td></tr>";
+   }
 
-	}
+   //Test for utf8_encode function.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][83]."</b></td>";
+   if (!function_exists('utf8_encode') || !function_exists('utf8_decode')) {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][84]."></td></tr>";
+      $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
+   }
+
+   //Test for json_encode function.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][102]."</b></td>";
+   if (!function_exists('json_encode') || !function_exists('json_decode')) {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][103]."></td></tr>";
+      $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
+   }
 
    //Test for mbstring extension.
    echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][104]."</b></td>";
    if (!extension_loaded('mbstring')) {
       echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][105]."></td></tr>";
       $error = 2;
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
    }
-   else {
-      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
 
+   // memory test
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][86]."</b></td>";
+
+   $mem = getMemoryLimit();
+
+   if ( $mem == "" ) { // memory_limit non compilé -> no memory limit
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][95]." - ".
+                 $LANG['install'][89]."' title='".$LANG['install'][95]." - ".
+                 $LANG['install'][89]."'></td></tr>";
+   } else if( $mem == "-1" ) { // memory_limit compilé mais illimité
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][96]." - ".
+                 $LANG['install'][89]."' title='".$LANG['install'][96]." - ".
+                 $LANG['install'][89]."'></td></tr>";
+   } else if ($mem<64*1024*1024) { // memoire insuffisante
+      echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".
+                             $LANG['install'][87]." $mem octets</b><br>".$LANG['install'][88]."<br>".
+                             $LANG['install'][90]."</td></tr>";
+   } else { // on a sufisament de mémoire on passe à la suite
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][91]." - ".
+                 $LANG['install'][89]."' title='".$LANG['install'][91]." - ".
+                 $LANG['install'][89]."'></td></tr>";
    }
-	
-	// memory test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][86]."</b></td>";
 
-	$mem = getMemoryLimit();
-	
-	if( $mem == "" ){          // memory_limit non compilé -> no memory limit
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][95]." - ".$LANG['install'][89]."' title='".$LANG['install'][95]." - ".$LANG['install'][89]."'></td></tr>";
-	}
-	else if( $mem == "-1" ){   // memory_limit compilé mais illimité
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][96]." - ".$LANG['install'][89]."' title='".$LANG['install'][96]." - ".$LANG['install'][89]."'></td></tr>";
-	}
-	else{	
-		if ($mem<64*1024*1024){ // memoire insuffisante
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".$LANG['install'][87]." $mem octets</b><br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
-		}
-		else{ // on a sufisament de mémoire on passe à la suite
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][91]." - ".$LANG['install'][89]."' title='".$LANG['install'][91]." - ".$LANG['install'][89]."'></td></tr>";
-		}
-	}
-	
-	$suberr = checkWriteAccessToDirs();
+   $suberr = checkWriteAccessToDirs();
 
-	return ($suberr ? $suberr : $error);
+   return ($suberr ? $suberr : $error);
 }
 
 /**
@@ -597,55 +630,65 @@ function commonCheckForUseGLPI(){
 *
 * @return 2 : creation error 1 : delete error 0: OK
 **/
-function checkWriteAccessToDirs(){
-	global $LANG;
-	$dir_to_check=array(
-		GLPI_DUMP_DIR => $LANG['install'][16],
-		GLPI_DOC_DIR => $LANG['install'][21],
-		GLPI_CONFIG_DIR => $LANG['install'][23],
-		GLPI_SESSION_DIR => $LANG['install'][50],
-		GLPI_CRON_DIR => $LANG['install'][52],
-		GLPI_CACHE_DIR => $LANG['install'][99]
-	);
-	$error=0;	
-	foreach ($dir_to_check as $dir => $message){
-		echo "<tr class='tab_bg_1' ><td class='left'><b>".$message."</b></td>";
-		$tmperror=testWriteAccessToDirectory($dir);
-	
-		switch($tmperror){
-			// Error on creation
-			case 4 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][100]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
-				$error=2;
-				break;
-			case 3 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][101]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
-				$error=1;
-				break;
-			// Error on creation
-			case 2 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][17]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
-				$error=2;
-				break;
-			case 1 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][19]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
-				$error=1;
-				break;
-			default :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][20]."' title='".$LANG['install'][20]."'></td></tr>";
-				break;
-		}
-	}
-	
-	// Only write test for GLPI_LOG as SElinux prevent removing log file.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][53]."</b></td>";
-	if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][22]."' title='".$LANG['install'][22]."'></td></tr>";
-	} else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][19]."</p> ".$LANG['install'][97]."'".GLPI_LOG_DIR."'. ".$LANG['install'][98]."</td></tr>";
-		$error=1;
-	}
-	return $error;
+function checkWriteAccessToDirs() {
+   global $LANG;
+
+   $dir_to_check=array(GLPI_DUMP_DIR    => $LANG['install'][16],
+                       GLPI_DOC_DIR     => $LANG['install'][21],
+                       GLPI_CONFIG_DIR  => $LANG['install'][23],
+                       GLPI_SESSION_DIR => $LANG['install'][50],
+                       GLPI_CRON_DIR    => $LANG['install'][52],
+                       GLPI_CACHE_DIR   => $LANG['install'][99]);
+   $error=0;
+   foreach ($dir_to_check as $dir => $message) {
+      echo "<tr class='tab_bg_1' ><td class='left'><b>".$message."</b></td>";
+      $tmperror=testWriteAccessToDirectory($dir);
+
+      switch($tmperror) {
+         // Error on creation
+         case 4 :
+            echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".
+                       $LANG['install'][100]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            $error=2;
+            break;
+
+         case 3 :
+            echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".
+                       $LANG['install'][101]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            $error=1;
+            break;
+
+         // Error on creation
+         case 2 :
+            echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".
+                       $LANG['install'][17]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            $error=2;
+            break;
+
+         case 1 :
+            echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".
+                       $LANG['install'][19]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            $error=1;
+            break;
+
+         default :
+            echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                       $LANG['install'][20]."' title='".$LANG['install'][20]."'></td></tr>";
+            break;
+      }
+   }
+
+   // Only write test for GLPI_LOG as SElinux prevent removing log file.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][53]."</b></td>";
+   if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
+                 $LANG['install'][22]."' title='".$LANG['install'][22]."'></td></tr>";
+   } else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".
+                 $LANG['install'][19]."</p> ".$LANG['install'][97]."'".GLPI_LOG_DIR."'. ".$LANG['install'][98]."</td></tr>";
+      $error=1;
+   }
+   return $error;
 }
 
 /**
@@ -655,29 +698,28 @@ function checkWriteAccessToDirs(){
  * @return stripslashes item
  */
 function stripslashes_deep($value) {
-	$value = is_array($value) ?
-		array_map('stripslashes_deep', $value) :
-			(is_null($value) ? NULL : stripslashes($value));
 
-	return $value;
+   $value = is_array($value) ? array_map('stripslashes_deep', $value) :
+            (is_null($value) ? NULL : stripslashes($value));
+   return $value;
 }
 
 /**
- *  Add slash for variable & array 
+ *  Add slash for variable & array
  *
  * @param $value array or string: value to add slashes (array or string)
  * @return addslashes value
  */
 function addslashes_deep($value) {
-	$value = is_array($value) ?
-		array_map('addslashes_deep', $value) :
-			(is_null($value) ? NULL : mysql_real_escape_string($value));
-	return $value;
+
+   $value = is_array($value) ? array_map('addslashes_deep', $value) :
+            (is_null($value) ? NULL : mysql_real_escape_string($value));
+   return $value;
 }
 
 /**
  * Prevent from XSS
- * Clean code 
+ * Clean code
  *
  * @param $value array or string: item to prevent (array or string)
  * @return clean item
@@ -685,13 +727,16 @@ function addslashes_deep($value) {
  * @see unclean_cross_side_scripting_deep*
  */
 function clean_cross_side_scripting_deep($value) {
-	$in=array('<','>');
-	$out=array("&lt;","&gt;");
-	$value = is_array($value) ?
-		array_map('clean_cross_side_scripting_deep', $value) :
-			(is_null($value) ? NULL : str_replace($in,$out,$value));
-	return $value;
+
+   $in=array('<',
+             '>');
+   $out=array("&lt;",
+              "&gt;");
+   $value = is_array($value) ? array_map('clean_cross_side_scripting_deep', $value) :
+            (is_null($value) ? NULL : str_replace($in,$out,$value));
+   return $value;
 }
+
 /**
  *  Invert fonction from clean_cross_side_scripting_deep
  *
@@ -700,13 +745,16 @@ function clean_cross_side_scripting_deep($value) {
  * @see clean_cross_side_scripting_deep
  */
 function unclean_cross_side_scripting_deep($value) {
-	$in=array('<','>');
-	$out=array("&lt;","&gt;");
-	$value = is_array($value) ?
-		array_map('unclean_cross_side_scripting_deep', $value) :
-			(is_null($value) ? NULL : str_replace($out,$in,$value));
-	return $value;
+
+   $in=array('<',
+             '>');
+   $out=array("&lt;",
+              "&gt;");
+   $value = is_array($value) ? array_map('unclean_cross_side_scripting_deep', $value) :
+            (is_null($value) ? NULL : str_replace($out,$in,$value));
+   return $value;
 }
+
 /**
  *  Utf8 decode for variable & array
  *
@@ -714,10 +762,10 @@ function unclean_cross_side_scripting_deep($value) {
  * @return decoded item
  */
 function utf8_decode_deep($value) {
-	$value = is_array($value) ?
-		array_map('utf8_decode_deep', $value) :
-			(is_null($value) ? NULL : utf8_decode($value));
-	return $value;
+
+   $value = is_array($value) ? array_map('utf8_decode_deep', $value) :
+            (is_null($value) ? NULL : utf8_decode($value));
+   return $value;
 }
 
 /**
@@ -727,12 +775,12 @@ function utf8_decode_deep($value) {
  * @param $length integer: resume length
  * @return cut string
  */
-function resume_text($string,$length=255){
-	
-	if (strlen($string)>$length){
-		$string=utf8_substr($string,0,$length)."&nbsp;(...)";
-	}
-	return $string;
+function resume_text($string,$length=255) {
+
+   if (strlen($string)>$length) {
+      $string=utf8_substr($string,0,$length)."&nbsp;(...)";
+   }
+   return $string;
 }
 
 /**
@@ -742,10 +790,10 @@ function resume_text($string,$length=255){
  * @param $value string: value string
  * @return string
  */
-function mailRow($string,$value){
-	$row=utf8_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT).$value."\n";
+function mailRow($string,$value) {
 
-	return $row;
+   $row=utf8_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT).$value."\n";
+   return $row;
 }
 
 /**
@@ -762,83 +810,7 @@ function utf8_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PA
 
     $diff = strlen($input) - utf8_strlen($input);
     return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
-
-/*
- * @param $ps_input string: input string
- * @param $pn_pad_length integer: padding length
- * @param $ps_pad_string string: padding string
- * @param $pn_pad_type: integer: padding type
-   $ret = "";
-	
-	$hn_length_of_padding = $pn_pad_length - utf8_strlen($ps_input);
-	$hn_psLength = utf8_strlen($ps_pad_string); // pad string length
-	
-	if ($hn_psLength <= 0 || $hn_length_of_padding <= 0) {
-		// Padding string equal to 0:
-		//
-		$ret = $ps_input;
-	} else {
-		$hn_repeatCount = floor($hn_length_of_padding / $hn_psLength); // how many times repeat
-	
-		if ($pn_pad_type == STR_PAD_BOTH) {
-			$hs_lastStrLeft = "";
-			$hs_lastStrRight = "";
-			$hn_repeatCountLeft = $hn_repeatCountRight = ($hn_repeatCount - $hn_repeatCount % 2) / 2;
-			
-			$hs_lastStrLength = $hn_length_of_padding - 2 * $hn_repeatCountLeft * $hn_psLength; // the rest length to pad
-			$hs_lastStrLeftLength = $hs_lastStrRightLength = floor($hs_lastStrLength / 2);      // the rest length divide to 2 parts
-			$hs_lastStrRightLength += $hs_lastStrLength % 2; // the last char add to right side
-			
-			$hs_lastStrLeft = utf8_substr($ps_pad_string, 0, $hs_lastStrLeftLength);
-			$hs_lastStrRight = utf8_substr($ps_pad_string, 0, $hs_lastStrRightLength);
-			
-			$ret = str_repeat($ps_pad_string, $hn_repeatCountLeft) . $hs_lastStrLeft;
-			$ret .= $ps_input;
-			$ret .= str_repeat($ps_pad_string, $hn_repeatCountRight) . $hs_lastStrRight;
-		} else {
-			$hs_lastStr = utf8_substr($ps_pad_string, 0, $hn_length_of_padding % $hn_psLength); // last part of pad string
-		
-			if ($pn_pad_type == STR_PAD_LEFT){
-				$ret = str_repeat($ps_pad_string, $hn_repeatCount) . $hs_lastStr . $ps_input;
-			} else {
-				$ret = $ps_input . str_repeat($ps_pad_string, $hn_repeatCount) . $hs_lastStr;
-			}
-		}
-	}
-	
-	return $ret;
-*/
 }
-
-
-
-//  Inspired From SPIP
-// Suppression basique et brutale de tous les <...>
-/*function removeTags($string, $rempl = "") {
-	$string = preg_replace(",<[^>]*>,U", $rempl, $string);
-	// ne pas oublier un < final non ferme
-	// mais qui peut aussi etre un simple signe plus petit que
-	$string = str_replace('<', ' ', $string);
-	return $string;
-}
-
-//  Inspired from SPIP
-/*function textBrut($string) {
-
-	$string = preg_replace("/\s+/u", " ", $string);
-	$string = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n\n", $string);
-	$string = preg_replace("/^\n+/", "", $string);
-	$string = preg_replace("/\n+$/", "", $string);
-	$string = preg_replace("/\n +/", "\n", $string);
-	$string = removeTags($string);
-	$string = preg_replace("/(&nbsp;| )+/", " ", $string);
-	// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-	$string = str_replace("&#8217;","'",$string);
-	return $string;
-}
-
-*/
-
 
 /**
  * Clean post value for display in textarea
@@ -847,13 +819,21 @@ function utf8_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PA
  *
  *@return clean value
  **/
-function cleanPostForTextArea($value){
-	$order   = array('\r\n', '\n', "\\'", '\"', '\\\\');
-	$replace = array("\n",   "\n", "'",   '"',  "\\");
-	//echo rawurldecode($_POST["data"]);
-	return str_replace($order,$replace,$value);
+function cleanPostForTextArea($value) {
 
+   $order   = array('\r\n',
+                    '\n',
+                    "\\'",
+                    '\"',
+                    '\\\\');
+   $replace = array("\n",
+                    "\n",
+                    "'",
+                    '"',
+                    "\\");
+   return str_replace($order,$replace,$value);
 }
+
 /**
  * Clean display value deleting html tags
  *
@@ -861,171 +841,107 @@ function cleanPostForTextArea($value){
  *
  *@return clean value
  **/
-function html_clean($value){
-//  Inspired from SPIP and http://fr3.php.net/strip-tags
-/*
-	$search=array(
-			"/<a[^>]+>/i",
-			"/<img[^>]+>/i",
-			"/<span[^>]+>/i",
-			"/<\/span>/i",
-			"/<\/a>/i",
-			"/<strong>/i",
-			"/<\/strong>/i",
-			"/<small>/i",
-			"/<\/small>/i",
-			"/<i>/i",
-			"/<\/i>/i",
-			"/<br>/i",
-			"/<br \/>/i",
-			"/&nbsp;;/",
-			"/&nbsp;/",
-			"/<p>/i",
-			"/<\/p>/i",
-			"/<div[^>]+>/i",
-			"/<\/div>/i",
-			"/<ul>/i",
-			"/<\/ul>/i",
-			"/<li>/i",
-			"/<\/li>/i",
-			"/<ol>/i",
-			"/<\/ol>/i",
-			"/<h[0-9]>/i",
-			"/<\/h[0-9]>/i",
-			"/<font[^>]+>/i",
-			"/<\/font>/i",
+function html_clean($value) {
 
-		     );
-	$replace=array(
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			", ",
-			"",
-			" ",
-			" ",
-			"",
-			"\n",
-			"",
-			"\n",
-			"",
-			"\n",
-			"",
-			"\n",
-			"",
-			"\n",
-			"",
-			"\n",
-			"",
-			"",
-		      );
-	
-	$value=preg_replace($search,$replace,$value);
-	return trim($value);
-*/
+   $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
-	$value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
+   $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                   '@<style[^>]*?>.*?</style[^>]*?>@siU', // Strip style tags properly
+                   '@<[\/\!]*?[^<>]*?>@si',              // Strip out HTML tags
+                   '@<![\s\S]*?--[ \t\n\r]*>@');        // Strip multi-line comments including CDATA
 
-	$search = array('@<script[^>]*?>.*?</script[^>]*?>@si',  // Strip out javascript
-               '@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
-               '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
-               '@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
-	);
-	$value = preg_replace($search, ' ', $value);
+   $value = preg_replace($search, ' ', $value);
 
-	$value = preg_replace("/(&nbsp;| )+/", " ", $value);
-	// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-	$value = str_replace("&#8217;","'",$value);
+   $value = preg_replace("/(&nbsp;| )+/", " ", $value);
+   // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
+   $value = str_replace("&#8217;","'",$value);
 
-	$value = preg_replace("/ +/u", " ", $value);
-//	$value = preg_replace("/^\n+/", " ", $value);
-//	$value = preg_replace("/\n+$/", " ", $value);
-
-	$value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
-	return trim($value);
+   $value = preg_replace("/ +/u", " ", $value);
+   $value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
+   return trim($value);
 }
-
 
 /**
  * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
  *
- * @param $time datetime: datetime to convert 
+ * @param $time datetime: datetime to convert
  * @return $time or $date
  */
-function convDateTime($time) { 
-	if (is_null($time)) return $time;
+function convDateTime($time) {
 
-	if (!isset($_SESSION["glpidate_format"])){
-		$_SESSION["glpidate_format"]=0;
-	}
+   if (is_null($time)) {
+      return $time;
+   }
 
-	
-	switch ($_SESSION['glpidate_format']){
-		case 1 : // DD-MM-YYYY
-			$date = substr($time,8,2)."-";        // day 
-			$date .= substr($time,5,2)."-";  // month
-			$date .= substr($time,0,4). " "; // year
-			$date .= substr($time,11,5);     // hours and minutes
-			return $date; 
-			break;
-		case 2 : // MM-DD-YYYY
-			$date = substr($time,5,2)."-";  // month
-			$date .= substr($time,8,2)."-";        // day 
-			$date .= substr($time,0,4). " "; // year
-			$date .= substr($time,11,5);     // hours and minutes
-			return $date; 
-			break;
-		default : // YYYY-MM-DD
-			if (strlen($time)>16){
-				return substr($time,0,16);
-			}
-			return $time;
-			break;
-	}
+   if (!isset($_SESSION["glpidate_format"])) {
+      $_SESSION["glpidate_format"]=0;
+   }
+
+   switch ($_SESSION['glpidate_format']) {
+      case 1 : // DD-MM-YYYY
+         $date = substr($time,8,2)."-";   // day
+         $date .= substr($time,5,2)."-";  // month
+         $date .= substr($time,0,4). " "; // year
+         $date .= substr($time,11,5);     // hours and minutes
+         return $date;
+         break;
+
+      case 2 : // MM-DD-YYYY
+         $date = substr($time,5,2)."-";   // month
+         $date .= substr($time,8,2)."-";  // day
+         $date .= substr($time,0,4). " "; // year
+         $date .= substr($time,11,5);     // hours and minutes
+         return $date;
+         break;
+
+      default : // YYYY-MM-DD
+         if (strlen($time)>16) {
+            return substr($time,0,16);
+         }
+         return $time;
+         break;
+   }
 }
 
 /**
  * Convert a date YY-MM-DD to DD-MM-YY for calendar
  *
- * @param $time date: date to convert 
+ * @param $time date: date to convert
  * @return $time or $date
  */
-function convDate($time) { 
-	global $CFG_GLPI;
-	if (is_null($time)) return $time;
+function convDate($time) {
+   global $CFG_GLPI;
 
-	if (!isset($_SESSION["glpidate_format"])){
-		$_SESSION["glpidate_format"]=0;
-	}
+   if (is_null($time)) {
+      return $time;
+   }
 
-	switch ($_SESSION['glpidate_format']){
-		case 1 : // DD-MM-YYYY
-			$date = substr($time,8,2)."-";        // day
-			$date .= substr($time,5,2)."-";  // month
-			$date .= substr($time,0,4); // year
-			return $date; 
-			break;
-		case 2 : // MM-DD-YYYY
-			$date = substr($time,5,2)."-";  // month
-			$date .= substr($time,8,2)."-";        // day
-			$date .= substr($time,0,4); // year
-			return $date; 
-			break;
-		default : // YYYY-MM-DD
-			if (strlen($time)>10){
-				return substr($time,0,10);
-			}
-			return $time;
-			break;
-	}
+   if (!isset($_SESSION["glpidate_format"])) {
+      $_SESSION["glpidate_format"]=0;
+   }
+
+   switch ($_SESSION['glpidate_format']) {
+      case 1 : // DD-MM-YYYY
+         $date = substr($time,8,2)."-";  // day
+         $date .= substr($time,5,2)."-"; // month
+         $date .= substr($time,0,4);     // year
+         return $date;
+         break;
+
+      case 2 : // MM-DD-YYYY
+         $date = substr($time,5,2)."-";  // month
+         $date .= substr($time,8,2)."-"; // day
+         $date .= substr($time,0,4);     // year
+         return $date;
+         break;
+
+      default : // YYYY-MM-DD
+         if (strlen($time)>10) {
+            return substr($time,0,10);
+         }
+         return $time;
+         break;
+   }
 }
 
 /**
@@ -1037,38 +953,40 @@ function convDate($time) {
  *
  * @return formatted number
  */
-function formatNumber($number,$edit=false,$forcedecimal=-1) { 
-	global $CFG_GLPI;
+function formatNumber($number,$edit=false,$forcedecimal=-1) {
+   global $CFG_GLPI;
 
-	// Php 5.3 : number_format() expects parameter 1 to be double,
-	if ($number=="") {
-		$number=0;	
-	} else if ($number=="-") { // used for not defines value (from TableauAmort, p.e.)
-		return "-";
-	}
-	
-	$decimal=$CFG_GLPI["decimal_number"];
-	if ($forcedecimal>=0){
-		$decimal=$forcedecimal;
-	}
+   // Php 5.3 : number_format() expects parameter 1 to be double,
+   if ($number=="") {
+      $number=0;
+   } else if ($number=="-") { // used for not defines value (from TableauAmort, p.e.)
+      return "-";
+   }
 
-	// Edit : clean display for mysql
-	if ($edit){
-		return number_format($number,$decimal,'.','');
-	}
+   $decimal=$CFG_GLPI["decimal_number"];
+   if ($forcedecimal>=0) {
+      $decimal=$forcedecimal;
+   }
 
-	// Display : clean display
-	switch ($_SESSION['glpinumber_format']){
-		case 2: // Other French
-			return number_format($number,$decimal,',',' ');
-			break;
-		case 0: // French
-			return number_format($number,$decimal,'.',' ');
-			break;
-		default: // English
-			return number_format($number,$decimal,'.',',');
-			break;
-	}	
+   // Edit : clean display for mysql
+   if ($edit) {
+      return number_format($number,$decimal,'.','');
+   }
+
+   // Display : clean display
+   switch ($_SESSION['glpinumber_format']) {
+      case 2: // Other French
+         return number_format($number,$decimal,',',' ');
+         break;
+
+      case 0: // French
+         return number_format($number,$decimal,'.',' ');
+         break;
+
+      default: // English
+         return number_format($number,$decimal,'.',',');
+         break;
+   }
 }
 
 /**
@@ -1078,81 +996,86 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
  * @param $filename string: file title
  * @return nothing
  */
-function sendFile($file,$filename){
-	global $DB,$LANG;
+function sendFile($file,$filename) {
+   global $DB,$LANG;
 
-	// Test securite : document in DOC_DIR
-	$tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
-	if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")){
-		echo "Security attack !!!";
-		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
-		return;
-	}
+   // Test securite : document in DOC_DIR
+   $tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
+   if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
+      echo "Security attack !!!";
+      logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"].
+               " try to get a non standard file.");
+      return;
+   }
 
-	if (!file_exists($file)){
-		echo "Error file $file does not exist";
-		return;
-	} else {
-		$splitter=explode("/",$file);
-		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
-		$query="SELECT mime FROM glpi_documents WHERE filename LIKE '$filedb'";
-		$result=$DB->query($query);
-		$mime="application/octetstream";
-		if ($result&&$DB->numrows($result)==1){
-			$mime=$DB->result($result,0,0);
-		} else {
-			// fichiers DUMP SQL et XML
-			if ($splitter[count($splitter)-2]=="dump"){
-				$splitter2=explode(".",$file);
-				switch ($splitter2[count($splitter2)-1]) {
-					case "sql" : 
-						$mime="text/x-sql";
-					break;
-					case "xml" :
-						$mime="text/xml";
-					break;
-				}
-			} else {
-				// Cas particulier
-				switch ($splitter[count($splitter)-2]) {
-					case "SQL" : 
-						$mime="text/x-sql";
-					break;
-					case "XML" :
-						$mime="text/xml";
-					break;
-				}
-			}
+   if (!file_exists($file)) {
+      echo "Error file $file does not exist";
+   return;
+   } else {
+      $splitter=explode("/",$file);
+      $filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
+      $query="SELECT `mime`
+              FROM `glpi_documents`
+              WHERE `filename` LIKE '$filedb'";
+      $result=$DB->query($query);
+      $mime="application/octetstream";
+      if ($result&&$DB->numrows($result)==1) {
+         $mime=$DB->result($result,0,0);
+      } else if ($splitter[count($splitter)-2]=="dump"){
+         // fichiers DUMP SQL et XML
+         $splitter2=explode(".",$file);
+         switch ($splitter2[count($splitter2)-1]) {
+            case "sql" :
+               $mime="text/x-sql";
+               break;
 
-		}
+            case "xml" :
+               $mime="text/xml";
+               break;
+         }
+      } else {
+         // Cas particulier
+         switch ($splitter[count($splitter)-2]) {
+            case "SQL" :
+               $mime="text/x-sql";
+               break;
 
-		// Now send the file with header() magic
-		header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-		header('Pragma: private'); /// IE BUG + SSL
-		//header('Pragma: no-cache'); 
-		header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-		header("Content-disposition: filename=\"$filename\"");
-		header("Content-type: ".$mime);
+            case "XML" :
+               $mime="text/xml";
+               break;
+         }
+      }
 
-		$f=fopen($file,"r");
+      // Now send the file with header() magic
+      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header('Pragma: private'); /// IE BUG + SSL
+      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+      header("Content-disposition: filename=\"$filename\"");
+      header("Content-type: ".$mime);
 
-		if (!$f){
-			echo "Error opening file $file";
-		} else {
-			// Pour que les \x00 ne devienne pas \0
-			$mc=get_magic_quotes_runtime();
-			if ($mc) @set_magic_quotes_runtime(0); 
-			$fsize=filesize($file);
+      $f=fopen($file,"r");
 
-			if ($fsize){
-				echo fread($f, filesize($file));
-			} else {
-				echo $LANG['document'][47];
-			}
+      if (!$f) {
+         echo "Error opening file $file";
+      } else {
+         // Pour que les \x00 ne devienne pas \0
+         $mc=get_magic_quotes_runtime();
+         if ($mc) {
+            @set_magic_quotes_runtime(0);
+         }
+         $fsize=filesize($file);
 
-			if ($mc) @set_magic_quotes_runtime($mc); 
-		}
-	}
+         if ($fsize) {
+            echo fread($f, filesize($file));
+         } else {
+            echo $LANG['document'][47];
+         }
+
+         if ($mc) {
+            @set_magic_quotes_runtime($mc);
+         }
+      }
+   }
 }
 
 /**
@@ -1162,41 +1085,45 @@ function sendFile($file,$filename){
  * @return $val
  */
 function return_bytes_from_ini_vars($val) {
-	$val = trim($val);
-	$last = strtolower($val{strlen($val)-1});
-	switch($last) {
-		// Le modifieur 'G' est disponible depuis PHP 5.1.0
-		case 'g':
-			$val *= 1024;
-		case 'm':
-			$val *= 1024;
-		case 'k':
-			$val *= 1024;
-	}
 
-	return $val;
+   $val = trim($val);
+   $last = strtolower($val{strlen($val)-1});
+   switch($last) {
+      // Le modifieur 'G' est disponible depuis PHP 5.1.0
+      case 'g':
+         $val *= 1024;
+
+      case 'm':
+         $val *= 1024;
+
+      case 'k':
+         $val *= 1024;
+   }
+
+   return $val;
 }
 
 /**
  * Header redirection hack
  *
- * @param $dest string: Redirection destination 
+ * @param $dest string: Redirection destination
  * @return nothing
  */
-function glpi_header($dest){
-	$toadd='';
-	if (!strpos($dest,"?")){
-		$toadd='?tokonq='.getRandomString(5);
-	} 	
-	echo "<script language=javascript>
-		NomNav = navigator.appName;
-		if (NomNav=='Konqueror'){
-			window.location=\"".$dest.$toadd."\";
-		} else {
-			window.location=\"".$dest."\";
-		}
-	</script>";
-	exit();
+function glpi_header($dest) {
+
+   $toadd='';
+   if (!strpos($dest,"?")) {
+      $toadd='?tokonq='.getRandomString(5);
+   }
+   echo "<script language=javascript>
+         NomNav = navigator.appName;
+         if (NomNav=='Konqueror'){
+            window.location=\"".$dest.$toadd."\";
+         } else {
+            window.location=\"".$dest."\";
+         }
+      </script>";
+   exit();
 }
 
 /**
@@ -1204,14 +1131,13 @@ function glpi_header($dest){
  *
  * @return boolean : true if launched
  */
-function callCronForce(){
+function callCronForce() {
+   global $CFG_GLPI;
 
-	global $CFG_GLPI;
-	
-	$path=$CFG_GLPI['root_doc']."/front/cron.php";
+   $path=$CFG_GLPI['root_doc']."/front/cron.php";
 
-	echo "<div style=\"background-image: url('$path');\"></div>";
-	return true;		
+   echo "<div style=\"background-image: url('$path');\"></div>";
+   return true;
 }
 
 /**
@@ -1219,23 +1145,21 @@ function callCronForce(){
  *
  * @return nothing
  */
-function callCron(){
-	
-	if (isset($_SESSION["glpicrontimer"])){
+function callCron() {
 
-		// call function callcron() every 5min
-		if ((time()-$_SESSION["glpicrontimer"])>300){
-			if (callCronForce()) {
-				// Restart timer
-				$_SESSION["glpicrontimer"]=time();			
-			}
-		}
-	} else {
-		// Start timer
-		$_SESSION["glpicrontimer"]=time();	
-	}
+   if (isset($_SESSION["glpicrontimer"])) {
+      // call function callcron() every 5min
+      if ((time()-$_SESSION["glpicrontimer"])>300) {
+         if (callCronForce()) {
+            // Restart timer
+            $_SESSION["glpicrontimer"]=time();
+         }
+      }
+   } else {
+      // Start timer
+      $_SESSION["glpicrontimer"]=time();
+   }
 }
-
 
 /**
  * Get hour from sql
@@ -1243,101 +1167,87 @@ function callCron(){
  * @param $time datetime: time
  * @return  array
  */
-function get_hour_from_sql($time){
-	$t=explode(" ",$time);
-	$p=explode(":",$t[1]);
-	return $p[0].":".$p[1];
+function get_hour_from_sql($time) {
+
+   $t=explode(" ",$time);
+   $p=explode(":",$t[1]);
+   return $p[0].":".$p[1];
 }
 
 /**
  *  Optimize sql table
  *
  * @param $progress_fct function to call to display progress message
- *  
+ *
  * @return nothing
  */
 function optimize_tables ($progress_fct=NULL){
+   global $DB;
 
-	global $DB;
-	
-	if (function_exists($progress_fct)) $progress_fct("optimize"); // Start
-	$result=$DB->list_tables();
-	while ($line = $DB->fetch_array($result))
-	{
-		if (strstr($line[0],"glpi_")){
-			$table = $line[0];
-			if (function_exists($progress_fct)) $progress_fct("optimize", $table);
-			
-			$query = "OPTIMIZE TABLE `".$table."` ;";
-			$DB->query($query);
-		}
-	}
-	$DB->free_result($result);
+   if (function_exists($progress_fct)) {
+      $progress_fct("optimize"); // Start
+   }
+   $result=$DB->list_tables();
+   while ($line = $DB->fetch_array($result)) {
+      if (strstr($line[0],"glpi_")) {
+         $table = $line[0];
+         if (function_exists($progress_fct)) {
+            $progress_fct("optimize", $table);
+         }
+         $query = "OPTIMIZE TABLE `".$table."` ;";
+         $DB->query($query);
+      }
+   }
+   $DB->free_result($result);
 
-	if (function_exists($progress_fct)) $progress_fct("optimize"); // End
+   if (function_exists($progress_fct)) {
+      $progress_fct("optimize"); // End
+   }
 }
 
 /**
 * Is a string seems to be UTF-8 one ?
-* 
+*
 * @param $Str string: string to analyze
-* @return  boolean 
+* @return  boolean
 **/
 function seems_utf8($str) {
    return mb_check_encoding($str,"UTF-8");
-/*
-	for ($i=0; $i<strlen($Str); $i++) {
-		if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
-			elseif ((ord($Str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
-				elseif ((ord($Str[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
-				elseif ((ord($Str[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
-				elseif ((ord($Str[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
-				elseif ((ord($Str[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
-		else return false; # Does not match any model
-			for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
-				if ((++$i == strlen($Str)) || ((ord($Str[$i]) & 0xC0) != 0x80))
-					return false;
-			}
-	}
-	return true;
-*/
 }
-
-
 
 /**
  * NOT USED IN CORE - Used for update process - Clean string for knowbase display
  * replace nl2br
- * 
+ *
  * @param $pee string: initial string
  * @param $br boolean: make line breaks ?
- * 
+ *
  * @return $string
  */
 function autop($pee, $br=true) {
-	// Thanks  to Matthew Mullenweg
+   // Thanks  to Matthew Mullenweg
 
-	$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
-	$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-	$pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
-	if ($br) {
-		$pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
-	}
-	return $pee;
+   $pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
+   $pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+   $pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs,
+                                                                     // including one at the end
+   if ($br) {
+      $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+   }
+   return $pee;
 }
-
 
 /**
  * NOT USED IN CORE - Used for update process - make url clickable
  *
  * @param $chaine string: initial string
- * 
+ *
  * @return $string
  */
-function clicurl($chaine){
-	$text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
+function clicurl($chaine) {
 
-	return $text;
+   $text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine);
+   return $text;
 }
 
 /**
@@ -1346,565 +1256,580 @@ function clicurl($chaine){
  * @param $text string: initial text
  * @param $start integer: where to start
  * @param $end integer: where to stop
- * 
- * @return array 
+ *
+ * @return array
  */
-function split_text($text, $start, $end){
+function split_text($text, $start, $end) {
 
-	// Adaptï¿½de PunBB 
-	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
+   // Adapte de PunBB
+   //Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
-	$tokens = explode($start, $text);
-
-	$outside[] = $tokens[0];
-
-	$num_tokens = count($tokens);
-	for ($i = 1; $i < $num_tokens; ++$i){
-		$temp = explode($end, $tokens[$i]);
-		$inside[] = $temp[0];
-		$outside[] = $temp[1];
-	}
-
-	return array($inside, $outside);
+   $tokens = explode($start, $text);
+   $outside[] = $tokens[0];
+   $num_tokens = count($tokens);
+   for ($i = 1; $i < $num_tokens; ++$i) {
+      $temp = explode($end, $tokens[$i]);
+      $inside[] = $temp[0];
+      $outside[] = $temp[1];
+   }
+   return array($inside, $outside);
 }
-
 
 /**
  * NOT USED IN CORE - Used for update process - Replace bbcode in text by html tag
  *
  * @param $string string: initial string
- * 
- * @return formatted string 
+ *
+ * @return formatted string
  */
-function rembo($string){
+function rembo($string) {
 
-	// Adaptï¿½de PunBB 
-	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
+   // Adapte de PunBB
+   //Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
-	// If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
-	if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false)
-	{
-		list($inside, $outside) = split_text($string, '[code]', '[/code]');
-		$outside = array_map('trim', $outside);
-		$string = implode('<">', $outside);
-	}
+   // If the message contains a code tag we have to split it up
+   // (text within [code][/code] shouldn't be touched)
+   if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false) {
+      list($inside, $outside) = split_text($string, '[code]', '[/code]');
+      $outside = array_map('trim', $outside);
+      $string = implode('<">', $outside);
+   }
 
+   $pattern = array('#\[b\](.*?)\[/b\]#s',
+                    '#\[i\](.*?)\[/i\]#s',
+                    '#\[u\](.*?)\[/u\]#s',
+                    '#\[s\](.*?)\[/s\]#s',
+                    '#\[c\](.*?)\[/c\]#s',
+                    '#\[g\](.*?)\[/g\]#s',
+                    '#\[email\](.*?)\[/email\]#',
+                    '#\[email=(.*?)\](.*?)\[/email\]#',
+                    '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
 
-	$pattern = array('#\[b\](.*?)\[/b\]#s',
-			'#\[i\](.*?)\[/i\]#s',
-			'#\[u\](.*?)\[/u\]#s',
-			'#\[s\](.*?)\[/s\]#s',
-			'#\[c\](.*?)\[/c\]#s',
-			'#\[g\](.*?)\[/g\]#s',
-			//'#\[url\](.*?)\[/url\]#e',
-			//'#\[url=(.*?)\](.*?)\[/url\]#e',
-			'#\[email\](.*?)\[/email\]#',
-			'#\[email=(.*?)\](.*?)\[/email\]#',
-			'#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
+   $replace = array('<strong>$1</strong>',
+                    '<em>$1</em>',
+                    '<span class="souligne">$1</span>',
+                    '<span class="barre">$1</span>',
+                    '<div class="center">$1</div>',
+                    '<big>$1</big>',
+                    '<a href="mailto:$1">$1</a>',
+                    '<a href="mailto:$1">$2</a>',
+                    '<span style="color: $1">$2</span>');
 
+   // This thing takes a while! :)
+   $string = preg_replace($pattern, $replace, $string);
 
-	$replace = array('<strong>$1</strong>',
-			'<em>$1</em>',
-			'<span class="souligne">$1</span>',
-			'<span class="barre">$1</span>',
-			'<div align="center">$1</div>',
-			'<big>$1</big>',
-			// 'truncate_url(\'$1\')',
-			//'truncate_url(\'$1\', \'$2\')',
-		'<a href="mailto:$1">$1</a>',
-		'<a href="mailto:$1">$2</a>',
-		'<span style="color: $1">$2</span>');
+   $string=clicurl($string);
+   $string=autop($string);
 
-	// This thing takes a while! :)
-	$string = preg_replace($pattern, $replace, $string);
+   // If we split up the message before we have to concatenate it together again (code tags)
+   if (isset($inside)) {
+      $outside = explode('<">', $string);
+      $string = '';
+      $num_tokens = count($outside);
 
-	$string=clicurl($string);
-	$string=autop($string);
-
-	// If we split up the message before we have to concatenate it together again (code tags)
-	if (isset($inside)){
-			$outside = explode('<">', $string);
-			$string = '';
-			$num_tokens = count($outside);
-
-			for ($i = 0; $i < $num_tokens; ++$i){
-					$string .= $outside[$i];
-					if (isset($inside[$i]))
-						$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><strong>Code:</strong><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
-			}
-	}
-
-	return $string;
+      for ($i = 0; $i < $num_tokens; ++$i) {
+         $string .= $outside[$i];
+         if (isset($inside[$i])) {
+            $string .= '<br><br><table  class="code center"><tr><td class="punquote">' .
+                       '<strong>Code:</strong><br><br><pre>'.trim($inside[$i]).'</pre></td>' .
+                       '</tr></table><br>';
+         }
+      }
+   }
+   return $string;
 }
 
 /**
 * Create SQL search condition
-* 
+*
 * @param $val string: value to search
 * @param $not boolean: is a negative search ?
-* 
-* @return search string 
-**/ 
-function makeTextSearch($val,$not=false){
-	$NOT="";
-	if ($not) {
-		$NOT= " NOT ";
-	}
-	// Unclean to permit < and > search
-	$val=unclean_cross_side_scripting_deep($val);
-	if ($val=="NULL"||$val=="null") {
-		$SEARCH=" IS $NOT NULL ";
-	} else {
-		$begin=0;
-		$end=0;
-		if (($length=strlen($val))>0){
-			if (($val[0]=='^')){
-				$begin=1;
-			}
-			if ($val[$length-1]=='$'){
-				$end=1;
-			}
-		}
-		if ($begin||$end) {
-			$val=utf8_substr($val,$begin,$length-$end-$begin);
-		}
+*
+* @return search string
+**/
+function makeTextSearch($val,$not=false) {
 
-		$SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+   $NOT="";
+   if ($not) {
+      $NOT= " NOT ";
+   }
+   // Unclean to permit < and > search
+   $val=unclean_cross_side_scripting_deep($val);
+   if ($val=="NULL"||$val=="null") {
+      $SEARCH=" IS $NOT NULL ";
+   } else {
+      $begin=0;
+      $end=0;
+      if (($length=strlen($val))>0) {
+         if (($val[0]=='^')) {
+            $begin=1;
+         }
+         if ($val[$length-1]=='$'){
+            $end=1;
+         }
+      }
+      if ($begin||$end) {
+         $val=utf8_substr($val,$begin,$length-$end-$begin);
+      }
 
-	}
-
-	return $SEARCH;
+      $SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+   }
+   return $SEARCH;
 }
 
 /**
  * Get a web page. Use proxy if configured
- * 
+ *
  * @param $url string: to retrieve
  * @param $msgerr string: set if problem encountered
  * @param $rec integer: internal use only Must be 0
- * 
+ *
  * @return content of the page (or empty)
  */
 function getURLContent ($url, &$msgerr=NULL, $rec=0) {
+   global $LANG,$CFG_GLPI;
 
-	global $LANG,$CFG_GLPI;
-	
-	$content="";
+   $content="";
+   $taburl=parse_url($url);
 
-	$taburl=parse_url($url);
+   // Connection directe
+   if (empty($CFG_GLPI["proxy_name"])) {
+      if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
+          $errno, $errstr, 1)) {
 
-	// Connection directe
-	if (empty($CFG_GLPI["proxy_name"])){
-		
-		if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80), $errno, $errstr, 1)){
+         if (isset($taburl["path"]) && $taburl["path"]!='/') {
+            // retrieve path + args
+            $request  = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
+         } else {
+            $request  = "GET / HTTP/1.1\r\n";
+         }
+         $request .= "Host: ".$taburl["host"]."\r\n";
+      } else {
+         if (isset($msgerr)) {
+            $msgerr=$LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
+         }
+         return "";
+      }
+   } else { // Connection using proxy
+      $fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
+      if ($fp) {
+         $request  = "GET $url HTTP/1.1\r\n";
+         $request .= "Host: ".$CFG_GLPI["proxy_name"]."\r\n";
+         if (!empty($CFG_GLPI["proxy_user"])) {
+            $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
+                        $CFG_GLPI["proxy_password"]) . "\r\n";
+         }
+      } else {
+         if (isset($msgerr)) {
+            $msgerr=$LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
+         }
+         return "";
+      }
+   }
 
-			if (isset($taburl["path"]) && $taburl["path"]!='/') {
-				// retrieve path + args
-				$request  = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
-			} else {
-				$request  = "GET / HTTP/1.1\r\n";
-			}
-			$request .= "Host: ".$taburl["host"]."\r\n";
+   $request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
+   $request .= "Connection: Close\r\n\r\n";
+   fwrite($fp, $request);
 
-		} else {
-			if (isset($msgerr)) {
-				$msgerr=$LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
-			}
-			return "";
-		}
-		
-	} else { // Connection using proxy
+   $header=true ;
+   $redir=false;
+   $errstr="";
+   while(!feof($fp)) {
+      if ($buf=fgets($fp, 1024)) {
+         if ($header) {
+            if (strlen(trim($buf))==0) {
+               // Empty line = end of header
+               $header=false;
+            } else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
+               if ($rec<9) {
+                  $desturl=trim($rep[1]);
+                  $taburl2=parse_url($desturl);
+                  if (isset($taburl2['host'])) {
+                     // Redirect to another host
+                     return (getURLContent($desturl,$errstr,$rec+1));
+                  } else  {
+                     // redirect to same host
+                     return (getURLContent(
+                             (isset($taburl['scheme'])?$taburl['scheme']:'http')."://".$taburl['host'].
+                             (isset($taburl['port'])?':'.$taburl['port']:'').$desturl,$errstr,$rec+1));
+                  }
+               } else {
+                  $errstr="Too deep";
+                  break;
+               }
+            } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
+               // HTTP 200 = OK
+            } else if (preg_match("/^HTTP.*302/", $buf)) {
+               // HTTP 302 = Moved Temporarily
+               $redir=true;
+            } else if (preg_match("/^HTTP/", $buf)) {
+               // Other HTTP status = error
+               $errstr=trim($buf);
+               break;
+            }
+         } else {
+            // Body
+            $content .= $buf;
+         }
+      }
+   } // eof
 
-		$fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
-		if ($fp) {
-	
-			$request  = "GET $url HTTP/1.1\r\n";
-			$request .= "Host: ".$CFG_GLPI["proxy_name"]."\r\n";
-			if (!empty($CFG_GLPI["proxy_user"])) {
-				$request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n";				
-			}
-			
-		} else {
-			if (isset($msgerr)) {
-				$msgerr=$LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
-			}
-			return "";
-		}
-	}
-		 
-	$request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
-	$request .= "Connection: Close\r\n\r\n";
-	
-	fwrite($fp, $request);
-	
-	$header=true ;
-	$redir=false;
-	$errstr="";
-	while(!feof($fp)) {
-		if ($buf=fgets($fp, 1024)) {
-			if ($header) {
-				if (strlen(trim($buf))==0) {
-					// Empty line = end of header
-					$header=false;
-				} else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
-					if ($rec<9) {
-						$desturl=trim($rep[1]);
-						$taburl2=parse_url($desturl);
-						if (isset($taburl2['host'])) {
-							// Redirect to another host
-							return (getURLContent($desturl,$errstr,$rec+1));
-						} else  {
-							// redirect to same host
-							return (getURLContent(
-								(isset($taburl['scheme'])?$taburl['scheme']:'http')."://".
-								$taburl['host'].
-								(isset($taburl['port'])?':'.$taburl['port']:'').
-								$desturl,$errstr,$rec+1));
-						}
-					} else {
-						$errstr="Too deep";
-						break;
-					}
-				} else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
-					// HTTP 200 = OK
-				} else if (preg_match("/^HTTP.*302/", $buf)) {
-					// HTTP 302 = Moved Temporarily
-					$redir=true;
-				} else if (preg_match("/^HTTP/", $buf)) {
-					// Other HTTP status = error
-					$errstr=trim($buf);
-					break;
-				}	
-			}
-			else { 
-				// Body
-				$content .= $buf;	
-			}
-		}
-	} // eof
-	
-	fclose($fp);
+   fclose($fp);
 
- 	if (empty($content) && isset($msgerr)) {
- 		if (empty($errstr)) {
- 			$msgerr=$LANG['setup'][312]; // no data
- 		}
-		else {
-			$msgerr=$LANG['setup'][310] . " ($errstr)"; // HTTP error	
-		}
-	}
-
-	return $content;	
+   if (empty($content) && isset($msgerr)) {
+      if (empty($errstr)) {
+         $msgerr=$LANG['setup'][312]; // no data
+      } else {
+         $msgerr=$LANG['setup'][310] . " ($errstr)"; // HTTP error
+      }
+   }
+   return $content;
 }
 
 /**
-* Check if new version is available 
-* 
+* Check if new version is available
+*
 * @param $auto boolean: check done autically ? (if not display result)
-* 
-* @return string explaining the result 
+*
+* @return string explaining the result
 **/
-function checkNewVersionAvailable($auto=true){
-	global $DB,$LANG,$CFG_GLPI;
+function checkNewVersionAvailable($auto=true) {
+   global $DB,$LANG,$CFG_GLPI;
 
-	if (!haveRight("check_update","r")) return false;	
+   if (!haveRight("check_update","r")) {
+      return false;
+   }
+   if (!$auto) {
+      echo "<br>";
+   }
 
-	if (!$auto) echo "<br>";
+   $error="";
+   $latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
 
-	$error="";
-	$latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
+   if (strlen(trim($latest_version))==0) {
+      if (!$auto) {
+         echo "<div class='center'> $error </div>";
+      } else {
+         return $error;
+      }
+   } else {
+      $splitted=explode(".",trim($CFG_GLPI["version"]));
+      if ($splitted[0]<10) {
+         $splitted[0].="0";
+      }
+      if ($splitted[1]<10) {
+         $splitted[1].="0";
+      }
+      $cur_version = $splitted[0]*10000+$splitted[1]*100;
+      if (isset($splitted[2])) {
+         if ($splitted[2]<10) {
+            $splitted[2].="0";
+         }
+         $cur_version+=$splitted[2];
+      }
+      $splitted=explode(".",trim($latest_version));
 
-	if (strlen(trim($latest_version))==0){
-		if (!$auto) {
-			echo "<div class='center'> $error </div>";
-		} else {
-			return $error;
-		}
-	} else {			
-		$splitted=explode(".",trim($CFG_GLPI["version"]));
+      if ($splitted[0]<10) {
+         $splitted[0].="0";
+      }
+      if ($splitted[1]<10) {
+         $splitted[1].="0";
+      }
 
-		if ($splitted[0]<10) $splitted[0].="0";
-		if ($splitted[1]<10) $splitted[1].="0";
-		$cur_version = $splitted[0]*10000+$splitted[1]*100;
-		if (isset($splitted[2])) {
-			if ($splitted[2]<10) $splitted[2].="0";
-			$cur_version+=$splitted[2];
-		}
+      $lat_version = $splitted[0]*10000+$splitted[1]*100;
+      if (isset($splitted[2])) {
+         if ($splitted[2]<10) {
+            $splitted[2].="0";
+         }
+         $lat_version+=$splitted[2];
+      }
 
-		$splitted=explode(".",trim($latest_version));
-
-		if ($splitted[0]<10) $splitted[0].="0";
-		if ($splitted[1]<10) $splitted[1].="0";
-
-		$lat_version = $splitted[0]*10000+$splitted[1]*100;
-		if (isset($splitted[2])) {
-			if ($splitted[2]<10) $splitted[2].="0";
-			$lat_version+=$splitted[2];
-		}
-
-		if ($cur_version < $lat_version){
-			$config_object=new Config();
-			$input["id"]=1;
-			$input["founded_new_version"]=$latest_version;
-			$config_object->update($input);
-			if (!$auto) {
-				echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
-				echo "<div class='center'>".$LANG['setup'][302]."</div>";
-			} else {
-				return $LANG['setup'][301]." ".$latest_version;
-			}
-		}  else {
-			if (!$auto){
-				echo "<div class='center'>".$LANG['setup'][303]."</div>";
-			} else {
-				return $LANG['setup'][303];
-			}
-		}
-	} 
-	return 1;
+      if ($cur_version < $lat_version) {
+         $config_object=new Config();
+         $input["id"]=1;
+         $input["founded_new_version"]=$latest_version;
+         $config_object->update($input);
+         if (!$auto) {
+            echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
+            echo "<div class='center'>".$LANG['setup'][302]."</div>";
+         } else {
+            return $LANG['setup'][301]." ".$latest_version;
+         }
+      } else {
+         if (!$auto) {
+            echo "<div class='center'>".$LANG['setup'][303]."</div>";
+         } else {
+            return $LANG['setup'][303];
+         }
+      }
+   }
+   return 1;
 }
+
 /**
 * Cron job to check if a new version is available
-* 
+*
 **/
-function cron_check_update(){
-	global $CFG_GLPI;
-	$result=checkNewVersionAvailable(1);
-	logInFile("cron",$result."\n");
+function cron_check_update() {
+   global $CFG_GLPI;
+
+   $result=checkNewVersionAvailable(1);
+   logInFile("cron",$result."\n");
 }
 
 /**
 * Get date using a begin date and a period in month
-* 
+*
 * @param $from date: begin date
 * @param $addwarranty integer: period in months
 * @param $deletenotice integer: period in months of notice
-* 
+*
 * @return expiration date string
 **/
-function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
-	global $LANG;
-	// Life warranty
-	if ($addwarranty==-1 && $deletenotice==0){
-		return $LANG['setup'][307];
-	}
-	if ($from==NULL || empty($from))
-		return "";
-	else {
-		return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
-	}
+function getWarrantyExpir($from,$addwarranty,$deletenotice=0) {
+   global $LANG;
 
+   // Life warranty
+   if ($addwarranty==-1 && $deletenotice==0) {
+      return $LANG['setup'][307];
+   }
+   if ($from==NULL || empty($from)) {
+      return "";
+   } else {
+      return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
+   }
 }
+
 /**
 * Get date using a begin date and a period in month and a notice one
-* 
+*
 * @param $begin date: begin date
 * @param $duration integer: period in months
-* @param $notice integer: notice in months 
-* 
-* @return expiration string 
+* @param $notice integer: notice in months
+*
+* @return expiration string
 **/
-function getExpir($begin,$duration,$notice="0"){
-	global $LANG;
-	if ($begin==NULL || empty($begin)){
-		return "";
-	} else {
-		$diff=strtotime("$begin+$duration month -$notice month")-time();
-		$diff_days=floor($diff/60/60/24);
-		if($diff_days>0){
-			return $diff_days." ".$LANG['stats'][31];
-		}else{
-			return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
-		}
-	}
+function getExpir($begin,$duration,$notice="0") {
+   global $LANG;
+
+   if ($begin==NULL || empty($begin)) {
+      return "";
+   } else {
+      $diff=strtotime("$begin+$duration month -$notice month")-time();
+      $diff_days=floor($diff/60/60/24);
+      if($diff_days>0) {
+         return $diff_days." ".$LANG['stats'][31];
+      } else {
+         return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
+      }
+   }
 }
 
 /**
-* Manage login redirection 
-* 
-* @param $where string: where to redirect ? 
+* Manage login redirection
+*
+* @param $where string: where to redirect ?
 **/
-function manageRedirect($where){
-	global $CFG_GLPI,$PLUGIN_HOOKS;
-	if (!empty($where)){
-		$data=explode("_",$where);
-		if (count($data)>=2&&isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
-			switch ($_SESSION["glpiactiveprofile"]["interface"]){
-				case "helpdesk" :
-					switch ($data[0]){
-						case "plugin":
-							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
-								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
-							} else {
-								glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
-							} 
-						break;
-						case "tracking":
-						case "ticket": ///TODO prepare update name : delete when tracking -> ticket
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$data[1]);
-						break;
-						case "prefs":
-							glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
-						break;
-						default:
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
-						break;
+function manageRedirect($where) {
+   global $CFG_GLPI,$PLUGIN_HOOKS;
 
+   if (!empty($where)) {
+      $data=explode("_",$where);
+      if (count($data)>=2 && isset($_SESSION["glpiactiveprofile"]["interface"])
+          && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
 
-					}
-				break;
-				case "central" :
-					switch ($data[0]){
-						case "plugin":
-							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
-								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
-							} else {
-								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
-							} 
-						break;
-						case "prefs":
-							glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
-						break;
-						default : 
-							if (!empty($data[0])&&$data[1]>0){
-								glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".$data[1]);
-							} else {
-								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
-							}
-						break;
-					}
-				break;
-			}
-		}
-	}
+         switch ($_SESSION["glpiactiveprofile"]["interface"]) {
+            case "helpdesk" :
+               switch ($data[0]) {
+                  case "plugin":
+                     if (isset($data[2]) && $data[2]>0
+                         && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
+                         && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
+
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
+                     } else {
+                        glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+                     }
+                     break;
+
+                  case "tracking":
+
+                  case "ticket": ///TODO prepare update name : delete when tracking -> ticket
+                     glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
+                                 $data[1]);
+                     break;
+
+                  case "prefs":
+                     glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
+                     break;
+
+                  default:
+                     glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+                     break;
+               }
+               break;
+
+            case "central" :
+               switch ($data[0]) {
+                  case "plugin":
+                     if (isset($data[2]) && $data[2]>0
+                         && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
+                         && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
+
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
+                     } else {
+                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+                     }
+                     break;
+
+                  case "prefs":
+                     glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
+                     break;
+
+                  default :
+                     if (!empty($data[0] )&& $data[1]>0) {
+                        glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".$data[1]);
+                     } else {
+                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+                     }
+                     break;
+               }
+               break;
+         }
+      }
+   }
 }
+
 /**
-* Clean string for input text field 
-* 
+* Clean string for input text field
+*
 * @param $string string: input text
-* 
+*
 * @return clean string
 **/
-function cleanInputText($string){
-	return preg_replace('/\"/','&quot;',$string);
-} 
+function cleanInputText($string) {
+   return preg_replace('/\"/','&quot;',$string);
+}
 
 /**
-* Get a random string 
-* 
-* @param $length integer: length of the random string 
-* 
+* Get a random string
+*
+* @param $length integer: length of the random string
+*
 * @return random string
 **/
 function getRandomString($length) {
 
-	$alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
-	$rndstring="";
-	for ($a = 0; $a <= $length; $a++) {
-		$b = rand(0, strlen($alphabet) - 1);
-		$rndstring .= $alphabet[$b];
-	}
-	return $rndstring;
+   $alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+   $rndstring="";
+   for ($a = 0; $a <= $length; $a++) {
+      $b = rand(0, strlen($alphabet) - 1);
+      $rndstring .= $alphabet[$b];
+   }
+   return $rndstring;
 }
 
 /**
 * Make a good string from the unix timestamp $sec
-* 
+*
 * @param $sec integer: timestamp
-* 
-* @param $display_sec boolean: display seconds ? 
-* 
-* @return string 
+*
+* @param $display_sec boolean: display seconds ?
+*
+* @return string
 **/
-function timestampToString($sec,$display_sec=true){
-	global $LANG;
-	$sec=floor($sec);
-	if ($sec<0) $sec=0;
+function timestampToString($sec,$display_sec=true) {
+   global $LANG;
 
-	if($sec < MINUTE_TIMESTAMP) {
-		return $sec." ".$LANG['stats'][34];
+   $sec=floor($sec);
+   if ($sec<0) {
+      $sec=0;
+   }
 
-	} else if($sec < HOUR_TIMESTAMP) {
-		$min = floor($sec/MINUTE_TIMESTAMP);
-		$sec = $sec%MINUTE_TIMESTAMP;
-
-		$out=$min." ".$LANG['stats'][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
-		return $out;
-
-	} else if($sec <  DAY_TIMESTAMP) {
-		$heure = floor($sec/HOUR_TIMESTAMP);
-		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
-		return $out;
-
-	} else {
-		$jour = floor($sec/DAY_TIMESTAMP);
-		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
-		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$jour." ".$LANG['stats'][31]." ".$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
-		return $out;
-
-	}
+   if($sec < MINUTE_TIMESTAMP) {
+      return $sec." ".$LANG['stats'][34];
+   } else if ($sec < HOUR_TIMESTAMP) {
+      $min = floor($sec/MINUTE_TIMESTAMP);
+      $sec = $sec%MINUTE_TIMESTAMP;
+      $out=$min." ".$LANG['stats'][33];
+      if ($display_sec) {
+         $out.=" ".$sec." ".$LANG['stats'][34];
+      }
+      return $out;
+   } else if($sec <  DAY_TIMESTAMP) {
+      $heure = floor($sec/HOUR_TIMESTAMP);
+      $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+      $sec = $sec%MINUTE_TIMESTAMP;
+      $out=$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
+      if ($display_sec) {
+         $out.=" ".$sec." ".$LANG['stats'][34];
+      }
+      return $out;
+   } else {
+      $jour = floor($sec/DAY_TIMESTAMP);
+      $heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
+      $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+      $sec = $sec%MINUTE_TIMESTAMP;
+      $out=$jour." ".$LANG['stats'][31]." ".$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
+      if ($display_sec) {
+         $out.=" ".$sec." ".$LANG['stats'][34];
+      }
+      return $out;
+   }
 }
+
 /**
 * Delete a directory and file contains in it
-* 
+*
 * @param $dir string: directory to delete
 **/
 function deleteDir($dir) {
-	if (file_exists($dir)){
-		chmod($dir,0777);
-		if (is_dir($dir)){
-			$id_dir = opendir($dir);
-			while($element = readdir($id_dir)){
-				if ($element != "." && $element != ".."){
-					if (is_dir($element)){
-						deleteDir($dir."/".$element);
-					} else {
-						unlink($dir."/".$element);
-					}
-	
-				}
-			}
-			closedir($id_dir);
-			rmdir($dir);
-		} else { // Delete file
-			unlink($dir);
-		}
-	}
+
+   if (file_exists($dir)) {
+      chmod($dir,0777);
+      if (is_dir($dir)) {
+         $id_dir = opendir($dir);
+         while($element = readdir($id_dir)) {
+            if ($element != "." && $element != "..") {
+               if (is_dir($element)) {
+                  deleteDir($dir."/".$element);
+               } else {
+                  unlink($dir."/".$element);
+               }
+            }
+         }
+         closedir($id_dir);
+         rmdir($dir);
+      } else { // Delete file
+         unlink($dir);
+      }
+   }
 }
 
 /**
  * Determine if a login is valid
  * @param $login string: login to check
- * @return boolean 
+ * @return boolean
  */
-function isValidLogin($login=""){
-	return preg_match( "/^[[:alnum:]@.\-_]+$/i", $login);
+function isValidLogin($login="") {
+   return preg_match( "/^[[:alnum:]@.\-_]+$/i", $login);
 }
-
 
 /**
  * Determine if Ldap is usable checking ldap extension existence
- * @return boolean 
+ * @return boolean
  */
-function canUseLdap(){
-	return extension_loaded('ldap');
+function canUseLdap() {
+   return extension_loaded('ldap');
 }
 
 /**
  * Determine if Imap/Pop is usable checking extension existence
- * @return boolean 
+ * @return boolean
  */
-function canUseImapPop(){
-	return extension_loaded('imap');
+function canUseImapPop() {
+   return extension_loaded('imap');
 }
-
 
 /** Converts an array of parameters into a query string to be appended to a URL.
  *
@@ -1912,16 +1837,19 @@ function canUseImapPop(){
  * @param   $array  array: parameters to append to the query string.
  * @param   $parent This should be left blank (it is used internally by the function).
  */
-function append_params($array, $parent=''){
-	$params = array();
-	foreach ($array as $k => $v){
-		if (is_array($v))
-		$params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' . rawurlencode($k) . ']'));
-		else
-		$params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' : rawurlencode($k)) . '=' . rawurlencode($v);
-	}
-	
-	return implode('&', $params);
+function append_params($array, $parent='') {
+
+   $params = array();
+   foreach ($array as $k => $v) {
+      if (is_array($v)) {
+         $params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' .
+                     rawurlencode($k) . ']'));
+      } else {
+         $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' :
+                      rawurlencode($k)) . '=' . rawurlencode($v);
+      }
+   }
+   return implode('&', $params);
 }
 
 /** Format a size passing a size in octet
@@ -1930,15 +1858,16 @@ function append_params($array, $parent=''){
  * @return  formatted size
  */
 function getSize($size) {
-	$bytes = array('B','KB','MB','GB','TB');
-	foreach($bytes as $val) {
-		if($size > 1024){
-			$size = $size / 1024;
-		}else{
-			break;
-		}
-	}
-	return round($size, 2)." ".$val;
+
+   $bytes = array('B','KB','MB','GB','TB');
+   foreach($bytes as $val) {
+      if($size > 1024) {
+         $size = $size / 1024;
+      } else {
+         break;
+      }
+   }
+   return round($size, 2)." ".$val;
 }
 
 /** Display how many logins since
@@ -1946,49 +1875,50 @@ function getSize($size) {
  * @return  nothing
  */
 function getCountLogin() {
-	global $DB;
-	
-	$query="SELECT count(*) 
-		FROM `glpi_events` 
-		WHERE message LIKE '%logged in%'";
-	$query2="SELECT date 
-		FROM `glpi_events` 
-		ORDER BY date ASC LIMIT 1";
-	//$DB=new DB;
-	$result=$DB->query($query);
-	$result2=$DB->query($query2);
-	$nb_login=$DB->result($result,0,0);
-	$date=$DB->result($result2,0,0);
+   global $DB;
 
-	echo '<b>'.$nb_login.'</b> logins since '.$date ;
+   $query="SELECT count(*)
+           FROM `glpi_events`
+           WHERE `message` LIKE '%logged in%'";
+
+   $query2="SELECT `date`
+            FROM `glpi_events`
+            ORDER BY `date` ASC LIMIT 1";
+
+   $result=$DB->query($query);
+   $result2=$DB->query($query2);
+   $nb_login=$DB->result($result,0,0);
+   $date=$DB->result($result2,0,0);
+
+   echo '<b>'.$nb_login.'</b> logins since '.$date ;
 }
+
 /** Initialise a list of items to use navigate through search results
  *
  * @param $itemtype device type
  * @param $title titre de la liste
  * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function initNavigateListItems($itemtype,$title="",$sub_type=-1){
-	global $LANG;
+function initNavigateListItems($itemtype,$title="",$sub_type=-1) {
+   global $LANG;
 
-	if (empty($title)){
-		$title=$LANG['common'][53];
-	}
-	if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
-		$url=$_SERVER['HTTP_REFERER'];
-	} else {
-		$url=$_SERVER['PHP_SELF'];
-	}
-	if ($sub_type<0) {
-		$_SESSION['glpilisttitle'][$itemtype]=$title;
-		$_SESSION['glpilistitems'][$itemtype]=array();
-		$_SESSION['glpilisturl'][$itemtype]=$url;
-	} else {
-		$_SESSION['glpilisttitle'][$itemtype][$sub_type]=$title;
-		$_SESSION['glpilistitems'][$itemtype][$sub_type]=array();
-		$_SESSION['glpilisturl'][$itemtype][$sub_type]=$url;
-	}
-
+   if (empty($title)) {
+      $title=$LANG['common'][53];
+   }
+   if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
+      $url=$_SERVER['HTTP_REFERER'];
+   } else {
+      $url=$_SERVER['PHP_SELF'];
+   }
+   if ($sub_type<0) {
+      $_SESSION['glpilisttitle'][$itemtype]=$title;
+      $_SESSION['glpilistitems'][$itemtype]=array();
+      $_SESSION['glpilisturl'][$itemtype]=$url;
+   } else {
+      $_SESSION['glpilisttitle'][$itemtype][$sub_type]=$title;
+      $_SESSION['glpilistitems'][$itemtype][$sub_type]=array();
+      $_SESSION['glpilisturl'][$itemtype][$sub_type]=$url;
+   }
 }
 
 /** Add an item to the navigate through search results list
@@ -1997,12 +1927,13 @@ function initNavigateListItems($itemtype,$title="",$sub_type=-1){
  * @param $ID ID of the item
  * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function addToNavigateListItems($itemtype,$ID,$sub_type=-1){
-	if ($sub_type<0) {
-		$_SESSION['glpilistitems'][$itemtype][]=$ID;
-	} else {
-		$_SESSION['glpilistitems'][$itemtype][$sub_type][]=$ID;
-	}
+function addToNavigateListItems($itemtype,$ID,$sub_type=-1) {
+
+   if ($sub_type<0) {
+      $_SESSION['glpilistitems'][$itemtype][]=$ID;
+   } else {
+      $_SESSION['glpilistitems'][$itemtype][$sub_type][]=$ID;
+   }
 }
 
 ?>
