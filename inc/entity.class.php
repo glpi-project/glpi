@@ -34,255 +34,250 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+   die("Sorry. You can't access directly to this file");
+}
 
 /// Entity Data class
-class EntityData extends CommonDBTM{
+class EntityData extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_entitiesdatas";
-		$this->type=-1;
-	}
-	function getIndexName(){
-		return "entities_id";
-	}
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_entitiesdatas";
+      $this->type=-1;
+   }
+
+   function getIndexName() {
+      return "entities_id";
+   }
 
 }
 
 
-/// Entity class
-class Entity extends CommonDBTM{
+// Entity class
+class Entity extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_entities";
-		$this->type=ENTITY_TYPE;
-		$this->entity_assign=true;
-		$this->may_be_recursive=true;
-	}
-	
-	function defineTabs($ID,$withtemplate){
-		global $LANG;
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_entities";
+      $this->type=ENTITY_TYPE;
+      $this->entity_assign=true;
+      $this->may_be_recursive=true;
+   }
 
-		$ong[1]=$LANG['title'][26];
-		$ong[2]=$LANG['Menu'][14];
-		$ong[3]=$LANG['rulesengine'][17];
-		if (haveRight("document","r")){
-			$ong[5]=$LANG['Menu'][27];
-		}
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
 
-		return $ong;
-	}
+      $ong[1]=$LANG['title'][26];
+      $ong[2]=$LANG['Menu'][14];
+      $ong[3]=$LANG['rulesengine'][17];
+      if (haveRight("document","r")) {
+         $ong[5]=$LANG['Menu'][27];
+      }
 
-	/**
-	 * Print a good title for entity pages
-	 *
-	 *@return nothing (display)
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
+      return $ong;
+   }
 
-		$buttons=array();
-		$title=$LANG['Menu'][37];
-		if (haveRight("entity","w")){
-			$buttons["entity.tree.php"]=$LANG['entity'][1];
-			$title="";
-		}
-		$buttons["entity.form.php?id=0"]=$LANG['entity'][2];
-		
-		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
-	}
+   /**
+    * Print a good title for entity pages
+    *
+    *@return nothing (display)
+    **/
+   function title() {
+      global  $LANG,$CFG_GLPI;
 
-	/**
-	 * Print the entity form
-	 *
-	 *
-	 * Print entity form
-	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the contact to print
-	 *@param $withtemplate='' boolean : template or basic item
-	 *
-	 *
-	 *@return Nothing (display)
-	 *
-	 **/
-	function showForm ($target,$ID,$withtemplate='') {
+      $buttons=array();
+      $title=$LANG['Menu'][37];
+      if (haveRight("entity","w")) {
+         $buttons["entity.tree.php"]=$LANG['entity'][1];
+         $title="";
+      }
+      $buttons["entity.form.php?id=0"]=$LANG['entity'][2];
 
-		global $CFG_GLPI, $LANG;
+      displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
+   }
 
-		if (!haveRight("entity","r")) return false;
+   /**
+    * Print the entity form
+    *
+    *@param $target filename : where to go when done.
+    *@param $ID Integer : Id of the contact to print
+    *@param $withtemplate='' boolean : template or basic item
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showForm ($target,$ID,$withtemplate='') {
+      global $CFG_GLPI, $LANG;
 
-		$con_spotted=false;
+      if (!haveRight("entity","r")) {
+         return false;
+      }
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
+      $con_spotted=false;
 
-			// Special root entity case	
-			if ($ID==0) {
-				$this->fields["name"]=$LANG['entity'][2];
-				$this->fields["completename"]="";
-			}
-		} 
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
 
-		
-		// Get data 
-		$entdata=new EntityData();
-		if (!$entdata->getFromDB($ID)){
-			$entdata->add(array("entities_id"=>$ID)); 
-			if (!$entdata->getFromDB($ID)){
-				$con_spotted=false;
-			}
-		}
-		
-		$canedit=$this->can($ID,'w');
-		
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		
-		if ($canedit) {
-			echo "<form method='post' name=form action=\"$target\">";
-		}
-		echo "<div class='center' id='tabsbody' >";
-		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		echo "<tr><th colspan='4'>";
-		echo $LANG['entity'][0]." ID $ID:";
+         // Special root entity case
+         if ($ID==0) {
+            $this->fields["name"]=$LANG['entity'][2];
+            $this->fields["completename"]="";
+         }
+      }
 
-		echo "</th></tr>";
+      // Get data
+      $entdata=new EntityData();
+      if (!$entdata->getFromDB($ID)) {
+         $entdata->add(array("entities_id"=>$ID));
+         if (!$entdata->getFromDB($ID)) {
+            $con_spotted=false;
+         }
+      }
 
-		echo "<tr class='tab_bg_1'>";
+      $canedit=$this->can($ID,'w');
 
-		echo "<td valign='top'>".$LANG['common'][16].":	</td>";
-		echo "<td valign='top'>";
-		echo $this->fields["name"];
-		if ($ID!=0) echo " (".$this->fields["completename"].")";
-		echo "</td>";
-		if (isset($this->fields["comment"])){
-			echo "<td valign='top'>";
-			echo $LANG['common'][25].":	</td>";
-			echo "<td align='center' valign='top'>".nl2br($this->fields["comment"]);
-			echo "</td>";
-		} else {
-			echo "<td colspan='2'>&nbsp;</td>";
-		}
-		echo "</tr>";
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
-		echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
-		echo "<td>";
-		autocompletionTextField("phonenumber","glpi_entitiesdatas","phonenumber",$entdata->fields["phonenumber"],40);	
-		echo "</td>";
-		echo "<td>".$LANG['financial'][30].":		</td><td>";
-		autocompletionTextField("fax","glpi_entitiesdatas","fax",$entdata->fields["fax"],40);	
-		echo "</td></tr>";
+      if ($canedit) {
+         echo "<form method='post' name=form action=\"$target\">";
+      }
+      echo "<div class='center' id='tabsbody' >";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>";
+      echo $LANG['entity'][0]." ID $ID";
+      echo "</th></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
-		echo "<td>";
-		autocompletionTextField("website","glpi_entitiesdatas","website",$entdata->fields["website"],40);	
-		echo "</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle'>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td class='middle'>";
+      echo $this->fields["name"];
+      if ($ID!=0) {
+         echo " (".$this->fields["completename"].")";
+      }
+      echo "</td>";
+      echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);
+      echo "</td></tr>";
 
-		echo "<td>".$LANG['setup'][14].":		</td><td>";
-		autocompletionTextField("email","glpi_entitiesdatas","email",$entdata->fields["email"],40);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("phonenumber","glpi_entitiesdatas","phonenumber",
+                              $entdata->fields["phonenumber"],40);
+      echo "</td>";
+      echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],40);
+      echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("fax","glpi_entitiesdatas","fax",$entdata->fields["fax"],40);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("admin_email","glpi_entitiesdatas","admin_email",
+                              $entdata->fields["admin_email"],40);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG['financial'][44].":		</td>";
-		echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$entdata->fields["address"]."</textarea>";
-		echo "<td>".$LANG['financial'][100]."</td>";
-		echo "<td>";
-		autocompletionTextField("postcode","glpi_entitiesdatas","postcode",$entdata->fields["postcode"],40);		
-		echo "</td>";
-		echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("website","glpi_entitiesdatas","website",$entdata->fields["website"],40);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("admin_reply","glpi_entitiesdatas","admin_reply",
+                              $entdata->fields["admin_reply"],40);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['financial'][101].":		</td><td>";
-		autocompletionTextField("town","glpi_entitiesdatas","town",$entdata->fields["town"],40);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("email","glpi_entitiesdatas","email",$entdata->fields["email"],40);
+      echo "</td>";
+      echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='6'>";
+      if ($ID > 0) {
+         echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
+      }
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['financial'][102].":		</td><td>";
-		autocompletionTextField("state","glpi_entitiesdatas","state",$entdata->fields["state"],40);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td class='middle'><textarea cols='45' rows='3' name='address'>".
+             $entdata->fields["address"]."</textarea></td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['financial'][103].":		</td><td>";
-		autocompletionTextField("country","glpi_entitiesdatas","country",$entdata->fields["country"],40);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("postcode","glpi_entitiesdatas","postcode",
+                              $entdata->fields["postcode"],7);
+      echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
+      autocompletionTextField("town","glpi_entitiesdatas","town",$entdata->fields["town"],25);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['setup'][203].":		</td><td colspan='3'>";
-		autocompletionTextField("admin_email","glpi_entitiesdatas","admin_email",$entdata->fields["admin_email"],50);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("state","glpi_entitiesdatas","state",$entdata->fields["state"],40);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['setup'][207].":		</td><td colspan='3'>";
-		autocompletionTextField("admin_reply","glpi_entitiesdatas","admin_reply",$entdata->fields["admin_reply"],50);		
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][103]."&nbsp;:</td><td>";
+      autocompletionTextField("country","glpi_entitiesdatas","country",$entdata->fields["country"],40);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG['entity'][12].":		</td>";
-		echo "<td>";
-		autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],50);		
-		echo "</td>";
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value=\"$ID\">";
+         echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         echo "</td></tr>";
+      }
+      echo "</table></div></form>";
 
-		echo "<td>".$LANG['entity'][13].":		</td>";
-		echo "<td>";
-		autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);		
-		echo "</td></tr>";
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-		if ($canedit) {
-			echo "<tr>";
-			echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
-			echo "<input type='hidden' name='entities_id' value=\"$ID\">\n";
-			echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">\n";
-			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
-			echo "</td>\n\n";
-			echo "</tr>";
+      return true;
+   }
 
-			echo "</table></div></form>";
-		} else {
-			echo "</table></div>";			
-		}
+   /**
+    * Get the ID of entity assigned to the object
+    *
+    * simply return ID
+    *
+    * @return ID of the entity
+   **/
+   function getEntityID () {
+      if (isset($this->fields["id"])) {
+         return $this->fields["id"];
+      }
+      return -1;
+   }
 
-		
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-		return true;
-	}
-
-	/**
-	 * Get the ID of entity assigned to the object
-	 * 
-	 * simply return ID
-	 * 
-	 * @return ID of the entity 
-	**/
-	function getEntityID () {
-		if (isset($this->fields["id"])) {
-			return $this->fields["id"];		
-		} 
-		return  -1;
-	}	
-	/**
-	 * Is the object recursive
-	 * 
-	 * Entity are always recursive
-	 * 
-	 * @return integer (0/1) 
-	**/
-	function isRecursive () {
-		return true;
-	}	
+   /**
+    * Is the object recursive
+    *
+    * Entity are always recursive
+    *
+    * @return integer (0/1)
+   **/
+   function isRecursive () {
+      return true;
+   }
 
    /**
    * Check right on an entity
@@ -296,7 +291,7 @@ class Entity extends CommonDBTM{
    function can($ID,$right,&$input=NULL) {
       global $LANG;
 
-      // Get item ID 
+      // Get item ID
       if ($ID<0) {
          // No entity define : adding process : use active entity
          if (isset($input['entities_id'])) {
@@ -326,7 +321,7 @@ class Entity extends CommonDBTM{
          case 'r':
             if ($this->canView()) {
                return haveAccessToEntity($entity_to_check, true);
-            } 
+            }
             break;
 
          case 'w':
@@ -334,8 +329,9 @@ class Entity extends CommonDBTM{
                return haveAccessToEntity($entity_to_check);
             }
             break;
+
          case 'recursive':
-            // Always check 
+            // Always check
             if ($this->canCreate() && haveAccessToEntity($entity_to_check)) {
                // Can make recursive if recursive access to entity
                return haveRecursiveAccessToEntity($entity_to_check);

@@ -47,6 +47,12 @@ if (isset($_POST["update"]))
 {
 	$entity->check($_POST["entities_id"],'w');
 
+   if (isset($_POST["comment"])) {
+      $entity->update(array(
+         'id' => $_POST["entities_id"],
+         'comment' => $_POST["comment"]));
+      unset($_POST["comment"]);
+   }
 	$entitydata->update($_POST);
 
 	logEvent($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
@@ -66,7 +72,7 @@ if (isset($_POST["update"]))
 
 	$rule = new OcsAffectEntityRule;
 	$ruleid = $rule->add($_POST);
-	
+
 	if ($ruleid)
 	{
 		//Add an action associated to the rule
@@ -74,7 +80,7 @@ if (isset($_POST["update"]))
 		//Action is : affect computer to this entity
 		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
 	}
-		
+
 	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_user_rule"]))
@@ -84,7 +90,7 @@ if (isset($_POST["update"]))
 
 	$rule = new RightAffectRule;
 	$ruleid = $rule->add($_POST);
-	
+
 	if ($ruleid)
 	{
 		//Add an action associated to the rule
@@ -96,7 +102,7 @@ if (isset($_POST["update"]))
 		}
 		$ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
 	}
-		
+
 	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -117,13 +123,13 @@ if (isset($_POST["update"]))
 	$entity->check($_POST["affectentity"],'w');
 
 	if (isset($_POST["delete_computer_rule"])){
-		$rule = new OcsAffectEntityRule;		
+		$rule = new OcsAffectEntityRule;
 	} else {
 		$rule = new RightAffectRule;
 	}
-		
+
 	if (count($_POST["item"])){
-		foreach ($_POST["item"] as $key => $val){	
+		foreach ($_POST["item"] as $key => $val){
 			$rule->delete(array('id'=>$key));
 		}
 	}
