@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')){
  */
 class CommonItem{
 	//! Object Type depending of the itemtype
-	var $obj = NULL;	
+	var $obj = NULL;
 	//! Device Type ID of the object
 	var $itemtype=0;
 	//! Device ID of the object
@@ -96,72 +96,72 @@ class CommonItem{
 				case PRINTER_TYPE :
 					$this->obj=new Printer;
 					break;
-				case MONITOR_TYPE : 
-					$this->obj= new Monitor;	
+				case MONITOR_TYPE :
+					$this->obj= new Monitor;
 					break;
-				case PERIPHERAL_TYPE : 
-					$this->obj= new Peripheral;	
-					break;				
-				case SOFTWARE_TYPE : 
-					$this->obj= new Software;	
-					break;				
-				case CONTACT_TYPE : 
-					$this->obj= new Contact;	
-					break;	
-				case ENTERPRISE_TYPE : 
-					$this->obj= new Enterprise;	
-					break;	
-				case CONTRACT_TYPE : 
-					$this->obj= new Contract;	
-					break;				
-				case CARTRIDGE_TYPE : 
-					$this->obj= new CartridgeType;	
-					break;					
-				case TYPEDOC_TYPE : 
-					$this->obj= new TypeDoc;	
-					break;		
-				case DOCUMENT_TYPE : 
-					$this->obj= new Document;	
-					break;					
-				case KNOWBASE_TYPE : 
-					$this->obj= new kbitem;	
-					break;					
-				case USER_TYPE : 
-					$this->obj= new User;	
-					break;					
-				case TRACKING_TYPE : 
-					$this->obj= new Job;	
+				case PERIPHERAL_TYPE :
+					$this->obj= new Peripheral;
 					break;
-				case CONSUMABLE_TYPE : 
-					$this->obj= new ConsumableType;	
-					break;					
-				case CARTRIDGE_ITEM_TYPE : 
-					$this->obj= new Cartridge;	
-					break;					
-				case CONSUMABLE_ITEM_TYPE : 
-					$this->obj= new Consumable;	
-					break;					
-				case SOFTWARELICENSE_TYPE : 
-					$this->obj= new SoftwareLicense;	
-					break;					
-				case SOFTWAREVERSION_TYPE : 
-					$this->obj= new SoftwareVersion;	
-					break;					
-				case LINK_TYPE : 
-					$this->obj= new Link;	
-					break;	
-				case PHONE_TYPE : 
-					$this->obj= new Phone;	
-					break;		
-				case REMINDER_TYPE : 
-					$this->obj= new Reminder;	
-					break;			
-				case GROUP_TYPE : 
-					$this->obj= new Group;	
-					break;			
-				case ENTITY_TYPE : 
-					$this->obj= new Entity;	
-					break;			
+				case SOFTWARE_TYPE :
+					$this->obj= new Software;
+					break;
+				case CONTACT_TYPE :
+					$this->obj= new Contact;
+					break;
+				case ENTERPRISE_TYPE :
+					$this->obj= new Enterprise;
+					break;
+				case CONTRACT_TYPE :
+					$this->obj= new Contract;
+					break;
+				case CARTRIDGE_TYPE :
+					$this->obj= new CartridgeType;
+					break;
+				case TYPEDOC_TYPE :
+					$this->obj= new TypeDoc;
+					break;
+				case DOCUMENT_TYPE :
+					$this->obj= new Document;
+					break;
+				case KNOWBASE_TYPE :
+					$this->obj= new kbitem;
+					break;
+				case USER_TYPE :
+					$this->obj= new User;
+					break;
+				case TRACKING_TYPE :
+					$this->obj= new Job;
+					break;
+				case CONSUMABLE_TYPE :
+					$this->obj= new ConsumableType;
+					break;
+				case CARTRIDGE_ITEM_TYPE :
+					$this->obj= new Cartridge;
+					break;
+				case CONSUMABLE_ITEM_TYPE :
+					$this->obj= new Consumable;
+					break;
+				case SOFTWARELICENSE_TYPE :
+					$this->obj= new SoftwareLicense;
+					break;
+				case SOFTWAREVERSION_TYPE :
+					$this->obj= new SoftwareVersion;
+					break;
+				case LINK_TYPE :
+					$this->obj= new Link;
+					break;
+				case PHONE_TYPE :
+					$this->obj= new Phone;
+					break;
+				case REMINDER_TYPE :
+					$this->obj= new Reminder;
+					break;
+				case GROUP_TYPE :
+					$this->obj= new Group;
+					break;
+				case ENTITY_TYPE :
+					$this->obj= new Entity;
+					break;
 				case AUTH_MAIL_TYPE:
 					$this->obj = new AuthMail;
 					break;
@@ -170,25 +170,25 @@ class CommonItem{
 					break;
 				case OCSNG_TYPE:
 					$this->obj = new Ocsng;
-					break;					
+					break;
 				case REGISTRY_TYPE:
 					$this->obj = new Registry;
-					break;					
+					break;
 				case PROFILE_TYPE:
 					$this->obj = new Profile;
-					break;					
+					break;
 				case MAILGATE_TYPE:
 					$this->obj = new Mailgate;
-					break;		
+					break;
 				case INFOCOM_TYPE:
 					$this->obj = new InfoCom;
-					break;				
+					break;
 				case TRANSFER_TYPE:
 					$this->obj = new Transfer;
-					break;				
+					break;
 				case BOOKMARK_TYPE:
 					$this->obj = new Bookmark;
-					break;				
+					break;
 				case BUDGET_TYPE:
 					$this->obj = new Budget;
 					break;
@@ -204,11 +204,11 @@ class CommonItem{
 
 							if (class_exists($class)){
 								$this->obj = new $class();
-							} 
-						} 
+							}
+						}
 					}
 					break;
-			}		
+			}
 		}
 	}
 
@@ -225,7 +225,7 @@ class CommonItem{
 				return $LANG['help'][30];
 				break;
 			case COMPUTER_TYPE :
-				return $LANG['computers'][44];
+				return $LANG['help'][25];
 				break;
 			case NETWORKING_TYPE :
 				return $LANG['help'][26];
@@ -233,72 +233,72 @@ class CommonItem{
 			case PRINTER_TYPE :
 				return $LANG['help'][27];
 				break;
-			case MONITOR_TYPE : 
+			case MONITOR_TYPE :
 				return $LANG['help'][28];
 				break;
-			case PERIPHERAL_TYPE : 
+			case PERIPHERAL_TYPE :
 				return $LANG['help'][29];
-				break;				
-			case SOFTWARE_TYPE : 
+				break;
+			case SOFTWARE_TYPE :
 				return $LANG['help'][31];
-				break;				
-			case CONTACT_TYPE : 
+				break;
+			case CONTACT_TYPE :
 				return $LANG['common'][18];
 				break;
-			case ENTERPRISE_TYPE : 
+			case ENTERPRISE_TYPE :
 				return $LANG['financial'][26];
 				break;
-			case CONTRACT_TYPE : 
+			case CONTRACT_TYPE :
 				return $LANG['financial'][1];
-				break;	
-			case CARTRIDGE_TYPE : 
+				break;
+			case CARTRIDGE_TYPE :
 				return $LANG['cartridges'][12];
 				break;
-			case TYPEDOC_TYPE : 
+			case TYPEDOC_TYPE :
 				return $LANG['document'][7];
 				break;
-			case DOCUMENT_TYPE : 
+			case DOCUMENT_TYPE :
 				return $LANG['Menu'][27];
-				break;					
-			case KNOWBASE_TYPE : 
+				break;
+			case KNOWBASE_TYPE :
 				return $LANG['title'][5];
-				break;	
-			case USER_TYPE : 
+				break;
+			case USER_TYPE :
 				return $LANG['common'][34];
-				break;	
-			case TRACKING_TYPE : 
+				break;
+			case TRACKING_TYPE :
 				return $LANG['job'][38];
-				break;	
-			case CONSUMABLE_TYPE : 
+				break;
+			case CONSUMABLE_TYPE :
 				return $LANG['consumables'][12];
-				break;					
-			case CARTRIDGE_ITEM_TYPE : 
+				break;
+			case CARTRIDGE_ITEM_TYPE :
 				return $LANG['cartridges'][0];
 				break;
-			case CONSUMABLE_ITEM_TYPE : 
+			case CONSUMABLE_ITEM_TYPE :
 				return $LANG['consumables'][0];
-				break;					
-			case SOFTWARELICENSE_TYPE : 
+				break;
+			case SOFTWARELICENSE_TYPE :
 				return $LANG['software'][11];
-				break;					
-			case SOFTWAREVERSION_TYPE : 
+				break;
+			case SOFTWAREVERSION_TYPE :
 				return $LANG['software'][5];
-				break;					
-			case LINK_TYPE : 
+				break;
+			case LINK_TYPE :
 				return $LANG['setup'][87];
-				break;					
-			case PHONE_TYPE : 
+				break;
+			case PHONE_TYPE :
 				return $LANG['help'][35];
-				break;				
-			case REMINDER_TYPE : 
+				break;
+			case REMINDER_TYPE :
 				return $LANG['title'][37];
-				break;	
-			case GROUP_TYPE : 
+				break;
+			case GROUP_TYPE :
 				return $LANG['common'][35];
-				break;	
-			case ENTITY_TYPE : 
+				break;
+			case ENTITY_TYPE :
 				return $LANG['Menu'][37];
-				break;			
+				break;
 			case AUTH_MAIL_TYPE:
 				return $LANG['login'][3];
 				break;
@@ -307,13 +307,13 @@ class CommonItem{
 				break;
 			case OCSNG_TYPE:
 				return $LANG['ocsng'][29];
-				break;					
+				break;
 			case REGISTRY_TYPE:
 				return $LANG['title'][43];
-				break;					
+				break;
 			case PROFILE_TYPE:
 				return $LANG['Menu'][35];
-				break;					
+				break;
 			case MAILGATE_TYPE:
 				return $LANG['Menu'][39];
 				break;
@@ -338,8 +338,8 @@ class CommonItem{
 								if (isset($data['name'])){
 									return $data['name'];
 								}
-							} 
-						} 
+							}
+						}
 					}
 				}
 				break;
@@ -384,13 +384,13 @@ class CommonItem{
 			return $this->obj->fields["question"];
 		else if (($this->itemtype==CARTRIDGE_TYPE||$this->itemtype==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
 			$name=$this->obj->fields["name"];
-			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
+			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))
 				$name.=" - ".$this->obj->fields["ref"];
 			return $name.$toadd;
 		}
 		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"].$toadd;
-		else 
+		else
 			return "N/A";
 	}
 	/**
@@ -430,7 +430,7 @@ class CommonItem{
 
 
 	}
-	
+
 	/**
 	 * Get comments of the Object
 	 *
@@ -443,7 +443,7 @@ class CommonItem{
       if ($tmp=$this->getField('serial')){
          $comment.="<strong>".$LANG['common'][19].": "."</strong>".$tmp."<br>";
       }
-      
+
       if ($tmp=$this->getField('otherserial')){
          $comment.="<strong>".$LANG['common'][20].": "."</strong>".$tmp."<br>";
       }
@@ -482,7 +482,7 @@ class CommonItem{
 			$rand=mt_rand();
 			$comment_display=" onmouseout=\"cleanhide('comment_commonitem$rand')\" onmouseover=\"cleandisplay('comment_commonitem$rand')\" ";
 			$comment_display2="<span class='over_link' id='comment_commonitem$rand'>".nl2br($comment)."</span>";
-	
+
 			$comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comment_display> ";
 			$comment.=$comment_display2;
 		}
