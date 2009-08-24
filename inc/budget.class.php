@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ *  Budget class
+ */
 class Budget extends CommonDBTM{
 
    /**
@@ -110,9 +113,9 @@ class Budget extends CommonDBTM{
       echo "</td>";
       echo "<td rowspan='4' class='middle right'>".$LANG['common'][25].
          "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='4'>.<textarea cols='45' 
+      echo "<td class='center middle' rowspan='4'>.<textarea cols='45'
       rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][21]." :</td>";
       echo "<td><input type='text' name='value' size='14'
@@ -155,9 +158,9 @@ class Budget extends CommonDBTM{
       // Manage add from template
       if (isset($input["_oldID"])) {
          // ADD Documents
-         $query="SELECT documents_id 
-                 FROM glpi_documents_items 
-                 WHERE items_id='".$input["_oldID"]."' 
+         $query="SELECT documents_id
+                 FROM glpi_documents_items
+                 WHERE items_id='".$input["_oldID"]."'
                        AND itemtype='".COMPUTER_TYPE."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {

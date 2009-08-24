@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Contract class
+/**
+ *  Contract class
+ */
 class Contract extends CommonDBTM {
 
     /**
@@ -59,13 +61,13 @@ class Contract extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query2 = "DELETE 
-                 FROM `glpi_contracts_suppliers` 
+      $query2 = "DELETE
+                 FROM `glpi_contracts_suppliers`
                  WHERE `contracts_id` = '$ID'";
       $DB->query($query2);
 
-      $query3 = "DELETE 
-                 FROM `glpi_contracts_items` 
+      $query3 = "DELETE
+                 FROM `glpi_contracts_items`
                  WHERE `contracts_id` = '$ID'";
       $DB->query($query3);
    }
@@ -134,7 +136,7 @@ class Contract extends CommonDBTM {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         // Create item 
+         // Create item
          $this->check(-1,'w');
          $this->getEmpty();
       }
@@ -276,10 +278,10 @@ class ContractItem extends CommonDBRelation{
    function __construct () {
       $this->table = 'glpi_contracts_items';
       $this->type = CONTRACTITEM_TYPE;
-      
+
       $this->itemtype_1 = CONTRACT_TYPE;
       $this->items_id_1 = 'contracts_id';
-      
+
       $this->itemtype_2 = 'itemtype';
       $this->items_id_2 = 'items_id';
    }
@@ -298,13 +300,13 @@ class ContractItem extends CommonDBRelation{
       if ($ID<0) {
          // Ajout
          $contract = new Contract();
-         
+
          if (!$contract->getFromDB($input['contracts_id'])) {
             return false;
          }
          if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->table, 
-                                     "`contracts_id`='".$input['contracts_id']."'") >= 
+             && countElementsInTable($this->table,
+                                     "`contracts_id`='".$input['contracts_id']."'") >=
                                           $contract->fields['max_links_allowed']) {
                return false;
          }
@@ -323,10 +325,10 @@ class ContractSupplier extends CommonDBRelation {
    function __construct () {
       $this->table = 'glpi_contracts_suppliers';
       $this->type = CONTRACTSUPPLIER_TYPE;
-      
+
       $this->itemtype_1 = CONTRACT_TYPE;
       $this->items_id_1 = 'contracts_id';
-      
+
       $this->itemtype_2 = ENTERPRISE_TYPE;
       $this->items_id_2 = 'suppliers_id';
    }

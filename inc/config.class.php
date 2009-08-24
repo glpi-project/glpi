@@ -37,24 +37,26 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Config class 
+/**
+ *  Config class
+ */
 class Config extends CommonDBTM {
 
     /**
-     * Constructor 
+     * Constructor
    **/
    function __construct () {
       $this->table="glpi_configs";
       $this->type=-1;
    }
-   
+
    /**
-    * Prepare input datas for updating the item 
+    * Prepare input datas for updating the item
     *
     *@param $input datas used to update the item
-    * 
+    *
     *@return the modified $input array
-    * 
+    *
    **/
    function prepareInputForUpdate($input) {
 
@@ -92,9 +94,9 @@ class Config extends CommonDBTM {
     * Print the config form for common options
     *
     *@param $target filename : where to go when done.
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormMain($target) {
       global $DB, $LANG, $CFG_GLPI;
@@ -187,7 +189,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][608] . "</td><td>";
-      dropdownYesNo("default_software_helpdesk_visible", 
+      dropdownYesNo("default_software_helpdesk_visible",
                     $CFG_GLPI["default_software_helpdesk_visible"]);
       echo "</td>";
       echo "<td class='center' colspan='2'></td>";
@@ -202,10 +204,10 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][247] . " (" . $LANG['common'][44] . ")</td><td>";
       echo "<select name=\"default_infocom_alert\">";
-      echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") . 
+      echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") .
              " >-----</option>";
-      echo "<option value=\"" . pow(2, ALERT_END) . "\" " . 
-             ($CFG_GLPI["default_infocom_alert"] == pow(2, ALERT_END) ? " selected " : "") . " >" . 
+      echo "<option value=\"" . pow(2, ALERT_END) . "\" " .
+             ($CFG_GLPI["default_infocom_alert"] == pow(2, ALERT_END) ? " selected " : "") . " >" .
              $LANG['financial'][80] . " </option>";
       echo "</select>";
       echo "</td></tr>";
@@ -245,7 +247,7 @@ class Config extends CommonDBTM {
       echo "</td><td class='center' colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -255,9 +257,9 @@ class Config extends CommonDBTM {
     * Print the config form for display
     *
     *@param $target filename : where to go when done.
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormDisplay($target) {
       global $DB, $LANG, $CFG_GLPI;
@@ -326,10 +328,10 @@ class Config extends CommonDBTM {
       echo "</textarea>";
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][407] . "</td>";
-      echo "<td><input size='30' type=\"text\" name=\"helpdesk_doc_url\" value=\"" . 
+      echo "<td><input size='30' type=\"text\" name=\"helpdesk_doc_url\" value=\"" .
                  $CFG_GLPI["helpdesk_doc_url"] . "\"></td>";
       echo "<td class='center'>" . $LANG['setup'][408] . "</td>";
-      echo "<td><input size='30' type=\"text\" name=\"central_doc_url\" value=\"" . 
+      echo "<td><input size='30' type=\"text\" name=\"central_doc_url\" value=\"" .
                  $CFG_GLPI["central_doc_url"] . "\"></td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
@@ -343,7 +345,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][121] . "</td>";
-      echo "<td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . 
+      echo "<td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" .
                  $CFG_GLPI["ajax_wildcard"] . "\"></td>";
       echo "<td class='center'>" . $LANG['setup'][122] . "</td><td>";
       dropdownInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
@@ -354,7 +356,7 @@ class Config extends CommonDBTM {
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -364,9 +366,9 @@ class Config extends CommonDBTM {
     * Print the config form for restrictions
     *
     *@param $target filename : where to go when done.
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormRestrict($target) {
       global $DB, $LANG, $CFG_GLPI;
@@ -395,7 +397,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'> " . $LANG['setup'][273] . " </td><td>";
       adminManagementDropdown("phones_management_restrict",$CFG_GLPI["phones_management_restrict"]);
-      echo "</td><td class='center'> " . $LANG['setup'][275] . " </td><td>";		
+      echo "</td><td class='center'> " . $LANG['setup'][275] . " </td><td>";
       adminManagementDropdown("printers_management_restrict",
                               $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
@@ -415,7 +417,7 @@ class Config extends CommonDBTM {
       dropdownYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
       echo " </td></tr>";
 
-      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";	
+      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";
       dropdownYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
@@ -437,14 +439,14 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'> " . $LANG['mailgate'][7] . " (".$LANG['common'][44].")</td><td>";
-      echo "<input type=\"text\" size='15' name=\"default_mailcollector_filesize_max\" value=\"" . 
+      echo "<input type=\"text\" size='15' name=\"default_mailcollector_filesize_max\" value=\"" .
              $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
              $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td><td class='center' colspan='2'>&nbsp;";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -454,9 +456,9 @@ class Config extends CommonDBTM {
     * Print the config form for connections
     *
     *@param $target filename : where to go when done.
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormConnection($target) {
       global $DB, $LANG, $CFG_GLPI;
@@ -505,15 +507,15 @@ class Config extends CommonDBTM {
       echo " </td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['state'][0] . " </td><td>";
-      dropdownStateBehaviour("state_autoupdate_mode", $LANG['setup'][197], 
+      dropdownStateBehaviour("state_autoupdate_mode", $LANG['setup'][197],
                              $CFG_GLPI["state_autoupdate_mode"]);
       echo "</td><td>";
-      dropdownStateBehaviour("state_autoclean_mode", $LANG['setup'][196], 
+      dropdownStateBehaviour("state_autoclean_mode", $LANG['setup'][196],
                              $CFG_GLPI["state_autoclean_mode"]);
       echo " </td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -523,9 +525,9 @@ class Config extends CommonDBTM {
     * Print the config form for slave DB
     *
     *@param $target filename : where to go when done.
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormDBSlave($target) {
       global $DB, $LANG, $CFG_GLPI, $DBSlave;
@@ -550,34 +552,34 @@ class Config extends CommonDBTM {
          $DBSlave = getDBSlaveConf();
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['install'][30] . " </td>";
-         echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" . 
+         echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" .
                     $DBSlave->dbhost . "\"></td>";
          echo "<td class='center'>" . $LANG['setup'][802] . "</td><td>";
-         echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" . 
+         echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" .
                 $DBSlave->dbdefault . "\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['install'][31] . "</td><td>";
          echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
          echo "<td class='center'>" . $LANG['install'][32] . "</td><td>";
-         echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" . 
+         echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" .
                 $DBSlave->dbpassword . "\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][704] . "</th></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][804] . " </td><td>";
-         dropdownYesNo("use_notification_on_dbreplicate_desync", 
+         dropdownYesNo("use_notification_on_dbreplicate_desync",
                        $CFG_GLPI["use_notification_on_dbreplicate_desync"]);
          echo " </td>";
          echo "<td class='center'> " . $LANG['setup'][806] . " </td><td>";
-         echo "<input type=\"text\" name=\"dbreplicate_maxdelay\" size='8' value=\"" . 
+         echo "<input type=\"text\" name=\"dbreplicate_maxdelay\" size='8' value=\"" .
                 $CFG_GLPI["dbreplicate_maxdelay"] . "\">";
          echo "&nbsp;" . $LANG['stats'][34]."</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][203] . " </td>";
          echo "<td colspan='3'>";
-         echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" . 
+         echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" .
                 $CFG_GLPI["dbreplicate_email"] . "\">";
          echo "</td></tr>";
 
@@ -592,7 +594,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -603,9 +605,9 @@ class Config extends CommonDBTM {
     *
     *@param $target filename : where to go when done.
     *@param $data array containing datas (CFG_GLPI for global config / glpi_users fields for user prefs)
-    * 
-    *@return Nothing (display) 
-    * 
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormUserPrefs($target,$data=array()) {
       global $DB, $LANG;
@@ -706,19 +708,19 @@ class Config extends CommonDBTM {
 
          echo "<table><tr>";
          echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_1\" size='7' value=\"" . 
+         echo "<input type=\"text\" name=\"priority_1\" size='7' value=\"" .
                 $data["priority_1"] . "\"></td>";
          echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_2\" size='7' value=\"" . 
+         echo "<input type=\"text\" name=\"priority_2\" size='7' value=\"" .
                 $data["priority_2"] . "\"></td>";
          echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_3\" size='7' value=\"" . 
+         echo "<input type=\"text\" name=\"priority_3\" size='7' value=\"" .
                 $data["priority_3"] . "\"></td>";
          echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_4\" size='7' value=\"" . 
+         echo "<input type=\"text\" name=\"priority_4\" size='7' value=\"" .
                 $data["priority_4"] . "\"></td>";
          echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_5\" size='7' value=\"" . 
+         echo "<input type=\"text\" name=\"priority_5\" size='7' value=\"" .
                 $data["priority_5"] . "\"></td>";
          echo "</tr></table>";
 
@@ -735,7 +737,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . 
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
@@ -744,10 +746,10 @@ class Config extends CommonDBTM {
    /**
     * Print the mailing config form
     *
-    *@param $target filename : where to go when done. 
-    * 
-    *@return Nothing (display) 
-    * 
+    *@param $target filename : where to go when done.
+    *
+    *@return Nothing (display)
+    *
    **/
    function showFormMailing($target,$tabs) {
       global $DB, $LANG, $CFG_GLPI;
@@ -767,14 +769,14 @@ class Config extends CommonDBTM {
             dropdownYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][203] . "</td>";
-            echo "<td><input type=\"text\" name=\"admin_email\" size='40' value=\"" . 
+            echo "<td><input type=\"text\" name=\"admin_email\" size='40' value=\"" .
                        $CFG_GLPI["admin_email"] . "\">";
             if (!isValidEmail($CFG_GLPI["admin_email"])) {
                echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
             }
             echo " </td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][207] . "</td>";
-            echo "<td><input type=\"text\" name=\"admin_reply\" size='40' value=\"" . 
+            echo "<td><input type=\"text\" name=\"admin_reply\" size='40' value=\"" .
                        $CFG_GLPI["admin_reply"] . "\">";
             if (!isValidEmail($CFG_GLPI["admin_reply"])) {
                echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
@@ -787,7 +789,7 @@ class Config extends CommonDBTM {
             dropdownYesNo("show_link_in_mail", $CFG_GLPI["show_link_in_mail"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][227] . "</td>";
-            echo "<td><input type=\"text\" name=\"url_base\" size='40' value=\"" . 
+            echo "<td><input type=\"text\" name=\"url_base\" size='40' value=\"" .
                        $CFG_GLPI["url_base"] . "\"> </td></tr>";
             if (!function_exists('mail')) {
                echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
@@ -797,33 +799,33 @@ class Config extends CommonDBTM {
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
             echo "<select name='cartridges_alert_repeat'> ";
-            echo "<option value='0' " . 
-                   ($CFG_GLPI["cartridges_alert_repeat"] == 0 ? "selected" : "") . " >" . 
+            echo "<option value='0' " .
+                   ($CFG_GLPI["cartridges_alert_repeat"] == 0 ? "selected" : "") . " >" .
                    $LANG['setup'][307] . "</option>";
-            echo "<option value='" . DAY_TIMESTAMP . "' " . 
-                   ($CFG_GLPI["cartridges_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "") . " >" . 
+            echo "<option value='" . DAY_TIMESTAMP . "' " .
+                   ($CFG_GLPI["cartridges_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "") . " >" .
                    $LANG['setup'][305] . "</option>";
-            echo "<option value='" . WEEK_TIMESTAMP . "' " . 
-                   ($CFG_GLPI["cartridges_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . 
+            echo "<option value='" . WEEK_TIMESTAMP . "' " .
+                   ($CFG_GLPI["cartridges_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "") . " >" .
                    $LANG['setup'][308] . "</option>";
-            echo "<option value='" . MONTH_TIMESTAMP . "' " . 
-                   ($CFG_GLPI["cartridges_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . 
+            echo "<option value='" . MONTH_TIMESTAMP . "' " .
+                   ($CFG_GLPI["cartridges_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "") . " >" .
                    $LANG['setup'][309] . "</option>";
             echo "</select>";
             echo "</td></tr>";
             echo "<tr class='tab_bg_2'>";
             echo "<td >" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
             echo "<select name='consumables_alert_repeat'> ";
-            echo "<option value='0' " . 
-                   ($CFG_GLPI["consumables_alert_repeat"] == 0 ? "selected" : "") . " >" . 
+            echo "<option value='0' " .
+                   ($CFG_GLPI["consumables_alert_repeat"] == 0 ? "selected" : "") . " >" .
                    $LANG['setup'][307] . "</option>";
-            echo "<option value='" . DAY_TIMESTAMP . "' " . 
+            echo "<option value='" . DAY_TIMESTAMP . "' " .
                    ($CFG_GLPI["consumables_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "")." >".
                    $LANG['setup'][305] . "</option>";
-            echo "<option value='" . WEEK_TIMESTAMP . "' " . 
+            echo "<option value='" . WEEK_TIMESTAMP . "' " .
                    ($CFG_GLPI["consumables_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "")." >".
                    $LANG['setup'][308] . "</option>";
-            echo "<option value='" . MONTH_TIMESTAMP . "' " . 
+            echo "<option value='" . MONTH_TIMESTAMP . "' " .
                    ($CFG_GLPI["consumables_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "")." >".
                    $LANG['setup'][309] . "</option>";
             echo "</select>";
@@ -840,15 +842,15 @@ class Config extends CommonDBTM {
             dropdownArrayValues("smtp_mode",$mail_methods,$CFG_GLPI["smtp_mode"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "</td>";
-            echo "<td><input type=\"text\" name=\"smtp_host\" size='40' value=\"" . 
+            echo "<td><input type=\"text\" name=\"smtp_host\" size='40' value=\"" .
                        $CFG_GLPI["smtp_host"] . "\"></td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][234] . "</td>";
-            echo "<td><input type=\"text\" name=\"smtp_username\" size='40' value=\"" . 
+            echo "<td><input type=\"text\" name=\"smtp_username\" size='40' value=\"" .
                        $CFG_GLPI["smtp_username"] . "\"></td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][235] . "</td>";
             echo "<td><input type=\"password\" name=\"smtp_password\" size='40' value=\"\"></td></tr>";
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"" . 
+            echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"" .
                    $LANG['buttons'][2] . "\" ></td></tr>";
             echo "</table></div></form>";
 
@@ -856,7 +858,7 @@ class Config extends CommonDBTM {
             echo "<div class='center'><table class='tab_cadre_fixe'><tr>";
             echo "<th colspan='2'>" . $LANG['setup'][229] . "</th></tr>";
             echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"" .
                    $LANG['buttons'][2] . "\">";
             echo " </td></tr></table></div>";
             break;
@@ -868,30 +870,30 @@ class Config extends CommonDBTM {
             $profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG['common'][10];
             $profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG['job'][4];
             $profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG['job'][3];
-            $profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG['common'][34] . " " . 
+            $profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG['common'][34] . " " .
                                                                 $LANG['common'][1];
             $profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG['setup'][239];
             $profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG['financial'][26];
             $profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
-            $profiles[USER_MAILING_TYPE . "_" . 
+            $profiles[USER_MAILING_TYPE . "_" .
                       SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][248];
-            $profiles[USER_MAILING_TYPE . "_" . 
+            $profiles[USER_MAILING_TYPE . "_" .
                       SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][249];
             asort($profiles);
-            $query = "SELECT `id`, `name` 
-                      FROM `glpi_profiles` 
+            $query = "SELECT `id`, `name`
+                      FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " . 
+               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
-            $query = "SELECT `id`, `name` 
-                      FROM `glpi_groups` 
+            $query = "SELECT `id`, `name`
+                      FROM `glpi_groups`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " . 
+               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             echo "<div class='center'>";
@@ -929,25 +931,25 @@ class Config extends CommonDBTM {
             showFormMailingType("resa", $profiles);
             echo "</tr></table></div>";
             break;
-            
+
          case 3 :
             $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
             $profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
-            $query = "SELECT `id`, `name` 
-                      FROM `glpi_profiles` 
+            $query = "SELECT `id`, `name`
+                      FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " . 
+               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
-            $query = "SELECT `id`, `name` 
-                      FROM `glpi_groups` 
+            $query = "SELECT `id`, `name`
+                      FROM `glpi_groups`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " . 
+               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             ksort($profiles);
@@ -956,35 +958,35 @@ class Config extends CommonDBTM {
             // ADMIN
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='3'>" . $LANG['setup'][243]."&nbsp;&nbsp;";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_consumables\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_consumables\" value=\"" .
                    $LANG['buttons'][50] . "\">";
             echo "</th></tr>";
             echo "<tr class='tab_bg_2'>";
             showFormMailingType("alertconsumable", $profiles);
             echo "</tr>";
             echo "<tr><th colspan='3'>" . $LANG['setup'][244]."&nbsp;&nbsp;";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_cartridges\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_cartridges\" value=\"" .
                    $LANG['buttons'][50] . "\">";
             echo "</th></tr>";
             echo "<tr class='tab_bg_1'>";
             showFormMailingType("alertcartridge", $profiles);
             echo "</tr>";
             echo "<tr><th colspan='3'>" . $LANG['setup'][246]."&nbsp;&nbsp;";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_contracts\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_contracts\" value=\"" .
                    $LANG['buttons'][50] . "\">";
             echo "</th></tr>";
             echo "<tr class='tab_bg_2'>";
             showFormMailingType("alertcontract", $profiles);
             echo "</tr>";
             echo "<tr><th colspan='3'>" . $LANG['setup'][247]."&nbsp;&nbsp;";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_infocoms\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_infocoms\" value=\"" .
                    $LANG['buttons'][50] . "\">";
             echo "</th></tr>";
             echo "<tr class='tab_bg_1'>";
             showFormMailingType("alertinfocom", $profiles);
             echo "</tr>";
             echo "<tr><th colspan='3'>" . $LANG['setup'][264]."&nbsp;&nbsp;";
-            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_softwares\" value=\"" . 
+            echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_softwares\" value=\"" .
                    $LANG['buttons'][50] . "\">";
             echo "</th></tr>";
             echo "<tr class='tab_bg_1'>";
@@ -1011,10 +1013,10 @@ class ConfigOCS extends CommonDBTM {
    /**
     * Prepare input datas for updating the item
     *
-    *@param $input datas used to update the item 
-    * 
+    *@param $input datas used to update the item
+    *
     *@return the modified $input array
-    * 
+    *
 **/
    function prepareInputForUpdate($input) {
 
@@ -1052,17 +1054,17 @@ class ConfigOCS extends CommonDBTM {
          if ($input["import_device_memory"]) {
             $input["checksum"]|= pow(2,MEMORIES_FL);
          }
-         if ($input["import_device_processor"] 
+         if ($input["import_device_processor"]
              || $input["import_general_contact"]
-             || $input["import_general_comment"] 
+             || $input["import_general_comment"]
              || $input["import_general_domain"]
-             || $input["import_general_os"] 
+             || $input["import_general_os"]
              || $input["import_general_name"]) {
             $input["checksum"]|= pow(2,HARDWARE_FL);
          }
-         if ($input["import_general_manufacturer"] 
+         if ($input["import_general_manufacturer"]
              || $input["import_general_type"]
-             || $input["import_general_model"] 
+             || $input["import_general_model"]
              || $input["import_general_serial"]) {
             $input["checksum"]|= pow(2,BIOS_FL);
          }
@@ -1081,14 +1083,14 @@ class ConfigOCS extends CommonDBTM {
       }
       return $input;
    }
-   
+
    /**
     * Actions done after the UPDATE of the item in the database
     *
     *@param $input datas used to update the item
     *@param $updates array of the updated fields
-    *@param $history store changes history ? 
-    * 
+    *@param $history store changes history ?
+    *
    **/
    function post_updateItem($input,$updates,$history=1) {
       global $CACHE_CFG;

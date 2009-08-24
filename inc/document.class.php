@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Document class
+ */
 class Document extends CommonDBTM {
 
    /**
@@ -54,12 +57,12 @@ class Document extends CommonDBTM {
     *
     *@param $filename filename of the document
     *@return true if succeed else false
-   **/	
+   **/
    function getFromDBbyFilename($filename) {
       global $DB;
 
-      $query="SELECT `id` 
-              FROM `glpi_documents` 
+      $query="SELECT `id`
+              FROM `glpi_documents`
               WHERE `filename`='$filename'";
       $result=$DB->query($query);
       if ($DB->numrows($result)==1) {
@@ -71,8 +74,8 @@ class Document extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $query3 = "DELETE 
-                 FROM `glpi_documents_items` 
+      $query3 = "DELETE
+                 FROM `glpi_documents_items`
                  WHERE `documents_id` = '$ID'";
       $result3 = $DB->query($query3);
 
@@ -116,7 +119,7 @@ class Document extends CommonDBTM {
          $input['mime']=$_FILES['filename']['type'];
       }
 
-      if (isset($input["item"]) && isset($input["itemtype"]) && $input["itemtype"] > 0 
+      if (isset($input["item"]) && isset($input["itemtype"]) && $input["itemtype"] > 0
           && $input["item"] > 0) {
          $ci=new CommonItem();
          $ci->getFromDB($input["itemtype"],$input["item"]);
@@ -152,7 +155,7 @@ class Document extends CommonDBTM {
          $docitem=new DocumentItem();
          $docitem->add(array('documents_id' => $newID,
                              'itemtype' => $input["itemtype"],
-                             'items_id' => $input["items_id"])); 
+                             'items_id' => $input["items_id"]));
          logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
       }
    }
@@ -174,7 +177,7 @@ class Document extends CommonDBTM {
       if (empty($input['filename'])) {
          unset($input['filename']);
       }
-      unset($input['current_filename']);	
+      unset($input['current_filename']);
 
       return $input;
    }
@@ -198,14 +201,14 @@ class Document extends CommonDBTM {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         // Create item 
+         // Create item
          $this->check(-1,'w');
          $this->getEmpty();
       }
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
       $this->showFormHeader($target,$ID,$withtemplate,2);
-      
+
       if ($ID>0) {
          echo "<tr><th colspan='2'>";
          if ($this->fields["users_id"]>0) {
@@ -293,10 +296,10 @@ class DocumentItem extends CommonDBRelation{
    function __construct () {
       $this->table = 'glpi_documents_items';
       $this->type = DOCUMENTITEM_TYPE;
-      
+
       $this->itemtype_1 = DOCUMENT_TYPE;
       $this->items_id_1 = 'documents_id';
-      
+
       $this->itemtype_2 = 'itemtype';
       $this->items_id_2 = 'items_id';
    }

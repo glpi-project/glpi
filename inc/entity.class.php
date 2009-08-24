@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Entity Data class
+/**
+ * Entity Data class
+ */
 class EntityData extends CommonDBTM {
 
    /**
@@ -55,7 +57,9 @@ class EntityData extends CommonDBTM {
 }
 
 
-// Entity class
+/**
+ * Entity class
+ */
 class Entity extends CommonDBTM {
 
    /**

@@ -29,15 +29,17 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: 
-// Purpose of file: 
+// Original Author of file:
+// Purpose of file:
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-/// Alert class 
+/**
+ * Alert class
+ */
 class Alert extends CommonDBTM {
 
 	/**
@@ -61,16 +63,16 @@ class Alert extends CommonDBTM {
 	 *@param $ID ID of the item to get
 	 *@param $type ID of the type to get
 	 *@return true if succeed else false
-	 * 
-	**/	
+	 *
+	**/
 	function getFromDBForDevice ($type,$ID) {
 
 		// Make new database object and fill variables
 		global $DB;
 		if (empty($ID)) return false;
 
-		$query = "SELECT * 
-			FROM `".$this->table."` 
+		$query = "SELECT *
+			FROM `".$this->table."`
 			WHERE itemtype='$type' AND items_id = '$ID'";
 
 		if ($result = $DB->query($query)) {
@@ -89,12 +91,12 @@ class Alert extends CommonDBTM {
 	 *@param $itemtype ID of the type to clear
 	 *@param $alert_type ID of the alert type to clear
 	 *@return nothing
-	 * 
-	**/	
+	 *
+	**/
 	function clear($itemtype,$ID,$alert_type){
 		global $DB;
 
-		$query="DELETE FROM `".$this->table."` 
+		$query="DELETE FROM `".$this->table."`
 			WHERE itemtype='$itemtype' AND items_id = '$ID' AND type='$alert_type'";
 		$DB->query($query);
 	}

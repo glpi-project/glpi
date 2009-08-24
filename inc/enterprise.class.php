@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Enterprise class (suppliers)
+ */
 class Enterprise extends CommonDBTM {
 
    /**
