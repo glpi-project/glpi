@@ -59,19 +59,19 @@ class CartridgeType extends CommonDBTM {
       global $DB;
       // Delete cartridges
       $query = "DELETE
-                FROM glpi_cartridges
-                WHERE (cartridgesitems_id = '$ID')";
+                FROM `glpi_cartridges`
+                WHERE `cartridgesitems_id` = '$ID'";
       $DB->query($query);
       // Delete all cartridge assoc
       $query2 = "DELETE
-                 FROM glpi_cartridges_printersmodels
-                 WHERE (cartridgesitems_id = '$ID')";
+                 FROM `glpi_cartridges_printersmodels`
+                 WHERE `cartridgesitems_id` = '$ID'";
       $result2 = $DB->query($query2);
 
       $query = "DELETE
-                FROM glpi_infocoms
-                WHERE (items_id = '$ID'
-                       AND itemtype='".CARTRIDGE_TYPE."')";
+                FROM `glpi_infocoms`
+                WHERE (`items_id` = '$ID'
+                       AND `itemtype` = '".CARTRIDGE_TYPE."')";
       $result = $DB->query($query);
 
    }
@@ -117,8 +117,8 @@ class CartridgeType extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM glpi_cartridges
-                WHERE cartridgesitems_id = '".$this->fields["id"]."'";
+                FROM `glpi_cartridges`
+                WHERE `cartridgesitems_id` = '".$this->fields["id"]."'";
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
          return $number;
@@ -141,8 +141,8 @@ class CartridgeType extends CommonDBTM {
 
       if ($cartridgesitems_id>0 && $printersmodels_id>0) {
          $query="INSERT
-                 INTO glpi_cartridges_printersmodels
-                      (cartridgesitems_id,printersmodels_id )
+                 INTO `glpi_cartridges_printersmodels`
+                      (`cartridgesitems_id`, `printersmodels_id`)
                  VALUES ('$cartridgesitems_id','$printersmodels_id');";
       $result = $DB->query($query);
       }
@@ -162,8 +162,8 @@ class CartridgeType extends CommonDBTM {
       global $DB;
 
       $query="DELETE
-              FROM glpi_cartridges_printersmodels
-              WHERE id= '$ID';";
+              FROM `glpi_cartridges_printersmodels`
+              WHERE `id`= '$ID';";
       $result = $DB->query($query);
    }
 
@@ -261,8 +261,8 @@ class CartridgeType extends CommonDBTM {
    }
 }
 
+//!  Cartridge Class
 /**
- * Cartridge Class
  * This class is used to manage the cartridges.
  * @see CartridgeType
  * @author Julien Dombre
@@ -283,9 +283,9 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "DELETE
-                FROM glpi_infocoms
-                WHERE (items_id = '$ID'
-                       AND itemtype='".CARTRIDGE_ITEM_TYPE."')";
+                FROM `glpi_infocoms`
+                WHERE (`items_id` = '$ID'
+                       AND `itemtype` = '".CARTRIDGE_ITEM_TYPE."')";
       $result = $DB->query($query);
    }
 
@@ -316,9 +316,9 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                glpi_cartridges
-                SET date_out = NULL, date_use = NULL, printers_id= 0
-                WHERE id='".$input["id"]."'";
+                `glpi_cartridges`
+                SET `date_out` = NULL, `date_use` = NULL, `printers_id` = '0'
+                WHERE `id`='".$input["id"]."'";
       if ($result = $DB->query($query)) {
          return true;
       } else {
@@ -338,9 +338,9 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query="UPDATE
-              glpi_cartridges
-              SET pages='$pages'
-              WHERE id='$ID'";
+              `glpi_cartridges`
+              SET `pages`='$pages'
+              WHERE `id`='$ID'";
       $DB->query($query);
    }
 
@@ -359,18 +359,18 @@ class Cartridge extends CommonDBTM {
       global $DB,$LANG;
 
       // Get first unused cartridge
-      $query = "SELECT id
-                FROM glpi_cartridges
-                WHERE cartridgesitems_id = '$tID'
-                      AND date_use IS NULL";
+      $query = "SELECT `id`
+                FROM `glpi_cartridges`
+                WHERE (`cartridgesitems_id` = '$tID'
+                      AND `date_use` IS NULL)";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE
-                   glpi_cartridges
-                   SET date_use = '".date("Y-m-d")."', printers_id = '$pID'
-                   WHERE id='".$DB->result($result,0,0)."'
-                         AND date_use IS NULL";
+                   `glpi_cartridges`
+                   SET `date_use` = '".date("Y-m-d")."', `printers_id` = '$pID'
+                   WHERE (`id`='".$DB->result($result,0,0)."'
+                         AND `date_use` IS NULL)";
          if ($result = $DB->query($query)) {
             return true;
          } else {
@@ -396,9 +396,9 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                glpi_cartridges
-                SET date_out = '".date("Y-m-d")."'
-                WHERE id='$ID'";
+                `glpi_cartridges`
+                SET `date_out` = '".date("Y-m-d")."'
+                WHERE `id`='$ID'";
       if ($result = $DB->query($query)) {
          return true;
       } else {

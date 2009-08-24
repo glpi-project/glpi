@@ -33,37 +33,39 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
  *  OCS Administration Information management class
  */
-class AdminInfo extends CommonDBTM{
-	/**
-	 * Constructor
-	 *
-	 *@return nothing
-	 *
-	**/
-	function __construct () {
-		$this->table="glpi_ocsadmininfoslinks";		
-		
-	}
-	/**
-	 * Actions done when item is deleted from the database
-	 *
-	 *@param $ID ID of the item
-	 *
-	 *
-	 *@return nothing
-	 *
-	 **/
-	function cleanDBonPurge($ID) {
-		global $DB;
-		$query = "DELETE FROM glpi_ocsadmininfoslinks WHERE ocsservers_id = '$ID'"; 
-		$result = $DB->query($query);
-	}
-} 
+class AdminInfo extends CommonDBTM {
+
+   /**
+    * Constructor
+    *
+    *@return nothing
+    *
+   **/
+   function __construct () {
+      $this->table="glpi_ocsadmininfoslinks";
+   }
+   /**
+    * Actions done when item is deleted from the database
+    *
+    *@param $ID ID of the item
+    *
+    *@return nothing
+    *
+    **/
+   function cleanDBonPurge($ID) {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_ocsadmininfoslinks`
+                WHERE `ocsservers_id` = '$ID'";
+      $result = $DB->query($query);
+   }
+}
 
 ?>
