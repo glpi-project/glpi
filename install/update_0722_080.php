@@ -35,9 +35,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.721 to 0.80
+// Update from 0.72.2 to 0.80
 
-function update0721to080() {
+function update0722to080() {
 	global $DB, $LANG;
 
 	echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";

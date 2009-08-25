@@ -3778,10 +3778,10 @@ $SEARCH_OPTION[RESERVATION_TYPE][2]['field']='id';
 $SEARCH_OPTION[RESERVATION_TYPE][2]['linkfield']='id';
 $SEARCH_OPTION[RESERVATION_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[RESERVATION_TYPE][31]['table']='glpi_states';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['field']='name';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['linkfield']='states_id';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['name']=$LANG['state'][0];
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['table']='glpi_states';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['field']='name';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['linkfield']='states_id';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['name']=$LANG['state'][0];
 
 $SEARCH_OPTION[RESERVATION_TYPE][3]['table']='glpi_locations';
 $SEARCH_OPTION[RESERVATION_TYPE][3]['field']='completename';
@@ -3809,7 +3809,6 @@ $SEARCH_OPTION[RESERVATION_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[RESERVATION_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[RESERVATION_TYPE][19]['name']=$LANG['common'][26];
 $SEARCH_OPTION[RESERVATION_TYPE][19]['datatype']='datetime';
-
 
 $SEARCH_OPTION[RESERVATION_TYPE][23]['table']='glpi_manufacturers';
 $SEARCH_OPTION[RESERVATION_TYPE][23]['field']='name';
