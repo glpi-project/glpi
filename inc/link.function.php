@@ -124,9 +124,9 @@ function deleteLinkDevice($ID){
  * @param $itemtype integer : item type
  * @param $lID integer : link ID
  */
-function addLinkDevice($tID,$lID){
+function addLinkDevice($itemtype,$lID){
 	global $DB;
-	if ($tID>0&&$lID>0){
+        if ($itemtype>0&&$lID>0){
 
 		$query="INSERT INTO glpi_links_itemtypes (itemtype,links_id ) VALUES ('$itemtype','$lID');";
 		$result = $DB->query($query);
