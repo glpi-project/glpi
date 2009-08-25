@@ -127,8 +127,10 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 		}
 	}
 
-	if ($usesession&&isset($_GET["reset_before"])){
-		if (isset($_SESSION['glpisearch'][$type])){
+        if ($usesession && 
+            (isset($_GET["reset_before"]) 
+               || (isset($_GET["reset"]) && $_GET["reset"]="reset_before"))) {
+           if (isset($_SESSION['glpisearch'][$type])){
 			unset($_SESSION['glpisearch'][$type]);
 		}
 		if (isset($_SESSION['glpisearchcount'][$type])){
