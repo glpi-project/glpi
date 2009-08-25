@@ -126,9 +126,9 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
 			}
 		}
 	}
-
-	if ($usesession&&isset($_GET["reset_before"])){
-		if (isset($_SESSION['glpisearch'][$itemtype])){
+        if ($usesession && (isset($_GET["reset_before"]) || isset($_GET["reset"]) && $_GET["reset"]="reset_before")){
+           
+           if (isset($_SESSION['glpisearch'][$itemtype])){
 			unset($_SESSION['glpisearch'][$itemtype]);
 		}
 		if (isset($_SESSION['glpisearchcount'][$itemtype])){
@@ -146,6 +146,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
 			$_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
 		}
 	}
+
 
 	if (is_array($_GET)&&$save){
 		foreach ($_GET as $key => $val){
