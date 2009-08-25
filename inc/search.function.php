@@ -883,7 +883,7 @@ function showList ($type,$params){
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$type]>0 || !empty($HAVING)){
+              if ($_SESSION["glpisearchcount2"][$type]>0 || !empty($HAVING) || in_array('all',$field)){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
