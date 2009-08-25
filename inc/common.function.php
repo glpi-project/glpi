@@ -532,10 +532,10 @@ function commonCheckForUseGLPI() {
       echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
                  $LANG['install'][14]."' title='".$LANG['install'][14]."'></td></tr>";
    } else if ($error != 2) {
+      echo "<td class='red'>";
+      echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][15]."</td></tr>";
       $error = 1;
    }
-   echo "<td class='red'>";
-   echo "<img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][15]."</td></tr>";
 
    //Test for session auto_start
    if (ini_get('session.auto_start')==1) {
