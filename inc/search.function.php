@@ -884,7 +884,7 @@ function showList ($itemtype,$params){
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$itemtype]>0 || !empty($HAVING)){
+        if ($_SESSION["glpisearchcount2"][$itemtype]>0 || !empty($HAVING) || in_array('all',$field)) {
 		$GROUPBY=" GROUP BY $itemtable.id";
 	}
 
@@ -1004,8 +1004,11 @@ function showList ($itemtype,$params){
 					} else {
 						$query_num=str_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$query_num);
 					}
+                                        
 					$result_num = $DB->query($query_num);
 					$numrows+= $DB->result($result_num,0,0);
+                                        
+                                        
 				}
 			}
 		} else {

@@ -109,7 +109,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][40]['name']=$LANG['computers'][52];
 
 $SEARCH_OPTION[COMPUTER_TYPE][41]['table']='glpi_operatingsystemsservicepacks';
 $SEARCH_OPTION[COMPUTER_TYPE][41]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][41]['linkfield']='operatingsystemsservicepacks';
+$SEARCH_OPTION[COMPUTER_TYPE][41]['linkfield']='operatingsystemsservicepacks_id';
 $SEARCH_OPTION[COMPUTER_TYPE][41]['name']=$LANG['computers'][53];
 
 $SEARCH_OPTION[COMPUTER_TYPE][42]['table']='glpi_autoupdatesystems';
