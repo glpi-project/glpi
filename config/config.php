@@ -112,8 +112,7 @@
 			$CFG_GLPI["root_doc"]=urldecode($CFG_GLPI["root_doc"]);
 	
 			// Path for icon of document type
-			$CFG_GLPI["typedoc_icon_dir"] = GLPI_ROOT."/pics/icones";
-
+                        $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
 
 		} else {
 			echo "Error accessing config table";
