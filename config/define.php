@@ -1,7 +1,7 @@
 <?php
 
 	// Current version of GLPI
-	define("GLPI_VERSION","0.72.1");
+	define("GLPI_VERSION","0.72.2");
 	define("GLPI_DEMO_MODE","0");
 
 	

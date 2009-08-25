@@ -3735,10 +3735,10 @@ $SEARCH_OPTION[RESERVATION_TYPE][2]['field']='ID';
 $SEARCH_OPTION[RESERVATION_TYPE][2]['linkfield']='ID';
 $SEARCH_OPTION[RESERVATION_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[RESERVATION_TYPE][31]['table']='glpi_dropdown_state';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['field']='name';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['linkfield']='state';
-$SEARCH_OPTION[RESERVATION_TYPE][31]['name']=$LANG['state'][0];
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['table']='glpi_dropdown_state';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['field']='name';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['linkfield']='state';
+//$SEARCH_OPTION[RESERVATION_TYPE][31]['name']=$LANG['state'][0];
 
 $SEARCH_OPTION[RESERVATION_TYPE][3]['table']='glpi_dropdown_locations';
 $SEARCH_OPTION[RESERVATION_TYPE][3]['field']='completename';
