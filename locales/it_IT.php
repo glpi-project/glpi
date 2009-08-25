@@ -1461,7 +1461,7 @@ $LANG['setup'][119]="Configurazione visualizzazione";
 $LANG['setup'][120]="Utilizza Ajax"; 
 $LANG['setup'][121]="Carattere jolly Ajax"; 
 $LANG['setup'][122]="Ajax - numero massimo di elementi visualizzati"; 
-$LANG['setup'][123]="Non usare Ajax se il numero degli elementi è meno di ('0' = mai)"; 
+$LANG['setup'][123]="Non usare Ajax se il numero degli elementi è minore di ('0' = mai)"; 
 $LANG['setup'][124]="Aggiungi automaticamente utente da fonte esterna di autenticazione"; 
 $LANG['setup'][125]="... da fonte esterna"; 
 $LANG['setup'][126]="Aggiungi automaticamente utente da fonte esterna di autenticazione"; 
