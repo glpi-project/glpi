@@ -207,7 +207,7 @@ class Document extends CommonDBTM {
       }
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showFormHeader($target,$ID,$withtemplate,2, " enctype='multipart/form-data'");
 
       if ($ID>0) {
          echo "<tr><th colspan='2'>";
@@ -229,13 +229,13 @@ class Document extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
       "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='8' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='".($ID>0 ? 7 : 6)."'>.<textarea cols='45' rows='8'
+         name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
-      if (!empty($ID)) {
+      if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['document'][22]."&nbsp;:</td>";
-         echo "<td>".getDocumentLink($this->fields["filename"])."";
+         echo "<td>".getDocumentLink($this->fields["filename"],'',45)."";
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
          echo "</td></tr>";
       }
