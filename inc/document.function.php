@@ -211,10 +211,10 @@ function showDeviceDocument($instID) {
       // for a document,
       // don't show here others documents associated to this one,
       // it's done for both directions in showDocumentAssociated
-      $query = "SELECT DISTINCT `itemtype` 
-                FROM `glpi_documents_items` 
-                WHERE `glpi_documents_items`.`documents_id` = '$instID' 
-                      AND `glpi_documents_items`.`itemtype` != ".DOCUMENT_TYPE." 
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_documents_items`
+                WHERE `glpi_documents_items`.`documents_id` = '$instID'
+                      AND `glpi_documents_items`.`itemtype` != ".DOCUMENT_TYPE."
                 ORDER BY `itemtype`";
 
       $result = $DB->query($query);
@@ -252,11 +252,11 @@ function showDeviceDocument($instID) {
                // Left join because root entity not storeed
                $query .= "`glpi_documents_items`.`items_id` AS entity
                           FROM `glpi_documents_items`
-                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_documents_items`.`items_id`) 
+                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_documents_items`.`items_id`)
                           WHERE ";
             } else {
                $query .= "`glpi_entities`.`id` AS entity
-                          FROM `glpi_documents_items`, `".$LINK_ID_TABLE[$itemtype]."` 
+                          FROM `glpi_documents_items`, `".$LINK_ID_TABLE[$itemtype]."`
                           LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`)
                           WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_documents_items`.`items_id`
                           AND ";
@@ -309,7 +309,7 @@ function showDeviceDocument($instID) {
                         echo "</td>";
                      }
                      echo "<td class='center'>".$ci->getType()."</td>";
-                     echo "<td ".(isset($data['is_deleted']) && 
+                     echo "<td ".(isset($data['is_deleted']) &&
                                   $data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
                      echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity']);
                      echo "</td>";
@@ -380,20 +380,20 @@ function addDeviceDocument($docID,$itemtype,$ID) {
       $docitem=new DocumentItem();
       $docitem->add(array('documents_id' => $docID,
                           'itemtype' => $itemtype,
-                          'items_id' => $ID)); 
+                          'items_id' => $ID));
    }
 }
 
 /** TODO : clean unused function
- * 
+ *
  * Delete a document to an item
  *
  * @param $ID doc_device ID
 function deleteDeviceDocument($ID) {
    global $DB;
 
-   $query="DELETE 
-           FROM `glpi_documents_items` 
+   $query="DELETE
+           FROM `glpi_documents_items`
            WHERE id= '$ID';";
    $result = $DB->query($query);
 }
@@ -437,13 +437,13 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
                         'entities_id',
                         'is_recursive');
 
-   $query = "SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity, 
-                    `glpi_documents`.`name` AS assocName, `glpi_documents`.* 
-             FROM `glpi_documents_items` 
-             LEFT JOIN `glpi_documents` 
-                       ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`) 
+   $query = "SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity,
+                    `glpi_documents`.`name` AS assocName, `glpi_documents`.*
+             FROM `glpi_documents_items`
+             LEFT JOIN `glpi_documents`
+                       ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
              LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-             WHERE `glpi_documents_items`.`items_id` = '$ID' 
+             WHERE `glpi_documents_items`.`items_id` = '$ID'
                    AND `glpi_documents_items`.`itemtype` = '$itemtype' ";
 
    if (isset($_SESSION["glpiID"])) {
@@ -454,14 +454,14 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
    }
    // Document : search links in both order using union
    if ($itemtype==DOCUMENT_TYPE) {
-      $query .= "UNION 
-                 SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity, 
-                        `glpi_documents`.`name` AS assocName, `glpi_documents`.* 
-                 FROM `glpi_documents_items` 
-                 LEFT JOIN `glpi_documents` 
+      $query .= "UNION
+                 SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity,
+                        `glpi_documents`.`name` AS assocName, `glpi_documents`.*
+                 FROM `glpi_documents_items`
+                 LEFT JOIN `glpi_documents`
                            ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
                  LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                 WHERE `glpi_documents_items`.`documents_id` = '$ID' 
+                 WHERE `glpi_documents_items`.`documents_id` = '$ID'
                        AND `glpi_documents_items`.`itemtype` = '$itemtype' ";
 
       if (isset($_SESSION["glpiID"])) {
@@ -510,8 +510,8 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
          $assocID=$data["assocID"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-         if ($withtemplate!=3 && $canread 
-             && (in_array($data['entities_id'],$_SESSION['glpiactiveentities']) 
+         if ($withtemplate!=3 && $canread
+             && (in_array($data['entities_id'],$_SESSION['glpiactiveentities'])
                  || $data["is_recursive"])) {
 
             echo "<td class='center'>";
@@ -571,8 +571,8 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
          }
       }
       $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
-      $q="SELECT count(*) 
-          FROM `glpi_documents` 
+      $q="SELECT count(*)
+          FROM `glpi_documents`
           WHERE `is_deleted`='0' $limit";
 
       $result = $DB->query($q);
@@ -614,9 +614,11 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
  *
  * @param filename filename of the document
  * @param $params additonal parameters to be added to the link
+ * @param $len maximum length of displayed string
+ *
  **/
-function getDocumentLink($filename,$params="") {
-   global $DB,$CFG_GLPI;	
+function getDocumentLink($filename, $params='', $len=20){
+   global $DB,$CFG_GLPI;
 
    if (empty($filename)) {
       return "&nbsp;";
@@ -629,8 +631,8 @@ function getDocumentLink($filename,$params="") {
       $fileout=$filename;
    }
 
-   if (utf8_strlen($fileout)>20) {
-      $fileout=utf8_substr($fileout,0,20)."...";
+   if (utf8_strlen($fileout)>$len) {
+      $fileout=utf8_substr($fileout,0,$len)."&hellip;";
    }
 
    $out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).
@@ -638,9 +640,9 @@ function getDocumentLink($filename,$params="") {
 
    if (count($splitter)==2) {
 
-      $query="SELECT * 
-              FROM `glpi_documentstypes` 
-              WHERE `ext` LIKE '".$splitter[0]."' 
+      $query="SELECT *
+              FROM `glpi_documentstypes`
+              WHERE `ext` LIKE '".$splitter[0]."'
                     AND `icon` <> ''";
 
       if ($result=$DB->query($query)) {
@@ -652,7 +654,7 @@ function getDocumentLink($filename,$params="") {
          }
       }
    }
-   $out.= "<strong>$fileout</strong></a>";	
+   $out.= "<strong>$fileout</strong></a>";
 
    return $out;
 }
@@ -663,13 +665,14 @@ function getDocumentLink($filename,$params="") {
  * @param name filename to clean
  **/
 function cleanFilenameDocument($name) {
+   $name = mb_convert_encoding($name, 'HTML-ENTITIES','UTF-8');
    // See http://en.wikipedia.org/wiki/Filename
    $bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
    $name = str_replace($bad_chars, '_', $name);
    $name = preg_replace("/%(\w{2})/", '_', $name);
    $name = preg_replace("/\\x00-\\x1f/u", '_', $name);
    // lowercase because MySQL is case insensitive (getFromDBbyFilename)
-   return strtolower($name);
+   return mb_convert_case($name, MB_CASE_LOWER,'UTF-8');
 }
 
 /**
@@ -720,9 +723,9 @@ function isValidDoc($filename) {
    $splitter=explode(".",$filename);
    $ext=end($splitter);
 
-   $query="SELECT * 
-           FROM `glpi_documentstypes` 
-           WHERE `ext` LIKE '$ext' 
+   $query="SELECT *
+           FROM `glpi_documentstypes`
+           WHERE `ext` LIKE '$ext'
                  AND `is_uploadable`='1'";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
