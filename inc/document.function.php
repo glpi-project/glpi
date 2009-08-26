@@ -88,7 +88,7 @@ function moveUploadedDocument($filename,$old_file=''){
 
 	} else addMessageAfterRedirect($LANG['document'][35],false,ERROR);
 
-	return "";	
+	return "";
 }
 
 /**
@@ -132,8 +132,8 @@ function uploadDocument($FILEDESC,$old_file=''){
 		}
 
 
-	} 
-	return "";	
+	}
+	return "";
 }
 
 /**
@@ -206,17 +206,17 @@ function showDeviceDocument($instID) {
 		// for a document,
 		// don't show here others documents associated to this one,
 		// it's done for both directions in showDocumentAssociated
-		$query = "SELECT DISTINCT device_type 
-			FROM glpi_doc_device 
-			WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.device_type != ".DOCUMENT_TYPE." 
+		$query = "SELECT DISTINCT device_type
+			FROM glpi_doc_device
+			WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.device_type != ".DOCUMENT_TYPE."
 			ORDER BY device_type";
-		
+
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
 		$i = 0;
 		$rand=mt_rand();
 		echo "<form method='post' name='document_form$rand' id='document_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
-	
+
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG['document'][19].":</th></tr><tr>";
 		if ($canedit) {
@@ -235,15 +235,15 @@ function showDeviceDocument($instID) {
 				$column="name";
 				if ($type==TRACKING_TYPE) $column="ID";
 				if ($type==KNOWBASE_TYPE) $column="question";
-	
+
 				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD, glpi_entities.ID AS entity
 							FROM glpi_doc_device, ".$LINK_ID_TABLE[$type];
 				if ($type != ENTITY_TYPE) {
 					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) ";
 				}
-				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  
+				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device
 						AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
-						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
+						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type]));
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
@@ -263,11 +263,11 @@ function showDeviceDocument($instID) {
                         $soft->getFromDB($data['sID']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
-							
+
 							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">"
 								.$data["name"]."$ID</a>";
-	
+
 							echo "<tr class='tab_bg_1'>";
 
 							if ($canedit){
@@ -278,47 +278,47 @@ function showDeviceDocument($instID) {
 								echo "</td>";
 							}
 							echo "<td class='center'>".$ci->getType()."</td>";
-							
+
 							echo "<td ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-							
+
 							echo "</tr>";
 						}
 					}
 			}
 			$i++;
 		}
-	
+
 		if ($canedit)	{
 			echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-	
+
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			echo "<input type='hidden' name='right' value='doc'>";
 			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$CFG_GLPI["doc_types"]);
-			
+
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</table></div>" ;
-			
+
 			echo "<div class='center'>";
 			echo "<table width='950px' class='tab_glpi'>";
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-		
+
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
-		
+
 			echo "</div>";
 
 
 		}else{
-	
+
 			echo "</table></div>"    ;
 		}
 		echo "</form>";
@@ -384,9 +384,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','FK_entities','recursive');
 
 
-	$query = "SELECT glpi_doc_device.ID AS assocID, glpi_entities.ID AS entity, 
+	$query = "SELECT glpi_doc_device.ID AS assocID, glpi_entities.ID AS entity,
 			glpi_docs.name AS assocName, glpi_docs.* FROM glpi_doc_device
-			LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID) 
+			LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID)
 			LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)
 			WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 
@@ -396,11 +396,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		// Anonymous access from FAQ
 		$query .= " AND glpi_docs.FK_entities=0 ";
 	}
-	
+
 	// Document : search links in both order using union
 	if ($device_type==DOCUMENT_TYPE){
-		$query .= "UNION 
-			SELECT glpi_doc_device.ID as assocID, glpi_entities.ID AS entity, 
+		$query .= "UNION
+			SELECT glpi_doc_device.ID as assocID, glpi_entities.ID AS entity,
 				glpi_docs.name AS assocName, glpi_docs.* FROM glpi_doc_device
 				LEFT JOIN glpi_docs ON (glpi_doc_device.FK_device=glpi_docs.ID)
 				LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)
@@ -411,11 +411,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			// Anonymous access from FAQ
 			$query .= " AND glpi_docs.FK_entities=0 ";
 		}
-	} 
+	}
 	$query .= " ORDER BY assocName";
-		
+
 	//echo $query;
-	
+
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -448,9 +448,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			}
 			$used[$docID]=$docID;
 			$assocID=$data["assocID"];
-	
+
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-			if ($withtemplate!=3 && $canread 
+			if ($withtemplate!=3 && $canread
 				&& (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])
 			){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
@@ -462,9 +462,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				echo "</strong></td>";
 			}
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
-			
+
 			echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
-	
+
 			echo "<td class='center'>";
 			if (!empty($data["link"]))
 				echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
@@ -472,7 +472,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "</td>";
 			echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
 			echo "<td class='center'>".$data["mime"]."</td>";
-	
+
 			if ($withtemplate<2) {
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($canedit)
@@ -490,9 +490,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$ci=new CommonItem();
 		$entities="";
 		$entity=$_SESSION["glpiactive_entity"];
-		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {		
+		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {
 			$entity=$ci->getField('FK_entities');
-			
+
 			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
 				$entities = getEntitySons($ci->obj->fields["FK_entities"]);
 			} else {
@@ -501,12 +501,12 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		}
 		$limit = getEntitiesRestrictRequest(" AND ","glpi_docs",'',$entities,true);
 		$q="SELECT count(*) FROM glpi_docs WHERE deleted='0' $limit";
-			
+
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
-	
+
 		if ($withtemplate<2){
-	
+
 			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
 				"<input type='hidden' name='FK_entities' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
@@ -531,7 +531,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			}
 			else {
 				echo "<td colspan='4'>&nbsp;</td>";
-			}	
+			}
 			echo "</tr>";
 		}
 	}
@@ -546,9 +546,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
  *
  * @param filename filename of the document
  * @param $params additonal parameters to be added to the link
+ * @param $len maximum length of displayed string
+ *
  **/
-function getDocumentLink($filename,$params=""){
-	global $DB,$CFG_GLPI;	
+function getDocumentLink($filename, $params='', $len=20){
+	global $DB,$CFG_GLPI;
 	if (empty($filename))
 		return "&nbsp;";
 
@@ -557,9 +559,9 @@ function getDocumentLink($filename,$params=""){
 		$fileout=$splitter[1];
 	else $fileout=$filename;
 
-	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
+	if (strlen($fileout)>$len) $fileout=substr($fileout,0,$len)."...";
 
-	$out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).$params."\" target=\"_blank\">";				
+	$out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).$params."\" target=\"_blank\">";
 	if (count($splitter)==2){
 
 		$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
@@ -568,11 +570,11 @@ function getDocumentLink($filename,$params=""){
 			if ($DB->numrows($result)>0){
 				$icon=$DB->result($result,0,'icon');
 
-				$out .= "&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$CFG_GLPI["typedoc_icon_dir"]."/$icon\" >";				
+				$out .= "&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$CFG_GLPI["typedoc_icon_dir"]."/$icon\" >";
 			}
 
 	}
-	$out.= "<strong>$fileout</strong></a>";	
+	$out.= "<strong>$fileout</strong></a>";
 
 
 	return $out;
@@ -584,13 +586,22 @@ function getDocumentLink($filename,$params=""){
  * @param name filename to clean
  **/
 function cleanFilenameDocument($name){
+   if (function_exists('mb_convert_encoding')) {
+      $name = mb_convert_encoding($name, 'HTML-ENTITIES','UTF-8');
+   }
 	// See http://en.wikipedia.org/wiki/Filename
 	$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
 	$name = str_replace($bad_chars, '_', $name);
 	$name = preg_replace("/%(\w{2})/", '_', $name);
 	$name = preg_replace("/\\x00-\\x1f/u", '_', $name);
+
 	// lowercase because MySQL is case insensitive (getFromDBbyFilename)
-	return strtolower($name);
+   if (function_exists('mb_convert_case')) {
+      $name = mb_convert_case($name, MB_CASE_LOWER,'UTF-8');
+   } else {
+      $name = strtolower($name);
+   }
+	return $name;
 }
 
 /**
