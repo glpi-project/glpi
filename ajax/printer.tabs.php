@@ -35,7 +35,8 @@
 
 
 
-$NEEDED_ITEMS=array("printer","computer","networking","reservation","tracking","cartridge","contract","infocom","document","user","group","link","enterprise","ocsng");
+$NEEDED_ITEMS=array('cartridge','computer','contract','document','enterprise','group','infocom',
+   'link','networking','ocsng','peripheral','phone','printer','reservation','tracking','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -60,25 +61,25 @@ checkRight("printer","r");
 					showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
 					break;
 
-				case 4 :			
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"],1,$_POST["withtemplate"]);	
+				case 4 :
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
 					showContractAssociated(PRINTER_TYPE,$_POST["id"],$_POST["withtemplate"]);
 					break;
 				case 5 :
-					showDocumentAssociated(PRINTER_TYPE,$_POST["id"],$_POST["withtemplate"]);	
+					showDocumentAssociated(PRINTER_TYPE,$_POST["id"],$_POST["withtemplate"]);
 					break;
 				default :
 					displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
 					break;
-			}	
+			}
 		}
 	} else {
 		switch($_POST['glpi_tab']){
 			case -1:
 				showCartridgeInstalled($_POST["id"]);
-				showCartridgeInstalled($_POST["id"],1);		
+				showCartridgeInstalled($_POST["id"],1);
 				showConnect($_POST['target'],$_POST["id"],PRINTER_TYPE);
-				showPortsAdd($_POST["id"],PRINTER_TYPE);	
+				showPortsAdd($_POST["id"],PRINTER_TYPE);
 				showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"]);
 				showContractAssociated(PRINTER_TYPE,$_POST["id"]);
@@ -87,24 +88,24 @@ checkRight("printer","r");
 				showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
 				displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
 				break;
-			case 3 :			
+			case 3 :
 				showConnect($_POST['target'],$_POST["id"],PRINTER_TYPE);
-				showPortsAdd($_POST["id"],PRINTER_TYPE);	
+				showPortsAdd($_POST["id"],PRINTER_TYPE);
 				showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
 				break;
-			case 4 :	
+			case 4 :
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"]);
 				showContractAssociated(PRINTER_TYPE,$_POST["id"]);
 				break;
 			case 5 :
 				showDocumentAssociated(PRINTER_TYPE,$_POST["id"]);
 				break;
-			case 6 :	
+			case 6 :
 				showJobListForItem(PRINTER_TYPE,$_POST["id"]);
 				break;
 			case 7 :
 				showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
-				break;	
+				break;
 				case 10 :
 				showNotesForm($_POST['target'],PRINTER_TYPE,$_POST["id"]);
 				break;
@@ -116,11 +117,11 @@ checkRight("printer","r");
 				break;
 			default :
 				if (!displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"])){
-					showCartridgeInstalled($_POST["id"]);		
+					showCartridgeInstalled($_POST["id"]);
 					showCartridgeInstalled($_POST["id"],1);
 				}
 				break;
-		}		
+		}
 	}
 
 	ajaxFooter();
