@@ -34,7 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","rulesengine","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","group","link","ocsng","phone","enterprise","search","registry","group","setup","ocsng","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown");
+$NEEDED_ITEMS=array("computer","rulesengine","device","networking","monitor","printer","tracking",
+   "software","peripheral","reservation","infocom","contract","document","user","group",
+   "link","ocsng","phone","enterprise","search","registry","group","setup","ocsng",
+   "rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -55,10 +58,10 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	//show computer form to add
 	if (!empty($_POST["withtemplate"])) {
-	
+
 		if ($_POST["ID"]>0){
 			switch($_POST['glpi_tab']){
-				case 2 :			
+				case 2 :
 					showSoftwareInstalled($_POST["ID"],$_POST["withtemplate"]);
 					break;
 				case 3 :
@@ -66,7 +69,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					if ($_POST["withtemplate"]!=2)
 						showPortsAdd($_POST["ID"],COMPUTER_TYPE);
 					showPorts($_POST["ID"], COMPUTER_TYPE,$_POST["withtemplate"]);
-					break;					
+					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
 					showContractAssociated(COMPUTER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
@@ -74,12 +77,12 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				case 5 :
 					showDocumentAssociated(COMPUTER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 					break;
-				case 20 :			
+				case 20 :
 					showComputerDisks($_POST["ID"],$_POST["withtemplate"]);
 					break;
 				default :
 					if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['glpi_tab'], $_POST["withtemplate"]))
-						showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);	
+						showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);
 					break;
 			}
 		}
@@ -87,7 +90,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 		switch($_POST['glpi_tab']){
 			case -1 :
-				showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);	
+				showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);
 				showComputerDisks($_POST["ID"],$_POST["withtemplate"]);
 				showSoftwareInstalled($_POST["ID"]);
 				showConnections($_POST['target'],$_POST["ID"]);
@@ -134,21 +137,21 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			case 13 :
 				ocsEditLock($_POST['target'],$_POST["ID"]);
 				break;
-			case 14:					
+			case 14:
 				showRegistry($_POST["ID"]);
 				break;
-			case 20 :			
+			case 20 :
 				showComputerDisks($_POST["ID"], $_POST["withtemplate"]);
 				break;
 			default :
 				if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]))
-					showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);			
+					showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);
 				break;
 		}
 	}
 
 
 	ajaxFooter();
-		
-		
+
+
 ?>

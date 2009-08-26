@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("phone","infocom","contract","user","group","link","networking","document","tracking","reservation","computer","enterprise","ocsng");
+$NEEDED_ITEMS=array("phone","infocom","contract","user","group","link",'peripheral','printer',
+   "networking","document","tracking","reservation","computer","enterprise","ocsng");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -107,16 +108,16 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					break;
 				case 7 :
 					showLinkOnDevice(PHONE_TYPE,$_POST["ID"]);
-					break;	
+					break;
 				case 10 :
 					showNotesForm($_POST['target'],PHONE_TYPE,$_POST["ID"]);
-					break;	
+					break;
 				case 11 :
 					showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["ID"]);
 					break;
 				case 12 :
 					showHistory(PHONE_TYPE,$_POST["ID"]);
-					break;		
+					break;
 				default :
 					if (!displayPluginAction(PHONE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'],$_POST["withtemplate"])){
 						showConnect($_POST['target'],$_POST["ID"],PHONE_TYPE);

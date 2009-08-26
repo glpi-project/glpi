@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","peripheral","printer","networking","reservation","tracking","document","user","group","link","phone","enterprise","infocom","contract");
+$NEEDED_ITEMS=array("computer","peripheral","printer","networking","reservation","tracking",
+   "document","user","group","link","phone","enterprise","infocom","contract");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -58,7 +59,7 @@ $netdevice->check($_POST["ID"],'r');
 						showContractAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 						break;
 					case 5 :
-						showDocumentAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);		
+						showDocumentAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 						break;
 
 					default :
@@ -98,10 +99,10 @@ $netdevice->check($_POST["ID"],'r');
 					break;
 				case 7 :
 					showLinkOnDevice(NETWORKING_TYPE,$_POST["ID"]);
-					break;	
+					break;
 				case 10 :
 					showNotesForm($_POST['target'],NETWORKING_TYPE,$_POST["ID"]);
-					break;			
+					break;
 				case 11 :
 					showDeviceReservations($_POST['target'],NETWORKING_TYPE,$_POST["ID"]);
 					break;
