@@ -55,8 +55,8 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
 	$pattern=trim($pattern);
 	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH){
 		//Perform comparison with fields in lower case
-		$field = strtolower($field);
-		$pattern = strtolower($pattern);
+                $field = utf8_strtolower($field);
+                $pattern = utf8_strtolower($pattern);
 	}
 	
 	switch ($condition) {

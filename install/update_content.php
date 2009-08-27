@@ -125,7 +125,7 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 						if ($conv_utf8) {
 							// Gestion users AD qui sont d��en UTF8
 							if ($table!="glpi_users"||!seems_utf8($val))
-								$val=utf8_encode($val);
+								$val=encodeInUtf8($val);
 						}
 						$insert .= "'".addslashes($val)."',";
 					}

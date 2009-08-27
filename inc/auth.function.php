@@ -1116,13 +1116,13 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 
    if (isset($mail_method["connect_string"]) && !empty ($mail_method["connect_string"])) {
       $identificat->auth_succeded = $identificat->connection_imap($mail_method["connect_string"],
-                                                                  utf8_decode($login),
-                                                                  utf8_decode($password));
+                                                                  decodeFromUtf8($login),
+                                                                  decodeFromUtf8($password));
       if ($identificat->auth_succeded) {
          $identificat->extauth = 1;
          $identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
          $identificat->auth_parameters = $mail_method;
-         $identificat->user->getFromIMAP($mail_method, utf8_decode($login));
+         $identificat->user->getFromIMAP($mail_method, decodeFromUtf8($login));
 
          //Update the authentication method for the current user
          $identificat->user->fields["authtype"] = AUTH_MAIL;
@@ -1141,7 +1141,7 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 **/
 function test_auth_mail($connect_string,$login,$password) {
    $identificat = new Identification();
-   return $identificat->connection_imap($connect_string, utf8_decode($login), utf8_decode($password));
+   return $identificat->connection_imap($connect_string, decodeFromUtf8($login), decodeFromUtf8($password));
 }
 
 /**

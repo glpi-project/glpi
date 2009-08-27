@@ -489,7 +489,7 @@ class RightRuleCollection extends RuleCollection {
 		{
 			//Dn is alwsays retreived from ldap : don't need to ask for it !
 			if ($param["value"] != "dn")
-				$params[]=strtolower($param["value"]);
+				$params[]=utf8_strtolower($param["value"]);
 		}
 		return $params;
 	}
@@ -530,7 +530,7 @@ class RightRuleCollection extends RuleCollection {
 					
 					foreach ($fields as $field)
 					{
-							switch(strtoupper($field))
+							switch(utf8_strtoupper($field))
 							{
 								case "LDAP_SERVER":
 									$rule_parameters["LDAP_SERVER"] = $params["ldap_server"];

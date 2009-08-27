@@ -1071,7 +1071,7 @@ function showOtherAuthList($target) {
 	}
 	echo "</th></tr>";
 
-	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
+	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") ))) {		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";

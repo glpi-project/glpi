@@ -344,11 +344,12 @@ class MailCollect {
 		// Do it before using charset variable
 		$head['subject']=$this->decodeMimeString($head['subject']);
 
-		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
-			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
+		if (!empty($this->charset)/*&&function_exists('mb_convert_encoding')*/){
+                        $body=encodeInUtf8($this->charset);
+			//$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
 		if (!seems_utf8($body)){
-			$tkt['content']= utf8_encode($body);
+			$tkt['content']= encodeInUtf8($body);
 		}else{
 			$tkt['content']= $body;
 		}
@@ -464,7 +465,7 @@ class MailCollect {
 	function mb_list_lowerencodings() { 
 		$r=mb_list_encodings();
 		for ($n=sizeOf($r); $n--; ) { 
-			$r[$n]=strtolower($r[$n]); 
+			$r[$n]=utf8_strtolower($r[$n]); 
 		} 
 		return $r;
 	}
@@ -483,15 +484,15 @@ class MailCollect {
 	function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8', $fallbackCharset='iso-8859-1') {
 		if (function_exists('mb_list_encodings')&&function_exists('mb_convert_encoding')){
 			$encodings=$this->mb_list_lowerencodings();
-			$inputCharset=strtolower($inputCharset);
-			$targetCharset=strtolower($targetCharset);
-			$fallbackCharset=strtolower($fallbackCharset);
+			$inputCharset=utf8_strtolower($inputCharset);
+			$targetCharset=utf8_strtolower($targetCharset);
+			$fallbackCharset=utf8_strtolower($fallbackCharset);
 			
 			$decodedStr='';
 			$mimeStrs=imap_mime_header_decode($mimeStr);
 			for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
 				$mimeStr=$mimeStrs[$i];
-				$mimeStr->charset=strtolower($mimeStr->charset);
+				$mimeStr->charset=utf8_strtolower($mimeStr->charset);
 				if (($mimeStr == 'default' && $inputCharset == $targetCharset)
 				|| $mimeStr->charset == $targetCharset) {
 					$decodedStr.=$mimeStr->text;
@@ -553,15 +554,15 @@ class MailCollect {
 		
 		$sender=$mail_header->from[0];
 		//$sender_replyto=$mail_header->reply_to[0];
-		if(strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster')
+		if(utf8_strtolower($sender->mailbox)!='mailer-daemon' && utf8_strtolower($sender->mailbox)!='postmaster')
 		{
 			$mail_details=array(
-					'from'=>strtolower($sender->mailbox).'@'.$sender->host,
+					'from'=>utf8_strtolower($sender->mailbox).'@'.$sender->host,
 					'subject'=>$mail_header->subject,
 					//'fromName'=>$sender->personal,
-					//'toOth'=>strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
+					//'toOth'=>utf8_strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
 					//'toNameOth'=>$sender_replyto->personal,
-					//'to'=>strtolower($mail_header->toaddress)
+					//'to'=>utf8_strtolower($mail_header->toaddress)
 				);
 			if (isset($mail_header->references)){
 					$mail_details['references'] = $mail_header->references;
@@ -711,7 +712,7 @@ class MailCollect {
 			// if there are any dparameters present in this part
 			if (count($structure->dparameters)>0){
 			foreach ($structure->dparameters as $dparam){
-				if ((strtoupper($dparam->attribute)=='NAME') ||(strtoupper($dparam->attribute)=='FILENAME')) $filename=$dparam->value;
+				if ((utf8_strtoupper($dparam->attribute)=='NAME') ||(utf8_strtoupper($dparam->attribute)=='FILENAME')) $filename=$dparam->value;
 				}
 			}
 			//if no filename found
@@ -719,7 +720,7 @@ class MailCollect {
 				// if there are any parameters present in this part
 				if (count($structure->parameters)>0){
 					foreach ($structure->parameters as $param){
-					if ((strtoupper($param->attribute)=='NAME') ||(strtoupper($param->attribute)=='FILENAME')) $filename=$param->value;
+					if ((utf8_strtoupper($param->attribute)=='NAME') ||(utf8_strtoupper($param->attribute)=='FILENAME')) $filename=$param->value;
 					}
 				}
 			}

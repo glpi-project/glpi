@@ -4,7 +4,7 @@
 $liste=array();
 
 function CLean ($buf) {
-	$buf=utf8_encode($buf);
+	$buf=encodeInUtf8($buf);
 	return html_entity_decode($buf,ENT_QUOTES,"utf-8");
 }
 function ListePlug ($lang, $name, $base, $num,$cat) {

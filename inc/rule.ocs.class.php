@@ -75,7 +75,7 @@ class OcsRuleCollection extends RuleCollection {
 
 		//Build the select request
 		foreach ($fields as $field) {
-			switch (strtoupper($field)) {
+			switch (utf8_strtoupper($field)) {
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
 				case "OCS_SERVER" :
 					$rule_parameters["OCS_SERVER"] = $this->ocsservers_id;
