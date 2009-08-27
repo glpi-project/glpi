@@ -512,7 +512,7 @@ class User extends CommonDBTM {
 		$query="SELECT DISTINCT `ldap_field` FROM `glpi_groups` WHERE `ldap_field`!='' ORDER BY `ldap_field`";
 		$group_fields = array ();
 		foreach ($DB->request($query) as $data) {
-				$group_fields[] = strtolower($data["ldap_field"]);					
+                   $group_fields[] = utf8_strtolower($data["ldap_field"]);					
 		}
 		if (count($group_fields)) {
 			//Need to sort the array because edirectory don't like it!

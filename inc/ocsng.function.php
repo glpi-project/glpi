@@ -128,7 +128,7 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
 				while ($data = $DBocs->fetch_array($result_glpi_comp)) {
 					// TODO store multiple values for each name
 					// really usefull for big database ?
-					$computer_names[strtolower($data["name"])] = $data["id"];
+					$computer_names[utf8_strtolower($data["name"])] = $data["id"];
 				}
 			}
 		}
@@ -1087,7 +1087,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 				$osname=$line["OSNAME"];
 				// Hack for OCS encoding problems
 				if (!seems_utf8($osname)){
-					$osname=utf8_encode($osname);
+					$osname=encodeInUtf8($osname);
 				}
 			
 				$compupdate["operatingsystems_id"] = externalImportDropdown('glpi_operatingsystems', $osname);
@@ -3054,12 +3054,12 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 				$initname = $data2["INITNAME"];
 				// Hack for OCS encoding problems
 				if (!seems_utf8($initname)){
-					$initname=utf8_encode($initname);
+					$initname=encodeInUtf8($initname);
 				}
 				$name = $data2["NAME"];
 				// Hack for OCS encoding problems
 				if (!seems_utf8($name)){
-					$name=utf8_encode($name);
+					$name=encodeInUtf8($name);
 				}
 				$version = $data2["VERSION"];
 				$manufacturer = processManufacturerName($data2["PUBLISHER"]);

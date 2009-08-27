@@ -184,7 +184,7 @@ class XML {
 							$FieldName="data";
 							$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
 					}
-					fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
+					fputs($fp, "			<".$FieldName.$Attributes.">".encodeInUtf8(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
 				}
 				fputs($fp, "		</row>\n");
 			}

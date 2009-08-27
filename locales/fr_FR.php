@@ -140,7 +140,6 @@ $LANG['calendarM'][10]="Novembre";
 $LANG['calendarM'][11]="Décembre"; 
 
 $LANG['cartridges'][0]="Cartouche"; 
-$LANG['cartridges'][6]="Ajouter Type de Cartouche..."; 
 $LANG['cartridges'][7]="Pas de cartouche trouvée"; 
 $LANG['cartridges'][9]="Aucune cartouche"; 
 $LANG['cartridges'][10]="Toner"; 
@@ -288,7 +287,6 @@ $LANG['computers'][8]="Volumes";
 $LANG['computers'][9]="OS"; 
 $LANG['computers'][10]="OS Numéro de série"; 
 $LANG['computers'][11]="OS Product ID"; 
-$LANG['computers'][12]="Nouvel ordinateur à partir d'un modèle"; 
 $LANG['computers'][14]="Inséré"; 
 $LANG['computers'][21]="CPU"; 
 $LANG['computers'][23]="RAM Type"; 
@@ -299,7 +297,6 @@ $LANG['computers'][37]="Pas d'écran connecté.";
 $LANG['computers'][38]="Pas d'imprimante connectée"; 
 $LANG['computers'][39]="Imprimante(s)"; 
 $LANG['computers'][40]="Moniteur(s)"; 
-$LANG['computers'][44]="Ordinateur(s)"; 
 $LANG['computers'][46]="Périphérique(s)"; 
 $LANG['computers'][47]="Pas de périphérique connecté"; 
 $LANG['computers'][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur."; 
@@ -320,7 +317,6 @@ $LANG['connect'][16]="Attention !! Les éléments suivants des deux matériels n
 $LANG['consumables'][0]="Consommable"; 
 $LANG['consumables'][1]="En stock"; 
 $LANG['consumables'][2]="Référence"; 
-$LANG['consumables'][6]="Ajouter Type de Consommable..."; 
 $LANG['consumables'][7]="Pas de consommable trouvé"; 
 $LANG['consumables'][9]="Aucun consommable"; 
 $LANG['consumables'][12]="Type de Consommable"; 
@@ -626,8 +622,6 @@ $LANG['install'][76]="Ok - Les sessions fonctionnent (pas de problèmes de trans
 $LANG['install'][77]="Étape"; 
 $LANG['install'][81]="Début de l'installation"; 
 $LANG['install'][82]="Base de données créée"; 
-$LANG['install'][83]="Test sur les fonctions utf8_encode et utf8_decode"; 
-$LANG['install'][84]="GLPI ne peut pas fonctionner correctement sans les fonctions utf8_encode et utf8_decode ; Essayez d'activer le support du XML pour PHP"; 
 $LANG['install'][85]="Les fonctions ont été trouvées - Parfait !"; 
 $LANG['install'][86]="Test de la mémoire allouée"; 
 $LANG['install'][87]="Mémoire allouée :"; 
@@ -648,10 +642,6 @@ $LANG['install'][102]="Test sur les fonctions Json";
 $LANG['install'][103]="GLPI ne peut pas fonctionner correctement sans les fonctions json_encode et json_decode "; 
 $LANG['install'][104]="Test sur l'extension mbstring";
 $LANG['install'][105]="L'extension mbstring de votre parseur PHP n'est pas installée";
-
-
-
-
 
 $LANG['job'][2]="par"; 
 $LANG['job'][3]="Receveur"; 
@@ -681,7 +671,6 @@ $LANG['job'][42]="Coût matériel";
 $LANG['job'][43]="Coût total"; 
 $LANG['job'][44]="Source de la demande"; 
 $LANG['job'][46]="Ticket créé dans l'entité"; 
-
 
 $LANG['joblist'][0]="Statut"; 
 $LANG['joblist'][1]="Seulement les miens"; 
@@ -750,7 +739,6 @@ $LANG['ldap'][22]="Réplicat(s)";
 $LANG['ldap'][23]="Import en masse de groupes depuis un annuaire";
 $LANG['ldap'][24]="Importation de nouveaux groupes";
 $LANG['ldap'][25]="Pas de groupes à importer";
-
 $LANG['ldap'][30]="Traitement des alias LDAP";
 $LANG['ldap'][31]="Jamais déréférencés (défaut)";
 $LANG['ldap'][32]="Toujours déréférencés";
@@ -847,8 +835,6 @@ $LANG['log'][94]="mise à jour d'une cartouche";
 $LANG['log'][95]="installation d'une cartouche"; 
 $LANG['log'][96]="désinstallation d'une cartouche";
 $LANG['log'][97]="sortie d'un consommable pour l'utilisateur"; 
-
-
 
 $LANG['login'][0]="Dernière connexion"; 
 $LANG['login'][1]="Se reconnecter"; 
@@ -995,7 +981,6 @@ $LANG['monitors'][18]="Options";
 $LANG['monitors'][19]="Sub-D"; 
 $LANG['monitors'][20]="BNC"; 
 $LANG['monitors'][21]="Taille"; 
-$LANG['monitors'][30]="Nouvel écran à partir d'un modèle"; 
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivot"; 
 
@@ -1127,13 +1112,11 @@ $LANG['pager'][4]="Afficher";
 $LANG['pager'][5]="éléments"; 
 
 $LANG['peripherals'][18]="Marque"; 
-$LANG['peripherals'][30]="Nouveau périphérique à partir d'un modèle"; 
 $LANG['peripherals'][31]="Gestion globale"; 
 $LANG['peripherals'][32]="Gestion unitaire"; 
 $LANG['peripherals'][33]="Type de gestion"; 
 
 $LANG['phones'][18]="Marque"; 
-$LANG['phones'][30]="Nouveau téléphone à partir d'un modèle"; 
 $LANG['phones'][36]="Alimentation"; 
 $LANG['phones'][38]="Casque"; 
 $LANG['phones'][39]="Haut parleur"; 
@@ -1167,7 +1150,6 @@ $LANG['printers'][14]="Série";
 $LANG['printers'][15]="Parallèle"; 
 $LANG['printers'][18]="Ports"; 
 $LANG['printers'][27]="USB"; 
-$LANG['printers'][28]="Nouvelle imprimante à partir d'un modèle"; 
 $LANG['printers'][30]="Compteur de page initial"; 
 $LANG['printers'][31]="Pages imprimées"; 
 
@@ -1432,7 +1414,6 @@ $LANG['setup'][18]="Identifiant";
 $LANG['setup'][19]="Mot de passe"; 
 $LANG['setup'][35]="MHZ"; 
 $LANG['setup'][39]="Suivis privés par défaut"; 
-$LANG['setup'][40]="Montrer les nouveaux tickets d'abord ?"; 
 $LANG['setup'][41]="Langue"; 
 $LANG['setup'][42]="Types de matériels réseau"; 
 $LANG['setup'][43]="Types d'imprimantes"; 
@@ -1479,7 +1460,6 @@ $LANG['setup'][104]="2- Sévère (Non utilisée)";
 $LANG['setup'][105]="3- Important (connexions réussies)"; 
 $LANG['setup'][106]="4- Notices (Ajout, suppression, tracking)"; 
 $LANG['setup'][107]="5- Complet (Tout)"; 
-$LANG['setup'][108]="Nombre d'événements du journal à afficher"; 
 $LANG['setup'][109]="Temps en jours de conservation des journaux (0 pour infini)"; 
 $LANG['setup'][110]="Montrer les nouveaux tickets sur la page d'accueil"; 
 $LANG['setup'][111]="Nombre d'éléments à afficher par page"; 
@@ -1501,7 +1481,6 @@ $LANG['setup'][126]="Ajouter directement un utilisateur d'une source externe";
 $LANG['setup'][127]="Autocomplétion des champs textes avec AJAX"; 
 $LANG['setup'][128]="Format des dates"; 
 $LANG['setup'][129]="Afficher les ID GLPI"; 
-$LANG['setup'][130]="Utiliser pour Onglets Suivant/Précédent"; 
 $LANG['setup'][131]="Nombre de caractères limite pour les listes déroulantes"; 
 $LANG['setup'][132]="Listes déroulantes arborescentes à plat"; 
 $LANG['setup'][133]="Activer le mode OCSNG"; 
@@ -1543,11 +1522,9 @@ $LANG['setup'][179]="Impossible d'utiliser CAS comme source de connexion externe
 $LANG['setup'][180]="Utiliser TLS"; 
 $LANG['setup'][181]="Fonction ldap_start_tls inexistante"; 
 $LANG['setup'][182]="Url de retour à la deconnexion (logout)"; 
-$LANG['setup'][183]="Utiliser le cache"; 
 $LANG['setup'][184]="Restrictions"; 
 $LANG['setup'][185]="Traceurs dans fichiers (SQL, mail, cron...)"; 
 $LANG['setup'][186]="Fuseau horaire"; 
-$LANG['setup'][187]="Limite du cache"; 
 $LANG['setup'][190]="Certificat x509";
 $LANG['setup'][191]="Attribut mail pour x509";
 $LANG['setup'][192]="Activé";
@@ -1617,8 +1594,6 @@ $LANG['setup'][272]="Restreindre la gestion des périphériques";
 $LANG['setup'][273]="Restreindre la gestion des téléphones"; 
 $LANG['setup'][274]="pour ajout manuel"; 
 $LANG['setup'][275]="Restreindre la gestion des imprimantes"; 
-$LANG['setup'][276]="Restreindre la gestion des licences"; 
-$LANG['setup'][277]="Déglobalisation possible des licences"; 
 $LANG['setup'][280]="Mise à jour automatique des éléments liés aux ordinateurs";
 $LANG['setup'][281]="Comportement sur connexion / mise à jour"; 
 $LANG['setup'][282]="Comportement sur déconnexion";
@@ -1723,8 +1698,6 @@ $LANG['software'][49]="Logiciel mis dans la corbeille après regroupement";
 $LANG['software'][50]="Affectée à l'ordinateur";
 $LANG['software'][51]="Le nombre doit être 1 pour pouvoir affecter";
 
-$LANG['softwarecategories'][1]="Repliés"; 
-$LANG['softwarecategories'][2]="Dépliés"; 
 $LANG['softwarecategories'][3]="Logiciels non catégorisés repliés"; 
 $LANG['softwarecategories'][4]="Logiciels catégorisés repliés"; 
 $LANG['softwarecategories'][5]="Catégorie de logiciels"; 

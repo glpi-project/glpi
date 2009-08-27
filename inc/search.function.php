@@ -2439,7 +2439,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 					$split=explode("$$$$",$data[$NAME.$num."_2"]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
-						$lowstr=strtolower($split[$k]);
+                                           $lowstr=utf8_strtolower($split[$k]);
 						if (strlen(trim($split[$k]))>0
 							  &&!in_array($lowstr,$displayed)){	
 							if ($count_display) {
@@ -2457,7 +2457,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
-						$lowstr=strtolower($split[$k]);
+                                           $lowstr=utf8_strtolower($split[$k]);
 						if (strlen(trim($split[$k]))>0 
 							&&!in_array($lowstr,$displayed)) {	
 							if ($count_display) {

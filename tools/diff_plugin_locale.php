@@ -5,7 +5,7 @@ $cmd=$_SERVER["argv"][0];
 function checkOne ($name, $tab="") {
 	global $cmd;
 
-	if (empty($tab)) $tab=strtoupper("LANG$name");
+	if (empty($tab)) $tab=utf8_strtoupper("LANG$name");
 	$old=getcwd();
 	if (is_dir($name."/trunk/locales") && is_file($name."/trunk/locales/fr_FR.php")) {
 		echo "+ ----- $name -----\n";

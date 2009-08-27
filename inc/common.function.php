@@ -245,6 +245,28 @@ function utf8_substr($str,$start,$length=-1) {
 }
 
 /**
+* strtolower function for utf8 string
+* @param $str string: string
+*
+* @return lower case string
+**/
+function utf8_strtolower($str) {
+
+   return mb_strtolower($str,"UTF-8");
+}
+
+/**
+* strtoupper function for utf8 string
+* @param $str string: string
+*
+* @return upper case string
+**/
+function utf8_strtoupper($str) {
+
+   return mb_strtoupper($str,"UTF-8");
+}
+
+/**
 * substr function for utf8 string
 * @param $str string: string
 * @param $tofound string: string to found
@@ -567,16 +589,6 @@ function commonCheckForUseGLPI() {
                  $LANG['install'][67]."' title='".$LANG['install'][67]."'></td></tr>";
    }
 
-   //Test for utf8_encode function.
-   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][83]."</b></td>";
-   if (!function_exists('utf8_encode') || !function_exists('utf8_decode')) {
-      echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][84]."></td></tr>";
-      $error = 2;
-   } else {
-      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".
-                 $LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
-   }
-
    //Test for json_encode function.
    echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][102]."</b></td>";
    if (!function_exists('json_encode') || !function_exists('json_decode')) {
@@ -752,19 +764,6 @@ function unclean_cross_side_scripting_deep($value) {
               "&gt;");
    $value = is_array($value) ? array_map('unclean_cross_side_scripting_deep', $value) :
             (is_null($value) ? NULL : str_replace($out,$in,$value));
-   return $value;
-}
-
-/**
- *  Utf8 decode for variable & array
- *
- * @param $value array or string: item to utf8_decode (array or string)
- * @return decoded item
- */
-function utf8_decode_deep($value) {
-
-   $value = is_array($value) ? array_map('utf8_decode_deep', $value) :
-            (is_null($value) ? NULL : utf8_decode($value));
    return $value;
 }
 
@@ -1087,7 +1086,7 @@ function sendFile($file,$filename) {
 function return_bytes_from_ini_vars($val) {
 
    $val = trim($val);
-   $last = strtolower($val{strlen($val)-1});
+   $last = utf8_strtolower($val{strlen($val)-1});
    switch($last) {
       // Le modifieur 'G' est disponible depuis PHP 5.1.0
       case 'g':

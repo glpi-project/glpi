@@ -665,14 +665,15 @@ function getDocumentLink($filename, $params='', $len=20){
  * @param name filename to clean
  **/
 function cleanFilenameDocument($name) {
-   $name = mb_convert_encoding($name, 'HTML-ENTITIES','UTF-8');
+   $name = encodeInUtf8($name, 'HTML-ENTITIES');
+
    // See http://en.wikipedia.org/wiki/Filename
    $bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
    $name = str_replace($bad_chars, '_', $name);
    $name = preg_replace("/%(\w{2})/", '_', $name);
    $name = preg_replace("/\\x00-\\x1f/u", '_', $name);
    // lowercase because MySQL is case insensitive (getFromDBbyFilename)
-   return mb_convert_case($name, MB_CASE_LOWER,'UTF-8');
+   return utf8_strtolower($name);
 }
 
 /**
@@ -729,7 +730,7 @@ function isValidDoc($filename) {
                  AND `is_uploadable`='1'";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         return strtoupper($ext);
+         return utf8_strtoupper($ext);
       }
    }
    return "";
