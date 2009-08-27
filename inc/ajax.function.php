@@ -122,7 +122,7 @@ function ajaxUpdateItemOnSelectEvent($toobserve,$toupdate,$url,$parameters=array
 /**
  * Javascript code for update an item when another item changed
  *
- * @param $toobserve id of the select to observe
+ * @param $toobserve id (or array of id) of the select to observe
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
@@ -141,7 +141,7 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 /**
  * Javascript code for update an item when another item changed (Javascript code only)
  *
- * @param $toobserve id of the select to observe
+ * @param $toobserve id (or array of id) of the select to observe
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
@@ -152,14 +152,21 @@ function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array
                                      $events=array("change"),$spinner=true) {
    global $CFG_GLPI;
 
-   // No need on ready because already ready (check in header)
-   foreach ($events as $event) {
-      echo "
-         Ext.get('$toobserve').on(
-            '$event',
-            function() {";
-               ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
-      echo "});\n";
+   if (is_array($toobserve)) {
+      $zones = $toobserve;
+   } else {
+      $zones = array($toobserve);
+   }
+
+   foreach ($zones as $zone) {
+      foreach ($events as $event) {
+         echo "
+            Ext.get('$zone').on(
+               '$event',
+               function() {";
+                  ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
+         echo "});\n";
+      }
    }
 }
 
@@ -188,39 +195,40 @@ function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobse
  * @param $parameters Parameters to send to ajax URL
  * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  * @param $toobserve id of another item used to get value in case of __VALUE__ used
+ *                   array of id to get value in case of __VALUE#__ used
  **/
 function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$toobserve="") {
    global $CFG_GLPI;
 
    // Get it from a Ext.Element object
-   echo "Ext.get('$toupdate').load({
+   $out = "Ext.get('$toupdate').load({
       url: '$url',
       scripts: true";
 
    if (count($parameters)) {
-      echo ",
+      $out .= ",
          params:'";
       $first=true;
       foreach ($parameters as $key => $val) {
          if ($first) {
             $first=false;
          } else {
-            echo "&";
+            $out .= "&";
          }
 
-         echo $key."=";
-         if ($val==="__VALUE__") {
-            echo "'+Ext.get('$toobserve').getValue()+'";
+         $out .= $key."=";
+         if (is_array($val)) {
+            $out .=  serialize($val);
+         } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+            $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
+         } else if ($val==="__VALUE__") {
+            $out .=  "'+Ext.get('$toobserve').getValue()+'";
          } else {
-            if (is_array($val)) {
-               echo serialize($val);
-            } else {
-               echo $val;
-            }
+            $out .=  $val;
          }
 
       }
-      echo "'\n";
+      echo $out."'\n";
    }
    echo "});";
 }
