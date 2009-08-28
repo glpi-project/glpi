@@ -51,20 +51,20 @@ $contract=new Contract();
 
 		if ($_POST['id']>0){
 			switch($_POST['glpi_tab']){
-				case -1 :	
+				case -1 :
 					showEnterpriseContract($_POST["id"]);
-					showDeviceContract($_POST["id"]);
+					showItemContract($_POST["id"]);
 					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
 					showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
 					displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
 					break;
 				case 2 :
-					showDeviceContract($_POST["id"]);
+					showItemContract($_POST["id"]);
 					break;
-				case 5 : 
+				case 5 :
 					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
 					break;
-				case 7 : 
+				case 7 :
 					showLinkOnDevice(CONTRACT_TYPE,$_POST["id"]);
 					break;
 				case 10 :
@@ -77,6 +77,6 @@ $contract=new Contract();
 					break;
 			}
 		}
-		
+
 	ajaxFooter();
 ?>
