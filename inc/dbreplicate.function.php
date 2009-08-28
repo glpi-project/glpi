@@ -112,7 +112,7 @@ function switchToSlave() {
  */
 function switchToMaster() {
    global $DB;
-
+   $DB = new DB;
    return $DB->connected;
 }
 
