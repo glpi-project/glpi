@@ -33,9 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
  * Return foreign key field name for a table
@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')){
  *
  * return string field name used for a foreign key to the parameter table
  */
-function getForeignKeyFieldForTable($table){
+function getForeignKeyFieldForTable($table) {
    if (strpos($table,'glpi_')===false){
       return "";
    }
@@ -59,7 +59,7 @@ function getForeignKeyFieldForTable($table){
  *
  * return string table name corresponding to a foreign key name
  */
-function getTableNameForForeignKeyField($fkname){
+function getTableNameForForeignKeyField($fkname) {
    if (strpos($fkname,'_id')===false){
       return "";
    }
@@ -76,7 +76,6 @@ function getTableNameForForeignKeyField($fkname){
  *
  **/
 function isDeviceTable($tablename) {
-
    // begin by glpi_devices but Not types tables (end = types)
    return (preg_match('/^glpi_devices',$tablename) && !preg_match('/types$',$tablename));
 }
@@ -89,16 +88,17 @@ function isDeviceTable($tablename) {
  *
  * return int nb of elements in table
  */
-function countElementsInTable($table,$condition=""){
-	global $DB;
-	$query="SELECT count(*) AS cpt
-		FROM $table";
-	if (!empty($condition)){
-		$query.=" WHERE $condition ";
-	}
-	$result=$DB->query($query);
-	$ligne = $DB->fetch_array($result);
-	return $ligne['cpt'];
+function countElementsInTable($table,$condition="") {
+   global $DB;
+
+   $query="SELECT count(*) AS cpt
+           FROM $table";
+   if (!empty($condition)) {
+      $query.=" WHERE $condition ";
+   }
+   $result=$DB->query($query);
+   $ligne = $DB->fetch_array($result);
+   return $ligne['cpt'];
 }
 
 /**
@@ -108,10 +108,13 @@ function countElementsInTable($table,$condition=""){
  *
  * return int nb of elements in table
  */
-function countElementsInTableForMyEntities($table){
-	global $CFG_GLPI;
-	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',in_array($table,$CFG_GLPI["recursive_type"])));
+function countElementsInTableForMyEntities($table) {
+   global $CFG_GLPI;
+
+   return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',
+                                          in_array($table,$CFG_GLPI["recursive_type"])));
 }
+
 /**
  * Count the number of elements in a table for a specific entity
  *
@@ -120,10 +123,13 @@ function countElementsInTableForMyEntities($table){
  *
  * return int nb of elements in table
  */
-function countElementsInTableForEntity($table,$entity){
-	global $CFG_GLPI;
-	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,in_array($table,$CFG_GLPI["recursive_type"])));
+function countElementsInTableForEntity($table,$entity) {
+   global $CFG_GLPI;
+
+   return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,
+                                          in_array($table,$CFG_GLPI["recursive_type"])));
 }
+
 /**
  * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
@@ -132,21 +138,23 @@ function countElementsInTableForEntity($table,$entity){
  *
  * return array containing all the datas
  */
-function getAllDatasFromTable($table,$condition=""){
-	global $DB;
-	$datas=array();
-	$query="SELECT * FROM $table ";
+function getAllDatasFromTable($table,$condition="") {
+   global $DB;
 
-	if (!empty($condition)){
-		$query.=" WHERE $condition ";
-	}
+   $datas=array();
+   $query="SELECT *
+           FROM `$table` ";
 
-	if ($result=$DB->query($query)){
-		while ($data=$DB->fetch_assoc($result)){
-			$datas[$data['id']]=$data;
-		}
-	}
-	return $datas;
+   if (!empty($condition)) {
+      $query.=" WHERE $condition ";
+   }
+
+   if ($result=$DB->query($query)) {
+      while ($data=$DB->fetch_assoc($result)) {
+         $datas[$data['id']]=$data;
+      }
+   }
+   return $datas;
 }
 
 /**
@@ -158,34 +166,31 @@ function getAllDatasFromTable($table,$condition=""){
  * @return string : name of the element
  * @see getTreeValueCompleteName
  */
-function getTreeLeafValueName($table,$ID,$withcomment=false){
-	global $DB,$LANG;
+function getTreeLeafValueName($table,$ID,$withcomment=false) {
+   global $DB,$LANG;
 
-	$name="";
-	$comment="";
-	if ($ID==0 && $table=="glpi_entities") {
-		$name = $LANG['entity'][2];
-
-	} else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
-		$name = $LANG['knowbase'][12];
-
-	} else {
-		$query = "SELECT *
-			FROM `$table`
-			WHERE id = '$ID'";
-		if ($result=$DB->query($query)){
-			if ($DB->numrows($result)==1){
-				$name=$DB->result($result,0,"name");
-				$comment=$DB->result($result,0,"comment");
-			}
-
-		}
-	}
-	if ($withcomment){
-		return array("name"=>$name,"comment"=>$comment);
-	} else {
-		return $name;
-	}
+   $name="";
+   $comment="";
+   if ($ID==0 && $table=="glpi_entities") {
+      $name = $LANG['entity'][2];
+   } else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
+      $name = $LANG['knowbase'][12];
+   } else {
+      $query = "SELECT *
+                FROM `$table`
+                WHERE `id` = '$ID'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)==1) {
+            $name=$DB->result($result,0,"name");
+            $comment=$DB->result($result,0,"comment");
+         }
+      }
+   }
+   if ($withcomment) {
+      return array("name"=>$name,"comment"=>$comment);
+   } else {
+      return $name;
+   }
 }
 
 /**
@@ -197,38 +202,36 @@ function getTreeLeafValueName($table,$ID,$withcomment=false){
  * @return string : completename of the element
  * @see getTreeLeafValueName
  */
-function getTreeValueCompleteName($table,$ID,$withcomment=false){
-	global $DB,$LANG;
-	$name="";
-	$comment="";
+function getTreeValueCompleteName($table,$ID,$withcomment=false) {
+   global $DB,$LANG;
 
-	if ($ID==0 && $table=="glpi_entities") {
-		$name = $LANG['entity'][2];
+   $name="";
+   $comment="";
 
-	} else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
-		$name = $LANG['knowbase'][12];
-
-	} else {
-		$query = "SELECT *
-			FROM `$table`
-			WHERE (id = '$ID')";
-		if ($result=$DB->query($query)){
-			if ($DB->numrows($result)==1){
-				$name=$DB->result($result,0,"completename");
-				$comment=$name.":<br>";
-				$comment.=$DB->result($result,0,"comment");
-			}
-
-		}
-	}
-	if (empty($name)) {
-		$name="&nbsp;";
-	}
-	if ($withcomment) {
-		return array("name"=>$name,"comment"=>$comment);
-	} else {
-		return $name;
-	}
+   if ($ID==0 && $table=="glpi_entities") {
+      $name = $LANG['entity'][2];
+   } else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
+      $name = $LANG['knowbase'][12];
+   } else {
+      $query = "SELECT *
+                FROM `$table`
+                WHERE `id` = '$ID'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)==1) {
+            $name=$DB->result($result,0,"completename");
+            $comment=$name.":<br>";
+            $comment.=$DB->result($result,0,"comment");
+         }
+      }
+   }
+   if (empty($name)) {
+      $name="&nbsp;";
+   }
+   if ($withcomment) {
+      return array("name"=>$name,"comment"=>$comment);
+   } else {
+      return $name;
+   }
 }
 
 /**
@@ -241,39 +244,32 @@ function getTreeValueCompleteName($table,$ID,$withcomment=false){
  * @param $level integer: current level of recursion
  * @return string name
  */
-function getTreeValueName($table,$ID, $wholename="",$level=0){
-	global $DB,$LANG;
+function getTreeValueName($table,$ID, $wholename="",$level=0) {
+   global $DB,$LANG;
 
    $parentIDfield=getForeignKeyFieldForTable($table);
 
-	$query = "SELECT *
-		FROM `$table`
-		WHERE id = '$ID'";
-	$name="";
+   $query = "SELECT *
+             FROM `$table`
+             WHERE `id` = '$ID'";
+   $name="";
 
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)>0){
-
-			$row=$DB->fetch_array($result);
-
-			$parentID = $row[$parentIDfield];
-			if($wholename == "")
-			{
-				$name = $row["name"];
-			} else
-			{
-				$name = $row["name"] . " > ";
-			}
-			$level++;
-			list($tmpname,$level)=getTreeValueName($table,$parentID, $name,$level);
-			$name =  $tmpname. $name;
-		}
-
-	}
-	return array($name,$level);
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         $row=$DB->fetch_array($result);
+         $parentID = $row[$parentIDfield];
+         if($wholename == "") {
+            $name = $row["name"];
+         } else {
+            $name = $row["name"] . " > ";
+         }
+         $level++;
+         list($tmpname,$level)=getTreeValueName($table,$parentID, $name,$level);
+         $name =  $tmpname. $name;
+      }
+   }
+   return array($name,$level);
 }
-
-
 
 /**
  * Get the ancestors of an item in a tree dropdown
@@ -282,7 +278,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
  * @param $items_id integer: The ID of the item
  * @return array of IDs of the ancestors
  */
-function getAncestorsOf($table,$items_id){
+function getAncestorsOf($table,$items_id) {
    global $DB;
 
    // IDs to be present in the final array
@@ -291,15 +287,15 @@ function getAncestorsOf($table,$items_id){
    $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"ancestors_cache");
-   if ($use_cache){
+   if ($use_cache) {
       $query="SELECT `ancestors_cache`,`$parentIDfield`
               FROM `$table`
               WHERE `id` = '$items_id'";
-      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
          $ancestors=trim($DB->result($result,0,0));
          $parent=$DB->result($result,0,1);
          // Return datas from cache in DB
-         if (!empty($ancestors)){
+         if (!empty($ancestors)) {
             return json_decode($ancestors,true);
          }
          // Recursive solution for table with-cache
@@ -311,7 +307,7 @@ function getAncestorsOf($table,$items_id){
          // Store cache datas in DB
          $query="UPDATE `$table`
                  SET `ancestors_cache`='".json_encode($id_found)."'
-                 WHERE id='$items_id';";
+                 WHERE `id`='$items_id'";
          $DB->query($query);
       }
       return $id_found;
@@ -320,25 +316,24 @@ function getAncestorsOf($table,$items_id){
    // Get the leafs of previous founded item
    // iterative solution for table without cache
    $IDf = $items_id;
-   while ($IDf>0){
+   while ($IDf>0) {
       // Get next elements
-      $query="SELECT $parentIDfield
+      $query="SELECT `$parentIDfield`
                FROM `$table`
-               WHERE id = '$IDf'";
+               WHERE `id` = '$IDf'";
 
       $result=$DB->query($query);
-      if ($DB->numrows($result)>0){
+      if ($DB->numrows($result)>0) {
          $IDf=$DB->result($result,0,0);
       } else {
          $IDf=0;
       }
-      if (!isset($id_found[$IDf])){
+      if (!isset($id_found[$IDf])) {
          $id_found[$IDf]=$IDf;
       } else {
          $IDf=0;
       }
    }
-
    return $id_found;
 }
 
@@ -349,53 +344,52 @@ function getAncestorsOf($table,$items_id){
  * @param $IDf integer: The ID of the father
  * @return array of IDs of the sons
  */
-function getSonsOf($table,$IDf){
+function getSonsOf($table,$IDf) {
    global $DB;
 
    $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"sons_cache");
-   if ($use_cache){
-      $query="SELECT sons_cache FROM `$table` WHERE id = '$IDf'";
-      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+   if ($use_cache) {
+      $query="SELECT `sons_cache` FROM `$table` WHERE `id` = '$IDf'";
+      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
          $sons=trim($DB->result($result,0,0));
-         if (!empty($sons)){
+         if (!empty($sons)) {
             return json_decode($sons,true);
          }
       }
    }
-	// IDs to be present in the final array
+   // IDs to be present in the final array
    $id_found[$IDf]=$IDf;
-	// current ID found to be added
+   // current ID found to be added
    $found=array();
-	// First request init the  varriables
-   $query="SELECT id
-         FROM `$table`
-         WHERE $parentIDfield = '$IDf'
-         ORDER BY name";
-   if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
-      while ($row=$DB->fetch_array($result)){
+   // First request init the  varriables
+   $query="SELECT `id`
+           FROM `$table`
+           WHERE `$parentIDfield` = '$IDf'
+           ORDER BY `name`";
+   if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
+      while ($row=$DB->fetch_array($result)) {
          $id_found[$row['id']]=$row['id'];
          $found[$row['id']]=$row['id'];
       }
    }
-
-	// Get the leafs of previous founded item
-   while (count($found)>0){
+   // Get the leafs of previous founded item
+   while (count($found)>0) {
       $first=true;
-		// Get next elements
-      $query="SELECT id
-            FROM `$table`
-            WHERE $parentIDfield IN ('" . implode("','",$found) . "')";
+      // Get next elements
+      $query="SELECT `id`
+              FROM `$table`
+              WHERE `$parentIDfield` IN ('" . implode("','",$found) . "')";
 
-		// CLear the found array
+      // CLear the found array
       unset($found);
       $found=array();
 
       $result=$DB->query($query);
-      if ($DB->numrows($result)>0){
-         while ($row=$DB->fetch_array($result)){
-            if (!isset($id_found[$row['id']])){
+      if ($DB->numrows($result)>0) {
+         while ($row=$DB->fetch_array($result)) {
+            if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']]=$row['id'];
                $found[$row['id']]=$row['id'];
             }
@@ -403,13 +397,14 @@ function getSonsOf($table,$IDf){
       }
    }
    // Store cache datas in DB
-   if ($use_cache){
-      $query="UPDATE `$table` SET sons_cache='".json_encode($id_found)."' WHERE id='$IDf';";
+   if ($use_cache) {
+      $query="UPDATE `$table`
+              SET `sons_cache`='".json_encode($id_found)."'
+              WHERE `id`='$IDf';";
       $DB->query($query);
    }
    return $id_found;
 }
-
 
 /**
  * Get the sons of an item in a tree dropdown
@@ -418,54 +413,54 @@ function getSonsOf($table,$IDf){
  * @param $IDf integer: The ID of the father
  * @return array of IDs of the sons
  */
-function getTreeForItem($table,$IDf){
-	global $DB;
+function getTreeForItem($table,$IDf) {
+   global $DB;
 
    $parentIDfield=getForeignKeyFieldForTable($table);
 
-	// IDs to be present in the final array
-	$id_found=array();
+   // IDs to be present in the final array
+   $id_found=array();
 
-	// current ID found to be added
-	$found=array();
-	// First request init the  varriables
-	$query="SELECT *
-		FROM `$table`
-		WHERE $parentIDfield = '$IDf' ORDER BY name";
-	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
-		while ($row=$DB->fetch_array($result)){
-			$id_found[$row['id']]['parent']=$IDf;
-			$id_found[$row['id']]['name']=$row['name'];
-			$found[$row['id']]=$row['id'];
-		}
-	}
+   // current ID found to be added
+   $found=array();
+   // First request init the  varriables
+   $query="SELECT *
+           FROM `$table`
+           WHERE `$parentIDfield` = '$IDf'
+           ORDER BY `name`";
+   if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
+      while ($row=$DB->fetch_array($result)) {
+         $id_found[$row['id']]['parent']=$IDf;
+         $id_found[$row['id']]['name']=$row['name'];
+         $found[$row['id']]=$row['id'];
+      }
+   }
+   // Get the leafs of previous founded item
+   while (count($found)>0) {
+      $first=true;
+      // Get next elements
+      $query="SELECT *
+              FROM `$table`
+              WHERE `$parentIDfield` IN ('" . implode("','",$found)."')
+              ORDER BY `name`";
+      // CLear the found array
+      unset($found);
+      $found=array();
 
-	// Get the leafs of previous founded item
-	while (count($found)>0){
-		$first=true;
-		// Get next elements
-		$query="SELECT *
-			FROM `$table`
-			WHERE $parentIDfield IN ('" . implode("','",$found)."') ORDER BY name";
-		// CLear the found array
-		unset($found);
-		$found=array();
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($row=$DB->fetch_array($result)){
-				if (!isset($id_found[$row['id']])){
-					$id_found[$row['id']]['parent']=$row[$parentIDfield];
-					$id_found[$row['id']]['name']=$row['name'];
-					$found[$row['id']]=$row['id'];
-				}
-			}
-		}
-	}
-	$tree[$IDf]['name']=getDropdownName($table,$IDf);
-	$tree[$IDf]['tree']=contructTreeFromList($id_found,$IDf);
-	return $tree;
-
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         while ($row=$DB->fetch_array($result)) {
+            if (!isset($id_found[$row['id']])) {
+               $id_found[$row['id']]['parent']=$row[$parentIDfield];
+               $id_found[$row['id']]['name']=$row['name'];
+               $found[$row['id']]=$row['id'];
+            }
+         }
+      }
+   }
+   $tree[$IDf]['name']=getDropdownName($table,$IDf);
+   $tree[$IDf]['tree']=contructTreeFromList($id_found,$IDf);
+   return $tree;
 }
 
 /**
@@ -475,19 +470,17 @@ function getTreeForItem($table,$IDf){
  * @param $root integer: root of the tree
  * @return list of items in the tree
  */
-function contructTreeFromList($list,$root){
-	$tree=array();
+function contructTreeFromList($list,$root) {
 
-
-	foreach ($list as $ID => $data){
-		if ($data['parent']==$root){
-			unset($list[$ID]);
-			$tree[$ID]['name']=$data['name'];
-			$tree[$ID]['tree']=contructTreeFromList($list,$ID);
-		}
-	}
-	return $tree;
-
+   $tree=array();
+   foreach ($list as $ID => $data) {
+      if ($data['parent']==$root) {
+         unset($list[$ID]);
+         $tree[$ID]['name']=$data['name'];
+         $tree[$ID]['tree']=contructTreeFromList($list,$ID);
+      }
+   }
+   return $tree;
 }
 
 /**
@@ -497,21 +490,21 @@ function contructTreeFromList($list,$root){
  * @param $parent integer: root of the tree
  * @return list of items in the tree
  */
-function contructListFromTree($tree,$parent=0){
-	$list=array();
-	foreach ($tree as $root => $data){
-		$list[$root]=$parent;
-		if (is_array($data['tree'])&&count($data['tree'])){
-			foreach ($data['tree'] as $ID => $underdata){
-				$list[$ID]=$root;
-				if (is_array($underdata['tree'])&&count($underdata['tree'])){
-					$list+=contructListFromTree($underdata['tree'],$ID);
-				}
-			}
-		}
-	}
-	return $list;
+function contructListFromTree($tree,$parent=0) {
 
+   $list=array();
+   foreach ($tree as $root => $data) {
+      $list[$root]=$parent;
+      if (is_array($data['tree'])&&count($data['tree'])) {
+         foreach ($data['tree'] as $ID => $underdata) {
+            $list[$ID]=$root;
+            if (is_array($underdata['tree'])&&count($underdata['tree'])) {
+               $list+=contructListFromTree($underdata['tree'],$ID);
+            }
+         }
+      }
+   }
+   return $list;
 }
 
 /**
@@ -522,68 +515,35 @@ function contructListFromTree($tree,$parent=0){
  * @param $reallink string: real field to link ($table.id if not set)
  * @return string the query
  */
-function getRealQueryForTreeItem($table,$IDf,$reallink=""){
+function getRealQueryForTreeItem($table,$IDf,$reallink="") {
+   global $DB;
 
-	global $DB;
+   if (empty($IDf)) {
+      return "";
+   }
+   if (empty($reallink)) {
+      $reallink=$table.".id";
+   }
+   $id_found=getSonsOf($table,$IDf);
 
-	if (empty($IDf)) return "";
+   // Construct the final request
+   if (count($id_found)>0) {
+      $ret=" ( ";
+      $i=0;
+      foreach ($id_found as $key => $val) {
+         if ($i>0) {
+            $ret.=" OR ";
+         }
+         $ret.="$reallink = '$val' ";
+         $i++;
+      }
+      $ret.=") ";
 
-	if (empty($reallink)) $reallink=$table.".id";
-
-	$id_found=getSonsOf($table,$IDf);
-
-
-	// Construct the final request
-	if (count($id_found)>0){
-		$ret=" ( ";
-		$i=0;
-		foreach ($id_found as $key => $val){
-			if ($i>0) $ret.=" OR ";
-			$ret.="$reallink = '$val' ";
-			$i++;
-		}
-		$ret.=") ";
-
-		return $ret;
-	} else return " ( $reallink = '$IDf') ";
+      return $ret;
+   } else {
+      return " ( $reallink = '$IDf') ";
+   }
 }
-
-
-/*  // NOT USED
- * Get the level for an item in a tree structure
- *
- * @param $table table name
- * @param $ID ID of the item
- * @return int level
- *
-function getTreeItemLevel($table,$ID){
-	global $DB;
-	$level=0;
-
-   $parentIDfield=getForeignKeyFieldForTable($table);
-
-	$query="SELECT $parentIDfield
-		FROM $table
-		WHERE id='$ID'";
-	while (1)
-	{
-		if (($result=$DB->query($query))&&$DB->numrows($result)==1){
-			$parentID=$DB->result($result,0,$parentIDfield;
-			if ($parentID==0) return $level;
-			else {
-				$level++;
-				$query="SELECT $parentIDfield
-					FROM $table
-					WHERE id='$parentID'";
-			}
-		}
-	}
-
-
-	return -1;
-
-}
-*/
 
 /**
  * Compute all completenames of Dropdown Tree table
@@ -591,20 +551,21 @@ function getTreeItemLevel($table,$ID){
  * @param $table : dropdown tree table to compute
  * @return nothing
  */
-function regenerateTreeCompleteName($table){
-	global $DB;
-	$query="SELECT id
-		FROM `$table`";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result)){
-			list($name,$level)=getTreeValueName($table,$data['id']);
-			$query="UPDATE `$table`
-				SET completename='".addslashes($name)."'
-				WHERE id='".$data['id']."'";
-			$DB->query($query);
-		}
-	}
+function regenerateTreeCompleteName($table) {
+   global $DB;
+
+   $query="SELECT `id`
+           FROM `$table`";
+   $result=$DB->query($query);
+   if ($DB->numrows($result)>0) {
+      while ($data=$DB->fetch_array($result)) {
+         list($name,$level)=getTreeValueName($table,$data['id']);
+         $query="UPDATE `$table`
+                 SET `completename`='".addslashes($name)."'
+                 WHERE `id`='".$data['id']."'";
+         $DB->query($query);
+      }
+   }
 }
 
 /**
@@ -614,27 +575,25 @@ function regenerateTreeCompleteName($table){
  * @param $ID : root ID to used : regenerate all under this element
  * @return nothing
  */
-function regenerateTreeCompleteNameUnderID($table,$ID){
-	global $DB;
+function regenerateTreeCompleteNameUnderID($table,$ID) {
+   global $DB;
 
    $parentIDfield=getForeignKeyFieldForTable($table);
+   list($name,$level)=getTreeValueName($table,$ID);
 
-	list($name,$level)=getTreeValueName($table,$ID);
-
-	$query="UPDATE `$table`
-		SET completename='".addslashes($name)."', level='$level'
-		WHERE id='".$ID."'";
-	$DB->query($query);
-	$query="SELECT id
-		FROM `$table`
-		WHERE $parentIDfield='$ID'";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result)){
-			regenerateTreeCompleteNameUnderID($table,$data["id"]);
-		}
-	}
-
+   $query="UPDATE `$table`
+           SET `completename`='".addslashes($name)."', `level`='$level'
+           WHERE `id`='$ID'";
+   $DB->query($query);
+   $query="SELECT `id`
+           FROM `$table`
+           WHERE `$parentIDfield`='$ID'";
+   $result=$DB->query($query);
+   if ($DB->numrows($result)>0) {
+      while ($data=$DB->fetch_array($result)) {
+         regenerateTreeCompleteNameUnderID($table,$data["id"]);
+      }
+   }
 }
 
 /**
@@ -646,69 +605,71 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
  * @param $nextprev_item field used to sort
  * @return the next ID, -1 if not exist
  */
-function getNextItem($table,$ID,$condition="",$nextprev_item="name"){
-	global $DB,$CFG_GLPI;
+function getNextItem($table,$ID,$condition="",$nextprev_item="name") {
+   global $DB,$CFG_GLPI;
 
-	if (empty($nextprev_item)){
-		return false;
-	}
+   if (empty($nextprev_item)) {
+      return false;
+   }
+   $search=$ID;
 
-	$search=$ID;
+   if ($nextprev_item!="id") {
+      $query="SELECT `$nextprev_item`
+              FROM `$table`
+              WHERE `id`='$ID'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $search=addslashes($DB->result($result,0,0));
+         } else {
+            $nextprev_item="id";
+         }
+      }
+   }
+   $LEFTJOIN='';
+   if ($table=="glpi_users") {
+      $LEFTJOIN=" LEFT JOIN `glpi_profiles_users`
+            '               ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
+   }
 
-	if ($nextprev_item!="id"){
-		$query="SELECT `".$nextprev_item."`
-			FROM `$table`
-			WHERE id='$ID'";
-		if ($result=$DB->query($query)){
-			if ($DB->numrows($result)>0){
-				$search=addslashes($DB->result($result,0,0));
-			} else {
-				$nextprev_item="id";
-			}
-		}
-	}
+   $query = "SELECT `$table`.`id`
+             FROM `$table`
+             $LEFTJOIN
+             WHERE ( `$table`.`$nextprev_item` > '$search' ";
 
-	$LEFTJOIN='';
-	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.id = glpi_profiles_users.users_id)';
-	}
+   // Same name case
+   if ($nextprev_item!="id") {
+      $query .= " OR (`$table`.`".$nextprev_item."` = '$search'
+                      AND `$table`.`id` > '$ID') ";
+   }
+   $query.=" ) ";
 
-	$query = "SELECT `$table`.id
-		FROM `$table` $LEFTJOIN
-		WHERE ( `$table`.`".$nextprev_item."` > '$search' ";
+   if (!empty($condition)) {
+      $query.=" AND $condition ";
+   }
+   if (in_array($table,$CFG_GLPI["deleted_tables"])) {
+      $query.=" AND `$table`.`is_deleted`='0' ";
+   }
+   if (in_array($table,$CFG_GLPI["template_tables"])) {
+      $query.=" AND `$table`.`is_template`='0' ";
+   }
 
-	// Same name case
-	if ($nextprev_item!="id"){
-		$query .= " OR (`$table`.`".$nextprev_item."` = '$search' AND `$table`.id > '$ID') ";
-	}
+   // Restrict to active entities
+   if ($table=="glpi_entities") {
+      $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
+   } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+      $query.=getEntitiesRestrictRequest("AND",$table,'','',
+                                         in_array($table,$CFG_GLPI["recursive_type"]));
+   } else if ($table=="glpi_users") {
+      $query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
+   }
+   $query.=" ORDER BY `$table`.`$nextprev_item` ASC, `$table`.`id` ASC";
 
-	$query.=" ) ";
-
-	if (!empty($condition)){
-		$query.=" AND $condition ";
-	}
-	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.=" AND `$table`.is_deleted='0' ";
-	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.=" AND `$table`.is_template='0' ";
-
-	// Restrict to active entities
-	if ($table=="glpi_entities") {
-		$query.=getEntitiesRestrictRequest("AND",$table,'','',true);
-	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
-	} else if ($table=="glpi_users"){
-		$query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
-	}
-
-	//$query.=" ORDER BY ".$nextprev_item." ASC, id ASC";
-	$query.=" ORDER BY `$table`.`$nextprev_item` ASC, `$table`.id ASC";
-
-	$result=$DB->query($query);
-	if ($result&&$DB->numrows($result)>0)
-		return $DB->result($result,0,"id");
-	else return -1;
-
+   $result=$DB->query($query);
+   if ($result && $DB->numrows($result)>0) {
+      return $DB->result($result,0,"id");
+   } else {
+      return -1;
+   }
 }
 
 /**
@@ -720,68 +681,70 @@ function getNextItem($table,$ID,$condition="",$nextprev_item="name"){
  * @param $nextprev_item field used to sort
  * @return the previous ID, -1 if not exist
  */
-function getPreviousItem($table,$ID,$condition="",$nextprev_item="name"){
-	global $DB,$CFG_GLPI;
+function getPreviousItem($table,$ID,$condition="",$nextprev_item="name") {
+   global $DB,$CFG_GLPI;
 
-	if (empty($nextprev_item)){
-		return false;
-	}
+   if (empty($nextprev_item)) {
+      return false;
+   }
 
-	$search=$ID;
-	if ($nextprev_item!="id"){
-		$query="SELECT `".$nextprev_item."`
-			FROM `$table`
-			WHERE id='$ID'";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$search=addslashes($DB->result($result,0,0));
-		} else {
-			$nextprev_item="id";
-		}
-	}
+   $search=$ID;
+   if ($nextprev_item!="id") {
+      $query="SELECT `$nextprev_item`
+              FROM `$table`
+              WHERE `id`='$ID'";
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         $search=addslashes($DB->result($result,0,0));
+      } else {
+         $nextprev_item="id";
+      }
+   }
+   $LEFTJOIN='';
+   if ($table=="glpi_users"){
+      $LEFTJOIN=" LEFT JOIN `glpi_profiles_users`
+            '               ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
+   }
 
-	$LEFTJOIN='';
-	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.id = glpi_profiles_users.users_id)';
-	}
+   $query = "SELECT `$table`.`id`
+             FROM `$table`
+             $LEFTJOIN
+             WHERE (`$table`.`$nextprev_item` < '$search' ";
 
-	$query = "SELECT `$table`.id
-		FROM `$table` $LEFTJOIN
-		WHERE  (`$table`.`".$nextprev_item."` < '$search' ";
+   // Same name case
+   if ($nextprev_item!="id") {
+      $query .= " OR (`$table`.`$nextprev_item` = '$search'
+                      AND `$table`.`id` < '$ID') ";
+   }
+   $query.=" ) ";
 
-	// Same name case
-	if ($nextprev_item!="id"){
-		$query .= " OR (`$table`.`".$nextprev_item."` = '$search' AND `$table`.id < '$ID') ";
-	}
+   if (!empty($condition)) {
+      $query.=" AND $condition ";
+   }
 
-	$query.=" ) ";
+   if (in_array($table,$CFG_GLPI["deleted_tables"]))
+      $query.="AND `$table`.`is_deleted`='0'";
+   if (in_array($table,$CFG_GLPI["template_tables"]))
+      $query.="AND `$table`.`is_template`='0'";
 
+   // Restrict to active entities
+   if ($table=="glpi_entities") {
+      $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
+   } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+      $query.=getEntitiesRestrictRequest("AND",$table,'','',
+                                         in_array($table,$CFG_GLPI["recursive_type"]));
+   } else if ($table=="glpi_users") {
+      $query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
+   }
 
-	if (!empty($condition)){
-		$query.=" AND $condition ";
-	}
+   $query.=" ORDER BY `$table`.`$nextprev_item` DESC, `$table`.`id` DESC";
 
-	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.="AND `$table`.is_deleted='0'";
-	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.="AND `$table`.is_template='0'";
-
-	// Restrict to active entities
-	if ($table=="glpi_entities") {
-		$query.=getEntitiesRestrictRequest("AND",$table,'','',true);
-	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
-	} else if ($table=="glpi_users"){
-		$query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
-	}
-
-	$query.=" ORDER BY `$table`.`".$nextprev_item."` DESC, `$table`.id DESC";
-
-	$result=$DB->query($query);
-	if ($result&&$DB->numrows($result)>0)
-		return $DB->result($result,0,"id");
-	else return -1;
-
+   $result=$DB->query($query);
+   if ($result&&$DB->numrows($result)>0) {
+      return $DB->result($result,0,"id");
+   } else {
+      return -1;
+   }
 }
 
 /**
@@ -797,45 +760,40 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item="name"){
  *@return string : formatted username
  *
  **/
-function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
-	global $CFG_GLPI;
-	$before="";
-	$after="";
-	$viewID="";
-	if (strlen($realname)>0) {
-		$temp=$realname;
+function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0) {
+   global $CFG_GLPI;
 
-		if (strlen($firstname)>0){
-			if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE){
-				$temp=$firstname." ".$temp;
-			} else {
-				$temp.=" ".$firstname;
-			}
-		}
+   $before="";
+   $after="";
+   $viewID="";
+   if (strlen($realname)>0) {
+      $temp=$realname;
+      if (strlen($firstname)>0) {
+         if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+            $temp=$firstname." ".$temp;
+         } else {
+            $temp.=" ".$firstname;
+         }
+      }
+      if($cut>0 && utf8_strlen($temp)>$cut) {
+      $temp=utf8_substr($temp,0,$cut);
+      $temp.=" ...";
+      }
+   } else {
+      $temp=$login;
+   }
+   if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiis_ids_visible"])) {
+      $viewID="&nbsp;($ID)";
+   }
 
-		if($cut>0 && utf8_strlen($temp)>$cut){
-			$temp=utf8_substr($temp,0,$cut);
-			$temp.=" ...";
-		}
-	}
-	else {
-		$temp=$login;
-	}
+   if ($link==1&&$ID>0) {
+      $before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."\" title=\"".
+                $temp."\">";
+      $after="</a>";
+   }
 
-	if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiis_ids_visible"])) {
-		$viewID="&nbsp;($ID)";
-	}
-
-	if ($link==1&&$ID>0){
-		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."\" title=\"".$temp."\">";
-		$after="</a>";
-	}
-
-	$username=$before.$temp.$viewID.$after;
-
-	return $username;
-
-
+   $username=$before.$temp.$viewID.$after;
+   return $username;
 }
 
 /**
@@ -847,48 +805,63 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
  *@return string : username string (realname if not empty and name if realname is empty).
  *
  **/
-function getUserName($ID,$link=0){
-	global $DB,$CFG_GLPI,$LANG;
+function getUserName($ID,$link=0) {
+   global $DB,$CFG_GLPI,$LANG;
 
-	$user="";
-	if ($link==2){
-		$user=array("name"=>"","link"=>"","comment"=>"");
-	}
-	if ($ID){
-		$query="SELECT *
-			FROM glpi_users
-			WHERE id='$ID'";
-		$result=$DB->query($query);
+   $user="";
+   if ($link==2) {
+      $user=array("name"=>"",
+                  "link"=>"",
+                  "comment"=>"");
+   }
+   if ($ID) {
+      $query="SELECT *
+              FROM `glpi_users`
+              WHERE `id`='$ID'";
+      $result=$DB->query($query);
 
-		if ($link==2) $user=array("name"=>"","comment"=>"","link"=>"");
-		if ($DB->numrows($result)==1){
-			$data=$DB->fetch_assoc($result);
-
-			$username=formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],$link);
-			if ($link==2){
-				$user["name"]=$username;
-				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
-				$user["comment"]=$LANG['common'][16].": ".$username."<br>";
-				$user["comment"].=$LANG['setup'][18].": ".$data["name"]."<br>";
-				if (!empty($data["email"]))
-					$user["comment"].=$LANG['setup'][14].": ".$data["email"]."<br>";
-				if (!empty($data["phone"]))
-					$user["comment"].=$LANG['help'][35].": ".$data["phone"]."<br>";
-				if (!empty($data["mobile"]))
-					$user["comment"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
-				if ($data["locations_id"]>0){
-					$user["comment"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["locations_id"])."<br>";
-				}
-				if ($data["userstitles_id"]>0)
-					$user["comment"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
-				if ($data["userscategories_id"]>0)
-					$user["comment"].=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$data["userscategories_id"])."<br>";
-			} else {
-				$user=$username;
-			}
-		}
-	}
-	return $user;
+      if ($link==2) {
+         $user=array("name"=>"",
+                     "comment"=>"",
+                     "link"=>"");
+      }
+      if ($DB->numrows($result)==1) {
+         $data=$DB->fetch_assoc($result);
+         $username=formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],
+                                  $link);
+         if ($link==2) {
+            $user["name"]=$username;
+            $user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
+            $user["comment"]=$LANG['common'][16]."&nbsp;: ".$username."<br>";
+            $user["comment"].=$LANG['setup'][18]."&nbsp;: ".$data["name"]."<br>";
+            if (!empty($data["email"])) {
+               $user["comment"].=$LANG['setup'][14]."&nbsp;: ".$data["email"]."<br>";
+            }
+            if (!empty($data["phone"])) {
+               $user["comment"].=$LANG['help'][35]."&nbsp;: ".$data["phone"]."<br>";
+            }
+            if (!empty($data["mobile"])) {
+               $user["comment"].=$LANG['common'][42]."&nbsp;: ".$data["mobile"]."<br>";
+            }
+            if ($data["locations_id"]>0) {
+               $user["comment"].=$LANG['common'][15]."&nbsp;: ".
+                                 getDropdownName("glpi_locations",$data["locations_id"])."<br>";
+            }
+            if ($data["userstitles_id"]>0) {
+               $user["comment"].=$LANG['users'][1]."&nbsp;: ".
+                                 getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
+            }
+            if ($data["userscategories_id"]>0) {
+               $user["comment"].=$LANG['users'][2]."&nbsp;: ".
+                                 getDropdownName("glpi_userscategories",$data["userscategories_id"]).
+                                 "<br>";
+            }
+         } else {
+            $user=$username;
+         }
+      }
+   }
+   return $user;
 }
 
 /**
@@ -900,19 +873,19 @@ function getUserName($ID,$link=0){
  *
  **/
 function TableExists($tablename) {
+   global $DB;
 
-	global $DB;
-	// Get a list of tables contained within the database.
-	$result = $DB->list_tables("%".$tablename."%");
-	if ($rcount = $DB->numrows($result)){
-		while ($data=$DB->fetch_row($result)){
-			if ($data[0]===$tablename){
-				return true;
-			}
-		}
-	}
-	$DB->free_result($result);
-	return false;
+   // Get a list of tables contained within the database.
+   $result = $DB->list_tables("%".$tablename."%");
+   if ($rcount = $DB->numrows($result)) {
+      while ($data=$DB->fetch_row($result)) {
+         if ($data[0]===$tablename) {
+            return true;
+         }
+      }
+   }
+   $DB->free_result($result);
+   return false;
 }
 
 /**
@@ -925,14 +898,17 @@ function TableExists($tablename) {
  *
  **/
 function FieldExists($table, $field) {
-	global $DB;
+   global $DB;
 
-	if ($fields = $DB->list_fields($table)){
-
-		if (isset($fields[$field]))
-			return true;
-		else return false;
-	} else return false;
+   if ($fields = $DB->list_fields($table)) {
+      if (isset($fields[$field])) {
+         return true;
+      } else {
+         return false;
+      }
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -945,21 +921,18 @@ function FieldExists($table, $field) {
  *
  **/
 function isIndex($table, $field) {
+   global $DB;
 
-	global $DB;
-	$result = $DB->query("SHOW INDEX FROM `". $table."`");
-	if ($result&&$DB->numrows($result)){
-		while ($data=$DB->fetch_assoc($result))
-			if ($data["Key_name"]==$field){
-				//			echo $table.".".$field."-> INDEX<br>";
-				return true;
-			}
-	}
-	//echo $table.".".$field."-> NOT INDEX<br>";
-	return false;
+   $result = $DB->query("SHOW INDEX FROM `$table`");
+   if ($result && $DB->numrows($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
+         if ($data["Key_name"]==$field) {
+            return true;
+         }
+      }
+   }
+   return false;
 }
-
-
 
 /**
  * Create a new name using a autoname field defined in a template
@@ -973,67 +946,90 @@ function isIndex($table, $field) {
  * @return new auto string
  *
  **/
-function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
-	global $LINK_ID_TABLE,$DB,$CFG_GLPI;
+function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1) {
+   global $LINK_ID_TABLE,$DB,$CFG_GLPI;
 
-	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
+   $len = utf8_strlen($objectName);
+   if ($isTemplate && $len > 8 && utf8_substr($objectName,0,4) === '&lt;'
+       && utf8_substr($objectName,$len - 4,4) === '&gt;') {
 
-	$len = utf8_strlen($objectName);
-	if($isTemplate && $len > 8 && utf8_substr($objectName,0,4) === '&lt;' && utf8_substr($objectName,$len - 4,4) === '&gt;') {
-		$autoNum = utf8_substr($objectName, 4, $len - 8);
-		$mask = '';
-		if(preg_match( "/\\#{1,10}/", $autoNum, $mask)){
-			$global = strpos($autoNum, '\\g') !== false && $itemtype != INFOCOM_TYPE ? 1 : 0;
-			$autoNum = str_replace(array('\\y','\\Y','\\m','\\d','_','%','\\g'), array(date('y'),date('Y'),date('m'),date('d'),'\\_','\\%',''), $autoNum);
-			$mask = $mask[0];
-			$pos = strpos($autoNum, $mask) + 1;
-			$len = utf8_strlen($mask);
-			$like = str_replace('#', '_', $autoNum);
+      $autoNum = utf8_substr($objectName, 4, $len - 8);
+      $mask = '';
+      if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
+         $global = strpos($autoNum, '\\g') !== false && $itemtype != INFOCOM_TYPE ? 1 : 0;
+         $autoNum = str_replace(array('\\y',
+                                      '\\Y',
+                                      '\\m',
+                                      '\\d',
+                                      '_','%',
+                                      '\\g'),
+                                array(date('y'),
+                                      date('Y'),
+                                      date('m'),
+                                      date('d'),
+                                      '\\_',
+                                      '\\%',
+                                      ''),
+                                $autoNum);
+         $mask = $mask[0];
+         $pos = strpos($autoNum, $mask) + 1;
+         $len = utf8_strlen($mask);
+         $like = str_replace('#', '_', $autoNum);
 
-			if ($global == 1){
-				$query = "";
-				$first = 1;
-				foreach($LINK_ID_TABLE as $t=>$table){
-					if ($t == COMPUTER_TYPE || $t == MONITOR_TYPE  || $t == NETWORKING_TYPE || $t == PERIPHERAL_TYPE || $t == PRINTER_TYPE || $t == PHONE_TYPE){
-						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
-							FROM $table
-							WHERE $field LIKE '$like'
-							AND is_deleted = '0'
-							AND is_template = '0'";
-							if ($CFG_GLPI["use_autoname_by_entity"]&&$entities_id>=0){
-								$query.=" AND entities_id = '$entities_id' ";
-							}
-						$first = 0;
-					}
-				}
-				$query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no
-					FROM ($query) AS codes";
-			} else	{
-				$table = $LINK_ID_TABLE[$itemtype];
-				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no
-					FROM $table
-					WHERE $field LIKE '$like' ";
-				if ($itemtype != INFOCOM_TYPE){
-					$query .= " AND is_deleted = '0' AND is_template = '0'";
-					if ($CFG_GLPI["use_autoname_by_entity"]&&$entities_id>=0){
-						$query.=" AND entities_id = '$entities_id' ";
-					}
-				}
+         if ($global == 1) {
+            $query = "";
+            $first = 1;
+            foreach($LINK_ID_TABLE as $t=>$table) {
+               if ($t == COMPUTER_TYPE || $t == MONITOR_TYPE  || $t == NETWORKING_TYPE
+                   || $t == PERIPHERAL_TYPE || $t == PRINTER_TYPE || $t == PHONE_TYPE) {
 
-			}
+                  $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
+                            FROM `$table`
+                            WHERE `$field` LIKE '$like'
+                                  AND `is_deleted` = '0'
+                                  AND `is_template` = '0'";
+                  if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
+                     $query.=" AND `entities_id` = '$entities_id' ";
+                  }
+                  $first = 0;
+               }
+            }
+            $query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no
+                      FROM ($query) AS codes";
+         } else {
+            $table = $LINK_ID_TABLE[$itemtype];
+            $query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no
+                      FROM `$table`
+                      WHERE `$field` LIKE '$like' ";
+            if ($itemtype != INFOCOM_TYPE) {
+               $query .= " AND `is_deleted` = '0'
+                           AND `is_template` = '0'";
+               if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
+                  $query.=" AND `entities_id` = '$entities_id' ";
+               }
+            }
+         }
 
-			$query = "SELECT MAX(Num.no) AS lastNo
-				FROM (".$query.") AS Num";
-			$resultNo = $DB->query($query);
+         $query = "SELECT MAX(Num.no) AS lastNo
+                   FROM (".$query.") AS Num";
+         $resultNo = $DB->query($query);
 
-			if ($DB->numrows($resultNo)>0) {
-				$data = $DB->fetch_array($resultNo);
-				$newNo = $data['lastNo'] + 1;
-			} else	$newNo = 0;
-			$objectName = str_replace(array($mask,'\\_','\\%'), array(utf8_str_pad($newNo, $len, '0', STR_PAD_LEFT),'_','%'), $autoNum);
-		}
-	}
-	return $objectName;
+         if ($DB->numrows($resultNo)>0) {
+            $data = $DB->fetch_array($resultNo);
+            $newNo = $data['lastNo'] + 1;
+         } else {
+            $newNo = 0;
+         }
+         $objectName = str_replace(array($mask,
+                                         '\\_',
+                                         '\\%'),
+                                   array(utf8_str_pad($newNo, $len, '0', STR_PAD_LEFT),
+                                         '_',
+                                         '%'),
+                                   $autoNum);
+      }
+   }
+   return $objectName;
 }
 
 /**
@@ -1042,30 +1038,17 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
  *@return nothing
  *
  **/
-function closeDBConnections(){
-	global $DB, $DBocs;
+function closeDBConnections() {
+   global $DB, $DBocs;
 
-	// Case of not init $DB object
-	if (method_exists($DB,"close")){
-		$DB->close();
-		if (isset($DBocs)&&method_exists($DBocs,"close")){
-			$DBocs->close();
-		}
-	}
+   // Case of not init $DB object
+   if (method_exists($DB,"close")) {
+      $DB->close();
+      if (isset($DBocs) && method_exists($DBocs,"close")) {
+         $DBocs->close();
+      }
+   }
 }
-
-// Check if the user have an email
-/* // NOT_USED
-function checkEmailForUser($ID){
-	global $DB;
-	$query="SELECT email FROM glpi_users WHERE id='$ID'";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)==1){
-		return isValidEmail($DB->result($result,0,0));
-	}
-	return false;
-}
-*/
 
 /**
  * Format a web link adding http:// if missing
@@ -1075,11 +1058,12 @@ function checkEmailForUser($ID){
  *@return formatted link.
  *
  **/
-function formatOutputWebLink($link){
-	if (!preg_match("/^https?/",$link)){
-		return "http://".$link;
-	}
-	return $link;
+function formatOutputWebLink($link) {
+
+   if (!preg_match("/^https?/",$link)) {
+      return "http://".$link;
+   }
+   return $link;
 }
 
 ?>
