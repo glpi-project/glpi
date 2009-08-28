@@ -63,7 +63,7 @@ function showInfocomEnterprise($instID) {
    $number = $DB->numrows($result);
    $i = 0;
 
-   echo "<br><br><div class='center'><table class='tab_cadrehov'>";
+   echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
    echo "<tr><th colspan='2'>";
    printPagerForm();
    echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -116,9 +116,9 @@ function showInfocomEnterprise($instID) {
                          .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                }
                echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
-               echo "<td class='center' ".
-                      (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
-                      ">".$name."</td>";
+               echo "<td class='center";
+               echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+               echo ">".$name."</td>";
                echo "<td class='center'>".
                       (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
                echo "<td class='center'>".
@@ -202,7 +202,7 @@ function showAssociatedContact($instID) {
          if ($canedit) {
             echo "<a href='".$CFG_GLPI["root_doc"].
                   "/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=".
-                  $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
+                  $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
                   $LANG['buttons'][6]."'></a>";
          } else {
             echo "&nbsp;";
