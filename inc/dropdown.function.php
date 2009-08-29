@@ -155,8 +155,8 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
    }
 
    if ($display_comment) {
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' 
-             onmouseout=\"cleanhide('comment_$myname$rand')\" 
+      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
       if ($dropdown_right && !empty($which)) {
          if (is_array($entity_restrict) && count($entity_restrict)==1) {
@@ -165,7 +165,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
          if (!is_array($entity_restrict)) {
             echo " style='cursor:pointer;'  onClick=\"var w = window.open('".
                  $CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which".
-                 "&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, ". 
+                 "&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, ".
                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
          }
       }
@@ -220,7 +220,7 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$
       } else if ($locations_id > 0) {
          $nb=countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
       } else {
-         $nb=countElementsInTable("glpi_netpoints", 
+         $nb=countElementsInTable("glpi_netpoints",
                "locations_id=0 ".getEntitiesRestrictRequest(" AND ","glpi_netpoints",'',$entity_restrict));
       }
       if ($nb>$CFG_GLPI["ajax_limit_count"]) {
@@ -241,10 +241,10 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$
    $default="<select name='$myname'><option value='$value'>$name</option></select>";
    ajaxDropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
 
-   // Display comment 
+   // Display comment
    if ($display_comment) {
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' 
-             onmouseout=\"cleanhide('comment_$myname$rand')\" 
+      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
       if (haveRight("entity_dropdown","w")) {
          echo " style='cursor:pointer;' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
@@ -267,7 +267,7 @@ function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$
  * @param $value the preselected value we want
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
- * 
+ *
  */
 function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
    global $DB,$CFG_GLPI,$LANG;
@@ -304,16 +304,16 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
    $where.=" `id`<>'$value' ";
 
    if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
-      $query = "SELECT `id`, `completename` AS name 
-                FROM `$table` 
-                $where 
+      $query = "SELECT `id`, `completename` AS name
+                FROM `$table`
+                $where
                 ORDER BY `name`";
    }
    else {
-      $query = "SELECT `id`, `name` 
-                FROM `$table` 
-                $where 
-                       AND `id`<>'$value' 
+      $query = "SELECT `id`, `name`
+                FROM `$table`
+                $where
+                       AND `id`<>'$value'
                 ORDER BY `name`";
    }
    $result = $DB->query($query);
@@ -333,20 +333,20 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 
 /**
  * Execute the query to select box with all glpi users where select key = name
- * 
+ *
  * Internaly used by showGroupUsers, dropdownUsers and ajax/dropdownUsers.php
  *
- * @param $count true if execute an count(*), 
+ * @param $count true if execute an count(*),
  * @param $right limit user who have specific right
  * @param $entity_restrict Restrict to a defined entity
  * @param $value default value
  * @param $used array of user ID
- * @param $search pattern 
- * 
+ * @param $search pattern
+ *
  * @return mysql result set.
  *
  */
-function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0, 
+function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0,
                               $used=array(), $search='') {
    global $DB, $CFG_GLPI;
 
@@ -373,13 +373,13 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 
       default :
          $joinprofile=true;
-         $where=" ( `glpi_profiles`.`".$right."`='1' 
+         $where=" ( `glpi_profiles`.`".$right."`='1'
                    AND `glpi_profiles`.`interface`='central' ".
                    getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1)." ) ";
          break;
    }
 
-   $where .= " AND `glpi_users`.`is_deleted`='0' 
+   $where .= " AND `glpi_users`.`is_deleted`='0'
                AND `glpi_users`.`is_active`='1' ";
 
    if ($value || count($used)) {
@@ -389,7 +389,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
          $where .= $value;
       }
       else {
-         $first=true;	
+         $first=true;
       }
       foreach($used as $val) {
          if ($first) {
@@ -403,16 +403,16 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
    }
 
    if ($count) {
-      $query = "SELECT COUNT(DISTINCT `glpi_users`.`id` ) AS cpt 
+      $query = "SELECT COUNT(DISTINCT `glpi_users`.`id` ) AS cpt
                 FROM `glpi_users` ";
    } else {
-      $query = "SELECT DISTINCT `glpi_users`.* 
+      $query = "SELECT DISTINCT `glpi_users`.*
                 FROM `glpi_users` ";
    }
-   $query.=" LEFT JOIN `glpi_profiles_users` 
+   $query.=" LEFT JOIN `glpi_profiles_users`
                        ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
    if ($joinprofile) {
-      $query .= " LEFT JOIN `glpi_profiles` 
+      $query .= " LEFT JOIN `glpi_profiles`
                             ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`) ";
    }
 
@@ -420,9 +420,9 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
       $query.= " WHERE $where ";
    } else {
       if (strlen($search)>0 && $search!=$CFG_GLPI["ajax_wildcard"]) {
-         $where.=" AND (`glpi_users`.`name` ".makeTextSearch($search)." 
-                        OR `glpi_users`.`realname` ".makeTextSearch($search)." 
-                        OR `glpi_users`.`firstname` ".makeTextSearch($search)." 
+         $where.=" AND (`glpi_users`.`name` ".makeTextSearch($search)."
+                        OR `glpi_users`.`realname` ".makeTextSearch($search)."
+                        OR `glpi_users`.`firstname` ".makeTextSearch($search)."
                         OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
                                   makeTextSearch($search).")";
       }
@@ -444,7 +444,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 /**
  * Make a select box with all glpi users where select key = name
  *
- * 
+ *
  *
  * @param $myname select name
  * @param $value default value
@@ -454,7 +454,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
- * 
+ *
  * @return nothing (print out an HTML select box)
  *
  */
@@ -520,8 +520,8 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_r
          }
          echo "<a id='comment_link_$myname$rand' href='".$user["link"]."'>";
       }
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' 
-             onmouseout=\"cleanhide('comment_$myname$rand')\" 
+      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\">";
       if ($view_users) {
          echo "</a>";
@@ -541,9 +541,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_r
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
- * 
+ *
  * @return nothing (print out an HTML select box)
- * 
+ *
  */
 function dropdownAllUsers($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
                           $used=array()) {
@@ -570,7 +570,7 @@ function dropdownUsersID($myname,$value,$right,$display_comment=1,$entity_restri
 }
 
 /**
- * Get the value of a dropdown 
+ * Get the value of a dropdown
  *
  *
  * Returns the value of the dropdown from $table with ID $id.
@@ -589,8 +589,8 @@ function getDropdownName($table,$id,$withcomment=0) {
       $name = "";
       $comment = "";
       if ($id) {
-         $query = "SELECT * 
-                   FROM `". $table ."` 
+         $query = "SELECT *
+                   FROM `". $table ."`
                    WHERE `id` = '". $id ."'";
          if ($result = $DB->query($query)) {
             if($DB->numrows($result) != 0) {
@@ -687,8 +687,8 @@ function getDropdownArrayNames($table,$ids) {
          $field='completename';
       }
 
-      $query="SELECT `id`, `$field` 
-              FROM `$table` 
+      $query="SELECT `id`, `$field`
+              FROM `$table`
               WHERE `id` IN (".implode(',',$ids).")";
 
       if ($result=$DB->query($query)) {
@@ -696,7 +696,7 @@ function getDropdownArrayNames($table,$ids) {
             $tabs[$data['id']]=$data[$field];
          }
       }
-   } 
+   }
    return $tabs;
 }
 
@@ -720,7 +720,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
       if ($CFG_GLPI["ajax_limit_count"]==0) {
          $use_ajax=true;
       } else {
-         $query="SELECT COUNT(`".$field."`) 
+         $query="SELECT COUNT(`".$field."`)
                  FROM `glpi_tickets` ".
                  getEntitiesRestrictRequest("WHERE","glpi_tickets");
          $result=$DB->query($query);
@@ -748,14 +748,14 @@ function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
 
    ajaxDropdown($use_ajax,"/ajax/dropdownUsersTracking.php",$params,$default,$rand);
 
-   // Display comment 
+   // Display comment
    if ($display_comment) {
       if (empty($user["link"])) {
          $user["link"]='#';
       }
       echo "<a href='".$user["link"]."'>";
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' 
-             onmouseout=\"cleanhide('comment_$myname$rand')\" 
+      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\">";
       echo "</a>";
       echo "<span class='over_link' id='comment_$myname$rand'>".$user["comment"]."</span>";
@@ -764,7 +764,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
 }
 
 /**
- * 
+ *
  * Make a select box for icons
  *
  *
@@ -806,7 +806,7 @@ function dropdownIcons($myname,$value,$store_path) {
 }
 
 /**
- * 
+ *
  * Make a select box for device type
  *
  *
@@ -831,7 +831,7 @@ function dropdownDeviceTypes($name,$value=0,$types=array()) {
 }
 
 /**
- * 
+ *
  *Make a select box for all items
  *
  *
@@ -930,9 +930,9 @@ function getYesNo($value) {
  *
  * @param $name select name
  * @param $value preselected value.
- * @param $none display none choice ? 
- * @param $read display read choice ? 
- * @param $write display write choice ? 
+ * @param $none display none choice ?
+ * @param $read display read choice ?
+ * @param $write display write choice ?
  * @return nothing (print out an HTML select box)
  */
 function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1) {
@@ -982,9 +982,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
       // My items
       foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
          if (isPossibleToAssignType($itemtype)) {
-            $query="SELECT * 
-                    FROM ".$LINK_ID_TABLE[$itemtype]." 
-                    WHERE `users_id`='".$userID."' 
+            $query="SELECT *
+                    FROM ".$LINK_ID_TABLE[$itemtype]."
+                    WHERE `users_id`='".$userID."'
                           AND `is_deleted`='0' ";
             if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                $query.=" AND `is_template`='0' ";
@@ -1029,9 +1029,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
       if (haveRight("show_group_hardware","1")) {
          $group_where="";
          $groups=array();
-         $query="SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name` 
-                 FROM `glpi_groups_users` 
-                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`) 
+         $query="SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name`
+                 FROM `glpi_groups_users`
+                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                  WHERE `glpi_groups_users`.`users_id`='".$userID."' ".
                        getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
          $result=$DB->query($query);
@@ -1049,9 +1049,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
             $tmp_device="";
             foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
                if (isPossibleToAssignType($itemtype)) {
-                  $query="SELECT * 
-                          FROM `".$LINK_ID_TABLE[$itemtype]."` 
-                          WHERE ($group_where) 
+                  $query="SELECT *
+                          FROM `".$LINK_ID_TABLE[$itemtype]."`
+                          WHERE ($group_where)
                                 AND `is_deleted`='0' ".
                                 getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",
                                    $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
@@ -1069,13 +1069,13 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                               $output = $data["name"];
                            }
                            if (isset($data['serial'])) {
-                              $output .= " - ".$data['serial']; 
+                              $output .= " - ".$data['serial'];
                            }
                            if (isset($data['otherserial'])) {
                               $output .= " - ".$data['otherserial'];
                            }
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                              $output .= " (".$data['id'].")";	
+                              $output .= " (".$data['id'].")";
                            }
                            $tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["id"];
                            $tmp_device.="' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
@@ -1110,11 +1110,11 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                if (!isset($already_add[$itemtype])) {
                   $already_add[$itemtype]=array();
                }
-               $query="SELECT DISTINCT ".$LINK_ID_TABLE[$itemtype].".* 
-                       FROM `glpi_computers_items` 
-                       LEFT JOIN ".$LINK_ID_TABLE[$itemtype]." 
+               $query="SELECT DISTINCT ".$LINK_ID_TABLE[$itemtype].".*
+                       FROM `glpi_computers_items`
+                       LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
                             ON (`glpi_computers_items`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
-                       WHERE `glpi_computers_items`.`itemtype`='$itemtype' 
+                       WHERE `glpi_computers_items`.`itemtype`='$itemtype'
                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
                                                 $search_computer)."
                              AND ".$LINK_ID_TABLE[$itemtype].".`is_deleted`='0' ";
@@ -1155,17 +1155,17 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
 
          // Software
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)) {
-            $query = "SELECT DISTINCT `glpi_softwaresversions`.`name` AS version, 
-                                      `glpi_softwares`.`name` AS name, `glpi_softwares`.`id` 
-                      FROM `glpi_computers_softwaresversions`, `glpi_softwares`, 
-                           `glpi_softwaresversions` 
+            $query = "SELECT DISTINCT `glpi_softwaresversions`.`name` AS version,
+                                      `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
+                      FROM `glpi_computers_softwaresversions`, `glpi_softwares`,
+                           `glpi_softwaresversions`
                       WHERE `glpi_computers_softwaresversions`.`softwaresversions_id`=
                                `glpi_softwaresversions`.`id`
                             AND `glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`
                             AND ".str_replace("XXXX","`glpi_computers_softwaresversions`.`computers_id`",
                                               $search_computer)."
                             AND `glpi_softwares`.`is_helpdesk_visible`='1' ".
-                            getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict)." 
+                            getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict)."
                       ORDER BY `glpi_softwares`.`name`";
 
             $result=$DB->query($query);
@@ -1205,7 +1205,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
  *
  * @param $myname select name
  * @param $value preselected value.
- * @param $admin is an admin access ? 
+ * @param $admin is an admin access ?
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
@@ -1253,7 +1253,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
                echo "</option></select>";
             }
          }
-         echo "</span>\n";	
+         echo "</span>\n";
       }
       echo "</div>";
    }
@@ -1268,7 +1268,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
  * @param $myname select name
  * @param $entity_restrict Restrict to a defined entity
  * @param $onlyglobal display only global devices (used for templates)
- * 
+ *
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,
@@ -1360,11 +1360,11 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
       $where .= " AND `id` NOT IN ('0','".implode("','",$used)."')";
    }
 
-   $query="SELECT * 
-           FROM `glpi_documentscategories` 
-           WHERE `id` IN (SELECT DISTINCT `documentscategories_id` 
-                          FROM `glpi_documents` 
-                          $where) 
+   $query="SELECT *
+           FROM `glpi_documentscategories`
+           WHERE `id` IN (SELECT DISTINCT `documentscategories_id`
+                          FROM `glpi_documents`
+                          $where)
            ORDER BY `name`";
    $result=$DB->query($query);
 
@@ -1481,7 +1481,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
             extraParams : {
                table: '$table',
                field: '$field'";
-            
+
             if (!empty($entity_restrict) && $entity_restrict>=0){
                $output .= ",entity_restrict: $entity_restrict";
             }
@@ -1510,10 +1510,10 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
          hideTrigger:true,
          minChars:3,
          resizable:true,
-         minListWidth:".($size*5).", // IE problem : wrong computation of the width of the ComboBox field 
+         minListWidth:".($size*5).", // IE problem : wrong computation of the width of the ComboBox field
          applyTo: 'textfield_$myname$rand'
       });";
-   
+
       $output .= "</script>";
 
       echo $output;
@@ -1525,7 +1525,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 }
 
 /**
- * Make a select box form  for device type 
+ * Make a select box form  for device type
  *
  * @param $target URL to post the form
  * @param $computers_id computer ID
@@ -1546,7 +1546,7 @@ function device_selecter($target,$computers_id,$withtemplate='') {
       echo "<tr  class='tab_bg_1'><td colspan='2' class='right' width='30%'>";
       echo $LANG['devices'][0]."&nbsp;:";
       echo "</td>";
-      echo "<td colspan='63'>"; 
+      echo "<td colspan='63'>";
       echo "<form action=\"$target\" method=\"post\">";
 
       $rand=mt_rand();
@@ -1627,7 +1627,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
       if (haveTypeRight(CONTRACT_TYPE,"w") && in_array($itemtype,$CFG_GLPI["contract_types"])) {
          echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
       }
-      if (haveRight('transfer','r') && isMultiEntitiesMode() 
+      if (haveRight('transfer','r') && isMultiEntitiesMode()
           && in_array($itemtype, array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,
                                        CONTRACT_TYPE,ENTERPRISE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,
                                        PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,
@@ -1639,12 +1639,12 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
       }
       switch ($itemtype) {
          case SOFTWARE_TYPE :
-            if ($isadmin 
+            if ($isadmin
                 && countElementsInTable("glpi_rules","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0) {
                echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".
                       $LANG['rulesengine'][40]."</option>";
             }
-            if (haveRight("rule_dictionnary_software","w") 
+            if (haveRight("rule_dictionnary_software","w")
                 && countElementsInTable("glpi_rules","sub_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0) {
                echo "<option value=\"replay_dictionnary\">".$LANG['rulesengine'][76]."</option>";
             }
@@ -1772,7 +1772,7 @@ function dropdownMassiveActionPorts($itemtype) {
  * @param $management_restrict global management restrict mode
  */
 function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_restrict=0) {
-   global $LANG,$CFG_GLPI;	
+   global $LANG,$CFG_GLPI;
 
    if ($value && empty($withtemplate)) {
       echo $LANG['peripherals'][31];
@@ -1881,7 +1881,7 @@ function dropdownHours($name,$value,$limit_planning=0) {
    // Last item
    $val=$end.":00";
    echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -1895,8 +1895,8 @@ function dropdownLicenseOfSoftware($myname,$softwares_id) {
 
 // TODO : this function is probably no more used (no more glpi_licenses)
 
-   $query="SELECT * 
-          FROM `glpi_licenses` 
+   $query="SELECT *
+          FROM `glpi_licenses`
           WHERE `softwares_id`='$softwares_id'
           GROUP BY `version`, `serial`, `expire`, `oem`, `oem_computer`, `buy`";
    $result=$DB->query($query);
@@ -2028,7 +2028,7 @@ function displayActiveEntities($target,$myname) {
 }
 
 /**
- * Dropdown of ticket status 
+ * Dropdown of ticket status
  *
  * @param $name select name
  * @param $value default value
@@ -2047,7 +2047,7 @@ function dropdownStatus($name,$value=0) {
    echo "</option>";
    echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".
           $LANG['joblist'][17]."</option>";
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2086,7 +2086,7 @@ function getStatusName($value) {
 }
 
 /**
- * Dropdown of ticket priority 
+ * Dropdown of ticket priority
  *
  * @param $name select name
  * @param $value default value
@@ -2115,7 +2115,7 @@ function dropdownPriority($name,$value=0,$complete=0) {
    echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][6]."</option>";
    echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][7]."</option>";
 
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2182,13 +2182,13 @@ function getRequestTypeName($value) {
          return $LANG['common'][62];
          break;
 
-      default : 
+      default :
          return "";
    }
 }
 
 /**
- * Dropdown of ticket request type 
+ * Dropdown of ticket request type
  *
  * @param $name select name
  * @param $value default value
@@ -2205,7 +2205,7 @@ function dropdownRequestType($name,$value=0) {
    echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['tracking'][35]."</option>"; // writing
    echo "<option value='6' ".($value==6?" selected ":"").">".$LANG['common'][62]."</option>"; // other
 
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2221,7 +2221,7 @@ function dropdownAmortType($name,$value=0) {
    echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
    echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][47]."</option>";
    echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][48]."</option>";
-   echo "</select>";	
+   echo "</select>";
 }
 /**
  * Get amortissement type name for infocoms
@@ -2282,7 +2282,7 @@ function dropdownPlanningState($name,$value='') {
    echo "<option value='0'".($value==0?" selected ":"").">".$LANG['planning'][16]."</option>";
    echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
    echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2292,8 +2292,8 @@ function dropdownPlanningState($name,$value='') {
  * @param $elements array of elements to display
  * @param $value default value
  * @param $used already used elements key (do not display)
- * 
- */	
+ *
+ */
 function dropdownArrayValues($name,$elements,$value='',$used=array()) {
 
    $rand=mt_rand();
@@ -2305,26 +2305,58 @@ function dropdownArrayValues($name,$elements,$value='',$used=array()) {
       }
    }
 
-   echo "</select>";	
+   echo "</select>";
    return $rand;
 }
 
 /**
- * Remplace an dropdown by an hidden input field 
+ * Dropdown for frequency (interval between 2 actions)
+ *
+ * @param $name select name
+ * @param $value default value
+ */
+function dropdownFrequency($name,$value=0) {
+   global $LANG;
+
+   $tab = array();
+
+   // Minutes
+   for ($i=5 ; $i<60 ; $i+=5) {
+      $tab[$i*MINUTE_TIMESTAMP] = $i . ' ' .$LANG['job'][22];
+   }
+
+   // Heures
+   for ($i=1 ; $i<24 ; $i++) {
+      $tab[$i*HOUR_TIMESTAMP] = $i . ' ' .$LANG['job'][21];
+   }
+
+   // Jours
+   $tab[DAY_TIMESTAMP] = $LANG['setup'][305];
+   for ($i=2 ; $i<7 ; $i++) {
+      $tab[$i*DAY_TIMESTAMP] = $i . ' ' .$LANG['stats'][31];
+   }
+
+   $tab[WEEK_TIMESTAMP] = $LANG['setup'][308];
+   $tab[MONTH_TIMESTAMP] = $LANG['setup'][309];
+
+   dropdownArrayValues($name, $tab, $value);
+}
+/**
+ * Remplace an dropdown by an hidden input field
  * and display the value.
  *
  * @param $name select name
  * @param $elements array of elements to display
  * @param $value default value
  * @param $used already used elements key (not used in this RO mode)
- *  
- */	
+ *
+ */
 function dropdownArrayValuesReadonly($name,$elements,$value='',$used=array()) {
 
    echo "<input type='hidden' name='$name' value='$value'>";
 
    if (isset($elements[$value])) {
-      echo $elements[$value]; 
+      echo $elements[$value];
    }
 }
 
@@ -2343,8 +2375,8 @@ function dropdownStateBehaviour ($name, $lib="", $value=0) {
       $elements["-1"]=$lib;
    }
 
-   $queryStateList = "SELECT `id`,`name` 
-                      FROM `glpi_states` 
+   $queryStateList = "SELECT `id`,`name`
+                      FROM `glpi_states`
                       ORDER BY `name`";
    $result = $DB->query($queryStateList);
    if ($DB->numrows($result) > 0) {
@@ -2405,7 +2437,7 @@ function adminManagementDropdown($name,$value,$software=0) {
 function dropdownGMT($name,$value='') {
    global $LANG;
 
-   $elements = array (-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 
+   $elements = array (-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
                       1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
 
    echo "<select name='$name' id='dropdown_".$name."'>";
@@ -2419,7 +2451,7 @@ function dropdownGMT($name,$value='') {
       $eltvalue=$element*HOUR_TIMESTAMP;
       echo "<option value='$eltvalue'".($eltvalue==$value?" selected ":"").">".$display_value."</option>";
    }
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2467,9 +2499,9 @@ function dropdownUnderProfiles($name,$value='') {
 
    $prof=new Profile();
 
-   $query="SELECT * 
+   $query="SELECT *
            FROM `glpi_profiles` ".
-           $prof->getUnderProfileRetrictRequest("WHERE")." 
+           $prof->getUnderProfileRetrictRequest("WHERE")."
            ORDER BY `name`";
 
    $res = $DB->query($query);
@@ -2564,7 +2596,7 @@ function dropdownContractRenewal($name,$value=0) {
    echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
    echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][105]."</option>";
    echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][106]."</option>";
-   echo "</select>";	
+   echo "</select>";
 }
 
 /**
@@ -2579,15 +2611,15 @@ function getContractRenewalName($value) {
    global $LANG;
 
    switch ($value) {
-      case 1: 
+      case 1:
          return $LANG['financial'][105];
          break;
 
-      case 2: 
+      case 2:
          return $LANG['financial'][106];
          break;
 
-      default : 
+      default :
       return "";
    }
 }
@@ -2595,7 +2627,7 @@ function getContractRenewalName($value) {
 /**
  * Get renewal ID by name
  * @param $value the name of the renewal
- * 
+ *
  * @return the ID of the renewal
  */
 function getContractRenewalIDByName($value) {
@@ -2612,7 +2644,7 @@ function getContractRenewalIDByName($value) {
 /**
  * Print all the authentication methods
  * @param name the dropdown name
- * 
+ *
  *@return Nothing (display)
  */
 function dropdownAuthMethods($name) {
@@ -2621,7 +2653,7 @@ function dropdownAuthMethods($name) {
    $methods[0]='-----';
    $methods[AUTH_DB_GLPI]=$LANG['login'][32];
 
-   $sql = "SELECT count(*) AS cpt 
+   $sql = "SELECT count(*) AS cpt
            FROM `glpi_authldaps`";
    $result = $DB->query($sql);
 
@@ -2630,7 +2662,7 @@ function dropdownAuthMethods($name) {
       $methods[AUTH_EXTERNAL]=$LANG['setup'][67];
    }
 
-   $sql = "SELECT count(*) AS cpt 
+   $sql = "SELECT count(*) AS cpt
            FROM `glpi_authmails`";
    $result = $DB->query($sql);
 
@@ -2638,7 +2670,7 @@ function dropdownAuthMethods($name) {
       $methods[AUTH_MAIL]=$LANG['login'][33];
    }
 
-   return dropdownArrayValues($name,$methods);	
+   return dropdownArrayValues($name,$methods);
 }
 
 /**
@@ -2668,11 +2700,11 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
       }
       $idrest .= ")";
    }
-   $query = "SELECT `glpi_contracts`.*, `glpi_entities`.`completename` 
-             FROM `glpi_contracts` 
+   $query = "SELECT `glpi_contracts`.*, `glpi_entities`.`completename`
+             FROM `glpi_contracts`
              LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
              WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest
-             ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name` ASC, 
+             ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name` ASC,
                       `glpi_contracts`.`begin_date` DESC";
    $result=$DB->query($query);
    echo "<select name='$name'>";
@@ -2698,6 +2730,6 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
    if ($prev>=0) {
       echo "</optgroup>";
    }
-   echo "</select>";	
+   echo "</select>";
 }
 ?>

@@ -356,6 +356,11 @@ $LANG['crontask'][34]="Interne";
 $LANG['crontask'][35]="Externe";
 $LANG['crontask'][36]="Mode d'exécution";
 $LANG['crontask'][37]="Fréquence d'exécution";
+$LANG['crontask'][38]="Plage d'exécution";
+$LANG['crontask'][39]="Nombre de messages à récupérer";
+$LANG['crontask'][40]="Dernière exécution";
+$LANG['crontask'][41]="Prochaine exécution";
+$LANG['crontask'][42]="Dès que possible";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";
