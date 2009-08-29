@@ -38,18 +38,18 @@
 // ID 90 : notepad -> no massive action
 // ID 101 : glpi_ocslinks -> no linkfield but massive action on it
 
-// Empty linkfield -> no massive action for field of main table 
+// Empty linkfield -> no massive action for field of main table
 
-// Datatype : 
-// - date 
+// Datatype :
+// - date
 // - datetime
-// - date_delay : date with a delay in month (end_warranty, end_date) 
+// - date_delay : date with a delay in month (end_warranty, end_date)
 //   - parameters : ['datafields'][1]=DATE_FIELD, ['datafields'][2]=DELAY_FIELD
 // - realtime : time spent in second
 // - weblink
 // - email
 // - text
-// - number : 
+// - number :
 //   - optional parameter : ['width'] for width search
 // - decimal : idem that number but formatted with decimal
 // - bool
@@ -511,16 +511,16 @@ $SEARCH_OPTION[COMPUTER_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[COMPUTER_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[COMPUTER_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[COMPUTER_TYPE][120]['datatype']='date';
 $SEARCH_OPTION[COMPUTER_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[COMPUTER_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[COMPUTER_TYPE][120]['datafields'][2]='warranty_duration';
 
- 
+
 $SEARCH_OPTION[COMPUTER_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['linkfield']='';
@@ -561,11 +561,11 @@ $SEARCH_OPTION[COMPUTER_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][59]['name']=$LANG['common'][41];
 
 $SEARCH_OPTION[COMPUTER_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[COMPUTER_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[COMPUTER_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[COMPUTER_TYPE][122]['field']='comment';
+$SEARCH_OPTION[COMPUTER_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[COMPUTER_TYPE][122]['datatype']='text';
- 	
+
 
 $SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG['Menu'][33];
 
@@ -913,14 +913,14 @@ $SEARCH_OPTION[NETWORKING_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[NETWORKING_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[NETWORKING_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[NETWORKING_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[NETWORKING_TYPE][120]['datafields'][2]='warranty_duration';
- 
+
 $SEARCH_OPTION[NETWORKING_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['linkfield']='';
@@ -960,10 +960,10 @@ $SEARCH_OPTION[NETWORKING_TYPE][59]['field']='alert';
 $SEARCH_OPTION[NETWORKING_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][59]['name']=$LANG['common'][41];
 
-$SEARCH_OPTION[NETWORKING_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[NETWORKING_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[NETWORKING_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[NETWORKING_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[NETWORKING_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[NETWORKING_TYPE][122]['field']='comment';
+$SEARCH_OPTION[NETWORKING_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[NETWORKING_TYPE][122]['datatype']='text';
 
 
@@ -1271,14 +1271,14 @@ $SEARCH_OPTION[PRINTER_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[PRINTER_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[PRINTER_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[PRINTER_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[PRINTER_TYPE][120]['datafields'][2]='warranty_duration';
- 
+
 $SEARCH_OPTION[PRINTER_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][53]['linkfield']='';
@@ -1318,10 +1318,10 @@ $SEARCH_OPTION[PRINTER_TYPE][59]['field']='alert';
 $SEARCH_OPTION[PRINTER_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][59]['name']=$LANG['common'][41];
 
-$SEARCH_OPTION[PRINTER_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PRINTER_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[PRINTER_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[PRINTER_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[PRINTER_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[PRINTER_TYPE][122]['field']='comment';
+$SEARCH_OPTION[PRINTER_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[PRINTER_TYPE][122]['datatype']='text';
 
 //////MONITOR_TYPE
@@ -1598,14 +1598,14 @@ $SEARCH_OPTION[MONITOR_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[MONITOR_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[MONITOR_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[MONITOR_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[MONITOR_TYPE][120]['datafields'][2]='warranty_duration';
-	 
+
 $SEARCH_OPTION[MONITOR_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][53]['field']='name';
 $SEARCH_OPTION[MONITOR_TYPE][53]['linkfield']='';
@@ -1645,10 +1645,10 @@ $SEARCH_OPTION[MONITOR_TYPE][59]['field']='alert';
 $SEARCH_OPTION[MONITOR_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][59]['name']=$LANG['common'][41];
 
-$SEARCH_OPTION[MONITOR_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][122]['field']='comment';
-$SEARCH_OPTION[MONITOR_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[MONITOR_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[MONITOR_TYPE][122]['datatype']='text';
 
 //////PERIPHERAL_TYPE
@@ -1925,14 +1925,14 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[PERIPHERAL_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['datafields'][2]='warranty_duration';
- 
+
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['linkfield']='';
@@ -1972,12 +1972,12 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][59]['field']='alert';
 $SEARCH_OPTION[PERIPHERAL_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][59]['name']=$LANG['common'][41];
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['field']='comment';
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[PERIPHERAL_TYPE][122]['datatype']='text';
-	 
+
 //////SOFTWARE_TYPE
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['common']=$LANG['common'][32];
@@ -2096,19 +2096,19 @@ $SEARCH_OPTION[SOFTWARE_TYPE][31]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['name']=$LANG['state'][0];
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][170]['table']='glpi_softwaresversions'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][170]['table']='glpi_softwaresversions';
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['field']='comment';
-$SEARCH_OPTION[SOFTWARE_TYPE][170]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARE_TYPE][170]['name']=$LANG['common'][25]." - ".$LANG['software'][5]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][170]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][170]['name']=$LANG['common'][25]." - ".$LANG['software'][5];
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['forcegroupby']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['datatype']='text';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['license']=$LANG['software'][11];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][160]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][160]['field']='name'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][160]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARE_TYPE][160]['name']=$LANG['common'][16]." - ".$LANG['software'][11]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['field']='name';
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['name']=$LANG['common'][16]." - ".$LANG['software'][11];
 $SEARCH_OPTION[SOFTWARE_TYPE][160]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][161]['table']='glpi_softwareslicenses';
@@ -2284,10 +2284,10 @@ $SEARCH_OPTION[SOFTWARE_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[SOFTWARE_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['datafields'][2]='warranty_duration';
@@ -2331,10 +2331,10 @@ $SEARCH_OPTION[SOFTWARE_TYPE][59]['field']='alert';
 $SEARCH_OPTION[SOFTWARE_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][59]['name']=$LANG['common'][41];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['field']='comment';
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[SOFTWARE_TYPE][122]['datatype']='text';
 
 
@@ -2342,52 +2342,52 @@ $SEARCH_OPTION[SOFTWARE_TYPE][122]['datatype']='text';
 
 // Only use for History (not by search Engine)
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['linkfield']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['name']=$LANG['common'][16]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['field']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['linkfield']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['name']=$LANG['common'][16];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['field']='serial'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['linkfield']='serial'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['name']=$LANG['common'][19]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['field']='serial';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['linkfield']='serial';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['name']=$LANG['common'][19];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['field']='otherserial'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['name']=$LANG['common'][20]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['field']='otherserial';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['linkfield']='';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['name']=$LANG['common'][20];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['field']='number'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['linkfield']='number'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['field']='number';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['linkfield']='number';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['name']=$LANG['tracking'][29];
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['datatype']='number'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['datatype']='number';
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['table']='glpi_softwareslicensestypes'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['linkfield']='softwareslicensestypes_id'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['name']=$LANG['common'][17]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['table']='glpi_softwareslicensestypes';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['field']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['linkfield']='softwareslicensestypes_id';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['name']=$LANG['common'][17];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwaresversions'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='softwaresversions_id_buy'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['name']=$LANG['software'][1]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwaresversions';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['field']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='softwaresversions_id_buy';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['name']=$LANG['software'][1];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwaresversions'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['linkfield']='softwaresversions_id_use'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['name']=$LANG['software'][2]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwaresversions';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['field']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['linkfield']='softwaresversions_id_use';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['name']=$LANG['software'][2];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwareslicenses'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['field']='expire'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['linkfield']='expire'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['name']=$LANG['software'][32]; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['datatype']='date'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwareslicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['field']='expire';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['linkfield']='expire';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['name']=$LANG['software'][32];
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['datatype']='date';
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['table']='glpi_computers'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='computers_id'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG['software'][50]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['table']='glpi_computers';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='computers_id';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG['software'][50];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['field']='comment';
@@ -2442,10 +2442,10 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datafields'][2]='warranty_duration';
@@ -2495,20 +2495,20 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['field']='completename';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['name']=$LANG['entity'][0];
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['field']='comment';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['datatype']='text';
 
 //////SOFTWAREVERSION_TYPE
 
 // Only use for History (not by search Engine)
 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['table']='glpi_softwaresversions'; 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['field']='name'; 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['linkfield']='name'; 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['name']=$LANG['common'][16]; 
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['table']='glpi_softwaresversions';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['field']='name';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['linkfield']='name';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['name']=$LANG['common'][16];
 
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['table']='glpi_softwaresversions';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['field']='comment';
@@ -2564,7 +2564,7 @@ $SEARCH_OPTION[BUDGET_TYPE][86]['field']='is_recursive';
 $SEARCH_OPTION[BUDGET_TYPE][86]['linkfield']='is_recursive';
 $SEARCH_OPTION[BUDGET_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[BUDGET_TYPE][86]['datatype']='bool';
-	 
+
 //////CONTACT_TYPE
 
 $SEARCH_OPTION[CONTACT_TYPE]['common']=$LANG['common'][32];
@@ -3469,14 +3469,14 @@ $SEARCH_OPTION[PHONE_TYPE][52]['field']='warranty_info';
 $SEARCH_OPTION[PHONE_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][52]['name']=$LANG['financial'][16];
 
-$SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty'; 
-$SEARCH_OPTION[PHONE_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG['financial'][80]; 
+$SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms';
+$SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty';
+$SEARCH_OPTION[PHONE_TYPE][120]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG['financial'][80];
 $SEARCH_OPTION[PHONE_TYPE][120]['datatype']='date_delay';
 $SEARCH_OPTION[PHONE_TYPE][120]['datafields'][1]='buy_date';
 $SEARCH_OPTION[PHONE_TYPE][120]['datafields'][2]='warranty_duration';
-	 
+
 $SEARCH_OPTION[PHONE_TYPE][53]['table']='glpi_suppliers_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][53]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][53]['linkfield']='';
@@ -3515,11 +3515,11 @@ $SEARCH_OPTION[PHONE_TYPE][59]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][59]['field']='alert';
 $SEARCH_OPTION[PHONE_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][59]['name']=$LANG['common'][41];
- 
-$SEARCH_OPTION[PHONE_TYPE][122]['table']='glpi_infocoms'; 
-$SEARCH_OPTION[PHONE_TYPE][122]['field']='comment'; 
-$SEARCH_OPTION[PHONE_TYPE][122]['linkfield']=''; 
-$SEARCH_OPTION[PHONE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3]; 
+
+$SEARCH_OPTION[PHONE_TYPE][122]['table']='glpi_infocoms';
+$SEARCH_OPTION[PHONE_TYPE][122]['field']='comment';
+$SEARCH_OPTION[PHONE_TYPE][122]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['financial'][3];
 $SEARCH_OPTION[PHONE_TYPE][122]['datatype']='text';
 
 $SEARCH_OPTION[PHONE_TYPE]['network']=$LANG['setup'][88];
@@ -3927,4 +3927,43 @@ $SEARCH_OPTION[TRANSFER_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[TRANSFER_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[TRANSFER_TYPE][1]['itemlink_link']=TRANSFER_TYPE;
 
+// CRONTASK_TYPE
+$SEARCH_OPTION[CRONTASK_TYPE]['common']=$LANG['common'][32];;
+$SEARCH_OPTION[CRONTASK_TYPE][1]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][1]['field']='name';
+$SEARCH_OPTION[CRONTASK_TYPE][1]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][1]['name']=$LANG['common'][16];
+$SEARCH_OPTION[CRONTASK_TYPE][1]['datatype']='itemlink';
+$SEARCH_OPTION[CRONTASK_TYPE][1]['itemlink_link']=CRONTASK_TYPE;
+
+$SEARCH_OPTION[CRONTASK_TYPE][2]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][2]['field']='id';
+$SEARCH_OPTION[CRONTASK_TYPE][2]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][2]['name']=$LANG['common'][2];
+
+$SEARCH_OPTION[CRONTASK_TYPE][3]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][3]['field']='description';
+$SEARCH_OPTION[CRONTASK_TYPE][3]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][3]['name']=$LANG['crontask'][30];
+
+$SEARCH_OPTION[CRONTASK_TYPE][4]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][4]['field']='state';
+$SEARCH_OPTION[CRONTASK_TYPE][4]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][4]['name']=$LANG['joblist'][0];
+
+$SEARCH_OPTION[CRONTASK_TYPE][5]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][5]['field']='mode';
+$SEARCH_OPTION[CRONTASK_TYPE][5]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][5]['name']=$LANG['crontask'][36];
+
+$SEARCH_OPTION[CRONTASK_TYPE][6]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][6]['field']='frequency';
+$SEARCH_OPTION[CRONTASK_TYPE][6]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][6]['name']=$LANG['crontask'][37];
+
+$SEARCH_OPTION[CRONTASK_TYPE][16]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][16]['field']='comment';
+$SEARCH_OPTION[CRONTASK_TYPE][16]['linkfield']='comment';
+$SEARCH_OPTION[CRONTASK_TYPE][16]['name']=$LANG['common'][25];
+$SEARCH_OPTION[CRONTASK_TYPE][16]['datatype']='text';
 ?>

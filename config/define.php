@@ -4,13 +4,13 @@
 	define("GLPI_VERSION","0.80");
 	define("GLPI_DEMO_MODE","0");
 
-	
+
 	// dictionnaries
 	// 0 Name - 1 lang file -  2 extjs dico - 3 tiny_mce dico
-	$CFG_GLPI["languages"]=array(   
-		"bg_BG"=>array("Български","bg_BG.php","bg","bg"),// 
+	$CFG_GLPI["languages"]=array(
+		"bg_BG"=>array("Български","bg_BG.php","bg","bg"),//
 		"ca_CA"=>array("Català","ca_CA.php","ca","ca"),//
-		"cs_CZ"=>array("Čeština","cs_CZ.php","cs","cs"),// 
+		"cs_CZ"=>array("Čeština","cs_CZ.php","cs","cs"),//
 		"de_DE"=>array("Deutsch","de_DE.php","de","de"),//
 		"dk_DK"=>array("Dansk","dk_DK.php","da","da"),//
 		"nl_NL"=>array("Nederlands","nl_NL.php","nl","nl"),//
@@ -115,7 +115,9 @@
    define("CONTACTSUPPLIER_TYPE",46);
    define("CONTRACTSUPPLIER_TYPE",47);
    define("DOCUMENTITEM_TYPE",48);
-	
+   define("CRONTASK_TYPE",49);
+   define("CRONTASKLOG_TYPE",50);
+
 	// GLPI MODE
 	define("NORMAL_MODE",0);
 	define("TRANSLATION_MODE",1);
@@ -127,7 +129,7 @@
 	define("RAM_DEVICE",3);
 	define("HDD_DEVICE",4);
 	define("NETWORK_DEVICE",5);
-	define("DRIVE_DEVICE",6); 
+	define("DRIVE_DEVICE",6);
 	define("CONTROL_DEVICE",7);
 	define("GFX_DEVICE",8);
 	define("SND_DEVICE",9);
@@ -152,7 +154,7 @@
 	define("HISTORY_RESTORE_ITEM",14);
    define("HISTORY_ADD_RELATION",15);
    define("HISTORY_DEL_RELATION",16);
-	
+
 	// OCSNG TYPES
 	define("HARDWARE_FL",0);
 	define("BIOS_FL",1);
@@ -180,7 +182,7 @@
 	define("USER_MAILING_TYPE",1);
 	define("PROFILE_MAILING_TYPE",2);
 	define("GROUP_MAILING_TYPE",3);
-	define("DB_NOTIFICATION_MAILING_TYPE",3);	
+	define("DB_NOTIFICATION_MAILING_TYPE",3);
 
 	// MAILING USERS TYPE
 	define("ADMIN_MAILING",1);
@@ -220,7 +222,7 @@
 
 	// Default number of items displayed in global search
 	define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
-	
+
 	$LINK_ID_TABLE=array(
 			COMPUTER_TYPE=> "glpi_computers",
 			NETWORKING_TYPE => "glpi_networkequipments",
@@ -261,10 +263,12 @@
 			COMPUTERDISK_TYPE => "glpi_computersdisks",
 			NETWORKING_PORT_TYPE => "glpi_networkports",
 			FOLLOWUP_TYPE => "glpi_ticketsfollowups",
-			BUDGET_TYPE=>"glpi_budgets"
+			BUDGET_TYPE=>"glpi_budgets",
+         CRONTASK_TYPE=>"glpi_crontasks",
+         CRONTASKLOG_TYPE=>"glpi_crontaskslogs"
 			);
 
-	$INFOFORM_PAGES=array( 
+	$INFOFORM_PAGES=array(
 			COMPUTER_TYPE=> "front/computer.form.php",
 			NETWORKING_TYPE => "front/networking.form.php",
 			PRINTER_TYPE => "front/printer.form.php",
@@ -304,9 +308,10 @@
 			COMPUTERDISK_TYPE => "front/computerdisk.form.php",
 			NETWORKING_PORT_TYPE => "front/networking.port.php",
 //			FOLLOWUP_TYPE => "???",
-			BUDGET_TYPE => "front/budget.form.php"			
+			BUDGET_TYPE => "front/budget.form.php",
+         CRONTASK_TYPE => "front/crontask.form.php"
 			);
-	$SEARCH_PAGES=array( 
+	$SEARCH_PAGES=array(
 			COMPUTER_TYPE=> "front/computer.php",
 			NETWORKING_TYPE => "front/networking.php",
 			PRINTER_TYPE => "front/printer.php",
@@ -319,6 +324,7 @@
 			DOCUMENT_TYPE => "front/document.php",
 			BUDGET_TYPE => "front/budget.php",
          OCSNG_TYPE => "front/setup.ocsng.php",
+         CRONTASK_TYPE => "front/crontask.php"
 		);
 
 	define("AUTH_DB_GLPI",1);
@@ -334,7 +340,7 @@
 	define("MAIL_SMTP",1);
 	define("MAIL_SMTPSSL",2);
 	define("MAIL_SMTPTLS",3);
-	
+
 	// MESSAGE TYPE
 	define("INFO",0);
 	define("ERROR",1);
@@ -347,15 +353,15 @@
 	define("PATTERN_CONTAIN",2);
 	define("PATTERN_NOT_CONTAIN",3);
 	define("PATTERN_BEGIN",4);
-	define("PATTERN_END",5);	
-	define("REGEX_MATCH",6);	
-	define("REGEX_NOT_MATCH",7);	
-	
+	define("PATTERN_END",5);
+	define("REGEX_MATCH",6);
+	define("REGEX_NOT_MATCH",7);
+
 
 	define("AND_MATCHING","AND");
-	define("OR_MATCHING","OR");	
-	
-	define("RULE_NOT_IN_CACHE",-1);	
+	define("OR_MATCHING","OR");
+
+	define("RULE_NOT_IN_CACHE",-1);
 	define("RULE_OCS_AFFECT_COMPUTER",0);
 	define("RULE_AFFECT_RIGHTS",1);
 	define("RULE_TRACKING_AUTO_ACTION",2);
@@ -376,11 +382,11 @@
 	define("RULE_DICTIONNARY_TYPE_NETWORKING",17);
 	define("RULE_DICTIONNARY_OS",18);
 	define("RULE_DICTIONNARY_OS_SP",19);
-	define("RULE_DICTIONNARY_OS_VERSION",20);	
+	define("RULE_DICTIONNARY_OS_VERSION",20);
 
 	//Bookmark types
 	define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
-	
+
 	//OCS constants
 	define("OCS_COMPUTER_IMPORTED", 0);
 	define("OCS_COMPUTER_SYNCHRONIZED", 1);
@@ -396,16 +402,28 @@
 	define("PLUGIN_NOTACTIVATED",4);
 	define("PLUGIN_TOBECLEANED",5);
 
+   // Cron Task
+   define("CRONTASK_STATE_DISABLE",0);
+   define("CRONTASK_STATE_WAITING",1);
+   define("CRONTASK_STATE_RUNNING",2);
+
+   define("CRONTASK_MODE_INTERNAL",1);
+   define("CRONTASK_MODE_EXTERNAL",2);
+
+   define("CRONTASKLOG_STATE_START",0);
+   define("CRONTASKLOG_STATE_RUN",1);
+   define("CRONTASKLOG_STATE_STOP",2);
+
 	//DEVICE ARRAY.
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers",
             "glpi_monitors","glpi_peripherals","glpi_softwares","glpi_cartridgesitems",
             "glpi_contracts","glpi_contacts","glpi_suppliers","glpi_documents","glpi_phones",
             "glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
-	
+
 	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networkequipments","glpi_printers",
             "glpi_monitors","glpi_peripherals","glpi_softwares","glpi_phones","state_types",
             "reservation_types","glpi_budgets");
-	
+
 	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_locations",
             "glpi_knowbaseitemscategories","glpi_ticketscategories");
 	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
@@ -433,7 +451,7 @@
  	$CFG_GLPI["netport_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
  	$CFG_GLPI["massiveaction_noupdate_types"]=array(OCSNG_TYPE,ENTITY_TYPE,PROFILE_TYPE);
-	$CFG_GLPI["massiveaction_nodelete_types"]=array(ENTITY_TYPE);
+	$CFG_GLPI["massiveaction_nodelete_types"]=array(ENTITY_TYPE,CRONTASK_TYPE);
 
 	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers",
       "glpi_consumablesitems","glpi_contacts","glpi_contracts","glpi_documents","glpi_locations",
@@ -452,15 +470,15 @@
             SOFTWARE_TYPE => "glpi_softwares", SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
             PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links",
             BUDGET_TYPE => "glpi_budgets");
-		
+
 	// New config options which can be missing during migration
 	$CFG_GLPI["number_format"]=0;
 	$CFG_GLPI["decimal_number"]=2;
 
 	// Default debug options : may be locally overriden
-	$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1; 
+	$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1;
 
-	
+
 	// User Prefs fields which override $CFG_GLPI config
 	$CFG_GLPI['user_pref_field']=array("language","list_limit","date_format","number_format",
                "is_ids_visible","dropdown_chars_limit","use_flat_dropdowntree",

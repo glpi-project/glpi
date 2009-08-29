@@ -673,6 +673,58 @@ CREATE TABLE `glpi_contractstypes` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_crontasks
+
+DROP TABLE IF EXISTS `glpi_crontasks`;
+CREATE TABLE `glpi_crontasks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
+  `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
+  `frequency` int(11) NOT NULL COMMENT 'second between launch',
+  `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
+  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
+  `mode` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
+  `allowmode` tinyint(4) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
+  `hourmin` tinyint(4) NOT NULL DEFAULT '0',
+  `hourmax` tinyint(4) NOT NULL DEFAULT '24',
+  `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'nomber of days',
+  `lastrun` datetime DEFAULT NULL COMMENT 'last run date',
+  `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `module` (`module`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.' AUTO_INCREMENT=13 ;
+
+INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
+   (1, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (2, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (3, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (4, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (5, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (6, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (7, NULL, 'events', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (8, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (9, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (10, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (11, NULL, 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (12, NULL, 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);
+
+### Dump table glpi_crontaskslogs
+
+DROP TABLE IF EXISTS `glpi_crontaskslogs`;
+CREATE TABLE `glpi_crontaskslogs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crontask_id` int(11) NOT NULL,
+  `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+  `date` int(11) NOT NULL,
+  `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
+  `elapsed` double NOT NULL COMMENT 'time elapsed since start',
+  `volume` int(11) NOT NULL COMMENT 'for statistics',
+  `content` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'message',
+  PRIMARY KEY (`id`),
+  KEY `crontask_id` (`crontask_id`),
+  KEY `crontasklogs_id` (`crontasklogs_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 ### Dump table glpi_devicescases
 
@@ -1015,6 +1067,11 @@ INSERT INTO `glpi_displayprefs` VALUES ('121','35','80','1','0');
 INSERT INTO `glpi_displayprefs` VALUES ('122','6','72','4','0');
 INSERT INTO `glpi_displayprefs` VALUES ('123','6','163','5','0');
 INSERT INTO `glpi_displayprefs` VALUES ('124','35','2','2','0');
+INSERT INTO `glpi_displayprefs` VALUES ('125', 49, 16, 2, 0);
+INSERT INTO `glpi_displayprefs` VALUES ('126', 49, 3, 1, 0);
+INSERT INTO `glpi_displayprefs` VALUES ('127', 49, 5, 4, 0);
+INSERT INTO `glpi_displayprefs` VALUES ('128', 49, 4, 3, 0);
+INSERT INTO `glpi_displayprefs` VALUES ('129', 49, 6, 5, 0);
 
 ### Dump table glpi_documents
 
