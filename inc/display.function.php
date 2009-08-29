@@ -163,9 +163,9 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
    if ($ref_pic_link!="") {
       echo "<td><img src=\"".$ref_pic_link."\" alt=\"".$ref_pic_text."\"title=\"".
                  $ref_pic_text."\" ></td>";
-      if ($ref_title!="") {
-         echo "<td><span class='icon_consol'><strong>".$ref_title."</strong></span></td>";
-      }
+   }
+   if ($ref_title!="") {
+      echo "<td><span class='icon_consol'><strong>".$ref_title."</strong></span></td>";
    }
    if (is_array($ref_btts) && count($ref_btts)) {
       foreach ($ref_btts as $key => $val) {

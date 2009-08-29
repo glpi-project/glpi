@@ -361,6 +361,7 @@ $LANG['crontask'][39]="Nombre de messages à récupérer";
 $LANG['crontask'][40]="Dernière exécution";
 $LANG['crontask'][41]="Prochaine exécution";
 $LANG['crontask'][42]="Dès que possible";
+$LANG['crontask'][43]="Aucune tâche en attente";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";

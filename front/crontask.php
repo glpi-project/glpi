@@ -43,10 +43,16 @@ checkRight("config", "w");
 
 commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
+$crontask = new CronTask();
+//if ($crontask->getNeedToRun(CRONTASK_MODE_EXTERNAL)) {
+if ($crontask->getNeedToRun()) {
+   displayTitle(GLPI_ROOT.'/pics/warning.png','',$LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name']);
+} else {
+   displayTitle(GLPI_ROOT.'/pics/ok.png','',$LANG['crontask'][43]);
+}
+
 manageGetValuesInSearch(CRONTASK_TYPE);
-
 searchForm(CRONTASK_TYPE,$_GET);
-
 showList(CRONTASK_TYPE,$_GET);
 
 commonFooter();

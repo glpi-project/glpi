@@ -56,6 +56,30 @@ class CronTask extends CommonDBTM{
       return $ong;
    }
 
+   function getNeedToRun($mode=0) {
+      global $DB;
+
+      $hour=date('H');
+      $query = "SELECT * FROM `".$this->table."`
+         WHERE `state`='".CRONTASK_STATE_WAITING."' ";
+      if ($mode) {
+         $query .= " AND `mode`='$mode' ";
+      }
+      $query .= " AND ((`hourmin`<`hourmax` AND  '$hour'>=`hourmin` AND '$hour'<`hourmax`)
+                    OR (`hourmin`>`hourmax` AND ('$hour'>=`hourmin` OR  '$hour'<`hourmax`)))
+                  AND (`lastrun` IS NULL
+                    OR unix_timestamp(`lastrun`)+`frequency`<unix_timestamp(now()))
+                ORDER BY `module`, unix_timestamp(`lastrun`)+`frequency`";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $this->fields = $DB->fetch_assoc($result);
+            return true;
+         }
+      }
+      return false;;
+   }
+
    /**
     * Print the contact form
     *
@@ -147,7 +171,7 @@ class CronTask extends CommonDBTM{
       if ($this->fields["state"]==CRONTASK_STATE_DISABLE) {
          echo $this->getStateName(CRONTASK_STATE_DISABLE);
       } else if (empty($this->fields['lastrun'])) {
-         echo $LANG['crontask'][41];
+         echo $LANG['crontask'][42];
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $disp = date("Y-m-d H:i:s", $next);
