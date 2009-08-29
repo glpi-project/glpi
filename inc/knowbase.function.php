@@ -53,25 +53,25 @@ if (!defined('GLPI_ROOT')){
  **/
 function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	global $LANG,$CFG_GLPI;
-	
+
 	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
-	
+
 	echo "<div>";
 	echo "<table  class='center-h'><tr><td>";
-	
-	
+
+
 	echo "<form method=get action=\"".$target."\">";
 	echo "<table border='0' class='tab_cadre'>";
 
 	echo "<tr ><th colspan='2'>".$LANG['search'][0].":</th></tr>";
 	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td>";
-	
+
 	echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
 
 	echo "</table></form>";
-	
+
 	echo "</td>";
-	
+
 	// Category select not for anonymous FAQ
 	if (isset($_SESSION["glpiID"])&&!$faq){
 		echo "<td><form method=get action=\"".$target."\">";
@@ -81,12 +81,12 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 		echo $LANG['common'][36]." : &nbsp; &nbsp;";
 		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
 		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
-		
+
 		echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
-	
+
 		echo "</table></form></td>";
-	} 
-	
+	}
+
 	echo "</tr></table></div>";
 
 
@@ -106,54 +106,47 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 
 	global $DB,$LANG,$CFG_GLPI;
-	
+
 	if($faq){
 		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) {
-			return false;	
+			return false;
 		}
-		
+
 		// Get All FAQ categories
 		if (!isset($_SESSION['glpi_faqcategories'])){
-			$_SESSION['glpi_faqcategories']=array();
-			$query="SELECT DISTINCT categoryID 
-				FROM glpi_kbitems 
+			$_SESSION['glpi_faqcategories']='(0)';
+         $tmp=array();
+			$query="SELECT DISTINCT categoryID
+				FROM glpi_kbitems
 				WHERE glpi_kbitems.faq = '1'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					while ($data=$DB->fetch_array($result)){
-						if (!in_array($data['categoryID'],$_SESSION['glpi_faqcategories'])){
-							$_SESSION['glpi_faqcategories'][]=$data['categoryID'];
-							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOfTreeItem('glpi_dropdown_kbcategories',$data['categoryID']));
+						if (!in_array($data['categoryID'],$tmp)){
+							$tmp[]=$data['categoryID'];
+							$tmp=array_merge($tmp,getAncestorsOfTreeItem('glpi_dropdown_kbcategories',$data['categoryID']));
 						}
 					}
 				}
-				if (count($_SESSION['glpi_faqcategories'])){
-					$tmp='(';
-					$first=true;
-					foreach ($_SESSION['glpi_faqcategories'] as $key => $val){
-						if ($first) $first=false;
-						else $tmp.=',';
-						$tmp.="'".$val."'";
-					}
-					$tmp.=')';
-					$_SESSION['glpi_faqcategories']=$tmp;
+				if (count($tmp)){
+					$_SESSION['glpi_faqcategories']="('".implode("','",$tmp)."')";
 				}
 
 			}
-			
+
 		}
-		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* 
-			FROM glpi_dropdown_kbcategories 
-			WHERE ID IN ".$_SESSION['glpi_faqcategories']." 
-				AND (glpi_dropdown_kbcategories.parentID = '$parentID') 
+		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.*
+			FROM glpi_dropdown_kbcategories
+			WHERE ID IN ".$_SESSION['glpi_faqcategories']."
+				AND (glpi_dropdown_kbcategories.parentID = '$parentID')
 			ORDER  BY name ASC";
 	}else{
 		if (!haveRight("knowbase","r")) {
 			return false;
 		}
-		$query = "SELECT * 
-			FROM glpi_dropdown_kbcategories 
-			WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') 
+		$query = "SELECT *
+			FROM glpi_dropdown_kbcategories
+			WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID')
 			ORDER  BY name ASC";
 	}
 
@@ -167,11 +160,11 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			$tmpID=$parentID;
 			$todisplay="";
 			while ($tmpID!=0){
-				$query2="SELECT * 
-					FROM glpi_dropdown_kbcategories 
+				$query2="SELECT *
+					FROM glpi_dropdown_kbcategories
 					WHERE ID='$tmpID'";
 				$result2=$DB->query($query2);
-				if ($DB->numrows($result2)==1){	
+				if ($DB->numrows($result2)==1){
 					$data=$DB->fetch_assoc($result2);
 					$tmpID=$data["parentID"];
 					$todisplay="<a href='$target?parentID=".$data["ID"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
@@ -180,29 +173,29 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			}
 			echo " > ".$todisplay;
 		}
-		
+
 		if ($DB->numrows($result)>0){
-			
-			
+
+
 				$i=0;
 			while ($row=$DB->fetch_array($result)){
 					// on affiche les résultats sur trois colonnes
 					if ($i%3==0) { echo "<tr>";}
 					$ID = $row["ID"];
 					echo "<td class='tdkb_result'>";
-				
+
 					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
 					echo "<div class='kb_resume'>".resume_text($row['comments'],60)."</div>";
-			
+
 				if($i%3==2) { echo "</tr>\n"; }
-				
+
 				$i++;
 			}
-			
+
 		}
 	echo "<tr><td colspan='3'>&nbsp;</td></tr></table><br>";
 
-	} 
+	}
 
 }
 
@@ -221,43 +214,43 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	// Lists kb  Items
 
 	global $DB,$CFG_GLPI, $LANG;
-	
-	
-	
+
+
+
 	$where="";
 	$order="";
 	$score="";
 
 	// Build query
 	if (isset($_SESSION["glpiID"])){
-		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true) . " AND "; 
+		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true) . " AND ";
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
 			$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1) AND ";
 		}
-	}	
+	}
 
 	if ($faq){ // helpdesk
 		$where .= " (glpi_kbitems.faq = '1') AND ";
 	}
-	
+
 	// a search with $contains
-	if (strlen($contains)) { 
+	if (strlen($contains)) {
 		$search=unclean_cross_side_scripting_deep($contains);
 		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
 		$where_1=$where." MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 		$order="order by SCORE DESC";
 
 		// preliminar query to allow alternate search if no result with fulltext
-		$query_1 = "SELECT count(ID) 
-			FROM glpi_kbitems 
+		$query_1 = "SELECT count(ID)
+			FROM glpi_kbitems
 			WHERE $where_1";
 		$result_1 = $DB->query($query_1);
 		$numrows_1 =  $DB->result($result_1,0,0);
 
 		if ($numrows_1<=0) {// not result this fulltext try with alternate search
-			
+
 			$search1 = array(
 			/* 1 */		'/\\\"/',
 			/* 2 */		"/\+/",
@@ -269,12 +262,12 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 			/* 8 */		"/\)/",
 			/* 9 */		"/\-/"
 					);
-  			
+
 
  			$contains = preg_replace($search1,"", $contains);
 
-	
-			$where.= " (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 
+
+			$where.= " (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ;
 		 } else {
 			$where=$where_1;
 		}
@@ -283,17 +276,17 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$where.="(glpi_kbitems.categoryID = '$parentID') ";
 		$order="ORDER BY glpi_kbitems.question ASC";
 	}
-	
+
 	if (!$start) {
 		$start = 0;
 	}
 
 	$query = "SELECT  * $score FROM glpi_kbitems";
  	$query.=" WHERE $where $order";
-	
-	
 
-	// Get it from database	
+
+
+	// Get it from database
 	if ($result = $DB->query($query)) {
 		$numrows =  $DB->numrows($result);
 		$list_limit=$_SESSION['glpilist_limit'];
@@ -348,8 +341,8 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 					echo displaySearchItem($output_type,html_clean(unclean_cross_side_scripting_deep(utf8_html_entity_decode($data["answer"]))),$item_num,$row_num);
 				}
 				// le cumul de fonction me plait pas TODO à optimiser.
-				
-						
+
+
 
 				// End Line
 				echo displaySearchEndLine($output_type);
@@ -383,18 +376,18 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
  * @return nothing (display table)
  **/
 function showKbViewGlobal($target,$faq=0){
-	
+
 	echo "<div>";
 	echo "<table  class='center-h' width='950px'><tr><td align='center' valign='middle'>";
-			
+
 	showKbRecentPopular($target,"recent",$faq);
-		
+
 	echo "</td><td align='center' valign='middle'>";
-		
+
 	showKbRecentPopular($target,"popular",$faq);
-		
+
 	echo "</td></tr>";
-				
+
 	echo "</table>";
 	echo "</div>";
 }
@@ -407,10 +400,10 @@ function showKbViewGlobal($target,$faq=0){
  * @return nothing (display table)
  **/
 function showKbRecentPopular($target,$type,$faq=0){
-	
+
 	global $DB,$CFG_GLPI, $LANG;
-	
-	
+
+
 	if ($type=="recent"){
 		$orderby="ORDER BY date DESC";
 		$title=$LANG['knowbase'][29];
@@ -418,10 +411,10 @@ function showKbRecentPopular($target,$type,$faq=0){
 		$orderby="ORDER BY view DESC";
 		$title=$LANG['knowbase'][30];
 	}
-		
+
 	$faq_limit="";
 	if (isset($_SESSION["glpiID"])){
-		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true); 
+		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true);
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
@@ -429,11 +422,11 @@ function showKbRecentPopular($target,$type,$faq=0){
 		} else {
 			$faq_limit .= " WHERE 1";
 		}
-	}	
+	}
 
 	if($faq){ // FAQ
 		$faq_limit.=" AND (glpi_kbitems.faq = '1')";
-	} 
+	}
 
 	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
 	//echo $query;
@@ -444,15 +437,15 @@ function showKbRecentPopular($target,$type,$faq=0){
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th>".$title."</th></tr>";
-	
+
 		while ($data=$DB->fetch_array($result)) {
 			echo "<tr class='tab_bg_2'><td class='left'><a ".($data['faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
 		}
 		echo "</table>";
 	}
 }
-	
-	
+
+
 
 
 
@@ -466,7 +459,7 @@ function kbItemMenu($ID)
 {
 	global $LANG, $CFG_GLPI;
 
-	$ki= new kbitem;	
+	$ki= new kbitem;
 
 	if (!$ki->can($ID,'r')) {
 		return false;
@@ -487,7 +480,7 @@ function kbItemMenu($ID)
 
 	if ($edit) {
 		echo "<tr>";
-		
+
 		if ($editFAQ) {
 			if($isFAQ) {
 				echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG['knowbase'][7]."' title='".$LANG['knowbase'][7]."'></a></td>\n";
@@ -495,12 +488,12 @@ function kbItemMenu($ID)
 				echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG['knowbase'][5]."' title='".$LANG['knowbase'][5]."'></a></td>\n";
 			}
 		}
-		
+
 		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8]."' title='".$LANG['knowbase'][8]."'></a></td>\n";
 		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG['common'][55])."','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes')\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9]."' title='".$LANG['knowbase'][9]."'></a></td>";
 
 		echo "</tr>\n";
-	} 
+	}
 
 	echo "</table><br>\n";
 }
@@ -513,7 +506,7 @@ function kbItemMenu($ID)
  *
  * @param $ID integer
  * @param $linkauthor display author link
- * 
+ *
  * @return nothing (display item : question and answer)
  **/
 function ShowKbItemFull($ID,$linkauthor=true){
@@ -525,46 +518,46 @@ function ShowKbItemFull($ID,$linkauthor=true){
 
 	//update counter view
 	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
-	$DB->query($query);	
+	$DB->query($query);
 
-	$ki= new kbitem;	
+	$ki= new kbitem;
 
 	if ($ki->getFromDB($ID)){
 		if ($ki->fields["faq"]){
-			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")&&!haveRight("knowbase","r")) return false;	
+			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")&&!haveRight("knowbase","r")) return false;
 		}
-		else 
-			if (!haveRight("knowbase","r")) return false;	
-	
-		
-	
-	
-	
+		else
+			if (!haveRight("knowbase","r")) return false;
+
+
+
+
+
 		$categoryID = $ki->fields["categoryID"];
 		$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
-	
+
 		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
-		
+
 		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
-	
+
 		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$ki->type))) {
-		
+
 			echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
 			echo "</h2>";
-		
+
 			echo $ki->fields["question"];
-		
+
 			echo "</td></tr>\n";
 			echo "<tr  class='tab_bg_3'><td class='left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
 			echo "</h2>\n";
-		
+
 			$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
-		
+
 			echo "<div id='kbanswer'>".$answer."</div>";
 			echo "</td></tr>";
-		
+
 			echo "<tr><th class='tdkb'>";
 			if($ki->fields["author"]){
 				echo $LANG['common'][37]." : ";
@@ -581,19 +574,19 @@ function ShowKbItemFull($ID,$linkauthor=true){
 			}
 			if($ki->fields["date"]){
 				echo $LANG['knowbase'][27]." : ". convDateTime($ki->fields["date"]);
-			}	
-		
+			}
+
 			echo "</th><th class='tdkb'>";
 			if($ki->fields["date_mod"]){
 				echo  $LANG['common'][26]." : ".convDateTime($ki->fields["date_mod"])."&nbsp;&nbsp;|&nbsp;&nbsp; ";
 			}
 			echo $LANG['knowbase'][26]." : ".$ki->fields["view"]."</th></tr>";
-		
+
 			echo "</table><br>";
-			
+
 			$CFG_GLPI["cache"]->end();
 		}
-		return true;	
+		return true;
 	} else return false;
 }
 
@@ -607,11 +600,11 @@ function ShowKbItemFull($ID,$linkauthor=true){
 /**
  * Add kb item to the public FAQ
  *
- * 
+ *
  * @param $ID integer
  *
- * 
- * @return nothing 
+ *
+ * @return nothing
  **/
 function KbItemaddtofaq($ID)
 {
@@ -622,11 +615,11 @@ function KbItemaddtofaq($ID)
 /**
  * Remove kb item from the public FAQ
  *
- * 
+ *
  * @param $ID integer
  *
- * 
- * @return nothing 
+ *
+ * @return nothing
  **/
 function KbItemremovefromfaq($ID)
 {
@@ -637,19 +630,19 @@ function KbItemremovefromfaq($ID)
 
 
 /**
- * 
- * get FAQ Categories
- * 
- * 
  *
- * 
+ * get FAQ Categories
+ *
+ *
+ *
+ *
  * @return $catNumbers
  **/
 /* NOT_USED
 function getFAQCategories()
 {
 
-	global $DB;	
+	global $DB;
 
 	$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1')";
 	$toprocess=array();
@@ -673,7 +666,7 @@ function getFAQCategories()
 		$query2="SELECT DISTINCT * FROM glpi_dropdown_kbcategories WHERE '0'='1' ";
 		foreach ($toprocess as $key)
 			$query2.=  " OR ID = '$key' ";
-	
+
 		$toprocess=array();
 
 		if ($result=$DB->query($query2)){
@@ -690,11 +683,11 @@ function getFAQCategories()
 		}
 	}
 
-	
+
 
 	return($catNumbers);
 
 }
 */
-	
+
 ?>
