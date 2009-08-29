@@ -1265,43 +1265,44 @@ function helpHeader($title,$url='') {
             }
          }
       }
-      if (isset($plugins) && count($plugins)>0) {
-         $list=array();
-         foreach ($plugins as $key => $val) {
-            $list[$key]=$val["name"];
-         }
-         asort($list);
-         echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
-         echo "<a href='#' title=\"".$LANG['common'][29]."\" class='itemP'>".
-                $LANG['common'][29]."</a>";  // default none
-         echo "<ul class='ssmenu'>";
-         // list menu item
-         foreach ($list as $key => $val) {
-            echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".
-                        $plugins[$key]["name"]."</a></li>\n";
-         }
-         echo "</ul></li>";
-      }
-      echo "</ul>";
-      echo "<div class='sep'></div>";
-      echo "</div>";
-
-      // End navigation bar
-      // End headline
-      ///Le sous menu contextuel 1
-      echo "<div id='c_ssmenu1'>";
-      echo "</div>";
-
-      //  Le fil d ariane
-      echo "<div id='c_ssmenu2'>";
-      echo "<ul>";
-      echo "<li><a href='#' title=''>Helpdesk > </a></li>";
-      showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
-      echo "</ul></div>";
-
-      echo "</div>"; // fin header
-      echo "<div id='page' >";
    }
+   if (isset($plugins) && count($plugins)>0) {
+      $list=array();
+      foreach ($plugins as $key => $val) {
+         $list[$key]=$val["name"];
+      }
+      asort($list);
+      echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
+      echo "<a href='#' title=\"".$LANG['common'][29]."\" class='itemP'>".
+             $LANG['common'][29]."</a>";  // default none
+      echo "<ul class='ssmenu'>";
+      // list menu item
+      foreach ($list as $key => $val) {
+         echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".
+                     $plugins[$key]["name"]."</a></li>\n";
+      }
+      echo "</ul></li>";
+   }
+   echo "</ul>";
+   echo "<div class='sep'></div>";
+   echo "</div>";
+
+   // End navigation bar
+   // End headline
+   ///Le sous menu contextuel 1
+   echo "<div id='c_ssmenu1'>";
+   echo "</div>";
+
+   //  Le fil d ariane
+   echo "<div id='c_ssmenu2'>";
+   echo "<ul>";
+   echo "<li><a href='#' title=''>Helpdesk > </a></li>";
+   showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+   echo "</ul></div>";
+
+   echo "</div>"; // fin header
+   echo "<div id='page' >";
+
    // call function callcron() every 5min
    callCron();
    displayMessageAfterRedirect();
