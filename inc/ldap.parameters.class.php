@@ -34,111 +34,118 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
 
 /// LDAP criteria class
 class LdapCriteria extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct() {
-		$this->table = "glpi_rulesldapparameters";
+   /**
+    * Constructor
+   **/
+   function __construct() {
+      $this->table = "glpi_rulesldapparameters";
+   }
 
-	}
+   /// Get parameters list
+   function getParametersList() {
+      global $DB;
 
-	/// Get parameters list
-	function getParametersList() {
-		global $DB;
-		$sql = "SELECT * 
-			FROM `".$this->table."` 
-			ORDER BY name ASC";
-		$result = $DB->query($sql);
-		$parameters = array ();
+      $sql = "SELECT *
+              FROM `".$this->table."`
+              ORDER BY `name` ASC";
+      $result = $DB->query($sql);
+      $parameters = array ();
 
-		while ($datas = $DB->fetch_array($result))
-			$parameters[] = $datas;
+      while ($datas = $DB->fetch_array($result)) {
+         $parameters[] = $datas;
+      }
 
-		return $parameters;
-	}
+      return $parameters;
+   }
 
-	/**
-	 * Print the ldap criteria form
-	 *
-	 *@param $target filename : where to go when done.
-	 **/
-	function showForm($target) {
-		global $LANG,$CFG_GLPI;
-		$canedit = haveRight("config", "w");
-		$ID=-1;
-		$parameters = $this->getParametersList();
+   /**
+    * Print the ldap criteria form
+    *
+    *@param $target filename : where to go when done.
+    **/
+   function showForm($target) {
+      global $LANG,$CFG_GLPI;
 
-		echo "<form name='entityaffectation_form' id='ldapcriterias_form' method='post' action=\"$target\">";
+      $canedit = haveRight("config", "w");
+      $ID=-1;
+      $parameters = $this->getParametersList();
 
-		if ($canedit) {
-			echo "<div class='center'>";
-			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG['ruleldap'][3] . "</tr><tr><td class='tab_bg_2' align='center'>";
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG['common'][16] . ":";
-			autocompletionTextField("name", $this->table, "name", "", 40);
-			echo $LANG['setup'][601] . ":";
-			autocompletionTextField("value", $this->table, "value", "", 40);
-			echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
-			echo "</td></tr>";
-			
-			echo "</table></div><br>";
-		}
+      echo "<form name='entityaffectation_form' id='ldapcriterias_form' method='post' ".
+           "action=\"$target\">";
 
-		if (!count($parameters)){
-			echo "<center>".$LANG['ruleldap'][2]."</center>";
-		} else {
-			echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG['common'][53]." ".$LANG['ruleldap'][1] . "</th></tr>";
-			echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG['common'][16]."</td><td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG['ruleldap'][3] . "</tr>";
+         echo "<tr><td class='tab_bg_2 center'>";
+         echo "</td><td class='tab_bg_2 center'>";
+         echo $LANG['common'][16] . "&nbsp;:";
+         autocompletionTextField("name", $this->table, "name", "", 40);
+         echo $LANG['setup'][601] . "&nbsp;:";
+         autocompletionTextField("value", $this->table, "value", "", 40);
+         echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table></div><br>";
+      }
 
-			foreach ($parameters as $parameter) {
-				echo "<tr class='tab_bg_1'>";
+      if (!count($parameters)) {
+         echo "<center>".$LANG['ruleldap'][2]."</center>";
+      } else {
+         echo "<div class='center'><table class='tab_cadrehov'>";
+         echo "<tr><th colspan='3'>" . $LANG['common'][53]." ".$LANG['ruleldap'][1] . "</th></tr>";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" . $LANG['common'][16]."</td>";
+         echo "<td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
 
-				if ($canedit) {
-					echo "<td width='10'>";
-					$sel = "";
-					if (isset ($_GET["select"]) && $_GET["select"] == "all")
-						$sel = "checked";
-					echo "<input type='checkbox' name='item[" . $parameter["id"] . "]' value='1' $sel>";
-					echo "</td>";
-				}
+         foreach ($parameters as $parameter) {
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td width='10'>";
+               $sel = "";
+               if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+                  $sel = "checked";
+               }
+               echo "<input type='checkbox' name='item[" . $parameter["id"] . "]' value='1' $sel>";
+               echo "</td>";
+            }
+            echo "<td>" . $parameter["name"] . "</td>";
+            echo "<td>" . $parameter["value"] . "</td>";
+            echo "</tr>";
+         }
+         echo "</table></div>";
 
-				echo "<td>" . $parameter["name"] . "</td>";
-				echo "<td>" . $parameter["value"] . "</td>";
-				echo "</tr>";
-			}
-			echo "</table></div>";
+         if ($canedit) {
+            echo "<div class='center'>";
+            echo "<table width='80%'>";
+            echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''>";
+            echo "</td><td class='center'>";
+            echo "<a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" .
+                   $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a>";
+            echo "</td><td>/</td><td class='center'>";
+            echo "<a onclick= \"if ( unMarkCheckboxes('ldapcriterias_form') ) return false;\" href='" .
+                   $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
+            echo "</td><td class='left' width='80%'>";
+            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
+                   "\" class='submit'>";
+            echo "</td></table></div>";
+         }
+      }
+      echo "</form>";
+   }
 
-			if ($canedit) {
-				echo "<div class='center'>";
-				echo "<table  width='80%'>";
-				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
-	
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
-				echo "</td><td align='left' width='80%'>";
-				echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
-				echo "</td>";
-				echo "</table>";
-	
-				echo "</div>";
-	
-			}
-		}
-		echo "</form>";
-	}
-	
-	function prepareInputForAdd($input){
-		//LDAP parameters MUST be in lower case
-		//because the are retieved in lower case  from the directory
-		$input["value"] = utf8_strtolower($input["value"]);
-		return $input;
-	}
+   function prepareInputForAdd($input) {
+
+      //LDAP parameters MUST be in lower case
+      //because the are retieved in lower case  from the directory
+      $input["value"] = utf8_strtolower($input["value"]);
+      return $input;
+   }
+
 }
 
 ?>
