@@ -88,257 +88,241 @@
 // et fait touch() sauf si ca n'est pas souhaite
 // (regle aussi le probleme des droits sur les fichiers touch())
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 /// Cron class
 class Cron {
 
-	/// Array of defined tasks
-	var $taches=array(); 
+   /// Array of defined tasks
+   var $taches=array();
 
-	/**
-	 * Constructor
-	 * @param $taches  task array for manual use
-	 **/
-	function __construct($taches=array()){
-		global $CFG_GLPI;
-		if(count($taches)>0){
-			$this->taches=$taches;
-		}else{
-			// la cle est la tache, la valeur le temps minimal, en secondes, entre
-			// deux memes taches ex $this->taches["test"]=30;
+   /**
+    * Constructor
+    * @param $taches  task array for manual use
+    **/
+   function __construct($taches=array()) {
+      global $CFG_GLPI;
 
-			if ($CFG_GLPI["use_ocs_mode"]){
-				// Every 5 mns
-				$this->taches["ocsng"]=300;
-			}
-			// Mailing alerts if mailing activated
-			if ($CFG_GLPI["use_mailing"]){
-				if ($CFG_GLPI["cartridges_alert_repeat"]>0)
-					$this->taches["cartridge"]=$CFG_GLPI["cartridges_alert_repeat"];
-				if ($CFG_GLPI["consumables_alert_repeat"]>0)
-					$this->taches["consumable"]=$CFG_GLPI["consumables_alert_repeat"];
-			}
-			if ($CFG_GLPI["use_licenses_alert"]>0){
-				$this->taches["software"]=DAY_TIMESTAMP;
-			}
+      if(count($taches)>0) {
+         $this->taches=$taches;
+      } else {
+         // la cle est la tache, la valeur le temps minimal, en secondes, entre deux memes taches
+         // ex $this->taches["test"]=30;
+         if ($CFG_GLPI["use_ocs_mode"]) {
+            // Every 5 mns
+            $this->taches["ocsng"]=300;
+         }
+         // Mailing alerts if mailing activated
+         if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["cartridges_alert_repeat"]>0) {
+               $this->taches["cartridge"]=$CFG_GLPI["cartridges_alert_repeat"];
+            }
+            if ($CFG_GLPI["consumables_alert_repeat"]>0) {
+               $this->taches["consumable"]=$CFG_GLPI["consumables_alert_repeat"];
+            }
+         }
+         if ($CFG_GLPI["use_licenses_alert"]>0) {
+            $this->taches["software"]=DAY_TIMESTAMP;
+         }
+         $this->taches["contract"]=DAY_TIMESTAMP;
+         $this->taches["infocom"]=DAY_TIMESTAMP;
+         $this->taches["logs"]=DAY_TIMESTAMP;
+         $this->taches["optimize"]=DAY_TIMESTAMP;
+         $this->taches["mailgate"]=600;
+         $this->taches["dbreplicate"]=300;
 
-			$this->taches["contract"]=DAY_TIMESTAMP;
-			$this->taches["infocom"]=DAY_TIMESTAMP;
-			$this->taches["logs"]=DAY_TIMESTAMP;
-			$this->taches["optimize"]=DAY_TIMESTAMP;
+         // Auto update check
+         if ($CFG_GLPI["auto_update_check"]>0) {
+            $this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
+         }
+         //Garbage collector for expired session file
+         $this->taches["session"]=DAY_TIMESTAMP;
+         //Plugins cron
+         $cronplug=getPluginsCronJobs();
+         if (is_array($cronplug) && count($cronplug)) {
+            $this->taches=array_merge($this->taches,$cronplug);
+         }
+      }
+   }
 
-			$this->taches["mailgate"]=600;
-			$this->taches["dbreplicate"]=300;
-			
-			// Auto update check
-			if ($CFG_GLPI["auto_update_check"]>0){
-				$this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
-			}
-			//Garbage collector for expired session file
-			$this->taches["session"]=DAY_TIMESTAMP;
-			//Plugins cron  
-			$cronplug=getPluginsCronJobs(); 
-			if (is_array($cronplug)&&count($cronplug)){ 
-				$this->taches=array_merge($this->taches,$cronplug); 
-			} 
-		}
-			
-			
-		
-	}
+   /**
+    * Launch cron
+    **/
+   function launch() {
+      global $CFG_GLPI,$LANG;
 
-	/**
-	 * Launch cron
-	 **/
-	function launch() {
+      $t = time();
+      // Quelle est la tache la plus urgente ?
+      $tache = FALSE;
+      $tmin = $t;
 
-		global $CFG_GLPI,$LANG;
+      foreach ($this->taches as $nom => $periode) {
+         $lock = GLPI_CRON_DIR. '/' . $nom . '.lock';
+         if (file_exists($lock)) {
+            $date_lock = @filemtime($lock);
+         } else {
+            $date_lock=0;
+         }
+         if ($date_lock + $periode < $tmin) {
+            $tmin = $date_lock + $periode;
+            $tache = $nom;
+            $last = $date_lock;
+         }
+         // debug : si la date du fichier est superieure a l'heure actuelle,
+         // c'est que le serveur a (ou a eu) des problemes de reglage horaire
+         // qui peuvent mettre en peril les taches cron : signaler dans le log
+         // (On laisse toutefois flotter sur une heure, pas la peine de s'exciter pour si peu)
+      }
+      if (!$tache) {
+         return;
+      }
 
-		$t = time();
+      // Interdire des taches paralleles, de maniere a eviter toute concurrence
+      // entre deux appli partageant la meme base, ainsi que toute interaction
+      // bizarre entre des taches differentes
+      // Ne rien lancer non plus si serveur naze evidemment
 
-		// Quelle est la tache la plus urgente ?
-		$tache = FALSE;
-		$tmin = $t;
+      if (!$this->get_lock('cron')) {
+         return;
+      }
 
+      // Un autre lock dans _DIR_SESSIONS, pour plus de securite
+      $lock = GLPI_CRON_DIR. '/'. $tache . '.lock';
+      if ($this->touch($lock, $this->taches[$tache])) {
+         // preparer la tache
+         $this->timer('tache');
+         $fonction = 'cron_' . $tache;
+         $fct_trouve=false;
+         $expl = explode('_',$tache);
+         if ($expl[0]=='plugin' && isset($expl[1])) {
+            // Plugin case / Load hook
+            usePlugin($expl[1],true);
+         } else if (!function_exists($fonction)) {
+            // pas trouvé de fonction -> inclusion de la fonction
+            if (file_exists(GLPI_ROOT.'/inc/'.$tache.'.function.php')) {
+               include_once(GLPI_ROOT.'/inc/'.$tache.'.function.php');
+            }
+            if (file_exists(GLPI_ROOT.'/inc/'.$tache.'.class.php')) {
+               include_once(GLPI_ROOT.'/inc/'.$tache.'.class.php');
+            }
+         } else {
+            $fct_trouve=true;
+         }
 
-		foreach ($this->taches as $nom => $periode) {
-			$lock = GLPI_CRON_DIR. '/' . $nom . '.lock';
-			if (file_exists($lock)){
-				$date_lock = @filemtime($lock);
-			} else {
-				$date_lock=0;
-			}
-			if ($date_lock + $periode < $tmin) {
-				$tmin = $date_lock + $periode;
-				$tache = $nom;
-				$last = $date_lock;
-			}
-			// debug : si la date du fichier est superieure a l'heure actuelle,
-			// c'est que le serveur a (ou a eu) des problemes de reglage horaire
-			// qui peuvent mettre en peril les taches cron : signaler dans le log
-			// (On laisse toutefois flotter sur une heure, pas la peine de s'exciter
-			// pour si peu)
-			//		else if ($date_lock > $t + HOUR_TIMESTAMP)
-			//echo "Erreur de date du fichier $lock : $date_lock > $t !";
-		}
-		if (!$tache) return;
-
-		// Interdire des taches paralleles, de maniere a eviter toute concurrence
-		// entre deux appli partageant la meme base, ainsi que toute interaction
-		// bizarre entre des taches differentes
-		// Ne rien lancer non plus si serveur naze evidemment
-
-		if (!$this->get_lock('cron')) {
-			//echo "tache $tache: pas de lock cron";
-			return;
-		}
-
-		// Un autre lock dans _DIR_SESSIONS, pour plus de securite
-		$lock = GLPI_CRON_DIR. '/'. $tache . '.lock';
-		if ($this->touch($lock, $this->taches[$tache])) {
-			// preparer la tache
-			$this->timer('tache');
-		
-			$fonction = 'cron_' . $tache;
-
-			$fct_trouve=false;
-
-			$expl = explode('_',$tache);
-			if ($expl[0]=='plugin' && isset($expl[1])) {
-				// Plugin case / Load hook
-				usePlugin($expl[1],true);
-			}
-			else if (!function_exists($fonction)){
-				// pas trouvé de fonction -> inclusion de la fonction 
-				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.function.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.function.php');
-				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.class.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.class.php');
-
-			} else { $fct_trouve=true;}
-
-			if ($fct_trouve||function_exists($fonction)){
-				// la fonction a été inclus ou la fonction existe
-				// l'appeler
-				logInFile("cron","Launch $tache\n");
+         if ($fct_trouve || function_exists($fonction)) {
+            // la fonction a été inclus ou la fonction existe
+            // l'appeler
+            logInFile("cron","Launch $tache\n");
             $saveglpiid="";
             // Save glpiID
-            if (isset($_SESSION["glpiID"])){
+            if (isset($_SESSION["glpiID"])) {
                $saveglpiid=$_SESSION["glpiID"];
             }
             $_SESSION["glpiID"]="cron_".$tache;
-				$code_de_retour = $fonction($last);
+            $code_de_retour = $fonction($last);
 
-				// si la tache a eu un effet : log
-				if ($code_de_retour) {
-					//echo "cron: $tache (" . $this->timer('tache') . ")";
-					// eventuellement modifier la date du fichier
-
-					if ($code_de_retour < 0) {
-						@touch($lock, (0 - $code_de_retour));
-					} else {// Log Event 
-//						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG['log'][45] );
-						logInFile("cron","$tache task was done (" . $this->timer('tache') . ")\n");
-					}
-				} else {
-					logInFile("cron","$tache Nothing to do (" . $this->timer('tache') . ")\n");
-				} 
-
-			} else {
-				logInFile("cron","Can't run task ($tache: missing function $fonction)\n");
-			}
-         if (empty($saveglpiid)){
+            // si la tache a eu un effet : log
+            if ($code_de_retour) {
+               // eventuellement modifier la date du fichier
+               if ($code_de_retour < 0) {
+                  @touch($lock, (0 - $code_de_retour));
+               } else {
+                  logInFile("cron","$tache task was done (" . $this->timer('tache') . ")\n");
+               }
+            } else {
+               logInFile("cron","$tache Nothing to do (" . $this->timer('tache') . ")\n");
+            }
+         } else {
+            logInFile("cron","Can't run task ($tache: missing function $fonction)\n");
+         }
+         if (empty($saveglpiid)) {
             unset($_SESSION["glpiID"]);
          } else {
             $_SESSION["glpiID"]=$saveglpiid;
          }
+      } // touch
+      // relacher le lock mysql
+      $this->release_lock('cron');
+   }
 
-		} // touch
+   /**
+    * Touch a file : set time of a file and return if file was last touch before the defined date
+    * @param $fichier file to touch
+    * @param $duree delay in past to touch the file (0: now)
+    * @param $touch do touch action ?
+    **/
+   function touch($fichier, $duree=0, $touch=true) {
 
-		// relacher le lock mysql
-		$this->release_lock('cron');
-	}
+      if (!($exists = @is_readable($fichier))
+          || ($duree == 0) || (@filemtime($fichier) < time() - $duree)) {
+         if ($touch) {
+            if (!@touch($fichier)) {
+               @unlink($fichier); @touch($fichier);
+            };
+            if (!$exists) {
+               @chmod($fichier, 0666);
+            }
+         }
+         return true;
+      }
+      return false;
+   }
 
+   /**
+    * Timer used to computer time of a process
+    * Launch twice to computer the delay
+    * @param $t timer name used
+    **/
+   function timer($t='rien') {
 
-	/**
-	 * Touch a file : set time of a file and return if file was last touch before the defined date
-	 * @param $fichier file to touch
-	 * @param $duree delay in past to touch the file (0: now)
-	 * @param $touch do touch action ?
-	 **/
-	function touch($fichier, $duree=0, $touch=true) {
-		if (!($exists = @is_readable($fichier))
-				|| ($duree == 0)
-				|| (@filemtime($fichier) < time() - $duree)) {
-			if ($touch) {
-				if (!@touch($fichier)) { @unlink($fichier); @touch($fichier); };
-				if (!$exists) @chmod($fichier, 0666);
-			}
-			return true;
-		}
-		return false;
-	}
+      static $time;
+      $a=time(); $b=microtime();
 
+      if (isset($time[$t])) {
+         $p = $a + $b - $time[$t];
+         unset($time[$t]);
+         return sprintf("%.2fs", $p);
+      } else {
+         $time[$t] = $a + $b;
+      }
+   }
 
+   /** Set a local lock
+   *@param $nom lock name
+   *@param $timeout lock timeout
+   */
+   function get_lock($nom, $timeout = 0) {
+      global $DB, $CFG_GLPI;
 
+      // Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
+      define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
+      $nom .= _LOCK_TIME;
 
-	/**
-	 * Timer used to computer time of a process
-	 * Launch twice to computer the delay
-	 * @param $t timer name used
-	 **/
-	function timer($t='rien') {
-		static $time;
-		$a=time(); $b=microtime();
+      $nom = addslashes($nom);
+      $query = "SELECT GET_LOCK('$nom', $timeout)";
+      $result = $DB->query($query);
+      list($lock_ok) = $DB->fetch_array($result);
 
-		if (isset($time[$t])) {
-			$p = $a + $b - $time[$t];
-			unset($time[$t]);
-			return sprintf("%.2fs", $p);
-		} else
-			$time[$t] = $a + $b;
-	}
+      if (!$lock_ok) {
+         log("pas de lock sql pour $nom");
+      }
+      return $lock_ok;
+   }
 
+   /** Unets a local lock
+   *@param $nom lock name
+   */
+   function release_lock($nom) {
+      global $DB,$CFG_GLPI;
 
+      $nom .= _LOCK_TIME;
 
-	/** Set a local lock
-	*@param $nom lock name
-	*@param $timeout lock timeout
-	*/
-	function get_lock($nom, $timeout = 0) {
-		global $DB, $CFG_GLPI;
-
-		// Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
-		define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
-		$nom .= _LOCK_TIME;
-
-		$nom = addslashes($nom);
-		$query = "SELECT GET_LOCK('$nom', $timeout)";
-		$result = $DB->query($query);
-		list($lock_ok) = $DB->fetch_array($result);
-
-		if (!$lock_ok) log("pas de lock sql pour $nom");
-		return $lock_ok;
-	}
-
-	/** Unets a local lock
-	*@param $nom lock name
-	*/
-	function release_lock($nom) {
-		global $DB,$CFG_GLPI;
-
-		$nom .= _LOCK_TIME;
-
-		$nom = addslashes($nom);
-		$query = "SELECT RELEASE_LOCK('$nom')";
-		$result = $DB->query($query);
-	}
-
-
-
-
-
+      $nom = addslashes($nom);
+      $query = "SELECT RELEASE_LOCK('$nom')";
+      $result = $DB->query($query);
+   }
 }
 
 ?>

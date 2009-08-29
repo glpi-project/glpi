@@ -482,15 +482,13 @@ function getMemoryLimit () {
          switch ($matches[2]) {
             case "G" :
                $mem*=1024;
-               break;
-
+               // nobreak;
             case "M" :
                $mem*=1024;
-               break;
-
+               // nobreak;
             case "K" :
                $mem*=1024;
-               break;
+               // nobreak;
          }
       }
    }
