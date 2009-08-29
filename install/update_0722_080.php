@@ -297,7 +297,7 @@ function update0722to080() {
                                  'glpi_documents_items','glpi_infocoms','glpi_bookmarks',
                                  'glpi_bookmarks_users','glpi_logs','glpi_links_itemtypes',
                                  'glpi_networkports','glpi_reservationsitems','glpi_tickets')),
-                           array('to' => 'devicetype', 
+                           array('to' => 'devicetype',
                               'noindex' => array('glpi_computers_devices'),
                               'tables' => array('glpi_computers_devices')),
                      ),
@@ -596,31 +596,31 @@ function update0722to080() {
                      ),
    'type' => array(array('to' => 'cartridgesitemstypes_id',
                            'tables' => array('glpi_cartridgesitems')),
-                  array('to' => 'computerstypes_id', 
+                  array('to' => 'computerstypes_id',
                            'tables' => array('glpi_computers')),
                   array('to' => 'consumablesitemstypes_id',
                            'tables' => array('glpi_consumablesitems')),
-                  array('to' => 'contactstypes_id', 
+                  array('to' => 'contactstypes_id',
                            'tables' => array('glpi_contacts')),
-                  array('to' => 'devicescasestypes_id', 
+                  array('to' => 'devicescasestypes_id',
                            'tables' => array('glpi_devicescases')),
                   array('to' => 'devicesmemoriestypes_id',
                            'tables' => array('glpi_devicesmemories')),
-                  array('to' => 'supplierstypes_id', 
+                  array('to' => 'supplierstypes_id',
                            'tables' => array('glpi_suppliers')),
-                  array('to' => 'monitorstypes_id', 
+                  array('to' => 'monitorstypes_id',
                            'tables' => array('glpi_monitors')),
                   array('to' => 'networkequipmentstypes_id',
                            'tables' => array('glpi_networkequipments')),
-                  array('to' => 'peripheralstypes_id', 
+                  array('to' => 'peripheralstypes_id',
                            'tables' => array('glpi_peripherals')),
-                  array('to' => 'phonestypes_id', 
+                  array('to' => 'phonestypes_id',
                            'tables' => array('glpi_phones')),
-                  array('to' => 'printerstypes_id', 
+                  array('to' => 'printerstypes_id',
                            'tables' => array('glpi_printers')),
                   array('to' => 'softwareslicensestypes_id',
                            'tables' => array('glpi_softwareslicenses')),
-                  array('to' => 'userscategories_id', 
+                  array('to' => 'userscategories_id',
                            'tables' => array('glpi_users')),
                   array('to' => 'itemtype', 'noindex' => array('glpi_computers_items'),
                            'tables' => array('glpi_computers_items','glpi_displayprefs')),
@@ -655,7 +655,7 @@ function update0722to080() {
                if (isset($tab['default']) && isset($tab['default'][$table])) {
                   $default_value=$tab['default'][$table];
                }
-               // Manage NULL fields 
+               // Manage NULL fields
                $query="UPDATE `$table` SET `$oldname`='$default_value' WHERE `$oldname` IS NULL ";
                $DB->query($query) or die("0.80 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
 
@@ -954,7 +954,7 @@ function update0722to080() {
                               'glpi_documents','glpi_suppliers','glpi_entitiesdatas',
                               'glpi_printers','glpi_monitors','glpi_phones','glpi_peripherals',
                               'glpi_networkequipments','glpi_softwares')),
-      
+
       'ldap_condition' =>  array('to' => 'condition',
                            'tables' => array('glpi_authldaps')),
       'import_printers' =>  array('to' => 'import_printer','long'=>true,
@@ -1057,7 +1057,7 @@ function update0722to080() {
          $default="DEFAULT NULL";
          if (isset($update['default']) && !is_null($update['default'])) {
             $default="DEFAULT '".$update['default']."'";
-         }         
+         }
 
          // Rename field
          if (FieldExists($table, $oldname)) {
@@ -1276,7 +1276,7 @@ function update0722to080() {
          $default="DEFAULT NULL";
          if (isset($update['default']) && !is_null($update['default'])) {
             $default="DEFAULT ".$update['default']."";
-         }         
+         }
 
          $NULL="NOT NULL";
          if (isset($update['maybenull']) && $update['maybenull']) {
@@ -1342,7 +1342,7 @@ function update0722to080() {
 //      $DB->query($query) or die("0.80 alter date_fiscale field in glpi_configs " . $LANG['update'][90] . $DB->error());
       $changes['glpi_configs'][]="CHANGE `date_fiscale` `date_tax` DATE NOT NULL DEFAULT '2005-12-31'";
    }
- 
+
    if (FieldExists('glpi_configs', 'sendexpire')) {
 //      $query="ALTER TABLE `glpi_configs` DROP `sendexpire`";
 //      $DB->query($query) or die("0.80 drop sendexpire field in glpi_configs " . $LANG['update'][90] . $DB->error());
@@ -1447,7 +1447,7 @@ function update0722to080() {
 //       $DB->query($query) or die("0.80 add filesize_max field in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
       $changes['glpi_mailcollectors'][]="ADD `filesize_max` INT(11) NOT NULL DEFAULT 2097152";
    }
- 
+
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
@@ -1750,7 +1750,7 @@ function update0722to080() {
 
 
 
-   
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 
    if (!isIndex('glpi_locations', 'name')) {
@@ -1812,7 +1812,7 @@ function update0722to080() {
    if (FieldExists('glpi_bookmarks', 'query')) {
       $olds = array("category", "type", "author","assign",
                "assign_group","assign_ent","recipient","contents","name_contents");
-   
+
       $news   = array("ticketscategories_id", "itemtype", "ice users_id","users_id_assign",
                "groups_id_assign","suppliers_id_assign","users_id_recipient","content","name_content");
 
@@ -1834,7 +1834,7 @@ function update0722to080() {
       }
       // All search
       $olds = array("deleted",);
-   
+
       $news   = array("is_deleted",);
       foreach ($olds as $key => $val) {
          $olds[$key]="&$val=";
@@ -1896,7 +1896,7 @@ function update0722to080() {
 	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
 		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
       $DB->query($query) or die("0.80 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
-	}	
+	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
@@ -1925,10 +1925,10 @@ function update0722to080() {
 			}
 		}
 	}
-   
-	
+
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulescachesoftwares'); // Updating schema
-	
+
 	if (FieldExists("glpi_rulescachesoftwares","ignore_ocs_import")) {
 		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
       $DB->query($query) or die("0.80 alter table glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
@@ -1939,12 +1939,12 @@ function update0722to080() {
 	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
-   
+
    if (!FieldExists("glpi_entities","sons_cache")) {
       $query = "ALTER TABLE `glpi_entities` ADD `sons_cache` LONGTEXT NULL ; ";
       $DB->query($query) or die("0.80 add sons_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
-   
+
    if (!FieldExists("glpi_entities","ancestors_cache")) {
       $query = "ALTER TABLE `glpi_entities` ADD `ancestors_cache` LONGTEXT NULL ; ";
       $DB->query($query) or die("0.80 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
@@ -2044,7 +2044,73 @@ function update0722to080() {
       $DB->query($query) or die("0.80 add template_name field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
 
-	// Display "Work ended." message - Keep this as the last action.
+   displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
+   if (!TableExists('glpi_crontasks')){
+      $query = "CREATE TABLE `glpi_crontasks` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `module` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
+        `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
+        `frequency` int(11) NOT NULL COMMENT 'second between launch',
+        `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
+        `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
+        `mode` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
+        `allowmode` tinyint(4) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
+        `hourmin` tinyint(4) NOT NULL DEFAULT '0',
+        `hourmax` tinyint(4) NOT NULL DEFAULT '24',
+        `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'nomber of days',
+        `lastrun` datetime DEFAULT NULL COMMENT 'last run date',
+        `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
+        `comment` text COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`id`),
+        KEY `module` (`module`,`name`)
+      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+        COMMENT='Task run by internal / external cron.';";
+      $DB->query($query) or die("0.72 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
+
+      $query="INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
+         (1, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (2, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (3, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (4, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (5, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (6, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (7, NULL, 'events', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (8, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (9, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (10, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (11, NULL, 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (12, NULL, 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
+      $DB->query($query) or die("0.72 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
+
+      $query="INSERT INTO `glpi_displayprefs` (`itemtype`, `num`, `rank`, `users_id`)
+         VALUES(49, 16, 2, 0),
+         VALUES(10931, 49, 3, 1, 0),
+         VALUES(10933, 49, 5, 4, 0),
+         VALUES(10932, 49, 4, 3, 0),
+         VALUES(10934, 49, 6, 5, 0);";
+      $DB->query($query) or die("0.72 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_crontaskslogs')){
+      $query = "CREATE TABLE `glpi_crontaskslogs` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `crontask_id` int(11) NOT NULL,
+        `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+        `date` int(11) NOT NULL,
+        `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
+        `elapsed` double NOT NULL COMMENT 'time elapsed since start',
+        `volume` int(11) NOT NULL COMMENT 'for statistics',
+        `content` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'message',
+        PRIMARY KEY (`id`),
+        KEY `crontask_id` (`crontask_id`),
+        KEY `crontasklogs_id` (`crontasklogs_id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
+      $DB->query($query) or die("0.72 create glpi_crontaskslogs" . $LANG['update'][90] . $DB->error());
+   }
+   // TODO migration of config option to task option
+   // TODO clean not used config option
+
+   // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }
 ?>

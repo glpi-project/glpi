@@ -193,6 +193,10 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("entity", $right);
          break;
 
+      case CRONTASK_TYPE :
+         return haveRight("config",$right);
+         break;
+
       case AUTH_MAIL_TYPE :
          return haveRight("config",$right);
          break;
