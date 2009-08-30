@@ -237,7 +237,8 @@ function cron_dbreplicate($task) {
          $task->log($msg);
 
          // Send notification if mail configured
-         if (!empty($CFG_GLPI["dbreplicate_email"])) {
+         if (!empty($CFG_GLPI["dbreplicate_email"])
+             && isValidEmail($CFG_GLPI["dbreplicate_email"])) {
             $mmail = new glpi_phpmailer();
             $mmail->From = $CFG_GLPI["admin_email"];
             $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
