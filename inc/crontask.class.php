@@ -182,6 +182,8 @@ class CronTask extends CommonDBTM{
    /**
     * read the first task which need to be run by cron
     *
+    * @param $mode : allow retrieve task for this mode
+    *
     * @return false if no task to run
     */
    function getNeedToRun($mode=0) {
@@ -190,13 +192,34 @@ class CronTask extends CommonDBTM{
       $hour=date('H');
       $query = "SELECT * FROM `".$this->table."`
          WHERE `state`='".CRONTASK_STATE_WAITING."' ";
+
       if ($mode) {
          $query .= " AND `mode`='$mode' ";
       }
+
+      // Get system lock
+      if (is_file(GLPI_CRON_DIR. '/all.lock')) {
+         // Global lock
+         return false;
+      }
+      $locks=array();
+      foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+         if (preg_match('!.*/(.*).lock$!', $lock, $reg)) {
+            $locks[]=$reg[1];
+         }
+      }
+      if (count($locks)) {
+         $lock = "AND `name` NOT IN ('".implode("','",$locks)."')";
+      } else {
+         $lock = '';
+      }
+
+      // Build query for frequency and allowed hour
       $query .= " AND ((`hourmin`<`hourmax` AND  '$hour'>=`hourmin` AND '$hour'<`hourmax`)
                     OR (`hourmin`>`hourmax` AND ('$hour'>=`hourmin` OR  '$hour'<`hourmax`)))
                   AND (`lastrun` IS NULL
                     OR unix_timestamp(`lastrun`)+`frequency`<unix_timestamp(now()))
+                  $lock
                 ORDER BY `module`, unix_timestamp(`lastrun`)+`frequency`";
 
       if ($result = $DB->query($query)) {
@@ -237,11 +260,10 @@ class CronTask extends CommonDBTM{
          echo $this->fields["module"]." - ";
       }
       echo $this->fields["name"]."</strong></td>";
-      $rowspan=6;
-      echo "<td rowspan='$rowspan' class='middle right'>".$LANG['common'][25].
+      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25].
          "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='$rowspan'>.<textarea cols='45' ".
-         "rows='$rowspan' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='6'>.<textarea cols='45' ".
+         "rows='8' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][30]." : </td><td>";
       echo $this->getDescription($ID,$this->fields["module"],$this->fields["name"]);
@@ -252,8 +274,12 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][0]." : </td><td>";
+      if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
+          || is_file(GLPI_CRON_DIR. '/all.lock')) {
+         echo "<strong>" . $LANG['crontask'][60]."</strong><br>";
+      }
       if ($this->fields["state"]==CRONTASK_STATE_RUNNING) {
-         echo "<strong>" . $this->getStateName(CRONTASK_STATE_RUNNING);
+         echo "<strong>" . $this->getStateName(CRONTASK_STATE_RUNNING)."</strong>";
       } else {
          dropdownArrayValues('state',
             array(CRONTASK_STATE_DISABLE=>$this->getStateName(CRONTASK_STATE_DISABLE),
