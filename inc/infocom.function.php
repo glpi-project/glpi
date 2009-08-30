@@ -516,10 +516,12 @@ function showDisplayInfocomLink($itemtype,$device_id,$update=0) {
 
 /**
  * Cron action on infocom : alert on expired warranty
- * @param $display display informations instead or log in file ?
+ *
+ * @param $task to log, if NULL use display
+ *
  * @return 0 : nothing to do 1 : done with success
  **/
-function cron_infocom($display=false) {
+function cron_infocom($task=NULL) {
    global $DB,$CFG_GLPI,$LANG;
 
    if (!$CFG_GLPI["use_mailing"]) {
@@ -593,10 +595,12 @@ function cron_infocom($display=false) {
          foreach ($message as $entity => $msg) {
             $mail=new MailingAlert("alertinfocom",$msg,$entity);
             if ($mail->send()) {
-               if ($display) {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity).": $msg\n");
+                  $task->addVolume(1);
+               } else {
                   addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).": $msg");
                }
-               logInFile("cron",getDropdownName("glpi_entities",$entity).": $msg\n");
 
                $input["type"]=ALERT_END;
                $input["itemtype"]=INFOCOM_TYPE;
@@ -608,11 +612,12 @@ function cron_infocom($display=false) {
                   unset($alert->fields['id']);
                }
             } else {
-               if ($display) {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
+               } else {
                   addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":
                                           Send infocom alert failed",false,ERROR);
                }
-               logInFile("cron",getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
             }
          }
          return 1;

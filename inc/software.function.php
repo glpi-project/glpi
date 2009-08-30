@@ -1369,13 +1369,15 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comment='') 
 
 /**
  * Cron action on softwares : alert on expired licences
- * @param $display display informations instead or log in file ?
+ *
+ * @param $task to log, if NULL display
+ *
  * @return 0 : nothing to do 1 : done with success
  **/
-function cron_software($display=false){
+function cron_software($task=NULL){
 	global $DB,$CFG_GLPI,$LANG;
 
-	return ; // TODO ???
+	// TODO ??? (seems ok) return ;
 	if (!$CFG_GLPI["use_mailing"]){
 		return false;
 	}
@@ -1387,7 +1389,7 @@ function cron_software($display=false){
 	$items_end=array();
 
 	// Check notice
-	$query="SELECT glpi_softwareslicenses.*, glpi_softwareslicenses.entities_id, glpi_softwares.name as softname
+	$query="SELECT glpi_softwareslicenses.*, glpi_softwares.name as softname
 		FROM glpi_softwareslicenses
 		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.id = glpi_alerts.items_id
 					AND glpi_alerts.itemtype='".SOFTWARELICENSE_TYPE."'
@@ -1408,7 +1410,7 @@ function cron_software($display=false){
 				$items[$data["entities_id"]]=array();
 			}
 
-			$name = $data['softname'].' '.$data['version'].' - '.$data['serial'];
+			$name = $data['softname'].' - '.$data['name'].' - '.$data['serial'];
 
 			// define message alert
 			if (strstr($message[$data["entities_id"]],$name)===false){
@@ -1424,10 +1426,12 @@ function cron_software($display=false){
 		foreach ($message as $entity => $msg){
 			$mail=new MailingAlert("alertlicense",$msg,$entity);
 			if ($mail->send()){
-				if ($display){
-					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
-				}
-				logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
+            if ($task) {
+               $task->log(getDropdownName("glpi_entities",$entity).":  $msg\n");
+               $task->addVolume(1);
+            } else {
+               addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
+            }
 
 				// Mark alert as done
 				$alert=new Alert();
@@ -1442,19 +1446,17 @@ function cron_software($display=false){
 					}
 				}
 			} else {
-				if ($display){
+				if ($task) {
+               $task->log(getDropdownName("glpi_entities",$entity).":  Send licenses alert failed\n");
+            } else {
 					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send licenses alert failed",false,ERROR);
 				}
-				logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send licenses alert failed\n");
 			}
 		}
 		return 1;
 	}
 
 	return 0;
-
-
 }
-
 
 ?>

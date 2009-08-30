@@ -55,27 +55,27 @@ $config = new Config();
 
 if (!empty ($_POST["test_cron_consumables"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_consumable(true);
+	cron_consumable();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_cartridges"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_cartridge(true);
+	cron_cartridge();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_contracts"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_contract(true);
+	cron_contract();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_infocoms"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_infocom(true);
+	cron_infocom();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_softwares"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_software(true);
+	cron_software();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_smtp_send"])) {
@@ -98,7 +98,7 @@ commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing");
 $tabs[1]=array('title'=>$LANG['common'][12],
 'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=mailing&glpi_tab=1");
-	
+
 $tabs[2]=array('title'=>$LANG['setup'][240],
 'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=mailing&glpi_tab=2");
