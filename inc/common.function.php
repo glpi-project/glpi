@@ -317,6 +317,8 @@ function code2utf($num) {
 function cron_logs($task) {
    global $CFG_GLPI,$DB;
 
+   $vol = 0;
+
    // Expire Event Log
    if ($task->fields['param'] > 0) {
       $secs = $task->fields['param'] * DAY_TIMESTAMP;
@@ -324,14 +326,26 @@ function cron_logs($task) {
       $query_exp = "DELETE
                     FROM `glpi_events`
                     WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+
       $DB->query($query_exp);
-
-      $vol = $DB->affected_rows();
-      $task->setVolume($vol);
-
-      return ($vol>0 ? 1 : 0);
+      $vol += $DB->affected_rows();
    }
-   return 0;
+
+   foreach ($DB->request('glpi_crontasks') as $data) {
+      if ($data['logs_lifetime']>0) {
+         $secs = $data['logs_lifetime'] * DAY_TIMESTAMP;
+
+         $query_exp = "DELETE
+                    FROM `glpi_crontaskslogs`
+                    WHERE `crontasks_id`='".$data['id']."'
+                      AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+
+         $DB->query($query_exp);
+         $vol += $DB->affected_rows();
+      }
+   }
+   $task->setVolume($vol);
+   return ($vol>0 ? 1 : 0);
 }
 
 /**
