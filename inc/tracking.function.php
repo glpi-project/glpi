@@ -833,7 +833,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
+function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$date,$entity_restrict,$status=1,$followup=array()) {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -947,7 +947,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
+		showDateTimeFormItem("date",$date,1);
 		echo "</td>";
 
 		echo "<td class='center'>".$LANG['job'][44].":</td>";
