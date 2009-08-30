@@ -34,96 +34,90 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+   die("Sorry. You can't access directly to this file");
+}
 
 // CLASSES link
 class Link extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_links";
-		$this->type=LINK_TYPE;
-		$this->may_be_recursive=true;
-		$this->entity_assign=true;
-	}
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_links";
+      $this->type=LINK_TYPE;
+      $this->may_be_recursive=true;
+      $this->entity_assign=true;
+   }
 
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
 
-	function defineTabs($ID,$withtemplate){
-		global $LANG;
+      $ong=array();
+      $ong[1]=$LANG['title'][26];
+      return $ong;
+   }
 
-		$ong=array();
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-		$ong[1]=$LANG['title'][26];
+      $query2="DELETE
+               FROM `glpi_links_itemtypes`
+               WHERE `links_id`='$ID'";
+      $DB->query($query2);
+   }
 
-		return $ong;
-	}
+   /**
+    * Print the link form
+    *
+    * Print g��al link form
+    *
+    *@param $target filename : where to go when done.
+    *@param $ID Integer : Id of the link to print
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showForm ($target,$ID) {
+      global $CFG_GLPI, $LANG;
 
-	function cleanDBonPurge($ID) {
+      if (!haveRight("link","r")) {
+         return false;
+      }
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
 
-		global $DB;
+      $this->showTabs($ID, '',$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,'',2);
 
-		$query2="DELETE FROM glpi_links_itemtypes WHERE links_id='$ID'";
-		$DB->query($query2);
-	}
+      echo "<tr class='tab_bg_1'><td height='23'>".$LANG['links'][6]."&nbsp;:</td>";
+      echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
+                            [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td></tr>";
 
-	/**
-	 * Print the link form
-	 *
-	 *
-	 * Print g��al link form
-	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the link to print
-	 *
-	 *
-	 *@return Nothing (display)
-	 *
-	 **/
-	function showForm ($target,$ID) {
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td colspan='3'>";
+      autocompletionTextField("name","glpi_links","name",$this->fields["name"],84);
+      echo "</td></tr>";
 
-		global $CFG_GLPI, $LANG;
+      echo "<tr class='tab_bg_1'><td>".$LANG['links'][1]."&nbsp;:</td>";
+      echo "<td colspan='2'>";
+      autocompletionTextField("link","glpi_links","link",$this->fields["link"],84);
+      echo "</td><td width='1'></td></tr>";
 
-		if (!haveRight("link","r")) return false;
+      echo "<tr class='tab_bg_1'><td>".$LANG['links'][9]."&nbsp;:</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea name='data' rows='10' cols='96'>".$this->fields["data"]."</textarea>";
+      echo "</td></tr>";
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
-		} 
+      $this->showFormButtons($ID,'',2);
 
-		$this->showTabs($ID, '',$_SESSION['glpi_tab']);
-		$this->showFormHeader($target,$ID);
-
-		echo "<tr class='tab_bg_1'><td>".$LANG['links'][6].":	</td>";
-		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td>";
-		echo "</tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":	</td>";
-		echo "<td>";
-		autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$LANG['links'][1].":	</td>";
-		echo "<td>";
-		autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$LANG['links'][9].":	</td>";
-		echo "<td>";
-		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
-		echo "</td></tr>";
-
-      $this->showFormButtons($ID);
-
-		return true;
-	}
-
+      return true;
+   }
 }
 
 ?>
