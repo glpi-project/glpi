@@ -368,6 +368,16 @@ $LANG['crontask'][46]="Tâche terminée, rien à faire";
 $LANG['crontask'][47]="Liste des dernières exécutions";
 $LANG['crontask'][48]="Lancement";
 $LANG['crontask'][49]="Fin";
+$LANG['crontask'][50]="Nombre d'exécutions";
+$LANG['crontask'][51]="Durée minimale";
+$LANG['crontask'][52]="Durée maximale";
+$LANG['crontask'][53]="Durée moyenne";
+$LANG['crontask'][54]="Durée totale";
+$LANG['crontask'][55]="Nombre minimun";
+$LANG['crontask'][56]="Nombre maximun";
+$LANG['crontask'][57]="Nombre moyen";
+$LANG['crontask'][58]="Nombre total";
+$LANG['crontask'][59]="Vitesse moyenne";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";

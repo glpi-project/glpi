@@ -692,7 +692,7 @@ CREATE TABLE `glpi_crontasks` (
   `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `module` (`module`,`name`)
+  UNIQUE KEY `module_name` (`module`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.' AUTO_INCREMENT=13 ;
 
 INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
@@ -722,8 +722,9 @@ CREATE TABLE `glpi_crontaskslogs` (
   `volume` int(11) NOT NULL COMMENT 'for statistics',
   `content` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'message',
   PRIMARY KEY (`id`),
-  KEY `crontask_id` (`crontask_id`),
-  KEY `crontasklogs_id` (`crontasklogs_id`)
+  KEY `crontasks_id` (`crontasks_id`),
+  KEY `crontasklogs_id` (`crontaskslogs_id`),
+  KEY `crontaskslogs_id_state` (`crontaskslogs_id`,`state`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 ### Dump table glpi_devicescases
