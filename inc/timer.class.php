@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -34,51 +34,42 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
 
 /**
  *  Timer class for debug
  */
 class Script_Timer {
-	//! Timer value
-	var $timer=0;
+   //! Timer value
+   var $timer=0;
 
 
-	/**
-	 * Constructor
-	**/
-	function __construct (){
-		return true;
-	}
+   /**
+    * Constructor
+    **/
+   function __construct () {
+      return true;
+   }
 
-	//! Start the Timer
-	function Start_Timer (){
-		$this->timer=microtime ();
+   //! Start the Timer
+   function Start_Timer () {
+      $this->timer=microtime(true);
 
-		return true;
-	}
-	/**
-	 * Get the current time of the timer
-	 *
-	 * @param $decimals number of decimal of the result
-	 * @return time past from Start_Timer
-	 *
-	 */
-	function Get_Time ($decimals = 3)
-	{
-		// $decimals will set the number of decimals you want for your milliseconds.
+      return true;
+   }
+   /**
+    * Get the current time of the timer
+    *
+    * @param $decimals number of decimal of the result
+    * @return time past from Start_Timer
+    *
+    */
+   function Get_Time ($decimals = 3) {
+      // $decimals will set the number of decimals you want for your milliseconds.
 
-		// format start time
-		$start_time = explode (" ", $this->timer);
-		$start_time = $start_time[1] + $start_time[0];
-		// get and format end time
-		$end_time = explode (" ", microtime ());
-		$end_time = $end_time[1] + $end_time[0];
-
-		return	number_format($end_time - $start_time,$decimals,'.',' ');
-
-	}
+      return number_format(microtime(true) - $this->timer,$decimals,'.',' ');
+   }
 }
 ?>
