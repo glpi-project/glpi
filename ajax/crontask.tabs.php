@@ -47,16 +47,19 @@ if(!isset($_POST["id"])) {
 if ($_POST['id']>0) {
    switch($_POST['glpi_tab']) {
       case -1 :
-         //showDeviceBudgetValue($_POST["id"]);
+         showCronStatistics($_POST["id"]);
+         showCronTaskHistory($_POST["id"]);
+         displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab']);
          break;
       case 1 :
-         // Stat
+         showCronStatistics($_POST["id"]);
          break;
       case 2 :
-         // Logs
+         showCronTaskHistory($_POST["id"]);
          break;
       default :
          if (!displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+            showCronStatistics($_POST["id"]);
          }
          break;
    }

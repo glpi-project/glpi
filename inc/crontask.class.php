@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class CronTask extends CommonDBTM{
 
+   static private $lockname='';
    private $timer=0.0;
    private $startlog=0;
    private $volume=0;
@@ -453,6 +454,65 @@ class CronTask extends CommonDBTM{
             break;
       }
       return '???';
+   }
+
+   /**
+    * Get a global database lock
+    */
+   static private function get_lock() {
+      global $DB;
+
+      // Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
+      $nom = $DB->dbdefault . ".glpicron." . intval(time()/HOUR_TIMESTAMP-340000);
+
+      $nom = addslashes($nom);
+      $query = "SELECT GET_LOCK('$nom', 0)";
+      $result = $DB->query($query);
+      list($lock_ok) = $DB->fetch_array($result);
+      if ($lock_ok) {
+         self::$lockname = $nom;
+      }
+      logInFile('sql-errors', "SELECT GET_LOCK('$nom', 0) => $lock_ok\n");
+      return $lock_ok;
+   }
+
+   /**
+    * Release the global database lock
+    */
+   static private function release_lock() {
+      global $DB;
+
+      if (self::$lockname) {
+         $nom = self::$lockname;
+         $query = "SELECT RELEASE_LOCK('$nom')";
+         $result = $DB->query($query);
+
+         logInFile('sql-errors', "SELECT RELEASE_LOCK('$nom')\n");
+      }
+   }
+
+   /**
+    * Launch the need cron tasks
+    *
+    * @param $mode
+    */
+   static public function launch($mode) {
+      if (CronTask::get_lock()) {
+         if (isset($_SESSION["glpiID"])) {
+            $saveglpiid=$_SESSION["glpiID"];
+         }
+         //$_SESSION["glpiID"]="cron_".$tache;
+
+
+
+         if (empty($saveglpiid)) {
+            unset($_SESSION["glpiID"]);
+         } else {
+            $_SESSION["glpiID"]=$saveglpiid;
+         }
+
+         CronTask::release_lock();
+      }
    }
 }
 
