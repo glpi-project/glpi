@@ -1538,7 +1538,6 @@ function device_selecter($target,$computers_id,$withtemplate='') {
    if (!haveRight("computer","w")) {
       return false;
    }
-
    if (!empty($withtemplate) && $withtemplate == 2) {
       //do nothing
    } else {
@@ -1551,13 +1550,15 @@ function device_selecter($target,$computers_id,$withtemplate='') {
 
       $rand=mt_rand();
 
+      $devices=getDictDeviceLabel();
+
       echo "<select name='devicetype' id='device$rand'>";
 
       echo '<option value="-1">-----</option>';
-      $devices=getDictDeviceLabel(-1);
+      
 
       foreach ($devices as $i => $name) {
-         echo '<option value="$i">$name</option>';
+         echo '<option value="'.$i.'">'.$name.'</option>';
       }
       echo "</select>";
 
