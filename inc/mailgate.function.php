@@ -41,28 +41,35 @@ if (!defined('GLPI_ROOT')){
  * Cron action on mailgate : retrieve mail and create tickets
  * @return -1 : done but not finish 1 : done with success
  **/
-function cron_mailgate(){
-	global $DB,$CFG_GLPI;
-	
-	$already_retrieve=0;
-	$query="SELECT * FROM glpi_mailcollectors WHERE is_active = 1";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)>0){
-			$mc=new MailCollect();
-			while ($data=$DB->fetch_assoc($result)){
-				
-				logInFile("cron","Collect mails from ".$data["host"]." for  ".getDropdownName("glpi_entities",$data["entities_id"])."\n");
-				$message=$mc->collect($data["id"]); 
- 				logInFile("cron","$message\n");
+function cron_mailgate($task){
+   global $DB,$CFG_GLPI;
 
-				$already_retrieve+=$mc->fetch_emails;
-				// Finish mailgate process but mark it to be redone
-				if ($already_retrieve >= MAX_MAILS_RETRIEVED){
-					return -1;
-				}
-			}
-		}
-	}
-	return 1;
+   $query="SELECT * FROM glpi_mailcollectors WHERE is_active = 1";
+   if ($result=$DB->query($query)){
+      $max = $task->fields['param'];
+      if ($DB->numrows($result)>0){
+         $mc=new MailCollect();
+
+         while ($max>0 && $data=$DB->fetch_assoc($result)){
+
+            $mc->maxfetch_emails = $max;
+
+            $task->log("Collect mails from ".$data["host"]." for  ".getDropdownName("glpi_entities",$data["entities_id"])."\n");
+            $message=$mc->collect($data["id"]);
+
+            $task->log("$message\n");
+            $task->addVolume($mc->fetch_emails);
+
+            $max -= $mc->fetch_emails;
+         }
+      }
+      if ($max == $task->fields['param']) {
+         return 0; // Nothin to do
+      } else if ($max > 0) {
+         return 1; // done
+      }
+      return -1; // still messages to retrieve
+   }
+   return 0;
 }
 ?>
