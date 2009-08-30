@@ -468,8 +468,8 @@ class AuthMail extends CommonDBTM {
    function prepareInputForAdd($input) {
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["connect_string"] = constructMailServerConfig($input);
-              }
-        		return $input;
+      }
+      return $input;
    }
 
    /**
@@ -503,12 +503,12 @@ class AuthMail extends CommonDBTM {
             echo "<input type='hidden' name='id' value='" . $ID . "'>";
          }
          echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>" . $LANG['login'][3] . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td>";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
          echo "</td></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][164] . "</td>";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][164] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
          echo "</td></tr>";
 

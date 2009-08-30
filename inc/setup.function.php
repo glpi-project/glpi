@@ -44,21 +44,21 @@ if (!defined('GLPI_ROOT')) {
 
 function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 	global $DB,$CFG_GLPI,$LANG;
-	
+
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
-		return false;	
-	
+		return false;
+
 	$field="name";
 	if (in_array($tablename, $CFG_GLPI["dropdowntree_tables"])) {
 		$field="completename";
 	}
-	
+
 	$where="";
 	$entity_restrict = -1;
 
 	if (!empty($entities_id) && $entities_id>=0){
 		$entity_restrict = $entities_id;
-	} else {	
+	} else {
 		$entity_restrict = $_SESSION["glpiactive_entity"];
 	}
 
@@ -72,24 +72,24 @@ function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 		}
 	} else if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$where=getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
-	} 
-	
+	}
+
 	echo "<div class='center'>";
 	$query="SELECT * FROM `$tablename` $where ORDER BY `$field`";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"$target\"><table class='tab_cadre_fixe'>";
-			
+
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") {
 				$sel="checked";
-			}			
+			}
 			$i=0;
 			while ($data=$DB->fetch_assoc($result)){
 				$class=" class='tab_bg_2' ";
 				if ($i%2){
 					$class=" class='tab_bg_1' ";
-				} 
+				}
 				echo "<tr $class><td width='10'><input type='checkbox' name='item[".$data["id"]."]' value='1' $sel></td><td>".$data[$field]."</td></tr>";
 				$i++;
 			}
@@ -97,7 +97,7 @@ function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 			echo "<input type='hidden' name='which' value='$tablename'>";
 			echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
 			echo "<input type='hidden' name='value2' value='$locations_id'>";
-			
+
 			echo "<div>";
 			echo "<table width='950' class='tab_glpi'>";
 			$parameters="which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id";
@@ -112,10 +112,10 @@ function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 		} else {
 			echo "<strong>".$LANG['search'][15]."</strong>";
 		}
-	
+
 	}
 	echo "</div>";
-	
+
 }
 
 function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where = '', $tomove = '', $type = '',$entities_id='') {
@@ -131,7 +131,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		if (!empty($entities_id)&&$entities_id>=0){
 			$entity_restrict = $entities_id;
-		} else {	
+		} else {
 			$entity_restrict = $_SESSION["glpiactive_entity"];
 		}
 
@@ -142,7 +142,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 
 	echo "<div class='center'>&nbsp;\n";
-	
+
 	echo "<form method='post' action=\"$target\">";
 
 
@@ -163,9 +163,9 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 		if ($ID>0) {
 			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
-			echo '<br>'; 
+			echo '<br>';
 			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $value["comment"] . "</textarea>";
-	
+
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
@@ -175,7 +175,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		} else {
 			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";
 		}
-		
+
 		echo "</td></tr></table></form>";
 
 		echo "<form method='post' action=\"$target\">";
@@ -227,12 +227,12 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 
 	echo "</table></form>";
-	
+
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id'>".$LANG['title'][42]."</a>";
 	}
-	
-	
+
+
 	echo "</div>";
 }
 
@@ -241,7 +241,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	global $DB, $CFG_GLPI, $LANG;
 
 	$tablename="glpi_netpoints";
-	
+
 	if (!haveRight("entity_dropdown", "w"))
 		return false;
 
@@ -249,7 +249,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	$numberof=0;
 	if (!empty($entities_id)&&$entities_id>=0){
 		$entity_restrict = $entities_id;
-	} else {	
+	} else {
 		$entity_restrict = $_SESSION["glpiactive_entity"];
 	}
 	if ($locations_id>0) {
@@ -275,7 +275,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-		if ($ID>0) {		
+		if ($ID>0) {
 			$query = "SELECT * FROM glpi_netpoints WHERE id = '" . $ID . "'";
 			$result = $DB->query($query);
 			$value = $loc = $comment = "";
@@ -288,15 +288,15 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 			echo "<br>";
 			echo $LANG['common'][15] . ": ";
 			dropdownValue("glpi_locations", "value2", $locations_id, 0, $entity_restrict);
-			
+
 			echo $LANG['networking'][52] . ": ";
-			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
-			echo "<br>"; 
+			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\'');
+			echo "<br>";
 			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $comment . "</textarea>";
-	
+
 			//
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
-	
+
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
@@ -304,7 +304,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
 			echo "<input type='hidden' name='value2' value='$locations_id'>";
-			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";			
+			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";
 		}
 		echo "</td></tr>";
 
@@ -320,8 +320,8 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
 	echo $LANG['networking'][52] . ": ";
-	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\''); 
-	echo "<br>"; 
+	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\'');
+	echo "<br>";
 	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' class='tab_bg_2' width='202'>";
@@ -337,7 +337,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	echo "<input type='hidden' name='value2' value='$locations_id'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
-	
+
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
@@ -355,11 +355,11 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
 	echo "</td></tr>";
 
 	echo "</table></form>";
-	
+
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id&amp;value2=$locations_id'>".$LANG['title'][42]."</a>";
 	}
-	
+
 	echo "</div>";
 }
 
@@ -375,7 +375,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		if (!empty($entities_id)&&$entities_id>=0){
 			$entity_restrict = $entities_id;
-		} else {	
+		} else {
 			$entity_restrict = $_SESSION["glpiactive_entity"];
 		}
 		$numberof = countElementsInTableForEntity($tablename, $entity_restrict);
@@ -383,7 +383,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 		$numberof = countElementsInTable($tablename);
 	}
 
-	
+
 
 	echo "<div class='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
@@ -408,21 +408,21 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
 
-		if ($ID>0) {			
-			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\''); 
+		if ($ID>0) {
+			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
 			echo "<br>";
 			echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "' >" . $value["comment"] . "</textarea>";
-	
+
 			//
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
-	
+
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
 			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
-			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";			
+			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";
 		}
 		echo "</td></tr>";
 
@@ -435,7 +435,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\'');
-	echo "<br>"; 
+	echo "<br>";
 	echo "<textarea rows='2' cols='50' name='comment' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' class='tab_bg_2' width='202'>";
@@ -446,11 +446,11 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 	echo "</td></tr>";
 
 	echo "</table></form>";
-	
+
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id'>".$LANG['title'][42]."</a>";
 	}
-	
+
 	echo "</div>";
 }
 
@@ -486,7 +486,7 @@ function moveTreeUnder($table, $to_move, $where) {
          if (FieldExists($table,"ancestors_cache")){
             $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
             $DB->query($query);
-         }         
+         }
 		}
 	}
 }
@@ -497,14 +497,14 @@ function updateDropdown($input) {
 	// Clean datas
 	$input["value"]=trim($input["value"]);
 	if (empty($input["value"])) return false;
-	
+
 	if ($input["tablename"] == "glpi_netpoints") {
-		$query = "UPDATE `".$input["tablename"]."` 
+		$query = "UPDATE `".$input["tablename"]."`
 			SET name = '".$input["value"]."', locations_id = '".$input["value2"]."', comment='".$input["comment"]."'
 			WHERE id = '".$input["id"]."'";
 
 	} else {
-		$query = "UPDATE `".$input["tablename"]."` 
+		$query = "UPDATE `".$input["tablename"]."`
 			SET name = '".$input["value"]."', comment='".$input["comment"]."'
 			WHERE id = '".$input["id"]."'";
 	}
@@ -541,38 +541,38 @@ function getDropdownID($input){
 		$query="";
 		$query_twin="";
 		if ($input["tablename"] == "glpi_netpoints") {
-			$query_twin="SELECT id FROM `".$input["tablename"]."` 
+			$query_twin="SELECT id FROM `".$input["tablename"]."`
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND locations_id = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
             $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 
-				$query_twin="SELECT id FROM `".$input["tablename"]."` 
+				$query_twin="SELECT id FROM `".$input["tablename"]."`
 					WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='0'";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
 					$query = "SELECT * FROM `".$input["tablename"]."` WHERE id='" . $input["value2"] . "'";
-					
+
 					$result = $DB->query($query);
-					
+
 					if ($DB->numrows($result) > 0) {
-						
+
 						$data = $DB->fetch_array($result);
 						$level_up = $data[$parentIDfield];
 						if ($input["type"] == "under") {
 							$level_up = $data["id"];
 						}
-					} 
-					$query_twin="SELECT id FROM `".$input["tablename"]."` 
+					}
+					$query_twin="SELECT id FROM `".$input["tablename"]."`
 						WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='$level_up'";
 				}
 			} else {
-				$query_twin="SELECT id FROM `".$input["tablename"]."` 
+				$query_twin="SELECT id FROM `".$input["tablename"]."`
 					WHERE $add_entity_field_twin name= '".$input["value"]."' ";
 			}
 		}
-		
+
 		// Check twin :
 		if ($result_twin = $DB->query($query_twin) ) {
 			if ($DB->numrows($result_twin) > 0){
@@ -594,7 +594,7 @@ function getDropdownID($input){
  *@param $entities_id int : entity in case of specific dropdown
  *@param $external_params
  *@param $comment
- *@param $add if true, add it if not found. if false, just check if exists 
+ *@param $add if true, add it if not found. if false, just check if exists
  *
  *@return integer : dropdown id.
  *
@@ -615,11 +615,11 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
 
 
 	$process = false;
-	
+
 	$input_values=array("name"=>$value);
 
 	$rulecollection = getRuleCollectionClassByTableName($dpdTable);
-	
+
 	switch ($dpdTable)
 	{
 		case "glpi_manufacturers":
@@ -629,9 +629,9 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
 		case "glpi_computerstypes":
 		case "glpi_monitorstypes":
 		case "glpi_printerstypes":
-		case "glpi_peripheralstypes":		
-		case "glpi_phonestypes":		
-		case "glpi_networkequipmentstypes":		
+		case "glpi_peripheralstypes":
+		case "glpi_phonestypes":
+		case "glpi_networkequipmentstypes":
 			$process = true;
 		break;
 		case "glpi_computersmodels":
@@ -680,7 +680,7 @@ function addDropdown($input) {
 		}
 		$query="";
 		if ($input["tablename"] == "glpi_netpoints") {
-			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,locations_id,comment) 
+			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,locations_id,comment)
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comment"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
@@ -691,22 +691,22 @@ function addDropdown($input) {
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
 					$query = "SELECT * FROM `".$input["tablename"]."` WHERE id='" . $input["value2"] . "'";
-					
+
 					$result = $DB->query($query);
-					
+
 					if ($DB->numrows($result) > 0) {
-						
+
 						$data = $DB->fetch_array($result);
 						$level_up = $data["$parentIDfield"];
 						if ($input["type"] == "under") {
 							$level_up = $data["id"];
 						}
-					} 
+					}
 					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comment)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comment"] . "')";
 				}
 			} else {
-				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,comment) 
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,comment)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comment"] . "')";
 			}
 		}
@@ -716,7 +716,7 @@ function addDropdown($input) {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 				regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
 			}
-			
+
          // Clean sons / ancestors if needed
          if (FieldExists($input["tablename"],"sons_cache")){
             $query = "UPDATE `".$input["tablename"]."` SET  `sons_cache` = '';";
@@ -756,7 +756,7 @@ function replaceDropDropDown($input) {
 	$RELATION = getDbRelations();
 
 	if (isset ($RELATION[$input["tablename"]]))
-		foreach ($RELATION[$input["tablename"]] as $table => $field){ 
+		foreach ($RELATION[$input["tablename"]] as $table => $field){
 			if ($table[0]!='_'){
 				if (!is_array($field)){
 					// Manage OCS lock for items - no need for array case
@@ -772,8 +772,8 @@ function replaceDropDropDown($input) {
 							}
 						}
 					}
-	
-	
+
+
 					$query = "UPDATE `$table` SET `$field` = '" . $input["newID"] . "'  WHERE `$field` = '" . $input["oldID"] . "'";
 					$DB->query($query);
 				} else {
@@ -802,7 +802,7 @@ function replaceDropDropDown($input) {
       $query = "UPDATE `".$input["tablename"]."` SET  `ancestors_cache` = '';";
       $DB->query($query);
    }
-   
+
 
 }
 
@@ -811,10 +811,10 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 
 	if (in_array($table, $CFG_GLPI["specif_entities_tables"])) {
 		if (!haveRight("entity_dropdown","w"))
-			return false;		
+			return false;
 	} else {
 		if (!haveRight("dropdown", "w"))
-			return false;		
+			return false;
 	}
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
@@ -849,10 +849,10 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 		echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 		echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
 		echo "<input type=\"hidden\" name=\"entities_id\" value=\"$entities_id\" />";
-	
+
 		echo "<table class='tab_cadre'><tr><td>";
 		echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG['buttons'][2] . "\" /></td>";
-	
+
 		echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG['buttons'][34] . "\" /></td></tr></table>";
 		echo "</form>";
 	}
@@ -970,7 +970,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 			echo "<a href=\"$target?id=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "</tr>";
 		}
-	
+
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["template_name"];
@@ -979,7 +979,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 			}
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			
+
 			if (haveTypeRight($itemtype, "w") && !$add) {
 				echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
@@ -1013,11 +1013,11 @@ function showLdapAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-		
+
 	echo "<div class='center'>";
-	
+
 	if (canUseLdap()) {
-		
+
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>";
 		echo "<strong>" . $LANG['login'][2] . "</strong>";
@@ -1047,7 +1047,7 @@ function showLdapAuthList($target) {
 
 
 	echo "</div>";
-	
+
 }
 
 function showOtherAuthList($target) {
@@ -1056,12 +1056,12 @@ function showOtherAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-		
+
 	echo "<form name=cas action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
 	echo "<div class='center'>";
-	
+
 	echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
 	// CAS config
@@ -1071,7 +1071,7 @@ function showOtherAuthList($target) {
 	}
 	echo "</th></tr>";
 
-	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") ))) {		
+	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") ))) {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
@@ -1102,12 +1102,12 @@ function showOtherAuthList($target) {
 	echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
 	echo "<option value='REDIRECT_REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") . ">REDIRECT_REMOTE_USER</option>";
 	echo "</select>";
-	
+
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][199] . "</td><td>";
 
-	dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);		
+	dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);
 	echo "</td></tr>";
 
 	echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>";
@@ -1121,7 +1121,7 @@ function showOtherAuthList($target) {
 
 	echo "</div>";
 	echo "</form>";
-	
+
 }
 
 function showImapAuthList($target) {
@@ -1130,9 +1130,9 @@ function showImapAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-		
+
 	echo "<div class='center'>";
-	
+
 	if (canUseImapPop()) {
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>";
@@ -1143,7 +1143,7 @@ function showImapAuthList($target) {
 		$sql = "SELECT * FROM glpi_authmails";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
-					
+
 			while ($mail_method = $DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;id=" . $mail_method["id"] . "' >" . $mail_method["name"] . "</a>" .
 				"</td><td class='center'>" . $mail_method["host"] . "</td></tr>";
@@ -1152,66 +1152,79 @@ function showImapAuthList($target) {
 		echo "</table>";
 	} else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
-		
+
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][165] . "</p><p>" . $LANG['setup'][166] . "</p></td></tr></table>";
 	}
 	echo "</div>";
-	
+
 }
 
-	function showMailServerConfig($value) {
-		global $LANG;
+   function showMailServerConfig($value) {
+      global $LANG;
 
-		if (!haveRight("config", "w"))
-			return false;
-		if (strstr($value,":")) {
-			$addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
-			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
-		} else {
-			if (strstr($value,"/"))
-				$addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
-			else
-				$addr = str_replace("{", "", preg_replace("/}.*/", "", $value));
-			$port = "";
-		}
-		$mailbox = preg_replace("/.*}/", "", $value);
+      if (!haveRight("config", "w")) {
+         return false;
+      }
+      if (strstr($value,":")) {
+         $addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
+         $port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
+      } else {
+         if (strstr($value,"/")) {
+            $addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
+         } else {
+            $addr = str_replace("{", "", preg_replace("/}.*/", "", $value));
+         }
+         $port = "";
+      }
+      $mailbox = preg_replace("/.*}/", "", $value);
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . ":</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][168] . ":</td><td>";
-		echo "<select name='server_type'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/imap' " . (strstr($value,"/imap") ? " selected " : "") . ">IMAP</option>";
-		echo "<option value='/pop' " . (strstr($value,"/pop") ? " selected " : "") . ">POP</option>";
-		echo "</select>";
-		echo "<select name='server_ssl'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/ssl' " . (strstr($value,"/ssl") ? " selected " : "") . ">SSL</option>";
-		echo "</select>";
-		
-		echo "<select name='server_tls'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/tls' " . (strstr($value,"/tls") ? " selected " : "") . ">TLS</option>";
-		echo "<option value='/notls' " . (strstr($value,"/notls") ? " selected " : "") . ">NO-TLS</option>";
-		echo "</select>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
+      echo "<td><input size='30' type='text' name='mail_server' value=\"" . $addr . "\" ></td></tr>";
 
-		echo "<select name='server_cert'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/novalidate-cert' " . (strstr($value,"/novalidate-cert") ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
-		echo "<option value='/validate-cert' " . (strstr($value,"/validate-cert") ? " selected " : "") . ">VALIDATE-CERT</option>";
-		echo "</select>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][168] . "&nbsp;:</td><td>";
+      echo "<select name='server_type'>";
+      echo "<option value=''>&nbsp;</option>";
+      echo "<option value='/imap' " . (strstr($value,"/imap") ? " selected " : "") . ">IMAP</option>";
+      echo "<option value='/pop' " . (strstr($value,"/pop") ? " selected " : "") . ">POP</option>";
+      echo "</select>&nbsp;";
 
-		echo "<input type=hidden name=imap_string value='".$value."'>";
-		echo "</td></tr>";
+      echo "<select name='server_ssl'>";
+      echo "<option value=''>&nbsp;</option>";
+      echo "<option value='/ssl' " . (strstr($value,"/ssl") ? " selected " : "") . ">SSL</option>";
+      echo "</select>&nbsp;";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][169] . ":</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][171] . ":</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
-		if (empty ($value))
-			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][170] . ":</td><td><strong>$value</strong></td></tr>";
+      echo "<select name='server_tls'>";
+      echo "<option value=''>&nbsp;</option>";
+      echo "<option value='/tls' " . (strstr($value,"/tls") ? " selected " : "") . ">TLS</option>";
+      echo "<option value='/notls' " . (strstr($value,"/notls") ? " selected " : "") .
+            ">NO-TLS</option>";
+      echo "</select>&nbsp;";
 
-	}
+      echo "<select name='server_cert'>";
+      echo "<option value=''>&nbsp;</option>";
+      echo "<option value='/novalidate-cert' " . (strstr($value,"/novalidate-cert") ? " selected " : "") .
+            ">NO-VALIDATE-CERT</option>";
+      echo "<option value='/validate-cert' " . (strstr($value,"/validate-cert") ? " selected " : "") .
+            ">VALIDATE-CERT</option>";
+      echo "</select>";
+
+      echo "<input type=hidden name=imap_string value='".$value."'>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][169] . "&nbsp;:</td>";
+      echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $mailbox . "\" >";
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][171] . "&nbsp;:</td>";
+      echo "<td><input size='10' type='text' name='server_port' value=\"" . $port . "\" ></td></tr>";
+      if (empty ($value)) {
+         $value = "&nbsp;";
+      }
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][170] . "&nbsp;:</td>";
+      echo "<td><strong>$value</strong></td></tr>";
+   }
+
 	function constructMailServerConfig($input) {
 
 		$out = "";
@@ -1240,18 +1253,18 @@ function showImapAuthList($target) {
 
 /*
  * Display a HTML report about systeme information / configuration
- * 
+ *
  */
 function showSystemInformations () {
 	global $DB,$LANG,$CFG_GLPI;
-	
+
 	$width=128;
-	
+
 	echo "<div class='center' id='tabsbody'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
 	echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
- 	
+
  	echo "GLPI ".$CFG_GLPI['version']."  (".$CFG_GLPI['root_doc']." => ".dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
    echo "\n</pre></td></tr><tr><th>" . $LANG['common'][52] . "</th></tr>";
@@ -1267,24 +1280,24 @@ function showSystemInformations () {
    }
    echo wordwrap($msg."\n", $width, "\n\t");
 
-   $msg = $LANG['Menu'][4].": "; 
+   $msg = $LANG['Menu'][4].": ";
    if (isset($_SERVER["SERVER_SOFTWARE"])) {
-      $msg .= $_SERVER["SERVER_SOFTWARE"]; 
+      $msg .= $_SERVER["SERVER_SOFTWARE"];
    }
    if (isset($_SERVER["SERVER_SIGNATURE"])) {
-      $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')'; 
+      $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')';
    }
    echo wordwrap($msg."\n", $width, "\n\t");
 
    if (isset($_SERVER["HTTP_USER_AGENT"])) {
-      echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n"; 
+      echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n";
    }
 
    $version = "???";
    foreach($DB->request('SELECT VERSION() as ver') as $data) {
-      $version = $data['ver'];      
+      $version = $data['ver'];
    }
-   echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";   
+   echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
 
    echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['plugins'][0] . "</th></tr>";
    echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
@@ -1292,7 +1305,7 @@ function showSystemInformations () {
 	$plug = new Plugin();
 	$pluglist=$plug->find("","name, directory");
 	foreach ($pluglist as $plugin) {
-		$msg = 
+		$msg =
          substr(str_pad($plugin['directory'],30),0,16)." ".$LANG['common'][16].":".
          utf8_substr(str_pad($plugin['name'],40),0,30)." ";
 		$msg .= $LANG['rulesengine'][78].":".str_pad($plugin['version'],10)." ";
@@ -1319,11 +1332,11 @@ function showSystemInformations () {
 				break;
 		}
 		echo wordwrap("\t".$msg."\n", $width, "\n\t\t");
-	} 	
+	}
 	echo "\n</pre></td></tr>";
 
 	$ldap_servers = getLdapServers ();
-	
+
 	if (!empty($ldap_servers)) {
 		echo "\n</pre></td><tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>";
 		echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
@@ -1369,10 +1382,10 @@ function showSystemInformations () {
       $msg .= "  (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").$CFG_GLPI['smtp_host'].")";
    }
    echo wordwrap($msg."\n", $width, "\n\t\t");
-   
+
    echo $LANG['mailgate'][0]."\n";
    foreach ($DB->request('glpi_mailcollectors') as $mc) {
-      
+
       $msg = "\t".$LANG['common'][16].':"'.$mc['name'].'"  ';
       $msg .= " ".$LANG['common'][52].':'.$mc['host'];
       $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
@@ -1382,9 +1395,9 @@ function showSystemInformations () {
    }
 
 	echo "\n[/code]\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
-	echo "</tr>"; 
-	
-	
+	echo "</tr>";
+
+
 	echo "</table></div>";
  }
 ?>
