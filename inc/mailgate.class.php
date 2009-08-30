@@ -89,10 +89,10 @@ class Mailgate  extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$this->getEmpty();
-		} 
+		}
 
 
 		echo "<div class='center'><form method='post' name=form action=\"$target\">";
@@ -170,10 +170,10 @@ class Mailgate  extends CommonDBTM {
 
 		echo "</table></form></div>";
 
-		return true;	
+		return true;
 
 	}
-	
+
 }
 
 
@@ -196,20 +196,22 @@ class MailCollect {
 	var $username='';
 	/// IMAP / POP password
 	var $password='';
-	
+
 	/// IMAP / POP connection
-	var $marubox='';					
-	
+	var $marubox='';
+
 	/// ID of the current message
 	var $mid = -1;
 	/// structure used to store the mail structure
 	var $structure = false;
 	/// structure used to store files attached to a mail
-	var $files; 	
+	var $files;
 	/// Message to add to body to build ticket
-	var $addtobody; 
-	/// Number of ferchs emails
+	var $addtobody;
+	/// Number of fetched emails
 	var $fetch_emails=0;
+   /// Maximim number of emails to fetch
+   var $maxfetch_emails=0;
 	/// Max size for attached files
 	var $filesize_max=0;
 
@@ -229,28 +231,28 @@ class MailCollect {
 		if ($mailgate->getFromDB($mailgateID)){
 
 			$this->entity=$mailgate->fields['entities_id'];
-	
+
 			$this->server	=	$mailgate->fields['host'];
 			$this->username	=	$mailgate->fields['login'];
 			$this->password	=	$mailgate->fields['password'];
 			$this->filesize_max	=	$mailgate->fields['filesize_max'];
 			$this->mid	= -1;
-	
+
 			$this->fetch_emails = 0;
 			//Connect to the Mail Box
 			$this->connect();
-	
+
 			if ($this->marubox){
 				// Get Total Number of Unread Email in mail box
 				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
 				$error=0;
-	
-				for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
+
+				for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++){
 					$tkt= $this->buildTicket($i);
-					$tkt['_mailgate']=$mailgateID; 
+					$tkt['_mailgate']=$mailgateID;
 					$this->deleteMails($i); // Delete Mail from Mail box
 					$result=imap_fetchheader($this->marubox,$i);
-	
+
 					// Is a mail responding of an already existgin ticket ?
 					if (isset($tkt['tickets_id']) ) {
 						// Deletion of message with sucess
@@ -273,17 +275,19 @@ class MailCollect {
 				}
 				imap_expunge($this->marubox);
 				$this->close_mailbox();   //Close Mail Box
-	
+
 				if ($display){
 					if ($error==0){
 						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
 					} else {
-						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")",false,ERROR);
+						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails.
+                             " ($error ".$LANG['common'][63].")",false,ERROR);
 					}
 				} else {
-					return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
+					return "Number of messages: available=$tot, collected=".$this->fetch_emails.
+                  ($error>0?" ($error error(s))":"");
 				}
-				
+
 			}else{
 				if ($display){
 					addMessageAfterRedirect($LANG['log'][41],false,ERROR);
@@ -300,16 +304,16 @@ class MailCollect {
 			}
 		}
 	} // end function MailCollect
-	
-	
-	
-	/** function buildTicket - Builds,and returns, the major structure of the ticket to be entered . 
+
+
+
+	/** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
 	* @param $i mail ID
 	* @return ticket fields array
 	*/
 	function buildTicket($i){
 		global $DB,$LANG,$CFG_GLPI;
-	
+
 		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
 
 		$tkt= array ();
@@ -325,8 +329,8 @@ class MailCollect {
 
 		//  Who is the user ?
 		$tkt['users_id']=0;
-		$query="SELECT id 
-			FROM glpi_users 
+		$query="SELECT id
+			FROM glpi_users
 			WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
 		if ($result&&$DB->numrows($result)){
@@ -357,7 +361,7 @@ class MailCollect {
 		if ($this->addtobody) {
 			$tkt['content'] .= $this->addtobody;
 		}
-		
+
 		//// Detect if it is a mail reply
 		$glpi_message_match="/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
 		// See In-Reply-To field
@@ -384,9 +388,9 @@ class MailCollect {
 
 			// Check if ticket  exists and users_id exists in GLPI
 			/// TODO check if users_id have right to add a followup to the ticket
-			if ( $job->getFromDB($tkt['tickets_id']) 
+			if ( $job->getFromDB($tkt['tickets_id'])
 				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'],$head['from']))) {
-		
+
 				$content=explode("\n",$tkt['content']);
 				$tkt['content']="";
 				$first_comment=true;
@@ -403,9 +407,9 @@ class MailCollect {
 					} else {
 						// Detect a signature if already keep lines
 /*						if (isset($val[0])&&$val[0]=='-'
-							&&isset($val[1])&&$val[1]=='-' 
+							&&isset($val[1])&&$val[1]=='-'
 							&&count($tokeep)){
-							
+
 							break;
 						} else {
 */
@@ -427,7 +431,7 @@ class MailCollect {
 			$tkt['use_email_notification']=1;
 			// Which entity ?
 			$tkt['entities_id']=$this->entity;
-	
+
 			//$tkt['Subject']= $head['subject'];   // not use for the moment
 			$tkt['name']=$this->textCleaner($head['subject']);
 			// Medium
@@ -449,7 +453,7 @@ class MailCollect {
 	}
 
 
-	/** function textCleaner - Strip out unwanted/unprintable characters from the subject. 
+	/** function textCleaner - Strip out unwanted/unprintable characters from the subject.
 	* @param $text text to clean
 	* @return clean text
 	*/
@@ -462,14 +466,14 @@ class MailCollect {
 
 
 	///return supported encodings in lowercase.
-	function mb_list_lowerencodings() { 
+	function mb_list_lowerencodings() {
 		$r=mb_list_encodings();
-		for ($n=sizeOf($r); $n--; ) { 
-			$r[$n]=utf8_strtolower($r[$n]); 
-		} 
+		for ($n=sizeOf($r); $n--; ) {
+			$r[$n]=utf8_strtolower($r[$n]);
+		}
 		return $r;
 	}
-	
+
 	/**  Receive a string with a mail header and returns it
 	// decoded to a specified charset.
 	// If the charset specified into a piece of text from header
@@ -487,7 +491,7 @@ class MailCollect {
 			$inputCharset=utf8_strtolower($inputCharset);
 			$targetCharset=utf8_strtolower($targetCharset);
 			$fallbackCharset=utf8_strtolower($fallbackCharset);
-			
+
 			$decodedStr='';
 			$mimeStrs=imap_mime_header_decode($mimeStr);
 			for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
@@ -500,7 +504,7 @@ class MailCollect {
 					if (in_array($mimeStr->charset, $encodings)){
 						$this->charset=	$mimeStr->charset;
 					}
-				
+
 					$decodedStr.=mb_convert_encoding(
 						$mimeStr->text, $targetCharset,
 						(in_array($mimeStr->charset, $encodings) ?
@@ -511,7 +515,7 @@ class MailCollect {
 		} else {
 			return $mimeStr;
 		}
-		
+
 	}
 
 	 ///Connect To the Mail Box
@@ -522,9 +526,9 @@ class MailCollect {
 
 	/**
 	 * get the message structure if not already retrieved
-	 * 
+	 *
 	 * @param $mid : Message ID.
-	 * 
+	 *
 	 */
 	 function getStructure ($mid)
 	 {
@@ -549,9 +553,9 @@ class MailCollect {
 	*	fromName  => Form Name of Mail
 	*/
 	function getHeaders($mid) // Get Header info
-	{	
+	{
 		$mail_header=imap_header($this->marubox,$mid);
-		
+
 		$sender=$mail_header->from[0];
 		//$sender_replyto=$mail_header->reply_to[0];
 		if(utf8_strtolower($sender->mailbox)!='mailer-daemon' && utf8_strtolower($sender->mailbox)!='postmaster')
@@ -578,16 +582,16 @@ class MailCollect {
 	* @param $structure mail structure
 	* @return mime type
 	*/
-	function get_mime_type(&$structure) { 
-		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER"); 
-		
-		if($structure->subtype) { 
-			return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype; 
-		} 
-		return "TEXT/PLAIN"; 
+	function get_mime_type(&$structure) {
+		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
+
+		if($structure->subtype) {
+			return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype;
+		}
+		return "TEXT/PLAIN";
 	}
-	
-	
+
+
 	/**Get Part Of Message Internal Private Use
 	* @param $stream An IMAP stream returned by imap_open
 	* @param $msg_number The message number
@@ -596,44 +600,44 @@ class MailCollect {
 	* @param $part_number The part number.
 	* @return data of false if error
 	*/
-	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) { 
-		if($structure) { 		
-			if($mime_type == $this->get_mime_type($structure)){ 
-				if(!$part_number) { 
-					$part_number = "1"; 
-				} 
-				$text = imap_fetchbody($stream, $msg_number, $part_number); 
-				if($structure->encoding == 3) { 
-					return imap_base64($text); 
-				} else if($structure->encoding == 4) { 
-					return imap_qprint($text); 
-				} else { 
-					return $text; 
-				} 
-			} 
-			if($structure->type == 1){ /* multipart */ 
+	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) {
+		if($structure) {
+			if($mime_type == $this->get_mime_type($structure)){
+				if(!$part_number) {
+					$part_number = "1";
+				}
+				$text = imap_fetchbody($stream, $msg_number, $part_number);
+				if($structure->encoding == 3) {
+					return imap_base64($text);
+				} else if($structure->encoding == 4) {
+					return imap_qprint($text);
+				} else {
+					return $text;
+				}
+			}
+			if($structure->type == 1){ /* multipart */
 				$prefix="";
 				reset($structure->parts);
-				while(list($index, $sub_structure) = each($structure->parts)){ 
-					if($part_number){ 
-						$prefix = $part_number . '.'; 
-					} 
-					$data = $this->get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix . ($index + 1)); 
-					if($data){ 
-						return $data; 
-					} 
-				} 
-			} 
-		} 
-		return false; 
-	} 
-	
+				while(list($index, $sub_structure) = each($structure->parts)){
+					if($part_number){
+						$prefix = $part_number . '.';
+					}
+					$data = $this->get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix . ($index + 1));
+					if($data){
+						return $data;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * used to get total unread mail from That mailbox
 	 *
-	 * Return : 
+	 * Return :
 	 * Int Total Mail
-	 */	
+	 */
 	function getTotalMails() //Get Total Number off Unread Email In Mailbox
 	{
 		$headers=imap_headers($this->marubox);
@@ -649,7 +653,7 @@ class MailCollect {
 	*
 	* @return  String of filename with coma separated
 	*like a.gif,pio.jpg etc
-	*/	
+	*/
 	function GetAttech($mid,$path) {
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
@@ -668,7 +672,7 @@ class MailCollect {
 					if ($enc == 2)
 						$message = imap_binary ($message);
 					if ($enc == 3)
-						$message = imap_base64 ($message); 
+						$message = imap_base64 ($message);
 					if ($enc == 4)
 						$message = quoted_printable_decode($message);
 					if ($enc == 5)
@@ -683,23 +687,23 @@ class MailCollect {
 		$ar=substr($ar,0,(strlen($ar)-1));
 		return $ar;
 	}
-	
+
 	/**
 	 * Private function : Recursivly get attached documents
-	 * 
+	 *
 	 * @param $mid : message id
 	 * @param $path : temporary path
 	 * @param $maxsize : of document to be retrieved
 	 * @param $structure : of the message or part
 	 * @param $part : part for recursive
-	 * 
+	 *
 	 * Result is stored in $this->files
-	 *  
+	 *
 	 */
 	function getRecursiveAttached ($mid, $path, $maxsize, $structure, $part="")
 	{
 		global $LANG;
-		
+
 		if ($structure->type == 1) { // multipart
 			reset($structure->parts);
 			while(list($index, $sub) = each($structure->parts)) {
@@ -742,32 +746,32 @@ class MailCollect {
 					case 2: $message = imap_binary($message); break;
 					case 3: $message = imap_base64($message); break;
 					case 4: $message = quoted_printable_decode($message); break;
-				}	
+				}
 				$fp=fopen($path.$filename,"w");
 				if ($fp) {
 					fwrite($fp,$message);
-					fclose($fp);	
-					
+					fclose($fp);
+
 					$this->files['multiple'] = true;
 					$j = count($this->files)-1;
 					$this->files[$j]['filename']['size'] = $structure->bytes;
 					$this->files[$j]['filename']['name'] = $filename;
 					$this->files[$j]['filename']['tmp_name'] = $path.$filename;
-					$this->files[$j]['filename']['type'] = $this->get_mime_type($structure);	
+					$this->files[$j]['filename']['type'] = $this->get_mime_type($structure);
 				}
 			} // fetchbody
-		} // ifdparameters 
+		} // ifdparameters
 	}
 
 	/**
 	 * Public function : get attached documents in a mail
-	 * 
+	 *
 	 * @param $mid : message id
 	 * @param $path : temporary path
 	 * @param $maxsize : of document to be retrieved
-	 * 
+	 *
 	 * @return array like $_FILES
-	 *  
+	 *
 	 */
 	function getAttached ($mid, $path, $maxsize)
 	{
@@ -775,7 +779,7 @@ class MailCollect {
 		$this->files = array();
 		$this->addtobody="";
 		$this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
-		
+
 		return ($this->files);
 	}
 	/**
@@ -789,14 +793,14 @@ class MailCollect {
 
 		$body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
 		if ($body == "") {
-			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);			
+			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);
 		}
-		if ($body == "") { 
+		if ($body == "") {
 			return "";
 		}
 		return $body;
 	}
-	
+
 	/**
 	 * Delete mail from that mail box
 	 *
@@ -805,11 +809,11 @@ class MailCollect {
 	function deleteMails($mid) {
 		imap_delete($this->marubox,$mid);
 	}
-	
+
 	/**
 	 * Close The Mail Box
-	 *  
- 	 */	
+	 *
+ 	 */
 	function close_mailbox() {
 		imap_close($this->marubox,CL_EXPUNGE);
 	}
