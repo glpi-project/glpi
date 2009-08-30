@@ -378,6 +378,7 @@ $LANG['crontask'][56]="Nombre maximun";
 $LANG['crontask'][57]="Nombre moyen";
 $LANG['crontask'][58]="Nombre total";
 $LANG['crontask'][59]="Vitesse moyenne";
+$LANG['crontask'][60]="Verrou système";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";
