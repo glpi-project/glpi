@@ -2096,7 +2096,7 @@ function update0722to080() {
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `crontasks_id` int(11) NOT NULL,
         `crontaskslogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
-        `date` int(11) NOT NULL,
+        `date` datetime NOT NULL,
         `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
         `elapsed` double NOT NULL COMMENT 'time elapsed since start',
         `volume` int(11) NOT NULL COMMENT 'for statistics',
