@@ -214,17 +214,6 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][306] . "</strong></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][306] . " </td>";
-      echo "<td><select name=\"auto_update_check\">";
-      $check = $CFG_GLPI["auto_update_check"];
-      echo "<option value=\"0\" " . ($check == 0 ? " selected" : "") . ">" . $LANG['setup'][307];
-      echo " </option>";
-      echo "<option value=\"7\" " . ($check == 7 ? " selected" : "") . ">" . $LANG['setup'][308];
-      echo " </option>";
-      echo "<option value=\"30\" " . ($check == 30 ? " selected" : "") . ">" . $LANG['setup'][309];
-      echo " </option>";
-      echo "</select></td><td colspan='2'>&nbsp;</td></tr>";
-
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][401] . " </td>";
       echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
       echo "</td>";
