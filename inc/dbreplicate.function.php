@@ -41,7 +41,7 @@ function create_slave_conn_file($host, $user, $password, $DBname) {
 
    $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = '" .
                $host . "'; \n var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
-               rawurlencode($password) . "'; \n var \$dbdefaul = '" . $DBname . "'; \n } \n ?>";
+               rawurlencode($password) . "'; \n var \$dbdefault = '" . $DBname . "'; \n } \n ?>";
    $fp = fopen(GLPI_CONFIG_DIR . "/config_db_slave.php", 'wt');
    if ($fp) {
       $fw = fwrite($fp, $DB_str);
@@ -215,8 +215,11 @@ function displayMySQLError() {
 
 /**
  *  Cron process to check DB replicate state
+ *
+ * @param $task to log and get param
+ *
  */
-function cron_dbreplicate() {
+function cron_dbreplicate($task) {
    global $DB, $CFG_GLPI, $LANG;
 
    //Lauch cron only is :
@@ -224,25 +227,32 @@ function cron_dbreplicate() {
    // 2 the slave database is configurated
    if (!$DB->isSlave() && isDBSlaveActive()) {
       $diff = getReplicateDelay();
-      //If admin must be notified when slave is not synchronized with master
-      if ($CFG_GLPI["use_notification_on_dbreplicate_desync"]
-          && $diff > $CFG_GLPI["dbreplicate_maxdelay"]) {
+
+      // Quite strange, but allow simple stat
+      $task->setVolume($diff);
+
+      if ($diff > ($task->fields['param']*60)) {
 
          $msg = $LANG['setup'][807] . " " . timestampToString($diff);
-         $mmail = new glpi_phpmailer();
-         $mmail->From = $CFG_GLPI["admin_email"];
-         $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
-         $mmail->FromName = $CFG_GLPI["dbreplicate_email"];
-         $mmail->AddAddress($CFG_GLPI["dbreplicate_email"], "");
-         $mmail->Subject = $LANG['setup'][808];
-         $mmail->Body = $msg;
-         $mmail->isHTML(false);
-         if (!$mmail->Send()) {
-            return 1;
-         } else {
-            return 0;
+         $task->log($msg);
+
+         // Send notification if mail configured
+         if (!empty($CFG_GLPI["dbreplicate_email"])) {
+            $mmail = new glpi_phpmailer();
+            $mmail->From = $CFG_GLPI["admin_email"];
+            $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
+            $mmail->FromName = $CFG_GLPI["dbreplicate_email"];
+            $mmail->AddAddress($CFG_GLPI["dbreplicate_email"], "");
+            $mmail->Subject = $LANG['setup'][808];
+            $mmail->Body = $msg;
+            $mmail->isHTML(false);
+
+            if ($mmail->Send()) {
+               $task->log("Mail send to ".$CFG_GLPI["dbreplicate_email"]);
+            }
          }
       }
+      return 1;
    }
    return 0;
 }
