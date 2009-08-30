@@ -2161,8 +2161,24 @@ function update0722to080() {
       $DB->query($query) or die("0.80 drop auto_update_check in check_update" . $LANG['update'][90] . $DB->error());
    }
 
-   // TODO migration of config option to task option
-   // TODO clean not used config option
+   if (FieldExists('glpi_configs','dbreplicate_maxdelay')) {
+      $query="SELECT `dbreplicate_maxdelay` FROM `glpi_configs` WHERE id=1";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $value=$DB->result($result,0,0);
+            $value = intval($value/60);
+            $query="UPDATE `glpi_crontasks` SET `state`='1', `frequency`='$value' WHERE `name`='dbreplicate';";
+            $DB->query($query);
+         }
+      }
+      $query="ALTER TABLE `glpi_configs` DROP `dbreplicate_maxdelay`";
+      $DB->query($query) or die("0.80 drop dbreplicate_maxdelay in check_update" . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_configs','use_notification_on_dbreplicate_desync')) {
+      $query="ALTER TABLE `glpi_configs` DROP `use_notification_on_dbreplicate_desync`";
+      $DB->query($query) or die("0.80 drop use_notification_on_dbreplicate_desync in check_update" . $LANG['update'][90] . $DB->error());
+   }
+
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

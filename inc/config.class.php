@@ -556,15 +556,6 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][704] . "</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][804] . " </td><td>";
-         dropdownYesNo("use_notification_on_dbreplicate_desync",
-                       $CFG_GLPI["use_notification_on_dbreplicate_desync"]);
-         echo " </td>";
-         echo "<td class='center'> " . $LANG['setup'][806] . " </td><td>";
-         echo "<input type=\"text\" name=\"dbreplicate_maxdelay\" size='8' value=\"" .
-                $CFG_GLPI["dbreplicate_maxdelay"] . "\">";
-         echo "&nbsp;" . $LANG['stats'][34]."</td></tr>";
-
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][203] . " </td>";
          echo "<td colspan='3'>";
          echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" .
