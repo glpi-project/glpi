@@ -393,9 +393,11 @@ class CronTask extends CommonDBTM{
 
       if (empty($module)) {
          switch ($id) {
+            /* TODO set this global ? (no other way to active/inactive server)
             case 1: // ocsng
                return $LANG['ocsconfig'][40];
                break;
+            */
             case 7: // events
                return $LANG['setup'][109];
                break;

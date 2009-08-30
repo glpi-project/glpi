@@ -48,13 +48,13 @@ function ocsGetTagLimit($cfg_ocs){
 			$WHERE = "( accountinfo.TAG='" . $splitter[0] . "' ";
 			for ($i = 1; $i < count($splitter); $i++){
 				$WHERE .= " OR accountinfo.TAG='" .$splitter[$i] . "' ";
-			}	
+			}
 			$WHERE .= ")";
 		}
 	}
 	if (!empty ($cfg_ocs["tag_exclude"])){
 		$splitter = explode("$", $cfg_ocs["tag_exclude"]);
-		
+
 		if (count($splitter)) {
 			if (!empty($WHERE)){
 				$WHERE.=" AND ";
@@ -62,7 +62,7 @@ function ocsGetTagLimit($cfg_ocs){
 			$WHERE .= "accountinfo.TAG <> '" . $splitter[0] . "' ";
 			for ($i = 1; $i < count($splitter); $i++){
 				$WHERE .= " AND accountinfo.TAG <> '" .$splitter[$i] . "' ";
-			}	
+			}
 		}
 	}
 	return $WHERE;
@@ -78,24 +78,24 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
 
 	$WHERE = ocsGetTagLimit($cfg_ocs);
 
-	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG, bios.SSN as SERIAL 
-			FROM hardware 
+	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG, bios.SSN as SERIAL
+			FROM hardware
 			INNER JOIN accountinfo ON (hardware.id = accountinfo.HARDWARE_ID)
-			INNER JOIN bios ON (hardware.id = bios.HARDWARE_ID)". 
+			INNER JOIN bios ON (hardware.id = bios.HARDWARE_ID)".
 			(!empty($WHERE)?"WHERE $WHERE":"")." ORDER BY hardware.NAME";
 	$result_ocs = $DBocs->query($query_ocs);
 
 	// Existing OCS - GLPI link
-	$query_glpi = "SELECT * 
-			FROM glpi_ocslinks 
+	$query_glpi = "SELECT *
+			FROM glpi_ocslinks
 			WHERE ocsservers_id='".$ocsservers_id."'";
 	$result_glpi = $DB->query($query_glpi);
 
 
 	if ($tolinked){
 		// Computers existing in GLPI
-		$query_glpi_comp = "SELECT id,name 
-				FROM glpi_computers 
+		$query_glpi_comp = "SELECT id,name
+				FROM glpi_computers
 				WHERE is_template='0' AND entities_id IN (".$_SESSION["glpiactiveentities_string"].")";
 		$result_glpi_comp = $DB->query($query_glpi_comp);
 	}
@@ -144,14 +144,14 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
 		if ($tolinked && count($hardware)) {
 			echo "<div class='center'><strong>" . $LANG['ocsng'][22] . "</strong></div>";
 		}
-		
+
 		echo "<div class='center'>";
 		if (($numrows = count($hardware)) > 0) {
 
 			$parameters = "check=$check";
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
-			// delete end 
+			// delete end
 			array_splice($hardware, $start + $_SESSION['glpilist_limit']);
 			// delete begin
 			if ($start > 0)
@@ -228,7 +228,7 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
 				} else {
 					//Look for the computer using automatic link criterias as defined in OCSNG configuration
 					$computer_found = getMachinesAlreadyInGLPI($tab["id"],$ocsservers_id,$entity);
-					
+
 					if (!empty($computer_found) && $computer_found != -1) {
 						dropdownValue("glpi_computers", "tolink[" .
 						$tab["id"] . "]", $computer_found[0],1,$entity);
@@ -277,21 +277,21 @@ function ocsLink($ocsid, $ocsservers_id, $glpi_computers_id) {
 	checkOCSconnection($ocsservers_id);
 
 	// Need to get device id due to ocs bug on duplicates
-	$query_ocs = "SELECT * 
+	$query_ocs = "SELECT *
 		FROM hardware
 		WHERE id = '$ocsid';";
 	$result_ocs = $DBocs->query($query_ocs);
 	$data = $DBocs->fetch_array($result_ocs);
 
-	$query = "INSERT INTO glpi_ocslinks 
-		(computers_id,ocsid,ocs_deviceid,last_update,ocsservers_id) 
+	$query = "INSERT INTO glpi_ocslinks
+		(computers_id,ocsid,ocs_deviceid,last_update,ocsservers_id)
 		VALUES ('" . $glpi_computers_id . "','" . $ocsid . "','" . $data["DEVICEID"] . "','" . $_SESSION["glpi_currenttime"] . "','" . $ocsservers_id . "')";
 	$result = $DB->query($query);
 
 	if ($result) {
 		return ($DB->insert_id());
 	} else {
-		// TODO : Check if this code part is ok ? why to send a link if insert do not works ? May have problem for example on ocsLinkComputer 
+		// TODO : Check if this code part is ok ? why to send a link if insert do not works ? May have problem for example on ocsLinkComputer
 		$query = "SELECT id
 			FROM glpi_ocslinks
 			WHERE ocsid = '$ocsid' AND ocsservers_id='" . $ocsservers_id . "';";
@@ -321,19 +321,19 @@ function ocsCheckConfig($what=1) {
 		if ($DBocs->numrows($result) != 1 || $DBocs->result($result, 0, 0) != 1) {
 			$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 
-			if (!$DBocs->query($query)) return false;			
+			if (!$DBocs->query($query)) return false;
 		}
 	}
 	# Check write access on hardware.CHECKSUM
 	if ($what & 4) {
 		if (!$DBocs->query("UPDATE hardware SET CHECKSUM = CHECKSUM LIMIT 1")) {
-			return false;			
+			return false;
 		}
 	}
 	# Check delete access on deleted_equiv
 	if ($what & 8) {
 		if (!$DBocs->query("DELETE FROM deleted_equiv LIMIT 0")) {
-			return false;			
+			return false;
 		}
 	}
 
@@ -362,44 +362,44 @@ function ocsManageDeleted($ocsservers_id) {
 
 					// Get hardware due to bug of duplicates management of OCS
 					if (strstr($equiv,"-")) {
-						$query_ocs = "SELECT * 
-								FROM hardware 
+						$query_ocs = "SELECT *
+								FROM hardware
 								WHERE DEVICEID='$equiv'";
 						$result_ocs = $DBocs->query($query_ocs);
-						
+
 						if ($data = $DBocs->fetch_array($result_ocs)) {
 
-							$query = "UPDATE glpi_ocslinks 
+							$query = "UPDATE glpi_ocslinks
 									SET ocsid='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "'
 									WHERE ocs_deviceid='$del' AND ocsservers_id='$ocsservers_id'";
 							$DB->query($query);
 
-							//Update hardware checksum due to a bug in OCS 
+							//Update hardware checksum due to a bug in OCS
  							//(when changing netbios name, software checksum is set instead of hardware checksum...)
-							$querychecksum = "UPDATE hardware 
-									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).") 
+							$querychecksum = "UPDATE hardware
+									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).")
 									WHERE ID='".$data["ID"]."'";
 							$DBocs->query($querychecksum);
 
 						}
 
 					} else {
-						$query_ocs = "SELECT * 
-								FROM hardware 
+						$query_ocs = "SELECT *
+								FROM hardware
 								WHERE id='$equiv'";
 
 						$result_ocs = $DBocs->query($query_ocs);
 						if ($data = $DBocs->fetch_array($result_ocs)){
-							
-							$query = "UPDATE glpi_ocslinks 
+
+							$query = "UPDATE glpi_ocslinks
 								SET ocsid='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "'
 								WHERE ocsid='$del' AND ocsservers_id='$ocsservers_id'";
 							$DB->query($query);
 
-							//Update hardware checksum due to a bug in OCS 
+							//Update hardware checksum due to a bug in OCS
  							//(when changing netbios name, software checksum is set instead of hardware checksum...)
-							$querychecksum = "UPDATE hardware 
-									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).") 
+							$querychecksum = "UPDATE hardware
+									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).")
 									WHERE ID='".$data["ID"]."'";
 							$DBocs->query($querychecksum);
 						}
@@ -407,8 +407,8 @@ function ocsManageDeleted($ocsservers_id) {
 					}
 
 					if ($data) {
-						$sql_id = "SELECT computers_id 
-							FROM glpi_ocslinks 
+						$sql_id = "SELECT computers_id
+							FROM glpi_ocslinks
 							WHERE ocsid='".$data["ID"]."' AND ocsservers_id='$ocsservers_id'";
 						if ($res_id = $DB->query($sql_id)){
 							if ($DB->numrows($res_id)>0){
@@ -421,15 +421,15 @@ function ocsManageDeleted($ocsservers_id) {
 								historyLog ($DB->result($res_id,0,"computers_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
 							}
 						}
-					}					
+					}
 				} else { // Deleted
 					if (strstr($del,"-"))
-						$query = "SELECT * 
-							FROM glpi_ocslinks 
+						$query = "SELECT *
+							FROM glpi_ocslinks
 							WHERE ocs_deviceid='$del' AND ocsservers_id='$ocsservers_id'";
 					else
-						$query = "SELECT * 
-							FROM glpi_ocslinks 
+						$query = "SELECT *
+							FROM glpi_ocslinks
 							WHERE ocsid='$del' AND ocsservers_id='$ocsservers_id'";
 					if ($result = $DB->query($query)){
 						if ($DB->numrows($result)>0) {
@@ -438,13 +438,13 @@ function ocsManageDeleted($ocsservers_id) {
 							$comp->delete(array (
 								"id" => $data["computers_id"],
 							), 0);
-	
+
 							//Add history to indicates that the machine was deleted from OCS
 							$changes[0]='0';
 							$changes[1]=$data["ocsid"];
 							$changes[2]="";
 							historyLog ($data["computers_id"],COMPUTER_TYPE,$changes,0,HISTORY_OCS_DELETE);
-	
+
 							$query = "DELETE FROM glpi_ocslinks WHERE id ='" . $data["ID"] . "'";
 							$DB->query($query);
 						}
@@ -498,22 +498,22 @@ function ocsImportComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -
 				// machines founded -> try to link
 				if (is_array($found_computers) && count($found_computers)>0){
 					foreach ($found_computers as $computers_id){
-						if (ocsLinkComputer($ocsid,$ocsservers_id,$computers_id,$canlink)){ 
+						if (ocsLinkComputer($ocsid,$ocsservers_id,$computers_id,$canlink)){
 							return OCS_COMPUTER_LINKED;
 						}
 					}
 				}
 				// Else simple Import
 			}
-			
+
 			//New machine to import
 			$query = "SELECT * FROM hardware WHERE id='$ocsid'";
 			$result = $DBocs->query($query);
 			if ($result && $DBocs->numrows($result) == 1) {
-	
+
 				$line = $DBocs->fetch_array($result);
 				$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-	
+
 				$cfg_ocs = getOcsConf($ocsservers_id);
 				$input = array ();
 				$input["entities_id"] = $data['entities_id'];
@@ -523,25 +523,25 @@ function ocsImportComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -
 					$input["states_id"] = $cfg_ocs["states_id_default"];
 				}
 				$computers_id = $comp->add($input);
-	
+
 				$ocsid = $line['ID'];
-	
+
 				$changes[0]='0';
 				$changes[1]="";
 				$changes[2]=$ocsid;
 				historyLog ($computers_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_IMPORT);
-				
+
 				if ($idlink = ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
 					ocsUpdateComputer($idlink, $ocsservers_id, 0);
 				}
-	
+
 			}
-	
+
 			if ($lock) {
 				removeEntityLock($data['entities_id'], $fp);
 			}
 			//Return code to indicates that the machine was imported
-			return OCS_COMPUTER_IMPORTED;	
+			return OCS_COMPUTER_IMPORTED;
 		}
 		else
 			//Return code to indicates that the machine was not imported because it doesn't matched rules
@@ -552,7 +552,7 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 	global $DB, $DBocs, $LANG;
 	checkOCSconnection($ocsservers_id);
 
-	$query = "SELECT *  
+	$query = "SELECT *
 		FROM glpi_ocslinks
 		WHERE computers_id='$computers_id'";
 
@@ -562,55 +562,55 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 	// Already link - check if the OCS computer already exists
 	if ($numrows > 0) {
 		$data = $DB->fetch_assoc($result);
-		$query = "SELECT * 
-			FROM hardware 
+		$query = "SELECT *
+			FROM hardware
 			WHERE id='" . $data["ocsid"] . "'";
 		$result_ocs = $DBocs->query($query);
 		// Not found
 		if ($DBocs->numrows($result_ocs) == 0) {
 			$ocs_exists = false;
-			$query = "DELETE FROM glpi_ocslinks 
+			$query = "DELETE FROM glpi_ocslinks
 				WHERE id='" . $data["ID"] . "'";
 			$DB->query($query);
 		}
 	}
-	
+
 	// TODO : if OCS ID change : ocs_link exists but not hardware in OCS so update only ocs_link and do not reset items before updateComputer
 
-	// No ocs_link or ocs computer does not exists so can link 
+	// No ocs_link or ocs computer does not exists so can link
 	if (!$ocs_exists || $numrows == 0) {
 
 		$ocsConfig = getOcsConf($ocsservers_id);
-		
+
 		// Set OCS checksum to max value
-		$query = "UPDATE hardware 
-			SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' 
+		$query = "UPDATE hardware
+			SET CHECKSUM='" . MAX_OCS_CHECKSUM . "'
 			WHERE id='$ocsid'";
 		$DBocs->query($query);
 
 		if ($idlink = ocsLink($ocsid, $ocsservers_id, $computers_id)) {
-		
+
 			$comp = new Computer;
 			$comp->getFromDB($computers_id);
 			$input["id"] = $computers_id;
 			$input["is_ocs_import"] = 1;
-			
-			// Not already import from OCS / mark default state 
+
+			// Not already import from OCS / mark default state
 			if ($link_auto || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0)) {
 				$input["states_id"] = $ocsConfig["states_id_default"];
 			}
-	
+
 			$comp->update($input);
-			
-			// Auto restore if deleted 
-			if ($comp->fields['is_deleted']){ 
+
+			// Auto restore if deleted
+			if ($comp->fields['is_deleted']){
 				$comp->restore(array('id'=>$computers_id));
 			}
-			
+
 			// Reset using GLPI Config
 			$cfg_ocs = getOcsConf($ocsservers_id);
-			$query = "SELECT * 
-				FROM hardware 
+			$query = "SELECT *
+				FROM hardware
 				WHERE id='$ocsid'";
 			$result = $DBocs->query($query);
 			$line = $DBocs->fetch_array($result);
@@ -650,7 +650,7 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 			$changes[1]="";
 			$changes[2]=$ocsid;
 			historyLog ($computers_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_LINK);
-			
+
 			ocsUpdateComputer($idlink, $ocsservers_id, 0);
 			return true;
 		}
@@ -658,7 +658,7 @@ function ocsLinkComputer($ocsid, $ocsservers_id, $computers_id,$link_auto=0) {
 		addMessageAfterRedirect($ocsid . " - " . $LANG['ocsng'][23],false,ERROR);
 	}
 
-	return false; 
+	return false;
 }
 
 
@@ -668,11 +668,11 @@ function ocsProcessComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = 
 	checkOCSconnection($ocsservers_id);
 
 	$comp = new Computer;
-	
+
 	//Check it machine is already present AND was imported by OCS AND still present in GLPI
-	$query = "SELECT glpi_ocslinks.id, computers_id, ocsid 
-		FROM glpi_ocslinks 
-      LEFT JOIN glpi_computers ON glpi_computers.id=glpi_ocslinks.computers_id 
+	$query = "SELECT glpi_ocslinks.id, computers_id, ocsid
+		FROM glpi_ocslinks
+      LEFT JOIN glpi_computers ON glpi_computers.id=glpi_ocslinks.computers_id
 		WHERE glpi_computers.id IS NOT NULL AND ocsid = '$ocsid' AND ocsservers_id='" . $ocsservers_id . "';";
 	$result_glpi_ocslinks = $DB->query($query);
 	if ($DB->numrows($result_glpi_ocslinks)) {
@@ -684,29 +684,29 @@ function ocsProcessComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = 
 		return ocsImportComputer($ocsid, $ocsservers_id, $lock, $defaultentity,$canlink);
 }
 
-/** Return array of GLPI computers matching the OCS one using the OCS config 
+/** Return array of GLPI computers matching the OCS one using the OCS config
 * @param $ocsid integer : ocs ID of the computer
 * @param $ocsservers_id integer : ocs server ID
 * @param $entity integer : entity ID
-* @return array containing the glpi computer ID 
+* @return array containing the glpi computer ID
 */
 function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocsservers_id);
-	
-	$found_computers=array(); 
+
+	$found_computers=array();
 
 	$sql_fields = "hardware.id";
 	$sql_from ="hardware";
 	$first = true;
 	$ocsParams = array();
-	
+
 	if ($conf["is_glpi_link_enabled"])	{
 		$ok=false;
 		//Build the request against OCS database to get the machine's informations
 		if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]){
 			$sql_from.=" LEFT JOIN networks ON (hardware.id=networks.HARDWARE_ID) ";
-		}	
+		}
 
 		if ($conf["use_ip_to_link"]){
 			$sql_fields.=", networks.IPADDRESS";
@@ -730,20 +730,20 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			$ocsParams["NAME"] = array();
 			$ok=true;
 		}
-		
+
 		// No criteria to link
 		if (!$ok){
 			return -1;
 		}
 
 		//Execute request
-		$sql = "SELECT ".$sql_fields." 
-			FROM $sql_from 
+		$sql = "SELECT ".$sql_fields."
+			FROM $sql_from
 			WHERE hardware.id='$ocsid';";
 		$result = $DBocs->query($sql);
 
 		//Get the list of parameters
-		
+
 		while ($dataOcs = $DB->fetch_array($result)){
 			if ($conf["use_ip_to_link"])
 				if (!empty($dataOcs["IPADDRESS"]) && !in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
@@ -764,27 +764,27 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			$where_entity = implode($entity,',');
 		else
 			$where_entity = $entity;
-			
+
 		$sql_where = " entities_id IN ($where_entity) AND is_template=0 ";
 		$sql_from = "glpi_computers";
 		if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]){
-			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.id=glpi_networkports.items_id 
+			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.id=glpi_networkports.items_id
 								AND glpi_networkports.itemtype=".COMPUTER_TYPE.") ";
-		}	
+		}
 		if ($conf["use_ip_to_link"]){
 			if (empty($ocsParams["IPADDRESS"])){
 				return -1;
-			} else {	
+			} else {
 				$sql_where.=" AND glpi_networkports.ip IN ";
 				for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
 					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
 				$sql_where.=")";
-			}			
+			}
 		}
 		if ($conf["use_mac_to_link"]){
 			if (empty($ocsParams["MACADDR"])){
 				return -1;
-			} else {	
+			} else {
 				$sql_where.=" AND glpi_networkports.mac IN ";
 				for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
 					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
@@ -795,7 +795,7 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 			//Search only computers with blank name
 			if ($conf["use_name_to_link"] == 2){
 				$sql_where .= " AND (glpi_computers.name='' OR glpi_computers.name IS NULL) ";
-			} else {	
+			} else {
 				if (empty($ocsParams["NAME"]))
 					return -1;
 				else
@@ -810,11 +810,11 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 		}
 		if ($conf["states_id_linkif"] > 0)
 			$sql_where .= " AND glpi_computers.states_id='".$conf["states_id_linkif"]."'";
-		
+
 		$sql_glpi = "SELECT glpi_computers.id FROM $sql_from " .
 			"WHERE $sql_where ORDER BY `glpi_computers`.`is_deleted` ASC";
 		$result_glpi = $DB->query($sql_glpi);
-		
+
 		if ($DB->numrows($result_glpi) > 0){
 			while ($data = $DB->fetch_array($result_glpi)) {
 				$found_computers[]=$data['id'];
@@ -822,8 +822,8 @@ function getMachinesAlreadyInGLPI($ocsid,$ocsservers_id,$entity){
 		}
 	}
 
-	return $found_computers; 
-		
+	return $found_computers;
+
 }
 /** Update a ocs computer
 * @param $ID integer : ID of ocslinks row
@@ -840,8 +840,8 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 	$cfg_ocs = getOcsConf($ocsservers_id);
 
    /// TODO is check on ocsservers_id needed ?
-	$query = "SELECT * 
-		FROM glpi_ocslinks 
+	$query = "SELECT *
+		FROM glpi_ocslinks
 		WHERE id='$ID' AND ocsservers_id='".$ocsservers_id."'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
@@ -851,9 +851,9 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 		$comp = new Computer;
 		$comp->getFromDB($line["computers_id"]);
 
-		// Get OCS ID 
-		$query_ocs = "SELECT * 
-				FROM hardware 
+		// Get OCS ID
+		$query_ocs = "SELECT *
+				FROM hardware
 				WHERE id='" . $line['ocsid'] . "'";
 		$result_ocs = $DBocs->query($query_ocs);
 		// Need do history to be 2 not to lock fields
@@ -864,18 +864,18 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 			$data_ocs = addslashes_deep($DBocs->fetch_array($result_ocs));
 
 			// update last_update and and last_ocs_update
-			$query = "UPDATE glpi_ocslinks 
-					SET last_update='" . $_SESSION["glpi_currenttime"] . "', 
-						last_ocs_update='" . $data_ocs["LASTDATE"] . "', 
-						ocs_agent_version='".$data_ocs["USERAGENT"]." ' 
+			$query = "UPDATE glpi_ocslinks
+					SET last_update='" . $_SESSION["glpi_currenttime"] . "',
+						last_ocs_update='" . $data_ocs["LASTDATE"] . "',
+						ocs_agent_version='".$data_ocs["USERAGENT"]." '
 					WHERE id='$ID'";
 			$DB->query($query);
 
 			if ($force) {
 
 				$ocs_checksum = MAX_OCS_CHECKSUM;
-				$query_ocs = "UPDATE hardware 
-						SET CHECKSUM= (" . MAX_OCS_CHECKSUM . ") 
+				$query_ocs = "UPDATE hardware
+						SET CHECKSUM= (" . MAX_OCS_CHECKSUM . ")
 						WHERE id='" . $line['ocsid'] . "'";
 				$DBocs->query($query_ocs);
 			} else {
@@ -888,14 +888,14 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
 			*/
-			
+
 			//By default log history
 			$loghistory["history"] = 1;
-			
+
 			// Is an update to do ?
 			if ($mixed_checksum) {
 				// Get updates on computers :
-            
+
 				$computer_updates = importOcsArrayFromDB($line["computer_update"]);
             if (!in_array(OCS_IMPORT_TAG_080,$computer_updates)){
                   $computer_updates=ocsMigrateComputerUpdates($line["computers_id"],$computer_updates);
@@ -965,13 +965,13 @@ function ocsUpdateComputer($ID, $ocsservers_id, $dohistory, $force = 0) {
 					ocsUpdateRegistry($line['computers_id'], $line['ocsid'], $ocsservers_id, $cfg_ocs);
 				}
 
-				// Update OCS Cheksum 
-				$query_ocs = "UPDATE hardware 
-						SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
+				// Update OCS Cheksum
+				$query_ocs = "UPDATE hardware
+						SET CHECKSUM= (CHECKSUM - $mixed_checksum)
 						WHERE id='" . $line['ocsid'] . "'";
 				$DBocs->query($query_ocs);
 
-				//Return code to indicate that computer was synchronized	
+				//Return code to indicate that computer was synchronized
 				return OCS_COMPUTER_SYNCHRONIZED;
 			}
 			else
@@ -998,8 +998,8 @@ function getOcsConf($id) {
 	//if ($data = $CACHE_CFG->get("CFG_OCSGLPI_$id", "GLPI_CFG")) {
 	//	return $data;
 	//} else {
-	$query = "SELECT * 
-		FROM glpi_ocsservers 
+	$query = "SELECT *
+		FROM glpi_ocsservers
 		WHERE id='$id'";
 	$result = $DB->query($query);
 	if ($result)
@@ -1035,7 +1035,7 @@ function getNumberOfOcsConfigs() {
  *@param $ocsservers_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $computer_updates array : already updated fields of the computer
- *@param $dohistory log updates on history ? 
+ *@param $dohistory log updates on history ?
  *
  *@return nothing.
  *
@@ -1045,13 +1045,13 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 
 	checkOCSconnection($ocsservers_id);
 
-	$query = "SELECT * 
-		FROM hardware 
+	$query = "SELECT *
+		FROM hardware
 		WHERE id='" . $ocsid . "'";
 	$result = $DBocs->query($query);
-	
+
 	$logHistory = 1;
-	
+
 	if ($DBocs->numrows($result) == 1) {
 
 		$line = $DBocs->fetch_assoc($result);
@@ -1067,7 +1067,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 
 		$sql_computer = "SELECT glpi_operatingsystems.name as os_name, glpi_operatingsystemsservicepacks.name as os_sp" .
 			" FROM glpi_computers, glpi_ocslinks, glpi_operatingsystems, glpi_operatingsystemsservicepacks" .
-			" WHERE glpi_ocslinks.computers_id = glpi_computers.id AND glpi_operatingsystems.id = glpi_computers.operatingsystems_id 
+			" WHERE glpi_ocslinks.computers_id = glpi_computers.id AND glpi_operatingsystems.id = glpi_computers.operatingsystems_id
 				AND glpi_operatingsystemsservicepacks.id = glpi_computers.operatingsystemsservicepacks_id
 				AND glpi_ocslinks.ocsid='".$ocsid."' AND glpi_ocslinks.ocsservers_id='".$ocsservers_id."'";
 
@@ -1081,7 +1081,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 			if (!$dohistory || $computerOS != $line["OSNAME"] || $computerOSSP != $line["OSCOMMENTS"])
 				$logHistory = 0;
 		}
-			
+
 		if ($cfg_ocs["import_general_os"]) {
 			if (!in_array("operatingsystems_id", $computer_updates)) {
 				$osname=$line["OSNAME"];
@@ -1089,7 +1089,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 				if (!seems_utf8($osname)){
 					$osname=encodeInUtf8($osname);
 				}
-			
+
 				$compupdate["operatingsystems_id"] = externalImportDropdown('glpi_operatingsystems', $osname);
 			}
 			if (!in_array("operatingsystemsversions_id", $computer_updates)) {
@@ -1105,7 +1105,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
 
 		if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
 			$compupdate["contact"] = $line["USERID"];
-			$query = "SELECT id 
+			$query = "SELECT id
 				FROM glpi_users
 				WHERE name='" . $line["USERID"] . "';";
 			$result = $DB->query($query);
@@ -1155,8 +1155,8 @@ function ocsUpdateBios($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $compute
 
 	checkOCSconnection($ocsservers_id);
 
-	$query = "SELECT * 
-		FROM bios 
+	$query = "SELECT *
+		FROM bios
 		WHERE HARDWARE_ID='" . $ocsid . "'";
 	$result = $DBocs->query($query);
 	$compupdate = array ();
@@ -1231,15 +1231,15 @@ function ocsCleanLinks($ocsservers_id) {
 	ocsManageDeleted($ocsservers_id);
 
 	// Delete unexisting GLPI computers
-	$query = "SELECT glpi_ocslinks.id 
-		FROM glpi_ocslinks 
-		LEFT JOIN glpi_computers ON glpi_computers.id=glpi_ocslinks.computers_id 
+	$query = "SELECT glpi_ocslinks.id
+		FROM glpi_ocslinks
+		LEFT JOIN glpi_computers ON glpi_computers.id=glpi_ocslinks.computers_id
 		WHERE glpi_computers.id IS NULL AND ocsservers_id='$ocsservers_id'";
 
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_array($result)) {
-			$query2 = "DELETE FROM glpi_ocslinks 
+			$query2 = "DELETE FROM glpi_ocslinks
 					WHERE id='" . $data['id'] . "'";
 			$DB->query($query2);
 		}
@@ -1265,7 +1265,7 @@ function ocsCleanLinks($ocsservers_id) {
 		while ($data = $DB->fetch_array($result)) {
 			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 			if (!isset ($hardware[$data["ocsid"]])) {
-				$query_del = "DELETE FROM glpi_ocslinks 
+				$query_del = "DELETE FROM glpi_ocslinks
 						WHERE id='" . $data["id"] . "'";
 				$DB->query($query_del);
 				$comp = new Computer();
@@ -1279,60 +1279,63 @@ function ocsCleanLinks($ocsservers_id) {
 
 }
 
-function cron_ocsng() {
+function cron_ocsng($task) {
 
-	global $DB, $CFG_GLPI;
+   global $DB, $CFG_GLPI;
 
-	//Get a randon server id
-	$ocsservers_id = getRandomOCSServerID();
-	if ($ocsservers_id > 0) {
-		//Initialize the server connection
-		$DBocs = getDBocs($ocsservers_id);
+   //Get a randon server id
+   $ocsservers_id = getRandomOCSServerID();
+   if ($ocsservers_id > 0) {
+      //Initialize the server connection
+      $DBocs = getDBocs($ocsservers_id);
 
-		$cfg_ocs = getOcsConf($ocsservers_id);
-			logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
+      $cfg_ocs = getOcsConf($ocsservers_id);
+      $task->log("Check updates from server " . $cfg_ocs['name'] . "\n");
 
-		if (!$cfg_ocs["cron_sync_number"]){
-			return 0;
-		}
-		ocsManageDeleted($ocsservers_id);
+      if (!$cfg_ocs["cron_sync_number"]){
+         return 0;
+      }
+      ocsManageDeleted($ocsservers_id);
 
+      $query = "SELECT MAX(last_ocs_update)
+                FROM glpi_ocslinks
+                WHERE ocsservers_id='$ocsservers_id'";
+      $max_date="0000-00-00 00:00:00";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $max_date=$DB->result($result,0,0);
+         }
+      }
 
-		$query = "SELECT MAX(last_ocs_update) 
-			FROM glpi_ocslinks 
-			WHERE ocsservers_id='$ocsservers_id'";
-		$max_date="0000-00-00 00:00:00";
-		if ($result=$DB->query($query)){
-			if ($DB->numrows($result)>0){
-				$max_date=$DB->result($result,0,0);
-			}
-		}
+      $query_ocs = "SELECT * FROM hardware
+                    INNER JOIN accountinfo ON (hardware.id = accountinfo.HARDWARE_ID)
+                    WHERE ((hardware.CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0
+                           OR hardware.LASTDATE > '$max_date') ";
 
-		$query_ocs = "SELECT * FROM hardware INNER JOIN accountinfo ON (hardware.id = accountinfo.HARDWARE_ID)
-			WHERE ((hardware.CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR hardware.LASTDATE > '$max_date') ";
-			
-		// workaround to avoid duplicate when synchro occurs during an inventory 
-		// "after" insert in ocsweb.hardware  and "before" insert in ocsweb.deleted_equiv 
-		$query_ocs .= " AND TIMESTAMP(LASTDATE) < (NOW()-180) ";
-		
-		$tag_limit=ocsGetTagLimit($cfg_ocs);
-		if (!empty($tag_limit)){
-			$query_ocs.= "AND ".$tag_limit;
-		}
-		
-		$query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".intval($cfg_ocs["cron_sync_number"]); 
-		
-		$result_ocs = $DBocs->query($query_ocs);
-		if ($DBocs->numrows($result_ocs) > 0) {
-			while ($data = $DBocs->fetch_array($result_ocs)) {
-				ocsProcessComputer($data["ID"],$ocsservers_id,0,-1,1);
-				logInFile("cron", "Update computer " . $data["ID"] . "\n");
-			}
-		} else {
-			return 0;
-		}
-	}
-	return 1;
+      // workaround to avoid duplicate when synchro occurs during an inventory
+      // "after" insert in ocsweb.hardware  and "before" insert in ocsweb.deleted_equiv
+      $query_ocs .= " AND TIMESTAMP(LASTDATE) < (NOW()-180) ";
+
+      $tag_limit=ocsGetTagLimit($cfg_ocs);
+      if (!empty($tag_limit)){
+         $query_ocs.= "AND ".$tag_limit;
+      }
+
+      $query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".intval($cfg_ocs["cron_sync_number"]);
+
+      $result_ocs = $DBocs->query($query_ocs);
+      $nbcomp = $DBocs->numrows($result_ocs);
+      if ($nbcomp > 0) {
+         while ($data = $DBocs->fetch_array($result_ocs)) {
+            $task->log("Update computer " . $data["ID"] . "\n"); // TODO remove if too much verbose ?
+            ocsProcessComputer($data["ID"],$ocsservers_id,0,-1,1);
+         }
+         $task->setVolume($nbcomp);
+      } else {
+         return 0;
+      }
+   }
+   return 1;
 }
 
 
@@ -1346,18 +1349,18 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 		return false;
 
 	$cfg_ocs = getOcsConf($ocsservers_id);
-	$query_ocs = "SELECT * 
-		FROM hardware 
-		WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 
+	$query_ocs = "SELECT *
+		FROM hardware
+		WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0
 		ORDER BY LASTDATE";
 	$result_ocs = $DBocs->query($query_ocs);
 
-	$query_glpi = "SELECT glpi_ocslinks.last_update as last_update,  glpi_ocslinks.computers_id as computers_id, 
-				glpi_ocslinks.ocsid as ocsid, glpi_computers.name as name, 
+	$query_glpi = "SELECT glpi_ocslinks.last_update as last_update,  glpi_ocslinks.computers_id as computers_id,
+				glpi_ocslinks.ocsid as ocsid, glpi_computers.name as name,
 				glpi_ocslinks.use_auto_update, glpi_ocslinks.id
-			FROM glpi_ocslinks  
-			LEFT JOIN glpi_computers ON (glpi_computers.id = glpi_ocslinks.computers_id) 
-			WHERE glpi_ocslinks.ocsservers_id='" . $ocsservers_id . "' 
+			FROM glpi_ocslinks
+			LEFT JOIN glpi_computers ON (glpi_computers.id = glpi_ocslinks.computers_id)
+			WHERE glpi_ocslinks.ocsservers_id='" . $ocsservers_id . "'
 			ORDER BY glpi_ocslinks.use_auto_update DESC, glpi_ocslinks.last_update, glpi_computers.name";
 
 	$result_glpi = $DB->query($query_glpi);
@@ -1393,7 +1396,7 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 			$parameters = "check=$check";
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
-			// delete end 
+			// delete end
 			array_splice($already_linked, $start + $_SESSION['glpilist_limit']);
 			// delete begin
 			if ($start > 0)
@@ -1437,16 +1440,16 @@ function ocsShowUpdateComputer($ocsservers_id, $check, $start) {
 
 function mergeOcsArray($computers_id, $tomerge, $field) {
 	global $DB;
-	$query = "SELECT `$field` 
-		FROM glpi_ocslinks 
+	$query = "SELECT `$field`
+		FROM glpi_ocslinks
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)){
 		if ($DB->numrows($result)){
 			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			$newtab = array_merge($tomerge, $tab);
 			$newtab = array_unique($newtab);
-			$query = "UPDATE glpi_ocslinks 
-				SET `$field`='" . exportOcsArrayToDB($newtab) . "' 
+			$query = "UPDATE glpi_ocslinks
+				SET `$field`='" . exportOcsArrayToDB($newtab) . "'
 				WHERE computers_id='$computers_id'";
 			$DB->query($query);
 		}
@@ -1465,8 +1468,8 @@ function deleteInOcsArray($computers_id, $todel, $field,$is_value_to_del=false) 
 			}
 			if (isset($tab[$todel])){
 				unset ($tab[$todel]);
-				$query = "UPDATE glpi_ocslinks 
-					SET `$field`='" . exportOcsArrayToDB($tab) . "' 
+				$query = "UPDATE glpi_ocslinks
+					SET `$field`='" . exportOcsArrayToDB($tab) . "'
 					WHERE computers_id='$computers_id'";
 				$DB->query($query);
 			}
@@ -1476,13 +1479,13 @@ function deleteInOcsArray($computers_id, $todel, $field,$is_value_to_del=false) 
 
 function replaceOcsArray($computers_id, $newArray, $field) {
 	global $DB;
-	
+
 	$newArray = exportOcsArrayToDB($newArray);
 	$query = "SELECT `$field` FROM glpi_ocslinks WHERE computers_id='".$computers_id."'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
-			$query = "UPDATE glpi_ocslinks 
-				SET `$field`='" . $newArray . "' 
+			$query = "UPDATE glpi_ocslinks
+				SET `$field`='" . $newArray . "'
 				WHERE computers_id=".$computers_id;
 			$DB->query($query);
 		}
@@ -1491,8 +1494,8 @@ function replaceOcsArray($computers_id, $newArray, $field) {
 
 function addToOcsArray($computers_id, $toadd, $field) {
 	global $DB;
-	$query = "SELECT `$field` 
-		FROM glpi_ocslinks 
+	$query = "SELECT `$field`
+		FROM glpi_ocslinks
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
@@ -1500,8 +1503,8 @@ function addToOcsArray($computers_id, $toadd, $field) {
 			foreach ($toadd as $key => $val) {
 				$tab[$key] = $val;
 			}
-			$query = "UPDATE glpi_ocslinks 
-				SET `$field`='" . exportOcsArrayToDB($tab) . "' 
+			$query = "UPDATE glpi_ocslinks
+				SET `$field`='" . exportOcsArrayToDB($tab) . "'
 				WHERE computers_id='$computers_id'";
 			$DB->query($query);
 		}
@@ -1511,7 +1514,7 @@ function addToOcsArray($computers_id, $toadd, $field) {
 
 function getOcsLockableFields(){
 	global $LANG;
-	
+
 	return array (
 			"name"=>$LANG['common'][16],
 			"computerstypes_id"=>$LANG['common'][17],
@@ -1583,14 +1586,14 @@ function ocsUnlockItems($computers_id,$field){
 	if (!in_array($field,array("import_monitor","import_printer","import_peripheral","import_ip","import_software","import_disk"))){
 		return false;
 	}
-	$query = "SELECT `$field` 
-		FROM glpi_ocslinks 
+	$query = "SELECT `$field`
+		FROM glpi_ocslinks
 		WHERE computers_id='$computers_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$tab = importOcsArrayFromDB($DB->result($result, 0, 0));
 			$update_done=false;
-			
+
 			foreach ($tab as $key => $val) {
 				if ($val != "_version_070_") {
 					switch ($field){
@@ -1603,7 +1606,7 @@ function ocsUnlockItems($computers_id,$field){
 							$querySearchLocked = "SELECT id FROM glpi_computers_softwaresversions WHERE id='$key'";
 							break;
 						case "import_ip":
-							$querySearchLocked = "SELECT * FROM glpi_networkports 
+							$querySearchLocked = "SELECT * FROM glpi_networkports
 								WHERE items_id='$computers_id' AND itemtype='".COMPUTER_TYPE."' AND ip='$val'";
 							break;
 						case "import_disk":
@@ -1618,17 +1621,17 @@ function ocsUnlockItems($computers_id,$field){
 						$update_done=true;
 					}
 				}
-			}		
-			
+			}
+
 			if ($update_done){
-				$query = "UPDATE glpi_ocslinks 
-						SET `$field`='" . exportOcsArrayToDB($tab) . "' 
+				$query = "UPDATE glpi_ocslinks
+						SET `$field`='" . exportOcsArrayToDB($tab) . "'
 						WHERE computers_id='$computers_id'";
 				$DB->query($query);
 			}
 		}
 	}
-	
+
 }
 
 function ocsEditLock($target, $ID) {
@@ -1637,8 +1640,8 @@ function ocsEditLock($target, $ID) {
 	if (!haveRight("computer","w")) {
 		return false;
 	}
-	$query = "SELECT * 
-		FROM glpi_ocslinks 
+	$query = "SELECT *
+		FROM glpi_ocslinks
 		WHERE computers_id='$ID'";
 
 	$result = $DB->query($query);
@@ -1673,7 +1676,7 @@ function ocsEditLock($target, $ID) {
 				}
 			}
 		}
-		
+
 
 		if (count($locked)) {
 			echo "<form method='post' action=\"$target\">";
@@ -1776,27 +1779,27 @@ function ocsEditLock($target, $ID) {
 		} else
 			echo "<strong>" . $LANG['ocsng'][33] . "</strong>";
 		echo "</div>";
-		
+
 		// Search locked IP
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
 		$locked_ip = importOcsArrayFromDB($data["import_ip"]);
-		
+
 		if (!in_array(OCS_IMPORT_TAG_072,$locked_ip))
 				$locked_ip=ocsMigrateImportIP($ID,$locked_ip);
-		
+
 		foreach ($locked_ip as $key => $val) {
 			if ($key>0)
 			{
 				$tmp = explode(OCS_FIELD_SEPARATOR,$val);
-				$querySearchLockedIP = "SELECT * 
-					FROM glpi_networkports 
-					WHERE items_id='$ID' AND itemtype='".COMPUTER_TYPE."' 
+				$querySearchLockedIP = "SELECT *
+					FROM glpi_networkports
+					WHERE items_id='$ID' AND itemtype='".COMPUTER_TYPE."'
 						AND ip='".$tmp[0]."' AND mac='".$tmp[1]."'";
 				$resultSearchIP = $DB->query($querySearchLockedIP);
 				if ($DB->numrows($resultSearchIP) == 0) {
-			
+
 					if (!($header)) {
 						$header = true;
 						echo "<form method='post' action=\"$target\">";
@@ -1835,7 +1838,7 @@ function ocsEditLock($target, $ID) {
 						echo "<table class='tab_cadre'>";
 						echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>";
 					}
-					
+
 					echo "<tr class='tab_bg_1'><td>" . str_replace('$$$$$',' v. ',$val) . "</td><td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
 				}
 			}
@@ -1846,7 +1849,7 @@ function ocsEditLock($target, $ID) {
 			echo "</form>";
 		} else
 			echo "<strong>" . $LANG['ocsng'][53] . "</strong>";
-		echo "</div>";			
+		echo "</div>";
 
 		// Search locked computerdisks
 		$header = false;
@@ -1865,7 +1868,7 @@ function ocsEditLock($target, $ID) {
 					echo "<table class='tab_cadre'>";
 					echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>";
 				}
-				
+
 				echo "<tr class='tab_bg_1'><td>$val</td><td><input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>";
 			}
 		}
@@ -1875,7 +1878,7 @@ function ocsEditLock($target, $ID) {
 			echo "</form>";
 		} else
 			echo "<strong>" . $LANG['ocsng'][56] . "</strong>";
-		echo "</div>";			
+		echo "</div>";
 
 	}
 
@@ -1884,7 +1887,7 @@ function ocsEditLock($target, $ID) {
 /**
  * Import the devices for a computer
  *
- * 
+ *
  *
  *@param $devicetype integer : device type
  *@param $computers_id integer : glpi computer id.
@@ -1910,9 +1913,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_memory"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT * 
-					FROM memories 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT *
+					FROM memories
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -1975,9 +1978,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_hdd"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT * 
-					FROM storages 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT *
+					FROM storages
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 
@@ -2019,9 +2022,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_drive"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT * 
-					FROM storages 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT *
+					FROM storages
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -2059,9 +2062,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_modem"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT * 
-					FROM modems 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT *
+					FROM modems
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -2089,9 +2092,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			//Ports
 			if ($cfg_ocs["import_device_port"]) {
 
-				$query2 = "SELECT * 
-					FROM ports 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT *
+					FROM ports
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -2125,12 +2128,12 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			}
 			break;
 		case PROCESSOR_DEVICE :
-			//Processeurs : 
+			//Processeurs :
 			if ($cfg_ocs["import_device_processor"]) {
 				$do_clean = true;
 
-				$query = "SELECT * 
-					FROM hardware 
+				$query = "SELECT *
+					FROM hardware
 					WHERE ID='$ocsid' ORDER BY ID";
 				$result = $DBocs->query($query);
 				if ($DBocs->numrows($result) == 1) {
@@ -2164,16 +2167,16 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
 				if (!in_array(OCS_IMPORT_TAG_072,$import_ip))
 					$import_ip=ocsMigrateImportIP($computers_id,$import_ip);
-				
-				$query2 = "SELECT * 
-					FROM networks 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+
+				$query2 = "SELECT *
+					FROM networks
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					ORDER BY ID";
 
 				$result2 = $DBocs->query($query2);
 				$i = 0;
 				$manually_link = false;
-				
+
 				//Count old ip in GLPI
 				$count_ip = count($import_ip);
 
@@ -2184,7 +2187,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 						if ($cfg_ocs["import_device_iface"]) {
 							$network["designation"] = $line2["DESCRIPTION"];
 							if (!in_array(NETWORK_DEVICE . OCS_FIELD_SEPARATOR . $network["designation"], $import_device)) {
-								
+
 								if (!empty ($line2["SPEED"]))
 									$network["bandwidth"] = $line2["SPEED"];
 								$net_id = ocsAddDevice(NETWORK_DEVICE, $network);
@@ -2208,16 +2211,16 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 
 							//if never imported in 0.70, insert id in the array
 							if ($count_ip == 1) {
-								//get old IP in DB							
+								//get old IP in DB
 								$querySelectIDandIP = "SELECT id,ip FROM glpi_networkports
-											WHERE itemtype='" . COMPUTER_TYPE . "' 
-											AND items_id='$computers_id' 
+											WHERE itemtype='" . COMPUTER_TYPE . "'
+											AND items_id='$computers_id'
 											AND mac='" . $line2["MACADDR"] . "'" . "
 											AND name='" . $line2["DESCRIPTION"] . "'";
 								$result = $DB->query($querySelectIDandIP);
 								if ($DB->numrows($result) > 0) {
 									while ($data = $DB->fetch_array($result)) {
-										//Upate import_ip column and import_ip array										
+										//Upate import_ip column and import_ip array
 										addToOcsArray($computers_id, array (
 											$data["id"] => $data["ip"].OCS_FIELD_SEPARATOR.$line2["MACADDR"]
 										), "import_ip");
@@ -2238,10 +2241,10 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 							$np = new Netport();
 
 							for ($j = 0; $j < count($ocs_ips); $j++) {
-								
+
 								//First search : look for the same port (same IP and same MAC)
 								$id_ip = array_search($ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"], $import_ip);
-								
+
 								//Second search : IP may have change, so look only for mac address
 								if(!$id_ip)
 								{
@@ -2251,11 +2254,11 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 										if ($ID > 0)
 										{
 											$tmp = explode(OCS_FIELD_SEPARATOR,$ip);
-											
+
 											//Port was found by looking at the mac address
 											if (isset($tmp[1]) && $tmp[1] == $line2["MACADDR"])
 											{
-												//Remove port in import_ip										
+												//Remove port in import_ip
 												deleteInOcsArray($computers_id,$ID,"import_ip");
 												addToOcsArray($computers_id,array($ID=>$ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"]),"import_ip");
 												$import_ip[$ID]= $ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"];
@@ -2265,7 +2268,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 										}
 									}
 								}
-								
+
 								//Update already in DB
 								if ($id_ip>0) {
 									$netport["ip"] = $ocs_ips[$j];
@@ -2300,9 +2303,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_gfxcard"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT DISTINCT(NAME) as NAME, MEMORY 
-					FROM videos 
-					WHERE HARDWARE_ID = '" . $ocsid . "'and NAME != '' 
+				$query2 = "SELECT DISTINCT(NAME) as NAME, MEMORY
+					FROM videos
+					WHERE HARDWARE_ID = '" . $ocsid . "'and NAME != ''
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -2334,9 +2337,9 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			if ($cfg_ocs["import_device_sound"]) {
 				$do_clean = true;
 
-				$query2 = "SELECT DISTINCT(NAME) as NAME, DESCRIPTION 
-					FROM sounds 
-					WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query2 = "SELECT DISTINCT(NAME) as NAME, DESCRIPTION
+					FROM sounds
+					WHERE HARDWARE_ID = '" . $ocsid . "'
 					AND NAME != '' ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
@@ -2378,7 +2381,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
 			{
 				// Disconnect wire
 				removeConnector($key);
-	
+
 				$query2 = "DELETE FROM glpi_networkports WHERE id = '$key'";
 				$DB->query($query2);
 				deleteInOcsArray($computers_id, $key, "import_ip");
@@ -2404,9 +2407,9 @@ function ocsAddDevice($devicetype, $dev_array) {
 
 	global $DB;
 	$table = getDeviceTable($devicetype);
-	
-	$query = "SELECT * 
-				FROM `" . $table . "` 
+
+	$query = "SELECT *
+				FROM `" . $table . "`
 				WHERE designation='" . $dev_array["designation"] . "'";
 
 	switch ($table)
@@ -2417,11 +2420,11 @@ function ocsAddDevice($devicetype, $dev_array) {
 				$query.=" AND bandwidth='".$dev_array["SPEED"]."'";
 		break;
 		default:
-		break;	
+		break;
 	}
 
 	$result = $DB->query($query);
-	
+
 	if ($DB->numrows($result) == 0) {
 		$dev = new Device($devicetype);
 		$input = array ();
@@ -2439,9 +2442,9 @@ function ocsAddDevice($devicetype, $dev_array) {
 /**
  * Import the devices for a computer
  *
- * 
  *
- *@param $itemtype integer : item type 
+ *
+ *@param $itemtype integer : item type
  *@param $computers_id integer : glpi computer id.
  *@param $ocsid integer : ocs computer id (ID).
  *@param $ocsservers_id integer : ocs server id
@@ -2471,9 +2474,9 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 				if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
 					foreach ($import_periph as $key => $val) {
 						$monitor_tag = $val;
-						//delete old value									
+						//delete old value
 						deleteInOcsArray($computers_id, $key, "import_monitor");
-						//search serial when it exists	
+						//search serial when it exists
 						$monitor_serial = "";
 						$query_monitor_id = "SELECT items_id FROM glpi_computers_items WHERE id='$key'";
 						$result_monitor_id = $DB->query($query_monitor_id);
@@ -2488,7 +2491,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 						}
 						//concat name + serial
 						$monitor_tag .= $monitor_serial;
-						//add new value (serial + name when its possible)							
+						//add new value (serial + name when its possible)
 						addToOcsArray($computers_id, array (
 							$key => $monitor_tag
 						), "import_monitor");
@@ -2506,25 +2509,25 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 				$do_clean = true;
 				$m = new Monitor;
 
-				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL, TYPE 
-					FROM monitors 
+				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL, TYPE
+					FROM monitors
 					WHERE HARDWARE_ID = '" . $ocsid . "'";
 				$result = $DBocs->query($query);
 				$lines=array();
 				$checkserial=true;
-				
+
 				// First pass - check if all serial present
 				if ($DBocs->numrows($result) > 0) {
 					while ($line = $DBocs->fetch_array($result)) {
 						if (empty($line["SERIAL"])) {
 							$checkserial=false;
-						} 
+						}
 						$lines[]=clean_cross_side_scripting_deep(addslashes_deep($line));
 					}
 				}
-				/* Second pass - import    
-					1:Global, 
-					2:Unique, 
+				/* Second pass - import
+					1:Global,
+					2:Unique,
 					3:Unique on serial : Don't synchronize if serial missing
 				*/
 				if (count($lines)>0 && ($cfg_ocs["import_monitor"]<=2 || $checkserial)) foreach ($lines as $line) {
@@ -2557,7 +2560,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 							$m->reset();
 
 							$mon["manufacturers_id"] = externalImportDropdown("glpi_manufacturers", $line["MANUFACTURER"]);
-							
+
 							if ($cfg_ocs["import_monitor_comment"])
 								$mon["comment"] = $line["DESCRIPTION"];
 							$id_monitor = 0;
@@ -2566,8 +2569,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 								//Config says : manage monitors as global
 								//check if monitors already exists in GLPI
 								$mon["is_global"] = 1;
-								$query = "SELECT id 
-									FROM glpi_monitors 
+								$query = "SELECT id
+									FROM glpi_monitors
 									WHERE name = '" . $mon["name"] . "'
 										AND is_global = '1' AND entities_id='".$entity."'";
 								$result_search = $DB->query($query);
@@ -2590,13 +2593,13 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 
 								// Try to find a monitor with the same serial.
 								if (!empty ($mon["serial"])) {
-									$query = "SELECT id 
-										FROM glpi_monitors 
-										WHERE serial LIKE '%" . $mon["serial"] . "%' AND is_global=0 
+									$query = "SELECT id
+										FROM glpi_monitors
+										WHERE serial LIKE '%" . $mon["serial"] . "%' AND is_global=0
 											AND entities_id='".$entity."'";
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) == 1) {
-										//Monitor founded												
+										//Monitor founded
 										$id_monitor = $DB->result($result_search, 0, "id");
 									}
 								}
@@ -2622,7 +2625,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 									$id_monitor = $m->add($input);
 								}
 							} // ($cfg_ocs["import_monitor"] >= 2)
-							
+
 							if ($id_monitor) {
 								//Import unique : Disconnect monitor on other computer done in Connect function
 								$connID = Connect($id_monitor, $computers_id, MONITOR_TYPE, $dohistory);
@@ -2635,12 +2638,12 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 
  								//Update column "is_deleted" set value to 0 and set status to default
 								$input = array ();
-								
+
 								$old = new Monitor;
 								if ($old->getFromDB($id_monitor)) {
 									if ($old->fields["is_deleted"]) {
 										$input["is_deleted"] = 0;
-									}		
+									}
 									if ($cfg_ocs["states_id_default"]>0 && $old->fields["states_id"]!=$cfg_ocs["states_id_default"]) {
 										$input["states_id"] = $cfg_ocs["states_id_default"];
 									}
@@ -2653,10 +2656,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 									if (count($input)) {
 										$input["id"] = $id_monitor;
 										$m->update($input);
-									}									
+									}
 								}
-							} 
-						} else { // found in array 
+							}
+						} else { // found in array
 							unset ($import_periph[$id]);
 						}
 					} // empty name
@@ -2671,8 +2674,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 			if ($cfg_ocs["import_printer"]) {
 				$do_clean = true;
 
-				$query = "SELECT * 
-					FROM printers 
+				$query = "SELECT *
+					FROM printers
 					WHERE HARDWARE_ID = '" . $ocsid . "'";
 				$result = $DBocs->query($query);
 				$p = new Printer;
@@ -2698,9 +2701,9 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 									//Config says : manage printers as global
 									//check if printers already exists in GLPI
 									$print["is_global"] = 1;
-									$query = "SELECT id 
-										FROM glpi_printers 
-										WHERE name = '" . $print["name"] . "' 
+									$query = "SELECT id
+										FROM glpi_printers
+										WHERE name = '" . $print["name"] . "'
 											AND is_global = '1' AND entities_id='".$entity."'";
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) > 0) {
@@ -2753,9 +2756,9 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 				$do_clean = true;
 				$p = new Peripheral;
 
-				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE 
-						FROM inputs 
-						WHERE HARDWARE_ID = '" . $ocsid . "' 
+				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE
+						FROM inputs
+						WHERE HARDWARE_ID = '" . $ocsid . "'
 						AND CAPTION <> ''";
 				$result = $DBocs->query($query);
 				if ($DBocs->numrows($result) > 0)
@@ -2779,9 +2782,9 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 								//Config says : manage peripherals as global
 								//check if peripherals already exists in GLPI
 								$periph["is_global"] = 1;
-								$query = "SELECT id 
-									FROM glpi_peripherals 
-									WHERE name = '" . $periph["name"] . "' 
+								$query = "SELECT id
+									FROM glpi_peripherals
+									WHERE name = '" . $periph["name"] . "'
 									AND is_global = '1' AND entities_id='".$entity."'";
 								$result_search = $DB->query($query);
 								if ($DB->numrows($result_search) > 0) {
@@ -2871,7 +2874,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
  *@param $entity integer : entity of the computer
  *@param $dohistory boolean : log changes ?
  *@param $cfg_ocs array : configuration ocs of the server
- 
+
  *@return Nothing (void).
  *
  **/
@@ -2889,7 +2892,7 @@ function ocsUpdateAdministrativeInfo($computers_id, $ocsid, $ocsservers_id, $cfg
 			$data_ocs = $DBocs->fetch_array($resultOCS);
 			$comp = new Computer();
 
-			//update data 
+			//update data
 			while ($links_glpi_ocs = $DB->fetch_array($result)) {
 				//get info from ocs
 				$ocs_column = $links_glpi_ocs['ocs_column'];
@@ -2942,7 +2945,7 @@ function ocsUpdateRegistry($computers_id, $ocsid, $ocsservers_id, $cfg_ocs) {
 		$DB->query($query_delete);
 
 		//Get data from OCS database
-		$query = "SELECT registry.NAME as NAME, registry.REGVALUE as regvalue, registry.HARDWARE_ID as computers_id, 
+		$query = "SELECT registry.NAME as NAME, registry.REGVALUE as regvalue, registry.HARDWARE_ID as computers_id,
 				regconfig.REGTREE as regtree, regconfig.REGKEY as regkey
 			FROM registry LEFT JOIN regconfig ON (registry.NAME = regconfig.NAME)
 		   	WHERE HARDWARE_ID = '" . $ocsid . "'";
@@ -2950,7 +2953,7 @@ function ocsUpdateRegistry($computers_id, $ocsid, $ocsservers_id, $cfg_ocs) {
 		if ($DBocs->numrows($result) > 0) {
 			$reg = new Registry();
 
-			//update data	
+			//update data
 			while ($data = $DBocs->fetch_array($result)) {
 				$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 				$input = array ();
@@ -2994,28 +2997,28 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 		//---- Import_software array is not in the new form ( ID => name+version) -----//
 		//----------------------------------------------------------------------------------------------------------------//
 		if (!in_array(OCS_IMPORT_TAG_070, $import_software)) {
-			
+
 			//Add the tag of the version at the beginning of the array
 			$softs_array[0] = OCS_IMPORT_TAG_070;
-			
+
 			//For each element of the table, add instID=>name.version
 			foreach ($import_software as $key => $value){
-				$query_softs = "SELECT glpi_softwaresversions.name as VERSION 
-					FROM glpi_computers_softwaresversions, glpi_softwaresversions 
+				$query_softs = "SELECT glpi_softwaresversions.name as VERSION
+					FROM glpi_computers_softwaresversions, glpi_softwaresversions
 					WHERE glpi_computers_softwaresversions.softwaresversions_id=glpi_softwaresversions.id AND glpi_computers_softwaresversions.computers_id='".$computers_id."'
 						AND glpi_computers_softwaresversions.id='".$key."'";
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
 				$softs_array[$key] =  $value . OCS_FIELD_SEPARATOR. $softs["VERSION"];
 			}
-			
+
 			//Replace in GLPI database the import_software by the new one
 			replaceOcsArray($computers_id, $softs_array, "import_software");
 
 			//Get import_software from the GLPI db
 			//TODO: don't get import_software in DB, but use the newly contructed one
-			$query = "SELECT import_software 
-				FROM glpi_ocslinks 
+			$query = "SELECT import_software
+				FROM glpi_ocslinks
 				WHERE computers_id='".$computers_id."'";
 			$result = $DB->query($query);
 
@@ -3025,29 +3028,29 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 				$tmp = $DB->fetch_array($result);
 				$import_software = importOcsArrayFromDB($tmp["import_software"]);
 			}
-					
+
 		}
-		
+
 
 
 		//---- Get all the softwares for this machine from OCS -----//
 		if ($cfg_ocs["use_soft_dict"]){
-			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
+			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME,
 				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
-				FROM softwares 
-				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
+				FROM softwares
+				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED)
 				WHERE softwares.HARDWARE_ID='$ocsid'";
 		} else {
-			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
+			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME,
 				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
-				FROM softwares 
+				FROM softwares
 				WHERE softwares.HARDWARE_ID='$ocsid'";
 		}
 
 		$result2 = $DBocs->query($query2);
 		$to_add_to_ocs_array = array ();
 		$soft = new Software;
-		
+
 		if ($DBocs->numrows($result2) > 0)
 			while ($data2 = $DBocs->fetch_array($result2)) {
 				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
@@ -3070,12 +3073,12 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 					$rulecollection = new DictionnarySoftwareCollection;
 					$res_rule = $rulecollection->processAllRules(array("name"=>$name,"manufacturer"=>$manufacturer,"old_version"=>$version), array (), array());
                $res_rule = addslashes_deep($res_rule);
-					
+
 					if (isset($res_rule["name"]))
 						$modified_name = $res_rule["name"];
 					else
 						$modified_name = $name;
-						
+
 					if (isset($res_rule["version"]) && $res_rule["version"]!= '')
 						$modified_version = $res_rule["version"];
 					else
@@ -3086,16 +3089,16 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 					$modified_name = $name;
 					$modified_version = $version;
 				}
-				
+
 				//Ignore this software
 				if (!isset($res_rule["_ignore_ocs_import"]) || !$res_rule["_ignore_ocs_import"])
-				{	
-	
+				{
+
 					// Clean software object
 					$soft->reset();
 
-					//If name+version not in present for this computer in glpi, add it 
-					if (!in_array($initname . OCS_FIELD_SEPARATOR. $version, $import_software)) 
+					//If name+version not in present for this computer in glpi, add it
+					if (!in_array($initname . OCS_FIELD_SEPARATOR. $version, $import_software))
 					{
 							//------------------------------------------------------------------------------------------------------------------//
 							//---- The software doesn't exists in this version for this computer -----//
@@ -3104,35 +3107,35 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 							$isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity);
 							//Import version for this software
 							$versionID = ocsImportVersion($isNewSoft,$modified_version);
-		
+
 							//Install license for this machine
 							$instID = installSoftwareVersion($computers_id, $versionID, $dohistory);
-							
+
 							//Add the software to the table of softwares for this computer to add in database
 							$to_add_to_ocs_array[$instID] = $initname . OCS_FIELD_SEPARATOR. $version;
-	
+
 					} else {
 						$instID = -1;
-	
+
 						//------------------------------------------------------------------------------------------------------------------//
 						//--------------------- The software exists in this version for this computer --------------//
 						//----------------------------------------------------------------------------------------------------------------//
-	
+
 						//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
 						$instID = array_search($initname . OCS_FIELD_SEPARATOR. $version, $import_software);
-						$query_soft = "SELECT glpi_softwares.id, glpi_softwares.name 
+						$query_soft = "SELECT glpi_softwares.id, glpi_softwares.name
 								FROM glpi_softwares, glpi_computers_softwaresversions, glpi_softwaresversions
-								WHERE glpi_computers_softwaresversions.id='".$instID."' 
+								WHERE glpi_computers_softwaresversions.id='".$instID."'
 									AND glpi_computers_softwaresversions.softwaresversions_id=glpi_softwaresversions.id
 									AND glpi_softwaresversions.softwares_id=glpi_softwares.id";
-	
+
 						$result_soft = $DB->query($query_soft);
 						$tmpsoft = $DB->fetch_array($result_soft);
 						$softName = $tmpsoft["name"];
 						$softID = $tmpsoft["id"];
 						$s = new Software;
 						$input["id"]=$softID;
-		
+
 						//First, get the name of the software into GLPI db IF dictionnary is used
 						if ($cfg_ocs["use_soft_dict"])
 						{
@@ -3145,16 +3148,16 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 						}
 						// OCS Dictionnary not use anymore : revert to original name
 						else if ($softName != $modified_name)
-						{	
+						{
 							$input["name"] = $modified_name;
 							$s->update($input);
 						}
-						
+
 						unset ($import_software[$instID]);
 					}
 				}
 			}
-		
+
 		//Remove the tag from the import_software array
 		unset ($import_software[0]);
 
@@ -3168,8 +3171,8 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 
 			foreach ($import_software as $key => $val) {
 
-				$query = "SELECT * 
-					FROM glpi_computers_softwaresversions 
+				$query = "SELECT *
+					FROM glpi_computers_softwaresversions
 					WHERE id = '" . $key . "'";
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
@@ -3186,7 +3189,7 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 								&& countElementsInTable('glpi_softwaresversions', "softwares_id  = '" . $vers->fields['softwares_id'] . "'") == 1) { // 1 is the current to be removed
 								putSoftwareInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
 							}
-							
+
 							$vers->delete(array (
 								"id" => $data['softwaresversions_id'],
 							));
@@ -3219,7 +3222,7 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 function ocsUpdateDisk($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_disk) {
 	global $DB, $DBocs, $LANG;
 	checkOCSconnection($ocsservers_id);
-	
+
 	$query="SELECT * FROM drives WHERE HARDWARE_ID='$ocsid'";
 	$result=$DBocs->query($query);
 	$d=new ComputerDisk();
@@ -3269,7 +3272,7 @@ function ocsUpdateDisk($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_
 						$id = array_search($disk["name"], $import_disk);
 						if ($d->getFromDB($id)){
 							// Update on total size change or variation of 5%
-							if ($d->fields['totalsize']!=$disk['totalsize'] 
+							if ($d->fields['totalsize']!=$disk['totalsize']
 							|| (abs($disk['freesize']-$d->fields['freesize'])/$disk['totalsize']) > 0.05){
 								$toupdate['id']=$id;
 								$toupdate['totalsize']=$disk['totalsize'];
@@ -3294,7 +3297,7 @@ function ocsUpdateDisk($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_
 
 	}
 
-	
+
 }
 
 /**
@@ -3313,8 +3316,8 @@ function ocsImportVersion($software, $version) {
 
 	$isNewVers = 0;
 
-	$query = "SELECT id 
-		FROM glpi_softwaresversions 
+	$query = "SELECT id
+		FROM glpi_softwaresversions
 		WHERE softwares_id = '" . $software . "'
 			AND name='" . $version . "'";
 
@@ -3364,20 +3367,20 @@ function ocsResetDisks($glpi_computers_id) {
 function ocsResetSoftwares($glpi_computers_id) {
 	global $DB;
 
-	$query = "SELECT * 
-		FROM glpi_computers_softwaresversions 
+	$query = "SELECT *
+		FROM glpi_computers_softwaresversions
 		WHERE computers_id = '" . $glpi_computers_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
-			$query2 = "SELECT COUNT(*) 
-				FROM glpi_computers_softwaresversions 
+			$query2 = "SELECT COUNT(*)
+				FROM glpi_computers_softwaresversions
 				WHERE softwaresversions_id = '" . $data['softwaresversions_id'] . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$vers = new SoftwareVersion;
 				$vers->getFromDB($data['softwaresversions_id']);
-				$query3 = "SELECT COUNT(*) 
+				$query3 = "SELECT COUNT(*)
 					FROM glpi_softwaresversions
 					WHERE softwares_id='" . $vers->fields['softwares_id'] . "'";
 				$result3 = $DB->query($query3);
@@ -3394,7 +3397,7 @@ function ocsResetSoftwares($glpi_computers_id) {
 			}
 		}
 
-		$query = "DELETE FROM glpi_computers_softwaresversions 
+		$query = "DELETE FROM glpi_computers_softwaresversions
 				WHERE computers_id = '" . $glpi_computers_id . "'";
 		$DB->query($query);
 	}
@@ -3414,7 +3417,7 @@ function ocsResetSoftwares($glpi_computers_id) {
  **/
 function ocsResetDevices($glpi_computers_id, $devicetype) {
 	global $DB;
-	$query = "DELETE FROM glpi_computers_devices 
+	$query = "DELETE FROM glpi_computers_devices
 				WHERE devicetype = '" . $devicetype . "'
 				AND computers_id = '" . $glpi_computers_id . "'";
 	$DB->query($query);
@@ -3434,8 +3437,8 @@ function ocsResetPeriphs($glpi_computers_id) {
 
 	global $DB;
 
-	$query = "SELECT * 
-		FROM glpi_computers_items 
+	$query = "SELECT *
+		FROM glpi_computers_items
 		WHERE computers_id = '" . $glpi_computers_id . "'
 		AND itemtype = '" . PERIPHERAL_TYPE . "'";
 	$result = $DB->query($query);
@@ -3445,8 +3448,8 @@ function ocsResetPeriphs($glpi_computers_id) {
 
 			Disconnect($data['id'],1,false);
 
-			$query2 = "SELECT COUNT(*) 
-				FROM glpi_computers_items 
+			$query2 = "SELECT COUNT(*)
+				FROM glpi_computers_items
 				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . PERIPHERAL_TYPE . "'";
 			$result2 = $DB->query($query2);
@@ -3455,7 +3458,7 @@ function ocsResetPeriphs($glpi_computers_id) {
 					'id' => $data['items_id'],
 				), 1);
 			}
-			
+
 		}
 	}
 
@@ -3473,8 +3476,8 @@ function ocsResetPeriphs($glpi_computers_id) {
 function ocsResetMonitors($glpi_computers_id) {
 
 	global $DB;
-	$query = "SELECT * 
-				FROM glpi_computers_items 
+	$query = "SELECT *
+				FROM glpi_computers_items
 				WHERE computers_id = '" . $glpi_computers_id . "'
 				AND itemtype = '" . MONITOR_TYPE . "'";
 
@@ -3485,8 +3488,8 @@ function ocsResetMonitors($glpi_computers_id) {
 
 			Disconnect($data['id'],1,false);
 
-			$query2 = "SELECT COUNT(*) 
-				FROM glpi_computers_items 
+			$query2 = "SELECT COUNT(*)
+				FROM glpi_computers_items
 				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . MONITOR_TYPE . "'";
 			$result2 = $DB->query($query2);
@@ -3512,8 +3515,8 @@ function ocsResetPrinters($glpi_computers_id) {
 
 	global $DB;
 
-	$query = "SELECT * 
-		FROM glpi_computers_items 
+	$query = "SELECT *
+		FROM glpi_computers_items
 		WHERE computers_id = '" . $glpi_computers_id . "'
 		AND itemtype = '" . PRINTER_TYPE . "'";
 	$result = $DB->query($query);
@@ -3522,8 +3525,8 @@ function ocsResetPrinters($glpi_computers_id) {
 
 			Disconnect($data['id'],1,false);
 
-			$query2 = "SELECT COUNT(*) 
-				FROM glpi_computers_items 
+			$query2 = "SELECT COUNT(*)
+				FROM glpi_computers_items
 				WHERE items_id = '" . $data['items_id'] . "'
 				AND itemtype = '" . PRINTER_TYPE . "'";
 			$result2 = $DB->query($query2);
@@ -3550,14 +3553,14 @@ function ocsResetRegistry($glpi_computers_id) {
 
 	global $DB;
 
-	$query = "SELECT * 
-		FROM glpi_registrykeys 
+	$query = "SELECT *
+		FROM glpi_registrykeys
 		WHERE computers_id = '" . $glpi_computers_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
-			$query2 = "SELECT COUNT(*) 
-				FROM glpi_registrykeys 
+			$query2 = "SELECT COUNT(*)
+				FROM glpi_registrykeys
 				WHERE computers_id = '" . $data['computers_id'] . "'";
 			$result2 = $DB->query($query2);
 			$registry = new Registry();
@@ -3584,18 +3587,18 @@ function ocsResetRegistry($glpi_computers_id) {
 function ocsResetDropdown($glpi_computers_id, $field, $table) {
 
 	global $DB;
-	$query = "SELECT `$field` AS VAL 
-		FROM glpi_computers 
+	$query = "SELECT `$field` AS VAL
+		FROM glpi_computers
 		WHERE id = '" . $glpi_computers_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
 		$value = $DB->result($result, 0, "VAL");
-		$query = "SELECT COUNT(*) AS CPT 
-			FROM glpi_computers 
+		$query = "SELECT COUNT(*) AS CPT
+			FROM glpi_computers
 			WHERE `$field` = '$value'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "CPT") == 1) {
-			$query2 = "DELETE FROM `$table` 
+			$query2 = "DELETE FROM `$table`
 				WHERE id = '$value'";
 			$DB->query($query2);
 		}
@@ -3605,7 +3608,7 @@ function ocsResetDropdown($glpi_computers_id, $field, $table) {
 /**
  * Choose an ocs server
  *
- * @return nothing. 
+ * @return nothing.
  */
 function ocsChooseServer($target) {
 	global $DB, $LANG;
@@ -3652,14 +3655,14 @@ function getDBocs($ocsservers_id) {
 /**
  * Check if OCS connection is always valid
  * If not, then establish a new connection on the good server
- * 
+ *
  * @return nothing.
  */
 function checkOCSconnection($ocsservers_id) {
 	global $DBocs;
 
 	//If $DBocs is not initialized, or if the connection should be on a different ocs server
-	// --> reinitialize connection to OCS server 
+	// --> reinitialize connection to OCS server
 	if (!$DBocs || $ocsservers_id != $DBocs->getServerID()) {
 		$DBocs = getDBocs($ocsservers_id);
 	}
@@ -3669,7 +3672,7 @@ function checkOCSconnection($ocsservers_id) {
 /**
  * Get the ocs server id of a machine, by giving the machine id
  * @param $ID the machine ID
- * @return the ocs server id of the machine 
+ * @return the ocs server id of the machine
  */
 function getOCSServerByMachineID($ID) {
 	global $DB;
@@ -3693,7 +3696,7 @@ function getOCSServerNameByID($ID) {
 }
 
 /**
- * Get a random ocsservers_id 
+ * Get a random ocsservers_id
  * @return an ocs server id
  */
 function getRandomOCSServerID() {
@@ -3717,9 +3720,9 @@ function getColumnListFromAccountInfoTable($ID, $glpi_column) {
 			if ($DBocs->numrows($result) > 0) {
 				while ($data = $DBocs->fetch_array($result)) {
 					//get the selected value in glpi if specified
-					$query = "SELECT ocs_column 
-						FROM glpi_ocsadmininfoslinks 
-						WHERE ocsservers_id='" . $ID . "' 
+					$query = "SELECT ocs_column
+						FROM glpi_ocsadmininfoslinks
+						WHERE ocsservers_id='" . $ID . "'
 							AND glpi_column='" . $glpi_column . "'";
 					$result_DB = $DB->query($query);
 					$selected = "";
@@ -3775,7 +3778,7 @@ function getFormServerAction($ID,$templateid)
 		if ($ID == -1 && $templateid == '')
 			$action = "add_template";
 		else
-			$action = "update_template";	
+			$action = "update_template";
 	}
 	elseif (isset($withtemplate) && $withtemplate ==2)
 	{
@@ -3784,10 +3787,10 @@ function getFormServerAction($ID,$templateid)
 		elseif ($ID == -1)
 			$action = "add_server_with_template";
 		else
-			$action = "update_server_with_template";	
+			$action = "update_server_with_template";
 	}
-	return $action;	
-	
+	return $action;
+
 }
 function setEntityLock($entity) {
 	global $CFG_GLPI;
@@ -3841,13 +3844,13 @@ function getOcsGeneralIpAddress($ocsservers_id,$computers_id)
 	if ($DBocs->numrows($res) == 1)
 		return $DBocs->result($res,0,"IPADDR");
 	else
-		return '';	
+		return '';
 }
 
 function ocsMigrateImportIP($computers_id,$import_ip)
 {
 	global $DB;
-	
+
 	//Add the new tag as the first occurence in the array
 	addToOcsArray($computers_id,array(0=>OCS_IMPORT_TAG_072),"import_ip");
 	$import_ip[0]=OCS_IMPORT_TAG_072;
@@ -3866,7 +3869,7 @@ function ocsMigrateImportIP($computers_id,$import_ip)
 				$datas = $DB->fetch_array($result);
 				$new_ip = (isset($datas["ip"])?$datas["ip"]:"");
 				$new_mac = (isset($datas["mac"])?$datas["mac"]:"");
-							
+
 				//Add new value (ID => IP.$$$$$.MAC)
 				addToOcsArray($computers_id,array($importip_ID=>$new_ip.OCS_FIELD_SEPARATOR.$new_mac),"import_ip");
 				$import_ip[$importip_ID]=$new_ip.OCS_FIELD_SEPARATOR.$new_mac;
@@ -3880,7 +3883,7 @@ function ocsMigrateImportIP($computers_id,$import_ip)
  * Get a direct link to the computer in ocs console
  * @param ocsservers_id the ID of the OCS server
  * @param computers_id ID of the computer in OCS hardware table
- * @param todisplay the link's label to display 
+ * @param todisplay the link's label to display
  * @return the html link to the computer in ocs console
  */
 function getComputerLinkToOcsConsole ($ocsservers_id,$ocsid,$todisplay)

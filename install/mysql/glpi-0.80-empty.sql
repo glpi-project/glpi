@@ -377,7 +377,6 @@ CREATE TABLE `glpi_configs` (
   `id` int(11) NOT NULL auto_increment,
   `show_jobs_at_login` tinyint(1) NOT NULL default '0',
   `cut` int(11) NOT NULL default '255',
-  `events_lifetime` int(11) NOT NULL default '30' COMMENT 'in days',
   `list_limit` int(11) NOT NULL default '20',
   `list_limit_max` int(11) NOT NULL default '50',
   `version` char(10) collate utf8_unicode_ci default NULL,
