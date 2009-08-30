@@ -34,145 +34,137 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+   die("Sorry. You can't access directly to this file");
+}
 
 /// Mailgate class
 class Mailgate  extends CommonDBTM {
 
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_mailcollectors";
+      $this->type=MAILGATE_TYPE;
+   }
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_mailcollectors";
-		$this->type=MAILGATE_TYPE;
-	}
-
-	function post_getEmpty () {
+   function post_getEmpty () {
       global $CFG_GLPI;
+
       $this->fields['filesize_max']=$CFG_GLPI['default_mailcollector_filesize_max'];
-		$this->fields['is_active']=1;
-	}
-	function prepareInputForUpdate($input) {
+   $this->fields['is_active']=1;
+   }
 
-		if (isset($input['password'])&&empty($input['password'])){
-			unset($input['password']);
-		}
-		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["host"] = constructMailServerConfig($input);
-		return $input;
-	}
+   function prepareInputForUpdate($input) {
 
-	function prepareInputForAdd($input) {
+      if (isset($input['password']) && empty($input['password'])) {
+         unset($input['password']);
+      }
+      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+         $input["host"] = constructMailServerConfig($input);
+      }
+      return $input;
+   }
 
-		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["host"] = constructMailServerConfig($input);
+   function prepareInputForAdd($input) {
 
-		return $input;
-	}
+      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+         $input["host"] = constructMailServerConfig($input);
+      }
+      return $input;
+   }
 
-	/**
-	 * Print the mailgate form
-	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the item to print
-	 *
-	 *@return boolean item found
-	 **/
-	function showForm ($target,$ID) {
+   /**
+    * Print the mailgate form
+    *
+    *@param $target filename : where to go when done.
+    *@param $ID Integer : Id of the item to print
+    *
+    *@return boolean item found
+    **/
+   function showForm ($target,$ID) {
+      global $CFG_GLPI, $LANG;
 
-		global $CFG_GLPI, $LANG;
+      if (!haveRight("config","r")) {
+         return false;
+      }
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
+      echo "<div class='center'><form method='post' name=form action=\"$target\">";
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th class='center' colspan='2'>";
+      if (empty($ID)) {
+         echo $LANG['mailgate'][1];
+      } else {
+         echo $LANG['mailgate'][0]."&nbsp;: ".$this->fields["id"];
+      }
+      echo "</th></tr>";
 
-		if (!haveRight("config","r")) return false;
+      if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {
+         echo "<tr class='tab_bg_1'><td colspan='2'>";
+         echo $LANG['mailgate'][4];
+         echo "</td></tr>";
+      }
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td><td>";
+      autocompletionTextField("name","glpi_mailcollectors","name",$this->fields["name"],40);
+      echo "</td></tr>";
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item
-			$this->check(-1,'w');
-			$this->getEmpty();
-		}
+      echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
+      dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,
+                    $_SESSION['glpiactiveentities']);
+      echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";
+      dropdownYesNo("is_active", $this->fields["is_active"]);
+      echo "</td></tr>";
 
-		echo "<div class='center'><form method='post' name=form action=\"$target\">";
+      showMailServerConfig($this->fields["host"]);
 
-		echo "<table class='tab_cadre' cellpadding='2'>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."&nbsp;:</td><td>";
+      autocompletionTextField("login","glpi_mailcollectors","login",$this->fields["login"],40);
+      echo "</td></tr>";
 
-		echo "<tr><th align='center' colspan='2'>";
-		if (empty($ID)){
-			echo $LANG['mailgate'][1];
-		} else {
-			echo $LANG['mailgate'][0].": ".$this->fields["id"];
-		}
+      echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td><td>";
+      echo "<input type='password' name='password' value='' size='20'>";
+      echo "</td></tr>";
 
-		echo "</th></tr>";
-		if (!function_exists('mb_list_encodings')||!function_exists('mb_convert_encoding')){
-			echo "<tr class='tab_bg_1'><td align='center' colspan='2'>";
-			echo $LANG['mailgate'][4];
-			echo "</td></tr>";
-		}
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][16].":	</td><td>";
-		autocompletionTextField("name","glpi_mailcollectors","name",$this->fields["name"],40);
-		echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td width='200px'> " . $LANG['mailgate'][7] . "&nbsp;:</td><td>";
+      echo "<input type='text' size='15' name='filesize_max' value=\"" .
+             $this->fields["filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".
+             getSize($this->fields["filesize_max"]);
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['entity'][0].":	</td><td>";
-		dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,$_SESSION['glpiactiveentities']);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][60].":	</td><td>";
-		dropdownYesNo("is_active", $this->fields["is_active"]);
-		echo "</td></tr>";
-
-
-		showMailServerConfig($this->fields["host"]);
-
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['login'][6].":	</td><td>";
-		autocompletionTextField("login","glpi_mailcollectors","login",$this->fields["login"],40);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['login'][7].":	</td><td>";
-		echo "<input type='password' name='password' value='' size='20'>";
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td width='200px'  class='center'> " . $LANG['mailgate'][7] . ":</td><td>";
-		echo "<input type=\"text\" size='15' name=\"filesize_max\" value=\"" . $this->fields["filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".getSize($this->fields["filesize_max"]);
-		echo "</td></tr>";
-
-
-		if (haveRight("config","w")) {
-
-			echo "<tr class='tab_bg_1'>";
-			if(empty($ID)){
-
-				echo "<td valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-			} else {
-
-				echo "<td valign='top' align='center'>";
-				echo "<input type='hidden' name='id' value=\"$ID\">\n";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td>";
-				echo "<td valign='top'>\n";
-				echo "<div class='center'>";
-				echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-				echo "</div>";
-				echo "</td>";
-				echo "</tr>";
-				echo "<tr class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
-				echo "</td></tr>";
-			}
-
-
-		}
-
-		echo "</table></form></div>";
-
-		return true;
-
-	}
+      if (haveRight("config","w")) {
+         echo "<tr class='tab_bg_2'>";
+         if (empty($ID)) {
+            echo "<td class='top' colspan='2'>";
+            echo "<div class='center'><input type='submit' name='add' value=\"".
+                                       $LANG['buttons'][8]."\" class='submit'></div>";
+            echo "</td></tr>";
+         } else {
+            echo "<td class='top center'>";
+            echo "<input type='hidden' name='id' value=\"$ID\">";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "</td>";
+            echo "<td class='top'><div class='center'>";
+            echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+            echo "</div></td>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_2'><td colspan='2' class='center'>";
+            echo "<input type='submit' name='get_mails' value=\"".
+                   $LANG['mailgate'][2]."\" class='submit'>";
+            echo "</td></tr>";
+         }
+      }
+      echo "</table></form></div>";
+      return true;
+   }
 
 }
 
@@ -185,638 +177,623 @@ class Mailgate  extends CommonDBTM {
  */
 /// Mailcollect class
 class MailCollect {
-	/// working entity
-	var $entity;
-	/// working charset of the mail
-	var $charset="";
 
-	/// IMAP / POP server
-	var $server='';
-	/// IMAP / POP login
-	var $username='';
-	/// IMAP / POP password
-	var $password='';
-
-	/// IMAP / POP connection
-	var $marubox='';
-
-	/// ID of the current message
-	var $mid = -1;
-	/// structure used to store the mail structure
-	var $structure = false;
-	/// structure used to store files attached to a mail
-	var $files;
-	/// Message to add to body to build ticket
-	var $addtobody;
-	/// Number of fetched emails
-	var $fetch_emails=0;
+   /// working entity
+   var $entity;
+   /// working charset of the mail
+   var $charset="";
+   /// IMAP / POP server
+   var $server='';
+   /// IMAP / POP login
+   var $username='';
+   /// IMAP / POP password
+   var $password='';
+   /// IMAP / POP connection
+   var $marubox='';
+   /// ID of the current message
+   var $mid = -1;
+   /// structure used to store the mail structure
+   var $structure = false;
+   /// structure used to store files attached to a mail
+   var $files;
+   /// Message to add to body to build ticket
+   var $addtobody;
+   /// Number of fetched emails
+   var $fetch_emails=0;
    /// Maximim number of emails to fetch
    var $maxfetch_emails=0;
-	/// Max size for attached files
-	var $filesize_max=0;
+   /// Max size for attached files
+   var $filesize_max=0;
 
-	/**
-	* Constructor
-	* @param $mailgateID ID of the mailgate
-	* @param $username IMAP/POP user name
-	* @param $password IMAP/POP password
-	* @param $entity entity ID used
-	* @param $display display messages in MessageAfterRedirect or just return error
-	* @return if $display = false return messages result string
-	*/
-	function collect($mailgateID,$display=0){
-		global $LANG;
+   /**
+   * Constructor
+   * @param $mailgateID ID of the mailgate
+   * @param $username IMAP/POP user name
+    * @param $password IMAP/POP password
+   * @param $entity entity ID used
+   * @param $display display messages in MessageAfterRedirect or just return error
+   * @return if $display = false return messages result string
+   */
+   function collect($mailgateID,$display=0) {
+      global $LANG;
 
-		$mailgate=new Mailgate();
-		if ($mailgate->getFromDB($mailgateID)){
+      $mailgate=new Mailgate();
+      if ($mailgate->getFromDB($mailgateID)) {
+         $this->entity = $mailgate->fields['entities_id'];
+         $this->server = $mailgate->fields['host'];
+         $this->username = $mailgate->fields['login'];
+         $this->password = $mailgate->fields['password'];
+         $this->filesize_max = $mailgate->fields['filesize_max'];
+         $this->mid = -1;
+         $this->fetch_emails = 0;
+         //Connect to the Mail Box
+         $this->connect();
 
-			$this->entity=$mailgate->fields['entities_id'];
+         if ($this->marubox) {
+            // Get Total Number of Unread Email in mail box
+            $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
+            $error=0;
+            for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
+               $tkt= $this->buildTicket($i);
+               $tkt['_mailgate']=$mailgateID;
+               $this->deleteMails($i); // Delete Mail from Mail box
+               $result=imap_fetchheader($this->marubox,$i);
+               // Is a mail responding of an already existgin ticket ?
+               if (isset($tkt['tickets_id']) ) {
+                  // Deletion of message with sucess
+                  if (false === is_array($result)) {
+                     $fup=new Followup();
+                     $fup->add($tkt);
+                  } else {
+                     $error++;
+                  }
+               } else { // New ticket
+                  // Deletion of message with sucess
+                  if (false === is_array($result)) {
+                     $track=new Job();
+                     $track->add($tkt);
+                  } else {
+                     $error++;
+                  }
+               }
+               $this->fetch_emails++;
+            }
+            imap_expunge($this->marubox);
+            $this->close_mailbox();   //Close Mail Box
 
-			$this->server	=	$mailgate->fields['host'];
-			$this->username	=	$mailgate->fields['login'];
-			$this->password	=	$mailgate->fields['password'];
-			$this->filesize_max	=	$mailgate->fields['filesize_max'];
-			$this->mid	= -1;
+            if ($display) {
+               if ($error==0) {
+                  addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".$this->fetch_emails);
+               } else {
+                  addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".$this->fetch_emails.
+                                          " ($error ".$LANG['common'][63].")",false,ERROR);
+               }
+            } else {
+               return "Number of messages: available=$tot, collected=".$this->fetch_emails.
+                       ($error>0?" ($error error(s))":"");
+            }
+         } else {
+            if ($display) {
+               addMessageAfterRedirect($LANG['log'][41],false,ERROR);
+            } else {
+               return "Could not connect to mailgate server";
+            }
+         }
+      } else {
+         if ($display) {
+            addMessageAfterRedirect($LANG['common'][54]."&nbsp;: mailgate ".$mailgateID,false,ERROR);
+         } else {
+            return 'Could find mailgate '.$mailgateID;
+         }
+      }
+   } // end function MailCollect
 
-			$this->fetch_emails = 0;
-			//Connect to the Mail Box
-			$this->connect();
+   /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
+   * @param $i mail ID
+   * @return ticket fields array
+   */
+   function buildTicket($i) {
+      global $DB,$LANG,$CFG_GLPI;
 
-			if ($this->marubox){
-				// Get Total Number of Unread Email in mail box
-				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
-				$error=0;
+      $head=$this->getHeaders($i); // Get Header Info Return Array Of Headers
+                                   // **Key Are (subject,to,toOth,toNameOth,from,fromName)
+      $tkt= array ();
 
-				for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++){
-					$tkt= $this->buildTicket($i);
-					$tkt['_mailgate']=$mailgateID;
-					$this->deleteMails($i); // Delete Mail from Mail box
-					$result=imap_fetchheader($this->marubox,$i);
+      // max size = 0 : no import attachments
+      if ($this->filesize_max>0) {
+         if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
+            $_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$this->filesize_max);
+         } else {
+            logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
+         }
+      }
+      //  Who is the user ?
+      $tkt['users_id']=0;
+      $query="SELECT `id`
+              FROM `glpi_users`
+              WHERE `email`='".$head['from']."'";
+      $result=$DB->query($query);
+      if ($result && $DB->numrows($result)) {
+         $tkt['users_id']=$DB->result($result,0,"id");
+      }
+      // AUto_import
+      $tkt['_auto_import']=1;
+      // For followup : do not check users_id = login user
+      $tkt['_do_not_check_users_id']=1;
+      $body=$this->getBody($i);
+      // Do it before using charset variable
+      $head['subject']=$this->decodeMimeString($head['subject']);
 
-					// Is a mail responding of an already existgin ticket ?
-					if (isset($tkt['tickets_id']) ) {
-						// Deletion of message with sucess
-						if (false === is_array($result)){
-							$fup=new Followup();
-							$fup->add($tkt);
-						} else {
-							$error++;
-						}
-					} else { // New ticket
-						// Deletion of message with sucess
-						if (false === is_array($result)){
-							$track=new Job();
-							$track->add($tkt);
-						} else {
-							$error++;
-						}
-					}
-					$this->fetch_emails++;
-				}
-				imap_expunge($this->marubox);
-				$this->close_mailbox();   //Close Mail Box
+      if (!empty($this->charset)) {
+         $body=encodeInUtf8($this->charset);
+      }
+      if (!seems_utf8($body)) {
+         $tkt['content']= encodeInUtf8($body);
+      } else {
+         $tkt['content']= $body;
+      }
+      // Add message from getAttached
+      if ($this->addtobody) {
+         $tkt['content'] .= $this->addtobody;
+      }
+      // Detect if it is a mail reply
+      $glpi_message_match="/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
+      // See In-Reply-To field
+      if (isset($head['in_reply_to'])) {
+         if (preg_match($glpi_message_match,$head['in_reply_to'],$match)) {
+            $tkt['tickets_id'] = (int)$match[1];
+         }
+      }
+      // See in References
+      if (!isset($tkt['tickets_id']) && isset($head['references'])) {
+         if (preg_match($glpi_message_match,$head['references'],$match)) {
+            $tkt['tickets_id'] = (int)$match[1];
+         }
+      }
+      // See in title
+      if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)) {
+         $tkt['tickets_id']=(int)$match[1];
+      }
+      // Found ticket link
+      if ( isset($tkt['tickets_id']) ) {
+         // it's a reply to a previous ticket
+         $job=new Job();
+         // Check if ticket  exists and users_id exists in GLPI
+         /// TODO check if users_id have right to add a followup to the ticket
+         if ($job->getFromDB($tkt['tickets_id'])
+             && ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'],$head['from']))) {
 
-				if ($display){
-					if ($error==0){
-						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
-					} else {
-						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails.
-                             " ($error ".$LANG['common'][63].")",false,ERROR);
-					}
-				} else {
-					return "Number of messages: available=$tot, collected=".$this->fetch_emails.
-                  ($error>0?" ($error error(s))":"");
-				}
+            $content=explode("\n",$tkt['content']);
+            $tkt['content']="";
+            $first_comment=true;
+            $to_keep=array();
+            foreach($content as $ID => $val) {
+               if (isset($val[0])&&$val[0]=='>') {
+                  // Delete line at the top of the first comment
+                  if ($first_comment) {
+                     $first_comment=false;
+                     if (isset($to_keep[$ID-1])) {
+                        unset($to_keep[$ID-1]);
+                     }
+                  }
+               } else {
+                  // Detect a signature if already keep lines
+                  $to_keep[$ID]=$ID;
+               }
+            }
+            foreach($to_keep as $ID ) {
+               $tkt['content'].=$content[$ID]."\n";
+            }
+         } else {
+            unset($tkt['tickets_id']);
+         }
+      }
+      if (! isset($tkt['tickets_id'])) {
+         // Mail followup
+         $tkt['user_email']=$head['from'];
+         $tkt['use_email_notification']=1;
+         // Which entity ?
+         $tkt['entities_id']=$this->entity;
+         //$tkt['Subject']= $head['subject'];   // not use for the moment
+         $tkt['name']=$this->textCleaner($head['subject']);
+         // Medium
+         $tkt['priority']= "3";
+         // No hardware associated
+         $tkt['itemtype']="0";
+         // Mail request type
+         $tkt['request_type']="2";
+      } else {
+         // Reopen if needed
+         $tkt['add_reopen']=1;
+      }
+      $tkt['content']=clean_cross_side_scripting_deep(html_clean($tkt['content']));
 
-			}else{
-				if ($display){
-					addMessageAfterRedirect($LANG['log'][41],false,ERROR);
-				} else {
-					return "Could not connect to mailgate server";
-				}
-	//			return 0;
-			}
-		} else {
-			if ($display){
-				addMessageAfterRedirect($LANG['common'][54].': mailgate '.$mailgateID,false,ERROR);
-			} else {
-				return 'Could find mailgate '.$mailgateID;
-			}
-		}
-	} // end function MailCollect
+      $tkt=addslashes_deep($tkt);
+      return $tkt;
+   }
 
+   /** function textCleaner - Strip out unwanted/unprintable characters from the subject.
+   * @param $text text to clean
+   * @return clean text
+   */
+   function textCleaner($text) {
+      $text= str_replace("=20", "\n", $text);
+      return $text;
+   }
 
+   ///return supported encodings in lowercase.
+   function mb_list_lowerencodings() {
 
-	/** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
-	* @param $i mail ID
-	* @return ticket fields array
-	*/
-	function buildTicket($i){
-		global $DB,$LANG,$CFG_GLPI;
+      $r=mb_list_encodings();
+      for ($n=sizeOf($r); $n--; ) {
+         $r[$n]=utf8_strtolower($r[$n]);
+      }
+      return $r;
+   }
 
-		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
+   /**  Receive a string with a mail header and returns it
+   // decoded to a specified charset.
+   // If the charset specified into a piece of text from header
+   // isn't supported by "mb", the "fallbackCharset" will be
+   // used to try to decode it.
+   * @param $mimeStr mime header string
+   * @param $inputCharset input charset
+   * @param $targetCharset target charset
+   * @param $fallbackCharset charset used if input charset not supported by mb
+   * @return decoded string
+   */
+   function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8',
+                             $fallbackCharset='iso-8859-1') {
 
-		$tkt= array ();
+      if (function_exists('mb_list_encodings') && function_exists('mb_convert_encoding')) {
+         $encodings=$this->mb_list_lowerencodings();
+         $inputCharset=utf8_strtolower($inputCharset);
+         $targetCharset=utf8_strtolower($targetCharset);
+         $fallbackCharset=utf8_strtolower($fallbackCharset);
+         $decodedStr='';
+         $mimeStrs=imap_mime_header_decode($mimeStr);
+         for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
+            $mimeStr=$mimeStrs[$i];
+            $mimeStr->charset=utf8_strtolower($mimeStr->charset);
+            if (($mimeStr == 'default' && $inputCharset == $targetCharset)
+                || $mimeStr->charset == $targetCharset) {
 
-		// max size = 0 : no import attachments
-		if ($this->filesize_max>0){
-			if (is_writable(GLPI_DOC_DIR."/_tmp/")){
-				$_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$this->filesize_max);
-			} else {
-				logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
-			}
-		}
+               $decodedStr.=$mimeStr->text;
+            } else {
+               if (in_array($mimeStr->charset, $encodings)) {
+                  $this->charset=$mimeStr->charset;
+               }
+               $decodedStr.=mb_convert_encoding($mimeStr->text, $targetCharset,
+                  (in_array($mimeStr->charset, $encodings) ? $mimeStr->charset : $fallbackCharset));
+            }
+         }
+         return $decodedStr;
+      } else {
+         return $mimeStr;
+      }
+   }
 
-		//  Who is the user ?
-		$tkt['users_id']=0;
-		$query="SELECT id
-			FROM glpi_users
-			WHERE email='".$head['from']."'";
-		$result=$DB->query($query);
-		if ($result&&$DB->numrows($result)){
-			$tkt['users_id']=$DB->result($result,0,"id");
-		}
+    ///Connect To the Mail Box
+   function connect() {
+      $this->marubox=@imap_open($this->server,$this->username,$this->password, 1);
+   }
 
-		// AUto_import
-		$tkt['_auto_import']=1;
-		// For followup : do not check users_id = login user
-		$tkt['_do_not_check_users_id']=1;
+   /**
+    * get the message structure if not already retrieved
+    *
+    * @param $mid : Message ID.
+    *
+    */
+    function getStructure ($mid) {
 
-		$body=$this->getBody($i);
+      if ($mid != $this->mid || !$this->structure) {
+         $this->structure = imap_fetchstructure($this->marubox,$mid);
+         if ($this->structure) {
+            $this->mid = $mid;
+         }
+      }
+   }
 
+   /**
+   *This function is use full to Get Header info from particular mail
+   *
+   * @param $mid               = Mail Id of a Mailbox
+   *
+   * @return Return Associative array with following keys
+   * subject   => Subject of Mail
+   * to        => To Address of that mail
+   * toOth     => Other To address of mail
+   * toNameOth => To Name of Mail
+   * from      => From address of mail
+   * fromName  => Form Name of Mail
+   */
+   function getHeaders($mid) { // Get Header info
 
-		// Do it before using charset variable
-		$head['subject']=$this->decodeMimeString($head['subject']);
+      $mail_header=imap_header($this->marubox,$mid);
+      $sender=$mail_header->from[0];
+      if (utf8_strtolower($sender->mailbox)!='mailer-daemon'
+          && utf8_strtolower($sender->mailbox)!='postmaster') {
 
-		if (!empty($this->charset)/*&&function_exists('mb_convert_encoding')*/){
-                        $body=encodeInUtf8($this->charset);
-			//$body=mb_convert_encoding($body, 'utf-8',$this->charset);
-		}
-		if (!seems_utf8($body)){
-			$tkt['content']= encodeInUtf8($body);
-		}else{
-			$tkt['content']= $body;
-		}
-		// Add message from getAttached
-		if ($this->addtobody) {
-			$tkt['content'] .= $this->addtobody;
-		}
+         $mail_details=array('from'=>utf8_strtolower($sender->mailbox).'@'.$sender->host,
+                             'subject'=>$mail_header->subject);
+         if (isset($mail_header->references)) {
+            $mail_details['references'] = $mail_header->references;
+         }
+         if (isset($mail_header->in_reply_to)) {
+            $mail_details['in_reply_to'] = $mail_header->in_reply_to;
+         }
+      }
+      return $mail_details;
+   }
 
-		//// Detect if it is a mail reply
-		$glpi_message_match="/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
-		// See In-Reply-To field
-		if (isset($head['in_reply_to'])){
-			if (preg_match($glpi_message_match,$head['in_reply_to'],$match)){
-				$tkt['tickets_id'] = (int)$match[1];
-			}
-		}
-		// See in References
-		if (!isset($tkt['tickets_id']) && isset($head['references'])){
-			if (preg_match($glpi_message_match,$head['references'],$match)){
-				$tkt['tickets_id'] = (int)$match[1];
-			}
-		}
+   /**Get Mime type Internal Private Use
+   * @param $structure mail structure
+   * @return mime type
+   */
+   function get_mime_type(&$structure) {
 
-		// See in title
-		if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)){
-				$tkt['tickets_id']=(int)$match[1];
-		}
-		// Found ticket link
-		if ( isset($tkt['tickets_id']) ) {
-			// it's a reply to a previous ticket
-			$job=new Job();
+      $primary_mime_type = array("TEXT",
+                                 "MULTIPART",
+                                 "MESSAGE",
+                                 "APPLICATION",
+                                 "AUDIO",
+                                 "IMAGE",
+                                 "VIDEO",
+                                 "OTHER");
+      if ($structure->subtype) {
+         return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype;
+      }
+      return "TEXT/PLAIN";
+   }
 
-			// Check if ticket  exists and users_id exists in GLPI
-			/// TODO check if users_id have right to add a followup to the ticket
-			if ( $job->getFromDB($tkt['tickets_id'])
-				&&  ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'],$head['from']))) {
+   /**Get Part Of Message Internal Private Use
+   * @param $stream An IMAP stream returned by imap_open
+   * @param $msg_number The message number
+   * @param $mime_type mime type of the mail
+   * @param $structure struture of the mail
+   * @param $part_number The part number.
+   * @return data of false if error
+   */
+   function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) {
 
-				$content=explode("\n",$tkt['content']);
-				$tkt['content']="";
-				$first_comment=true;
-				$to_keep=array();
-				foreach($content as $ID => $val){
-					if (isset($val[0])&&$val[0]=='>'){
-						// Delete line at the top of the first comment
-						if ($first_comment){
-							$first_comment=false;
-							if (isset($to_keep[$ID-1])){
-								unset($to_keep[$ID-1]);
-							}
-						}
-					} else {
-						// Detect a signature if already keep lines
-/*						if (isset($val[0])&&$val[0]=='-'
-							&&isset($val[1])&&$val[1]=='-'
-							&&count($tokeep)){
+      if ($structure) {
+         if ($mime_type == $this->get_mime_type($structure)) {
+            if (!$part_number) {
+               $part_number = "1";
+            }
+            $text = imap_fetchbody($stream, $msg_number, $part_number);
+            if ($structure->encoding == 3) {
+               return imap_base64($text);
+            } else if($structure->encoding == 4) {
+               return imap_qprint($text);
+            } else {
+               return $text;
+            }
+         }
+         if ($structure->type == 1) { /* multipart */
+            $prefix="";
+            reset($structure->parts);
+            while (list($index, $sub_structure) = each($structure->parts)) {
+               if ($part_number) {
+                  $prefix = $part_number . '.';
+               }
+               $data = $this->get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix .
+                                       ($index + 1));
+               if ($data) {
+                  return $data;
+               }
+            }
+         }
+      }
+      return false;
+   }
 
-							break;
-						} else {
-*/
-							$to_keep[$ID]=$ID;
-//						}
-					}
-				}
-				foreach($to_keep as $ID ){
-					$tkt['content'].=$content[$ID]."\n";
-				}
-			} else {
-				unset($tkt['tickets_id']);
-			}
-		}
+   /**
+    * used to get total unread mail from That mailbox
+    *
+    * Return :
+    * Int Total Mail
+    */
+   function getTotalMails() {//Get Total Number off Unread Email In Mailbox
 
-		if ( ! isset($tkt['tickets_id']) ) {
-			// Mail followup
-			$tkt['user_email']=$head['from'];
-			$tkt['use_email_notification']=1;
-			// Which entity ?
-			$tkt['entities_id']=$this->entity;
+      $headers=imap_headers($this->marubox);
+      return count($headers);
+   }
 
-			//$tkt['Subject']= $head['subject'];   // not use for the moment
-			$tkt['name']=$this->textCleaner($head['subject']);
-			// Medium
-			$tkt['priority']= "3";
-			// No hardware associated
-			$tkt['itemtype']="0";
-			// Mail request type
-			$tkt['request_type']="2";
-		} else {
-			// Reopen if needed
-			$tkt['add_reopen']=1;
-		}
+   /**
+   *GetAttech($mid,$path) / Prefer use getAttached
+   *Save attached file from mail to given path of a particular location
+   *
+   * @param $mid mail id
+   * @param $path path where to save
+   *
+   * @return  String of filename with coma separated
+   *like a.gif,pio.jpg etc
+   */
+   function GetAttech($mid,$path) {
 
-		$tkt['content']=clean_cross_side_scripting_deep(html_clean($tkt['content']));
+      $struckture = imap_fetchstructure($this->marubox,$mid);
+      $ar="";
+      if (isset($struckture->parts) && count($struckture->parts)>0) {
+         foreach ($struckture->parts as $key => $value) {
+            $enc=$struckture->parts[$key]->encoding;
+            if ($struckture->parts[$key]->ifdparameters) {
+               $name=$struckture->parts[$key]->dparameters[0]->value;
+               $message = imap_fetchbody($this->marubox,$mid,$key+1);
+               if ($enc == 0) {
+                  $message = imap_8bit($message);
+               }
+               if ($enc == 1) {
+                  $message = imap_8bit ($message);
+               }
+               if ($enc == 2) {
+                  $message = imap_binary ($message);
+               }
+               if ($enc == 3) {
+                  $message = imap_base64 ($message);
+               }
+               if ($enc == 4) {
+                  $message = quoted_printable_decode($message);
+               }
+               if ($enc == 5) {
+                  $message = $message;
+               }
+               $fp=fopen($path.$name,"w");
+               fwrite($fp,$message);
+               fclose($fp);
+               $ar=$ar.$name.",";
+            }
+         }
+      }
+      $ar=substr($ar,0,(strlen($ar)-1));
+      return $ar;
+   }
 
-		$tkt=addslashes_deep($tkt);
+   /**
+    * Private function : Recursivly get attached documents
+    *
+    * @param $mid : message id
+    * @param $path : temporary path
+    * @param $maxsize : of document to be retrieved
+    * @param $structure : of the message or part
+    * @param $part : part for recursive
+    *
+    * Result is stored in $this->files
+    *
+    */
+   function getRecursiveAttached ($mid, $path, $maxsize, $structure, $part="") {
+      global $LANG;
 
-		return $tkt;
-	}
+      if ($structure->type == 1) { // multipart
+         reset($structure->parts);
+         while(list($index, $sub) = each($structure->parts)) {
+            $this->getRecursiveAttached($mid, $path, $maxsize, $sub, ($part ? $part.".".
+                                        ($index+1) : ($index+1)));
+         }
+      } else if ($structure->ifdparameters) {
+         //get filename of attachment if present
+         $filename='';
+         // if there are any dparameters present in this part
+         if (count($structure->dparameters)>0) {
+            foreach ($structure->dparameters as $dparam) {
+               if ((utf8_strtoupper($dparam->attribute)=='NAME')
+                   || (utf8_strtoupper($dparam->attribute)=='FILENAME')) {
 
+                  $filename=$dparam->value;
+               }
+            }
+         }
+         //if no filename found
+         if ($filename=='') {
+            // if there are any parameters present in this part
+            if (count($structure->parameters)>0) {
+               foreach ($structure->parameters as $param) {
+                  if ((utf8_strtoupper($param->attribute)=='NAME')
+                      || (utf8_strtoupper($param->attribute)=='FILENAME')) {
 
-	/** function textCleaner - Strip out unwanted/unprintable characters from the subject.
-	* @param $text text to clean
-	* @return clean text
-	*/
-	function textCleaner($text)
-	{
-		//$text= str_replace("'", "", $text);
-		$text= str_replace("=20", "\n", $text);
-		return $text;
-	}
+                     $filename=$param->value;
+                  }
+               }
+            }
+         }
+         $filename=$this->decodeMimeString($filename);
 
+         if ($structure->bytes > $maxsize) {
+            $this->addtobody .= "<br>".$LANG['mailgate'][6]." (" .
+                                getSize($structure->bytes) . "): ".$filename;
+            return false;
+         }
+         if (!isValidDoc($filename)) {
+            $this->addtobody .= "<br>".$LANG['mailgate'][5]." (" .
+                                $this->get_mime_type($structure) . "): ".$filename;
+            return false;
+         }
+         if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+            switch ($structure->encoding) {
+               case 1 :
+                  $message = imap_8bit($message);
+                  break;
 
-	///return supported encodings in lowercase.
-	function mb_list_lowerencodings() {
-		$r=mb_list_encodings();
-		for ($n=sizeOf($r); $n--; ) {
-			$r[$n]=utf8_strtolower($r[$n]);
-		}
-		return $r;
-	}
+               case 2 :
+                  $message = imap_binary($message);
+                  break;
 
-	/**  Receive a string with a mail header and returns it
-	// decoded to a specified charset.
-	// If the charset specified into a piece of text from header
-	// isn't supported by "mb", the "fallbackCharset" will be
-	// used to try to decode it.
-	* @param $mimeStr mime header string
-	* @param $inputCharset input charset
-	* @param $targetCharset target charset
-	* @param $fallbackCharset charset used if input charset not supported by mb
-	* @return decoded string
-	*/
-	function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8', $fallbackCharset='iso-8859-1') {
-		if (function_exists('mb_list_encodings')&&function_exists('mb_convert_encoding')){
-			$encodings=$this->mb_list_lowerencodings();
-			$inputCharset=utf8_strtolower($inputCharset);
-			$targetCharset=utf8_strtolower($targetCharset);
-			$fallbackCharset=utf8_strtolower($fallbackCharset);
+               case 3 :
+                  $message = imap_base64($message);
+                  break;
 
-			$decodedStr='';
-			$mimeStrs=imap_mime_header_decode($mimeStr);
-			for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
-				$mimeStr=$mimeStrs[$i];
-				$mimeStr->charset=utf8_strtolower($mimeStr->charset);
-				if (($mimeStr == 'default' && $inputCharset == $targetCharset)
-				|| $mimeStr->charset == $targetCharset) {
-					$decodedStr.=$mimeStr->text;
-				} else {
-					if (in_array($mimeStr->charset, $encodings)){
-						$this->charset=	$mimeStr->charset;
-					}
+               case 4 :
+                  $message = quoted_printable_decode($message);
+                  break;
+            }
+            $fp=fopen($path.$filename,"w");
+            if ($fp) {
+               fwrite($fp,$message);
+               fclose($fp);
+               $this->files['multiple'] = true;
+               $j = count($this->files)-1;
+               $this->files[$j]['filename']['size'] = $structure->bytes;
+               $this->files[$j]['filename']['name'] = $filename;
+               $this->files[$j]['filename']['tmp_name'] = $path.$filename;
+               $this->files[$j]['filename']['type'] = $this->get_mime_type($structure);
+            }
+         } // fetchbody
+      } // ifdparameters
+   }
 
-					$decodedStr.=mb_convert_encoding(
-						$mimeStr->text, $targetCharset,
-						(in_array($mimeStr->charset, $encodings) ?
-						$mimeStr->charset : $fallbackCharset)
-						);
-				}
-			} return $decodedStr;
-		} else {
-			return $mimeStr;
-		}
+   /**
+    * Public function : get attached documents in a mail
+    *
+    * @param $mid : message id
+    * @param $path : temporary path
+    * @param $maxsize : of document to be retrieved
+    *
+    * @return array like $_FILES
+    *
+    */
+   function getAttached ($mid, $path, $maxsize) {
 
-	}
+      $this->getStructure($mid);
+      $this->files = array();
+      $this->addtobody="";
+      $this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
+      return ($this->files);
+   }
 
-	 ///Connect To the Mail Box
-	function connect()
-	{
-		$this->marubox=@imap_open($this->server,$this->username,$this->password, 1);
-	}
+   /**
+    * Get The actual mail content from this mail
+    *
+    * @param $mid : mail Id
+    */
+   function getBody($mid) {// Get Message Body
 
-	/**
-	 * get the message structure if not already retrieved
-	 *
-	 * @param $mid : Message ID.
-	 *
-	 */
-	 function getStructure ($mid)
-	 {
-	 	if ($mid != $this->mid || !$this->structure) {
-			$this->structure = imap_fetchstructure($this->marubox,$mid);
-			if ($this->structure) {
-				$this->mid = $mid;
-			}
-	 	}
-	 }
-	/**
-	*This function is use full to Get Header info from particular mail
-	*
-	* @param $mid               = Mail Id of a Mailbox
-	*
-	* @return Return Associative array with following keys
-	*	subject   => Subject of Mail
-	*	to        => To Address of that mail
-	*	toOth     => Other To address of mail
-	*	toNameOth => To Name of Mail
-	*	from      => From address of mail
-	*	fromName  => Form Name of Mail
-	*/
-	function getHeaders($mid) // Get Header info
-	{
-		$mail_header=imap_header($this->marubox,$mid);
+      $this->getStructure($mid);
+      $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
+      if ($body == "") {
+         $body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);
+      }
+      if ($body == "") {
+         return "";
+      }
+      return $body;
+   }
 
-		$sender=$mail_header->from[0];
-		//$sender_replyto=$mail_header->reply_to[0];
-		if(utf8_strtolower($sender->mailbox)!='mailer-daemon' && utf8_strtolower($sender->mailbox)!='postmaster')
-		{
-			$mail_details=array(
-					'from'=>utf8_strtolower($sender->mailbox).'@'.$sender->host,
-					'subject'=>$mail_header->subject,
-					//'fromName'=>$sender->personal,
-					//'toOth'=>utf8_strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
-					//'toNameOth'=>$sender_replyto->personal,
-					//'to'=>utf8_strtolower($mail_header->toaddress)
-				);
-			if (isset($mail_header->references)){
-					$mail_details['references'] = $mail_header->references;
-			}
-			if (isset($mail_header->in_reply_to)){
-					$mail_details['in_reply_to'] = $mail_header->in_reply_to;
-			}
-		}
-		return $mail_details;
-	}
+   /**
+    * Delete mail from that mail box
+    *
+    * @param $mid : mail Id
+    */
+   function deleteMails($mid) {
+      imap_delete($this->marubox,$mid);
+   }
 
-	/**Get Mime type Internal Private Use
-	* @param $structure mail structure
-	* @return mime type
-	*/
-	function get_mime_type(&$structure) {
-		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
-
-		if($structure->subtype) {
-			return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype;
-		}
-		return "TEXT/PLAIN";
-	}
-
-
-	/**Get Part Of Message Internal Private Use
-	* @param $stream An IMAP stream returned by imap_open
-	* @param $msg_number The message number
-	* @param $mime_type mime type of the mail
-	* @param $structure struture of the mail
-	* @param $part_number The part number.
-	* @return data of false if error
-	*/
-	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) {
-		if($structure) {
-			if($mime_type == $this->get_mime_type($structure)){
-				if(!$part_number) {
-					$part_number = "1";
-				}
-				$text = imap_fetchbody($stream, $msg_number, $part_number);
-				if($structure->encoding == 3) {
-					return imap_base64($text);
-				} else if($structure->encoding == 4) {
-					return imap_qprint($text);
-				} else {
-					return $text;
-				}
-			}
-			if($structure->type == 1){ /* multipart */
-				$prefix="";
-				reset($structure->parts);
-				while(list($index, $sub_structure) = each($structure->parts)){
-					if($part_number){
-						$prefix = $part_number . '.';
-					}
-					$data = $this->get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix . ($index + 1));
-					if($data){
-						return $data;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * used to get total unread mail from That mailbox
-	 *
-	 * Return :
-	 * Int Total Mail
-	 */
-	function getTotalMails() //Get Total Number off Unread Email In Mailbox
-	{
-		$headers=imap_headers($this->marubox);
-		return count($headers);
-	}
-
-	/**
-	*GetAttech($mid,$path) / Prefer use getAttached
-	*Save attached file from mail to given path of a particular location
-	*
-	* @param $mid mail id
-	* @param $path path where to save
-	*
-	* @return  String of filename with coma separated
-	*like a.gif,pio.jpg etc
-	*/
-	function GetAttech($mid,$path) {
-		$struckture = imap_fetchstructure($this->marubox,$mid);
-		$ar="";
-		if (isset($struckture->parts)&&count($struckture->parts)>0){
-			foreach($struckture->parts as $key => $value)
-			{
-				$enc=$struckture->parts[$key]->encoding;
-				if($struckture->parts[$key]->ifdparameters)
-				{
-					$name=$struckture->parts[$key]->dparameters[0]->value;
-					$message = imap_fetchbody($this->marubox,$mid,$key+1);
-					if ($enc == 0)
-						$message = imap_8bit($message);
-					if ($enc == 1)
-						$message = imap_8bit ($message);
-					if ($enc == 2)
-						$message = imap_binary ($message);
-					if ($enc == 3)
-						$message = imap_base64 ($message);
-					if ($enc == 4)
-						$message = quoted_printable_decode($message);
-					if ($enc == 5)
-						$message = $message;
-					$fp=fopen($path.$name,"w");
-					fwrite($fp,$message);
-					fclose($fp);
-					$ar=$ar.$name.",";
-				}
-			}
-		}
-		$ar=substr($ar,0,(strlen($ar)-1));
-		return $ar;
-	}
-
-	/**
-	 * Private function : Recursivly get attached documents
-	 *
-	 * @param $mid : message id
-	 * @param $path : temporary path
-	 * @param $maxsize : of document to be retrieved
-	 * @param $structure : of the message or part
-	 * @param $part : part for recursive
-	 *
-	 * Result is stored in $this->files
-	 *
-	 */
-	function getRecursiveAttached ($mid, $path, $maxsize, $structure, $part="")
-	{
-		global $LANG;
-
-		if ($structure->type == 1) { // multipart
-			reset($structure->parts);
-			while(list($index, $sub) = each($structure->parts)) {
-				$this->getRecursiveAttached($mid, $path, $maxsize, $sub, ($part ? $part.".".($index+1) : ($index+1)));
-			}
-		} else if ($structure->ifdparameters) {
-
-			//get filename of attachment if present
-			$filename='';
-			// if there are any dparameters present in this part
-			if (count($structure->dparameters)>0){
-			foreach ($structure->dparameters as $dparam){
-				if ((utf8_strtoupper($dparam->attribute)=='NAME') ||(utf8_strtoupper($dparam->attribute)=='FILENAME')) $filename=$dparam->value;
-				}
-			}
-			//if no filename found
-			if ($filename==''){
-				// if there are any parameters present in this part
-				if (count($structure->parameters)>0){
-					foreach ($structure->parameters as $param){
-					if ((utf8_strtoupper($param->attribute)=='NAME') ||(utf8_strtoupper($param->attribute)=='FILENAME')) $filename=$param->value;
-					}
-				}
-			}
-			$filename=$this->decodeMimeString($filename);
-
-			if ($structure->bytes > $maxsize) {
-				$this->addtobody .= "<br>".$LANG['mailgate'][6]." (" . getSize($structure->bytes) . "): ".$filename;
-				return false;
-			}
-			if (!isValidDoc($filename)){
-				$this->addtobody .= "<br>".$LANG['mailgate'][5]." (" . $this->get_mime_type($structure) . "): ".$filename;
-				return false;
-			}
-			if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
-				switch ($structure->encoding)
-				{
-					// case 0:	$message = imap_7bit($message); break;
-					case 1:	$message = imap_8bit($message); break;
-					case 2: $message = imap_binary($message); break;
-					case 3: $message = imap_base64($message); break;
-					case 4: $message = quoted_printable_decode($message); break;
-				}
-				$fp=fopen($path.$filename,"w");
-				if ($fp) {
-					fwrite($fp,$message);
-					fclose($fp);
-
-					$this->files['multiple'] = true;
-					$j = count($this->files)-1;
-					$this->files[$j]['filename']['size'] = $structure->bytes;
-					$this->files[$j]['filename']['name'] = $filename;
-					$this->files[$j]['filename']['tmp_name'] = $path.$filename;
-					$this->files[$j]['filename']['type'] = $this->get_mime_type($structure);
-				}
-			} // fetchbody
-		} // ifdparameters
-	}
-
-	/**
-	 * Public function : get attached documents in a mail
-	 *
-	 * @param $mid : message id
-	 * @param $path : temporary path
-	 * @param $maxsize : of document to be retrieved
-	 *
-	 * @return array like $_FILES
-	 *
-	 */
-	function getAttached ($mid, $path, $maxsize)
-	{
-		$this->getStructure($mid);
-		$this->files = array();
-		$this->addtobody="";
-		$this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
-
-		return ($this->files);
-	}
-	/**
-	 * Get The actual mail content from this mail
-	 *
-	 * @param $mid : mail Id
-	 */
-	function getBody($mid) // Get Message Body
-	{
-		$this->getStructure($mid);
-
-		$body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
-		if ($body == "") {
-			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);
-		}
-		if ($body == "") {
-			return "";
-		}
-		return $body;
-	}
-
-	/**
-	 * Delete mail from that mail box
-	 *
-	 * @param $mid : mail Id
-	 */
-	function deleteMails($mid) {
-		imap_delete($this->marubox,$mid);
-	}
-
-	/**
-	 * Close The Mail Box
-	 *
- 	 */
-	function close_mailbox() {
-		imap_close($this->marubox,CL_EXPUNGE);
-	}
+   /**
+    * Close The Mail Box
+    *
+    */
+   function close_mailbox() {
+      imap_close($this->marubox,CL_EXPUNGE);
+   }
 
 }
 
