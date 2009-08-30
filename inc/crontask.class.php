@@ -92,7 +92,6 @@ class CronTask extends CommonDBTM{
             ));
          return true;
       }
-      logInFile('php-errors',"SQL=$query\nError=".$DB->error()."\n");
       return false;
    }
 
@@ -472,7 +471,6 @@ class CronTask extends CommonDBTM{
       if ($lock_ok) {
          self::$lockname = $nom;
       }
-      logInFile('sql-errors', "SELECT GET_LOCK('$nom', 0) => $lock_ok\n");
       return $lock_ok;
    }
 
@@ -486,8 +484,6 @@ class CronTask extends CommonDBTM{
          $nom = self::$lockname;
          $query = "SELECT RELEASE_LOCK('$nom')";
          $result = $DB->query($query);
-
-         logInFile('sql-errors', "SELECT RELEASE_LOCK('$nom')\n");
       }
    }
 
@@ -503,7 +499,38 @@ class CronTask extends CommonDBTM{
          }
          //$_SESSION["glpiID"]="cron_".$tache;
 
+         $task = new CronTask();
+         if ($task->getNeedToRun($mode)) {
+            if (empty($task->fields['module'])) {
+               $fonction = 'cron_' . $task->fields['name'];
+               if (!function_exists($fonction)) {
+                  // pas trouvé de fonction -> inclusion de la fonction
+                  if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php')) {
+                     include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php');
+                  }
+                  if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php')) {
+                     include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php');
+                  }
+               }
+            } else {
+               // Plugin case / Load hook
+               usePlugin($task->fields['module'],true);
+               $fonction = 'plugin_'.$task->fields['module'].'_cron_' . $task->fields['name'];
+            }
+            if (function_exists($fonction)) {
+               if ($task->start()) { // Lock in DB + log start
+                  logInFile("php-errors","Launch $fonction\n"); // TODO : remove this
 
+                  $retcode = $fonction($task);
+                  $task->end($retcode); // Unlock in DB + log end
+               }
+
+            } else {
+               logInFile('php-errors', "Undefined function '$fonction'\n");
+               // TODO disable task ??
+            }
+         }
+         else logInFile("php-errors","No task to Launch\n"); // TODO : remove this
 
          if (empty($saveglpiid)) {
             unset($_SESSION["glpiID"]);

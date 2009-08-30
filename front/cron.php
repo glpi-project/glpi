@@ -36,38 +36,39 @@
 // Ensure current directory when run from crontab
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
-$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","setup",
-"software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","rule.softwarecategories","rule.ocs",
-"user","reservation","reminder","admininfo","group","mailing","document","rule.dictionnary.software","rule.dictionnary.dropdown","registry");
+$NEEDED_ITEMS=array('admininfo','computer','crontask','device','document','enterprise','group',
+   'infocom','mailgate','mailing','networking','peripheral','phone','printer','monitor','ocsng',
+   'registry','reminder','reservation','rulesengine','rule.dictionnary.dropdown',
+   'rule.dictionnary.software','rule.ocs', 'rule.softwarecategories','rule.tracking','setup',
+   'software','tracking','user');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
 if (!is_writable(GLPI_LOCK_DIR)) {
-	echo "\tERROR : " .GLPI_LOCK_DIR. " not writable\n";
-	echo "\trun script as 'apache' user\n";
-	exit (1);	
+   echo "\tERROR : " .GLPI_LOCK_DIR. " not writable\n";
+   echo "\trun script as 'apache' user\n";
+   exit (1);
 }
 
 if (!isCommandLine()) {
-	//The advantage of using background-image is that cron is called in a separate
-	//request and thus does not slow down output of the main page as it would if called
-	//from there.
-	$image = pack("H*", "47494638396118001800800000ffffff00000021f90401000000002c0000000018001800000216848fa9cbed0fa39cb4da8bb3debcfb0f86e248965301003b");
-	header("Content-Type: image/gif");
-	header("Content-Length: ".strlen($image));
-	header("Cache-Control: no-cache,no-store");
-	header("Pragma: no-cache");
-	header("Connection: close");
-	echo $image;
-	flush();
+   //The advantage of using background-image is that cron is called in a separate
+   //request and thus does not slow down output of the main page as it would if called
+   //from there.
+   $image = pack("H*", "47494638396118001800800000ffffff00000021f90401000000002c0000000".
+                       "018001800000216848fa9cbed0fa39cb4da8bb3debcfb0f86e248965301003b");
+   header("Content-Type: image/gif");
+   header("Content-Length: ".strlen($image));
+   header("Cache-Control: no-cache,no-store");
+   header("Pragma: no-cache");
+   header("Connection: close");
+   echo $image;
+   flush();
+
+   CronTask::launch(CRONTASK_MODE_INTERNAL);
+} else {
+   CronTask::launch(CRONTASK_MODE_EXTERNAL);
 }
-
-//Definitions possibles des taches directement en passant un array (rappel les taches appellent des fonctions cron_matache() )
-//$taches=array("test"=>30,"test2"=>10);
-//$cron=new Cron($taches);
-
-$cron=new Cron();
-$cron->launch();
 
 ?>

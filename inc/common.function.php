@@ -309,23 +309,29 @@ function code2utf($num) {
 }
 
 /**
-* Clean log cron function
-*
-**/
-function cron_logs() {
+ * Clean log cron function
+ *
+ * @param $task instance of CronTask
+ *
+ **/
+function cron_logs($task) {
    global $CFG_GLPI,$DB;
 
    // Expire Event Log
-   if ($CFG_GLPI["events_lifetime"] > 0) {
-      $secs = $CFG_GLPI["events_lifetime"] * DAY_TIMESTAMP;
+   if ($task->fields['param'] > 0) {
+      $secs = $task->fields['param'] * DAY_TIMESTAMP;
 
       $query_exp = "DELETE
                     FROM `glpi_events`
                     WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
       $DB->query($query_exp);
-      logInFile("cron","Cleaning log events passed from more than ".
-                $CFG_GLPI["events_lifetime"]." days\n");
+
+      $vol = $DB->affected_rows();
+      $task->setVolume($vol);
+
+      return ($vol>0 ? 1 : 0);
    }
+   return 0;
 }
 
 /**
