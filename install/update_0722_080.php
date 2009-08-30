@@ -2142,6 +2142,25 @@ function update0722to080() {
       $DB->query($query) or die("0.80 drop events_lifetime in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
+   // Move glpi_config.auto_update_check to glpi_crontasks.state
+   if (FieldExists('glpi_configs','auto_update_check')) {
+      $query="SELECT `auto_update_check` FROM `glpi_configs` WHERE id=1";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $value=$DB->result($result,0,0);
+            if ($value>0) {
+               $value *= DAY_TIMESTAMP;
+               $query="UPDATE `glpi_crontasks` SET `state`='1', `frequency`='$value' WHERE `name`='check_update';";
+            } else {
+               $query="UPDATE `glpi_crontasks` SET `state`='0' WHERE `name`='logs';";
+            }
+            $DB->query($query);
+         }
+      }
+      $query="ALTER TABLE `glpi_configs` DROP `auto_update_check`";
+      $DB->query($query) or die("0.80 drop auto_update_check in check_update" . $LANG['update'][90] . $DB->error());
+   }
+
    // TODO migration of config option to task option
    // TODO clean not used config option
 

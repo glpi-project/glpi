@@ -409,7 +409,6 @@ CREATE TABLE `glpi_configs` (
   `url_base` varchar(255) collate utf8_unicode_ci default NULL,
   `show_link_in_mail` tinyint(1) NOT NULL default '0',
   `text_login` text collate utf8_unicode_ci,
-  `auto_update_check` int(11) NOT NULL default '0',
   `founded_new_version` char(10) collate utf8_unicode_ci default NULL,
   `dropdown_max` int(11) NOT NULL default '100',
   `ajax_wildcard` char(1) collate utf8_unicode_ci default '*',

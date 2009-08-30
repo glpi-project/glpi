@@ -337,36 +337,46 @@ function cron_logs($task) {
 /**
 * Clean log cron function
 *
+* @param $task for log
+*
 **/
-function cron_optimize() {
+function cron_optimize($task=NULL) {
    global $CFG_GLPI,$DB;
 
-   logInFile("cron","Start optimize tables\n");
-   optimize_tables();
-   logInFile("cron","Optimize tables done\n");
+   $nb = optimize_tables();
+
+   if ($task) {
+      $task->setVolume($nb);
+   }
+   return 1;
 }
 
 /**
  * Garbage collector for expired file session
  *
+ * @param $task for log
+ *
  **/
-function cron_session() {
+function cron_session($task) {
    global $CFG_GLPI;
 
    // max time to keep the file session
    $maxlifetime = session_cache_expire();
-   $do=false;
+   $nb=0;
    foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
       if (filemtime($filename) + $maxlifetime < time()) {
          // Delete session file if not delete before
-         @unlink($filename);
-         $do=true;
+         if (@unlink($filename)) {
+            $nb++;
+         }
       }
    }
-   if ($do) {
-      logInFile("cron","Clean session files created since more than $maxlifetime seconds\n");
+   $task->setVolume($nb);
+   if ($nb) {
+      $task->log("Clean $nb session file(s) created since more than $maxlifetime seconds\n");
+      return 1;
    }
-   return true;
+   return 0;
 }
 
 /**
@@ -1182,7 +1192,7 @@ function get_hour_from_sql($time) {
  *
  * @param $progress_fct function to call to display progress message
  *
- * @return nothing
+ * @return number of tables
  */
 function optimize_tables ($progress_fct=NULL){
    global $DB;
@@ -1190,22 +1200,23 @@ function optimize_tables ($progress_fct=NULL){
    if (function_exists($progress_fct)) {
       $progress_fct("optimize"); // Start
    }
-   $result=$DB->list_tables();
+   $result=$DB->list_tables("glpi_%");
+   $nb=0;
    while ($line = $DB->fetch_array($result)) {
-      if (strstr($line[0],"glpi_")) {
-         $table = $line[0];
-         if (function_exists($progress_fct)) {
-            $progress_fct("optimize", $table);
-         }
-         $query = "OPTIMIZE TABLE `".$table."` ;";
-         $DB->query($query);
+      $table = $line[0];
+      if (function_exists($progress_fct)) {
+         $progress_fct("optimize", $table);
       }
+      $query = "OPTIMIZE TABLE `".$table."` ;";
+      $DB->query($query);
+      $nb++;
    }
    $DB->free_result($result);
 
    if (function_exists($progress_fct)) {
       $progress_fct("optimize"); // End
    }
+   return $nb;
 }
 
 /**
@@ -1499,7 +1510,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 function checkNewVersionAvailable($auto=true) {
    global $DB,$LANG,$CFG_GLPI;
 
-   if (!haveRight("check_update","r")) {
+   if (!$auto && !haveRight("check_update","r")) {
       return false;
    }
    if (!$auto) {
@@ -1572,12 +1583,15 @@ function checkNewVersionAvailable($auto=true) {
 /**
 * Cron job to check if a new version is available
 *
+* @param $task for log
 **/
-function cron_check_update() {
+function cron_check_update($task) {
    global $CFG_GLPI;
 
    $result=checkNewVersionAvailable(1);
-   logInFile("cron",$result."\n");
+   $task->log($result);
+
+   return 1;
 }
 
 /**
