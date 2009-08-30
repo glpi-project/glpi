@@ -104,6 +104,12 @@ if (!$post_ticket && isset($_POST["hour"]))
 elseif (!isset($_SESSION["helpdeskSaved"]["hour"])) $hour=0;
 else $hour=$_SESSION["helpdeskSaved"]["hour"];
 
+
+if (!$post_ticket && isset($_POST["date"]))
+	$date=$_POST["date"];
+elseif (!isset($_SESSION["helpdeskSaved"]["date"])) $date=date("Y-m-d H:i:s");
+else $date=$_SESSION["helpdeskSaved"]["date"];
+
 if (!$post_ticket && isset($_POST["ticketscategories_id"]))
 	$ticketscategories_id=$_POST["ticketscategories_id"];
 elseif (!isset($_SESSION["helpdeskSaved"]["ticketscategories_id"])) $ticketscategories_id=0;
@@ -162,7 +168,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$users_id_assign,$groups_id_assign,$name,$content,$ticketscategories_id,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
+	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$users_id_assign,$groups_id_assign,$name,$content,$ticketscategories_id,$priority,$request_type,$hour,$minute,$date,$entity_restrict,$status,$followup);
 }
 
 commonFooter();
