@@ -2124,6 +2124,24 @@ function update0722to080() {
       unlink($lock);
    }
 
+   // Move glpi_config.events_lifetime to glpi_crontasks.param
+   if (FieldExists('glpi_configs','events_lifetime')) {
+      $query="SELECT `events_lifetime` FROM `glpi_configs` WHERE id=1";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $value=$DB->result($result,0,0);
+            if ($value>0) {
+               $query="UPDATE `glpi_crontasks` SET `state`='1', `param`='$value' WHERE `name`='logs';";
+            } else {
+               $query="UPDATE `glpi_crontasks` SET `state`='0' WHERE `name`='logs';";
+            }
+            $DB->query($query);
+         }
+      }
+      $query="ALTER TABLE `glpi_configs` DROP `events_lifetime`";
+      $DB->query($query) or die("0.80 drop events_lifetime in glpi_configs" . $LANG['update'][90] . $DB->error());
+   }
+
    // TODO migration of config option to task option
    // TODO clean not used config option
 

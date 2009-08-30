@@ -141,8 +141,7 @@ class Config extends CommonDBTM {
       }
       echo ">" . $LANG['setup'][107] . "</option>";
       echo "</select></td>";
-      echo "<td class='center'>" . $LANG['setup'][109] . " </td><td>";
-      dropdownInteger('events_lifetime', $CFG_GLPI["events_lifetime"], 0, 365,10);
+      echo "<td class='center'>&nbsp;</td><td>&nbsp;";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
