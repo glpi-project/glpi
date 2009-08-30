@@ -34,14 +34,11 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+   die("Sorry. You can't access directly to this file");
+}
 
 /**
- * Log  history 
- *
- * 
+ * Log  history
  *
  * @param $items_id
  * @param $itemtype
@@ -50,42 +47,39 @@ if (!defined('GLPI_ROOT')){
  * @param $linked_action
  **/
 function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action='0') {
+   global $DB;
 
-	global $DB;
+   $date_mod=$_SESSION["glpi_currenttime"];
+   if (!empty($changes)) {
 
-	$date_mod=$_SESSION["glpi_currenttime"];
-	
-	if(!empty($changes)){
+      // create a query to insert history
+      $id_search_option=$changes[0];
+      $old_value=$changes[1];
+      $new_value=$changes[2];
 
-		// créate a query to insert history
-		$id_search_option=$changes[0];
-		$old_value=$changes[1];
-		$new_value=$changes[2];
-
-		if (isset($_SESSION["glpiID"])){
+      if (isset($_SESSION["glpiID"])) {
          if (is_numeric($_SESSION["glpiID"])) {
-			   $username = getUserName($_SESSION["glpiID"],$link=0);
+            $username = getUserName($_SESSION["glpiID"],$link=0);
          } else { // For cron management
             $username=$_SESSION["glpiID"];
          }
-		} else {
-			$username="";
+      } else {
+         $username="";
       }
 
-		// Build query
-		$query = "INSERT INTO glpi_logs (items_id, itemtype, devicetype, linked_action, user_name, date_mod,
-		id_search_option, old_value, new_value)  
-		VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
-		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
-		$DB->query($query)  or die($DB->error());
-	}
-
+      // Build query
+      $query = "INSERT INTO
+                `glpi_logs` (`items_id`, `itemtype`, `devicetype`, `linked_action`, `user_name`,
+                             `date_mod`, `id_search_option`, `old_value`, `new_value`)
+                VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','".
+                        addslashes($username)."', '$date_mod', '$id_search_option', '".
+                        utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."')";
+      $DB->query($query)  or die($DB->error());
+   }
 }
 
 /**
  * Construct  history for device
- *
- * 
  *
  * @param $items_id ID of the device
  * @param $itemtype ID of the device type
@@ -93,273 +87,292 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
  * @param $values all values of the item
  **/
 function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
+   global $LINK_ID_TABLE, $LANG ;
 
-	global $LINK_ID_TABLE, $LANG ;
+   if (count($oldvalues)) {
+      // needed to have  $SEARCH_OPTION
+      $SEARCH_OPTION=getSearchOptions();
+      foreach ($oldvalues as $key => $oldval) {
+         $changes=array();
+         // Parsing $SEARCH_OPTIONS to find infocom
+         if ($itemtype==INFOCOM_TYPE) {
+            $ic=new Infocom();
+            if ($ic->getFromDB($values['id'])) {
+               $real_type=$ic->fields['itemtype'];
+               $items_id=$ic->fields['items_id'];
+               if (isset($SEARCH_OPTION[$real_type])) {
+                  foreach($SEARCH_OPTION[$real_type] as $key2 => $val2) {
+                     if (($val2["field"]==$key && strpos($val2['table'],'infocoms'))
+                         || ($key=='budgets_id' && $val2['table']=='glpi_budgets')
+                         || ($key=='suppliers_id' && $val2['table']=='glpi_suppliers_infocoms')) {
 
-	if (count($oldvalues)){
-		// needed to have  $SEARCH_OPTION
-		$SEARCH_OPTION=getSearchOptions();
+                        $id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+                        if ($val2["table"]=="glpi_infocoms") {
+                           // 1st case : text field -> keep datas
+                           $changes=array($id_search_option,
+                                          addslashes($oldval),
+                                          $values[$key]);
+                        } else if ($val2["table"]=="glpi_suppliers_infocoms") {
+                           // 2nd case ; link field -> get data from glpi_suppliers
+                           $changes=array($id_search_option,
+                                          addslashes(getDropdownName("glpi_suppliers",$oldval)),
+                                          addslashes(getDropdownName("glpi_suppliers",$values[$key])));
+                        } else  {
+                           // 3rd case ; link field -> get data from dropdown (budget)
+                           $changes=array($id_search_option,
+                                          addslashes(getDropdownName( $val2["table"],$oldval)),
+                                          addslashes(getDropdownName( $val2["table"],$values[$key])));
+                        }
+                     break; // foreach exit
+                     }
+                  }
+               }
+            }
+         } else {
+            $real_type=$itemtype;
+            // Parsing $SEARCH_OPTION, check if an entry exists matching $key
+            if (isset($SEARCH_OPTION[$itemtype])) {
+               foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2) {
+                  // Linkfield or standard field not massive action enable
+                  if ($val2["linkfield"]==$key
+                      || (empty($val2["linkfield"]) && $key == $val2["field"])){
 
-		foreach ($oldvalues as $key => $oldval){
-			$changes=array();
-			// Parsing $SEARCH_OPTIONS to find infocom 
-			if ($itemtype==INFOCOM_TYPE) {
-				$ic=new Infocom();
-				if ($ic->getFromDB($values['id'])){
-					$real_type=$ic->fields['itemtype'];
-					$items_id=$ic->fields['items_id'];
-					if (isset($SEARCH_OPTION[$real_type])) foreach($SEARCH_OPTION[$real_type] as $key2 => $val2){
-						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
-							($key=='budgets_id'&&$val2['table']=='glpi_budgets') ||
-							($key=='suppliers_id'&&$val2['table']=='glpi_suppliers_infocoms')) {
-							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
-							if ($val2["table"]=="glpi_infocoms"){
-								// 1st case : text field -> keep datas
-								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
-							} else if ($val2["table"]=="glpi_suppliers_infocoms") {
-								// 2nd case ; link field -> get data from glpi_suppliers
-								$changes=array($id_search_option,  addslashes(getDropdownName("glpi_suppliers",$oldval)), addslashes(getDropdownName("glpi_suppliers",$values[$key])));
-							} else  {
-								// 3rd case ; link field -> get data from dropdown (budget)
-								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
-							}
-						break; // foreach exit
-						}
-					}
-				}
-			} else {
-				$real_type=$itemtype;
-				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-				if (isset($SEARCH_OPTION[$itemtype])){
-					foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
-				
-						// Linkfield or standard field not massive action enable
-						if($val2["linkfield"]==$key 
-							|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
-							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
-				
-							if($val2["table"]==$LINK_ID_TABLE[$itemtype]){
-								// 1st case : text field -> keep datas
-								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
-							}else {
-								// 2nd case ; link field -> get data from dropdown
-								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
-							}
-							break;
-						}
-					} 
-				}
-			}
-		
-			if (count($changes)){
-				historyLog ($items_id,$real_type,$changes);
-			}
-
-		}
-	}
+                     $id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+                     if ($val2["table"]==$LINK_ID_TABLE[$itemtype]) {
+                        // 1st case : text field -> keep datas
+                        $changes=array($id_search_option,
+                                       addslashes($oldval),
+                                       $values[$key]);
+                     } else {
+                        // 2nd case ; link field -> get data from dropdown
+                        $changes=array($id_search_option,
+                                       addslashes(getDropdownName( $val2["table"],$oldval)),
+                                       addslashes(getDropdownName( $val2["table"],$values[$key])));
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+         if (count($changes)) {
+            historyLog ($items_id,$real_type,$changes);
+         }
+      }
+   }
 } // function construct_history
-
-
 
 /**
  * Show History
- ** 
- * Show history for a device 
+ **
+ * Show history for a device
  *
  * @param $items_id
  * @param $itemtype
  **/
-function showHistory($itemtype,$items_id){
+function showHistory($itemtype,$items_id) {
+   global $DB, $LINK_ID_TABLE,$LANG;
 
-	global $DB, $LINK_ID_TABLE,$LANG;	
-	
-	$SEARCH_OPTION=getSearchOptions();
-	
-	if (isset($_REQUEST["start"])) {
-		$start = $_REQUEST["start"];
-	} else {
-		$start = 0;
-	}
+   $SEARCH_OPTION=getSearchOptions();
+   if (isset($_REQUEST["start"])) {
+      $start = $_REQUEST["start"];
+   } else {
+      $start = 0;
+   }
 
-	// Total Number of events
-	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
+   // Total Number of events
+   $number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
 
-	// No Events in database
-	if ($number < 1) {
-		echo "<div class='center'>";
-		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG['event'][20]."</th></tr>";
-		echo "</table>";
-		echo "</div><br>";
-		return;
-	}
+   // No Events in database
+   if ($number < 1) {
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th>".$LANG['event'][20]."</th></tr>";
+      echo "</table>";
+      echo "</div><br>";
+      return;
+   }
 
-	// Display the pager
-	printAjaxPager($LANG['title'][38],$start,$number);
+   // Display the pager
+   printAjaxPager($LANG['title'][38],$start,$number);
 
-	$query="SELECT * 
-		FROM glpi_logs 
-		WHERE items_id='".$items_id."' AND itemtype='".$itemtype."'
-		ORDER BY id DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+   $query="SELECT *
+           FROM `glpi_logs`
+           WHERE `items_id`='".$items_id."'
+                 AND `itemtype`='".$itemtype."'
+           ORDER BY `id` DESC
+           LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-	//echo $query;
+   // Get results
+   $result = $DB->query($query);
 
-	// Get results
-	$result = $DB->query($query);
+   // Output events
+   echo "<div class='center'><table class='tab_cadre_fixe'>";
+   echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][27]."</th>";
+   echo "<th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th>";
+   echo "<th>".$LANG['event'][19]."</th></tr>";
+   while ($data =$DB->fetch_array($result)) {
+      $display_history = true;
+      $ID = $data["id"];
+      $date_mod=convDateTime($data["date_mod"]);
+      $user_name = $data["user_name"];
+      $field="";
+      // This is an internal device ?
+      if ($data["linked_action"]) {
+         // Yes it is an internal device
+         switch ($data["linked_action"]) {
+            case HISTORY_DELETE_ITEM :
+               $change = $LANG['log'][22];
+               break;
 
-	// Output events
-	echo "<div class='center'><table class='tab_cadre_fixe'>";
-	//echo "<tr><th colspan='5'>".$LANG['title'][38]."</th></tr>";
-	echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][27]."</th><th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th><th>".$LANG['event'][19]."</th></tr>";
-	while ($data =$DB->fetch_array($result)){ 
-		$display_history = true;
-		$ID = $data["id"];
-		$date_mod=convDateTime($data["date_mod"]);
-		$user_name = $data["user_name"];
-		$field="";
-		// This is an internal device ?
-		if($data["linked_action"]){
-			// Yes it is an internal device
+            case HISTORY_RESTORE_ITEM :
+               $change = $LANG['log'][23];
+               break;
 
-			switch ($data["linked_action"]){
+            case HISTORY_ADD_DEVICE :
+               $field=getDictDeviceLabel($data["devicetype"]);
+               $change = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["new_value"]."\"";
+               break;
 
-				case HISTORY_DELETE_ITEM :
-					$change = $LANG['log'][22];	
-					break;
-				case HISTORY_RESTORE_ITEM :
-					$change = $LANG['log'][23];	
-					break;
+            case HISTORY_UPDATE_DEVICE :
+               $field=getDictDeviceLabel($data["devicetype"]);
+               $change = getDeviceSpecifityLabel($data["devicetype"])."&nbsp;<strong>:</strong>&nbsp;".
+                           $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
+                           $data[ "new_value"]."\"";
+               break;
 
-				case HISTORY_ADD_DEVICE :
-					$field=getDictDeviceLabel($data["devicetype"]);
-					$change = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
-					break;
+            case HISTORY_DELETE_DEVICE :
+               $field=getDictDeviceLabel($data["devicetype"]);
+               $change = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["old_value"]."\"";
+               break;
 
-				case HISTORY_UPDATE_DEVICE :
-					$field=getDictDeviceLabel($data["devicetype"]);
-					$change = getDeviceSpecifityLabel($data["devicetype"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
-					break;
+            case HISTORY_INSTALL_SOFTWARE :
+               $field=$LANG['help'][31];
+               $change = $LANG['software'][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["new_value"]."\"";
+               break;
 
-				case HISTORY_DELETE_DEVICE :
-					$field=getDictDeviceLabel($data["devicetype"]);
-					$change = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					break;
-				case HISTORY_INSTALL_SOFTWARE :
-					$field=$LANG['help'][31];
-					$change = $LANG['software'][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					break;				
-				case HISTORY_UNINSTALL_SOFTWARE :
-					$field=$LANG['help'][31];
-					$change = $LANG['software'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					break;	
-				case HISTORY_DISCONNECT_DEVICE:
-					$ci=new CommonItem();
-					$ci->setType($data["devicetype"]);
-					$field=$ci->getType();
-					$change = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					break;	
-				case HISTORY_CONNECT_DEVICE:
-					$ci=new CommonItem();
-					$ci->setType($data["devicetype"]);
-					$field=$ci->getType();
-					$change = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					break;	
-				case HISTORY_OCS_IMPORT:
-					if (haveRight("view_ocsng","r")){
-						$field="";
-						$change = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					} else {
-						$display_history = false;
-					}
-						
-					break;	
-				case HISTORY_OCS_DELETE:
-					if (haveRight("view_ocsng","r")){
-						$field="";
-						$change = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					} else {
-						$display_history = false;
-					}
+            case HISTORY_UNINSTALL_SOFTWARE :
+               $field=$LANG['help'][31];
+               $change = $LANG['software'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["old_value"]."\"";
+               break;
 
-					break;	
-				case HISTORY_OCS_LINK:
-					if (haveRight("view_ocsng","r")){
-						$ci=new CommonItem();
-						$ci->setType($data["devicetype"]);
-						$field=$ci->getType();
-						$change = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					} else {
-						$display_history = false;
-					}
+            case HISTORY_DISCONNECT_DEVICE :
+               $ci=new CommonItem();
+               $ci->setType($data["devicetype"]);
+               $field=$ci->getType();
+               $change = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["old_value"]."\"";
+               break;
 
-					break;	
-				case HISTORY_OCS_IDCHANGED:
-					if (haveRight("view_ocsng","r")){
-						$field="";
-						$change = $LANG['ocsng'][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					} else {
-						$display_history = false;
-					}
+            case HISTORY_CONNECT_DEVICE :
+               $ci=new CommonItem();
+               $ci->setType($data["devicetype"]);
+               $field=$ci->getType();
+               $change = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["new_value"]."\"";
+               break;
 
-					break;	
-					
-				case HISTORY_LOG_SIMPLE_MESSAGE:
-					$field="";
-					$change = $data["new_value"];	
-					break;			
+            case HISTORY_OCS_IMPORT :
+               if (haveRight("view_ocsng","r")) {
+                  $field="";
+                  $change = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
+                  $change.= "&nbsp;"."\"".$data["new_value"]."\"";
+               } else {
+                  $display_history = false;
+               }
+               break;
+
+            case HISTORY_OCS_DELETE :
+               if (haveRight("view_ocsng","r")) {
+                  $field="";
+                  $change = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
+                  $change.= "&nbsp;"."\"".$data["old_value"]."\"";
+               } else {
+                  $display_history = false;
+               }
+               break;
+
+            case HISTORY_OCS_LINK :
+               if (haveRight("view_ocsng","r")) {
+                  $ci=new CommonItem();
+                  $ci->setType($data["devicetype"]);
+                  $field=$ci->getType();
+                  $change = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
+                  $change.= "&nbsp;"."\"".$data["new_value"]."\"";
+               } else {
+                  $display_history = false;
+               }
+               break;
+
+            case HISTORY_OCS_IDCHANGED :
+               if (haveRight("view_ocsng","r")) {
+                  $field="";
+                  $change = $LANG['ocsng'][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                            $data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".
+                            $data["new_value"]."\"";
+               } else {
+                  $display_history = false;
+               }
+               break;
+
+            case HISTORY_LOG_SIMPLE_MESSAGE :
+               $field="";
+               $change = $data["new_value"];
+               break;
 
             case HISTORY_ADD_RELATION :
                $ci=new CommonItem();
                $ci->setType($data["devicetype"]);
                $field=$ci->getType();
-               $change =$LANG['log'][32].": ".$data["new_value"];
-               break;            
+               $change = $LANG['log'][32]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["new_value"]."\"";
+               break;
 
             case HISTORY_DEL_RELATION :
                $ci=new CommonItem();
                $ci->setType($data["devicetype"]);
                $field=$ci->getType();
-               $change =$LANG['log'][33].": ".$data["old_value"];
-               break;            
-			}
-		}else{
-			$fieldname="";
-			// It's not an internal device
-			foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
+               $change = $LANG['log'][33]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                         $data["old_value"]."\"";
+               break;
+         }
 
-				if($key2==$data["id_search_option"]){
-					$field= $val2["name"];
-					$fieldname=$val2["field"];
-				}
-			}
+      } else {
+         $fieldname="";
+         // It's not an internal device
+         foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2) {
+            if ($key2==$data["id_search_option"]) {
+               $field= $val2["name"];
+               $fieldname=$val2["field"];
+            }
+         }
+         switch ($fieldname) {
+            case "comment" :
+               $change =$LANG['log'][64];
+               break;
 
-			switch ($fieldname){
-				case "comment" :
-					$change =$LANG['log'][64];
-					break;
-				case "notepad" : 
-					$change =$LANG['log'][67];
-					break;
-				default :
-					$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
-			}
-		}// fin du else
+            case "notepad" :
+               $change =$LANG['log'][67];
+               break;
 
-		if ($display_history)
-		{
-			// show line 
-			echo "<tr class='tab_bg_2'>";
-	
-			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='60%'>$change</td>"; 
-			echo "</tr>";
-		}
-	}
+            default :
+               $change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
+                         $data[ "new_value"]."\"";
+         }
+      }// fin du else
 
-	echo "</table></div>";
-
+      if ($display_history) {
+         // show line
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td>";
+         echo "<td width='60%'>$change</td></tr>";
+      }
+   }
+   echo "</table></div>";
 }
-
-
 
 /**
  * Log an event.
@@ -367,203 +380,203 @@ function showHistory($itemtype,$items_id){
  * Log the event $event on the glpi_event table with all the others args, if
  * $level is above or equal to setting from configuration.
  *
- * @param $items_id 
+ * @param $items_id
  * @param $type
  * @param $level
  * @param $service
  * @param $event
  **/
 function logEvent ($items_id, $type, $level, $service, $event) {
-	// Logs the event if level is above or equal to setting from configuration
-	
-	global $DB,$CFG_GLPI, $LANG;
-	if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) { 
-		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($items_id)."', '".addslashes($type)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
-		$result = $DB->query($query);    
+   global $DB,$CFG_GLPI, $LANG;
 
-	}
+   // Logs the event if level is above or equal to setting from configuration
+   if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) {
+      $query = "INSERT INTO
+                `glpi_events`
+                VALUES (NULL, '".addslashes($items_id)."', '".addslashes($type)."', '".
+                        $_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".
+                        addslashes($level)."', '".addslashes($event)."')";
+      $result = $DB->query($query);
+   }
 }
 
 /**
  * Return arrays for function showEvent et lastEvent
  *
  **/
-function logArray(){
+function logArray() {
+   global $LANG;
 
-	global $LANG;
+   $logItemtype=array("system"=>$LANG['log'][1],
+                      "computers"=>$LANG['log'][2],
+                      "monitors"=>$LANG['log'][3],
+                      "printers"=>$LANG['log'][4],
+                      "software"=>$LANG['log'][5],
+                      "networking"=>$LANG['log'][6],
+                      "cartridges"=>$LANG['log'][7],
+                      "peripherals"=>$LANG['log'][8],
+                      "consumables"=>$LANG['log'][9],
+                      "tracking"=>$LANG['log'][10],
+                      "ticket"=>$LANG['log'][10], ///TODO prepare update name : delete when tracking -> ticket
+                      "contacts"=>$LANG['log'][11],
+                      "enterprises"=>$LANG['log'][12],
+                      "documents"=>$LANG['log'][13],
+                      "knowbase"=>$LANG['log'][14],
+                      "users"=>$LANG['log'][15],
+                      "infocom"=>$LANG['log'][19],
+                      "devices"=>$LANG['log'][18],
+                      "links"=>$LANG['log'][38],
+                      "typedocs"=>$LANG['log'][39],
+                      "planning"=>$LANG['log'][16],
+                      "reservation"=>$LANG['log'][42],
+                      "contracts"=>$LANG['log'][17],
+                      "phones"=>$LANG['log'][43],
+                      "dropdown"=>$LANG['log'][44],
+                      "groups"=>$LANG['log'][47],
+                      "entity"=>$LANG['log'][63],
+                      "rules"=>$LANG['log'][65],
+                      "reminder"=>$LANG['log'][81],
+                      "transfers"=>$LANG['transfer'][1]);
 
-	$logItemtype=array("system"=>$LANG['log'][1],
-			"computers"=>$LANG['log'][2],
-			"monitors"=>$LANG['log'][3],
-			"printers"=>$LANG['log'][4],
-			"software"=>$LANG['log'][5],
-			"networking"=>$LANG['log'][6],
-			"cartridges"=>$LANG['log'][7],
-			"peripherals"=>$LANG['log'][8],
-			"consumables"=>$LANG['log'][9],
-			"tracking"=>$LANG['log'][10],
-			"ticket"=>$LANG['log'][10], ///TODO prepare update name : delete when tracking -> ticket
-			"contacts"=>$LANG['log'][11],
-			"enterprises"=>$LANG['log'][12],
-			"documents"=>$LANG['log'][13],
-			"knowbase"=>$LANG['log'][14],
-			"users"=>$LANG['log'][15],
-			"infocom"=>$LANG['log'][19],
-			"devices"=>$LANG['log'][18],
-			"links"=>$LANG['log'][38],
-			"typedocs"=>$LANG['log'][39],
-			"planning"=>$LANG['log'][16],
-			"reservation"=>$LANG['log'][42],
-			"contracts"=>$LANG['log'][17],
-			"phones"=>$LANG['log'][43],
-			"dropdown"=>$LANG['log'][44],
-			"groups"=>$LANG['log'][47],
-			"entity"=>$LANG['log'][63],
-			"rules"=>$LANG['log'][65],
-			"reminder"=>$LANG['log'][81],
-			"transfers"=>$LANG['transfer'][1]);
+   $logService=array("inventory"=>$LANG['Menu'][38],
+                     "tracking"=>$LANG['Menu'][5],
+                     "planning"=>$LANG['Menu'][29],
+                     "tools"=>$LANG['Menu'][18],
+                     "financial"=>$LANG['Menu'][26],
+                     "login"=>$LANG['log'][55],
+                     "setup"=>$LANG['common'][12],
+                     "security"=>$LANG['log'][66],
+                     "reservation"=>$LANG['log'][58],
+                     "cron"=>$LANG['log'][59],
+                     "document"=>$LANG['Menu'][27],
+                     "plugin"=>$LANG['common'][29]);
 
-
-	$logService=array("inventory"=>$LANG['Menu'][38],
-			"tracking"=>$LANG['Menu'][5],
-			"planning"=>$LANG['Menu'][29],
-			"tools"=>$LANG['Menu'][18],
-			"financial"=>$LANG['Menu'][26],
-			"login"=>$LANG['log'][55],
-			"setup"=>$LANG['common'][12],
-			"security"=>$LANG['log'][66],
-			"reservation"=>$LANG['log'][58],
-			"cron"=>$LANG['log'][59],
-			"document"=>$LANG['Menu'][27],
-			"plugin"=>$LANG['common'][29]);
-
-	return array($logItemtype,$logService);
-
+   return array($logItemtype,$logService);
 }
 
-function displayItemLogID($type,$items_id){
-	global $CFG_GLPI;
+function displayItemLogID($type,$items_id) {
+   global $CFG_GLPI;
 
-	if ($items_id=="-1" || $items_id=="0") {
-		echo "&nbsp;";//$item;
-	} else {
-		if ($type=="infocom"){
-			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
-		} else {
-			if ($items_id=="-1" || $items_id=="0") {
-				echo "&nbsp;";//$item;
-			} else {
-				switch ($type){
-					case "rules" :
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?id=".$items_id."\">".$items_id."</a>";
-						break;
-					case "infocom" :
-						echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$items_id</a>";					
-						break;
-					case "devices":
-						echo $items_id;
-						break;
-					case "reservation":
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".$items_id."\">$items_id</a>";
-						break;
-					default :
-					if ($type[strlen($type)-1]=='s'){
-						$show=substr($type,0,strlen($type)-1);
-					}else $show=$type;
-						
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=";
-					echo $items_id;
-					echo "\">$items_id</a>";
-					break;
-				}
-			}			
-		}
-	}			
+   if ($items_id=="-1" || $items_id=="0") {
+      echo "&nbsp;";//$item;
+   } else {
+      if ($type=="infocom") {
+         echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
+               "/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=".
+               "1000,height=400,scrollbars=no')\">$items_id</a>";
+      } else {
+         if ($items_id=="-1" || $items_id=="0") {
+            echo "&nbsp;";//$item;
+         } else {
+            switch ($type) {
+               case "rules" :
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?id=".
+                        $items_id."\">".$items_id."</a>";
+                  break;
+
+               case "infocom" :
+                  echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
+                        "/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=".
+                        "1000,height=400,scrollbars=no')\">$items_id</a>";
+                  break;
+
+               case "devices" :
+                  echo $items_id;
+                  break;
+
+               case "reservation" :
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".
+                        $items_id."\">$items_id</a>";
+                  break;
+
+               default :
+                  if ($type[strlen($type)-1]=='s') {
+                     $show=substr($type,0,strlen($type)-1);
+                  } else {
+                     $show=$type;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=".$items_id;
+                  echo "\">$items_id</a>";
+                  break;
+            }
+         }
+      }
+   }
 }
-
 
 /**
  * Print a nice tab for last event from inventory section
  *
  * Print a great tab to present lasts events occured on glpi
  *
- *
  * @param $target where to go when complete
- * @param $order order by clause occurences (eg: ) 
- * @param $sort order by clause occurences (eg: date) 
+ * @param $order order by clause occurences (eg: )
+ * @param $sort order by clause occurences (eg: date)
  * @param $user
  **/
 function showAddEvents($target,$user="") {
-	// Show events from $result in table form
+   global $DB,$CFG_GLPI, $LANG;
 
-	global $DB,$CFG_GLPI, $LANG;
+   // Show events from $result in table form
+   list($logItemtype,$logService)=logArray();
 
-	list($logItemtype,$logService)=logArray();
+   // define default sorting
+   $usersearch="%";
+   if (!empty($user)) {
+      $usersearch=$user." ";
+   }
 
-	// define default sorting
+   // Query Database
+   $query = "SELECT *
+             FROM `glpi_events`
+             WHERE `message` LIKE '".$usersearch.addslashes($LANG['log'][20])."%'
+             ORDER BY `date` DESC
+             LIMIT 0,".intval($_SESSION['glpilist_limit']);
 
-	$usersearch="%";
-	if (!empty($user))
-		$usersearch=$user." ";
+   // Get results
+   $result = $DB->query($query);
 
-	// Query Database
-	$query = "SELECT * 
-		FROM glpi_events 
-		WHERE message LIKE '".$usersearch.addslashes($LANG['log'][20])."%' 
-		ORDER BY date DESC LIMIT 0,".intval($_SESSION['glpilist_limit']);
+   // Number of results
+   $number = $DB->numrows($result);
 
-	// Get results
-	$result = $DB->query($query);
+   // No Events in database
+   if ($number < 1) {
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr><th>".$LANG['central'][4]."</th></tr>";
+      echo "</table><br>";
+      return;
+   }
 
+   // Output events
+   $i = 0;
 
-	// Number of results
-	$number = $DB->numrows($result);
+   echo "<br><table class='tab_cadrehov'>";
+   echo "<tr><th colspan='5'>";
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG['central'][2]." ".
+          $_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a></th></tr>";
 
-	// No Events in database
-	if ($number < 1) {
-		echo "<br>";
-		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th>".$LANG['central'][4]."</th></tr>";
-		echo "</table>";
-		echo "<br>";
-		return;
-	}
+   echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
+   echo "<th>".$LANG['common'][27]."</th>";
+   echo "<th width='8%'>".$LANG['event'][2]."</th>";
+   echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
 
-	// Output events
-	$i = 0;
+   while ($i < $number) {
+      $ID = $DB->result($result, $i, "id");
+      $items_id = $DB->result($result, $i, "items_id");
+      $type = $DB->result($result, $i, "type");
+      $date = $DB->result($result, $i, "date");
+      $service = $DB->result($result, $i, "service");
+      $message = $DB->result($result, $i, "message");
 
-	echo "<br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG['central'][2]." ".$_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a></th></tr>";
-	echo "<tr>";
+      echo "<tr class='tab_bg_2'><td>".$logItemtype[$type].":</td>";
+      echo "<td class='center'>";
+      displayItemLogID($type,$items_id);
+      echo "</td><td class='center'>".convDateTime($date)."</td>";
+      echo "<td class='center'>".$logService[$service]."</td><td>$message</td></tr>";
 
-	echo "<th colspan='2'>".$LANG['event'][0]."</th>";
-
-	echo "<th>".$LANG['common'][27]."</th>";
-
-	echo "<th width='8%'>".$LANG['event'][2]."</th>";
-
-	echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
-
-	while ($i < $number) {
-		$ID = $DB->result($result, $i, "id");
-		$items_id = $DB->result($result, $i, "items_id");
-		$type = $DB->result($result, $i, "type");
-		$date = $DB->result($result, $i, "date");
-		$service = $DB->result($result, $i, "service");
-		//$level = $DB->result($result, $i, "level");
-		$message = $DB->result($result, $i, "message");
-
-		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$logItemtype[$type].":</td><td class='center'>";
-
-		displayItemLogID($type,$items_id);
-		echo "</td><td  class='center'>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td>$message</td>";
-		echo "</tr>";
-
-		$i++; 
-	}
-
-	echo "</table><br>";
+      $i++;
+   }
+   echo "</table><br>";
 }
 
 /**
@@ -571,93 +584,97 @@ function showAddEvents($target,$user="") {
  *
  * Print a great tab to present lasts events occured on glpi
  *
- *
  * @param $target where to go when complete
- * @param $order order by clause occurences (eg: ) 
- * @param $sort order by clause occurences (eg: date) 
+ * @param $order order by clause occurences (eg: )
+ * @param $sort order by clause occurences (eg: date)
  * @param $start
  **/
 function showEvents($target,$order,$sort,$start=0) {
-	// Show events from $result in table form
+   global $DB,$CFG_GLPI,$LANG;
 
-	global $DB,$CFG_GLPI, $LANG;
+   // Show events from $result in table form
+   list($logItemtype,$logService)=logArray();
 
-	list($logItemtype,$logService)=logArray();
+   // Columns of the Table
+   $items = array("items_id" => array($LANG['event'][0],
+                                      "colspan='2'"),
+                  "date"     => array($LANG['common'][27], ""),
+                  "service"  => array($LANG['event'][2],
+                                      "width='8%'"),
+                  "level"    => array($LANG['event'][3],
+                                      "width='8%'"),
+                  "message"  => array($LANG['event'][4],
+                                      "width='50%'"));
 
-	// Columns of the Table
-	$items = array(
-		"items_id"		=> array($LANG['event'][0], "colspan='2'"),
-		"date"		=> array($LANG['common'][27], ""),
-		"service"	=> array($LANG['event'][2], "width='8%'"),
-		"level"		=> array($LANG['event'][3], "width='8%'"),
-		"message"	=> array($LANG['event'][4], "width='50%'")
-		);
+   // define default sorting
+   if (!isset($items[$sort])) {
+      $sort = "`date`";
+   }
+   if ($order!="ASC") {
+      $order = "DESC";
+   }
 
-	// define default sorting
-	if (!isset($items[$sort])) {
-		$sort = "date";
-	}
-	if ($order!="ASC"){
-		$order = "DESC";
-	}
+   // Query Database
+   $query_limit = "SELECT *
+                   FROM `glpi_events`
+                   ORDER BY $sort $order
+                   LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
 
-	// Query Database
-	$query_limit = "SELECT * FROM glpi_events ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+   // Number of results
+   $numrows = countElementsInTable("glpi_events");
+   // Get results
+   $result = $DB->query($query_limit);
+   $number = $DB->numrows($result);
 
-	// Number of results
-	$numrows = countElementsInTable("glpi_events");
-	// Get results
-	$result = $DB->query($query_limit);
-	$number = $DB->numrows($result);
+   // No Events in database
+   if ($number < 1) {
+      echo "<div class='center'><strong>".$LANG['central'][4]."</strong></div>";
+      return;
+   }
 
-	// No Events in database
-	if ($number < 1) {
-		echo "<div class='center'><strong>".$LANG['central'][4]."</strong></div>";
-		return;
-	}
+   // Output events
+   $i = 0;
 
-	// Output events
-	$i = 0;
+   echo "<div class='center'>";
+   $parameters="sort=$sort&amp;order=$order";
+   printPager($start,$numrows,$target,$parameters);
 
-	echo "<div class='center'>";
-	$parameters="sort=$sort&amp;order=$order";
-	printPager($start,$numrows,$target,$parameters);
+   echo "<table class='tab_cadre_fixe'>";
+   echo "<tr>";
+   foreach ($items as $field => $args) {
+      echo "<th ".$args[1].">";
+      if ($sort==$field) {
+         if ($order=="DESC") {
+            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+         } else {
+            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+         }
+      }
+      echo "<a href='$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."'>".$args[0].
+            "</a></th>";
+   }
+   echo "</tr>";
 
-	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr>";
-	foreach ($items as $field => $args) {
-		echo "<th ".$args[1].">";
-		
-		if ($sort==$field) {
-			if ($order=="DESC") {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-			} else {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-			}
-		}
-		echo "<a href='$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."'>".$args[0]."</a></th>";		
-	}
-	echo "</tr>";
+   while ($i < $number) {
+      $ID = $DB->result($result, $i, "id");
+      $items_id = $DB->result($result, $i, "items_id");
+      $type = $DB->result($result, $i, "type");
+      $date = $DB->result($result, $i, "date");
+      $service = $DB->result($result, $i, "service");
+      $level = $DB->result($result, $i, "level");
+      $message = $DB->result($result, $i, "message");
 
-	while ($i < $number) {
-		$ID = $DB->result($result, $i, "id");
-		$items_id = $DB->result($result, $i, "items_id");
-		$type = $DB->result($result, $i, "type");
-		$date = $DB->result($result, $i, "date");
-		$service = $DB->result($result, $i, "service");
-		$level = $DB->result($result, $i, "level");
-		$message = $DB->result($result, $i, "message");
-		
-		echo "<tr class='tab_bg_2'>";
-		echo "<td>".(isset($logItemtype[$type])?$logItemtype[$type]:"&nbsp;").":</td><td class='center'><strong>";
-		displayItemLogID($type,$items_id);
-		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td><td class='center'>$level</td><td>$message</td>";
-		echo "</tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".(isset($logItemtype[$type])?$logItemtype[$type]:"&nbsp;").":</td>";
+      echo "<td class='center'><strong>";
+      displayItemLogID($type,$items_id);
+      echo "</strong></td><td>".convDateTime($date)."</td>";
+      echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td>";
+      echo "<td class='center'>$level</td><td>$message</td></tr>";
 
-		$i++; 
-	}
-
-	echo "</table></div><br>";
+      $i++;
+   }
+   echo "</table></div><br>";
 }
 
 ?>
