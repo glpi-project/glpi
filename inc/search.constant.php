@@ -3216,6 +3216,11 @@ $SEARCH_OPTION[LINK_TYPE][3]['field']='link';
 $SEARCH_OPTION[LINK_TYPE][3]['linkfield']='link';
 $SEARCH_OPTION[LINK_TYPE][3]['name']=$LANG['links'][1];
 
+$SEARCH_OPTION[LINK_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[LINK_TYPE][80]['field']='completename';
+$SEARCH_OPTION[LINK_TYPE][80]['linkfield']='entities_id';
+$SEARCH_OPTION[LINK_TYPE][80]['name']=$LANG['entity'][0];
+
 
 //////PHONE_TYPE
 
