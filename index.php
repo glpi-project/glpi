@@ -41,9 +41,7 @@ if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 	include (GLPI_ROOT . "/inc/common.function.php");
 	glpi_header("install/install.php");
 	die();
-}
-else
-{
+} else {
 	include (GLPI_ROOT . "/inc/includes.php");
 	$_SESSION["glpitest"]='testcookie';
 
@@ -90,7 +88,7 @@ else
 	}
 
 	// redirect to ticket 
-	if (isset($_GET["redirect"])){
+	if (isset($_GET["redirect"])) {
 		manageRedirect($_GET["redirect"]);
 		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 	}
@@ -116,8 +114,8 @@ else
 	echo "<noscript><p>";
 	echo $LANG['login'][26];
 	echo "</p></noscript>";
-	if (isset($_GET['error'])){
-		switch ($_GET['error']){
+	if (isset($_GET['error'])) {
+		switch ($_GET['error']) {
 			case 1 : // cookie error
 				echo $LANG['login'][27];
 				break;
@@ -130,13 +128,13 @@ else
 
 
 	// Display FAQ is enable
-	if ($CFG_GLPI["use_public_faq"]){
+	if ($CFG_GLPI["use_public_faq"]) {
 		echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a></div>';
 	}
 	
 	echo "</div>"; // end contenu login
 
-	if (GLPI_DEMO_MODE){
+	if (GLPI_DEMO_MODE) {
 		echo "<div class='center'>";
 		getCountLogin();
 		echo "</div>";
@@ -150,7 +148,7 @@ else
 
 }
 // call cron
-if (! GLPI_DEMO_MODE){
+if (! GLPI_DEMO_MODE) {
 	callCronForce();
 }
 
