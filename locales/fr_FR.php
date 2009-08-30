@@ -362,6 +362,9 @@ $LANG['crontask'][40]="Dernière exécution";
 $LANG['crontask'][41]="Prochaine exécution";
 $LANG['crontask'][42]="Dès que possible";
 $LANG['crontask'][43]="Aucune tâche en attente";
+$LANG['crontask'][44]="Tâche terminée, traitement partiel";
+$LANG['crontask'][45]="Tâche terminée, traitement complet";
+$LANG['crontask'][46]="Tâche terminée, rien à faire";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";

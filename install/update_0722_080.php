@@ -2074,7 +2074,7 @@ function update0722to080() {
          (4, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (5, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (6, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (7, NULL, 'events', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (7, NULL, 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (8, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (9, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (10, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
@@ -2094,8 +2094,8 @@ function update0722to080() {
    if (!TableExists('glpi_crontaskslogs')){
       $query = "CREATE TABLE `glpi_crontaskslogs` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `crontask_id` int(11) NOT NULL,
-        `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+        `crontasks_id` int(11) NOT NULL,
+        `crontaskslogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
         `date` int(11) NOT NULL,
         `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
         `elapsed` double NOT NULL COMMENT 'time elapsed since start',
@@ -2107,6 +2107,22 @@ function update0722to080() {
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
       $DB->query($query) or die("0.72 create glpi_crontaskslogs" . $LANG['update'][90] . $DB->error());
    }
+   // Retrieve core task lastrun date
+   $tasks=array('ocsng','cartridge','consumable','software','contract','infocom',
+               'logs','optimize','mailgate','dbreplicate','check_update','session');
+   foreach ($tasks as $task) {
+      $lock=GLPI_CRON_DIR. '/' . $task . '.lock';
+      if (is_readable($lock) && $stat=stat($lock)) {
+         $DB->query("UPDATE `glpi_crontasks` SET `lastrun`='".date('Y-m-d H:i:s',$stat['mtime'])."'
+                     WHERE `name`='$task'");
+         unlink($lock);
+      }
+   }
+   // Clean plugin lock
+   foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+      unlink($lock);
+   }
+
    // TODO migration of config option to task option
    // TODO clean not used config option
 

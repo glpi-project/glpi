@@ -38,6 +38,10 @@ if (!defined('GLPI_ROOT')) {
  */
 class CronTask extends CommonDBTM{
 
+   private $timer=0.0;
+   private $startlog=0;
+   private $volume=0;
+
    /**
     * Constructor
    **/
@@ -56,6 +60,130 @@ class CronTask extends CommonDBTM{
       return $ong;
    }
 
+   /**
+    * Start a task, timer, stat, log, ...
+    *
+    * @return bool : true if ok (not start by another)
+    */
+   function start() {
+      global $DB;
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      $query = "UPDATE `".$this->table."`
+                SET `state`='".CRONTASK_STATE_RUNNING."', `lastrun`=NOW()
+                WHERE `id`='".$this->fields['id']."'
+                  AND `state`='".CRONTASK_STATE_WAITING."'";
+      $result = $DB->query($query);
+      if ($DB->affected_rows($result)>0) {
+         $this->timer = microtime(true);
+         $log = new CronTaskLog();
+         $this->startlog = $log->add(array(
+            'crontasks_id' => $this->fields['id'],
+            'date' => $_SESSION['glpi_currenttime'],
+            'content' => $this->getModeName(isCommandLine() ? CRONTASK_MODE_EXTERNAL
+                                                            : CRONTASK_MODE_INTERNAL),
+            'crontaskslogs_id' => 0,
+            'state' => CRONTASKLOG_STATE_START,
+            'volume' => 0,
+            'elapsed' => 0
+            ));
+         return true;
+      }
+      logInFile('php-errors',"SQL=$query\nError=".$DB->error()."\n");
+      return false;
+   }
+
+   /**
+    * Set the currently proccessed volume of a running task
+    *
+    * @param $volume
+    */
+   function setVolume ($volume) {
+      $this->volume = $volume;
+   }
+
+   /**
+    * Increase the currently proccessed volume of a running task
+    *
+    * @param $volume
+    */
+   function addVolume ($volume) {
+      $this->volume += $volume;
+   }
+
+   /**
+    * Start a task, timer, stat, log, ...
+    *
+    * @param $retcode : <0 : need to run again, 0:nothing to do, >0:ok
+    *
+    * @return bool : true if ok (not start by another)
+    */
+   function end($retcode) {
+      global $LANG, $DB;
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      $query = "UPDATE `".$this->table."`
+                SET `state`='".CRONTASK_STATE_WAITING."',
+                    `lastrun`=NOW()
+                WHERE `id`='".$this->fields['id']."'
+                  AND `state`='".CRONTASK_STATE_RUNNING."'";
+      $result = $DB->query($query);
+      if ($DB->affected_rows($result)>0) {
+         if ($retcode < 0) {
+            $content = $LANG['crontask'][44]; // Partial
+         } else if ($retcode > 0) {
+            $content = $LANG['crontask'][45]; // Complete
+         } else {
+            $content = $LANG['crontask'][46]; // Nothing to do
+         }
+         $log = new CronTaskLog();
+         $log->add(array(
+            'crontasks_id' => $this->fields['id'],
+            'date' => $_SESSION['glpi_currenttime'],
+            'content' => $content,
+            'crontaskslogs_id' => $this->startlog,
+            'state' => CRONTASKLOG_STATE_STOP,
+            'volume' => $this->volume,
+            'elapsed' => (microtime(true)-$this->timer)
+            ));
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Add a log message for a running task
+    *
+    * @param $content
+    *
+    */
+   function log($content) {
+      global $LANG;
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      $log = new CronTaskLog();
+      return $log->add(array(
+            'crontasks_id' => $this->fields['id'],
+            'date' => $_SESSION['glpi_currenttime'],
+            'content' => $content,
+            'crontaskslogs_id' => $this->startlog,
+            'state' => CRONTASKLOG_STATE_RUN,
+            'volume' => $this->volume,
+            'elapsed' => (microtime(true)-$this->timer)
+            ));
+   }
+
+   /**
+    * read the first task which need to be run by cron
+    *
+    * @return false if no task to run
+    */
    function getNeedToRun($mode=0) {
       global $DB;
 
@@ -168,13 +296,27 @@ class CronTask extends CommonDBTM{
          dropdownInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
-      if ($this->fields["state"]==CRONTASK_STATE_DISABLE) {
-         echo $this->getStateName(CRONTASK_STATE_DISABLE);
+      if ($this->fields["state"]!=CRONTASK_STATE_WAITING) {
+         echo $this->getStateName($this->fields["state"]);
       } else if (empty($this->fields['lastrun'])) {
          echo $LANG['crontask'][42];
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
-         $disp = date("Y-m-d H:i:s", $next);
+         $h=date('H',$next);
+         $deb=($this->fields['hourmin'] < 10 ? "0".$this->fields['hourmin'] : $this->fields['hourmin']);
+         $fin=($this->fields['hourmax'] < 10 ? "0".$this->fields['hourmax'] : $this->fields['hourmax']);
+         if ($deb<$fin && $h<$deb) {
+            $disp = date('Y-m-d', $next). " $deb:00:00";
+            $next = strtotime($disp);
+         } else if ($deb<$fin && $h>=$this->fields['hourmax']) {
+            $disp = date('Y-m-d', $next+DAY_TIMESTAMP). " $deb:00:00";
+            $next = strtotime($disp);
+         } if ($deb>$fin && $h<$deb && $h>=$fin) {
+            $disp = date('Y-m-d', $next). " $deb:00:00";
+            $next = strtotime($disp);
+         } else {
+            $disp = date("Y-m-d H:i:s", $next);
+         }
          if ($next<time()) {
             echo $LANG['crontask'][42].' ('.convDateTime($disp).')';
          } else {
@@ -288,4 +430,17 @@ class CronTask extends CommonDBTM{
    }
 }
 
+/**
+ * CronTaskLog class
+ */
+class CronTaskLog extends CommonDBTM{
+
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_crontaskslogs";
+      $this->type=CRONTASKLOG_TYPE;
+   }
+}
 ?>

@@ -702,7 +702,7 @@ INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `sta
    (4, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
    (5, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
    (6, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-   (7, NULL, 'events', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+   (7, NULL, 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
    (8, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
    (9, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
    (10, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
@@ -714,8 +714,8 @@ INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `sta
 DROP TABLE IF EXISTS `glpi_crontaskslogs`;
 CREATE TABLE `glpi_crontaskslogs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `crontask_id` int(11) NOT NULL,
-  `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+  `crontasks_id` int(11) NOT NULL,
+  `crontaskslogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
   `date` int(11) NOT NULL,
   `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
   `elapsed` double NOT NULL COMMENT 'time elapsed since start',
