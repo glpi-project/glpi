@@ -709,8 +709,10 @@ function showContractAssociatedEnterprise($ID) {
 /**
  * Cron action on contracts : alert depending of the config : on notice and expire
  *
+ * @param $task for log, if NULL display
+ *
  **/
-function cron_contract($display=false) {
+function cron_contract($task=NULL) {
    global $DB,$CFG_GLPI,$LANG;
 
    if (!$CFG_GLPI["use_mailing"]) {
@@ -789,10 +791,12 @@ function cron_contract($display=false) {
       foreach ($message as $entity => $msg) {
          $mail=new MailingAlert("alertcontract",$msg,$entity);
          if ($mail->send()) {
-            if ($display) {
+            if ($task) {
+               $task->log(getDropdownName("glpi_entities",$entity).":  $msg\n");
+               $task->addVolume(1);
+            } else {
                addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
             }
-            logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 
             // Mark alert as done
             $alert=new Alert();
@@ -814,11 +818,12 @@ function cron_contract($display=false) {
                }
             }
          } else {
-            if ($display) {
+            if ($task) {
+               $task->log(getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
+            } else {
                addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
                                        ":  Send contract alert failed",false,ERROR);
             }
-            logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
          }
       }
       return 1;

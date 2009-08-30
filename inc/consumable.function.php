@@ -77,7 +77,7 @@ function showConsumableAdd($ID) {
  * Print out all the consumables that are issued from the consumable item identified by $ID
  *
  *@param $tID integer : Consumable item identifier.
- *@param $show_old boolean : show old consumables or not. 
+ *@param $show_old boolean : show old consumables or not.
  *
  *@return Nothing (displays)
  **/
@@ -92,12 +92,12 @@ function showConsumables ($tID,$show_old=0) {
    $cartype=new ConsumableType();
 
    if ($cartype->getFromDB($tID)) {
-      $query = "SELECT count(*) AS COUNT 
-                FROM `glpi_consumables` 
+      $query = "SELECT count(*) AS COUNT
+                FROM `glpi_consumables`
                 WHERE (`consumablesitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
-         if ($DB->result($result,0,0)!=0) { 
+         if ($DB->result($result,0,0)!=0) {
             if (!$show_old&&$canedit) {
                echo "<form method='post' action='".
                       $CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
@@ -146,20 +146,20 @@ function showConsumables ($tID,$show_old=0) {
       $leftjoin="";
       $addselect="";
       if (!$show_old) { // NEW
-         $where= " AND `date_out` IS NULL 
+         $where= " AND `date_out` IS NULL
                   ORDER BY `date_in`, `id`";
       } else { //OLD
-         $where= " AND `date_out` IS NOT NULL 
-                  ORDER BY `date_out` DESC, 
-                           `date_in`, 
+         $where= " AND `date_out` IS NOT NULL
+                  ORDER BY `date_out` DESC,
+                           `date_in`,
                            `id`";
          $leftjoin=" LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_consumables`.`users_id`) ";
-         $addselect= ", `glpi_users`.`realname` AS REALNAME, 
-                        `glpi_users`.`firstname` AS FIRSTNAME, 
+         $addselect= ", `glpi_users`.`realname` AS REALNAME,
+                        `glpi_users`.`firstname` AS FIRSTNAME,
                         `glpi_users`.`name` AS USERNAME ";
       }
-      $query = "SELECT `glpi_consumables`.* $addselect 
-                FROM `glpi_consumables` $leftjoin 
+      $query = "SELECT `glpi_consumables`.* $addselect
+                FROM `glpi_consumables` $leftjoin
                 WHERE (`consumablesitems_id` = '$tID') $where";
 
       if ($result = $DB->query($query)) {
@@ -169,13 +169,13 @@ function showConsumables ($tID,$show_old=0) {
             $date_out=convDate($data["date_out"]);
 
             echo "<tr class='tab_bg_1'><td class='center'>";
-            echo $data["id"]; 
+            echo $data["id"];
             echo "</td><td class='center'>";
             echo getConsumableStatus($data["id"]);
             echo "</td><td class='center'>";
             echo $date_in;
             echo "</td><td class='center'>";
-            echo $date_out;		
+            echo $date_out;
             echo "</td>";
 
             if ($show_old) {
@@ -278,8 +278,8 @@ function countConsumables($tID,$alarm_threshold,$nohtml=0) {
 function getConsumablesNumber($tID) {
    global $DB;
 
-   $query = "SELECT `id` 
-             FROM `glpi_consumables` 
+   $query = "SELECT `id`
+             FROM `glpi_consumables`
              WHERE `consumablesitems_id` = '$tID'";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -298,9 +298,9 @@ function getConsumablesNumber($tID) {
 function getOldConsumablesNumber($tID) {
    global $DB;
 
-   $query = "SELECT `id` 
-             FROM `glpi_consumables` 
-             WHERE (`consumablesitems_id` = '$tID' 
+   $query = "SELECT `id`
+             FROM `glpi_consumables`
+             WHERE (`consumablesitems_id` = '$tID'
                     AND `date_out` IS NOT NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -319,9 +319,9 @@ function getOldConsumablesNumber($tID) {
 function getUnusedConsumablesNumber($tID) {
    global $DB;
 
-   $query = "SELECT `id` 
-             FROM `glpi_consumables` 
-             WHERE (`consumablesitems_id` = '$tID' 
+   $query = "SELECT `id`
+             FROM `glpi_consumables`
+             WHERE (`consumablesitems_id` = '$tID'
                     AND `date_out` IS NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -330,19 +330,19 @@ function getUnusedConsumablesNumber($tID) {
 /**
  * To be commented
  *
- * 
+ *
  *
  *@param $cID integer : consumable ID.
  *
- *@return 
+ *@return
  *
  **/
 function isNewConsumable($cID) {
    global $DB;
 
-   $query = "SELECT `id` 
-             FROM `glpi_consumables` 
-             WHERE (`id` = '$cID' 
+   $query = "SELECT `id`
+             FROM `glpi_consumables`
+             WHERE (`id` = '$cID'
                     AND `date_out` IS NULL)";
    $result = $DB->query($query);
    return ($DB->numrows($result)==1);
@@ -351,19 +351,19 @@ function isNewConsumable($cID) {
 /**
  * To be commented
  *
- * 
+ *
  *
  *@param $cID integer : consumable ID.
  *
- *@return 
+ *@return
  *
  **/
 function isOldConsumable($cID) {
    global $DB;
 
-   $query = "SELECT `id` 
-             FROM `glpi_consumables` 
-             WHERE (`id` = '$cID' 
+   $query = "SELECT `id`
+             FROM `glpi_consumables`
+             WHERE (`id` = '$cID'
                     AND `date_out` IS NOT NULL)";
    $result = $DB->query($query);
    return ($DB->numrows($result)==1);
@@ -372,7 +372,7 @@ function isOldConsumable($cID) {
 /**
  * Get the dict value for the status of a consumable
  *
- * 
+ *
  *
  *@param $cID integer : consumable ID.
  *
@@ -400,13 +400,13 @@ function showConsumableSummary(){
       return false;
    }
 
-   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id`, `users_id` 
-             FROM `glpi_consumables` 
-             WHERE `date_out` IS NOT NULL 
-                   AND `consumablesitems_id` IN (SELECT `id` 
-                                                 FROM `glpi_consumablesitems` 
+   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id`, `users_id`
+             FROM `glpi_consumables`
+             WHERE `date_out` IS NOT NULL
+                   AND `consumablesitems_id` IN (SELECT `id`
+                                                 FROM `glpi_consumablesitems`
                                                  ".getEntitiesRestrictRequest(
-                                                 "WHERE","glpi_consumablesitems").") 
+                                                 "WHERE","glpi_consumablesitems").")
              GROUP BY `users_id`, `consumablesitems_id`";
    $used=array();
 
@@ -417,13 +417,13 @@ function showConsumableSummary(){
          }
       }
    }
-   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id` 
-             FROM `glpi_consumables` 
-             WHERE `date_out` IS NULL 
-                   AND `consumablesitems_id` IN (SELECT `id` 
-                                                 FROM `glpi_consumablesitems` 
+   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id`
+             FROM `glpi_consumables`
+             WHERE `date_out` IS NULL
+                   AND `consumablesitems_id` IN (SELECT `id`
+                                                 FROM `glpi_consumablesitems`
                                                  ".getEntitiesRestrictRequest(
-                                                 "WHERE","`glpi_consumablesitems`").") 
+                                                 "WHERE","`glpi_consumablesitems`").")
              GROUP BY `consumablesitems_id`";
    $new=array();
 
@@ -436,8 +436,8 @@ function showConsumableSummary(){
    }
 
    $types=array();
-   $query="SELECT * 
-           FROM `glpi_consumablesitems` 
+   $query="SELECT *
+           FROM `glpi_consumablesitems`
            ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
@@ -507,10 +507,12 @@ function showConsumableSummary(){
 
 /**
  * Cron action on consumables : alert if a stock is behind the threshold
- * @param $display display informations instead or log in file ?
+ *
+ * @param $task to log, if NULL display
+ *
  * @return 0 : nothing to do 1 : done with success
  **/
-function cron_consumable($display=false) {
+function cron_consumable($task=NULL) {
    global $DB,$CFG_GLPI,$LANG;
 
    if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["consumables_alert_repeat"]) {
@@ -519,18 +521,18 @@ function cron_consumable($display=false) {
    loadLanguage($CFG_GLPI["language"]);
 
    // Get cartridges type with alarm activated and last warning > config
-   $query="SELECT `glpi_consumablesitems`.`id` AS consID, 
-                  `glpi_consumablesitems`.`entities_id` as entity, 
-                  `glpi_consumablesitems`.`ref` as consref, 
-                  `glpi_consumablesitems`.`name` AS consname, 
-                  `glpi_consumablesitems`.`alarm_threshold` AS threshold, 
+   $query="SELECT `glpi_consumablesitems`.`id` AS consID,
+                  `glpi_consumablesitems`.`entities_id` as entity,
+                  `glpi_consumablesitems`.`ref` as consref,
+                  `glpi_consumablesitems`.`name` AS consname,
+                  `glpi_consumablesitems`.`alarm_threshold` AS threshold,
                   `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-          FROM `glpi_consumablesitems` 
-          LEFT JOIN `glpi_alerts` ON (`glpi_consumablesitems`.`id` = `glpi_alerts`.`items_id` 
-                                       AND `glpi_alerts`.`itemtype`='".CONSUMABLE_TYPE."') 
-          WHERE `glpi_consumablesitems`.`is_deleted`='0' 
+          FROM `glpi_consumablesitems`
+          LEFT JOIN `glpi_alerts` ON (`glpi_consumablesitems`.`id` = `glpi_alerts`.`items_id`
+                                       AND `glpi_alerts`.`itemtype`='".CONSUMABLE_TYPE."')
+          WHERE `glpi_consumablesitems`.`is_deleted`='0'
                 AND `glpi_consumablesitems`.`alarm_threshold`>='0'
-                AND (`glpi_alerts`.`date` IS NULL 
+                AND (`glpi_alerts`.`date` IS NULL
                      OR (`glpi_alerts`.date+".$CFG_GLPI["consumables_alert_repeat"].
                          ") < CURRENT_TIMESTAMP());";
 
@@ -554,7 +556,7 @@ function cron_consumable($display=false) {
                                        $LANG['software'][20]."&nbsp;: ".$unused."<br>";
             $items[$data["entity"]][]=$data["consID"];
 
-            // if alert exists -> delete 
+            // if alert exists -> delete
             if (!empty($data["alertID"])) {
                $alert->delete(array("id"=>$data["alertID"]));
             }
@@ -565,10 +567,12 @@ function cron_consumable($display=false) {
             $mail=new MailingAlert("alertconsumable",$msg,$entity);
 
             if ($mail->send()) {
-               if ($display) {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity)." :  $msg\n");
+                  $task->addVolume(1);
+               } else {
                   addMessageAfterRedirect(getDropdownName("glpi_entities",$entity)." :  $msg");
                }
-               logInFile("cron",getDropdownName("glpi_entities",$entity)." :  $msg\n");
 
                $input["type"]=ALERT_THRESHOLD;
                $input["itemtype"]=CONSUMABLE_TYPE;
@@ -580,12 +584,13 @@ function cron_consumable($display=false) {
                   unset($alert->fields['id']);
                }
             } else {
-               if ($display) {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity).
+                         " : Send consumable alert failed\n");
+               } else {
                   addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
                                           " : Send consumable alert failed",false,ERROR);
                }
-               logInFile("cron",getDropdownName("glpi_entities",$entity).
-                         " : Send consumable alert failed\n");
             }
          }
          return 1;
