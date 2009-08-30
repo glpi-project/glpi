@@ -157,4 +157,77 @@ function showCronTaskHistory($ID) {
    } // Query
    echo "</div>";
 }
+
+/**
+ * Display statistics of a task
+ *
+ * @param $ID : crontasks_id
+ */
+function showCronStatistics($ID) {
+   global $DB, $CFG_GLPI, $LANG;
+
+   echo "<br><div class='center'>";
+   echo "<table class='tab_cadre'><tr>";
+   echo "<th colspan='2'>&nbsp;".$LANG['Menu'][13]."&nbsp;</th>"; // Date
+   echo "</tr>\n";
+
+   $nbstart = countElementsInTable('glpi_crontaskslogs',
+          "`crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_START."'");
+   $nbstop = countElementsInTable('glpi_crontaskslogs',
+          "`crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'");
+
+   echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][50]."&nbsp;:</td><td class='right'>";
+   if ($nbstart==$nbstop) {
+      echo $nbstart;
+   } else {
+      // This should not appen => task crash ?
+      echo $LANG['crontask'][48]." = $nbstart<br>".$LANG['crontask'][49]." = $nbstop";
+   }
+   echo "</td></tr>";
+
+   if ($nbstop) {
+      $query = "SELECT
+                  MIN(`elapsed`) AS elapsedmin,
+                  MAX(`elapsed`) AS elapsedmax,
+                  AVG(`elapsed`) AS elapsedavg,
+                  SUM(`elapsed`) AS elapsedtot,
+                  MIN(`volume`) AS volmin,
+                  MAX(`volume`) AS volmax,
+                  AVG(`volume`) AS volavg,
+                  SUM(`volume`) AS voltot
+               FROM `glpi_crontaskslogs`
+               WHERE `crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'";
+      $result = $DB->query($query);
+      if ($data = $DB->fetch_assoc($result)) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['elapsedmin'],2)."s</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][52]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['elapsedmax'],2)."s</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][53]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['elapsedavg'],2)."s</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][54]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['elapsedtot'],2)."s</td></tr>";
+      }
+      if ($data && $data['voltot']>0) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][55]."&nbsp;:</td>";
+         echo "<td class='right'>".$data['volmin']."</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][56]."&nbsp;:</td>";
+         echo "<td class='right'>".$data['volmax']."</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][57]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['volavg'],2)."</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][58]."&nbsp;:</td>";
+         echo "<td class='right'>".$data['voltot']."</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][59]."&nbsp;:</td>";
+         echo "<td class='right'>".number_format($data['voltot']/$data['elapsedtot'],2)."</td></tr>";
+      }
+   }
+   echo "</table></div>";
+}
 ?>
