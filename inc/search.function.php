@@ -829,7 +829,7 @@ function showList ($itemtype,$params){
 
 
 	//// 4 - ORDER
-	$ORDER="ORDER BY id";
+	$ORDER=" ORDER BY id ";
 	foreach($toview as $key => $val){
 		if ($sort==$val){
 			$ORDER= addOrderBy($itemtype,$sort,$order,$key);
