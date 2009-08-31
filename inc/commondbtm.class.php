@@ -1202,10 +1202,10 @@ class CommonDBTM {
          echo "</table></div>";
          return false;
       }
-      echo "<tr>\n";
+      echo "<tr>";
 
       if ($withtemplate || $ID<=0) {
-         echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
+         echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>";
          if ($ID<=0||$withtemplate==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
@@ -1230,9 +1230,14 @@ class CommonDBTM {
                                                     $LANG['buttons'][22]."\" class='submit'>";
             }else {
                // TODO : change message for "destroy" / "send in trash" ?
-               // TODO : add javascript to confirm when no trash ??
-               echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6].
-                      "\" class='submit'>";
+               if (!in_array($this->table,$CFG_GLPI["deleted_tables"])) {
+                  echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
+                         "\" class='submit' OnClick='return window.confirm(\"" .
+                         $LANG['common'][50]. "\");'>";
+               } else {
+                  echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
+                         "\" class='submit'>";
+               }
             }
          } else {
             echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
@@ -1272,7 +1277,7 @@ class CommonDBTM {
          }
       }
       echo "<div class='center' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe' >";
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='$colspan'>";
 
