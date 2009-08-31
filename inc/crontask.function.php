@@ -186,7 +186,7 @@ function showCronStatistics($ID) {
    echo "</td></tr>";
 
    if ($nbstop) {
-      $query = "SELECT
+      $query = "SELECT MIN(`date`) AS datemin,
                   MIN(`elapsed`) AS elapsedmin,
                   MAX(`elapsed`) AS elapsedmax,
                   AVG(`elapsed`) AS elapsedavg,
@@ -199,6 +199,9 @@ function showCronStatistics($ID) {
                WHERE `crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'";
       $result = $DB->query($query);
       if ($data = $DB->fetch_assoc($result)) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:</td>";
+         echo "<td class='right'>".convDateTime($data['datemin'])."</td></tr>";
+
          echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:</td>";
          echo "<td class='right'>".number_format($data['elapsedmin'],2)."s</td></tr>";
 
@@ -206,7 +209,7 @@ function showCronStatistics($ID) {
          echo "<td class='right'>".number_format($data['elapsedmax'],2)."s</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][53]."&nbsp;:</td>";
-         echo "<td class='right'>".number_format($data['elapsedavg'],2)."s</td></tr>";
+         echo "<td class='right'><strong>".number_format($data['elapsedavg'],2)."s</strong></td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][54]."&nbsp;:</td>";
          echo "<td class='right'>".number_format($data['elapsedtot'],2)."s</td></tr>";
@@ -219,7 +222,7 @@ function showCronStatistics($ID) {
          echo "<td class='right'>".$data['volmax']."</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][57]."&nbsp;:</td>";
-         echo "<td class='right'>".number_format($data['volavg'],2)."</td></tr>";
+         echo "<td class='right'><strong>".number_format($data['volavg'],2)."</strong></td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][58]."&nbsp;:</td>";
          echo "<td class='right'>".$data['voltot']."</td></tr>";
