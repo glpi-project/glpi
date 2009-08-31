@@ -35,12 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"auth",
-	"ldap",
-	"user"
-);
+$NEEDED_ITEMS = array ('auth', 'ldap', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -56,7 +51,7 @@ if (isset ($_POST["update"])) {
 
 
 if (!isset($_GET["id"])){
-	$_GET["id"]="";	
+	$_GET["id"]="";
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");

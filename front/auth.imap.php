@@ -35,12 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"auth",
-	"ldap",
-	"user"
-);
+$NEEDED_ITEMS = array ('auth', 'ldap', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -69,25 +64,25 @@ elseif (isset ($_POST["delete_mail"])) {
 	glpi_header($CFG_GLPI["root_doc"] . "/front/auth.imap.php");
 
 }elseif (isset ($_POST["test_mail"])) {
-	
+
 	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])){
 		addMessageAfterRedirect($LANG['login'][22]);
 	} else {
-		addMessageAfterRedirect($LANG['login'][23],false,ERROR);	
+		addMessageAfterRedirect($LANG['login'][23],false,ERROR);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 if (!isset($_GET["id"])){
-	$_GET["id"]="";	
+	$_GET["id"]="";
 }
 
 if (!isset($_GET["next"])){
-	$_GET["next"]="";	
+	$_GET["next"]="";
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
-	
+
 switch($_GET['next']){
 	case "extauth_mail" :
 		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
