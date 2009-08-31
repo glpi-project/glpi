@@ -55,7 +55,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 			break;
 	}
 
-	
+
 
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
@@ -78,13 +78,13 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 		case "change_authtype":
 			$rand = dropdownAuthMethods("authtype");
 			$paramsmassaction=array('authtype'=>'__VALUE__');
-			
+
 			ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",$paramsmassaction);
-	
-			echo "<span id='show_massiveaction_field'>"; 
+
+			echo "<span id='show_massiveaction_field'>";
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 			echo "</span>\n";
-		
+
 		break;
 		case "compute_software_category":
 		case "replay_dictionnary":
@@ -94,15 +94,16 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 		case "purge":
 		case "restore":
 		case "add_transfer_list":
+      case 'reset':
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "unlock_ocsng_field":
 			$fields['all']=$LANG['common'][66];
 			$fields+=getOcsLockableFields();
 			dropdownArrayValues("field",$fields);
-			
+
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
-			break;	
+			break;
 		case "unlock_ocsng_monitor";
 		case "unlock_ocsng_peripheral";
 		case "unlock_ocsng_software";
@@ -113,7 +114,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 			break;
 		case "install":
 			dropdownSoftwareToInstall("softwaresversions_id",$_SESSION["glpiactive_entity"],1);
-            echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][4]."\" >"; 
+            echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][4]."\" >";
 		break;
 		case "connect":
 			dropdownConnect(COMPUTER_TYPE,$_POST["itemtype"],"connect_item");
@@ -136,7 +137,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 			dropdownUnderProfiles("profiles_id");
 			echo ".&nbsp;".$LANG['profiles'][28].":";
 			dropdownYesNo("is_recursive",0);
-			
+
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_document":
@@ -199,7 +200,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 								){
 									$newgroup.= "<option value='$key'>".$val["name"]."</option>";
 									$items_in_group++;
-								} 
+								}
 							}
 						}
 					}
@@ -208,9 +209,9 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 			if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
 			if (!$first_group)
 				echo "</optgroup>";
-	
+
 			echo "</select>";
-	
+
 			$paramsmassaction=array('id_field'=>'__VALUE__',
 				'itemtype'=>$_POST["itemtype"],
 				);
@@ -221,7 +222,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 				}
 			}
 			ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$paramsmassaction);
-	
+
 			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;
@@ -242,7 +243,7 @@ if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"
 				doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
 					'MassiveActionsDisplay',
 					$_POST["itemtype"],$_POST["action"]);
-			} 
+			}
 			break;
 
 	}

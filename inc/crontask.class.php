@@ -313,8 +313,8 @@ class CronTask extends CommonDBTM{
          echo $LANG['setup'][307];
       } else {
          echo convDateTime($this->fields['lastrun']);
-         echo "<a href='$target?id=$ID&amp;resetdate=1'>";
-         echo "<img src='".GLPI_ROOT."/pics/reset.png'></a>";
+         echo " <a href='$target?id=$ID&amp;resetdate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
+         echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
       }
       echo "</td></tr>";
 

@@ -509,7 +509,20 @@ if (isset($_POST["itemtype"])){
 						$fup->add($_POST);
 					}
 				}
-			break;
+            break;
+
+         case 'reset':
+            if ($_POST["itemtype"]==CRONTASK_TYPE) {
+               checkRight('config','w');
+               $crontask=new CronTask();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1 && $crontask->getFromDB($key)) {
+                      $crontask->resetDate();
+                  }
+               }
+            }
+            break;
+
 			default :
 
 				// Plugin specific actions

@@ -1555,7 +1555,7 @@ function device_selecter($target,$computers_id,$withtemplate='') {
       echo "<select name='devicetype' id='device$rand'>";
 
       echo '<option value="-1">-----</option>';
-      
+
 
       foreach ($devices as $i => $name) {
          echo '<option value="'.$i.'">'.$name.'</option>';
@@ -1704,6 +1704,11 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             if (haveRight("comment_all_ticket","1")) {
                echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
             }
+            break;
+
+         case CRONTASK_TYPE :
+            echo "<option value='reset'>".$LANG['buttons'][16].
+               " (".$LANG['crontask'][40].")</option>";
             break;
       }
 
