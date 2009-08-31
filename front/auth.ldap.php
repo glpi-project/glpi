@@ -35,12 +35,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"auth",
-	"ldap",
-	"user"
-);
+
+$NEEDED_ITEMS = array ('auth', 'ldap', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -61,7 +57,7 @@ elseif (isset ($_POST["add_ldap"])) {
 			if (testLDAPConnection($newID)){
 				addMessageAfterRedirect($LANG['login'][22]);
 			} else{
-				addMessageAfterRedirect($LANG['login'][23],false,ERROR);	
+				addMessageAfterRedirect($LANG['login'][23],false,ERROR);
 			}
 			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&id=".$newID);
 		}
@@ -76,11 +72,11 @@ elseif (isset ($_POST["delete_ldap"])) {
 elseif (isset ($_POST["test_ldap"])) {
 	$ldap = new AuthLDAP;
 	$ldap->getFromDB($_POST["id"]);
-	
+
 	if (testLDAPConnection($_POST["id"])){
 		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;
 	} else{
-		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;	
+		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -93,7 +89,7 @@ elseif (isset ($_POST["test_ldap_replicate"])) {
 		if (testLDAPConnection($_POST["id"],$replicate_id)){
 			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
 		} else{
-			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";	
+			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -103,7 +99,7 @@ elseif (isset($_POST["delete_replicate"]))
 	$replicate = new AuthLdapReplicate;
 	foreach ($_POST["item"] as $index=>$val)
 		$replicate->delete(array("id"=>$index));
-	glpi_header($_SERVER['HTTP_REFERER']);		
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["add_replicate"]))
 {
@@ -111,20 +107,20 @@ elseif (isset($_POST["add_replicate"]))
 	unset($_POST["next"]);
 	unset($_POST["id"]);
 	$replicate->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 
 if (!isset($_GET["id"])){
-	$_GET["id"]="";	
+	$_GET["id"]="";
 }
 
 if (!isset($_GET["next"])){
-	$_GET["next"]="";	
+	$_GET["next"]="";
 }
 
 if (!isset($_GET["preconfig"])){
-	$_GET["preconfig"]="";	
+	$_GET["preconfig"]="";
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","ldap");

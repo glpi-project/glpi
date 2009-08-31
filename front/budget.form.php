@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("budget","enterprise","link","document");
+$NEEDED_ITEMS = array ('budget', 'document', 'enterprise', 'link');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -81,7 +82,7 @@ else {
 	commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
 	$budget->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
-		
+
 	commonFooter();
 }
 
