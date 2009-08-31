@@ -62,7 +62,7 @@ class AdminInfo extends CommonDBTM {
       global $DB;
 
       $query = "DELETE
-                FROM `glpi_ocsadmininfoslinks`
+                FROM `".$this->table."`
                 WHERE `ocsservers_id` = '$ID'";
       $result = $DB->query($query);
    }

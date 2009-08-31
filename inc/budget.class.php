@@ -107,7 +107,7 @@ class Budget extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_budgets","name",$this->fields["name"],
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],
          40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='4' class='middle right'>".$LANG['common'][25].
@@ -160,11 +160,11 @@ class Budget extends CommonDBTM{
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
                  WHERE `items_id` = '".$input["_oldID"]."'
-                       AND `itemtype` = '".BUDGET_TYPE."';";
+                       AND `itemtype` = '".$this->type."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               addDeviceDocument($data["documents_id"],BUDGET_TYPE,$newID);
+               addDeviceDocument($data["documents_id"],$this->type,$newID);
             }
          }
       }

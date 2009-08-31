@@ -130,7 +130,7 @@ class Printer  extends CommonDBTM {
 				"FROM glpi_networkports_networkports, glpi_networkports " .
 				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.id " .
 				"AND   glpi_networkports_networkports.$enda IN (SELECT id FROM glpi_networkports 
-									WHERE itemtype=".PRINTER_TYPE." AND items_id='$ID') " .
+									WHERE itemtype=".$this->type." AND items_id='$ID') " .
 				"GROUP BY itemtype;";
 
 			$res = $DB->query($sql);
@@ -169,7 +169,7 @@ class Printer  extends CommonDBTM {
 		if (isset($input["_oldID"])){
 			// ADD Infocoms
 			$ic= new Infocom();
-			if ($ic->getFromDBforDevice(PRINTER_TYPE,$input["_oldID"])){
+			if ($ic->getFromDBforDevice($this->type,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
@@ -188,7 +188,7 @@ class Printer  extends CommonDBTM {
 			// ADD Ports
 			$query="SELECT id 
 				FROM glpi_networkports 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PRINTER_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -207,23 +207,23 @@ class Printer  extends CommonDBTM {
 			// ADD Contract				
 			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PRINTER_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["contracts_id"],PRINTER_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],$this->type,$newID);
 			}
 	
 			// ADD Documents			
 			$query="SELECT documents_id 
 				FROM glpi_documents_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PRINTER_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceDocument($data["documents_id"],PRINTER_TYPE,$newID);
+					addDeviceDocument($data["documents_id"],$this->type,$newID);
 			}
 		}
 
@@ -237,7 +237,7 @@ class Printer  extends CommonDBTM {
 		$job =new Job();
 		$query = "SELECT * 
 			FROM glpi_tickets 
-			WHERE items_id = '$ID'  AND itemtype='".PRINTER_TYPE."'";
+			WHERE items_id = '$ID'  AND itemtype='".$this->type."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
@@ -251,7 +251,7 @@ class Printer  extends CommonDBTM {
 
 		$query = "SELECT id 
 			FROM glpi_networkports 
-			WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
+			WHERE items_id = '$ID' AND itemtype = '".$this->type."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networkports_networkports
@@ -261,11 +261,11 @@ class Printer  extends CommonDBTM {
 		}
 
 		$query2 = "DELETE FROM glpi_networkports
-                  WHERE items_id = '$ID' AND itemtype = '".PRINTER_TYPE."'";
+                  WHERE items_id = '$ID' AND itemtype = '".$this->type."'";
 		$result2 = $DB->query($query2);
 
 		$query="SELECT * FROM glpi_computers_items
-               WHERE itemtype='".PRINTER_TYPE."' AND items_id='$ID'";
+               WHERE itemtype='".$this->type."' AND items_id='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -276,7 +276,7 @@ class Printer  extends CommonDBTM {
 		}
 
 
-		$query="SELECT * FROM glpi_reservationsitems WHERE itemtype='".PRINTER_TYPE."' AND items_id='$ID'";
+		$query="SELECT * FROM glpi_reservationsitems WHERE itemtype='".$this->type."' AND items_id='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
@@ -284,10 +284,10 @@ class Printer  extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_infocoms WHERE items_id = '$ID' AND itemtype='".PRINTER_TYPE."'";
+		$query = "DELETE FROM glpi_infocoms WHERE items_id = '$ID' AND itemtype='".$this->type."'";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype='".PRINTER_TYPE."'";
+		$query = "DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype='".$this->type."'";
 		$result = $DB->query($query);
 
 		$query = "UPDATE glpi_cartridges SET printers_id = NULL WHERE printers_id='$ID'";
@@ -340,8 +340,8 @@ class Printer  extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
       echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("name","glpi_printers","name",$objectName,40,$this->fields["entities_id"]);
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("name",$this->table,"name",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
@@ -357,11 +357,11 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-      autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],40,$this->fields["entities_id"]);
+      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-      autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
+      autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
 
@@ -411,12 +411,12 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-      autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],40,$this->fields["entities_id"]);
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,40,$this->fields["entities_id"]);
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['printers'][18].": </td><td>\n";
@@ -449,11 +449,11 @@ class Printer  extends CommonDBTM {
 
       // Ram ?
       echo "<tr><td>".$LANG['devices'][6].":</td><td>\n";
-      autocompletionTextField("memory_size","glpi_printers","memory_size",$this->fields["memory_size"],40,$this->fields["entities_id"]);
+      autocompletionTextField("memory_size",$this->table,"memory_size",$this->fields["memory_size"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
       // Initial count pages ?
       echo "<tr><td>".$LANG['printers'][30].":</td><td>\n";
-      autocompletionTextField("init_pages_counter","glpi_printers","init_pages_counter",$this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
+      autocompletionTextField("init_pages_counter",$this->table,"init_pages_counter",$this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
 

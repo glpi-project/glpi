@@ -58,7 +58,7 @@ class ReservationItem extends CommonDBTM {
 	function getFromDBbyItem($itemtype,$ID){
 		global $DB;
 
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype = '$itemtype' AND items_id = '$ID')";
+		$query = "SELECT * FROM ".$this->table." WHERE (itemtype = '$itemtype' AND items_id = '$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);
@@ -209,7 +209,7 @@ class ReservationResa extends CommonDBTM {
 		if(isset($this->fields["id"]))
 			$ID_where=" (id <> '".$this->fields["id"]."') AND ";
 
-		$query = "SELECT * FROM glpi_reservations".
+		$query = "SELECT * FROM ".$this->table." ".
 			" WHERE $ID_where (reservationsitems_id = '".$this->fields["reservationsitems_id"]."') 
 				AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) 
 					OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) 

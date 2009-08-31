@@ -130,7 +130,7 @@ class ConsumableType extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_consumablesitems","name",
+      autocompletionTextField("name",$this->table,"name",
                               $this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
@@ -141,7 +141,7 @@ class ConsumableType extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,
+      autocompletionTextField("ref",$this->table,"ref",$this->fields["ref"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -210,7 +210,7 @@ class Consumable extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype`='".CONSUMABLE_ITEM_TYPE."')";
+                       AND `itemtype`='".$this->type."')";
       $result = $DB->query($query);
    }
 
@@ -227,7 +227,7 @@ class Consumable extends CommonDBTM {
       if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
-         $ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
+         $ic->fields["itemtype"]=$this->type;
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
          }
@@ -242,7 +242,7 @@ class Consumable extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `glpi_consumables`
+                `".$this->table."`
                 SET `date_out` = NULL
                 WHERE `id`='".$input["id"]."'";
 
@@ -268,7 +268,7 @@ class Consumable extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `glpi_consumables`
+                `".$this->table."`
                 SET `date_out` = '".date("Y-m-d")."',
                     `users_id` = '$users_id'
                 WHERE `id` = '$ID'";

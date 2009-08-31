@@ -112,7 +112,7 @@ class Group extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
                               $this->fields["entities_id"]);
       echo "</td>";
       if (useAuthLdap()) {
@@ -141,14 +141,14 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][260]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_field","glpi_groups","ldap_field",
+         autocompletionTextField("ldap_field",$this->table,"ldap_field",
                                  $this->fields["ldap_field"],40,$this->fields["entities_id"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][601]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_value","glpi_groups","ldap_value",
+         autocompletionTextField("ldap_value",$this->table,"ldap_value",
                                  $this->fields["ldap_value"],40,$this->fields["entities_id"]);
          echo "</td></tr>";
 
@@ -159,7 +159,7 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][261]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",
+         autocompletionTextField("ldap_group_dn",$this->table,"ldap_group_dn",
                                  $this->fields["ldap_group_dn"],40,$this->fields["entities_id"]);
          echo "</td></tr>";
       }

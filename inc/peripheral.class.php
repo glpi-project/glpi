@@ -107,7 +107,7 @@ class Peripheral  extends CommonDBTM  {
 		if (isset($input["_oldID"])){
 			// ADD Infocoms
 			$ic= new Infocom();
-			if ($ic->getFromDBforDevice(PERIPHERAL_TYPE,$input["_oldID"])){
+			if ($ic->getFromDBforDevice($this->type,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
@@ -126,7 +126,7 @@ class Peripheral  extends CommonDBTM  {
 			// ADD Ports
 			$query="SELECT id 
 				FROM glpi_networkports 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PERIPHERAL_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -145,23 +145,23 @@ class Peripheral  extends CommonDBTM  {
 			// ADD Contract				
 			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PERIPHERAL_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["contracts_id"],PERIPHERAL_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],$this->type,$newID);
 			}
 	
 			// ADD Documents			
 			$query="SELECT documents_id 
 				FROM glpi_documents_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PERIPHERAL_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceDocument($data["documents_id"],PERIPHERAL_TYPE,$newID);
+					addDeviceDocument($data["documents_id"],$this->type,$newID);
 			}
 		}
 
@@ -173,7 +173,7 @@ class Peripheral  extends CommonDBTM  {
 		$job =new Job();
 		$query = "SELECT * 
 			FROM glpi_tickets 
-			WHERE items_id = '$ID'  AND itemtype='".PERIPHERAL_TYPE."'";
+			WHERE items_id = '$ID'  AND itemtype='".$this->type."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
@@ -186,7 +186,7 @@ class Peripheral  extends CommonDBTM  {
 			}
 
 		$query="SELECT * FROM glpi_reservationsitems
-               WHERE (itemtype='".PERIPHERAL_TYPE."' AND items_id='$ID')";
+               WHERE (itemtype='".$this->type."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
@@ -195,11 +195,11 @@ class Peripheral  extends CommonDBTM  {
 		}
 
 		$query = "DELETE FROM glpi_infocoms
-               WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
+               WHERE (items_id = '$ID' AND itemtype='".$this->type."')";
 		$result = $DB->query($query);
 
 		$query="SELECT * FROM glpi_computers_items
-               WHERE (itemtype='".PERIPHERAL_TYPE."' AND items_id='$ID')";
+               WHERE (itemtype='".$this->type."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -210,7 +210,7 @@ class Peripheral  extends CommonDBTM  {
 		}
 
 		$query = "DELETE FROM glpi_contracts_items
-               WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
+               WHERE (items_id = '$ID' AND itemtype='".$this->type."')";
 		$result = $DB->query($query);
 	}
 
@@ -260,8 +260,8 @@ class Peripheral  extends CommonDBTM  {
 
       echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("name","glpi_peripherals","name",$objectName,40,$this->fields["entities_id"]);
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("name",$this->table,"name",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>";
@@ -273,11 +273,11 @@ class Peripheral  extends CommonDBTM  {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>";
-      autocompletionTextField("contact_num","glpi_peripherals","contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
+      autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][18].":	</td><td>";
-      autocompletionTextField("contact","glpi_peripherals","contact",$this->fields["contact"],40,$this->fields["entities_id"]);
+      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
@@ -317,17 +317,17 @@ class Peripheral  extends CommonDBTM  {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['peripherals'][18].":</td><td>";
-      autocompletionTextField("brand","glpi_peripherals","brand",$this->fields["brand"],40,$this->fields["entities_id"]);
+      autocompletionTextField("brand",$this->table,"brand",$this->fields["brand"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>";
-      autocompletionTextField("serial","glpi_peripherals","serial",$this->fields["serial"],40,$this->fields["entities_id"]);
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,40,$this->fields["entities_id"]);
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,$this->fields["entities_id"]);
 
       echo "</td></tr>";
 

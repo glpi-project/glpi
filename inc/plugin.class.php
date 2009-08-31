@@ -440,7 +440,7 @@ class Plugin extends CommonDBTM {
 	**/	
 	function unactivateAll(){
 		global$DB;
-		$query="UPDATE glpi_plugins SET state=".PLUGIN_NOTACTIVATED." WHERE state=".PLUGIN_ACTIVATED.";";
+		$query="UPDATE ".$this->table." SET state=".PLUGIN_NOTACTIVATED." WHERE state=".PLUGIN_ACTIVATED.";";
 		$DB->query($query);
 
 		$_SESSION['glpi_plugins']=array();

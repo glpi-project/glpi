@@ -210,7 +210,7 @@ class PlanningTracking extends CommonDBTM {
 		if(isset($this->fields["id"]))
 			$ID_where=" (id <> '".$this->fields["id"]."') AND ";
 
-		$query = "SELECT * FROM glpi_ticketsplannings".
+		$query = "SELECT * FROM ".$this->table." ".
 			" WHERE $ID_where (users_id = '".$this->fields["users_id"]."') AND ".
 			" ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) ".
 			" OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) ".

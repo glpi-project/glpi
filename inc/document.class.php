@@ -62,7 +62,7 @@ class Document extends CommonDBTM {
       global $DB;
 
       $query="SELECT `id`
-              FROM `glpi_documents`
+              FROM `".$this->table."`
               WHERE `filename`='$filename'";
       $result=$DB->query($query);
       if ($DB->numrows($result)==1) {
@@ -224,7 +224,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_documents","name",$this->fields["name"],45,
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],45,
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
@@ -258,7 +258,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][33]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("link","glpi_documents","link",$this->fields["link"],45,
+      autocompletionTextField("link",$this->table,"link",$this->fields["link"],45,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -272,7 +272,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][4]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("mime","glpi_documents","mime",$this->fields["mime"],45,
+      autocompletionTextField("mime",$this->table,"mime",$this->fields["mime"],45,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
