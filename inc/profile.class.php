@@ -72,7 +72,7 @@ class Profile extends CommonDBTM{
 		global $DB;
 
 		if (isset($input["is_default"])&&$input["is_default"]==1){
-			$query="UPDATE glpi_profiles SET `is_default`='0' WHERE id <> '".$input['id']."'";
+			$query="UPDATE ".$this->table." SET `is_default`='0' WHERE id <> '".$input['id']."'";
 			$DB->query($query);
 		}
 	}
@@ -146,10 +146,10 @@ class Profile extends CommonDBTM{
 		}
 		
 		if ($_SESSION['glpiactiveprofile']['interface']=='central'){
-			$query.=" (glpi_profiles.interface='helpdesk') " ;
+			$query.=" (".$this->table.".interface='helpdesk') " ;
 		}
 		
-		$query.=" OR ( glpi_profiles.interface='".$_SESSION['glpiactiveprofile']['interface']."' ";
+		$query.=" OR ( ".$this->table.".interface='".$_SESSION['glpiactiveprofile']['interface']."' ";
 		foreach ($_SESSION['glpiactiveprofile'] as $key => $val){
 			if (
 			!is_array($val) // Do not include entities field added by login
@@ -161,19 +161,19 @@ class Profile extends CommonDBTM{
 					default:
 						switch ($val){
 							case '0':
-								$query.=" AND (glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL OR glpi_profiles.$key = '') ";
+								$query.=" AND (".$this->table.".$key = '0' OR ".$this->table.".$key IS NULL OR ".$this->table.".$key = '') ";
 								break;	
 							case '1':
-								$query.=" AND (glpi_profiles.$key = '1' OR glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL OR glpi_profiles.$key = '' ) ";
+								$query.=" AND (".$this->table.".$key = '1' OR ".$this->table.".$key = '0' OR ".$this->table.".$key IS NULL OR ".$this->table.".$key = '' ) ";
 								break;	
 							case 'r':
-								$query.=" AND (glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL OR glpi_profiles.$key = '' ) ";
+								$query.=" AND (".$this->table.".$key = 'r' OR ".$this->table.".$key IS NULL OR ".$this->table.".$key = '' ) ";
 								break;	
 							case 'w':
-								$query.=" AND (glpi_profiles.$key = 'w' OR glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL OR glpi_profiles.$key = '' ) ";
+								$query.=" AND (".$this->table.".$key = 'w' OR ".$this->table.".$key = 'r' OR ".$this->table.".$key IS NULL OR ".$this->table.".$key = '' ) ";
 								break;	
 							default:
-								$query.=" AND glpi_profiles.$key IS NULL OR glpi_profiles.$key = '' ";
+								$query.=" AND ".$this->table.".$key IS NULL OR ".$this->table.".$key = '' ";
 								break;
 						}
 					break;
@@ -200,7 +200,7 @@ class Profile extends CommonDBTM{
          // return false;
       }
       $under_profiles=array();
-      $query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
+      $query="SELECT * FROM ".$this->table." ".$this->getUnderProfileRetrictRequest("WHERE");
       $result=$DB->query($query);
       while ($data=$DB->fetch_assoc($result)) {
          $under_profiles[$data['id']]=$data['id'];

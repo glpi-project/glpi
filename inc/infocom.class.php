@@ -69,7 +69,7 @@ class InfoCom extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `glpi_infocoms`
+                FROM `".$this->table."`
                 WHERE `items_id` = '$ID'
                       AND `itemtype`='$itemtype'";
 

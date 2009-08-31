@@ -229,7 +229,7 @@ class Job extends CommonDBTM{
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();
 				if ($docID=$doc->add($input2)){
-					addDeviceDocument($docID,TRACKING_TYPE,$input["id"]);
+					addDeviceDocument($docID,$this->type,$input["id"]);
 					// force update date_mod
 					$input["date_mod"]=$_SESSION["glpi_currenttime"];
 					if ($CFG_GLPI["add_followup_on_update_ticket"]){
@@ -242,7 +242,7 @@ class Job extends CommonDBTM{
 		}
 
 		if (isset($input["document"])&&$input["document"]>0){
-			addDeviceDocument($input["document"],TRACKING_TYPE,$input["id"]);
+			addDeviceDocument($input["document"],$this->type,$input["id"]);
 			$doc=new Document();
 			$doc->getFromDB($input["document"]);
 			unset($input["document"]);
@@ -729,7 +729,7 @@ class Job extends CommonDBTM{
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();
 				if ($docID=$doc->add($input2))
-					addDeviceDocument($docID,TRACKING_TYPE,$newID);
+					addDeviceDocument($docID,$this->type,$newID);
 			}
 		}
 
@@ -816,7 +816,7 @@ class Job extends CommonDBTM{
 		if ($result = $DB->query($query)) {
 			$sum=$DB->result($result,0,0);
 			if (is_null($sum)) $sum=0;
-			$query2="UPDATE glpi_tickets SET realtime='".$sum."' WHERE id='$ID'";
+			$query2="UPDATE ".$this->table." SET realtime='".$sum."' WHERE id='$ID'";
 			$DB->query($query2);
 			return true;
 		} else {
@@ -831,7 +831,7 @@ class Job extends CommonDBTM{
 	**/
 	function updateDateMod($ID) {
 		global $DB;
-		$query="UPDATE glpi_tickets SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE id='$ID'";
+		$query="UPDATE ".$this->table." SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE id='$ID'";
 		$DB->query($query);
 	}
 

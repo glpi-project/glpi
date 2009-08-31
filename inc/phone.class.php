@@ -106,7 +106,7 @@ class Phone extends CommonDBTM {
 		if (isset($input["_oldID"])){
 			// ADD Infocoms
 			$ic= new Infocom();
-			if ($ic->getFromDBforDevice(PHONE_TYPE,$input["_oldID"])){
+			if ($ic->getFromDBforDevice($this->type,$input["_oldID"])){
 				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
@@ -125,7 +125,7 @@ class Phone extends CommonDBTM {
 			// ADD Ports
 			$query="SELECT id 
 				FROM glpi_networkports 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -144,23 +144,23 @@ class Phone extends CommonDBTM {
 			// ADD Contract				
 			$query="SELECT contracts_id 
 				FROM glpi_contracts_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["contracts_id"],PHONE_TYPE,$newID);
+					addDeviceContract($data["contracts_id"],$this->type,$newID);
 			}
 	
 			// ADD Documents			
 			$query="SELECT documents_id 
 				FROM glpi_documents_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".$this->type."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
 				while ($data=$DB->fetch_array($result))
-					addDeviceDocument($data["documents_id"],PHONE_TYPE,$newID);
+					addDeviceDocument($data["documents_id"],$this->type,$newID);
 			}
 		}
 
@@ -176,7 +176,7 @@ class Phone extends CommonDBTM {
 		$job =new Job();
 		$query = "SELECT * 
 			FROM glpi_tickets 
-			WHERE (items_id = '$ID'  AND itemtype='".PHONE_TYPE."')";
+			WHERE (items_id = '$ID'  AND itemtype='".$this->type."')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
@@ -189,7 +189,7 @@ class Phone extends CommonDBTM {
 
 		$query="SELECT * 
 			FROM glpi_reservationsitems 
-			WHERE (itemtype='".PHONE_TYPE."' AND items_id='$ID')";
+			WHERE (itemtype='".$this->type."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
@@ -198,12 +198,12 @@ class Phone extends CommonDBTM {
 		}
 
 		$query = "DELETE FROM glpi_infocoms
-                  WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
+                  WHERE (items_id = '$ID' AND itemtype='".$this->type."')";
 		$result = $DB->query($query);
 
 
 		$query="SELECT * FROM glpi_computers_items
-               WHERE (itemtype='".PHONE_TYPE."' AND items_id='$ID')";
+               WHERE (itemtype='".$this->type."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -214,7 +214,7 @@ class Phone extends CommonDBTM {
 		}
 
 		$query = "DELETE FROM glpi_contracts_items
-               WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
+               WHERE (items_id = '$ID' AND itemtype='".$this->type."')";
 		$result = $DB->query($query);
 	}
 
@@ -261,8 +261,8 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].($template?"*":"").":	</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", 
-         ($template === "newcomp"), PHONE_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("name","glpi_phones","name",
+         ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("name",$this->table,"name",
          $objectName,40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33].":</td><td>";
@@ -284,27 +284,27 @@ class Phone extends CommonDBTM {
          "interface",1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][19].": </td><td>";
-      autocompletionTextField("serial","glpi_phones","serial",
+      autocompletionTextField("serial",$this->table,"serial",
          $this->fields["serial"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][21].":	</td><td>";
-      autocompletionTextField("contact_num","glpi_phones","contact_num",
+      autocompletionTextField("contact_num",$this->table,"contact_num",
          $this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"").":</td><td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", 
-         ($template === "newcomp"), PHONE_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial","glpi_phones","otherserial",
+         ($template === "newcomp"), $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial",$this->table,"otherserial",
          $objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][18].":	</td><td>";
-      autocompletionTextField("contact","glpi_phones","contact",
+      autocompletionTextField("contact",$this->table,"contact",
          $this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['setup'][71].":  </td><td>";
-      autocompletionTextField("firmware","glpi_phones","firmware",
+      autocompletionTextField("firmware",$this->table,"firmware",
          $this->fields["firmware"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
       
@@ -320,7 +320,7 @@ class Phone extends CommonDBTM {
          $this->fields["groups_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['phones'][40].": </td><td>";
-      autocompletionTextField("number_line","glpi_phones","number_line",
+      autocompletionTextField("number_line",$this->table,"number_line",
          $this->fields["number_line"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
       
@@ -354,7 +354,7 @@ class Phone extends CommonDBTM {
       echo $this->fields["comment"]."</textarea></td></tr>";
       
       echo "<tr class='tab_bg_1'><td>".$LANG['phones'][18].":</td><td>";
-      autocompletionTextField("brand","glpi_phones","brand",
+      autocompletionTextField("brand",$this->table,"brand",
          $this->fields["brand"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
       

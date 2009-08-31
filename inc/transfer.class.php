@@ -2547,7 +2547,7 @@ class Transfer extends CommonDBTM{
       if ($edit_form){
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>".$LANG['common'][16].":	</td><td colspan='2'>";
-         autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],40);
+         autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
          echo "</td>";
          echo "</tr>";
       }
@@ -2747,7 +2747,7 @@ class Transfer extends CommonDBTM{
 			//echo '<tr><th colspan="2">'.$LANG['transfer'][4].'</th></tr>';
 			echo "<table class='tab_cadre_fixe' >";
 			echo '<tr><th>'.$LANG['transfer'][7].'</th><th>'.$LANG['transfer'][8].":&nbsp;";
-			$rand=dropdownValue("glpi_transfers","id",0,0,-1,array('value_fieldname'=>'id',
+			$rand=dropdownValue($this->table,"id",0,0,-1,array('value_fieldname'=>'id',
 			'to_update'=>"transfer_form", 'url'=>$CFG_GLPI["root_doc"]."/ajax/transfers.php"));
 			echo '</th></tr>';
 			echo "<tr><td class='tab_bg_1' valign='top'>";

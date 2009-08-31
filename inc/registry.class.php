@@ -48,7 +48,7 @@ class Registry extends CommonDBTM{
 	}
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query = "DELETE FROM glpi_registrykeys WHERE id_computer = '$ID')";
+		$query = "DELETE FROM ".$this->table." WHERE computers_id = '$ID')";
 		$result = $DB->query($query);
 	}
 

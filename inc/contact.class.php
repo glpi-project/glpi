@@ -162,7 +162,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][48]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
@@ -172,42 +172,42 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][43]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("firstname","glpi_contacts","firstname",
+      autocompletionTextField("firstname",$this->table,"firstname",
                               $this->fields["firstname"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;: </td>";
       echo "<td>";
-      autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,
+      autocompletionTextField("phone",$this->table,"phone",$this->fields["phone"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]." 2&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,
+      autocompletionTextField("phone2",$this->table,"phone2",$this->fields["phone2"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][42]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,
+      autocompletionTextField("mobile",$this->table,"mobile",$this->fields["mobile"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,
+      autocompletionTextField("fax",$this->table,"fax",$this->fields["fax"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,
+      autocompletionTextField("email",$this->table,"email",$this->fields["email"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 

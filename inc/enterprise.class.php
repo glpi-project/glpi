@@ -132,7 +132,7 @@ class Enterprise extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_suppliers","name",$this->fields["name"],40,
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
@@ -143,7 +143,7 @@ class Enterprise extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("phonenumber","glpi_suppliers","phonenumber",
+      autocompletionTextField("phonenumber",$this->table,"phonenumber",
                               $this->fields["phonenumber"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='8' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
@@ -153,21 +153,21 @@ class Enterprise extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("fax","glpi_suppliers","fax",$this->fields["fax"],40,
+      autocompletionTextField("fax",$this->table,"fax",$this->fields["fax"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("website","glpi_suppliers","website",$this->fields["website"],40,
+      autocompletionTextField("website",$this->table,"website",$this->fields["website"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("email","glpi_suppliers","email",$this->fields["email"],40,
+      autocompletionTextField("email",$this->table,"email",$this->fields["email"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -179,24 +179,24 @@ class Enterprise extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("postcode","glpi_suppliers","postcode",$this->fields["postcode"],7,
+      autocompletionTextField("postcode",$this->table,"postcode",$this->fields["postcode"],7,
                               $this->fields["entities_id"]);
       echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField("town","glpi_suppliers","town",$this->fields["town"],25,
+      autocompletionTextField("town",$this->table,"town",$this->fields["town"],25,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("state","glpi_suppliers","state",$this->fields["state"],40,
+      autocompletionTextField("state",$this->table,"state",$this->fields["state"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("country","glpi_suppliers","country",$this->fields["country"],40,
+      autocompletionTextField("country",$this->table,"country",$this->fields["country"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 

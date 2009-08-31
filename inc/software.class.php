@@ -135,7 +135,7 @@ class Software extends CommonDBTM {
 		if (isset($input["_oldID"])){
 			// ADD Infocoms
 			$ic = new Infocom();
-			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
+			if ($ic->getFromDBforDevice($this->type, $input["_oldID"])) {
 				$ic->fields["items_id"] = $newID;
 				unset ($ic->fields["id"]);
 				if (isset($ic->fields["immo_number"])) {
@@ -152,21 +152,21 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query = "SELECT contracts_id FROM glpi_contracts_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT contracts_id FROM glpi_contracts_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . $this->type . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
 				while ($data = $DB->fetch_array($result))
-					addDeviceContract($data["contracts_id"], SOFTWARE_TYPE, $newID);
+					addDeviceContract($data["contracts_id"], $this->type, $newID);
 			}
 	
 			// ADD Documents			
-			$query = "SELECT documents_id FROM glpi_documents_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT documents_id FROM glpi_documents_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . $this->type . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
 				while ($data = $DB->fetch_array($result))
-					addDeviceDocument($data["documents_id"], SOFTWARE_TYPE, $newID);
+					addDeviceDocument($data["documents_id"], $this->type, $newID);
 			}
 		}
 
@@ -177,7 +177,7 @@ class Software extends CommonDBTM {
 		global $DB, $CFG_GLPI;
 
 		$job = new Job();
-		$query = "SELECT * FROM glpi_tickets WHERE (items_id = '$ID'  AND itemtype='" . SOFTWARE_TYPE . "')";
+		$query = "SELECT * FROM glpi_tickets WHERE (items_id = '$ID'  AND itemtype='" . $this->type . "')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
@@ -191,13 +191,13 @@ class Software extends CommonDBTM {
 					));
 			}
 
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . SOFTWARE_TYPE . "')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . $this->type . "')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='" . SOFTWARE_TYPE . "')";
+		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='" . $this->type . "')";
 		$result = $DB->query($query);
 
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype='" . SOFTWARE_TYPE . "' AND items_id='$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype='" . $this->type . "' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) > 0) {
 				$rr = new ReservationItem();
@@ -285,7 +285,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
       echo "<td>";
-      autocompletionTextField("name", "glpi_softwares", "name", $this->fields["name"], 40,$this->fields["entities_id"]);
+      autocompletionTextField("name", $this->table, "name", $this->fields["name"], 40,$this->fields["entities_id"]);
       echo "</td>";
       
       
@@ -479,7 +479,7 @@ class SoftwareVersion extends CommonDBTM {
 	
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_softwaresversions","name",$this->fields["name"],40);
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
@@ -581,7 +581,7 @@ class SoftwareLicense extends CommonDBTM {
 			if (empty($ic->fields['buy_date'])){
 				unset($ic->fields['buy_date']);
 			}
-			$ic->fields["itemtype"] = SOFTWARELICENSE_TYPE;
+			$ic->fields["itemtype"] = $this->type;
 			$ic->addToDB();
 		}
 	}
@@ -590,7 +590,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		global $DB;
 
-		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . SOFTWARELICENSE_TYPE . "')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . $this->type . "')";
 		$result = $DB->query($query);
 
 	}
@@ -665,17 +665,17 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_softwareslicenses","name",$this->fields["name"],80);
+		autocompletionTextField("name",$this->table,"name",$this->fields["name"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][19].":		</td>";
 		echo "<td>";
-		autocompletionTextField("serial","glpi_softwareslicenses","serial",$this->fields["serial"],80);
+		autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][20].":		</td>";
 		echo "<td>";
-		autocompletionTextField("otherserial","glpi_softwareslicenses","otherserial",$this->fields["otherserial"],80);
+		autocompletionTextField("otherserial",$this->table,"otherserial",$this->fields["otherserial"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['tracking'][29].":		</td>";

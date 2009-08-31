@@ -356,7 +356,7 @@ class Computer extends CommonDBTM {
 
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])) {
+         if ($ic->getFromDBforDevice($this->type,$input["_oldID"])) {
             $ic->fields["items_id"]=$newID;
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
@@ -402,11 +402,11 @@ class Computer extends CommonDBTM {
          $query="SELECT `contracts_id`
                  FROM `glpi_contracts_items`
                  WHERE `items_id`='".$input["_oldID"]."'
-                       AND `itemtype`='".COMPUTER_TYPE."';";
+                       AND `itemtype`='".$this->type."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               addDeviceContract($data["contracts_id"],COMPUTER_TYPE,$newID);
+               addDeviceContract($data["contracts_id"],$this->type,$newID);
             }
          }
 
@@ -414,11 +414,11 @@ class Computer extends CommonDBTM {
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
                  WHERE `items_id`='".$input["_oldID"]."'
-                       AND `itemtype`='".COMPUTER_TYPE."';";
+                       AND `itemtype`='".$this->type."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               addDeviceDocument($data["documents_id"],COMPUTER_TYPE,$newID);
+               addDeviceDocument($data["documents_id"],$this->type,$newID);
             }
          }
 
@@ -426,7 +426,7 @@ class Computer extends CommonDBTM {
          $query="SELECT `id`
                  FROM `glpi_networkports`
                  WHERE `items_id`='".$input["_oldID"]."'
-                       AND `itemtype`='".COMPUTER_TYPE."';";
+                       AND `itemtype`='".$this->type."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
@@ -463,7 +463,7 @@ class Computer extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_tickets`
                 WHERE (`items_id` = '$ID'
-                      AND `itemtype`='".COMPUTER_TYPE."')";
+                      AND `itemtype`='".$this->type."')";
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
@@ -488,19 +488,19 @@ class Computer extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_contracts_items`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype`='".COMPUTER_TYPE."')";
+                       AND `itemtype`='".$this->type."')";
       $result = $DB->query($query);
 
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype`='".COMPUTER_TYPE."')";
+                       AND `itemtype`='".$this->type."')";
       $result = $DB->query($query);
 
       $query = "SELECT `id`
                 FROM `glpi_networkports`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype` = '".COMPUTER_TYPE."')";
+                       AND `itemtype` = '".$this->type."')";
       $result = $DB->query($query);
       while ($data = $DB->fetch_array($result)) {
          $q = "DELETE
@@ -513,7 +513,7 @@ class Computer extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_networkports`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype` = '".COMPUTER_TYPE."')";
+                       AND `itemtype` = '".$this->type."')";
       $result = $DB->query($query);
 
       $query="SELECT *
@@ -535,7 +535,7 @@ class Computer extends CommonDBTM {
 
       $query="SELECT *
               FROM `glpi_reservationsitems`
-              WHERE (`itemtype`='".COMPUTER_TYPE."'
+              WHERE (`itemtype`='".$this->type."'
                      AND `items_id`='$ID')";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -607,13 +607,13 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),COMPUTER_TYPE,
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),$this->type,
                     $this->fields["entities_id"]);
-      autocompletionTextField("name","glpi_computers","name",$objectName,40,
+      autocompletionTextField("name",$this->table,"name",$objectName,40,
                                $this->fields["entities_id"]);
       echo "</td><td>".$LANG['common'][18]." :</td>";
       echo "<td>";
-      autocompletionTextField("contact","glpi_computers","contact",
+      autocompletionTextField("contact",$this->table,"contact",
                               $this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -623,7 +623,7 @@ class Computer extends CommonDBTM {
       dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
       echo "</td><td>".$LANG['common'][21]."&nbsp;: </td>";
       echo "<td >";
-      autocompletionTextField("contact_num","glpi_computers","contact_num",
+      autocompletionTextField("contact_num",$this->table,"contact_num",
                               $this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -683,27 +683,27 @@ class Computer extends CommonDBTM {
                      $this->fields["operatingsystemsservicepacks_id"]);
       echo "</td><td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],40,
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
                                $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("os_license_number","glpi_computers","os_license_number",
+      autocompletionTextField("os_license_number",$this->table,"os_license_number",
                               $this->fields["os_license_number"],40, $this->fields["entities_id"]);
       echo "</td><td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td >";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             COMPUTER_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,40,
+                             $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
                                $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("os_licenseid","glpi_computers","os_licenseid",
+      autocompletionTextField("os_licenseid",$this->table,"os_licenseid",
                                $this->fields["os_licenseid"],40,$this->fields["entities_id"]);
       echo "</td><td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td >";
@@ -878,16 +878,16 @@ class ComputerDisk extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_computersdisks","name",$this->fields["name"],40);
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
       echo "</td><td>".$LANG['computers'][6]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("device","glpi_computersdisks","device", $this->fields["device"],40);
+      autocompletionTextField("device",$this->table,"device", $this->fields["device"],40);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][5]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("mountpoint","glpi_computersdisks","mountpoint",
+      autocompletionTextField("mountpoint",$this->table,"mountpoint",
                               $this->fields["mountpoint"],40);
       echo "</td><td>".$LANG['computers'][4]."&nbsp;:</td>";
       echo "<td>";
@@ -897,13 +897,13 @@ class ComputerDisk extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][3]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("totalsize","glpi_computersdisks","totalsize",
+      autocompletionTextField("totalsize",$this->table,"totalsize",
                               $this->fields["totalsize"],40);
       echo "&nbsp;".$LANG['common'][82]."</td>";
 
       echo "<td>".$LANG['computers'][2]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("freesize","glpi_computersdisks","freesize",
+      autocompletionTextField("freesize",$this->table,"freesize",
                               $this->fields["freesize"],40);
       echo "&nbsp;".$LANG['common'][82]."</td></tr>";
 

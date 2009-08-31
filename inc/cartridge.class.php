@@ -203,7 +203,7 @@ class CartridgeType extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_cartridgesitems","name",
+      autocompletionTextField("name",$this->table,"name",
          $this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
@@ -214,7 +214,7 @@ class CartridgeType extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]." : </td>";
       echo "<td>";
-      autocompletionTextField("ref","glpi_cartridgesitems","ref",
+      autocompletionTextField("ref",$this->table,"ref",
          $this->fields["ref"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -285,7 +285,7 @@ class Cartridge extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype` = '".CARTRIDGE_ITEM_TYPE."')";
+                       AND `itemtype` = '".$this->type."')";
       $result = $DB->query($query);
    }
 
@@ -301,7 +301,7 @@ class Cartridge extends CommonDBTM {
       if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["cartridgesitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
-         $ic->fields["itemtype"]=CARTRIDGE_ITEM_TYPE;
+         $ic->fields["itemtype"]=$this->type;
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
          }
@@ -316,7 +316,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `glpi_cartridges`
+                `".$this->type."`
                 SET `date_out` = NULL, `date_use` = NULL, `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
       if ($result = $DB->query($query)) {
@@ -338,7 +338,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query="UPDATE
-              `glpi_cartridges`
+              `".$this->type."`
               SET `pages`='$pages'
               WHERE `id`='$ID'";
       $DB->query($query);
@@ -360,14 +360,14 @@ class Cartridge extends CommonDBTM {
 
       // Get first unused cartridge
       $query = "SELECT `id`
-                FROM `glpi_cartridges`
+                FROM `".$this->type."`
                 WHERE (`cartridgesitems_id` = '$tID'
                       AND `date_use` IS NULL)";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE
-                   `glpi_cartridges`
+                   `".$this->type."`
                    SET `date_use` = '".date("Y-m-d")."', `printers_id` = '$pID'
                    WHERE (`id`='".$DB->result($result,0,0)."'
                          AND `date_use` IS NULL)";
@@ -396,7 +396,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `glpi_cartridges`
+                `".$this->type."`
                 SET `date_out` = '".date("Y-m-d")."'
                 WHERE `id`='$ID'";
       if ($result = $DB->query($query)) {
