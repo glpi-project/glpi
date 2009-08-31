@@ -183,10 +183,11 @@ class CronTask extends CommonDBTM{
     * read the first task which need to be run by cron
     *
     * @param $mode : allow retrieve task for this mode
+    * @param $name : one specify action
     *
     * @return false if no task to run
     */
-   function getNeedToRun($mode=0) {
+   function getNeedToRun($mode=0, $name='') {
       global $DB;
 
       $hour=date('H');
@@ -195,6 +196,9 @@ class CronTask extends CommonDBTM{
 
       if ($mode) {
          $query .= " AND `mode`='$mode' ";
+      }
+      if ($name) {
+         $query .= " AND `name`='".addslashes($name)."' ";
       }
 
       // Get system lock
@@ -511,45 +515,57 @@ class CronTask extends CommonDBTM{
    /**
     * Launch the need cron tasks
     *
-    * @param $mode
+    * @param $mode (internal/external)
+    * @param $max number of task to launch ()
+    * @param $name of task to run
     */
-   static public function launch($mode) {
+   static public function launch($mode, $max=1, $name='') {
+
       if (CronTask::get_lock()) {
          if (isset($_SESSION["glpiID"])) {
             $saveglpiid=$_SESSION["glpiID"];
          }
-         //$_SESSION["glpiID"]="cron_".$tache;
-
          $task = new CronTask();
-         if ($task->getNeedToRun($mode)) {
-            if (empty($task->fields['module'])) {
-               $fonction = 'cron_' . $task->fields['name'];
-               if (!function_exists($fonction)) {
-                  // pas trouvé de fonction -> inclusion de la fonction
-                  if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php')) {
-                     include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php');
-                  }
-                  if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php')) {
-                     include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php');
-                  }
-               }
-            } else {
-               // Plugin case / Load hook
-               usePlugin($task->fields['module'],true);
-               $fonction = 'plugin_'.$task->fields['module'].'_cron_' . $task->fields['name'];
-            }
-            if (function_exists($fonction)) {
-               if ($task->start()) { // Lock in DB + log start
+         for ($i=1 ; $i<=$max ; $i++) {
+            $prefix = ($mode==CRONTASK_MODE_EXTERNAL ? 'External' : 'Internal')." #$i: ";
+            if ($task->getNeedToRun($mode, $name)) {
+               $_SESSION["glpiID"]="cron_".$task->fields['name'];
 
-                  $retcode = $fonction($task);
-                  $task->end($retcode); // Unlock in DB + log end
+               if (empty($task->fields['module'])) {
+                  $fonction = 'cron_' . $task->fields['name'];
+                  if (!function_exists($fonction)) {
+                     // pas trouvé de fonction -> inclusion de la fonction
+                     if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php')) {
+                        include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php');
+                     }
+                     if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php')) {
+                        include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php');
+                     }
+                  }
+               } else {
+                  // Plugin case / Load hook
+                  usePlugin($task->fields['module'],true);
+                  $fonction = 'plugin_'.$task->fields['module'].'_cron_' . $task->fields['name'];
                }
+               if (function_exists($fonction)) {
+                  if ($task->start()) { // Lock in DB + log start
+                     logInFile('cron', $prefix."Launch ".$task->fields['name']."\n");
+                     $retcode = $fonction($task);
+                     $task->end($retcode); // Unlock in DB + log end
+                  } else {
+                     logInFile('cron', $prefix."Can't start ".$task->fields['name']."\n");
+                  }
 
-            } else {
-               logInFile('php-errors', "Undefined function '$fonction'\n");
-               // TODO disable task ??
+               } else {
+                  logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
+                  logInFile('cron', $prefix."Can't start ".$task->fields['name'].
+                     "\nUndefined function '$fonction'\n");
+                  // TODO disable task ??
+               }
+            } else if ($i==1) {
+               logInFile('cron', $prefix."Nothing to launch\n");
             }
-         }
+         } // end for
 
          if (empty($saveglpiid)) {
             unset($_SESSION["glpiID"]);
@@ -558,6 +574,8 @@ class CronTask extends CommonDBTM{
          }
 
          CronTask::release_lock();
+      } else {
+         logInFile('cron', "Can't get DB lock'\n");
       }
    }
 }

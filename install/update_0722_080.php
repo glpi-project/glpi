@@ -2176,6 +2176,12 @@ function update0722to080() {
       $DB->query($query) or die("0.80 drop use_notification_on_dbreplicate_desync in check_update" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_configs','cron_limit')) {
+      $query="ALTER TABLE `glpi_configs` ADD `cron_limit` TINYINT NOT NULL DEFAULT '1'
+                           COMMENT 'Number of tasks execute by external cron'";
+      $DB->query($query) or die("0.80 add cron_limit in glpi_configs" . $LANG['update'][90] . $DB->error());
+   }
+
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
