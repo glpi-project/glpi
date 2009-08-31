@@ -227,6 +227,14 @@ class CommonItem {
                $this->obj = new Budget;
                break;
 
+            case CRONTASK_TYPE:
+               $this->obj = new CronTask;
+               break;
+
+            case CRONTASKLOG_TYPE:
+               $this->obj = new CronTaskLog;
+               break;
+
             default :
                // Plugin case
                if ($itemtype>1000) {

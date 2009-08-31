@@ -34,10 +34,11 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking",
-					"peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge",
-					"contract","enterprise","contact","group","profile","search","mailgate","typedoc","admininfo",
-					"registry","setup","rulesengine","rule.right", "rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown","entity","ldap","transfer");
+$NEEDED_ITEMS=array('admininfo','cartridge','computer','contact','contract','consumable','crontask',
+   'device','document','enterprise','entity','infocom','group','ldap','link','mailgate','monitor',
+   'networking','ocsng','peripheral','phone','printer','profile','registry','reservation',
+   'rulesengine','rule.dictionnary.software','rule.dictionnary.dropdown','rule.right',
+   'rule.softwarecategories','search','setup','software','tracking','transfer','typedoc','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -79,19 +80,19 @@ if (isset($_POST["itemtype"])){
 	}
 
 	commonHeader($LANG['title'][42],$_SERVER['PHP_SELF']);
-	
-	
+
+
 	if (isset($_GET['multiple_actions'])){
 		if (isset($_SESSION['glpi_massiveaction'])&&isset($_SESSION['glpi_massiveaction']['items'])){
 			$percent=min(100,round(100*($_SESSION['glpi_massiveaction']['item_count']-count($_SESSION['glpi_massiveaction']['items']))/$_SESSION['glpi_massiveaction']['item_count'],0));
 			displayProgressBar(400,$percent);
 		}
 	}
-	
-	
+
+
 	if (isset($_POST["action"])&&isset($_POST["itemtype"])&&isset($_POST["item"])&&count($_POST["item"])){
 
-	
+
 	/// Save selection
 	if (!isset($_SESSION['glpimassiveactionselected'])||count($_SESSION['glpimassiveactionselected'])==0){
 		$_SESSION['glpimassiveactionselected']=array();
@@ -107,7 +108,7 @@ if (isset($_POST["itemtype"])){
 	} else { /// Security : not used if no problem
 		$REDIRECT=$CFG_GLPI['root_doc']."/front/central.php";
 	}
-	
+
 		switch($_POST["action"]){
 			case "connect_to_computer":
 				$ci=new CommonItem();
@@ -129,13 +130,13 @@ if (isset($_POST["itemtype"])){
 						}
 					}
 				}
-	
+
 			break;
 
 			case "connect":
 				$ci=new CommonItem();
 				$ci2=new CommonItem();
-	
+
 				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1&&$ci->getFromDB($_POST["itemtype"],$key)) {
@@ -153,13 +154,13 @@ if (isset($_POST["itemtype"])){
 						}
 					}
 				}
-	
+
 			break;
 			case "disconnect":
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$query="SELECT * 
-							FROM glpi_computers_items 
+						$query="SELECT *
+							FROM glpi_computers_items
 							WHERE itemtype='".$_POST["itemtype"]."' AND items_id = '$key'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -199,7 +200,6 @@ if (isset($_POST["itemtype"])){
 			break;
 			case "update":
 				$searchopt=cleanSearchOption($_POST["itemtype"],'w');
-				
 				if (isset($searchopt[$_POST["id_field"]])){
 					/// Infocoms case
 					if ($_POST["itemtype"]<1000
@@ -207,7 +207,7 @@ if (isset($_POST["itemtype"])){
 						$ic=new Infocom();
 						$ci=new CommonItem();
 						$ci->setType($_POST["itemtype"],1);
-		
+
 						$link_entity_type=-1;
 						/// Specific entity item
 						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_suppliers_infocoms"){
@@ -215,9 +215,9 @@ if (isset($_POST["itemtype"])){
 							if ($ent->getFromDB($_POST[$_POST["field"]])){
 								$link_entity_type=$ent->fields["entities_id"];
 							}
-							
+
 						}
-						
+
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1){
 								if ($ci->getFromDB($_POST["itemtype"],$key)){
@@ -236,14 +236,14 @@ if (isset($_POST["itemtype"])){
 						$ci->setType($_POST["itemtype"],1);
 						$link_entity_type=array();
 						/// Specific entity item
-						
+
 						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["itemtype"]]
 						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
 						&& in_array($LINK_ID_TABLE[$_POST["itemtype"]],$CFG_GLPI["specif_entities_tables"])){
-							
+
 							$ci2=new CommonDBTM();
 							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
-		
+
 							if ($ci2->getFromDB($_POST[$_POST["field"]])){
 								if (isset($ci2->fields["entities_id"])&&$ci2->fields["entities_id"]>=0){
 									if (isset($ci2->fields["is_recursive"])&&$ci2->fields["is_recursive"]){
@@ -252,9 +252,9 @@ if (isset($_POST["itemtype"])){
 										$link_entity_type[]=$ci2->fields["entities_id"];
 									}
 								}
-		
+
 							}
-							
+
 						}
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1) {
@@ -353,7 +353,7 @@ if (isset($_POST["itemtype"])){
             break;
 			case "change_authtype":
 				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) 
+					if ($val==1)
 						$ids[]=$key;
 				}
 			changeUserAuthMethod($ids,$_POST["authtype"],$_POST["auth_server"]);
@@ -426,7 +426,7 @@ if (isset($_POST["itemtype"])){
 							FROM glpi_ocslinks
 							WHERE computers_id='".$key."'";
 						$result = $DB->query($query);
-						if ($DB->numrows($result) == 1) {                   
+						if ($DB->numrows($result) == 1) {
 							$data = $DB->fetch_assoc($result);
 							if ($data['ocsservers_id'] != -1){
 							//Force update of the machine
@@ -441,7 +441,7 @@ if (isset($_POST["itemtype"])){
 					}
 				}
 			break;
-	
+
 			case "compute_software_category":
 				$softcatrule = new SoftwareCategoriesRuleCollection;
 				$soft = new Software;
@@ -453,7 +453,7 @@ if (isset($_POST["itemtype"])){
 						$params["name"]=$soft->fields["name"];
 						$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
 						$params["comment"]=$soft->fields["comment"];
-						
+
 						//Process rules
 						$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));
 					}
@@ -464,7 +464,7 @@ if (isset($_POST["itemtype"])){
 				$softdictionnayrule = new DictionnarySoftwareCollection;
 				$ids=array();
 				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) 
+					if ($val==1)
 						$ids[]=$key;
 				}
 				$softdictionnayrule->replayRulesOnExistingDB(0,0,$ids);
@@ -481,10 +481,10 @@ if (isset($_POST["itemtype"])){
 						$user->getFromDB($key);
 						if (($user->fields["authtype"] == AUTH_LDAP) || ($user->fields["authtype"] == AUTH_EXTERNAL))
 							ldapImportUserByServerId($user->fields["name"],1,$user->fields["auths_id"]);
-					} 
+					}
 				}
 			break;
-			
+
 			case "add_transfer_list":
 				if (!isset($_SESSION['glpitransfer_list'])){
 					$_SESSION['glpitransfer_list']=array();
@@ -492,7 +492,7 @@ if (isset($_POST["itemtype"])){
 				if (!isset($_SESSION['glpitransfer_list'][$_POST["itemtype"]])){
 					$_SESSION['glpitransfer_list'][$_POST["itemtype"]]=array();
 				}
-				
+
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$_SESSION['glpitransfer_list'][$_POST["itemtype"]][$key]=$key;
@@ -528,22 +528,22 @@ if (isset($_POST["itemtype"])){
 					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
 						'MassiveActionsProcess',
 						$_POST);
-				} 
-	
+				}
+
 			break;
 		}
-	
+
 		addMessageAfterRedirect($LANG['common'][23]);
 		glpi_header($REDIRECT);
-	
+
 	} else { //action, itemtype or item not defined
-		
+
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$LANG['common'][24]."</b></div>";
-		
+
 		displayBackLink();
 	}
-	
+
 	commonFooter();
 } // itemtype defined
 
