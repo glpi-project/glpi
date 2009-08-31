@@ -476,6 +476,7 @@ CREATE TABLE `glpi_configs` (
   `names_format` int(11) NOT NULL default '0' COMMENT 'see *NAME_BEFORE constant in define.php',
   `default_request_type` int(11) NOT NULL default '1',
   `use_noright_users_add` tinyint(1) NOT NULL default '1',
+  `cron_limit` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Number of tasks execute by external cron',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

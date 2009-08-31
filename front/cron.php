@@ -67,8 +67,22 @@ if (!isCommandLine()) {
    flush();
 
    CronTask::launch(CRONTASK_MODE_INTERNAL);
+
+} else if (isset($_SERVER['argc']) && $_SERVER['argc']>1){
+
+   // Parse command line options
+   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
+      if (is_numeric($_SERVER['argv'][$i])) {
+         // Number of tasks
+         CronTask::launch(CRONTASK_MODE_EXTERNAL, intval($_SERVER['argv'][$i]));
+      } else {
+         // Task name
+         CronTask::launch(CRONTASK_MODE_EXTERNAL, $CFG_GLPI['cron_limit'], $_SERVER['argv'][$i]);
+      }
+   }
 } else {
-   CronTask::launch(CRONTASK_MODE_EXTERNAL);
+   // Default from configuration
+   CronTask::launch(CRONTASK_MODE_EXTERNAL, $CFG_GLPI['cron_limit']);
 }
 
 ?>
