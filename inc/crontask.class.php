@@ -540,7 +540,6 @@ class CronTask extends CommonDBTM{
             }
             if (function_exists($fonction)) {
                if ($task->start()) { // Lock in DB + log start
-                  logInFile("php-errors","Launch $fonction\n"); // TODO : remove this
 
                   $retcode = $fonction($task);
                   $task->end($retcode); // Unlock in DB + log end
@@ -551,7 +550,6 @@ class CronTask extends CommonDBTM{
                // TODO disable task ??
             }
          }
-         else logInFile("php-errors","No task to Launch\n"); // TODO : remove this
 
          if (empty($saveglpiid)) {
             unset($_SESSION["glpiID"]);
