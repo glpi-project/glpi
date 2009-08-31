@@ -33,28 +33,30 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
 /**
  * Cron action on mailgate : retrieve mail and create tickets
  * @return -1 : done but not finish 1 : done with success
  **/
-function cron_mailgate($task){
+function cron_mailgate($task) {
    global $DB,$CFG_GLPI;
 
-   $query="SELECT * FROM glpi_mailcollectors WHERE is_active = 1";
-   if ($result=$DB->query($query)){
+   $query = "SELECT *
+             FROM `glpi_mailcollectors`
+             WHERE `is_active` = '1'";
+   if ($result=$DB->query($query)) {
       $max = $task->fields['param'];
-      if ($DB->numrows($result)>0){
+      if ($DB->numrows($result)>0) {
          $mc=new MailCollect();
 
-         while ($max>0 && $data=$DB->fetch_assoc($result)){
-
+         while ($max>0 && $data=$DB->fetch_assoc($result)) {
             $mc->maxfetch_emails = $max;
 
-            $task->log("Collect mails from ".$data["host"]." for  ".getDropdownName("glpi_entities",$data["entities_id"])."\n");
+            $task->log("Collect mails from ".$data["host"]." for  ".
+                        getDropdownName("glpi_entities",$data["entities_id"])."\n");
             $message=$mc->collect($data["id"]);
 
             $task->log("$message\n");

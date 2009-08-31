@@ -34,573 +34,616 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+   die("Sorry. You can't access directly to this file");
+}
 
 // CLASSES Networking
 
-
 class Netdevice extends CommonDBTM {
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_networkequipments";
-		$this->type=NETWORKING_TYPE;
-		$this->dohistory=true;
-		$this->entity_assign=true;
-		$this->may_be_recursive=true;
-	}
+   /**
+    * Constructor
+   **/
+   function __construct () {
 
+      $this->table="glpi_networkequipments";
+      $this->type=NETWORKING_TYPE;
+      $this->dohistory=true;
+      $this->entity_assign=true;
+      $this->may_be_recursive=true;
+   }
 
-	function defineTabs($ID,$withtemplate){
-		global $LANG;
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
 
-		$ong=array();
-		if ($ID > 0){
-			$ong[1]=$LANG['title'][27];
-			if (haveRight("contract","r") || haveRight("infocom","r")){
-				$ong[4]=$LANG['Menu'][26];
-			}
-			if (haveRight("document","r")){
-				$ong[5]=$LANG['Menu'][27];
-			}
-	
-			if(empty($withtemplate)){
-				if (haveRight("show_all_ticket","1")){
-					$ong[6]=$LANG['title'][28];
-				}
-				if (haveRight("link","r")){
-					$ong[7]=$LANG['title'][34];
-				}
-				if (haveRight("notes","r")){
-					$ong[10]=$LANG['title'][37];
-				}
-				if (haveRight("reservation_central","r")){
-					$ong[11]=$LANG['Menu'][17];
-				}
-					
-	
-				$ong[12]=$LANG['title'][38];
-			}	
-		} else { // New item
-			$ong[1]=$LANG['title'][26];
-		}
-		return $ong;
-	}
+      $ong=array();
+      if ($ID > 0) {
+         $ong[1]=$LANG['title'][27];
+         if (haveRight("contract","r") || haveRight("infocom","r")) {
+            $ong[4]=$LANG['Menu'][26];
+         }
+         if (haveRight("document","r")) {
+            $ong[5]=$LANG['Menu'][27];
+         }
+         if (empty($withtemplate)) {
+            if (haveRight("show_all_ticket","1")) {
+               $ong[6]=$LANG['title'][28];
+            }
+            if (haveRight("link","r")) {
+               $ong[7]=$LANG['title'][34];
+            }
+            if (haveRight("notes","r")) {
+               $ong[10]=$LANG['title'][37];
+            }
+            if (haveRight("reservation_central","r")) {
+               $ong[11]=$LANG['Menu'][17];
+            }
+            $ong[12]=$LANG['title'][38];
+         }
+      } else { // New item
+         $ong[1]=$LANG['title'][26];
+      }
+      return $ong;
+   }
 
-	function prepareInputForAdd($input) {
+   function prepareInputForAdd($input) {
 
-		if (isset($input["id"])&&$input["id"]>0){
-			$input["_oldID"]=$input["id"];
-		}
-		unset($input['id']);
-		unset($input['withtemplate']);
+      if (isset($input["id"])&&$input["id"]>0) {
+         $input["_oldID"]=$input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
 
-		return $input;
-	}
+      return $input;
+   }
 
-	function post_addItem($newID,$input) {
-		global $DB;
+   function post_addItem($newID,$input) {
+      global $DB;
 
-		// Manage add from template
-		if (isset($input["_oldID"])){
-			// ADD Infocoms
-			$ic= new Infocom();
-			if ($ic->getFromDBforDevice(NETWORKING_TYPE,$input["_oldID"])){
-				$ic->fields["items_id"]=$newID;
-				unset ($ic->fields["id"]);
-				if (isset($ic->fields["immo_number"])) {
-					$ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1, INFOCOM_TYPE ,$input['entities_id']);
-				}
-				if (empty($ic->fields['use_date'])){
-					unset($ic->fields['use_date']);
-				}
-				if (empty($ic->fields['buy_date'])){
-					unset($ic->fields['buy_date']);
-				}
+      // Manage add from template
+      if (isset($input["_oldID"])) {
+         // ADD Infocoms
+         $ic= new Infocom();
+         if ($ic->getFromDBforDevice(NETWORKING_TYPE,$input["_oldID"])) {
+            $ic->fields["items_id"]=$newID;
+            unset ($ic->fields["id"]);
+            if (isset($ic->fields["immo_number"])) {
+               $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
+                                                     INFOCOM_TYPE ,$input['entities_id']);
+            }
+            if (empty($ic->fields['use_date'])) {
+               unset($ic->fields['use_date']);
+            }
+            if (empty($ic->fields['buy_date'])) {
+               unset($ic->fields['buy_date']);
+            }
+            $ic->addToDB();
+         }
+         // ADD Ports
+         $query = "SELECT `id`
+                   FROM `glpi_networkports`
+                   WHERE `items_id` = '".$input["_oldID"]."'
+                         AND `itemtype` = '".NETWORKING_TYPE."'";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0) {
+            while ($data=$DB->fetch_array($result)) {
+               $np= new Netport();
+               $np->getFromDB($data["id"]);
+               unset($np->fields["id"]);
+               unset($np->fields["ip"]);
+               unset($np->fields["mac"]);
+               unset($np->fields["netpoints_id"]);
+               $np->fields["items_id"]=$newID;
+               $np->addToDB();
+            }
+         }
+         // ADD Contract
+         $query = "SELECT `contracts_id`
+                   FROM `glpi_contracts_items`
+                   WHERE `items_id` = '".$input["_oldID"]."'
+                         AND `itemtype` = '".NETWORKING_TYPE."'";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0) {
+            while ($data=$DB->fetch_array($result)) {
+               addDeviceContract($data["contracts_id"],NETWORKING_TYPE,$newID);
+            }
+         }
+         // ADD Documents
+         $query = "SELECT `documents_id`
+                   FROM `glpi_documents_items`
+                   WHERE `items_id` = '".$input["_oldID"]."'
+                         AND `itemtype` = '".NETWORKING_TYPE."'";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0) {
+            while ($data=$DB->fetch_array($result)) {
+               addDeviceDocument($data["documents_id"],NETWORKING_TYPE,$newID);
+            }
+         }
+      }
+   }
 
-				$ic->addToDB();
-			}
-	
-			// ADD Ports
-			$query="SELECT id 
-				FROM glpi_networkports 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)>0){
-	
-				while ($data=$DB->fetch_array($result)){
-					$np= new Netport();
-					$np->getFromDB($data["id"]);
-					unset($np->fields["id"]);
-					unset($np->fields["ip"]);
-					unset($np->fields["mac"]);
-					unset($np->fields["netpoints_id"]);
-					$np->fields["items_id"]=$newID;
-					$np->addToDB();
-				}
-			}
-	
-			// ADD Contract				
-			$query="SELECT contracts_id 
-				FROM glpi_contracts_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)>0){
-	
-				while ($data=$DB->fetch_array($result))
-					addDeviceContract($data["contracts_id"],NETWORKING_TYPE,$newID);
-			}
-	
-			// ADD Documents			
-			$query="SELECT documents_id 
-				FROM glpi_documents_items 
-				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)>0){
-	
-				while ($data=$DB->fetch_array($result))
-					addDeviceDocument($data["documents_id"],NETWORKING_TYPE,$newID);
-			}
-		}
+   function pre_deleteItem($ID) {
+      removeConnector($ID);
+      return true;
+   }
 
-	}
+   function cleanDBonPurge($ID) {
+      global $DB,$CFG_GLPI;
 
-	function pre_deleteItem($ID) {
-		removeConnector($ID);	
-		return true;
-	}
+      $job =new Job();
+      $query = "SELECT *
+                FROM `glpi_tickets`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '".NETWORKING_TYPE."'";
+      $result = $DB->query($query);
 
+      if ($DB->numrows($result)) {
+         while ($data=$DB->fetch_array($result)) {
+            if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
+               $query = "UPDATE
+                         `glpi_tickets`
+                         SET `items_id` = '0', `itemtype` = '0'
+                         WHERE `id` = '".$data["id"]."'";
+               $DB->query($query);
+            } else {
+               $job->delete(array("id"=>$data["id"]));
+            }
+         }
+      }
+      $query = "SELECT `id`
+                FROM `glpi_networkports`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '".NETWORKING_TYPE."'";
+      $result = $DB->query($query);
+      while ($data = $DB->fetch_array($result)) {
+         $q = "DELETE
+               FROM `glpi_networkports_networkports`
+               WHERE `networkports_id_1` = '".$data["id"]."'
+                     OR `networkports_id_2` = '".$data["id"]."'";
+         $result2 = $DB->query($q);
+      }
+      $query = "DELETE
+                FROM `glpi_networkports`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '".NETWORKING_TYPE."'";
+      $result = $DB->query($query);
 
-	function cleanDBonPurge($ID) {
-		global $DB,$CFG_GLPI;
+      $query = "DELETE
+                FROM `glpi_infocoms`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '".NETWORKING_TYPE."'";
+      $result = $DB->query($query);
 
+      $query = "DELETE
+                FROM `glpi_contracts_items`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '".NETWORKING_TYPE."'";
+      $result = $DB->query($query);
 
-		$job =new Job();
-		$query = "SELECT * FROM glpi_tickets WHERE items_id = '$ID'  AND itemtype='".NETWORKING_TYPE."'";
-		$result = $DB->query($query);
+      $query = "SELECT *
+                FROM `glpi_reservationsitems`
+                WHERE `itemtype` = '".NETWORKING_TYPE."'
+                AND `items_id` = '$ID'";
 
-		if ($DB->numrows($result))
-			while ($data=$DB->fetch_array($result)) {
-				if ($CFG_GLPI["keep_tickets_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE id='".$data["id"]."';";
-					$DB->query($query);
-				} else $job->delete(array("id"=>$data["id"]));
-			}
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $rr=new ReservationItem();
+            $rr->delete(array("id"=>$DB->result($result,0,"id")));
+         }
+      }
+   }
 
-		$query = "SELECT id FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
-		$result = $DB->query($query);
-		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networkports_networkports WHERE networkports_id_1 = '".$data["id"]."' OR networkports_id_2 = '".$data["id"]."'";
-			$result2 = $DB->query($q);				
-		}
+   /**
+    * Can I change recusvive flag to false
+    * check if there is "linked" object in another entity
+    *
+    * Overloaded from CommonDBTM
+    *
+    * @return booleen
+    **/
+   function canUnrecurs () {
+      global $DB, $CFG_GLPI, $LINK_ID_TABLE;
 
-
-		$query = "DELETE FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
-		$result = $DB->query($query);
-
-		$query = "DELETE FROM glpi_infocoms WHERE items_id = '$ID' AND itemtype='".NETWORKING_TYPE."'";
-		$result = $DB->query($query);
-
-		$query = "DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype='".NETWORKING_TYPE."'";
-		$result = $DB->query($query);
-
-		$query="SELECT * FROM glpi_reservationsitems WHERE itemtype='".NETWORKING_TYPE."' AND items_id='$ID'";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)>0) {
-				$rr=new ReservationItem();
-				$rr->delete(array("id"=>$DB->result($result,0,"id")));
-			}
-		}
-	}
-
-	/**
-	 * Can I change recusvive flag to false
-	 * check if there is "linked" object in another entity
-	 * 
-	 * Overloaded from CommonDBTM
-	 *
-	 * @return booleen
-	 **/
-	function canUnrecurs () {
-
-		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
-		
-		$ID  = $this->fields['id'];
-
-		if ($ID<0 || !$this->fields['is_recursive']) {
-			return true;
-		}
-
-		if (!parent::canUnrecurs()) {
-			return false;
-		}
-		$entities = "(".$this->fields['entities_id'];
+      $ID = $this->fields['id'];
+      if ($ID<0 || !$this->fields['is_recursive']) {
+         return true;
+      }
+      if (!parent::canUnrecurs()) {
+         return false;
+      }
+      $entities = "(".$this->fields['entities_id'];
       foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
-			$entities .= ",$papa";
-		}
-		$entities .= ")";
+         $entities .= ",$papa";
+      }
+      $entities .= ")";
 
-		// RELATION : networking -> _port -> _wire -> _port -> device
+      // RELATION : networking -> _port -> _wire -> _port -> device
 
-		// Evaluate connection in the 2 ways
-		for ($tabend=array("networkports_id_1"=>"networkports_id_2","networkports_id_2"=>"networkports_id_1");list($enda,$endb)=each($tabend);) {
-			
-			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
-				"FROM glpi_networkports_networkports, glpi_networkports " .
-				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.id " .
-				"AND   glpi_networkports_networkports.$enda IN (SELECT id FROM glpi_networkports 
-									WHERE itemtype=".NETWORKING_TYPE." AND items_id='$ID') " .
-				"GROUP BY itemtype;";
+      // Evaluate connection in the 2 ways
+      for ($tabend=array("networkports_id_1"=>"networkports_id_2",
+                         "networkports_id_2"=>"networkports_id_1");list($enda,$endb)=each($tabend);) {
 
-			$res = $DB->query($sql);
-			if ($res) while ($data = $DB->fetch_assoc($res)) {
+         $sql = "SELECT `itemtype`, GROUP_CONCAT(DISTINCT `items_id`) AS ids
+                 FROM `glpi_networkports_networkports`, `glpi_networkports`
+                 WHERE `glpi_networkports_networkports`.`$endb` = `glpi_networkports`.`id`
+                       AND `glpi_networkports_networkports`.`$enda`
+                                 IN (SELECT `id`
+                                     FROM `glpi_networkports`
+                                     WHERE `itemtype` = ".NETWORKING_TYPE."
+                                           AND `items_id` = '$ID')
+                 GROUP BY `itemtype`";
 
-				// For each itemtype which are entity dependant
-				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
-					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
-	
-					if (countElementsInTable("$table", "id IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
-							return false;						
-					}
-				}			
-			}
-		}
-		
-		return true;
-	}
+         $res = $DB->query($sql);
+         if ($res) {
+            while ($data = $DB->fetch_assoc($res)) {
+               // For each itemtype which are entity dependant
+               if (isset($LINK_ID_TABLE[$data["itemtype"]])
+                   && in_array($table=$LINK_ID_TABLE[$data["itemtype"]],
+                               $CFG_GLPI["specif_entities_tables"])) {
 
-	/**
-	 * Print the networking form
-	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the item to print
-	 *@param $withtemplate integer template or basic item
-	 *
-	 *@return boolean item found
-	 **/
-	function showForm ($target,$ID,$withtemplate='') {
-		// Show device or blank form
+                  if (countElementsInTable("$table", "id IN (".$data["ids"].")
+                                           AND entities_id NOT IN $entities")>0) {
+                     return false;
+                  }
+               }
+            }
+         }
+      }
+      return true;
+   }
 
-		global $CFG_GLPI, $LANG;
+   /**
+    * Print the networking form
+    *
+    *@param $target filename : where to go when done.
+    *@param $ID Integer : Id of the item to print
+    *@param $withtemplate integer template or basic item
+    *
+    *@return boolean item found
+    **/
+   function showForm ($target,$ID,$withtemplate='') {
+      global $CFG_GLPI, $LANG;
 
-		if (!haveRight("networking","r")) return false;
+      // Show device or blank form
 
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$this->getEmpty();
-		} 
+      if (!haveRight("networking","r")) {
+         return false;
+      }
 
-		if(!empty($withtemplate) && $withtemplate == 2) {
-			$template = "newcomp";
-			$datestring = $LANG['computers'][14].": ";
-			$date = convDateTime($_SESSION["glpi_currenttime"]);
-		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-			$template = "newtemplate";
-			$datestring = $LANG['computers'][14].": ";
-			$date = convDateTime($_SESSION["glpi_currenttime"]);
-		} else {
-			$datestring = $LANG['common'][26].": ";
-			$date = convDateTime($this->fields["date_mod"]);
-			$template = false;
-		}
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
+
+      if (!empty($withtemplate) && $withtemplate == 2) {
+         $template = "newcomp";
+         $datestring = $LANG['computers'][14].": ";
+         $date = convDateTime($_SESSION["glpi_currenttime"]);
+      } elseif (!empty($withtemplate) && $withtemplate == 1) {
+         $template = "newtemplate";
+         $datestring = $LANG['computers'][14].": ";
+         $date = convDateTime($_SESSION["glpi_currenttime"]);
+      } else {
+         $datestring = $LANG['common'][26].": ";
+         $date = convDateTime($this->fields["date_mod"]);
+         $template = false;
+      }
 
       $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-      $this->showFormHeader($target,$ID, $withtemplate);
+      $this->showFormHeader($target,$ID, $withtemplate,2);
 
-      echo "<tr><td class='tab_bg_1' valign='top'>\n";
-
-      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-      echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("name","glpi_networkequipments","name",$objectName,40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
-      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-      autocompletionTextField("contact_num","glpi_networkequipments","contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-      autocompletionTextField("contact","glpi_networkequipments","contact",$this->fields["contact"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
-      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr><td>".$LANG['state'][0].":</td><td>\n";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>$datestring</td><td>$date\n";
-      if (!$template&&!empty($this->fields['template_name'])) {
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['template_name'].")";
-      }
-      echo "</td></tr>\n";
-
-      echo "</table>\n";
-
-      echo "</td>\n";
-      echo "<td class='tab_bg_1' valign='top'>\n";
-
-      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-      echo "<tr><td>".$LANG['common'][17].": 	</td><td>\n";
-      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id", $this->fields["networkequipmentstypes_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-      dropdownValue("glpi_networkequipmentsmodels", "networkequipmentsmodels_id", $this->fields["networkequipmentsmodels_id"]);
-      echo "</td></tr>";
-
-      echo "<tr><td>".$LANG['setup'][71].": 	</td><td>\n";
-      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id", $this->fields["networkequipmentsfirmwares_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
-      autocompletionTextField("ram","glpi_networkequipments","ram",$this->fields["ram"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-      autocompletionTextField("serial","glpi_networkequipments","serial",$this->fields["serial"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial","glpi_networkequipments","otherserial",$objectName,40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['setup'][89].": 	</td><td>\n";
-      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
-      autocompletionTextField("ip","glpi_networkequipments","ip",$this->fields["ip"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
-      autocompletionTextField("mac","glpi_networkequipments","mac",$this->fields["mac"],40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "</table>\n";
-
-      echo "</td>\n";
-      echo "</tr>\n";
-      echo "<tr>\n";
-      echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
-
-      echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-      echo $LANG['common'][25].":	</td>\n";
-      echo "<td class='center'><textarea cols='80' rows='4' name='comment' >".$this->fields["comment"]."</textarea>\n";
-      echo "</td></tr></table>\n";
-
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                             NETWORKING_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("name","glpi_networkequipments","name",$objectName,40,
+                              $this->fields["entities_id"]);
       echo "</td>";
-      echo "</tr>\n";
+      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id",
+                    $this->fields["networkequipmentstypes_id"]);
+      echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate);
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id",
+                    $this->fields["networkequipmentsfirmwares_id"]);
+      echo "</td></tr>";
 
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
+                    $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['networking'][5]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("ram","glpi_networkequipments","ram",$this->fields["ram"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
 
-		return true;
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][10]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
+                      $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      echo "</td></tr>";
 
-	}
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][21]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("contact_num","glpi_networkequipments","contact_num",
+                              $this->fields["contact_num"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networkequipmentsmodels", "networkequipmentsmodels_id",
+                    $this->fields["networkequipmentsmodels_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("contact","glpi_networkequipments","contact",
+                              $this->fields["contact"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("serial","glpi_networkequipments","serial",$this->fields["serial"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
+                             NETWORKING_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial","glpi_networkequipments","otherserial",$objectName,40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+                    $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td rowspan='6'>";
+      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='6'>
+            <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['networking'][14]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("ip","glpi_networkequipments","ip",$this->fields["ip"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['networking'][15]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("mac","glpi_networkequipments","mac",$this->fields["mac"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;
+      if (!$template && !empty($this->fields['template_name'])) {
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")";
+      }
+      echo "</td></tr>";
+
+      $this->showFormButtons($ID,$withtemplate,2);
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
+      return true;
+   }
 
 }
 
 /// Netport class
 class Netport extends CommonDBTM {
 
-	/// ID of the port connected to the current one
-	var $contact_id		= 0;
-
-	/// hardare data : name
-	var $device_name	= "";
-	/// hardare data : ID
-	var $device_ID		= 0;
-	/// hardare data : type
-	var $itemtype		= 0;
-	/// hardare data : entity
-	var $entities_id		= -1;
-	/// hardare data : locations_id
-	var $locations_id		= -1;
-	/// hardare data : is_recursive
+   /// ID of the port connected to the current one
+   var $contact_id		= 0;
+   /// hardare data : name
+   var $device_name	= "";
+   /// hardare data : ID
+   var $device_ID		= 0;
+   /// hardare data : type
+   var $itemtype		= 0;
+   /// hardare data : entity
+   var $entities_id		= -1;
+   /// hardare data : locations_id
+   var $locations_id		= -1;
+   /// hardare data : is_recursive
    var $is_recursive = 0;
-	/// hardare data : is_deleted
+   /// hardare data : is_deleted
    var $is_deleted = 0;
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_networkports";
-		$this->type = NETWORKING_PORT_TYPE;
-	}
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_networkports";
+      $this->type = NETWORKING_PORT_TYPE;
+   }
 
-	function post_updateItem($input,$updates,$history=1){
-		//$tomatch=array("netpoints_id","ip","mac");
-		// Only netpoint updates : ip and mac may be different.
-		$tomatch=array("netpoints_id");
-		$updates=array_intersect($updates,$tomatch);
-		if (count($updates)){
-			$save_ID=$this->fields["id"];
-			$n=new Netwire;
-			if ($this->fields["id"]=$n->getOppositeContact($save_ID)){
-				$this->updateInDB($updates);
-			}
-			$this->fields["id"]=$save_ID;
-		}
-	}
+   function post_updateItem($input,$updates,$history=1) {
 
-	function prepareInputForUpdate($input) {
-		// Is a preselected mac adress selected ?
-		if (isset($input['pre_mac'])&&!empty($input['pre_mac'])){
-			$input['mac']=$input['pre_mac'];
-			unset($input['pre_mac']);
-		}
-		return $input;
-	}
+      // Only netpoint updates : ip and mac may be different.
+      $tomatch=array("netpoints_id");
+      $updates=array_intersect($updates,$tomatch);
+      if (count($updates)) {
+         $save_ID=$this->fields["id"];
+         $n=new Netwire;
+         if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
+            $this->updateInDB($updates);
+         }
+         $this->fields["id"]=$save_ID;
+      }
+   }
 
+   function prepareInputForUpdate($input) {
 
-	function prepareInputForAdd($input) {
-		if (isset($input["logical_number"])&&strlen($input["logical_number"])==0) unset($input["logical_number"]);
-		//unset($input['search']);
-		return $input;
-	}
+      // Is a preselected mac adress selected ?
+      if (isset($input['pre_mac']) && !empty($input['pre_mac'])) {
+         $input['mac']=$input['pre_mac'];
+         unset($input['pre_mac']);
+      }
+      return $input;
+   }
 
-	function cleanDBonPurge($ID) {
-		global $DB;
+   function prepareInputForAdd($input) {
 
-		$query = "DELETE FROM glpi_networkports_networkports WHERE (networkports_id_1 = '$ID' OR networkports_id_2 = '$ID')";
-		$result = $DB->query($query);
-	}
+      if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
+         unset($input["logical_number"]);
+      }
+      return $input;
+   }
 
-	// SPECIFIC FUNCTIONS
+   function cleanDBonPurge($ID) {
+      global $DB;
 
-	/**
-	 * Retrieve data in the port of the item which belongs to
-	 *
-	 *@param $ID Integer : Id of the item to print
-	 *@param $itemtype item type
-	 *
-	 *@return boolean item found
-	 **/
-	function getDeviceData($ID, $itemtype) {
-		global $DB,$LINK_ID_TABLE;
+      $query = "DELETE
+                FROM `glpi_networkports_networkports`
+                WHERE `networkports_id_1` = '$ID'
+                      OR `networkports_id_2` = '$ID'";
+      $result = $DB->query($query);
+   }
 
-		$table = $LINK_ID_TABLE[$itemtype];
+   // SPECIFIC FUNCTIONS
+   /**
+    * Retrieve data in the port of the item which belongs to
+    *
+    *@param $ID Integer : Id of the item to print
+    *@param $itemtype item type
+    *
+    *@return boolean item found
+    **/
+   function getDeviceData($ID, $itemtype) {
+      global $DB,$LINK_ID_TABLE;
 
-		$query = "SELECT * FROM $table WHERE id = '$ID'";
-		if ($result=$DB->query($query))
-		{
-			$data = $DB->fetch_array($result);
-			$this->device_name = $data["name"];
-			$this->is_deleted = $data["is_deleted"];
-			$this->entities_id = $data["entities_id"];
-			$this->locations_id = $data["locations_id"];
-			$this->device_ID = $ID;
-			$this->itemtype = $itemtype;
-			$this->is_recursive = (isset($data["is_recursive"])?$data["is_recursive"]:0);
-			return true;
-		}
-		else 
-		{
-			return false;
-		}
-	}
+      $table = $LINK_ID_TABLE[$itemtype];
 
-	/**
-	 * Get port opposite port ID if linked item
-	 * ID store in contact_id
-	 *@param $ID networking port ID
-	 *
-	 *@return boolean item found
-	 **/
-	function getContact($ID) {
+      $query = "SELECT *
+                FROM `$table`
+                WHERE `id` = '$ID'";
+      if ($result=$DB->query($query)) {
+         $data = $DB->fetch_array($result);
+         $this->device_name = $data["name"];
+         $this->is_deleted = $data["is_deleted"];
+         $this->entities_id = $data["entities_id"];
+         $this->locations_id = $data["locations_id"];
+         $this->device_ID = $ID;
+         $this->itemtype = $itemtype;
+         $this->is_recursive = (isset($data["is_recursive"])?$data["is_recursive"]:0);
+         return true;
+      } else {
+         return false;
+      }
+   }
 
-		$wire = new Netwire;
-		if ($this->contact_id = $wire->getOppositeContact($ID)){
-			return true;
-		}else{
-			return false;
-		}
-	}
+   /**
+    * Get port opposite port ID if linked item
+    * ID store in contact_id
+    *@param $ID networking port ID
+    *
+    *@return boolean item found
+    **/
+   function getContact($ID) {
 
-	function defineTabs($ID,$withtemplate) {
-		global $LANG, $CFG_GLPI;
+      $wire = new Netwire;
+      if ($this->contact_id = $wire->getOppositeContact($ID)) {
+         return true;
+      } else {
+         return false;
+      }
+   }
 
-		$ong[1] = $LANG['title'][26];
+   function defineTabs($ID,$withtemplate) {
+      global $LANG, $CFG_GLPI;
 
-		return $ong;
-	}
+      $ong[1] = $LANG['title'][26];
+      return $ong;
+   }
+
 }
 
 /// Netwire class
 class Netwire {
 
-	/// ID of the netwire
-	var $ID		= 0;
-	/// first connected port ID
-	var $networkports_id_1	= 0;
-	/// second connected port ID
-	var $networkports_id_2	= 0;
+   /// ID of the netwire
+   var $ID = 0;
+   /// first connected port ID
+   var $networkports_id_1 = 0;
+   /// second connected port ID
+   var $networkports_id_2 = 0;
 
-	/**
-	 * Get port opposite port ID 
-	 * 
-	 *@param $ID networking port ID
-	 *
-	 *@return integer ID of opposite port. false if not found
-	 **/
-	function getOppositeContact ($ID){
-		global $DB;
-		$query = "SELECT * FROM glpi_networkports_networkports
-               WHERE networkports_id_1 = '$ID' OR networkports_id_2 = '$ID'";
-		if ($result=$DB->query($query))
-		{
-			$data = $DB->fetch_array($result);
-			if (is_array($data)){
-				$this->networkports_id_1 = $data["networkports_id_1"];
-				$this->networkports_id_2 = $data["networkports_id_2"];
-			}
+   /**
+    * Get port opposite port ID
+    *
+    *@param $ID networking port ID
+    *
+    *@return integer ID of opposite port. false if not found
+    **/
+   function getOppositeContact ($ID) {
+      global $DB;
 
-			if ($this->networkports_id_1 == $ID){
-				return $this->networkports_id_2;
-			} else if ($this->networkports_id_2 == $ID){
-				return $this->networkports_id_1;
-			} else {
-				return false;
-			}
-		}
-	}
+      $query = "SELECT *
+                FROM `glpi_networkports_networkports`
+                WHERE `networkports_id_1` = '$ID'
+                      OR `networkports_id_2` = '$ID'";
+      if ($result=$DB->query($query)) {
+         $data = $DB->fetch_array($result);
+         if (is_array($data)) {
+            $this->networkports_id_1 = $data["networkports_id_1"];
+            $this->networkports_id_2 = $data["networkports_id_2"];
+         }
+         if ($this->networkports_id_1 == $ID) {
+            return $this->networkports_id_2;
+         } else if ($this->networkports_id_2 == $ID) {
+            return $this->networkports_id_1;
+         } else {
+            return false;
+         }
+      }
+   }
+
 }
 
 ?>
