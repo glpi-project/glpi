@@ -309,8 +309,13 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][109]." : </td><td>";
       dropdownInteger('logs_lifetime', $this->fields['logs_lifetime'],0,360,10);
       echo "</td><td>".$LANG['crontask'][40]."&nbsp;:</td><td>";
-      echo (empty($this->fields['lastrun'])
-         ? $LANG['setup'][307] : convDateTime($this->fields['lastrun']));
+      if (empty($this->fields['lastrun'])) {
+         echo $LANG['setup'][307];
+      } else {
+         echo convDateTime($this->fields['lastrun']);
+         echo "<a href='$target?id=$ID&amp;resetdate=1'>";
+         echo "<img src='".GLPI_ROOT."/pics/reset.png'></a>";
+      }
       echo "</td></tr>";
 
       $label = $this->getParameterDescription($ID,$this->fields["module"],$this->fields["name"]);
@@ -359,6 +364,20 @@ class CronTask extends CommonDBTM{
       return true;
    }
 
+   /**
+    * reset the next launch date => for a launch as soon as possible
+    *
+    */
+   function resetDate () {
+      global $DB;
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      return $this->update(array(
+            'id'=> $this->fields['id'],
+            'lastrun'=>'NULL'));
+   }
 
    /**
     * Translate task description
