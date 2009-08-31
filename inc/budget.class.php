@@ -160,11 +160,11 @@ class Budget extends CommonDBTM{
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
                  WHERE `items_id` = '".$input["_oldID"]."'
-                       AND `itemtype` = '".COMPUTER_TYPE."';";
+                       AND `itemtype` = '".BUDGET_TYPE."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               addDeviceDocument($data["documents_id"],COMPUTER_TYPE,$newID);
+               addDeviceDocument($data["documents_id"],BUDGET_TYPE,$newID);
             }
          }
       }
