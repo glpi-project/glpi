@@ -142,7 +142,7 @@ class Config extends CommonDBTM {
       echo ">" . $LANG['setup'][107] . "</option>";
       echo "</select></td>";
       echo "<td class='center'>".$LANG['setup'][101]."</td><td>";
-      dropdownInteger('cron_limit', $CFG_GLPI["time_offset"], 1, 30);
+      dropdownInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
