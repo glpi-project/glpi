@@ -2083,11 +2083,8 @@ function update0722to080() {
       $DB->query($query) or die("0.72 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_displayprefs` (`itemtype`, `num`, `rank`, `users_id`)
-         VALUES(49, 16, 2, 0),
-         VALUES(10931, 49, 3, 1, 0),
-         VALUES(10933, 49, 5, 4, 0),
-         VALUES(10932, 49, 4, 3, 0),
-         VALUES(10934, 49, 6, 5, 0);";
+         VALUES (49, 16, 2, 0), (49, 3, 1, 0),
+                (49, 5, 4, 0),  (49, 4, 3, 0), (49, 6, 5, 0);";
       $DB->query($query) or die("0.72 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 
