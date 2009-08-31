@@ -103,11 +103,11 @@ class Typedoc  extends CommonDBTM {
 		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":	</td><td>";
-		autocompletionTextField("name","glpi_documentstypes","name",$this->fields["name"],40);
+		autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
 		echo "</td>";
 
 		echo "<td>".$LANG['document'][9].":	</td><td>";
-		autocompletionTextField("ext","glpi_documentstypes","ext",$this->fields["ext"],40);
+		autocompletionTextField("ext",$this->table,"ext",$this->fields["ext"],40);
 
 		echo "</td></tr>";
 
@@ -117,7 +117,7 @@ class Typedoc  extends CommonDBTM {
 		echo "</td>";
 
 		echo "<td>".$LANG['document'][4].":	</td><td>";
-		autocompletionTextField("mime","glpi_documentstypes","mime",$this->fields["mime"],40);
+		autocompletionTextField("mime",$this->table,"mime",$this->fields["mime"],40);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['document'][11].":	</td><td>";
