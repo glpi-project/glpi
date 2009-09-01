@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('entity', 'group', 'ldap', 'profile', 'rule.right', 'rulesengine', 'user');
+$NEEDED_ITEMS = array ('entity', 'group', 'ldap', 'profile', 'rulesengine', 'rule.right', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

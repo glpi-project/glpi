@@ -39,9 +39,9 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 $NEEDED_ITEMS = array ('admininfo', 'computer', 'crontask', 'device', 'document', 'enterprise',
    'group', 'infocom', 'mailgate', 'mailing', 'monitor', 'networking', 'ocsng', 'peripheral',
-   'phone', 'printer', 'registry', 'reminder', 'reservation', 'rule.dictionnary.dropdown',
-   'rule.dictionnary.software', 'rule.ocs', 'rule.softwarecategories', 'rule.tracking',
-   'rulesengine', 'setup', 'software', 'tracking', 'user');
+   'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
+   'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
+   'rule.softwarecategories', 'rule.tracking', 'setup', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
