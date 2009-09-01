@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')){
  * Print the form for devices linked to a computer or a template
  *
  *
- * Print the form for devices linked to a computer or a template 
+ * Print the form for devices linked to a computer or a template
  *
  *@param $target filename : where to go when done.
  *@param $ID Integer : Id of the computer or the template to print
@@ -102,7 +102,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
  *
  * Print the form for computers or templates connections to printers, screens or peripherals
  *
- *@param $target 
+ *@param $target
  *@param $ID integer: Computer or template ID
  *@param $withtemplate=''  boolean : Template or basic item.
  *
@@ -156,9 +156,9 @@ function showConnections($target,$ID,$withtemplate='') {
                echo "</tr><tr class='tab_bg_1'>";
             }
             echo "<td class='center'>";
-            $query = "SELECT * 
-                      FROM `glpi_computers_items` 
-                      WHERE `computers_id` = '$ID' 
+            $query = "SELECT *
+                      FROM `glpi_computers_items`
+                      WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'";
             if ($result=$DB->query($query)) {
                $resultnum = $DB->numrows($result);
@@ -256,9 +256,9 @@ function showComputerDisks($ID,$withtemplate='') {
 
    echo "<div class='center'>";
 
-   $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computersdisks`.* 
+   $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computersdisks`.*
              FROM `glpi_computersdisks`
-             LEFT JOIN `glpi_filesystems` 
+             LEFT JOIN `glpi_filesystems`
                        ON (`glpi_computersdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
              WHERE (`computers_id` = '$ID')";
 
@@ -299,7 +299,7 @@ function showComputerDisks($ID,$withtemplate='') {
          echo "<tr><th colspan='6'>".$LANG['search'][15]."</th></tr>";
       }
    if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
-      echo "<tr class='tab_bg_2'><th colspan='6''>";
+      echo "<tr class='tab_bg_2'><th colspan='6'>";
       echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
              $withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
    }
