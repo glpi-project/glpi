@@ -1069,7 +1069,11 @@ function displaySoftsByLicense($data, $computers_ID, $withtemplate,$canedit) {
 
 	echo "<tr class='tab_bg_1'>";
 	if ($canedit) {
-		echo "<td><input type='checkbox' name='version_$ID'></td>";
+      echo "<td>";
+      if ($ID>0) {
+         echo "<input type='checkbox' name='version_$ID'>";
+      }
+      echo "</td>";
 	}
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?id=" . $data['softwares_id'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiis_ids_visible"] ? " (" . $data['softwares_id'] . ")" : "") . "</a>";
