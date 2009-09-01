@@ -2493,4 +2493,22 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
 function changeProgressBarMessage ($msg="&nbsp;") {
    echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";
 }
+
+function displayToolTip ($message, $link='') {
+   global $CFG_GLPI;
+
+   $rand=mt_rand();
+
+   if ($link) {
+      echo "<a href='$link'>";
+   }
+   echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+       onmouseout=\"cleanhide('tooltip_$rand')\" onmouseover=\"cleandisplay('tooltip_$rand')\" ";
+   if ($link) {
+      echo "style='cursor:pointer;'></a>";
+   } else {
+      echo ">";
+   }
+   echo "<span class='over_link' id='tooltip_$rand'>".nl2br($message)."</span>\n";
+}
 ?>
