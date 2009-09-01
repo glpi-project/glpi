@@ -349,18 +349,18 @@ function showLicenses($softwares_id) {
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
 
-			echo "<th>".($sort=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=name&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][16]."</a></th>";
+			echo "<th>".($sort=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
 
 			if ($software->isRecursive()) {
 				// Ereg to search entity in string for match default order
-				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['entity'][0]."</a></th>";
+				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
 			}
-			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][19]."</a></th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
 			echo "<th>".$LANG['tracking'][29]."</th>";
-			echo "<th>".($sort=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=typename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][17]."</a></th>";
-			echo "<th>".($sort=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=buyname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][1]."</a></th>";
-			echo "<th>".($sort=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=usename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][2]."</a></th>";
-			echo "<th>".($sort=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=expire&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][32]."</a></th>";
+			echo "<th>".($sort=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=typename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
+			echo "<th>".($sort=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=buyname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1]."</a></th>";
+			echo "<th>".($sort=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=usename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][2]."</a></th>";
+			echo "<th>".($sort=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=expire&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
 			echo "<th>".$LANG['help'][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG['software'][50] is too long) ??
 			//echo "<th>".$LANG['financial'][3]."</th>";
 			echo "</tr>";
@@ -568,19 +568,19 @@ function showInstallations($searchID, $crit="softwares_id") {
 			}
 
 			if ($crit=="softwares_id") {
-				echo "<th>".($sort=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=vername&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][5]."</a></th>";
+				echo "<th>".($sort=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=vername&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][5]."</a></th>";
 			}
-			echo "<th>".($sort=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][16]."</a></th>";
+			echo "<th>".($sort=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
 			if ($showEntity) {
-				echo "<th>".(strstr($sort,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['entity'][0]."</a></th>";
+				echo "<th>".(strstr($sort,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
 			}
-			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][19]."</a></th>";
-			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][20]."</a></th>";
-			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][15]."</a></th>";
-			echo "<th>".(strstr($sort,"state")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=state,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['state'][0]."</a></th>";
-			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][35]."</a></th>";
-			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][34]."</a></th>";
-			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][11]."</a></th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
+			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";
+			echo "<th>".(strstr($sort,"state")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";
+			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][35]."</a></th>";
+			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][34]."</a></th>";
+			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][11]."</a></th>";
 			echo "</tr>\n";
 
 			do {
@@ -1073,7 +1073,7 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
 
 	echo "<td>" . $data["version"];
    if ($data["computers_id"]==$computers_id) {
-      echo " - <strong>". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]) . "</strong>";
+      echo " - <strong>". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]) . "</strong>&nbsp; ";
       $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$data['licid'];
       displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['licname']."<br>".
                       $LANG['common'][19]."&nbsp;: ".$data['licserial']."<br>".$data['liccomment'],
@@ -1117,7 +1117,7 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
    echo "<td>" . $data["state"] . "</td>";
 
    echo "<td>" . $data["version"];
-   echo " - <strong>". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]) . "</strong> ";
+   echo " - <strong>". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]) . "</strong>&nbsp; ";
    displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['licname']."<br>".
                    $LANG['common'][19]."&nbsp;: ".$data['licserial']."<br>".$data['liccomment'],
                    $link);
