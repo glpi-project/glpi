@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine");
+$NEEDED_ITEMS = array('rulesengine');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -50,8 +50,8 @@ commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 	echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG['rulesengine'][77] . "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td valign='top'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr class='tab_bg_1'><th>".$LANG['rulesengine'][80]."</th></tr>";	
-	
+	echo "<tr class='tab_bg_1'><th>".$LANG['rulesengine'][80]."</th></tr>";
+
 	if (haveRight("rule_dictionnary_software","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.software.php\"><strong>" . $LANG['rulesengine'][35] . "</strong></a></td></tr>";
 	}
@@ -80,8 +80,8 @@ commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.monitor.php\"><strong>" . $LANG['rulesengine'][61] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.printer.php\"><strong>" . $LANG['rulesengine'][64] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.peripheral.php\"><strong>" . $LANG['rulesengine'][63] . "</strong></a></td></tr>";
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.networking.php\"><strong>" . $LANG['rulesengine'][65] . "</strong></a></td></tr>";		
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.phone.php\"><strong>" . $LANG['rulesengine'][62] . "</strong></a></td></tr>";		
+		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.networking.php\"><strong>" . $LANG['rulesengine'][65] . "</strong></a></td></tr>";
+		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.phone.php\"><strong>" . $LANG['rulesengine'][62] . "</strong></a></td></tr>";
 	}
 	echo "</table></td>";
 

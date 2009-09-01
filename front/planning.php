@@ -35,8 +35,8 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor","peripheral","networking","software","enterprise","reminder","phone");
+$NEEDED_ITEMS = array ('computer', 'enterprise', 'monitor', 'networking', 'peripheral',
+   'phone', 'planning', 'printer', 'reminder', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -55,7 +55,7 @@ switch ($_GET["usertype"]){
 	case "user" :
 		$_GET['gID']=-1;
 		break;
-	case "group" :	
+	case "group" :
 		$_GET['uID']=-1;
 		break;
 	case "user_group":

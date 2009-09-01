@@ -34,7 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("ocsng","rulesengine","rule.ocs","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry","admininfo","group","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown");
+$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'group', 'infocom',
+   'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'registry', 'reservation',
+   'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
+   'rule.softwarecategories', 'rulesengine', 'setup', 'software', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -43,7 +46,7 @@ checkRight("ocsng","w");
 
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
-if (isset($_SESSION["ocs_update"])){	
+if (isset($_SESSION["ocs_update"])){
 	if ($count=count($_SESSION["ocs_update"])){
 		$percent=min(100,round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],0));
 
@@ -64,7 +67,7 @@ if (isset($_SESSION["ocs_update"])){
 }
 
 
-if (!isset($_POST["update_ok"])){	
+if (!isset($_POST["update_ok"])){
 	if (!isset($_GET['check'])) $_GET['check']='all';
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
@@ -72,7 +75,7 @@ if (!isset($_POST["update_ok"])){
 	ocsShowUpdateComputer($_SESSION["ocsservers_id"],$_GET['check'],$_GET['start']);
 
 } else {
-	if (count($_POST['toupdate'])>0){		
+	if (count($_POST['toupdate'])>0){
 		$_SESSION["ocs_update_count"]=0;
 		foreach ($_POST['toupdate'] as $key => $val){
 			if ($val=="on")	{

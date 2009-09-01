@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","user","group","link","enterprise","ocsng");
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'group', 'infocom',
+   'link', 'monitor', 'ocsng', 'reservation', 'tracking', 'user');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -61,9 +63,9 @@ else if (isset($_POST["delete"]))
 	else $monitor->delete($_POST);
 
 	logEvent($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 }
 else if (isset($_POST["restore"]))
@@ -76,11 +78,11 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-		
+
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$monitor->check($input["id"],'w');
 

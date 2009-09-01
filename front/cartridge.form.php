@@ -33,8 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS = array ('cartridge', 'contract', 'document', 'enterprise', 'infocom', 'link',
+   'printer');
 
-$NEEDED_ITEMS=array("cartridge","printer","link","document","infocom","contract","enterprise");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -50,7 +51,7 @@ if (isset($_POST["add"]))
 	$newID=$cartype->add($_POST);
 	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$cartype->check($_POST["id"],'w');

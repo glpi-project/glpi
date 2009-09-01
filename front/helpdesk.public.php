@@ -34,8 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("user","tracking","reservation","document","knowbase","computer","printer","networking","peripheral","monitor","software","infocom","phone","enterprise","group","profile");
+$NEEDED_ITEMS = array ('computer', 'document', 'enterprise', 'group', 'infocom', 'knowbase',
+   'monitor', 'networking', 'peripheral', 'phone', 'printer', 'profile', 'reservation',
+   'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -85,7 +86,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$_POST["tickets_id"]."&glpi_tab=1");
 
 
-	}	
+	}
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
 	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
@@ -111,17 +112,17 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 			$track->update($_POST);
 			glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
 		}
-		$track=new Job();	
+		$track=new Job();
 		$track->check($_GET["id"],'r');
-		$track->showTabs($_GET["id"],'',$_SESSION['glpi_tab']); 
+		$track->showTabs($_GET["id"],'',$_SESSION['glpi_tab']);
 		echo "<div id='tabcontent'></div>";
-	
+
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 	}
 }
 
 //*******************
-// fin  Affichage Module r�ervation 
+// fin  Affichage Module r�ervation
 //*******************
 
 

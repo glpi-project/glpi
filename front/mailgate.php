@@ -35,7 +35,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ("setup","ocsng","user","search");
+
+$NEEDED_ITEMS = array ('ocsng', 'search', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -58,7 +59,7 @@ if (!canUseImapPop()) {
 	manageGetValuesInSearch(MAILGATE_TYPE);
 	searchForm(MAILGATE_TYPE,$_GET);
 	showList(MAILGATE_TYPE,$_GET);
-	
+
 	commonFooter();
 }
 ?>

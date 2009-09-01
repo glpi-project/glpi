@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("user","document","knowbase");
+$NEEDED_ITEMS = array ('document', 'knowbase', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -62,7 +61,7 @@ if (isset($_GET["redirect"])){
 		// Anonymous FAQ
 		simpleHeader($LANG['Menu'][20],array($LANG['Menu'][20]=>$_SERVER['PHP_SELF']));
 	}
-	
+
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
 	if(!isset($_GET["knowbaseitemscategories_id"])) $_GET["knowbaseitemscategories_id"] = 0;
@@ -81,7 +80,7 @@ if (isset($_GET["redirect"])){
 		if (!$_GET["knowbaseitemscategories_id"] && strlen($_GET["contains"])==0){
 			showKbViewGlobal($_SERVER['PHP_SELF'],1) ;
 		}
-		
+
 	}
 
 	helpFooter();

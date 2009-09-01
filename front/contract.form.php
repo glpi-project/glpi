@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peripheral","networking","software","document","link","phone","infocom");
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'infocom', 'link',
+   'monitor', 'networking', 'peripheral', 'phone', 'printer', 'software');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -47,11 +49,11 @@ $contractsupplier=new ContractSupplier();
 if (isset($_POST["add"]))
 {
 	$contract->check(-1,'w',$_POST);
-	
+
 	$newID=$contract->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$contract->check($_POST['id'],'w');
@@ -83,7 +85,7 @@ else if (isset($_POST["update"]))
 	$contract->update($_POST);
 	logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["additem"]))
 {
    $contractitem->check(-1,'w',$_POST);
@@ -132,7 +134,7 @@ else
 	commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 	$contract->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-		
+
 	commonFooter();
 }
 

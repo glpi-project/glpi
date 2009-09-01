@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("knowbase","document");
+$NEEDED_ITEMS = array ('document', 'knowbase');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -59,7 +58,7 @@ if ($_GET["id"]=="new"){
 	commonFooter();
 
 } else if (isset($_POST["add"])){
-	// ajoute un item dans la base de connaisssances 	
+	// ajoute un item dans la base de connaisssances
 	$kb->can(-1,'w');
 
 	$newID=$kb->add($_POST);
@@ -71,7 +70,7 @@ if ($_GET["id"]=="new"){
 	$kb->can($_POST["id"],'w');
 
 	$kb->update($_POST);
-	logEvent($_POST["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);	
+	logEvent($_POST["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"])  && strcmp($_GET["modify"],"yes") == 0){
@@ -87,7 +86,7 @@ if ($_GET["id"]=="new"){
 	$kb->can($_GET["id"],'w');
 
 	$kb->delete($_GET);
-	logEvent($_GET["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);	
+	logEvent($_GET["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 
 } else if (isset($_GET["id"])  && strcmp($_GET["addtofaq"],"yes") == 0){

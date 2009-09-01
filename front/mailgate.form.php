@@ -34,8 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("mailgate","setup","tracking","rulesengine","rule.tracking","user","mailing","document","group","enterprise","computer","printer","networking","peripheral","monitor","software","infocom","phone","planning");
+$NEEDED_ITEMS = array ('computer', 'document', 'enterprise', 'group', 'infocom', 'mailgate',
+   'mailing', 'monitor', 'networking', 'peripheral', 'phone', 'planning', 'printer',
+   'rule.tracking', 'rulesengine', 'setup', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -51,7 +52,7 @@ if (isset($_POST["add"]))
 	$newID=$mailgate->add($_POST);
 	logEvent($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$mailgate->check($_POST['id'],'w');

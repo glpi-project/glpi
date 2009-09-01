@@ -34,7 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","rulesengine","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","group","link","ocsng","phone","enterprise","search","registry","group","setup","ocsng","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown");
+$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group',
+   'group', 'infocom', 'link', 'monitor', 'networking', 'ocsng', 'ocsng', 'peripheral', 'phone',
+   'printer', 'registry', 'reservation', 'rule.dictionnary.dropdown', 'rule.dictionnary.software',
+   'rule.softwarecategories', 'rulesengine', 'search', 'setup', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -60,9 +63,9 @@ else if (isset($_POST["delete"])) {
 		$computer->delete($_POST,1);
 	else $computer->delete($_POST);
 	logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
 else if (isset($_POST["restore"]))
@@ -77,7 +80,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$computer->check($input['id'],'w');
 
@@ -92,7 +95,7 @@ else if (isset($_POST["update"])) {
 	logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-//Disconnect a device 
+//Disconnect a device
 else if (isset($_GET["disconnect"])) {
 
 	$computer->check($_GET['computers_id'],'w');
@@ -127,7 +130,7 @@ elseif(isset($_POST["update_device"])) {
 		if (count($data)==2)
 			if ($data[0]=="devicevalue"){
 				update_device_specif($val,$data[1]);
-			} 
+			}
 	}
 
 	logEvent($_POST["id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
@@ -148,7 +151,7 @@ elseif(isset($_POST["unlock_monitor"])){
 		foreach ($_POST["lockmonitor"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_monitor");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_printer"])){
 	$computer->check($_POST['id'],'w');
@@ -157,7 +160,7 @@ elseif(isset($_POST["unlock_printer"])){
 		foreach ($_POST["lockprinter"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_printer");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_soft"])){
 	$computer->check($_POST['id'],'w');
@@ -166,7 +169,7 @@ elseif(isset($_POST["unlock_soft"])){
 		foreach ($_POST["locksoft"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_software");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_disk"])){
 	$computer->check($_POST['id'],'w');
@@ -175,7 +178,7 @@ elseif(isset($_POST["unlock_disk"])){
 		foreach ($_POST["lockdisk"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_disk");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_periph"])){
 	$computer->check($_POST['id'],'w');
@@ -184,7 +187,7 @@ elseif(isset($_POST["unlock_periph"])){
 		foreach ($_POST["lockperiph"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_peripheral");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_ip"])){
 	$computer->check($_POST['id'],'w');
@@ -193,7 +196,7 @@ elseif(isset($_POST["unlock_ip"])){
 		foreach ($_POST["lockip"] as $key => $val)
 			deleteInOcsArray($_POST["id"],$key,"import_ip");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($_POST["unlock_field"])){
 	$computer->check($_POST['id'],'w');
@@ -205,7 +208,7 @@ elseif(isset($_POST["unlock_field"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["force_ocs_resynch"])){
 	$computer->check($_POST['id'],'w');
-	
+
 	//Get the ocs server id associated with the machine
 	$ocsservers_id = getOCSServerByMachineID($_POST["id"]);
 

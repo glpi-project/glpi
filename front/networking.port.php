@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("networking","computer","printer","phone","peripheral");
+$NEEDED_ITEMS = array ('computer', 'networking', 'peripheral', 'phone', 'printer');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -57,7 +57,7 @@ $ADDREFERER="";
 if (!strpos($_SERVER['HTTP_REFERER'],"&referer="))$ADDREFERER="&referer=".urlencode($REFERER);
 
 $np=new Netport();
-if(isset($_POST["add"])){	
+if(isset($_POST["add"])){
 	checkRight("networking","w");
 
 	unset($_POST["referer"]);
@@ -80,14 +80,14 @@ if(isset($_POST["add"])){
 		$input=$_POST;
 		unset($input['several']);
 		unset($input['from_logical_number']);
-		unset($input['to_logical_number']);	
+		unset($input['to_logical_number']);
 		for ($i=$_POST["from_logical_number"];$i<=$_POST["to_logical_number"];$i++){
 			$add="";
 			if ($i<10)	$add="0";
 			$input["logical_number"]=$i;
 			$input["name"]=$_POST["name"].$add.$i;
 			unset($np->fields["id"]);
-			$np->add($input);	
+			$np->add($input);
 		}
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
@@ -142,7 +142,7 @@ else if (isset($_POST["connect"])){
 				makeConnector($sport,$dport);
 			}
 		}
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["disconnect"])){
 	checkRight("networking","w");
@@ -173,7 +173,7 @@ else if (isset($_POST['assign_vlan'])){
 	checkRight("networking","w");
 
 	if (isset($_POST["vlan"])&&$_POST["vlan"]>0){
-		assignVlan($_POST["id"],$_POST["vlan"]);	
+		assignVlan($_POST["id"],$_POST["vlan"]);
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
@@ -198,7 +198,7 @@ else if (isset($_GET['unassign_vlan'])){
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
-else 
+else
 {
 	if(empty($_GET["items_id"])) $_GET["items_id"] ="";
 	if(empty($_GET["itemtype"])) $_GET["itemtype"] ="";

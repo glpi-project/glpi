@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("peripheral","infocom","contract","user","group","link","networking","document","tracking","reservation","computer","enterprise","ocsng");
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'group', 'infocom',
+   'link', 'networking', 'ocsng', 'peripheral', 'reservation', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -64,9 +65,9 @@ else if (isset($_POST["delete"]))
 	else $peripheral->delete($_POST);
 
 	logEvent($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 }
 else if (isset($_POST["restore"]))
@@ -83,7 +84,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$peripheral->check($input["id"],'w');
 

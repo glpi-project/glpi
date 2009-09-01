@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","user","group","computer","printer","monitor","peripheral","networking","software","link","phone","infocom","device");
+$NEEDED_ITEMS = array ('computer', 'contact', 'contract', 'device', 'document', 'enterprise',
+   'group', 'infocom', 'link', 'monitor', 'networking', 'peripheral', 'phone', 'printer',
+   'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -56,7 +58,7 @@ if (isset($_POST["add"]))
 	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$ent->check($_POST["id"],'w');
@@ -88,13 +90,13 @@ else if (isset($_POST["update"]))
 	$ent->update($_POST);
 	logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else
 {
 	commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
 	$ent->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-		
+
 	commonFooter();
 }
 

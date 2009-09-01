@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","peripheral","printer","networking","reservation","tracking","document","user","group","link","phone","enterprise","infocom","contract");
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'group', 'infocom',
+   'link', 'networking', 'peripheral', 'phone', 'printer', 'reservation', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -62,9 +63,9 @@ else if (isset($_POST["delete"]))
 	else $netdevice->delete($_POST);
 
 	logEvent($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["restore"]))
@@ -81,10 +82,10 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$netdevice->check($input["id"],'w');
-	
+
 	$netdevice->delete($input,1);
 	logEvent($input["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");

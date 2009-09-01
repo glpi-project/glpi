@@ -33,7 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("contact","enterprise","link","document");
+
+$NEEDED_ITEMS = array ('contact', 'document', 'enterprise', 'link');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -103,7 +105,7 @@ else
 	commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
 
 	$contact->showForm($_SERVER['PHP_SELF'],$_GET["id"],'');
-		
+
 	commonFooter();
 }
 

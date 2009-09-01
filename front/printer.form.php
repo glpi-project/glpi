@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("printer","computer","networking","reservation","tracking","cartridge","contract","infocom","document","user","group","link","enterprise","ocsng");
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'contract', 'document', 'enterprise', 'group',
+   'infocom', 'link', 'networking', 'ocsng', 'printer', 'reservation', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -64,9 +64,9 @@ else if (isset($_POST["delete"]))
 		$print->delete($_POST,1);
 	else $print->delete($_POST);
 	logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 }
 else if (isset($_POST["restore"]))
@@ -81,7 +81,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$print->check($input["id"],'w');
 

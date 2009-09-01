@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("document","tracking");
+$NEEDED_ITEMS = array ('document', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -67,9 +67,9 @@ if (isset($_GET["file"])){
 
 					// Knowbase Case
 					if (!$send&&haveRight("knowbase","r")){
-						$query = "SELECT * 
-							FROM glpi_documents_items 
-							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
+						$query = "SELECT *
+							FROM glpi_documents_items
+							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
 								AND glpi_documents_items.documents_id='".$doc->fields["id"]."'";
 
 						$result=$DB->query($query);
@@ -77,11 +77,11 @@ if (isset($_GET["file"])){
 							$send=true;
 					}
 					if (!$send&&haveRight("faq","r")){
-						$query = "SELECT * 
-							FROM glpi_documents_items 
-								LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.id = glpi_documents_items.Fk_device) 
-							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
-								AND glpi_documents_items.documents_id='".$doc->fields["id"]."' 
+						$query = "SELECT *
+							FROM glpi_documents_items
+								LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.id = glpi_documents_items.Fk_device)
+							WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
+								AND glpi_documents_items.documents_id='".$doc->fields["id"]."'
 								AND glpi_knowbaseitems.is_faq=1";
 
 						$result=$DB->query($query);
@@ -96,10 +96,10 @@ if (isset($_GET["file"])){
 						$job->getFromDB($_GET["tickets_id"]);
 
 						if ($job->fields["users_id"]==$_SESSION["glpiID"]||$job->fields["users_id_assign"]==$_SESSION["glpiID"]){
-							$query = "SELECT * 
-								FROM glpi_documents_items 
-								WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."' 
-									AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' 
+							$query = "SELECT *
+								FROM glpi_documents_items
+								WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."'
+									AND glpi_documents_items.itemtype = '".TRACKING_TYPE."'
 									AND documents_id='".$doc->fields["id"]."'";
 							$result=$DB->query($query);
 							if ($DB->numrows($result)>0)
@@ -114,10 +114,10 @@ if (isset($_GET["file"])){
 					} else {
 						if (haveRight("faq","r")||$CFG_GLPI["use_public_faq"]){
 							// Check if it is a FAQ document
-							$query = "SELECT * 
-								FROM glpi_documents_items 
+							$query = "SELECT *
+								FROM glpi_documents_items
 									LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.id = glpi_documents_items.Fk_device)
-								WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."' 
+								WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
 									AND glpi_documents_items.documents_id='".$doc->fields["id"]."'
 									AND glpi_knowbaseitems.is_faq=1";
 
@@ -132,10 +132,10 @@ if (isset($_GET["file"])){
 							$job->getFromDB($_GET["tickets_id"]);
 
 							if ($job->fields["users_id"]==$_SESSION["glpiID"]){
-								$query = "SELECT * 
-									FROM glpi_documents_items 
-									WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."' 
-										AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' 
+								$query = "SELECT *
+									FROM glpi_documents_items
+									WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."'
+										AND glpi_documents_items.itemtype = '".TRACKING_TYPE."'
 										AND documents_id='".$doc->fields["id"]."'";
 								$result=$DB->query($query);
 								if ($DB->numrows($result)>0)

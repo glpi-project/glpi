@@ -33,8 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+$NEEDED_ITEMS = array ('central', 'computer', 'contract', 'enterprise', 'group', 'monitor',
+   'networking', 'peripheral', 'phone', 'planning', 'printer', 'profile', 'reminder', 'setup',
+   'software', 'tracking', 'user');
+
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract","profile");
 include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
@@ -80,7 +84,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	echo "<br><br>";
 
-	
+
 	$tabs['my']=array('title'=>$LANG['central'][12],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
 		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=my");

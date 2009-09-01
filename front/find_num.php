@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user");
+$NEEDED_ITEMS = array('user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -74,15 +74,15 @@ function fillidfield(Type,Id){
 	window.close();}
 	</script>
 
-	<?php 
+	<?php
 
 	echo "<div align='center'>";
 	echo "<p><strong>".$LANG['help'][22]."</strong></p>";
-	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER['PHP_SELF']."\">"; 
+	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER['PHP_SELF']."\">";
 
 	echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
 	echo "<tr><th align='center'  width='100%' height='29'>".$LANG['help'][23]."</th>";
-	echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>"; 
+	echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>";
 	echo "<input name='NomContact' type='text' id='NomContact' >";
 	echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
 	echo "<input type='submit' name='send' value=\"". $LANG['buttons'][0]."\">";
@@ -102,9 +102,9 @@ function fillidfield(Type,Id){
 
 
 	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_computers 
-		WHERE is_template='0' AND is_deleted='0' 
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+		FROM glpi_computers
+		WHERE is_template='0' AND is_deleted='0'
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
@@ -129,9 +129,9 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_networkequipments 
-		WHERE is_template='0' AND is_deleted='0' 
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+		FROM glpi_networkequipments
+		WHERE is_template='0' AND is_deleted='0'
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
@@ -156,9 +156,9 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_printers 
-		WHERE is_template='0' AND is_deleted='0' 
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+		FROM glpi_printers
+		WHERE is_template='0' AND is_deleted='0'
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
@@ -183,9 +183,9 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_monitors 
-		WHERE is_template='0' AND is_deleted='0' 
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+		FROM glpi_monitors
+		WHERE is_template='0' AND is_deleted='0'
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
@@ -210,9 +210,9 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_peripherals 
-		WHERE is_template='0' AND is_deleted='0' 
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+		FROM glpi_peripherals
+		WHERE is_template='0' AND is_deleted='0'
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
@@ -236,9 +236,9 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "SELECT name, id 
+	$query = "SELECT name, id
 		FROM glpi_softwares
-		WHERE is_template='0' AND is_deleted='0' 
+		WHERE is_template='0' AND is_deleted='0'
 			AND (name LIKE '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))

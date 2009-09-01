@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("infocom","computer","printer","monitor","peripheral","networking","software","cartridge","consumable","phone");
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'infocom', 'monitor',
+   'networking', 'peripheral', 'phone', 'printer', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -44,11 +45,11 @@ $ic=new Infocom();
 if (isset($_GET["add"]))
 {
 	checkRight("infocom","w");
-	
+
 	$newID=$ic->add($_GET, false);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	checkRight("infocom","w");
@@ -64,7 +65,7 @@ else if (isset($_POST["update"]))
 	$ic->update($_POST);
 	logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 
 glpi_header($_SERVER['HTTP_REFERER']);
 
