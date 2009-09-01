@@ -406,9 +406,19 @@ function printReservation($target,$ID,$date){
 				$ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
 				
 				//if (in_array($ci->obj->fields["entities_id"],$_SESSION["glpiactiveentities"])){
-				if ($ci->obj->can($m->fields["items_id"],"r")){
+
+				if ($ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]) 
+                                    && haveAccessToEntity($ci->obj->fields["entities_id"])){
+
+                                       $typename=$ci->getType();
+                                       if ($m->fields["itemtype"]==PERIPHERAL_TYPE){
+                                          if (isset($ci->obj->fields["peripheralstypes_id"])&&$ci->obj->fields["peripheralstypes_id"]!=0){
+                                             $typename=getDropdownName("glpi_peripheralstypes",$ci->obj->fields["peripheralstypes_id"]);
+                                          }
+                                       }
+
 					list($annee,$mois,$jour)=explode("-",$date);
-					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;id=".$data['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
+					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;id=".$data['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>$typename - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";
 					printReservationItem($target,$data['id'],$date);
 					echo "</td></tr>";
