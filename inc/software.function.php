@@ -1377,7 +1377,6 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comment='') 
 function cron_software($task=NULL){
 	global $DB,$CFG_GLPI,$LANG;
 
-	// TODO ??? (seems ok) return ;
 	if (!$CFG_GLPI["use_mailing"]){
 		return false;
 	}
