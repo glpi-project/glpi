@@ -34,22 +34,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"ocsng",
-	"computer",
-	"device",
-	"printer",
-	"networking",
-	"peripheral",
-	"monitor",
-	"software",
-	"infocom",
-	"phone",
-	"tracking",
-	"enterprise",
-	"setup",
-	"admininfo"
-);
+
+$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'infocom', 'monitor',
+   'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'setup', 'software', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -68,9 +55,9 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
 	$name = "";
 	if (isset($_GET["ocsservers_id"]))
 		$_SESSION["ocsservers_id"] = $_GET["ocsservers_id"];
-				
-	$sql = "SELECT name 
-		FROM glpi_ocsservers 
+
+	$sql = "SELECT name
+		FROM glpi_ocsservers
 		WHERE id='".$_SESSION["ocsservers_id"]."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {

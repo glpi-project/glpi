@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("consumable","infocom");
+$NEEDED_ITEMS = array ('consumable', 'infocom');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -65,14 +66,14 @@ else if (isset($_GET["delete"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["give"]))
-{	
+{
 	$constype->check($_POST["tID"],'w');
 
 	if ($_POST["users_id"]>0){
 		if (isset($_POST["out"]))
 			foreach ($_POST["out"] as $key => $val)
 				$con->out($key,$_POST["users_id"]);
-	
+
 		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);

@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("consumable","printer","infocom","link","document","enterprise","contract");
+$NEEDED_ITEMS = array ('consumable', 'contract', 'document', 'enterprise', 'infocom', 'link',
+   'printer');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -50,7 +51,7 @@ if (isset($_POST["add"]))
 	$newID=$constype->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$constype->check($_POST["id"],'w');
@@ -82,7 +83,7 @@ else if (isset($_POST["update"]))
 	$constype->update($_POST);
 	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else
 {
 	commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");

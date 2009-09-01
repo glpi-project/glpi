@@ -32,7 +32,9 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-$NEEDED_ITEMS=array("ldap.parameters");
+
+
+$NEEDED_ITEMS = array ('ldap.parameters');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -40,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 $criteria = new LdapCriteria;
 
 if (isset($_POST["delete"])){
-		
+
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{

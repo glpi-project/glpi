@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("search","peripheral","infocom","contract");
+$NEEDED_ITEMS = array ('contract', 'infocom', 'peripheral', 'search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

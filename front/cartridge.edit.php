@@ -33,8 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS = array ('cartridge', 'infocom');
 
-$NEEDED_ITEMS=array("cartridge","infocom");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -53,7 +53,7 @@ if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 	$cart->check($_POST["cID"],'w');
 
 	$cart->updatePages($_POST["cID"],$_POST['pages']);
-	
+
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
 
 	glpi_header($_SERVER['HTTP_REFERER']);

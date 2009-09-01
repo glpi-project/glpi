@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("phone","infocom","contract","user","group","link","networking","document","tracking","reservation","computer","enterprise","ocsng");
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'group', 'infocom',
+   'link', 'networking', 'ocsng', 'phone', 'reservation', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -65,9 +66,9 @@ else if (isset($_POST["delete"]))
 	else $phone->delete($_POST);
 
 	logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"])) 
+	if(!empty($_POST["withtemplate"]))
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else 
+	else
 		glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 }
 else if (isset($_POST["restore"]))
@@ -81,11 +82,11 @@ else if (isset($_POST["restore"]))
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	$phone->check($_POST["id"],'w');
-		
+
 	if (isset($_POST["purge"]))
 		$input["id"]=$_POST["id"];
 	else
-		$input["id"] = $_GET["id"];	
+		$input["id"] = $_GET["id"];
 
 	$phone->delete($input,1);
 	logEvent($input["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
@@ -130,7 +131,7 @@ else
 	commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
 	$phone->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
-	
+
 	commonFooter();
 }
 

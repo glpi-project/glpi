@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("device","enterprise");
+$NEEDED_ITEMS = array ('device', 'enterprise');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -63,7 +64,7 @@ foreach ($dp as $key=>$val) {
    if ($_GET["devicetype"]==$key) {
       $sel="selected";
    }
-   echo "<option value='$key' $sel>".$val."</option>";	
+   echo "<option value='$key' $sel>".$val."</option>";
 }
 echo "</select></td>";
 echo "<td>".$LANG['common'][16]."&nbsp;: <input  type='text' size='20' name='name' value='".$_GET['name']."'></td>";

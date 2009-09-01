@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","admininfo");
+$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'infocom', 'monitor',
+   'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'reservation', 'setup', 'software',
+   'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

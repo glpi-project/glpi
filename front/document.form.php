@@ -34,9 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","networking",
-   "software","contract","knowbase","cartridge","consumable","phone","enterprise","contact",
-   "tracking",'budget','entity');
+$NEEDED_ITEMS = array ('budget', 'cartridge', 'computer', 'consumable', 'contact', 'contract',
+   'document', 'enterprise', 'entity', 'knowbase', 'monitor', 'networking', 'peripheral', 'phone',
+   'printer', 'software', 'tracking');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -62,7 +63,7 @@ if (isset($_POST["add"]))
 	}
 	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$name.".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
 	$doc->check($_POST["id"],'w');
@@ -95,12 +96,12 @@ else if (isset($_POST["update"]))
 	$doc->update($_POST);
 	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 
 else if (isset($_POST["adddocumentitem"])){
    $documentitem->check(-1,'w',$_POST);
    if ($documentitem->add($_POST)) {
-      logEvent($_POST["documents_id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);      
+      logEvent($_POST["documents_id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 }

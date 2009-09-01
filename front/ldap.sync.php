@@ -35,11 +35,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"ldap",
-	"user",
-	"profile","entity","group","rulesengine","rule.right","setup"
-);
+
+$NEEDED_ITEMS = array ('entity', 'group', 'ldap', 'profile', 'rule.right', 'rulesengine',
+   'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -84,8 +82,8 @@ elseif (!isset ($_POST["sync_ok"])) {
 
 		if (isset ($_SESSION["ldap_sync"]))
 			unset ($_SESSION["ldap_sync"]);
-			
-		//Store in session the ldap server's id, in case of it is not already done	
+
+		//Store in session the ldap server's id, in case of it is not already done
 		if (!isset ($_SESSION["ldap_server"]))
 			$_SESSION["ldap_server"] = $_POST["ldap_server"];
 
@@ -105,7 +103,7 @@ elseif (!isset ($_POST["sync_ok"])) {
 				$_SESSION["ldap_sortorder"]="DESC";
 			else
 				$_SESSION["ldap_sortorder"]=(!isset($_GET["order"])?"DESC":$_GET["order"]);
-				
+
 			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1,$_SESSION["ldap_filter"],$_SESSION["ldap_sortorder"]);
 		}
 	} else {

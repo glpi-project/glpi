@@ -34,7 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","group","tracking","document","computer","printer","networking","peripheral","monitor","software","infocom","phone","rulesengine","rule.tracking","planning");
+$NEEDED_ITEMS = array ('computer', 'document', 'group', 'infocom', 'monitor', 'networking',
+   'peripheral', 'phone', 'planning', 'printer', 'rule.tracking', 'rulesengine', 'software',
+   'tracking', 'user');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -53,12 +56,12 @@ if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 if (!isset($_POST["add"]))
 	$post_ticket = false;
 else
-	$post_ticket = true;	
+	$post_ticket = true;
 
 if (!isset($_POST["entities_id"]))
 	$entity_restrict = $_SESSION["glpiactive_entity"];
 else
-	$entity_restrict = $_POST["entities_id"];	
+	$entity_restrict = $_POST["entities_id"];
 
 
 if (isset($_GET["itemtype"])) $itemtype=$_GET["itemtype"];

@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("setup","profile","ocsng");
+$NEEDED_ITEMS = array ('ocsng', 'profile', 'setup');
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
@@ -80,12 +79,12 @@ if (isset($_POST["move"])) {
 	if(dropdownUsed($_POST["tablename"], $_POST["id"]) && empty($_POST["forcedelete"])) {
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
-		else 	
+		else
 			commonHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["id"],$_POST["entities_id"]);
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popFooter();
-		else 
+		else
 			commonFooter();
 	} else {
 		deleteDropdown($_POST);

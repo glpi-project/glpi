@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("device","enterprise");
+$NEEDED_ITEMS = array ('device', 'enterprise');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -57,7 +58,7 @@ if (isset($_GET['onglet'])) {
 }
 
 if (isset($_POST["add"])) {
-	$device=new Device($_POST["devicetype"]);	
+	$device=new Device($_POST["devicetype"]);
    $device->check(-1,"w");
 	$newID=$device->add($_POST);
 
@@ -65,14 +66,14 @@ if (isset($_POST["add"])) {
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
 }
 else if (isset($_POST["delete"])) {
-	$device=new Device($_POST["devicetype"]);	
+	$device=new Device($_POST["devicetype"]);
    $device->check($_POST["id"],"w");
 	$device->delete($_POST);
 	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
 }
 else if (isset($_POST["update"])) {
-	$device=new Device($_POST["devicetype"]);	
+	$device=new Device($_POST["devicetype"]);
    $device->check($_POST["id"],"w");
 	$device->update($_POST);
 	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);

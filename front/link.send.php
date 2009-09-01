@@ -29,7 +29,9 @@
  */
 
 
-$NEEDED_ITEMS=array("link","knowbase","computer","printer","networking","peripheral","monitor","software","infocom","phone","cartridge","consumable","contract","contact","enterprise");
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'contact', 'contract',
+   'enterprise', 'infocom', 'knowbase', 'link', 'monitor', 'networking', 'peripheral', 'phone',
+   'printer', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -38,7 +40,7 @@ checkRight("link","r");
 
 if (isset($_GET["lID"])){
 	$query="SELECT glpi_links.id, glpi_links.link as link,glpi_links.data as data
-		FROM glpi_links 
+		FROM glpi_links
 		WHERE glpi_links.id='".$_GET["lID"]."'";
 
 	$result=$DB->query($query);
@@ -100,8 +102,8 @@ if (isset($_GET["lID"])){
 		$i=0;
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ip, mac
-				FROM glpi_networkports 
-				WHERE (items_id = '".$_GET["id"]."' AND itemtype = '".$_GET["itemtype"]."') 
+				FROM glpi_networkports
+				WHERE (items_id = '".$_GET["id"]."' AND itemtype = '".$_GET["itemtype"]."')
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){
@@ -129,12 +131,12 @@ if (isset($_GET["lID"])){
 
 		// Pour que les \x00 ne devienne pas \0
 		$mc=get_magic_quotes_runtime();
-		if ($mc) @set_magic_quotes_runtime(0); 
+		if ($mc) @set_magic_quotes_runtime(0);
 
 		echo $file;
 
-		if ($mc) @set_magic_quotes_runtime($mc); 
+		if ($mc) @set_magic_quotes_runtime($mc);
 
 	}
-}	
+}
 ?>

@@ -1,5 +1,6 @@
 <?php
-$NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor","peripheral","networking","software","enterprise","reminder","phone");
+$NEEDED_ITEMS = array ('computer', 'enterprise', 'monitor', 'networking', 'peripheral',
+   'phone', 'planning', 'printer', 'reminder', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

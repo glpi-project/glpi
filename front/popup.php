@@ -29,7 +29,8 @@
  */
 
 
-$NEEDED_ITEMS=array( "setup", "entity", "rulesengine", "ocsng", "search","networking","computer","phone","printer","tracking");
+$NEEDED_ITEMS = array ('computer', 'entity', 'networking', 'ocsng', 'phone', 'printer',
+   'rulesengine', 'search', 'setup', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -69,32 +70,32 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			include "setup.display.php";
 			popFooter();
 		break;
-		case "test_rule": 
-			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
-			include "rule.test.php"; 
-			popFooter(); 
+		case "test_rule":
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
+			include "rule.test.php";
+			popFooter();
 		break;
-		case "test_all_rules": 
-			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
-			include "rulesengine.test.php"; 
-			popFooter(); 
+		case "test_all_rules":
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
+			include "rulesengine.test.php";
+			popFooter();
 		break;
-		case "show_cache": 
-			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
-			include "rule.cache.php"; 
-			popFooter(); 
+		case "show_cache":
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
+			include "rule.cache.php";
+			popFooter();
 		break;
-		case "load_bookmark": 
-			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']); 
+		case "load_bookmark":
+			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
 			$_GET["action"]="load";
-			include "bookmark.php"; 
-			popFooter(); 
+			include "bookmark.php";
+			popFooter();
 		break;
-		case "edit_bookmark": 
-			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']); 
+		case "edit_bookmark":
+			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
 			$_GET["action"]="edit";
-			include "bookmark.php"; 
-			popFooter(); 
+			include "bookmark.php";
+			popFooter();
 		break;
 
 	}

@@ -33,7 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("reservation","search","user","computer","printer","monitor","peripheral","networking","software","phone");
+
+$NEEDED_ITEMS = array ('computer', 'monitor', 'networking', 'peripheral', 'phone', 'printer',
+   'reservation', 'search', 'software', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -45,7 +47,7 @@ if (isset($_GET["redirect"])){
 }
 
 //*******************
-	// Affichage Module reservation 
+	// Affichage Module reservation
 	//******************
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
@@ -110,12 +112,12 @@ if (isset($_GET["redirect"])){
 					unset($rr->fields["id"]);
 					$_POST['_ok']=$rr->add($_POST);
 				}
-	
+
 			}
 			// Positionnement du calendrier au mois de debut
 			$_GET["mois_courant"]=$begin_month;
 			$_GET["annee_courant"]=$begin_year;
-	
+
 			if ($_POST['_ok']){
 				logEvent($_POST["reservationsitems_id"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
 			} else $all_ok=false;
@@ -136,7 +138,7 @@ if (isset($_GET["redirect"])){
 	}
 
 //*******************
-// fin  Affichage Module reservation 
+// fin  Affichage Module reservation
 //*******************
 helpFooter();
 

@@ -33,7 +33,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("contact","enterprise");
+$NEEDED_ITEMS = array ('contact', 'enterprise');
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");

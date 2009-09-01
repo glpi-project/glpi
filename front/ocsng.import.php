@@ -34,8 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("ocsng","rulesengine","rule.ocs","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry",
-"admininfo","group","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown","entity");
+$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'entity', 'group',
+   'infocom', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'registry',
+   'reservation', 'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
+   'rule.softwarecategories', 'rulesengine', 'setup', 'software', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -49,7 +51,7 @@ if (!isset($_SESSION["change_import_mode"])){
 	$_SESSION["change_import_mode"] = false;
 }
 
-//Changing the import mode	
+//Changing the import mode
 if (isset($_GET["change_import_mode"])){
 	if ($_GET["change_import_mode"] == "false"){
 		$_SESSION["change_import_mode"]=false;
@@ -68,7 +70,7 @@ if (isset($_SESSION["ocs_import"]["id"])){
 		if (isset($_SESSION["ocs_import"]["entities_id"][$key]))
 			$entity=$_SESSION["ocs_import"]["entities_id"][$key];
 		else
-			$entity=-1;	
+			$entity=-1;
 
 		ocsProcessComputer($key,$_SESSION["ocsservers_id"],0,$entity,0);
 
@@ -105,9 +107,9 @@ if (!isset($_POST["import_ok"])){
 			}
 		}
 	}
-	
+
 	glpi_header($_SERVER['PHP_SELF']);
-	
+
 }
 
 
