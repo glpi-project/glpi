@@ -397,8 +397,7 @@ function printReservation($target,$ID,$date){
 		$result=$DB->query($query);
 
 		if ($DB->numrows($result)>0){
-			$m=new ReservationItem;
-
+                        $m= new ReservationItem();
 			while ($data=$DB->fetch_array($result)){
 
 				$m->getFromDB($data['ID']);
@@ -406,9 +405,19 @@ function printReservation($target,$ID,$date){
 				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 				
 				//if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
-				if ($ci->obj->can($m->fields["id_device"],"r")){
+				if ($ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]) 
+                                    && haveAccessToEntity($ci->obj->fields["FK_entities"])){
 					list($annee,$mois,$jour)=explode("-",$date);
-					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
+
+                                       $typename=$ci->getType();
+                                       if ($m->fields["device_type"]==PERIPHERAL_TYPE){
+                                                if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
+                                                         $typename=getDropdownName("glpi_type_peripherals",$ci->obj->fields["type"]);
+                                                }
+                                       }
+
+
+					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>$typename - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";
 					printReservationItem($target,$data['ID'],$date);
 					echo "</td></tr>";

@@ -95,8 +95,8 @@ if (isset($_GET["redirect"])){
 			$_POST['id_item']=$id_item;
 			$ok=true;
 			$times=$_POST["periodicity_times"];
-			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
-			list($end_year,$end_month,$end_day)=explode("-",$_POST["end_date"]);
+			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
+			list($end_year,$end_month,$end_day)=explode("-",$_POST["end"]);
 			$to_add=1;
 			if ($_POST["periodicity"]=="week") {
 				$to_add=7;
