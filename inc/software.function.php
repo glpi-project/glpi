@@ -931,16 +931,16 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
    }
    $req=$DB->request($query);
    if ($req->numrows()) {
-   $cat=true;
-   foreach ($req as $data) {
-      if ($cat) {
-         displayCategoryHeader($computers_id, $data,$rand,$canedit);
-         $cat = false;
+      $cat=true;
+      foreach ($req as $data) {
+         if ($cat) {
+            displayCategoryHeader($computers_id, $data,$rand,$canedit);
+            $cat = false;
+         }
+         displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
+         addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["licid"]);
       }
-      displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
-      addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["licid"]);
-   }
-   displayCategoryFooter(NULL,$rand,$canedit);
+      displayCategoryFooter(NULL,$rand,$canedit);
    }
 
    echo "</table></div><br>";
