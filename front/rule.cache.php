@@ -34,17 +34,17 @@
 // ----------------------------------------------------------------------
 
 
-if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
+if(!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', '..');
 
-	$NEEDED_ITEMS=array("entity","rulesengine","ocsng");
-	include (GLPI_ROOT . "/inc/includes.php");
+   $NEEDED_ITEMS = array('entity', 'ocsng', 'rulesengine');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup"))
 	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 
-if (isset($_GET["sub_type"]))	
+if (isset($_GET["sub_type"]))
 {
 	echo "<br>";
 	$rulecollection = getRuleCollectionClass($_GET["sub_type"]);

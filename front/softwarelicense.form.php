@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("software","infocom");
+$NEEDED_ITEMS = array('infocom', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -70,7 +70,7 @@ else if (isset($_POST["update"]))
 	logEvent($license->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["id"]);
 	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$license->fields['softwares_id']);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else
 {
 	checkRight("software","r");

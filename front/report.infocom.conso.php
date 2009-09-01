@@ -34,9 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-
-$NEEDED_ITEMS=array("contract","infocom","software","cartridge","consumable","stat");
+$NEEDED_ITEMS = array('cartridge', 'consumable', 'contract', 'infocom', 'software', 'stat');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -84,10 +82,10 @@ $valeurgraphtot=array();
 function display_infocoms_report($itemtype,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT glpi_infocoms.* 
-		FROM glpi_infocoms 
+	$query="SELECT glpi_infocoms.*
+		FROM glpi_infocoms
 		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."') ";
-	
+
 	switch ($itemtype){
 		case CONSUMABLE_ITEM_TYPE :
 			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.consumablesitems_id = glpi_consumablesitems.id) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
@@ -98,7 +96,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 		case SOFTWARELICENSE_TYPE :
 			$query.=" INNER JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id) ".getEntitiesRestrictRequest("WHERE","glpi_softwares");
 		break;
-	
+
 	}
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
@@ -108,29 +106,29 @@ function display_infocoms_report($itemtype,$begin,$end){
 		if ($DB->numrows($result)>0){
 			$comp=new CommonItem();
 			$comp->getFromDB($itemtype,0);
-	
+
 			echo "<h2>".$comp->getType()."</h2>";
-	
-			echo "<table class='tab_cadre'>";	
-	
+
+			echo "<table class='tab_cadre'>";
+
 			$valeursoustot=0;
 			$valeurnettesoustot=0;
 			$valeurnettegraph=array();
 			$valeurgraph=array();
-	
+
 			while ($line=$DB->fetch_array($result)){
-	
+
 				if ($itemtype==SOFTWARELICENSE_TYPE){
 					$comp->getFromDB($itemtype,$line["items_id"]);
 					if ($comp->obj->fields["serial"]=="global"){
 						$line["value"]*=getInstallionsForLicense($line["items_id"]);
 					}
 				}
-				if ($line["value"]>0) $valeursoustot+=$line["value"];	
-	
+				if ($line["value"]>0) $valeursoustot+=$line["value"];
+
 				$valeurnette=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"n");
 				$tmp=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"all");
-	
+
 				if (is_array($tmp)&&count($tmp)>0)
 					foreach ($tmp["annee"] as $key => $val){
 						if ($tmp["vcnetfin"][$key]>0){
@@ -145,52 +143,52 @@ function display_infocoms_report($itemtype,$begin,$end){
 						$valeurgraph[$year]+=$line["value"];
 					}
 				}
-	
-	
-				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
-	
-	
-			}	
-	
+
+
+				$valeurnettesoustot+=str_replace(" ","",$valeurnette);
+
+
+			}
+
 			$valeurtot+=$valeursoustot;
 			$valeurnettetot+=$valeurnettesoustot;
-	
-	
+
+
 			if (count($valeurnettegraph)>0){
-	
+
 				echo "<tr><td colspan='5'  align='center'>";
-				ksort($valeurnettegraph); 
-	
+				ksort($valeurnettegraph);
+
 				$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
-	
+
 				foreach ($valeurnettegraph as $key => $val) {
 					if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
 					$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
 				}
-	
+
 				graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
-	
+
 				echo "</td></tr>";
 			}
-	
+
 			if (count($valeurgraph)>0){
 				echo "<tr><td colspan='5' align='center'>";
-	
-				ksort($valeurgraph); 
-	
+
+				ksort($valeurgraph);
+
 				$valeurgraphdisplay=array_map('round',$valeurgraph);
-	
+
 				foreach ($valeurgraph as $key => $val) {
 					if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
 					$valeurgraphtot[$key]+=$valeurgraph[$key];
 				}
-	
+
 				graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
-	
+
 				echo "</td></tr>";
 			}
 			echo "</table>";
-	
+
 		}
 	}
 }
@@ -216,7 +214,7 @@ if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
 	graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
 }
-if (count($valeurgraphtot)>0){	
+if (count($valeurgraphtot)>0){
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
 	graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
 }

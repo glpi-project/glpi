@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("transfer","search");
+
+$NEEDED_ITEMS = array('search', 'transfer');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

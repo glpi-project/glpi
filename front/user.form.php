@@ -34,8 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation","ldap","entity","rulesengine","rule.right");
+$NEEDED_ITEMS = array('computer', 'enterprise', 'entity', 'group', 'ldap', 'monitor',
+   'networking', 'peripheral', 'phone', 'printer', 'profile', 'reservation', 'rulesengine',
+   'rule.right', 'setup', 'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -63,7 +64,7 @@ if(empty($_GET["name"])) $_GET["name"] = "";
 if (isset($_POST["add"])) {
 	checkRight("user","w");
 
-	// Pas de nom pas d'ajout	
+	// Pas de nom pas d'ajout
 	if (!empty($_POST["name"])){
 		$newID=$user->add($_POST);
 		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
@@ -86,14 +87,14 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("user","w");
 	$user->delete($_POST,1);
-	
+
 	logEvent($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset ($_POST["force_ldap_resynch"]))
 {
 	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
-	
+
 	$user->getFromDB($_POST["id"]);
 	ldapImportUserByServerId($user->fields["name"],true,$user->fields["auths_id"],true);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -130,7 +131,7 @@ else if (isset($_POST["deletegroup"]))
 		addUserProfileEntity($_POST);
 		logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
 	}
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteright"]))
 {
@@ -147,7 +148,7 @@ else if (isset($_POST["deletegroup"]))
 }elseif (isset($_POST["switch_auth_internal"]))
 {
 	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
-	
+
 	$user = new User;
 	$input["id"]=$_POST["id"];
 	$input["authtype"]=AUTH_DB_GLPI;
@@ -157,23 +158,23 @@ else if (isset($_POST["deletegroup"]))
 }elseif (isset($_POST["switch_auth_ldap"]))
 {
 	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
-	
+
 	$user = new User;
 	$input["id"]=$_POST["id"];
 	$input["authtype"]=AUTH_LDAP;
 	$input["auths_id"]=$_POST["auths_id"];
 	$user->update($input);
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["switch_auth_mail"]))
 {
 	checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
-	
+
 	$user = new User;
 	$input["id"]=$_POST["id"];
 	$input["authtype"]=AUTH_MAIL;
 	$input["auths_id"]=$_POST["auths_id"];
 	$user->update($input);
-	glpi_header($_SERVER['HTTP_REFERER']);	
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
 
@@ -193,7 +194,7 @@ else if (isset($_POST["deletegroup"]))
 		commonFooter();
 	} else {
 		checkRight("user","w");
-		
+
 		if (isset($_GET['add_ext_auth_ldap'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 				import_user_from_ldap_servers($_GET['login']);

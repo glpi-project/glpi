@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("software");
+$NEEDED_ITEMS = array('software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -73,7 +72,7 @@ else if (isset($_POST["update"]))
 	logEvent($version->fields['softwares_id'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
 	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$version->fields['softwares_id']);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else
 {
 	checkRight("software","r");

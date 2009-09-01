@@ -33,12 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"auth",
-	"ldap",
-	"user"
-);
+
+$NEEDED_ITEMS = array('auth', 'ldap', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -53,7 +49,7 @@ echo "<tr class='tab_bg_1'><td  align='center'><a href=\"auth.ldap.php\"><strong
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"auth.imap.php\"><strong>" .$LANG['login'][3] . "</strong></a></td> </tr>";
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"auth.others.php\"><strong>" . $LANG['common'][67] . "</strong></a></td></tr>";
 echo "</table></div>";
-	
+
 commonFooter();
 
 ?>

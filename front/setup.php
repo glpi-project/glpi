@@ -30,7 +30,7 @@
 
 // Based on:
 // IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+// Christian Bauer
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -38,7 +38,7 @@
 
 
 
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS = array('setup');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -83,14 +83,14 @@ if (count($data)>0){
 	foreach ($data as $page => $title)
 		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
 	echo "</table></td>";
-} 
+}
 
 if (count($config)>0){
 	echo "<td><table>";
 	foreach ($config as $page => $title)
 		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
 	echo "</table></td>";
-} 
+}
 
 echo "</tr>";
 

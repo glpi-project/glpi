@@ -35,7 +35,8 @@
 
 
 
-$NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","phone","stat");
+$NEEDED_ITEMS = array('computer', 'monitor', 'networking', 'peripheral', 'phone', 'printer',
+   'software', 'stat', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

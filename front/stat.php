@@ -29,14 +29,12 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: 
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("stat","tracking");
-
+$NEEDED_ITEMS = array('stat', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

@@ -29,13 +29,13 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: 
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
 
-$NEEDED_ITEMS=array("stat","tracking","user","setup","device");
+$NEEDED_ITEMS = array('device', 'setup', 'stat', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -120,7 +120,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 }
 
 
-echo "</div>"; 
+echo "</div>";
 
 
 commonFooter();

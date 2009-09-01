@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------
 
 if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
+   define('GLPI_ROOT', '..');
 
-	$NEEDED_ITEMS=array("rulesengine");
-	include (GLPI_ROOT . "/inc/includes.php");
+   $NEEDED_ITEMS = array('rulesengine');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
 if (isset($_POST["sub_type"]))$sub_type=$_POST["sub_type"];
@@ -62,7 +62,7 @@ if (isset($_POST["test_all_rules"]))
 	//Unset values that must not be processed by the rule
 	unset($_POST["sub_type"]);
 	unset($_POST["test_all_rules"]);
-	
+
 	echo "<br>";
 	$rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'],$_POST);
 }

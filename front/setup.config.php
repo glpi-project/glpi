@@ -35,11 +35,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"ocsng",
-	"dbreplicate"
-);
+
+$NEEDED_ITEMS = array('dbreplicate', 'ocsng', 'setup');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -61,7 +58,7 @@ commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
 $tabs[1]=array('title'=>$LANG['setup'][70],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=1");
-	
+
 $tabs[2]=array('title'=>$LANG['setup'][119],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=2");
@@ -81,11 +78,11 @@ $tabs[4]=array('title'=>$LANG['connect'][0],
 $tabs[5]=array('title'=>$LANG['setup'][800],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=5");
-				
+
 $tabs[7]=array('title'=>$LANG['setup'][720],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=7");
-				
+
 echo "<div id='tabspanel' class='center-h'></div>";
 createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 echo "<div id='tabcontent'></div>";

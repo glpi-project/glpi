@@ -34,11 +34,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"user",
-	"profile",
-	"group"
-);
+
+$NEEDED_ITEMS = array('group', 'profile', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -71,7 +68,7 @@ if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
 
 	$tabs+=$plug_tabs;
-	
+
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";

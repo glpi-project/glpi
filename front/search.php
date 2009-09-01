@@ -35,7 +35,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("computer","search","software","document");
+
+$NEEDED_ITEMS = array('computer', 'document', 'search', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -49,7 +50,7 @@ if (isset($_GET["globalsearch"])){
 	$types=array(COMPUTER_TYPE,MONITOR_TYPE,SOFTWARE_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PRINTER_TYPE,PHONE_TYPE,CONTACT_TYPE,ENTERPRISE_TYPE,DOCUMENT_TYPE);
 
 	$ci=new CommonItem();
-	
+
 	foreach($types as $itemtype){
 		if (haveTypeRight($itemtype,'r')){
 			manageGetValuesInSearch($itemtype,false,false);

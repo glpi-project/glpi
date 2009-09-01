@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","ocsng","rule.ocs");
+$NEEDED_ITEMS = array('entity', 'ocsng', 'rulesengine', 'rule.ocs');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

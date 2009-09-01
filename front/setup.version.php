@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS = array('setup');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

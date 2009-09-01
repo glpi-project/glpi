@@ -33,7 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.software","software","rule.dictionnary.dropdown", "rule.softwarecategories","setup");
+
+$NEEDED_ITEMS = array('rulesengine', 'rule.dictionnary.dropdown', 'rule.dictionnary.software',
+   'rule.softwarecategories', 'setup', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

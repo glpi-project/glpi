@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("reminder","tracking","user");
+$NEEDED_ITEMS = array ('reminder', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -46,17 +45,17 @@ $remind=new Reminder();
 checkCentralAccess();
 if (isset($_POST["add"]))
 {
-	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...) 
+	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...)
 	$remind->getEmpty();
 	$remind->check(-1,'w',$_POST);
 
 	$newID=$remind->add($_POST);
 	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 else if (isset($_POST["delete"]))
 {
-	$remind->check($_POST["id"],'w');	
+	$remind->check($_POST["id"],'w');
 
 	$remind->delete($_POST);
 	logEvent($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
@@ -64,7 +63,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	$remind->check($_POST["id"],'w');	
+	$remind->check($_POST["id"],'w');
 
 	$remind->update($_POST);
 	logEvent($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);

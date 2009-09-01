@@ -35,10 +35,10 @@
 
 
 if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
+   define('GLPI_ROOT', '..');
 
-	$NEEDED_ITEMS=array("search","setup");
-	include (GLPI_ROOT . "/inc/includes.php");
+   $NEEDED_ITEMS = array('search', 'setup');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
 if (isset($_POST["itemtype"]))$itemtype=$_POST["itemtype"];
@@ -65,15 +65,15 @@ if (isset($_POST["activate"])) {
 	$setupdisplay->down($_POST);
 }
 if ((strpos($_SERVER['PHP_SELF'],"popup")&&$itemtype>0)/*||$itemtype=$setupdisplay->title($_SERVER['PHP_SELF'],$itemtype)*/){
-	
+
 	$tabs[1]=array('title'=>$LANG['central'][13],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
 	'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=1&itemtype=$itemtype");
-		
+
 	$tabs[2]=array('title'=>$LANG['central'][12],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
 	'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=2&itemtype=$itemtype");
-						
+
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";
