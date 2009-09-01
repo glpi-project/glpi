@@ -47,6 +47,10 @@ function update0721to0722() {
    // Delete state from reservation search
    $query = "DELETE FROM `glpi_display` WHERE type=".RESERVATION_TYPE." AND num=31;";
    $DB->query($query) or die("0.72.2 delete search of state from reservations" . $LANG['update'][90] . $DB->error());
+
+   // Clean licences alerts
+   $query = "DELETE FROM `glpi_alerts` WHERE device_type=".SOFTWARELICENSE_TYPE.";";
+   $DB->query($query) or die("0.72.2 delete search of state from reservations" . $LANG['update'][90] . $DB->error());
    
       // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0722"); // End

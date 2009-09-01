@@ -1355,7 +1355,6 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='')
 	return $ID;
 }
 
-
 /**
  * Cron action on softwares : alert on expired licences
  * @param $display display informations instead or log in file ?
@@ -1364,7 +1363,6 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='')
 function cron_software($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	return ; // TODO ???
 	if (!$CFG_GLPI["mailing"]){
 		return false;
 	}
@@ -1397,7 +1395,7 @@ function cron_software($display=false){
 				$items[$data["FK_entities"]]=array();
 			}
 
-			$name = $data['softname'].' '.$data['version'].' - '.$data['serial'];
+			$name = $data['softname'].' - '.$data['name'].' - '.$data['serial'];
 
 			// define message alert
 			if (strstr($message[$data["FK_entities"]],$name)===false){
@@ -1408,7 +1406,6 @@ function cron_software($display=false){
 
 
 	}
-
 	if (count($message)>0){
 		foreach ($message as $entity => $msg){
 			$mail=new MailingAlert("alertlicense",$msg,$entity);
