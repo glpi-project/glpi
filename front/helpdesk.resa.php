@@ -95,8 +95,11 @@ if (isset($_GET["redirect"])){
 			$_POST['id_item']=$id_item;
 			$ok=true;
 			$times=$_POST["periodicity_times"];
+
+			$begin=$_POST["begin"];
 			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
-			list($end_year,$end_month,$end_day)=explode("-",$_POST["end"]);
+			$end=$_POST["end"];
+
 			$to_add=1;
 			if ($_POST["periodicity"]=="week") {
 				$to_add=7;
@@ -104,8 +107,9 @@ if (isset($_GET["redirect"])){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_ok']=true;
 			for ($i=1;$i<=$times&&$_POST['_ok'];$i++){
-				$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
-				$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
+				$_POST["begin"]=date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
+				$_POST["end"]=date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
+                  
 				if ($_SESSION["glpiID"]==$_POST["id_user"]) {
 					unset($rr->fields["ID"]);
 					$_POST['_ok']=$rr->add($_POST);
