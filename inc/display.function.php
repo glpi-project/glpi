@@ -2494,6 +2494,14 @@ function changeProgressBarMessage ($msg="&nbsp;") {
    echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";
 }
 
+
+/**
+ * Display an "help" image and display a tooltip on mouseover
+ * could also be a link to another page
+ *
+ * @param $message to de displayed on mouseover
+ * @param $link
+ */
 function displayToolTip ($message, $link='') {
    global $CFG_GLPI;
 
