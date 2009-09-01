@@ -1016,7 +1016,15 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					{
 						$query="SELECT * 
 							FROM `".$LINK_ID_TABLE[$type]."` 
-							WHERE ($group_where) AND deleted='0' ";
+							WHERE ($group_where)  ";
+
+                                             if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])) {
+                                                $query.=" AND `deleted`='0' ";	
+                                             }
+                                             if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+                                                      $query.=" AND `is_template`='0' ";
+                                             }
+
 						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -1074,10 +1082,14 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 						FROM glpi_connect_wire 
 						LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) 
 						WHERE glpi_connect_wire.type='$type' 
-							AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer)." 
-							AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
+							AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer);
+
+                                             if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])) {
+                                                $query.=" AND ".$LINK_ID_TABLE[$type].".deleted='0' ";	
+                                             }
+
 					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
-						$query.=" AND is_template='0' ";
+						$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0' ";
 					}
 					$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
 					$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".name";
