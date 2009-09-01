@@ -942,13 +942,20 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			if (isPossibleToAssignType($type)){
 				$query="SELECT * 
-					FROM ".$LINK_ID_TABLE[$type]." 
-					WHERE FK_users='".$userID."' AND deleted='0' ";
+					       FROM `".$LINK_ID_TABLE[$type]."` 
+					          WHERE `FK_users`='".$userID."'";
+            if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])) {
+               $query.=" AND `deleted`='0' ";	
+            }
+            
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
-					$query.=" AND is_template='0' ";
+					$query.=" AND `is_template`='0' ";
 				}
 				
-				
+            if (in_array($type,$CFG_GLPI["helpdesk_visible_types"])){
+               $query.=" AND `helpdesk_visible`='1' ";
+            }
+            
 				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
 				$query.=" ORDER BY name ";
 
