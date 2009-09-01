@@ -575,12 +575,24 @@ class MailCollect {
 				} 
 				$text = imap_fetchbody($stream, $msg_number, $part_number); 
 				if($structure->encoding == 3) { 
-					return imap_base64($text); 
+					$text =  imap_base64($text); 
 				} else if($structure->encoding == 4) { 
-					return imap_qprint($text); 
-				} else { 
-					return $text; 
+					$text =  imap_qprint($text); 
 				} 
+                                 //else { return $text; } 
+                                 if( $structure->subtype && $structure->subtype=="HTML"){ 
+					$text = str_replace("\r","",$text);  
+					$text = str_replace("\n","",$text);  
+				}
+
+				if (count($structure->parameters)>0){ 
+   				  foreach ($structure->parameters as $param){ 
+				    if ((strtoupper($param->attribute)=='CHARSET') && function_exists('mb_convert_encoding') && strtoupper($param->value) != 'UTF-8'){ 
+                                       $text = mb_convert_encoding($text, 'utf-8',$param->value); 
+                                       } 
+                                   } 
+                                } 
+                            return $text;
 			} 
 			if($structure->type == 1){ /* multipart */ 
 				$prefix="";
