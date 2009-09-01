@@ -297,6 +297,17 @@ class Mailing
 											}
 										}
 									}
+                                                                       //don't send email if last followup from user, STOP spamming user!
+                                                                       $query3 = "SELECT * FROM glpi_followups WHERE tracking = '".$this->job->fields["ID"]."'  ORDER by date DESC LIMIT 1"; 
+                                                                       $result3=$DB->query($query3); 
+                                                                       if($data=$DB->fetch_array($result3)){ 
+                                                                           $fup=new Followup(); 
+                                                                           $fup->getFromDB($data['ID']); 
+                                                                           if($this->job->fields["author"] == $fup->fields["author"]) {
+										$authorsend=false; 
+                                                                           }
+									} 
+									$DB->free_result($result3);
 
 									if ($authorsend){
 										$this->addToEmailList($emails,$this->job->fields["uemail"],$authorlang);
