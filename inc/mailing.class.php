@@ -320,6 +320,21 @@ class Mailing {
                                  }
                               }
                            }
+
+                           //don't send email if last followup from user, STOP spamming user!
+                           $query3 = "SELECT * FROM glpi_ticketsfollowups 
+                                          WHERE tickets_id = '".$this->job->fields["id"]."'  
+                                          ORDER by date DESC LIMIT 1"; 
+                           $result3=$DB->query($query3); 
+                           if($data=$DB->fetch_array($result3)){ 
+                              $fup=new Followup(); 
+                              $fup->getFromDB($data['ID']); 
+                              if($this->job->fields["users_id"] == $fup->fields["users_id"]) {
+                                    $users_idsend=false; 
+                              }
+                           } 
+                           $DB->free_result($result3);
+
                            if ($users_idsend) {
                               $this->addToEmailList($emails,$this->job->fields["user_email"],
                                                     $users_idlang);
