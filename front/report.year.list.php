@@ -34,9 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-
-$NEEDED_ITEMS=array("contract","infocom");
+$NEEDED_ITEMS = array('contract', 'infocom');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -114,13 +112,13 @@ if (isset($query)&&count($query)){
 			echo "<th>".$LANG['search'][9]."</th>";
 			echo "</tr>";
 			while( $data = $DB->fetch_array($result)){
-				echo "<tr class='tab_bg_1'>";	
+				echo "<tr class='tab_bg_1'>";
 				if($data['itemname']) {
-					echo "<td> ".$data['itemname']." </td>"; 
-				} else { 
+					echo "<td> ".$data['itemname']." </td>";
+				} else {
 					echo "<td> N/A </td>";
 				}
-				echo "<td> ".getYesNo($data['itemdeleted'])." </td>"; 
+				echo "<td> ".getYesNo($data['itemdeleted'])." </td>";
 
 				if ($display_entity){
 					if ($data['entID']==0){
@@ -129,17 +127,17 @@ if (isset($query)&&count($query)){
 						echo "<td>".$data['entname']."</td>";
 					}
 				}
-		
+
 				if($data['location']) {
-					echo "<td> ".$data['location']." </td>"; 
-				} else { 
+					echo "<td> ".$data['location']." </td>";
+				} else {
 					echo "<td> N/A </td>";
 				}
-		
+
 				if($data['buy_date']) {
-					echo "<td> ".convDate($data['buy_date'])." </td>"; 
+					echo "<td> ".convDate($data['buy_date'])." </td>";
 					if($data["warranty_duration"]) {
-						echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>"; 
+						echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>";
 					} else {
 						echo "<td> N/A </td>";
 					}
@@ -147,24 +145,24 @@ if (isset($query)&&count($query)){
 					echo "<td> N/A </td><td> N/A </td>";
 				}
 				if($data['type']) {
-					echo "<td> ".$data['type']." </td>"; 
-				} else { 
+					echo "<td> ".$data['type']." </td>";
+				} else {
 					echo "<td> N/A </td>";
 				}
-		
+
 				if($data['begin_date']) {
-					echo "<td> ".convDate($data['begin_date'])." </td>"; 
+					echo "<td> ".convDate($data['begin_date'])." </td>";
 					if($data["duration"]) {
-						echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>"; 
+						echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>";
 					} else {
 						echo "<td> N/A </td>";
 					}
 				} else {
 					echo "<td> N/A </td><td> N/A </td>";
 				}
-		
+
 				echo "</tr>\n";
-			}	
+			}
 			echo "</table></div><br><hr><br>";
 		}
 	}

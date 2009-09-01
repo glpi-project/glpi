@@ -33,9 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+$NEEDED_ITEMS = array('computer', 'document', 'enterprise', 'group', 'mailing', 'monitor',
+   'networking', 'ocsng', 'peripheral', 'phone', 'planning', 'printer', 'software', 'tracking',
+   'user');
+
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("group","user","planning","tracking","computer","printer","monitor","peripheral",
-	"ocsng","networking","software","enterprise","phone","document","mailing");
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
@@ -82,7 +85,7 @@ if (isset($_POST['update'])){
 if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
-}	
+}
 
 	$track->check($_GET["id"],'r');
 

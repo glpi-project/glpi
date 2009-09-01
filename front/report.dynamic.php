@@ -34,28 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("search",
-"user",
-"computer",
-"printer",
-"monitor",
-"peripheral",
-"networking",
-"software",
-"phone",
-"cartridge",
-"consumable",
-"stat",
-"tracking",
-"contract",
-"infocom",
-"enterprise",
-"device",
-"document",
-"knowbase",
-"group"
-);
-
+$NEEDED_ITEMS = array('cartridge', 'computer', 'consumable', 'contract', 'device', 'document',
+   'enterprise', 'group', 'infocom', 'knowbase', 'monitor', 'networking', 'peripheral', 'phone',
+   'printer', 'search', 'software', 'stat', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -114,8 +95,8 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 							// If display done exit else do normal display
 							exit();
 						}
-					} 
-				} 
+					}
+				}
 			}
 
 

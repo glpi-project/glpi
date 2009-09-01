@@ -29,7 +29,7 @@
  */
 
 
-$NEEDED_ITEMS=array("search","document");
+$NEEDED_ITEMS = array('document', 'search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

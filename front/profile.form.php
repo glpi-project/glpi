@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("profile","search","entity","user");
+$NEEDED_ITEMS = array ('entity', 'profile', 'search', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -94,10 +93,10 @@ commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
-}	
+}
 
 
-	$prof->showTabs($_GET["id"],'',$_SESSION['glpi_tab']); 
+	$prof->showTabs($_GET["id"],'',$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";
 
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";

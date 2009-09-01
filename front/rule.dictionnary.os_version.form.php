@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.dictionnary.dropdown");
+$NEEDED_ITEMS = array('entity', 'rulesengine', 'rule.dictionnary.dropdown');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

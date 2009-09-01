@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("search","typedoc");
+$NEEDED_ITEMS = array('search', 'typedoc');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

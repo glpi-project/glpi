@@ -29,14 +29,12 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: 
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-
-
-$NEEDED_ITEMS=array("user","stat","tracking");
+$NEEDED_ITEMS = array('stat', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -70,15 +68,15 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 $items=array(
 	$LANG['job'][4]=> array(
-		"user"=>array(	
+		"user"=>array(
 			"title"=>$LANG['common'][37],
 			"field"=>"glpi_tickets.users_id"
 			),
-		"users_id_recipient"=>array(	
+		"users_id_recipient"=>array(
 			"title"=>$LANG['job'][3],
 			"field"=>"glpi_tickets.users_id_recipient"
 			),
-		"group"=>array(	
+		"group"=>array(
 			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tickets.groups_id"
 			),
@@ -92,33 +90,33 @@ $items=array(
 			),
 	),
 	$LANG['common'][32] => array(
-		"ticketscategories_id"=>array(	
+		"ticketscategories_id"=>array(
 			"title"=>$LANG['common'][36],
 			"field"=>"glpi_tickets.ticketscategories_id"
 			),
-		"priority"=>array(	
+		"priority"=>array(
 			"title"=>$LANG['joblist'][2],
 			"field"=>"glpi_tickets.priority"
 			),
-		"request_type"=>array(	
+		"request_type"=>array(
 			"title"=>$LANG['job'][44],
 			"field"=>"glpi_tickets.request_type"
 			),
 	),
 	$LANG['job'][5] => array(
-		"technicien"=>array(	
+		"technicien"=>array(
 			"title"=>$LANG['job'][6]." ".$LANG['stats'][48],
 			"field"=>"glpi_tickets.users_id_assign"
 			),
-		"technicien_followup"=>array(	
+		"technicien_followup"=>array(
 				"title"=>$LANG['job'][6]." ".$LANG['stats'][49],
 				"field"=>"glpi_followup.users_id"
 				),
-		"groups_id_assign"=>array(	
+		"groups_id_assign"=>array(
 			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tickets.groups_id_assign"
 			),
-		"enterprise"=>array(	
+		"enterprise"=>array(
 				"title"=>$LANG['financial'][26],
 				"field"=>"glpi_tickets.suppliers_id_assign"
 				),
@@ -153,7 +151,7 @@ $items=array(
 	echo "</td></tr>";
 	echo "</table></form></div>";
 
-	
+
 	$val=getStatsItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
 	$params=array("type"=>$_POST["type"],"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],STAT_TYPE,$params);

@@ -33,8 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+$NEEDED_ITEMS = array('computer', 'document', 'enterprise', 'group', 'monitor', 'networking',
+   'peripheral', 'phone', 'printer', 'software', 'tracking', 'user');
+
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("user","group","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
@@ -79,7 +82,7 @@ if (!isset($_GET["status"])||isset($_GET['reset'])) {
 	} else {
 		$_GET["status"]="notold";
 	}
-} 
+}
 
 if (!isset($_GET["showfollowups"])||isset($_GET['reset'])) $_GET["showfollowups"]=0;
 if (!isset($_GET["items_id"])||isset($_GET['reset'])) $_GET["items_id"]=0;

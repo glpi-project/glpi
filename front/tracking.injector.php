@@ -30,15 +30,16 @@
 
 // Based on:
 // IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+// Christian Bauer
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("user","group","profile","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document","rulesengine","rule.tracking");
+$NEEDED_ITEMS = array('computer', 'document', 'enterprise', 'group', 'monitor', 'networking',
+   'peripheral', 'phone', 'printer', 'profile', 'rulesengine', 'rule.tracking', 'software',
+   'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

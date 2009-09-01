@@ -34,9 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-
-
-$NEEDED_ITEMS=array("contract","infocom","computer","printer","monitor","peripheral","networking","software","phone","stat");
+$NEEDED_ITEMS = array('computer', 'contract', 'infocom', 'monitor', 'networking', 'peripheral',
+   'phone', 'printer', 'software', 'stat');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -84,7 +83,7 @@ $valeurgraphtot=array();
 function display_infocoms_report($itemtype,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms 
+	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms
 		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
 	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id = glpi_entities.id) ";
 
@@ -123,7 +122,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 				$line["value"]*=getNumberConnections($itemtype,$line["items_id"]);
 			}
 
-			if ($line["value"]>0) $valeursoustot+=$line["value"];	
+			if ($line["value"]>0) $valeursoustot+=$line["value"];
 
 			$valeurnette=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"n");
 			$tmp=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"all");
@@ -144,7 +143,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 			}
 
 
-			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
+			$valeurnettesoustot+=str_replace(" ","",$valeurnette);
 
 			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
 			if ($display_entity){
@@ -158,7 +157,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 			echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".formatNumber($valeurnette)."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 
-		}	
+		}
 
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
@@ -169,7 +168,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 		if (count($valeurnettegraph)>0){
 
 			echo "<tr><td colspan='5'  class='center'>";
-			ksort($valeurnettegraph); 
+			ksort($valeurnettegraph);
 
 			$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
 
@@ -186,7 +185,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 		if (count($valeurgraph)>0){
 			echo "<tr><td colspan='5' class='center'>";
 
-			ksort($valeurgraph); 
+			ksort($valeurgraph);
 
 			$valeurgraphdisplay=array_map('round',$valeurgraph);
 
@@ -230,7 +229,7 @@ if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
 	graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
 }
-if (count($valeurgraphtot)>0){	
+if (count($valeurgraphtot)>0){
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
 	graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
 }

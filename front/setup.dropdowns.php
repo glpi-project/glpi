@@ -38,10 +38,10 @@
 //,"ocsng","rulesengine","computer","monitor","printer","peripheral","phone","software","networking","computer","monitor","printer","peripheral","phone","software","networking");
 
 if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
+   define('GLPI_ROOT', '..');
 
-	$NEEDED_ITEMS=array("setup");
-	include (GLPI_ROOT . "/inc/includes.php");
+   $NEEDED_ITEMS = array('setup');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
 checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
@@ -97,7 +97,7 @@ if (isset($_POST['mass_delete'])){
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 }else if (isset($_POST["several_add"])) {
-	
+
 	for ($i=$_POST["from"];$i<=$_POST["to"];$i++){
 		$_POST["value"]=$_POST["before"].$i.$_POST["after"];
 		addDropdown($_POST);
@@ -211,7 +211,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_networks"=>$LANG['setup'][88],
 					"glpi_vlans"=>$LANG['setup'][90],
 					),
-			
+
 			$LANG['Menu'][4]=>array(
 			"glpi_softwarescategories"=>$LANG['softwarecategories'][5],
 			),
@@ -220,7 +220,7 @@ if (isset($_POST['mass_delete'])){
 			"glpi_userstitles"=>$LANG['users'][1],
 			"glpi_userscategories"=>$LANG['users'][2],
 			)
-			
+
 			); //end $opt
 
 	$plugdrop=getPluginsDropdowns();
@@ -233,7 +233,7 @@ if (isset($_POST['mass_delete'])){
 				if (!in_array($key,$CFG_GLPI["specif_entities_tables"])){
 					unset($optgroup[$label][$key]);
 				}
-				
+
 			}
 			if (count($optgroup[$label])==0){
 				unset($optgroup[$label]);
@@ -247,7 +247,7 @@ if (isset($_POST['mass_delete'])){
 				if (in_array($key,$CFG_GLPI["specif_entities_tables"])){
 					unset($optgroup[$label][$key]);
 				}
-				
+
 			}
 			if (count($optgroup[$label])==0){
 				unset($optgroup[$label]);
@@ -259,15 +259,15 @@ if (isset($_POST['mass_delete'])){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $LANG['setup'][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
-	
+
 		foreach($optgroup as $label=>$dp){
-	
+
 			echo "<optgroup label=\"$label\">";
-	
+
 			foreach ($dp as $key => $val){
 				$sel="";
 				if ($which==$key) $sel="selected";
-				echo "<option value='$key' $sel>".$val."</option>";	
+				echo "<option value='$key' $sel>".$val."</option>";
 			}
 			echo "</optgroup>";
 		}
@@ -279,13 +279,13 @@ if (isset($_POST['mass_delete'])){
 	if ($which=="glpi_netpoints"){
 		if (haveRight("entity_dropdown","w")){
 			$title=$LANG['setup'][73];
-			
+
 			if (strpos($_SERVER['PHP_SELF'],"popup")){
-				
+
 				if ($value2>0) {
 					$title .= " (" . $LANG['common'][15] . ":&nbsp;" . getDropdownName("glpi_locations", $value2) . ")";
 				}
-				
+
 			} else {
 				echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
@@ -301,7 +301,7 @@ if (isset($_POST['mass_delete'])){
 				} else {
 					showFormNetpoint($_SERVER['PHP_SELF'],$title,$ID,$entities_id,$value2);
 				}
-			}		
+			}
 		}
 	} else if ($which){
 		// Search title

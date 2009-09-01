@@ -35,17 +35,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"ocsng",
-	"mailing",
-	"consumable",
-	"cartridge",
-	"contract",
-	"infocom",
-	"software",
-	"cron"
-);
+
+$NEEDED_ITEMS = array('cartridge', 'consumable', 'contract', 'cron', 'infocom', 'mailing',
+   'ocsng', 'setup', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------
 
 if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
+   define('GLPI_ROOT', '..');
 
-	$NEEDED_ITEMS=array("rulesengine");
-	include (GLPI_ROOT . "/inc/includes.php");
+   $NEEDED_ITEMS = array('rulesengine');
+   include (GLPI_ROOT . "/inc/includes.php");
 }
 
 
@@ -69,7 +69,7 @@ if (isset($_POST["test_rule"]))
 	unset($_POST["rules_id"]);
 	unset($_POST["sub_type"]);
 	$rule->getRuleWithCriteriasAndActions($rules_id,1,1);
-	
+
 	// Need for RuleEngines
 	foreach ($_POST as $key => $val) {
 		$_POST[$key] = stripslashes($_POST[$key]);
