@@ -1056,10 +1056,17 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                if (isPossibleToAssignType($itemtype)) {
                   $query="SELECT *
                           FROM `".$LINK_ID_TABLE[$itemtype]."`
-                          WHERE ($group_where)
-                                AND `is_deleted`='0' ".
+                          WHERE ($group_where) ".
                                 getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",
                                    $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
+
+                  if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+                     $query.=" AND `is_deleted`='0' ";  
+                  }
+                  if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+                     $query.=" AND `is_template`='0' ";
+                  }
+
                   $result=$DB->query($query);
                   if ($DB->numrows($result)>0) {
                      $ci->setType($itemtype);
@@ -1121,8 +1128,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                             ON (`glpi_computers_items`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
                        WHERE `glpi_computers_items`.`itemtype`='$itemtype'
                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
-                                                $search_computer)."
-                             AND ".$LINK_ID_TABLE[$itemtype].".`is_deleted`='0' ";
+                                                $search_computer);
+               if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+                  $query.=" AND `is_deleted`='0' ";  
+               }
                if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                   $query.=" AND `is_template`='0' ";
                }
