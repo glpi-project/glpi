@@ -812,7 +812,12 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted, glpi_dropdown_state.name AS state,
-		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
+		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,
+      `glpi_softwarelicenses`.`type` AS lictype,
+      `glpi_softwarelicenses`.`id` AS licid,
+      `glpi_softwarelicenses`.`name` AS licname,
+      `glpi_softwarelicenses`.`serial` AS licserial,
+      `glpi_softwarelicenses`.`comments` AS liccomment
 		FROM glpi_inst_software
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
 		LEFT JOIN glpi_dropdown_state ON ( glpi_dropdown_state.ID = glpi_softwareversions.state )
@@ -823,7 +828,12 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted, glpi_dropdown_state.name AS state,
-		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
+		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,
+      `glpi_softwarelicenses`.`type` AS lictype,
+      `glpi_softwarelicenses`.`id` AS licid,
+      `glpi_softwarelicenses`.`name` AS licname,
+      `glpi_softwarelicenses`.`serial` AS licserial,
+      `glpi_softwarelicenses`.`comments` AS liccomment
 	    FROM glpi_inst_software
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
 		LEFT JOIN glpi_dropdown_state ON ( glpi_dropdown_state.ID = glpi_softwareversions.state )
@@ -858,7 +868,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$cat = -1;
 
-	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
+	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".
+      (empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
+   initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG['help'][25]." = ".
+      (empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
 
 	$installed=array();
 	if ($DB->numrows($result)) {
@@ -870,6 +883,9 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 			displaySoftsByCategory($data, $instID, $withtemplate,$canedit);
 			addToNavigateListItems(SOFTWARE_TYPE,$data["sID"]);
+         if ($data['licid']) {
+            addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["licid"]);
+         }
 			$installed[]=$data["sID"];
 		}
 
@@ -884,7 +900,12 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	// Affected licenses NOT installed
 	$query = "SELECT glpi_software.name as softname, glpi_software.deleted, glpi_dropdown_state.name AS state, glpi_softwarelicenses.buy_version,
-		glpi_softwarelicenses.sID, glpi_softwareversions.name AS version, glpi_softwarelicenses.type AS lictype
+		glpi_softwarelicenses.sID, glpi_softwareversions.name AS version,
+      `glpi_softwarelicenses`.`type` AS lictype,
+      `glpi_softwarelicenses`.`id` AS licid,
+      `glpi_softwarelicenses`.`name` AS licname,
+      `glpi_softwarelicenses`.`serial` AS licserial,
+      `glpi_softwarelicenses`.`comments` AS liccomment
 		FROM glpi_softwarelicenses
 		INNER JOIN glpi_software ON (glpi_softwarelicenses.sID = glpi_software.ID)
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)
@@ -903,6 +924,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 				$cat = false;
 			}
 			displaySoftsByLicense($data, $instID, $withtemplate, $canedit);
+         addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["licid"]);
 		}
 		displayCategoryFooter(NULL,$rand,$canedit);
 	}
@@ -1020,7 +1042,7 @@ function displayCategoryHeader($cID,$data,$rand,$canedit) {
  * @return nothing
  */
 function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
-	global $LANG, $CFG_GLPI;
+	global $LANG, $CFG_GLPI, $INFOFORM_PAGES;
 
 	$ID = $data["ID"];
 	$multiple = false;
@@ -1036,7 +1058,11 @@ function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
 
 	echo "<td>" . $data["version"];
 	if ($data["FK_computers"]==$instID) {
-		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
+		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong> ";
+      $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?ID=".$data['licid'];
+      displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['licname']."<br>".
+                      $LANG['common'][19]."&nbsp;: ".$data['licserial']."<br>".$data['liccomment'],
+                      $link);
 	}
 	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
@@ -1055,15 +1081,16 @@ function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
  * @return nothing
  */
 function displaySoftsByLicense($data, $instID, $withtemplate,$canedit) {
-	global $LANG, $CFG_GLPI;
+	global $LANG, $CFG_GLPI, $INFOFORM_PAGES;
 
 	$ID = $data["buy_version"];
 	$multiple = false;
+   $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?ID=".$data['licid'];
 
 	echo "<tr class='tab_bg_1'>";
    if ($canedit) {
       echo "<td>";
-      if ($ID>0) {
+      if ((empty ($withtemplate) || $withtemplate != 2) && $ID>0) {
          echo "<input type='checkbox' name='version_$ID'>";
       }
       echo "</td>";
@@ -1074,8 +1101,11 @@ function displaySoftsByLicense($data, $instID, $withtemplate,$canedit) {
 	echo "<td>" . $data["state"] . "</td>";
 
 	echo "<td>" . $data["version"];
-	echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
-	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit && $ID>0) {
+	echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong> ";
+   displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['licname']."<br>".
+                   $LANG['common'][19]."&nbsp;: ".$data['licserial']."<br>".$data['liccomment'],
+                   $link);
+   if ((empty ($withtemplate) || $withtemplate != 2) && $canedit && $ID>0) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?install=install&amp;vID=$ID&amp;cID=$instID\">";
 		echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
 	}
