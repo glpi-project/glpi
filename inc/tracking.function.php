@@ -2371,7 +2371,7 @@ function showFollowupsSummary($tID){
 		while ($data=$DB->fetch_array($result)){
 			$canedit=($caneditall||$data['author']==$_SESSION['glpiID']);
 
-			echo "<tr class='tab_bg_2' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$tID.$data["ID"]."$rand();\"":"style='cursor:none'")
+			echo "<tr class='tab_bg_".($data['private']==1?"4":"2")."' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$tID.$data["ID"]."$rand();\"":"style='cursor:none'")
 				." id='viewfollowup".$tID.$data["ID"]."$rand'>";
 			echo "<td>".$data["ID"]."</td>";
 
