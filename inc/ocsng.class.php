@@ -454,10 +454,10 @@ class Ocsng extends CommonDBTM {
             $out.=$LANG['ocsng'][44];
          } else {
             $out.=$LANG['ocsng'][18];
-            $out.="\n<tr class='tab_bg_2'><td class='center'>".$LANG['ocsng'][19]."</td></tr>\n";
+            $out.="\n<tr class='tab_bg_2'><td class='center'>".$LANG['ocsng'][19];
          }
       }
-      $out.="</td></tr>";
+      $out.="</td></tr>\n";
       $out.="</table></div>";
       echo $out;
    }
