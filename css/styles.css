@@ -1516,12 +1516,13 @@ margin:0;
 }
 
 
-#kbanswer p {margin-bottom:8pt}
+#kbanswer p {
+   margin: 1.12em 0
+}
 
 #kbanswer h1 {
    font-size: 2em;
-   margin: .67em 0;
-   font-weight: bolder;
+   margin: .67em 0
 }
 #kbanswer h2 {
    font-size: 1.5em;
