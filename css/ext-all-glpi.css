@@ -240,6 +240,4 @@ overflow:visible;
 /* Correct for date picker */
 .ext-ie .x-menu{overflow:visible;}
 
-/* For clean display of knowbase : use a specific css (div included) for knowbase*/
-p {margin-bottom:8pt}
 
