@@ -60,20 +60,22 @@ if (isset($_GET["file"])){
 
 				if (isset($_SESSION["glpiactiveprofile"]["interface"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
-					if (haveRight("document","r")
-							||$doc->fields["FK_users"]==$_SESSION["glpiID"])
+					if ((haveRight("document","r") && haveAccessToEntity($doc->fields['FK_entities']))
+							||$doc->fields["FK_users"]==$_SESSION["glpiID"]){
 						$send=true;
+               }
 
 					// Knowbase Case
 					if (!$send&&haveRight("knowbase","r")){
 						$query = "SELECT * 
-							FROM glpi_doc_device 
-							WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' 
-								AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."'";
+							FROM glpi_doc_device
+							WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."'
+								AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' ";
 
 						$result=$DB->query($query);
-						if ($DB->numrows($result)>0)
+						if ($DB->numrows($result)>0){
 							$send=true;
+                  }
 					}
 					if (!$send&&haveRight("faq","r")){
 						$query = "SELECT * 
