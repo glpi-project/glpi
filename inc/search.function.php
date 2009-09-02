@@ -1531,7 +1531,7 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num){
 				$replace=array("<",">");
 				$val=preg_replace($search,$replace,$val);
 
-				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
+				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/",$val,$regs)){
 					if ($NOT){
 						if ($regs[1]=='<') {
 							$regs[1]='>';
@@ -2226,7 +2226,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 				$search=array("/\&lt;/","/\&gt;/");
 				$replace=array("<",">");
 				$val=preg_replace($search,$replace,$val);
-				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
+				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/",$val,$regs)){
 					if ($nott){
 						if ($regs[1]=='<') {
 							$regs[1]='>';
