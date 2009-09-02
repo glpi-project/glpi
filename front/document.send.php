@@ -61,9 +61,10 @@ if (isset($_GET["file"])){
 
 				if (isset($_SESSION["glpiactiveprofile"]["interface"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
-					if (haveRight("document","r")
-							||$doc->fields["users_id"]==$_SESSION["glpiID"])
+					if ((haveRight("document","r") && haveAccessToEntity($doc->fields['entities_id']))
+							||$doc->fields["users_id"]==$_SESSION["glpiID"]) {
 						$send=true;
+               }
 
 					// Knowbase Case
 					if (!$send&&haveRight("knowbase","r")){
