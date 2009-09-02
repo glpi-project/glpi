@@ -224,9 +224,6 @@ margin:3px;
 /* strong is not normal */
 strong{font-weight:bolder;}
 
-/* For clean display of knowbase : use a specific css (div included) for knowbase*/
-p {margin-bottom:8pt}
-
 /* X panel */
 /* Allow class overlink to function grr */
 
