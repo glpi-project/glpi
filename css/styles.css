@@ -1551,3 +1551,11 @@ div#show_all_menu{
    font-weight: bolder;
 }
 
+#kbanswer address {
+   font-style: italic;
+}
+
+#kbanswer pre {
+   font-family: monospace;
+   white-space: pre;
+}
