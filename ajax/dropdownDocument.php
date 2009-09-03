@@ -51,6 +51,9 @@ $where=" WHERE  (glpi_docs.rubrique = '".$_POST['rubdoc']."' AND glpi_docs.delet
 
 
 if (isset($_POST["entity_restrict"])){
+   if (!is_numeric($_POST["entity_restrict"]) && !is_array($_POST["entity_restrict"])) {
+      $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
+   }
 	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$_POST["entity_restrict"],true);
 } else {
 	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'','',true);
@@ -63,7 +66,7 @@ if (isset($_POST['used'])) {
 			$used=unserialize(stripslashes($_POST['used']));
 		}
 	if (count($used)) {
-		$where .=" AND ID NOT IN ('".implode("','",$used)."') ";	
+		$where .=" AND ID NOT IN ('".implode("','",$used)."') ";
 	}
 }
 
@@ -75,9 +78,9 @@ $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
-$query = "SELECT * 
-	FROM glpi_docs 
-	$where 
+$query = "SELECT *
+	FROM glpi_docs
+	$where
 	ORDER BY FK_entities, name $LIMIT";
 //error_log($query);
 $result = $DB->query($query);
