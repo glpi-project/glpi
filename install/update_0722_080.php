@@ -726,7 +726,6 @@ function update0722to080() {
                            array('from' => 'autoname_entity', 'to' => 'use_autoname_by_entity', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'expand_soft_categorized', 'to' => 'is_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'expand_soft_not_categorized', 'to' => 'is_not_categorized_soft_expanded', 'default' =>1, 'noindex'=>true ),//
-                           array('from' => 'dbreplicate_notify_desynchronization', 'to' => 'use_notification_on_dbreplicate_desync', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'ticket_title_mandatory', 'to' => 'is_ticket_title_mandatory', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'ticket_content_mandatory', 'to' => 'is_ticket_content_mandatory', 'default' =>1, 'noindex'=>true ),//
                            array('from' => 'ticket_category_mandatory', 'to' => 'is_ticket_category_mandatory', 'default' =>0, 'noindex'=>true ),//
@@ -1164,7 +1163,6 @@ function update0722to080() {
                               ),
       'glpi_configs' => array(array('from' => 'glpi_timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               array('from' => 'cartridges_alarm', 'to' => 'default_alarm_threshold', 'default' =>10, 'noindex'=>true),//
-                              array('from' => 'expire_events', 'to' => 'events_lifetime', 'default' =>30, 'noindex'=>true,'comments'=>'in days'),//
                               array('from' => 'event_loglevel', 'to' => 'event_loglevel', 'default' =>5, 'noindex'=>true),//
                               array('from' => 'cas_port', 'to' => 'cas_port', 'default' =>443, 'noindex'=>true,'checkdatas'=>true),//
                               array('from' => 'auto_update_check', 'to' => 'auto_update_check', 'default' =>0, 'noindex'=>true),//
@@ -2121,9 +2119,9 @@ function update0722to080() {
       unlink($lock);
    }
 
-   // Move glpi_config.events_lifetime to glpi_crontasks.param
-   if (FieldExists('glpi_configs','events_lifetime')) {
-      $query="SELECT `events_lifetime` FROM `glpi_configs` WHERE id=1";
+   // Move glpi_config.expire_events to glpi_crontasks.param
+   if (FieldExists('glpi_configs','expire_events')) {
+      $query="SELECT `expire_events` FROM `glpi_configs` WHERE id=1";
       if ($result=$DB->query($query)){
          if ($DB->numrows($result)>0){
             $value=$DB->result($result,0,0);
@@ -2135,8 +2133,8 @@ function update0722to080() {
             $DB->query($query);
          }
       }
-      $query="ALTER TABLE `glpi_configs` DROP `events_lifetime`";
-      $DB->query($query) or die("0.80 drop events_lifetime in glpi_configs" . $LANG['update'][90] . $DB->error());
+      $query="ALTER TABLE `glpi_configs` DROP `expire_events`";
+      $DB->query($query) or die("0.80 drop expire_events in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
    // Move glpi_config.auto_update_check to glpi_crontasks.state
@@ -2171,9 +2169,9 @@ function update0722to080() {
       $query="ALTER TABLE `glpi_configs` DROP `dbreplicate_maxdelay`";
       $DB->query($query) or die("0.80 drop dbreplicate_maxdelay in check_update" . $LANG['update'][90] . $DB->error());
    }
-   if (FieldExists('glpi_configs','use_notification_on_dbreplicate_desync')) {
-      $query="ALTER TABLE `glpi_configs` DROP `use_notification_on_dbreplicate_desync`";
-      $DB->query($query) or die("0.80 drop use_notification_on_dbreplicate_desync in check_update" . $LANG['update'][90] . $DB->error());
+   if (FieldExists('glpi_configs','dbreplicate_notify_desynchronization')) {
+      $query="ALTER TABLE `glpi_configs` DROP `dbreplicate_notify_desynchronization`";
+      $DB->query($query) or die("0.80 drop dbreplicate_notify_desynchronization in check_update" . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_configs','cron_limit')) {
