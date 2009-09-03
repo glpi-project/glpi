@@ -577,27 +577,31 @@ class RuleCollection {
 		
 		if (count($this->RuleList->list)){
 
-			foreach ($this->RuleList->list as $rule){
+			foreach ($this->RuleList->list as $rule) {
 				//If the rule is active, process it
-				if ($rule->fields["is_active"]){
+				if ($rule->fields["is_active"]) {
 					$output["_rule_process"]=false;
 					$output["result"][$rule->fields["id"]]["id"]=$rule->fields["id"];
 					
 					$rule->process($input,$output,$params);
-					if ($output["_rule_process"]&&$this->stop_on_first_match){
+					if ($output["_rule_process"]&&$this->stop_on_first_match) {
 						unset($output["_rule_process"]);
 						$output["result"][$rule->fields["id"]]["result"]=1;
 						$output["_ruleid"]=$rule->fields["id"];
 						return $output;
-					}elseif ($output["_rule_process"]){
+					} elseif ($output["_rule_process"]) {
 						$output["result"][$rule->fields["id"]]["result"]=1;
-					}else{
+					} else {
 						$output["result"][$rule->fields["id"]]["result"]=0;
 					}
-				}else{
+				} else {
 					//Rule is inactive
 					$output["result"][$rule->fields["id"]]["result"]=2;
 				}
+            if ($this->use_output_rule_process_as_next_input){
+               $input=$output;
+            }
+
 			}
 		}
 
