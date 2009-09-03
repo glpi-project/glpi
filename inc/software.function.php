@@ -371,11 +371,12 @@ function showLicenses($softwares_id) {
 
 				if ($license->can($data['id'],"w")){
 					echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-					echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
 				} else {
 					echo "<td>&nbsp;</td>";
-					echo "<td>".$data['name'].(empty($data['name'])?$data['id']:"")."</td>";
 				}
+            echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".
+                  $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+
 				if ($software->isRecursive()) {
 					echo "<td>".$data['entity']."</td>";
 				}
