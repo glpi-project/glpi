@@ -34,10 +34,11 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group',
-   'infocom', 'link', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
-   'registry', 'reservation', 'rule.dictionnary.dropdown', 'rule.dictionnary.software',
-   'rule.softwarecategories', 'rulesengine', 'search', 'setup', 'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group', 'infocom', 
+                       'link', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
+                       'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown', 
+                       'rule.dictionnary.software', 'rule.softwarecategories', 'search', 'setup', 
+                       'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
