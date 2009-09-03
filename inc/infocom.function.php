@@ -66,15 +66,8 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
    }
 
    if ($ci->getFromDB($itemtype,$dev_ID)) {
-      $entity=-1;
+      $entity=$ci->getField("entities_id");
 
-      if ($itemtype==SOFTWARELICENSE_TYPE) {
-         $soft=new Software();
-         $soft->getFromDB($ci->getField('softwares_id'));
-         $entity=$soft->fields['entities_id'];
-      } else {
-         $entity=$ci->getField("entities_id");
-      }
       if (!$ic->getFromDBforDevice($itemtype,$dev_ID)) {
          if ($ic->can(-1,"w",$entity) && $withtemplate!=2) {
             echo "<table class='tab_cadre'><tr><th>";
