@@ -67,7 +67,7 @@ class Software extends CommonDBTM {
 			if (haveRight("document","r")){
 				$ong[5] = $LANG['Menu'][27];
 			}
-	
+
 			if (empty ($withtemplate)) {
 				if (haveRight("show_all_ticket","1")){
 					$ong[6] = $LANG['title'][28];
@@ -81,9 +81,9 @@ class Software extends CommonDBTM {
 				if (haveRight("reservation_central", "r")){
 					$ong[11] = $LANG['Menu'][17];
 				}
-			
+
 				$ong[12] = $LANG['title'][38];
-				
+
 				if ($this->isRecursive()) {
 					$ong[21] = $LANG['software'][47];
 				}
@@ -124,7 +124,7 @@ class Software extends CommonDBTM {
 				$input["category"]=0;
 			}
 		}
-				
+
 		return $input;
 	}
 	function post_addItem($newID, $input) {
@@ -150,21 +150,21 @@ class Software extends CommonDBTM {
 
 				$ic->addToDB();
 			}
-	
-			// ADD Contract				
+
+			// ADD Contract
 			$query = "SELECT FK_contract FROM glpi_contract_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
-	
+
 				while ($data = $DB->fetch_array($result))
 					addDeviceContract($data["FK_contract"], SOFTWARE_TYPE, $newID);
 			}
-	
-			// ADD Documents			
+
+			// ADD Documents
 			$query = "SELECT FK_doc FROM glpi_doc_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
-	
+
 				while ($data = $DB->fetch_array($result))
 					addDeviceDocument($data["FK_doc"], SOFTWARE_TYPE, $newID);
 			}
@@ -260,11 +260,11 @@ class Software extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$use_cache=false;
 			$this->getEmpty();
-		} 
+		}
 		$canedit=$this->can($ID,'w');
 
 		$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
@@ -284,7 +284,7 @@ class Software extends CommonDBTM {
 		}
 
 		echo "<div class='center' id='tabsbody'>";
-		
+
 		if ($canedit) {
 			echo "<form method='post' action=\"$target\">";
 		}
@@ -295,7 +295,7 @@ class Software extends CommonDBTM {
 		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 		echo "<table class='tab_cadre_fixe'>";
-	
+
 		$this->showFormHeader($ID, $withtemplate, 2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
@@ -303,8 +303,8 @@ class Software extends CommonDBTM {
 			echo "<td>";
 			autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
 			echo "</td>";
-			
-			
+
+
 			echo "<td>" . $LANG['common'][36] . ":		</td><td>";
 			dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
 			echo "</td>";
@@ -400,7 +400,7 @@ class Software extends CommonDBTM {
 			}
 			echo "</tr>";
 			echo "</table></form></div>";
-		}else { // ! $canedit 
+		}else { // ! $canedit
 			echo "</table></div>";
 		}
 
@@ -413,7 +413,7 @@ class Software extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 	/**
-	* Count Installations of a software 
+	* Count Installations of a software
 	*
 	* @return integer installation number
 	*/
@@ -427,11 +427,11 @@ class Software extends CommonDBTM {
 			return false;
 		}
 	}
-	
+
 	function getEmpty()
 	{
 		global $CFG_GLPI;
-		
+
 		parent::getEmpty();
 		$this->fields["helpdesk_visible"]= $CFG_GLPI["software_helpdesk_visible"];
 	}
@@ -470,19 +470,19 @@ class SoftwareVersion extends CommonDBTM {
 		$soft=new Software();
 		$soft->getFromDB($this->fields["sID"]);
 		return $soft->getEntityID();
-	}	
+	}
 
 	function isRecursive () {
 		$soft=new Software();
 		$soft->getFromDB($this->fields["sID"]);
 		return $soft->isRecursive();
-	}	
+	}
 
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
 		$ong[1] = $LANG['title'][26];
-		
+
 		if ($ID) {
 			$ong[2] = $LANG['software'][19];
 			$ong[12] = $LANG['title'][38];
@@ -499,7 +499,7 @@ class SoftwareVersion extends CommonDBTM {
 	 *@param $sID ID of the software for add process
 	 *
 	 *@return true if displayed  false if item not found or not right to display
-	 **/	
+	 **/
 	function showForm($target,$ID,$sID=-1){
 		global $CFG_GLPI,$LANG;
 
@@ -509,11 +509,11 @@ class SoftwareVersion extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$use_cache=false;
 			$this->getEmpty();
-		} 
+		}
 		$canedit=$this->can($ID,'w');
 
 
@@ -534,12 +534,12 @@ class SoftwareVersion extends CommonDBTM {
 		echo "<td>";
 		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
 		echo "</td></tr>";
-	
+
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
 		echo "</td></tr>";
-	
+
 		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
 		dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
 		echo "</td></tr>";
@@ -554,12 +554,12 @@ class SoftwareVersion extends CommonDBTM {
 		echo "</td>";
 		echo "</tr>";
 
-		if ($canedit) {			
+		if ($canedit) {
 			echo "<tr  class='tab_bg_2'>";
 
 			if ($ID>0) {
-	
-				if (countLicensesForVersion($ID)>0    // Only count buy_version (don't care of use_version if no installation) 
+
+				if (countLicensesForVersion($ID)>0    // Only count buy_version (don't care of use_version if no installation)
 					|| countInstallationsForVersion($ID)>0){
 					echo "<td  colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
@@ -574,22 +574,22 @@ class SoftwareVersion extends CommonDBTM {
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 					echo "</td>\n\n";
-	
+
 				}
-		
-	
+
+
 			} else {
-	
+
 				echo "<td colspan='2'>";
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td></tr>";
-	
+
 			}
 		}
 		echo "</table></div></form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-				
+
 		return true;
 
 	}
@@ -658,15 +658,15 @@ class SoftwareLicense extends CommonDBTM {
 		if (isset($input['FK_computers']) && $input['FK_computers'] == 0){
 			$input['FK_computers'] = -1;
 		}
-		if ((isset($input['FK_computers']) && $input['FK_computers'] > 0) 
+		if ((isset($input['FK_computers']) && $input['FK_computers'] > 0)
 		 	|| (!isset($input['FK_computers']) && isset($this->fields['FK_computers']) && $this->fields['FK_computers']>0)){
 			// Number is 1 for affected license
 			$input['number']=1;
 		}
-		
+
 		return $input;
 	}
-	
+
 	function post_addItem($newID, $input) {
 
 
@@ -710,7 +710,7 @@ class SoftwareLicense extends CommonDBTM {
 		$soft->getFromDB($this->fields["sID"]);
 		return $soft->getEntityID();
 
-	}	
+	}
 */
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
@@ -738,7 +738,7 @@ class SoftwareLicense extends CommonDBTM {
 	 *@param $sID ID of the software for add process
 	 *
 	 *@return true if displayed  false if item not found or not right to display
-	 **/	
+	 **/
 	function showForm($target,$ID,$sID=-1){
 		global $CFG_GLPI,$LANG;
 
@@ -748,24 +748,25 @@ class SoftwareLicense extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$use_cache=false;
 			$this->getEmpty();
-			
+
 			$this->fields['sID']=$sID;
 			$this->fields['number']=1;
-		} 
+		}
 
-		//$soft=new Software();
-		//$soft->getFromDB($this->fields['sID']);
+      $canedit = $this->can($ID,'w');
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
-		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		if ($canedit) {
+         echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+         echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+      }
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
-		
+
 		$this->showFormHeader($ID);
 		if ($ID>0){
 			$sID=$this->fields["sID"];
@@ -796,9 +797,9 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG['tracking'][29].":		</td>";
 		echo "<td>";
 		if ($this->fields["FK_computers"]>0) {
-			echo "1  (".$LANG['software'][50].")";		
+			echo "1  (".$LANG['software'][50].")";
 		} else {
-			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));			
+			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));
 		}
 		echo "</td></tr>";
 
@@ -832,7 +833,7 @@ class SoftwareLicense extends CommonDBTM {
 			echo $LANG['software'][51];
 		}
 		echo "</td></tr>";
-	
+
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
 
 		// table commentaires
@@ -845,6 +846,8 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr  class='tab_bg_2'>";
 
+
+      if ($canedit) {
 		if ($ID>0) {
 
 			echo "<td>";
@@ -854,32 +857,33 @@ class SoftwareLicense extends CommonDBTM {
 			echo "<td>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
-			echo "</td>\n\n";
+			echo "</td></tr>\n";
 		} else {
 
 			echo "<td colspan='2'>";
 			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
-			echo "</td></tr>";
+			echo "</td></tr>\n";
 
 		}
+      }
 		echo "</table></div></form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-				
+
 		return true;
 	}
 
 	/**
 	 * Is the license may be recursive
-	 * 
+	 *
 	 * @return boolean
 	**/
 	function maybeRecursive () {
 		$soft=new Software();
-		
+
 		if (isset($this->fields["sID"]) && $soft->getFromDB($this->fields["sID"]))
 			return $soft->isRecursive();
-		
+
 		return false;
 	}
 }

@@ -64,15 +64,8 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 
 	//echo "<br>";
 	if ($ci->getFromDB($device_type,$dev_ID)){
-		$entity=-1;
+		$entity=$ci->getField("FK_entities");
 
-		if ($device_type==SOFTWARELICENSE_TYPE){
-			$soft=new Software();
-			$soft->getFromDB($ci->getField('sID'));
-			$entity=$soft->fields['FK_entities'];
-		} else {
-			$entity=$ci->getField("FK_entities");
-		}
 		if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
 			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){
 				//echo "<div class='center'>";
@@ -81,16 +74,16 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				//echo "</div>";
 			}
 		} else { // getFromDBforDevice
-			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
-			
+			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2);
+
 			if ($canedit) {
 				echo "<form name='form_ic' method='post' action=\"$target\">";
 			}
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],"infocoms-show")?"_fixe":"")."'>";
-	
+
 			echo "<tr><th colspan='4'>".$LANG['financial'][3]."</th></tr>";
-	
+
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][26].":		</td>";
 			echo "<td class='center'>";
 			if ($withtemplate==2) {
@@ -98,37 +91,37 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			} else {
 				dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
 			}
-	
+
 			echo "</td>";
 			echo "<td>".$LANG['financial'][82].":		</td>";
 			echo "<td >";
-			autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,-1,$option);	
+			autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,-1,$option);
 			echo "</td></tr>";
-	
+
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][18].":		</td>";
 			echo "<td >";
-			autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,-1,$option);	
+			autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,-1,$option);
 			echo "</td>";
-	
+
 			echo "<td>".$LANG['financial'][19].":		</td><td>";
-			autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,-1,$option);	
+			autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,-1,$option);
 			echo "</td></tr>";
-	
+
 			// Can edit calendar ?
 			$editcalendar=($withtemplate!=2);
-			
+
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][14].":	</td><td>";
 			showDateFormItem("buy_date",$ic->fields["buy_date"],true,$editcalendar);
 			echo "</td>";
-	
-	
+
+
 			echo "<td>".$LANG['financial'][76].":	</td><td>";
 			showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
 			echo "</td>";
 			echo "</tr>";
-	
+
 			if ($show_immo){
-	
+
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][15].":	</td><td>";
 				if ($withtemplate==2){
 					// -1 = life
@@ -146,52 +139,52 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG['financial'][88]."&nbsp;";
 				echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 				echo "</td>";
-	
+
 				echo "<td>".$LANG['financial'][87].":	</td><td >";
-	
+
 				dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
-	
+
 				echo "</td></tr>";
-	
-	
+
+
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][78].":		</td>";
 				echo "<td ><input type='text' $option name='warranty_value' value=\"".formatNumber($ic->fields["warranty_value"],true)."\" size='16'></td>";
-	
-	
+
+
 				echo "<td>".$LANG['financial'][16].":		</td>";
 				echo "<td >";
-				autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],40,-1,-1,$option);	
-	
+				autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],40,-1,-1,$option);
+
 				echo "</td></tr>";
 			}
-	
+
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][21].":		</td><td  ".($show_immo?"":" colspan='3'")."><input type='text' name='value' $option value=\"".formatNumber($ic->fields["value"],true)."\" size='16'></td>";
 			if ($show_immo){
 				echo "<td>".$LANG['financial'][81]." :</td><td>";
-	
+
 				echo  formatNumber(TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n"));
-	
+
 				echo "</td>";
 			}
 			echo "</tr>";
-	
+
 			if ($show_immo){
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][20]."*:		</td>";
 				echo "<td >";
 				$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
-				autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option); 
-	
+				autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option);
+
 				echo "</td>";
-	
+
 				echo "<td>".$LANG['financial'][22].":		</td><td >";
 				if ($withtemplate==2){
 					echo getAmortTypeName($ic->fields["amort_type"]);
 				} else {
 					dropdownAmortType("amort_type",$ic->fields["amort_type"]);
 				}
-	
+
 				echo "</td></tr>";
-	
+
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][23].":		</td><td>";
 				if ($withtemplate==2){
 					echo $ic->fields["amort_time"];
@@ -200,10 +193,10 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				}
 				echo " ".$LANG['financial'][9];
 				echo "</td>";
-	
+
 				echo "<td>".$LANG['financial'][77].":		</td>";
 				echo "<td >";
-				autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,-1,$option);	
+				autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,-1,$option);
 				echo "</td></tr>";
 			}
 			//TCO
@@ -215,36 +208,36 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
 				echo "</td></tr>";
 			}
-	
+
 			if ($CFG_GLPI['mailing']){
 				echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247].":		</td>";
 				echo "<td>";
 				echo dropdownAlertInfocoms("alert",$ic->fields["alert"]);
-		
+
 				echo "</td>";
-		
-		
+
+
 				echo "<td>&nbsp;</td>";
 				echo "<td >&nbsp;";
 				echo "</td></tr>";
 			}
-	
+
 			// commment
 			echo "<tr class='tab_bg_1'><td valign='top'>";
 			echo $LANG['common'][25].":	</td>";
 			echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 			echo "</td></tr>";
-	
+
 			if ($canedit){
 				echo "<tr>";
-	
+
 				echo "<td class='tab_bg_2' colspan='2' align='center'>";
 				echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
 				echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-	
+
 				echo "</td>";
 				echo "</tr>";
 				echo "</table></div></form>";
@@ -252,7 +245,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			else {
 				echo "</table></div>";
 			}
-	
+
 		}
 	}
 }
@@ -263,7 +256,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 /**
  * Calculate amortissement for an item
  *
- * 
+ *
  *
  *@param $type_amort type d'amortisssment "lineaire=2" ou "degressif=1"
  *@param $va valeur d'acquisition
@@ -299,29 +292,29 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			$date_H, $date_i, $date_s); // un traitement sur la date mysql pour recuperer l'annee
 
 	// un traitement sur la date mysql pour les infos necessaires
-	$date_Y2 = $date_m2 = $date_d2 = $date_H2 = $date_i2 = $date_s2=0;	
+	$date_Y2 = $date_m2 = $date_d2 = $date_H2 = $date_i2 = $date_s2=0;
 	sscanf($date_fiscale, "%4s-%2s-%2s %2s:%2s:%2s",
 			$date_Y2, $date_m2, $date_d2,
-			$date_H2, $date_i2, $date_s2); 
+			$date_H2, $date_i2, $date_s2);
 	$date_Y2=date("Y");
 
 	switch ($type_amort) {
 		case "2" :
 			########################### Calcul amortissement lineaire ###########################
 			if($va>0 &&$duree>0  &&!empty($date_achat)) {
-				## calcul du prorata temporis en jour ##	
+				## calcul du prorata temporis en jour ##
 				$ecartfinmoiscourant=(30-$date_d); // calcul ecart entre jour  date acquis ou mise en service et fin du mois courant
-				
+
 				// en lineaire on calcule en jour
 				if ($date_d2<30) {
-					$ecartmoisexercice=(30-$date_d2); 
-				}	
+					$ecartmoisexercice=(30-$date_d2);
+				}
 				if ($date_m>$date_m2) {
 					$date_m2=$date_m2+12;
 				} // si l'annee fiscale debute au dela de l'annee courante
 				$ecartmois=(($date_m2-$date_m)*30); // calcul ecart etre mois d'acquisition et debut ann� fiscale
 				$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-				
+
 				## calcul tableau d'amortissement ##
 				$txlineaire = (100/$duree); // calcul du taux lineaire
 				$annuite = ($va*$txlineaire)/100; // calcul de l'annuitee
@@ -347,10 +340,10 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 					$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
 					$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
 				}
-			}else{ 
-				return "-"; break; 
-			}	
-		break;	
+			}else{
+				return "-"; break;
+			}
+		break;
 
 		case "1" :
 			########################### Calcul amortissement degressif ###########################
@@ -358,12 +351,12 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			if($va>0 &&$duree>0  &&$coef>1 && !empty($date_achat)) {
 				## calcul du prorata temporis en mois ##
 				// si l'annee fiscale debute au dela de l'annee courante
-				if ($date_m>$date_m2) {	
-					$date_m2=$date_m2+12;	
+				if ($date_m>$date_m2) {
+					$date_m2=$date_m2+12;
 				}
 				$ecartmois=($date_m2-$date_m)+1; // calcul ecart etre mois d'acquisition et debut annee fiscale
 				$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-				
+
 				## calcul tableau d'amortissement ##
 				$txlineaire = (100/$duree); // calcul du taux lineaire virtuel
 				$txdegressif=$txlineaire*$coef; // calcul du taux degressif
@@ -385,10 +378,10 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 					$mrt=$tab['vcnetfin'][$i];
 				} // end for
 
-				// amortissement en lineaire pour les derneres annees 	 
+				// amortissement en lineaire pour les derneres annees
 				if ($dureelineaire!=0){
 					$txlineaire = (100/$dureelineaire); // calcul du taux lineaire
-				} else { 
+				} else {
 					$txlineaire = 100;
 				}
 				$annuite = ($tab['vcnetfin'][$dureedegressif]*$txlineaire)/100; // calcul de l'annuite
@@ -410,9 +403,9 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 						$tab['vcnetfin'][$duree]=0;
 					}
 				}
-			}else{ 
-				return "-"; break; 
-			}	
+			}else{
+				return "-"; break;
+			}
 		break;
 	default :
 		return "-"; break;
@@ -443,10 +436,10 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 /**
  * Calculate TCO and TCO by month for an item
  *
- * 
+ *
  *
  *@param $ticket_tco Tco part of tickets
- *@param $value 
+ *@param $value
  *@param $date_achat
  *
  *@return float
@@ -454,8 +447,8 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
  **/
 function showTco($ticket_tco,$value,$date_achat=""){
 	global $CFG_GLPI;
-	// Affiche le TCO ou le TCO mensuel pour un matériel 
-	//		
+	// Affiche le TCO ou le TCO mensuel pour un matériel
+	//
 	$totalcost=$ticket_tco;
 
 	if ($date_achat){ // on veut donc le TCO mensuel
@@ -475,7 +468,7 @@ function showTco($ticket_tco,$value,$date_achat=""){
 		return formatNumber(($totalcost+$value)); // TCO
 	}
 
-}// fin showTCO	
+}// fin showTCO
 
 
 
@@ -485,7 +478,7 @@ function showTco($ticket_tco,$value,$date_achat=""){
  *
  *@param $device_type integer: item type
  *@param $device_id integer:  item ID
- *@param $update integer: 
+ *@param $update integer:
  *
  *@return float
  **/
@@ -494,8 +487,8 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 
 	if (!haveRight("infocom","r")) return false;
 
-	$query="SELECT COUNT(*) 
-		FROM glpi_infocoms 
+	$query="SELECT COUNT(*)
+		FROM glpi_infocoms
 		WHERE FK_device='$device_id' AND device_type='$device_type'";
 
 	$add="add";
@@ -529,15 +522,15 @@ function cron_infocom($display=false){
 	$items=array();
 
 	// Check notice
-	$query="SELECT glpi_infocoms.* 
-		FROM glpi_infocoms 
-		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".INFOCOM_TYPE."' 
-					AND glpi_alerts.type='".ALERT_END."') 
-		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
-			AND glpi_infocoms.warranty_duration>0 
-			AND glpi_infocoms.buy_date IS NOT NULL 
-			AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 
+	$query="SELECT glpi_infocoms.*
+		FROM glpi_infocoms
+		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device
+					AND glpi_alerts.device_type='".INFOCOM_TYPE."'
+					AND glpi_alerts.type='".ALERT_END."')
+		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0
+			AND glpi_infocoms.warranty_duration>0
+			AND glpi_infocoms.buy_date IS NOT NULL
+			AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0
 			AND glpi_alerts.date IS NULL;";
 
 	$result=$DB->query($query);
@@ -567,7 +560,7 @@ function cron_infocom($display=false){
 					$message[$entity].=$LANG['mailing'][40]." ".$ci->getType()." - ".$ci->getName().": ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>\n";
 					$items[$entity][]=$data["ID"];
 				}
-			} 
+			}
 
 		}
 		if (count($message)>0){
@@ -579,9 +572,9 @@ function cron_infocom($display=false){
 				if ($mail->send()){
 					if ($display){
 						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
-					} 
+					}
 					logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
-					
+
 
 					$input["type"]=ALERT_END;
 					$input["device_type"]=INFOCOM_TYPE;
