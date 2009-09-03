@@ -379,6 +379,7 @@ $LANG['crontask'][57]="Nombre moyen";
 $LANG['crontask'][58]="Nombre total";
 $LANG['crontask'][59]="Vitesse moyenne";
 $LANG['crontask'][60]="Verrou système";
+$LANG['crontask'][61]="Plugin désactivé";
 
 $LANG['devices'][0]="Ajouter un nouveau composant";
 $LANG['devices'][1]="Disque dur";

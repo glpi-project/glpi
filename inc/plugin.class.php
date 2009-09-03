@@ -48,14 +48,14 @@ class Plugin extends CommonDBTM {
 		$this->table="glpi_plugins";
 		$this->type=PLUGIN_TYPE;
 	}
-	
+
 	/**
 	 * Retrieve an item from the database using its directory
 	 *
 	 *@param $name name of the plugin
 	 *@return true if succeed else false
-	 * 
-	**/	
+	 *
+	**/
 	function getFromDBbyDir($dir) {
 		global $DB;
 		$query = "SELECT * FROM `".$this->table."` WHERE (directory = '" . $dir . "')";
@@ -76,10 +76,10 @@ class Plugin extends CommonDBTM {
 	/**
 	 * Check plugins states and detect new plugins
 	 *
-	**/	
+	**/
 	function checkStates(){
 		global $LANG;
-		//// Get all plugins 
+		//// Get all plugins
 		// Get all from DBs
 		$pluglist=$this->find("","name, directory");
 		$db_plugins=array();
@@ -88,8 +88,8 @@ class Plugin extends CommonDBTM {
 				$db_plugins[$plug['directory']]=$plug['id'];
 			}
 		}
-		
-		// Parse plugin dir 
+
+		// Parse plugin dir
 		$file_plugins=array();
 		$error_plugins=array();
 		$dirplug=GLPI_ROOT."/plugins";
@@ -103,10 +103,10 @@ class Plugin extends CommonDBTM {
 					include_once($dirplug."/".$filename."/setup.php");
 					$function="plugin_version_$filename";
 					if (function_exists($function)){
-						$file_plugins[$filename]=$function();	
+						$file_plugins[$filename]=$function();
 						$file_plugins[$filename]=addslashes_deep($file_plugins[$filename]);
 					}
-				} 
+				}
 			}
 		}
 
@@ -147,7 +147,7 @@ class Plugin extends CommonDBTM {
 				if (!$usage_ok){
 					$input=$file_plugins[$plug];
 					$input['id']=$ID;
-					$this->update($input);					
+					$this->update($input);
 				}
 			}
 			// Delete plugin for file list
@@ -172,13 +172,13 @@ class Plugin extends CommonDBTM {
 	/**
 	 * List availabled plugins
 	 *
-	**/	
+	**/
 	function listPlugins(){
 		global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 		$this->checkStates();
 
 		echo "<div align='center'><table class='tab_cadrehov' cellpadding='5'>";
-		
+
 		// ligne a modifier en fonction de la modification des fichiers de langues
 		echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>";
 		echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th><th>".$LANG['state'][0]."</th><th>".$LANG['common'][37]."</th><th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>";
@@ -204,9 +204,9 @@ class Plugin extends CommonDBTM {
 
 
 			// Only config for install plugins
-			if (in_array($plug['state'],array(PLUGIN_ACTIVATED,PLUGIN_TOBECONFIGURED,PLUGIN_NOTACTIVATED)) 
+			if (in_array($plug['state'],array(PLUGIN_ACTIVATED,PLUGIN_TOBECONFIGURED,PLUGIN_NOTACTIVATED))
 				&& isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
-				echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".$PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name']."</strong></a>";		
+				echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".$PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name']."</strong></a>";
 			} else {
 				echo $plug['name'];
 			}
@@ -260,7 +260,7 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_NEW :
 				case PLUGIN_NOTINSTALLED :
 					echo "<td>";
-					if (function_exists("plugin_".$plug['directory']."_install") 
+					if (function_exists("plugin_".$plug['directory']."_install")
 						&& function_exists("plugin_".$plug['directory']."_check_config")){
 						$function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
 						$do_install=true;
@@ -274,10 +274,10 @@ class Plugin extends CommonDBTM {
 						echo $LANG['plugins'][5].":";
 						if (!function_exists("plugin_".$plug['directory']."_install")){
 							echo " plugin_".$plug['directory']."_install";
-						} 
+						}
 						if (!function_exists("plugin_".$plug['directory']."_check_config")){
 							echo " plugin_".$plug['directory']."_check_config";
-						} 
+						}
 					}
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
@@ -342,7 +342,7 @@ class Plugin extends CommonDBTM {
 	 * uninstall a plugin
 	 *
 	 *@param $ID ID of the plugin
-	**/	
+	**/
 	function uninstall($ID){
 		if ($this->getFromDB($ID)){
 
@@ -354,6 +354,8 @@ class Plugin extends CommonDBTM {
 			}
 			$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTINSTALLED,'version'=>''));
 			$this->removeFromSession($this->fields['directory']);
+
+         CronTask::Unregister($this->fields['directory']);
 		}
 	}
 
@@ -361,7 +363,7 @@ class Plugin extends CommonDBTM {
 	 * install a plugin
 	 *
 	 *@param $ID ID of the plugin
-	**/	
+	**/
 	function install($ID){
 		if ($this->getFromDB($ID)){
 
@@ -382,15 +384,15 @@ class Plugin extends CommonDBTM {
 			}
 		}
 	}
-	
+
 	/**
 	 * activate a plugin
 	 *
 	 *@param $ID ID of the plugin
-	**/	
+	**/
 	function activate($ID){
 		global $PLUGIN_HOOKS;
-		
+
 		if ($this->getFromDB($ID)){
 
 			usePlugin($this->fields['directory'],true);
@@ -400,25 +402,25 @@ class Plugin extends CommonDBTM {
 					return false;
 				}
 			}
-			
+
 			$function = 'plugin_' . $this->fields['directory'] . '_check_config';
 			if (function_exists($function)) {
 				if ($function()){
 					$this->update(array('id'=>$ID,'state'=>PLUGIN_ACTIVATED));
 					$_SESSION['glpi_plugins'][]=$this->fields['directory'];
-					
+
 // Initialize session for the plugin
-					if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']]) 
+					if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
 						&& function_exists($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
-							call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);		
+							call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
 					}
 
 					// Initialize profile for the plugin
-					if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]) 
+					if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
 						&& function_exists($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
-							call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);		
-					}						
-				} 
+							call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
+					}
+				}
 			}  // exists _check_config
 		} // getFromDB
 	}
@@ -426,7 +428,7 @@ class Plugin extends CommonDBTM {
 	 * unactivate a plugin
 	 *
 	 *@param $ID ID of the plugin
-	**/	
+	**/
 	function unactivate($ID){
 		if ($this->getFromDB($ID)){
 			$this->update(array('id'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
@@ -437,7 +439,7 @@ class Plugin extends CommonDBTM {
 	/**
 	 * unactivate all activated plugins for update process
 	 *
-	**/	
+	**/
 	function unactivateAll(){
 		global$DB;
 		$query="UPDATE ".$this->table." SET state=".PLUGIN_NOTACTIVATED." WHERE state=".PLUGIN_ACTIVATED.";";
@@ -450,7 +452,7 @@ class Plugin extends CommonDBTM {
 	 * clean a plugin
 	 *
 	 *@param $ID ID of the plugin
-	**/	
+	**/
 	function clean($ID){
 		if ($this->getFromDB($ID)){
 			$this->delete(array('id'=>$ID));
@@ -462,7 +464,7 @@ class Plugin extends CommonDBTM {
 	 * is a plugin activated
 	 *
 	 *@param $plugin plugin directory
-	**/	
+	**/
 	function isActivated($plugin){
 		if ($this->getFromDBbyDir($plugin)){
 			return ($this->fields['state']==PLUGIN_ACTIVATED);
@@ -473,10 +475,10 @@ class Plugin extends CommonDBTM {
 	 * is a plugin installed
 	 *
 	 *@param $plugin plugin directory
-	**/	
+	**/
 	function isInstalled($plugin){
 		if ($this->getFromDBbyDir($plugin)){
-			return ($this->fields['state']==PLUGIN_ACTIVATED 
+			return ($this->fields['state']==PLUGIN_ACTIVATED
 				|| $this->fields['state']==PLUGIN_TOBECONFIGURED
 				|| $this->fields['state']==PLUGIN_NOTACTIVATED
 			);
@@ -487,7 +489,7 @@ class Plugin extends CommonDBTM {
 	 * remove plugin from session variable
 	 *
 	 *@param $plugin plugin directory
-	**/	
+	**/
 	function removeFromSession($plugin){
 		$key=array_search($plugin,$_SESSION['glpi_plugins']);
 		if ($key!==false){
