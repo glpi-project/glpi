@@ -33,42 +33,52 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+$NEEDED_ITEMS = array ('central', 'computer', 'contract', 'enterprise', 'group', 'monitor',
+   'networking', 'peripheral', 'phone', 'planning', 'printer', 'reminder', 'setup', 'software',
+   'tracking', 'user');
+
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-	checkCentralAccess();
+checkCentralAccess();
 
-	if (!isset($_POST['glpi_tab'])){
-		$_POST['glpi_tab']="my";
-	}
+if (!isset($_POST['glpi_tab'])) {
+   $_POST['glpi_tab']="my";
+}
 
-	switch ($_POST['glpi_tab']){
-		case "my" :
-			showCentralMyView();
-			break;
-		case "global" :
-			showCentralGlobalView();
-			break;
-		case "group" :
-			showCentralGroupView();
-			break;
-		case -1 : // all
-			showCentralMyView();
-			echo "<br>";
-			showCentralGroupView();
-			echo "<br>";
-			showCentralGlobalView();
-			echo "<br>";
-			displayPluginAction("central","",$_POST['glpi_tab'],"");
-			break;
-		default :
-			if (!displayPluginAction("central","",$_POST['glpi_tab'],""))
-				showCentralMyView();		
-			break;
-	}
-	ajaxFooter();
+switch ($_POST['glpi_tab']) {
+   case "my" :
+      showCentralMyView();
+      break;
+
+   case "global" :
+      showCentralGlobalView();
+      break;
+
+   case "group" :
+      showCentralGroupView();
+      break;
+
+   case -1 : // all
+      showCentralMyView();
+      echo "<br>";
+      showCentralGroupView();
+      echo "<br>";
+      showCentralGlobalView();
+      echo "<br>";
+      displayPluginAction("central","",$_POST['glpi_tab'],"");
+      break;
+
+   default :
+      if (!displayPluginAction("central","",$_POST['glpi_tab'],"")) {
+         showCentralMyView();
+      }
+      break;
+}
+
+ajaxFooter();
 
 ?>
