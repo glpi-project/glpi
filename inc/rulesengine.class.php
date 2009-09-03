@@ -598,6 +598,9 @@ class RuleCollection {
 					//Rule is inactive
 					$output["result"][$rule->fields["ID"]]["result"]=2;
 				}
+            if ($this->use_output_rule_process_as_next_input){
+               $input=$output;
+            }
 			}
 		}
 
