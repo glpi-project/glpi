@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-08-04 02:11
+#GLPI Dump database on 2009-09-03 20:22
 
 ### Dump table glpi_alerts
 
@@ -376,7 +376,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_config` VALUES ('1','10','0','1','250','30','15','50',' 0.72.1','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152','0','0','1','0');
+INSERT INTO `glpi_config` VALUES ('1','10','0','1','250','30','15','50',' 0.72.2','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152','0','0','1','0');
 
 ### Dump table glpi_connect_wire
 
@@ -766,9 +766,9 @@ CREATE TABLE `glpi_display` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_display` VALUES ('32','1','4','4','0');
-INSERT INTO `glpi_display` VALUES ('34','1','6','6','0');
-INSERT INTO `glpi_display` VALUES ('33','1','5','5','0');
-INSERT INTO `glpi_display` VALUES ('31','1','8','3','0');
+INSERT INTO `glpi_display` VALUES ('34','1','45','6','0');
+INSERT INTO `glpi_display` VALUES ('33','1','40','5','0');
+INSERT INTO `glpi_display` VALUES ('31','1','5','3','0');
 INSERT INTO `glpi_display` VALUES ('30','1','23','2','0');
 INSERT INTO `glpi_display` VALUES ('86','12','3','1','0');
 INSERT INTO `glpi_display` VALUES ('49','4','31','1','0');
@@ -784,7 +784,7 @@ INSERT INTO `glpi_display` VALUES ('63','6','4','3','0');
 INSERT INTO `glpi_display` VALUES ('62','6','5','2','0');
 INSERT INTO `glpi_display` VALUES ('61','6','23','1','0');
 INSERT INTO `glpi_display` VALUES ('83','11','4','2','0');
-INSERT INTO `glpi_display` VALUES ('82','11','3','1','0');
+INSERT INTO `glpi_display` VALUES ('82','11','34','1','0');
 INSERT INTO `glpi_display` VALUES ('57','5','3','3','0');
 INSERT INTO `glpi_display` VALUES ('56','5','23','2','0');
 INSERT INTO `glpi_display` VALUES ('55','5','31','1','0');
@@ -795,13 +795,13 @@ INSERT INTO `glpi_display` VALUES ('37','1','17','9','0');
 INSERT INTO `glpi_display` VALUES ('40','2','3','3','0');
 INSERT INTO `glpi_display` VALUES ('41','2','4','4','0');
 INSERT INTO `glpi_display` VALUES ('42','2','11','6','0');
-INSERT INTO `glpi_display` VALUES ('43','2','9','7','0');
+INSERT INTO `glpi_display` VALUES ('43','2','19','7','0');
 INSERT INTO `glpi_display` VALUES ('47','3','4','4','0');
-INSERT INTO `glpi_display` VALUES ('48','3','9','6','0');
-INSERT INTO `glpi_display` VALUES ('53','4','9','6','0');
+INSERT INTO `glpi_display` VALUES ('48','3','19','6','0');
+INSERT INTO `glpi_display` VALUES ('53','4','19','6','0');
 INSERT INTO `glpi_display` VALUES ('54','4','7','7','0');
 INSERT INTO `glpi_display` VALUES ('58','5','4','4','0');
-INSERT INTO `glpi_display` VALUES ('59','5','9','6','0');
+INSERT INTO `glpi_display` VALUES ('59','5','19','6','0');
 INSERT INTO `glpi_display` VALUES ('60','5','7','7','0');
 INSERT INTO `glpi_display` VALUES ('64','7','3','1','0');
 INSERT INTO `glpi_display` VALUES ('65','7','4','2','0');
@@ -820,8 +820,8 @@ INSERT INTO `glpi_display` VALUES ('77','10','5','3','0');
 INSERT INTO `glpi_display` VALUES ('78','10','6','4','0');
 INSERT INTO `glpi_display` VALUES ('79','10','7','5','0');
 INSERT INTO `glpi_display` VALUES ('80','10','11','6','0');
-INSERT INTO `glpi_display` VALUES ('84','11','5','3','0');
-INSERT INTO `glpi_display` VALUES ('85','11','6','4','0');
+INSERT INTO `glpi_display` VALUES ('84','11','23','3','0');
+INSERT INTO `glpi_display` VALUES ('85','11','3','4','0');
 INSERT INTO `glpi_display` VALUES ('88','12','6','2','0');
 INSERT INTO `glpi_display` VALUES ('89','12','4','3','0');
 INSERT INTO `glpi_display` VALUES ('90','12','5','4','0');
@@ -829,15 +829,15 @@ INSERT INTO `glpi_display` VALUES ('91','13','3','1','0');
 INSERT INTO `glpi_display` VALUES ('92','13','4','2','0');
 INSERT INTO `glpi_display` VALUES ('93','13','7','3','0');
 INSERT INTO `glpi_display` VALUES ('94','13','5','4','0');
-INSERT INTO `glpi_display` VALUES ('95','13','6','5','0');
-INSERT INTO `glpi_display` VALUES ('96','15','3','1','0');
+INSERT INTO `glpi_display` VALUES ('95','13','16','5','0');
+INSERT INTO `glpi_display` VALUES ('96','15','34','1','0');
 INSERT INTO `glpi_display` VALUES ('98','15','5','3','0');
 INSERT INTO `glpi_display` VALUES ('99','15','6','4','0');
-INSERT INTO `glpi_display` VALUES ('100','15','7','5','0');
-INSERT INTO `glpi_display` VALUES ('101','17','3','1','0');
+INSERT INTO `glpi_display` VALUES ('100','15','3','5','0');
+INSERT INTO `glpi_display` VALUES ('101','17','34','1','0');
 INSERT INTO `glpi_display` VALUES ('102','17','4','2','0');
-INSERT INTO `glpi_display` VALUES ('103','17','5','3','0');
-INSERT INTO `glpi_display` VALUES ('104','17','6','4','0');
+INSERT INTO `glpi_display` VALUES ('103','17','23','3','0');
+INSERT INTO `glpi_display` VALUES ('104','17','3','4','0');
 INSERT INTO `glpi_display` VALUES ('105','2','40','5','0');
 INSERT INTO `glpi_display` VALUES ('106','3','40','5','0');
 INSERT INTO `glpi_display` VALUES ('107','4','40','5','0');
@@ -848,7 +848,7 @@ INSERT INTO `glpi_display` VALUES ('111','23','23','2','0');
 INSERT INTO `glpi_display` VALUES ('112','23','3','3','0');
 INSERT INTO `glpi_display` VALUES ('113','23','4','4','0');
 INSERT INTO `glpi_display` VALUES ('114','23','40','5','0');
-INSERT INTO `glpi_display` VALUES ('115','23','9','6','0');
+INSERT INTO `glpi_display` VALUES ('115','23','19','6','0');
 INSERT INTO `glpi_display` VALUES ('116','23','7','7','0');
 INSERT INTO `glpi_display` VALUES ('117','27','16','1','0');
 INSERT INTO `glpi_display` VALUES ('118','22','31','1','0');
@@ -1498,9 +1498,6 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_event_log` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_event_log` VALUES ('5','-1','system','2009-08-04 02:11:50','login','3','glpi connexion de l\'IP : 127.0.0.1');
-
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS `glpi_followups`;
@@ -2060,8 +2057,7 @@ CREATE TABLE `glpi_plugins` (
   `homepage` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`directory`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_printers
 
@@ -3014,7 +3010,7 @@ CREATE TABLE `glpi_users` (
   KEY `active` (`active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-08-04 02:11:50','2009-08-04 02:11:50','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-09-03 20:22:27','2009-08-04 02:11:50','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
