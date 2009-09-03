@@ -61,6 +61,15 @@ class CronTask extends CommonDBTM{
       return $ong;
    }
 
+   function cleanDBonPurge($id) {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_crontaskslogs`
+                WHERE `crontasks_id` = '$id'";
+      $result = $DB->query($query);
+   }
+
    /**
     * Start a task, timer, stat, log, ...
     *
@@ -192,8 +201,14 @@ class CronTask extends CommonDBTM{
 
       $hour=date('H');
       $query = "SELECT * FROM `".$this->table."`
-         WHERE `state`='".CRONTASK_STATE_WAITING."' ";
+         WHERE `state`='".CRONTASK_STATE_WAITING."'
+           AND (`module` IS NULL";
 
+      if (count($_SESSION['glpi_plugins'])) {
+         $query .= " OR `module` IN ('".implode("','", $_SESSION['glpi_plugins'])."'))";
+      } else {
+         $query .= ')';
+      }
       if ($mode) {
          $query .= " AND `mode`='$mode' ";
       }
@@ -277,10 +292,19 @@ class CronTask extends CommonDBTM{
       dropdownFrequency('frequency',$this->fields["frequency"]);
       echo "</td></tr>";
 
+      $tmpstate = $this->fields["state"];
       echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][0]." : </td><td>";
       if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
           || is_file(GLPI_CRON_DIR. '/all.lock')) {
          echo "<strong>" . $LANG['crontask'][60]."</strong><br>";
+         $tmpstate = CRONTASK_STATE_DISABLE;
+      }
+      if (!empty($this->fields["module"])) {
+         $plug = new Plugin();
+         if (!$plug->isActivated($this->fields["module"])) {
+            echo "<strong>" . $LANG['crontask'][61]."</strong><br>";
+            $tmpstate = CRONTASK_STATE_DISABLE;
+         }
       }
       if ($this->fields["state"]==CRONTASK_STATE_RUNNING) {
          echo "<strong>" . $this->getStateName(CRONTASK_STATE_RUNNING)."</strong>";
@@ -331,8 +355,8 @@ class CronTask extends CommonDBTM{
          dropdownInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
-      if ($this->fields["state"]!=CRONTASK_STATE_WAITING) {
-         echo $this->getStateName($this->fields["state"]);
+      if ($tmpstate!=CRONTASK_STATE_WAITING) {
+         echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
          echo $LANG['crontask'][42];
       } else {
@@ -400,7 +424,13 @@ class CronTask extends CommonDBTM{
          }
          return $LANG['crontask'][30].' '.$id;
       }
-      // TODO plugin case
+
+      // Plugin case
+      $info = doOneHook($module, "cron_${name}_info", $name);
+      if (isset($info['description'])) {
+         return $info['description'];
+      }
+      return "$module / $name";
    }
 
    /**
@@ -434,7 +464,13 @@ class CronTask extends CommonDBTM{
          // No parameter
          return '';
       }
-      // TODO plugin case
+
+      // Plugin case
+      $info = doOneHook($module, "cron_${name}_info", $name);
+      if (isset($info['parameter'])) {
+         return $info['parameter'];
+      }
+      return '';
    }
 
    /**
@@ -545,7 +581,7 @@ class CronTask extends CommonDBTM{
                } else {
                   // Plugin case / Load hook
                   usePlugin($task->fields['module'],true);
-                  $fonction = 'plugin_'.$task->fields['module'].'_cron_' . $task->fields['name'];
+                  $fonction = 'plugin_'.$task->fields['module'].'_cron_' . $task->fields['name'].'_run';
                }
                if (function_exists($fonction)) {
                   if ($task->start()) { // Lock in DB + log start
@@ -577,6 +613,62 @@ class CronTask extends CommonDBTM{
       } else {
          logInFile('cron', "Can't get DB lock'\n");
       }
+   }
+
+   /**
+    * Register new task for plugin (called by plugin during install)
+    *
+    * @param $module : name of the plugin
+    * @param $name : of the task
+    * @param $frequency : of execution
+    * @param $array of optional options
+    *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
+    *
+    * @return bool for success
+    */
+   static public function Register($module, $name, $frequency, $options=array()) {
+
+      // Check that hook exists
+      if (!function_exists("plugin_${module}_cron_${name}_run")
+          || !function_exists("plugin_${module}_cron_${name}_info")) {
+         return false;
+      }
+      $input = array (
+         'module' => $module,
+         'name' => $name,
+         'frequency' => $frequency
+      );
+      foreach (array ('state', 'mode', 'allowmode', 'hourmin', 'hourmax',
+                      'logs_lifetime', 'param', 'comment') as $key) {
+         if (isset ($options[$key])) {
+            $input[$key] = $options[$key];
+         }
+      }
+      $temp = new CronTask();
+      return $temp->add($input);
+   }
+
+   /**
+    * Unregister tasks for a plugin (call by glpi after uninstall)
+    *
+    * @param $module : name of the plugin
+    *
+    * @return bool for success
+    */
+   static public function Unregister($module) {
+      global $DB;
+
+      if (empty($module)) {
+         return false;
+      }
+      $temp = new CronTask();
+      $ret = true;
+      foreach ($DB->request('glpi_crontasks', array('module'=>$module)) as $data) {
+         if (!$temp->delete($data)) {
+            $ret = false;
+         }
+      }
+      return $ret;
    }
 }
 
