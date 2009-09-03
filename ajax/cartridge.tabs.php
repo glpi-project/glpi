@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("cartridge","printer","link","document","infocom","contract","enterprise");
+$NEEDED_ITEMS = array ('cartridge', 'contract', 'document', 'enterprise', 'infocom', 'link',
+   'printer');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -42,46 +43,49 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if(!isset($_POST["id"])) {
-	exit();
+   exit();
 }
 
 checkRight("cartridge","r");
 
-	
-	switch($_POST['glpi_tab']){
-		case -1 :	
-			showCompatiblePrinters($_POST["id"]);
-			showCartridgesAdd($_POST["id"]);
-			showCartridges($_POST["id"]);
-			showCartridges($_POST["id"],1);
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
-			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
-			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
-			displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_POST['glpi_tab']);
-			break;
-		case 4 :
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
-			break;
+switch($_POST['glpi_tab']) {
+   case -1 :
+      showCompatiblePrinters($_POST["id"]);
+      showCartridgesAdd($_POST["id"]);
+      showCartridges($_POST["id"]);
+      showCartridges($_POST["id"],1);
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
+      showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
+      showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
+      displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_POST['glpi_tab']);
+      break;
 
-		case 5 :
-			showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
-			break;			
-		case 7 : 
-			showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
-			break;
-		case 10 :
-			showNotesForm($_POST['target'],CARTRIDGE_TYPE,$_POST["id"]);
-			break;
-		default :
-			if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-				showCompatiblePrinters($_POST["id"]);
-				showCartridgesAdd($_POST["id"]);
-				showCartridges($_POST["id"]);
-				showCartridges($_POST["id"],1);
-			}
-			break;
-	}
-	
-	ajaxFooter();
+   case 4 :
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["id"],1);
+      break;
+
+   case 5 :
+      showDocumentAssociated(CARTRIDGE_TYPE,$_POST["id"]);
+      break;
+
+   case 7 :
+      showLinkOnDevice(CARTRIDGE_TYPE,$_POST["id"]);
+      break;
+
+   case 10 :
+      showNotesForm($_POST['target'],CARTRIDGE_TYPE,$_POST["id"]);
+      break;
+
+   default :
+      if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+         showCompatiblePrinters($_POST["id"]);
+         showCartridgesAdd($_POST["id"]);
+         showCartridges($_POST["id"]);
+         showCartridges($_POST["id"],1);
+      }
+      break;
+}
+
+ajaxFooter();
 
 ?>

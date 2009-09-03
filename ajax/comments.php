@@ -43,35 +43,34 @@ header_nocache();
 
 checkLoginUser();
 
-if (isset($_POST["table"]) && isset($_POST["value"])) {	
-
+if (isset($_POST["table"]) && isset($_POST["value"])) {
    // Security
-   if (! TableExists($_POST['table']) ){
+   if (! TableExists($_POST['table']) ) {
       exit();
    }
 
-	switch ($_POST["table"]){
-		case "glpi_users":
-			if ($_POST['value']==0){
-				$tmpname['link']=$CFG_GLPI['root_doc']."/front/user.php";
-				$tmpname['comment']="";
-			} else {
-				$tmpname=getUserName($_POST["value"],2);
-			}
-			echo $tmpname["comment"];
+   switch ($_POST["table"]) {
+      case "glpi_users" :
+         if ($_POST['value']==0) {
+            $tmpname['link']=$CFG_GLPI['root_doc']."/front/user.php";
+            $tmpname['comment']="";
+         } else {
+            $tmpname=getUserName($_POST["value"],2);
+         }
+         echo $tmpname["comment"];
+         if (isset($_POST['withlink'])){
+            echo "<script type='text/javascript' >\n";
+            echo "Ext.get('".$_POST['withlink']."').dom.href='".$tmpname['link']."';";
+            echo "</script>\n";
+         }
+         break;
 
-			if (isset($_POST['withlink'])){
-				echo "<script type='text/javascript' >\n";
-				echo "	Ext.get('".$_POST['withlink']."').dom.href='".$tmpname['link']."';";
-				echo "</script>\n";
-			} 
-			break;
-		default :
-			if ($_POST["value"]>0){
-				$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
-				echo $tmpname["comment"];
-			} 
-			break;
-	}
+      default :
+         if ($_POST["value"]>0) {
+            $tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
+            echo $tmpname["comment"];
+         }
+         break;
+   }
 }
 ?>
