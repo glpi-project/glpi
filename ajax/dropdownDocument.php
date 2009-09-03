@@ -34,52 +34,56 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"dropdownDocument.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+if(strpos($_SERVER['PHP_SELF'],"dropdownDocument.php")) {
+   define('GLPI_ROOT','..');
+   $AJAX_INCLUDE=1;
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
 }
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE  (glpi_documents.documentscategories_id = '".$_POST['rubdoc']."' AND glpi_documents.is_deleted='0' ) ";
+$where=" WHERE  (glpi_documents.documentscategories_id = '".$_POST['rubdoc'].
+   "' AND glpi_documents.is_deleted='0' ) ";
 
 
 if (isset($_POST["entity_restrict"])){
-	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'',$_POST["entity_restrict"],true);
+   if (!is_numeric($_POST["entity_restrict"]) && !is_array($_POST["entity_restrict"])) {
+      $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
+   }
+   $where.=getEntitiesRestrictRequest("AND","glpi_documents",'',$_POST["entity_restrict"],true);
 } else {
-	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'','',true);
+   $where.=getEntitiesRestrictRequest("AND","glpi_documents",'','',true);
 }
 
 if (isset($_POST['used'])) {
-	if (is_array($_POST['used'])) {
-			$used=$_POST['used'];
-		} else {
-			$used=unserialize(stripslashes($_POST['used']));
-		}
-	if (count($used)) {
-		$where .=" AND id NOT IN ('".implode("','",$used)."') ";	
-	}
+   if (is_array($_POST['used'])) {
+      $used=$_POST['used'];
+   } else {
+      $used=unserialize(stripslashes($_POST['used']));
+   }
+   if (count($used)) {
+      $where .=" AND id NOT IN ('".implode("','",$used)."') ";
+   }
 }
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-	$where.=" AND glpi_documents.name ".makeTextSearch($_POST['searchText']);
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+   $where.=" AND glpi_documents.name ".makeTextSearch($_POST['searchText']);
+}
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
-$query = "SELECT * 
-	FROM glpi_documents 
-	$where 
-	ORDER BY entities_id, name $LIMIT";
-//error_log($query);
+$query = "SELECT *
+          FROM glpi_documents
+          $where
+          ORDER BY entities_id, name $LIMIT";
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\">";
@@ -87,24 +91,25 @@ echo "<select name=\"".$_POST['myname']."\">";
 echo "<option value=\"0\">-----</option>";
 
 if ($DB->numrows($result)) {
-	$prev=-1;
-	while ($data=$DB->fetch_array($result)) {
-		if ($data["entities_id"]!=$prev) {
-			if ($prev>=0) {
-				echo "</optgroup>";
-			}
-			$prev=$data["entities_id"];
-			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-		}
-		$output = $data["name"];
-		if($_SESSION["glpiis_ids_visible"]||empty($output)){
-			$output.=" (".$data["id"].")";
-		}
-		echo "<option value=\"".$data["id"]."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
-	}
-	if ($prev>=0) {
-		echo "</optgroup>";
-	}
+   $prev=-1;
+   while ($data=$DB->fetch_array($result)) {
+      if ($data["entities_id"]!=$prev) {
+         if ($prev>=0) {
+            echo "</optgroup>";
+         }
+         $prev=$data["entities_id"];
+         echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+      }
+      $output = $data["name"];
+      if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+         $output.=" (".$data["id"].")";
+      }
+      echo "<option value=\"".$data["id"]."\" title=\"".cleanInputText($output)."\">".
+            utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+   }
+   if ($prev>=0) {
+      echo "</optgroup>";
+   }
 }
 echo "</select>";
 
