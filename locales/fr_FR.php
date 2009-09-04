@@ -336,11 +336,11 @@ $LANG['consumables'][38]="Seuil d'alarme";
 $LANG['crontask'][0]="Tâches planifiées";
 // index if crontask id
 $LANG['crontask'][1]="Synchronisation des matériels depuis OCS Inventory NG";
-$LANG['crontask'][2]="Envoie des alertes sur les cartouches";
-$LANG['crontask'][3]="Envoie des alertes sur les consommables";
-$LANG['crontask'][4]="Envoie des alertes sur expiration des licences";
-$LANG['crontask'][5]="Envoie des alertes sur les contrats";
-$LANG['crontask'][6]="Envoie des alertes sur les informations financières";
+$LANG['crontask'][2]="Envoi des alertes sur les cartouches";
+$LANG['crontask'][3]="Envoi des alertes sur les consommables";
+$LANG['crontask'][4]="Envoi des alertes sur expiration des licences";
+$LANG['crontask'][5]="Envoi des alertes sur les contrats";
+$LANG['crontask'][6]="Envoi des alertes sur les informations financières";
 $LANG['crontask'][7]="Nettoyage des journaux";
 $LANG['crontask'][8]="Optimisation de la base de données";
 $LANG['crontask'][9]="Récupération des messages (Collecteurs)";
