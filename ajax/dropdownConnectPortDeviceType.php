@@ -33,9 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$AJAX_INCLUDE=1;
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -43,26 +43,20 @@ header_nocache();
 checkRight("networking","w");
 
 // Make a select box
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0) {
+   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
+   $rand=mt_rand();
 
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
-	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
+   $use_ajax=true;
+   $paramsconnectpdt=array('searchText'=>'__VALUE__',
+                           'itemtype'=>$_POST['itemtype'],
+                           'current'=>$_POST['current'],
+                           'myname'=>$_POST["myname"],
+                           'entity_restrict'=>$_POST["entity_restrict"]);
 
-	$rand=mt_rand();
+   $default="<select name='item$rand'><option value='0'>------</option></select>\n";
+   ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$paramsconnectpdt,$default,$rand);
 
-	$use_ajax=true;
-
-
-        $paramsconnectpdt=array('searchText'=>'__VALUE__',
-                        'itemtype'=>$_POST['itemtype'],
-                        'current'=>$_POST['current'],
-                        'myname'=>$_POST["myname"],
-			'entity_restrict'=>$_POST["entity_restrict"],
-                        );
-
-	
-	$default="<select name='item$rand'><option value='0'>------</option></select>\n";
-	ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$paramsconnectpdt,$default,$rand);
-
-}		
+}
 
 ?>

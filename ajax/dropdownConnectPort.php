@@ -88,7 +88,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
             $output_long="";
          }
          if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output=" ($ID)";
+            $output .= " ($ID)";
          }
          echo "<option value='$ID' title=\"".cleanInputText($output.$output_long)."\">".$output;
          echo "</option>";
