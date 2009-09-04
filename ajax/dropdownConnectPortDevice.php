@@ -95,7 +95,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0) {
       echo "<option value='0'>--".$LANG['common'][11]."--</option>";
    }
 
-   echo "<option value='0'>-----</option>";
+   echo "<option value='0'>------</option>";
    if ($DB->numrows($result)) {
       $prev = -1;
       while ($data = $DB->fetch_array($result)) {
