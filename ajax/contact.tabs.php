@@ -33,43 +33,49 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("contact","enterprise","link","document");
+$NEEDED_ITEMS=array("contact","document","enterprise","link");
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
-if(empty($_POST["id"])) $_POST["id"] = -1;
-
-		if ($_POST['id']>0){
-			switch($_POST['glpi_tab']){
-				case -1 :	
-					showEnterpriseContact($_POST["id"]);
-					showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
-					showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-					displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
-					break;
-				case 5 : 
-					showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
-					break;
-				case 7 : 
-					showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-					break;
-				case 10 :
-					showNotesForm($_POST['target'],CONTACT_TYPE,$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab'])){
-						showEnterpriseContact($_POST["id"]);
-					}
-					break;
-			}
-	
+if (empty($_POST["id"])) {
+   $_POST["id"] = -1;
 }
-	ajaxFooter();
+if ($_POST['id']>0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showEnterpriseContact($_POST["id"]);
+         showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
+         showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
+         displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         break;
+
+      case 5 :
+         showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
+         break;
+
+      case 7 :
+         showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],CONTACT_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+            showEnterpriseContact($_POST["id"]);
+         }
+         break;
+   }
+}
+
+ajaxFooter();
 
 ?>

@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
+if (!isset($_POST["id"])) {
    exit();
 }
 
@@ -51,20 +51,23 @@ if ($_POST['id']>0) {
          showCronTaskHistory($_POST["id"]);
          displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab']);
          break;
+
       case 1 :
          showCronStatistics($_POST["id"]);
          break;
+
       case 2 :
          showCronTaskHistory($_POST["id"]);
          break;
+
       default :
          if (!displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
             showCronStatistics($_POST["id"]);
          }
          break;
    }
-
 }
+
 ajaxFooter();
 
 ?>

@@ -33,51 +33,54 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"ocsng",
-	"dbreplicate"
-);
+$NEEDED_ITEMS = array("dbreplicate","ocsng","setup");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
-	checkRight("config", "r");
-	
-	$config = new Config();
-	
-	if ($_POST["id"]<0){
-			switch($_POST['glpi_tab']){
-				case 1 :
-					$config->showFormMain($_POST['target']);
-					break;
-				case 2 :
-					$config->showFormDisplay($_POST['target']);
-					break;
-				case 3 :
-					$config->showFormRestrict($_POST['target']);
-					break;
-				case 4 :
-					$config->showFormConnection($_POST['target']);
-					break;
-				case 5 :
-					$config->showFormDBSlave($_POST['target']);
-					break;
-				case 6 :
-					$config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
-					break;
-				case 7 :
-					showSystemInformations();
-					break;
-				default :
-					break;
-		}
-	}
+checkRight("config", "r");
+
+$config = new Config();
+
+if ($_POST["id"]<0) {
+   switch($_POST['glpi_tab']) {
+      case 1 :
+         $config->showFormMain($_POST['target']);
+         break;
+
+      case 2 :
+         $config->showFormDisplay($_POST['target']);
+         break;
+
+      case 3 :
+         $config->showFormRestrict($_POST['target']);
+         break;
+
+      case 4 :
+         $config->showFormConnection($_POST['target']);
+         break;
+
+      case 5 :
+         $config->showFormDBSlave($_POST['target']);
+         break;
+
+      case 6 :
+         $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
+         break;
+
+      case 7 :
+         showSystemInformations();
+         break;
+
+      default :
+         break;
+   }
+}
 
 ?>

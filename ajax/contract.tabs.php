@@ -33,50 +33,58 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array("computer","contact","contract","document","enterprise","infocom","link",
+                    "monitor","networking","peripheral","phone","printer","software");
 
-$NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peripheral","networking","software","document","link","phone","infocom","contact");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
-
-if(!isset($_POST["id"])) $_POST["id"] = -1;
+if (!isset($_POST["id"])) {
+   $_POST["id"] = -1;
+}
 
 $contract=new Contract();
 
-		if ($_POST['id']>0){
-			switch($_POST['glpi_tab']){
-				case -1 :
-					showEnterpriseContract($_POST["id"]);
-					showItemContract($_POST["id"]);
-					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
-					showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-					displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
-					break;
-				case 2 :
-					showItemContract($_POST["id"]);
-					break;
-				case 5 :
-					showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
-					break;
-				case 7 :
-					showLinkOnDevice(CONTRACT_TYPE,$_POST["id"]);
-					break;
-				case 10 :
-					showNotesForm($_POST['target'],CONTRACT_TYPE,$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab'])){
-						showEnterpriseContract($_POST["id"]);
-					}
-					break;
-			}
-		}
+if ($_POST['id']>0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showEnterpriseContract($_POST["id"]);
+         showItemContract($_POST["id"]);
+         showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
+         showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
+         displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         break;
 
-	ajaxFooter();
+      case 2 :
+         showItemContract($_POST["id"]);
+         break;
+
+      case 5 :
+         showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
+         break;
+
+      case 7 :
+         showLinkOnDevice(CONTRACT_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],CONTRACT_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+            showEnterpriseContract($_POST["id"]);
+         }
+         break;
+   }
+}
+
+ajaxFooter();
+
 ?>

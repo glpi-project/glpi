@@ -34,48 +34,54 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("consumable","printer","infocom","link","document","enterprise","contract");
+$NEEDED_ITEMS=array("consumable","contract","document","enterprise","infocom","link","printer");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
 checkRight("consumable","r");
 
-	switch($_SESSION['glpi_tab']){
-		case -1 :	
-			showConsumableAdd($_POST["id"]);
-			showConsumables($_POST["id"]);
-			showConsumables($_POST["id"],1);
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["id"],1);
-			showDocumentAssociated(CONSUMABLE_TYPE,$_POST["id"]);
-			showLinkOnDevice(CONSUMABLE_TYPE,$_POST["id"]);
-			displayPluginAction(CONSUMABLE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-			break;
-		case 4 :
-			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["id"],1);
-			break;
-		case 5 :
-			showDocumentAssociated(CONSUMABLE_TYPE,$_POST["id"]);
-			break;
-		case 7 : 
-			showLinkOnDevice(CONSUMABLE_TYPE,$_POST["id"]);
-			break;
-		case 10 :
-			showNotesForm($_POST['target'],CONSUMABLE_TYPE,$_POST["id"]);
-			break;
-		default :
-			if (!displayPluginAction(CONSUMABLE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-				showConsumableAdd($_POST["id"]);
-				showConsumables($_POST["id"]);
-				showConsumables($_POST["id"],1);
-			}
-			break;
-	}
-	ajaxFooter();	
+switch($_SESSION['glpi_tab']) {
+   case -1 :
+      showConsumableAdd($_POST["id"]);
+      showConsumables($_POST["id"]);
+      showConsumables($_POST["id"],1);
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["id"],1);
+      showDocumentAssociated(CONSUMABLE_TYPE,$_POST["id"]);
+      showLinkOnDevice(CONSUMABLE_TYPE,$_POST["id"]);
+      displayPluginAction(CONSUMABLE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+      break;
+
+   case 4 :
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["id"],1);
+      break;
+
+   case 5 :
+      showDocumentAssociated(CONSUMABLE_TYPE,$_POST["id"]);
+      break;
+
+   case 7 :
+      showLinkOnDevice(CONSUMABLE_TYPE,$_POST["id"]);
+      break;
+
+   case 10 :
+      showNotesForm($_POST['target'],CONSUMABLE_TYPE,$_POST["id"]);
+      break;
+
+   default :
+      if (!displayPluginAction(CONSUMABLE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+         showConsumableAdd($_POST["id"]);
+         showConsumables($_POST["id"]);
+         showConsumables($_POST["id"],1);
+      }
+      break;
+}
+
+ajaxFooter();
 ?>
