@@ -33,64 +33,70 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$AJAX_INCLUDE=1;
+
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
-$AJAX_INCLUDE=1;
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("networking","w");
 
 // Make a select box
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
+   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&isset($_POST["item"])){
+   $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
+                    `glpi_networkports`.`id` AS did, `$table`.`name` AS cname,
+                    `glpi_networkports`.`name` AS nname, `glpi_networkports`.`ip`,
+                    `glpi_networkports`.`mac`
+             FROM `$table`
+             LEFT JOIN `glpi_networkports`
+               ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
+                   AND `glpi_networkports`.`itemtype` = '".$_POST["itemtype"]."'
+                   AND `glpi_networkports`.`items_id` = `$table`.`id`)
+             LEFT JOIN `glpi_networkports_networkports`
+               ON (`glpi_networkports_networkports`.`networkports_id_1` = `glpi_networkports`.`id`
+                   OR `glpi_networkports_networkports`.`networkports_id_2`=`glpi_networkports`.`id`)
+             WHERE `glpi_networkports_networkports`.`id` IS NULL
+                   AND `glpi_networkports`.`id` IS NOT NULL
+                   AND `glpi_networkports`.`id` <> '".$_POST['current']."'
+                   AND `$table`.`is_deleted` = '0'
+                   AND `$table`.`is_template` = '0'
+             ORDER BY `glpi_networkports`.`id`";
+   $result = $DB->query($query);
 
-	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
+   echo "<br>";
+   echo "<select name=\"".$_POST['myname']."[".$_POST["current"]."]\" size='1'>";
+   echo "<option value='0'>-----</option>";
+   if ($DB->numrows($result)) {
+      while ($data = $DB->fetch_array($result)) {
+         $output = $data['cname'];
+         $output_long="";
+         if (!empty($data['ip'])) {
+            $output.= " - ".$data['ip'];
+         }
+         if (!empty($data['mac'])) {
+            $output_long.= " - ".$data['mac'];
+         }
+         if (!empty($data['nname'])) {
+            $output_long.= utf8_substr(" - ".$data['nname'],0,$_SESSION["glpidropdown_chars_limit"]);
+         }
+         $ID = $data['did'];
+         if (empty($data["ip"])) {
+            $output.=$output_long;
+            $output_long="";
+         }
+         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            $output=" ($ID)";
+         }
+         echo "<option value='$ID' title=\"".cleanInputText($output.$output_long)."\">".$output;
+         echo "</option>";
+      }
+   }
+   echo "</select>";
 
-	$where="";		
-	$where.=" AND $table.is_deleted=0 ";
-	$where.=" AND $table.is_template='0' ";		
-
-	$query =  "SELECT DISTINCT glpi_networkports_networkports.id as WID, glpi_networkports.id as DID,
-      $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ip,
-      glpi_networkports.mac";
-	$query.= " FROM $table ";
-	$query.= " LEFT JOIN glpi_networkports
-                  ON (glpi_networkports.items_id='".$_POST['item']."'
-                     AND glpi_networkports.itemtype='".$_POST["itemtype"]."'
-                     AND glpi_networkports.items_id=$table.id) ";
-	$query.= " LEFT JOIN glpi_networkports_networkports
-                  ON (glpi_networkports_networkports.networkports_id_1=glpi_networkports.id
-                     OR glpi_networkports_networkports.networkports_id_2=glpi_networkports.id)";
-	$query.= " WHERE glpi_networkports_networkports.id IS NULL
-                  AND glpi_networkports.id IS NOT NULL
-                  AND glpi_networkports.id <> '".$_POST['current']."' ";
-	$query.= $where;
-	$query.= " ORDER BY glpi_networkports.id";
-	$result = $DB->query($query);
-	echo "<br>";
-	echo "<select name=\"".$_POST['myname']."[".$_POST["current"]."]\" size='1'>";
-
-	echo "<option value=\"0\">-----</option>";
-	if ($DB->numrows($result)) {
-		while ($data = $DB->fetch_array($result)) {
-			$output = $data['CNAME'];
-			$output_long="";
-			if (!empty($data['ip'])) $output.= " - ".$data['ip'];
-			if (!empty($data['mac'])) $output_long.= " - ".$data['mac'];
-			if (!empty($data['NNAME'])) $output_long.= utf8_substr(" - ".$data['NNAME'],0,$_SESSION["glpidropdown_chars_limit"]);
-			$ID = $data['DID'];
-			if (empty($data["ip"])) {
-				$output.=$output_long;
-				$output_long="";
-			}
-			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output.$output_long)."\">".$output."</option>";
-		}
-	}
-	echo "</select>";
-
-	echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+   echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 }
 
 ?>
