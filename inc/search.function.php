@@ -1711,26 +1711,29 @@ function addDefaultToView ($itemtype){
  *
  **/
 function addDefaultSelect ($itemtype){
-	global $CFG_GLPI, $LINK_ID_TABLE;
+   global $CFG_GLPI, $LINK_ID_TABLE;
 
-	switch ($itemtype){
-		case RESERVATION_TYPE:
-			$ret = "glpi_reservationsitems.is_active as ACTIVE, ";
-		break;
-		case CARTRIDGE_TYPE:
-			$ret = "glpi_cartridgesitems.alarm_threshold as ALARM, ";
-		break;
-		case CONSUMABLE_TYPE:
-			$ret = "glpi_consumablesitems.alarm_threshold as ALARM, ";
-		break;
-		default :
-			$ret = "";
-		break;
-	}
-	if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-		$ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".is_recursive, ";
-	}
-	return $ret;
+   switch ($itemtype){
+      case RESERVATION_TYPE:
+         $ret = "`glpi_reservationsitems`.`is_active` as ACTIVE, ";
+         break;
+      case CARTRIDGE_TYPE:
+         $ret = "`glpi_cartridgesitems`.`alarm_threshold` as ALARM, ";
+         break;
+      case CONSUMABLE_TYPE:
+         $ret = "`glpi_consumablesitems`.`alarm_threshold` as ALARM, ";
+         break;
+      case CRONTASK_TYPE:
+         $ret = "`glpi_crontasks`.`module` as module, `glpi_crontasks`.`name` as name, ";
+         break;
+      default :
+         $ret = "";
+         break;
+   }
+   if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
+      $ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".is_recursive, ";
+   }
+   return $ret;
 }
 
 /**
@@ -1881,7 +1884,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 			}
          break;
       case 'glpi_crontasks.description':
-         return " module AS ".$NAME."_".$num."_1, name AS ".$NAME."_".$num."_2, ";
+         return " `name` AS ".$NAME."_".$num.", ";
          break;
 	}
 
@@ -2580,7 +2583,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 			break;
 
       case 'glpi_crontasks.description':
-         return CronTask::getDescription($data['id'],$data[$NAME.$num.'_1'],$data[$NAME.$num.'_2']);
+         return CronTask::getDescription($data['id'],$data['module'],$data['name']);
          break;
       case 'glpi_crontasks.state':
          return CronTask::getStateName($data[$NAME.$num]);

@@ -2046,8 +2046,8 @@ function update0722to080() {
    if (!TableExists('glpi_crontasks')){
       $query = "CREATE TABLE `glpi_crontasks` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `module` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
-        `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
+        `module` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
+        `name` varchar(80) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
         `frequency` int(11) NOT NULL COMMENT 'second between launch',
         `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
         `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
@@ -2081,8 +2081,8 @@ function update0722to080() {
       $DB->query($query) or die("0.72 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_displayprefs` (`itemtype`, `num`, `rank`, `users_id`)
-         VALUES (49, 16, 2, 0), (49, 3, 1, 0),
-                (49, 5, 4, 0),  (49, 4, 3, 0), (49, 6, 5, 0);";
+         VALUES (49, 8, 1, 0), (49, 3, 2, 0),
+                (49, 4, 3, 0),  (49, 7, 4, 0);";
       $DB->query($query) or die("0.72 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 

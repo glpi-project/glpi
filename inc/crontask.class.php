@@ -71,6 +71,66 @@ class CronTask extends CommonDBTM{
    }
 
    /**
+    * Read a Crontask by its name
+    *
+    *@param $name name of the task
+    *@param module name of the plugin
+    *
+    *@return true if succeed else false
+    *
+    */
+   function getFromDBbyName($name, $module=NULL) {
+      global $DB;
+
+      $query = "SELECT * FROM `".$this->table."`
+                WHERE `name`='$name'";
+      if ($module) {
+         $query .= " AND `module`='$module'";
+      } else {
+         $query .= " AND `module` IS NULL";
+      }
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
+         return false;
+      }
+      return false;
+   }
+
+   /**
+    * Give a task state
+    *
+    * @return interger 0 : task is enabled
+    *    if disable : 1: by config, 2: by system lock, 3: by plugin
+    *
+    */
+   function isDisabled () {
+      if ($this->fields['state']==CRONTASK_STATE_DISABLE) {
+         return 1;
+      }
+      if (is_file(GLPI_CRON_DIR. '/all.lock')
+         || is_file(GLPI_CRON_DIR. '/'.$this->fields['name'].'.lock')) {
+         // Global lock
+         return 2;
+      }
+      if (empty($this->fields['module'])) {
+         return 0;
+      }
+
+      // Plugin case
+      $plug = new Plugin();
+      if (!$plug->isActivated($this->fields["module"])) {
+         return 3;
+      }
+      return 0;
+   }
+   /**
     * Start a task, timer, stat, log, ...
     *
     * @return bool : true if ok (not start by another)
@@ -426,7 +486,8 @@ class CronTask extends CommonDBTM{
       }
 
       // Plugin case
-      $info = doOneHook($module, "cron_${name}_info", $name);
+      loadPluginLang($module);
+      $info = doOneHook($module, "cron_info", $name);
       if (isset($info['description'])) {
          return $info['description'];
       }
@@ -466,7 +527,8 @@ class CronTask extends CommonDBTM{
       }
 
       // Plugin case
-      $info = doOneHook($module, "cron_${name}_info", $name);
+      loadPluginLang($module);
+      $info = doOneHook($module, "cron_info", $name);
       if (isset($info['parameter'])) {
          return $info['parameter'];
       }
@@ -630,7 +692,7 @@ class CronTask extends CommonDBTM{
 
       // Check that hook exists
       if (!function_exists("plugin_${module}_cron_${name}_run")
-          || !function_exists("plugin_${module}_cron_${name}_info")) {
+          || !function_exists("plugin_${module}_cron_info")) {
          return false;
       }
       $input = array (

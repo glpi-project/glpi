@@ -676,8 +676,8 @@ CREATE TABLE `glpi_contractstypes` (
 DROP TABLE IF EXISTS `glpi_crontasks`;
 CREATE TABLE `glpi_crontasks` (
   `id` int(11) NOT NULL auto_increment,
-  `module` varchar(30) collate utf8_unicode_ci default NULL COMMENT 'NULL (glpi) or plugin name',
-  `name` varchar(30) collate utf8_unicode_ci NOT NULL COMMENT 'task name',
+  `module` varchar(80) collate utf8_unicode_ci default NULL COMMENT 'NULL (glpi) or plugin name',
+  `name` varchar(80) collate utf8_unicode_ci NOT NULL COMMENT 'task name',
   `frequency` int(11) NOT NULL COMMENT 'second between launch',
   `param` int(11) default NULL COMMENT 'task specify parameter',
   `state` tinyint(4) NOT NULL default '1' COMMENT '0:disabled, 1:waiting, 2:running',
@@ -1070,11 +1070,10 @@ INSERT INTO `glpi_displayprefs` VALUES ('121','35','80','1','0');
 INSERT INTO `glpi_displayprefs` VALUES ('122','6','72','4','0');
 INSERT INTO `glpi_displayprefs` VALUES ('123','6','163','5','0');
 INSERT INTO `glpi_displayprefs` VALUES ('124','35','2','2','0');
-INSERT INTO `glpi_displayprefs` VALUES ('125','49','16','2','0');
-INSERT INTO `glpi_displayprefs` VALUES ('126','49','3','1','0');
-INSERT INTO `glpi_displayprefs` VALUES ('127','49','5','4','0');
-INSERT INTO `glpi_displayprefs` VALUES ('128','49','4','3','0');
-INSERT INTO `glpi_displayprefs` VALUES ('129','49','6','5','0');
+INSERT INTO `glpi_displayprefs` VALUES ('125','49','8','1','0');
+INSERT INTO `glpi_displayprefs` VALUES ('126','49','3','2','0');
+INSERT INTO `glpi_displayprefs` VALUES ('127','49','4','3','0');
+INSERT INTO `glpi_displayprefs` VALUES ('128','49','7','4','0');
 
 ### Dump table glpi_documents
 
