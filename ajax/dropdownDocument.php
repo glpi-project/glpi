@@ -34,9 +34,9 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"dropdownDocument.php")) {
-   define('GLPI_ROOT','..');
+if (strpos($_SERVER['PHP_SELF'],"dropdownDocument.php")) {
    $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    header_nocache();
@@ -47,11 +47,10 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE  (glpi_documents.documentscategories_id = '".$_POST['rubdoc'].
-   "' AND glpi_documents.is_deleted='0' ) ";
+$where=" WHERE `glpi_documents`.`documentscategories_id` = '".$_POST['rubdoc']."'
+               AND `glpi_documents`.`is_deleted` = '0' ";
 
-
-if (isset($_POST["entity_restrict"])){
+if (isset($_POST["entity_restrict"])) {
    if (!is_numeric($_POST["entity_restrict"]) && !is_array($_POST["entity_restrict"])) {
       $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
    }
@@ -67,28 +66,29 @@ if (isset($_POST['used'])) {
       $used=unserialize(stripslashes($_POST['used']));
    }
    if (count($used)) {
-      $where .=" AND id NOT IN ('".implode("','",$used)."') ";
+      $where .=" AND `id` NOT IN ('".implode("','",$used)."') ";
    }
 }
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $where.=" AND glpi_documents.name ".makeTextSearch($_POST['searchText']);
+if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {
+   $where.=" AND `glpi_documents`.`name` ".makeTextSearch($_POST['searchText']);
 }
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
-
+if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
+   $LIMIT="";
+}
 
 $query = "SELECT *
-          FROM glpi_documents
+          FROM `glpi_documents`
           $where
-          ORDER BY entities_id, name $LIMIT";
+          ORDER BY `entities_id`, `name`
+          $LIMIT";
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\">";
-
-echo "<option value=\"0\">-----</option>";
+echo "<option value='0''>------</option>";
 
 if ($DB->numrows($result)) {
    $prev=-1;

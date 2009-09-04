@@ -33,40 +33,34 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array("device");
+$AJAX_INCLUDE=1;
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("device");
 include (GLPI_ROOT."/inc/includes.php");
-
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkCentralAccess();
 
-if (isset($_POST["idtable"])){
-	$table=getDeviceTable($_POST["idtable"]);
+if (isset($_POST["idtable"])) {
+   $table=getDeviceTable($_POST["idtable"]);
+   $rand=mt_rand();
 
+   $use_ajax=false;
+   if ($CFG_GLPI["use_ajax"]) {
+      if(countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]) {
+         $use_ajax=true;
+      }
+   }
+   $paramsdev=array('searchText'=>'__VALUE__',
+                    'table'=>$table,
+                    'value'=>0,
+                    'myname'=>$_POST["myname"],
+                    'rand'=>$rand);
 
-	$rand=mt_rand();
+   $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+   ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsdev,$default,$rand);
+}
 
-	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
-		if(countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]){
-			$use_ajax=true;
-		}
-	}
-
-
-
-        $paramsdev=array('searchText'=>'__VALUE__',
-                        'table'=>$table,
-                        'value'=>0,
-                        'myname'=>$_POST["myname"],
-			'rand'=>$rand,
-                        );
-
-	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsdev,$default,$rand);
-}		
 ?>
