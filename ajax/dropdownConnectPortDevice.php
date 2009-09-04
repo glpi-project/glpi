@@ -33,100 +33,104 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$AJAX_INCLUDE=1;
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("networking","w");
 
-
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
-	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
-
-	$rand=mt_rand();
-	if (!isset($_POST['searchText']))$_POST['searchText']="";
-
-	$where="WHERE is_deleted=0 ";
-	$where.=" AND is_template=0 ";		
-
-	if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
-		$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
-	}
-	$multi=in_array($table,$CFG_GLPI["recursive_type"]);
-	
-	if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
-		$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
-		if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-			$multi=true;
-		}	
-	} else {
-		$where.=getEntitiesRestrictRequest(" AND ",$table,'','',$multi);
-		if (count($_SESSION['glpiactiveentities'])>1) {
-			$multi=true;	
-		}
-	}
-
-	if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-		$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0) {
+   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
+   $rand=mt_rand();
+   if (!isset($_POST['searchText'])) {
+      $_POST['searchText']="";
    }
 
-	$NBMAX=$CFG_GLPI["dropdown_max"];
+   $where=" WHERE `is_deleted` ='0'
+                  AND `is_template` = '0' ";
 
-	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+   if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
+       && !is_array($_POST["entity_restrict"])) {
 
-	$order = ($multi ? "entities_id,name" : "name");
-	$query = "SELECT * 
-		FROM ".$table." 
-		$where ORDER BY 
-		$order $LIMIT";
-	$result = $DB->query($query);
+      $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+   }
+   $multi=in_array($table,$CFG_GLPI["recursive_type"]);
 
-	echo "<select id='item$rand' name=\"item\" size='1'>";
+   if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+      $where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
+      if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+         $multi=true;
+      }
+   } else {
+      $where.=getEntitiesRestrictRequest(" AND ",$table,'','',$multi);
+      if (count($_SESSION['glpiactiveentities'])>1) {
+         $multi=true;
+      }
+   }
 
-	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-		echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
+   if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+      $where.=" AND `name` ".makeTextSearch($_POST['searchText'])." ";
+   }
+   $NBMAX=$CFG_GLPI["dropdown_max"];
+   $LIMIT="LIMIT 0,$NBMAX";
 
-	echo "<option value=\"0\">-----</option>";
-	if ($DB->numrows($result)) {
-		$prev = -1;
-		while ($data = $DB->fetch_array($result)) {
-			if ($multi && $data["entities_id"]!=$prev) {
-				if ($prev>=0) {
-					echo "</optgroup>";
-				}
-				$prev=$data["entities_id"];
-				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-			}
-			$output = $data['name'];
-			$ID = $data['id'];
-			if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
-				$output.=" ($ID)";
-			}
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
-		}
-		if ($multi && $prev>=0) {
-			echo "</optgroup>";
-		}		
-	}
-	echo "</select>";
+   if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+      $LIMIT="";
+   }
+   $order = ($multi ? "`entities_id`, `name`" : "`name`");
 
+   $query = "SELECT *
+             FROM `$table`
+             $where
+             ORDER BY $order
+             $LIMIT";
+   $result = $DB->query($query);
 
-        $paramsconnectpd=array('item'=>'__VALUE__',
-                        'itemtype'=>$_POST['itemtype'],
-                        'current'=>$_POST['current'],
-                        'myname'=>$_POST["myname"],
-                        );
+   echo "<select id='item$rand' name='item' size='1'>";
 
-	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$paramsconnectpd);
+   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+      echo "<option value='0'>--".$LANG['common'][11]."--</option>";
+   }
 
-	echo "<span id='results_item_$rand'>\n";
-	echo "</span>\n";	
+   echo "<option value='0'>-----</option>";
+   if ($DB->numrows($result)) {
+      $prev = -1;
+      while ($data = $DB->fetch_array($result)) {
+         if ($multi && $data["entities_id"]!=$prev) {
+            if ($prev>=0) {
+               echo "</optgroup>";
+            }
+            $prev=$data["entities_id"];
+            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+         }
+         $output = $data['name'];
+         $ID = $data['id'];
+         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            $output.=" ($ID)";
+         }
+         echo "<option value='$ID' title=\"".cleanInputText($output)."\">".
+               utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+      }
+      if ($multi && $prev>=0) {
+         echo "</optgroup>";
+      }
+   }
+   echo "</select>";
 
+   $paramsconnectpd=array('item'=>'__VALUE__',
+                          'itemtype'=>$_POST['itemtype'],
+                          'current'=>$_POST['current'],
+                          'myname'=>$_POST["myname"]);
 
+   ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"].
+                               "/ajax/dropdownConnectPort.php",$paramsconnectpd);
 
-}		
+   echo "<span id='results_item_$rand'>";
+   echo "</span>\n";
+
+}
+
 ?>
