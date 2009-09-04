@@ -33,132 +33,135 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (strpos($_SERVER['PHP_SELF'],"dropdownConnect.php")) {
+   define('GLPI_ROOT','..');
+   $AJAX_INCLUDE=1;
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-if(strpos($_SERVER['PHP_SELF'],"dropdownConnect.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
-
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
 checkTypeRight($_POST["fromtype"],"w");
 
-
-if (isset($_POST["used"])&&!is_numeric($_POST["used"])&&!is_array($_POST["used"]))
-	$used = unserialize(stripslashes($_POST["used"]));
-else
-	$used = $_POST["used"];
-
-if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
-	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
-}
-// Make a select box
-
-$table=$LINK_ID_TABLE[$_POST["idtable"]];
-
-$where="";		
-if (in_array($table,$CFG_GLPI["deleted_tables"])){
-	$where.=" AND $table.is_deleted=0 ";
-}
-if (in_array($table,$CFG_GLPI["template_tables"])){
-	$where.=" AND $table.is_template='0' ";
-}
-
-if (!empty($used)){
-	$where.=" AND $table.id NOT IN ('".implode("','",$used)."')";
-}
-
-if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-   $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])."
-            OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
-}
-
-
-$multi=in_array($table,$CFG_GLPI["recursive_type"]);
-if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
-	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
-	if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-		$multi=true;	
-	}
+if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["used"])) {
+   $used = unserialize(stripslashes($_POST["used"]));
 } else {
-	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_SESSION['glpiactiveentities'],$multi);
-	if (count($_SESSION['glpiactiveentities'])>1) {
-		$multi=true;	
-	}
+   $used = $_POST["used"];
+}
+
+if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
+    && !is_array($_POST["entity_restrict"])) {
+
+   $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+}
+
+// Make a select box
+$table=$LINK_ID_TABLE[$_POST["idtable"]];
+$where="";
+
+if (in_array($table,$CFG_GLPI["deleted_tables"])) {
+   $where.=" AND `$table`.`is_deleted` = '0' ";
+}
+if (in_array($table,$CFG_GLPI["template_tables"])) {
+   $where.=" AND `$table`.`is_template` = '0' ";
+}
+
+if (!empty($used)) {
+   $where.=" AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
+}
+
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+   $where.=" AND ( `$table`.`name` ".makeTextSearch($_POST['searchText'])."
+                  OR `$table`.`serial` ".makeTextSearch($_POST['searchText'])." )";
+}
+
+$multi = in_array($table,$CFG_GLPI["recursive_type"]);
+if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+   $where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
+   if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+      $multi=true;
+   }
+} else {
+   $where.=getEntitiesRestrictRequest(" AND ",$table,'',$_SESSION['glpiactiveentities'],$multi);
+   if (count($_SESSION['glpiactiveentities'])>1) {
+      $multi=true;
+   }
 }
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
-	$LIMIT="";
+   $LIMIT="";
 }
 
-
-if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
-	$CONNECT_SEARCH=" WHERE ( $table.is_global='1' ) ";
+if ($_POST["onlyglobal"] && $_POST["idtable"]!=COMPUTER_TYPE) {
+   $CONNECT_SEARCH=" WHERE `$table`.`is_global` = '1' ";
 } else {
-	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" WHERE 1 ";
-	else {
-		$CONNECT_SEARCH=" WHERE (glpi_computers_items.id IS NULL OR $table.is_global='1' )";	
-	}
-}	
+   if ($_POST["idtable"]==COMPUTER_TYPE) {
+      $CONNECT_SEARCH=" WHERE 1 ";
+   } else {
+      $CONNECT_SEARCH=" WHERE `glpi_computers_items`.`id` IS NULL
+                              OR `$table`.`is_global` = '1' ";
+   }
+}
 
 $LEFTJOINCONNECT="";
-if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
-	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.id = glpi_computers_items.items_id AND glpi_computers_items.itemtype = '".$_POST['idtable']."')";
+if ($_POST["idtable"]!=COMPUTER_TYPE && !$_POST["onlyglobal"]) {
+   $LEFTJOINCONNECT=" LEFT JOIN `glpi_computers_items`
+                         ON (`$table`.`id` = `glpi_computers_items`.`items_id`
+                             AND `glpi_computers_items`.`itemtype` = '".$_POST['idtable']."')";
 }
-$query = "SELECT DISTINCT $table.id,$table.name AS name,
-		$table.serial AS serial,$table.otherserial AS otherserial,
-		$table.entities_id as entities_id 
-	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH 
-	$where 
-	ORDER BY entities_id, name ASC";
+$query = "SELECT DISTINCT `$table`.`id`, `$table`.`name` AS name, `$table`.`serial` AS serial,
+                 `$table`.`otherserial` AS otherserial, `$table`.`entities_id` AS entities_id
+          FROM `$table`
+          $LEFTJOINCONNECT
+          $CONNECT_SEARCH
+          $where
+          ORDER BY entities_id, name ASC";
 
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
-
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+   echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
+}
 echo "<option value=\"0\">-----</option>";
+
 if ($DB->numrows($result)) {
-	$prev=-1;
-	while ($data = $DB->fetch_array($result)) {
-		if ($multi && $data["entities_id"]!=$prev) {
-			if ($prev>=0) {
-				echo "</optgroup>";
-			}
-			$prev=$data["entities_id"];
-			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-		}
-		
-		$output = $data['name'];
-		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
-		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
+   $prev=-1;
+   while ($data = $DB->fetch_array($result)) {
+      if ($multi && $data["entities_id"]!=$prev) {
+         if ($prev>=0) {
+            echo "</optgroup>";
+         }
+         $prev=$data["entities_id"];
+         echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+      }
+      $output = $data['name'];
+      if (!empty($data['serial'])) {
+         $output.=" - ".$data["serial"];
+      }
+      if (!empty($data['otherserial'])) {
+         $output.=" - ".$data["otherserial"];
+      }
+      $ID = $data['id'];
 
-		$ID = $data['id'];
+      if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+         $output.=" ($ID)";
+      }
+      echo "<option value='$ID' title=\"".cleanInputText($output)."\">".
+            utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+   }
 
-		if ($_SESSION["glpiis_ids_visible"]||empty($output)){
-			 $output.=" ($ID)";
-		}
-
-	
-		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
-	}
-
-	if ($multi && $prev>=0) {
-		echo "</optgroup>";
-	}
-		
+   if ($multi && $prev>=0) {
+      echo "</optgroup>";
+   }
 }
 echo "</select>";
-
 
 ?>
