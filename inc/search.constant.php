@@ -3972,6 +3972,11 @@ $SEARCH_OPTION[CRONTASK_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[CRONTASK_TYPE][7]['name']=$LANG['crontask'][40];
 $SEARCH_OPTION[CRONTASK_TYPE][7]['datatype']='datetime';
 
+$SEARCH_OPTION[CRONTASK_TYPE][8]['table']='glpi_crontasks';
+$SEARCH_OPTION[CRONTASK_TYPE][8]['field']='module';
+$SEARCH_OPTION[CRONTASK_TYPE][8]['linkfield']='';
+$SEARCH_OPTION[CRONTASK_TYPE][8]['name']=$LANG['common'][29];
+
 $SEARCH_OPTION[CRONTASK_TYPE][16]['table']='glpi_crontasks';
 $SEARCH_OPTION[CRONTASK_TYPE][16]['field']='comment';
 $SEARCH_OPTION[CRONTASK_TYPE][16]['linkfield']='comment';
