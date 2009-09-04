@@ -38,13 +38,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
-if ($_POST['id']>0){
-   //displayPluginAction(DEVICE_TYPE,$_POST["id"],$_POST['glpi_tab']);
-}
 ajaxFooter();
 
 ?>

@@ -33,46 +33,46 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array("cartridge","computer","consumable","contact","contract","document","enterprise",
+                    "knowbase","monitor","networking","peripheral","phone","printer","software",
+                    "tracking");
 
-$NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","networking","software","contract","knowbase","cartridge","consumable","phone","enterprise","contact","tracking");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
-}
-
-
-if(!isset($_POST["id"])) {
-	$_POST["id"] = -1;
+if (!isset($_POST["id"])) {
+   exit();
 }
 
 $doc= new Document();
-
 $doc->check($_POST["id"],'r');
 
-		switch ($_POST['glpi_tab']){
-			case -1 :
-				showDeviceDocument($_POST["id"]);
-				showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
-				displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab']);
-				break;
-			case 5 :
-				showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
-				break;
-			case 10 :
-				showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
-				break;
-			default :
-				if ($_POST["id"]){
-					if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab'])){
-						showDeviceDocument($_POST["id"]);
-					}
-				}
-				break;
-		}
-	ajaxFooter();
+switch ($_POST['glpi_tab']) {
+   case -1 :
+      showDeviceDocument($_POST["id"]);
+      showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+      displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+      break;
+
+   case 5 :
+      showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+      break;
+
+   case 10 :
+      showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
+      break;
+
+   default :
+      if ($_POST["id"]) {
+         if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+            showDeviceDocument($_POST["id"]);
+         }
+      }
+      break;
+}
+
+ajaxFooter();
 
 ?>
