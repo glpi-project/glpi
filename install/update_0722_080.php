@@ -2046,26 +2046,26 @@ function update0722to080() {
    if (!TableExists('glpi_crontasks')){
       $query = "CREATE TABLE `glpi_crontasks` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `module` char(80) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
-        `name` char(80) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
+        `plugin` char(78) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
+        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
         `frequency` int(11) NOT NULL COMMENT 'second between launch',
         `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
-        `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
-        `mode` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
-        `allowmode` tinyint(1) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
-        `hourmin` tinyint(2) NOT NULL DEFAULT '0',
-        `hourmax` tinyint(2) NOT NULL DEFAULT '24',
+        `state` int(11) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
+        `mode` int(11) NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
+        `allowmode` int(11) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
+        `hourmin` int(11) NOT NULL DEFAULT '0',
+        `hourmax` int(11) NOT NULL DEFAULT '24',
         `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'nomber of days',
         `lastrun` datetime DEFAULT NULL COMMENT 'last run date',
         `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
         `comment` text COLLATE utf8_unicode_ci,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `module_name` (`module`,`name`)
+        UNIQUE KEY `plugin_name` (`plugin`,`name`)
       ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
         COMMENT='Task run by internal / external cron.';";
       $DB->query($query) or die("0.72 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_crontasks` (`id`, `module`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
+      $query="INSERT INTO `glpi_crontasks` (`id`, `plugin`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
          (1, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (2, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (3, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
