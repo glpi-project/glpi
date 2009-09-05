@@ -33,30 +33,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array("search");
+$AJAX_INCLUDE=1;
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("search");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("user","w");
-if ($_POST["authtype"] > 0)
-{
-	switch($_POST["authtype"])
-	{
-		case AUTH_DB_GLPI:
-			echo "<input type=\"hidden\" name=\"auth_server\" value='0'>";
-		break;
-		case AUTH_LDAP:
-		case AUTH_EXTERNAL:
-			dropdownValue("glpi_authldaps","auth_server",1);
-		break;
-		case AUTH_MAIL:
-			dropdownValue("glpi_authmails","auth_server",1);
-		break;
-	}
-	echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
+if ($_POST["authtype"] > 0) {
+   switch($_POST["authtype"]) {
+      case AUTH_DB_GLPI :
+         echo "<input type='hidden' name='auth_server' value='0'>";
+         break;
+      case AUTH_LDAP :
+      case AUTH_EXTERNAL :
+         dropdownValue("glpi_authldaps","auth_server",1);
+         break;
+
+      case AUTH_MAIL :
+         dropdownValue("glpi_authmails","auth_server",1);
+         break;
+   }
+   echo "<input type='submit' name='massiveaction' class='submit' value=\"".$LANG['buttons'][2]."\" >";
 }
 ?>
