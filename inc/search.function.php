@@ -1724,7 +1724,7 @@ function addDefaultSelect ($itemtype){
          $ret = "`glpi_consumablesitems`.`alarm_threshold` as ALARM, ";
          break;
       case CRONTASK_TYPE:
-         $ret = "`glpi_crontasks`.`module` as module, `glpi_crontasks`.`name` as name, ";
+         $ret = "`glpi_crontasks`.`plugin` as plugin, `glpi_crontasks`.`name` as name, ";
          break;
       default :
          $ret = "";
@@ -2583,7 +2583,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 			break;
 
       case 'glpi_crontasks.description':
-         return CronTask::getDescription($data['id'],$data['module'],$data['name']);
+         return CronTask::getDescription($data['id'],$data['plugin'],$data['name']);
          break;
       case 'glpi_crontasks.state':
          return CronTask::getStateName($data[$NAME.$num]);
