@@ -135,7 +135,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][5]['name']=$LANG['common'][19];
 $SEARCH_OPTION[COMPUTER_TYPE][6]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][6]['field']='otherserial';
 $SEARCH_OPTION[COMPUTER_TYPE][6]['linkfield']='otherserial';
-$SEARCH_OPTION[COMPUTER_TYPE][9]['name']=$LANG['common'][20];
+$SEARCH_OPTION[COMPUTER_TYPE][6]['name']=$LANG['common'][20];
 
 $SEARCH_OPTION[COMPUTER_TYPE][16]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][16]['field']='comment';
