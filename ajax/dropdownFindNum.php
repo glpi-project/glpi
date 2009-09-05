@@ -41,18 +41,22 @@ header_nocache();
 checkRight("create_ticket","1");
 
 // Security
-if (! TableExists($_POST['table']) ) {
+if (!TableExists($_POST['table'])) {
    exit();
 }
 
-if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"]>=0) {
-   $entity = $_POST["entity_restrict"];
+if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
+   if (isset ($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
+      $entity = $_POST["entity_restrict"];
+   } else {
+      $entity = '';
+   }
+   // allow opening ticket on recursive object (printer, software, ...)
+   $recursive = in_array($_POST['table'], $CFG_GLPI["recursive_type"]);
+   $where = getEntitiesRestrictRequest("WHERE", $_POST['table'], '', $entity, $recursive);
 } else {
-   $entity = '';
+   $where = "WHERE 1";
 }
-// allow opening ticket on recursive object (printer, software, ...)
-$recursive = in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
-$where=getEntitiesRestrictRequest("WHERE",$_POST['table'],'',$entity,$recursive);
 
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])) {
    $where.=" AND `is_deleted` ='0' ";
