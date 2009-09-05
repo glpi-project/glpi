@@ -2060,7 +2060,7 @@ function update0722to080() {
         `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
         `comment` text COLLATE utf8_unicode_ci,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `plugin_name` (`plugin`,`name`)
+        UNIQUE KEY `unicity` (`plugin`,`name`)
       ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
         COMMENT='Task run by internal / external cron.';";
       $DB->query($query) or die("0.72 create glpi_crontasks" . $LANG['update'][90] . $DB->error());

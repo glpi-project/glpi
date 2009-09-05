@@ -690,7 +690,7 @@ CREATE TABLE `glpi_crontasks` (
   `lastcode` int(11) default NULL COMMENT 'last run return code',
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `plugin_name` (`plugin`,`name`)
+  UNIQUE KEY `unicity` (`plugin`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
 INSERT INTO `glpi_crontasks` VALUES ('1',NULL,'ocsng','300',NULL,'1','1','3','0','24','30','2009-09-03 20:31:48',NULL,NULL);
