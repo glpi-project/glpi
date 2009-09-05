@@ -33,41 +33,37 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-if(strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+if (strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
 }
 
 checkCentralAccess();
 
 // Make a select box
+if (isset($_POST["rubdoc"])) {
+   $rand=$_POST['rand'];
+   $use_ajax=false;
+   if ($CFG_GLPI["use_ajax"]
+       && countElementsInTable('glpi_documents',"glpi_documents.documentscategories_id='".
+                               $_POST["rubdoc"]."' ".
+                               getEntitiesRestrictRequest("AND", "glpi_documents","",
+                                                          $_POST["entity_restrict"],true)
+                              ) > $CFG_GLPI["ajax_limit_count"] ) {
+      $use_ajax=true;
+   }
+   $paramsrubdoc=array('searchText'=>'__VALUE__',
+                       'rubdoc'=>$_POST["rubdoc"],
+                       'entity_restrict'=>$_POST["entity_restrict"],
+                       'rand'=>$_POST['rand'],
+                       'myname'=>$_POST['myname'],
+                       'used'=>$_POST['used']);
 
-if (isset($_POST["rubdoc"])){
+   $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+   ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
+}
 
-	$rand=$_POST['rand'];
-
-	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"] && 
-		countElementsInTable('glpi_documents',"glpi_documents.documentscategories_id='".$_POST["rubdoc"]."' ".getEntitiesRestrictRequest("AND", "glpi_documents","",$_POST["entity_restrict"],true) )>$CFG_GLPI["ajax_limit_count"]
-	){
-		$use_ajax=true;
-	}
-
-
-	$paramsrubdoc=array('searchText'=>'__VALUE__',
-			'rubdoc'=>$_POST["rubdoc"],
-			'entity_restrict'=>$_POST["entity_restrict"],
-			'rand'=>$_POST['rand'],
-			'myname'=>$_POST['myname'],
-			'used'=>$_POST['used']
-			);
-	
-	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
-
-}		
 ?>

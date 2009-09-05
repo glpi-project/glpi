@@ -34,56 +34,55 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"dropdownRules.php")){
-	define('GLPI_ROOT','..');
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
+if (strpos($_SERVER['PHP_SELF'],"dropdownRules.php")) {
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
 checkLoginUser();
 
-
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {
-	$_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];	
+   $_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
 }
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
-$sql = "SELECT id,name,ranking 
-	FROM glpi_rules 
-	WHERE sub_type='".$_POST["type"]."'";
+$sql = "SELECT `id`, `name`, `ranking`
+        FROM `glpi_rules`
+        WHERE `sub_type`='".$_POST["type"]."'";
 
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
-	$LIMIT="";	
+   $LIMIT="";
 } else {
-	$sql .= " AND name ".makeTextSearch($_POST['searchText']);	
+   $sql .= " AND `name` ".makeTextSearch($_POST['searchText']);
 }
-$sql .= " ORDER BY ranking ASC " . $LIMIT;
-	
+$sql .= " ORDER BY `ranking` ASC " .
+          $LIMIT;
 $result = $DB->query($sql);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-	echo "<option value='0'>--".$LANG['common'][11]."--</option>";
+   echo "<option value='0'>--".$LANG['common'][11]."--</option>";
 } else {
-	echo "<option value='0'>-----</option>";
+   echo "<option value='0'>------</option>";
 }
 
-
 if ($DB->numrows($result)) {
-	while ($data =$DB->fetch_array($result)) {
-		$ID = $data['id'];
-		$name = $data['name'];
-		echo "<option value='$ID' title=\"".cleanInputText($name)."\">".utf8_substr($name,0,$_POST["limit"])."</option>";
-	}
+   while ($data =$DB->fetch_array($result)) {
+      $ID = $data['id'];
+      $name = $data['name'];
+      echo "<option value='$ID' title=\"".cleanInputText($name)."\">".
+             utf8_substr($name,0,$_POST["limit"])."</option>";
+   }
 }
 echo "</select>";
 
