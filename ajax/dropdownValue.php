@@ -34,344 +34,354 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"dropdownValue.php")){
-	define('GLPI_ROOT','..');
-	// Include plugin if it is a plugin table
-	if (!strstr($_POST['table'],"plugin")){
-		$AJAX_INCLUDE=1;
-	}
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
+if (strpos($_SERVER['PHP_SELF'],"dropdownValue.php")) {
+   // Include plugin if it is a plugin table
+   if (!strstr($_POST['table'],"plugin")) {
+      $AJAX_INCLUDE=1;
+   }
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
 checkLoginUser();
 
 // Security
-if (! TableExists($_POST['table']) ){
-	exit();
+if (! TableExists($_POST['table']) ) {
+   exit();
 }
 
-if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
-	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
+    && !is_array($_POST["entity_restrict"])) {
+
+   $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
+
 // Make a select box with preselected values
-if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
+if (!isset($_POST["limit"])) {
+   $_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
+}
 
-	$where="WHERE 1 ";
-	
-	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
-		$where.=" AND is_deleted=0 ";
-	}
-	if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
-		$where.=" AND is_template=0 ";
-	}
+$where="WHERE 1 ";
 
-	if (isset($_POST['onlyglobal'])&&$_POST['onlyglobal']){
-		$where.=" AND is_global=1 ";
-	}
+if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])) {
+   $where.=" AND `is_deleted`='0' ";
+}
+if (in_array($_POST['table'],$CFG_GLPI["template_tables"])) {
+   $where.=" AND `is_template`='0' ";
+}
+if (isset($_POST['onlyglobal']) && $_POST['onlyglobal']) {
+   $where.=" AND `is_global`='1' ";
+}
 
-	$NBMAX=$CFG_GLPI["dropdown_max"];
-	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+$NBMAX=$CFG_GLPI["dropdown_max"];
+$LIMIT="LIMIT 0,$NBMAX";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+   $LIMIT="";
+}
 
-	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-			$where.=" AND completename ".makeTextSearch($_POST['searchText']);
-		}
+if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
+   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+      $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
+   }
+   $multi=false;
 
-		$multi=false;
+   // Manage multiple Entities dropdowns
+   $add_order="";
+   if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])
+       || $_POST['table']=='glpi_entities') {
 
-		// Manage multiple Entities dropdowns
-		$add_order="";
-		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])||$_POST['table']=='glpi_entities'){
-
-			$multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
-
-			$field='entities_id';
-			$add_order=" entities_id, ";
-			if ($_POST['table']=='glpi_entities'){
-				$field='id';
-				$add_order=" ";
-
-			}
-
-			if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
-				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
-				if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-					$multi=true;	
-				}
-			} else {
-				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field);
-				if (count($_SESSION['glpiactiveentities'])>1) {
-					$multi=true;	
-				}
-			}
-			if ($_POST['table']=='glpi_entities'){
-				$multi=false;
-			}
-		}
-
-		$query = "SELECT * 
-			FROM `".$_POST['table']."` 
-			$where 
-			ORDER BY $add_order completename 
-			$LIMIT";
-		//error_log("SQL1:".$query);
-		$result = $DB->query($query);
-
-		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'"; 
-		if ($_POST['table'] == "glpi_entities" &&$_POST["auto_submit"]==1)
-			echo " onChange='submit()'";
-		echo ">";
-
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-			echo "<option class='tree' value=\"0\">--".$LANG['common'][11]."--</option>";
-		$display_selected=true;
-		switch ($_POST["table"]){
-			case "glpi_knowbaseitemscategories" :
-				echo "<option class='tree' value=\"0\">--".$LANG['knowbase'][12]."--</option>";
-				break;
-			case "glpi_entities" :
-				// If entity=0 allowed
-				if (isset($_POST["entity_restrict"])&& 
-					(($_POST["entity_restrict"]<=0 && in_array(0,$_SESSION['glpiactiveentities']))
-					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))))
-				{	
-					echo "<option class='tree' value=\"0\">--".$LANG['entity'][2]."--</option>";
-				}
-				// Entity=0 already add above
-				if ($_POST['value']==0){
-					$display_selected=false;
-				}
-				break;
-			default :
-				echo "<option class='tree' value=\"0\">-----</option>";
-				break;
-		}
-
-		if ($display_selected){
-			$outputval=getDropdownName($_POST['table'],$_POST['value']);
-			if (!empty($outputval)&&$outputval!="&nbsp;") {
-				if (utf8_strlen($outputval)>$_POST["limit"]) {
-					// Completename for tree dropdown : keep right
-					$outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
-				}
-				if ($_SESSION["glpiis_ids_visible"]||empty($outputval)){
-					 $outputval.=" (".$_POST['value'].")";
-				}
-
-				echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
-			}
-		}
-
-		if ($DB->numrows($result)) {
-			$prev=-1;
-			while ($data =$DB->fetch_array($result)) {
-
-				$ID = $data['id'];
-				$level = $data['level'];
-	
-				$output=$data['name'];
-
-				if ($multi && $data["entities_id"]!=$prev) {
-					if ($prev>=0) {
-						echo "</optgroup>";
-					}
-					$prev=$data["entities_id"];
-					echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-				}
-
-				$class=" class='tree' ";
-				$raquo="&raquo;";
-				if ($level==1){
-					$class=" class='treeroot' ";
-					$raquo="";
-				}
-
-				if ($_SESSION['glpiuse_flat_dropdowntree']){
-					$output=$data['completename'];
-					if ($level>1){
-						$class="";
-						$raquo="";
-						$level=0;
-					}
-				}
-				
-				if (utf8_strlen($output)>$_POST["limit"]) {
-					if ($_SESSION['glpiuse_flat_dropdowntree']){
-						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
-					} else {
-						$output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
-					}
-				}
-				
-				if ($_SESSION["glpiis_ids_visible"]||empty($output)){
-					 $output.=" ($ID)";
-				}
-
-				$style=$class;
-				$addcomment="";
-				if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
-
-				echo "<option value=\"$ID\" $style title=\"".cleanInputText($data['completename'].$addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
-			}
-
-		}
-		echo "</select>";
-
-	} else { // Not dropdowntree_tables
-		$where .=" AND `".$_POST['table']."`.id NOT IN ('".$_POST['value']."'";
-		if (isset($_POST['used'])) {
-			if (is_array($_POST['used'])) {
-				$used=$_POST['used'];
-			} else {
-				$used=unserialize(stripslashes($_POST['used']));
-			}
-			if (count($used)) {
-				$where .= ",'".implode("','",$used)."'";
-			}
-		}
-		$where .= ") ";
-
-		$multi=false;
-		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
-			$multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
-			
-			if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
-				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],"entities_id",$_POST["entity_restrict"],$multi);
-				if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-					$multi=true;	
-				}
-			} else {
-				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],'','',$multi);	
-				if (count($_SESSION['glpiactiveentities'])>1) {
-					$multi=true;	
-				}
-			}
-		}
-
-      $field="name";
-      if (strstr($_POST['table'],"glpi_device")
-         && !strstr($_POST['table'],"types")) {
-         $field="designation";
+      $multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+      $field='entities_id';
+      $add_order=" entities_id, ";
+      if ($_POST['table']=='glpi_entities') {
+         $field='id';
+         $add_order="";
       }
 
-
-      if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-         $search=makeTextSearch($_POST['searchText']);
-         $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
-         if ($_POST['table']=="glpi_softwares.licenses"){
-            $where.=" OR `glpi_softwares`.`name` ".$search;
+      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
+         if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+            $multi=true;
          }
-         $where.=')';
+      } else {
+         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field);
+         if (count($_SESSION['glpiactiveentities'])>1) {
+            $multi=true;
+         }
       }
-      
-		switch ($_POST['table']){
-			case "glpi_contacts":
-				$query = "SELECT `".$_POST['table']."`.entities_id, CONCAT(name,' ',firstname) as $field, 
-						`".$_POST['table']."`.comment, `".$_POST['table']."`.id
-					FROM `".$_POST['table']."` 
-					$where";
-			break;
-			case "glpi_softwareslicenses":
-				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_softwares.name,' - ',glpi_softwareslicenses.name) as $field
-					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.softwares_id = glpi_softwares.id)
-					$where";
+      if ($_POST['table']=='glpi_entities') {
+         $multi=false;
+      }
+   }
 
-			break;
-			default :
-				$query = "SELECT * 
-					FROM `".$_POST['table']."` 
-					$where";
-			break;
-		}
-		if ($multi) {
-			$query.=" ORDER BY entities_id, $field $LIMIT";			
-		} else {
-			$query.=" ORDER BY $field $LIMIT";			
-		}
-		//error_log("SQL2:".$query);
-		$result = $DB->query($query);
-		//echo $query;
-		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
+   $query = "SELECT *
+             FROM `".$_POST['table']."`
+             $where
+             ORDER BY $add_order `completename`
+             $LIMIT";
+   $result = $DB->query($query);
 
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
+   echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
+          $_POST['myname']."\" size='1'";
+   if ($_POST['table'] == "glpi_entities" && $_POST["auto_submit"]==1) {
+      echo " onChange='submit()'";
+   }
+   echo ">";
 
-		echo "<option value=\"0\">-----</option>";
+   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+      echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
+   }
+   $display_selected=true;
+   switch ($_POST["table"]) {
+      case "glpi_knowbaseitemscategories" :
+         echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
+         break;
 
-		$output=getDropdownName($_POST['table'],$_POST['value']);
-		if (!empty($output)&&$output!="&nbsp;"){
+      case "glpi_entities" :
+         // If entity=0 allowed
+         if (isset($_POST["entity_restrict"])&&
+             (($_POST["entity_restrict"]<=0 && in_array(0,$_SESSION['glpiactiveentities']))
+              || (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) {
 
-			if($_SESSION["glpiis_ids_visible"]||empty($output)){
-				$output.=" (".$_POST['value'].")";
-			}
+            echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
+         }
+         // Entity=0 already add above
+         if ($_POST['value']==0) {
+            $display_selected=false;
+         }
+         break;
 
-			echo "<option selected value='".$_POST['value']."'>".$output."</option>";
-		}
+      default :
+         echo "<option class='tree' value='0'>-----</option>";
+         break;
+   }
 
-		if ($DB->numrows($result)) {
-			$prev=-1;
-			while ($data =$DB->fetch_array($result)) {
-				$output = $data[$field];
-				if (isset($_POST['withserial'])&&isset($data["serial"]) && !empty($data["serial"])){
-					 $output.=" - ".$data["serial"];
-				}
-				if (isset($_POST['withotherserial'])&&isset($data["otherserial"]) && !empty($data["otherserial"])) {
-					$output.=" - ".$data["otherserial"];
-				}
-				$ID = $data['id'];
-				$addcomment="";
-				if (isset($data["comment"])) $addcomment=" - ".$data["comment"];
+   if ($display_selected) {
+      $outputval=getDropdownName($_POST['table'],$_POST['value']);
+      if (!empty($outputval) && $outputval!="&nbsp;") {
+         if (utf8_strlen($outputval)>$_POST["limit"]) {
+            // Completename for tree dropdown : keep right
+            $outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
+         }
+         if ($_SESSION["glpiis_ids_visible"] || empty($outputval)) {
+            $outputval.=" (".$_POST['value'].")";
+         }
+         echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+      }
+   }
 
-				if ($_SESSION["glpiis_ids_visible"]||empty($output)){
-					 $output.=" ($ID)";
-				}
-				if ($multi && $data["entities_id"]!=$prev) {
-					if ($prev>=0) {
-						echo "</optgroup>";
-					}
-					$prev=$data["entities_id"];
-					echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-				}
- 				echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\">".utf8_substr($output,0,$_POST["limit"])."</option>";
-			}
-			if ($multi) {
-				echo "</optgroup>";
-			}		
-		}
-		echo "</select>";
-	}
+   if ($DB->numrows($result)) {
+      $prev=-1;
+      while ($data =$DB->fetch_array($result)) {
+         $ID = $data['id'];
+         $level = $data['level'];
+         $output=$data['name'];
+         if ($multi && $data["entities_id"]!=$prev) {
+            if ($prev>=0) {
+               echo "</optgroup>";
+            }
+            $prev=$data["entities_id"];
+            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+         }
+         $class=" class='tree' ";
+         $raquo="&raquo;";
+         if ($level==1) {
+            $class=" class='treeroot'";
+            $raquo="";
+         }
+         if ($_SESSION['glpiuse_flat_dropdowntree']) {
+            $output=$data['completename'];
+            if ($level>1) {
+               $class="";
+               $raquo="";
+               $level=0;
+            }
+         }
+         if (utf8_strlen($output)>$_POST["limit"]) {
+            if ($_SESSION['glpiuse_flat_dropdowntree']) {
+               $output="&hellip;".utf8_substr($output,-$_POST["limit"]);
+            } else {
+               $output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
+            }
+         }
+         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            $output.=" ($ID)";
+         }
+         $style=$class;
+         $addcomment="";
+         if (isset($data["comment"])) {
+            $addcomment=" - ".$data["comment"];
+         }
+         echo "<option value='$ID' $style title=\"".cleanInputText($data['completename'].
+               $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
+      }
+   }
+   echo "</select>";
+} else { // Not dropdowntree_tables
+   $where .=" AND `".$_POST['table']."`.`id` NOT IN ('".$_POST['value']."'";
+   if (isset($_POST['used'])) {
+      if (is_array($_POST['used'])) {
+         $used=$_POST['used'];
+      } else {
+         $used=unserialize(stripslashes($_POST['used']));
+      }
+      if (count($used)) {
+         $where .= ",'".implode("','",$used)."'";
+      }
+   }
+   $where .= ") ";
 
-if (isset($_POST["comment"])&&$_POST["comment"]){
-	$paramscomment=array('value'=>'__VALUE__','table'=>$_POST["table"]);
-	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
+   $multi=false;
+   if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
+      $multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+         $where.=getEntitiesRestrictRequest("AND",$_POST['table'],"entities_id",
+                                            $_POST["entity_restrict"],$multi);
+         if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+            $multi=true;
+         }
+      } else {
+         $where.=getEntitiesRestrictRequest("AND",$_POST['table'],'','',$multi);
+         if (count($_SESSION['glpiactiveentities'])>1) {
+            $multi=true;
+         }
+      }
+   }
+
+   $field="name";
+   if (strstr($_POST['table'],"glpi_device") && !strstr($_POST['table'],"types")) {
+      $field="designation";
+   }
+
+   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+      $search=makeTextSearch($_POST['searchText']);
+      $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
+      if ($_POST['table']=="glpi_softwareslicenses") {
+         $where.=" OR `glpi_softwares`.`name` ".$search;
+      }
+      $where.=')';
+   }
+
+   switch ($_POST['table']) {
+      case "glpi_contacts" :
+         $query = "SELECT `".$_POST['table']."`.`entities_id`,
+                          CONCAT(`name`,' ',`firstname`) AS $field,
+                          `".$_POST['table']."`.`comment`, `".$_POST['table']."`.`id`
+                   FROM `".$_POST['table']."`
+                   $where";
+         break;
+
+      case "glpi_softwareslicenses" :
+         $query = "SELECT `".$_POST['table']."`.*,
+                          CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwareslicenses`.`name`)
+                                 AS $field
+                   FROM `".$_POST['table']."`
+                   LEFT JOIN `glpi_softwares`
+                        ON (`glpi_softwareslicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                   $where";
+         break;
+
+      default :
+         $query = "SELECT *
+                   FROM `".$_POST['table']."`
+                   $where";
+         break;
+   }
+
+   if ($multi) {
+      $field="`entities_id`, $field";
+   }
+   $query.=" ORDER BY $field
+             $LIMIT";
+   $result = $DB->query($query);
+
+   echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
+          "\" size='1'>";
+
+   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+      echo "<option value='0''>--".$LANG['common'][11]."--</option>";
+   }
+   echo "<option value='0''>------</option>";
+
+   $output=getDropdownName($_POST['table'],$_POST['value']);
+   if (!empty($output) && $output!="&nbsp;") {
+      if ($_SESSION["glpiis_ids_visible"]) {
+         $output.=" (".$_POST['value'].")";
+      }
+      echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+   }
+
+   if ($DB->numrows($result)) {
+      $prev=-1;
+      while ($data =$DB->fetch_array($result)) {
+         $output = $data[$field];
+         if (isset($_POST['withserial']) && isset($data["serial"]) && !empty($data["serial"])) {
+            $output.=" - ".$data["serial"];
+         }
+         if (isset($_POST['withotherserial']) && isset($data["otherserial"])
+             && !empty($data["otherserial"])) {
+            $output.=" - ".$data["otherserial"];
+         }
+         $ID = $data['id'];
+         $addcomment="";
+         if (isset($data["comment"])) {
+            $addcomment=" - ".$data["comment"];
+         }
+         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            $output.=" ($ID)";
+         }
+         if ($multi && $data["entities_id"]!=$prev) {
+            if ($prev>=0) {
+               echo "</optgroup>";
+            }
+            $prev=$data["entities_id"];
+            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+         }
+         echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
+                utf8_substr($output,0,$_POST["limit"])."</option>";
+      }
+      if ($multi) {
+         echo "</optgroup>";
+      }
+   }
+   echo "</select>";
 }
 
-if (isset($_POST["update_item"])&&
-	(is_array($_POST["update_item"]) || strlen($_POST["update_item"])>0)){
-	if (!is_array($_POST["update_item"])){
-		$data=unserialize(stripslashes($_POST["update_item"]));
-	} else $data=$_POST["update_item"];
-	
-	if (is_array($data)&&count($data)){
-		$paramsupdate=array();
-		if (isset($data['value_fieldname'])){
-			$paramsupdate=array($data['value_fieldname']=>'__VALUE__');
-		}
-		if (isset($data["moreparams"])&&is_array($data["moreparams"])&&count($data["moreparams"])){
-			foreach ($data["moreparams"] as $key => $val){
-				$paramsupdate[$key]=$val;
-			}
-		}
-		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],$data['to_update'],$data['url'],$paramsupdate,false);
-	}
+if (isset($_POST["comment"]) && $_POST["comment"]) {
+   $paramscomment=array('value'=>'__VALUE__',
+                        'table'=>$_POST["table"]);
+   ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comment_".
+                               $_POST["myname"].$_POST["rand"],
+                               $CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
 }
 
+if (isset($_POST["update_item"])
+    && (is_array($_POST["update_item"]) || strlen($_POST["update_item"])>0)) {
+
+   if (!is_array($_POST["update_item"])) {
+      $data=unserialize(stripslashes($_POST["update_item"]));
+   } else {
+      $data=$_POST["update_item"];
+   }
+   if (is_array($data) && count($data)) {
+      $paramsupdate=array();
+      if (isset($data['value_fieldname'])) {
+         $paramsupdate=array($data['value_fieldname']=>'__VALUE__');
+      }
+      if (isset($data["moreparams"]) && is_array($data["moreparams"]) && count($data["moreparams"])) {
+         foreach ($data["moreparams"] as $key => $val) {
+            $paramsupdate[$key]=$val;
+         }
+      }
+      ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],$data['to_update'],
+                                  $data['url'],$paramsupdate,false);
+   }
+}
 
 ?>

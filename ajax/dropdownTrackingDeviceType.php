@@ -33,40 +33,42 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT','..');
-//$AJAX_INCLUDE=1;
 $NEEDED_ITEMS=array("tracking");
+
+define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
 
-// Make a select box                                            
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0&&(isPossibleToAssignType($_POST["itemtype"]))){
-	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
+// Make a select box
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0
+    && (isPossibleToAssignType($_POST["itemtype"]))) {
 
-	if (!isset($_POST["admin"])||$_POST["admin"]==0){
-		echo "<div align='center'>".$LANG['help'][23].":&nbsp;";
-	}
-	$rand=mt_rand();
+   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
+   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
+      echo "<div class='center'>".$LANG['help'][23]."&nbsp;:&nbsp;";
+   }
+   $rand=mt_rand();
+   ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,15);
+   echo "</div>";
+   if (isset($_POST["admin"]) && $_POST["admin"]==1) {
+      echo "<br>";
+   }
+   $paramstrackingdt=array('searchText'=>'__VALUE__',
+                           'myname'=>$_POST["myname"],
+                           'table'=>$table,
+                           'itemtype'=>$_POST["itemtype"],
+                           'entity_restrict'=>$_POST['entity_restrict']);
 
-	ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,15);
-	echo "</div>";
-	if (isset($_POST["admin"])&$_POST["admin"]==1){
-		echo "<br>";
-	}
+   ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",
+                                  $paramstrackingdt,false);
 
-	$paramstrackingdt=array('searchText'=>'__VALUE__',
-			'myname'=>$_POST["myname"],
-			'table'=>$table,
-			'itemtype'=>$_POST["itemtype"],
-			'entity_restrict'=>$_POST['entity_restrict'],
-	);
-	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$paramstrackingdt,false);
+   echo "<span id='results_ID$rand'>";
+   echo "<select name='id'><option value='0'>------</option></select>";
+   echo "</span>\n";
+}
 
-	echo "<span id='results_ID$rand'>";
-	echo "<select name='id'><option value='0'>------</option></select>";
-	echo "</span>";	
-}		
 ?>
