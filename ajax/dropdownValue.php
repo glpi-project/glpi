@@ -305,9 +305,9 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
           "\" size='1'>";
 
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-      echo "<option value='0''>--".$LANG['common'][11]."--</option>";
+      echo "<option value='0'>--".$LANG['common'][11]."--</option>";
    }
-   echo "<option value='0''>------</option>";
+   echo "<option value='0'>------</option>";
 
    $output=getDropdownName($_POST['table'],$_POST['value']);
    if (!empty($output) && $output!="&nbsp;") {
