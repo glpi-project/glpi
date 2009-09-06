@@ -248,7 +248,7 @@ function countConsumables($tID,$alarm_threshold,$nohtml=0) {
          $highlight="class='tab_bg_1_2'";
       }
       if (!$nohtml) {
-         $out.= "<div $highlight>".$LANG['common'][33]."&nsbp;:&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".
+         $out.= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".
                   $LANG['consumables'][13]."&nbsp;: $unused</strong>&nbsp;&nbsp;&nbsp;".
                   $LANG['consumables'][15]."&nbsp;: $old</div>";
       } else {
