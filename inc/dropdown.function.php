@@ -2681,7 +2681,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 				echo "<optgroup label=\"". $data["completename"] ."\">";
 			}
 			echo "<option value='".$data["ID"]."'>";
-			echo substr($data["name"]." - #".$data["num"]." - ".convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_limit"]);
+			echo utf8_substr($data["name"]." - #".$data["num"]." - ".convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_limit"]);
 			echo "</option>";
 		}
 	}
