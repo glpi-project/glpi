@@ -42,6 +42,9 @@ if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 	glpi_header("install/install.php");
 	die();
 } else {
+
+   $TRY_OLD_CONFIG_FIRST=true;
+
 	include (GLPI_ROOT . "/inc/includes.php");
 	$_SESSION["glpitest"]='testcookie';
 

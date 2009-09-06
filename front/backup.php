@@ -37,6 +37,7 @@
 
 
 $NEEDED_ITEMS=array("xml");
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -486,6 +487,8 @@ if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 
 if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path."/".$_GET["file"])) {
 
+
+   $_SESSION['TRY_OLD_CONFIG_FIRST']=true;
 	init_time(); //initialise le temps
 	//d�ut de fichier
 	if (!isset($_GET["offset"])) $offset=0;

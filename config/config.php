@@ -83,13 +83,31 @@
 
 		$config_object=new Config();
       $config_ok=false;
-		if($config_object->getFromDB(1)) {
-         $config_ok=true;
-      } else {
-         // Manage glpi_config table before 0.80
+
+      if (isset($TRY_OLD_CONFIG_FIRST) // index case
+         || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST'])) { // backup case
+         if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])){
+            unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
+         }
+         // First try old config table : for update proces management from < 0.80 to >= 0.80
          $config_object->table='glpi_config';
          if($config_object->getFromDB(1)) {
             $config_ok=true;
+         } else {
+            $config_object->table='glpi_configs';
+            if($config_object->getFromDB(1)) {
+               $config_ok=true;
+            }
+         }
+      } else { // Normal load process : use normal config table. If problem try old one
+         if($config_object->getFromDB(1)) {
+            $config_ok=true;
+         } else {
+            // Manage glpi_config table before 0.80
+            $config_object->table='glpi_config';
+            if($config_object->getFromDB(1)) {
+               $config_ok=true;
+            }
          }
       }
 
