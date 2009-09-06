@@ -109,6 +109,7 @@ $LANG['buttons'][53]="Nettoyer";
 $LANG['buttons'][54]="Ajouter et Réouvrir";
 $LANG['buttons'][55]="Premier";
 $LANG['buttons'][56]="Dernier";
+$LANG['buttons'][57]="Executer";
 
 $LANG['calendarD'][0]="D";
 $LANG['calendarD'][1]="L";

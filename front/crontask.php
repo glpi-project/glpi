@@ -41,14 +41,27 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
+if (isset($_GET['execute'])) {
+   if (is_numeric($_GET['execute'])) {
+      $name = CronTask::launch(0,$_GET['execute']);
+   } else {
+      $name = CronTask::launch(0,1,$_GET['execute']);
+   }
+   if ($name) {
+      addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
 commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
 $crontask = new CronTask();
 //if ($crontask->getNeedToRun(CRONTASK_MODE_EXTERNAL)) {
 if ($crontask->getNeedToRun()) {
-   displayTitle(GLPI_ROOT.'/pics/warning.png','',$LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name']);
+   displayTitle(GLPI_ROOT.'/pics/warning.png',$LANG['crontask'][41],
+      $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
+      array($_SERVER['PHP_SELF']."?execute=1"=>$LANG['buttons'][57]));
 } else {
-   displayTitle(GLPI_ROOT.'/pics/ok.png','',$LANG['crontask'][43]);
+   displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
 }
 
 manageGetValuesInSearch(CRONTASK_TYPE);
