@@ -415,10 +415,12 @@ class CronTask extends CommonDBTM{
          dropdownInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
+      $launch=false;
       if ($tmpstate!=CRONTASK_STATE_WAITING) {
          echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
          echo $LANG['crontask'][42];
+         $launch=true;
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $h=date('H',$next);
@@ -437,10 +439,15 @@ class CronTask extends CommonDBTM{
             $disp = date("Y-m-d H:i:s", $next);
          }
          if ($next<time()) {
-            echo $LANG['crontask'][42].' ('.convDateTime($disp).')';
+            echo $LANG['crontask'][42].' ('.convDateTime($disp).') ';
+            $launch=true;
          } else {
             echo convDateTime($disp);
          }
+      }
+      if ($launch) {
+         echo " - <a href='".GLPI_ROOT."/front/crontask.php?execute=".$this->fields["name"]."'>";
+         echo $LANG['buttons'][57]."</a>";
       }
       echo "</td></tr>";
 
@@ -616,8 +623,12 @@ class CronTask extends CommonDBTM{
     * @param $mode (internal/external)
     * @param $max number of task to launch ()
     * @param $name of task to run
+    *
+    * @return the name of last task launched
     */
    static public function launch($mode, $max=1, $name='') {
+
+      $taskname='';
 
       if (CronTask::get_lock()) {
          if (isset($_SESSION["glpiID"])) {
@@ -647,6 +658,7 @@ class CronTask extends CommonDBTM{
                }
                if (function_exists($fonction)) {
                   if ($task->start()) { // Lock in DB + log start
+                     $taskname = $task->fields['name'];
                      logInFile('cron', $prefix."Launch ".$task->fields['name']."\n");
                      $retcode = $fonction($task);
                      $task->end($retcode); // Unlock in DB + log end
@@ -675,6 +687,8 @@ class CronTask extends CommonDBTM{
       } else {
          logInFile('cron', "Can't get DB lock'\n");
       }
+
+      return $taskname;
    }
 
    /**
