@@ -242,7 +242,7 @@
 			TRACKING_TYPE => "glpi_tickets",
 			CONSUMABLEITEM_TYPE => "glpi_consumablesitems",
 			CONSUMABLE_TYPE => "glpi_consumables",
-			CARTRIDGES_TYPE => "glpi_cartridges",
+			CARTRIDGE_TYPE => "glpi_cartridges",
 			SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
 			LINK_TYPE => "glpi_links",
 			STATE_TYPE => "",
@@ -287,7 +287,7 @@
 			TRACKING_TYPE => "front/tracking.form.php",
 			CONSUMABLEITEM_TYPE => "front/consumable.form.php",
 //			CONSUMABLE_TYPE => "??",
-//			CARTRIDGES_TYPE => "??",
+//			CARTRIDGE_TYPE => "??",
 			SOFTWARELICENSE_TYPE => "front/softwarelicense.form.php",
 			LINK_TYPE => "front/link.form.php",
 //			STATE_TYPE => "??",
@@ -435,7 +435,7 @@
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,CONSUMABLEITEM_TYPE,
-            CARTRIDGEITEM_TYPE,CONSUMABLE_TYPE,CARTRIDGES_TYPE);
+            CARTRIDGEITEM_TYPE,CONSUMABLE_TYPE,CARTRIDGE_TYPE);
 	$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["linkuser_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
