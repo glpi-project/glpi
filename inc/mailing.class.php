@@ -541,9 +541,9 @@ class Mailing {
       // Create the message subject
       $subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["id"],"] ");
 
-      if (isMultiEntitiesMode()) {
-         $subject.=getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
-      }
+//      if (isMultiEntitiesMode()) {
+//         $subject.=getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
+//      }
 
       switch ($this->type) {
          case "new" :
