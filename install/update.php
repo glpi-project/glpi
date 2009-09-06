@@ -524,8 +524,10 @@ function updatedbUpTo031()
 			update0712to0713();
 			include("update_0713_072.php");
 			update0713to072();
-         include("update_072_0721.php");
-         update072to0721();
+		        include("update_072_0721.php");
+		        update072to0721();
+                	include("update_0721_0722.php");
+	                update0721to0722();
 
 			break;
 	}
