@@ -61,7 +61,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
    }
 
    if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")
-       && ($itemtype==SOFTWARE_TYPE || $itemtype==CARTRIDGE_TYPE || $itemtype==CONSUMABLE_TYPE)) {
+       && ($itemtype==SOFTWARE_TYPE || $itemtype==CARTRIDGEITEM_TYPE || $itemtype==CONSUMABLEITEM_TYPE)) {
       echo "<div class='center'>".$LANG['financial'][84]."</div>";
    }
 
@@ -201,9 +201,9 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
             echo "</td></tr>";
          }
          //TCO
-         if ($itemtype!=SOFTWARE_TYPE && $itemtype!=CARTRIDGE_TYPE && $itemtype!=CONSUMABLE_TYPE
-             && $itemtype!=CONSUMABLE_ITEM_TYPE && $itemtype!=SOFTWARELICENSE_TYPE
-             && $itemtype!=CARTRIDGE_ITEM_TYPE) {
+         if ($itemtype!=SOFTWARE_TYPE && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=CONSUMABLEITEM_TYPE
+             && $itemtype!=CONSUMABLE_TYPE && $itemtype!=SOFTWARELICENSE_TYPE
+             && $itemtype!=CARTRIDGE_TYPE) {
 
             echo "<tr class='tab_bg_1'><td>";
             echo $LANG['financial'][89]."&nbsp;:</td><td>";

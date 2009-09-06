@@ -131,7 +131,7 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("contract", $right);
          break;
 
-      case CARTRIDGE_TYPE :
+      case CARTRIDGEITEM_TYPE :
          return haveRight("cartridge", $right);
          break;
 
@@ -161,15 +161,15 @@ function haveTypeRight($itemtype, $right) {
          }
          break;
 
-      case CONSUMABLE_TYPE :
+      case CONSUMABLEITEM_TYPE :
          return haveRight("consumable", $right);
          break;
 
-      case CARTRIDGE_ITEM_TYPE :
+      case CARTRIDGE_TYPE :
          return haveRight("cartridge", $right);
          break;
 
-      case CONSUMABLE_ITEM_TYPE :
+      case CONSUMABLE_TYPE :
          return haveRight("consumable", $right);
          break;
 

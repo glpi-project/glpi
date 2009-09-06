@@ -48,11 +48,11 @@ if (isset($_GET["synthese"])){
 
 } else {
 
-	manageGetValuesInSearch(CONSUMABLE_TYPE);
+	manageGetValuesInSearch(CONSUMABLEITEM_TYPE);
 
-	searchForm(CONSUMABLE_TYPE,$_GET);
+	searchForm(CONSUMABLEITEM_TYPE,$_GET);
 
-	showList(CONSUMABLE_TYPE,$_GET);
+	showList(CONSUMABLEITEM_TYPE,$_GET);
 
 }
 commonFooter();

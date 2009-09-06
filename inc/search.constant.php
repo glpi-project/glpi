@@ -2860,68 +2860,68 @@ $SEARCH_OPTION[CONTRACT_TYPE][86]['name']=$LANG['entity'][9];
 $SEARCH_OPTION[CONTRACT_TYPE][86]['datatype']='bool';
 
 
-//////CARTRIDGE_TYPE
+//////CARTRIDGEITEM_TYPE
 
-$SEARCH_OPTION[CARTRIDGE_TYPE]['common']=$LANG['common'][32];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['field']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['linkfield']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['name']=$LANG['common'][16];
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['datatype']='itemlink';
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['itemlink_type']=CARTRIDGE_TYPE;
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['field']='name';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['name']=$LANG['common'][16];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['datatype']='itemlink';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][1]['itemlink_type']=CARTRIDGEITEM_TYPE;
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['field']='id';
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['linkfield']='';
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['name']=$LANG['common'][2];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][2]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][2]['field']='id';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][2]['linkfield']='';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][34]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][34]['field']='ref';
-$SEARCH_OPTION[CARTRIDGE_TYPE][34]['linkfield']='ref';
-$SEARCH_OPTION[CARTRIDGE_TYPE][34]['name']=$LANG['consumables'][2];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][34]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][34]['field']='ref';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][34]['linkfield']='ref';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][34]['name']=$LANG['consumables'][2];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][4]['table']='glpi_cartridgesitemstypes';
-$SEARCH_OPTION[CARTRIDGE_TYPE][4]['field']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][4]['linkfield']='cartridgesitemstypes_id';
-$SEARCH_OPTION[CARTRIDGE_TYPE][4]['name']=$LANG['common'][17];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][4]['table']='glpi_cartridgesitemstypes';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][4]['field']='name';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][4]['linkfield']='cartridgesitemstypes_id';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][4]['name']=$LANG['common'][17];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][23]['table']='glpi_manufacturers';
-$SEARCH_OPTION[CARTRIDGE_TYPE][23]['field']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][23]['linkfield']='manufacturers_id';
-$SEARCH_OPTION[CARTRIDGE_TYPE][23]['name']=$LANG['common'][5];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][23]['table']='glpi_manufacturers';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][23]['field']='name';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][23]['linkfield']='manufacturers_id';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][23]['name']=$LANG['common'][5];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['table']='glpi_locations';
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['field']='completename';
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['linkfield']='locations_id';
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['name']=$LANG['consumables'][36];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][3]['table']='glpi_locations';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][3]['field']='completename';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][3]['linkfield']='locations_id';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][3]['name']=$LANG['consumables'][36];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][24]['table']='glpi_users';
-$SEARCH_OPTION[CARTRIDGE_TYPE][24]['field']='name';
-$SEARCH_OPTION[CARTRIDGE_TYPE][24]['linkfield']='users_id_tech';
-$SEARCH_OPTION[CARTRIDGE_TYPE][24]['name']=$LANG['common'][10];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][24]['table']='glpi_users';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][24]['field']='name';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][24]['linkfield']='users_id_tech';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][24]['name']=$LANG['common'][10];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['field']='alarm_threshold';
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['linkfield']='alarm_threshold';
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['name']=$LANG['consumables'][38];
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['datatype']='number';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][8]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][8]['field']='alarm_threshold';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][8]['linkfield']='alarm_threshold';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][8]['name']=$LANG['consumables'][38];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][8]['datatype']='number';
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][16]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][16]['field']='comment';
-$SEARCH_OPTION[CARTRIDGE_TYPE][16]['linkfield']='comment';
-$SEARCH_OPTION[CARTRIDGE_TYPE][16]['name']=$LANG['common'][25];
-$SEARCH_OPTION[CARTRIDGE_TYPE][16]['datatype']='text';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][16]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][16]['field']='comment';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][16]['linkfield']='comment';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][16]['name']=$LANG['common'][25];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][16]['datatype']='text';
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][90]['table']='glpi_cartridgesitems';
-$SEARCH_OPTION[CARTRIDGE_TYPE][90]['field']='notepad';
-$SEARCH_OPTION[CARTRIDGE_TYPE][90]['linkfield']='';
-$SEARCH_OPTION[CARTRIDGE_TYPE][90]['name']=$LANG['title'][37];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][90]['table']='glpi_cartridgesitems';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][90]['field']='notepad';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][90]['linkfield']='';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][90]['name']=$LANG['title'][37];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][80]['table']='glpi_entities';
-$SEARCH_OPTION[CARTRIDGE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CARTRIDGE_TYPE][80]['linkfield']='entities_id';
-$SEARCH_OPTION[CARTRIDGE_TYPE][80]['name']=$LANG['entity'][0];
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][80]['field']='completename';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][80]['linkfield']='entities_id';
+$SEARCH_OPTION[CARTRIDGEITEM_TYPE][80]['name']=$LANG['entity'][0];
 
 //////TYPEDOC_TYPE
 
@@ -3132,68 +3132,68 @@ $SEARCH_OPTION[USER_TYPE][82]['field']='name';
 $SEARCH_OPTION[USER_TYPE][82]['linkfield']='userscategories_id';
 $SEARCH_OPTION[USER_TYPE][82]['name']=$LANG['users'][2];
 
-//////CONSUMABLE_TYPE
+//////CONSUMABLEITEM_TYPE
 
-$SEARCH_OPTION[CONSUMABLE_TYPE]['common']=$LANG['common'][32];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['field']='name';
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['linkfield']='name';
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['name']=$LANG['common'][16];
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['datatype']='itemlink';
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['itemlink_type']=CONSUMABLE_TYPE;
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['field']='name';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['name']=$LANG['common'][16];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['datatype']='itemlink';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][1]['itemlink_type']=CONSUMABLEITEM_TYPE;
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['field']='id';
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['linkfield']='';
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['name']=$LANG['common'][2];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][2]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][2]['field']='id';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][2]['linkfield']='';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][34]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][34]['field']='ref';
-$SEARCH_OPTION[CONSUMABLE_TYPE][34]['linkfield']='ref';
-$SEARCH_OPTION[CONSUMABLE_TYPE][34]['name']=$LANG['consumables'][2];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][34]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][34]['field']='ref';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][34]['linkfield']='ref';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][34]['name']=$LANG['consumables'][2];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][4]['table']='glpi_consumablesitemstypes';
-$SEARCH_OPTION[CONSUMABLE_TYPE][4]['field']='name';
-$SEARCH_OPTION[CONSUMABLE_TYPE][4]['linkfield']='consumablesitemstypes_id';
-$SEARCH_OPTION[CONSUMABLE_TYPE][4]['name']=$LANG['common'][17];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][4]['table']='glpi_consumablesitemstypes';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][4]['field']='name';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][4]['linkfield']='consumablesitemstypes_id';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][4]['name']=$LANG['common'][17];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][23]['table']='glpi_manufacturers';
-$SEARCH_OPTION[CONSUMABLE_TYPE][23]['field']='name';
-$SEARCH_OPTION[CONSUMABLE_TYPE][23]['linkfield']='FK_glpi_enteprise';
-$SEARCH_OPTION[CONSUMABLE_TYPE][23]['name']=$LANG['common'][5];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][23]['table']='glpi_manufacturers';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][23]['field']='name';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][23]['linkfield']='FK_glpi_enteprise';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][23]['name']=$LANG['common'][5];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][3]['table']='glpi_locations';
-$SEARCH_OPTION[CONSUMABLE_TYPE][3]['field']='completename';
-$SEARCH_OPTION[CONSUMABLE_TYPE][3]['linkfield']='locations_id';
-$SEARCH_OPTION[CONSUMABLE_TYPE][3]['name']=$LANG['consumables'][36];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][3]['table']='glpi_locations';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][3]['field']='completename';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][3]['linkfield']='locations_id';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][3]['name']=$LANG['consumables'][36];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][24]['table']='glpi_users';
-$SEARCH_OPTION[CONSUMABLE_TYPE][24]['field']='name';
-$SEARCH_OPTION[CONSUMABLE_TYPE][24]['linkfield']='users_id_tech';
-$SEARCH_OPTION[CONSUMABLE_TYPE][24]['name']=$LANG['common'][10];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][24]['table']='glpi_users';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][24]['field']='name';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][24]['linkfield']='users_id_tech';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][24]['name']=$LANG['common'][10];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['field']='alarm_threshold';
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['linkfield']='alarm_threshold';
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['name']=$LANG['consumables'][38];
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['datatype']='number';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][8]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][8]['field']='alarm_threshold';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][8]['linkfield']='alarm_threshold';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][8]['name']=$LANG['consumables'][38];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][8]['datatype']='number';
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['field']='comment';
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['linkfield']='comment';
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['name']=$LANG['common'][25];
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['datatype']='text';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][16]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][16]['field']='comment';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][16]['linkfield']='comment';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][16]['name']=$LANG['common'][25];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][16]['datatype']='text';
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][90]['table']='glpi_consumablesitems';
-$SEARCH_OPTION[CONSUMABLE_TYPE][90]['field']='notepad';
-$SEARCH_OPTION[CONSUMABLE_TYPE][90]['linkfield']='';
-$SEARCH_OPTION[CONSUMABLE_TYPE][90]['name']=$LANG['title'][37];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][90]['table']='glpi_consumablesitems';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][90]['field']='notepad';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][90]['linkfield']='';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][90]['name']=$LANG['title'][37];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][80]['table']='glpi_entities';
-$SEARCH_OPTION[CONSUMABLE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CONSUMABLE_TYPE][80]['linkfield']='entities_id';
-$SEARCH_OPTION[CONSUMABLE_TYPE][80]['name']=$LANG['entity'][0];
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][80]['field']='completename';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][80]['linkfield']='entities_id';
+$SEARCH_OPTION[CONSUMABLEITEM_TYPE][80]['name']=$LANG['entity'][0];
 
 //////LINK_TYPE
 

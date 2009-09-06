@@ -65,7 +65,7 @@ class Transfer extends CommonDBTM{
 	/// item types which have tickets
 	var $TICKETS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	/// item types which have documents
-	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, DOCUMENT_TYPE);
+	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLEITEM_TYPE, CARTRIDGEITEM_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, DOCUMENT_TYPE);
 
 
 	/**
@@ -161,7 +161,7 @@ class Transfer extends CommonDBTM{
 			}
 			
 			// Inventory Items : MONITOR....
-			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARELICENSE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
+			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARELICENSE_TYPE, CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE);
 			foreach ($INVENTORY_TYPES as $itemtype){
 				$this->inittype=$itemtype;
 				if (isset($items[$itemtype])&&count($items[$itemtype])){
@@ -254,7 +254,7 @@ class Transfer extends CommonDBTM{
 		// Init types :
 		$types=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE,
 			SOFTWARE_TYPE, SOFTWARELICENSE_TYPE, SOFTWAREVERSION_TYPE, CONTRACT_TYPE, ENTERPRISE_TYPE, CONTACT_TYPE,
-			TRACKING_TYPE, DOCUMENT_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE, LINK_TYPE);
+			TRACKING_TYPE, DOCUMENT_TYPE, CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE, LINK_TYPE);
 		
 		foreach ($types as $t){
 			if (!isset($this->needtobe_transfer[$t])){
@@ -700,13 +700,13 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							$this->addToBeTransfer(CARTRIDGE_TYPE,$data['cartridgesitems_id']);
+							$this->addToBeTransfer(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id']);
 						}
 					}
 				}
 			}
 		}
-		$this->item_search[CARTRIDGE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGE_TYPE]);
+		$this->item_search[CARTRIDGEITEM_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGEITEM_TYPE]);
 
 
 		// Init all item_search if not defined
@@ -828,7 +828,7 @@ class Transfer extends CommonDBTM{
 				}
 
 				// transfer compatible printers
-				if ($itemtype==CARTRIDGE_TYPE) {
+				if ($itemtype==CARTRIDGEITEM_TYPE) {
 					$this->transferCompatiblePrinters($ID,$newID);
 				}
 
@@ -1033,8 +1033,8 @@ class Transfer extends CommonDBTM{
 						$newcarttypeID=-1;
 						// 1 - Search carttype destination ?
 						// Already transfer carttype : 
-						if (isset($this->already_transfer[CARTRIDGE_TYPE][$data['cartridgesitems_id']])){
-							$newcarttypeID=$this->already_transfer[CARTRIDGE_TYPE][$data['cartridgesitems_id']];
+						if (isset($this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgesitems_id']])){
+							$newcarttypeID=$this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgesitems_id']];
 						} else {
 							// Not already transfer cartype
 							$query="SELECT count(*) AS CPT 
@@ -1046,7 +1046,7 @@ class Transfer extends CommonDBTM{
 							if ($DB->result($result_search,0,'CPT')==0){
 								// Yes : transfer
 								$need_clean_process=false;
-								$this->transferItem(CARTRIDGE_TYPE,$data['cartridgesitems_id'],$data['cartridgesitems_id']);
+								$this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id'],$data['cartridgesitems_id']);
 								$newcarttypeID=$data['cartridgesitems_id'];
 							} else {
 								// No : copy carttype
@@ -1068,7 +1068,7 @@ class Transfer extends CommonDBTM{
 									unset($carttype->fields);
 									$newcarttypeID=$carttype->add($input);
 									// 2 - transfer as copy
-									$this->transferItem(CARTRIDGE_TYPE,$data['cartridgesitems_id'],$newcarttypeID);
+									$this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id'],$newcarttypeID);
 								}
 								// Founded -> use to link : nothing to do
 							}

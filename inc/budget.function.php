@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id: contract.function.php 8498 2009-07-25 19:11:33Z moyo $
@@ -75,8 +76,8 @@ function showDeviceBudget($budgets_id) {
    $num=0;
    while ($i < $number) {
       $itemtype=$DB->result($result, $i, "itemtype");
-      if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLE_ITEM_TYPE
-          && $itemtype!=CARTRIDGE_ITEM_TYPE && $itemtype!=SOFTWARELICENSE_TYPE) {
+      if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLE_TYPE
+          && $itemtype!=CARTRIDGE_TYPE && $itemtype!=SOFTWARELICENSE_TYPE) {
          $query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*
                    FROM `glpi_infocoms`
                    INNER JOIN ".$LINK_ID_TABLE[$itemtype]."

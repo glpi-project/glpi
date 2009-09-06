@@ -1222,9 +1222,9 @@ function showList ($itemtype,$params){
 			// Add specific column Header
 //			if ($itemtype==SOFTWARE_TYPE)
 //				echo displaySearchHeaderItem($output_type,$LANG['software'][11],$header_num);
-			if ($itemtype==CARTRIDGE_TYPE)
+			if ($itemtype==CARTRIDGEITEM_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG['cartridges'][0],$header_num);
-			if ($itemtype==CONSUMABLE_TYPE)
+			if ($itemtype==CONSUMABLEITEM_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
 			if ($itemtype==STATE_TYPE||$itemtype==RESERVATION_TYPE){
 				echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
@@ -1348,13 +1348,13 @@ function showList ($itemtype,$params){
 							}
 						}
 				// Specific column display
-				if ($itemtype==CARTRIDGE_TYPE){
+				if ($itemtype==CARTRIDGEITEM_TYPE){
 					echo displaySearchItem($output_type,countCartridges($data["id"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}
 //				if ($itemtype==SOFTWARE_TYPE){
 //					echo displaySearchItem($output_type,countInstallations($data["id"],$output_type),$item_num,$row_num);
 //				}
-				if ($itemtype==CONSUMABLE_TYPE){
+				if ($itemtype==CONSUMABLEITEM_TYPE){
 					echo displaySearchItem($output_type,countConsumables($data["id"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}
 				if ($itemtype==STATE_TYPE||$itemtype==RESERVATION_TYPE){
@@ -1717,10 +1717,10 @@ function addDefaultSelect ($itemtype){
       case RESERVATION_TYPE:
          $ret = "`glpi_reservationsitems`.`is_active` as ACTIVE, ";
          break;
-      case CARTRIDGE_TYPE:
+      case CARTRIDGEITEM_TYPE:
          $ret = "`glpi_cartridgesitems`.`alarm_threshold` as ALARM, ";
          break;
-      case CONSUMABLE_TYPE:
+      case CONSUMABLEITEM_TYPE:
          $ret = "`glpi_consumablesitems`.`alarm_threshold` as ALARM, ";
          break;
       case CRONTASK_TYPE:
