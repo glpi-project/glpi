@@ -88,7 +88,7 @@ $query = "SELECT *
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\">";
-echo "<option value='0''>------</option>";
+echo "<option value='0'>------</option>";
 
 if ($DB->numrows($result)) {
    $prev=-1;
