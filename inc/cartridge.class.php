@@ -51,7 +51,7 @@ class CartridgeType extends CommonDBTM {
    **/
    function __construct () {
       $this->table="glpi_cartridgesitems";
-      $this->type=CARTRIDGE_TYPE;
+      $this->type=CARTRIDGEITEM_TYPE;
       $this->entity_assign=true;
    }
 
@@ -71,7 +71,7 @@ class CartridgeType extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype` = '".CARTRIDGE_TYPE."')";
+                       AND `itemtype` = '".CARTRIDGEITEM_TYPE."')";
       $result = $DB->query($query);
 
    }
@@ -274,7 +274,7 @@ class Cartridge extends CommonDBTM {
    **/
    function __construct () {
       $this->table="glpi_cartridges";
-      $this->type=CARTRIDGE_ITEM_TYPE;
+      $this->type=CARTRIDGE_TYPE;
       // by the Cartridge Type
       $this->entity_assign=true;
    }
@@ -298,7 +298,7 @@ class Cartridge extends CommonDBTM {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
-      if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["cartridgesitems_id"])) {
+      if ($ic->getFromDBforDevice(CARTRIDGEITEM_TYPE,$this->fields["cartridgesitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
          $ic->fields["itemtype"]=$this->type;

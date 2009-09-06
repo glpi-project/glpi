@@ -219,7 +219,7 @@ function showCartridges ($tID,$show_old=0) {
                echo "</td>";
             }
             echo "<td class='center'>";
-            showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["id"],1);
+            showDisplayInfocomLink(CARTRIDGE_TYPE,$data["id"],1);
             echo "</td>";
             echo "<td class='center'>";
             if (!is_null($date_use) && $canedit) {
@@ -707,7 +707,7 @@ function cron_cartridge($task=NULL) {
            FROM `glpi_cartridgesitems`
            LEFT JOIN `glpi_alerts`
                      ON (`glpi_cartridgesitems`.`id` = `glpi_alerts`.`items_id`
-                         AND `glpi_alerts`.`itemtype` = '".CARTRIDGE_TYPE."')
+                         AND `glpi_alerts`.`itemtype` = '".CARTRIDGEITEM_TYPE."')
            WHERE `glpi_cartridgesitems`.`is_deleted` = '0'
                  AND `glpi_cartridgesitems`.`alarm_threshold` >= '0'
                  AND (`glpi_alerts`.`date` IS NULL
@@ -757,7 +757,7 @@ function cron_cartridge($task=NULL) {
                }
 
                $input["type"]=ALERT_THRESHOLD;
-               $input["itemtype"]=CARTRIDGE_TYPE;
+               $input["itemtype"]=CARTRIDGEITEM_TYPE;
 
                //// add alerts
                foreach ($items[$entity] as $ID) {

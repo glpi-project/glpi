@@ -50,7 +50,7 @@ class ConsumableType extends CommonDBTM {
     **/
    function __construct () {
       $this->table="glpi_consumablesitems";
-      $this->type=CONSUMABLE_TYPE;
+      $this->type=CONSUMABLEITEM_TYPE;
       $this->entity_assign=true;
    }
 
@@ -199,7 +199,7 @@ class Consumable extends CommonDBTM {
     **/
    function __construct () {
       $this->table="glpi_consumables";
-      $this->type=CONSUMABLE_ITEM_TYPE;
+      $this->type=CONSUMABLE_TYPE;
       // by the Consumable type
       $this->entity_assign=true;
    }
@@ -224,7 +224,7 @@ class Consumable extends CommonDBTM {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
-      if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])) {
+      if ($ic->getFromDBforDevice(CONSUMABLEITEM_TYPE,$this->fields["consumablesitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
          $ic->fields["itemtype"]=$this->type;

@@ -1643,7 +1643,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
          echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
       }
       if (haveRight('transfer','r') && isMultiEntitiesMode()
-          && in_array($itemtype, array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,
+          && in_array($itemtype, array(CARTRIDGEITEM_TYPE,COMPUTER_TYPE,CONSUMABLEITEM_TYPE,CONTACT_TYPE,
                                        CONTRACT_TYPE,ENTERPRISE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,
                                        PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,
                                        SOFTWARELICENSE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,

@@ -191,7 +191,7 @@ function showConsumables ($tID,$show_old=0) {
                echo "</td>";
             }
             echo "<td class='center'>";
-            showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["id"],1);
+            showDisplayInfocomLink(CONSUMABLE_TYPE,$data["id"],1);
             echo "</td>";
 
             if (!$show_old && $canedit) {
@@ -529,7 +529,7 @@ function cron_consumable($task=NULL) {
                   `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
           FROM `glpi_consumablesitems`
           LEFT JOIN `glpi_alerts` ON (`glpi_consumablesitems`.`id` = `glpi_alerts`.`items_id`
-                                       AND `glpi_alerts`.`itemtype`='".CONSUMABLE_TYPE."')
+                                       AND `glpi_alerts`.`itemtype`='".CONSUMABLEITEM_TYPE."')
           WHERE `glpi_consumablesitems`.`is_deleted`='0'
                 AND `glpi_consumablesitems`.`alarm_threshold`>='0'
                 AND (`glpi_alerts`.`date` IS NULL
@@ -575,7 +575,7 @@ function cron_consumable($task=NULL) {
                }
 
                $input["type"]=ALERT_THRESHOLD;
-               $input["itemtype"]=CONSUMABLE_TYPE;
+               $input["itemtype"]=CONSUMABLEITEM_TYPE;
 
                // add alerts
                foreach ($items[$entity] as $ID) {

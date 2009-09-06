@@ -56,10 +56,10 @@ function update0721to0722() {
    //// Correct search.constant numbers
    $updates=array();
    // location :
-   $updates[]=array('type'=>CARTRIDGE_TYPE,'from'=>3,'to'=>34);
-   $updates[]=array('type'=>CARTRIDGE_TYPE,'from'=>6,'to'=>3);
-   $updates[]=array('type'=>CONSUMABLE_TYPE,'from'=>3,'to'=>34);
-   $updates[]=array('type'=>CONSUMABLE_TYPE,'from'=>6,'to'=>3);
+   $updates[]=array('type'=>CARTRIDGEITEM_TYPE,'from'=>3,'to'=>34);
+   $updates[]=array('type'=>CARTRIDGEITEM_TYPE,'from'=>6,'to'=>3);
+   $updates[]=array('type'=>CONSUMABLEITEM_TYPE,'from'=>3,'to'=>34);
+   $updates[]=array('type'=>CONSUMABLEITEM_TYPE,'from'=>6,'to'=>3);
    $updates[]=array('type'=>USER_TYPE,'from'=>3,'to'=>34);
    $updates[]=array('type'=>USER_TYPE,'from'=>7,'to'=>3);
    // serial / otherserial
@@ -71,11 +71,11 @@ function update0721to0722() {
    $updates[]=array('type'=>STATE_TYPE,'from'=>9,'to'=>6);
    $updates[]=array('type'=>STATE_TYPE,'from'=>8,'to'=>5);
    // Manufacturer
-   $updates[]=array('type'=>CONSUMABLE_TYPE,'from'=>5,'to'=>23);
-   $updates[]=array('type'=>CARTRIDGE_TYPE,'from'=>5,'to'=>23);
+   $updates[]=array('type'=>CONSUMABLEITEM_TYPE,'from'=>5,'to'=>23);
+   $updates[]=array('type'=>CARTRIDGEITEM_TYPE,'from'=>5,'to'=>23);
    // tech_num
-   $updates[]=array('type'=>CONSUMABLE_TYPE,'from'=>7,'to'=>24);
-   $updates[]=array('type'=>CARTRIDGE_TYPE,'from'=>7,'to'=>24);
+   $updates[]=array('type'=>CONSUMABLEITEM_TYPE,'from'=>7,'to'=>24);
+   $updates[]=array('type'=>CARTRIDGEITEM_TYPE,'from'=>7,'to'=>24);
    // date_mod
    $updates[]=array('type'=>NETWORKING_TYPE,'from'=>9,'to'=>19);
    $updates[]=array('type'=>PRINTER_TYPE,'from'=>9,'to'=>19);
@@ -91,7 +91,7 @@ function update0721to0722() {
    $updates[]=array('type'=>SOFTWARE_TYPE,'from'=>6,'to'=>16);
    $updates[]=array('type'=>CONTACT_TYPE,'from'=>7,'to'=>16);
    $updates[]=array('type'=>ENTERPRISE_TYPE,'from'=>7,'to'=>16);
-   $updates[]=array('type'=>CARTRIDGE_TYPE,'from'=>10,'to'=>16);
+   $updates[]=array('type'=>CARTRIDGEITEM_TYPE,'from'=>10,'to'=>16);
    $updates[]=array('type'=>DOCUMENT_TYPE,'from'=>6,'to'=>16);
    $updates[]=array('type'=>USER_TYPE,'from'=>12,'to'=>16);
    $updates[]=array('type'=>PHONE_TYPE,'from'=>10,'to'=>16);

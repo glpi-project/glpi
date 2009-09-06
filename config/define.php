@@ -77,15 +77,15 @@
 	define("ENTERPRISE_TYPE",8);//
 	define("INFOCOM_TYPE",9);//
 	define("CONTRACT_TYPE",10);//
-	define("CARTRIDGE_TYPE",11);//
+	define("CARTRIDGEITEM_TYPE",11);//
 	define("TYPEDOC_TYPE",12);
 	define("DOCUMENT_TYPE",13);//
 	define("KNOWBASE_TYPE",14);//
 	define("USER_TYPE",15);//
 	define("TRACKING_TYPE",16);//
-	define("CONSUMABLE_TYPE",17);//
-	define("CONSUMABLE_ITEM_TYPE",18);
-	define("CARTRIDGE_ITEM_TYPE",19);
+	define("CONSUMABLEITEM_TYPE",17);//
+	define("CONSUMABLE_TYPE",18);
+	define("CARTRIDGE_TYPE",19);
 	define("SOFTWARELICENSE_TYPE",20);
 	define("LINK_TYPE",21);
 	define("STATE_TYPE",22);
@@ -234,15 +234,15 @@
 			ENTERPRISE_TYPE => "glpi_suppliers",
 			INFOCOM_TYPE => "glpi_infocoms",
 			CONTRACT_TYPE => "glpi_contracts",
-			CARTRIDGE_TYPE => "glpi_cartridgesitems",
+			CARTRIDGEITEM_TYPE => "glpi_cartridgesitems",
 			TYPEDOC_TYPE => "glpi_documentstypes",
 			DOCUMENT_TYPE => "glpi_documents",
 			KNOWBASE_TYPE => "glpi_knowbaseitems",
 			USER_TYPE => "glpi_users",
 			TRACKING_TYPE => "glpi_tickets",
-			CONSUMABLE_TYPE => "glpi_consumablesitems",
-			CONSUMABLE_ITEM_TYPE => "glpi_consumables",
-			CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
+			CONSUMABLEITEM_TYPE => "glpi_consumablesitems",
+			CONSUMABLE_TYPE => "glpi_consumables",
+			CARTRIDGES_TYPE => "glpi_cartridges",
 			SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
 			LINK_TYPE => "glpi_links",
 			STATE_TYPE => "",
@@ -279,15 +279,15 @@
 			ENTERPRISE_TYPE => "front/enterprise.form.php",
 			INFOCOM_TYPE => "front/infocom.form.php",
 			CONTRACT_TYPE => "front/contract.form.php",
-			CARTRIDGE_TYPE => "front/cartridge.form.php",
+			CARTRIDGEITEM_TYPE => "front/cartridge.form.php",
 			TYPEDOC_TYPE => "front/typedoc.form.php",
 			DOCUMENT_TYPE => "front/document.form.php",
 			KNOWBASE_TYPE => "front/knowbase.form.php",
 			USER_TYPE => "front/user.form.php",
 			TRACKING_TYPE => "front/tracking.form.php",
-			CONSUMABLE_TYPE => "front/consumable.form.php",
-//			CONSUMABLE_ITEM_TYPE => "??",
-//			CARTRIDGE_ITEM_TYPE => "??",
+			CONSUMABLEITEM_TYPE => "front/consumable.form.php",
+//			CONSUMABLE_TYPE => "??",
+//			CARTRIDGES_TYPE => "??",
 			SOFTWARELICENSE_TYPE => "front/softwarelicense.form.php",
 			LINK_TYPE => "front/link.form.php",
 //			STATE_TYPE => "??",
@@ -429,13 +429,13 @@
 	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE);
 	$CFG_GLPI["doc_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
-            NETWORKING_TYPE,PHONE_TYPE,ENTERPRISE_TYPE,ENTITY_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,ENTERPRISE_TYPE,ENTITY_TYPE,CARTRIDGEITEM_TYPE,CONSUMABLEITEM_TYPE,
             CONTRACT_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,BUDGET_TYPE);
 	$CFG_GLPI["contract_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
-            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,CONSUMABLE_TYPE,
-            CARTRIDGE_TYPE,CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,CONSUMABLEITEM_TYPE,
+            CARTRIDGEITEM_TYPE,CONSUMABLE_TYPE,CARTRIDGES_TYPE);
 	$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["linkuser_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
@@ -445,7 +445,7 @@
 	$CFG_GLPI["helpdesk_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
             NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["link_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,
-            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,
+            NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CARTRIDGEITEM_TYPE,CONSUMABLEITEM_TYPE,
             ENTERPRISE_TYPE,CONTACT_TYPE, CONTRACT_TYPE, BUDGET_TYPE);
 	$CFG_GLPI["helpdesk_visible_types"]=array(SOFTWARE_TYPE);
  	$CFG_GLPI["netport_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);

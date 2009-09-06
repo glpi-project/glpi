@@ -86,13 +86,13 @@ function display_infocoms_report($itemtype,$begin,$end) {
                   AND `glpi_infocoms`.`itemtype`='$itemtype') ";
 
    switch ($itemtype) {
-      case CONSUMABLE_ITEM_TYPE :
+      case CONSUMABLE_TYPE :
          $query.=" INNER JOIN `glpi_consumablesitems`
                       ON (`glpi_consumables`.`consumablesitems_id` = `glpi_consumablesitems`.`id`) ".
                    getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
          break;
 
-      case CARTRIDGE_ITEM_TYPE :
+      case CARTRIDGE_TYPE :
          $query.=" INNER JOIN `glpi_cartridgesitems`
                       ON (`glpi_cartridges`.`cartridgesitems_id` = `glpi_cartridgesitems`.`id`) ".
                    getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
@@ -207,9 +207,9 @@ function display_infocoms_report($itemtype,$begin,$end) {
 
 echo "<table width='90%'>";
 echo "<tr><td class='center top'>";
-display_infocoms_report(CONSUMABLE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report(CONSUMABLE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td class='center top'>";
-display_infocoms_report(CARTRIDGE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report(CARTRIDGE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>\n";
 echo "<tr><td>";
 display_infocoms_report(SOFTWARELICENSE_TYPE,$_POST["date1"],$_POST["date2"]);

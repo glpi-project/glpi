@@ -123,7 +123,7 @@ class CommonItem {
                $this->obj= new Contract;
                break;
 
-            case CARTRIDGE_TYPE :
+            case CARTRIDGEITEM_TYPE :
                $this->obj= new CartridgeType;
                break;
 
@@ -147,15 +147,15 @@ class CommonItem {
                $this->obj= new Job;
                break;
 
-            case CONSUMABLE_TYPE :
+            case CONSUMABLEITEM_TYPE :
                $this->obj= new ConsumableType;
                break;
 
-            case CARTRIDGE_ITEM_TYPE :
+            case CARTRIDGE_TYPE :
                $this->obj= new Cartridge;
                break;
 
-            case CONSUMABLE_ITEM_TYPE :
+            case CONSUMABLE_TYPE :
                $this->obj= new Consumable;
                break;
 
@@ -303,7 +303,7 @@ class CommonItem {
             return $LANG['financial'][1];
             break;
 
-         case CARTRIDGE_TYPE :
+         case CARTRIDGEITEM_TYPE :
             return $LANG['cartridges'][12];
             break;
 
@@ -327,15 +327,15 @@ class CommonItem {
             return $LANG['job'][38];
             break;
 
-         case CONSUMABLE_TYPE :
+         case CONSUMABLEITEM_TYPE :
             return $LANG['consumables'][12];
             break;
 
-         case CARTRIDGE_ITEM_TYPE :
+         case CARTRIDGE_TYPE :
             return $LANG['cartridges'][0];
             break;
 
-         case CONSUMABLE_ITEM_TYPE :
+         case CONSUMABLE_TYPE :
             return $LANG['consumables'][0];
             break;
 
@@ -464,7 +464,7 @@ class CommonItem {
           && $this->obj->fields["question"]!="") {
 
          return $this->obj->fields["question"];
-      } else if (($this->itemtype==CARTRIDGE_TYPE || $this->itemtype==CONSUMABLE_TYPE)
+      } else if (($this->itemtype==CARTRIDGEITEM_TYPE || $this->itemtype==CONSUMABLEITEM_TYPE)
                  && $this->obj!=NULL && $this->obj->fields["name"]!="") {
 
          $name=$this->obj->fields["name"];
@@ -515,9 +515,9 @@ class CommonItem {
       switch ($this->itemtype) {
          case GENERAL_TYPE :
 
-         case CARTRIDGE_ITEM_TYPE :
+         case CARTRIDGE_TYPE :
 
-         case CONSUMABLE_ITEM_TYPE :
+         case CONSUMABLE_TYPE :
             return $this->getName($with_comment);
             break;
 
