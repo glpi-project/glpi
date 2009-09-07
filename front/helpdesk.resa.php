@@ -106,10 +106,10 @@ if (isset($_GET["redirect"])){
 			}
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_ok']=true;
-			for ($i=1;$i<=$times&&$_POST['_ok'];$i++){
+			for ($i=0;$i<$times&&$_POST['_ok'];$i++){
 				$_POST["begin"]=date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
 				$_POST["end"]=date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
-                  
+
 				if ($_SESSION["glpiID"]==$_POST["id_user"]) {
 					unset($rr->fields["ID"]);
 					$_POST['_ok']=$rr->add($_POST);
