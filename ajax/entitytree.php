@@ -33,20 +33,21 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
+$AJAX_INCLUDE=1;
 
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkLoginUser();
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	if (!isset($_GET['target'])){
-		$_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
-	}
-	displayActiveEntities($_GET['target'],"activeentity");
-	ajaxFooter();
+checkLoginUser();
+
+if (!isset($_GET['target'])) {
+   $_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
+}
+
+displayActiveEntities($_GET['target'],"activeentity");
+
+ajaxFooter();
+
 ?>
