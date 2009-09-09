@@ -316,7 +316,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->type."`
+                `".$this->table."`
                 SET `date_out` = NULL, `date_use` = NULL, `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
       if ($result = $DB->query($query)) {
@@ -338,7 +338,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query="UPDATE
-              `".$this->type."`
+              `".$this->table."`
               SET `pages`='$pages'
               WHERE `id`='$ID'";
       $DB->query($query);
@@ -360,14 +360,14 @@ class Cartridge extends CommonDBTM {
 
       // Get first unused cartridge
       $query = "SELECT `id`
-                FROM `".$this->type."`
+                FROM `".$this->table."`
                 WHERE (`cartridgesitems_id` = '$tID'
                       AND `date_use` IS NULL)";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE
-                   `".$this->type."`
+                   `".$this->table."`
                    SET `date_use` = '".date("Y-m-d")."', `printers_id` = '$pID'
                    WHERE (`id`='".$DB->result($result,0,0)."'
                          AND `date_use` IS NULL)";
@@ -396,7 +396,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->type."`
+                `".$this->table."`
                 SET `date_out` = '".date("Y-m-d")."'
                 WHERE `id`='$ID'";
       if ($result = $DB->query($query)) {
