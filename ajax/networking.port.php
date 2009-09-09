@@ -33,31 +33,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-//error_log("REQUEST".print_r($_REQUEST,true));
-
 $NEEDED_ITEMS=array("networking");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
 if (!isset($_POST['id'])) {
-	exit();
+   exit();
 }
 
-if ($_POST["id"]>0){
-	switch($_POST['glpi_tab']){
-		case -1: // All
-			showPortVLANForm($_POST["id"]);
-			displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_POST['glpi_tab'], false);
-			break;
-		default :
-			if (!displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_POST['glpi_tab'], false)) {
-				showPortVLANForm($_POST["id"]);
-			}
-			break;
-	}
+if ($_POST["id"]>0) {
+   switch($_POST['glpi_tab']) {
+      case -1: // All
+         showPortVLANForm($_POST["id"]);
+         displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_POST['glpi_tab'], false);
+         break;
+
+      default :
+         if (!displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_POST['glpi_tab'], false)) {
+            showPortVLANForm($_POST["id"]);
+         }
+   }
 }
 
-	ajaxFooter();
+ajaxFooter();
+
 ?>

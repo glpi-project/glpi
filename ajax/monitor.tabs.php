@@ -33,78 +33,95 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array("computer","contract","document","enterprise","group","infocom","link",
+                    "monitor","ocsng","reservation","tracking","user");
 
-$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","user","group","link","enterprise","ocsng");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(empty($_POST["id"])) exit();
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
-
-
 checkRight("monitor","r");
 
- 
-	if (!empty($_POST["withtemplate"])) {
+if (empty($_POST["id"])) {
+   exit();
+}
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
-		if ($_POST["id"]>0){
-			switch($_POST['glpi_tab']){
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
-					showContractAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
-					break;
-				case 5 :			
-					showDocumentAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
-					break;
-				default :
-					displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-					break;
-			}
-		}
-	} else {
+if (!empty($_POST["withtemplate"])) {
+   if ($_POST["id"]>0) {
+      switch($_POST['glpi_tab']) {
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
+                            MONITOR_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
+            showContractAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-		switch($_POST['glpi_tab']){
-			case -1:
-				showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-				showContractAssociated(MONITOR_TYPE,$_POST["id"]);			
-				showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);	
-				showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-				showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-				displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-				break;
-			case 4 :			
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-				showContractAssociated(MONITOR_TYPE,$_POST["id"]);			
-				break;
-			case 5 :			
-				showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);	
-				break;
-			case 6 :			
-				showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-				break;
-			case 7 :
-				showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-				break;	
-			case 10 :
-				showNotesForm($_POST['target'],MONITOR_TYPE,$_POST["id"]);
-				break;	
-			case 11 :
-				showDeviceReservations($_POST['target'],MONITOR_TYPE,$_POST["id"]);
-				break;
-			case 12 :
-				showHistory(MONITOR_TYPE,$_POST["id"]);
-				break;	
-			default :
-				if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]))
-					showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
-				break;	
-		}
-	}
+         case 5 :
+            showDocumentAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-	ajaxFooter();
+         default :
+            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      }
+   }
+} else {
+   switch($_POST['glpi_tab']) {
+      case -1:
+         showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+         showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+         showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);
+         showJobListForItem(MONITOR_TYPE,$_POST["id"]);
+         showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+         displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         break;
+
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+         showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 5 :
+         showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 6 :
+         showJobListForItem(MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 7 :
+         showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 11 :
+         showDeviceReservations($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      case 12 :
+         showHistory(MONITOR_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],
+                                  $_POST["withtemplate"])) {
+            showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
+         }
+   }
+}
+
+ajaxFooter();
+
 ?>

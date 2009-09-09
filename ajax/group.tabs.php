@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 $NEEDED_ITEMS=array("group","user");
 
 define('GLPI_ROOT', '..');
@@ -41,33 +40,32 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
+checkRight("group","r");
+
 $group=new Group;
+if ($_POST["id"]>0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showGroupUsers($_POST['target'],$_POST["id"]);
+         showGroupDevice($_POST["id"]);
+         displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         break;
 
-	checkRight("group","r");
+      case 2 :
+         showGroupDevice($_POST["id"]);
+         break;
 
-		if ($_POST["id"]>0){
-			switch($_POST['glpi_tab']){
-				case -1 :	
-					showGroupUsers($_POST['target'],$_POST["id"]);
-					showGroupDevice($_POST["id"]);
-					displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-					break;
-				case 2 : 
-					showGroupDevice($_POST["id"]);
-					break;
+      default :
+         if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            showGroupUsers($_POST['target'],$_POST["id"]);
+         }
+   }
+}
 
-				default :
-					if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-						showGroupUsers($_POST['target'],$_POST["id"]);
-					}
-					break;
-			}
-		}
-	
-	ajaxFooter();
+ajaxFooter();
+
 ?>

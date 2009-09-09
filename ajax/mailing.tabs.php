@@ -34,36 +34,25 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"ocsng",
-	"mailing",
-	"consumable",
-	"cartridge",
-	"contract",
-	"infocom",
-	"software",
-	"cron"
-);
+$NEEDED_ITEMS = array("cartridge","consumable","contract","cron","infocom","mailing","ocsng",
+                      "setup","software");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-	checkRight("config", "r");
-	
-	$config = new Config();
+checkRight("config", "r");
 
-	switch($_POST['glpi_tab']){
-		default :
-			if (!displayPluginAction("mailing","",$_POST['glpi_tab'],"")){
-				$config->showFormMailing($_POST['target'],$_POST['glpi_tab']);
-			}
-			break;
-		
-	}
-	
-	ajaxFooter();
+$config = new Config();
+
+switch($_POST['glpi_tab']) {
+   default :
+      if (!displayPluginAction("mailing","",$_POST['glpi_tab'],"")) {
+         $config->showFormMailing($_POST['target'],$_POST['glpi_tab']);
+      }
+}
+
+ajaxFooter();
 
 ?>

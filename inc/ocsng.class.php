@@ -83,14 +83,14 @@ class Ocsng extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
-      $tabs[0]=$LANG['help'][30];
+      $tabs[1]=$LANG['help'][30];
       //If connection to the OCS DB  is ok, and all rights are ok too
       if ($ID != '' && checkOCSconnection($ID) && ocsCheckConfig(1) && ocsCheckConfig(2)
           && ocsCheckConfig(4) && ocsCheckConfig(8)) {
 
-         $tabs[1]=$LANG['ocsconfig'][5];
-         $tabs[2]=$LANG['ocsconfig'][27];
-         $tabs[3]=$LANG['setup'][620];
+         $tabs[2]=$LANG['ocsconfig'][5];
+         $tabs[3]=$LANG['ocsconfig'][27];
+         $tabs[4]=$LANG['setup'][620];
       }
       return $tabs;
    }

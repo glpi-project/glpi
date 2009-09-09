@@ -33,90 +33,105 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS=array("computer","peripheral","printer","networking","reservation","tracking","document","user","group","link","phone","enterprise","infocom","contract");
+$NEEDED_ITEMS=array("computer","contract","document","enterprise","group","infocom","link",
+                    "networking","peripheral","phone","printer","reservation","tracking","user");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!isset($_POST['id'])) exit();
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
-
+if (!isset($_POST['id'])) {
+   exit();
+}
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 $netdevice=new Netdevice();
 $netdevice->check($_POST["id"],'r');
 
-	if (!empty($_POST["withtemplate"])) {
+if (!empty($_POST["withtemplate"])) {
+   if ($_POST["id"]>0) {
+      switch($_POST['glpi_tab']) {
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,
+                            $_POST["id"],1,$_POST["withtemplate"]);
+            showContractAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-			if ($_POST["id"]>0){
-				switch($_POST['glpi_tab']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
-						showContractAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
-						break;
-					case 5 :
-						showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);		
-						break;
+         case 5 :
+            showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-					default :
-						if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-							showPorts($_POST["id"], NETWORKING_TYPE,$_POST["withtemplate"]);
-							if ($_POST["withtemplate"]!=2) showPortsAdd($_POST["id"],NETWORKING_TYPE);
-						}
-						break;
-				}
+         default :
+            if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],
+                                     $_POST["withtemplate"])) {
+               showPorts($_POST["id"], NETWORKING_TYPE,$_POST["withtemplate"]);
+               if ($_POST["withtemplate"]!=2) {
+                  showPortsAdd($_POST["id"],NETWORKING_TYPE);
+               }
+            }
+      }
+   }
+} else {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showPortsAdd($_POST["id"],NETWORKING_TYPE);
+         showPorts($_POST["id"],NETWORKING_TYPE);
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,
+                         $_POST["id"]);
+         showContractAssociated(NETWORKING_TYPE,$_POST["id"]);
+         showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+         showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
+         showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
+         displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         break;
 
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,
+                         $_POST["id"]);
+         showContractAssociated(NETWORKING_TYPE,$_POST["id"]);
+         break;
 
+      case 5 :
+         showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+         break;
 
-			}
+      case 6 :
+         showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
+         break;
 
-	} else {
+      case 7 :
+         showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
+         break;
 
-			switch($_POST['glpi_tab']){
-				case -1:
-					showPortsAdd($_POST["id"],NETWORKING_TYPE);
-					showPorts($_POST["id"],NETWORKING_TYPE);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["id"]);
-					showContractAssociated(NETWORKING_TYPE,$_POST["id"]);
-					showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
-					showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
-					showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
-					displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["id"]);
-					showContractAssociated(NETWORKING_TYPE,$_POST["id"]);
-					break;
-				case 5 :
-					showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
-					break;
-				case 6 :
-					showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
-					break;
-				case 7 :
-					showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
-					break;	
-				case 10 :
-					showNotesForm($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
-					break;			
-				case 11 :
-					showDeviceReservations($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
-					break;
-				case 12 :
-					showHistory(NETWORKING_TYPE,$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-						showPortsAdd($_POST["id"],NETWORKING_TYPE);
-						showPorts($_POST["id"],NETWORKING_TYPE);
-					}
-					break;
-			}
-	}
+      case 10 :
+         showNotesForm($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
+         break;
 
+      case 11 :
+         showDeviceReservations($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
+         break;
 
-	ajaxFooter();
+      case 12 :
+         showHistory(NETWORKING_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],
+                                  $_POST["withtemplate"])) {
+            showPortsAdd($_POST["id"],NETWORKING_TYPE);
+            showPorts($_POST["id"],NETWORKING_TYPE);
+         }
+   }
+}
+
+ajaxFooter();
+
 ?>

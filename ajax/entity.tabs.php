@@ -33,60 +33,61 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS=array('entity', 'rulesengine', 'rule.ocs', 'rule.right', 'user', 'profile', 
-	'document', 'contract');
+$NEEDED_ITEMS=array('contract','document','entity', 'rulesengine', 'rule.ocs', 'rule.right',
+                    'profile','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
-$entity=new Entity();
+$entity = new Entity();
 $ocsrule = new OcsAffectEntityRule;
 $ldaprule = new RightAffectRule;
 
 if (!isset($_POST["start"])) {
-	$_POST["start"]=0;
+   $_POST["start"]=0;
 }
 
-	$entity->check($_POST["id"],'r');
+$entity->check($_POST["id"],'r');
 
-		if ($_POST["id"]>=0){
-			switch($_POST['glpi_tab']){
-				case -1 :	
-					showEntityUser($_POST['target'],$_POST["id"]);
-					showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
-					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
-					if ($CFG_GLPI["use_ocs_mode"]) {
-					   $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
-					}
-					displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-					break;
-				case 2 : 
-					showEntityUser($_POST['target'],$_POST["id"]);
-					break;
-				case 3 :
-					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
-					if ($CFG_GLPI["use_ocs_mode"]) {
-						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
-					}
-					break;
-				case 5 :
-					showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-						
-					}
-				break;
-			}
-		}
-	
-	ajaxFooter();
+if ($_POST["id"]>=0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showEntityUser($_POST['target'],$_POST["id"]);
+         showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+         $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+         if ($CFG_GLPI["use_ocs_mode"]) {
+            $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+         }
+         displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         break;
+
+      case 2 :
+         showEntityUser($_POST['target'],$_POST["id"]);
+         break;
+
+      case 3 :
+         $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+         if ($CFG_GLPI["use_ocs_mode"]) {
+            $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+         }
+         break;
+
+         case 5 :
+            showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+            break;
+
+         default :
+            if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            }
+   }
+}
+
+ajaxFooter();
+
 ?>
