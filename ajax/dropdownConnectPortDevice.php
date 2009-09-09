@@ -35,7 +35,6 @@
 
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -50,22 +49,22 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
 	$where="WHERE deleted=0 ";
-	$where.=" AND is_template=0 ";		
+	$where.=" AND is_template=0 ";
 
 	if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
 		$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 	}
 	$multi=in_array($table,$CFG_GLPI["recursive_type"]);
-	
+
 	if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
 		$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
 		if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
 			$multi=true;
-		}	
+		}
 	} else {
 		$where.=getEntitiesRestrictRequest(" AND ",$table,'','',$multi);
 		if (count($_SESSION['glpiactiveentities'])>1) {
-			$multi=true;	
+			$multi=true;
 		}
 	}
 
@@ -78,9 +77,9 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 	$order = ($multi ? "FK_entities,name" : "name");
-	$query = "SELECT * 
-		FROM ".$table." 
-		$where ORDER BY 
+	$query = "SELECT *
+		FROM ".$table."
+		$where ORDER BY
 		$order $LIMIT";
 	$result = $DB->query($query);
 
@@ -109,7 +108,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 		}
 		if ($multi && $prev>=0) {
 			echo "</optgroup>";
-		}		
+		}
 	}
 	echo "</select>";
 
@@ -123,9 +122,9 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$paramsconnectpd);
 
 	echo "<span id='results_item_$rand'>\n";
-	echo "</span>\n";	
+	echo "</span>\n";
 
 
 
-}		
+}
 ?>
