@@ -295,10 +295,12 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    }
 
    if ($multi) {
-      $field="`entities_id`, $field";
+      $query.=" ORDER BY `entities_id`, $field
+                $LIMIT";
+   } else {
+      $query.=" ORDER BY $field
+                $LIMIT";
    }
-   $query.=" ORDER BY $field
-             $LIMIT";
    $result = $DB->query($query);
 
    echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
