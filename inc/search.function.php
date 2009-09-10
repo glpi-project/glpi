@@ -2131,7 +2131,12 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			return $link." (glpi_auth_mail.name $SEARCH OR glpi_auth_ldap.name $SEARCH ) ";
 		break;
 		case "glpi_contracts.renewal":
-			return $link." ".$table.".".$field."=".getContractRenewalIDByName($val);
+			$valid=getContractRenewalIDByName($val);
+			if ($valid>0){
+				return $link." ".$table.".".$field."=".$valid;
+			} else {
+				return "";
+			}
 		break;
 	}
 
