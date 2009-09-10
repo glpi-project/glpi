@@ -35,98 +35,109 @@
 
 
 $NEEDED_ITEMS=array('computer','contract','document','enterprise','group','infocom','link',
-   'networking','phone','ocsng','peripheral','printer','reservation','tracking','user');
+                    'networking','ocsng','peripheral','phone','printer','reservation','tracking',
+                    'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
 
+checkRight("phone","r");
 
-if(empty($_POST["id"])) $_POST["id"] = "";
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
+if (empty($_POST["id"])) {
+   $_POST["id"] = "";
+}
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
+if (!empty($_POST["withtemplate"])) {
+   if ($_POST["id"]>0) {
+      switch($_POST['glpi_tab']) {
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,
+                            $_POST["id"],1,$_POST["withtemplate"]);
+            showContractAssociated(PHONE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
+         case 5 :
+            showDocumentAssociated(PHONE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-	checkRight("phone","r");
+         default :
+            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+                                     $_POST["withtemplate"])) {
+               if ($_POST["withtemplate"]!=2) {
+                  showPortsAdd($_POST["id"],PHONE_TYPE);
+               }
+               showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+            }
+      }
+   }
+} else {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
+         showPortsAdd($_POST["id"],PHONE_TYPE);
+         showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
+         showContractAssociated(PHONE_TYPE,$_POST["id"]);
+         showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
+         showJobListForItem(PHONE_TYPE,$_POST["id"]);
+         showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+         displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
+         break;
 
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
+         showContractAssociated(PHONE_TYPE,$_POST["id"]);
+         break;
 
-	if (!empty($_POST["withtemplate"])) {
+      case 5 :
+         showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
+         break;
 
-		if ($_POST["id"]>0){
+      case 6 :
+         showJobListForItem(PHONE_TYPE,$_POST["id"]);
+         break;
 
-				switch($_POST['glpi_tab']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
-						showContractAssociated(PHONE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-						break;
-					case 5 :
-						showDocumentAssociated(PHONE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-						break;
+      case 7 :
+         showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+         break;
 
-					default :
-						if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"])){
-							if ($_POST["withtemplate"]!=2)	{
-								showPortsAdd($_POST["id"],PHONE_TYPE);
-							}
-							showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
-						}
+      case 10 :
+         showNotesForm($_POST['target'],PHONE_TYPE,$_POST["id"]);
+         break;
 
-						break;
-				}
-			}
+      case 11 :
+         showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["id"]);
+         break;
 
+      case 12 :
+         showHistory(PHONE_TYPE,$_POST["id"]);
+         break;
 
-	} else {
-			switch($_POST['glpi_tab']){
-				case -1:
-					showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
-					showPortsAdd($_POST["id"],PHONE_TYPE);
-					showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
-					showContractAssociated(PHONE_TYPE,$_POST["id"]);
-					showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
-					showJobListForItem(PHONE_TYPE,$_POST["id"]);
-					showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-					displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
-					showContractAssociated(PHONE_TYPE,$_POST["id"]);
-					break;
-				case 5 :
-					showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
-					break;
-				case 6 :
-					showJobListForItem(PHONE_TYPE,$_POST["id"]);
-					break;
-				case 7 :
-					showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-					break;
-				case 10 :
-					showNotesForm($_POST['target'],PHONE_TYPE,$_POST["id"]);
-					break;
-				case 11 :
-					showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["id"]);
-					break;
-				case 12 :
-					showHistory(PHONE_TYPE,$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"])){
-						showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
-						showPortsAdd($_POST["id"],PHONE_TYPE);
-						showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
-					}
-					break;
-			}
-	}
+      default :
+         if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+                                  $_POST["withtemplate"])) {
+            showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
+            showPortsAdd($_POST["id"],PHONE_TYPE);
+            showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+         }
+   }
+}
 
-	ajaxFooter();
+ajaxFooter();
+
 ?>
