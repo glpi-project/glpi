@@ -415,7 +415,7 @@ class Phone extends CommonDBTM {
    function getSelectLinkedItem () {
 
       return "SELECT '".COMPUTER_TYPE."', `computers_id`
-              `FROM glpi_computers_items`
+              FROM `glpi_computers_items`
               WHERE `itemtype`='".$this->type."'
                     AND `items_id`='" . $this->fields['id']."'";
    }
