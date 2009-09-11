@@ -2322,7 +2322,8 @@ function displayConfigItem ($type,$field){
 function giveItem ($type,$ID,$data,$num,$meta=0){
 	global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-	if (isset($CFG_GLPI["union_search_type"][$type])){
+   if (isset($CFG_GLPI["union_search_type"][$type])
+       && $CFG_GLPI["union_search_type"][$type]==$SEARCH_OPTION[$type][$ID]["table"]) {
 		return giveItem ($data["TYPE"],$ID,$data,$num);
 	}
 
