@@ -33,20 +33,21 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$NEEDED_ITEMS=array('transfer');
+$AJAX_INCLUDE=1;
 
-	define('GLPI_ROOT','..');
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS=array("transfer");
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkRight("transfer","r");
-	if (isset($_POST["id"])&& $_POST["id"]>0){
-		$transfer=new Transfer();
-		$transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["id"]);
-	}
-	ajaxFooter();
+checkRight("transfer","r");
+
+if (isset($_POST["id"]) && $_POST["id"]>0) {
+   $transfer=new Transfer();
+   $transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["id"]);
+}
+
+ajaxFooter();
+
 ?>

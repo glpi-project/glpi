@@ -33,45 +33,53 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("computer","software","rulesengine","tracking","document","user","group","link","reservation","infocom","contract","enterprise","rule.softwarecategories");
+$NEEDED_ITEMS=array('computer','contract','document','enterprise','group','infocom','link',
+                    'reservation','rulesengine','rule.softwarecategories','software','tracking',
+                    'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 if (!isset($_POST['id'])) {
-	exit();
+   exit();
 }
 
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
-	checkRight("software","r");
+checkRight("software","r");
 
-		switch($_POST['glpi_tab']){
-			case -1:
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
-				displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-				break;
-			case 4 :
-				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
-				break;
-			case 5 :
-					showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-					break;
-			case 12 :
-				showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
-				break;
-			default :
-				if (!displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-				}
-				break;
-		}
+switch($_POST['glpi_tab']) {
+   case -1 :
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
+      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      break;
 
-	ajaxFooter();
+   case 4 :
+      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
+      break;
+
+   case 5 :
+      showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+      break;
+
+   case 12 :
+      showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
+      break;
+
+   default :
+      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+}
+
+ajaxFooter();
+
 ?>

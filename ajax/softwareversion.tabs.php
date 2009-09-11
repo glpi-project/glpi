@@ -33,43 +33,52 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("computer","software","rulesengine","tracking","document","user","group","link","reservation","infocom","contract","enterprise","rule.softwarecategories");
+$NEEDED_ITEMS=array('computer','contract','document','enterprise','group','infocom','link',
+                    'reservation','rulesengine','rule.softwarecategories','software','tracking',
+                    'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 if (!isset($_POST['id'])) {
-	exit();
+   exit();
 }
 
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
-	checkRight("software","r");
+checkRight("software","r");
 
-		switch($_POST['glpi_tab']){
-			case -1:
-				showInstallations($_POST["id"], "id");
-				displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-				break;
-			case 2 :
-				showInstallations($_POST["id"], "id");
-				break;
-			case 12 :
-				showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
-				break;
-			default :
-				if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-					showInstallationsByEntity($_POST["id"]);
-				}
-				break;
-		}
+switch($_POST['glpi_tab']) {
+   case -1 :
+      showInstallations($_POST["id"], "id");
+      displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      break;
 
-	ajaxFooter();
+   case 2 :
+      showInstallations($_POST["id"], "id");
+      break;
+
+   case 12 :
+      showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
+      break;
+
+   default :
+      if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],
+          $_POST["withtemplate"])) {
+         showInstallationsByEntity($_POST["id"]);
+      }
+}
+
+ajaxFooter();
+
 ?>

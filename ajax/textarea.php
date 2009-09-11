@@ -33,18 +33,18 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
+$AJAX_INCLUDE=1;
 
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkLoginUser();
-	echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".(isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
-	echo cleanPostForTextArea(rawurldecode($_POST["data"]));
-	echo "</textarea>";
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
+
+checkLoginUser();
+
+echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".
+       (isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
+echo cleanPostForTextArea(rawurldecode($_POST["data"]));
+echo "</textarea>";
 
 ?>

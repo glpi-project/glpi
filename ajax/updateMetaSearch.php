@@ -33,52 +33,57 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
+$NEEDED_ITEMS=array('search');
+$AJAX_INCLUDE=1;
 
-	$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS=array("search");
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	if ($_POST["itemtype"]>0){
-		checkTypeRight($_POST["itemtype"],"r");
-		echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".stripslashes($_POST["val"])."\" >";
-		echo "&nbsp;";
-		echo $LANG['search'][10]."&nbsp;";
-	
-		echo "<select name=\"field2[".$_POST["num"]."]\" size='1'>";
-		$first_group=true;
-		$newgroup="";
-		$items_in_group=0;
-		$searchopt=cleanSearchOption($_POST["itemtype"]);
-		foreach ($searchopt as $key => $val) {
-			// print groups
-			if (!is_array($val)){
-				if (!empty($newgroup)&&$items_in_group>0) {
-					echo $newgroup;
-					$first_group=false;
-				}
-				$items_in_group=0;
-				$newgroup="";
-				if (!$first_group) $newgroup.="</optgroup>";
-				$newgroup.="<optgroup label=\"$val\">";
-			} else {
-				// No search on plugins
-				if ($key < 1000 && !isset($val["nometa"])){
-					$newgroup.= "<option value=\"".$key."\" title=\"".cleanInputText($val["name"])."\""; 
-					if($key == $_POST["field"]) $newgroup.= "selected";
-					$newgroup.= ">". utf8_substr($val["name"],0,20) ."</option>\n";
-					$items_in_group++;
-				}
-			}
-		}
-		if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
-		if (!$first_group)
-			echo "</optgroup>";
-	
-		echo "</select>&nbsp;";
-	}
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
+
+if ($_POST["itemtype"]>0) {
+   checkTypeRight($_POST["itemtype"],"r");
+   echo "<input type='text' size='10' name='contains2[".$_POST["num"]."]' value=\"".
+          stripslashes($_POST["val"])."\" >&nbsp;";
+   echo $LANG['search'][10]."&nbsp;";
+
+   echo "<select name='field2[".$_POST["num"]."]' size='1'>";
+   $first_group=true;
+   $newgroup="";
+   $items_in_group=0;
+   $searchopt=cleanSearchOption($_POST["itemtype"]);
+   foreach ($searchopt as $key => $val) {
+      // print groups
+      if (!is_array($val)) {
+         if (!empty($newgroup) && $items_in_group>0) {
+            echo $newgroup;
+            $first_group=false;
+         }
+         $items_in_group=0;
+         $newgroup="";
+         if (!$first_group) {
+            $newgroup.="</optgroup>";
+         }
+         $newgroup.="<optgroup label='$val'>";
+      } else {
+         // No search on plugins
+         if ($key < 1000 && !isset($val["nometa"])) {
+            $newgroup.= "<option value='$key' title=\"".cleanInputText($val["name"])."\"";
+            if ($key == $_POST["field"]) {
+               $newgroup.= "selected";
+            }
+            $newgroup.= ">". utf8_substr($val["name"],0,20) ."</option>\n";
+            $items_in_group++;
+         }
+      }
+   }
+   if (!empty($newgroup) && $items_in_group>0) {
+      echo $newgroup;
+   }
+   if (!$first_group) {
+      echo "</optgroup>";
+   }
+   echo "</select>&nbsp;";
+}
+
 ?>
