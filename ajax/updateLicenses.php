@@ -33,60 +33,26 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
+$NEEDED_ITEMS=array('software');
+$AJAX_INCLUDE=1;
 
-	$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS=array("software");
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkRight("software","w");
-	
-	switch ($_POST["actiontype"]){
-		case "uninstall_license": 
-			echo "<input type='submit' name='uninstall_license' value='".$LANG['buttons'][2]."' class='submit'>";
-		break;
-		case "install_license": 
-			echo "<input type='submit' name='install_license' value='".$LANG['buttons'][2]."' class='submit'>";
-		break;
-/*		case "update_buy"	:
-			dropdownYesNo("buy");
-			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG['buttons'][14]."' class='submit'>";
-		break;
-		case "update_expire" :
-			echo "<table><tr><td>";
-			showDateFormItem("expire");
-			echo "</td></td>";
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$LANG['buttons'][14]."' class='submit'>";
-			echo "</td></tr></table>";
-		break;
-		case "move":
-			// TODO : check this ? obsoleted function call
-			dropdownLicenseOfSoftware("lID",$_POST["softwares_id"]);
-			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG['buttons'][14]."' class='submit'>";
-		break;
-		case "delete_similar_license":
-			echo "&nbsp;&nbsp;<input type='submit' name='delete_similar_license' value='".$LANG['buttons'][6]."' class='submit'>"; 
-		break;
-		case "delete_license": 
-			echo "&nbsp;&nbsp;<input type='submit' name='delete_license' value='".$LANG['buttons'][2]."' class='submit'>";
-		break;
-		case "uninstall_license": 
-			echo "<input type='submit' name='uninstall_license' value='".$LANG['buttons'][2]."' class='submit'>";
-		break;
-		case "install_license": 
-			echo "<input type='submit' name='install_license' value='".$LANG['buttons'][2]."' class='submit'>";
-		break;
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-		case "move_to_software":
-			$soft=new Software();
-			$soft->getFromDB($_POST["softwares_id"]);
-			dropdownValue("glpi_softwares","softwares_id",0,1,$soft->fields['entities_id']);
-			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG['buttons'][14]."' class='submit'>";
-		break;
-*/		
-	}
+checkRight("software","w");
+
+switch ($_POST["actiontype"]) {
+   case "uninstall_license" :
+      echo "<input type='submit' name='uninstall_license' value='".
+             $LANG['buttons'][2]."' class='submit'>";
+      break;
+
+   case "install_license" :
+      echo "<input type='submit' name='install_license' value='".
+             $LANG['buttons'][2]."' class='submit'>";
+      break;
+}
 
 ?>

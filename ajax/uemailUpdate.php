@@ -33,31 +33,32 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkCentralAccess();
-	
-	$query="SELECT email from glpi_users WHERE id='".$_POST["value"]."'";
-	$email="";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)){
-			$email=$DB->result($result,0,"email");
-		}
-	}
-	echo "<input type='text' size='30' name='user_email' value='$email'>";
+$AJAX_INCLUDE=1;
 
-	echo "<script type='text/javascript' >\n";
-	if (!empty($email)){
-		echo "window.document.getElementById('dropdownyesno_use_email_notification').value='1';";
-	} else {
-		echo "window.document.getElementById('dropdownyesno_use_email_notification').value='0';";
-	}
-	echo "</script>\n";
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
+
+checkCentralAccess();
+
+$query = "SELECT `email`
+          FROM `glpi_users`
+          WHERE `id` = '".$_POST["value"]."'";
+$email="";
+if ($result=$DB->query($query)) {
+   if ($DB->numrows($result)) {
+      $email=$DB->result($result,0,"email");
+   }
+}
+echo "<input type='text' size='30' name='user_email' value='$email'>";
+
+echo "<script type='text/javascript' >\n";
+if (!empty($email)) {
+   echo "window.document.getElementById('dropdownyesno_use_email_notification').value='1';";
+} else {
+   echo "window.document.getElementById('dropdownyesno_use_email_notification').value='0';";
+}
+echo "</script>\n";
 
 ?>

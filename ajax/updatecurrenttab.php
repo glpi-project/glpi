@@ -32,6 +32,7 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+
 define('GLPI_ROOT','..');
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
@@ -43,7 +44,7 @@ setGlpiSessionPath();
 startGlpiSession();
 // Manage tabs
 if (isset($_REQUEST['glpi_tab'])) {
-	$_SESSION['glpi_tab']=$_REQUEST['glpi_tab'];
+   $_SESSION['glpi_tab']=$_REQUEST['glpi_tab'];
 }
 
 ?>

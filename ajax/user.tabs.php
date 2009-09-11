@@ -33,75 +33,87 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation","ldap","entity","rulesengine","rule.right");
+$NEEDED_ITEMS=array('computer','enterprise','entity','group','ldap','monitor','networking',
+                    'peripheral','phone','printer','profile','reservation','rulesengine',
+                    'rule.right','setup','software','tracking','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
-if(!isset($_POST["id"])) {
-	exit();
+if (!isset($_POST["id"])) {
+   exit();
 }
+
+checkRight("user","r");
 
 $user=new User();
 
 if (!isset($_POST["start"])) {
-	$_POST["start"]=0;
+   $_POST["start"]=0;
 }
 
-if (!isset($_POST["sort"])) $_POST["sort"]="";
-if (!isset($_POST["order"])) $_POST["order"]="";
-if (empty($_POST["id"])&&isset($_POST["name"])){
-
-	$user->getFromDBbyName($_POST["name"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+if (!isset($_POST["sort"])) {
+   $_POST["sort"]="";
 }
-if(empty($_POST["name"])) $_POST["name"] = "";
+if (!isset($_POST["order"])) {
+   $_POST["order"]="";
+}
 
-	checkRight("user","r");
+if (empty($_POST["id"]) && isset($_POST["name"])) {
+   $user->getFromDBbyName($_POST["name"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+}
 
-		if ($_POST["id"]>0){
-			switch($_POST['glpi_tab']){
-				case -1:
-					showUserRights($_POST['target'],$_POST["id"]);
-					showGroupAssociated($_POST['target'],$_POST["id"]);
-					showDeviceUser($_POST["id"]);
-					showUserReservations($_POST['target'],$_POST["id"]);
-					if (haveRight("show_all_ticket", "1")){
-						showJobListForUser($_POST["id"]);
-					}
-					displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-					break;
-				case 1 :
-					showUserRights($_POST['target'],$_POST["id"]);
-					break;
-				case 2 :
-					showDeviceUser($_POST["id"]);
-					break;
-				case 3 :
-					showJobListForUser($_POST["id"]);
-					break;
-				case 4 :
-					showGroupAssociated($_POST['target'],$_POST["id"]);
-					break;
-				case 11 :
-					showUserReservations($_POST['target'],$_POST["id"]);
-					break;
-				case 12:
-					showSynchronizationForm($_POST['target'],$_POST["id"]);
-					break;
-				case 13:
-					showHistory(USER_TYPE,$_POST["id"]);
-					break;
-				default : 
-					if (!displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']))
-						showGroupAssociated($_POST['target'],$_POST["id"]);
-					break;
-			}
-		}
-	
-	ajaxFooter();
+if (empty($_POST["name"])) {
+   $_POST["name"] = "";
+}
+
+if ($_POST["id"]>0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showUserRights($_POST['target'],$_POST["id"]);
+         showGroupAssociated($_POST['target'],$_POST["id"]);
+         showDeviceUser($_POST["id"]);
+         showUserReservations($_POST['target'],$_POST["id"]);
+         if (haveRight("show_all_ticket", "1")) {
+            showJobListForUser($_POST["id"]);
+         }
+         displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         break;
+
+      case 2 :
+         showDeviceUser($_POST["id"]);
+         break;
+
+      case 3 :
+         showJobListForUser($_POST["id"]);
+         break;
+
+      case 4 :
+         showGroupAssociated($_POST['target'],$_POST["id"]);
+         break;
+
+      case 11 :
+         showUserReservations($_POST['target'],$_POST["id"]);
+         break;
+
+      case 12 :
+         showSynchronizationForm($_POST['target'],$_POST["id"]);
+         break;
+
+      case 13 :
+         showHistory(USER_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            showUserRights($_POST['target'],$_POST["id"]);
+         }
+   }
+}
+
+ajaxFooter();
+
 ?>
