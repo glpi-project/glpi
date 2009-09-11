@@ -611,133 +611,140 @@ class Computer extends CommonDBTM {
                     $this->fields["entities_id"]);
       autocompletionTextField("name",$this->table,"name",$objectName,40,
                                $this->fields["entities_id"]);
-      echo "</td><td>".$LANG['common'][18]." :</td>";
-      echo "<td>";
-      autocompletionTextField("contact",$this->table,"contact",
-                              $this->fields["contact"],40,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
+      echo "</td>";
       echo "<td >".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td >";
       dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
-      echo "</td><td>".$LANG['common'][21]."&nbsp;: </td>";
-      echo "<td >";
-      autocompletionTextField("contact_num",$this->table,"contact_num",
-                              $this->fields["contact_num"],40,$this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >".$LANG['common'][22]."&nbsp;: </td>";
-      echo "<td >";
-      dropdownValue("glpi_computersmodels", "computersmodels_id",$this->fields["computersmodels_id"]);
-      echo "</td><td >".$LANG['common'][34]."&nbsp;: </td>";
-      echo "<td >";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
-      echo "</td></tr>";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['common'][15]."&nbsp;: </td>";
       echo "<td >";
       dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                      $this->fields["entities_id"]);
-      echo "</td><td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "</td>";
+      echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
+      echo "<td >";
+      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id",
+                     $this->fields["operatingsystemsservicepacks_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][10]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
+                       $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownValue("glpi_manufacturers","manufacturers_id", $this->fields["manufacturers_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownValue("glpi_computersmodels", "computersmodels_id",$this->fields["computersmodels_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][21]."&nbsp;: </td>";
+      echo "<td >";
+      autocompletionTextField("contact_num",$this->table,"contact_num",
+                              $this->fields["contact_num"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td >";
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
+                               $this->fields["entities_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][18]." :</td>";
+      echo "<td>";
+      autocompletionTextField("contact",$this->table,"contact",
+                              $this->fields["contact"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
+      echo "<td >";
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
+                             $this->type,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
+                               $this->fields["entities_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['common'][34]."&nbsp;: </td>";
+      echo "<td >";
+      dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td rowspan='9'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='9' class='middle'>";
+      echo "<textarea  cols='45' rows='14' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td >";
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                      $this->fields["entities_id"]);
-      echo "</td></tr>";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][5]."&nbsp;: </td><td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id", $this->fields["manufacturers_id"]);
-      echo "</td><td >".$LANG['common'][10]."&nbsp;: </td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td >";
-      dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
-                       $this->fields["entities_id"]);
-      echo "</td></tr>";
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][9]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
+      echo "<td >";
+      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";
+      echo "<td>";
       dropdownValue("glpi_operatingsystems", "operatingsystems_id",
                      $this->fields["operatingsystems_id"]);
-      echo "</td><td>".$LANG['setup'][88]." :</td>";
-      echo "<td >";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
-      echo "</td></tr>";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
       echo "<td >";
       dropdownValue("glpi_operatingsystemsversions", "operatingsystemsversions_id",
                      $this->fields["operatingsystemsversions_id"]);
-      echo "</td><td>".$LANG['setup'][89]."&nbsp;:</td>";
-      echo "<td >";
-      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
-      echo "</td></tr>";
-
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
+      echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id",
-                     $this->fields["operatingsystemsservicepacks_id"]);
-      echo "</td><td>".$LANG['common'][19]."&nbsp;:</td>";
-      echo "<td >";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                               $this->fields["entities_id"]);
-      echo "</td></tr>";
+      autocompletionTextField("os_licenseid",$this->table,"os_licenseid",
+                              $this->fields["os_licenseid"],40, $this->fields["entities_id"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
       autocompletionTextField("os_license_number",$this->table,"os_license_number",
                               $this->fields["os_license_number"],40, $this->fields["entities_id"]);
-      echo "</td><td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
-      echo "<td >";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
-                               $this->fields["entities_id"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
-      echo "<td >";
-      autocompletionTextField("os_licenseid",$this->table,"os_licenseid",
-                               $this->fields["os_licenseid"],40,$this->fields["entities_id"]);
-      echo "</td><td>".$LANG['state'][0]."&nbsp;:</td>";
-      echo "<td >";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
-      echo "</td></tr>";
+      echo "</td></tr>\n";
 
       // Get OCS Datas :
       $dataocs=array();
       if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")) {
-         $query="SELECT *
-                 FROM `glpi_ocslinks`
-                 WHERE `computers_id`='$ID'";
+         $query = "SELECT *
+                   FROM `glpi_ocslinks`
+                   WHERE `computers_id`='$ID'";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)==1) {
             $dataocs=$DB->fetch_array($result);
          }
       }
-
-      echo "<tr class='tab_bg_1'>";
-      if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")
-          && haveRight("sync_ocsng","w") && count($dataocs)) {
-         echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33]."&nbsp;:</td>";
-         echo "<td >";
-         dropdownYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
-         echo "</td>";
-      } else {
-         echo "<td colspan=2></td>";
-      }
-      echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
-      echo "<td >";
-      dropdownValue("glpi_autoupdatesystems", "autoupdatesystems_id",
-                     $this->fields["autoupdatesystems_id"]);
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
@@ -775,10 +782,24 @@ class Computer extends CommonDBTM {
             echo $LANG['common'][52]." ".getOCSServerNameByID($ID)."</td>";
          }
       }
-      echo "</td>";
-      echo "<td class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='middle'><textarea  cols='50' rows='3' name='comment' >".
-                                $this->fields["comment"]."</textarea></td></tr>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")
+          && haveRight("sync_ocsng","w") && count($dataocs)) {
+         echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33]."&nbsp;:</td>";
+         echo "<td >";
+         dropdownYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
+         echo "</td>";
+      } else {
+         echo "<td colspan=2></td>";
+      }
+      echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
+      echo "<td >";
+      dropdownValue("glpi_autoupdatesystems", "autoupdatesystems_id",
+                     $this->fields["autoupdatesystems_id"]);
+      echo "</td></tr>";
+
 
       $this->showFormButtons($ID,$withtemplate,2);
 
