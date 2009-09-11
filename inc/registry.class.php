@@ -33,25 +33,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-	
-class Registry extends CommonDBTM{
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-	/**
-	 * Constructor
-	**/
-	function __construct () {
-		$this->table="glpi_registrykeys";		
-		$this->type=REGISTRY_TYPE;
-	}
-	function cleanDBonPurge($ID) {
-		global $DB;
-		$query = "DELETE FROM ".$this->table." WHERE computers_id = '$ID')";
-		$result = $DB->query($query);
-	}
+class Registry extends CommonDBTM {
 
-} 
+   /**
+    * Constructor
+   **/
+   function __construct () {
+      $this->table="glpi_registrykeys";
+      $this->type=REGISTRY_TYPE;
+   }
+
+   function cleanDBonPurge($ID) {
+      global $DB;
+
+      $query = "DELETE
+                FROM `".$this->table."`
+                WHERE `computers_id` = '$ID'";
+      $result = $DB->query($query);
+   }
+
+}
 
 ?>

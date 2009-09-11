@@ -33,181 +33,183 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-function showProfileEntityUser($target,$ID,$prof){	
- 	
- 	global $DB,$LANG,$CFG_GLPI;
- 	
-	$canedit=haveRight("user","w");
+function showProfileEntityUser($target,$ID,$prof) {
+   global $DB,$LANG,$CFG_GLPI;
 
-	$show=true;
- 	if (!empty($ID)&&$ID){
-		$prof->getFromDB($ID);
-	} else {
-		$prof->getEmpty();
-		$show=false;
-	}
-	 	
- 	echo "<div class='center'>";
-	echo "<table class='tab_cadre_fixe'><tr>";
-	echo "<th>".$LANG['profiles'][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>";
-	echo "<tr><th colspan='2'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
- 	echo "</table>";
-	echo "</div>";
-  	
-	if (!$show){
-		return false;
-	}
+   $canedit=haveRight("user","w");
+   $show=true;
+   if (!empty($ID) && $ID) {
+      $prof->getFromDB($ID);
+   } else {
+      $prof->getEmpty();
+      $show=false;
+   }
 
-  	$query="SELECT glpi_users.*, glpi_profiles_users.entities_id AS entity, glpi_profiles_users.id AS linkID, 
-			glpi_profiles_users.is_dynamic,glpi_profiles_users.is_recursive
- 		FROM glpi_profiles_users 
- 		LEFT JOIN glpi_entities ON (glpi_entities.id=glpi_profiles_users.entities_id)
- 		LEFT JOIN glpi_users ON (glpi_users.id=glpi_profiles_users.users_id)
- 		WHERE glpi_profiles_users.profiles_id='".$ID."' 
-			AND glpi_users.is_deleted=0 ".getEntitiesRestrictRequest("AND","glpi_profiles_users")."
- 		ORDER BY glpi_entities.completename";
+   echo "<div class='center'>\n";
+   echo "<table class='tab_cadre_fixe'><tr>";
+   echo "<th>".$LANG['profiles'][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>\n";
+   echo "<tr><th colspan='2'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".
+              $LANG['profiles'][28].")</th></tr>";
+   echo "</table></div>\n";
 
- 	echo "<div class='center'>";
-	echo "<table class='tab_cadre_fixe'>";
- 	
-	$i=0;
-	$nb_per_line=3;
-	$rand=mt_rand(); // Just to avoid IDE warning
+   if (!$show) {
+      return false;
+   }
 
- 	if ($result = $DB->query($query))
- 	{ 
- 		if ($DB->numrows($result)!=0)
-	 	{
+   $query = "SELECT `glpi_users`.*, `glpi_profiles_users`.`entities_id` AS entity,
+                  `glpi_profiles_users`.`id` AS linkID, `glpi_profiles_users`.`is_dynamic`,
+                  `glpi_profiles_users`.`is_recursive`
+             FROM `glpi_profiles_users`
+             LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_profiles_users`.`entities_id`)
+             LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+             WHERE `glpi_profiles_users`.`profiles_id` = '$ID'
+                   AND `glpi_users`.`is_deleted` = '0' ".
+                   getEntitiesRestrictRequest("AND","glpi_profiles_users")."
+             ORDER BY `glpi_entities`.`completename`";
 
-	 		$temp=-1;
-	 		while ($data=$DB->fetch_array($result)) 
-			{	
-	 			if($data["entity"]!=$temp)
-				{
-					while ($i%$nb_per_line!=0)
-					{
-						if ($canedit){
-							echo "<td width='10'>&nbsp;</td>";
-						}
-						echo "<td class='tab_bg_1'>&nbsp;</td>\n";
-						$i++;
-					}
+   echo "<div class='center'>";
+   echo "<table class='tab_cadre_fixe'>";
 
-					if ($i!=0) {
-						echo "</table>";
-						if ($canedit){
-							echo "<div class='center'>";
-							echo "<table width='100%' class='tab_glpi'>";
-							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-							
-							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-							echo "</td><td align='left' width='80%'>";
-							dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
-							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\"
- class='submit'>";
-							echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+   $i=0;
+   $nb_per_line=3;
+   $rand=mt_rand(); // Just to avoid IDE warning
 
-							echo "</td></tr>";
-							echo "</table>";
-							echo "</div>";
-						}
-						echo "</div></form></td></tr>\n";
-					}
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)!=0) {
+         $temp=-1;
+         while ($data=$DB->fetch_array($result)) {
+            if ($data["entity"]!=$temp) {
+               while ($i%$nb_per_line!=0) {
+                  if ($canedit) {
+                     echo "<td width='10'>&nbsp;</td>";
+                  }
+                  echo "<td class='tab_bg_1'>&nbsp;</td>\n";
+                  $i++;
+               }
+               if ($i!=0) {
+                  echo "</table>";
+                  if ($canedit) {
+                     echo "<div class='center'>";
+                     echo "<table width='100%' class='tab_glpi'>";
+                     echo "<tr><td>";
+                     echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+                     echo "<td class='center'>";
+                     echo "<a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') )
+                            return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
+                            $LANG['buttons'][18]."</a></td>";
+                     echo "<td>/</td><td class='center'>";
+                     echo "<a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') )
+                            return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
+                            $LANG['buttons'][19]."</a>";
+                     echo "</td><td class='left' width='80%'>";
+                     dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+                     echo "&nbsp;<input type='submit' name='moveentity' value=\"".
+                           $LANG['buttons'][20]."\" class='submit'>";
+                     echo "&nbsp;<input type='submit' name='deleteuser' value=\"".
+                           $LANG['buttons'][6]."\" class='submit'>";
+                     echo "</td></tr>";
+                     echo "</table></div>\n";
+                  }
+                  echo "</div></form></td></tr>\n";
+               }
 
+               // New entity
+               $i=0;
+               $temp=$data["entity"];
+               $rand=mt_rand();
+               echo "<tr class='tab_bg_2'>";
+               echo "<td class='left'>";
+               echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
+                      GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+               echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
+               echo "<strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
+               echo "</a>";
+               echo "</td></tr>\n";
 
-					// New entity
-		 			$i=0;
-		 			$temp=$data["entity"];		
+               echo "<tr><td>";
+               echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand.
+                      "_$temp' method='post' action=\"$target\">";
+               echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
+               echo "<table class='tab_cadre_fixe'>\n";
+            }
+            if ($i%$nb_per_line==0) {
+               if ($i!=0) {
+                  echo "</tr>\n";
+               }
+               echo "<tr class='tab_bg_1'>\n";
+               $i=0;
+            }
+            if ($canedit) {
+               echo "<td width='10'>";
+               $sel="";
+               if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  $sel="checked";
+               }
+               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               echo "</td>";
+            }
+            echo "<td class='tab_bg_1'>".formatUserName($data["id"],$data["name"],$data["realname"],
+                                                        $data["firstname"],1);
 
-					$rand=mt_rand();
-					echo "<tr class='tab_bg_2'>";
-					echo "<td align='left'>"; 
-					echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-					echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp; <strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
-					echo "</a>"; 
-					echo "</td>"; 
-					echo "</tr>"; 
-					echo "<tr><td>";
-	 				
-					echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand."_$temp' method='post' action=\"$target\">";
-					echo "<div align='center' id='entity$temp$rand' style=\"display:none;\">\n"; 
-					echo "<table class='tab_cadre_fixe'>\n";
-				}
-
-		 		if ($i%$nb_per_line==0) {
-					if ($i!=0) echo "</tr>\n";
-						echo "<tr class='tab_bg_1'>\n";
-					$i=0;	
-				}
-
-				if ($canedit){
-					echo "<td width='10'>";
-					$sel="";
-					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-					echo "</td>";
-				}
-
-				echo "<td class='tab_bg_1'>".formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
-
-				if ($data["is_dynamic"]||$data["is_recursive"]){
-					echo "<strong>&nbsp;(";
-					if ($data["is_dynamic"]) echo "D";
-					if ($data["is_dynamic"]&&$data["is_recursive"]) echo ", ";
-						if ($data["is_recursive"]) echo "R";
-					echo ")</strong>";
-				}
-				echo "</td>\n";
-
-				$i++;
- 					
-			}
-			
-			if ($i%$nb_per_line!=0)
-			{
-				while ($i%$nb_per_line!=0)
-				{
-					if ($canedit){
-						echo "<td width='10'>&nbsp;</td>";
-					}
-
-					echo "<td class='tab_bg_1'>&nbsp;---</td>";
-
-					$i++;
-				}
-				
-			}
-			if ($i!=0) {
-				echo "</table>";
-				if ($canedit){
-					echo "<div class='center'>";
-					echo "<table width='100%' class='tab_glpi'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-					
-					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-					echo "</td><td align='left' width='80%'>";
-					dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
-					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\" class='submit'>";
-					echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-					echo "</td>";
-					echo "</table>";
-					echo "</div>";
-				}
-				echo "</div></form></td></tr>\n";	
-			}
-
-		}
- 		else
- 			echo "<tr><td class='tab_bg_1' align=center>".$LANG['profiles'][33]."</td></tr>";
- 		}
- 
- 	echo "</table>";
-	echo "</div>";
-
-  }
+            if ($data["is_dynamic"] || $data["is_recursive"]) {
+               echo "<strong>&nbsp;(";
+               if ($data["is_dynamic"]) {
+                  echo "D";
+               }
+               if ($data["is_dynamic"] && $data["is_recursive"]) {
+                  echo ", ";
+               }
+               if ($data["is_recursive"]) {
+                  echo "R";
+               }
+               echo ")</strong>";
+            }
+            echo "</td>\n";
+            $i++;
+         }
+         if ($i%$nb_per_line!=0) {
+            while ($i%$nb_per_line!=0) {
+               if ($canedit) {
+                  echo "<td width='10'>&nbsp;</td>";
+               }
+               echo "<td class='tab_bg_1'>------</td>";
+               $i++;
+            }
+         }
+         if ($i!=0) {
+            echo "</table>\n";
+            if ($canedit) {
+               echo "<div class='center'>";
+               echo "<table width='100%' class='tab_glpi'>";
+               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+               echo "<td class='center'>";
+               echo "<a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') )
+                      return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
+                      $LANG['buttons'][18]."</a></td>";
+               echo "<td>/</td><td class='center'>";
+               echo "<a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') )
+                      return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
+                      $LANG['buttons'][19]."</a>";
+               echo "</td><td class='left' width='80%'>";
+               dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+               echo "&nbsp;<input type='submit' name='moveentity' value=\"".
+                            $LANG['buttons'][20]."\" class='submit'>";
+               echo "&nbsp;<input type='submit' name='deleteuser' value=\"".
+                            $LANG['buttons'][6]."\" class='submit'>";
+               echo "</td>";
+               echo "</table></div>\n";
+            }
+            echo "</div></form></td></tr>\n";
+         }
+      } else {
+         echo "<tr><td class='tab_bg_1 center'>".$LANG['profiles'][33]."</td></tr>\n";
+      }
+   }
+   echo "</table></div>\n";
+}
 
 ?>

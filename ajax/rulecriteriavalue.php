@@ -34,29 +34,26 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")){
-	define('GLPI_ROOT','..');
-	//$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS = array("tracking");
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
+if (strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")) {
+   $NEEDED_ITEMS = array("tracking");
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
 }
 
 include_once (GLPI_ROOT."/inc/rulesengine.function.php");
-	
 checkLoginUser();
-// Non define case
-if (isset($_POST["sub_type"])){
-	$rule=getRuleClass($_POST["sub_type"]);
-	$criterias=$rule->getCriterias();
-	$rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
-}
 
-	
+// Non define case
+if (isset($_POST["sub_type"])) {
+   $rule=getRuleClass($_POST["sub_type"]);
+   $criterias=$rule->getCriterias();
+   $rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
+}
 
 ?>

@@ -34,50 +34,47 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"rulecriteria.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
-
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
+if (strpos($_SERVER['PHP_SELF'],"rulecriteria.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
 }
 
-	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
-	
-	checkLoginUser();
-	if (isset($_POST["sub_type"])){
-		$rule=getRuleClass($_POST["sub_type"]);
-		$criterias=$rule->getCriterias();
-		if (count($criterias)){
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
-			// First include -> first of the predefined array
-			if (!isset($_POST["criteria"])){
-				$_POST["criteria"]=key($criterias);
-			}
-			$type="";
-			if (isset($criterias[$_POST["criteria"]]['type'])){
-				$type=$criterias[$_POST["criteria"]]['type'];
-			}
-			$randcrit = dropdownRulesConditions($type,"condition");
-			echo "&nbsp;&nbsp;";
+include_once (GLPI_ROOT."/inc/rulesengine.function.php");
+checkLoginUser();
 
-			echo "<span id='condition_span'>\n";
-			echo "</span>\n";
+if (isset($_POST["sub_type"])) {
+   $rule=getRuleClass($_POST["sub_type"]);
+   $criterias=$rule->getCriterias();
+   if (count($criterias)) {
+      // First include -> first of the predefined array
+      if (!isset($_POST["criteria"])) {
+         $_POST["criteria"]=key($criterias);
+      }
+      $type="";
+      if (isset($criterias[$_POST["criteria"]]['type'])) {
+         $type=$criterias[$_POST["criteria"]]['type'];
+      }
+      $randcrit = dropdownRulesConditions($type,"condition");
+      echo "&nbsp;&nbsp;";
+      echo "<span id='condition_span'>\n";
+      echo "</span>\n";
 
-			$paramscriteria=array('condition'=>'__VALUE__',
-					'criteria'=>$_POST["criteria"],
-					'sub_type'=>$_POST["sub_type"],
-			);
-			ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false);
-			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false,"dropdown_condition$randcrit");
-		}
-
-	}
-
-	
+      $paramscriteria=array('condition'=>'__VALUE__',
+                            'criteria'=>$_POST["criteria"],
+                            'sub_type'=>$_POST["sub_type"]);
+      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",
+                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,
+                                  false);
+      ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
+                     $paramscriteria,false,"dropdown_condition$randcrit");
+   }
+}
 
 ?>

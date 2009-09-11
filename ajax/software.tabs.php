@@ -35,91 +35,107 @@
 
 //error_log("REQUEST".print_r($_REQUEST,true));
 
-$NEEDED_ITEMS=array("computer","software","rulesengine","tracking","document","user","group","link","reservation","infocom","contract","enterprise","rule.softwarecategories");
+$NEEDED_ITEMS=array('computer','contract','document','enterprise','group','infocom','link',
+                    'reservation','rulesengine','rule.softwarecategories','software','tracking',
+                    'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 if (!isset($_POST['id'])) {
-	exit();
+   exit();
 }
 
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
+checkRight("software","r");
 
-	checkRight("software","r");
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
-	if (!empty($_POST["withtemplate"])) {
+if (!empty($_POST["withtemplate"])) {
+   if ($_POST["id"]>0) {
+      switch($_POST['glpi_tab']) {
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,
+                            $_POST["id"],1,$_POST["withtemplate"]);
+            showContractAssociated(SOFTWARE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-			if ($_POST["id"]>0){
-				switch($_POST['glpi_tab']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
-						showContractAssociated(SOFTWARE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-						break;
-					case 5 :
-						showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-						break;
-					default :
-						displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'], $_POST["withtemplate"]);
-						break;
-				}
-			}
+         case 5 :
+            showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            break;
 
-	} else {
+         default :
+            displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'], $_POST["withtemplate"]);
+      }
+   }
+} else {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         showVersions($_POST["id"]);
+         showLicenses($_POST["id"]);
+         showInstallations($_POST["id"]);
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
+         showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
+         showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"]);
+         showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
+         showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
+         displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         break;
 
-			switch($_POST['glpi_tab']){
-				case -1:
-					showVersions($_POST["id"]);
-					showLicenses($_POST["id"]);
-					showInstallations($_POST["id"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
-					showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
-					showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"]);
-					showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
-					showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
-					displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
-					break;
-				case 2 :
-					showInstallations($_POST["id"]);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
-					showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
-					break;
-				case 5 :
-					showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"]);
-					break;
-				case 6 :
-					showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
-					break;
-				case 7 :
-					showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
-					break;	
-				case 10 :
-					showNotesForm($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
-					break;				
-				case 11 :
-					showDeviceReservations($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
-					break;
-				case 12 :
-					showHistory(SOFTWARE_TYPE,$_POST["id"]);
-					break;
-				case 21:
-					showSoftwareMergeCandidates($_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
-						showVersions($_POST["id"]);
-						showLicenses($_POST["id"]);
-					}
-					break;
-			}
-	}
+      case 2 :
+         showInstallations($_POST["id"]);
+         break;
 
-	ajaxFooter();
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
+         showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 5 :
+         showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 6 :
+         showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 7 :
+         showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 11 :
+         showDeviceReservations($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 12 :
+         showHistory(SOFTWARE_TYPE,$_POST["id"]);
+         break;
+
+      case 21 :
+         showSoftwareMergeCandidates($_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+            showVersions($_POST["id"]);
+            showLicenses($_POST["id"]);
+         }
+   }
+}
+
+ajaxFooter();
+
 ?>

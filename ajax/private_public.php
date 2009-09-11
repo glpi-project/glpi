@@ -33,41 +33,39 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (strpos($_SERVER['PHP_SELF'],"private_public.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-if(strpos($_SERVER['PHP_SELF'],"private_public.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
-	if (isset($_POST['is_private'])){
-		checkLoginUser();
-		switch ($_POST['is_private']){
-			case true :
-				echo "<input type='hidden' name='is_private' value='1'>\n";
-				echo "<input type='hidden' name='entities_id' value='-1'>\n";
-				echo "<input type='hidden' name='is_recursive' value='0'>\n";
-				echo $LANG['common'][77]. " - ";
+if (isset($_POST['is_private'])) {
+   checkLoginUser();
+   switch ($_POST['is_private']) {
+      case true :
+         echo "<input type='hidden' name='is_private' value='1'>\n";
+         echo "<input type='hidden' name='entities_id' value='-1'>\n";
+         echo "<input type='hidden' name='is_recursive' value='0'>\n";
+         echo $LANG['common'][77]. " - ";
+         echo "<a onClick='setPublic".$_POST['rand']."()'>".$LANG['common'][78]."</a>";
+         break;
 
-				echo "<a onClick='setPublic".$_POST['rand']."()'>".$LANG['common'][78]."</a>";
-				break;
-			case false :
-				echo "<input type='hidden' name='is_private' value='0'>\n";
-				echo $LANG['common'][76].":&nbsp;";
-				dropdownValue('glpi_entities',"entities_id",$_POST["entities_id"]);
-				echo "&nbsp;+&nbsp;".$LANG['entity'][9].":&nbsp;";
-				dropdownYesNo('is_recursive',$_POST["is_recursive"]);
+      case false :
+         echo "<input type='hidden' name='is_private' value='0'>\n";
+         echo $LANG['common'][76]."&nbsp;:&nbsp;";
+         dropdownValue('glpi_entities',"entities_id",$_POST["entities_id"]);
+         echo "&nbsp;+&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
+         dropdownYesNo('is_recursive',$_POST["is_recursive"]);
+         echo " - ";
+         echo "<a onClick='setPrivate".$_POST['rand']."()'>".$LANG['common'][79]."</a>";
+         break;
+   }
+}
 
-				echo " - ";
-
-				echo "<a onClick='setPrivate".$_POST['rand']."()'>".$LANG['common'][79]."</a>";
-				
-				break;
-		}
-	}
 ?>

@@ -33,57 +33,51 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS=array("profile","search","entity","user");
+$NEEDED_ITEMS=array('entity','profile','search','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	$_POST["id"] = "";
+if (!isset($_POST["id"])) {
+   $_POST["id"] = "";
 }
 
-$prof=new Profile();
-
 checkRight("profile","r");
-	
-		if ($_POST["id"]>0){
-			switch($_POST['glpi_tab']){
-				case -1 :	
-					$prof->showForm($_POST['target'],$_POST["id"]);
-					showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
-					displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-					break;
-				case 1:
-					$prof->showForm($_POST['target'],$_POST["id"]);
-					break;
-				case 2 : 
-					showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
-					break;
-				default :
-					if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-						$prof->showForm($_POST['target'],$_POST["id"]);
-					}
-					break;
-			}
-		} else	{
-		switch($_POST['glpi_tab']){
-				case -1 :	
-					$prof->showForm($_POST['target'],$_POST["id"]);
-					displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
-					break;
-				case 1:
-					$prof->showForm($_POST['target'],$_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
-						$prof->showForm($_POST['target'],$_POST["id"]);
-					}
-					break;
-			}
-	}
-	
-	ajaxFooter();
+
+$prof=new Profile();
+if ($_POST["id"]>0) {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         $prof->showForm($_POST['target'],$_POST["id"]);
+         showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
+         displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         break;
+
+      case 2 :
+         showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
+         break;
+
+      default :
+         if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            $prof->showForm($_POST['target'],$_POST["id"]);
+         }
+   }
+} else {
+   switch($_POST['glpi_tab']) {
+      case -1 :
+         $prof->showForm($_POST['target'],$_POST["id"]);
+         displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         break;
+
+      default :
+         if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            $prof->showForm($_POST['target'],$_POST["id"]);
+         }
+   }
+}
+
+ajaxFooter();
+
 ?>
