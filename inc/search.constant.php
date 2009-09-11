@@ -3666,15 +3666,15 @@ $SEARCH_OPTION[STATE_TYPE][3]['field']='completename';
 $SEARCH_OPTION[STATE_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[STATE_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[STATE_TYPE][8]['table']='state_types';
-$SEARCH_OPTION[STATE_TYPE][8]['field']='serial';
-$SEARCH_OPTION[STATE_TYPE][8]['linkfield']='serial';
-$SEARCH_OPTION[STATE_TYPE][8]['name']=$LANG['common'][19];
+$SEARCH_OPTION[STATE_TYPE][5]['table']='state_types';
+$SEARCH_OPTION[STATE_TYPE][5]['field']='serial';
+$SEARCH_OPTION[STATE_TYPE][5]['linkfield']='serial';
+$SEARCH_OPTION[STATE_TYPE][5]['name']=$LANG['common'][19];
 
-$SEARCH_OPTION[STATE_TYPE][9]['table']='state_types';
-$SEARCH_OPTION[STATE_TYPE][9]['field']='otherserial';
-$SEARCH_OPTION[STATE_TYPE][9]['linkfield']='otherserial';
-$SEARCH_OPTION[STATE_TYPE][9]['name']=$LANG['common'][20];
+$SEARCH_OPTION[STATE_TYPE][6]['table']='state_types';
+$SEARCH_OPTION[STATE_TYPE][6]['field']='otherserial';
+$SEARCH_OPTION[STATE_TYPE][6]['linkfield']='otherserial';
+$SEARCH_OPTION[STATE_TYPE][6]['name']=$LANG['common'][20];
 
 $SEARCH_OPTION[STATE_TYPE][16]['table']='state_types';
 $SEARCH_OPTION[STATE_TYPE][16]['field']='comments';
