@@ -33,12 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"user",
-	"profile",
-	"group",
-	"setup"
-);
+$NEEDED_ITEMS = array('group','profile','setup','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -46,28 +41,27 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
+
 $user = new User();
 
+switch ($_POST['glpi_tab']) {
+   case 1 :
+      $user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
+      break;
 
-	switch ($_POST['glpi_tab']){
-		case 1 : 
-			$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
-			break;
-		case 2 : 
+   case 2 :
+      $config = new Config();
+      $user->getFromDB($_SESSION["glpiID"]);
+      $user->computePreferences();
+      $config->showFormUserPrefs($_POST['target'],$user->fields);
+      break;
 
-			$config = new Config();
-			$user->getFromDB($_SESSION["glpiID"]);
-			$user->computePreferences();
-			$config->showFormUserPrefs($_POST['target'],$user->fields);
-			break;
-		default :
-			if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")){
-				$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
-			}
-			break;
-
-	}
-
+   default :
+      if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")) {
+         $user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
+      }
+}
 
 ajaxFooter();
+
 ?>

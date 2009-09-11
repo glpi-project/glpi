@@ -33,64 +33,64 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
+$AJAX_INCLUDE=1;
 
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkCentralAccess();
-	
-	$split=explode(":",$CFG_GLPI["planning_begin"]);
-	$global_begin=$split[0].":".$split[1];
-	$split=explode(":",$CFG_GLPI["planning_end"]);
-	$global_end=$split[0].":".$split[1];
-	
-	if (isset($_POST["id"])&&$_POST["id"]>0){
-		echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
-	}
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	if (isset($_POST["begin"])&&!empty($_POST["begin"])){
-		$begin=$_POST["begin"];
-	} else {
-		$begin=date("Y-m-d")." 12:00:00";
-	}
-	if (isset($_POST["end"])&&!empty($_POST["end"])){
-		$end=$_POST["end"];
-	} else {
-		$end=date("Y-m-d")." 13:00:00";
-	}
+checkCentralAccess();
 
-	$state=0;
-	if (isset($_POST["state"])){
-		$state=$_POST["state"];
-	} 
-	
-	echo "<table class='tab_cadre' cellpadding='2'>";
-	if (isset($_POST["users_id"])&&isset($_POST["entity"])){
-		echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9].":	</td>";
-		echo "<td>";
-		dropdownUsers("plan[users_id]",$_POST["users_id"],"own_ticket",-1,1,$_POST["entity"]);
-		echo "</td></tr>";
-	}
-	
-	echo "<tr class='tab_bg_2'><td>".$LANG['search'][8].":	</td><td>";
-	showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$global_begin,$global_end);
-	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_2'><td>".$LANG['search'][9].":	</td><td>";
-	showDateTimeFormItem("plan[end]",$end,-1,false,true,'','',$global_begin,$global_end);
-	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_2'><td>".$LANG['state'][0].":	</td>";
-	echo "<td>";
-	dropdownPlanningState("plan[state]",$state);
-	echo "</td></tr>";
-	
-	echo "</table>";
+$split=explode(":",$CFG_GLPI["planning_begin"]);
+$global_begin=$split[0].":".$split[1];
+$split=explode(":",$CFG_GLPI["planning_end"]);
+$global_end=$split[0].":".$split[1];
 
-	ajaxFooter();
+if (isset($_POST["id"]) && $_POST["id"]>0) {
+   echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
+}
+
+if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
+   $begin=$_POST["begin"];
+} else {
+   $begin=date("Y-m-d")." 12:00:00";
+}
+
+if (isset($_POST["end"]) && !empty($_POST["end"])) {
+   $end=$_POST["end"];
+} else {
+   $end=date("Y-m-d")." 13:00:00";
+}
+
+$state=0;
+if (isset($_POST["state"])) {
+   $state=$_POST["state"];
+}
+
+echo "<table class='tab_cadre'>";
+if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
+   echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9]."&nbsp;:</td>";
+   echo "<td class='center'>";
+   dropdownUsers("plan[users_id]",$_POST["users_id"],"own_ticket",-1,1,$_POST["entity"]);
+   echo "</td></tr>\n";
+}
+
+echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
+showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$global_begin,$global_end);
+echo "</td></tr>\n";
+
+echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
+showDateTimeFormItem("plan[end]",$end,-1,false,true,'','',$global_begin,$global_end);
+echo "</td></tr>\n";
+
+echo "<tr class='tab_bg_2'><td>".$LANG['state'][0]."&nbsp;:</td>";
+echo "<td class='center'>";
+dropdownPlanningState("plan[state]",$state);
+echo "</td></tr>";
+
+echo "</table>\n";
+
+ajaxFooter();
+
 ?>
