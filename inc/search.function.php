@@ -2334,9 +2334,10 @@ function displayConfigItem ($itemtype,$field){
 function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 	global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-	if (isset($CFG_GLPI["union_search_type"][$itemtype])){
-		return giveItem ($data["TYPE"],$ID,$data,$num);
-	}
+   if (isset($CFG_GLPI["union_search_type"][$itemtype])
+       && $CFG_GLPI["union_search_type"][$itemtype]==$SEARCH_OPTION[$itemtype][$ID]["table"]) {
+      return giveItem ($data["TYPE"],$ID,$data,$num);
+   }
 
 	// Plugin can override core definition for its type
 	if ($itemtype>1000){
