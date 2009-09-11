@@ -34,63 +34,66 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"ruleactionvalue.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
-
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
+if (strpos($_SERVER['PHP_SELF'],"ruleactionvalue.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
 }
 
-	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
-	
-	checkLoginUser();
-	$display=false;
-	
-	switch ($_POST["action_type"])
-	{
-		//If a regex value is used, then always display an autocompletiontextfield
-		case "regex_result":
-		case "append_regex_result":
-			autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
-		break;	
-		default:
-		if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])){
-			switch($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type']){
-				case "dropdown":
-					dropdownValue($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'],"value");
-					$display=true;
-					break;
-				case "dropdown_assign":
-					dropdownUsers("value",0,"own_ticket");
-					$display=true;
-					break;
-				case "dropdown_users":
-					dropdownAllUsers("value");
-					$display=true;
-					break;
-				case "dropdown_priority":
-					dropdownPriority("value");
-					$display=true;
-					break;
-				case "dropdown_status":
-					dropdownStatus("value");
-					$display=true;
-					break;
-				case "yesno":
-					dropdownYesNo("value");
-					$display=true;
-					break;	
-			}
-		}
-		if (!$display){
-			autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
-		}
-		break;
-	}
+include_once (GLPI_ROOT."/inc/rulesengine.function.php");
+checkLoginUser();
+$display=false;
+
+switch ($_POST["action_type"]) {
+   //If a regex value is used, then always display an autocompletiontextfield
+   case "regex_result" :
+   case "append_regex_result" :
+      autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
+      break;
+
+   default :
+      if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])) {
+         switch($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type']) {
+            case "dropdown" :
+               dropdownValue($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'],"value");
+               $display=true;
+               break;
+
+            case "dropdown_assign" :
+               dropdownUsers("value",0,"own_ticket");
+               $display=true;
+               break;
+
+            case "dropdown_users" :
+               dropdownAllUsers("value");
+               $display=true;
+               break;
+
+            case "dropdown_priority" :
+               dropdownPriority("value");
+               $display=true;
+               break;
+
+            case "dropdown_status" :
+               dropdownStatus("value");
+               $display=true;
+               break;
+
+            case "yesno" :
+               dropdownYesNo("value");
+               $display=true;
+               break;
+         }
+      }
+      if (!$display) {
+         autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
+      }
+}
+
 ?>

@@ -36,57 +36,54 @@
 /** Display registry values for a computer
 * @param $ID integer : computer ID
 */
-function showRegistry($ID){
-	
-	global $DB,$CFG_GLPI, $LANG;
-	
-	if (!haveRight("computer","r")) return false;
-	//REGISTRY HIVE
-	$REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
-	"HKEY_CURRENT_USER",
-	"HKEY_LOCAL_MACHINE",
-	"HKEY_USERS",
-	"HKEY_CURRENT_CONFIG",
-	"HKEY_DYN_DATA");
+function showRegistry($ID) {
+   global $DB,$CFG_GLPI, $LANG;
 
+   if (!haveRight("computer","r")) {
+      return false;
+   }
 
-	$query = "SELECT id 
-		FROM glpi_registrykeys 
-		WHERE computers_id='".$ID."'";
-	
-	if ($result = $DB->query($query)) {
-		if ($DB->numrows($result)!=0) { 
-			
-			echo "<div class='center'><table class='tab_cadre_fixe'>";
-			echo "<tr>";
-			echo "<th colspan='4'>";
-			echo $DB->numrows($result)." ";
-			echo $LANG['registry'][4];
-			
-			echo ":</th>";
+   //REGISTRY HIVE
+   $REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
+                        "HKEY_CURRENT_USER",
+                        "HKEY_LOCAL_MACHINE",
+                        "HKEY_USERS",
+                        "HKEY_CURRENT_CONFIG",
+                        "HKEY_DYN_DATA");
 
-			echo "</tr>";        
-			echo "<tr>";			
-			echo "<th>".$LANG['registry'][6]."</th>";
-			echo "<th>".$LANG['registry'][1]."</th><th>".$LANG['registry'][2]."</th>";
-			echo "<th>".$LANG['registry'][3]."</th></tr>\n";	
-			while ($regid=$DB->fetch_row($result)) {
-				$reg = new Registry;
-				$reg->getFromDB(current($regid));	
-				echo "<tr class='tab_bg_1'>";								
-				echo "<td>".$reg->fields["ocs_name"]."</td>";
-				echo "<td>".$REGISTRY_HIVE[$reg->fields["hive"]]."</td>";
-				echo "<td>".$reg->fields["path"]."</td>";
-				echo "<td>".$reg->fields["value"]."</td>";
-				echo "</tr>";	
-			
-			}
-			echo "</table>";
-			echo "</div>\n\n";
-	
-		}
-		else echo "<div class='center'><strong>".$LANG['registry'][5]."</strong></div>";
-	}
-	
+   $query = "SELECT `id`
+             FROM `glpi_registrykeys`
+             WHERE `computers_id` = '$ID'";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)!=0) {
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='4'>";
+         echo $DB->numrows($result)." ".$LANG['registry'][4];
+         echo "</th></tr>\n";
+         echo "<tr><th>".$LANG['registry'][6]."</th>";
+         echo "<th>".$LANG['registry'][1]."</th>";
+         echo "<th>".$LANG['registry'][2]."</th>";
+         echo "<th>".$LANG['registry'][3]."</th></tr>\n";
+         while ($regid=$DB->fetch_row($result)) {
+            $reg = new Registry;
+            $reg->getFromDB(current($regid));
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$reg->fields["ocs_name"]."</td>";
+            if (isset($REGISTRY_HIVE[$reg->fields["hive"]])) {
+               echo "<td>".$REGISTRY_HIVE[$reg->fields["hive"]]."</td>";
+            } else {
+               echo "<td>(".$reg->fields["hive"].")</td>";
+            }
+            echo "<td>".$reg->fields["path"]."</td>";
+            echo "<td>".$reg->fields["value"]."</td>";
+            echo "</tr>";
+         }
+         echo "</table></div>\n\n";
+      } else {
+         echo "<div class='center'><strong>".$LANG['registry'][5]."</strong></div>\n";
+      }
+   }
 }
+
 ?>

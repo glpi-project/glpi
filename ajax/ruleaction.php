@@ -34,47 +34,45 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(strpos($_SERVER['PHP_SELF'],"ruleaction.php")){
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-};
-
-if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
+if (strpos($_SERVER['PHP_SELF'],"ruleaction.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
 }
 
-	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
-	
-	if (!isset($RULES_ACTIONS)){
-		include(GLPI_ROOT."/inc/rules.constant.php");
-	}
-	checkLoginUser();
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
+include_once (GLPI_ROOT."/inc/rulesengine.function.php");
 
-	// Non define case
-	if (isset($_POST["sub_type"])&&isset($RULES_ACTIONS[$_POST["sub_type"]])){
-		// First include -> first of the predefined array
-		if (!isset($_POST["field"])){
-			$_POST["field"]=key($RULES_ACTIONS[$_POST["sub_type"]]);
-		}
+if (!isset($RULES_ACTIONS)) {
+   include(GLPI_ROOT."/inc/rules.constant.php");
+}
+checkLoginUser();
 
-		$randaction=dropdownRulesActions($_POST["sub_type"],"action_type",$_POST["field"]);
+// Non define case
+if (isset($_POST["sub_type"]) && isset($RULES_ACTIONS[$_POST["sub_type"]])) {
+   // First include -> first of the predefined array
+   if (!isset($_POST["field"])) {
+      $_POST["field"]=key($RULES_ACTIONS[$_POST["sub_type"]]);
+   }
 
-		echo "&nbsp;&nbsp;";
-		echo "<span id='action_type_span'>\n";
-		echo "</span>\n";
+   $randaction=dropdownRulesActions($_POST["sub_type"],"action_type",$_POST["field"]);
 
-		$paramsaction=array('action_type'=>'__VALUE__',
-				'field'=>$_POST["field"],
-				'sub_type'=>$_POST["sub_type"],
-		);
-		ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false);
-		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false,"dropdown_action_type$randaction");
-	}
+   echo "&nbsp;&nbsp;";
+   echo "<span id='action_type_span'>\n";
+   echo "</span>\n";
 
-	
+   $paramsaction=array('action_type'=>'__VALUE__',
+                       'field'=>$_POST["field"],
+                       'sub_type'=>$_POST["sub_type"]);
+   ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",
+                               $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false);
+   ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,
+                  false,"dropdown_action_type$randaction");
+}
 
 ?>
