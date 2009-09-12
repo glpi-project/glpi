@@ -279,16 +279,6 @@ class Cartridge extends CommonDBTM {
       $this->entity_assign=true;
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB;
-
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE (`items_id` = '$ID'
-                       AND `itemtype` = '".$this->type."')";
-      $result = $DB->query($query);
-   }
-
    function prepareInputForAdd($input) {
       return array("cartridgesitems_id"=>$input["tID"],
                    "date_in"=>date("Y-m-d"));

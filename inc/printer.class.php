@@ -297,12 +297,6 @@ class Printer  extends CommonDBTM {
       }
 
       $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-
-      $query = "DELETE
                 FROM `glpi_contracts_items`
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '".$this->type."'";
@@ -313,6 +307,9 @@ class Printer  extends CommonDBTM {
                 SET `printers_id` = NULL
                 WHERE `printers_id` = '$ID'";
       $result = $DB->query($query);
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**

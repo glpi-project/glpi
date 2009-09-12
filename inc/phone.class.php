@@ -198,12 +198,6 @@ class Phone extends CommonDBTM {
          }
       }
 
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-
       $query = "SELECT *
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->type."'
@@ -223,6 +217,9 @@ class Phone extends CommonDBTM {
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '".$this->type."'";
       $result = $DB->query($query);
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**

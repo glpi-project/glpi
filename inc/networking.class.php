@@ -209,12 +209,6 @@ class Netdevice extends CommonDBTM {
       $result = $DB->query($query);
 
       $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-
-      $query = "DELETE
                 FROM `glpi_contracts_items`
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '".$this->type."'";
@@ -231,6 +225,9 @@ class Netdevice extends CommonDBTM {
             $rr->delete(array("id"=>$DB->result($result,0,"id")));
          }
       }
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**

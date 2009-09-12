@@ -194,11 +194,6 @@ class Peripheral  extends CommonDBTM {
             $rr->delete(array("id"=>$DB->result($result,0,"id")));
          }
       }
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
 
       $query = "SELECT *
                 FROM `glpi_computers_items`
@@ -217,6 +212,9 @@ class Peripheral  extends CommonDBTM {
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '".$this->type."'";
       $result = $DB->query($query);
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**
