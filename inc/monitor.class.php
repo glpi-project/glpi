@@ -170,11 +170,6 @@ class Monitor extends CommonDBTM {
             }
          }
       }
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $DB->query($query);
 
       $query = "SELECT *
                 FROM `glpi_reservationsitems`
@@ -205,6 +200,9 @@ class Monitor extends CommonDBTM {
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '".$this->type."'";
       $DB->query($query);
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**

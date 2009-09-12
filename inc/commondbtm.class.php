@@ -410,6 +410,15 @@ class CommonDBTM {
    *@return nothing
    **/
    function cleanDBonPurge($ID) {
+      global $CFG_GLPI, $DB;
+
+      if (in_array($this->type,$CFG_GLPI['infocom_types'])) {
+         $query = "DELETE
+                   FROM `glpi_infocoms`
+                   WHERE (`items_id` = '$ID'
+                          AND `itemtype` = '".$this->type."')";
+         $result = $DB->query($query);
+      }
    }
 
    /**

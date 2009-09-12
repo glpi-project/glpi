@@ -491,12 +491,6 @@ class Computer extends CommonDBTM {
                        AND `itemtype`='".$this->type."')";
       $result = $DB->query($query);
 
-      $query = "DELETE
-                FROM `glpi_infocoms`
-                WHERE (`items_id` = '$ID'
-                       AND `itemtype`='".$this->type."')";
-      $result = $DB->query($query);
-
       $query = "SELECT `id`
                 FROM `glpi_networkports`
                 WHERE (`items_id` = '$ID'
@@ -558,6 +552,9 @@ class Computer extends CommonDBTM {
                 FROM `glpi_computersdisks`
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
+
+      // For infocom...
+      parent::cleanDBonPurge($ID);
    }
 
    /**
