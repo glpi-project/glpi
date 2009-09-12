@@ -2207,8 +2207,8 @@ class RuleCached extends Rule{
 			$total++;
 		}
 		
-		echo "</table></div><br>";
-		echo "<center><a href=\"$target\">".$LANG['buttons'][13]."</center>";
+		echo "</table><br><br>";
+		echo "<a href=\"$target\">".$LANG['buttons'][13]."</a></div>";
 		
 	}
 
@@ -2324,7 +2324,10 @@ class RuleCachedCollection extends RuleCollection{
 		while ($datas = $DB->fetch_array($res_count)){
 			echo "<tr>";			
 			echo "<td class='tab_bg_2'>";
-			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."&rules_id=".$datas["rules_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
+            "/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type.
+            "&amp;rules_id=".$datas["rules_id"]."' ,'glpipopup', 
+            'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
 			echo $datas["name"];
 			echo "</a></td>";
 			echo "<td class='tab_bg_2'>".$datas["cpt"]."</td>";
