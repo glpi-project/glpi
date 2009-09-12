@@ -191,19 +191,6 @@ class Software extends CommonDBTM {
 					));
 			}
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='" . $this->type . "')";
-		$result = $DB->query($query);
-
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype='" . $this->type . "' AND items_id='$ID')";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) > 0) {
-				$rr = new ReservationItem();
-				$rr->delete(array (
-					"id" => $DB->result($result,0,"id")
-				));
-			}
-		}
-
 		// Delete all licenses
 		$query2 = "SELECT id FROM glpi_softwareslicenses WHERE (softwares_id = '$ID')";
 
