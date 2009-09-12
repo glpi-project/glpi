@@ -51,6 +51,8 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 	checkRight("reservation_helpdesk","1");
 
+   commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
+
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]){
@@ -60,11 +62,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
 			}
 		}
-	}
-
-
-	commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
-	if (isset($_POST["clear_resa"])){
+	} else if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
 		if ($rr->delete($_POST)){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
