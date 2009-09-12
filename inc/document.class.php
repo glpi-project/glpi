@@ -74,10 +74,8 @@ class Document extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $query3 = "DELETE
-                 FROM `glpi_documents_items`
-                 WHERE `documents_id` = '$ID'";
-      $result3 = $DB->query($query3);
+      $di = new DocumentItem();
+      $di->cleanDBonItemDelete($this->type,$ID);
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filename"])) {

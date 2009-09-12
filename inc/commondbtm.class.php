@@ -456,6 +456,12 @@ class CommonDBTM {
          $ci = new ContractItem();
          $ci->cleanDBonItemDelete($this->type,$ID);
       }
+
+      // If this type have DOCUMENT, clean one associated to purged item
+      if (in_array($this->type,$CFG_GLPI["doc_types"])) {
+         $di = new DocumentItem();
+         $di->cleanDBonItemDelete($this->type,$ID);
+      }
    }
 
    /**
