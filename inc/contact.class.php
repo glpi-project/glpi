@@ -55,10 +55,8 @@ class Contact extends CommonDBTM{
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_contacts_suppliers`
-                WHERE `contacts_id` = '$ID'";
-      $DB->query($query);
+      $cs = new ContactSupplier();
+      $cs->cleanDBonItemDelete($this->type,$ID);
    }
 
    function defineTabs($ID,$withtemplate) {
