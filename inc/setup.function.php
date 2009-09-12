@@ -792,6 +792,9 @@ function replaceDropDropDown($input) {
 	if ($input["tablename"]=="glpi_entities"){
 		$query = "DELETE FROM `glpi_entitiesdatas` WHERE `entities_id` = '" . $input["oldID"] . "'";
 		$DB->query($query);
+
+      $di = new DocumentItem();
+      $di->cleanDBonItemDelete(ENTITY_TYPE,$input["oldID"]);
    }
    // Clean sons / ancestors if needed
    if (FieldExists($input["tablename"],"sons_cache")){
