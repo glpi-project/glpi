@@ -263,7 +263,7 @@ class Profile extends CommonDBTM {
          $this->getFromDB($ID);
       } else {
          $this->getEmpty();
-         $onfocus="onfocus=\"this.value=''\"";
+         $onfocus="onfocus=\"if (this.value=='".$LANG['common'][0]."') this.value='';\"";
          $new=true;
       }
 

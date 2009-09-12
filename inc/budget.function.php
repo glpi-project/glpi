@@ -1,4 +1,3 @@
-
 <?php
 /*
  * @version $Id: contract.function.php 8498 2009-07-25 19:11:33Z moyo $
