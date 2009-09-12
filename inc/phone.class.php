@@ -213,6 +213,9 @@ class Phone extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".PHONE_TYPE."')";
 		$result = $DB->query($query);
+
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
 	}
 
 	/**

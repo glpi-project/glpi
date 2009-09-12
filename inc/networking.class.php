@@ -215,6 +215,9 @@ class Netdevice extends CommonDBTM {
 				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
 			}
 		}
+
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
 	}
 
 	/**

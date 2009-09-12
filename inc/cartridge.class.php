@@ -68,6 +68,8 @@ class CartridgeType extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_TYPE."')";
 		$result = $DB->query($query);
 
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
 	}
 
 	function post_getEmpty () {

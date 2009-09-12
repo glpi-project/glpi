@@ -61,6 +61,9 @@ class ConsumableType extends CommonDBTM {
 		// Delete cartridconsumablesges
 		$query = "DELETE FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$ID')";
 		$DB->query($query);
+
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
 	}
 
 	function post_getEmpty () {

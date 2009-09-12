@@ -787,6 +787,11 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 
+
+      $query = "DELETE FROM `glpi_doc_device` 
+                WHERE (FK_device = '".$input["oldID"]."' 
+                       AND device_type='".ENTITY_TYPE."')";
+      $result = $DB->query($query);
 /*		if (isset($_SESSION["glpiID"])){
 			$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 			initEntityProfiles($_SESSION["glpiID"]);

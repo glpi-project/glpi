@@ -289,7 +289,9 @@ class Printer  extends CommonDBTM {
 		$query = "UPDATE glpi_cartridges SET FK_glpi_printers = NULL WHERE FK_glpi_printers='$ID'";
 		$result = $DB->query($query);
 
-	}
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
+   }
 
 	/**
 	 * Print the printer form

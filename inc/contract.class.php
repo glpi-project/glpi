@@ -65,6 +65,9 @@ class Contract extends CommonDBTM {
 
 		$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
 		$DB->query($query3);
+
+      $query = "DELETE FROM `glpi_doc_device` WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+      $result = $DB->query($query);
 	}
 
 	function defineTabs($ID,$withtemplate){
