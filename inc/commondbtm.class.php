@@ -412,11 +412,51 @@ class CommonDBTM {
    function cleanDBonPurge($ID) {
       global $CFG_GLPI, $DB;
 
+      // If this type have INFOCOM, clean one associated to purged item
       if (in_array($this->type,$CFG_GLPI['infocom_types'])) {
-         $query = "DELETE
-                   FROM `glpi_infocoms`
+         $infocom = new InfoCom();
+         if ($infocom->getFromDBforDevice($this->type, $ID)) {
+             $infocom->delete(array('id'=>$infocom->fields['id']));
+         }
+      }
+
+      // If this type have NETPORT, clean one associated to purged item
+      if (in_array($this->type,$CFG_GLPI['netport_types'])) {
+         $query = "SELECT `id`
+                   FROM `glpi_networkports`
                    WHERE (`items_id` = '$ID'
                           AND `itemtype` = '".$this->type."')";
+         $result = $DB->query($query);
+
+         while ($data = $DB->fetch_array($result)) {
+            $q = "DELETE
+                  FROM `glpi_networkports_networkports`
+                  WHERE (`networkports_id_1` = '".$data["id"]."'
+                         OR `networkports_id_2` = '".$data["id"]."')";
+            $result2 = $DB->query($q);
+         }
+
+         $query = "DELETE
+                   FROM `glpi_networkports`
+                   WHERE (`items_id` = '$ID'
+                          AND `itemtype` = '".$this->type."')";
+         $result = $DB->query($query);
+      }
+
+      // If this type is RESERVABLE clean one associated to purged item
+      if (in_array($this->type,$CFG_GLPI['reservation_types'])) {
+         $rr=new ReservationItem();
+         if ($rr->getFromDBbyItem($this->type, $ID)) {
+             $rr->delete(array('id'=>$infocom->fields['id']));
+         }
+      }
+
+      // If this type have CONTRACT, clean one associated to purged item
+      if (in_array($this->type,$CFG_GLPI['contract_types'])) {
+         $query = "DELETE
+                   FROM `glpi_contracts_items`
+                   WHERE (`items_id` = '$ID'
+                          AND `itemtype`='".$this->type."')";
          $result = $DB->query($query);
       }
    }

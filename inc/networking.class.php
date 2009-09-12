@@ -190,41 +190,6 @@ class Netdevice extends CommonDBTM {
             }
          }
       }
-      $query = "SELECT `id`
-                FROM `glpi_networkports`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-      while ($data = $DB->fetch_array($result)) {
-         $q = "DELETE
-               FROM `glpi_networkports_networkports`
-               WHERE `networkports_id_1` = '".$data["id"]."'
-                     OR `networkports_id_2` = '".$data["id"]."'";
-         $result2 = $DB->query($q);
-      }
-      $query = "DELETE
-                FROM `glpi_networkports`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_contracts_items`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype` = '".$this->type."'";
-      $result = $DB->query($query);
-
-      $query = "SELECT *
-                FROM `glpi_reservationsitems`
-                WHERE `itemtype` = '".$this->type."'
-                AND `items_id` = '$ID'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $rr=new ReservationItem();
-            $rr->delete(array("id"=>$DB->result($result,0,"id")));
-         }
-      }
 
       // For infocom...
       parent::cleanDBonPurge($ID);
