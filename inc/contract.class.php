@@ -61,15 +61,11 @@ class Contract extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $query2 = "DELETE
-                 FROM `glpi_contracts_suppliers`
-                 WHERE `contracts_id` = '$ID'";
-      $DB->query($query2);
+      $cs = new ContractSupplier();
+      $cs->cleanDBonItemDelete($this->type,$ID);
 
-      $query3 = "DELETE
-                 FROM `glpi_contracts_items`
-                 WHERE `contracts_id` = '$ID'";
-      $DB->query($query3);
+      $ci = new ContractItem();
+      $ci->cleanDBonItemDelete($this->type,$ID);
    }
 
    function defineTabs($ID,$withtemplate) {

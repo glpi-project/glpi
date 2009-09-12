@@ -453,11 +453,8 @@ class CommonDBTM {
 
       // If this type have CONTRACT, clean one associated to purged item
       if (in_array($this->type,$CFG_GLPI['contract_types'])) {
-         $query = "DELETE
-                   FROM `glpi_contracts_items`
-                   WHERE (`items_id` = '$ID'
-                          AND `itemtype`='".$this->type."')";
-         $result = $DB->query($query);
+         $ci = new ContractItem();
+         $ci->cleanDBonItemDelete($this->type,$ID);
       }
    }
 
@@ -1706,6 +1703,46 @@ abstract class CommonDBRelation extends CommonDBTM {
          $changes[2]="";
          historyLog ($ci2->obj->fields["id"],$ci2->obj->type,$changes,$ci1->obj->type,
                      HISTORY_DEL_RELATION);
+      }
+   }
+
+   /**
+    * Clean the Relation Table when item of the relation is deleted
+    * To be call from the cleanDBonPurge of each Item class
+    *
+    * @param $itemtype : type of the item
+    * @param $item_id : id of the item
+    */
+   function cleanDBonItemDelete ($itemtype, $item_id) {
+      global $DB;
+
+      $query = "SELECT `id`
+                FROM `".$this->table."`";
+
+      if ($itemtype==$this->itemtype_1) {
+         $where = " WHERE `".$this->items_id_1."`='$item_id'";
+      } else if (!is_numeric($this->itemtype_1)) {
+         $where = " WHERE (`".$this->itemtype_1."`='$itemtype'
+                           AND `".$this->items_id_1."`='$item_id')";
+      } else {
+         $where = '';
+      }
+
+      if ($itemtype==$this->itemtype_2) {
+         $where .= (empty($where) ? " WHERE " : " OR ");
+         $where .= " `".$this->items_id_2."`='$item_id'";
+      } else if (!is_numeric($this->itemtype_2)) {
+         $where .= (empty($where) ? " WHERE " : " OR ");
+         $where .= " (`".$this->itemtype_2."`='$itemtype'
+                      AND `".$this->items_id_2."`='$item_id')";
+      }
+
+      if (empty($where)) {
+         return false;
+      }
+      $result = $DB->query($query.$where);
+      while ($data = $DB->fetch_assoc($result)) {
+         $this->delete(array('id'=>$data['id']));
       }
    }
 }

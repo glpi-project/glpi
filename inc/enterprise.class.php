@@ -57,17 +57,11 @@ class Enterprise extends CommonDBTM {
 
       $job=new Job;
 
-      // Delete all enterprises associations from infocoms and contract
-      $query3 = "DELETE
-                 FROM `glpi_contracts_suppliers`
-                 WHERE `suppliers_id` = '$ID'";
-      $result3 = $DB->query($query3);
+      $cs = new ContractSupplier();
+      $cs->cleanDBonItemDelete($this->type,$ID);
 
-      // Delete all contact enterprise associations
-      $query2 = "DELETE
-                 FROM `glpi_contacts_suppliers`
-                 WHERE `suppliers_id` = '$ID'";
-      $result2 = $DB->query($query2);
+      $cs = new ContactSupplier();
+      $cs->cleanDBonItemDelete($this->type,$ID);
    }
 
    function defineTabs($ID,$withtemplate) {
