@@ -492,8 +492,11 @@ function updateDbUpTo031()
 			include("update_0721_0722.php");
 			update0721to0722();
       case "0.72.2":
-         include("update_0722_080.php");
-         update0722to080();
+         include("update_0722_0723.php");
+         update0722to0723();
+      case "0.72.3":
+         include("update_0723_080.php");
+         update0723to080();
       case "0.80":
 			break;
 		default:
@@ -528,8 +531,10 @@ function updateDbUpTo031()
          update072to0721();
 			include("update_0721_0722.php");
 			update0721to0722();
-         include("update_0722_080.php");
-         update0722to080();
+         include("update_0722_0723.php");
+         update0722to0723();
+         include("update_0723_080.php");
+         update0723to080();
 
 			break;
 	}
