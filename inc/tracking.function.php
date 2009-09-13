@@ -2810,34 +2810,30 @@ function computeTicketTco($itemtype,$items_id){
  * Get all available types to which a ticket can be assigned
  * 
  */
-function getAllTypesForHelpdesk()
-{
-	global $LANG, $PLUGIN_HOOKS;
-	$types = array();
+function getAllTypesForHelpdesk() {
+   global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
 
-	$array_types = array(COMPUTER_TYPE=>$LANG['help'][25],
-	 					NETWORKING_TYPE=>$LANG['help'][26],
-	  					PRINTER_TYPE=>$LANG['help'][27],
-	   					MONITOR_TYPE=>$LANG['help'][28],
-	    				PERIPHERAL_TYPE=>$LANG['help'][29],
-	     				SOFTWARE_TYPE=>$LANG['help'][31],
-	      				PHONE_TYPE=>$LANG['help'][35]);
-	
-	//Types of the plugins
-	if (isset($PLUGIN_HOOKS['assign_to_ticket'])){
-		foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
-			$types=doOneHook($plugin,'AssignToTicket',$types);
-		}	
-	}
+   $types = array();
 
-	//Types of the core (after the plugin for robustness)     				
-	foreach ($array_types as $itemtype => $label)
-		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype))
-			$types[$itemtype] = $label;
-	
-	ksort($types); // core type first... asort could be better ?
+   //Types of the plugins (keep the plugin hook for right check)
+   if (isset($PLUGIN_HOOKS['assign_to_ticket'])){
+      foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
+         $types=doOneHook($plugin,'AssignToTicket',$types);
+      }	
+   }
 
-	return $types;		 
+   //Types of the core (after the plugin for robustness)
+   $ci = new CommonItem();
+   foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+      if ($itemtype<32
+            && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype))) {
+         $ci->setType($itemtype);
+         $types[$itemtype] = $ci->getType();
+      }
+   }
+   ksort($types); // core type first... asort could be better ?
+
+   return $types;
 }
 
 /**

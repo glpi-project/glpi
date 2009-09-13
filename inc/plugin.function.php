@@ -492,7 +492,7 @@ function registerPluginType($plugin,$name,$itemtype,$attrib) {
 
       foreach (array('reservation_types','infocom_types','linkuser_types','linkgroup_types',
                      'massiveaction_noupdate_types','massiveaction_nodelete_types','doc_types',
-                     'contract_types','helpdesk_visible_types') as $att) {
+                     'contract_types','helpdesk_visible_types','helpdesk_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
          }
