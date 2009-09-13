@@ -190,6 +190,7 @@ function showDeviceContract($instID) {
 		$type=$DB->result($result, $i, "device_type");
 
 		if (haveTypeRight($type,"r")){
+         $ci->setType($type,true);
  			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD, glpi_entities.ID AS entity
 						FROM glpi_contract_device, " .$LINK_ID_TABLE[$type];
 			if ($type != ENTITY_TYPE) {	
@@ -202,14 +203,13 @@ function showDeviceContract($instID) {
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 			}						
-			$query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
+			$query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type],'','',$ci->obj->maybeRecursive())
 				." ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".name";
 
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
          $totalnb+=$nb;
-				if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
-				$ci->setType($type);
+			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
 				
 				echo "<tr class='tab_bg_1'>";
 				if ($canedit) {
@@ -222,7 +222,6 @@ function showDeviceContract($instID) {
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";				
 			} else if ($nb>0){
-				$ci->setType($type);
 				for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false){
 					$ID="";
 					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
