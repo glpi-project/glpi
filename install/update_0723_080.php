@@ -35,9 +35,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.72.2 to 0.80
+// Update from 0.72.3 to 0.80
 
-function update0722to080() {
+function update0723to080() {
 	global $DB, $LANG;
 
 	echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
@@ -2063,7 +2063,7 @@ function update0722to080() {
         UNIQUE KEY `unicity` (`plugin`,`name`)
       ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
         COMMENT='Task run by internal / external cron.';";
-      $DB->query($query) or die("0.72 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_crontasks` (`id`, `plugin`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
          (1, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
@@ -2078,12 +2078,12 @@ function update0722to080() {
          (10, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (11, NULL, 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (12, NULL, 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
-      $DB->query($query) or die("0.72 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_displayprefs` (`itemtype`, `num`, `rank`, `users_id`)
          VALUES (49, 8, 1, 0), (49, 3, 2, 0),
                 (49, 4, 3, 0),  (49, 7, 4, 0);";
-      $DB->query($query) or die("0.72 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 
    if (!TableExists('glpi_crontaskslogs')){
@@ -2101,7 +2101,7 @@ function update0722to080() {
         KEY `crontasklogs_id` (`crontaskslogs_id`),
         KEY `crontaskslogs_id_state` (`crontaskslogs_id`,`state`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
-      $DB->query($query) or die("0.72 create glpi_crontaskslogs" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 create glpi_crontaskslogs" . $LANG['update'][90] . $DB->error());
    }
    // Retrieve core task lastrun date
    $tasks=array('ocsng','cartridge','consumable','software','contract','infocom',
