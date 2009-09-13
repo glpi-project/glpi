@@ -212,6 +212,7 @@ function showItemContract($instID) {
    while ($i < $number) {
       $itemtype=$DB->result($result, $i, "itemtype");
       if (haveTypeRight($itemtype,"r")) {
+         $ci->setType($itemtype,true);
          $query = "SELECT `".$LINK_ID_TABLE[$itemtype]."`.*, `glpi_contracts_items`.`id` AS IDD,
                           `glpi_entities`.`id` AS entity
                    FROM `glpi_contracts_items`, `" .$LINK_ID_TABLE[$itemtype]."`";
@@ -226,12 +227,12 @@ function showItemContract($instID) {
          if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
             $query.=" AND `".$LINK_ID_TABLE[$itemtype]."`.`is_template`='0'";
          }
-         $query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])."
+         $query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype],'','',
+                                              $ci->obj->maybeRecursive())."
                    ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`name`";
 
          $result_linked=$DB->query($query);
          $nb=$DB->numrows($result_linked);
-         $ci->setType($itemtype);
          if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
