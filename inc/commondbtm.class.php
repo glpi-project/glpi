@@ -309,6 +309,7 @@ class CommonDBTM {
          $this->cleanDBonPurge($ID);
          $this->cleanHistory($ID);
          $this->cleanRelationData($ID);
+         $this->cleanRelationTable($ID);
 
          $query = "DELETE
                    FROM `".$this->table."`
@@ -358,6 +359,7 @@ class CommonDBTM {
 
    /**
    * Clean data in the tables which have linked the deleted item
+   * Clear 1/N Relation
    *
    *@param $ID ID of the item
    *
@@ -365,7 +367,7 @@ class CommonDBTM {
    *
    **/
    function cleanRelationData($ID) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $RELATION=getDbRelations();
       if (isset($RELATION[$this->table])) {
@@ -385,6 +387,32 @@ class CommonDBTM {
                              WHERE `$f`='$ID' ";
                      $DB->query($query);
                   }
+               }
+            }
+         }
+      }
+      
+      // Clean ticket open against the item
+      if (in_array($this->type,$CFG_GLPI["helpdesk_types"])) {
+         $job=new Job;
+   
+         $query = "SELECT *
+                   FROM `glpi_tickets`
+                   WHERE `items_id` = '$ID'
+                     AND `itemtype`='".$this->type."'";
+         $result = $DB->query($query);
+   
+         if ($DB->numrows($result)) {
+            while ($data=$DB->fetch_array($result)) {
+               if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
+                  // TODO : use update method for history/notify ? check state != old ?
+                  $query = "UPDATE
+                            `glpi_tickets`
+                            SET `items_id` = '0', `itemtype` = '0'
+                            WHERE `id`='".$data["id"]."';";
+                  $DB->query($query);
+               } else {
+                   $job->delete(array("id"=>$data["id"]));
                }
             }
          }
@@ -410,6 +438,14 @@ class CommonDBTM {
    *@return nothing
    **/
    function cleanDBonPurge($ID) {
+   }
+   
+   /**
+    * Clean the date in the relation tables for the deleted item
+    * Clear N/N Relation
+    * 
+    */
+   function cleanRelationTable ($ID) {
       global $CFG_GLPI, $DB;
 
       // If this type have INFOCOM, clean one associated to purged item

@@ -458,28 +458,6 @@ class Computer extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI;
 
-      $job=new Job;
-
-      $query = "SELECT *
-                FROM `glpi_tickets`
-                WHERE (`items_id` = '$ID'
-                      AND `itemtype`='".$this->type."')";
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_array($result)) {
-            if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
-               $query = "UPDATE
-                         `glpi_tickets`
-                         SET `items_id` = '0', `itemtype` = '0'
-                         WHERE `id`='".$data["id"]."';";
-               $DB->query($query);
-            } else {
-                $job->delete(array("id"=>$data["id"]));
-            }
-         }
-      }
-
       $query = "DELETE
                 FROM `glpi_computers_softwaresversions`
                 WHERE `computers_id` = '$ID'";
@@ -516,9 +494,6 @@ class Computer extends CommonDBTM {
                 FROM `glpi_computersdisks`
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
-
-      // For infocom...
-      parent::cleanDBonPurge($ID);
    }
 
    /**

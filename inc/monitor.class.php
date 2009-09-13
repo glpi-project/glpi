@@ -150,27 +150,6 @@ class Monitor extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI;
 
-      $job =new Job();
-      $query = "SELECT *
-                FROM `glpi_tickets`
-                WHERE `items_id` = '$ID'
-                      AND `itemtype`='".$this->type."'";
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_array($result)) {
-            if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
-               $query = "UPDATE
-                         `glpi_tickets`
-                         SET `items_id` = '0', `itemtype` = '0'
-                         WHERE `id` = '".$data["id"]."'";
-               $DB->query($query);
-            } else {
-               $job->delete(array("id"=>$data["id"]));
-            }
-         }
-      }
-
       $query = "SELECT *
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->type."'
@@ -184,9 +163,6 @@ class Monitor extends CommonDBTM {
             }
          }
       }
-
-      // For infocom...
-      parent::cleanDBonPurge($ID);
    }
 
    /**
