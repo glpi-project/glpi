@@ -252,18 +252,17 @@ class OcsAffectEntityRule extends Rule {
 
 		if ($canedit) {
 
-			echo "<div class='center'>";
-			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='4'>" .  $LANG['rulesengine'][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
-			echo $LANG['common'][16] . ":";
-			echo "</td><td align='center' class='tab_bg_2'>";
-			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 40);
-			echo $LANG['joblist'][6] . ":";
-			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 40);
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG['rulesengine'][9] . ":";
-			$this->dropdownRulesMatch("match", "AND");
-			echo "</td><td align='center' class='tab_bg_2'>";
+         echo "<div class='center'>";
+         echo "<table  class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>" .  $LANG['rulesengine'][18] . "</th></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".$LANG['common'][16] . "&nbsp;:&nbsp;";
+         autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 33);
+         echo "&nbsp;&nbsp;&nbsp;".$LANG['joblist'][6] . "&nbsp;:&nbsp;";
+         autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 33);
+         echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
+         $this->dropdownRulesMatch("match", "AND");
+         echo "</td><td class='tab_bg_2 center'>";
 			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
