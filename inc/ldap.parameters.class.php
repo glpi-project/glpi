@@ -82,14 +82,14 @@ class LdapCriteria extends CommonDBTM {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG['ruleldap'][3] . "</tr>";
-         echo "<tr><td class='tab_bg_2 center'>";
-         echo "</td><td class='tab_bg_2 center'>";
-         echo $LANG['common'][16] . "&nbsp;:";
+         echo "<tr><th colspan='3'>" .$LANG['ruleldap'][3] . "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='center'>".$LANG['common'][16] . "&nbsp;:&nbsp";
          autocompletionTextField("name", $this->table, "name", "", 40);
-         echo $LANG['setup'][601] . "&nbsp;:";
+         echo "</td><td>".$LANG['setup'][601] . "&nbsp;:&nbsp";
          autocompletionTextField("value", $this->table, "value", "", 40);
-         echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
+         echo "</td><td><input type='submit' name='add' value=\"" . $LANG['buttons'][8] .
+                     "\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div><br>";
       }
@@ -97,7 +97,7 @@ class LdapCriteria extends CommonDBTM {
       if (!count($parameters)) {
          echo "<center>".$LANG['ruleldap'][2]."</center>";
       } else {
-         echo "<div class='center'><table class='tab_cadrehov'>";
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . $LANG['common'][53]." ".$LANG['ruleldap'][1] . "</th></tr>";
          echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" . $LANG['common'][16]."</td>";
          echo "<td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
@@ -121,7 +121,7 @@ class LdapCriteria extends CommonDBTM {
 
          if ($canedit) {
             echo "<div class='center'>";
-            echo "<table width='80%'>";
+            echo "<table class='tab_glpi' width='77%'>";
             echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''>";
             echo "</td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" .

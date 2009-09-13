@@ -267,7 +267,7 @@ class OcsAffectEntityRule extends Rule {
       echo "<tr><th colspan='3'>" . $LANG['entity'][5] . "</th></tr>\n";
 
       //Get all rules and actions
-      $rules = $this->getRulesByID( $ID, 0, 1);
+      $rules = $this->getRulesForEntity( $ID, 0, 1);
       if (!empty ($rules)) {
          initNavigateListItems(RULE_TYPE, $LANG['entity'][0]."=".getDropdownName("glpi_entities",$ID),
                                $this->sub_type);
@@ -317,22 +317,22 @@ class OcsAffectEntityRule extends Rule {
 
    /**
     * Return all rules from database
-    * @param $ID ID of the rules
+    * @param $ID of rules => @param $ID of entity
     * @param withcriterias import rules criterias too
     * @param withactions import rules actions too
     */
-   function getRulesByID($ID, $withcriterias, $withactions) {
+   function getRulesForEntity($ID, $withcriterias, $withactions) {
       global $DB;
 
       $ocs_affect_computer_rules = array ();
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
-      $sql = "SELECT *
-              FROM `glpi_rulesactions` AS gra, `glpi_rules` AS grd
-              WHERE `gra`.`rules_id` = `grd`.`id`
-                    AND `gra`.`field` = 'entities_id'
-                    AND `grd`.`sub_type` = '".$this->sub_type."'
-                    AND `gra`.`value` = '$ID'";
+      $sql = "SELECT `glpi_rules`.`id`
+              FROM `glpi_rulesactions`, `glpi_rules`
+              WHERE `glpi_rulesactions`.`rules_id` = `glpi_rules`.`id`
+                    AND `glpi_rulesactions`.`field` = 'entities_id'
+                    AND `glpi_rules`.`sub_type` = '".$this->sub_type."'
+                    AND `glpi_rulesactions`.`value` = '$ID'";
 
       $result = $DB->query($sql);
       while ($rule = $DB->fetch_array($result)) {

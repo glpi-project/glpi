@@ -48,7 +48,7 @@ if (isset($_GET["action"])){
 	$rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["action"])){
-	checkRight($rulecollection->right,"w");	
+	checkRight($rulecollection->right,"w");
 
 	// Use massive action system
 	switch ($_POST["action"]){
@@ -83,20 +83,20 @@ if (isset($_GET["action"])){
 					}
 				}
 			}
-		break;		
+		break;
 	}
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])){
 
-	checkRight($rulecollection->right,"w");	
+	checkRight($rulecollection->right,"w");
 
 	// Current time
 	$start = explode(" ",microtime());
 	$start = $start[0]+$start[1];
-	
+
 	// Limit computed from current time
 	$max = get_cfg_var("max_execution_time");
 	$max = $start + ($max>0 ? $max/2.0 : 30.0);
-	
+
 	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
 
 	if (!(isset($_POST['replay_confirm']) || isset($_GET['offset'])) && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
@@ -104,7 +104,7 @@ if (isset($_GET["action"])){
 		exit();
 	}
 
-	echo "<div class='center'>"; 
+	echo "<div class='center'>";
 	echo "<table class='tab_cadrehov'>";
 
 	echo "<tr><th><div class='relative'><span><strong>" .$rulecollection->getTitle(). "</strong></span>";
@@ -114,9 +114,9 @@ if (isset($_GET["action"])){
 	echo "</td></tr>\n";
 	echo "</table>";
 	echo "</div>";
-	
+
 	if (!isset($_GET['offset'])) {
-		// First run		
+		// First run
 		$offset = $rulecollection->replayRulesOnExistingDB(0,$max,array(),$_POST);
 		$manufacturer = (isset($_POST["manufacturer"]) ? $_POST["manufacturer"] : 0);
 	} else {
@@ -133,7 +133,7 @@ if (isset($_GET["action"])){
 		$end=explode(" ",microtime());
 		$duree=round($end[0]+$end[1]-$start);
 
-		changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).")");		
+		changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).")");
 		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
 	} else {
 		// Need more work
@@ -146,6 +146,7 @@ if (isset($_GET["action"])){
 
 commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
 
+$rulecollection->title();
 $rulecollection->showForm($_SERVER['PHP_SELF']);
 commonFooter();
 ?>
