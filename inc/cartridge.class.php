@@ -67,9 +67,6 @@ class CartridgeType extends CommonDBTM {
                  FROM `glpi_cartridges_printersmodels`
                  WHERE `cartridgesitems_id` = '$ID'";
       $result2 = $DB->query($query2);
-
-      // For infocom...
-      parent::cleanDBonPurge($ID);
    }
 
    function post_getEmpty () {
