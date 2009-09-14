@@ -62,9 +62,19 @@ class Profile extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
-      $ong[1]=$LANG['common'][12];
-      if ($ID && haveRight("user","r")) {
-         $ong[2]=$LANG['Menu'][14];
+      if (!$ID) {
+         $ong[1]=$LANG['common'][12];
+
+      } else if ($this->fields['interface']=='helpdesk') {
+         $ong[1]=$LANG['Menu'][31]; // Helpdesk
+
+      } else {
+         $ong[1]=$LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
+         $ong[2]=$LANG['title'][24]; // Assistance
+         $ong[3]=$LANG['Menu'][15].'/'.$LANG['common'][12]; // Administration/Setup
+         if (haveRight("user","r")) {
+            $ong[4]=$LANG['Menu'][14];
+         }
       }
       return $ong;
    }
@@ -242,6 +252,13 @@ class Profile extends CommonDBTM {
       echo "</table>\n";
    }
 
+   function post_getEmpty () {
+      global $LANG;
+
+      $this->fields["interface"]="helpdesk";
+      $this->fields["name"]=$LANG['common'][0];
+   }
+
    /**
     * Print the profile form headers
     *
@@ -251,7 +268,7 @@ class Profile extends CommonDBTM {
     *
     *@return boolean item found
     **/
-   function showForm($target,$ID, $withtemplate='') {
+   function showForm($target, $ID, $withtemplate='') {
       global $LANG,$CFG_GLPI;
 
       if (!haveRight("profile","r")) {
@@ -263,80 +280,61 @@ class Profile extends CommonDBTM {
          $this->getFromDB($ID);
       } else {
          $this->getEmpty();
-         $onfocus="onfocus=\"if (this.value=='".$LANG['common'][0]."') this.value='';\"";
+         $onfocus="onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
          $new=true;
       }
 
       $rand=mt_rand();
 
-      if (empty($this->fields["interface"])) {
-         $this->fields["interface"]="helpdesk";
-      }
-      if (empty($this->fields["name"])) {
-         $this->fields["name"]=$LANG['common'][0];
-      }
-      echo "<form name='form' method='post' action=\"$target\">\n";
-      echo "<div class='center' id='tabsbody' >";
-      echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".$LANG['common'][16]."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;";
-      echo "<input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>\n";
-      echo "<th>".$LANG['profiles'][2]."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;";
-      echo "<select name='interface' ".($new?"":"onchange='submit()'").">";
+      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showFormHeader($target,$ID,$withtemplate,2);
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></td>";
+
+      echo "<td>".$LANG['profiles'][13]."&nbsp;:</td><td>";
+      dropdownYesNo("is_default",$this->fields["is_default"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][2]."&nbsp;:</td><td>";
+      //echo "<select name='interface' ".($new?"":"onchange='submit()'").">";
+      echo "<select name='interface'>";
       echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
              $LANG['Menu'][31]."</option>\n";
       echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".
              $LANG['title'][0]."</option>";
-      echo "</select></th>\n";
-      echo "<th>".$LANG['profiles'][13]."&nbsp;:&nbsp;&nbsp;";
-      dropdownYesNo("is_default",$this->fields["is_default"]);
-      echo "</th>";
+      echo "</select></td>";
 
-      echo "</tr></table></div>";
+      echo "<td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
+      dropdownYesNo("password_update",$this->fields["password_update"]);
+      echo "</td></tr>\n";
 
-      echo "<div class='center' id='profile_form$rand'>";
-      if (!empty($ID) && $ID) {
-         if ($this->fields["interface"]=="helpdesk") {
-            $this->showHelpdeskForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$ID);
-         } else {
-            $this->showCentralForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$ID);
-         }
-         $this->showLegend();
-      } else {
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-      }
-      echo "</div></form>";
+      $this->showFormButtons($ID,$withtemplate,2);
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
       return true;
    }
 
    /**
-    * Print the helpdesk form for a profile
+    * Print the helpdesk right form for the current profile
     *
-    *@param $ID Integer : Id of the item to print
-    *
-    *@return boolean item found
+    * @param $target of the form
     **/
-   function showHelpdeskForm($target,$ID) {
+   function showFormHelpdesk($target) {
       global $LANG,$CFG_GLPI;
+
+      $ID = $this->fields['id'];
 
       if (!haveRight("profile","r")) {
          return false;
       }
-      $canedit=haveRight("profile","w");
-      if ($ID) {
-         $this->getFromDB($ID);
-      } else {
-         return false;
+      if ($canedit=haveRight("profile","w")) {
+         echo "<form method='post' action='$target'>";
       }
-      echo "\n<table class='tab_cadre_fixe'><tr>";
-      echo "<th colspan='4' height='25'>- ".$LANG['profiles'][3]." -</th></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>".$LANG['profiles'][25]."</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][24]."&nbsp;:</td><td colspan='3'>";
-      dropdownYesNo("password_update",$this->fields["password_update"]);
-      echo "</td></tr>\n";
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>".$LANG['title'][24]."</strong></td></tr>\n";
@@ -410,41 +408,34 @@ class Profile extends CommonDBTM {
 
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>";
+         echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-         echo "</td><td colspan='2' class='center'>";
-         echo "<input type='submit' name='delete' onclick=\"return confirm('".
-                $LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
          echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
       }
-      echo "</table>";
    }
 
    /**
-    * Print the central form for a profile
+    * Print the Inventory/Management/Toolsd right form for the current profile
     *
-    *@param $ID Integer : Id of the item to print
-    *
-    *@return boolean item found
+    * @param $target of the form
     **/
-   function showCentralForm($target,$ID) {
+   function showFormInventory($target) {
       global $LANG,$CFG_GLPI;
+
+      $ID = $this->fields['id'];
 
       if (!haveRight("profile","r")) {
          return false;
       }
-      $canedit=haveRight("profile","w");
-
-      if ($ID) {
-         $this->getFromDB($ID);
-      } else {
-         return false;
+      if ($canedit=haveRight("profile","w")) {
+         echo "<form method='post' action='$target'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr>";
-      echo "<th colspan='6' height='25'>- ".$LANG['profiles'][4]." -</th></tr>\n";
 
       // Inventory
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
@@ -483,26 +474,6 @@ class Profile extends CommonDBTM {
       dropdownNoneReadWrite("peripheral",$this->fields["peripheral"],1,1,1);
       echo "</td></tr>\n";
 
-      // General
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-      echo "<strong>".$LANG['profiles'][25]."</strong></td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['title'][37]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("notes",$this->fields["notes"],1,1,1);
-      echo "</td>";
-      echo "<td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
-      dropdownYesNo("password_update",$this->fields["password_update"]);
-      echo "</td>";
-      echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['bookmark'][5]."&nbsp;:</td><td colspan='5'>";
-      dropdownNoneReadWrite("bookmark_public",$this->fields["bookmark_public"],1,1,1);
-      echo "</td></tr>\n";
-
       // Gestion / Management
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
       echo "<strong>".$LANG['Menu'][26]."</strong></td></tr>";
@@ -525,6 +496,82 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td colspan='3'>";
       dropdownNoneReadWrite("budget",$this->fields["budget"],1,1,1);
       echo "</td></tr>\n";
+
+      // Outils / Tools
+      echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
+      echo "<strong>".$LANG['Menu'][18]."</strong></td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['title'][37]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("notes",$this->fields["notes"],1,1,1);
+      echo "</td>";
+      echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
+      echo "</td>";
+      echo "<td>".$LANG['bookmark'][5]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("bookmark_public",$this->fields["bookmark_public"],1,1,1);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['knowbase'][1]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,1);
+      echo "</td>";
+      echo "<td>".$LANG['Menu'][6]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("reports",$this->fields["reports"],1,1,0);
+      echo "</td>";
+      echo "<td>".$LANG['Menu'][17]."&nbsp;:</td><td>";
+      dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['title'][5]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][23]."&nbsp;:</td><td colspan='3'>";
+      dropdownNoneReadWrite("reservation_central",$this->fields["reservation_central"],1,1,1);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['Menu'][33]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("ocsng",$this->fields["ocsng"],1,0,1);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][31]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("sync_ocsng",$this->fields["sync_ocsng"],1,0,1);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][30]."&nbsp;:</td><td>";
+      dropdownNoneReadWrite("view_ocsng",$this->fields["view_ocsng"],1,1,0);
+      echo "</td></tr>\n";
+
+      if ($canedit) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value=$ID>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
+      }
+   }
+
+   /**
+    * Print the Tracking right form for the current profile
+    *
+    * @param $target of the form
+    **/
+   function showFormTracking($target) {
+      global $LANG,$CFG_GLPI;
+
+      $ID = $this->fields['id'];
+
+      if (!haveRight("profile","r")) {
+         return false;
+      }
+      if ($canedit=haveRight("profile","w")) {
+         echo "<form method='post' action='$target'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
 
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
@@ -640,39 +687,37 @@ class Profile extends CommonDBTM {
       dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
-      // Outils / Tools
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-      echo "<strong>".$LANG['Menu'][18]."</strong></td></tr>\n";
+      if ($canedit) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value=$ID>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
+      }
+   }
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='tab_bg_4'>".$LANG['knowbase'][1]."&nbsp;:</td><td class='tab_bg_4'>";
-      dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,1);
-      echo "</td>";
-      echo "<td>".$LANG['Menu'][6]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("reports",$this->fields["reports"],1,1,0);
-      echo "</td>";
-      echo "<td>".$LANG['Menu'][17]."&nbsp;:</td><td>";
-      dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
-      echo "</td></tr>\n";
+   /**
+    * Print the central form for a profile
+    *
+    * @param $target of the form
+    *
+    **/
+   function showFormAdmin($target) {
+      global $LANG,$CFG_GLPI;
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='tab_bg_4'>".$LANG['title'][5]."&nbsp;:</td><td class='tab_bg_4'>";
-      dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
-      echo "</td>";
-      echo "<td>".$LANG['profiles'][23]."&nbsp;:</td><td colspan='3'>";
-      dropdownNoneReadWrite("reservation_central",$this->fields["reservation_central"],1,1,1);
-      echo "</td></tr>\n";
+      $ID = $this->fields['id'];
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td  class='tab_bg_4'>".$LANG['Menu'][33]."&nbsp;:</td><td class='tab_bg_4'>";
-      dropdownNoneReadWrite("ocsng",$this->fields["ocsng"],1,0,1);
-      echo "</td>";
-      echo "<td>".$LANG['profiles'][31]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("sync_ocsng",$this->fields["sync_ocsng"],1,0,1);
-      echo "</td>";
-      echo "<td>".$LANG['profiles'][30]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("view_ocsng",$this->fields["view_ocsng"],1,1,0);
-      echo "</td></tr>\n";
+      if (!haveRight("profile","r")) {
+         return false;
+      }
+      if ($canedit=haveRight("profile","w")) {
+         echo "<form method='post' action='$target'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'><tr>";
 
       // Administration
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
@@ -776,17 +821,17 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='3' class='center'>";
-         echo "<input type='hidden' name='id' value='$ID'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value=$ID>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-         echo "</td><td colspan='3' class='center'>";
-         echo "<input type='submit' name='delete' onclick=\"return confirm('".
-               $LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
          echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
       }
-      echo "</table>\n";
-   }
 
+      $this->showLegend();
+   }
 }
 ?>
