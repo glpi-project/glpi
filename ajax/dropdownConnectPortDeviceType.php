@@ -35,7 +35,7 @@
 
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
+
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -43,10 +43,9 @@ header_nocache();
 checkRight("networking","w");
 
 // Make a select box
-
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
-
+   
 	$rand=mt_rand();
 
 	$use_ajax=true;
