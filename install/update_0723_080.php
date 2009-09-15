@@ -1868,6 +1868,8 @@ function update0723to080() {
                            'FK_group'=>'groups_id','assign'=>'users_id_assign',
                            'assign_group'=>'groups_id_assign','device_type'=>'itemtype',
                            'FK_entities'=>'entities_id','contents'=>'content',);
+
+   $DB->query("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(id) FROM glpi_rules WHERE sub_type=".$ruletype." GROUP BY sub_type;";
