@@ -58,6 +58,23 @@ if (isset($_GET['reset'])&&$_GET['reset']=="reset_before") {
 	}
 if (isset($_GET['reset'])) unset($_SESSION['tickets_id']);
 
+// Default boookmark
+if (!isset($_SESSION['tickets_id'])){
+      $query="SELECT bookmarks_id
+			FROM glpi_bookmarks_users
+			WHERE users_id='".$_SESSION['glpiID']."'
+				AND itemtype='".TRACKING_TYPE."';";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)>0){
+				$IDtoload=$DB->result($result,0,0);
+				// Load bookmark on main window
+				$bookmark=new Bookmark();
+				$bookmark->load($IDtoload,false);
+			}
+		}
+}
+
+
 if (isset($_SESSION['tickets_id'])&&is_array($_SESSION['tickets_id']))
 foreach ($_SESSION['tickets_id'] as $key => $val)
 if (!isset($_GET[$key])) $_GET[$key]=$val;
