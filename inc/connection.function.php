@@ -203,31 +203,31 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 			if (!$device->getField('is_global')){
 				
 				$updates=array();
-				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')){
+				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')  && isset($dev->obj->fields['location'])){
 					$updates[]="location";
 					$device->obj->fields['location']=0;
 				}
-				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')) {
+				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')  && isset($dev->obj->fields['FK_users'])) {
 					$updates[]="FK_users";
 					$device->obj->fields['FK_users']=0;	
 				}
-				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
+				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')  && isset($dev->obj->fields['FK_groups'])){
 					$updates[]="FK_groups";
 					$device->obj->fields['FK_groups']=0;
 				}
-				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
+				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')  && isset($dev->obj->fields['contact'])){
 					$updates[]="contact";
 					$device->obj->fields['contact']="";
 				}
-				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')){
+				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')  && isset($dev->obj->fields['contact_num'])){
 					$updates[]="contact_num";
 					$device->obj->fields['contact_num']="";
 				}
-				if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')) {
+				if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')  && isset($dev->obj->fields['state'])) {
 					$updates[]="state";
 					$device->obj->fields['state']=0;	
 				}
-				if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
+				if ($CFG_GLPI["autoclean_link_state"]>0   && isset($dev->obj->fields['state']) && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
 					$updates[]="state";
 					$device->obj->fields['state']=$CFG_GLPI["autoclean_link_state"];	
 				}
@@ -357,11 +357,11 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 		}
 		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['FK_users']!=$dev->getField('FK_users'))
 		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
-			if ($CFG_GLPI["autoupdate_link_user"]){
+			if ($CFG_GLPI["autoupdate_link_user"] && isset($dev->obj->fields['FK_users'])){
 				$updates[]="FK_users";
 				$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
 			}
-			if ($CFG_GLPI["autoupdate_link_group"]){
+			if ($CFG_GLPI["autoupdate_link_group"] && isset($dev->obj->fields['FK_groups'])){
 				$updates[]="FK_groups";
 				$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
 			}
@@ -370,7 +370,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 		}
 
 		if ($CFG_GLPI["autoupdate_link_contact"]
-		&&($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num'))){
+		 && isset($dev->obj->fields['contact']) && ($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num'))){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
 			$dev->obj->fields['contact']=addslashes($comp->fields['contact']);
@@ -378,13 +378,13 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][49],true);
 		}
-		if ($CFG_GLPI["autoupdate_link_state"]<0 && $comp->fields['state']!=$dev->getField('state')) {
+		if ($CFG_GLPI["autoupdate_link_state"]<0  && isset($dev->obj->fields['state']) && $comp->fields['state']!=$dev->getField('state')) {
 			$updates[0]="state";
 			$dev->obj->fields['state']=$comp->fields['state'];
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][56],true);
 		}
-		if ($CFG_GLPI["autoupdate_link_state"]>0 && $dev->getField('state')!=$CFG_GLPI["autoupdate_link_state"]) {
+		if ($CFG_GLPI["autoupdate_link_state"]>0  && isset($dev->obj->fields['state']) && $dev->getField('state')!=$CFG_GLPI["autoupdate_link_state"]) {
 			$updates[0]="state";
 			$dev->obj->fields['state']=$CFG_GLPI["autoupdate_link_state"];
 			$dev->obj->updateInDB($updates);
