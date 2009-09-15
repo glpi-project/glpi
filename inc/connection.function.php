@@ -196,32 +196,46 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocsservers_id=0) {
       if ($doautoactions) {
          if (!$device->getField('is_global')) {
             $updates=array();
-            if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')) {
+            if ($CFG_GLPI["is_location_autoclean"] 
+               && $device->getField('locations_id') 
+                  && isset($dev->obj->fields['location_id'])) {
                $updates[]="locations_id";
                $device->obj->fields['locations_id']=0;
             }
-            if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
+            if ($CFG_GLPI["is_user_autoclean"] 
+               && $device->getField('users_id') 
+                  && isset($dev->obj->fields['users_id'])) {
                $updates[]="users_id";
                $device->obj->fields['users_id']=0;
             }
-            if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')) {
+            if ($CFG_GLPI["is_group_autoclean"] 
+               && $device->getField('groups_id') 
+                  && isset($dev->obj->fields['groups_id'])) {
                $updates[]="groups_id";
                $device->obj->fields['groups_id']=0;
             }
-            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')) {
+            if ($CFG_GLPI["is_contact_autoclean"] 
+               && $device->getField('contact') 
+                  && isset($dev->obj->fields['contact_id'])) {
                $updates[]="contact";
                $device->obj->fields['contact']="";
             }
-            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')) {
+            if ($CFG_GLPI["is_contact_autoclean"] 
+               && $device->getField('contact_num') 
+                  && isset($dev->obj->fields['contact_num'])) {
                $updates[]="contact_num";
                $device->obj->fields['contact_num']="";
             }
-            if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->getField('states_id')) {
+            if ($CFG_GLPI["state_autoclean_mode"]<0 
+               && isset($dev->obj->fields['state']) 
+                  && $device->getField('states_id') 
+                     && isset($dev->obj->fields['states_id'])) {
                $updates[]="states_id";
                $device->obj->fields['states_id']=0;
             }
             if ($CFG_GLPI["state_autoclean_mode"]>0
-                && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
+                && isset($dev->obj->fields['state'])
+                  && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
                $updates[]="states_id";
                $device->obj->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
             }
@@ -337,21 +351,26 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
          historyLog ($sID,$itemtype,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
       }
       if ($CFG_GLPI["is_location_autoupdate"]
-          && $comp->fields['locations_id'] != $dev->getField('locations_id')){
+          && isset($dev->obj->fields['locations_id'])
+            && $comp->fields['locations_id'] != $dev->getField('locations_id')){
          $updates[0]="locations_id";
          $dev->obj->fields['locations_id']=addslashes($comp->fields['locations_id']);
          $dev->obj->updateInDB($updates);
          addMessageAfterRedirect($LANG['computers'][48],true);
       }
       if (($CFG_GLPI["is_user_autoupdate"]
-           && $comp->fields['users_id'] != $dev->getField('users_id'))
-          || ($CFG_GLPI["is_group_autoupdate"]
-              && $comp->fields['groups_id'] != $dev->getField('groups_id'))) {
-         if ($CFG_GLPI["is_user_autoupdate"]) {
+           && isset($dev->obj->fields['users_id'])
+            && $comp->fields['users_id'] != $dev->getField('users_id'))
+               || ($CFG_GLPI["is_group_autoupdate"]
+                  && isset($dev->obj->fields['groups_id'])
+                     && $comp->fields['groups_id'] != $dev->getField('groups_id'))) {
+         if ($CFG_GLPI["is_user_autoupdate"]
+            && isset($dev->obj->fields['users_id'])) {
             $updates[]="users_id";
             $dev->obj->fields['users_id']=$comp->fields['users_id'];
          }
-         if ($CFG_GLPI["is_group_autoupdate"]) {
+         if ($CFG_GLPI["is_group_autoupdate"]
+            && isset($dev->obj->fields['groups_id'])) {
             $updates[]="groups_id";
             $dev->obj->fields['groups_id']=$comp->fields['groups_id'];
          }
@@ -360,8 +379,10 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
       }
 
       if ($CFG_GLPI["is_contact_autoupdate"]
-          && ($comp->fields['contact'] != $dev->getField('contact')
-              || $comp->fields['contact_num'] != $dev->getField('contact_num'))) {
+          && isset($dev->obj->fields['contact'])
+            && ($comp->fields['contact'] != $dev->getField('contact')
+                 || $comp->fields['contact_num'] != $dev->getField('contact_num')
+                     && isset($dev->obj->fields['contact_num']))) {
          $updates[0]="contact";
          $updates[1]="contact_num";
          $dev->obj->fields['contact']=addslashes($comp->fields['contact']);
@@ -370,14 +391,16 @@ function Connect($sID,$computers_id,$itemtype,$dohistory=1) {
          addMessageAfterRedirect($LANG['computers'][49],true);
       }
       if ($CFG_GLPI["state_autoupdate_mode"]<0
-          && $comp->fields['states_id'] != $dev->getField('states_id')) {
+          && $comp->fields['states_id'] != $dev->getField('states_id')
+            && isset($dev->obj->fields['states_id'])) {
          $updates[0]="states_id";
          $dev->obj->fields['states_id']=$comp->fields['states_id'];
          $dev->obj->updateInDB($updates);
          addMessageAfterRedirect($LANG['computers'][56],true);
       }
       if ($CFG_GLPI["state_autoupdate_mode"]>0
-          && $dev->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"]) {
+          && isset($dev->obj->fields['states_id'])
+            && $dev->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"]) {
          $updates[0]="states_id";
          $dev->obj->fields['states_id']=$CFG_GLPI["state_autoupdate_mode"];
          $dev->obj->updateInDB($updates);
