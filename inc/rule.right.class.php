@@ -411,9 +411,11 @@ class RightRuleCollection extends RuleCollection {
          unset($output["_ldap_rules"]);
       }
       foreach ($output as $criteria => $value) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='center'>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
-         echo "<td class='center'>".$rule->getActionValue($criteria,$value)."</td></tr>\n";
+         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) { // ignore _* fields
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center'>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
+            echo "<td class='center'>".$rule->getActionValue($criteria,$value)."</td></tr>\n";
+         }
       }
       echo "</tr>";
    }
