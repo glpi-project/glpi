@@ -335,6 +335,16 @@ class User extends CommonDBTM {
 				}
 			}
 		}
+      // Get auth method fo sync ldap groups if needed
+      /// TODO : review it : maybe do it on post actions
+      if (!isset($input["auth_method"])){
+         $this->getFromDB($input['ID']);
+         $input["auth_method"]=$this->fields['auth_method'];
+         if (!isset($input["id_auth"])){
+            $input["id_auth"]=$this->fields['id_auth'];
+         }
+      }
+
 		$this->syncLdapGroups($input);
 
 		$this->applyRightRules($input);
@@ -441,7 +451,7 @@ class User extends CommonDBTM {
 		if (isset($input["auth_method"])&&($input["auth_method"]==AUTH_LDAP || isAlternateAuthWithLdap($input['auth_method']))){
 			if (isset ($input["ID"]) && $input["ID"]>0) {
 				$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-				
+
 				if (count($auth_method)){
 					if (!isset($input["_groups"])){
 						$input["_groups"]=array();
