@@ -55,6 +55,22 @@ if (isset($_GET['reset'])&&$_GET['reset']=="reset_before") {
 	}
 if (isset($_GET['reset'])) unset($_SESSION['tracking']);
 
+// Default boookmark
+if (!isset($_SESSION['tracking'])){
+		$query="SELECT FK_bookmark
+			FROM glpi_display_default
+			WHERE FK_users='".$_SESSION['glpiID']."'
+				AND device_type='".TRACKING_TYPE."';";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)>0){
+				$IDtoload=$DB->result($result,0,0);
+				// Load bookmark on main window
+				$bookmark=new Bookmark();
+				$bookmark->load($IDtoload,false);
+			}
+		}
+}
+
 if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
 foreach ($_SESSION['tracking'] as $key => $val)
 if (!isset($_GET[$key])) $_GET[$key]=$val;
