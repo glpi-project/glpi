@@ -485,52 +485,52 @@ class RightRuleCollection extends RuleCollection {
       if ($params["type"] == "LDAP") {
          //Get all the field to retrieve to be able to process rule matching
          $rule_fields = $this->getFieldsToLookFor();
+
          //Get all the datas we need from ldap to process the rules
          $sz = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*", $rule_fields);
          $rule_input = ldap_get_entries($params["connection"], $sz);
+
          if (count($rule_input)) {
             if (isset($input)) {
                $groups = $input;
             } else {
                $groups = array();
-               $rule_input = $rule_input[0];
-               //Get all the ldap fields
-               $fields = $this->getFieldsForQuery();
-               foreach ($fields as $field) {
-                  switch(utf8_strtoupper($field)) {
-                     case "LDAP_SERVER" :
-                        $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
-                        break;
+            }
+            $rule_input = $rule_input[0];
+            //Get all the ldap fields
+            $fields = $this->getFieldsForQuery();
+            foreach ($fields as $field) {
+               switch(utf8_strtoupper($field)) {
+                  case "LDAP_SERVER" :
+                     $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+                     break;
 
-                     case "GROUPS" :
-                        foreach ($groups as $group) {
-                           $rule_parameters["GROUPS"][] = $group;
-                        }
-                        break;
+                  case "GROUPS" :
+                     foreach ($groups as $group) {
+                        $rule_parameters["GROUPS"][] = $group;
+                     }
+                     break;
 
-                     default :
-                        if (isset($rule_input[$field])) {
-                           if (!is_array($rule_input[$field])) {
-                              $rule_parameters[$field] = $rule_input[$field];
-                           } else {
-                              for ($i=0;$i < count($rule_input[$field]) -1;$i++) {
-                                 $rule_parameters[$field][] = $rule_input[$field][$i];
-                              }
+                  default :
+                     if (isset($rule_input[$field])) {
+                        if (!is_array($rule_input[$field])) {
+                           $rule_parameters[$field] = $rule_input[$field];
+                        } else {
+                           for ($i=0;$i < count($rule_input[$field]) -1;$i++) {
+                              $rule_parameters[$field][] = $rule_input[$field][$i];
                            }
                         }
-                  }
+                     }
                }
             }
             return $rule_parameters;
-         } else {
-           return $rule_input;
          }
-      //IMAP/POP login method
-      } else {
-         $rule_parameters["MAIL_SERVER"] = $params["mail_server"];
-         $rule_parameters["MAIL_EMAIL"] = $params["email"];
-         return $rule_parameters;
+         return $rule_input;
       }
+      //IMAP/POP login method
+      $rule_parameters["MAIL_SERVER"] = $params["mail_server"];
+      $rule_parameters["MAIL_EMAIL"] = $params["email"];
+      return $rule_parameters;
    }
 
    /**
