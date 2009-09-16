@@ -34,7 +34,7 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Marco Gaiarin for ldap features 
+// And Marco Gaiarin for ldap features
 
 if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
@@ -79,12 +79,12 @@ class User extends CommonDBTM {
 		global $LANG;
 
 		$ong=array();
-		// No add process	
+		// No add process
 		if ($ID>0){
 			$ong[1] = $LANG['Menu'][35]; // principal
 
 			$ong[4]=$LANG['Menu'][36];
-	
+
 			$ong[2] = $LANG['common'][1]; // materiel
 			if (haveRight("show_all_ticket", "1")){
 				$ong[3] = $LANG['title'][28]; // tickets
@@ -127,7 +127,7 @@ class User extends CommonDBTM {
 			foreach ($entities as $ent){
 				if (haveAccessToEntity($ent)){
 					$all=false;
-					$query = "DELETE FROM glpi_users_profiles 
+					$query = "DELETE FROM glpi_users_profiles
 						WHERE FK_users = '$ID' AND FK_entities='$ent'";
 					$DB->query($query);
 				}
@@ -171,8 +171,8 @@ class User extends CommonDBTM {
 	 *
 	 *@param $name login of the user
 	 *@return true if succeed else false
-	 * 
-	**/	
+	 *
+	**/
 	function getFromDBbyName($name) {
 		global $DB;
 		$query = "SELECT * FROM glpi_users WHERE (name = '" . $name . "')";
@@ -193,7 +193,7 @@ class User extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		global $CFG_GLPI,$DB,$LANG;
 
-	
+
 		// Check if user does not exists
 		$query="SELECT * FROM glpi_users WHERE name='".$input['name']."';";
 		$result=$DB->query($query);
@@ -201,7 +201,7 @@ class User extends CommonDBTM {
 			addMessageAfterRedirect($LANG['setup'][606],false,ERROR);
 			return false;
 		}
-		
+
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
 				unset ($input["password"]);
@@ -284,8 +284,8 @@ class User extends CommonDBTM {
 				unset($input["password"]);
 			} else {
 				// Check right : my password of user with lesser rights
-				if (isset($input['ID']) && 
-					((isset($_SESSION['glpiID']) && $input['ID']==$_SESSION['glpiID']) 
+				if (isset($input['ID']) &&
+					((isset($_SESSION['glpiID']) && $input['ID']==$_SESSION['glpiID'])
 						|| $this->currentUserHaveMoreRightThan($input['ID']) )){
 					$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 					$input["password"] = "";
@@ -309,7 +309,7 @@ class User extends CommonDBTM {
 				$input["ID"] = $this->fields["ID"];
 		}
 
-		
+
 		if (isset ($_SESSION["glpiID"]) && isset ($input["FK_entities"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpidefault_entity"] = $input["FK_entities"];
 		}
@@ -368,25 +368,25 @@ class User extends CommonDBTM {
 	 *@param $input data used to apply rules
 	 *
 	 *@return boolean : true if we play the Rule Engine
-	**/	
+	**/
 	function applyRightRules($input){
 		global $DB;
 		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| isAlternateAuthWithLdap($input["auth_method"])))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
-			
+
 			//and add/update/delete only if it's necessary !
 			if (isset($input["_ldap_rules"]["rules_entities_rights"]))
 				$entities_rules = $input["_ldap_rules"]["rules_entities_rights"];
 			else
 				$entities_rules = array();
-	
+
 			if (isset($input["_ldap_rules"]["rules_entities"]))
 				$entities = $input["_ldap_rules"]["rules_entities"];
-			else 
+			else
 				$entities = array();
-				
+
 			if (isset($input["_ldap_rules"]["rules_rights"]))
 				$rights = $input["_ldap_rules"]["rules_rights"];
 			else
@@ -394,8 +394,8 @@ class User extends CommonDBTM {
 
 			//purge dynamic rights
 			$this->purgeDynamicProfiles();
-			
-			//For each affectation -> write it in DB		
+
+			//For each affectation -> write it in DB
 			foreach($entities_rules as $entity){
 				$affectation["FK_entities"] = $entity[0];
 				$affectation["FK_profiles"] = $entity[1];
@@ -404,7 +404,7 @@ class User extends CommonDBTM {
 				$affectation["dynamic"] = 1;
 				addUserProfileEntity($affectation);
 			}
-	
+
 			if (count($entities)>0&&count($rights)==0){
 				//If no dynamics profile is provided : get the profil by default if not existing profile
 				$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
@@ -431,20 +431,20 @@ class User extends CommonDBTM {
 					}
 				}
 			}
-			
+
 			//Unset all the temporary tables
 			unset($input["_ldap_rules"]);
-			
+
 			return true;
-		} 
+		}
 		return false;
-		 
+
 	}
 	/**
 	 * Synchronise LDAP group of the user
 	 *
 	 *@param $input data used to sync
-	**/	
+	**/
 	function syncLdapGroups($input){
 		global $DB;
 
@@ -458,8 +458,8 @@ class User extends CommonDBTM {
 					}
 					// Clean groups
 					$input["_groups"] = array_unique ($input["_groups"]);
-	
-	
+
+
 					$WHERE = "";
 					switch ($auth_method["ldap_search_for_groups"]) {
 						case 0 : // user search
@@ -469,18 +469,18 @@ class User extends CommonDBTM {
 							$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
 							break;
 						case 2 : // user+ group search
-							$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL 
-									AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+							$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL
+									AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL)
 								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
 							break;
-	
+
 					}
 					// Delete not available groups like to LDAP
-					$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-						FROM glpi_users_groups 
-						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+					$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups
+						FROM glpi_users_groups
+						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups)
 						WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
-	
+
 					$result = $DB->query($query);
 					if ($DB->numrows($result) > 0) {
 						while ($data = $DB->fetch_array($result)){
@@ -492,7 +492,7 @@ class User extends CommonDBTM {
 							}
 						}
 					}
-					
+
 					//If the user needs to be added to one group or more
 					if (count($input["_groups"])>0)
 					{
@@ -509,7 +509,7 @@ class User extends CommonDBTM {
 	/**
 	 * Get the name of the current user
 	 * @return string containing name of the user
-	**/	
+	**/
 	function getName() {
 		return formatUserName($this->fields["ID"],$this->fields["name"],$this->fields["realname"],$this->fields["firstname"]);
 	}
@@ -543,9 +543,9 @@ class User extends CommonDBTM {
 			/// If the groups must be retrieve from the ldap user object
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
          $v = ldap_get_entries($ldap_connection, $sr);
-			
+
          for ($i=0;$i<count($v['count']);$i++) {
-				
+
 				///Try to find is DN in present and needed: if yes, then extract only the OU from it
             if (($ldap_method["ldap_field_group"]=='dn' || in_array('ou',$group_fields))
                   && isset($v[$i]['dn'])) {
@@ -556,10 +556,10 @@ class User extends CommonDBTM {
 
 					/// Search in DB for group with ldap_group_dn
                if ($ldap_method["ldap_field_group"]=='dn' && count($v[$i]['ou'])>0) {
-						
+
                   $query="SELECT ID FROM `glpi_groups`
-                        WHERE `ldap_group_dn` IN ('".implode("','",addslashes($v[$i]['ou']))."')";
-							
+                        WHERE `ldap_group_dn` IN ('".implode("','",addslashes_deep($v[$i]['ou']))."')";
+
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][]=$group['ID'];
                   }
@@ -569,15 +569,15 @@ class User extends CommonDBTM {
                      $v[$i]['ou']['count'] = count($v[$i]['ou']);
             }
             //logInFile("debug","Groupes virtuels LDAP (avec OU) : ".print_r($v[$i],true));
-				
+
 				/// For each attribute retrieve from LDAP, search in the DB
             foreach ($group_fields as $field) {
                if (isset($v[$i][$field]) && isset($v[$i][$field]['count']) && $v[$i][$field]['count']>0) {
                   unset($v[$i][$field]['count']);
                   $query="SELECT ID FROM `glpi_groups`
                         WHERE `ldap_field`='$field'
-                        AND `ldap_value` IN ('".implode("','",addslashes($v[$i][$field]))."')";
-							  
+                        AND `ldap_value` IN ('".implode("','",addslashes_deep($v[$i][$field]))."')";
+
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][]=$group['ID'];
                   }
@@ -586,7 +586,7 @@ class User extends CommonDBTM {
          } // for each ldapresult
       } // count($group_fields)
    }
-	
+
 	/**
    * Function that try to load from LDAP the user membership
    * by searching in the attribute of the Groups
@@ -609,18 +609,18 @@ class User extends CommonDBTM {
 			///Don't add $ldap_method["ldap_login"]."=", because sometimes it may not work (for example with posixGroup)
          $user_tmp = $login;
       }
-			
+
       $v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
       //logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
-		
+
       foreach ($v as $result) {
          if (isset($result[$ldap_method["ldap_field_group_member"]])
              && is_array($result[$ldap_method["ldap_field_group_member"]])
              && count($result[$ldap_method["ldap_field_group_member"]])>0) {
-			
+
             $query="SELECT ID FROM `glpi_groups`
-                  WHERE `ldap_group_dn` IN ('".implode("','",addslashes($result[$ldap_method["ldap_field_group_member"]]))."')";
-						
+                  WHERE `ldap_group_dn` IN ('".implode("','",addslashes_deep($result[$ldap_method["ldap_field_group_member"]]))."')";
+
             foreach ($DB->request($query) as $group) {
                $this->fields["_groups"][]=$group['ID'];
             }
@@ -651,11 +651,11 @@ class User extends CommonDBTM {
 			//Set all the search fields
 			$this->fields['password'] = "";
 			$this->fields['password_md5'] = "";
-			
+
 			$fields=getLDAPSyncFields($ldap_method);
 			$fields = array_filter($fields);
 			$f = array_values($fields);
-							
+
 			$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
 			$v = ldap_get_entries($ldap_connection, $sr);
 
@@ -682,7 +682,7 @@ class User extends CommonDBTM {
 									$language = getUserLanguage($v[0][$e][0]);
 									if ($language != ''){
 										$this->fields[$k]=$language;
-                           } 
+                           }
 									break;
 								case "title":
 								case "type":
@@ -695,9 +695,9 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 								 $this->fields[$k] = addslashes($v[0][$e][0]);
 								else
 								$this->fields[$k] = "";
-								break;						
+								break;
 							}
-					}	
+					}
 			}
 
 
@@ -706,28 +706,28 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
              || $ldap_method["ldap_search_for_groups"] == 2) {
             $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password);
          }
-			
-					
+
+
 			///The groups are retrived by looking into an ldap group object
          if ($ldap_method["ldap_search_for_groups"] == 1
                  || $ldap_method["ldap_search_for_groups"] == 2) {
             $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
          }
-         
+
 			///Only process rules if working on the master database
 			if (!$DB->isSlave()){
 				///Instanciate the affectation's rule
 				$rule = new RightRuleCollection();
-					
+
 				///Process affectation rules :
 				///we don't care about the function's return because all the datas are stored in session temporary
 				if (isset($this->fields["_groups"]))
 					$groups = $this->fields["_groups"];
 				else
-					$groups = array();	
-		
+					$groups = array();
+
 				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ldap_connection,"userdn"=>$userdn));
-				
+
 				///Hook to retrieve more informations for ldap
 				$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
 			}
@@ -740,7 +740,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 	/**
 	 * Get all the group a user belongs to
 	 *
-	 * @param $ds ldap connection 
+	 * @param $ds ldap connection
 	 * @param $ldap_base_dn Basedn used
 	 * @param $user_dn Basedn of the user
 	 * @param $group_condition group search condition
@@ -758,7 +758,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			"dn"
 		);
 
-		if (!$use_dn)		
+		if (!$use_dn)
 			$filter = "(& $group_condition (|($group_field_member=$user_dn)($group_field_member=$login_field=$user_dn)))";
 		else
 			$filter = "(& $group_condition ($group_field_member=$user_dn))";
@@ -789,7 +789,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 	 */
 	function getFromIMAP($mail_method, $name) {
 		global $DB;
-		
+
 		// we prevent some delay..
 		if (empty ($mail_method["imap_host"])) {
 			return false;
@@ -810,21 +810,21 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 		{
 			//Instanciate the affectation's rule
 			$rule = new RightRuleCollection();
-				
+
 			//Process affectation rules :
 			//we don't care about the function's return because all the datas are stored in session temporary
 			if (isset($this->fields["_groups"]))
 				$groups = $this->fields["_groups"];
 			else
-				$groups = array();	
+				$groups = array();
 			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["ID"],"email"=>$this->fields["email"]));
 		}
 		return true;
 
-	} // getFromIMAP()  	    
+	} // getFromIMAP()
 
 	/**
-	 * Blank passwords field of a user in the DB 
+	 * Blank passwords field of a user in the DB
 	 * needed for external auth users
 	 **/
 	function blankPassword() {
@@ -849,12 +849,12 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 		if (haveRight("user", "w")) {
 			$buttons["user.form.php?new=1"] = $LANG['setup'][2];
 			$title = "";
-			
+
 			if (haveRight("user_auth_method", "w")) {
 				if (useAuthLdap()) {
 					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
 					$buttons["ldap.php"] = $LANG['setup'][3];
-					
+
 				} else if (useAuthExt()) {
 					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
 				}
@@ -889,16 +889,16 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 		global $DB;
 		$prof=array();
 		$query="SELECT DISTINCT glpi_users_profiles.FK_profiles
-				FROM glpi_users_profiles 
+				FROM glpi_users_profiles
 				WHERE glpi_users_profiles.FK_users='$ID'";
-	
+
 		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){		
+		if ($DB->numrows($result)>0){
 			while ($data=$DB->fetch_assoc($result)){
 				$prof[$data['FK_profiles']]=$data['FK_profiles'];
 			}
 		}
-		
+
 		return $prof;
 	}
 
@@ -921,7 +921,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 
 		$canedit = haveRight("user", "w");
 		$canread = haveRight("user", "r");
-		
+
 		$caneditpassword=$this->currentUserHaveMoreRightThan($ID);
 
 		$spotted = false;
@@ -945,17 +945,17 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			}
 		}
 		if ($spotted) {
-		
-			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 
-				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
+
+			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI
+				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
-		
+
 			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-			
+
 			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
 			echo "<div class='center' id='tabsbody' >";
-			
+
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
 				echo "<input type='hidden' name='auth_method' value='1'>";
@@ -989,7 +989,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			//do some rights verification
 			if (haveRight("user", "w")) {
 				if ( (!$extauth || empty($ID)) && $caneditpassword) {
-					
+
 					echo "<td class='center'>" . $LANG['setup'][19] . ":</td><td><input type='password' name='password' value='' size='20'></td></tr>";
 				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";
@@ -1063,7 +1063,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 						echo "</td><td align='center' colspan='2'></td>";
 						echo "</tr>";
 					}
-					
+
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][24] . ":</td><td class='center'>";
 					if (!empty($this->fields["date_mod"])){
 						echo convDateTime($this->fields["date_mod"]);
@@ -1109,7 +1109,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 				}
 			}
 			echo "</table></div></form>";
-			
+
 			echo "<div id='tabcontent'></div>";
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 			return true;
@@ -1139,16 +1139,16 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 
 			$auth_method = $this->getAuthMethodsByID();
 
-			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 
-				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
+			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI
+				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
 
 
-			// No autocopletion : 
+			// No autocopletion :
 			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
 			$CFG_GLPI["ajax_autocompletion"]=false;
-			
+
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG['common'][34] . " : " . $this->fields["name"] . "</th></tr>";
@@ -1228,7 +1228,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			if (count($_SESSION['glpiprofiles'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['profiles'][13] . "</td><td>";
 				$options=array(0=>'----');
-				
+
 				foreach ($_SESSION['glpiprofiles'] as $ID => $prof){
 					$options[$ID]=$prof['name'];
 				}
@@ -1241,10 +1241,10 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 				dropdownValue("glpi_entities","FK_entities",$_SESSION["glpidefault_entity"],1,$_SESSION['glpiactiveentities']);
 				echo "</td></tr>";
 			}
-			
+
 			if (haveRight("config", "w")){
 				echo "<tr class='tab_bg_1'>";
-			
+
 				echo "<td class='center'>" . $LANG['setup'][138] . " </td><td><select name=\"use_mode\">";
 				echo "<option value=\"" . NORMAL_MODE . "\" " . ($this->fields["use_mode"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG['setup'][135] . " </option>";
 				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($this->fields["use_mode"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG['setup'][136] . " </option>";
@@ -1263,7 +1263,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1288,19 +1288,19 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
          }
       }
 
-      
+
 		// Security system except for login update
-		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
-			if ($_SESSION["glpiID"] == $input['ID']) { 
+		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) {
+			if ($_SESSION["glpiID"] == $input['ID']) {
 				$ret = $updates;
-				
+
 				if (isset($this->fields["auth_method"])){
-					// extauth ldap case 
+					// extauth ldap case
 					if ($_SESSION["glpiextauth"] && ($this->fields["auth_method"] == AUTH_LDAP || isAlternateAuthWithLdap($this->fields["auth_method"]))) {
 						$auth_method = getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 						if (count($auth_method)){
 							$fields=getLDAPSyncFields($auth_method);
-							foreach ($fields as $key => $val){ 
+							foreach ($fields as $key => $val){
 								if (!empty ($val)){
 									unset ($ret[$key]);
 								}
@@ -1311,17 +1311,17 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 					if (isset($this->fields["auth_method"])&&$this->fields["auth_method"] == AUTH_MAIL){
 						unset ($ret["email"]);
 					}
-					
+
 					unset ($ret["active"]);
 					unset ($ret["comments"]);
 				}
-				
-				return array($input,$ret); 
-			} else { 
+
+				return array($input,$ret);
+			} else {
 				return array($input,array());
 			}
 		}
-		
+
 		return array($input,$updates);
 	}
 
@@ -1332,7 +1332,7 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 	function purgeDynamicProfiles()
 	{
 		global $DB;
-		
+
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
