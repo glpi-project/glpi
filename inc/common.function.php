@@ -1041,7 +1041,7 @@ function html_clean($value){
 	$value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
 	$search = array('@<script[^>]*?>.*?</script[^>]*?>@si',  // Strip out javascript
-               '@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
+               '@<style[^>]*?>.*?</style[^>]*?>@si',    // Strip style tags properly
                '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
                '@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
 	);
