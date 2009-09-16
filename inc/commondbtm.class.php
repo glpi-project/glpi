@@ -391,17 +391,17 @@ class CommonDBTM {
             }
          }
       }
-      
+
       // Clean ticket open against the item
       if (in_array($this->type,$CFG_GLPI["helpdesk_types"])) {
          $job=new Job;
-   
+
          $query = "SELECT *
                    FROM `glpi_tickets`
                    WHERE `items_id` = '$ID'
                      AND `itemtype`='".$this->type."'";
          $result = $DB->query($query);
-   
+
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
                if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
@@ -439,11 +439,11 @@ class CommonDBTM {
    **/
    function cleanDBonPurge($ID) {
    }
-   
+
    /**
     * Clean the date in the relation tables for the deleted item
     * Clear N/N Relation
-    * 
+    *
     */
    function cleanRelationTable ($ID) {
       global $CFG_GLPI, $DB;
@@ -587,13 +587,21 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
 
+      $name = '';
+      if (isset($this->fields["name"])) {
+         $name = $this->fields["name"];
+      }
+      if ($_SESSION['glpiis_ids_visible']
+          || !isset($this->fields["name"])
+          || empty($this->fields["name"])) {
+         $name .= " (".$this->fields['id'].")";
+      }
+
       if ($addMessAfterRedirect) {
          addMessageAfterRedirect($LANG['common'][70] . ": <a href='" . $CFG_GLPI["root_doc"].
                                  "/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] .
-                                 (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
-                                 ? stripslashes($this->fields["name"])
-                                 : "(".$this->fields['id'].")") . "</a>");
+                                 (isset($input['is_template']) ? "&amp;withtemplate=1" : "").
+                                 "'>" .$name . "</a>");
       }
    }
 
