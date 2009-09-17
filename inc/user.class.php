@@ -336,7 +336,7 @@ class User extends CommonDBTM {
       // Get auth method fo sync ldap groups if needed
       /// TODO : review it : maybe do it on post actions
       if (!isset($input["authtype"])){
-         $this->getFromDB($input['ID']);
+         $this->getFromDB($input['id']);
          $input["authtype"]=$this->fields['authtype'];
          if (!isset($input["auths_id"])){
             $input["auths_id"]=$this->fields['auths_id'];
