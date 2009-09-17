@@ -748,17 +748,17 @@ function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
 
    ajaxDropdown($use_ajax,"/ajax/dropdownUsersTracking.php",$params,$default,$rand);
 
+   if (!haveRight("user","r")) {
+      $user["link"] = '';
+   } else if (empty($user["link"])) {
+      $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
+   }
    // Display comment
    if ($display_comment) {
-      if (empty($user["link"])) {
-         $user["link"]='#';
-      }
-      echo "<a href='".$user["link"]."'>";
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-             onmouseout=\"cleanhide('comment_$myname$rand')\"
-             onmouseover=\"cleandisplay('comment_$myname$rand')\">";
-      echo "</a>";
-      echo "<span class='over_link' id='comment_$myname$rand'>".$user["comment"]."</span>";
+      displayToolTip($user["comment"], $user["link"],
+                     array('widget'=>'dropdown_'.$myname.$rand,
+                           'value'=>'__VALUE__',
+                           'table'=>'glpi_users'));
    }
    return $rand;
 }
@@ -986,15 +986,15 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                     FROM ".$LINK_ID_TABLE[$itemtype]."
                     WHERE `users_id`='".$userID."'";
             if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
-               $query.=" AND `is_deleted`='0' ";  
-            }                          
+               $query.=" AND `is_deleted`='0' ";
+            }
             if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                $query.=" AND `is_template`='0' ";
             }
             if (in_array($itemtype,$CFG_GLPI["helpdesk_visible_types"])){
                $query.=" AND `is_helpdesk_visible`='1' ";
             }
-            
+
             $query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict,
                                                in_array($itemtype,$CFG_GLPI["recursive_type"]));
             $query.=" ORDER BY `name` ";
@@ -1061,7 +1061,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                                    $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 
                   if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
-                     $query.=" AND `is_deleted`='0' ";  
+                     $query.=" AND `is_deleted`='0' ";
                   }
                   if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                      $query.=" AND `is_template`='0' ";
@@ -1130,7 +1130,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
                                                 $search_computer);
                if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
-                  $query.=" AND `is_deleted`='0' ";  
+                  $query.=" AND `is_deleted`='0' ";
                }
                if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                   $query.=" AND `is_template`='0' ";
