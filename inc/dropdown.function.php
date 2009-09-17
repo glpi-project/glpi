@@ -514,19 +514,15 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_r
 
    // Display comment
    if ($display_comment) {
-      if ($view_users) {
-         if (empty($user["link"])) {
-            $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
-         }
-         echo "<a id='comment_link_$myname$rand' href='".$user["link"]."'>";
+      if (!$view_users) {
+         $user["link"] = '';
+      } else if (empty($user["link"])) {
+         $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
       }
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-             onmouseout=\"cleanhide('comment_$myname$rand')\"
-             onmouseover=\"cleandisplay('comment_$myname$rand')\">";
-      if ($view_users) {
-         echo "</a>";
-      }
-      echo "<span class='over_link' id='comment_$myname$rand'>".$user["comment"]."</span>";
+      displayToolTip($user["comment"], $user["link"],
+                     array('widget'=>'dropdown_'.$myname.$rand,
+                           'value'=>'__VALUE__',
+                           'table'=>'glpi_users'));
    }
    return $rand;
 }
