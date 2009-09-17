@@ -2501,22 +2501,35 @@ function changeProgressBarMessage ($msg="&nbsp;") {
  *
  * @param $message to de displayed on mouseover
  * @param $link
+ * @param $ajax array of ajax option
+ *    widget : name of widget to observe
+ *    table : use to get comment
+ *    value : to pass to ajax (__VALUE__)
  */
-function displayToolTip ($message, $link='') {
+function displayToolTip ($message, $link='',$ajax=array()) {
    global $CFG_GLPI;
 
-   $rand=mt_rand();
+   $name="tooltip_".mt_rand();
 
    if ($link) {
-      echo "<a href='$link'>";
+      echo "<a id='link_$name' href='$link'>";
+      $ajax['withlink'] = "link_$name";
    }
    echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-       onmouseout=\"cleanhide('tooltip_$rand')\" onmouseover=\"cleandisplay('tooltip_$rand')\" ";
+       onmouseout=\"cleanhide('comment_$name')\" onmouseover=\"cleandisplay('comment_$name')\" ";
    if ($link) {
       echo "style='cursor:pointer;'></a>";
    } else {
       echo ">";
    }
-   echo "<span class='over_link' id='tooltip_$rand'>".nl2br($message)."</span>\n";
+   echo "<span class='over_link' id='comment_$name'>".nl2br($message)."</span>\n";
+
+   if (isset($ajax['widget'])) {
+      $widget = $ajax['widget'];
+      unset($ajax['widget']);
+
+      ajaxUpdateItemOnSelectEvent($widget, "comment_$name",
+            $CFG_GLPI["root_doc"]."/ajax/comments.php", $ajax);
+   }
 }
 ?>

@@ -121,12 +121,5 @@ if (count($users)) {
 }
 echo "</select>";
 
-if (isset($_POST["comment"] )&& $_POST["comment"]) {
-   $paramscomment=array('value'=>'__VALUE__',
-                        'table'=>'glpi_users');
-   ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
-                               "comment_".$_POST["myname"].$_POST["rand"],
-                               $CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
-}
 
 ?>
