@@ -1748,8 +1748,9 @@ $LANG['software'][49]="Logiciel mis dans la corbeille après regroupement";
 $LANG['software'][50]="Affectée à l'ordinateur";
 $LANG['software'][51]="Le nombre doit être 1 pour pouvoir affecter";
 
-$LANG['softwarecategories'][3]="Logiciels non catégorisés repliés";
-$LANG['softwarecategories'][4]="Logiciels catégorisés repliés";
+$LANG['softwarecategories'][2]="Logiciels sans catégorie";
+$LANG['softwarecategories'][3]="Logiciels non catégorisés dépliés";
+$LANG['softwarecategories'][4]="Logiciels catégorisés dépliés";
 $LANG['softwarecategories'][5]="Catégorie de logiciels";
 
 $LANG['state'][0]="Statut";

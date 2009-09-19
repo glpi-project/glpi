@@ -682,7 +682,7 @@ function installSoftwareVersion($computers_id, $softwaresversions_id, $dohistory
                           SET `softwaresversions_id_use`='$softwaresversions_id'
                           WHERE `softwares_id`='".$vers->fields["softwares_id"]."'
                             AND `computers_id`='$computers_id'
-                            AND (`softwaresversions_id_use`=0 OR `softwaresversions_id_use` IS NULL)");
+                            AND `softwaresversions_id_use`=0");
 
 					if ($dohistory) {
 						$soft = new Software();
@@ -822,10 +822,9 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
    $canedit=haveRight("software", "w");
    $entities_id = $comp->fields["entities_id"];
 
-   $mainquery = " `glpi_softwarescategories`.`name` as category,
-                  `glpi_softwares`.`softwarescategories_id`,
+   $mainquery = " `glpi_softwares`.`softwarescategories_id`,
                   `glpi_softwares`.`name` as softname,
-                  `glpi_computers_softwaresversions`.`id`, `glpi_softwares`.`is_deleted`,
+                  `glpi_computers_softwaresversions`.`id`,
                   `glpi_states`.`name` AS state,
                   `glpi_softwaresversions`.`id` as verid,
                   `glpi_softwaresversions`.`softwares_id`,
@@ -841,9 +840,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
                           AND `glpi_softwaresversions`.`softwares_id` = `glpi_softwareslicenses`.`softwares_id`
                           AND `glpi_softwaresversions`.`id` = `glpi_softwareslicenses`.`softwaresversions_id_use`)
                LEFT JOIN `glpi_softwares`
-                      ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)
-               LEFT JOIN `glpi_softwarescategories`
-                      ON (`glpi_softwarescategories`.`id` = `glpi_softwares`.`softwarescategories_id`)";
+                      ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)";
 
    $query_cat =  "SELECT 2 as TYPE,
                   $mainquery
@@ -854,8 +851,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 	$query_nocat = "SELECT 1 as TYPE,
                    $mainquery
 	                WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
-                     AND (`glpi_softwares`.`softwarescategories_id` <= 0
-                        OR `glpi_softwares`.`softwarescategories_id` IS NULL )
+                     AND `glpi_softwares`.`softwarescategories_id` <= 0
                    GROUP BY `glpi_softwaresversions`.`id`";
 
 	$query = "( $query_cat) UNION ($query_nocat)
@@ -912,7 +908,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
    }
 
    // Affected licenses NOT installed
-   $query = "SELECT `glpi_softwares`.`name` as softname, `glpi_softwares`.`is_deleted`,
+   $query = "SELECT `glpi_softwares`.`name` as softname,
                     `glpi_states`.`name` AS state,
                     `glpi_softwareslicenses`.`softwaresversions_id_buy`,
                     `glpi_softwareslicenses`.`softwares_id`,
@@ -925,8 +921,6 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
             FROM `glpi_softwareslicenses`
             INNER JOIN `glpi_softwares`
                    ON (`glpi_softwareslicenses`.`softwares_id` = `glpi_softwares`.`id`)
-            LEFT JOIN `glpi_softwarescategories`
-                   ON (`glpi_softwarescategories`.`id` = `glpi_softwares`.`softwarescategories_id`)
             LEFT JOIN `glpi_softwaresversions`
                    ON (`glpi_softwareslicenses`.`softwaresversions_id_buy` = `glpi_softwaresversions`.`id`)
             LEFT JOIN `glpi_states`
@@ -1016,11 +1010,11 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
 		$cat = $data["softwarescategories_id"];
 		if ($cat) {
 			// Categorized
-			$catname = $data["category"];
+			$catname = getDropdownName('glpi_softwarescategories', $cat);
 			$display = $_SESSION["glpiis_categorized_soft_expanded"];
 		} else {
 			// Not categorized
-			$catname = $LANG['softwarecategories'][3];
+			$catname = $LANG['softwarecategories'][2];
 			$display = $_SESSION["glpiis_not_categorized_soft_expanded"];
 		}
 	} else {
