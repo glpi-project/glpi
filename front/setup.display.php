@@ -60,9 +60,9 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["delete"])||isset($_POST["delete_x"])) {
 	$setupdisplay->delete($_POST);
 } else if (isset($_POST["up"])||isset($_POST["up_x"])) {
-	$setupdisplay->up($_POST);
+	$setupdisplay->orderItem($_POST,'up');
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
-	$setupdisplay->down($_POST);
+	$setupdisplay->orderItem($_POST,'down');
 }
 if ((strpos($_SERVER['PHP_SELF'],"popup")&&$itemtype>0)/*||$itemtype=$setupdisplay->title($_SERVER['PHP_SELF'],$itemtype)*/){
 
