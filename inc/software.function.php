@@ -828,17 +828,12 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
                   `glpi_states`.`name` AS state,
                   `glpi_softwaresversions`.`id` as verid,
                   `glpi_softwaresversions`.`softwares_id`,
-                  `glpi_softwaresversions`.`name` AS version,
-                  GROUP_CONCAT(`glpi_softwareslicenses`.`id`) AS licid
+                  `glpi_softwaresversions`.`name` AS version
                FROM `glpi_computers_softwaresversions`
                LEFT JOIN `glpi_softwaresversions`
                       ON (`glpi_computers_softwaresversions`.`softwaresversions_id` = `glpi_softwaresversions`.`id`)
                LEFT JOIN `glpi_states`
                       ON (`glpi_states`.`id` = `glpi_softwaresversions`.`states_id`)
-               LEFT JOIN `glpi_softwareslicenses`
-                      ON (`glpi_softwareslicenses`.`computers_id` = '$computers_id'
-                          AND `glpi_softwaresversions`.`softwares_id` = `glpi_softwareslicenses`.`softwares_id`
-                          AND `glpi_softwaresversions`.`id` = `glpi_softwareslicenses`.`softwaresversions_id_use`)
                LEFT JOIN `glpi_softwares`
                       ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)";
 
@@ -895,13 +890,12 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
             $cat = displayCategoryHeader($computers_id, $data,$rand,$canedit);
          }
 
-         displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit);
+         $licids = displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit);
          addToNavigateListItems(SOFTWARE_TYPE,$data["softwares_id"]);
-         if ($data['licid']) {
-            foreach (explode(',',$data['licid']) as $licid)
+         foreach ($licids as $licid) {
             addToNavigateListItems(SOFTWARELICENSE_TYPE,$licid);
+            $installed[]=$licid;
          }
-         $installed[]=$data["verid"];
       }
 
       displayCategoryFooter($cat,$rand,$canedit);
@@ -927,7 +921,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
                    ON (`glpi_states`.`id` = `glpi_softwaresversions`.`states_id`)
             WHERE `glpi_softwareslicenses`.`computers_id` = '$computers_id' ";
    if (count($installed)) {
-      $query .= " AND `glpi_softwareslicenses`.`softwaresversions_id_use` NOT IN (".implode(',',$installed).")";
+      $query .= " AND `glpi_softwareslicenses`.`id` NOT IN (".implode(',',$installed).")";
    }
    $req=$DB->request($query);
    if ($req->numrows()) {
@@ -1054,12 +1048,14 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
  * @param $data data used to display
  * @param $computers_ID ID of the computer
  * @param $withtemplate template case of the view process
- * @return nothing
+
+ * @return array of found license id
  */
 function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
    global $DB,$LANG, $CFG_GLPI, $INFOFORM_PAGES;
 
    $ID = $data["id"];
+   $verid = $data["verid"];
    $multiple = false;
 
    echo "<tr class='tab_bg_1'>";
@@ -1078,30 +1074,37 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
            "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id\">";
       echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
    }
-   if ($data["licid"]) {
-      echo "</td>";
-      $query = "SELECT `glpi_softwareslicenses`.*, `glpi_softwareslicensestypes`.`name` as type
-                FROM `glpi_softwareslicenses`
-                LEFT JOIN `glpi_softwareslicensestypes`
-                     ON `glpi_softwareslicenses`.`softwareslicensestypes_id`=`glpi_softwareslicensestypes`.`id`
-                WHERE `glpi_softwareslicenses`.`id` IN (".$data["licid"].")";
 
-      foreach ($DB->request($query) as $licdata) {
-         echo "<strong>". $licdata['name'] . "</strong>&nbsp; ";
-         if ($licdata['type']) {
-            echo "(".$licdata['type'].")&nbsp; ";
-         }
-         $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$licdata['id'];
-         displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
-                         $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
-                         $link);
-         echo "<br>";
+   echo "</td>";
+   $query = "SELECT `glpi_softwareslicenses`.*, `glpi_softwareslicensestypes`.`name` as type
+             FROM `glpi_softwareslicenses`
+             LEFT JOIN `glpi_softwareslicensestypes`
+                  ON `glpi_softwareslicenses`.`softwareslicensestypes_id`=`glpi_softwareslicensestypes`.`id`
+             WHERE `glpi_softwareslicenses`.`computers_id`='$computers_id'
+               AND (`glpi_softwareslicenses`.`softwaresversions_id_use`='$verid'
+                    OR (`glpi_softwareslicenses`.`softwaresversions_id_use`=0
+                        AND `glpi_softwareslicenses`.`softwaresversions_id_buy`='$verid'))";
+
+   $licids=array();
+   foreach ($DB->request($query) as $licdata) {
+      $licids[]=$licdata['id'];
+      echo "<strong>". $licdata['name'] . "</strong>&nbsp; ";
+      if ($licdata['type']) {
+         echo "(".$licdata['type'].")&nbsp; ";
       }
-   } else {
-      echo "</td>&nbsp;";
-}
+      $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$licdata['id'];
+      displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
+                      $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
+                      $link);
+      echo "<br>";
+   }
+   if (!count($licids)) {
+      echo "&nbsp;";
+   }
 
    echo "</td></tr>\n";
+
+   return $licids;
 }
 
 /**
