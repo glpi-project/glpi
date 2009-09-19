@@ -887,14 +887,8 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
    }
 
    // Affected licenses NOT installed
-   $query = "SELECT `glpi_softwares`.`name` as softname,
-                    `glpi_softwareslicenses`.`softwaresversions_id_buy`,
-                    `glpi_softwareslicenses`.`softwares_id`,
-                    `glpi_softwareslicenses`.`softwareslicensestypes_id` AS lictype,
-                    `glpi_softwareslicenses`.`id` AS licid,
-                    `glpi_softwareslicenses`.`name` AS licname,
-                    `glpi_softwareslicenses`.`serial` AS licserial,
-                    `glpi_softwareslicenses`.`comment` AS liccomment,
+   $query = "SELECT `glpi_softwareslicenses`.*,
+                    `glpi_softwares`.`name` as softname,
                     `glpi_softwaresversions`.`name` AS version,
                     `glpi_states`.`name` AS state
             FROM `glpi_softwareslicenses`
@@ -917,7 +911,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
             $cat = false;
          }
          displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
-         addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["licid"]);
+         addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["id"]);
       }
       displayCategoryFooter(NULL,$rand,$canedit);
    }
@@ -1105,7 +1099,7 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
 
    $ID = $data["softwaresversions_id_buy"];
    $multiple = false;
-   $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$data['licid'];
+   $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$data['id'];
 
    echo "<tr class='tab_bg_1'>";
    if ($canedit) {
@@ -1127,12 +1121,12 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
          "?install=install&amp;softwaresversions_id=$ID&amp;computers_id=$computers_id\">";
       echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
    }
-   echo "</td></td><strong>" . $data["licname"] . "</strong>&nbsp; ";
-   if ($data["lictype"]) {
-      echo " (". getDropdownName("glpi_softwareslicensestypes",$data["lictype"]).")&nbsp; ";
+   echo "</td></td><strong>" . $data["name"] . "</strong>&nbsp; ";
+   if ($data["softwareslicensestypes_id"]) {
+      echo " (". getDropdownName("glpi_softwareslicensestypes",$data["softwareslicensestypes_id"]).")&nbsp; ";
    }
-   displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['licname']."<br>".
-                   $LANG['common'][19]."&nbsp;: ".$data['licserial']."<br>".$data['liccomment'],
+   displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
+                   $LANG['common'][19]."&nbsp;: ".$data['serial']."<br>".$data['comment'],
                    $link);
    echo "</td></tr>\n";
 }
