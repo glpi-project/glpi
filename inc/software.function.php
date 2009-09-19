@@ -822,38 +822,23 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
    $canedit=haveRight("software", "w");
    $entities_id = $comp->fields["entities_id"];
 
-   $mainquery = " `glpi_softwares`.`softwarescategories_id`,
-                  `glpi_softwares`.`name` as softname,
-                  `glpi_computers_softwaresversions`.`id`,
-                  `glpi_states`.`name` AS state,
-                  `glpi_softwaresversions`.`id` as verid,
-                  `glpi_softwaresversions`.`softwares_id`,
-                  `glpi_softwaresversions`.`name` AS version
+   $query = "SELECT `glpi_softwares`.`softwarescategories_id`,
+                    `glpi_softwares`.`name` as softname,
+                    `glpi_computers_softwaresversions`.`id`,
+                    `glpi_states`.`name` AS state,
+                    `glpi_softwaresversions`.`id` as verid,
+                    `glpi_softwaresversions`.`softwares_id`,
+                    `glpi_softwaresversions`.`name` AS version
                FROM `glpi_computers_softwaresversions`
                LEFT JOIN `glpi_softwaresversions`
                       ON (`glpi_computers_softwaresversions`.`softwaresversions_id` = `glpi_softwaresversions`.`id`)
                LEFT JOIN `glpi_states`
                       ON (`glpi_states`.`id` = `glpi_softwaresversions`.`states_id`)
                LEFT JOIN `glpi_softwares`
-                      ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)";
-
-   $query_cat =  "SELECT 2 as TYPE,
-                  $mainquery
-                  WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
-                     AND `glpi_softwares`.`softwarescategories_id` > 0
-                  GROUP BY `glpi_softwaresversions`.`id`";
-
-	$query_nocat = "SELECT 1 as TYPE,
-                   $mainquery
-	                WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
-                     AND `glpi_softwares`.`softwarescategories_id` <= 0
-                   GROUP BY `glpi_softwaresversions`.`id`";
-
-	$query = "( $query_cat) UNION ($query_nocat)
-
-              ORDER BY TYPE, `softwarescategories_id`, `softname`, `version`";
-
-   $DB->query("SET SESSION group_concat_max_len = 9999999;");
+                      ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)
+               WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
+               GROUP BY `glpi_softwaresversions`.`id`
+               ORDER BY `softwarescategories_id`, `softname`, `version`";
 
    $result = $DB->query($query);
    $i = 0;
@@ -903,15 +888,15 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 
    // Affected licenses NOT installed
    $query = "SELECT `glpi_softwares`.`name` as softname,
-                    `glpi_states`.`name` AS state,
                     `glpi_softwareslicenses`.`softwaresversions_id_buy`,
                     `glpi_softwareslicenses`.`softwares_id`,
-                    `glpi_softwaresversions`.`name` AS version,
                     `glpi_softwareslicenses`.`softwareslicensestypes_id` AS lictype,
                     `glpi_softwareslicenses`.`id` AS licid,
                     `glpi_softwareslicenses`.`name` AS licname,
                     `glpi_softwareslicenses`.`serial` AS licserial,
-                    `glpi_softwareslicenses`.`comment` AS liccomment
+                    `glpi_softwareslicenses`.`comment` AS liccomment,
+                    `glpi_softwaresversions`.`name` AS version,
+                    `glpi_states`.`name` AS state
             FROM `glpi_softwareslicenses`
             INNER JOIN `glpi_softwares`
                    ON (`glpi_softwareslicenses`.`softwares_id` = `glpi_softwares`.`id`)
