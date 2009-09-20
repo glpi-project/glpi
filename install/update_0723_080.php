@@ -2182,6 +2182,22 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add cron_limit in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_documents','sha1sum')) {
+      $query="ALTER TABLE `glpi_documents`
+                   ADD `sha1sum` CHAR(40) CHARACTER SET ascii NULL DEFAULT NULL ,
+                   ADD INDEX (`sha1sum`)";
+      $DB->query($query) or die("0.80 add sha1sum in glpi_documents" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_documents','filepath')) {
+      $query="ALTER TABLE `glpi_documents`
+                ADD `filepath` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL
+                COMMENT 'file storage path' AFTER `filename`";
+      $DB->query($query) or die("0.80 add filepath in glpi_documents" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_documents` SET `filepath`=`filename`";
+      $DB->query($query) or die("0.80 set value of filepath in glpi_documents" . $LANG['update'][90] . $DB->error());
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

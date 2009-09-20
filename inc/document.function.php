@@ -91,10 +91,57 @@ function moveUploadedDocument($filename,$old_file='') {
 /**
  * Upload a new file
  *
+ * @param $input data need for add/update (will be completed)
+ * @param $FILEDESC FILE descriptor
+ *
+ * @return true on success
+ **/
+function uploadDocument(&$input,$FILEDESC) {
+   global $LANG;
+
+   if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
+      return false;
+   }
+   $sha1sum = sha1_file($FILEDESC['tmp_name']);
+   $dir = isValidDoc($FILEDESC['name']);
+   $path = getUploadFileValidLocationName($dir,$sha1sum);
+   if (!$sha1sum || !$dir || !$path) {
+      return false;
+   }
+
+   // Delete old file (if not used by another doc)
+   if (isset($input['current_filename'])
+       && !empty($input['current_filename'])
+       && countElementsInTable('glpi_documents',"`sha1sum`='$sha1sum'")<=1) {
+      if (unlink(GLPI_DOC_DIR."/".$input['current_filename'])) {
+         addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$input['current_filename']);
+      } else {
+         addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$input['current_filename'],
+                                 false,ERROR);
+      }
+   }
+
+   // Move uploaded file
+   if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$path)) {
+      addMessageAfterRedirect($LANG['document'][26]);
+      // For display
+      $input['filename'] = $FILEDESC['name'];
+      // Storage path
+      $input['filepath'] = $path;
+      // Checksum
+      $input['sha1sum'] = $sha1sum;
+      return true;
+   }
+   addMessageAfterRedirect($LANG['document'][27],false,ERROR);
+   return false;
+}
+
+/**
+ * Upload a new file
+ *
  * @param $FILEDESC FILE descriptor
  * @param $old_file old file name to replace : to unlink it
  * @return nothing
- **/
 function uploadDocument($FILEDESC,$old_file='') {
    global $CFG_GLPI,$LANG;
 
@@ -132,6 +179,38 @@ function uploadDocument($FILEDESC,$old_file='') {
    }
    return "";
 }
+ **/
+
+/**
+ * Find a valid path for the new file
+ *
+ * @param $dir dir to search a free path for the file
+ * @param $filename new filename
+
+ * @return nothing
+ **/
+function getUploadFileValidLocationName($dir,$sha1sum) {
+   global $CFG_GLPI,$LANG;
+
+   if (empty($dir)) {
+      addMessageAfterRedirect($LANG['document'][32],false,ERROR);
+      return '';
+   }
+   if (!is_dir(GLPI_DOC_DIR)) {
+      addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR,false,ERROR);
+      return '';
+   }
+   $subdir = $dir.'/'.substr($sha1sum,0,2);
+   if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir)) {
+      addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$subdir);
+   }
+   if (!is_dir(GLPI_DOC_DIR."/".$subdir)) {
+      addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$subdir." ".
+                              $LANG['document'][30],false,ERROR);
+      return '';
+   }
+   return $subdir.'/'.substr($sha1sum,2).'.'.$dir;
+}
 
 /**
  * Find a valid path for the new file
@@ -140,7 +219,7 @@ function uploadDocument($FILEDESC,$old_file='') {
  * @param $filename new filename
  * @param $force may replace an existing doc ?
  * @return nothing
- **/
+
 function getUploadFileValidLocationName($dir,$filename,$force) {
    global $CFG_GLPI,$LANG;
 
@@ -190,6 +269,7 @@ function getUploadFileValidLocationName($dir,$filename,$force) {
    }
    return "";
 }
+ **/
 
 /**
  * Show devices links to a document
@@ -529,7 +609,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
             echo "</strong></td>";
          }
          echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
-         echo "<td class='center'>".getDocumentLink($data["filename"])."</td>";
+         echo "<td class='center'>".getDocumentLink($docID)."</td>";
          echo "<td class='center'>";
          if (!empty($data["link"])) {
             echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
@@ -612,51 +692,18 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
 /**
  * Get download link for a document
  *
- * @param filename filename of the document
+ * @param $id of the document
  * @param $params additonal parameters to be added to the link
  * @param $len maximum length of displayed string
  *
  **/
-function getDocumentLink($filename, $params='', $len=20){
-   global $DB,$CFG_GLPI;
+function getDocumentLink($id, $params='', $len=20){
 
-   if (empty($filename)) {
-      return "&nbsp;";
+   $doc = new Document();
+   if ($doc->getFromDB($id)) {
+      return $doc->getDownloadLink($params,$len);
    }
-
-   $splitter=explode("/",$filename);
-   if (count($splitter)==2) {
-      $fileout=$splitter[1];
-   } else {
-      $fileout=$filename;
-   }
-
-   if (utf8_strlen($fileout)>$len) {
-      $fileout=utf8_substr($fileout,0,$len)."&hellip;";
-   }
-
-   $out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).
-            $params."\" target=\"_blank\">";
-
-   if (count($splitter)==2) {
-
-      $query="SELECT *
-              FROM `glpi_documentstypes`
-              WHERE `ext` LIKE '".$splitter[0]."'
-                    AND `icon` <> ''";
-
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $icon=$DB->result($result,0,'icon');
-            $out .= "&nbsp;<img class='middle' style=\"margin-left:3px; margin-right:6px;\" alt='".
-                            $fileout."' title='".$fileout."' src=\"".
-                            $CFG_GLPI["typedoc_icon_dir"]."/$icon\" >";
-         }
-      }
-   }
-   $out.= "<strong>$fileout</strong></a>";
-
-   return $out;
+   return "&nbsp;";
 }
 
 /**
