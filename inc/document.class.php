@@ -110,7 +110,7 @@ class Document extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      global $LANG;
+      global $LANG, $INFOFORM_PAGES, $CFG_GLPI, $DB;
 
       $input["users_id"] = $_SESSION["glpiID"];
 
@@ -139,12 +139,23 @@ class Document extends CommonDBTM {
       }
 
       unset($input["upload_file"]);
-      if (!isset($input["_only_if_upload_succeed"]) || !$input["_only_if_upload_succeed"]
-          || !empty($input['filename'])) {
-         return $input;
-      } else {
+      if (isset($input["_only_if_upload_succeed"]) && $input["_only_if_upload_succeed"]
+          && empty($input['filename'])) {
          return false;
       }
+      if (isset($input['sha1sum'])) {
+         // Check if already upload in the current entity
+         $crit = array('sha1sum'=>$input['sha1sum'],
+                       'entities_id'=>$input['entities_id']);
+         foreach ($DB->request($this->table, $crit) as $data) {
+            addMessageAfterRedirect($LANG['document'][48].
+               "&nbsp;: <a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type]."?id=".
+                     $data['id']."\">".$data['name']."</a>",
+               false, ERROR);
+            return false;
+         }
+      }
+      return $input;
    }
 
    function post_addItem($newID,$input) {
