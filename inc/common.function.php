@@ -1017,7 +1017,8 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 }
 
 /**
- *  Send a file to the navigator
+ * Send a file (not a document) to the navigator
+ * See Document->send();
  *
  * @param $file string: storage filename
  * @param $filename string: file title
@@ -1029,80 +1030,37 @@ function sendFile($file,$filename) {
    // Test securite : document in DOC_DIR
    $tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
    if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
-      echo "Security attack !!!";
       logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"].
                " try to get a non standard file.");
-      return;
+      die("Security attack !!!");
    }
 
    if (!file_exists($file)) {
-      echo "Error file $file does not exist";
-   return;
-   } else {
-      $splitter=explode("/",$file);
-      $filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
-      $query="SELECT `mime`
-              FROM `glpi_documents`
-              WHERE `filename` LIKE '$filedb'";
-      $result=$DB->query($query);
-      $mime="application/octetstream";
-      if ($result&&$DB->numrows($result)==1) {
-         $mime=$DB->result($result,0,0);
-      } else if ($splitter[count($splitter)-2]=="dump"){
-         // fichiers DUMP SQL et XML
-         $splitter2=explode(".",$file);
-         switch ($splitter2[count($splitter2)-1]) {
-            case "sql" :
-               $mime="text/x-sql";
-               break;
+      die("Error file $file does not exist");
+   }
+   $splitter=explode("/",$file);
 
-            case "xml" :
-               $mime="text/xml";
-               break;
-         }
-      } else {
-         // Cas particulier
-         switch ($splitter[count($splitter)-2]) {
-            case "SQL" :
-               $mime="text/x-sql";
-               break;
+   $mime="application/octetstream";
+   if (preg_match('/\.(...)$/',$file,$regs)){
+      switch ($regs[1]) {
+         case "sql" :
+            $mime="text/x-sql";
+            break;
 
-            case "XML" :
-               $mime="text/xml";
-               break;
-         }
-      }
-
-      // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition: filename=\"$filename\"");
-      header("Content-type: ".$mime);
-
-      $f=fopen($file,"r");
-
-      if (!$f) {
-         echo "Error opening file $file";
-      } else {
-         // Pour que les \x00 ne devienne pas \0
-         $mc=get_magic_quotes_runtime();
-         if ($mc) {
-            @set_magic_quotes_runtime(0);
-         }
-         $fsize=filesize($file);
-
-         if ($fsize) {
-            echo fread($f, filesize($file));
-         } else {
-            echo $LANG['document'][47];
-         }
-
-         if ($mc) {
-            @set_magic_quotes_runtime($mc);
-         }
+         case "xml" :
+            $mime="text/xml";
+            break;
       }
    }
+
+   // Now send the file with header() magic
+   header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+   header('Pragma: private'); /// IE BUG + SSL
+   header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+   header("Content-disposition: filename=\"$filename\"");
+   header("Content-type: ".$mime);
+
+   readfile($file) or die ("Error opening file $file");
 }
 
 /**

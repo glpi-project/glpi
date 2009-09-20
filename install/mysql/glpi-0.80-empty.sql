@@ -1083,7 +1083,8 @@ CREATE TABLE `glpi_documents` (
   `entities_id` int(11) NOT NULL default '0',
   `is_recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `filename` varchar(255) collate utf8_unicode_ci default NULL,
+  `filename` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'for display and transfert',
+  `filepath` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file storage path',
   `documentscategories_id` int(11) NOT NULL default '0',
   `mime` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
@@ -1093,6 +1094,7 @@ CREATE TABLE `glpi_documents` (
   `notepad` longtext collate utf8_unicode_ci,
   `users_id` int(11) NOT NULL default '0',
   `tickets_id` int(11) NOT NULL default '0',
+  `sha1sum` char(40) CHARACTER SET ascii DEFAULT NULL,
   PRIMARY KEY  (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -1100,7 +1102,8 @@ CREATE TABLE `glpi_documents` (
   KEY `tickets_id` (`tickets_id`),
   KEY `users_id` (`users_id`),
   KEY `documentscategories_id` (`documentscategories_id`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
+  KEY `sha1sum` (`sha1sum`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

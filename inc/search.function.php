@@ -2435,9 +2435,10 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 			}
 		break;
 
-		case "glpi_documents.filename" :
-			return getDocumentLink($data[$NAME.$num]);
-		break;
+      case "glpi_documents.filename" :
+         return getDocumentLink($data['id']);
+         break;
+
 		case "glpi_devicesharddrives.specif_default" :
 		case "glpi_devicesmemories.specif_default" :
 		case "glpi_devicesprocessors.specif_default" :

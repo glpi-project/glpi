@@ -426,6 +426,7 @@ $LANG['device_power'][1]="ATX";
 $LANG['device_ram'][1]="Fréquence";
 $LANG['device_ram'][2]="Taille";
 
+$LANG['document'][1]="Somme de contrôle (SHA1)";
 $LANG['document'][2]="Fichier";
 $LANG['document'][3]="Rubrique";
 $LANG['document'][4]="Type MIME";

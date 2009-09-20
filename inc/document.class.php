@@ -57,7 +57,6 @@ class Document extends CommonDBTM {
     *
     *@param $filename filename of the document
     *@return true if succeed else false
-   **/
    function getFromDBbyFilename($filename) {
       global $DB;
 
@@ -70,6 +69,7 @@ class Document extends CommonDBTM {
       }
       return false;
    }
+   **/
 
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LANG;
@@ -78,15 +78,16 @@ class Document extends CommonDBTM {
       $di->cleanDBonItemDelete($this->type,$ID);
 
       // UNLINK DU FICHIER
-      if (!empty($this->fields["filename"])) {
-         if (is_file(GLPI_DOC_DIR."/".$this->fields["filename"])
-             && !is_dir(GLPI_DOC_DIR."/".$this->fields["filename"])) {
-            if (unlink(GLPI_DOC_DIR."/".$this->fields["filename"])) {
-               addMessageAfterRedirect($LANG['document'][24].GLPI_DOC_DIR."/".
-                                       $this->fields["filename"]);
+      if (!empty($this->fields["filepath"])) {
+         if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
+             && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
+             && countElementsInTable($this->table,"`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
+            if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
+               addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
+                                       $this->fields["filepath"]);
             } else {
-               addMessageAfterRedirect($LANG['document'][25].GLPI_DOC_DIR."/".
-                                       $this->fields["filename"],false,ERROR);
+               addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
+                                       $this->fields["filepath"],false,ERROR);
             }
          }
       }
@@ -117,8 +118,8 @@ class Document extends CommonDBTM {
          $input['mime']=$_FILES['filename']['type'];
       }
 
-      if (isset($input["item"]) && isset($input["itemtype"]) && $input["itemtype"] > 0
-          && $input["item"] > 0) {
+      if (isset($input["item"]) && isset($input["itemtype"])
+          && $input["itemtype"]>0 && $input["item"]>0) {
          $ci=new CommonItem();
          $ci->getFromDB($input["itemtype"],$input["item"]);
          $input["name"]=addslashes(resume_text($LANG['document'][18]." ".$ci->getType()." - ".
@@ -127,11 +128,13 @@ class Document extends CommonDBTM {
 
       if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          $input['filename']=moveUploadedDocument($input["upload_file"]);
-      } else if (isset($_FILES)&&isset($_FILES['filename'])) {
-         $input['filename']= uploadDocument($_FILES['filename']);
+
+      } else if (isset($_FILES) && isset($_FILES['filename'])) {
+         uploadDocument($input,$_FILES['filename']);
       }
 
-      if (!isset($input['name']) && isset($input['filename'])) {
+      if ((!isset($input['name']) || empty($input['name']))
+          && isset($input['filename'])){
          $input['name']=$input['filename'];
       }
 
@@ -168,7 +171,7 @@ class Document extends CommonDBTM {
          if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
             $input['filename']=moveUploadedDocument($input["upload_file"],$input['current_filename']);
          } else {
-            $input['filename']= uploadDocument($_FILES['filename'],$input['current_filename']);
+            uploadDocument($input,$_FILES['filename']);
          }
       }
 
@@ -225,15 +228,15 @@ class Document extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name",$this->fields["name"],45,
                               $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
+      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25].
       "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='".($ID>0 ? 7 : 6)."'>.<textarea cols='45' rows='8'
+      echo "<td class='center middle' rowspan='6'>.<textarea cols='45' rows='8'
          name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['document'][22]."&nbsp;:</td>";
-         echo "<td>".getDocumentLink($this->fields["filename"],'',45)."";
+         echo "<td>".$this->getDownloadLink('',45);
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
          echo "</td></tr>";
       }
@@ -272,6 +275,10 @@ class Document extends CommonDBTM {
       echo "<td>";
       autocompletionTextField("mime",$this->table,"mime",$this->fields["mime"],45,
                               $this->fields["entities_id"]);
+      if ($ID>0) {
+         echo "</td><td>".$LANG['document'][1]."&nbsp;:</td>";
+         echo "<td>".$this->fields["sha1sum"];
+      }
       echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
@@ -280,8 +287,76 @@ class Document extends CommonDBTM {
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
    return true;
-
    }
+
+   /**
+    * Send a document to navigator
+    *
+    */
+   function send() {
+      $file = GLPI_DOC_DIR."/".$this->fields['filepath'];
+
+      if (!file_exists($file)) {
+         die("Error file ".$file." does not exist");
+      }
+      // Now send the file with header() magic
+      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header('Pragma: private'); /// IE BUG + SSL
+      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+      header("Content-disposition: filename=\"".$this->fields['filename']."\"");
+      header("Content-type: ".$this->fields['mime']);
+
+      readfile($file) or die ("Error opening file $file");
+   }
+
+   /**
+    * Get download link for a document
+    *
+    * @param $params additonal parameters to be added to the link
+    * @param $len maximum length of displayed string
+    *
+    **/
+   function getDownloadLink($params='', $len=20){
+      global $DB,$CFG_GLPI;
+
+      $splitter=explode("/",$this->fields['filename']);
+      if (count($splitter)==2) {
+         // Old documents in EXT/filename
+         $fileout=$splitter[1];
+      } else {
+         // New document
+         $fileout=$this->fields['filename'];
+      }
+
+      if (utf8_strlen($fileout)>$len) {
+         $fileout=utf8_substr($fileout,0,$len)."&hellip;";
+      }
+
+      $out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
+               $this->fields['id'].$params."\" target=\"_blank\">";
+
+      $splitter=explode("/",$this->fields['filepath']);
+      if (count($splitter)) {
+
+         $query="SELECT *
+                 FROM `glpi_documentstypes`
+                 WHERE `ext` LIKE '".$splitter[0]."'
+                       AND `icon` <> ''";
+
+         if ($result=$DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $icon=$DB->result($result,0,'icon');
+               $out .= "&nbsp;<img class='middle' style=\"margin-left:3px; margin-right:6px;\" alt='".
+                               $fileout."' title='".$fileout."' src=\"".
+                               $CFG_GLPI["typedoc_icon_dir"]."/$icon\" >";
+            }
+         }
+      }
+      $out.= "<strong>$fileout</strong></a>";
+
+      return $out;
+   }
+
 
 }
 
