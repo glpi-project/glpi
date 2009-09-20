@@ -125,7 +125,7 @@ function uploadDocument(&$input,$FILEDESC) {
    if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$path)) {
       addMessageAfterRedirect($LANG['document'][26]);
       // For display
-      $input['filename'] = $FILEDESC['name'];
+      $input['filename'] = addslashes($FILEDESC['name']);
       // Storage path
       $input['filepath'] = $path;
       // Checksum

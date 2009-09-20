@@ -112,6 +112,9 @@ class Document extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG, $INFOFORM_PAGES, $CFG_GLPI, $DB;
 
+      // security (don't accept filename from $_POST)
+      unset($input['filename']);
+
       $input["users_id"] = $_SESSION["glpiID"];
 
       if (isset($_FILES['filename']['type'] )&& !empty($_FILES['filename']['type'])) {
@@ -127,22 +130,29 @@ class Document extends CommonDBTM {
       }
 
       if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
+         // Move doc from upload dir
          $input['filename']=moveUploadedDocument($input["upload_file"]);
 
       } else if (isset($_FILES) && isset($_FILES['filename'])) {
+         // Move doc send with form
          uploadDocument($input,$_FILES['filename']);
       }
 
+      // Default document name
       if ((!isset($input['name']) || empty($input['name']))
           && isset($input['filename'])){
          $input['name']=$input['filename'];
       }
 
       unset($input["upload_file"]);
+
+      // Don't add if no file
       if (isset($input["_only_if_upload_succeed"]) && $input["_only_if_upload_succeed"]
-          && empty($input['filename'])) {
+          && (!isset($input['filename']) || empty($input['filename']))) {
          return false;
       }
+
+      // Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity
          $crit = array('sha1sum'=>$input['sha1sum'],
@@ -173,6 +183,9 @@ class Document extends CommonDBTM {
    }
 
    function prepareInputForUpdate($input) {
+
+      // security (don't accept filename from $_POST)
+      unset($input['filename']);
 
       if (isset($_FILES['filename']['type']) && !empty($_FILES['filename']['type'])) {
          $input['mime']=$_FILES['filename']['type'];
