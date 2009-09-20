@@ -201,7 +201,7 @@ function getUploadFileValidLocationName($dir,$sha1sum) {
       return '';
    }
    $subdir = $dir.'/'.substr($sha1sum,0,2);
-   if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir)) {
+   if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
       addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$subdir);
    }
    if (!is_dir(GLPI_DOC_DIR."/".$subdir)) {
