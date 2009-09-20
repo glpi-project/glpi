@@ -44,48 +44,72 @@ if (!defined('GLPI_ROOT')){
  * @param $old_file old file name to replace : to unlink it
  * @return nothing
  **/
-function moveUploadedDocument($filename,$old_file='') {
+function moveUploadedDocument(&$input,$filename) {
    global $CFG_GLPI,$LANG;
 
-   if (is_dir(GLPI_DOC_DIR."/_uploads")) {
-      if (is_file(GLPI_DOC_DIR."/_uploads/".$filename)) {
-         $dir=isValidDoc($filename);
-         $new_path=getUploadFileValidLocationName($dir,$filename,0);
-         if (!empty($new_path)) {
+   $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
-            // Delete old file
-            if (!empty($old_file) && is_file(GLPI_DOC_DIR."/".$old_file)
-                && !is_dir(GLPI_DOC_DIR."/".$old_file)) {
-               if (unlink(GLPI_DOC_DIR."/".$old_file)) {
-                  addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
-               } else {
-                  addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
-                                          $old_file,false,ERROR);
-               }
-            }
+   if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
+      addMessageAfterRedirect($LANG['document'][35], false, ERROR);
+      return false;
+   }
+   if (!is_file($fullpath)) {
+      addMessageAfterRedirect($LANG['document'][38]."&nbsp;: ".$fullpath, false, ERROR);
+      return false;
+   }
+   $sha1sum = sha1_file($fullpath);
+   $dir = isValidDoc($filename);
+   $new_path = getUploadFileValidLocationName($dir, $sha1sum);
 
-            // Déplacement si droit
-            if (is_writable (GLPI_DOC_DIR."/_uploads/".$filename)) {
-               if (rename(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)) {
-                  addMessageAfterRedirect($LANG['document'][39]);
-                  return $new_path;
-               } else {
-                  addMessageAfterRedirect($LANG['document'][40],false,ERROR);
-               }
-            } else { // Copi sinon
-               if (copy(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)) {
-                  addMessageAfterRedirect($LANG['document'][41]);
-                  return $new_path;
-               } else {
-                  addMessageAfterRedirect($LANG['document'][40],false,ERROR);
-               }
-            }
-         }
-      } else addMessageAfterRedirect($LANG['document'][38]."&nsbp;: ".GLPI_DOC_DIR."/_uploads/".
-                                     $filename,false,ERROR);
-   } else addMessageAfterRedirect($LANG['document'][35],false,ERROR);
+   if (!$sha1sum || !$dir || !$new_path) {
+      return false;
+   }
 
-   return "";
+   // Delete old file (if not used by another doc)
+   if (isset($input['current_filename'])
+       && !empty($input['current_filename'])
+       && is_file(GLPI_DOC_DIR."/".$input['current_filename'])
+       && countElementsInTable('glpi_documents',"`sha1sum`='$sha1sum'")<=1) {
+      if (unlink(GLPI_DOC_DIR."/".$input['current_filename'])) {
+         addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$input['current_filename']);
+      } else {
+         addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$input['current_filename'],
+                                 false,ERROR);
+      }
+   }
+
+   // Local file : try to detect mime type
+   if (function_exists('finfo_open') && $finfo = finfo_open(FILEINFO_MIME)) {
+      $input['mime'] = finfo_file($finfo, $fullpath);
+      finfo_close($finfo);
+   } else if (function_exists('mime_content_type')) {
+      $input['mime'] = mime_content_type($fullpath);
+   }
+
+   // Déplacement si droit
+   if (is_writable ($fullpath)) {
+      if (rename($fullpath, GLPI_DOC_DIR."/".$new_path)) {
+         addMessageAfterRedirect($LANG['document'][39]);
+      } else {
+         addMessageAfterRedirect($LANG['document'][40],false,ERROR);
+         return false;
+      }
+   } else { // Copi sinon
+      if (copy($fullpath, GLPI_DOC_DIR."/".$new_path)) {
+         addMessageAfterRedirect($LANG['document'][41]);
+      } else {
+         addMessageAfterRedirect($LANG['document'][40],false,ERROR);
+         return false;
+      }
+   }
+
+   // For display
+   $input['filename'] = addslashes($filename);
+   // Storage path
+   $input['filepath'] = $new_path;
+   // Checksum
+   $input['sha1sum'] = $sha1sum;
+   return true;
 }
 
 /**
@@ -102,6 +126,7 @@ function uploadDocument(&$input,$FILEDESC) {
    if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
       return false;
    }
+
    $sha1sum = sha1_file($FILEDESC['tmp_name']);
    $dir = isValidDoc($FILEDESC['name']);
    $path = getUploadFileValidLocationName($dir,$sha1sum);
@@ -119,6 +144,11 @@ function uploadDocument(&$input,$FILEDESC) {
          addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$input['current_filename'],
                                  false,ERROR);
       }
+   }
+
+   // Mime type from client
+   if (isset($FILEDESC['type'])&& !empty($FILEDESC['type'])) {
+      $input['mime'] = $FILEDESC['type'];
    }
 
    // Move uploaded file

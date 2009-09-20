@@ -117,10 +117,6 @@ class Document extends CommonDBTM {
 
       $input["users_id"] = $_SESSION["glpiID"];
 
-      if (isset($_FILES['filename']['type'] )&& !empty($_FILES['filename']['type'])) {
-         $input['mime']=$_FILES['filename']['type'];
-      }
-
       if (isset($input["item"]) && isset($input["itemtype"])
           && $input["itemtype"]>0 && $input["item"]>0) {
          $ci=new CommonItem();
@@ -131,7 +127,7 @@ class Document extends CommonDBTM {
 
       if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
-         $input['filename']=moveUploadedDocument($input["upload_file"]);
+         moveUploadedDocument($input,$input["upload_file"]);
 
       } else if (isset($_FILES) && isset($_FILES['filename'])) {
          // Move doc send with form
@@ -193,7 +189,7 @@ class Document extends CommonDBTM {
 
       if (isset($input['current_filename'])) {
          if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
-            $input['filename']=moveUploadedDocument($input["upload_file"],$input['current_filename']);
+            moveUploadedDocument($input,$input["upload_file"]);
          } else {
             uploadDocument($input,$_FILES['filename']);
          }
