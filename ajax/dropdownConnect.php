@@ -74,8 +74,9 @@ if (!empty($used)) {
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $where.=" AND ( `$table`.`name` ".makeTextSearch($_POST['searchText'])."
-                  OR `$table`.`serial` ".makeTextSearch($_POST['searchText'])." )";
+   $where.=" AND ( `$table`.`name` ".makeTextSearch($_POST['searchText']).
+                 " OR `$table`.`otherserial` ".makeTextSearch($_POST['searchText']).
+                 " OR `$table`.`serial` ".makeTextSearch($_POST['searchText'])." )";
 }
 
 $multi = in_array($table,$CFG_GLPI["recursive_type"]);
@@ -104,8 +105,8 @@ if ($_POST["onlyglobal"] && $_POST["idtable"]!=COMPUTER_TYPE) {
    if ($_POST["idtable"]==COMPUTER_TYPE) {
       $CONNECT_SEARCH=" WHERE 1 ";
    } else {
-      $CONNECT_SEARCH=" WHERE `glpi_computers_items`.`id` IS NULL
-                              OR `$table`.`is_global` = '1' ";
+      $CONNECT_SEARCH=" WHERE (`glpi_computers_items`.`id` IS NULL
+                              OR `$table`.`is_global` = '1') ";
    }
 }
 
@@ -121,7 +122,8 @@ $query = "SELECT DISTINCT `$table`.`id`, `$table`.`name` AS name, `$table`.`seri
           $LEFTJOINCONNECT
           $CONNECT_SEARCH
           $where
-          ORDER BY entities_id, name ASC";
+          ORDER BY entities_id, name ASC
+          $LIMIT";
 
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -142,17 +144,17 @@ if ($DB->numrows($result)) {
          echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
       }
       $output = $data['name'];
+      $ID = $data['id'];
+      if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+         $output.=" ($ID)";
+      }
       if (!empty($data['serial'])) {
          $output.=" - ".$data["serial"];
       }
       if (!empty($data['otherserial'])) {
          $output.=" - ".$data["otherserial"];
       }
-      $ID = $data['id'];
 
-      if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-         $output.=" ($ID)";
-      }
       echo "<option value='$ID' title=\"".cleanInputText($output)."\">".
             utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
    }
