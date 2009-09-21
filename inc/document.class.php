@@ -377,6 +377,30 @@ class Document extends CommonDBTM {
       return $out;
    }
 
+   /**
+    * find a document with a file attached
+    *
+    * @param $entity of the document
+    * @param $path of the searched file
+    *
+    * @return boolean
+    */
+   function findFile ($entity, $path) {
+      global $DB;
+
+      $sum = sha1_file($path);
+      if (!$sum) {
+         return false;
+      }
+      $crit = array('sha1sum' => $sum,
+                    'entities_id' => $entity);
+
+      foreach ($DB->request($this->table, $crit) as $data) {
+         $this->fields = $data;
+         return true;
+      }
+      return false;
+   }
 
 }
 
