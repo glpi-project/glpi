@@ -488,10 +488,11 @@ function addDeviceDocument($docID,$itemtype,$ID) {
    }
    if ($docID>0 && $ID>0 && $itemtype>0){
       $docitem=new DocumentItem();
-      $docitem->add(array('documents_id' => $docID,
-                          'itemtype' => $itemtype,
-                          'items_id' => $ID));
+      return $docitem->add(array('documents_id' => $docID,
+                                 'itemtype' => $itemtype,
+                                 'items_id' => $ID));
    }
+   return false;
 }
 
 /** TODO : clean unused function

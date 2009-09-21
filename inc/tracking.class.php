@@ -54,13 +54,13 @@ class Job extends CommonDBTM{
 		$this->entity_assign=true;
 
 	}
-	
-	function defineTabs($ID,$withtemplate){ 
-		global $LANG,$CFG_GLPI; 
-		
+
+	function defineTabs($ID,$withtemplate){
+		global $LANG,$CFG_GLPI;
+
 		$job=new Job();
 		$job->getFromDB($ID);
-		
+
 		$ong[1]=$LANG['job'][38]." ".$ID;
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			if ($job->canAddFollowups()){
@@ -75,7 +75,7 @@ class Job extends CommonDBTM{
 
 		$ong['no_all_tab']=true;
 
-		return $ong; 
+		return $ong;
 	}
 	/**
 	 * Retrieve an item from the database with datas associated (hardwares)
@@ -124,7 +124,7 @@ class Job extends CommonDBTM{
 		if ($DB->numrows($result)>0)
 			while ($data=$DB->fetch_array($result)){
 				$querydel="DELETE FROM glpi_ticketsplannings WHERE ticketsfollowups_id = '".$data['id']."'";
-				$DB->query($querydel);				
+				$DB->query($querydel);
 			}
 		$query1="DELETE FROM glpi_ticketsfollowups WHERE tickets_id = '$ID'";
 		$DB->query($query1);
@@ -155,7 +155,7 @@ class Job extends CommonDBTM{
 					// Can not steal or can steal and not assign to me
 					if (!haveRight("steal_ticket","1")||$input["users_id_assign"]!=$_SESSION["glpiID"]){
 						unset($input["users_id_assign"]);
-					} 
+					}
 
 				}
 			}
@@ -190,7 +190,7 @@ class Job extends CommonDBTM{
 			$input=$ret;
 		}
 
-		// NEEDED ???? 
+		// NEEDED ????
 		if (isset($input["itemtype"])&& $input["itemtype"]==0&&!isset($input["items_id"])){
 			$input["items_id"]=0;
 		}
@@ -208,38 +208,17 @@ class Job extends CommonDBTM{
 		} else {
 			unset($input["items_id"]);
 			unset($input["itemtype"]);
-		}	
-
-
-		if ( isset($_FILES['multiple']) ) {
-			unset($_FILES['multiple']);
-			$TMPFILE = $_FILES;
-		} else {
-			$TMPFILE = array( $_FILES );
 		}
-		foreach ($TMPFILE as $_FILES) {
-			// add Document if exists
-			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-				$input2=array();
-				$input2["name"]=addslashes(resume_text($LANG['tracking'][24]." ".$input["id"],200)); 
-				$input2["tickets_id"]=$input["id"];
-				$input2["documentscategories_id"]=$CFG_GLPI["documentscategories_id_forticket"];
-				$this->getFromDB($input["id"]);
-				$input2["entities_id"]=$this->fields["entities_id"];
-				$input2["_only_if_upload_succeed"]=1;
-				$doc=new Document();
-				if ($docID=$doc->add($input2)){
-					addDeviceDocument($docID,$this->type,$input["id"]);
-					// force update date_mod
-					$input["date_mod"]=$_SESSION["glpi_currenttime"];
-					if ($CFG_GLPI["add_followup_on_update_ticket"]){
-						$input['_doc_added']=stripslashes($doc->fields["name"]); 
-					}
-				}
-			} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
-				addMessageAfterRedirect($LANG['document'][46],false,ERROR);
-			}
-		}
+
+      // Add document if needed
+      $this->getFromDB($input["id"]); // entities_id field required
+      $docadded = $this->addFiles($input["id"]);
+      if (count($docadded)>0) {
+         $input["date_mod"]=$_SESSION["glpi_currenttime"];
+         if ($CFG_GLPI["add_followup_on_update_ticket"]){
+            $input['_doc_added']=$docadded;
+         }
+      }
 
 		if (isset($input["document"])&&$input["document"]>0){
 			addDeviceDocument($input["document"],$this->type,$input["id"]);
@@ -248,7 +227,7 @@ class Job extends CommonDBTM{
 			unset($input["document"]);
 			// Force date_mod of tracking
 			$input["date_mod"]=$_SESSION["glpi_currenttime"];
-			$input['_doc_added']=$doc->fields["name"];
+			$input['_doc_added'][]=$doc->fields["name"];
 		}
 
 		// Old values for add followup in change
@@ -317,7 +296,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Check dates change interval due to the fact that second are not displayed in form
-		
+
 		if (($key=array_search('date',$updates))!==false && (substr($this->fields["date"],0,16) == substr($oldvalues['date'],0,16))){
 			unset($updates[$key]);
 		}
@@ -334,7 +313,7 @@ class Job extends CommonDBTM{
 				$this->fields["user_email"]=$user->fields["email"];
 			}
 		}
-		
+
 		// Do not take into account date_mod if no update is done
 		if (count($updates)==1 && ($key=array_search('date_mod',$updates))!==false){
 			unset($updates[$key]);
@@ -349,11 +328,13 @@ class Job extends CommonDBTM{
 		if (count($updates)){
 			// New values for add followup in change
 			$change_followup_content="";
-			if (isset($input['_doc_added'])){
-				$change_followup_content=$LANG['mailing'][26]." ".$input['_doc_added'];
+			if (isset($input['_doc_added']) && count($input['_doc_added'])>0) {
+            foreach ($input['_doc_added'] as $name) {
+               $change_followup_content .= $LANG['mailing'][26]." $name\n";
+            }
 			}
 			$global_mail_change_count=0;
-	
+
 			// Update Ticket Tco
 			if (in_array("realtime",$updates)||in_array("cost_time",$updates)|| in_array("cost_fixed",$updates)||in_array("cost_material",$updates)){
 				$ci=new CommonItem;
@@ -366,8 +347,8 @@ class Job extends CommonDBTM{
 			}
 
 			if ($CFG_GLPI["add_followup_on_update_ticket"]&&count($updates)){
-	
-	
+
+
 				foreach ($updates as $key)
 				switch ($key) {
 					case "name":
@@ -380,27 +361,27 @@ class Job extends CommonDBTM{
 					break;
 					case "date":
 						$change_followup_content.=$LANG['mailing'][48].": ".$input["_old_date"]." -> ".$this->fields["date"]."\n";
-		
+
 						$global_mail_change_count++;
 					break;
 					case "closedate":
 						// if update status from an not closed status : no mail for change closedate
 						if (!in_array("status",$updates)||!strstr($input["status"],"old_")){
 							$change_followup_content.=$LANG['mailing'][49].": ".$input["_old_closedate"]." -> ".$this->fields["closedate"]."\n";
-			
+
 							$global_mail_change_count++;
 						}
 					break;
 					case "status":
 						$new_status=$this->fields["status"];
 						$change_followup_content.=$LANG['mailing'][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
-		
+
 						if (strstr($new_status,"old_"))
 							$newinput["add_close"]="add_close";
 
-						if (in_array("closedate",$updates))	
+						if (in_array("closedate",$updates))
 							$global_mail_change_count++; // Manage closedate
-		
+
 						$global_mail_change_count++;
 					break;
 					case "users_id":
@@ -410,7 +391,7 @@ class Job extends CommonDBTM{
 						$users_id->getFromDB($this->fields["users_id"]);
 						$new_users_id_name=$users_id->getName();
 						$change_followup_content.=$LANG['mailing'][18].": $old_users_id_name -> ".$new_users_id_name."\n";
-		
+
 						$global_mail_change_count++;
 					break;
 					case "users_id_recipient":
@@ -420,7 +401,7 @@ class Job extends CommonDBTM{
 						$recipient->getFromDB($this->fields["users_id_recipient"]);
 						$new_recipient_name=$recipient->getName();
 						$change_followup_content.=$LANG['mailing'][50].": $old_recipient_name -> ".$new_recipient_name."\n";
-		
+
 						$global_mail_change_count++;
 					break;
 					case "groups_id" :
@@ -433,7 +414,7 @@ class Job extends CommonDBTM{
 					case "priority" :
 						$new_priority=$this->fields["priority"];
 						$change_followup_content.=$LANG['mailing'][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
-						$global_mail_change_count++;		
+						$global_mail_change_count++;
 					break;
 					case "ticketscategories_id":
 						$new_ticketscategories_id=$this->fields["ticketscategories_id"];
@@ -466,7 +447,7 @@ class Job extends CommonDBTM{
 						$new_item_name=$ci->getName();
 						if ($new_item_name=="N/A"||empty($new_item_name))
 							$new_item_name=$LANG['mailing'][107];
-		
+
 						$change_followup_content.=$LANG['mailing'][17].": $old_item_name -> ".$new_item_name."\n";
 						if (in_array("items_id",$updates)) $global_mail_change_count++;
 						if (in_array("itemtype",$updates)) $global_mail_change_count++;
@@ -515,7 +496,7 @@ class Job extends CommonDBTM{
 				unset($input["_old_assign"]);
 			}
 			$mail_send=false;
-	
+
 			if (!empty($change_followup_content)){ // Add followup if not empty
 				$newinput=array();
 				$newinput["content"]=addslashes($change_followup_content);
@@ -528,7 +509,7 @@ class Job extends CommonDBTM{
 				// pass _old_assign if assig changed
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
-				} 
+				}
 				if (isset($input["status"])&&in_array("status",$updates)&&strstr($input["status"],"old_")){
 					$newinput["type"]="finish";
 				}
@@ -536,21 +517,21 @@ class Job extends CommonDBTM{
 				$fup->add($newinput);
 				$mail_send=true;
 			}
-	
-			
+
+
 			// Clean content to mail
 			$this->fields["content"]=stripslashes($this->fields["content"]);
-	
+
 			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["use_mailing"]){
 				$user=new User;
 				$user->getFromDB($_SESSION["glpiID"]);
 				$mailtype="update";
 				if (isset($input["status"])&&$input["status"]&&in_array("status",$updates)&&strstr($input["status"],"old_")){
 					$mailtype="finish";
-				} 
+				}
 				if (isset($input["_old_assign"])){
 					$this->fields["_old_assign"]=$input["_old_assign"];
-				} 
+				}
 				$mail = new Mailing($mailtype,$this,$user);
 				$mail->send();
 			}
@@ -560,7 +541,7 @@ class Job extends CommonDBTM{
 
 	function prepareInputForAdd($input) {
 		global $CFG_GLPI,$LANG;
-		
+
 		// Check mandatory
 		$mandatory_ok=true;
 
@@ -568,7 +549,7 @@ class Job extends CommonDBTM{
 		if (!isset($input['_auto_import'])){
 
 			$_SESSION["helpdeskSaved"]=$input;
-	
+
 			if ($CFG_GLPI["is_ticket_content_mandatory"]&&(!isset($input['content'])||empty($input['content']))){
 				addMessageAfterRedirect($LANG['tracking'][8],false,ERROR);
 				$mandatory_ok=false;
@@ -585,7 +566,7 @@ class Job extends CommonDBTM{
 				addMessageAfterRedirect($LANG['help'][16],false,ERROR);
 				$mandatory_ok=false;
 			}
-	
+
 			if (!$mandatory_ok){
 				return false;
 			}
@@ -616,13 +597,13 @@ class Job extends CommonDBTM{
 		if (!isset($input["users_id_assign"])) {
          $input["users_id_assign"]=0;
       }
-		
+
 		if (!isset($input["date"])||empty($input["date"])){
 			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
 
 		if (isset($input["items_id"])&&$input["items_id"]==0){
-			$input["itemtype"]=0;	
+			$input["itemtype"]=0;
 		}
 
 		if ($input["itemtype"]==0){
@@ -666,7 +647,7 @@ class Job extends CommonDBTM{
 			if (!isset($input[$field])){
 				$input[$field]=0;
 			}
-		} 
+		}
 
 		$input=$rules->processAllRules($input,$input);
 
@@ -697,8 +678,8 @@ class Job extends CommonDBTM{
 			} else {
 				$input["closedate"]=$_SESSION["glpi_currenttime"];
 			}
-		} 
-		
+		}
+
 		// No name set name
                 if (empty($input["name"])) {
                         $input["name"]=preg_replace('/\r\n/',' ',$input['content']);
@@ -712,26 +693,8 @@ class Job extends CommonDBTM{
 	function post_addItem($newID,$input) {
 		global $LANG,$CFG_GLPI;
 
-		// add Document if exists
-		if (isset($_FILES['multiple']) ) {
-			unset($_FILES['multiple']);
-			$TMPFILE = $_FILES;
-		} else {
-			$TMPFILE = array( $_FILES );
-		}
-		foreach ($TMPFILE as $_FILES) {
-			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-				$input2=array();
-				$input2["name"]=$LANG['tracking'][24]." $newID";
-				$input2["tickets_id"]=$newID;
-				$input2["entities_id"]=$this->fields["entities_id"];
-				$input2["documentscategories_id"]=$CFG_GLPI["documentscategories_id_forticket"];
-				$input2["_only_if_upload_succeed"]=1;
-				$doc=new Document();
-				if ($docID=$doc->add($input2))
-					addDeviceDocument($docID,$this->type,$newID);
-			}
-		}
+      // Add document if needed
+      $this->addFiles($newID);
 
 		// Log this event
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["users_id"])." ".$LANG['log'][20]);
@@ -837,7 +800,7 @@ class Job extends CommonDBTM{
 
 	/**
 	 * Get text describing Followups
-	 * 
+	 *
 	* @param $format text or html
 	* @param $sendprivate true if both public and private followups have to be printed in the email
 	 */
@@ -872,8 +835,8 @@ class Job extends CommonDBTM{
 							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
 						}
 
-						$message.=$LANG['mailing'][0]."\n";	
-					}	
+						$message.=$LANG['mailing'][0]."\n";
+					}
 				}
 			}else{ // text format
 				$message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]." : $nbfollow\n".$LANG['mailing'][1]."\n";
@@ -898,8 +861,8 @@ class Job extends CommonDBTM{
 							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
 						}
 
-						$message.=$LANG['mailing'][0]."\n";	
-					}	
+						$message.=$LANG['mailing'][0]."\n";
+					}
 				}
 
 
@@ -910,7 +873,7 @@ class Job extends CommonDBTM{
 
 	/**
 	 * Get text describing ticket
-	 * 
+	 *
 	* @param $format text or html
 	 */
 	function textDescription($format="text"){
@@ -996,7 +959,7 @@ class Job extends CommonDBTM{
 
 		}else{ //text format
 			$message = $LANG['mailing'][1]."\n*".$LANG['mailing'][5]."*\n".$LANG['mailing'][1]."\n";
-			
+
 			$message.=mailRow($LANG['common'][57],$this->fields["name"]);
 			$users_id=$this->getAuthorName();
 			if (empty($users_id)) $users_id=$LANG['mailing'][108];
@@ -1034,7 +997,7 @@ class Job extends CommonDBTM{
 				$message.=mailRow($LANG['mailing'][103],$LANG['choice'][0]);
 			}
 
-			
+
 			if (isset($this->fields["ticketscategories_id"])&&$this->fields["ticketscategories_id"]){
 				$message.= mailRow($LANG['common'][36],getDropdownName("glpi_ticketscategories",$this->fields["ticketscategories_id"]));
 			} else $message.=mailRow($LANG['common'][36],$LANG['mailing'][100]);
@@ -1050,7 +1013,7 @@ class Job extends CommonDBTM{
 
 	/**
 	 * Get users_id name
-	 * 
+	 *
 	 * @param $link boolean with link ?
 	 * @return string users_id name
 	 */
@@ -1060,7 +1023,7 @@ class Job extends CommonDBTM{
 
 	/**
 	 * Is the current user have right to add followups to the current ticket ?
-	 * 
+	 *
 	 * @return boolean
 	 */
 	function canAddFollowups(){
@@ -1072,7 +1035,7 @@ class Job extends CommonDBTM{
 	}
 	/**
 	 * Is the current user have right to show the current ticket ?
-	 * 
+	 *
 	 * @return boolean
 	 */
 	function canView(){
@@ -1087,6 +1050,60 @@ class Job extends CommonDBTM{
 			)
 			);
 	}
+
+   /**
+    * add files (from $_FILES) to a ticket
+    * create document if needed
+    * create link from document to ticket
+    *
+    * @param $id of the ticket
+    *
+    * @return array of doc added name
+    */
+   function addFiles ($id) {
+      global $LANG, $CFG_GLPI;
+
+      $docadded=array();
+      $doc=new Document();
+
+      // add Document if exists
+      if (isset($_FILES['multiple']) ) {
+         unset($_FILES['multiple']);
+         $TMPFILE = $_FILES;
+      } else {
+         $TMPFILE = array( $_FILES );
+      }
+      foreach ($TMPFILE as $_FILES) {
+         if (isset($_FILES['filename'])
+             && count($_FILES['filename'])>0
+             && $_FILES['filename']["size"]>0) {
+            // Check for duplicate
+            if ($doc->findFile($this->fields["entities_id"], $_FILES['filename']['tmp_name'])) {
+               $docID = $doc->fields["id"];
+            } else {
+               $input2=array();
+               $input2["name"]=addslashes($LANG['tracking'][24]." $id");
+               $input2["tickets_id"]=$id;
+               $input2["entities_id"]=$this->fields["entities_id"];
+               $input2["documentscategories_id"]=$CFG_GLPI["documentscategories_id_forticket"];
+               $input2["_only_if_upload_succeed"]=1;
+               $input2["entities_id"]=$this->fields["entities_id"];
+               $docID=$doc->add($input2);
+            }
+            if ($docID>0) {
+               if (addDeviceDocument($docID,$this->type,$id)) {
+                  $docadded[]=stripslashes($doc->fields["name"]);
+               }
+            }
+
+         } else if (!empty($_FILES['filename']['name'])
+                    && isset($_FILES['filename']['error'])
+                    && $_FILES['filename']['error']){
+            addMessageAfterRedirect($LANG['document'][46],false,ERROR);
+         }
+      }
+      return $docadded;
+   }
 
 }
 
@@ -1104,13 +1121,13 @@ class Followup  extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 		$querydel="DELETE FROM glpi_ticketsplannings WHERE ticketsfollowups_id = '$ID'";
-		$DB->query($querydel);				
+		$DB->query($querydel);
 	}
 
 	function post_deleteFromDB($ID){
 		$job=new Job();
 		$job->updateRealtime($this->fields['tickets_id']);
-		$job->updateDateMod($this->fields["tickets_id"]);		
+		$job->updateDateMod($this->fields["tickets_id"]);
 	}
 
 
@@ -1136,9 +1153,9 @@ class Followup  extends CommonDBTM {
 
 		if ($job->getFromDB($input["tickets_id"])){
 			$job->updateDateMod($input["tickets_id"]);
-			
+
 			if (count($updates)){
-		
+
 				if ($CFG_GLPI["use_mailing"]&&
 				(in_array("content",$updates)||isset($input['_need_send_mail']))){
 					$user=new User;
@@ -1147,13 +1164,13 @@ class Followup  extends CommonDBTM {
 					$mail->send();
 					$mailsend=true;
 				}
-		
+
 				if (in_array("realtime",$updates)) {
 					$job->updateRealTime($input["tickets_id"]);
 				}
 			}
 		}
-		
+
 		if (isset($input["_plan"])){
 
 			$pt=new PlanningTracking();
@@ -1218,7 +1235,7 @@ class Followup  extends CommonDBTM {
 			if (isset($input['plan'])){
 				$input['_plan']=$input['plan'];
 				unset($input['plan']);
-			}	
+			}
 			if (isset($input["add_close"])) $input['_close']=1;
 			unset($input["add_close"]);
 
@@ -1292,7 +1309,7 @@ class Followup  extends CommonDBTM {
 		if ($CFG_GLPI["use_mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
-			if (!isset($input['_auto_import'])&&isset($_SESSION["glpiID"])){ 
+			if (!isset($input['_auto_import'])&&isset($_SESSION["glpiID"])){
 				$user->getFromDB($_SESSION["glpiID"]);
 			}
 			$mail = new Mailing($input["_type"],$input["_job"],$user,
@@ -1312,7 +1329,7 @@ class Followup  extends CommonDBTM {
 	**/
 	function getAuthorName($link=0){
 		return getUserName($this->fields["users_id"],$link);
-	}	
+	}
 
 }
 
