@@ -798,6 +798,8 @@ $SEARCH_OPTION[NETWORKING_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[NETWORKING_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[NETWORKING_TYPE][29]['datatype']     = 'itemlink';
+$SEARCH_OPTION[NETWORKING_TYPE][29]['itemlink_type']= CONTRACT_TYPE;
 
 $SEARCH_OPTION[NETWORKING_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['field']        = 'num';
@@ -1158,6 +1160,8 @@ $SEARCH_OPTION[PRINTER_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[PRINTER_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[PRINTER_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PRINTER_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[PRINTER_TYPE][29]['datatype']     = 'itemlink';
+$SEARCH_OPTION[PRINTER_TYPE][29]['itemlink_type']= CONTRACT_TYPE;
 
 $SEARCH_OPTION[PRINTER_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][30]['field']        = 'num';
@@ -1487,6 +1491,8 @@ $SEARCH_OPTION[MONITOR_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[MONITOR_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[MONITOR_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[MONITOR_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[MONITOR_TYPE][29]['datatype']     = 'itemlink';
+$SEARCH_OPTION[MONITOR_TYPE][29]['itemlink_type']= CONTRACT_TYPE;
 
 $SEARCH_OPTION[MONITOR_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][30]['field']        = 'num';
@@ -1818,6 +1824,8 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[PERIPHERAL_TYPE][29]['datatype']     = 'itemlink';
+$SEARCH_OPTION[PERIPHERAL_TYPE][29]['itemlink_type']= CONTRACT_TYPE;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['field']        = 'num';
@@ -2170,6 +2178,8 @@ $SEARCH_OPTION[SOFTWARE_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[SOFTWARE_TYPE][29]['datatype']      = 'itemlink';
+$SEARCH_OPTION[SOFTWARE_TYPE][29]['itemlink_type'] = CONTRACT_TYPE;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['field']        = 'num';
@@ -3361,6 +3371,8 @@ $SEARCH_OPTION[PHONE_TYPE][29]['field']        = 'name';
 $SEARCH_OPTION[PHONE_TYPE][29]['linkfield']    = '';
 $SEARCH_OPTION[PHONE_TYPE][29]['name']         = $LANG['common'][16]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PHONE_TYPE][29]['forcegroupby'] = true;
+$SEARCH_OPTION[PHONE_TYPE][29]['datatype']     = 'itemlink';
+$SEARCH_OPTION[PHONE_TYPE][29]['itemlink_type']= CONTRACT_TYPE;
 
 $SEARCH_OPTION[PHONE_TYPE][30]['table']        = 'glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][30]['field']        = 'num';
