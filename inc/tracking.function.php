@@ -2238,8 +2238,12 @@ function showJobDetails ($target,$ID){
 				} else {
 					echo $doc->getDownloadLink("&tickets_id=$ID");
 				}
-				if (haveRight("document","w"))
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=delete&amp;id=".$data["id"]."&amp;devtype=".TRACKING_TYPE."&amp;devid=".$ID."&amp;docid=".$data["documents_id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'></a>";
+            if (haveRight("document","w")) {
+               echo "<a href='".$CFG_GLPI["root_doc"].
+                  "/front/document.form.php?deletedocumentitem=1&amp;id=".$data["id"].
+                  "&amp;documents_id=".$data["documents_id"]."'><img src='".
+                  $CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'></a>";
+            }
 				echo "</td></tr>";
 			}
 		}
