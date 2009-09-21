@@ -325,7 +325,7 @@ class MailCollect {
       $head['subject']=$this->decodeMimeString($head['subject']);
 
       if (!empty($this->charset)) {
-         $body=encodeInUtf8($this->charset);
+         $body=encodeInUtf8($body,$this->charset);
       }
       if (!seems_utf8($body)) {
          $tkt['content']= encodeInUtf8($body);
