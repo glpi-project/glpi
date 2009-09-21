@@ -60,7 +60,7 @@ if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!i
 
 $table=$LINK_ID_TABLE[$_POST["idtable"]];
 
-$where="";		
+$where="";
 if (in_array($table,$CFG_GLPI["deleted_tables"])){
 	$where.=" AND $table.deleted=0 ";
 }
@@ -73,19 +73,21 @@ if (!empty($used)){
 }
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
+$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText']).
+            " OR $table.otherserial ".makeTextSearch($_POST['searchText']).
+            " OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
 
 $multi=in_array($table,$CFG_GLPI["recursive_type"]);
 if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
 	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
 	if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-		$multi=true;	
+		$multi=true;
 	}
 } else {
 	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_SESSION['glpiactiveentities'],$multi);
 	if (count($_SESSION['glpiactiveentities'])>1) {
-		$multi=true;	
+		$multi=true;
 	}
 }
 
@@ -103,9 +105,9 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 	if ($_POST["idtable"]==COMPUTER_TYPE)
 		$CONNECT_SEARCH=" WHERE 1 ";
 	else {
-		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
+		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";
 	}
-}	
+}
 
 $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
@@ -113,10 +115,11 @@ if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
 }
 $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
 		$table.serial AS serial,$table.otherserial AS otherserial,
-		$table.FK_entities as FK_entities 
-	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH 
-	$where 
-	ORDER BY FK_entities, name ASC";
+		$table.FK_entities as FK_entities
+	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH
+	$where
+	ORDER BY FK_entities, name ASC
+   $LIMIT";
 
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -135,25 +138,24 @@ if ($DB->numrows($result)) {
 			$prev=$data["FK_entities"];
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
-		
+
 		$output = $data['name'];
+      $ID = $data['ID'];
+      if ($_SESSION["glpiview_ID"]||empty($output)){
+          $output.=" ($ID)";
+      }
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
 
-		$ID = $data['ID'];
 
-		if ($_SESSION["glpiview_ID"]||empty($output)){
-			 $output.=" ($ID)";
-		}
 
-	
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 
 	if ($multi && $prev>=0) {
 		echo "</optgroup>";
 	}
-		
+
 }
 echo "</select>";
 
