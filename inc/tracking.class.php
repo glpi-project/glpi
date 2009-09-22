@@ -1078,7 +1078,7 @@ class Job extends CommonDBTM{
              && count($_FILES['filename'])>0
              && $_FILES['filename']["size"]>0) {
             // Check for duplicate
-            if ($doc->findFile($this->fields["entities_id"], $_FILES['filename']['tmp_name'])) {
+            if ($doc->getFromDBbyContent($this->fields["entities_id"], $_FILES['filename']['tmp_name'])) {
                $docID = $doc->fields["id"];
             } else {
                $input2=array();
