@@ -38,11 +38,34 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
+ * Move a file to a new location
+ * Work even if dest file already exists
+ *
+ * @param $srce source file path
+ * @param $dest destination file path
+ *
+ * @return boolean : success
+ */
+function renameForce ($srce, $dest) {
+
+   // File already present
+   if (is_file($dest)) {
+      // As content is the same (sha1sum), no need to copy
+      @unlink($srce);
+      return true;
+   }
+   // Move
+   return rename($srce,$dest);
+}
+
+/**
  * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
  *
  * @param $filename filename to move
  * @param $old_file old file name to replace : to unlink it
- * @return nothing
+ *
+ * @return boolean for success
+ *
  **/
 function moveUploadedDocument(&$input,$filename) {
    global $CFG_GLPI,$LANG;
@@ -86,15 +109,14 @@ function moveUploadedDocument(&$input,$filename) {
       $input['mime'] = mime_content_type($fullpath);
    }
 
-   // Déplacement si droit
-   if (is_writable ($fullpath)) {
-      if (rename($fullpath, GLPI_DOC_DIR."/".$new_path)) {
+   if (is_writable(GLPI_DOC_DIR."/_uploads/") && is_writable ($fullpath)) { // Move if allowed
+      if (renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
          addMessageAfterRedirect($LANG['document'][39]);
       } else {
          addMessageAfterRedirect($LANG['document'][40],false,ERROR);
          return false;
       }
-   } else { // Copi sinon
+   } else { // Copy (will overwrite dest file is present)
       if (copy($fullpath, GLPI_DOC_DIR."/".$new_path)) {
          addMessageAfterRedirect($LANG['document'][41]);
       } else {
@@ -152,7 +174,7 @@ function uploadDocument(&$input,$FILEDESC) {
    }
 
    // Move uploaded file
-   if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$path)) {
+   if (renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR."/".$path)) {
       addMessageAfterRedirect($LANG['document'][26]);
       // For display
       $input['filename'] = addslashes($FILEDESC['name']);
