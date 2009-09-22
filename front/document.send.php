@@ -39,7 +39,7 @@ $NEEDED_ITEMS = array ('document', 'tracking');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!$CFG_GLPI["use_public_faq"]){
+if (!$CFG_GLPI["use_public_faq"]) {
    checkLoginUser();
 }
 
@@ -63,9 +63,9 @@ if (isset($_GET['docid'])) { // docid for document
       // Knowbase Case
       if (!$send && haveRight("knowbase","r")) {
          $query = "SELECT *
-            FROM glpi_documents_items
-            WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
-               AND glpi_documents_items.documents_id='".$doc->fields["id"]."'";
+            FROM `glpi_documents_items`
+            WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               AND `glpi_documents_items`.`documents_id`='".$doc->fields["id"]."'";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)>0)
@@ -74,11 +74,12 @@ if (isset($_GET['docid'])) { // docid for document
 
       if (!$send && haveRight("faq","r")) {
          $query = "SELECT *
-            FROM glpi_documents_items
-               LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.id = glpi_documents_items.Fk_device)
-            WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
-               AND glpi_documents_items.documents_id='".$doc->fields["id"]."'
-               AND glpi_knowbaseitems.is_faq=1";
+            FROM `glpi_documents_items`
+               LEFT JOIN `glpi_knowbaseitems`
+                      ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+            WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               AND `glpi_documents_items`.`documents_id`='".$doc->fields["id"]."'
+               AND `glpi_knowbaseitems`.`is_faq`='1''";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)>0)
@@ -86,17 +87,17 @@ if (isset($_GET['docid'])) { // docid for document
       }
 
       // Tracking Case
-      if (!$send && isset($_GET["tickets_id"])){
+      if (!$send && isset($_GET["tickets_id"])) {
          $job=new Job;
          $job->getFromDB($_GET["tickets_id"]);
 
          if ($job->fields["users_id"]==$_SESSION["glpiID"]
-             || $job->fields["users_id_assign"]==$_SESSION["glpiID"]){
+             || $job->fields["users_id_assign"]==$_SESSION["glpiID"]) {
             $query = "SELECT *
-               FROM glpi_documents_items
-               WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."'
-                  AND glpi_documents_items.itemtype = '".TRACKING_TYPE."'
-                  AND documents_id='".$doc->fields["id"]."'";
+               FROM `glpi_documents_items`
+               WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                  AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                  AND `documents_id`='".$doc->fields["id"]."'";
             $result=$DB->query($query);
             if ($DB->numrows($result)>0)
                $send=true;
@@ -105,17 +106,18 @@ if (isset($_GET['docid'])) { // docid for document
    } else { // ! central
 
       // Check if it is my doc
-      if (isset($_SESSION["glpiID"]) && $doc->fields["users_id"]==$_SESSION["glpiID"]){
+      if (isset($_SESSION["glpiID"]) && $doc->fields["users_id"]==$_SESSION["glpiID"]) {
          $send=true;
       } else {
-         if (haveRight("faq","r") || $CFG_GLPI["use_public_faq"]){
+         if (haveRight("faq","r") || $CFG_GLPI["use_public_faq"]) {
             // Check if it is a FAQ document
             $query = "SELECT *
-               FROM glpi_documents_items
-                  LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.id = glpi_documents_items.Fk_device)
-               WHERE glpi_documents_items.itemtype = '".KNOWBASE_TYPE."'
-                  AND glpi_documents_items.documents_id='".$doc->fields["id"]."'
-                  AND glpi_knowbaseitems.is_faq=1";
+               FROM `glpi_documents_items`
+                  LEFT JOIN `glpi_knowbaseitems`
+                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+                  AND `glpi_documents_items`.`documents_id`='".$doc->fields["id"]."'
+                  AND `glpi_knowbaseitems.is_faq`='1''";
 
             $result=$DB->query($query);
             if ($DB->numrows($result)>0)
@@ -123,16 +125,16 @@ if (isset($_GET['docid'])) { // docid for document
          }
 
          // Tracking Case
-         if (!$send && isset($_GET["tickets_id"])){
+         if (!$send && isset($_GET["tickets_id"])) {
             $job=new Job;
             $job->getFromDB($_GET["tickets_id"]);
 
-            if ($job->fields["users_id"]==$_SESSION["glpiID"]){
+            if ($job->fields["users_id"]==$_SESSION["glpiID"]) {
                $query = "SELECT *
-                  FROM glpi_documents_items
-                  WHERE glpi_documents_items.items_id = '".$_GET["tickets_id"]."'
-                     AND glpi_documents_items.itemtype = '".TRACKING_TYPE."'
-                     AND documents_id='".$doc->fields["id"]."'";
+                  FROM `glpi_documents_items`
+                  WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                     AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                     AND `documents_id`='".$doc->fields["id"]."'";
                $result=$DB->query($query);
                if ($DB->numrows($result)>0)
                   $send=true;
@@ -140,17 +142,25 @@ if (isset($_GET['docid'])) { // docid for document
          }
       }
    }
-   if ($send && file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
-      $doc->send();
+   if (!file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
+      echo $LANG['document'][38]; // Not found
+
+   } else if ($send) {
+      if ($doc->fields['sha1sum']
+          && $doc->fields['sha1sum']!=sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
+         echo $LANG['document'][49]; // Doc alterated
+      } else {
+         $doc->send();
+      }
    } else {
-      echo $LANG['document'][45];
+      echo $LANG['document'][45]; // No right
    }
 }
 else if (isset($_GET["file"])) { // for other file
 
    $splitter=explode("/",$_GET["file"]);
 
-   if (count($splitter)==2){
+   if (count($splitter)==2) {
       $send=false;
 
       if ($splitter[0]=="_dumps" && haveRight("backup","w")) {
@@ -166,6 +176,5 @@ else if (isset($_GET["file"])) { // for other file
       echo $LANG['document'][44];
    }
 }
-
 
 ?>
