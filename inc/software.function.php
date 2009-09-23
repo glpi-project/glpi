@@ -837,7 +837,6 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
                LEFT JOIN `glpi_softwares`
                       ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)
                WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
-               GROUP BY `glpi_softwaresversions`.`id`
                ORDER BY `softwarescategories_id`, `softname`, `version`";
 
    $result = $DB->query($query);
