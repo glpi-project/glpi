@@ -1052,8 +1052,8 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
            "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id\">";
       echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
    }
+   echo "</td><td>";
 
-   echo "</td>";
    $query = "SELECT `glpi_softwareslicenses`.*, `glpi_softwareslicensestypes`.`name` as type
              FROM `glpi_softwareslicenses`
              LEFT JOIN `glpi_softwareslicensestypes`
