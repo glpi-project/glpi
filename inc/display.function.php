@@ -1665,6 +1665,31 @@ function nullFooter() {
 }
 
 /**
+ * Simple Error message page
+ *
+ * @param $message string displayed before dying
+ *
+ * @return nothing as function kill script
+ */
+function displayErrorAndDie ($message) {
+   global $LANG, $CFG_GLPI, $HEADER_LOADED;
+
+   if (!$HEADER_LOADED) {
+      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      }
+   }
+   echo "<div class='center'><br><br>";
+   echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
+   echo "<strong>$message</strong></div>";
+   nullFooter();
+   exit ();
+}
+/**
  * Print the helpdesk
  *
  * @param $ID int : ID of the user who want to display the Helpdesk

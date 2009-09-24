@@ -47,7 +47,7 @@ $doc=new Document;
 
 if (isset($_GET['docid'])) { // docid for document
    if (!$doc->getFromDB($_GET['docid'])) {
-      die($LANG['document'][43]);
+      displayErrorAndDie($LANG['document'][43]);
    }
 
    $send=false;
@@ -143,17 +143,17 @@ if (isset($_GET['docid'])) { // docid for document
       }
    }
    if (!file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
-      echo $LANG['document'][38]; // Not found
+      displayErrorAndDie($LANG['document'][38]); // Not found
 
    } else if ($send) {
       if ($doc->fields['sha1sum']
           && $doc->fields['sha1sum']!=sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
-         echo $LANG['document'][49]; // Doc alterated
+         displayErrorAndDie($LANG['document'][49]); // Doc alterated
       } else {
          $doc->send();
       }
    } else {
-      echo $LANG['document'][45]; // No right
+      displayErrorAndDie($LANG['document'][45]); // No right
    }
 }
 else if (isset($_GET["file"])) { // for other file
@@ -170,10 +170,10 @@ else if (isset($_GET["file"])) { // for other file
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
          sendFile(GLPI_DOC_DIR."/".$_GET["file"],$splitter[1]);
       } else {
-         echo $LANG['document'][45];
+         displayErrorAndDie($LANG['document'][45]);
       }
    } else {
-      echo $LANG['document'][44];
+      displayErrorAndDie($LANG['document'][44]);
    }
 }
 

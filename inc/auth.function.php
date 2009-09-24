@@ -256,29 +256,12 @@ function haveTypeRight($itemtype, $right) {
 /**
  * Display common message for privileges errors
  *
- * @return Nothing
+ * @return Nothing (die)
 **/
 function displayRightError() {
-   global $LANG, $CFG_GLPI, $HEADER_LOADED;
+   global $LANG;
 
-   if (!$HEADER_LOADED) {
-      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
-         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-      } else {
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-            commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-         } else {
-            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-               helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-            }
-         }
-      }
-   }
-   echo "<div class='center'><br><br>";
-   echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-   echo "<strong>" . $LANG['common'][83] . "</strong></div>";
-   nullFooter();
-   exit ();
+   displayErrorAndDie($LANG['common'][83]);
 }
 
 /**
