@@ -38,6 +38,7 @@
 		"sl_SL"=>array("Slovenščina","sl_SI.php","sl","sl"),//
 		"sv_SE"=>array("Svenska","sv_SE.php","sv_SE","sv"),//
 		"tr_TR"=>array("Türkçe","tr_TR.php","tr","tr"),//
+		"ua_UA"=>array("українська мова","ua_UA.php","ukr","en"),//
 		"ja_JP"=>array("日本語","ja_JP.php","ja","ja"),//
 		"zh_CN"=>array("中文","zh_CN.php","en","zh"),//
 		);
