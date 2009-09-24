@@ -1668,14 +1668,15 @@ function nullFooter() {
  * Simple Error message page
  *
  * @param $message string displayed before dying
+ * @param $minimal set to true do not display app menu
  *
  * @return nothing as function kill script
  */
-function displayErrorAndDie ($message) {
+function displayErrorAndDie ($message, $minimal=false) {
    global $LANG, $CFG_GLPI, $HEADER_LOADED;
 
    if (!$HEADER_LOADED) {
-      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+      if ($minimal || !isset ($_SESSION["glpiactiveprofile"]["interface"])) {
          nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
          commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
