@@ -1147,10 +1147,14 @@ function displayMessageAfterRedirect() {
  * @param $msg Message to add
  * @param $check_once Check if the message is not already added
  * @param $message_type message type (INFO, ERROR)
+ * @param $reset clear previous added message
  **/
-function addMessageAfterRedirect($msg,$check_once=false,$message_type=INFO) {
+function addMessageAfterRedirect($msg,$check_once=false,$message_type=INFO,$reset=false) {
 
    if (!empty($msg)) {
+      if ($reset) {
+         $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
+      }
       $toadd="";
       if ($check_once) {
          if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false) {
