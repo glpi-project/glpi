@@ -51,7 +51,7 @@ $LANG['bookmark'][5]="Public bookmarks";
 $LANG['bookmark'][6]="Použít defaultně"; 
 
 $LANG['buttons'][0]="Hledat"; 
-$LANG['buttons'][2]="Poslat"; 
+$LANG['buttons'][2]="Odeslat"; 
 $LANG['buttons'][3]="Přiřadit"; 
 $LANG['buttons'][4]="Instalovat"; 
 $LANG['buttons'][5]="Odinstalovat"; 

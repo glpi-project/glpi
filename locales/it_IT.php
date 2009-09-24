@@ -272,7 +272,7 @@ $LANG['common'][86]="Non sei autorizzato a cambiare il flag di visibilità per l
 $LANG['common'][87]="Nuova scheda"; 
 $LANG['common'][88]="Identificativo interno del server (ID)"; 
 
-$LANG['computers'][0]="Quantità"; 
+$LANG['computers'][0]="Volume"; 
 $LANG['computers'][1]="Percentuale libera"; 
 $LANG['computers'][2]="Spazio libero"; 
 $LANG['computers'][3]="Spazio totale"; 
@@ -280,7 +280,7 @@ $LANG['computers'][4]="File System";
 $LANG['computers'][5]="Punto di montaggio"; 
 $LANG['computers'][6]="Percorso fisico"; 
 $LANG['computers'][7]="Aggiungi un volume"; 
-$LANG['computers'][8]="Quantità"; 
+$LANG['computers'][8]="Volumi"; 
 $LANG['computers'][9]="Sistema Operativo (SO)"; 
 $LANG['computers'][10]="Numero seriale SO:"; 
 $LANG['computers'][11]="ID prodotto SO:"; 
