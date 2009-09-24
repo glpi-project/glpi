@@ -157,7 +157,7 @@ class Document extends CommonDBTM {
             addMessageAfterRedirect($LANG['document'][48].
                "&nbsp;: <a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type]."?id=".
                      $data['id']."\">".$data['name']."</a>",
-               false, ERROR);
+               false, ERROR, true);
             return false;
          }
       }
