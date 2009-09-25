@@ -451,6 +451,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 				foreach ($list as $key => $val) {
 					$menu['plugins']['content'][$key]['title']=$val;
 					$menu['plugins']['content'][$key]['page']='/plugins/'.$key.'/';
+
+               // Set default link for plugins
+               if (!isset($menu['plugins']['default'])){
+                  $menu['plugins']['default']=$menu['plugins']['content'][$key]['page'];
+               }
+
 					if ($sector=="plugins"&&$item==$key){
 						if (isset($PLUGIN_HOOKS["submenu_entry"][$key])&&is_array($PLUGIN_HOOKS["submenu_entry"][$key])){
 							foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link){
