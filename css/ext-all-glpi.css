@@ -240,4 +240,9 @@ overflow:visible;
 /* Correct for date picker */
 .ext-ie .x-menu{overflow:visible;}
 
+/* Correct for kb */
+#kbanswer em {
+   font-style: italic;
+}
+
 
