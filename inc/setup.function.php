@@ -449,10 +449,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 * @param $table name
 * @param $field :sons_cache or ancestors_cache
 */
-function CleanSonAncestors($table,$field){
+function CleanSonAncestors($table,$field) {
    global $DB;
+
    if (FieldExists($table,$field)) {
-      $query = "UPDATE `".$table."` SET `$field` = ''";
+      $query = "UPDATE `".$table."`
+                SET `$field` = ''";
       $DB->query($query);
    }
 }
