@@ -2489,8 +2489,8 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
 
    // Default case
    $ADD = "";
-   if (($nott && $val!="NULL")
-       ||$val=='^$') {
+   if (($nott && $val!="NULL" && $val!='^$')    // Not something
+       ||(!$nott && $val=='^$')) {              // Empty
       $ADD = " OR $tocompute IS NULL";
    }
 
