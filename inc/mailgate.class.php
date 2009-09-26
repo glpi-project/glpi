@@ -681,24 +681,28 @@ class MailCollect {
       if ($structure->type == 1) { // multipart
          reset($structure->parts);
          while(list($index, $sub) = each($structure->parts)) {
-            $this->getRecursiveAttached($mid, $path, $maxsize, $sub, ($part ? $part.".".
-                                        ($index+1) : ($index+1)));
+            $this->getRecursiveAttached($mid, $path, $maxsize, $sub,
+                                        ($part ? $part.".".($index+1) : ($index+1)));
          }
-      } else if ($structure->ifdparameters) {
-         //get filename of attachment if present
+      } else {
          $filename='';
-         // if there are any dparameters present in this part
-         if (count($structure->dparameters)>0) {
-            foreach ($structure->dparameters as $dparam) {
-               if ((utf8_strtoupper($dparam->attribute)=='NAME')
-                   || (utf8_strtoupper($dparam->attribute)=='FILENAME')) {
 
-                  $filename=$dparam->value;
+         if ($structure->ifdparameters) {
+            // get filename of attachment if present
+            // if there are any dparameters present in this part
+            if (count($structure->dparameters)>0) {
+               foreach ($structure->dparameters as $dparam) {
+                  if ((utf8_strtoupper($dparam->attribute)=='NAME')
+                      || (utf8_strtoupper($dparam->attribute)=='FILENAME')) {
+
+                     $filename=$dparam->value;
+                  }
                }
             }
          }
+
          //if no filename found
-         if ($filename=='') {
+         if (empty($filename) && $structure->ifparameters) {
             // if there are any parameters present in this part
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
@@ -709,6 +713,16 @@ class MailCollect {
                   }
                }
             }
+         }
+
+         if (empty($filename) && $structure->type==5 && $structure->subtype) {
+            // Embeded image come without filename - generate trivial one
+            $filename = "image_$part.".$structure->subtype;
+         }
+
+         // if no filename found, ignore this part
+         if (empty($filename)) {
+            return false;
          }
          $filename=$this->decodeMimeString($filename);
 
@@ -740,10 +754,7 @@ class MailCollect {
                   $message = quoted_printable_decode($message);
                   break;
             }
-            $fp=fopen($path.$filename,"w");
-            if ($fp) {
-               fwrite($fp,$message);
-               fclose($fp);
+            if (file_put_contents($path.$filename, $message)) {
                $this->files['multiple'] = true;
                $j = count($this->files)-1;
                $this->files[$j]['filename']['size'] = $structure->bytes;
@@ -752,7 +763,7 @@ class MailCollect {
                $this->files[$j]['filename']['type'] = $this->get_mime_type($structure);
             }
          } // fetchbody
-      } // ifdparameters
+      } // Single part
    }
 
    /**
