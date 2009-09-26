@@ -522,7 +522,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			if (isset($_SESSION['glpimassiveactionselected'][$data["id"]])){
 				$sel="checked";
 			}
-			$first_col.="&nbsp;<input type='checkbox' name='items_id[".$data["id"]."]' value='1' $sel>";
+			$first_col.="&nbsp;<input type='checkbox' name='item[".$data["id"]."]' value='1' $sel>";
 		}
 
 
@@ -1772,7 +1772,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				if ($request_type!=0) $title.=" - ".$LANG['job'][44]." = ".getRequestTypeName($request_type);
 				if ($ticketscategories_id!=0) $title.=" - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",$ticketscategories_id);
 				if ($priority!=0) $title.=" - ".$LANG['joblist'][2]." = ".getPriorityName($priority);
-				if ($itemtype!=0&&$itemitem!=0){
+				if ($itemtype!=0 && $items_id!=0) {
 					$ci=new CommonItem();
 					$ci->getFromDB($itemtype,$items_id);
 					$title.=" - ".$LANG['common'][1]." = ".$ci->getType()." / ".$ci->getNameID();
