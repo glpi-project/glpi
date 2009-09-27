@@ -3885,7 +3885,10 @@ $SEARCH_OPTION[TRACKING_TYPE][7]['field']     = 'name';
 $SEARCH_OPTION[TRACKING_TYPE][7]['linkfield'] = 'ticketscategories_id';
 $SEARCH_OPTION[TRACKING_TYPE][7]['name']      = $LANG['common'][36];
 
-
+$SEARCH_OPTION[TRACKING_TYPE][9]['table']     = 'glpi_tickets';
+$SEARCH_OPTION[TRACKING_TYPE][9]['field']     = 'request_type';
+$SEARCH_OPTION[TRACKING_TYPE][9]['linkfield'] = 'request_type';
+$SEARCH_OPTION[TRACKING_TYPE][9]['name']      = $LANG['job'][44];
 
 // OCSNG_TYPE
 $SEARCH_OPTION[OCSNG_TYPE]['common'] = $LANG['common'][32];
