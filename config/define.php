@@ -120,6 +120,7 @@ define("CONTRACTSUPPLIER_TYPE",47);
 define("DOCUMENTITEM_TYPE",48);
 define("CRONTASK_TYPE",49);
 define("CRONTASKLOG_TYPE",50);
+define("TICKETCATEGORY_TYPE",51);
 
 
 // GLPI MODE
@@ -284,7 +285,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
                        CONTRACTSUPPLIER_TYPE => "glpi_contracts_suppliers",
                        DOCUMENTITEM_TYPE     => "glpi_documents_items",
                        CRONTASK_TYPE         => "glpi_crontasks",
-                       CRONTASKLOG_TYPE      => "glpi_crontaskslogs");
+                       CRONTASKLOG_TYPE      => "glpi_crontaskslogs",
+                       TICKETCATEGORY_TYPE   => "glpi_ticketscategories");
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -335,8 +337,9 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // CONTACTSUPPLIER_TYPE => "???",
 // CONTRACTSUPPLIER_TYPE => "???",
 // DOCUMENTITEM_TYPE => "???",
-                        CRONTASK_TYPE        => "front/crontask.form.php");
+                        CRONTASK_TYPE        => "front/crontask.form.php",
 // CRONTASKLOG_TYPE => "???",
+                        TICKETCATEGORY_TYPE  => "front/ticketcategory.form.php");
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE   => "front/computer.php",
@@ -511,7 +514,7 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgesitems
       'glpi_consumablesitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
       'glpi_links','glpi_locations','glpi_mailcollectors','glpi_monitors','glpi_netpoints',
       'glpi_networkequipments','glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
-      'glpi_softwareslicenses','glpi_suppliers', 'glpi_tickets',
+      'glpi_softwareslicenses','glpi_suppliers','glpi_tickets','glpi_ticketscategories',
       'reservation_types','state_types');
 
 $CFG_GLPI["union_search_type"] = array(RESERVATION_TYPE=>"reservation_types",
@@ -528,7 +531,8 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
                                     LINK_TYPE            => "glpi_links",
                                     GROUP_TYPE           => "glpi_groups",
-                                    BUDGET_TYPE          => "glpi_budgets");
+                                    BUDGET_TYPE          => "glpi_budgets",
+                                    TICKETCATEGORY_TYPE  => "glpi_ticketscategories");
 
 
 // New config options which can be missing during migration

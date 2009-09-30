@@ -238,6 +238,10 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("budget",$right);
          break;
 
+      case TICKETCATEGORY_TYPE :
+         return haveRight("entity_dropdown",$right);
+         break;
+
       default :
          // Plugin case
          if ($itemtype>1000) {

@@ -2968,6 +2968,8 @@ CREATE TABLE `glpi_tickets` (
 DROP TABLE IF EXISTS `glpi_ticketscategories`;
 CREATE TABLE `glpi_ticketscategories` (
   `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `ticketscategories_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `completename` text collate utf8_unicode_ci,
@@ -2975,7 +2977,8 @@ CREATE TABLE `glpi_ticketscategories` (
   `level` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
-  KEY `ticketscategories_id` (`ticketscategories_id`)
+  KEY `ticketscategories_id` (`ticketscategories_id`),
+  KEY `entities_id` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

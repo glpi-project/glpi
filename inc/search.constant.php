@@ -742,7 +742,6 @@ $SEARCH_OPTION[NETWORKING_TYPE][86]['linkfield'] = 'is_recursive';
 $SEARCH_OPTION[NETWORKING_TYPE][86]['name']      = $LANG['entity'][9];
 $SEARCH_OPTION[NETWORKING_TYPE][86]['datatype']  = 'bool';
 
-
 $SEARCH_OPTION[NETWORKING_TYPE]['network'] = $LANG['setup'][88];
 
 $SEARCH_OPTION[NETWORKING_TYPE][20]['table']        = 'glpi_networkports';
@@ -4000,4 +3999,36 @@ $SEARCH_OPTION[CRONTASK_TYPE][16]['linkfield'] = 'comment';
 $SEARCH_OPTION[CRONTASK_TYPE][16]['name']      = $LANG['common'][25];
 $SEARCH_OPTION[CRONTASK_TYPE][16]['datatype']  = 'text';
 
+// CRONTASK_TYPE
+$SEARCH_OPTION[TICKETCATEGORY_TYPE]['common']           = $LANG['common'][32];;
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['table']         = 'glpi_ticketscategories';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['field']         = 'name';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['linkfield']     = '';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['name']          = $LANG['common'][16];
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['datatype']      = 'itemlink';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['itemlink_link'] = TICKETCATEGORY_TYPE;
+
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['table']         = 'glpi_ticketscategories';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['field']         = 'completename';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['linkfield']     = 'completename';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['name']          = $LANG['common'][51];
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['datatype']      = 'itemlink';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['itemlink_type'] = TICKETCATEGORY_TYPE;
+
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][16]['table']     = 'glpi_ticketscategories';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][16]['field']     = 'comment';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][16]['linkfield'] = 'comment';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][16]['name']      = $LANG['common'][25];
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][16]['datatype']  = 'text';
+
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][80]['table']     = 'glpi_entities';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][80]['field']     = 'completename';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][80]['linkfield'] = 'entities_id';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][80]['name']      = $LANG['entity'][0];
+
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][86]['table']     = 'glpi_ticketscategories';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][86]['field']     = 'is_recursive';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][86]['linkfield'] = 'is_recursive';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][86]['name']      = $LANG['entity'][9];
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][86]['datatype']  = 'bool';
 ?>
