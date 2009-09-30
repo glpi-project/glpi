@@ -89,41 +89,26 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
    }
-   $multi=false;
 
    // Manage multiple Entities dropdowns
    $add_order="";
    if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])
        || $_POST['table']=='glpi_entities') {
 
-      $multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
-      $field='entities_id';
-      $add_order=" entities_id, ";
-      if ($_POST['table']=='glpi_entities') {
-         $field='id';
-         $add_order="";
-      }
+      $recur=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
-         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
-         if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
-            $multi=true;
-         }
+         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'',
+                                            $_POST["entity_restrict"],$recur);
       } else {
-         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field);
-         if (count($_SESSION['glpiactiveentities'])>1) {
-            $multi=true;
-         }
-      }
-      if ($_POST['table']=='glpi_entities') {
-         $multi=false;
+         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'', '', $recur);
       }
    }
 
    $query = "SELECT *
              FROM `".$_POST['table']."`
              $where
-             ORDER BY $add_order `completename`
+             ORDER BY `completename`
              $LIMIT";
    $result = $DB->query($query);
 
@@ -182,13 +167,6 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
          $ID = $data['id'];
          $level = $data['level'];
          $output=$data['name'];
-         if ($multi && $data["entities_id"]!=$prev) {
-            if ($prev>=0) {
-               echo "</optgroup>";
-            }
-            $prev=$data["entities_id"];
-            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-         }
          $class=" class='tree' ";
          $raquo="&raquo;";
          if ($level==1) {

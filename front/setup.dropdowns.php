@@ -188,10 +188,6 @@ if (isset($_POST['mass_delete'])){
 					"glpi_documentscategories"=>$LANG['setup'][81],
 					),
 
-			$LANG['title'][24]=>array(
-					"glpi_ticketscategories"=>$LANG['setup'][79],
-					),
-
 			$LANG['Menu'][18]=>array(
 					"glpi_knowbaseitemscategories"=>$LANG['title'][5],
 					),

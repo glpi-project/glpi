@@ -828,6 +828,15 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       }
    }
 
+   if (haveRight("entity_dropdown","r")) {
+      $menu['config']['content']['ticketcategory']['title']=$LANG['setup'][79];
+      $menu['config']['content']['ticketcategory']['page']='/front/ticketcategory.php';
+      $menu['config']['content']['ticketcategory']['links']['search']='/front/ticketcategory.php';
+      if (haveRight("entity_dropdown","w")) {
+         $menu['config']['content']['ticketcategory']['links']['add']="/front/ticketcategory.form.php";
+      }
+   }
+
    if (haveRight("link","r")) {
       $menu['config']['content']['link']['title']=$LANG['title'][33];
       $menu['config']['content']['link']['page']='/front/link.php';
