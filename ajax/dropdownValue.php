@@ -85,6 +85,19 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT="";
 }
 
+$where .=" AND `".$_POST['table']."`.`id` NOT IN ('".$_POST['value']."'";
+if (isset($_POST['used'])) {
+   if (is_array($_POST['used'])) {
+      $used=$_POST['used'];
+   } else {
+      $used=unserialize(stripslashes($_POST['used']));
+   }
+   if (count($used)) {
+      $where .= ",'".implode("','",$used)."'";
+   }
+}
+$where .= ") ";
+
 if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
@@ -202,19 +215,6 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    }
    echo "</select>";
 } else { // Not dropdowntree_tables
-   $where .=" AND `".$_POST['table']."`.`id` NOT IN ('".$_POST['value']."'";
-   if (isset($_POST['used'])) {
-      if (is_array($_POST['used'])) {
-         $used=$_POST['used'];
-      } else {
-         $used=unserialize(stripslashes($_POST['used']));
-      }
-      if (count($used)) {
-         $where .= ",'".implode("','",$used)."'";
-      }
-   }
-   $where .= ") ";
-
    $multi=false;
    if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
       $multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
