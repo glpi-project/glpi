@@ -1381,8 +1381,9 @@ class TicketCategory extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_ticketscategories","ticketscategories_id",
-                    $this->fields["ticketscategories_id"],1,
-                    $this->fields["entities_id"]);
+                    $this->fields["ticketscategories_id"], 0,
+                    $this->fields["entities_id"], '',
+                    getSonsOf($this->table, $ID));
       echo "</td></tr>\n";
 
       $this->showFormButtons($ID,'',2);
@@ -1390,6 +1391,23 @@ class TicketCategory extends CommonDBTM{
       return true;
    }
 
+   function prepareInputForAdd($input) {
+
+      $parent = new TicketCategory();
+
+      if (isset($input['ticketscategories_id'])
+          && $input['ticketscategories_id']>0
+          && $parent->getFromDB($input['ticketscategories_id'])) {
+         $input['level'] = $parent->fields['level']+1;
+         $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
+      } else {
+         $input['ticketscategories_id'] = 0;
+         $input['level'] = 1;
+         $input['completename'] = $input['name'];
+      }
+
+      return $input;
+   }
 }
 
 ?>
