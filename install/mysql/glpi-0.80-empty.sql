@@ -2975,10 +2975,16 @@ CREATE TABLE `glpi_ticketscategories` (
   `completename` text collate utf8_unicode_ci,
   `comment` text collate utf8_unicode_ci,
   `level` int(11) NOT NULL default '0',
+  `knowbaseitemscategories_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_users table',
+  `groups_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_groups table',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ticketscategories_id` (`ticketscategories_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `knowbaseitemscategories_id` (`knowbaseitemscategories_id`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id` (`groups_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

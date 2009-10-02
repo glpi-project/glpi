@@ -2199,18 +2199,46 @@ function update0723to080() {
       $DB->query($query) or die("0.80 set value of filepath in glpi_documents" . $LANG['update'][90] . $DB->error());
    }
 
+   displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['setup'][79]); // Updating schema
    if (!FieldExists('glpi_ticketscategories','entities_id')) {
-   	$query = "ALTER TABLE `glpi_ticketscategories`
-   			        ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
+      $query = "ALTER TABLE `glpi_ticketscategories`
+                    ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
                     ADD INDEX (`entities_id`)";
       $DB->query($query) or die("0.80 add entities_id,is_recursive in glpi_ticketscategories" .
                                  $LANG['update'][90] . $DB->error());
 
-		// Set existing categories recursive global
+      // Set existing categories recursive global
       $query = "UPDATE `glpi_ticketscategories` SET `is_recursive` = '1'";
       $DB->query($query) or die("0.80 set value of is_recursive in glpi_ticketscategories" .
                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_ticketscategories','knowbaseitemscategories_id')) {
+      $query = "ALTER TABLE `glpi_ticketscategories`
+                      ADD `knowbaseitemscategories_id` INT NOT NULL DEFAULT '0',
+                      ADD INDEX ( `knowbaseitemscategories_id` )";
+
+       $DB->query($query) or die("0.80 add knowbaseitemscategories_id in glpi_ticketscategories" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_ticketscategories','users_id')) {
+      $query = "ALTER TABLE `glpi_ticketscategories`
+                        ADD `users_id` INT NOT NULL DEFAULT '0' COMMENT 'link to glpi_users table',
+                        ADD INDEX ( `users_id` ) ";
+
+       $DB->query($query) or die("0.80 add users_id in glpi_ticketscategories" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_ticketscategories','groups_id')) {
+      $query = "ALTER TABLE `glpi_ticketscategories`
+                        ADD `groups_id` INT NOT NULL DEFAULT '0' COMMENT 'link to glpi_groups table',
+                        ADD INDEX ( `groups_id` ) ";
+
+       $DB->query($query) or die("0.80 add groups_id in glpi_ticketscategories" .
+                                 $LANG['update'][90] . $DB->error());
    }
 
    // Display "Work ended." message - Keep this as the last action.

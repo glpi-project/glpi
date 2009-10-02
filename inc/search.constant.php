@@ -4001,6 +4001,7 @@ $SEARCH_OPTION[CRONTASK_TYPE][16]['datatype']  = 'text';
 
 // CRONTASK_TYPE
 $SEARCH_OPTION[TICKETCATEGORY_TYPE]['common']           = $LANG['common'][32];;
+
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['table']         = 'glpi_ticketscategories';
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['field']         = 'name';
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['linkfield']     = '';
@@ -4010,7 +4011,7 @@ $SEARCH_OPTION[TICKETCATEGORY_TYPE][1]['itemlink_link'] = TICKETCATEGORY_TYPE;
 
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['table']         = 'glpi_ticketscategories';
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['field']         = 'completename';
-$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['linkfield']     = 'completename';
+$SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['linkfield']     = '';
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['name']          = $LANG['common'][51];
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['datatype']      = 'itemlink';
 $SEARCH_OPTION[TICKETCATEGORY_TYPE][14]['itemlink_type'] = TICKETCATEGORY_TYPE;
