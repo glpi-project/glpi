@@ -1408,6 +1408,9 @@ class TicketCategory extends CommonDBTM{
 
       $this->showFormButtons($ID,'',2);
 
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
       return true;
    }
 
@@ -1434,6 +1437,44 @@ class TicketCategory extends CommonDBTM{
          regenerateTreeCompleteNameUnderID($this->table, $input['id']);
       }
    }
+   /**
+    * Print the HTML array children of a TicketCategory
+    *
+    *@param $ID of the TicketCategory
+    *
+    *@return Nothing (display)
+    *
+    **/
+    function showChildren($ID) {
+      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+
+      $this->check($ID, 'r');
+
+      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='7'>".$LANG['setup'][78]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
+      echo "<th>".$LANG['entity'][0]."</th>"; // Entity
+      echo "<th>".$LANG['common'][10]."</th>"; // User
+      echo "<th>".$LANG['common'][35]."</th>"; // Group
+      echo "<th>".$LANG['title'][5]."</th>"; // KB
+      echo "<th>".$LANG['common'][25]."</th>";
+      echo "</tr>\n";
+
+      foreach ($DB->request($this->table, array('ticketscategories_id'=>$ID)) as $data) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td><a href='".$CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type]."?id=";
+         echo $data['id']."'>".$data['name']."</a></td>";
+         echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+         echo "<td>".getUserName($data["users_id"])."</td>";
+         echo "<td>".getDropdownName("glpi_groups",$data["groups_id"])."</td>";
+         echo "<td>".getDropdownName("glpi_knowbaseitemscategories",
+                                     $data["knowbaseitemscategories_id"])."</td>";
+         echo "<td>".$data['comment']."</td>";
+         echo "</tr>\n";
+      }
+      echo "</table></div>\n";
+   }
+
 }
 
 ?>
