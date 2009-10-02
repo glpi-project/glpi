@@ -2229,13 +2229,8 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
             }
          }
          if ($itemtype==USER_TYPE) { // glpi_users case / not link table
-            return $link." (`$table$linkfield`.`$field` $SEARCH ) ";
+            return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
          } else {
-            $ADD = "";
-            if ($nott) {
-               $ADD=" OR `$table$linkfield`.`$field` IS NULL";
-            }
-
             if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
                $name1='firstname';
                $name2='realname';
@@ -2243,29 +2238,20 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
                $name1='realname';
                $name2='firstname';
             }
-            return $link." (`$table$linkfield`.`$field` $SEARCH
-                            OR `$table$linkfield`.`$name1` $SEARCH
+            return $link." (`$table$linkfield`.`$name1` $SEARCH
                             OR `$table$linkfield`.`$name2` $SEARCH
                             OR CONCAT(`$table$linkfield`.`$name1`,' ',
-                                      `$table$linkfield`.`$name2`) $SEARCH
-                            $ADD) ";
+                                      `$table$linkfield`.`$name2`) $SEARCH".
+                            makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
          }
          break;
 
       case "glpi_networkports.mac" :
-         $ADD = "";
-         if ($nott) {
-            $ADD = " OR `$table`.`$field` IS NULL";
-         }
          if ($itemtype==COMPUTER_TYPE) {
-            return $link." (`DEVICE_".NETWORK_DEVICE."`.`specificity` $SEARCH
-                            OR `$table`.`$field` $SEARCH
-                            $ADD ) ";
-         } else {
-            return $link." `$table`.`$field` $SEARCH
-                   $ADD";
+            return "$link (".makeTextCriteria("`DEVICE_".NETWORK_DEVICE."`.`specificity`",$val,$nott,'').
+                             makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').")";
          }
-         break;
+         return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
 
       case "glpi_contracts.expire" :
          $search=array("/\&lt;/","/\&gt;/");
@@ -2419,13 +2405,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
             } else { // standard search
                // Date format modification if needed
                $val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
-               $SEARCH=makeTextSearch($val,$nott);
-               $ADD = "";
-               if ($nott) {
-                  $ADD = " OR $date_computation IS NULL";
-               }
-               return $link." ($date_computation $SEARCH
-                               $ADD )";
+               return makeTextCriteria($date_computation,$val,$nott,$link);
             }
             break;
 
@@ -2488,14 +2468,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    }
 
    // Default case
-   $ADD = "";
-   if (($nott && $val!="NULL" && $val!='^$')    // Not something
-       ||(!$nott && $val=='^$')) {              // Empty
-      $ADD = " OR $tocompute IS NULL";
-   }
-
-   return $link." ($tocompute $SEARCH
-                   $ADD) ";
+   return makeTextCriteria($tocompute,$val,$nott,$link);
 
 }
 
