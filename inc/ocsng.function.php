@@ -3170,7 +3170,7 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['FILESYSTEM'];
 					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["TYPE"]);
-				} else if (in_array($line['FILESYSTEM'],array('ext4','ext3','jfs','jfs2','smbfs','nfs','hfs','ufs','Journaled HFS+','fusefs','fuseblk')) ){
+				} else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','jfs','jfs2','smbfs','nfs','hfs','ufs','Journaled HFS+','fusefs','fuseblk')) ){
 					$disk['name']=$line['VOLUMN'];
 					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['TYPE'];
