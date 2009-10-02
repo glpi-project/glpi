@@ -1487,6 +1487,7 @@ $LANG['setup'][74]="Vous ne pouvez pas supprimer cet élément car il possède d
 $LANG['setup'][75]="Comme enfant de";
 $LANG['setup'][76]="Au même niveau que";
 $LANG['setup'][77]="Sélectionnez un lieu";
+$LANG['setup'][78]="Sous-catégories";
 $LANG['setup'][79]="Catégorie des tickets";
 $LANG['setup'][80]="Types de Tiers";
 $LANG['setup'][81]="Rubriques des documents";
