@@ -1355,12 +1355,33 @@ function makeTextSearch($val,$not=false) {
          }
       }
       if ($begin||$end) {
-         $val=utf8_substr($val,$begin,$length-$end-$begin);
+         // no utf8_substr, to be consistent with strlen result 
+         $val=substr($val,$begin,$length-$end-$begin);
       }
 
       $SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
    }
    return $SEARCH;
+}
+
+/**
+* Create SQL search condition
+*
+* @param $field name (should be ` protected)
+* @param $val string: value to search
+* @param $not boolean: is a negative search ?
+* @param $link with previous criteria
+*
+* @return search SQL string
+**/
+function makeTextCriteria ($field, $val, $not=false, $link='AND') {
+   $sql = $field . makeTextSearch($val,$not);
+   
+   if (($not && $val!="NULL" && $val!='^$')    // Not something
+       ||(!$not && $val=='^$')) {              // Empty
+      $sql = "($sql OR $field IS NULL)";
+   }
+   return " $link $sql ";
 }
 
 /**
