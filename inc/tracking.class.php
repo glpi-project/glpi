@@ -1432,6 +1432,25 @@ class TicketCategory extends CommonDBTM{
       return $input;
    }
 
+   function pre_deleteItem($ID) {
+      global $DB;
+
+      $parent = $this->fields['ticketscategories_id'];
+
+      $DB->query("UPDATE `glpi_tickets`
+                  SET `ticketscategories_id`='$parent'
+                  WHERE `ticketscategories_id`='$ID'");
+
+      $tmp = new TicketCategory();
+      $crit = array('FIELDS'=>'id',
+                    'ticketscategories_id'=>$ID);
+      foreach ($DB->request($this->table, $crit) as $data) {
+         $data['ticketscategories_id'] = $parent;
+         $tmp->update($data);
+      }
+      return true;
+   }
+
    function post_updateItem($input,$updates,$history=1) {
       if (in_array('name', $updates) || in_array('ticketscategories_id', $updates)) {
          regenerateTreeCompleteNameUnderID($this->table, $input['id']);
