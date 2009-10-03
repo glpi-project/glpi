@@ -672,7 +672,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       if ($this->fields["number"]==1) {
          dropdownValue('glpi_computers','computers_id',$this->fields["computers_id"],1,
-                       $this->fields['entities_id']);
+                       ($this->fields['is_recursive']
+                            ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                            : $this->fields['entities_id']));
       } else {
          echo $LANG['software'][51];
       }
