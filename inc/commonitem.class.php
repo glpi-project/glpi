@@ -235,6 +235,10 @@ class CommonItem {
                $this->obj = new CronTaskLog;
                break;
 
+            case TICKETCATEGORY_TYPE:
+               $this->obj = new TicketCategory;
+               break;
+
             default :
                // Plugin case
                if ($itemtype>1000) {
