@@ -834,7 +834,10 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG['software'][50].":		</td>";
 		echo "<td>";
 		if ($this->fields["number"]==1) {
-			dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['FK_entities']);
+         dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,
+                       ($this->fields['recursive']
+                            ? getEntitySons($this->fields['FK_entities'])
+                            : $this->fields['FK_entities']));
 		} else {
 			echo $LANG['software'][51];
 		}
