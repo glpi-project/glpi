@@ -1441,6 +1441,7 @@ class TicketCategory extends CommonDBTM{
                   SET `ticketscategories_id`='$parent'
                   WHERE `ticketscategories_id`='$ID'");
 
+      CleanFields($this->table, 'sons_cache', 'ancestors_cache');
       $tmp = new TicketCategory();
       $crit = array('FIELDS'=>'id',
                     'ticketscategories_id'=>$ID);
@@ -1451,8 +1452,20 @@ class TicketCategory extends CommonDBTM{
       return true;
    }
 
+   function prepareInputForUpdate($input) {
+      // Can't move a parent under a child
+      if (isset($input['ticketscategories_id'])
+          && in_array($input['ticketscategories_id'], getSonsOf($this->table, $input['id']))) {
+         return false;
+      }
+      return $input;
+   }
+
    function post_updateItem($input,$updates,$history=1) {
       if (in_array('name', $updates) || in_array('ticketscategories_id', $updates)) {
+         if (in_array('ticketscategories_id', $updates)) {
+            CleanFields($this->table, 'sons_cache', 'ancestors_cache');
+         }
          regenerateTreeCompleteNameUnderID($this->table, $input['id']);
       }
    }

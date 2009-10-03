@@ -140,7 +140,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
 
    // Display comment
    $which="";
-   
+
    // Check if table is an dropdown, and user right
    if (key_exists_deep($table, getAllDropdowns())) {
       $which=$table;
@@ -1678,13 +1678,13 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             }
             break;
 
-            case ENTERPRISE_TYPE :
+         case ENTERPRISE_TYPE :
             if ($isadmin) {
                echo "<option value='add_contact'>".$LANG['financial'][24]."</option>";
             }
             break;
 
-            case CONTACT_TYPE :
+         case CONTACT_TYPE :
             if ($isadmin) {
                echo "<option value='add_enterprise'>".$LANG['financial'][25]."</option>";
             }
@@ -1710,6 +1710,12 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
          case CRONTASK_TYPE :
             echo "<option value='reset'>".$LANG['buttons'][16].
                " (".$LANG['crontask'][40].")</option>";
+            break;
+
+         case TICKETCATEGORY_TYPE :
+            if ($isadmin) {
+               echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
+            }
             break;
       }
 
@@ -2740,14 +2746,14 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
    echo "</select>";
 }
 /**
- * Get the dropdown list name the user is allowed to edit 
- * 
+ * Get the dropdown list name the user is allowed to edit
+ *
  * @return array (group of dropdown) of array (table => localized name)
  */
  function getAllDropdowns() {
    global $LANG, $CFG_GLPI;
    static $optgroup=NULL;
-   
+
    if (is_null($optgroup)) {
       $optgroup=array(
          $LANG['setup'][139]=>array(
@@ -2826,28 +2832,28 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
       if (count($plugdrop)){
          $optgroup=array_merge($optgroup,$plugdrop);
       }
-      
+
       if (!haveRight("dropdown","w")){
          foreach($optgroup as $label=>$dp){
             foreach ($dp as $key => $val){
                if (!in_array($key,$CFG_GLPI["specif_entities_tables"])){
                   unset($optgroup[$label][$key]);
                }
-   
+
             }
             if (count($optgroup[$label])==0){
                unset($optgroup[$label]);
             }
          }
       }
-   
+
       if (!haveRight("entity_dropdown","w")){
          foreach($optgroup as $label=>$dp){
             foreach ($dp as $key => $val){
                if (in_array($key,$CFG_GLPI["specif_entities_tables"])){
                   unset($optgroup[$label][$key]);
                }
-   
+
             }
             if (count($optgroup[$label])==0){
                unset($optgroup[$label]);
@@ -2855,6 +2861,6 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
          }
       }
    }
-   return $optgroup; 
+   return $optgroup;
  }
 ?>

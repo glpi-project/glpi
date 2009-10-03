@@ -64,6 +64,15 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                $LANG['buttons'][2]."\" >\n";
          break;
 
+      case 'move_under' :
+         if ($_POST["itemtype"]==TICKETCATEGORY_TYPE) {
+            echo '&nbsp;'.$LANG['setup'][75];
+            dropdownValue('glpi_ticketscategories', 'parent', '', 0);
+            echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+                  $LANG['buttons'][2]."\" >\n";
+         }
+         break;
+
       case "move_rule" :
          echo "<select name='move_type'>";
          echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
