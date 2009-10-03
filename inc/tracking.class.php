@@ -1370,7 +1370,7 @@ class TicketCategory extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_ticketscategories","ticketscategories_id",
-                    $this->fields["ticketscategories_id"], 0,
+                    $this->fields["ticketscategories_id"], 1,
                     $this->fields["entities_id"], '',
                     ($ID>0 ? getSonsOf($this->table, $ID) : array()));
       echo "</td>";

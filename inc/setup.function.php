@@ -785,10 +785,11 @@ function replaceDropDropDown($input) {
 
       $di = new DocumentItem();
       $di->cleanDBonItemDelete(ENTITY_TYPE,$input["oldID"]);
+
+      // Clean sons / ancestors if needed
+      CleanSonAncestors('glpi_entities',"sons_cache");
+      CleanSonAncestors('glpi_entities',"ancestors_cache");
    }
-   // Clean sons / ancestors if needed
-   CleanSonAncestors('glpi_entitiesdatas',"sons_cache");
-   CleanSonAncestors('glpi_entitiesdatas',"ancestors_cache");
 }
 
 function showDeleteConfirmForm($target, $table, $ID,$entities_id) {

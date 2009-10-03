@@ -140,25 +140,16 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
 
    // Display comment
    $which="";
-
-   $dropdown_right=false;
-
-   /// TODO find a way to limit click system
-   if (!in_array($table,$CFG_GLPI["specif_entities_tables"])) {
-      $dropdown_right=haveRight("dropdown","w");
-   } else {
-      $dropdown_right=haveRight("entity_dropdown","w");
-   }
-
-   if ($dropdown_right) {
+   
+   // Check if table is an dropdown, and user right
+   if (key_exists_deep($table, getAllDropdowns())) {
       $which=$table;
    }
-
    if ($display_comment) {
       echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
              onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
-      if ($dropdown_right && !empty($which)) {
+      if (!empty($which)) {
          if (is_array($entity_restrict) && count($entity_restrict)==1) {
             $entity_restrict=array_pop($entity_restrict);
          }
@@ -2748,4 +2739,122 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
    }
    echo "</select>";
 }
+/**
+ * Get the dropdown list name the user is allowed to edit 
+ * 
+ * @return array (group of dropdown) of array (table => localized name)
+ */
+ function getAllDropdowns() {
+   global $LANG, $CFG_GLPI;
+   static $optgroup=NULL;
+   
+   if (is_null($optgroup)) {
+      $optgroup=array(
+         $LANG['setup'][139]=>array(
+            "glpi_locations"=>$LANG['common'][15],
+            "glpi_states"=>$LANG['setup'][83],
+            "glpi_manufacturers"=>$LANG['common'][5],
+            ),
+
+         $LANG['setup'][140]=>array(
+            "glpi_computerstypes"=>$LANG['setup'][4],
+            "glpi_networkequipmentstypes"=>$LANG['setup'][42],
+            "glpi_printerstypes"=>$LANG['setup'][43],
+            "glpi_monitorstypes"=>$LANG['setup'][44],
+            "glpi_peripheralstypes"=>$LANG['setup'][69],
+            "glpi_phonestypes"=>$LANG['setup'][504],
+            "glpi_softwareslicensestypes"=>$LANG['software'][30],
+            "glpi_cartridgesitemstypes"=>$LANG['setup'][84],
+            "glpi_consumablesitemstypes"=>$LANG['setup'][92],
+            "glpi_contractstypes"=>$LANG['setup'][85],
+            "glpi_contactstypes"=>$LANG['setup'][82],
+            "glpi_devicesmemoriestypes"=>$LANG['setup'][86],
+            "glpi_supplierstypes"=>$LANG['setup'][80],
+            "glpi_interfaces"=>$LANG['setup'][93],
+            "glpi_devicescasestypes"=>$LANG['setup'][45],
+            "glpi_phonespowersupplies"=>$LANG['setup'][505],
+            "glpi_filesystems"=>$LANG['computers'][4],
+            ),
+
+         $LANG['common'][22]=>array(
+               "glpi_computersmodels"=>$LANG['setup'][91],
+               "glpi_networkequipmentsmodels"=>$LANG['setup'][95],
+               "glpi_printersmodels"=>$LANG['setup'][96],
+               "glpi_monitorsmodels"=>$LANG['setup'][94],
+               "glpi_peripheralsmodels"=>$LANG['setup'][97],
+               "glpi_phonesmodels"=>$LANG['setup'][503],
+
+               ),
+
+         $LANG['Menu'][26]=>array(
+               //"glpi_budgets"=>$LANG['financial'][87],
+               "glpi_documentscategories"=>$LANG['setup'][81],
+               ),
+
+         $LANG['Menu'][18]=>array(
+               "glpi_knowbaseitemscategories"=>$LANG['title'][5],
+               ),
+
+         $LANG['setup'][145]=>array(
+               "glpi_operatingsystems"=>$LANG['setup'][5],
+               "glpi_operatingsystemsversions"=>$LANG['computers'][52],
+               "glpi_operatingsystemsservicepacks"=>$LANG['computers'][53],
+               "glpi_autoupdatesystems"=>$LANG['computers'][51],
+               ),
+
+         $LANG['setup'][88]=>array(
+               "glpi_networkinterfaces"=>$LANG['setup'][9],
+               "glpi_networkequipmentsfirmwares"=>$LANG['setup'][71],
+               "glpi_netpoints"=>$LANG['setup'][73],
+               "glpi_domains"=>$LANG['setup'][89],
+               "glpi_networks"=>$LANG['setup'][88],
+               "glpi_vlans"=>$LANG['setup'][90],
+               ),
+
+         $LANG['Menu'][4]=>array(
+         "glpi_softwarescategories"=>$LANG['softwarecategories'][5],
+         ),
+
+         $LANG['common'][34]=>array(
+         "glpi_userstitles"=>$LANG['users'][1],
+         "glpi_userscategories"=>$LANG['users'][2],
+         )
+
+         ); //end $opt
+
+      $plugdrop=getPluginsDropdowns();
+      if (count($plugdrop)){
+         $optgroup=array_merge($optgroup,$plugdrop);
+      }
+      
+      if (!haveRight("dropdown","w")){
+         foreach($optgroup as $label=>$dp){
+            foreach ($dp as $key => $val){
+               if (!in_array($key,$CFG_GLPI["specif_entities_tables"])){
+                  unset($optgroup[$label][$key]);
+               }
+   
+            }
+            if (count($optgroup[$label])==0){
+               unset($optgroup[$label]);
+            }
+         }
+      }
+   
+      if (!haveRight("entity_dropdown","w")){
+         foreach($optgroup as $label=>$dp){
+            foreach ($dp as $key => $val){
+               if (in_array($key,$CFG_GLPI["specif_entities_tables"])){
+                  unset($optgroup[$label][$key]);
+               }
+   
+            }
+            if (count($optgroup[$label])==0){
+               unset($optgroup[$label]);
+            }
+         }
+      }
+   }
+   return $optgroup; 
+ }
 ?>
