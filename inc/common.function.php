@@ -758,6 +758,21 @@ function addslashes_deep($value) {
 }
 
 /**
+ * 
+ */
+function key_exists_deep($need,$tab) {
+   
+   foreach ($tab as $key => $value) {
+      if ($need == $key) {
+         return true;
+      }
+      if (is_array($value) && key_exists_deep($need, $value)) {
+         return true;
+      }
+   }
+   return false;
+}
+/**
  * Prevent from XSS
  * Clean code
  *
