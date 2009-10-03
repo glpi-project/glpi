@@ -2241,6 +2241,15 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_ticketscategories','ancestors_cache')) {
+      $query = "ALTER TABLE `glpi_ticketscategories`
+                        ADD `ancestors_cache` LONGTEXT NULL,
+                        ADD `sons_cache` LONGTEXT NULL";
+
+       $DB->query($query) or die("0.80 add cache in glpi_ticketscategories" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }

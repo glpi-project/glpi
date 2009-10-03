@@ -444,21 +444,6 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
    echo "</div>";
 }
 
-/** Clean sons / ancestors if needed
-*
-* @param $table name
-* @param $field :sons_cache or ancestors_cache
-*/
-function CleanSonAncestors($table,$field) {
-   global $DB;
-
-   if (FieldExists($table,$field)) {
-      $query = "UPDATE `".$table."`
-                SET `$field` = ''";
-      $DB->query($query);
-   }
-}
-
 function moveTreeUnder($table, $to_move, $where) {
    global $DB;
 
@@ -489,8 +474,7 @@ function moveTreeUnder($table, $to_move, $where) {
          regenerateTreeCompleteNameUnderID($table, $to_move);
 
          // Clean sons / ancestors if needed
-         CleanSonAncestors($table,"sons_cache");
-         CleanSonAncestors($table,"ancestors_cache");
+         CleanFields($table, 'sons_cache', 'ancestors_cache');
       }
    }
 }
@@ -518,8 +502,7 @@ function updateDropdown($input) {
          regenerateTreeCompleteNameUnderID($input["tablename"], $input["id"]);
       }
       // Clean sons / ancestors if needed
-      CleanSonAncestors($input["tablename"],"sons_cache");
-      CleanSonAncestors($input["tablename"],"ancestors_cache");
+      CleanFields($input["tablename"], 'sons_cache', 'ancestors_cache');
       return true;
    }
 }
@@ -703,8 +686,7 @@ function addDropdown($input) {
             regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
          }
          // Clean sons / ancestors if needed
-         CleanSonAncestors($input["tablename"],"sons_cache");
-         CleanSonAncestors($input["tablename"],"ancestors_cache");
+         CleanFields($input["tablename"], 'sons_cache', 'ancestors_cache');
 
          return $ID;
       }
@@ -787,8 +769,7 @@ function replaceDropDropDown($input) {
       $di->cleanDBonItemDelete(ENTITY_TYPE,$input["oldID"]);
 
       // Clean sons / ancestors if needed
-      CleanSonAncestors('glpi_entities',"sons_cache");
-      CleanSonAncestors('glpi_entities',"ancestors_cache");
+      CleanFields('glpi_entities', 'sons_cache', 'ancestors_cache');
    }
 }
 

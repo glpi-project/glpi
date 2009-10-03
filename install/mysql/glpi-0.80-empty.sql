@@ -2978,6 +2978,8 @@ CREATE TABLE `glpi_ticketscategories` (
   `knowbaseitemscategories_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_users table',
   `groups_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_groups table',
+  `sons_cache` longtext collate utf8_unicode_ci,
+  `ancestors_cache` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ticketscategories_id` (`ticketscategories_id`),

@@ -1066,4 +1066,28 @@ function formatOutputWebLink($link) {
    return $link;
 }
 
+/**
+* Clean fields if needed
+*
+* @param $table name
+* @param $field :sons_cache, ancestors_cache, ...
+*/
+function CleanFields() {
+   global $DB;
+
+   $args = func_get_args();
+   $table = array_shift($args);
+   $query = '';
+   foreach ($args as $field) {
+      if (FieldExists($table,$field)) {
+         $query .= (empty($query)?"UPDATE `$table` SET" : ",")." `$field` = NULL ";
+
+      }
+   }
+   if (!empty($query)) {
+      $DB->query($query);
+   }
+}
+
+
 ?>
