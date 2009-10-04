@@ -70,6 +70,14 @@ function update0722to0723() {
       }
    }
 
+	if (FieldExists("glpi_auth_ldap", "ldap_group_condition")) {
+		$query = "ALTER TABLE `glpi_auth_ldap` CHANGE `ldap_group_condition` `ldap_group_condition` TEXT NULL DEFAULT NULL;";
+		$DB->query($query) or die("0.72.3 alter ldap_group_condition in glpi_auth_ldap" . $LANG['update'][90] . $DB->error());
+	}	  	
+
+
+ 
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0723"); // End
 } // fin 0.72.3 
