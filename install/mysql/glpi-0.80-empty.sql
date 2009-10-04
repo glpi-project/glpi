@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-09-03 20:31
+#GLPI Dump database on 2009-10-04 21:58
 
 ### Dump table glpi_alerts
 
@@ -685,7 +685,7 @@ CREATE TABLE `glpi_crontasks` (
   `allowmode` int(11) NOT NULL default '3' COMMENT '1:internal, 2:external, 3:both',
   `hourmin` int(11) NOT NULL default '0',
   `hourmax` int(11) NOT NULL default '24',
-  `logs_lifetime` int(11) NOT NULL default '30' COMMENT 'nomber of days',
+  `logs_lifetime` int(11) NOT NULL default '30' COMMENT 'number of days',
   `lastrun` datetime default NULL COMMENT 'last run date',
   `lastcode` int(11) default NULL COMMENT 'last run return code',
   `comment` text collate utf8_unicode_ci,
@@ -693,18 +693,18 @@ CREATE TABLE `glpi_crontasks` (
   UNIQUE KEY `unicity` (`plugin`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
-INSERT INTO `glpi_crontasks` VALUES ('1',NULL,'ocsng','300',NULL,'1','1','3','0','24','30','2009-09-03 20:31:48',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('1',NULL,'ocsng','300',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('2',NULL,'cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3',NULL,'consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4',NULL,'software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5',NULL,'contract','86400',NULL,'1','1','3','0','24','30','2009-08-30 14:31:34',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('6',NULL,'infocom','86400',NULL,'1','1','3','0','24','30','2009-08-13 13:06:14',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('7',NULL,'logs','86400','30','0','1','3','0','24','30','2009-08-13 13:30:04',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('8',NULL,'optimize','604800',NULL,'1','1','3','0','24','30','2009-08-13 13:52:01',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('9',NULL,'mailgate','600','10','1','1','3','0','24','30','2009-08-26 09:44:03',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('10',NULL,'dbreplicate','60',NULL,'1','1','3','0','24','30','2009-08-26 09:29:42',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5',NULL,'contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('6',NULL,'infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('7',NULL,'logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('8',NULL,'optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('9',NULL,'mailgate','600','10','1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('10',NULL,'dbreplicate','60',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('11',NULL,'check_update','604800',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('12',NULL,'session','86400',NULL,'1','1','3','0','24','30','2009-08-29 12:09:14',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('12',NULL,'session','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 
 ### Dump table glpi_crontaskslogs
 
@@ -723,11 +723,6 @@ CREATE TABLE `glpi_crontaskslogs` (
   KEY `crontasklogs_id` (`crontaskslogs_id`),
   KEY `crontaskslogs_id_state` (`crontaskslogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_crontaskslogs` VALUES ('1','1','0','2009-09-03 20:31:48','0','0','0','Interne');
-INSERT INTO `glpi_crontaskslogs` VALUES ('2','1','1','2009-09-03 20:31:48','1','0.0203168392181','0','Check updates from server localhost
-');
-INSERT INTO `glpi_crontaskslogs` VALUES ('3','1','1','2009-09-03 20:31:48','2','0.0234398841858','0','Tâche terminée, rien à faire');
 
 ### Dump table glpi_devicescases
 
@@ -1084,7 +1079,7 @@ CREATE TABLE `glpi_documents` (
   `is_recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `filename` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'for display and transfert',
-  `filepath` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'file storage path',
+  `filepath` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'file storage path',
   `documentscategories_id` int(11) NOT NULL default '0',
   `mime` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
@@ -1094,7 +1089,7 @@ CREATE TABLE `glpi_documents` (
   `notepad` longtext collate utf8_unicode_ci,
   `users_id` int(11) NOT NULL default '0',
   `tickets_id` int(11) NOT NULL default '0',
-  `sha1sum` char(40) CHARACTER SET ascii DEFAULT NULL,
+  `sha1sum` char(40) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -1290,10 +1285,6 @@ CREATE TABLE `glpi_events` (
   KEY `level` (`level`),
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-08-04 02:11:50','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-09-03 20:31:50','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -2968,18 +2959,18 @@ CREATE TABLE `glpi_tickets` (
 DROP TABLE IF EXISTS `glpi_ticketscategories`;
 CREATE TABLE `glpi_ticketscategories` (
   `id` int(11) NOT NULL auto_increment,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL default '0',
+  `is_recursive` tinyint(1) NOT NULL default '0',
   `ticketscategories_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `completename` text collate utf8_unicode_ci,
   `comment` text collate utf8_unicode_ci,
   `level` int(11) NOT NULL default '0',
-  `knowbaseitemscategories_id` int(11) NOT NULL DEFAULT '0',
-  `users_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_users table',
-  `groups_id` int(11) NOT NULL DEFAULT '0' COMMENT 'link to glpi_groups table',
-  `sons_cache` longtext collate utf8_unicode_ci,
+  `knowbaseitemscategories_id` int(11) NOT NULL default '0',
+  `users_id` int(11) NOT NULL default '0',
+  `groups_id` int(11) NOT NULL default '0',
   `ancestors_cache` longtext collate utf8_unicode_ci,
+  `sons_cache` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ticketscategories_id` (`ticketscategories_id`),
@@ -3125,7 +3116,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-09-03 20:31:50','2009-09-03 20:31:50','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-10-04 21:58:22','2009-10-04 21:58:22','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
