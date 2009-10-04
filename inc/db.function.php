@@ -1089,5 +1089,25 @@ function CleanFields() {
    }
 }
 
+/**
+ * Add dates for request
+ *
+ * @param $field : table.field to request
+ * @param $begin date : begin date
+ * @param $end date : end date
+ *
+ * @return sql
+ */
+function getDateRequest($field,$begin, $end) {
+
+   $sql = '';
+   if (!empty($begin)) {
+      $sql .= " AND $field >= '$begin' ";
+   }
+   if (!empty($end)) {
+      $sql .= " AND $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
+   }
+   return $sql;
+}
 
 ?>
