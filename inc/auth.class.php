@@ -657,9 +657,6 @@ class AuthLDAP extends CommonDBTM {
 
       if (canUseLdap()) {
          echo "<form action=\"$target\" method='post'>";
-         if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value='" . $ID . "'>";
-         }
 
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -803,6 +800,7 @@ class AuthLDAP extends CommonDBTM {
                    $LANG['buttons'][2]."'></td></tr></table>";
          } else {
             echo "<tr class='tab_bg_2'><td class='center' colspan=2>";
+            echo "<input type='hidden' name='id' value='" . $ID . "'>";
             echo "<input type='submit' name='update_ldap' class='submit' value='".
                    $LANG['buttons'][2]."'></td>";
             echo "<td class='center' colspan=2>";
