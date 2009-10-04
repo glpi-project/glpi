@@ -1930,7 +1930,7 @@ function update0723to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulescachesoftwares'); // Updating schema
 
 	if (FieldExists("glpi_rulescachesoftwares","ignore_ocs_import")) {
-		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
+		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
       $DB->query($query) or die("0.80 alter table glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
 	if (!FieldExists("glpi_rulescachesoftwares","is_helpdesk_visible")) {
@@ -2057,7 +2057,7 @@ function update0723to080() {
         `allowmode` int(11) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
         `hourmin` int(11) NOT NULL DEFAULT '0',
         `hourmax` int(11) NOT NULL DEFAULT '24',
-        `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'nomber of days',
+        `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'number of days',
         `lastrun` datetime DEFAULT NULL COMMENT 'last run date',
         `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
         `comment` text COLLATE utf8_unicode_ci,
@@ -2121,9 +2121,24 @@ function update0723to080() {
       unlink($lock);
    }
 
+   // disable ocsng cron if not activate
+   if (FieldExists('glpi_configs','use_ocs_mode')) {
+      $query="SELECT `use_ocs_mode` FROM `glpi_configs` WHERE `id`=1";
+      if ($result=$DB->query($query)){
+         if ($DB->numrows($result)>0){
+            $value=$DB->result($result,0,0);
+            if ($value==0) {
+               $query="UPDATE `glpi_crontasks` SET `state`='0' WHERE `name`='ocsng';";
+               $DB->query($query);
+            }
+         }
+      }
+   }
+
+
    // Move glpi_config.expire_events to glpi_crontasks.param
    if (FieldExists('glpi_configs','expire_events')) {
-      $query="SELECT `expire_events` FROM `glpi_configs` WHERE id=1";
+      $query="SELECT `expire_events` FROM `glpi_configs` WHERE `id`=1";
       if ($result=$DB->query($query)){
          if ($DB->numrows($result)>0){
             $value=$DB->result($result,0,0);
@@ -2184,14 +2199,19 @@ function update0723to080() {
 
    if (!FieldExists('glpi_documents','sha1sum')) {
       $query="ALTER TABLE `glpi_documents`
-                   ADD `sha1sum` CHAR(40) CHARACTER SET ascii NULL DEFAULT NULL ,
+                   ADD `sha1sum` CHAR(40) NULL DEFAULT NULL ,
                    ADD INDEX (`sha1sum`)";
       $DB->query($query) or die("0.80 add sha1sum in glpi_documents" . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_documents','filename')) {
+        $query="ALTER TABLE `glpi_documents` CHANGE `filename` `filename` VARCHAR( 255 ) NULL DEFAULT NULL COMMENT 'for display and transfert'";
+        $DB->query($query) or die("0.80 alter filename in glpi_documents" . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_documents','filepath')) {
       $query="ALTER TABLE `glpi_documents`
-                ADD `filepath` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL
+                ADD `filepath` VARCHAR( 255 ) NULL
                 COMMENT 'file storage path' AFTER `filename`";
       $DB->query($query) or die("0.80 add filepath in glpi_documents" . $LANG['update'][90] . $DB->error());
 
@@ -2225,7 +2245,7 @@ function update0723to080() {
 
    if (!FieldExists('glpi_ticketscategories','users_id')) {
       $query = "ALTER TABLE `glpi_ticketscategories`
-                        ADD `users_id` INT NOT NULL DEFAULT '0' COMMENT 'link to glpi_users table',
+                        ADD `users_id` INT NOT NULL DEFAULT '0',
                         ADD INDEX ( `users_id` ) ";
 
        $DB->query($query) or die("0.80 add users_id in glpi_ticketscategories" .
@@ -2234,7 +2254,7 @@ function update0723to080() {
 
    if (!FieldExists('glpi_ticketscategories','groups_id')) {
       $query = "ALTER TABLE `glpi_ticketscategories`
-                        ADD `groups_id` INT NOT NULL DEFAULT '0' COMMENT 'link to glpi_groups table',
+                        ADD `groups_id` INT NOT NULL DEFAULT '0',
                         ADD INDEX ( `groups_id` ) ";
 
        $DB->query($query) or die("0.80 add groups_id in glpi_ticketscategories" .
