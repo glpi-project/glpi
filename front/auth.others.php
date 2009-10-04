@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -41,17 +40,17 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
+
 $config = new Config();
 
 //Update CAS configuration
 if (isset ($_POST["update"])) {
-	$config->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+   $config->update($_POST);
+   glpi_header($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-
-if (!isset($_GET["id"])){
-	$_GET["id"]="";
+if (!isset($_GET["id"])) {
+   $_GET["id"]="";
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
@@ -59,4 +58,5 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others
 showOtherAuthList($_SERVER['PHP_SELF']);
 
 commonFooter();
+
 ?>

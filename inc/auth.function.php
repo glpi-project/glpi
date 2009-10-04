@@ -1242,15 +1242,15 @@ function showReplicatesList($target,$master_id) {
       $canedit = haveRight("config", "w");
       echo "<form action=\"$target\" method='post' name='ldap_replicates_form'
              id='ldap_replicates_form'>";
-      echo"<input type='hidden' name='id' value='" . $master_id . "'></td>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'><div class='relative'><span>";
-      echo "<strong>" . $LANG['ldap'][18] . "</strong></span></th></tr>";
-      echo "<tr class='tab_bg_1'><td class='center'></td>";
+      echo"<input type='hidden' name='id' value='" . $master_id . "'>";
+      echo "<strong>" . $LANG['ldap'][18] . "</strong></span></div></th></tr>";
+      echo "<tr class='tab_bg_1'><td></td>";
       echo "<td class='center'>".$LANG['common'][16]."</td>";
-      echo "<td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td>";
+      echo "<td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td></tr>";
       while ($ldap_replicate = $DB->fetch_array($result)) {
          echo "<tr class='tab_bg_2'><td class='center'>";
          if (isset ($_GET["select"]) && $_GET["select"] == "all") {
@@ -1263,22 +1263,22 @@ function showReplicatesList($target,$master_id) {
          echo "</td>";
          echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
          echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"] . "</td>";
-         echo "<td class='center' colspan=4>";
+         echo "<td class='center'>";
          echo"<input type='submit' name='test_ldap_replicate[".$ldap_replicate["id"]."]'
                class='submit' value=\"" . $LANG['buttons'][50] . "\" ></td>";
          echo"</tr>";
       }
-      echo "<div class='center'>";
+      echo "</table>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
       echo "<td class='center'>";
       echo "<a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\"
-             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=all'>" .
+             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&amp;id=$master_id&amp;select=all'>" .
              $LANG['buttons'][18] . "</a></td>";
       echo "<td>/</td><td class='center'>";
       echo "<a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\"
-             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&id=$master_id&select=none'>" .
+             href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&amp;id=$master_id&amp;select=none'>" .
              $LANG['buttons'][19] . "</a>";
       echo "</td><td class='left' width='80%'>";
       echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\"
@@ -1301,7 +1301,7 @@ function addNewReplicateForm($target, $master_id) {
    echo "<table class='tab_cadre_fixe'>";
 
    echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG['ldap'][20] . "</strong>";
-   echo "</span></th></tr>";
+   echo "</span></div></th></tr>";
    echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td>";
    echo "<td class='center'>".$LANG['common'][52]."</td>";
    echo "<td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
@@ -1309,9 +1309,9 @@ function addNewReplicateForm($target, $master_id) {
    echo "<td class='center'><input type='text' name='name'></td>";
    echo "<td class='center'><input type='text' name='host'></td>";
    echo "<td class='center'><input type='text' name='port'></td>";
-   echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
+   echo "<td class='center'><input type='hidden' name='next' value=\"extauth_ldap\">";
    echo "<input type='hidden' name='authldaps_id' value=\"".$master_id."\">";
-   echo "<td class='center'><input type='submit' name='add_replicate' value=\"" .
+   echo "<input type='submit' name='add_replicate' value=\"" .
                              $LANG['buttons'][2] . "\" class='submit'></td>";
    echo "</tr></table></div></form>";
 }
