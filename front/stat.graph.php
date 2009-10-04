@@ -174,8 +174,8 @@ switch($_GET["type"]){
 
 		$device_table = getDeviceTable($_GET["champ"]);
 
-		$next=getNextItem($device_table,$_GET["id"]);
-		$prev=getPreviousItem($device_table,$_GET["id"]);
+		$next=getNextItem($device_table,$_GET["id"],'','designation');
+		$prev=getPreviousItem($device_table,$_GET["id"],'','designation');
 
 		$query = "SELECT designation
 			FROM ".$device_table."
