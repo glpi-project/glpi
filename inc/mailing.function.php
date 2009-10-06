@@ -234,7 +234,7 @@ function updateMailNotifications($input) {
  * @return boolean
  * from http://www.linuxjournal.com/article/9585
  */
-function isValidEmail($email,$checkdns=true)
+function isValidEmail($email,$checkdns=false)
 {
    $isValid = true;
    $atIndex = strrpos($email, "@");
