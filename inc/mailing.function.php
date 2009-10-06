@@ -283,6 +283,9 @@ function isValidEmail($email,$checkdns=true)
             // domain not found in DNS
             $isValid = false;
          }
+      } else if (!preg_match('/\\./', $domain)) {
+         // domain has no dots
+         $isValid = false;
       }
    }
    return $isValid;
