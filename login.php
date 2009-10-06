@@ -77,6 +77,9 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 
 	if ($identificat->getAlternateAuthSystemsUserLogin($auth_method)&&!empty($identificat->user->fields['name'])){
 		$user=$identificat->user->fields['name'];
+      // Used for log when login process failed
+      $_POST['login_name']=$user;
+
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($user));
