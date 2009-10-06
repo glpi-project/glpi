@@ -214,7 +214,7 @@ function testMail(){
  * @return boolean
  * from http://www.linuxjournal.com/article/9585
  */
-function isValidEmail($email,$checkdns=false)
+function isValidEmail($email,$checkdns=true)
 {
    $isValid = true;
    $atIndex = strrpos($email, "@");
@@ -263,6 +263,9 @@ function isValidEmail($email,$checkdns=false)
             // domain not found in DNS
             $isValid = false;
          }
+      } else if (!preg_match('/\\./', $domain)) {
+         // domain has no dots
+         $isValid = false;
       }
    }
    return $isValid;
