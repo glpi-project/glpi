@@ -527,16 +527,17 @@ function generateGlobalDropdowns(){
 	}
 
 
+   /// TODO complete it : by entity...
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
-		$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'0','categorie $i','','comment categorie $i','1')";
+		$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'0','1','0','categorie $i','','comment categorie $i','1','0','0','0','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID=$DB->insert_id();
 		for ($j=0;$j<mt_rand(0,pow($MAX['tracking_category'],1/2));$j++){
-			$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'$newID','s-categorie $j','','comment s-categorie $j','2')";
+			$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'0','1','$newID','s-categorie $j','','comment s-categorie $j','2','0','0','0','','')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$newID2=$DB->insert_id();
 			for ($k=0;$k<mt_rand(0,pow($MAX['tracking_category'],1/2));$k++){
-				$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'$newID2','ss-categorie $k','','comment ss-categorie $k','3')";
+				$query="INSERT INTO glpi_ticketscategories VALUES (NULL,'0','1','$newID2','ss-categorie $k','','comment ss-categorie $k','3','0','0','0','','')";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}	
 		}
@@ -792,14 +793,14 @@ function generate_entity($ID_entity){
 	for ($i=0;$i<$MAX['document'];$i++){
 		$link="";
 		if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','0','document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
+		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','0','document $i-$ID_entity','','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	// GLobal ones
 	for ($i=0;$i<$MAX['document']/2;$i++){
 		$link="";
 		if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','1','Recursive document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
+		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','1','Recursive document $i-$ID_entity','','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["document"]=getMaxItem("glpi_documents");
