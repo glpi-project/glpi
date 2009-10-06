@@ -43,12 +43,12 @@ class Profile extends CommonDBTM {
    /// Helpdesk fields of helpdesk profiles
    var $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','comment_ticket',
                               'observe_ticket','password_update','helpdesk_hardware',
-                              'helpdesk_hardware_type','show_group_ticket','show_group_hardware');
+                              'helpdesk_item_type','show_group_ticket','show_group_hardware');
 
    /// Common fields used for all profiles type
    var $common_fields=array("id","name","interface","is_default");
    /// Fields not related to a basic right
-   var $noright_fields=array('helpdesk_hardware','helpdesk_hardware_type','show_group_ticket',
+   var $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
                              'show_group_hardware','own_ticket');
 
    /**
@@ -108,27 +108,17 @@ class Profile extends CommonDBTM {
             $input["faq"]=='r';
          }
       }
-
-      if (isset($input["helpdesk_hardware_type"])) {
-         $types=$input["helpdesk_hardware_type"];
-         unset($input["helpdesk_hardware_type"]);
-         $input["helpdesk_hardware_type"]=0;
-         foreach ($types as $val) {
-            $input["helpdesk_hardware_type"]+=pow(2,$val);
-         }
+      if (isset($input["helpdesk_item_type"])) {
+         $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
       }
+
       return $input;
    }
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["helpdesk_hardware_type"])) {
-         $types=$input["helpdesk_hardware_type"];
-         unset($input["helpdesk_hardware_type"]);
-         $input["helpdesk_hardware_type"]=0;
-         foreach ($types as $val) {
-            $input["helpdesk_hardware_type"]+=pow(2,$val);
-         }
+      if (isset($input["helpdesk_item_type"])) {
+         $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
       }
       return $input;
    }
@@ -144,6 +134,11 @@ class Profile extends CommonDBTM {
                unset($this->fields[$key]);
             }
          }
+      }
+      // decode array
+      if (isset($this->fields["helpdesk_item_type"])
+            && !is_array($this->fields["helpdesk_item_type"])){
+            $this->fields["helpdesk_item_type"]=json_decode($this->fields["helpdesk_item_type"],true);
       }
    }
 
@@ -378,13 +373,14 @@ class Profile extends CommonDBTM {
       echo "</select>\n";
       echo "</td><td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td>";
-      echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
+
+      echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if ($itemtype<32) { // TODO this need to be fixed
+         if ($itemtype<1000) { // No Plugin for the moment
             $ci->setType($itemtype);
             echo "<option value='".$itemtype."' ".
-                  (($this->fields["helpdesk_hardware_type"]&pow(2,$itemtype))?" selected":"").">".
+                  (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
                   $ci->getType()."</option>\n";
          }
       }
@@ -639,13 +635,13 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td>";
-      echo "\n<select name='helpdesk_hardware_type[]' multiple size='3'>";
+      echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if ($itemtype<32) { // TODO this need to be fixed
+         if ($itemtype<1000) { // No Plugin for the moment
             $ci->setType($itemtype);
             echo "<option value='".$itemtype."' ".
-                  (($this->fields["helpdesk_hardware_type"]&pow(2,$itemtype))?" selected":"").">".
+                  (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
                   $ci->getType()."</option>\n";
          }
       }

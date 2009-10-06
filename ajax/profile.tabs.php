@@ -48,7 +48,7 @@ checkRight("profile","r");
 
 $prof=new Profile();
 if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
-
+   $prof->cleanProfile();
    if ($prof->fields['interface']=='helpdesk') {
       switch($_POST['glpi_tab']) {
          case -1 :
