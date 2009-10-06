@@ -2205,7 +2205,9 @@ function update0723to080() {
    }
 
    if (FieldExists('glpi_documents','filename')) {
-        $query="ALTER TABLE `glpi_documents` CHANGE `filename` `filename` VARCHAR( 255 ) NULL DEFAULT NULL COMMENT 'for display and transfert'";
+        $query="ALTER TABLE `glpi_documents`
+                  CHANGE `filename` `filename` VARCHAR( 255 ) NULL DEFAULT NULL
+                  COMMENT 'for display and transfert'";
         $DB->query($query) or die("0.80 alter filename in glpi_documents" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2239,7 +2241,7 @@ function update0723to080() {
                       ADD `knowbaseitemscategories_id` INT NOT NULL DEFAULT '0',
                       ADD INDEX ( `knowbaseitemscategories_id` )";
 
-       $DB->query($query) or die("0.80 add knowbaseitemscategories_id in glpi_ticketscategories" .
+      $DB->query($query) or die("0.80 add knowbaseitemscategories_id in glpi_ticketscategories" .
                                  $LANG['update'][90] . $DB->error());
    }
 
@@ -2248,7 +2250,7 @@ function update0723to080() {
                         ADD `users_id` INT NOT NULL DEFAULT '0',
                         ADD INDEX ( `users_id` ) ";
 
-       $DB->query($query) or die("0.80 add users_id in glpi_ticketscategories" .
+      $DB->query($query) or die("0.80 add users_id in glpi_ticketscategories" .
                                  $LANG['update'][90] . $DB->error());
    }
 
@@ -2257,7 +2259,7 @@ function update0723to080() {
                         ADD `groups_id` INT NOT NULL DEFAULT '0',
                         ADD INDEX ( `groups_id` ) ";
 
-       $DB->query($query) or die("0.80 add groups_id in glpi_ticketscategories" .
+      $DB->query($query) or die("0.80 add groups_id in glpi_ticketscategories" .
                                  $LANG['update'][90] . $DB->error());
    }
 
@@ -2266,9 +2268,50 @@ function update0723to080() {
                         ADD `ancestors_cache` LONGTEXT NULL,
                         ADD `sons_cache` LONGTEXT NULL";
 
-       $DB->query($query) or die("0.80 add cache in glpi_ticketscategories" .
+      $DB->query($query) or die("0.80 add cache in glpi_ticketscategories" .
                                  $LANG['update'][90] . $DB->error());
    }
+
+
+
+   // change item type management for helpdesk
+   if (FieldExists('glpi_profiles','helpdesk_hardware_type')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `helpdesk_item_type` TEXT NULL DEFAULT NULL AFTER `helpdesk_hardware_type` ;";
+      $DB->query($query) or die("0.80 add  helpdesk_item_type in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+
+      $query="SELECT id, helpdesk_hardware_type FROM glpi_profiles";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data=$DB->fetch_assoc($result)) {
+               $types=$data['helpdesk_hardware_type'];
+               $CFG_GLPI["helpdesk_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
+                                       PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+               $tostore=array();
+               
+               foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+                  if (pow(2,$itemtype)&$types){
+                     $tostore[$itemtype]=$itemtype;
+                  }
+               }
+               $query="UPDATE `glpi_profiles`
+                     SET `helpdesk_item_type`='".json_encode($tostore)."'
+                     WHERE `id`='".$data['id']."'";
+
+               $DB->query($query) or die("0.80 populate helpdesk_item_type" .
+                                    $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+      $query = "ALTER TABLE `glpi_profiles` DROP `helpdesk_hardware_type`;";
+      $DB->query($query) or die("0.80 drop helpdesk_hardware_type in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+
+   }
+
+
+
+
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

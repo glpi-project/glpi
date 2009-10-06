@@ -1105,7 +1105,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
                       PRINTER_TYPE,
                       PHONE_TYPE);
          foreach ($types as $itemtype) {
-            if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype)) {
+            if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                if (!isset($already_add[$itemtype])) {
                   $already_add[$itemtype]=array();
                }
@@ -1155,7 +1155,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
          }
 
          // Software
-         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)) {
+         if (in_array(SOFTWARE_TYPE,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             $query = "SELECT DISTINCT `glpi_softwaresversions`.`name` AS version,
                                       `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
                       FROM `glpi_computers_softwaresversions`, `glpi_softwares`,

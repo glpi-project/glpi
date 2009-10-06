@@ -2829,8 +2829,8 @@ function getAllTypesForHelpdesk() {
    //Types of the core (after the plugin for robustness)
    $ci = new CommonItem();
    foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-      if ($itemtype<32
-            && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype))) {
+      if ($itemtype<1000 // No plugin here
+            && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          $ci->setType($itemtype);
          $types[$itemtype] = $ci->getType();
       }
@@ -2845,18 +2845,17 @@ function getAllTypesForHelpdesk() {
  * @param $itemtype the object's type
  * @return true if ticket can be assign to this type, false if not
  */
-function isPossibleToAssignType($itemtype)
-{
-	global $PLUGIN_HOOKS;
+function isPossibleToAssignType($itemtype) {
+   global $PLUGIN_HOOKS;
 
-	//check the core
-	if ($itemtype < 1000)
-	{
-		if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$itemtype)))
-			return true;
-		else
-			return false;
-	}
+   //check the core
+   if ($itemtype < 1000) {
+      if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+         return true;
+      } else {
+         return false;
+      }
+   }
 
 	//If it's not a core's type, then check plugins
 	$types = array();
