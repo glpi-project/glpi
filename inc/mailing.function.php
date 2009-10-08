@@ -263,8 +263,8 @@ function isValidEmail($email,$checkdns=false)
             // domain not found in DNS
             $isValid = false;
          }
-      } else if (!preg_match('/\\./', $domain)) {
-         // domain has no dots
+      } else if (!preg_match('/\\./', $domain) || !preg_match("/[a-zA-Z0-9]$/", $domain)) {
+         // domain has no dots or do not end by alphenum char
          $isValid = false;
       }
    }
