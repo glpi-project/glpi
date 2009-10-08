@@ -85,6 +85,9 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			case "glpi_tracking.priority":
 				dropdownPriority($search["linkfield"]);
 				break;
+         case "glpi_tracking.request_type" :
+            dropdownRequestType($search["linkfield"]);
+            break;
 			default :
 				// Specific plugin Type case
 				$plugdisplay=false;
