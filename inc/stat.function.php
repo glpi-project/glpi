@@ -283,7 +283,10 @@ function getNbIntervTech($date1,$date2) {
              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_assign`) ".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY realname, firstname, name";
 
    $result = $DB->query($query);
@@ -318,7 +321,10 @@ function getNbIntervTechFollowup($date1,$date2) {
              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketsfollowups`.`users_id`)".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .="     AND `glpi_ticketsfollowups`.`users_id` <> '0'
                   AND `glpi_ticketsfollowups`.`users_id` IS NOT NULL
               ORDER BY realname, firstname, name";
@@ -353,7 +359,10 @@ function getNbIntervEnterprise($date1,$date2) {
                   ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`) ".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query.= " ORDER BY name";
 
    $tab=array();
@@ -423,7 +432,10 @@ function getNbIntervAuthor($date1,$date2) {
              INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY realname, firstname, name";
 
    $result = $DB->query($query);
@@ -463,7 +475,10 @@ function getNbIntervTitleOrType($date1,$date2,$title=true) {
              LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .=" ORDER BY `glpi_users`.`$field`";
 
    $result = $DB->query($query);
@@ -493,7 +508,10 @@ function getNbIntervRecipient($date1,$date2) {
              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`)".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY realname, firstname, name";
 
    $result = $DB->query($query);
@@ -522,7 +540,10 @@ function getNbIntervPriority($date1,$date2) {
              FROM `glpi_tickets` ".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY `priority`";
 
    $result = $DB->query($query);
@@ -551,7 +572,10 @@ function getNbIntervRequestType($date1,$date2) {
              FROM `glpi_tickets` ".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY `request_type`";
 
    $result = $DB->query($query);
@@ -607,7 +631,10 @@ function getNbIntervGroup($date1,$date2) {
              LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id` = `glpi_groups`.`id`)".
              getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY `glpi_groups`.`name`";
 
    $result = $DB->query($query);
@@ -636,7 +663,10 @@ function getNbIntervAssignGroup($date1,$date2) {
              LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id_assign` = `glpi_groups`.`id`)".
              getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
-   $query .= getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
    $query .= " ORDER BY `glpi_groups`.`name`";
 
    $result = $DB->query($query);
@@ -741,7 +771,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
    switch($type) {
       case "inter_total" :
-         $WHERE .= getDateRequest("`glpi_tickets`.`date`",$begin,$end);
+         $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`date`",$begin,$end);
 
          $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`date`),'%Y-%m') AS date_unix,
                           COUNT(`glpi_tickets`.`id`) AS total_visites
@@ -756,7 +786,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND (`glpi_tickets`.`status` = 'old_done'
                           OR `glpi_tickets`.`status` = 'old_notdone')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
-         $WHERE .= getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+         $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
          $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                               AS date_unix,
@@ -772,7 +802,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND (`glpi_tickets`. `status` = 'old_done'
                           OR `glpi_tickets`.`status` = 'old_notdone')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
-         $WHERE .= getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+         $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
          $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                               AS date_unix,
@@ -792,7 +822,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
             $realtime_table = "glpi_tickets";
          }
          $WHERE .= " AND `$realtime_table`.`realtime` > '0' ";
-         $WHERE .= getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+         $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
          $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                               AS date_unix,
@@ -808,7 +838,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND (`glpi_tickets`.`status` = 'old_done'
                           OR `glpi_tickets`.`status` = 'old_notdone')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
-         $WHERE .= getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+         $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
          $query = "SELECT `glpi_tickets`.`id`,
                           FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
