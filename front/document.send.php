@@ -60,7 +60,7 @@ if (isset($_GET["file"])){
 
 				if (isset($_SESSION["glpiactiveprofile"]["interface"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
-					if ((haveRight("document","r") && haveAccessToEntity($doc->fields['FK_entities']))
+					if ($doc->can($doc->fields['ID'],'r')
 							||$doc->fields["FK_users"]==$_SESSION["glpiID"]){
 						$send=true;
                }
