@@ -1102,12 +1102,15 @@ function getDateRequest($field,$begin, $end) {
 
    $sql = '';
    if (!empty($begin)) {
-      $sql .= " AND $field >= '$begin' ";
+         $sql .= " $field >= '$begin' ";
    }
    if (!empty($end)) {
-      $sql .= " AND $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
+      if (!empty($sql)){
+         $sql.= " AND ";
+      }
+      $sql .= " $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
    }
-   return $sql;
+   return " (".$sql.") ";
 }
 
 ?>
