@@ -3396,7 +3396,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
                         $LINK `glpi_softwares`
                            ON (`glpi_softwaresversions_$to_type`.`softwares_id`
                                = `glpi_softwares`.`id`)
-                        $LINK `glpi_softwareslicenses` AS glpi_softwareslicenses_$to_type
+                        LEFT JOIN `glpi_softwareslicenses` AS glpi_softwareslicenses_$to_type
                            ON (`glpi_softwares`.`id` = `glpi_softwareslicenses_$to_type`.`softwares_id`" .
                                getEntitiesRestrictRequest(' AND',"glpi_softwareslicenses_$to_type",
                                                           '','',true).") ";
