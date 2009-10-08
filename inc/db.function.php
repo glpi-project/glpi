@@ -1052,4 +1052,28 @@ function formatOutputWebLink($link){
 	return $link;
 }
 
+/**
+ * Add dates for request
+ *
+ * @param $field : table.field to request
+ * @param $begin date : begin date
+ * @param $end date : end date
+ *
+ * @return sql
+ */
+function getDateRequest($field,$begin, $end) {
+
+   $sql = '';
+   if (!empty($begin)) {
+         $sql .= " $field >= '$begin' ";
+   }
+   if (!empty($end)) {
+      if (!empty($sql)){
+         $sql.= " AND ";
+      }
+      $sql .= " $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
+   }
+   return " (".$sql.") ";
+}
+
 ?>
