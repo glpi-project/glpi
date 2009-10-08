@@ -55,8 +55,7 @@ if (isset($_GET['docid'])) { // docid for document
    if (isset($_SESSION["glpiactiveprofile"]["interface"])
        && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
       // My doc Check and Common doc right access
-      if ((haveRight("document","r") && haveAccessToEntity($doc->fields['entities_id']))
-            || $doc->fields["users_id"]==$_SESSION["glpiID"]) {
+      if ($doc->can($_GET['docid'],'r') || $doc->fields["users_id"]==$_SESSION["glpiID"]) {
          $send=true;
       }
 
@@ -79,7 +78,7 @@ if (isset($_GET['docid'])) { // docid for document
                       ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
             WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
                AND `glpi_documents_items`.`documents_id`='".$doc->fields["id"]."'
-               AND `glpi_knowbaseitems`.`is_faq`='1''";
+               AND `glpi_knowbaseitems`.`is_faq`='1'";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)>0)
@@ -117,7 +116,7 @@ if (isset($_GET['docid'])) { // docid for document
                          ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
                WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
                   AND `glpi_documents_items`.`documents_id`='".$doc->fields["id"]."'
-                  AND `glpi_knowbaseitems.is_faq`='1''";
+                  AND `glpi_knowbaseitems`.`is_faq`='1'";
 
             $result=$DB->query($query);
             if ($DB->numrows($result)>0)
