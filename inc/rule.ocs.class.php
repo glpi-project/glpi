@@ -88,14 +88,14 @@ class OcsRuleCollection extends RuleCollection {
       $from_sql = "FROM `hardware` ";
       foreach ($tables as $table => $linkfield) {
          if ($table!='hardware' && !empty($linkfield)) {
-            $from_sql .= " LEFT JOIN `$table` ON (`$table`.`$linkfield` = `hardware`.`id`)";
+            $from_sql .= " LEFT JOIN `$table` ON (`$table`.`$linkfield` = `hardware`.`ID`)";
          }
       }
 
       if ($select_sql != "") {
          //Build the all request
-         $sql = "SELECT  $select_sql
-                 $from_sql .
+         $sql = "SELECT $select_sql
+                 $from_sql 
                  WHERE `hardware`.`ID` = '$computers_id'";
 
          checkOCSconnection($this->ocsservers_id);
