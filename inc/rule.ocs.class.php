@@ -94,9 +94,9 @@ class OcsRuleCollection extends RuleCollection {
 
       if ($select_sql != "") {
          //Build the all request
-         $sql = "SELECT . $select_sql
+         $sql = "SELECT  $select_sql
                  $from_sql .
-                 WHERE `hardware`.`id` = '$computers_id'";
+                 WHERE `hardware`.`ID` = '$computers_id'";
 
          checkOCSconnection($this->ocsservers_id);
          $result = $DBocs->query($sql);
