@@ -105,7 +105,7 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
          $data = clean_cross_side_scripting_deep(addslashes_deep($data));
          $hardware[$data["ID"]]["date"] = $data["LASTDATE"];
          $hardware[$data["ID"]]["name"] = $data["NAME"];
-         $hardware[$data["ID"]]["tag"] = $data["TAG"];
+         $hardware[$data["ID"]]["TAG"] = $data["TAG"];
          $hardware[$data["ID"]]["id"] = $data["ID"];
          $hardware[$data["ID"]]["serial"] = $data["SERIAL"];
       }
