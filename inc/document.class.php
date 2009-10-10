@@ -402,6 +402,105 @@ class Document extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Check is the curent user is allowed to see the file
+    * 
+    * @return boolean
+    */
+   function canViewFile() {
+      global $DB, $CFG_GLPI;
+      
+      if (isset($_SESSION["glpiactiveprofile"]["interface"])
+          && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
+         // My doc Check and Common doc right access
+         if ($this->can($_GET['docid'],'r') || $this->fields["users_id"]==$_SESSION["glpiID"]) {
+            return true;
+         }
+   
+         // Knowbase Case
+         if (haveRight("knowbase","r")) {
+            $query = "SELECT *
+               FROM `glpi_documents_items`
+               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+                  AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'";
+   
+            $result=$DB->query($query);
+            if ($DB->numrows($result)>0)
+               return true;
+         }
+   
+         if (haveRight("faq","r")) {
+            $query = "SELECT *
+               FROM `glpi_documents_items`
+                  LEFT JOIN `glpi_knowbaseitems`
+                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+                  AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
+                  AND `glpi_knowbaseitems`.`is_faq`='1'";
+   
+            $result=$DB->query($query);
+            if ($DB->numrows($result)>0)
+               return true;
+         }
+   
+         // Tracking Case
+         if (isset($_GET["tickets_id"])) {
+            $job=new Job;
+            $job->getFromDB($_GET["tickets_id"]);
+   
+            if ($job->fields["users_id"]==$_SESSION["glpiID"]
+                || $job->fields["users_id_assign"]==$_SESSION["glpiID"]) {
+               $query = "SELECT *
+                  FROM `glpi_documents_items`
+                  WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                     AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                     AND `documents_id`='".$this->fields["id"]."'";
+               $result=$DB->query($query);
+               if ($DB->numrows($result)>0)
+                  return true;
+            }
+         }
+      } else { // ! central
+   
+         // Check if it is my doc
+         if (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"]) {
+            return true;
+         } else {
+            if (haveRight("faq","r") || $CFG_GLPI["use_public_faq"]) {
+               // Check if it is a FAQ document
+               $query = "SELECT *
+                  FROM `glpi_documents_items`
+                     LEFT JOIN `glpi_knowbaseitems`
+                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+                  WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+                     AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
+                     AND `glpi_knowbaseitems`.`is_faq`='1'";
+   
+               $result=$DB->query($query);
+               if ($DB->numrows($result)>0)
+                  return true;
+            }
+   
+            // Tracking Case
+            if (isset($_GET["tickets_id"])) {
+               $job=new Job;
+               $job->getFromDB($_GET["tickets_id"]);
+   
+               if ($job->fields["users_id"]==$_SESSION["glpiID"]) {
+                  $query = "SELECT *
+                     FROM `glpi_documents_items`
+                     WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                        AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                        AND `documents_id`='".$this->fields["id"]."'";
+                  $result=$DB->query($query);
+                  if ($DB->numrows($result)>0)
+                     return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
 }
 
 // Relation between Documents and Items
