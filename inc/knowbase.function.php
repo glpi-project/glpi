@@ -503,7 +503,7 @@ function ShowKbItemFull($ID,$linkusers_id=true) {
    $ki= new kbitem;
    if ($ki->getFromDB($ID)) {
       if ($ki->fields["is_faq"]) {
-         if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) {
+         if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) {
             return false;
          }
       } else if (!haveRight("knowbase","r")) {
