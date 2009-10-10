@@ -421,82 +421,105 @@ class Document extends CommonDBTM {
          if (haveRight("knowbase","r")) {
             $query = "SELECT *
                FROM `glpi_documents_items`
+               LEFT JOIN `glpi_knowbaseitems`
+                      ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
                WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
-                  AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'";
+                  AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'".
+                  getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
    
             $result=$DB->query($query);
-            if ($DB->numrows($result)>0)
+            if ($DB->numrows($result)>0) {
                return true;
+            }
          }
    
          if (haveRight("faq","r")) {
             $query = "SELECT *
                FROM `glpi_documents_items`
-                  LEFT JOIN `glpi_knowbaseitems`
-                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+               LEFT JOIN `glpi_knowbaseitems`
+                      ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
                WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
-                  AND `glpi_knowbaseitems`.`is_faq`='1'";
+                  AND `glpi_knowbaseitems`.`is_faq`='1'".
+                  getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
    
             $result=$DB->query($query);
-            if ($DB->numrows($result)>0)
+            if ($DB->numrows($result)>0) {
                return true;
+            }
          }
    
          // Tracking Case
          if (isset($_GET["tickets_id"])) {
             $job=new Job;
-            $job->getFromDB($_GET["tickets_id"]);
    
-            if ($job->fields["users_id"]==$_SESSION["glpiID"]
-                || $job->fields["users_id_assign"]==$_SESSION["glpiID"]) {
+            if ($job->can($_GET["tickets_id"],'r')) {
                $query = "SELECT *
                   FROM `glpi_documents_items`
                   WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
                      AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
                      AND `documents_id`='".$this->fields["id"]."'";
                $result=$DB->query($query);
-               if ($DB->numrows($result)>0)
+               if ($DB->numrows($result)>0) {
                   return true;
-            }
-         }
-      } else { // ! central
-   
-         // Check if it is my doc
-         if (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"]) {
-            return true;
-         } else {
-            if (haveRight("faq","r") || $CFG_GLPI["use_public_faq"]) {
-               // Check if it is a FAQ document
-               $query = "SELECT *
-                  FROM `glpi_documents_items`
-                     LEFT JOIN `glpi_knowbaseitems`
-                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-                  WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
-                     AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
-                     AND `glpi_knowbaseitems`.`is_faq`='1'";
-   
-               $result=$DB->query($query);
-               if ($DB->numrows($result)>0)
-                  return true;
-            }
-   
-            // Tracking Case
-            if (isset($_GET["tickets_id"])) {
-               $job=new Job;
-               $job->getFromDB($_GET["tickets_id"]);
-   
-               if ($job->fields["users_id"]==$_SESSION["glpiID"]) {
-                  $query = "SELECT *
-                     FROM `glpi_documents_items`
-                     WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
-                        AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
-                        AND `documents_id`='".$this->fields["id"]."'";
-                  $result=$DB->query($query);
-                  if ($DB->numrows($result)>0)
-                     return true;
                }
             }
+         }
+      } else if (isset($_SESSION["glpiID"])) { // ! central
+   
+         // Check if it is my doc
+         if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
+            return true;
+         } 
+         if (haveRight("faq","r")) {
+            // Check if it is a FAQ document
+            $query = "SELECT *
+               FROM `glpi_documents_items`
+                  LEFT JOIN `glpi_knowbaseitems`
+                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+                  AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
+                  AND `glpi_knowbaseitems`.`is_faq`='1'".
+                  getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
+
+            $result=$DB->query($query);
+            if ($DB->numrows($result)>0) {
+               return true;
+            }
+         }
+
+         // Tracking Case
+         if (isset($_GET["tickets_id"])) {
+            $job=new Job;
+
+            if ($job->can($_GET["tickets_id"],'r')) {
+               $query = "SELECT *
+                  FROM `glpi_documents_items`
+                  WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                     AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                     AND `documents_id`='".$this->fields["id"]."'";
+               $result=$DB->query($query);
+               if ($DB->numrows($result)>0) {
+                  return true;
+               }
+            }
+         }
+      } 
+      // Public FAQ for not connected user
+      if ($CFG_GLPI["use_public_faq"]) {
+         $query = "SELECT *
+            FROM `glpi_documents_items`
+               LEFT JOIN `glpi_knowbaseitems`
+                      ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+            WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
+               AND `glpi_knowbaseitems`.`is_faq`='1'
+               AND `glpi_knowbaseitems`.`entities_id`='0'
+               AND `glpi_knowbaseitems`.`is_recursive`='1'";
+
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0) {
+            return true;
          }
       }
       return false;
