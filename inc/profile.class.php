@@ -108,10 +108,14 @@ class Profile extends CommonDBTM {
             $input["faq"]=='r';
          }
       }
-      if (isset($input["helpdesk_item_type"])) {
-         $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
-      }
 
+      if (isset($input["_helpdesk_item_types"])) {
+         if (isset($input["helpdesk_item_type"])) {
+            $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
+         } else {
+            $input["helpdesk_item_type"]=json_encode(array());
+         }
+      }
       return $input;
    }
 
@@ -137,8 +141,13 @@ class Profile extends CommonDBTM {
       }
       // decode array
       if (isset($this->fields["helpdesk_item_type"])
-            && !is_array($this->fields["helpdesk_item_type"])){
-            $this->fields["helpdesk_item_type"]=json_decode($this->fields["helpdesk_item_type"],true);
+            && !is_array($this->fields["helpdesk_item_type"])) {
+         $this->fields["helpdesk_item_type"]=json_decode($this->fields["helpdesk_item_type"],true);
+      }
+      // Empty/NULL case
+      if (!isset($this->fields["helpdesk_item_type"])
+          || !is_array($this->fields["helpdesk_item_type"])) {
+         $this->fields["helpdesk_item_type"]=array();
       }
    }
 
@@ -374,6 +383,7 @@ class Profile extends CommonDBTM {
       echo "</td><td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td>";
 
+      echo "<input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
@@ -635,6 +645,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td>";
+      echo "<input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
