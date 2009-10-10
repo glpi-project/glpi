@@ -148,7 +148,7 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      // Unicity check
+      /* Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity
          $crit = array('sha1sum'=>$input['sha1sum'],
@@ -160,7 +160,7 @@ class Document extends CommonDBTM {
                false, ERROR, true);
             return false;
          }
-      }
+      } */
       return $input;
    }
 
