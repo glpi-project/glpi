@@ -2041,25 +2041,34 @@ function displayActiveEntities($target,$myname) {
 }
 
 /**
+ * get the Ticket status list 
+ * 
+ * @return an array
+ */
+function getAllStatus() {
+   global $LANG;
+   
+   return array(
+      'new'          => $LANG['joblist'][9],
+      'assign'       => $LANG['joblist'][18],
+      'plan'         => $LANG['joblist'][19],
+      'waiting'      => $LANG['joblist'][26],
+      'old_done'     => $LANG['joblist'][10],
+      'old_notdone'  => $LANG['joblist'][17]);
+}
+/**
  * Dropdown of ticket status
  *
  * @param $name select name
  * @param $value default value
  */
-function dropdownStatus($name,$value=0) {
-   global $LANG;
-
+function dropdownStatus($name, $value=0) {
+   
+   $tab = getAllStatus();
    echo "<select name='$name'>";
-   echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG['joblist'][9]."</option>";
-   echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG['joblist'][18];
-   echo "</option>";
-   echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG['joblist'][19]."</option>";
-   echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG['joblist'][26];
-   echo "</option>";
-   echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG['joblist'][10];
-   echo "</option>";
-   echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".
-          $LANG['joblist'][17]."</option>";
+   foreach ($tab as $key => $val) {
+      echo "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
+   }
    echo "</select>";
 }
 
@@ -2071,31 +2080,8 @@ function dropdownStatus($name,$value=0) {
 function getStatusName($value) {
    global $LANG;
 
-   switch ($value) {
-      case "new" :
-         return $LANG['joblist'][9];
-         break;
-
-      case "assign" :
-         return $LANG['joblist'][18];
-         break;
-
-      case "plan" :
-         return $LANG['joblist'][19];
-         break;
-
-      case "waiting" :
-         return $LANG['joblist'][26];
-         break;
-
-      case "old_done" :
-         return $LANG['joblist'][10];
-         break;
-
-      case "old_notdone" :
-         return $LANG['joblist'][17];
-         break;
-   }
+   $tab = getAllStatus();
+   return (isset($tab[$value]) ? $tab[$value] : '');
 }
 
 /**

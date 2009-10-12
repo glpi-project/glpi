@@ -2310,6 +2310,14 @@ function update0723to080() {
    }
 
 
+   if (!FieldExists('glpi_profiles','helpdesk_status')) {
+      $query = "ALTER TABLE `glpi_profiles` 
+                   ADD `helpdesk_status` TEXT NULL 
+                        COMMENT 'json encoded array of from/dest allowed status change' 
+                        AFTER `helpdesk_item_type`";
+      $DB->query($query) or die("0.80 add helpdesk_status in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+   }
 
 
 

@@ -2296,6 +2296,7 @@ CREATE TABLE `glpi_profiles` (
   `password_update` char(1) collate utf8_unicode_ci default NULL,
   `helpdesk_hardware` int(11) NOT NULL default '0',
   `helpdesk_item_type` text collate utf8_unicode_ci,
+  `helpdesk_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
   `show_group_ticket` char(1) collate utf8_unicode_ci default NULL,
   `show_group_hardware` char(1) collate utf8_unicode_ci default NULL,
   `rule_dictionnary_software` char(1) collate utf8_unicode_ci default NULL,
