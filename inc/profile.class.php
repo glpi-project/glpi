@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
    var $common_fields=array("id","name","interface","is_default");
    /// Fields not related to a basic right
    var $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
-                             'show_group_hardware','own_ticket');
+                             'show_group_hardware','own_ticket','helpdesk_status');
 
    /**
     * Constructor
@@ -116,6 +116,19 @@ class Profile extends CommonDBTM {
             $input["helpdesk_item_type"]=json_encode(array());
          }
       }
+
+      if (isset($input["_cycles"])) {
+         $tab = getAllStatus();
+         $cycle = array();
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if ($from!=$dest && $input["_cycle"][$from][$dest]==0) {
+                  $cycle[$from][$dest]=0;
+               }
+            }
+         }
+         $input["helpdesk_status"]=json_encode($cycle);
+      }
       return $input;
    }
 
@@ -148,6 +161,11 @@ class Profile extends CommonDBTM {
       if (!isset($this->fields["helpdesk_item_type"])
           || !is_array($this->fields["helpdesk_item_type"])) {
          $this->fields["helpdesk_item_type"]=array();
+      }
+      // Decode status array
+      if (isset($this->fields["helpdesk_status"])
+            && !is_array($this->fields["helpdesk_status"])) {
+         $this->fields["helpdesk_status"]=json_decode($this->fields["helpdesk_status"],true);
       }
    }
 
@@ -694,9 +712,35 @@ class Profile extends CommonDBTM {
       dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
+      echo "</table><table class='tab_cadre_fixe'>";
+      $tabstatus=getAllStatus();
+      
+      echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+      echo "<input type='hidden' name='_cycles' value='1'</td>";
+      foreach ($tabstatus as $label) {
+         echo "<td class='center'>$label</td>";
+      }
+      echo "</tr>\n";
+      foreach ($tabstatus as $from => $label) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
+         foreach ($tabstatus as $dest => $label) {
+            echo "<td class='center'>";
+            if ($dest==$from) {
+               echo getYesNo(1);
+            } else {
+               dropdownYesNo("_cycle[$from][$dest]",
+                             (!isset($this->fields['helpdesk_status'][$from][$dest])
+                              || $this->fields['helpdesk_status'][$from][$dest]));
+            }
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
+      
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>\n";
