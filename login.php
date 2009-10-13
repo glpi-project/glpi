@@ -215,6 +215,15 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 
 	$identificat->initSession();
 
+   // Redirect management
+   $REDIRECT = "";
+   if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
+      $REDIRECT = "?redirect=" .$_POST['redirect'];
+   } else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
+      $REDIRECT = "?redirect=" .$_GET['redirect'];
+   }
+
+
 	// now we can continue with the process...
 	if ($identificat->auth_succeded) {
 		// Log Event
@@ -223,15 +232,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		} else {
 			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG['log'][40] . " : " . $ip);
 		}
-	
-		// Redirect management
-		$REDIRECT = "";
-		if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
-			$REDIRECT = "?redirect=" .$_POST['redirect'];
-		} else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
-			$REDIRECT = "?redirect=" .$_GET['redirect'];
-		}
-	
+		
 		// Redirect to Command Central if not post-only
 		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
@@ -244,7 +245,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
       // Logout whit noAUto to manage auto_login with errors
-		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1">' . $LANG['login'][1] . '</a></b></div>';
+		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.str_replace("?","&",$REDIRECT).'">' . $LANG['login'][1] . '</a></b></div>';
 		if (GLPI_DEMO_MODE){
 			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
 		} else {
