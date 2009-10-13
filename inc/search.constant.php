@@ -3914,12 +3914,11 @@ $SEARCH_OPTION[PROFILE_TYPE][2]['field']     = 'interface';
 $SEARCH_OPTION[PROFILE_TYPE][2]['linkfield'] = '';
 $SEARCH_OPTION[PROFILE_TYPE][2]['name']      = $LANG['profiles'][2];
 
- 	
-$SEARCH_OPTION[PROFILE_TYPE][3]['table']='glpi_profiles';
-$SEARCH_OPTION[PROFILE_TYPE][3]['field']='is_default';
-$SEARCH_OPTION[PROFILE_TYPE][3]['linkfield']='';
-$SEARCH_OPTION[PROFILE_TYPE][3]['name']=$LANG['profiles'][13];
-$SEARCH_OPTION[PROFILE_TYPE][3]['datatype']='bool';
+$SEARCH_OPTION[PROFILE_TYPE][3]['table']     = 'glpi_profiles';
+$SEARCH_OPTION[PROFILE_TYPE][3]['field']     = 'is_default';
+$SEARCH_OPTION[PROFILE_TYPE][3]['linkfield'] = '';
+$SEARCH_OPTION[PROFILE_TYPE][3]['name']      = $LANG['profiles'][13];
+$SEARCH_OPTION[PROFILE_TYPE][3]['datatype']  = 'bool';
 
 
 
