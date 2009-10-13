@@ -42,25 +42,25 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if(!isset($_POST["id"])) {
-	exit();
+   exit();
 }
-	
-		if ($_POST["id"]>0){
-			switch($_REQUEST['glpi_tab']){
-				case 1:
-					showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
-					showFollowupsSummary($_POST["id"]);
-					break;
-				case 2 :
-					showAddFollowupForm($_POST["id"]);
-					break;
-				default :
-					if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])){
-						showJobDetails($_POST['target'],$_POST["id"]);
-					}
-					break;
-			}
-		}
-	
-	ajaxFooter();
+
+if ($_POST["id"]>0){
+   switch($_REQUEST['glpi_tab']) {
+      case 1:
+         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+         showFollowupsSummary($_POST["id"]);
+         break;
+      case 2 :
+         showAddFollowupForm($_POST["id"]);
+         break;
+      default :
+         if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])){
+            showJobDetails($_POST['target'],$_POST["id"]);
+         }
+         break;
+   }
+}
+
+ajaxFooter();
 ?>
