@@ -3056,7 +3056,7 @@ function ocsUpdateRegistry($computers_id, $ocsid, $ocsservers_id, $cfg_ocs) {
                        `registry`.`HARDWARE_ID` AS computers_id, `regconfig`.`REGTREE` AS regtree,
                        `regconfig`.`REGKEY` AS regkey
                 FROM `registry`
-                LEFT JOIN `regconfig` ON (name = `regconfig`.`NAME`)
+                LEFT JOIN `regconfig` ON (`registry`.`NAME` = `regconfig`.`NAME`)
                 WHERE `HARDWARE_ID` = '$ocsid'";
       $result = $DBocs->query($query);
       if ($DBocs->numrows($result) > 0) {

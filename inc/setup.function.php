@@ -678,6 +678,9 @@ function addDropdown($input) {
          }
          $query = "$field, `$parentIDfield`,`completename`)
                    $valuefield, '$level_up','')";
+      } else {
+         $query = "$field)
+                   $valuefield)";
       }
 
       if ($result = $DB->query($query)) {
