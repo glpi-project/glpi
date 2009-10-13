@@ -33,14 +33,14 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['table']     =  'accountinfo';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['field']     =  'TAG';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['name']      =  $LANG['ocsconfig'][39];
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['linkfield'] =  'HARDWARE_ID';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['table']     = 'accountinfo';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['field']     = 'TAG';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['name']      = $LANG['ocsconfig'][39];
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['TAG']['linkfield'] = 'HARDWARE_ID';
 
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['table']     =  'hardware';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['field']     =  'WORKGROUP';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['name']      =  $LANG['setup'][89];
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['table']     = 'hardware';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['field']     = 'WORKGROUP';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['name']      = $LANG['setup'][89];
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DOMAIN']['linkfield'] = '';
 
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['table']     = 'glpi_ocsservers';
@@ -48,8 +48,8 @@ $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['field']     = 'name';
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['name']      = $LANG['ocsng'][29];
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['linkfield'] = '';
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['type']      = 'dropdown';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['virtual']   = 'true';
-$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['id']        =' ocs_server';
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['virtual']   = true;
+$RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['OCS_SERVER']['id']        = 'ocs_server';
 
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['IPSUBNET']['table']     = 'networks';
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['IPSUBNET']['field']     = 'IPSUBNET';
@@ -87,7 +87,7 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['field']     = 'name';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['name']      = $LANG['login'][2];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['linkfield'] = '';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['type']      = 'dropdown';
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['virtual']   = 'true';
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['virtual']   = true;
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['id']        = 'ldap_server';
 
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['table']     = 'glpi_authmails';
@@ -95,7 +95,7 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['field']     = 'name';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['name']      = $LANG['login'][3];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['linkfield'] = '';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['type']      = 'dropdown';
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['virtual']   = 'true';
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['virtual']   = true;
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_SERVER']['id']        = 'mail_server';
 
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['table']     = '';
@@ -103,7 +103,7 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['field']     = '';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['name']      = $LANG['login'][6]." ".
                                                                   $LANG['login'][3];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['linkfield'] = '';
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['virtual']   = 'true';
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['virtual']   = true;
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['id']        = 'mail_email';
 
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['table']     = 'glpi_groups';
@@ -111,7 +111,7 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['field']     = 'name';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['name']      = $LANG['Menu'][36]." ".$LANG['login'][2];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['linkfield'] = '';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['type']      = 'dropdown';
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['virtual']   = 'true';
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['virtual']   = true;
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['id']        = 'groups';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['entities_id']['name']   = $LANG['entity'][0];
@@ -180,7 +180,7 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id']['field']     = 'name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id']['name']      = $LANG['job'][4]." - ".
                                                                         $LANG['common'][35];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id']['linkfield'] = 'groups_id';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id']['type']      =' dropdown';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id']['type']      = 'dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['users_id_assign']['table']     = 'glpi_users';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['users_id_assign']['field']     = 'name';
