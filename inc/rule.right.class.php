@@ -571,7 +571,7 @@ class RightRuleCollection extends RuleCollection {
 
 		$fields = array();
 		foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria){
-				if (isset($criteria['virtual']) && $criteria['virtual'] == "true")
+				if (isset($criteria['virtual']) && $criteria['virtual'])
 					$fields[]=$criteria['id'];
 				else	
 				$fields[]=$criteria['field'];	
