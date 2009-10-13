@@ -45,11 +45,11 @@ if (!isset($_POST["id"])) {
 }
 
 if ($_POST['id']>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showCronStatistics($_POST["id"]);
          showCronTaskHistory($_POST["id"]);
-         displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 1 :
@@ -61,7 +61,7 @@ if ($_POST['id']>0) {
          break;
 
       default :
-         if (!displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showCronStatistics($_POST["id"]);
          }
          break;

@@ -50,12 +50,12 @@ if(empty($_POST["id"])) {
 }
 
 if ($_POST['id']>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showDeviceBudget($_POST["id"]);
          showDocumentAssociated(BUDGET_TYPE,$_POST["id"]);
          showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
-         displayPluginAction(BUDGET_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -79,7 +79,7 @@ if ($_POST['id']>0) {
          break;
 
       default :
-         if (!displayPluginAction(BUDGET_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showDeviceBudgetValue($_POST["id"]);
          }
          break;

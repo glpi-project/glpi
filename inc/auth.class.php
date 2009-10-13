@@ -322,7 +322,8 @@ class Identification {
                $_SESSION["glpi_use_mode"] = $this->user->fields['use_mode'];
                $_SESSION["glpicrontimer"] = time();
                // Default tab
-               $_SESSION['glpi_tab']=1;
+//               $_SESSION['glpi_tab']=1;
+               $_SESSION['glpi_tabs']=array();
                $this->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
                   if (isset($this->user->fields[$field])) {

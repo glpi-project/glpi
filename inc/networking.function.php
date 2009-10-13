@@ -318,7 +318,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
          }
       }
    }
-   $netport->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"itemtype=$devtype
+   $netport->showTabs($ID, false, getActiveTab($netport->type),array(),"itemtype=$devtype
                       AND items_id=$ondevice");
 
    echo "\n<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";

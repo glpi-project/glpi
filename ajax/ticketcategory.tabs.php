@@ -50,14 +50,14 @@ checkRight("entity_dropdown","r");
 $category = new TicketCategory();
 
 if ($_POST["id"]>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          $category->showChildren($_POST["id"]);
-         displayPluginAction(TICKETCATEGORY_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         displayPluginAction(TICKETCATEGORY_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       default :
-         if (!displayPluginAction(TICKETCATEGORY_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+         if (!displayPluginAction(TICKETCATEGORY_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             $category->showChildren($_POST["id"]);
          }
    }

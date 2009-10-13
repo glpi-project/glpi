@@ -49,7 +49,7 @@ checkRight("config", "r");
 $config = new Config();
 
 if ($_POST["id"]<0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case 1 :
          $config->showFormMain($_POST['target']);
          break;

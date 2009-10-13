@@ -103,7 +103,7 @@ $plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"mailing","","");
 $tabs+=$plug_tabs;
 
 echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('mailing'));
 echo "<div id='tabcontent'></div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

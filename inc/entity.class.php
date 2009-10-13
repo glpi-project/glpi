@@ -148,7 +148,7 @@ class Entity extends CommonDBTM {
 
       $canedit=$this->can($ID,'w');
 
-      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
 
       if ($canedit) {
          echo "<form method='post' name=form action=\"$target\">";

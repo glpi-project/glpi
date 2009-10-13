@@ -58,7 +58,7 @@ if (!isset($_POST["withtemplate"])) {
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
                             MONITOR_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
@@ -70,11 +70,11 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1:
          showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
          showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
@@ -82,7 +82,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);
          showJobListForItem(MONITOR_TYPE,$_POST["id"]);
          showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-         displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 4 :
@@ -115,7 +115,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_POST['glpi_tab'],
+         if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
          }

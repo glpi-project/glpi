@@ -46,7 +46,7 @@ if(!isset($_POST["id"])) {
 }
 	
 		if ($_POST["id"]>0){
-			switch($_POST['glpi_tab']){
+			switch($_REQUEST['glpi_tab']){
 				case 1:
 					showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
 					showFollowupsSummary($_POST["id"]);
@@ -55,7 +55,7 @@ if(!isset($_POST["id"])) {
 					showAddFollowupForm($_POST["id"]);
 					break;
 				default :
-					if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_SESSION['glpi_tab'])){
+					if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])){
 						showJobDetails($_POST['target'],$_POST["id"]);
 					}
 					break;

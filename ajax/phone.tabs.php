@@ -64,7 +64,7 @@ if (!isset($_POST["withtemplate"])) {
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
@@ -76,7 +76,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
                   showPortsAdd($_POST["id"],PHONE_TYPE);
@@ -86,7 +86,7 @@ if (!empty($_POST["withtemplate"])) {
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
          showPortsAdd($_POST["id"],PHONE_TYPE);
@@ -96,7 +96,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
          showJobListForItem(PHONE_TYPE,$_POST["id"]);
          showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-         displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 4 :
@@ -129,7 +129,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+         if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
             showPortsAdd($_POST["id"],PHONE_TYPE);

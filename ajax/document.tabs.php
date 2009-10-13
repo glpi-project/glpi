@@ -49,11 +49,11 @@ if (!isset($_POST["id"])) {
 $doc= new Document();
 $doc->check($_POST["id"],'r');
 
-switch ($_POST['glpi_tab']) {
+switch ($_REQUEST['glpi_tab']) {
    case -1 :
       showDeviceDocument($_POST["id"]);
       showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
-      displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+      displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
       break;
 
    case 5 :
@@ -66,7 +66,7 @@ switch ($_POST['glpi_tab']) {
 
    default :
       if ($_POST["id"]) {
-         if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showDeviceDocument($_POST["id"]);
          }
       }

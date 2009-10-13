@@ -143,8 +143,8 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 }
 
 // Manage tabs
-if (isset($_REQUEST['glpi_tab'])) {
-   $_SESSION['glpi_tab']=$_REQUEST['glpi_tab'];
+if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
+   $_SESSION['glpi_tabs'][$_REQUEST['itemtype']]=$_REQUEST['glpi_tab'];
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {

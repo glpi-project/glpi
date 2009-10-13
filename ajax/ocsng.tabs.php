@@ -48,7 +48,7 @@ if (!isset ($_POST["id"])) {
 checkRight("ocsng", "w");
 
 $ocs = new Ocsng();
-switch ($_POST['glpi_tab']) {
+switch ($_REQUEST['glpi_tab']) {
    case -1 :
       $ocs->showDBConnectionStatus($_POST["id"]);
       $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
@@ -69,7 +69,7 @@ switch ($_POST['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction(OCSNG_TYPE,$_POST["id"],$_POST['glpi_tab'],"")) {
+      if (!displayPluginAction(OCSNG_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],"")) {
          $ocs->showDBConnectionStatus($_POST["id"]);
       }
 }

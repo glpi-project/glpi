@@ -942,7 +942,7 @@ class User extends CommonDBTM {
 				|| ($this->fields["authtype"]==NOT_YET_AUTHENTIFIED
 						&& !empty ($this->fields["password"]) ) );
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate,getActiveTab($this->type));
 
 			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
 			echo "<div class='center' id='tabsbody' >";

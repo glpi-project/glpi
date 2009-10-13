@@ -44,7 +44,7 @@ checkLoginUser();
 
 $user = new User();
 
-switch ($_POST['glpi_tab']) {
+switch ($_REQUEST['glpi_tab']) {
    case 1 :
       $user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
       break;
@@ -57,7 +57,7 @@ switch ($_POST['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")) {
+      if (!displayPluginAction("prefs","",$_REQUEST['glpi_tab'],"")) {
          $user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
       }
 }

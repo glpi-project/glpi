@@ -56,7 +56,7 @@ if (!isset($_POST["start"])) {
 $entity->check($_POST["id"],'r');
 
 if ($_POST["id"]>=0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showEntityUser($_POST['target'],$_POST["id"]);
          showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
@@ -64,7 +64,7 @@ if ($_POST["id"]>=0) {
          if ($CFG_GLPI["use_ocs_mode"]) {
             $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
          }
-         displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -83,7 +83,7 @@ if ($_POST["id"]>=0) {
             break;
 
          default :
-            if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             }
    }
 }

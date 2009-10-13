@@ -45,11 +45,7 @@ header_nocache();
 
 checkCentralAccess();
 
-if (!isset($_POST['glpi_tab'])) {
-   $_POST['glpi_tab']="my";
-}
-
-switch ($_POST['glpi_tab']) {
+switch ($_REQUEST['glpi_tab']) {
    case "my" :
       showCentralMyView();
       break;
@@ -69,11 +65,11 @@ switch ($_POST['glpi_tab']) {
       echo "<br>";
       showCentralGlobalView();
       echo "<br>";
-      displayPluginAction("central","",$_POST['glpi_tab'],"");
+      displayPluginAction("central","",$_REQUEST['glpi_tab'],"");
       break;
 
    default :
-      if (!displayPluginAction("central","",$_POST['glpi_tab'],"")) {
+      if (!displayPluginAction("central","",$_REQUEST['glpi_tab'],"")) {
          showCentralMyView();
       }
       break;

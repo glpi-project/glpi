@@ -537,7 +537,7 @@ class Computer extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
       $this->showFormHeader($target, $ID, $withtemplate, 2);
 
       echo "<tr class='tab_bg_1'>";
@@ -815,7 +815,7 @@ class ComputerDisk extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"computers_id="
+      $this->showTabs($ID, false, getActiveTab($this->type),array(),"computers_id="
                       .$this->fields['computers_id']);
       $this->showFormHeader($target,$ID,'',2);
 

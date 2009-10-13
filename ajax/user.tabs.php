@@ -71,7 +71,7 @@ if (empty($_POST["name"])) {
 }
 
 if ($_POST["id"]>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showUserRights($_POST['target'],$_POST["id"]);
          showGroupAssociated($_POST['target'],$_POST["id"]);
@@ -80,7 +80,7 @@ if ($_POST["id"]>0) {
          if (haveRight("show_all_ticket", "1")) {
             showJobListForUser($_POST["id"]);
          }
-         displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         displayPluginAction(USER_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -108,7 +108,7 @@ if ($_POST["id"]>0) {
          break;
 
       default :
-         if (!displayPluginAction(USER_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+         if (!displayPluginAction(USER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showUserRights($_POST['target'],$_POST["id"]);
          }
    }

@@ -52,11 +52,6 @@ else if (isset($_POST["referer"])) {
 
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
-if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_tab']=$_GET['onglet'];
-}
-
 if (isset($_POST["add"])) {
 	$device=new Device($_POST["devicetype"]);
    $device->check(-1,"w");

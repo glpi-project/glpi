@@ -46,10 +46,10 @@ checkRight("config", "r");
 
 $config = new Config();
 
-switch($_POST['glpi_tab']) {
+switch($_REQUEST['glpi_tab']) {
    default :
-      if (!displayPluginAction("mailing","",$_POST['glpi_tab'],"")) {
-         $config->showFormMailing($_POST['target'],$_POST['glpi_tab']);
+      if (!displayPluginAction("mailing","",$_REQUEST['glpi_tab'],"")) {
+         $config->showFormMailing($_POST['target'],$_REQUEST['glpi_tab']);
       }
 }
 

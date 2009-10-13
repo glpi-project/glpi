@@ -70,7 +70,7 @@ if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
 	$tabs+=$plug_tabs;
 
 	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('prefs'));
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

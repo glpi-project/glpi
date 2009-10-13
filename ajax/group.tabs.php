@@ -48,11 +48,11 @@ checkRight("group","r");
 
 $group=new Group;
 if ($_POST["id"]>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showGroupUsers($_POST['target'],$_POST["id"]);
          showGroupDevice($_POST["id"]);
-         displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+         displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -60,7 +60,7 @@ if ($_POST["id"]>0) {
          break;
 
       default :
-         if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+         if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showGroupUsers($_POST['target'],$_POST["id"]);
          }
    }

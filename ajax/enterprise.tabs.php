@@ -62,14 +62,14 @@ if (!isset($_POST["order"])) {
 $ent->check($_POST["id"],'r');
 
 if ($_POST["id"]>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showAssociatedContact($_POST["id"]);
          showContractAssociatedEnterprise($_POST["id"]);
          showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"]);
          showJobListForEnterprise($_POST["id"]);
          showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
-         displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 1 :
@@ -101,7 +101,7 @@ if ($_POST["id"]>0) {
          break;
 
       default :
-         if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showAssociatedContact($_POST["id"]);
          }
    }
