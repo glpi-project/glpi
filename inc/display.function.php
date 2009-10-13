@@ -2226,6 +2226,19 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 }
 
 /**
+ *  Get active Tab for an itemtype
+ *
+ * @param $itemtype item type
+ * @return nothing
+ */
+function getActiveTab($itemtype) {
+   if (isset($_SESSION['glpi_tabs'][$itemtype])) {
+      return $_SESSION['glpi_tabs'][$itemtype];
+   }
+   return "";
+}
+
+/**
  *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
  *
  * @param $tabdiv_id ID of the div containing the tabs

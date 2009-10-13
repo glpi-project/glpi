@@ -103,7 +103,7 @@ include (GLPI_ROOT."/inc/includes.php");
 		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=-1");
 
 	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('central'));
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

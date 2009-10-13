@@ -59,7 +59,7 @@ checkRight("printer","r");
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 3 :
             if ($_POST["withtemplate"]!=2) {
                showPortsAdd($_POST["id"],PRINTER_TYPE);
@@ -78,12 +78,12 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+            displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                 $_POST["withtemplate"]);
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showCartridgeInstalled($_POST["id"]);
          showCartridgeInstalled($_POST["id"],1);
@@ -95,7 +95,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(PRINTER_TYPE,$_POST["id"]);
          showJobListForItem(PRINTER_TYPE,$_POST["id"]);
          showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
-         displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 3 :
@@ -134,7 +134,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(PRINTER_TYPE,$_POST["id"],$_SESSION['glpi_tab'],
+         if (!displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showCartridgeInstalled($_POST["id"]);
             showCartridgeInstalled($_POST["id"],1);

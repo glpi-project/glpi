@@ -50,25 +50,25 @@ $prof=new Profile();
 if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
    $prof->cleanProfile();
    if ($prof->fields['interface']=='helpdesk') {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case -1 :
             $prof->showFormHelpdesk($_POST['target']);
-            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
             break;
 
          default :
-            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
             }
       }
    } else {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case -1 :
             $prof->showFormInventory($_POST['target']);
             $prof->showFormTracking($_POST['target']);
             $prof->showFormAdmin($_POST['target']);
             showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
-            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
             break;
 
          case 2 :
@@ -84,13 +84,13 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             break;
 
          default :
-            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
                $prof->showFormInventory($_POST['target']);
             }
       }
    }
 } else {
-   displayPluginAction(PROFILE_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+   displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
 }
 
 ajaxFooter();

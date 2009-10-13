@@ -106,7 +106,7 @@ class Group extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
       $this->showFormHeader($target,$ID,$withtemplate,2);
 
       echo "<tr class='tab_bg_1'>";

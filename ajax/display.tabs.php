@@ -50,13 +50,13 @@ checkSeveralRightsOr(array("search_config_global"=>"w",
                            "search_config"=>"w"));
 
 if ($_POST["id"]<0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case 1 :
-         $setupdisplay->showFormGlobal($_POST['target'],$_POST["itemtype"]);
+         $setupdisplay->showFormGlobal($_POST['target'],$_POST["displaytype"]);
          break;
 
       case 2 :
-         $setupdisplay->showFormPerso($_POST['target'],$_POST["itemtype"]);
+         $setupdisplay->showFormPerso($_POST['target'],$_POST["displaytype"]);
          break;
    }
 }

@@ -395,7 +395,7 @@ class Ocsng extends CommonDBTM {
          $this->getFromDB($ID);
       }
 
-      $this->showTabs($ID, '',$_SESSION['glpi_tab']);
+      $this->showTabs($ID, '',getActiveTab($this->type));
 
       $out  = "\n<div class='center' id='tabsbody'>";
       $out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";

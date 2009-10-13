@@ -58,7 +58,7 @@ $netdevice->check($_POST["id"],'r');
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
@@ -70,7 +70,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],
+            if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
                showPorts($_POST["id"], NETWORKING_TYPE,$_POST["withtemplate"]);
                if ($_POST["withtemplate"]!=2) {
@@ -80,7 +80,7 @@ if (!empty($_POST["withtemplate"])) {
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showPortsAdd($_POST["id"],NETWORKING_TYPE);
          showPorts($_POST["id"],NETWORKING_TYPE);
@@ -90,7 +90,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
          showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
          showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
-         displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 4 :
@@ -124,7 +124,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_POST['glpi_tab'],
+         if (!displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showPortsAdd($_POST["id"],NETWORKING_TYPE);
             showPorts($_POST["id"],NETWORKING_TYPE);

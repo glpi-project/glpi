@@ -43,7 +43,7 @@ header_nocache();
 
 
 $bookmark = new Bookmark;
-$bookmark->showBookmarkList($_POST['target'],$_POST['glpi_tab']);
+$bookmark->showBookmarkList($_POST['target'],$_REQUEST['glpi_tab']);
 
 ajaxFooter();
 ?>

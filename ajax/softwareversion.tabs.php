@@ -58,10 +58,10 @@ if (!isset($_POST["withtemplate"])) {
 
 checkRight("software","r");
 
-switch($_POST['glpi_tab']) {
+switch($_REQUEST['glpi_tab']) {
    case -1 :
       showInstallations($_POST["id"], "id");
-      displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
       break;
 
    case 2 :
@@ -73,7 +73,7 @@ switch($_POST['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_POST['glpi_tab'],
+      if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
           $_POST["withtemplate"])) {
          showInstallationsByEntity($_POST["id"]);
       }

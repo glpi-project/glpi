@@ -66,7 +66,7 @@ if (isset($_POST['update'])){
 	$newID=$fup->add($_POST);
 
 	logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]."&glpi_tab=1");
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]."&glpi_tab=1&itemtype=".TRACKING_TYPE);
 
 } else if (isset($_POST["update_followup"])){
 	checkRight("comment_all_ticket","1");
@@ -81,15 +81,9 @@ if (isset($_POST['update'])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]);
 }
 
-// Manage All case which does not exist
-if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_tab']=$_GET['onglet'];
-}
-
 	$track->check($_GET["id"],'r');
 
-	$track->showTabs($_GET["id"],'',$_SESSION['glpi_tab']);
+	$track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
 	echo "<div id='tabcontent'></div>";
 
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";

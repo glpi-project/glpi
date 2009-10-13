@@ -107,18 +107,18 @@ if ($_GET["action"]=="edit") {
 } else { // $_GET["action"]="load";
 	
 	echo '<br>';
-	
+
 	$tabs[1]=array('title'=>$LANG['common'][77],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1&itemtype=".BOOKMARK_TYPE);
 		
 	if (haveRight('bookmark_public','r')){
 		$tabs[0]=array('title'=>$LANG['common'][76],
 			'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-			'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0");
+			'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=".BOOKMARK_TYPE);
 	}				
 	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab(BOOKMARK_TYPE));
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }

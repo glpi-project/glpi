@@ -52,13 +52,13 @@ if (!isset($_POST["id"])) {
 $contract=new Contract();
 
 if ($_POST['id']>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showEnterpriseContract($_POST["id"]);
          showItemContract($_POST["id"]);
          showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-         displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -78,7 +78,7 @@ if ($_POST['id']>0) {
          break;
 
       default :
-         if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showEnterpriseContract($_POST["id"]);
          }
          break;

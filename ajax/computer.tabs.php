@@ -63,7 +63,7 @@ checkRight("computer","r");
 //show computer form to add
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 2 :
             showSoftwareInstalled($_POST["id"],$_POST["withtemplate"]);
             break;
@@ -91,7 +91,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_POST['glpi_tab'],
+            if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
                showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             }
@@ -99,7 +99,7 @@ if (!empty($_POST["withtemplate"])) {
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
          showComputerDisks($_POST["id"],$_POST["withtemplate"]);
@@ -113,7 +113,7 @@ if (!empty($_POST["withtemplate"])) {
          showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
          showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
          showRegistry($_POST["id"]);
-         displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 2 :
@@ -168,7 +168,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_POST['glpi_tab'],
+         if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
          }

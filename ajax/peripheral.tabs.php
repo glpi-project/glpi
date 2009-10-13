@@ -59,7 +59,7 @@ if (!isset($_POST["withtemplate"])) {
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
@@ -71,7 +71,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],
+            if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
                   showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
@@ -81,7 +81,7 @@ if (!empty($_POST["withtemplate"])) {
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
          showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
@@ -92,7 +92,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(PERIPHERAL_TYPE,$_POST["id"]);
          showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
          showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
-         displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 4 :
@@ -126,7 +126,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_POST['glpi_tab'],
+         if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                   $_POST["withtemplate"])) {
             showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
             showPortsAdd($_POST["id"],PERIPHERAL_TYPE);

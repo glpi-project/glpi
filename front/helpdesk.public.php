@@ -83,9 +83,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		$newID=$fup->add($_POST);
 
 		logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-		glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$_POST["tickets_id"]."&glpi_tab=1");
-
-
+		glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$_POST["tickets_id"]);
 	}
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
@@ -114,7 +112,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		}
 		$track=new Job();
 		$track->check($_GET["id"],'r');
-		$track->showTabs($_GET["id"],'',$_SESSION['glpi_tab']);
+		$track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
 		echo "<div id='tabcontent'></div>";
 
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";

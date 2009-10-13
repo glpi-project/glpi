@@ -177,13 +177,6 @@ else if (isset($_POST["deletegroup"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
-
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}
-
-
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 

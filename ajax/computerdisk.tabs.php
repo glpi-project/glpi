@@ -39,9 +39,9 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (isset($_POST["id"]) && $_POST['id']>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       default :
-         if (!displayPluginAction(COMPUTERDISK_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(COMPUTERDISK_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
          }
          break;
    }

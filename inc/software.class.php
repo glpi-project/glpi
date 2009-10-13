@@ -247,7 +247,7 @@ class Software extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
+      $this->showTabs($ID, $withtemplate, getActiveTab($this->type));
       $this->showFormHeader($target, $ID, $withtemplate, 2);
 
       echo "<tr class='tab_bg_1'>";
@@ -436,7 +436,7 @@ class SoftwareVersion extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),
+      $this->showTabs($ID, false, getActiveTab($this->type),array(),
                       "softwares_id=".$this->fields['softwares_id']);
       $this->showFormHeader($target,$ID,'',2);
 
@@ -604,7 +604,7 @@ class SoftwareLicense extends CommonDBTM {
          $this->fields['number']=1;
       }
 
-      $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),
+      $this->showTabs($ID, false, getActiveTab($this->type),array(),
                       "softwares_id=".$this->fields['softwares_id']);
       $this->showFormHeader($target,$ID,'',2);
 

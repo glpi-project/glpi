@@ -86,7 +86,7 @@ class Typedoc  extends CommonDBTM {
 		} 
 
 		echo "<div class='center'>";
-		$this->showTabs($ID, '',$_SESSION['glpi_tab']);
+		$this->showTabs($ID, '',getActiveTab($this->type));
 
 		echo "<form method='post' name=form action=\"$target\">";
 

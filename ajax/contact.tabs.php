@@ -48,12 +48,12 @@ if (empty($_POST["id"])) {
    $_POST["id"] = -1;
 }
 if ($_POST['id']>0) {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showEnterpriseContact($_POST["id"]);
          showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-         displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab']);
+         displayPluginAction(CONTACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 5 :
@@ -69,7 +69,7 @@ if ($_POST['id']>0) {
          break;
 
       default :
-         if (!displayPluginAction(CONTACT_TYPE,$_POST["id"],$_POST['glpi_tab'])) {
+         if (!displayPluginAction(CONTACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showEnterpriseContact($_POST["id"]);
          }
          break;

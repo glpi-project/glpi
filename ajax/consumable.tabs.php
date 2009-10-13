@@ -47,7 +47,7 @@ if (!isset($_POST["id"])) {
 
 checkRight("consumable","r");
 
-switch($_SESSION['glpi_tab']) {
+switch($_REQUEST['glpi_tab']) {
    case -1 :
       showConsumableAdd($_POST["id"]);
       showConsumables($_POST["id"]);
@@ -55,7 +55,7 @@ switch($_SESSION['glpi_tab']) {
       showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
       showDocumentAssociated(CONSUMABLEITEM_TYPE,$_POST["id"]);
       showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
-      displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_SESSION['glpi_tab']);
+      displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
       break;
 
    case 4 :
@@ -75,7 +75,7 @@ switch($_SESSION['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_SESSION['glpi_tab'])) {
+      if (!displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
          showConsumableAdd($_POST["id"]);
          showConsumables($_POST["id"]);
          showConsumables($_POST["id"],1);

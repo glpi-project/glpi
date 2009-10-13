@@ -62,7 +62,7 @@ if (!isset($_POST["withtemplate"])) {
 
 if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
-      switch($_POST['glpi_tab']) {
+      switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
@@ -74,11 +74,11 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          default :
-            displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'], $_POST["withtemplate"]);
+            displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
    }
 } else {
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          showVersions($_POST["id"]);
          showLicenses($_POST["id"]);
@@ -88,7 +88,7 @@ if (!empty($_POST["withtemplate"])) {
          showDocumentAssociated(SOFTWARE_TYPE,$_POST["id"]);
          showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
          showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
-         displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+         displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
          break;
 
       case 2 :
@@ -129,7 +129,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"])){
+         if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"])){
             showVersions($_POST["id"]);
             showLicenses($_POST["id"]);
          }

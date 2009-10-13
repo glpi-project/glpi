@@ -57,34 +57,34 @@ commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
 
 $tabs[1]=array('title'=>$LANG['setup'][70],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=1");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=1&itemtype=config");
 
 $tabs[2]=array('title'=>$LANG['setup'][119],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=2");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=2&itemtype=config");
 
 $tabs[6]=array('title'=>$LANG['setup'][6],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=6");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=6&itemtype=config");
 
 $tabs[3]=array('title'=>$LANG['setup'][184],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=3");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=3&itemtype=config");
 
 $tabs[4]=array('title'=>$LANG['connect'][0],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=4");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=4&itemtype=config");
 
 $tabs[5]=array('title'=>$LANG['setup'][800],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=5");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=5&itemtype=config");
 
 $tabs[7]=array('title'=>$LANG['setup'][720],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=7");
+'params'=>"target=".$_SERVER['PHP_SELF']."&id=-1&glpi_tab=7&itemtype=config");
 
 echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('config'));
 echo "<div id='tabcontent'></div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

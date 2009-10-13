@@ -58,11 +58,11 @@ if (!isset($_POST["withtemplate"])) {
 
 checkRight("software","r");
 
-switch($_POST['glpi_tab']) {
+switch($_REQUEST['glpi_tab']) {
    case -1 :
       showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
       showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
       break;
 
    case 4 :
@@ -78,7 +78,7 @@ switch($_POST['glpi_tab']) {
       break;
 
    default :
-      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST['glpi_tab'],$_POST["withtemplate"]);
+      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
 }
 
 ajaxFooter();
