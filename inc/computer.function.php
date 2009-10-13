@@ -288,10 +288,10 @@ function showComputerDisks($ID,$withtemplate='') {
             echo "<td>".$data['device']."</td>";
             echo "<td>".$data['mountpoint']."</td>";
             echo "<td>".$data['fsname']."</td>";
-            echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".
-                   $LANG['common'][82]."</td>";
-            echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".
-                   $LANG['common'][82]."</td>";
+            echo "<td class='right'>".formatNumber($data['totalsize'], false, 0)."&nbsp;".
+                   $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+            echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
+                   $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 
             addToNavigateListItems(COMPUTERDISK_TYPE,$data['id']);
          }
