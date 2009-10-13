@@ -145,16 +145,17 @@ elseif (isset($_POST["connect_device"])) {
 		compdevice_add($_POST["computers_id"],$_POST["devicetype"],$_POST["devices_id"]);
 	glpi_header($_SERVER['PHP_SELF']."?id=".$_POST["computers_id"]."&withtemplate=".$_POST["withtemplate"]);
 }
-elseif(isset($_POST["unlock_monitor"])){
+else if(isset($_POST["unlock_monitor"])) {
 	$computer->check($_POST['id'],'w');
 
-	if (isset($_POST["lockmonitor"])&&count($_POST["lockmonitor"])){
-		foreach ($_POST["lockmonitor"] as $key => $val)
+	if (isset($_POST["lockmonitor"])&&count($_POST["lockmonitor"])) {
+		foreach ($_POST["lockmonitor"] as $key => $val) {
 			deleteInOcsArray($_POST["id"],$key,"import_monitor");
+      }
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif(isset($_POST["unlock_printer"])){
+else if(isset($_POST["unlock_printer"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["lockprinter"])&&count($_POST["lockprinter"])){
@@ -163,7 +164,7 @@ elseif(isset($_POST["unlock_printer"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif(isset($_POST["unlock_soft"])){
+else if(isset($_POST["unlock_soft"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["locksoft"])&&count($_POST["locksoft"])){
@@ -172,7 +173,7 @@ elseif(isset($_POST["unlock_soft"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif(isset($_POST["unlock_disk"])){
+else if(isset($_POST["unlock_disk"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["lockdisk"])&&count($_POST["lockdisk"])){
@@ -181,7 +182,7 @@ elseif(isset($_POST["unlock_disk"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif(isset($_POST["unlock_periph"])){
+else if(isset($_POST["unlock_periph"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["lockperiph"])&&count($_POST["lockperiph"])){
@@ -190,7 +191,7 @@ elseif(isset($_POST["unlock_periph"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif(isset($_POST["unlock_ip"])){
+else if(isset($_POST["unlock_ip"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["lockip"])&&count($_POST["lockip"])){
@@ -198,8 +199,7 @@ elseif(isset($_POST["unlock_ip"])){
 			deleteInOcsArray($_POST["id"],$key,"import_ip");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif(isset($_POST["unlock_field"])){
+} else if(isset($_POST["unlock_field"])) {
 	$computer->check($_POST['id'],'w');
 
 	if (isset($_POST["lockfield"])&&count($_POST["lockfield"])){
@@ -207,7 +207,7 @@ elseif(isset($_POST["unlock_field"])){
 			deleteInOcsArray($_POST["id"],$key,"computer_update");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-} elseif (isset($_POST["force_ocs_resynch"])){
+} else if (isset($_POST["force_ocs_resynch"])){
 	$computer->check($_POST['id'],'w');
 
 	//Get the ocs server id associated with the machine

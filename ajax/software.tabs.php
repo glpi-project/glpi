@@ -129,7 +129,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"])){
+         if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
             showVersions($_POST["id"]);
             showLicenses($_POST["id"]);
          }

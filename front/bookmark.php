@@ -34,93 +34,92 @@
 // ----------------------------------------------------------------------
 
 if(!isset($_GET["type"])) {
-	$_GET["type"] = -1;
+   $_GET["type"] = -1;
 }
 
 if(!isset($_GET["itemtype"])) {
-	$_GET["itemtype"] = -1;
+   $_GET["itemtype"] = -1;
 }
 
 if(!isset($_GET["url"])) {
-	$_GET["url"] = "";
+   $_GET["url"] = "";
 }
 
 $bookmark = new Bookmark;
 
 /// TODO : check rights for actions
 
-if (isset($_POST["add"])){
+if (isset($_POST["add"])) {
 
-	$bookmark->getEmpty();
-	$bookmark->check(-1,'w',$_POST);
+   $bookmark->getEmpty();
+   $bookmark->check(-1,'w',$_POST);
 
-	$bookmark->add($_POST);
-	$_GET["action"]="load";
+   $bookmark->add($_POST);
+   $_GET["action"]="load";
 
-} elseif (isset($_POST["update"])){
+} elseif (isset($_POST["update"])) {
 
-	$bookmark->check($_POST["id"],'w');	
+   $bookmark->check($_POST["id"],'w');
 
-	$bookmark->update($_POST);
-	$_GET["action"]="load";
-	
-} elseif ($_GET["action"]=="edit" && isset($_GET['mark_default']) && isset($_GET["id"])){
-	
-	if ($_GET["mark_default"]>0){
-		$bookmark->mark_default($_GET["id"]);
-	} elseif ($_GET["mark_default"]==0){
-		$bookmark->unmark_default($_GET["id"]);
-	}
-	$_GET["action"]="load";
+   $bookmark->update($_POST);
+   $_GET["action"]="load";
 
-} elseif ($_GET["action"]=="load" && isset($_GET["id"]) && $_GET["id"]>0){
-	
-	$bookmark->load($_GET["id"]);
+} elseif ($_GET["action"]=="edit" && isset($_GET['mark_default']) && isset($_GET["id"])) {
 
-} elseif (isset($_POST["delete"])){
-	
-	$bookmark->check($_POST["id"],'w');	
-	$bookmark->delete($_POST);
-	$_GET["action"]="load";
+   if ($_GET["mark_default"]>0) {
+      $bookmark->mark_default($_GET["id"]);
+   } elseif ($_GET["mark_default"]==0) {
+      $bookmark->unmark_default($_GET["id"]);
+   }
+   $_GET["action"]="load";
 
-} elseif (isset($_POST["delete_several"])){
-	foreach ($_POST["bookmark"] as $ID=>$value){
-		if ($bookmark->can($ID,'w')){
-			$bookmark->delete(array("id"=>$ID));
-		}
-		
-	}
-	$_GET["action"]="load";
+} elseif ($_GET["action"]=="load" && isset($_GET["id"]) && $_GET["id"]>0) {
+
+   $bookmark->load($_GET["id"]);
+
+} elseif (isset($_POST["delete"])) {
+
+   $bookmark->check($_POST["id"],'w');
+   $bookmark->delete($_POST);
+   $_GET["action"]="load";
+
+} elseif (isset($_POST["delete_several"])) {
+   foreach ($_POST["bookmark"] as $ID=>$value) {
+      if ($bookmark->can($ID,'w')) {
+         $bookmark->delete(array("id"=>$ID));
+      }
+   }
+   $_GET["action"]="load";
 }
 
 
 if ($_GET["action"]=="edit") {
-	
-	if (isset($_GET['id']) && $_GET['id']>0){
-		// Modify
-		$bookmark->showForm($_SERVER['PHP_SELF'],$_GET['id']);
-	} else {
-		// Create
-		$bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["itemtype"]);	
-	}
+
+   if (isset($_GET['id']) && $_GET['id']>0) {
+      // Modify
+      $bookmark->showForm($_SERVER['PHP_SELF'],$_GET['id']);
+   } else {
+      // Create
+      $bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["itemtype"]);
+   }
 
 } else { // $_GET["action"]="load";
-	
-	echo '<br>';
 
-	$tabs[1]=array('title'=>$LANG['common'][77],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1&itemtype=".BOOKMARK_TYPE);
-		
-	if (haveRight('bookmark_public','r')){
-		$tabs[0]=array('title'=>$LANG['common'][76],
-			'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-			'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=".BOOKMARK_TYPE);
-	}				
-	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab(BOOKMARK_TYPE));
-	echo "<div id='tabcontent'></div>";
-	echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   echo '<br>';
+
+   $tabs[1]=array('title'=>$LANG['common'][77],
+      'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+      'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1&itemtype=".BOOKMARK_TYPE);
+
+   if (haveRight('bookmark_public','r')) {
+      $tabs[0]=array('title'=>$LANG['common'][76],
+         'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+         'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=".BOOKMARK_TYPE);
+   }
+   echo "<div id='tabspanel' class='center-h'></div>";
+   createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab(BOOKMARK_TYPE));
+   echo "<div id='tabcontent'></div>";
+   echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
-		
+
 ?>
