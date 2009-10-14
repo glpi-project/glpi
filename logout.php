@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -34,34 +35,39 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '.');
-$NEEDED_ITEMS=array("user");
+
+$NEEDED_ITEMS = array('user');
 include (GLPI_ROOT . "/inc/includes.php");
 
 //@session_start();
 
-if (!isset($_SESSION["noAUTO"])&&isset($_SESSION["glpiauthtype"])&&$_SESSION["glpiauthtype"]==AUTH_CAS) {
-	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	$cas=new phpCAS();
-	$cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
-	$cas->logout($CFG_GLPI["cas_logout"]);
+if (!isset($_SESSION["noAUTO"])
+    && isset($_SESSION["glpiauthtype"])
+    && $_SESSION["glpiauthtype"]==AUTH_CAS) {
+
+   include (GLPI_ROOT . "/lib/phpcas/CAS.php");
+   $cas=new phpCAS();
+   $cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
+                $CFG_GLPI["cas_uri"]);
+   $cas->logout($CFG_GLPI["cas_logout"]);
 }
 
 $toADD="";
 
 // Redirect management
-if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
+if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0) {
    $toADD = "?redirect=" .$_POST['redirect'];
-} else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
+} else if (isset ($_GET['redirect']) && strlen($_GET['redirect'])>0) {
    $toADD = "?redirect=" .$_GET['redirect'];
 }
 
 if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
-   if (empty($toADD)){
+   if (empty($toADD)) {
       $toADD.="?";
    } else {
       $toADD.="&";
    }
-	$toADD.="noAUTO=1";
+   $toADD.="noAUTO=1";
 }
 
 $id = new Identification();
@@ -70,4 +76,5 @@ $id->destroySession();
 // Redirect to the login-page
 
 glpi_header($CFG_GLPI["root_doc"]."/index.php".$toADD);
+
 ?>
