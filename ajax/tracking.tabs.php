@@ -34,31 +34,33 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("group","user","planning","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document","mailing");
+$NEEDED_ITEMS = array('computer','document','enterprise','group','mailing','monitor','networking',
+                      'peripheral','phone','planning','printer','software','tracking','user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
+if (!isset($_POST["id"])) {
    exit();
 }
 
-if ($_POST["id"]>0){
+if ($_POST["id"]>0) {
    switch($_REQUEST['glpi_tab']) {
-      case 1:
+      case 1 :
          showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
          showFollowupsSummary($_POST["id"]);
          break;
+
       case 2 :
          showAddFollowupForm($_POST["id"]);
          break;
+
       default :
-         if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])){
+         if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showJobDetails($_POST['target'],$_POST["id"]);
          }
-         break;
    }
 }
 
