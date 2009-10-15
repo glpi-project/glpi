@@ -194,7 +194,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true) {
  *@param $itemtype type to display the form
  *@param $params parameters array may include field, contains, sort, is_deleted, link, link2, contains2, field2, type2
  *
- *@return nothing (diplays)
+ *@return nothing (displays)
  *
  **/
 function searchForm($itemtype,$params) {
@@ -2346,7 +2346,26 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
          } else {
             return "";
          }
-      break;
+         break;
+         
+      case "glpi_networkports.ip" :
+         $search=array("/\&lt;/","/\&gt;/");
+         $replace=array("<",">");
+         $val=preg_replace($search,$replace,$val);
+         if (preg_match("/([<>])([=]*)[[:space:]]*([0-9\.]+)/",$val,$regs)) {
+            if ($nott) {
+               if ($regs[1]=='<') {
+                  $regs[1]='>';
+               } else {
+                  $regs[1]='<';
+               }
+            }
+            $regs[1].=$regs[2];
+            return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." ".ip2long($regs[3]).") ";
+         }
+         return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
+         break;
+      
    }
 
    //// Default cases
