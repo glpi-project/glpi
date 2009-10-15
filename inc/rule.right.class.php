@@ -241,30 +241,29 @@ class RightAffectRule extends Rule {
 						switch ($action->fields["field"])
 						{
 							case "_affect_entity_by_dn":
-								$res = getRegexResultById($action->fields["value"],$regex_results);
-								if ($res != null) {
-									$entity=getEntityIDByDn($res);
-								} else {
+                     case "_affect_entity_by_tag":
+                        $match_entity = false;
+                        $entity = array();
+                        foreach ($regex_results as $regex_result) {
+                           $res = getRegexResultById($action->fields["value"],array($regex_result));
+                           if ($res != null) {
+                              if ($action->fields["field"] == "_affect_entity_by_dn" ) {
+                                 array_push($entity, array(getEntityIDByDN($res),$recursive));	
+                              }
+                              else {
+                              	array_push($entity, array(getEntityIDByTag($res),$recursive));
+                              }
+                              
+                              $match_entity=true;
+                           }
+                        }
+
+								if (!$match_entity) {
 									//Not entity assigned : action processing must be stopped for this rule
 									$continue=false;										
 								}
 							break;
-							case "_affect_entity_by_tag":
-								$res = getRegexResultById($action->fields["value"],$regex_results);
-								if ($res != null) {
-									$entity=getEntityIDByTag($res);
-								} else {
-									//Not entity assigned : action processing must be stopped for this rule
-									$continue=false;
-								}
-								break;								
 						} // switch (field)
-						/*
-						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
-						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
-						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
-						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
-						*/
 					break;
 				} // switch (action_type)
 			} // foreach (action)
@@ -274,10 +273,18 @@ class RightAffectRule extends Rule {
 		{
 			//Nothing to be returned by the function :
 			//Store in session the entity and/or right
-			if ($entity != '' && $right != '')
+			if ($entity != '' && $right != '') {
 				$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
-			elseif ($entity != '') 
-				$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
+			}
+			elseif ($entity != '') {
+            if (!is_array($entity)) {
+              $output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);	
+				}
+            //If it comes from a regex with multiple results
+            else {
+               $output["_ldap_rules"]["rules_entities"][] = $entity;
+            }
+			} 
 			elseif ($right != '') 
 				$output["_ldap_rules"]["rules_rights"][]=$right;
 

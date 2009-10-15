@@ -1379,7 +1379,8 @@ class Rule extends CommonDBTM{
 		if (!isset($input[$criteria->fields["criteria"]])){
 			$input[$criteria->fields["criteria"]]='';
 		}
-		//If the value is not an array
+
+      //If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
 
 			$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
@@ -1402,11 +1403,11 @@ class Rule extends CommonDBTM{
 			// Positive condition : Need to match one
 			 } else {
 				$res = false;
-				foreach($input[$criteria->fields["criteria"]] as $tmp){
-					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+				foreach($input[$criteria->fields["criteria"]] as $crit){
+					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$crit);
 
 					$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
-					if ($res) break;
+					//if ($res) break;
 				}
 	
 			}

@@ -397,38 +397,55 @@ class User extends CommonDBTM {
 
 			//For each affectation -> write it in DB
 			foreach($entities_rules as $entity){
-				$affectation["FK_entities"] = $entity[0];
-				$affectation["FK_profiles"] = $entity[1];
-				$affectation["recursive"] = $entity[2];
-				$affectation["FK_users"] = $input["ID"];
-				$affectation["dynamic"] = 1;
-				addUserProfileEntity($affectation);
+				//Multiple entities assignation
+            if (is_array($entity[0])) {
+               foreach ($entity[0] as $tmp => $ent) {
+                  $affectation["FK_entities"] = $ent[0];
+                  $affectation["FK_profiles"] = $entity[1];
+                  $affectation["recursive"] = $entity[2];
+                  $affectation["FK_users"] = $input["ID"];
+                  $affectation["dynamic"] = 1;
+                  addUserProfileEntity($affectation);
+   				}
+            }
+            else {
+               $affectation["FK_entities"] = $entity[0];
+               $affectation["FK_profiles"] = $entity[1];
+               $affectation["recursive"] = $entity[2];
+               $affectation["FK_users"] = $input["ID"];
+               $affectation["dynamic"] = 1;
+               addUserProfileEntity($affectation);
+            }
 			}
 
 			if (count($entities)>0&&count($rights)==0){
-				//If no dynamics profile is provided : get the profil by default if not existing profile
-				$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
-				$result = $DB->query($exist_profile);
-				if ($DB->numrows($result)==0){
+				//If no dynamics profile is provided : get the profil by default if no existing profile
+				//$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
+            
+            //$result = $DB->query($exist_profile);
+				//if ($DB->numrows($result)==0){
 					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+
 					$result = $DB->query($sql_default_profile);
 					if ($DB->numrows($result))
 					{
 						$rights[]=$DB->result($result,0,0);
 					}
-				}
+				//}
 			}
 
 			if (count($rights)>0&&count($entities)>0){
-				foreach($entities as $entity){
-					foreach($rights as $right){
-						$affectation["FK_entities"] = $entity[0];
-						$affectation["FK_profiles"] = $right;
-						$affectation["FK_users"] = $input["ID"];
-						$affectation["recursive"] = $entity[1];
-						$affectation["dynamic"] = 1;
-						addUserProfileEntity($affectation);
-					}
+            foreach($entities as $entity_tab){
+                  foreach ($entity_tab as $tmp => $entity) {
+                  foreach($rights as $right){
+                     $affectation["FK_entities"] = $entity[0];
+                     $affectation["FK_profiles"] = $right;
+                     $affectation["FK_users"] = $input["ID"];
+                     $affectation["recursive"] = $entity[1];
+                     $affectation["dynamic"] = 1;
+                     addUserProfileEntity($affectation);
+                     }
+                  }
 				}
 			}
 
