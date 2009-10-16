@@ -433,19 +433,19 @@ class User extends CommonDBTM {
 					}
 				//}
 			}
-
-			if (count($rights)>0&&count($entities)>0){
-            foreach($entities as $entity_tab){
-                  foreach ($entity_tab as $tmp => $entity) {
-                  foreach($rights as $right){
-                     $affectation["FK_entities"] = $entity[0];
-                     $affectation["FK_profiles"] = $right;
-                     $affectation["FK_users"] = $input["ID"];
-                     $affectation["recursive"] = $entity[1];
-                     $affectation["dynamic"] = 1;
-                     addUserProfileEntity($affectation);
-                     }
-                  }
+ 
+ 			if (count($rights)>0&&count($entities)>0){
+            foreach($rights as $right){
+               foreach($entities as $entity_tab){
+                  	foreach ($entity_tab as $entity) {
+                        $affectation["FK_entities"] = $entity[0];
+                        $affectation["FK_profiles"] = $right;
+                        $affectation["FK_users"] = $input["ID"];
+                        $affectation["recursive"] = $entity[1];
+                        $affectation["dynamic"] = 1;
+                        addUserProfileEntity($affectation);
+                  	}
+               }
 				}
 			}
 

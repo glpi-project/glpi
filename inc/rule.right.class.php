@@ -278,7 +278,8 @@ class RightAffectRule extends Rule {
 			}
 			elseif ($entity != '') {
             if (!is_array($entity)) {
-              $output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);	
+              $entities_array=array($entity,$recursive);
+              $output["_ldap_rules"]["rules_entities"][]=array($entities_array);	
 				}
             //If it comes from a regex with multiple results
             else {
@@ -384,7 +385,7 @@ class RightRuleCollection extends RuleCollection {
 
 	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
-
+      
 		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
@@ -411,12 +412,12 @@ class RightRuleCollection extends RuleCollection {
 				$this->displayActionByName("profile",$val[0]);
 		}
 
+
 		if (isset($output["_ldap_rules"]["rules_entities_rights"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][112]."</td>";
-
-			foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val)
+ 			foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val)
 			{
 				$this->displayActionByName("entity",$val[0]);
 				if (isset($val[1]))
