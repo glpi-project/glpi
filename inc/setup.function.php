@@ -943,7 +943,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 
       case PHONE_TYPE :
          $title = $LANG['Menu'][34];
-         $query = "FROM `glpi_phones`
+         $query .= "FROM `glpi_phones`
                     $where
                         $whereentity
                     $order";
@@ -951,15 +951,16 @@ function listTemplates($itemtype, $target, $add = 0) {
 
       case OCSNG_TYPE :
          $title = $LANG['Menu'][33];
-         $query = "FROM `glpi_ocsservers`
+         $query .= "FROM `glpi_ocsservers`
                     $where
                     $order";
          break;
 
       case BUDGET_TYPE :
          $title = $LANG['financial'][87];
-         $query = "FROM `glpi_budgets`
+         $query .= "FROM `glpi_budgets`
                     $where
+                        $whereentity
                     $order";
          break;
    }
