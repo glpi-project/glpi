@@ -835,6 +835,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       if (haveRight("entity_dropdown","w")) {
          $menu['config']['content']['ticketcategory']['links']['add']="/front/ticketcategory.form.php";
       }
+
+      $menu['config']['content']['taskcategory']['title']=$LANG['setup'][98];
+      $menu['config']['content']['taskcategory']['page']='/front/taskcategory.php';
+      $menu['config']['content']['taskcategory']['links']['search']='/front/taskcategory.php';
+      if (haveRight("entity_dropdown","w")) {
+         $menu['config']['content']['taskcategory']['links']['add']="/front/taskcategory.form.php";
+      }
    }
 
    if (haveRight("link","r")) {

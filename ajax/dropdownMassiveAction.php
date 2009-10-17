@@ -65,9 +65,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case 'move_under' :
-         if ($_POST["itemtype"]==TICKETCATEGORY_TYPE) {
+         if (in_array($_POST["itemtype"], array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE))) {
             echo '&nbsp;'.$LANG['setup'][75];
-            dropdownValue('glpi_ticketscategories', 'parent', '', 0);
+            dropdownValue($LINK_ID_TABLE[$_POST["itemtype"]], 'parent', '', 0);
             echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                   $LANG['buttons'][2]."\" >\n";
          }

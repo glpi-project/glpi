@@ -121,6 +121,7 @@ define("DOCUMENTITEM_TYPE",48);
 define("CRONTASK_TYPE",49);
 define("CRONTASKLOG_TYPE",50);
 define("TICKETCATEGORY_TYPE",51);
+define("TASKCATEGORY_TYPE",52);
 
 
 // GLPI MODE
@@ -286,7 +287,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
                        DOCUMENTITEM_TYPE     => "glpi_documents_items",
                        CRONTASK_TYPE         => "glpi_crontasks",
                        CRONTASKLOG_TYPE      => "glpi_crontaskslogs",
-                       TICKETCATEGORY_TYPE   => "glpi_ticketscategories");
+                       TICKETCATEGORY_TYPE   => "glpi_ticketscategories",
+                       TASKCATEGORY_TYPE     => "glpi_taskscategories");
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -339,7 +341,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // DOCUMENTITEM_TYPE => "???",
                         CRONTASK_TYPE        => "front/crontask.form.php",
 // CRONTASKLOG_TYPE => "???",
-                        TICKETCATEGORY_TYPE  => "front/ticketcategory.form.php");
+                        TICKETCATEGORY_TYPE  => "front/ticketcategory.form.php",
+                        TASKCATEGORY_TYPE    => "front/taskcategory.form.php");
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE   => "front/computer.php",
@@ -464,8 +467,9 @@ $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monit
                                      'glpi_printers','glpi_softwares',
                                      'reservation_types','state_types');
 
-$CFG_GLPI["dropdowntree_tables"] = array('glpi_entities','glpi_knowbaseitemscategories',
-                                         'glpi_locations','glpi_ticketscategories');
+$CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemscategories',
+                                         'glpi_locations', 'glpi_taskscategories',
+                                         'glpi_ticketscategories');
 
 $CFG_GLPI["state_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                  PERIPHERAL_TYPE, PHONE_TYPE);
@@ -532,7 +536,8 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     LINK_TYPE            => "glpi_links",
                                     GROUP_TYPE           => "glpi_groups",
                                     BUDGET_TYPE          => "glpi_budgets",
-                                    TICKETCATEGORY_TYPE  => "glpi_ticketscategories");
+                                    TICKETCATEGORY_TYPE  => "glpi_ticketscategories",
+                                    TASKCATEGORY_TYPE    => "glpi_taskscategories");
 
 
 // New config options which can be missing during migration

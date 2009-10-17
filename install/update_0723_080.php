@@ -212,7 +212,7 @@ function update0723to080() {
             $DB->query($query) or die("0.80 rename $original_table to $new_table " . $LANG['update'][90] . $DB->error());
          }
       }
-      if (FieldExists($new_table,'ID')){
+      if (FieldExists($new_table,'ID')) {
          // ALTER ID -> id
 //          $query=" ALTER TABLE `$new_table` CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT";
 //          $DB->query($query) or die("0.80 rename ID to id in $new_table " . $LANG['update'][90] . $DB->error());
@@ -1740,7 +1740,7 @@ function update0723to080() {
       }
    }
 
-   foreach ($changes as $table => $tab){
+   foreach ($changes as $table => $tab) {
       displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $table); // Updating schema
       $query="ALTER TABLE `$table` ".implode($tab," ,\n").";";
       $DB->query($query) or die("0.80 multiple alter in $table " . $LANG['update'][90] . $DB->error());
@@ -1759,8 +1759,8 @@ function update0723to080() {
 
    // Update values of mailcollectors
    $query="SELECT default_mailcollector_filesize_max FROM glpi_configs WHERE id=1";
-   if ($result=$DB->query($query)){
-      if ($DB->numrows($result)>0){
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)>0) {
          $query="UPDATE glpi_mailcollectors SET filesize_max='".$DB->result($result,0,0)."';";
          $DB->query($query);
       }
@@ -2045,7 +2045,7 @@ function update0723to080() {
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
-   if (!TableExists('glpi_crontasks')){
+   if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `plugin` char(78) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
@@ -2088,7 +2088,7 @@ function update0723to080() {
       $DB->query($query) or die("0.80 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 
-   if (!TableExists('glpi_crontaskslogs')){
+   if (!TableExists('glpi_crontaskslogs')) {
       $query = "CREATE TABLE `glpi_crontaskslogs` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `crontasks_id` int(11) NOT NULL,
@@ -2124,8 +2124,8 @@ function update0723to080() {
    // disable ocsng cron if not activate
    if (FieldExists('glpi_configs','use_ocs_mode')) {
       $query="SELECT `use_ocs_mode` FROM `glpi_configs` WHERE `id`=1";
-      if ($result=$DB->query($query)){
-         if ($DB->numrows($result)>0){
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
             $value=$DB->result($result,0,0);
             if ($value==0) {
                $query="UPDATE `glpi_crontasks` SET `state`='0' WHERE `name`='ocsng';";
@@ -2139,8 +2139,8 @@ function update0723to080() {
    // Move glpi_config.expire_events to glpi_crontasks.param
    if (FieldExists('glpi_configs','expire_events')) {
       $query="SELECT `expire_events` FROM `glpi_configs` WHERE `id`=1";
-      if ($result=$DB->query($query)){
-         if ($DB->numrows($result)>0){
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
             $value=$DB->result($result,0,0);
             if ($value>0) {
                $query="UPDATE `glpi_crontasks` SET `state`='1', `param`='$value' WHERE `name`='logs';";
@@ -2157,8 +2157,8 @@ function update0723to080() {
    // Move glpi_config.auto_update_check to glpi_crontasks.state
    if (FieldExists('glpi_configs','auto_update_check')) {
       $query="SELECT `auto_update_check` FROM `glpi_configs` WHERE id=1";
-      if ($result=$DB->query($query)){
-         if ($DB->numrows($result)>0){
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
             $value=$DB->result($result,0,0);
             if ($value>0) {
                $value *= DAY_TIMESTAMP;
@@ -2175,8 +2175,8 @@ function update0723to080() {
 
    if (FieldExists('glpi_configs','dbreplicate_maxdelay')) {
       $query="SELECT `dbreplicate_maxdelay` FROM `glpi_configs` WHERE id=1";
-      if ($result=$DB->query($query)){
-         if ($DB->numrows($result)>0){
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
             $value=$DB->result($result,0,0);
             $value = intval($value/60);
             $query="UPDATE `glpi_crontasks` SET `state`='1', `frequency`='$value' WHERE `name`='dbreplicate';";
@@ -2290,7 +2290,7 @@ function update0723to080() {
                $tostore=array();
                
                foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-                  if (pow(2,$itemtype)&$types){
+                  if (pow(2,$itemtype)&$types) {
                      $tostore[$itemtype]=$itemtype;
                   }
                }
@@ -2319,7 +2319,25 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
-
+   if (!TableExists('glpi_taskscategories')) {
+      $query = "CREATE TABLE `glpi_taskscategories` (
+           `id` int(11) NOT NULL auto_increment,
+           `entities_id` int(11) NOT NULL default '0',
+           `is_recursive` tinyint(1) NOT NULL default '0',
+           `taskscategories_id` int(11) NOT NULL default '0',
+           `name` varchar(255) default NULL,
+           `completename` text,
+           `comment` text,
+           `level` int(11) NOT NULL default '0',
+           `ancestors_cache` longtext,
+           `sons_cache` longtext,
+           PRIMARY KEY  (`id`),
+           KEY `name` (`name`),
+           KEY `taskscategories_id` (`taskscategories_id`),
+           KEY `entities_id` (`entities_id`)
+         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_taskscategories" . $LANG['update'][90] . $DB->error());
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
