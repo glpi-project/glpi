@@ -2913,6 +2913,27 @@ CREATE TABLE `glpi_supplierstypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_taskscategories
+
+DROP TABLE IF EXISTS `glpi_taskscategories`;
+CREATE TABLE `glpi_taskscategories` (
+  `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
+  `is_recursive` tinyint(1) NOT NULL default '0',
+  `taskscategories_id` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `completename` text collate utf8_unicode_ci,
+  `comment` text collate utf8_unicode_ci,
+  `level` int(11) NOT NULL default '0',
+  `ancestors_cache` longtext collate utf8_unicode_ci,
+  `sons_cache` longtext collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`),
+  KEY `taskscategories_id` (`taskscategories_id`),
+  KEY `entities_id` (`entities_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_tickets
 
 DROP TABLE IF EXISTS `glpi_tickets`;

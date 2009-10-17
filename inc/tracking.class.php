@@ -1333,178 +1333,40 @@ class Followup  extends CommonDBTM {
 
 }
 
-class TicketCategory extends CommonDBTM{
+class TicketCategory extends CommonTreeDropdown {
 
    /**
     * Constructor
     **/
    function __construct(){
-      $this->table="glpi_ticketscategories";
-      $this->type=TICKETCATEGORY_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
+      parent::__construct(TICKETCATEGORY_TYPE);
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function getAdditionalFields() {
       global $LANG;
-
-      $ong=array();
-      $ong[1]=$LANG['title'][26];
-      return $ong;
+      
+      return array (array('name'  => 'users_id',      
+                          'label' => $LANG['common'][10],
+                          'type'  => 'dropdownUsersID',
+                          'list'  => true),
+                    array('name'  => 'groups_id',
+                          'label' => $LANG['common'][35],
+                          'type'  => 'dropdownValue',
+                          'list'  => true),
+                    array('name'  => 'knowbaseitemscategories_id',
+                          'label' => $LANG['title'][5],
+                          'type'  => 'dropdownValue',
+                          'list'  => true));
    }
+}
 
-   function showForm ($target,$ID) {
-      global $CFG_GLPI, $LANG;
+class TaskCategory extends CommonTreeDropdown {
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-         $this->getEmpty();
-      }
-
-      $this->showTabs($ID, '',getActiveTab($this->type));
-      $this->showFormHeader($target,$ID,'',2);
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_ticketscategories","ticketscategories_id",
-                    $this->fields["ticketscategories_id"], 1,
-                    $this->fields["entities_id"], '',
-                    ($ID>0 ? getSonsOf($this->table, $ID) : array()));
-      echo "</td>";
-
-      echo "<td rowspan='5'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='5'>
-            <textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10]."&nbsp;: </td>";
-      echo "<td>";
-      dropdownUsersID("users_id",$this->fields["users_id"],"interface",1,
-                       $this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
-      echo "<td >";
-      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
-                     $this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['title'][5]."&nbsp;:</td>";
-      echo "<td >";
-         dropdownValue("glpi_knowbaseitemscategories","knowbaseitemscategories_id",
-                       $this->fields["knowbaseitemscategories_id"]);
-      echo "</td></tr>\n";
-
-      $this->showFormButtons($ID,'',2);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-      return true;
-   }
-
-   function prepareInputForAdd($input) {
-
-      $parent = new TicketCategory();
-
-      if (isset($input['ticketscategories_id'])
-          && $input['ticketscategories_id']>0
-          && $parent->getFromDB($input['ticketscategories_id'])) {
-         $input['level'] = $parent->fields['level']+1;
-         $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
-      } else {
-         $input['ticketscategories_id'] = 0;
-         $input['level'] = 1;
-         $input['completename'] = $input['name'];
-      }
-
-      return $input;
-   }
-
-   function pre_deleteItem($ID) {
-      global $DB;
-
-      $parent = $this->fields['ticketscategories_id'];
-
-      $DB->query("UPDATE `glpi_tickets`
-                  SET `ticketscategories_id`='$parent'
-                  WHERE `ticketscategories_id`='$ID'");
-
-      CleanFields($this->table, 'sons_cache', 'ancestors_cache');
-      $tmp = new TicketCategory();
-      $crit = array('FIELDS'=>'id',
-                    'ticketscategories_id'=>$ID);
-      foreach ($DB->request($this->table, $crit) as $data) {
-         $data['ticketscategories_id'] = $parent;
-         $tmp->update($data);
-      }
-      return true;
-   }
-
-   function prepareInputForUpdate($input) {
-      // Can't move a parent under a child
-      if (isset($input['ticketscategories_id'])
-          && in_array($input['ticketscategories_id'], getSonsOf($this->table, $input['id']))) {
-         return false;
-      }
-      return $input;
-   }
-
-   function post_updateItem($input,$updates,$history=1) {
-      if (in_array('name', $updates) || in_array('ticketscategories_id', $updates)) {
-         if (in_array('ticketscategories_id', $updates)) {
-            CleanFields($this->table, 'sons_cache', 'ancestors_cache');
-         }
-         regenerateTreeCompleteNameUnderID($this->table, $input['id']);
-      }
-   }
    /**
-    * Print the HTML array children of a TicketCategory
-    *
-    *@param $ID of the TicketCategory
-    *
-    *@return Nothing (display)
-    *
+    * Constructor
     **/
-    function showChildren($ID) {
-      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
-
-      $this->check($ID, 'r');
-
-      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>".$LANG['setup'][78]."&nbsp;:</th></tr>";
-      echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
-      echo "<th>".$LANG['entity'][0]."</th>"; // Entity
-      echo "<th>".$LANG['common'][10]."</th>"; // User
-      echo "<th>".$LANG['common'][35]."</th>"; // Group
-      echo "<th>".$LANG['title'][5]."</th>"; // KB
-      echo "<th>".$LANG['common'][25]."</th>";
-      echo "</tr>\n";
-
-      foreach ($DB->request($this->table, array('ticketscategories_id'=>$ID)) as $data) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td><a href='".$CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type]."?id=";
-         echo $data['id']."'>".$data['name']."</a></td>";
-         echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
-         echo "<td>".getUserName($data["users_id"])."</td>";
-         echo "<td>".getDropdownName("glpi_groups",$data["groups_id"])."</td>";
-         echo "<td>".getDropdownName("glpi_knowbaseitemscategories",
-                                     $data["knowbaseitemscategories_id"])."</td>";
-         echo "<td>".$data['comment']."</td>";
-         echo "</tr>\n";
-      }
-      echo "</table></div>\n";
+   function __construct(){
+      parent::__construct(TASKCATEGORY_TYPE);
    }
 
 }

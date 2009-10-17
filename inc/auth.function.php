@@ -239,6 +239,7 @@ function haveTypeRight($itemtype, $right) {
          break;
 
       case TICKETCATEGORY_TYPE :
+      case TASKCATEGORY_TYPE :
          return haveRight("entity_dropdown",$right);
          break;
 

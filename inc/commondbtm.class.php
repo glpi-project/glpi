@@ -371,19 +371,25 @@ class CommonDBTM {
 
       $RELATION=getDbRelations();
       if (isset($RELATION[$this->table])) {
+         $newval = 0;
+         $fkname = getForeignKeyFieldForTable($this->table);
+         if (isset($this->fields[$fkname])) {
+            // When delete a tree item, remplace by is parent
+            $newval = $this->fields[$fkname];
+         }
          foreach ($RELATION[$this->table] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {
                   $query="UPDATE
                           `$tablename`
-                          SET `$field` = '0'
+                          SET `$field` = '$newval'
                           WHERE `$field`='$ID' ";
                   $DB->query($query);
                } else {
                   foreach ($field as $f) {
                      $query="UPDATE
                              `$tablename`
-                             SET `$f` = '0'
+                             SET `$f` = '$newval'
                              WHERE `$f`='$ID' ";
                      $DB->query($query);
                   }
@@ -1796,4 +1802,203 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
    }
 }
+
+abstract class CommonTreeDropdown extends CommonDBTM{
+
+   /**
+    * Constructor
+    **/
+   function __construct($itemtype){
+      global $LINK_ID_TABLE;
+      
+      $this->type=$itemtype;
+      $this->table=$LINK_ID_TABLE[$itemtype];
+      $this->keyid=getForeignKeyFieldForTable($this->table);
+      $this->entity_assign=true;
+      $this->may_be_recursive=true;
+   }
+
+   /**
+    * Return Additional Fileds for this type
+    */
+   function getAdditionalFields() {
+      return array();
+   }
+   
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
+
+      $ong=array();
+      $ong[1]=$LANG['title'][26];
+      return $ong;
+   }
+
+   function showForm ($target,$ID) {
+      global $CFG_GLPI, $LANG;
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
+
+      $this->showTabs($ID, '',getActiveTab($this->type));
+      $this->showFormHeader($target,$ID,'',2);
+
+      $fields = $this->getAdditionalFields();
+      $nb=count($fields);
+      
+      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue($this->table, $this->keyid,
+                    $this->fields["$this->keyid"], 1,
+                    $this->fields["entities_id"], '',
+                    ($ID>0 ? getSonsOf($this->table, $ID) : array()));
+      echo "</td>";
+
+      echo "<td rowspan='".($nb+2)."'>";
+      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='".($nb+2)."'>
+            <textarea cols='45' rows='".($nb+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      echo "</td></tr>\n";
+
+      foreach ($fields as $field) {
+         echo "<tr class='tab_bg_1'><td>".$field['label']."&nbsp;:</td><td>";
+         switch ($field['type']) {
+            case 'dropdownUsersID' :
+               dropdownUsersID($field['name'], $this->fields[$field['name']], "interface", 1,
+                                $this->fields["entities_id"]);
+               break;
+            case 'dropdownValue' :
+               dropdownValue(getTableNameForForeignKeyField($field['name']), 
+                              $field['name'], $this->fields[$field['name']],1,
+                              $this->fields["entities_id"]);
+               break;
+         }
+         echo "</td></tr>\n";
+      }
+
+      $this->showFormButtons($ID,'',2);
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
+      return true;
+   }
+
+   function prepareInputForAdd($input) {
+
+      $parent = clone $this;
+
+      if (isset($input[$this->keyid])
+          && $input[$this->keyid]>0
+          && $parent->getFromDB($input[$this->keyid])) {
+         $input['level'] = $parent->fields['level']+1;
+         $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
+      } else {
+         $input[$this->keyid] = 0;
+         $input['level'] = 1;
+         $input['completename'] = $input['name'];
+      }
+
+      return $input;
+   }
+
+   function pre_deleteItem($ID) {
+      global $DB;
+
+      $parent = $this->fields[$this->keyid];
+
+      CleanFields($this->table, 'sons_cache', 'ancestors_cache');
+      $tmp = clone $this;
+      $crit = array('FIELDS'=>'id',
+                    $this->keyid=>$ID);
+      foreach ($DB->request($this->table, $crit) as $data) {
+         $data[$this->keyid] = $parent;
+         $tmp->update($data);
+      }
+      return true;
+   }
+
+   function prepareInputForUpdate($input) {
+      // Can't move a parent under a child
+      if (isset($input[$this->keyid])
+          && in_array($input[$this->keyid], getSonsOf($this->table, $input['id']))) {
+         return false;
+      }
+      return $input;
+   }
+
+   function post_updateItem($input,$updates,$history=1) {
+      if (in_array('name', $updates) || in_array($this->keyid, $updates)) {
+         if (in_array($this->keyid, $updates)) {
+            CleanFields($this->table, 'sons_cache', 'ancestors_cache');
+         }
+         regenerateTreeCompleteNameUnderID($this->table, $input['id']);
+      }
+   }
+   /**
+    * Print the HTML array children of a TreeDropdown
+    *
+    *@param $ID of the dropdown
+    *
+    *@return Nothing (display)
+    *
+    **/
+    function showChildren($ID) {
+      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+
+      $this->check($ID, 'r');
+      $fields = $this->getAdditionalFields();
+      $nb=count($fields);
+
+      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][78]."</th></tr>";
+      echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
+      echo "<th>".$LANG['entity'][0]."</th>"; // Entity
+      foreach ($fields as $field) {
+         if ($field['list']) {
+            echo "<th>".$field['label']."</th>";
+         }
+      }
+      echo "<th>".$LANG['common'][25]."</th>";
+      echo "</tr>\n";
+
+      foreach ($DB->request($this->table, array($this->keyid=>$ID)) as $data) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td><a href='".$CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type]."?id=";
+         echo $data['id']."'>".$data['name']."</a></td>";
+         echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+         foreach ($fields as $field) {
+            if ($field['list']) {
+               echo "<td>";
+               switch ($field['type']) {
+                  case 'dropdownUsersID' :
+                     echo getUserName($data[$field['name']]);
+                     break;
+                  case 'dropdownValue' :
+                     echo getDropdownName(getTableNameForForeignKeyField($field['name']),
+                                     $data[$field['name']]);
+                     break;
+                  default:
+                     echo $data[$field['name']];
+               }
+               echo "</td>";
+            }
+         }
+         echo "<td>".$data['comment']."</td>";
+         echo "</tr>\n";
+      }
+      echo "</table></div>\n";
+   }
+
+}
+
 ?>

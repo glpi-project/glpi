@@ -1507,6 +1507,7 @@ $LANG['setup'][94]="Modèles de moniteurs";
 $LANG['setup'][95]="Modèles de matériels réseau";
 $LANG['setup'][96]="Modèles d'imprimantes";
 $LANG['setup'][97]="Modèles de périphériques";
+$LANG['setup'][98]="Catégorie des tâches";
 $LANG['setup'][101]="Nombre maximum de tâches (exécution externe)";
 $LANG['setup'][102]="Niveau de journalisation";
 $LANG['setup'][103]="1- Critique (erreur de connexion seulement)";
