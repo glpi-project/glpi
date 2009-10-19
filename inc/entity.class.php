@@ -78,6 +78,7 @@ class Entity extends CommonDBTM {
       $ong[1]=$LANG['title'][26];
       $ong[2]=$LANG['Menu'][14];
       $ong[3]=$LANG['rulesengine'][17];
+      $ong[4]=$LANG['entity'][14];
       if (haveRight("document","r")) {
          $ong[5]=$LANG['Menu'][27];
       }
@@ -167,27 +168,6 @@ class Entity extends CommonDBTM {
          echo " (".$this->fields["completename"].")";
       }
       echo "</td>";
-      echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("phonenumber","glpi_entitiesdatas","phonenumber",
-                              $entdata->fields["phonenumber"],40);
-      echo "</td>";
-      echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("fax","glpi_entitiesdatas","fax",$entdata->fields["fax"],40);
-      echo "</td>";
       echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField("admin_email","glpi_entitiesdatas","admin_email",
@@ -195,9 +175,10 @@ class Entity extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
+      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("website","glpi_entitiesdatas","website",$entdata->fields["website"],40);
+      autocompletionTextField("phonenumber","glpi_entitiesdatas","phonenumber",
+                              $entdata->fields["phonenumber"],40);
       echo "</td>";
       echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
       echo "<td>";
@@ -210,11 +191,23 @@ class Entity extends CommonDBTM {
       echo "<td>";
       autocompletionTextField("email","glpi_entitiesdatas","email",$entdata->fields["email"],40);
       echo "</td>";
-      echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='6'>";
+      echo "<td rowspan='8'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='8'>";
       if ($ID > 0) {
          echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
       }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle'>".$LANG['financial'][30]."&nbsp;:</td>";
+      echo "<td class='middle'>";
+      autocompletionTextField("fax","glpi_entitiesdatas","fax",$entdata->fields["fax"],40);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle'>".$LANG['financial'][45]."&nbsp;:</td>";
+      echo "<td class='middle'>";
+      autocompletionTextField("website","glpi_entitiesdatas","website",$entdata->fields["website"],40);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
