@@ -52,7 +52,6 @@ $LANG['bookmark'][5]="Marque-page publics";
 $LANG['bookmark'][6]="Vue par défaut";
 
 
-
 $LANG['buttons'][0]="Rechercher";
 $LANG['buttons'][2]="Valider";
 $LANG['buttons'][3]="Attribuer";
@@ -479,9 +478,9 @@ $LANG['entity'][8]="Par entité";
 $LANG['entity'][9]="Sous-entités";
 $LANG['entity'][10]="Sélectionnez l'entité souhaitée";
 $LANG['entity'][11]="pour voir l'entité et ses sous-entités";
-$LANG['entity'][12]="DN de l'entité";
-$LANG['entity'][13]="TAG de l'entité";
-
+$LANG['entity'][12]="Information LDAP représentant l'entité";
+$LANG['entity'][13]="Information OCS représentant l'entité";
+$LANG['entity'][14]="Informations avancées";
 
 $LANG['event'][0]="Item (ID)";
 $LANG['event'][2]="Service";
@@ -573,7 +572,6 @@ $LANG['financial'][106]="Express";
 $LANG['financial'][107]="Reconduction";
 $LANG['financial'][108]="Total dépensé sur le budget";
 $LANG['financial'][109]="Total restant sur le budget";
-
 
 $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="heure(s)";

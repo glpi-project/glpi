@@ -38,6 +38,76 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
+ * 
+ */
+function showEntityAdvancedOptions($target,$ID) {
+	global $DB, $LANG;
+
+      $entity = new Entity;
+      if (!haveRight("entity","r")) {
+         return false;
+      }
+
+      $con_spotted=false;
+
+      if ($ID > 0) {
+         $entity->check($ID,'r');
+      } else {
+         // Create item
+         $entity->check(-1,'w');
+         $entity->getEmpty();
+
+         // Special root entity case
+         if ($ID==0) {
+            $entity->fields["name"]=$LANG['entity'][2];
+            $entity->fields["completename"]="";
+         }
+      }
+
+      // Get data
+      $entdata=new EntityData();
+      if (!$entdata->getFromDB($ID)) {
+         $entdata->add(array("entities_id"=>$ID));
+         if (!$entdata->getFromDB($ID)) {
+            $con_spotted=false;
+         }
+      }
+
+      $canedit=$entity->can($ID,'w');
+
+      if ($canedit) {
+         echo "<form method='post' name=form action=\"$target\">";
+      }
+      echo "<div class='center' id='tabsbody' >";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>";
+      echo $LANG['entity'][0]." ID $ID";
+      echo "</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);
+      echo "</td>";
+      echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],40);
+      echo "</td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value=\"$ID\">";
+         echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         echo "</td></tr>";
+      }
+
+      echo "</table></form>";
+   
+}
+/**
  * Show users of an entity
  *
  * @param $target string : where to go on action
