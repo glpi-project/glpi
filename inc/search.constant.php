@@ -2545,14 +2545,14 @@ $SEARCH_OPTION[BUDGET_TYPE][1]['datatype']      = 'itemlink';
 $SEARCH_OPTION[BUDGET_TYPE][1]['itemlink_type'] = BUDGET_TYPE;
 
 $SEARCH_OPTION[BUDGET_TYPE][2]['table']     = 'glpi_budgets';
-$SEARCH_OPTION[BUDGET_TYPE][2]['field']     = 'startdate';
+$SEARCH_OPTION[BUDGET_TYPE][2]['field']     = 'begin_date';
 $SEARCH_OPTION[BUDGET_TYPE][2]['linkfield'] = 'begin_date';
 $SEARCH_OPTION[BUDGET_TYPE][2]['name']      = $LANG['search'][8];
 $SEARCH_OPTION[BUDGET_TYPE][2]['datatype']  = 'date';
 
 $SEARCH_OPTION[BUDGET_TYPE][3]['table']     = 'glpi_budgets';
 $SEARCH_OPTION[BUDGET_TYPE][3]['field']     = 'end_date';
-$SEARCH_OPTION[BUDGET_TYPE][3]['linkfield'] = 'enddate';
+$SEARCH_OPTION[BUDGET_TYPE][3]['linkfield'] = 'end_date';
 $SEARCH_OPTION[BUDGET_TYPE][3]['name']      = $LANG['search'][9];
 $SEARCH_OPTION[BUDGET_TYPE][3]['datatype']  = 'date';
 
@@ -2562,7 +2562,7 @@ $SEARCH_OPTION[BUDGET_TYPE][4]['linkfield'] = 'value';
 $SEARCH_OPTION[BUDGET_TYPE][4]['name']      = $LANG['financial'][21];
 $SEARCH_OPTION[BUDGET_TYPE][4]['datatype']  = 'integer';
 
-$SEARCH_OPTION[BUDGET_TYPE][16]['table']     = 'glpi_contacts';
+$SEARCH_OPTION[BUDGET_TYPE][16]['table']     = 'glpi_budgets';
 $SEARCH_OPTION[BUDGET_TYPE][16]['field']     = 'comment';
 $SEARCH_OPTION[BUDGET_TYPE][16]['linkfield'] = 'comment';
 $SEARCH_OPTION[BUDGET_TYPE][16]['name']      = $LANG['common'][25];
@@ -2573,7 +2573,7 @@ $SEARCH_OPTION[BUDGET_TYPE][80]['field']     = 'completename';
 $SEARCH_OPTION[BUDGET_TYPE][80]['linkfield'] = 'entities_id';
 $SEARCH_OPTION[BUDGET_TYPE][80]['name']      = $LANG['entity'][0];
 
-$SEARCH_OPTION[BUDGET_TYPE][86]['table']     = 'glpi_contacts';
+$SEARCH_OPTION[BUDGET_TYPE][86]['table']     = 'glpi_budgets';
 $SEARCH_OPTION[BUDGET_TYPE][86]['field']     = 'is_recursive';
 $SEARCH_OPTION[BUDGET_TYPE][86]['linkfield'] = 'is_recursive';
 $SEARCH_OPTION[BUDGET_TYPE][86]['name']      = $LANG['entity'][9];
