@@ -1987,7 +1987,7 @@ function deleteDir($dir) {
  * @return boolean 
  */
 function isValidLogin($login=""){
-	return preg_match( "/^[[:alnum:]@.\-_]+$/i", $login);
+	return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
 }
 
 
