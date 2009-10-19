@@ -524,7 +524,7 @@ $LANG['gmt'][1]="hodin";
 
 $LANG['help'][3]="Velmi velká"; 
 $LANG['help'][4]="Vysoká"; 
-$LANG['help'][5]="Prostřední"; 
+$LANG['help'][5]="Střední"; 
 $LANG['help'][6]="Nízká"; 
 $LANG['help'][7]="Velmi nízká"; 
 $LANG['help'][8]="Informovat mě o provedených akcích"; 
