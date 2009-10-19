@@ -492,6 +492,7 @@ function updateDbUpTo031()
 			include("update_0721_0722.php");
 			update0721to0722();
       case "0.72.2":
+      case "0.72.21":
          include("update_0722_0723.php");
          update0722to0723();
       case "0.72.3":
