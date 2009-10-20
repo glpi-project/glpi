@@ -74,7 +74,7 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
                 VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','".
                         addslashes($username)."', '$date_mod', '$id_search_option', '".
                         utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."')";
-      $DB->query($query)  or die($DB->error());
+      $DB->query($query);
    }
 }
 
