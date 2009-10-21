@@ -55,7 +55,7 @@ class RightAffectRule extends Rule {
 
 	function preProcessPreviewResults($output)
 	{
-		return $output;
+      return $output;
 	}
 	
 	function maxActionsCount(){
@@ -247,14 +247,19 @@ class RightAffectRule extends Rule {
                         foreach ($regex_results as $regex_result) {
                            $res = getRegexResultById($action->fields["value"],array($regex_result));
                            if ($res != null) {
+                              
                               if ($action->fields["field"] == "_affect_entity_by_dn" ) {
-                                 array_push($entity, array(getEntityIDByDN($res),$recursive));	
+                                 $entity_found = getEntityIDByDN($res);
                               }
                               else {
-                              	array_push($entity, array(getEntityIDByTag($res),$recursive));
+                                $entity_found = getEntityIDByTag($res);	
                               }
                               
-                              $match_entity=true;
+                              //If an entity was found
+                              if ($entity > -1) {
+                                 array_push($entity, array($entity_found,$recursive));	
+                                 $match_entity=true;
+                              }
                            }
                         }
 
@@ -386,6 +391,7 @@ class RightRuleCollection extends RuleCollection {
 	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
       
+      logInFile("debug","output=".exportArrayToDB($output)."\n");
 		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
@@ -395,11 +401,13 @@ class RightRuleCollection extends RuleCollection {
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][111]."</td>";
 
-			foreach ($output["_ldap_rules"]["rules_entities"] as $val)
+			foreach ($output["_ldap_rules"]["rules_entities"] as $entities)
 			{
-				$this->displayActionByName("entity",$val[0]);
-				if (isset($val[1]))
-					$this->displayActionByName("recursive",$val[1]);
+            foreach ($entities as $entity) {
+               $this->displayActionByName("entity",$entity[0]);
+               if (isset($entity[1]))
+                  $this->displayActionByName("recursive",$entity[1]);
+            }
 			}
 		}
 
@@ -425,6 +433,7 @@ class RightRuleCollection extends RuleCollection {
 				if (isset($val[2]))
 					$this->displayActionByName("recursive",$val[2]);
 			}
+
 		}
 		
 		if (isset($output["_ldap_rules"]))

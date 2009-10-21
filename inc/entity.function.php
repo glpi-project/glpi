@@ -243,7 +243,7 @@ function getEntityIDByField($field,$value)
 	if ($DB->numrows($result)==1)
 		return $DB->result($result,0,"FK_entities");
 	else
-		return "";	
+		return -1;	
 }
 
 function getEntityIDByDN($value)

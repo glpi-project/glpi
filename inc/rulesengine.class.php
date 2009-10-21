@@ -733,7 +733,7 @@ class RuleCollection {
 	
 	function preProcessPreviewResults($output)
 	{
-		return $output;
+      return $this->cleanTestOutputCriterias($output);
 	}	
 }
 
@@ -1621,17 +1621,11 @@ class Rule extends CommonDBTM{
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
-		//If output array contains keys begining with _ : drop it
-		foreach($output as $criteria => $value){
-			if ($criteria[0]=='_'){
-				unset($output[$criteria]);
-			}
-		}
 	
 		$output = $this->preProcessPreviewResults($output);
 		
 		foreach ($output as $criteria => $value){
-			echo "<tr  class='tab_bg_2'>";
+         echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
 			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
 			echo "</td>";
@@ -1657,7 +1651,7 @@ class Rule extends CommonDBTM{
 		echo "</table></div>";
 	}
 
-	/**
+ 	/**
 	 * Show the minimal form for the criteria rule
 	* @param $fields datas used to display the criteria
 	* @param $canedit can edit the criterias rule ?
