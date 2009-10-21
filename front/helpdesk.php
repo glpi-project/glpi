@@ -45,24 +45,24 @@ checkRight("create_ticket","1");
 
 commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 
-if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
+if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])) {
 	$splitter=explode("_",$_POST["_my_items"]);
-	if (count($splitter)==2){
+	if (count($splitter)==2) {
 		$_POST["itemtype"]=$splitter[0];
 		$_POST["items_id"]=$splitter[1];
 	}
 }
 
-if (!isset($_POST["add"]))
+if (!isset($_POST["add"])) {
 	$post_ticket = false;
-else
+} else {
 	$post_ticket = true;
-
-if (!isset($_POST["entities_id"]))
+}
+if (!isset($_POST["entities_id"])) {
 	$entity_restrict = $_SESSION["glpiactive_entity"];
-else
+} else {
 	$entity_restrict = $_POST["entities_id"];
-
+}
 
 if (isset($_GET["itemtype"])) $itemtype=$_GET["itemtype"];
 else if (isset($_SESSION["helpdeskSaved"]["itemtype"])) $itemtype=$_SESSION["helpdeskSaved"]["itemtype"];
@@ -171,7 +171,23 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$users_id,$group,$users_id_assign,$groups_id_assign,$name,$content,$ticketscategories_id,$priority,$request_type,$hour,$minute,$date,$entity_restrict,$status,$followup);
+   $array = array(
+                  "users_id" => $users_id,
+                  "group" => $group,
+                  "users_id_assign" => $users_id_assign,
+                  "groups_id_assign" => $groups_id_assign,
+                  "name" => $name,
+                  "content" => $content,
+                  "ticketscategories_id" => $ticketscategories_id,
+                  "priority" => $priority,
+                  "request_type" => $request_type,
+                  "hour" => $hour,
+                  "minute" => $minute,
+                  "date" => $date,
+                  "entity_restrict" => $entity_restrict,
+                  "status" => $status,
+                  "followup" => $followup);
+	showJobDetails($_SERVER['PHP_SELF'], 0, $array);
 }
 
 commonFooter();
