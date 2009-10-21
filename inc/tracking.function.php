@@ -769,207 +769,209 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $users_id_assign=0, $groups_id_assign=0, $name='',$content='',$ticketscategories_id=0, $priority=3,$request_type=1,$hour=0,$minute=0,$date,$entity_restrict,$status=1,$followup=array()) {
-	/// Prints a nice form to add jobs
+/*
+function addformtracking ($itemtype=0,$id=0, $target, $users_id, $group=0, $users_id_assign=0, $groups_id_assign=0, $name='',$content='',$ticketscategories_id=0, $priority=3,$request_type=1,$hour=0,$minute=0,$date,$entity_restrict,$status=1,$followup=array()) {
+	/// prints a nice form to add jobs
 
-	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
-	if (!haveRight("create_ticket","1")) return false;
+	global $cfg_glpi, $lang,$cfg_glpi,$referer,$db;
+	if (!haveright("create_ticket","1")) return false;
 
 	$add_url="";
 	if ($itemtype>0){
-		$add_url="?itemtype=$itemtype&amp;items_id=$ID";
+		$add_url="?itemtype=$itemtype&amp;items_id=$id";
 	}
 	echo "<br><form name='form_ticket' method='post' action='$target$add_url' enctype=\"multipart/form-data\">";
 	echo "<div class='center'>";
 
-	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG['job'][13];
-	if (haveRight("comment_all_ticket","1")){
+	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$lang['job'][13];
+	if (haveright("comment_all_ticket","1")){
 		echo "&nbsp;&nbsp;";
-		dropdownStatus("status",$status);
+		dropdownstatus("status",$status);
 	}
 
 	echo '<br>';
 
 	if ($itemtype>0){
-		$m=new CommonItem;
-		$m->getFromDB($itemtype,$ID);
-		echo $m->getType()." - ".$m->getLink();
+		$m=new commonitem;
+		$m->getfromdb($itemtype,$id);
+		echo $m->gettype()." - ".$m->getlink();
 	}
 
-	echo "<input type='hidden' name='items_id' value=\"$ID\">";
+	echo "<input type='hidden' name='items_id' value=\"$id\">";
 	echo "<input type='hidden' name='itemtype' value=\"$itemtype\">";
 
-	/// Set default entity
-	if (!haveRight("update_ticket","1")){
+	/// set default entity
+	if (!haveright("update_ticket","1")){
 		echo "<input type='hidden' name='entities_id' value='".$entity_restrict."'>";
 	}
 
 	echo "</th></tr>";
 
 	$users_id_rand=0;
-	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG['job'][4].":</td>";
+	if (haveright("update_ticket","1")){
+		echo "<tr class='tab_bg_2' alig
+	$users_id_rand=0;n='center'><td>".$lang['job'][4].":</td>";
 		echo "<td colspan='3' align='center'>";
 
-		///Check if the user have access to this entity only, or subentities too
-		if (haveAccessToEntity($_SESSION["glpiactive_entity"],true)){
-            $entities = getSonsOf("glpi_entities",$_SESSION["glpiactive_entity"]);
-      } else {
-			$entities = $_SESSION["glpiactive_entity"];
-      }
+		///check if the user have access to this entity only, or subentities too
+		if (haveaccesstoentity($_session["glpiactive_entity"],true)){
+           $entities = getsonsof("glpi_entities",$_session["glpiactive_entity"]);
+     } else {
+			$entities = $_session["glpiactive_entity"];
+     }
 
-		//List all users in the active entity (and all it's sub-entities if needed)
-		$users_id_rand=dropdownAllUsers("users_id",$users_id,1,$entities,1);
+		//list all users in the active entity (and all it's sub-entities if needed)
+		$users_id_rand=dropdownallusers("users_id",$users_id,1,$entities,1);
 
-		//Get all the user's entities
-		$all_entities = getUserEntities($users_id, true);
+		//get all the user's entities
+		$all_entities = getuserentities($users_id, true);
 		$values = array();
 
-		//For each user's entity, check if the technician which creates the ticket have access to it
-		foreach ($all_entities as $tmp => $ID)
-			if (haveAccessToEntity($ID))
-				$values[]=$ID;
+		//for each user's entity, check if the technician which creates the ticket have access to it
+		foreach ($all_entities as $tmp => $id)
+			if (haveaccesstoentity($id))
+				$values[]=$id;
 
 		$count = count($values);
 
 		if ($count>0 && !in_array($entity_restrict,$values)) {
-			// If entity is not in the list of user's entities,
+			// if entity is not in the list of user's entities,
 			// then use as default value the first value of the user's entites list
 			$entity_restrict = $values[0];
 		}
 
-		//If user have access to more than one entity, then display a combobox
+		//if user have access to more than one entity, then display a combobox
 		if ($count > 1) {
-			$rand = dropdownValue("glpi_entities", "entities_id", $entity_restrict, 1, $values,'',array(),1);
+			$rand = dropdownvalue("glpi_entities", "entities_id", $entity_restrict, 1, $values,'',array(),1);
 		} else {
 			echo "<input type='hidden' name='entities_id' value='".$entity_restrict."'>";
 		}
 		echo "</td></tr>";
 	}
 
-	//If multi-entity environment, display the name of the entity on which the ticket will be created
-	if (isMultiEntitiesMode()){
+	//if multi-entity environment, display the name of the entity on which the ticket will be created
+	if (ismultientitiesmode()){
 		echo "<tr class='tab_bg_2' align='center'>";
 		echo "<th colspan='4'>";
-		echo $LANG['job'][46].":&nbsp;".getDropdownName("glpi_entities",$entity_restrict);
+		echo $lang['job'][46].":&nbsp;".getdropdownname("glpi_entities",$entity_restrict);
 		echo "</th></tr>";
 	}
 
 	$users_id_rand=0;
-	if (haveRight("update_ticket","1")){
+	if (haveright("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'>";
-		echo "<td>".$LANG['common'][35].":</td>";
+		echo "<td>".$lang['common'][35].":</td>";
 		echo "<td align='center' colspan='3'><span id='span_group'>";
 
-		//Look for group in the entities. If it's not present, then do not use default combobox value
-		if (isGroupVisibleInEntity($group,$entity_restrict))
+		//look for group in the entities. if it's not present, then do not use default combobox value
+		if (isgroupvisibleinentity($group,$entity_restrict))
 			$group_visible = $group;
 		else
 			$group_visible = '';
-		dropdownValue("glpi_groups","groups_id",$group_visible,1,$entity_restrict);
+		dropdownvalue("glpi_groups","groups_id",$group_visible,1,$entity_restrict);
 		echo "</span></td></tr>";
 	}
 
 
-	if ($itemtype==0 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
+	if ($itemtype==0 && $_session["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='center'>".$LANG['help'][24].": </td>";
+		echo "<td class='center'>".$lang['help'][24].": </td>";
 		echo "<td align='center' colspan='3'>";
-		dropdownMyDevices($users_id,$entity_restrict);
-		dropdownTrackingAllDevices("itemtype",$itemtype,0,$entity_restrict);
+		dropdownmydevices($users_id,$entity_restrict);
+		dropdowntrackingalldevices("itemtype",$itemtype,0,$entity_restrict);
 		echo "</td></tr>";
 	}
 
 
-	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][27].":</td>";
+	if (haveright("update_ticket","1")){
+		echo "<tr class='tab_bg_2'><td class='center'>".$lang['common'][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		showDateTimeFormItem("date",$date,1);
+		showdatetimeformitem("date",$date,1);
 		echo "</td>";
 
-		echo "<td class='center'>".$LANG['job'][44].":</td>";
+		echo "<td class='center'>".$lang['job'][44].":</td>";
 		echo "<td class='center'>";
-		dropdownRequestType("request_type",$request_type);
+		dropdownrequesttype("request_type",$request_type);
 		echo "</td></tr>";
 	}
 
 
-	// Need comment right to add a followup with the realtime
-	if (haveRight("comment_all_ticket","1")){
+	// need comment right to add a followup with the realtime
+	if (haveright("comment_all_ticket","1")){
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='center'>";
-		echo $LANG['job'][20].":</td>";
+		echo $lang['job'][20].":</td>";
 		echo "<td align='center' colspan='3'>";
-		dropdownInteger('hour',$hour,0,100);
+		dropdowninteger('hour',$hour,0,100);
 
-		echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-		dropdownInteger('minute',$minute,0,59);
+		echo "&nbsp;".$lang['job'][21]."&nbsp;&nbsp;";
+		dropdowninteger('minute',$minute,0,59);
 
-		echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
+		echo "&nbsp;".$lang['job'][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
 	}
 
 
 	echo "<tr class='tab_bg_2'>";
 
-	echo "<td class='tab_bg_2' align='center'>".$LANG['joblist'][2].":</td>";
+	echo "<td class='tab_bg_2' align='center'>".$lang['joblist'][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
 
-	dropdownPriority("priority",$priority);
+	dropdownpriority("priority",$priority);
 	echo "</td>";
 
-	echo "<td class='center'>".$LANG['common'][36].":</td>";
+	echo "<td class='center'>".$lang['common'][36].":</td>";
 	echo "<td class='center'>";
-	dropdownValue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
+	dropdownvalue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
 	echo "</td></tr>";
 
-	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")||haveRight("own_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG['buttons'][3].":</td>";
+	if (haveright("assign_ticket","1")||haveright("steal_ticket","1")||haveright("own_ticket","1")){
+		echo "<tr class='tab_bg_2' align='center'><td>".$lang['buttons'][3].":</td>";
 		echo "<td colspan='3'>";
 
-		//Try to assign the ticket to an user. Look if it's visible in the entites
-		$ents_assign = getUserEntities($users_id_assign,true);
+		//try to assign the ticket to an user. look if it's visible in the entites
+		$ents_assign = getuserentities($users_id_assign,true);
 		if (in_array($entity_restrict,$ents_assign))
 			$assign_tech = $users_id_assign;
 		else
 			$assign_tech = 0;
 
-		if (haveRight("assign_ticket","1")){
-			echo $LANG['job'][6].": ";
-			dropdownUsers("users_id_assign",$assign_tech,"own_ticket",0,1,$entity_restrict,0);
-			echo "<br>".$LANG['common'][35].": <span id='span_group_assign'>";
+		if (haveright("assign_ticket","1")){
+			echo $lang['job'][6].": ";
+			dropdownusers("users_id_assign",$assign_tech,"own_ticket",0,1,$entity_restrict,0);
+			echo "<br>".$lang['common'][35].": <span id='span_group_assign'>";
 
-			//Look for group in the entities. If it's not present, then do not use default combobox value
-			if (isGroupVisibleInEntity($groups_id_assign,$entity_restrict))
+			//look for group in the entities. if it's not present, then do not use default combobox value
+			if (isgroupvisibleinentity($groups_id_assign,$entity_restrict))
 				$group_visible = $groups_id_assign;
 			else
 				$group_visible = '';
 
-			dropdownValue("glpi_groups", "groups_id_assign", $group_visible,1,$entity_restrict);
+			dropdownvalue("glpi_groups", "groups_id_assign", $group_visible,1,$entity_restrict);
 			echo "</span>";
 		} else { // own or steal active
-			echo $LANG['job'][6].":";
-			dropdownUsers("users_id_assign",$assign_tech,"id",0,1,$entity_restrict,0);
+			echo $lang['job'][6].":";
+			dropdownusers("users_id_assign",$assign_tech,"id",0,1,$entity_restrict,0);
 		}
 		echo "</td></tr>";
 
 	}
 
 
-	if(isAuthorMailingActivatedForHelpdesk()){
+	if(isauthormailingactivatedforhelpdesk()){
 
-		$query="SELECT email from glpi_users WHERE id='$users_id'";
+		$query="select email from glpi_users where id='$users_id'";
 
-		$result=$DB->query($query);
+		$result=$db->query($query);
 		$email="";
-		if ($result&&$DB->numrows($result))
-			$email=$DB->result($result,0,"email");
+		if ($result&&$db->numrows($result))
+			$email=$db->result($result,0,"email");
 		echo "<tr class='tab_bg_1'>";
-		echo "<td class='center'>".$LANG['help'][8].":</td>";
+		echo "<td class='center'>".$lang['help'][8].":</td>";
 		echo "<td class='center'>";
-		dropdownYesNo('use_email_notification',!empty($email));
+		dropdownyesno('use_email_notification',!empty($email));
 		echo "</td>";
-		echo "<td class='center'>".$LANG['help'][11].":</td>";
+		echo "<td class='center'>".$lang['help'][11].":</td>";
 		echo "<td><span id='user_email_result'>";
 		echo "<input type='text' size='30' name='user_email' value='$email'>";
 		echo "</span>";
@@ -979,14 +981,14 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $user
 	}
 
 	echo "</table><br><table class='tab_cadre_fixe'>";
-	echo "<tr><th class='center'>".$LANG['common'][57].":";
+	echo "<tr><th class='center'>".$lang['common'][57].":";
 	echo "</th><th colspan='3' class='left'>";
 
-	echo "<input type='text' size='80' name='name' value=\"".cleanInputText($name)."\">";
+	echo "<input type='text' size='80' name='name' value=\"".cleaninputtext($name)."\">";
 	echo "</th> </tr>";
 
 
-	echo "<tr><th colspan='4' align='center'>".$LANG['job'][11].":";
+	echo "<tr><th colspan='4' align='center'>".$lang['job'][11].":";
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='content'>$content</textarea></td></tr>";
@@ -995,34 +997,34 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $user
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 
-	echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." ".$LANG['common'][45]."):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"class='pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=500')\">";
+	echo "<tr class='tab_bg_1'><td>".$lang['document'][2]." (".$max_size." ".$lang['common'][45]."):	";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\"class='pointer;' alt=\"aide\"onclick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','help','scrollbars=1,resizable=1,width=1000,height=500')\">";
 	echo "</td>";
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
 
-	echo "<td colspan='2' class='center'><a href='$target'><img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></td>";
+	echo "<td colspan='2' class='center'><a href='$target'><img title=\"".$lang['buttons'][16]."\" alt=\"".$lang['buttons'][16]."\" src='".$cfg_glpi["root_doc"]."/pics/reset.png' class='calendrier'></a></td>";
 
 
 
-	echo "<td colspan='2' align='center'><input type='submit' name='add' value=\"".$LANG['buttons'][2]."\" class='submit'>";
+	echo "<td colspan='2' align='center'><input type='submit' name='add' value=\"".$lang['buttons'][2]."\" class='submit'>";
 
 	echo "</td></tr></table>";
 
 
 
-	if (haveRight("comment_all_ticket","1")){
+	if (haveright("comment_all_ticket","1")){
 	echo "<br>";
 
-		showAddFollowupForm(-1,false,$followup);
+		showaddfollowupform(-1,false,$followup);
 	}
 
 	echo "</div></form>";
 
 }
-
+*/
 function getTrackingFormFields($_POST)
 {
 	$params = array(
@@ -1878,18 +1880,36 @@ function getAssignName($ID,$itemtype,$link=0){
 
 
 
-function showJobDetails ($target,$ID){
+function showJobDetails($target, $ID,$array=array()) {
 	global $DB,$CFG_GLPI,$LANG;
 	$job=new Job();
 
-	$canupdate=haveRight("update_ticket","1");
+	$canupdate=haveRight('update_ticket','1');
 	$showuserlink=0;
-	if (haveRight('user','r')){
+	if (haveRight('user','r')) {
 		$showuserlink=1;
 	}
-	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields["entities_id"])) {
+	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields['entities_id'])) {
 
-		if (!$job->canView()){
+   } else {
+      $job->getEmpty();
+      $job->fields["users_id"] = $array["users_id"];
+      $job->fields["group"] = $array["group"];
+      $job->fields["users_id_assign"] = $array["users_id_assign"];
+      $job->fields["groups_id_assign"] = $array["groups_id_assign"];
+      $job->fields["name"] = $array["name"];
+      $job->fields["content"] = $array["content"];
+      $job->fields["ticketscategories_id"] = $array["ticketscategories_id"];
+      $job->fields["priority"] = $array["priority"];
+      $job->fields["request_type"] = $array["request_type"];
+      $job->fields["hour"] = $array["hour"];
+      $job->fields["minute"] = $array["minute"];
+      $job->fields["date"] = $array["date"];
+      $job->fields["entity_restrict"] = $array["entity_restrict"];
+      $job->fields["status"] = $array["status"];
+      $job->fields["followup"] = $array["followup"];
+   }
+   if (!$job->canView()) {
 			return false;
 		}
 
@@ -1897,229 +1917,338 @@ function showJobDetails ($target,$ID){
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["itemtype"],$job->fields["items_id"]);
 
-		//echo "<div class='center'>";
-		echo "<form method='post' name='form_ticket' action='$target'  enctype=\"multipart/form-data\">\n";
-		echo "<div class='center' id='tabsbody'>";
+   $canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields['users_id']==$_SESSION['glpiID']);
+   $item=new CommonItem();
+   $item->getFromDB($job->fields['itemtype'],$job->fields['items_id']);
+
+   echo '<form method="post" name="form_ticket" action="'.$target.'" enctype="multipart/form-data">';
+   echo '<div class="center" id="tabsbody">';
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
-		// OPtional line
-		if (isMultiEntitiesMode()){
-			echo "<tr><th colspan='3'>";
-			echo getDropdownName("glpi_entities",$job->fields["entities_id"]);
-			echo "</th></tr>";
+   if ($ID == '0') {
+      echo '<tr>';
+      echo '<th colspan="4">';
+      echo $LANG['job'][13];
+      echo '</th>';
+      echo '</tr>';
 		}
+   // Optional line
+   if (isMultiEntitiesMode()) {
+      echo '<tr>';
+      echo '<th colspan="4">';
+      if ($ID == 0) {
+         echo $LANG['job'][46].":&nbsp;".getDropdownName("glpi_entities",$job->fields['entity_restrict']);
+      } else {
+         echo getDropdownName('glpi_entities',$job->fields['entities_id']);
+      }
+      echo '</th>';
+      echo '</tr>';
+   }
 
-		// First line
-		echo "<tr><th colspan='2' style='text-align:left;'><table><tr><td><span class='tracking_small'>";
-		echo $LANG['joblist'][11].": </span></td><td>";
-		showDateTimeFormItem("date",$job->fields["date"],1,false,$canupdate);
+   echo "<tr>";
+   echo "<th style='text-align:left;' colspan='2' width='50%'>";
 
-		echo "</td><td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp; </span></td><td>";
+   echo "<table>";
+
+   echo "<tr>";
+   echo "<td>";
+   echo "<span class='tracking_small'>";
+   echo $LANG['joblist'][11].": </span>";
+   echo "</td>";
+   echo "<td>";
+   if ($ID == "0") {
+      showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
+   } else {
+      showDateTimeFormItem("date",$job->fields["date"],1,false,$canupdate);
+   }
+   echo "</td>";
+   if ($ID > 0) {
+      echo "<td>";
+      echo "<span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp; </span>";
 		if ($canupdate){
 			dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,$job->fields["entities_id"]);
 		} else {
 			echo getUserName($job->fields["users_id_recipient"],$showuserlink);
 		}
-
-		echo "</td></tr></table>";
-
-		if (strstr($job->fields["status"],"old_")){
-			echo "<table><tr><td>";
-			echo "<span class='tracking_small'>".$LANG['joblist'][12].": </td><td>";
+      echo "</td>";
+      if (strstr($job->fields["status"],"old_")) {
+         echo "<td>";
+         echo "<table>";
+         echo "<tr>";
+         echo "<td>";
+         echo "<span class='tracking_small'>".$LANG['joblist'][12].": ";
+         echo "</td>";
+         echo "<td>";
 
 			showDateTimeFormItem("closedate",$job->fields["closedate"],1,false,$canupdate);
-			echo "</span></td></tr></table>\n";
+         echo "</span>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>\n";
+         echo "</td>";
 		}
+      echo "</tr>";
+   }
+   echo "</table>";
 
 		echo "</th>";
-		echo "<th><span class='tracking_small'>".$LANG['common'][26].":<br>";
 
+   echo "<th colspan='2' width='50%'>";
+   if ($ID > 0 ) {
+      echo "<span class='tracking_small'>".$LANG['common'][26].":<br>";
 		echo convDateTime($job->fields["date_mod"])."\n";
+      echo "</span>";
+   }
+   echo "</th>";
+   echo "</tr>";
 
-		echo "</span></th></tr>";
-		echo "<tr class='tab_bg_2'>";
-		// Premier Colonne
-		echo "<td class='top' width='27%'>";
-		echo "<table cellpadding='3'>";
-		echo "<tr class='tab_bg_2'><td class='left'>";
-		echo $LANG['joblist'][0].":</td><td>";
-		if ($canupdate){
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left' width='60'>";
+   echo $LANG['joblist'][0].":";
+   echo "</td>";
+   echo "<td>";
+   if ($canupdate) {
 			dropdownStatus("status",$job->fields["status"]);
 		} else {
 			echo getStatusName($job->fields["status"]);
 		}
-		echo "</td></tr>";
+   echo "</td>";
+   echo "<th class='center' colspan='2'><strong>";
+   echo $LANG['job'][4].":";
+   echo "</strong></th>";
+   echo "</tr>";
 
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['joblist'][29].":";
+   echo "</td>";
+   echo "<td>";
+   // TODO : PUT Urgence
+   echo "</td>";
+   echo "<td class='left'>";
+   if (($ID == "0") AND (haveRight("update_ticket","1"))) {
+      echo $LANG['job'][4].":";
+      echo "</td>";
+      echo "<td>";
 
-		echo "<tr><td class='left'>";
-		echo $LANG['joblist'][2].":</td><td>";
-		if ($canupdate)
-			dropdownPriority("priority",$job->fields["priority"]);
-		else echo getPriorityName($job->fields["priority"]);
-		echo "</td></tr>";
+      ///Check if the user have access to this entity only, or subentities too
+      if (haveAccessToEntity($_SESSION["glpiactive_entity"],true)){
+            $entities = getSonsOf("glpi_entities",$_SESSION["glpiactive_entity"]);
+      } else {
+         $entities = $_SESSION["glpiactive_entity"];
+      }
 
-		echo "<tr><td class='left'>";
-		echo $LANG['common'][36].":</td><td >";
-		if ($canupdate)
-			dropdownValue("glpi_ticketscategories","ticketscategories_id",$job->fields["ticketscategories_id"]);
-		else echo getDropdownName("glpi_ticketscategories",$job->fields["ticketscategories_id"]);
-		echo "</td></tr>";
+      //List all users in the active entity (and all it's sub-entities if needed)
+      $users_id_rand=dropdownAllUsers("users_id",$array["users_id"],1,$entities,1);
 
-		echo "<tr><td class='center' colspan='2'><strong>";
-		echo $LANG['job'][4].":</strong></td></tr>";
+      //Get all the user's entities
+      $all_entities = getUserEntities($array["users_id"], true);
+      $values = array();
 
-		echo "<tr><td class='left'>";
-		echo $LANG['common'][34].":</td><td>";
-		if ($canupdate){
+      //For each user's entity, check if the technician which creates the ticket have access to it
+      foreach ($all_entities as $tmp => $ID_entity) {
+         if (haveAccessToEntity($ID_entity)) {
+            $values[]=$ID_entity;
+         }
+      }
+
+      $count = count($values);
+
+      if ($count>0 && !in_array($array["entity_restrict"],$values)) {
+         // If entity is not in the list of user's entities,
+         // then use as default value the first value of the user's entites list
+         $entity_restrict = $values[0];
+      }
+
+      //If user have access to more than one entity, then display a combobox
+      if ($count > 1) {
+         $rand = dropdownValue("glpi_entities", "entities_id", $array["entity_restrict"], 1, $values,'',array(),1);
+      } else {
+         echo "<input type='hidden' name='entities_id' value='".$array["entity_restrict"]."'>";
+      }
+   } else if ($canupdate){
+      echo $LANG['common'][34].":";
+      echo "</td>";
+      echo "<td>";
 			dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
 		} else {
+      echo $LANG['common'][34].":";
+      echo "</td>";
+      echo "<td>";
 			echo getUserName($job->fields["users_id"],$showuserlink);
 		}
-		echo "</td></tr>";
+   echo "</td>";
+   echo "</tr>";
 
-		echo "<tr><td class='left'>";
-		echo $LANG['common'][35].":</td><td>";
-		if ($canupdate){
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['joblist'][30].":";
+   echo "</td>";
+   echo "<td>";
+   // TODO : PUT Impact
+   echo "</td>";
+   echo "<td class='left'>";
+   echo $LANG['common'][35].":";
+   echo "</td>";
+   echo "<td>";
+   if ($canupdate) {
 			dropdownValue("glpi_groups","groups_id",$job->fields["groups_id"],1,$job->fields["entities_id"]);
 		} else {
 			echo getDropdownName("glpi_groups",$job->fields["groups_id"]);
 		}
-		echo "</td></tr>";
+   echo "</td>";
+   echo "</tr>";
 
-
-		echo "</table></td>";
-
-		// Deuxieme colonne
-		echo "<td class='top' width='33%'>";
-
-		echo "<table>";
-
-		echo "<tr><td class='left'>";
-		echo $LANG['job'][44].":</td><td>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['joblist'][2].":";
+   echo "</td>";
+   echo "<td>";
 		if ($canupdate)
-			dropdownRequestType("request_type",$job->fields["request_type"]);
-		else echo getRequestTypeName($job->fields["request_type"]);
-		echo "</td></tr>";
+      dropdownPriority("priority",$job->fields["priority"]);
+   else echo getPriorityName($job->fields["priority"]);
+   echo "</td>";
+   echo "<th class='center' colspan='2'><strong>";
+   echo $LANG['job'][5].":";
+   echo "</strong></th>";
+   echo "</tr>";
 
-		echo "<tr><td class='left'>";
-		echo $LANG['common'][1].":</td><td>";
-		if ($canupdate){
-			if (haveTypeRight($job->fields["itemtype"],'r')){
-				echo $item->getType()." - ".$item->getLink(1);
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['common'][36].":";
+   echo "</td>";
+   echo "<td >";
+   if ($canupdate) {
+      dropdownValue("glpi_ticketscategories","ticketscategories_id",$job->fields["ticketscategories_id"]);
 			} else {
-				echo $item->getType()." ".$item->getNameID();
+      echo getDropdownName("glpi_ticketscategories",$job->fields["ticketscategories_id"]);
 			}
-			dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
-		}
-		else {
-			echo $item->getType()." ".$item->getNameID();
-		}
-
-		echo "</td></tr>";
-
-
-		echo "<tr><td class='center' colspan='2'><strong>";
-		echo $LANG['job'][5].":</strong></td></tr>";
-
-		if (haveRight("assign_ticket","1")){
-			echo "<tr><td class='left'>";
-			echo $LANG['job'][6].":</td><td>";
+   echo "</td>";
+   if (haveRight("assign_ticket","1")) {
+      echo "<td class='left'>";
+      echo $LANG['job'][6].":";
+      echo "</td>";
+      echo "<td>";
 			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"own_ticket",0,1,$job->fields["entities_id"]);
-			echo "</td></tr>";
+      echo "</td>";
 		} else if (haveRight("steal_ticket","1")) {
-			echo "<tr><td class='right'>";
-			echo $LANG['job'][6].":</td><td>";
+      echo "<td class='right'>";
+      echo $LANG['job'][6].":";
+      echo "</td>";
+      echo "<td>";
 			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"id",0,1,$job->fields["entities_id"]);
-			echo "</td></tr>";
-		} else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0){
-                        echo "<tr><td class='right'>";
-                        echo $LANG['job'][6].":</td><td>";
+      echo "</td>";
+   } else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0) {
+      echo "<td class='right'>";
+      echo $LANG['job'][6].":";
+      echo "</td>";
+      echo "<td>";
                         dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"id",0,1,$job->fields["entities_id"]);
-                        echo "</td></tr>";
+      echo "</td>";
                 } else {
-			echo "<tr><td class='left'>";
-			echo $LANG['job'][6].":</td><td>";
+      echo "<td class='left'>";
+      echo $LANG['job'][6].":";
+      echo "</td>";
+      echo "<td>";
 			echo getUserName($job->fields["users_id_assign"],$showuserlink);
-			echo "</td></tr>";
+      echo "</td>";
 		}
+   echo "</tr>";
 
-		if (haveRight("assign_ticket","1")){
-			echo "<tr><td class='left'>";
-			echo $LANG['common'][35].":</td><td>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['job'][44].":";
+   echo "</td>";
+   echo "<td>";
+   if ($canupdate) {
+      dropdownRequestType("request_type",$job->fields["request_type"]);
+   } else {
+      echo getRequestTypeName($job->fields["request_type"]);
+   }
+   echo "</td>";
+   if (haveRight("assign_ticket","1")) {
+      echo "<td class='left'>";
+      echo $LANG['common'][35].":";
+      echo "</td>";
+      echo "<td>";
 			dropdownValue("glpi_groups","groups_id_assign",$job->fields["groups_id_assign"],1,$job->fields["entities_id"]);
-			echo "</td></tr>";
-			echo "<tr><td class='left'>";
-			echo $LANG['financial'][26].":</td><td>";
-			dropdownValue("glpi_suppliers","suppliers_id_assign",$job->fields["suppliers_id_assign"],1,$job->fields["entities_id"]);
-			echo "</td></tr>";
+      echo "</td>";
 		} else {
-			echo "<tr><td class='left'>";
-			echo $LANG['common'][35].":</td><td>";
+      echo "<td class='left'>";
+      echo $LANG['common'][35].":";
+      echo "</td>";
+      echo "<td>";
 			echo getDropdownName("glpi_groups",$job->fields["groups_id_assign"]);
-			echo "</td></tr>";
-			echo "<tr><td class='left'>";
-			echo $LANG['financial'][26].":</td><td>";
-			echo getDropdownName("glpi_suppliers",$job->fields["suppliers_id_assign"]);
-			echo "</td></tr>";
+      echo "</td>";
 		}
-		echo "</table>";
+   echo "</tr>";
 
-
+   echo "<tr class='tab_bg_1'>";
+   echo "<td class='left'>";
+   echo $LANG['common'][1].":";
 		echo "</td>";
+   echo "<td>";
+   if ($canupdate) {
+      if (haveTypeRight($job->fields["itemtype"],'r')){
+         echo $item->getType()." - ".$item->getLink(1);
+      } else {
+         echo $item->getType()." ".$item->getNameID();
+      }
+      if ($ID  == 0) {
+         dropdownMyDevices($array["users_id"],$array["entity_restrict"]);
+      }
+      dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
+   } else {
+      echo $item->getType()." ".$item->getNameID();
+   }
+   echo "</td>";
 
-		// Troisieme Colonne
-		echo "<td class='top' width='20%'>";
-		echo "<table border='0'>";
-
-		echo "<tr><td class='left'>";
-		echo $LANG['job'][20].":</td><td>";
-		echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
-		echo "</td></tr>";
-
-		if(haveRight("contract","r")){  // admin = oui on affiche les couts liés à l'interventions
-
-			echo "<tr><td class='left'>";
-			// cout
-			echo $LANG['job'][40].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".formatNumber($job->fields["cost_time"],true)."\"></td></tr>";
-
-			echo "<tr><td class='left'>";
-
-			echo $LANG['job'][41].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".formatNumber($job->fields["cost_fixed"],true)."\">";
-
-			echo "</td></tr>\n";
-
-			echo "<tr><td class='left'>";
-
-			echo $LANG['job'][42].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".formatNumber($job->fields["cost_material"],true)."\">";
-
-			echo "</td></tr>\n";
-
-			echo "<tr><td class='left'>";
-
-			echo $LANG['job'][43].": ";
-			echo "</td><td><strong>";
-			echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
-			echo "</strong></td></tr>\n";
+   if ((haveRight("assign_ticket","1")) AND ($ID != "0")) {
+      echo "<td class='left'>";
+      echo $LANG['financial'][26].":";
+      echo "</td>";
+      echo "<td>";
+      dropdownValue("glpi_suppliers","suppliers_id_assign",$job->fields["suppliers_id_assign"],1,$job->fields["entities_id"]);
+      echo "</td>";
+   } else {
+      if ($ID != "0") {
+         echo "<td class='left'>";
+         echo $LANG['financial'][26].":";
+         echo "</td>";
+         echo "<td>";
+         echo getDropdownName("glpi_suppliers",$job->fields["suppliers_id_assign"]);
+         echo "</td>";
+      } else {
+         // Need comment right to add a followup with the realtime
+         if ((haveRight("comment_all_ticket","1")) AND ($ID == "0")){
+            echo "<td class='left'>";
+            echo $LANG['job'][20].":";
+            echo "</td>";
+            echo "<td align='center' colspan='3'>";
+            dropdownInteger('hour',$array['hour'],0,100);
+            echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+            dropdownInteger('minute',$array['minute'],0,59);
+            echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
+         } else {
+            echo "<td colspan='2'>";
 		}
-		echo '</table>';
-		echo "</td></tr>";
+         echo "</td>";
+      }
+   }
+   echo "</tr>";
 
-
-		// Deuxieme Ligne
-		// Colonnes 1 et 2
-		echo "<tr class='tab_bg_1'><td colspan='2'>";
-		echo "<table width='99%' >";
-		echo "<tr class='tab_bg_2'><th colspan='2'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th>";
+   echo $LANG['common'][57]." : ";
+   echo "</th>";
+   echo "<th>";
 		if ($canupdate_descr){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showName$rand(){\n";
 				echo "Ext.get('name$rand').setDisplayed('none');";
 				$params=array('maxlength'=>250,
-					'size'=>80,
+            'size'=>50,
 					'name'=>'name',
 					'data'=>rawurlencode($job->fields["name"]),
 				);
@@ -2136,6 +2265,11 @@ function showJobDetails ($target,$ID){
 
 			echo "<div id='viewname$rand'>\n";
 			echo "</div>\n";
+      if ($ID == 0) {
+         echo "<script type='text/javascript' >\n
+         showName$rand();
+         </script>";
+      }
 			//echo "<input type='text' maxlength='250' size='80' name='name' value=\"".$job->fields["name"]."\">";
 		} else {
 			if (empty($job->fields["name"])){
@@ -2144,10 +2278,19 @@ function showJobDetails ($target,$ID){
 				echo $job->fields["name"];
 			}
 		}
-		echo "</th></tr>";
-		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG['joblist'][6]."</td>";
-		echo "<td  width='85%' class='left'>";
+   echo "</th>";
+   echo "<th colspan='2'>";
+   if ($CFG_GLPI["use_mailing"]==1) {
+      echo $LANG['title'][10];
+   }
+   echo "</th>";
+   echo "</tr>";
 
+   echo "<tr class='tab_bg_1'>";
+   echo "<td rowspan='5'>";
+   echo $LANG['joblist'][6];
+   echo "</td>";
+   echo "<td class='left' rowspan='5'>";
 		if ($canupdate_descr){ // Admin =oui on autorise la modification de la description
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
@@ -2155,7 +2298,7 @@ function showJobDetails ($target,$ID){
 
 				echo "Ext.get('desc$rand').setDisplayed('none');";
 				$params=array('rows'=>6,
-					'cols'=>60,
+            'cols'=>50,
 					'name'=>'content',
 					'data'=>rawurlencode($job->fields["content"]),
 				);
@@ -2172,47 +2315,65 @@ function showJobDetails ($target,$ID){
 
 			echo "<div id='viewdesc$rand'>\n";
 			echo "</div>\n";
-		} else echo nl2br($job->fields["content"]);
-
+      if ($ID == 0) {
+         echo "<script type='text/javascript' >\n
+         showDesc$rand();
+         </script>";
+      }
+   } else {
+      echo nl2br($job->fields["content"]);
+   }
 		echo "</td>";
-		echo "</tr>";
-		echo "</table>";
-		echo "</td>";
-		// Colonne 3
-
-		echo "<td class='top'>";
-
 		// Mailing ? Y or no ?
-
 		if ($CFG_GLPI["use_mailing"]==1){
-			echo "<table><tr><td class='right'>";
-			echo $LANG['job'][19].":</td><td>";
+      echo "<td class='left'>";
+      echo $LANG['job'][19].":";
+      echo "</td>";
+      echo "<td>";
 			if ($canupdate){
 				dropdownYesNo('use_email_notification',$job->fields["use_email_notification"]);
 			} else {
 				if ($job->fields["use_email_notification"]) echo $LANG['choice'][1];
 				else $LANG['choice'][0];
 			}
-			echo "</td></tr>";
+   } else {
+      echo "<td colspan='2'>&nbsp;";
+   }
+   echo "</td>";
+   echo "</tr>";
 
-			echo "<tr><td class='right'>";
+   echo "<tr class='tab_bg_1'>";
+   // Mailing ? Y or no ?
+   if ($CFG_GLPI["use_mailing"] == 1) {
+      echo "<td class='left'>";
 			echo $LANG['joblist'][27].":";
-			echo "</td><td>";
-			if ($canupdate){
-				autocompletionTextField("user_email","glpi_tickets","user_email",$job->fields["user_email"],15,$job->fields["entities_id"]);
-
-				if (!empty($job->fields["user_email"]))
+      echo "</td>";
+      echo "<td>";
+      if ($canupdate) {
+         autocompletionTextField("user_email","glpi_tickets","user_email",$job->fields["user_email"],35,$job->fields["entities_id"]);
+         if (!empty($job->fields["user_email"])) {
 					echo "<a href='mailto:".$job->fields["user_email"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-			} else if (!empty($job->fields["user_email"]))
+         }
+      } else if (!empty($job->fields["user_email"])) {
 				echo "<a href='mailto:".$job->fields["user_email"]."'>".$job->fields["user_email"]."</a>";
-			else echo "&nbsp;";
-			echo "</td></tr></table>";
-
-
+      } else {
+         echo "&nbsp;";
 		}
+      echo "</td>";
+   } else {
+       echo "<td colspan='2'>&nbsp;";
+   }
+   echo "</td>";
+   echo "</tr>";
 
+   echo "<tr class='tab_bg_1'>";
+   echo "<th colspan='2'>";
+   echo $LANG['document'][21];
+   echo "</th>";
+   echo "</tr>";
 
-
+   echo "<tr class='tab_bg_1'>";
+   echo "<td valign='top' colspan='2'>";
 
 		// File associated ?
 		$query2 = "SELECT *
@@ -2220,14 +2381,15 @@ function showJobDetails ($target,$ID){
 			WHERE glpi_documents_items.items_id = '".$job->fields["id"]."' AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' ";
 		$result2 = $DB->query($query2);
 		$numfiles=$DB->numrows($result2);
-		echo "<table width='100%'><tr><th colspan='2'>".$LANG['document'][21]."</th></tr>";
+   echo "<table width='100%'>";
 
 		if ($numfiles>0){
 			$doc=new Document;
 			while ($data=$DB->fetch_array($result2)){
 				$doc->getFromDB($data["documents_id"]);
 
-				echo "<tr><td>";
+         echo "<tr>";
+         echo "<td>";
 
 				if (empty($doc->fields["filename"])){
 					if (haveRight("document","r")){
@@ -2244,44 +2406,78 @@ function showJobDetails ($target,$ID){
                   "&amp;documents_id=".$data["documents_id"]."'><img src='".
                   $CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'></a>";
             }
-				echo "</td></tr>";
+         echo "</td>";
+         echo "</tr>";
 			}
 		}
 		if ($canupdate||haveRight("comment_all_ticket","1")
 			||(haveRight("comment_ticket","1")&&!strstr($job->fields["status"],'old_'))
 		){
-			echo "<tr><td colspan='2'>";
+      echo "<tr>";
+      echo "<td colspan='2'>";
 			echo "<input type='file' name='filename' size='20'>";
 			if ($canupdate&&haveRight("document","r")){
 				echo "<br>";
 				dropdownDocument("document",$job->fields["entities_id"]);
 			}
-			echo "</td></tr>";
+      echo "</td>";
+      echo "</tr>";
 		}
 		echo "</table>";
+   echo "</td>";
+   echo "</tr>";
 
-		echo "</td></tr>";
-		// Troisi�e Ligne
+
+
 		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")
 			||(haveRight("comment_ticket","1")&&!strstr($job->fields["status"],'old_'))
 			||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")
+      ) {
 
-			){
-			echo "<tr class='tab_bg_1'><td colspan='3' class='center'>";
-			echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'></td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center'>";
+      if ($ID == "0") {
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][2]."\" class='submit'>";
+      } else {
+         echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'>";
 		}
+      echo "</td>";
+      echo "</tr>";
+   }
 
 		echo "</table>";
 		echo "<input type='hidden' name='id' value='$ID'>";
 		echo "</div>";
+   
+   if ($ID == 0) {
+      $commentall=haveRight("update_followups","1");
+      $prefix="";
+      $postfix="";
+      $randfollow=mt_rand();
+      echo "<script type='text/javascript' >\n";
+      echo "function showFollow$randfollow(){\n";
+      echo "document.getElementById('follow$randfollow').style.display='block';\n";
+      echo "}";
+      echo "</script>\n";
+
+
+      // Follow for add ticket
+      echo "<br/>";
+      echo "<div class='center'>";
+
+      echo "<a href='javascript:onClick=showFollow$randfollow()'>".$LANG['job'][29]."</a>";
+
+      echo "<div id='follow$randfollow' style='display:none'>";
+      showAddFollowupForm(-1,false);
+      echo "</div>";
+
+   }
+   echo "<input type='hidden' name='id' value='$ID'>";
+   echo "</div>";
 		echo "</form>";
 
 		return true;
-	} else {
-		echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";
-		return false;
 	}
-}
 
 function showFollowupsSummary($tID){
 	global $DB,$LANG,$CFG_GLPI;
@@ -2438,7 +2634,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 	echo $LANG['job'][29];
 	echo "</th></tr>";
 
-	if ($commentall){
+	if ($commentall) {
 		$width_left=$width_right="50%";
 		$cols=50;
 	} else {
@@ -2867,6 +3063,84 @@ function isPossibleToAssignType($itemtype) {
 			return true;
 	}
 	return false;
+}
+
+
+function showJobCost($target,$ID) {
+   global $DB,$LANG;
+
+   $job=new Job();
+   $job->getFromDB($ID)&&haveAccessToEntity($job->fields["entities_id"]);
+
+   echo "<form method='post' name='form_ticket_cost' action='$target' >\n";
+	echo "<div class='center' id='tabsbody'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+
+   echo "<tr><th colspan='2'>";
+   echo $LANG['job'][47];
+   echo "</th></tr>";
+
+   echo "<tr class='tab_bg_2'>";
+	echo "<td class='left'>";
+	echo $LANG['job'][20].":";
+   echo "</td>";
+   
+   echo "<td>";
+	echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
+	echo "</td>";
+   echo "</tr>";
+
+	if(haveRight("contract","r")){  // admin = oui on affiche les couts liés à l'interventions
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='left'>";
+   	echo $LANG['job'][40].": ";
+		echo "</td>";
+      
+      echo "<td>";
+      echo "<input type='text' maxlength='100' size='15' name='cost_time' value=\"".formatNumber($job->fields["cost_time"],true)."\">";
+      echo "</td>";
+      echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+      echo "<td class='left'>";
+		echo $LANG['job'][41].": ";
+		echo "</td>";
+      
+      echo "<td>";
+      echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".formatNumber($job->fields["cost_fixed"],true)."\">";
+		echo "</td>";
+      echo "</tr>\n";
+
+		echo "<tr class='tab_bg_2'>";
+      echo "<td class='left'>";
+      echo $LANG['job'][42].": ";
+		echo "</td>";
+      
+      echo "<td>";
+      echo "<input type='text' maxlength='100' size='15' name='cost_material' value=\"".formatNumber($job->fields["cost_material"],true)."\">";
+      echo "</td>";
+      echo "</tr>\n";
+
+		echo "<tr class='tab_bg_2'>";
+      echo "<td class='left'>";
+      echo $LANG['job'][43].": ";
+		echo "</td>";
+
+      echo "<td><strong>";
+      echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
+      echo "</strong></td>";
+      echo "</tr>\n";
+   }   
+
+   echo "</table>";
+
+
+
+
+
+
+
+   
 }
 
 ?>

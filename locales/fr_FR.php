@@ -721,6 +721,7 @@ $LANG['job'][42]="Coût matériel";
 $LANG['job'][43]="Coût total";
 $LANG['job'][44]="Source de la demande";
 $LANG['job'][46]="Ticket créé dans l'entité";
+$LANG['job'][47]="Coûts";
 
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";
@@ -745,6 +746,11 @@ $LANG['joblist'][25]="Fermé";
 $LANG['joblist'][26]="En attente";
 $LANG['joblist'][27]="Email pour le suivi";
 $LANG['joblist'][28]="Tickets sur les éléments liés";
+$LANG['joblist'][29]="Urgence";
+$LANG['joblist'][30]="Impact";
+$LANG['joblist'][31]="Date d'échéance";
+
+$LANG['jobresolution'][1]="Résolution";
 
 $LANG['knowbase'][1]="Foire aux questions";
 $LANG['knowbase'][3]="Question";
