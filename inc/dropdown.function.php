@@ -1179,6 +1179,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 
 			$types = getAllTypesForHelpdesk();
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
+			echo "<option value='-1' >-----</option>\n";
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG['help'][30]."</option>\n";
 			foreach ($types as $type => $label)
 			{
