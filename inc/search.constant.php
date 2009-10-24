@@ -3000,7 +3000,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][80]['field']     = 'completename';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['linkfield'] = 'entities_id';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['name']      = $LANG['entity'][0];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][86]['table']     = 'glpi_contracts';
+$SEARCH_OPTION[DOCUMENT_TYPE][86]['table']     = 'glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][86]['field']     = 'is_recursive';
 $SEARCH_OPTION[DOCUMENT_TYPE][86]['linkfield'] = 'is_recursive';
 $SEARCH_OPTION[DOCUMENT_TYPE][86]['name']      = $LANG['entity'][9];
