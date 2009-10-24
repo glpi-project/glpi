@@ -2339,6 +2339,13 @@ function update0723to080() {
       $DB->query($query) or die("0.80 create glpi_taskscategories" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_documentstypes','comment')) {
+      $query = "ALTER TABLE `glpi_documentstypes` ADD `comment` TEXT NULL ";
+      $DB->query($query) or die("0.80 add comment in glpi_documentstypes" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }

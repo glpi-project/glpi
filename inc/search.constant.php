@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 /**
- * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine 
+ * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
  */
 
 //////COMPUTER_TYPE
@@ -2946,6 +2946,12 @@ $SEARCH_OPTION[TYPEDOC_TYPE][5]['table']     = 'glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['field']     = 'is_uploadable';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['linkfield'] = '';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['name']      = $LANG['document'][15];
+
+$SEARCH_OPTION[TYPEDOC_TYPE][16]['table']     = 'glpi_documentstypes';
+$SEARCH_OPTION[TYPEDOC_TYPE][16]['field']     = 'comment';
+$SEARCH_OPTION[TYPEDOC_TYPE][16]['linkfield'] = 'comment';
+$SEARCH_OPTION[TYPEDOC_TYPE][16]['name']      = $LANG['common'][25];
+$SEARCH_OPTION[TYPEDOC_TYPE][16]['datatype']  = 'text';
 
 
 //////DOCUMENT_TYPE
