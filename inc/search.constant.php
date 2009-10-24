@@ -33,33 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Conventions :
-// ID 80 : entities_id link -> no massive action
-// ID 90 : notepad -> no massive action
-// ID 101 : glpi_ocslinks -> no linkfield but massive action on it
-
-// Empty linkfield -> no massive action for field of main table
-
-// Datatype :
-// - date
-// - datetime
-// - date_delay : date with a delay in month (end_warranty, end_date)
-//   - parameters : ['datafields'][1]=DATE_FIELD, ['datafields'][2]=DELAY_FIELD
-// - realtime : time spent in second
-// - weblink
-// - email
-// - text
-// - number :
-//   - optional parameter : ['width'] for width search
-// - decimal : idem that number but formatted with decimal
-// - bool
-// - itemlink : link to the item
-//     - optionnal parameter for linked or meta items : itemlink_type : type used to link
-
-// Spécial parameters :
-//   - ['unit'] permit to set unit to display after standard display
-//   - ['computation'] for special computation case : use TABLE for table name
-
+/**
+ * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine 
+ */
 
 //////COMPUTER_TYPE
 $SEARCH_OPTION[COMPUTER_TYPE]['common'] = $LANG['common'][32];
