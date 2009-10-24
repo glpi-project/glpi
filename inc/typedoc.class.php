@@ -95,7 +95,10 @@ class Typedoc  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][10]."&nbsp;: </td><td>";
       dropdownIcons("icon",$this->fields["icon"],GLPI_ROOT."/pics/icones");
-      if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
+      if (!empty($this->fields["icon"])) {
+         echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
+              $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
+      }
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][11]."&nbsp;: </td><td>";
