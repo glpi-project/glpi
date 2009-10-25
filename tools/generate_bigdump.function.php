@@ -667,27 +667,27 @@ function generate_entity($ID_entity){
 	$FIRST["locations"]=getMaxItem("glpi_locations")+1;
 	for ($i=0;$i<pow($MAX['locations'],1/5)&&$added<$MAX['locations'];$i++){
 		$added++;
-		$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','lieu $i','0','','comment lieu $i','1')";
+		$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','lieu $i','0','','comment lieu $i','1','','','building X','room $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID=$DB->insert_id();
 		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
 			$added++;
-			$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','s-lieu $j','$newID','','comment s-lieu $j','2')";
+			$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','s-lieu $j','$newID','','comment s-lieu $j','2','','','building X','room $i-$j')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$newID2=$DB->insert_id();
 			for ($k=0;$k<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$k++){
 				$added++;
-				$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','ss-lieu $k','$newID2','','comment ss-lieu $k','3')";
+				$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ss-lieu $k','$newID2','','comment ss-lieu $k','3','','','building X','room $i-$j-$k')";
 				$DB->query($query) or die("PB REQUETE ".$query);
 				$newID3=$DB->insert_id();
 				for ($l=0;$l<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$l++){
 					$added++;
-					$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','sss-lieu $l','$newID3','','comment sss-lieu $l','4')";
+					$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','sss-lieu $l','$newID3','','comment sss-lieu $l','4','','','building X','room $i-$j-$k-$l')";
 					$DB->query($query) or die("PB REQUETE ".$query);
 					$newID4=$DB->insert_id();
 					for ($m=0;$m<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$m++){
 						$added++;
-						$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','ssss-lieu $m','$newID4','','comment ssss-lieu $m',5)";
+						$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ssss-lieu $m','$newID4','','comment ssss-lieu $m',5,'','','building X','room $i-$j-$k-$l-$m')";
 						$DB->query($query) or die("PB REQUETE ".$query);
 					}	
 				}	
