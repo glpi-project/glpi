@@ -238,6 +238,7 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("budget",$right);
          break;
 
+      case LOCATION_TYPE :
       case TICKETCATEGORY_TYPE :
       case TASKCATEGORY_TYPE :
          return haveRight("entity_dropdown",$right);

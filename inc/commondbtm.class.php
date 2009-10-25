@@ -1856,7 +1856,7 @@ abstract class CommonTreeDropdown extends CommonDBTM{
          $this->getEmpty();
       }
 
-      $this->showTabs($ID, '',getActiveTab($this->type));
+      $this->showTabs($ID, '',getActiveTab($this->type),array('itemtype'=>$this->type));
       $this->showFormHeader($target,$ID,'',2);
 
       $fields = $this->getAdditionalFields();
@@ -1893,6 +1893,10 @@ abstract class CommonTreeDropdown extends CommonDBTM{
                dropdownValue(getTableNameForForeignKeyField($field['name']),
                               $field['name'], $this->fields[$field['name']],1,
                               $this->fields["entities_id"]);
+               break;
+            case 'text' :
+               autocompletionTextField($field['name'],$this->table,$field['name'],
+                                       $this->fields[$field['name']],40);
                break;
          }
          echo "</td></tr>\n";

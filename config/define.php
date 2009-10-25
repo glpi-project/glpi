@@ -122,6 +122,7 @@ define("CRONTASK_TYPE",49);
 define("CRONTASKLOG_TYPE",50);
 define("TICKETCATEGORY_TYPE",51);
 define("TASKCATEGORY_TYPE",52);
+define("LOCATION_TYPE",53);
 
 
 // GLPI MODE
@@ -288,7 +289,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
                        CRONTASK_TYPE         => "glpi_crontasks",
                        CRONTASKLOG_TYPE      => "glpi_crontaskslogs",
                        TICKETCATEGORY_TYPE   => "glpi_ticketscategories",
-                       TASKCATEGORY_TYPE     => "glpi_taskscategories");
+                       TASKCATEGORY_TYPE     => "glpi_taskscategories",
+                       LOCATION_TYPE         => "glpi_locations");
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -342,22 +344,27 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         CRONTASK_TYPE        => "front/crontask.form.php",
 // CRONTASKLOG_TYPE => "???",
                         TICKETCATEGORY_TYPE  => "front/dropdown.form.php?itemtype=".TICKETCATEGORY_TYPE,
-                        TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE);
+                        TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE,
+                        LOCATION_TYPE        => "front/dropdown.form.php?itemtype=".LOCATION_TYPE);
 
 // Form for each type (order by type number)
-$SEARCH_PAGES = array(COMPUTER_TYPE   => "front/computer.php",
-                      NETWORKING_TYPE => "front/networking.php",
-                      PRINTER_TYPE    => "front/printer.php",
-                      MONITOR_TYPE    => "front/monitor.php",
-                      PERIPHERAL_TYPE => "front/peripheral.php",
-                      SOFTWARE_TYPE   => "front/software.php",
-                      CONTACT_TYPE    => "front/contact.php",
-                      ENTERPRISE_TYPE => "front/enterprise.php",
-                      CONTRACT_TYPE   => "front/contract.php",
-                      DOCUMENT_TYPE   => "front/document.php",
-                      OCSNG_TYPE      => "front/setup.ocsng.php",
-                      BUDGET_TYPE     => "front/budget.php",
-                      CRONTASK_TYPE   => "front/crontask.php");
+$SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
+                      NETWORKING_TYPE      => "front/networking.php",
+                      PRINTER_TYPE         => "front/printer.php",
+                      MONITOR_TYPE         => "front/monitor.php",
+                      PERIPHERAL_TYPE      => "front/peripheral.php",
+                      SOFTWARE_TYPE        => "front/software.php",
+                      CONTACT_TYPE         => "front/contact.php",
+                      ENTERPRISE_TYPE      => "front/enterprise.php",
+                      CONTRACT_TYPE        => "front/contract.php",
+                      DOCUMENT_TYPE        => "front/document.php",
+                      OCSNG_TYPE           => "front/setup.ocsng.php",
+                      BUDGET_TYPE          => "front/budget.php",
+                      CRONTASK_TYPE        => "front/crontask.php",
+                      TICKETCATEGORY_TYPE  => "front/dropdown.php?itemtype=".TICKETCATEGORY_TYPE,
+                      TASKCATEGORY_TYPE    => "front/dropdown.php?itemtype=".TASKCATEGORY_TYPE,
+                      LOCATION_TYPE        => "front/dropdown.php?itemtype=".LOCATION_TYPE);
+
 
 define("AUTH_DB_GLPI",1);
 define("AUTH_MAIL",2);
@@ -537,7 +544,8 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     GROUP_TYPE           => "glpi_groups",
                                     BUDGET_TYPE          => "glpi_budgets",
                                     TICKETCATEGORY_TYPE  => "glpi_ticketscategories",
-                                    TASKCATEGORY_TYPE    => "glpi_taskscategories");
+                                    TASKCATEGORY_TYPE    => "glpi_taskscategories",
+                                    LOCATION_TYPE        => "glpi_locations");
 
 
 // New config options which can be missing during migration
