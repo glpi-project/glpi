@@ -486,6 +486,9 @@ function searchForm($itemtype,$params) {
    echo "</td></tr>";
    echo "</table>\n";
 
+   // For dropdown
+   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+
    // Reset to start when submit new search
    echo "<input type='hidden' name='start' value='0'>";
    echo "</form>";
@@ -1184,6 +1187,11 @@ function showList ($itemtype,$params) {
                       getMultiSearchItemForLink("link2",$link2);
 
       $parameters = "sort=$sort&amp;order=$order".$globallinkto;
+      $tmp=explode('?',$target,2);
+      if (count($tmp)>1) {
+         $target = $tmp[0];
+         $parameters = $tmp[1].'&amp;'.$parameters;
+      }
 
       if ($output_type==GLOBAL_SEARCH) {
          $ci = new CommonItem();
@@ -1294,7 +1302,7 @@ function showList ($itemtype,$params) {
 
          // Display column Headers for toview items
          foreach ($toview as $key => $val) {
-            $linkto = "$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC").
+            $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC").
                       "&amp;start=$start".$globallinkto;
             echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$itemtype][$val]["name"],
                                          $header_num,$linkto,$sort==$val,$order);

@@ -525,22 +525,14 @@ if (isset($_POST["itemtype"])){
             break;
 
          case 'move_under':
-            if ($_POST["itemtype"]==TICKETCATEGORY_TYPE && isset($_POST['parent'])) {
-               checkRight('config','w');
-               $category=new TicketCategory();
+            if (isset($_POST['parent'])) {
+               $ci = new CommonItem();
+               $ci->setType($_POST["itemtype"], true);
+               $fk = getForeignKeyFieldForTable($ci->obj->table);
                foreach ($_POST["item"] as $key => $val){
-                  if ($val==1 && $category->can($key,'w')) {
-                      $category->update(array('id'=>$key,
-                                              'ticketscategories_id'=>$_POST['parent']));
-                  }
-               }
-            } else if ($_POST["itemtype"]==TASKCATEGORY_TYPE && isset($_POST['parent'])) {
-               checkRight('config','w');
-               $category=new TaskCategory();
-               foreach ($_POST["item"] as $key => $val){
-                  if ($val==1 && $category->can($key,'w')) {
-                      $category->update(array('id'=>$key,
-                                              'taskscategories_id'=>$_POST['parent']));
+                  if ($val==1 && $ci->obj->can($key,'w')) {
+                      $ci->obj->update(array('id' => $key,
+                                              $fk  => $_POST['parent']));
                   }
                }
             }

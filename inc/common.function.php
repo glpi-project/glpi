@@ -758,10 +758,10 @@ function addslashes_deep($value) {
 }
 
 /**
- * 
+ *
  */
 function key_exists_deep($need,$tab) {
-   
+
    foreach ($tab as $key => $value) {
       if ($need == $key) {
          return true;
@@ -1370,7 +1370,7 @@ function makeTextSearch($val,$not=false) {
          }
       }
       if ($begin||$end) {
-         // no utf8_substr, to be consistent with strlen result 
+         // no utf8_substr, to be consistent with strlen result
          $val=substr($val,$begin,$length-$end-$begin);
       }
 
@@ -1391,7 +1391,7 @@ function makeTextSearch($val,$not=false) {
 **/
 function makeTextCriteria ($field, $val, $not=false, $link='AND') {
    $sql = $field . makeTextSearch($val,$not);
-   
+
    if (($not && $val!="NULL" && $val!='^$')    // Not something
        ||(!$not && $val=='^$')) {              // Empty
       $sql = "($sql OR $field IS NULL)";
@@ -1932,6 +1932,8 @@ function initNavigateListItems($itemtype,$title="",$sub_type=-1) {
    }
    if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
       $url=$_SERVER['HTTP_REFERER'];
+   } else if (strpos($_SERVER['PHP_SELF'],"dropdown")>0) {
+      $url=$_SERVER['PHP_SELF']."?itemtype=$itemtype";
    } else {
       $url=$_SERVER['PHP_SELF'];
    }

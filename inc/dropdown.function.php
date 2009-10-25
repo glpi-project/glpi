@@ -2746,7 +2746,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 
    if (is_null($optgroup)) {
       $optgroup =
-         array($LANG['setup'][139] => array("glpi_locations"     => $LANG['common'][15],
+         array($LANG['setup'][139] => array(LOCATION_TYPE        => $LANG['common'][15],
                                             "glpi_states"        => $LANG['setup'][83],
                                             "glpi_manufacturers" => $LANG['common'][5]),
 

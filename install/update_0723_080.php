@@ -2288,7 +2288,7 @@ function update0723to080() {
                $CFG_GLPI["helpdesk_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                        PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
                $tostore=array();
-               
+
                foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
                   if (pow(2,$itemtype)&$types) {
                      $tostore[$itemtype]=$itemtype;
@@ -2311,9 +2311,9 @@ function update0723to080() {
 
 
    if (!FieldExists('glpi_profiles','helpdesk_status')) {
-      $query = "ALTER TABLE `glpi_profiles` 
-                   ADD `helpdesk_status` TEXT NULL 
-                        COMMENT 'json encoded array of from/dest allowed status change' 
+      $query = "ALTER TABLE `glpi_profiles`
+                   ADD `helpdesk_status` TEXT NULL
+                        COMMENT 'json encoded array of from/dest allowed status change'
                         AFTER `helpdesk_item_type`";
       $DB->query($query) or die("0.80 add helpdesk_status in glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
@@ -2342,6 +2342,23 @@ function update0723to080() {
    if (!FieldExists('glpi_documentstypes','comment')) {
       $query = "ALTER TABLE `glpi_documentstypes` ADD `comment` TEXT NULL ";
       $DB->query($query) or die("0.80 add comment in glpi_documentstypes" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_locations','is_recursive')) {
+      $query = "ALTER TABLE `glpi_locations`
+                        ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
+                        ADD `ancestors_cache` LONGTEXT NULL,
+                        ADD `sons_cache` LONGTEXT NULL";
+
+      $DB->query($query) or die("0.80 add recursive, cache in glpi_locations" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists('glpi_locations','building')) {
+      $query = "ALTER TABLE `glpi_locations` ADD `building` VARCHAR( 255 ) NULL ,
+                                             ADD `room` VARCHAR( 255 ) NULL ";
+
+      $DB->query($query) or die("0.80 add building, room in glpi_locations" .
                                  $LANG['update'][90] . $DB->error());
    }
 

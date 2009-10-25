@@ -87,4 +87,34 @@ class TaskCategory extends CommonTreeDropdown {
    }
 }
 
+class Location extends CommonTreeDropdown {
+
+   /**
+    * Constructor
+    **/
+   function __construct(){
+      parent::__construct(LOCATION_TYPE);
+   }
+
+
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array (array('name'  => 'building',
+                          'label' => $LANG['setup'][99],
+                          'type'  => 'text',
+                          'list'  => true),
+                    array('name'  => 'room',
+                          'label' => $LANG['setup'][100],
+                          'type'  => 'text',
+                          'list'  => true));
+   }
+
+   function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][15];
+   }
+}
+
 ?>

@@ -236,11 +236,15 @@ class CommonItem {
                break;
 
             case TICKETCATEGORY_TYPE:
-               $this->obj = new TicketCategory;
+               $this->obj = new TicketCategory();
                break;
 
             case TASKCATEGORY_TYPE:
-               $this->obj = new TaskCategory;
+               $this->obj = new TaskCategory();
+               break;
+
+            case LOCATION_TYPE:
+               $this->obj = new Location();
                break;
 
             default :
