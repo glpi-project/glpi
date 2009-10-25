@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: document.php 8830 2009-09-01 06:28:12Z remi $
+ * @version $Id: phone.tabs.php 8933 2009-09-10 18:41:20Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,26 +29,42 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi collet
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('document', 'search', 'tracking');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-checkRight("entity_dropdown","r");
+$itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
+if (!$itemtype) {
+   displayErrorAndDie($LANG['login'][5]."($itemtype)");
+}
+if (!isset($_POST["id"])) {
+   exit();
+}
+checkTypeRight($itemtype, 'r');
 
-commonHeader($LANG['setup'][79],$_SERVER['PHP_SELF'],"config","taskcategory");
+$ci = new CommonItem();
+$ci->setType($itemtype,true);
 
-manageGetValuesInSearch(TASKCATEGORY_TYPE);
+if ($_POST["id"]>0) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         $ci->objshowChildren($_POST["id"]);
+         displayPluginAction($itemtype,$_POST["id"],$_REQUEST['glpi_tab']);
+         break;
 
-searchForm(TASKCATEGORY_TYPE,$_GET);
+      default :
+         if (!displayPluginAction($itemtype,$_POST["id"],$_REQUEST['glpi_tab'])) {
+            $ci->obj->showChildren($_POST["id"]);
+         }
+   }
+}
 
-showList(TASKCATEGORY_TYPE,$_GET);
-
-commonFooter();
+ajaxFooter();
 
 ?>

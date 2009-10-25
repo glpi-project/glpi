@@ -436,9 +436,7 @@ function logArray() {
                       "entity"=>$LANG['log'][63],
                       "rules"=>$LANG['log'][65],
                       "reminder"=>$LANG['log'][81],
-                      "transfers"=>$LANG['transfer'][1],
-                      "ticketcategory"=>$LANG['setup'][79],
-                      "taskcategory"=>$LANG['setup'][98]);
+                      "transfers"=>$LANG['transfer'][1]);
 
    $logService=array("inventory"=>$LANG['Menu'][38],
                      "tracking"=>$LANG['Menu'][5],

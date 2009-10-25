@@ -34,20 +34,29 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('document', 'search', 'tracking');
+$NEEDED_ITEMS = array ('search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("entity_dropdown","r");
+$itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
+if (!$itemtype) {
+   displayErrorAndDie($LANG['login'][5]."($itemtype)");
+}
+checkTypeRight($itemtype, 'r');
 
-commonHeader($LANG['setup'][79],$_SERVER['PHP_SELF'],"config","ticketcategory");
+$ci = new CommonItem();
+$ci->setType($itemtype,true);
 
-manageGetValuesInSearch(TICKETCATEGORY_TYPE);
+commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",$itemtype);
 
-searchForm(TICKETCATEGORY_TYPE,$_GET);
+displayTitle('','',$ci->getType());
 
-showList(TICKETCATEGORY_TYPE,$_GET);
+manageGetValuesInSearch($itemtype);
+
+searchForm($itemtype,$_GET);
+
+showList($itemtype,$_GET);
 
 commonFooter();
 

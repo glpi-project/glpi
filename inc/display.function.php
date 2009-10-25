@@ -767,6 +767,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("dropdown","w") || haveRight("entity_dropdown","w")) {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
+      if ($option) {
+         $menu['config']['content']['dropdowns']['links']['search']
+                  = '/front/dropdown.php?itemtype='.$option;
+         $menu['config']['content']['dropdowns']['links']['add']
+                  = '/front/dropdown.form.php?itemtype='.$option;
+      }
    }
 
    if (haveRight("device","w")) {
@@ -827,7 +833,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $menu['config']['content']['typedoc']['links']['add']="/front/typedoc.form.php";
       }
    }
-
+/*
    if (haveRight("entity_dropdown","r")) {
       $menu['config']['content']['ticketcategory']['title']=$LANG['setup'][79];
       $menu['config']['content']['ticketcategory']['page']='/front/ticketcategory.php';
@@ -843,7 +849,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $menu['config']['content']['taskcategory']['links']['add']="/front/taskcategory.form.php";
       }
    }
-
+*/
    if (haveRight("link","r")) {
       $menu['config']['content']['link']['title']=$LANG['title'][33];
       $menu['config']['content']['link']['page']='/front/link.php';

@@ -341,8 +341,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // DOCUMENTITEM_TYPE => "???",
                         CRONTASK_TYPE        => "front/crontask.form.php",
 // CRONTASKLOG_TYPE => "???",
-                        TICKETCATEGORY_TYPE  => "front/ticketcategory.form.php",
-                        TASKCATEGORY_TYPE    => "front/taskcategory.form.php");
+                        TICKETCATEGORY_TYPE  => "front/dropdown.form.php?itemtype=".TICKETCATEGORY_TYPE,
+                        TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE);
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE   => "front/computer.php",

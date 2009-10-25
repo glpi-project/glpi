@@ -51,6 +51,7 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/ajax.function.php");
+include_once (GLPI_ROOT . "/inc/dropdown.class.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");

@@ -2043,13 +2043,13 @@ function displayActiveEntities($target,$myname) {
 }
 
 /**
- * get the Ticket status list 
- * 
+ * get the Ticket status list
+ *
  * @return an array
  */
 function getAllStatus() {
    global $LANG;
-   
+
    return array(
       'new'          => $LANG['joblist'][9],
       'assign'       => $LANG['joblist'][18],
@@ -2065,7 +2065,7 @@ function getAllStatus() {
  * @param $value default value
  */
 function dropdownStatus($name, $value=0) {
-   
+
    $tab = getAllStatus();
    echo "<select name='$name'>";
    foreach ($tab as $key => $val) {
@@ -2778,6 +2778,9 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
                $LANG['Menu'][26] => array("glpi_documentscategories" => $LANG['setup'][81]),
 
                $LANG['Menu'][18] => array("glpi_knowbaseitemscategories" => $LANG['title'][5]),
+
+               $LANG['title'][24] => array (TICKETCATEGORY_TYPE => $LANG['setup'][79],
+                                            TASKCATEGORY_TYPE => $LANG['setup'][98]),
 
                $LANG['setup'][145] => array("glpi_operatingsystems"      => $LANG['setup'][5],
                                             "glpi_operatingsystemsversions"
