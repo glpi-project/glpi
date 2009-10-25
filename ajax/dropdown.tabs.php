@@ -41,7 +41,7 @@ header_nocache();
 
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
 if (!$itemtype) {
-   displayErrorAndDie($LANG['login'][5]."($itemtype)");
+   displayErrorAndDie($LANG['login'][5]);
 }
 if (!isset($_POST["id"])) {
    exit();
@@ -51,10 +51,13 @@ checkTypeRight($itemtype, 'r');
 $ci = new CommonItem();
 $ci->setType($itemtype,true);
 
+// TODO : this probably need to be moved to class :
+// $ci->obj->displayTabContent($_REQUEST['glpi_tab'])
+
 if ($_POST["id"]>0) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $ci->objshowChildren($_POST["id"]);
+         $ci->obj->showChildren($_POST["id"]);
          displayPluginAction($itemtype,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 

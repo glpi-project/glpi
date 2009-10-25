@@ -43,7 +43,7 @@ if(!isset($_GET["id"])) {
 }
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
 if (!$itemtype) {
-   displayErrorAndDie($LANG['login'][5]."(".$_REQUEST['itemtype'].")");
+   displayErrorAndDie($LANG['login'][5]);
 }
 checkTypeRight($itemtype, 'r');
 
