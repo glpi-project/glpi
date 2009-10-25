@@ -51,9 +51,9 @@ $ci = new CommonItem();
 $ci->setType($itemtype,true);
 
 if (isset($_POST["add"])) {
-   $ci->obj->check(-1,'w');
+   $ci->obj->check(-1,'w',$_POST);
 
-   if ($newID=$category->add($_POST)) {
+   if ($newID=$ci->obj->add($_POST)) {
       logEvent($newID, "dropdown", 4, "setup",
                $_SESSION["glpiname"]." added ".$_POST["name"].".");
    }
@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $ci->obj->delete($_POST,1);
 
    logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticketcategory.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/dropdown.php?itemtype=$itemtype");
 
 } else if (isset($_POST["update"])) {
    $ci->obj->check($_POST["id"],'w');

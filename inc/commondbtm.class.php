@@ -1199,6 +1199,13 @@ class CommonDBTM {
 
       $RELATION=getDbRelations();
 
+      if (in_array($this->table, $CFG_GLPI["dropdowntree_tables"])) {
+         $f = getForeignKeyFieldForTable($this->table);
+         if (countElementsInTable($this->table, "`$f`='$ID'
+                                                 AND entities_id NOT IN $entities")>0) {
+            return false;
+         }
+      }
       if (isset($RELATION[$this->table])) {
          foreach ($RELATION[$this->table] as $tablename => $field) {
             if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
@@ -1857,6 +1864,7 @@ abstract class CommonTreeDropdown extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
       echo "<td>";
+      echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
       dropdownValue($this->table, $this->keyid,
                     $this->fields["$this->keyid"], 1,
                     $this->fields["entities_id"], '',
