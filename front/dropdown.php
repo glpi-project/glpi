@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
 if (!$itemtype) {
-   displayErrorAndDie($LANG['login'][5]."($itemtype)");
+   displayErrorAndDie($LANG['login'][5]);
 }
 checkTypeRight($itemtype, 'r');
 
