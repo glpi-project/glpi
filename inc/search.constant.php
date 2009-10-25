@@ -3611,6 +3611,11 @@ $SEARCH_OPTION[GROUP_TYPE][6]['linkfield'] = 'is_recursive';
 $SEARCH_OPTION[GROUP_TYPE][6]['name']      = $LANG['entity'][9];
 $SEARCH_OPTION[GROUP_TYPE][6]['datatype']  = 'bool';
 
+$SEARCH_OPTION[GROUP_TYPE][80]['table']     = 'glpi_entities';
+$SEARCH_OPTION[GROUP_TYPE][80]['field']     = 'completename';
+$SEARCH_OPTION[GROUP_TYPE][80]['linkfield'] = 'entities_id';
+$SEARCH_OPTION[GROUP_TYPE][80]['name']      = $LANG['entity'][0];
+
 
 //////ENTITY_TYPE
 $SEARCH_OPTION[ENTITY_TYPE]['common'] = $LANG['common'][32];
