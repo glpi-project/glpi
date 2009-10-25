@@ -2347,7 +2347,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
             return "";
          }
          break;
-         
+
       case "glpi_networkports.ip" :
          $search=array("/\&lt;/","/\&gt;/");
          $replace=array("<",">");
@@ -2365,7 +2365,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
          }
          return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
          break;
-      
+
    }
 
    //// Default cases
@@ -2826,8 +2826,9 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
       switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
          case "itemlink" :
             if (!empty($data[$NAME.$num."_2"])) {
-               $out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
-                       $data[$NAME.$num."_2"]."\">";
+               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype];
+               $out .= (strstr($INFOFORM_PAGES[$itemtype],'?') ?'&amp;' :  '?');
+               $out .= 'id='.$data[$NAME.$num."_2"]."\">";
                $out .= $data[$NAME.$num].$unit;
                if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
                   $out .= " (".$data[$NAME.$num."_2"].")";

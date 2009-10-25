@@ -50,9 +50,18 @@ checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
 
 //if(isset($_SERVER['HTTP_REFERER']))
 //$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
-if (isset($_POST["which"]))$which=$_POST["which"];
-elseif (isset($_GET["which"]))$which=$_GET["which"];
-else $which="";
+if (isset($_POST["which"])) {
+   $which=$_POST["which"];
+} else if (isset($_GET["which"])) {
+   $which=$_GET["which"];
+} else {
+   $which="";
+}
+
+// TODO Temporary hack form dropdown which are manage as Object
+if (is_numeric($which)) {
+   glpi_header(GLPI_ROOT."/front/dropdown.php?itemtype=$which");
+}
 
 // Security
 if (!empty($which) && ! TableExists($which) ){

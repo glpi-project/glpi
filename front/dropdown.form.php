@@ -34,8 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array('tracking');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -43,34 +41,41 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-$category = new TicketCategory();
+$itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
+if (!$itemtype) {
+   displayErrorAndDie($LANG['login'][5]."(".$_REQUEST['itemtype'].")");
+}
+checkTypeRight($itemtype, 'r');
+
+$ci = new CommonItem();
+$ci->setType($itemtype,true);
 
 if (isset($_POST["add"])) {
-   $category->check(-1,'w');
+   $ci->obj->check(-1,'w');
 
    if ($newID=$category->add($_POST)) {
-      logEvent($newID, "ticketcategory", 4, "setup",
+      logEvent($newID, "dropdown", 4, "setup",
                $_SESSION["glpiname"]." added ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $category->check($_POST["id"],'w');
-   $category->delete($_POST,1);
+   $ci->obj->check($_POST["id"],'w');
+   $ci->obj->delete($_POST,1);
 
-   logEvent($_POST["id"], "ticketcategory", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($CFG_GLPI["root_doc"]."/front/ticketcategory.php");
 
 } else if (isset($_POST["update"])) {
-   $category->check($_POST["id"],'w');
-   $category->update($_POST);
+   $ci->obj->check($_POST["id"],'w');
+   $ci->obj->update($_POST);
 
-   logEvent($_POST["id"], "ticketcategory", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","ticketcategory");
-   $category->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns",$itemtype);
+   $ci->obj->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
    commonFooter();
 }
 

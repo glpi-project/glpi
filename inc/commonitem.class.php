@@ -239,6 +239,10 @@ class CommonItem {
                $this->obj = new TicketCategory;
                break;
 
+            case TASKCATEGORY_TYPE:
+               $this->obj = new TaskCategory;
+               break;
+
             default :
                // Plugin case
                if ($itemtype>1000) {
@@ -422,6 +426,10 @@ class CommonItem {
                      }
                   }
                }
+            }
+            // TODO => could be used for most type but requires object instanciation
+            if (method_exists($this->obj,'getTypeName')) {
+               return $this->obj->getTypeName();
             }
             break;
       }

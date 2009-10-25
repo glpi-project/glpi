@@ -1333,42 +1333,4 @@ class Followup  extends CommonDBTM {
 
 }
 
-class TicketCategory extends CommonTreeDropdown {
-
-   /**
-    * Constructor
-    **/
-   function __construct(){
-      parent::__construct(TICKETCATEGORY_TYPE);
-   }
-
-   function getAdditionalFields() {
-      global $LANG;
-      
-      return array (array('name'  => 'users_id',      
-                          'label' => $LANG['common'][10],
-                          'type'  => 'dropdownUsersID',
-                          'list'  => true),
-                    array('name'  => 'groups_id',
-                          'label' => $LANG['common'][35],
-                          'type'  => 'dropdownValue',
-                          'list'  => true),
-                    array('name'  => 'knowbaseitemscategories_id',
-                          'label' => $LANG['title'][5],
-                          'type'  => 'dropdownValue',
-                          'list'  => true));
-   }
-}
-
-class TaskCategory extends CommonTreeDropdown {
-
-   /**
-    * Constructor
-    **/
-   function __construct(){
-      parent::__construct(TASKCATEGORY_TYPE);
-   }
-
-}
-
 ?>

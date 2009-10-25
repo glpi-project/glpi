@@ -1810,7 +1810,7 @@ abstract class CommonTreeDropdown extends CommonDBTM{
     **/
    function __construct($itemtype){
       global $LINK_ID_TABLE;
-      
+
       $this->type=$itemtype;
       $this->table=$LINK_ID_TABLE[$itemtype];
       $this->keyid=getForeignKeyFieldForTable($this->table);
@@ -1824,12 +1824,17 @@ abstract class CommonTreeDropdown extends CommonDBTM{
    function getAdditionalFields() {
       return array();
    }
-   
+
+   /**
+    * Get the localized display name of the type
+    */
+   abstract function getTypeName();
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
       $ong=array();
-      $ong[1]=$LANG['title'][26];
+      $ong[1] = $this->getTypeName();
       return $ong;
    }
 
@@ -1849,7 +1854,7 @@ abstract class CommonTreeDropdown extends CommonDBTM{
 
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
-      
+
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue($this->table, $this->keyid,
@@ -1877,7 +1882,7 @@ abstract class CommonTreeDropdown extends CommonDBTM{
                                 $this->fields["entities_id"]);
                break;
             case 'dropdownValue' :
-               dropdownValue(getTableNameForForeignKeyField($field['name']), 
+               dropdownValue(getTableNameForForeignKeyField($field['name']),
                               $field['name'], $this->fields[$field['name']],1,
                               $this->fields["entities_id"]);
                break;
@@ -1973,8 +1978,8 @@ abstract class CommonTreeDropdown extends CommonDBTM{
 
       foreach ($DB->request($this->table, array($this->keyid=>$ID)) as $data) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td><a href='".$CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type]."?id=";
-         echo $data['id']."'>".$data['name']."</a></td>";
+         echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
+         echo $this->type.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
          echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
          foreach ($fields as $field) {
             if ($field['list']) {
