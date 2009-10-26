@@ -247,6 +247,10 @@ class CommonItem {
                $this->obj = new Location();
                break;
 
+            case NETPOINT_TYPE:
+               $this->obj = new Netpoint();
+               break;
+
             default :
                // Plugin case
                if ($itemtype>1000) {

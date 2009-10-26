@@ -51,22 +51,7 @@ checkTypeRight($itemtype, 'r');
 $ci = new CommonItem();
 $ci->setType($itemtype,true);
 
-// TODO : this probably need to be moved to class :
-// $ci->obj->displayTabContent($_REQUEST['glpi_tab'])
-
-if ($_POST["id"]>0) {
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         $ci->obj->showChildren($_POST["id"]);
-         displayPluginAction($itemtype,$_POST["id"],$_REQUEST['glpi_tab']);
-         break;
-
-      default :
-         if (!displayPluginAction($itemtype,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            $ci->obj->showChildren($_POST["id"]);
-         }
-   }
-}
+$ci->obj->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
 
 ajaxFooter();
 

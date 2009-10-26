@@ -4006,5 +4006,7 @@ $obj = new TaskCategory();
 $SEARCH_OPTION[TASKCATEGORY_TYPE]   = $obj->getSearchOptions();
 $obj = new Location();
 $SEARCH_OPTION[LOCATION_TYPE]       = $obj->getSearchOptions();
+$obj = new Netpoint();
+$SEARCH_OPTION[NETPOINT_TYPE]       = $obj->getSearchOptions();
 
 ?>
