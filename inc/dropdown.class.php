@@ -233,9 +233,16 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     */
    function showTabContent ($ID, $tab) {
       if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
-         $this->showChildren($ID);
+         switch ($tab) {
+            case 1 :
+               $this->showChildren($ID);
+               return true;
+            case -1 :
+               $this->showChildren($ID);
+               return false;
+         }
       }
-      return ($tab == -1 ? false : true);
+      return false;
    }
 
    function prepareInputForAdd($input) {
@@ -505,6 +512,86 @@ class Location extends CommonTreeDropdown {
       $tab[12]['datatype']      = 'text';
 
       return $tab;
+   }
+
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
+
+      $ong=parent::defineTabs($ID,$withtemplate);
+      $ong[2] = $LANG['networking'][51];
+
+      return $ong;
+   }
+
+   /**
+    * Display content of Tab
+    *
+    * @param $ID of the item
+    * @param $tab number of the tab
+    *
+    * @return true if handled (for class stack)
+    */
+   function showTabContent ($ID, $tab) {
+      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
+         switch ($tab) {
+            case 2 :
+               $this->showNetpoints($ID);
+               return true;
+            case -1 :
+               $this->showNetpoints($ID);
+               return false;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Print the HTML array of the Netpoint associated to a Location
+    *
+    *@param $ID of the Location
+    *
+    *@return Nothing (display)
+    *
+    **/
+    function showNetpoints($ID) {
+      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+
+      $this->check($ID, 'r');
+
+      if (isset($_REQUEST["start"])) {
+         $start = $_REQUEST["start"];
+      } else {
+         $start = 0;
+      }
+      $number = countElementsInTable('`glpi_netpoints`', "`locations_id`='$ID'");
+
+      echo "<br><div class='center'>";
+
+      if ($number < 1) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan>".$LANG['networking'][51]." - ".$LANG['search'][15]."</th></tr>";
+      } else {
+         printAjaxPager($this->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
+         echo "<th>".$LANG['common'][25]."</th>";
+         echo "</tr>\n";
+
+         $crit = array('locations_id' => $ID,
+                       'ORDER'        => 'name',
+                       'START'        => $start,
+                       'LIMIT'        => $_SESSION['glpilist_limit']);
+
+         foreach ($DB->request('glpi_netpoints', $crit) as $data) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
+            echo NETPOINT_TYPE.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
+            echo "<td>".$data['comment']."</td>";
+            echo "</tr>\n";
+         }
+      }
+      echo "</table></div>\n";
    }
 }
 
