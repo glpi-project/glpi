@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-
-abstract class CommonTreeDropdown extends CommonDBTM{
+///
+abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * Constructor
@@ -48,9 +48,6 @@ abstract class CommonTreeDropdown extends CommonDBTM{
 
       $this->type=$itemtype;
       $this->table=$LINK_ID_TABLE[$itemtype];
-      $this->keyid=getForeignKeyFieldForTable($this->table);
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
    }
 
    /**
@@ -90,24 +87,16 @@ abstract class CommonTreeDropdown extends CommonDBTM{
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][75]."&nbsp;:</td>";
-      echo "<td>";
-      echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
-      dropdownValue($this->table, $this->keyid,
-                    $this->fields["$this->keyid"], 1,
-                    $this->fields["entities_id"], '',
-                    ($ID>0 ? getSonsOf($this->table, $ID) : array()));
-      echo "</td>";
-
-      echo "<td rowspan='".($nb+2)."'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='".($nb+2)."'>
-            <textarea cols='45' rows='".($nb+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
+      echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
       autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      echo "</td>";
+
+      echo "<td rowspan='".($nb+1)."'>";
+      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='".($nb+1)."'>
+            <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       foreach ($fields as $field) {
@@ -126,6 +115,12 @@ abstract class CommonTreeDropdown extends CommonDBTM{
                autocompletionTextField($field['name'],$this->table,$field['name'],
                                        $this->fields[$field['name']],40);
                break;
+            case 'parent' :
+               dropdownValue($this->table, $field['name'],
+                             $this->fields[$field['name']], 1,
+                             $this->fields["entities_id"], '',
+                             ($ID>0 ? getSonsOf($this->table, $ID) : array()));
+               break;
          }
          echo "</td></tr>\n";
       }
@@ -136,6 +131,75 @@ abstract class CommonTreeDropdown extends CommonDBTM{
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
       return true;
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][32];;
+
+      $tab[1]['table']         = $this->table;
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_link'] = $this->type;
+
+      $tab[16]['table']     = $this->table;
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      if ($this->entity_assign) {
+         $tab[80]['table']     = 'glpi_entities';
+         $tab[80]['field']     = 'completename';
+         $tab[80]['linkfield'] = 'entities_id';
+         $tab[80]['name']      = $LANG['entity'][0];
+      }
+      if ($this->may_be_recursive) {
+         $tab[86]['table']     = $this->table;
+         $tab[86]['field']     = 'is_recursive';
+         $tab[86]['linkfield'] = 'is_recursive';
+         $tab[86]['name']      = $LANG['entity'][9];
+         $tab[86]['datatype']  = 'bool';
+      }
+      return $tab;
+   }
+}
+
+/// CommonTreeDropdown class - Hirearchical and cross entities
+abstract class CommonTreeDropdown extends CommonDropdown {
+
+   /**
+    * Constructor
+    **/
+   function __construct($itemtype){
+      global $LINK_ID_TABLE;
+
+      $this->type=$itemtype;
+      $this->table=$LINK_ID_TABLE[$itemtype];
+      $this->keyid=getForeignKeyFieldForTable($this->table);
+      $this->entity_assign=true;
+      $this->may_be_recursive=true;
+   }
+
+   /**
+    * Return Additional Fileds for this type
+    */
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => $this->keyid,
+                         'label' => $LANG['setup'][75],
+                         'type'  => 'parent',
+                         'list'  => false));
    }
 
    function prepareInputForAdd($input) {
@@ -271,8 +335,28 @@ abstract class CommonTreeDropdown extends CommonDBTM{
       echo "</table></div>\n";
    }
 
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[14]['table']         = $this->table;
+      $tab[14]['field']         = 'completename';
+      $tab[14]['linkfield']     = '';
+      $tab[14]['name']          = $LANG['common'][51];
+      $tab[14]['datatype']      = 'itemlink';
+      $tab[14]['itemlink_type'] = $this->type;
+
+      return $tab;
+   }
 }
 
+/// TicketCategory class
 class TicketCategory extends CommonTreeDropdown {
 
    /**
@@ -285,7 +369,11 @@ class TicketCategory extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array (array('name'  => 'users_id',
+      return  array(array('name'  => $this->keyid,
+                          'label' => $LANG['setup'][75],
+                          'type'  => 'parent',
+                          'list'  => false),
+                   array('name'  => 'users_id',
                           'label' => $LANG['common'][10],
                           'type'  => 'dropdownUsersID',
                           'list'  => true),
@@ -306,6 +394,7 @@ class TicketCategory extends CommonTreeDropdown {
    }
 }
 
+/// TaskCategory class
 class TaskCategory extends CommonTreeDropdown {
 
    /**
@@ -323,6 +412,7 @@ class TaskCategory extends CommonTreeDropdown {
    }
 }
 
+/// Location class
 class Location extends CommonTreeDropdown {
 
    /**
@@ -336,20 +426,49 @@ class Location extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array (array('name'  => 'building',
-                          'label' => $LANG['setup'][99],
-                          'type'  => 'text',
-                          'list'  => true),
-                    array('name'  => 'room',
-                          'label' => $LANG['setup'][100],
-                          'type'  => 'text',
-                          'list'  => true));
+      return array(array('name'  => $this->keyid,
+                         'label' => $LANG['setup'][75],
+                         'type'  => 'parent',
+                         'list'  => false),
+                   array('name'  => 'building',
+                         'label' => $LANG['setup'][99],
+                         'type'  => 'text',
+                         'list'  => true),
+                   array('name'  => 'room',
+                         'label' => $LANG['setup'][100],
+                         'type'  => 'text',
+                         'list'  => true));
    }
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['common'][15];
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[11]['table']         = $this->table;
+      $tab[11]['field']         = 'building';
+      $tab[11]['linkfield']     = 'building';
+      $tab[11]['name']          = $LANG['setup'][99];
+      $tab[11]['datatype']      = 'text';
+
+      $tab[12]['table']         = $this->table;
+      $tab[12]['field']         = 'room';
+      $tab[12]['linkfield']     = 'room';
+      $tab[12]['name']          = $LANG['setup'][100];
+      $tab[12]['datatype']      = 'text';
+
+      return $tab;
    }
 }
 

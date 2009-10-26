@@ -3999,44 +3999,12 @@ $SEARCH_OPTION[CRONTASK_TYPE][16]['linkfield'] = 'comment';
 $SEARCH_OPTION[CRONTASK_TYPE][16]['name']      = $LANG['common'][25];
 $SEARCH_OPTION[CRONTASK_TYPE][16]['datatype']  = 'text';
 
-// TICKETCATEGORY_TYPE
-// Tree Dropdown
-foreach (array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE) as $type) {
-   global $LINK_ID_TABLE;
-   $table = $LINK_ID_TABLE[$type];
-
-   $SEARCH_OPTION[$type]['common']           = $LANG['common'][32];;
-
-   $SEARCH_OPTION[$type][1]['table']         = $table;
-   $SEARCH_OPTION[$type][1]['field']         = 'name';
-   $SEARCH_OPTION[$type][1]['linkfield']     = '';
-   $SEARCH_OPTION[$type][1]['name']          = $LANG['common'][16];
-   $SEARCH_OPTION[$type][1]['datatype']      = 'itemlink';
-   $SEARCH_OPTION[$type][1]['itemlink_link'] = $type;
-
-   $SEARCH_OPTION[$type][14]['table']         = $table;
-   $SEARCH_OPTION[$type][14]['field']         = 'completename';
-   $SEARCH_OPTION[$type][14]['linkfield']     = '';
-   $SEARCH_OPTION[$type][14]['name']          = $LANG['common'][51];
-   $SEARCH_OPTION[$type][14]['datatype']      = 'itemlink';
-   $SEARCH_OPTION[$type][14]['itemlink_type'] = $type;
-
-   $SEARCH_OPTION[$type][16]['table']     = $table;
-   $SEARCH_OPTION[$type][16]['field']     = 'comment';
-   $SEARCH_OPTION[$type][16]['linkfield'] = 'comment';
-   $SEARCH_OPTION[$type][16]['name']      = $LANG['common'][25];
-   $SEARCH_OPTION[$type][16]['datatype']  = 'text';
-
-   $SEARCH_OPTION[$type][80]['table']     = 'glpi_entities';
-   $SEARCH_OPTION[$type][80]['field']     = 'completename';
-   $SEARCH_OPTION[$type][80]['linkfield'] = 'entities_id';
-   $SEARCH_OPTION[$type][80]['name']      = $LANG['entity'][0];
-
-   $SEARCH_OPTION[$type][86]['table']     = $table;
-   $SEARCH_OPTION[$type][86]['field']     = 'is_recursive';
-   $SEARCH_OPTION[$type][86]['linkfield'] = 'is_recursive';
-   $SEARCH_OPTION[$type][86]['name']      = $LANG['entity'][9];
-   $SEARCH_OPTION[$type][86]['datatype']  = 'bool';
-}
+// Dropdown item
+$obj = new TicketCategory();
+$SEARCH_OPTION[TICKETCATEGORY_TYPE] = $obj->getSearchOptions();
+$obj = new TaskCategory();
+$SEARCH_OPTION[TASKCATEGORY_TYPE]   = $obj->getSearchOptions();
+$obj = new Location();
+$SEARCH_OPTION[LOCATION_TYPE]       = $obj->getSearchOptions();
 
 ?>
