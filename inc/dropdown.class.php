@@ -70,6 +70,27 @@ abstract class CommonDropdown extends CommonDBTM {
       return $ong;
    }
 
+   /**
+    * Display content of Tab
+    *
+    * @param $ID of the item
+    * @param $tab number of the tab
+    *
+    * @return true if handled (for class stack)
+    */
+   function showTabContent ($ID, $tab) {
+      if ($ID>0) {
+         switch ($tab) {
+            case -1:
+               displayPluginAction($this->type,$ID,$tab);
+               return false;
+            default:
+               return displayPluginAction($this->type,$ID,$tab);
+         }
+      }
+      return false;
+   }
+
    function showForm ($target,$ID) {
       global $CFG_GLPI, $LANG;
 
@@ -200,6 +221,21 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false));
+   }
+
+   /**
+    * Display content of Tab
+    *
+    * @param $ID of the item
+    * @param $tab number of the tab
+    *
+    * @return true if handled (for class stack)
+    */
+   function showTabContent ($ID, $tab) {
+      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
+         $this->showChildren($ID);
+      }
+      return ($tab == -1 ? false : true);
    }
 
    function prepareInputForAdd($input) {
@@ -467,6 +503,53 @@ class Location extends CommonTreeDropdown {
       $tab[12]['linkfield']     = 'room';
       $tab[12]['name']          = $LANG['setup'][100];
       $tab[12]['datatype']      = 'text';
+
+      return $tab;
+   }
+}
+
+/// Netpoint class
+class Netpoint extends CommonDropdown {
+
+   /**
+    * Constructor
+    **/
+   function __construct(){
+      $this->type = NETPOINT_TYPE;
+      $this->table = 'glpi_netpoints';
+      $this->entity_assign = true;
+   }
+
+
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'locations_id',
+                         'label' => $LANG['common'][15],
+                         'type'  => 'dropdownValue',
+                         'list'  => true));
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][15];
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[3]['table']         = 'glpi_locations';
+      $tab[3]['field']         = 'completename';
+      $tab[3]['linkfield']     = 'locations_id';
+      $tab[3]['name']          = $LANG['common'][15];
 
       return $tab;
    }

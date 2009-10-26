@@ -2792,7 +2792,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 
                $LANG['setup'][88] => array("glpi_networkinterfaces"          => $LANG['setup'][9],
                                            "glpi_networkequipmentsfirmwares" => $LANG['setup'][71],
-                                           "glpi_netpoints"                  => $LANG['setup'][73],
+                                           NETPOINT_TYPE                     => $LANG['setup'][73],
                                            "glpi_domains"                    => $LANG['setup'][89],
                                            "glpi_networks"                   => $LANG['setup'][88],
                                            "glpi_vlans"                      => $LANG['setup'][90]),

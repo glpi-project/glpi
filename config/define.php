@@ -123,6 +123,7 @@ define("CRONTASKLOG_TYPE",50);
 define("TICKETCATEGORY_TYPE",51);
 define("TASKCATEGORY_TYPE",52);
 define("LOCATION_TYPE",53);
+define("NETPOINT_TYPE",54);
 
 
 // GLPI MODE
@@ -290,7 +291,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
                        CRONTASKLOG_TYPE      => "glpi_crontaskslogs",
                        TICKETCATEGORY_TYPE   => "glpi_ticketscategories",
                        TASKCATEGORY_TYPE     => "glpi_taskscategories",
-                       LOCATION_TYPE         => "glpi_locations");
+                       LOCATION_TYPE         => "glpi_locations",
+                       NETPOINT_TYPE         => "glpi_netpoints");
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -345,7 +347,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // CRONTASKLOG_TYPE => "???",
                         TICKETCATEGORY_TYPE  => "front/dropdown.form.php?itemtype=".TICKETCATEGORY_TYPE,
                         TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE,
-                        LOCATION_TYPE        => "front/dropdown.form.php?itemtype=".LOCATION_TYPE);
+                        LOCATION_TYPE        => "front/dropdown.form.php?itemtype=".LOCATION_TYPE,
+                        NETPOINT_TYPE        => "front/dropdown.form.php?itemtype=".NETPOINT_TYPE);
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
@@ -363,7 +366,8 @@ $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
                       CRONTASK_TYPE        => "front/crontask.php",
                       TICKETCATEGORY_TYPE  => "front/dropdown.php?itemtype=".TICKETCATEGORY_TYPE,
                       TASKCATEGORY_TYPE    => "front/dropdown.php?itemtype=".TASKCATEGORY_TYPE,
-                      LOCATION_TYPE        => "front/dropdown.php?itemtype=".LOCATION_TYPE);
+                      LOCATION_TYPE        => "front/dropdown.php?itemtype=".LOCATION_TYPE,
+                      NETPOINT_TYPE        => "front/dropdown.php?itemtype=".NETPOINT_TYPE);
 
 
 define("AUTH_DB_GLPI",1);
