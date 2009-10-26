@@ -557,6 +557,7 @@ class Location extends CommonTreeDropdown {
       global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
 
       $this->check($ID, 'r');
+      $canedit = $this->can($ID, 'w');
 
       if (isset($_REQUEST["start"])) {
          $start = $_REQUEST["start"];
@@ -573,9 +574,16 @@ class Location extends CommonTreeDropdown {
       } else {
          printAjaxPager($this->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
-         echo "<th>".$LANG['common'][25]."</th>";
+         if ($canedit) {
+            echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action='".
+                   $CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+         }
+         echo "<table class='tab_cadre_fixe'><tr>";
+         if ($canedit) {
+            echo "<th width='10'>&nbsp;</th>";
+         }
+         echo "<th>".$LANG['common'][16]."</th>"; // Name
+         echo "<th>".$LANG['common'][25]."</th>"; // Comment
          echo "</tr>\n";
 
          $crit = array('locations_id' => $ID,
@@ -587,13 +595,35 @@ class Location extends CommonTreeDropdown {
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
             addToNavigateListItems(NETPOINT_TYPE,$data["id"]);
             echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+            }
             echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
             echo NETPOINT_TYPE.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
             echo "<td>".$data['comment']."</td>";
             echo "</tr>\n";
          }
+         echo "</table>\n";
+         if ($canedit) {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+            echo "<td class='center'>";
+            echo "<a onclick= \"if (markCheckboxes('massiveaction_form')) return false;\"".
+                  " href='#'>".$LANG['buttons'][18]."</a></td>";
+            echo "<td>/</td><td class='center'>";
+            echo "<a onclick= \"if (unMarkCheckboxes('massiveaction_form')) return false;\"".
+                  " href='#'>".$LANG['buttons'][19]."</a>";
+            echo "</td><td class='left' width='80%'>";
+            echo "<input type='hidden' name='itemtype' value='".NETPOINT_TYPE."'>";
+            echo "<input type='hidden' name='action' value='delete'>";
+            echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+                  $LANG['buttons'][6]."\" >\n";
+
+            echo "</td></tr>";
+            echo "</table></form>\n";
+         }
       }
-      echo "</table></div>\n";
+      echo "</div>\n";
    }
 }
 
