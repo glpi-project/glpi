@@ -525,8 +525,8 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgesitems
       'glpi_consumablesitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
       'glpi_links','glpi_locations','glpi_mailcollectors','glpi_monitors','glpi_netpoints',
       'glpi_networkequipments','glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
-      'glpi_softwareslicenses','glpi_suppliers','glpi_tickets','glpi_ticketscategories',
-      'reservation_types','state_types');
+      'glpi_softwareslicenses','glpi_suppliers','glpi_tickets','glpi_taskscategories',
+      'glpi_ticketscategories','reservation_types','state_types');
 
 $CFG_GLPI["union_search_type"] = array(RESERVATION_TYPE=>"reservation_types",
                                        STATE_TYPE=>"state_types");
