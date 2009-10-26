@@ -533,7 +533,7 @@ class Netpoint extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['common'][15];
+      return $LANG['setup'][73];
    }
 
    /**
