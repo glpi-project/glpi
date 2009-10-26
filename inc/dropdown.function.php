@@ -1715,6 +1715,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
 
          case TICKETCATEGORY_TYPE :
          case TASKCATEGORY_TYPE :
+         case LOCATION_TYPE :
             if ($isadmin) {
                echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
             }
