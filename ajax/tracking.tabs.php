@@ -57,6 +57,10 @@ if ($_POST["id"]>0) {
          showAddFollowupForm($_POST["id"]);
          break;
 
+      case 3 :
+         showJobCost($_POST['target'],$_POST["id"]);
+         break;
+
       default :
          if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
             showJobDetails($_POST['target'],$_POST["id"]);

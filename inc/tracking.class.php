@@ -72,7 +72,8 @@ class Job extends CommonDBTM{
 				$ong[2]=$LANG['job'][29];
 			}
 		}
-
+      $ong[3]=$LANG['job'][47];
+      $ong[4]=$LANG['jobresolution'][1];
 		$ong['no_all_tab']=true;
 
 		return $ong;
