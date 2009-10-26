@@ -583,7 +583,9 @@ class Location extends CommonTreeDropdown {
                        'START'        => $start,
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
+         initNavigateListItems(NETPOINT_TYPE, $this->getTypeName()."= ".$this->fields['name']);
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
+            addToNavigateListItems(NETPOINT_TYPE,$data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
             echo NETPOINT_TYPE.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
