@@ -230,7 +230,7 @@ $LANG['common'][43]="Jméno";
 $LANG['common'][44]="Výchozí hodnota(y)"; 
 $LANG['common'][45]="MB max"; 
 $LANG['common'][46]="Vcard"; 
-$LANG['common'][47]="Pokrok"; 
+$LANG['common'][47]="Postup"; 
 $LANG['common'][48]="Příjmení"; 
 $LANG['common'][49]="Žádný"; 
 $LANG['common'][50]="Potvrdit smazání?"; 
@@ -522,7 +522,7 @@ $LANG['financial'][107]="Obnova";
 $LANG['gmt'][0]="GMT"; 
 $LANG['gmt'][1]="hodin"; 
 
-$LANG['help'][3]="Velmi velká"; 
+$LANG['help'][3]="Velmi vysoká"; 
 $LANG['help'][4]="Vysoká"; 
 $LANG['help'][5]="Střední"; 
 $LANG['help'][6]="Nízká"; 
