@@ -852,25 +852,8 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    echo "<tr class='tab_bg_1 center'>";
    echo "<td colspan='1' >".$LANG['joblist'][0]."&nbsp;:&nbsp;";
-   echo "<select name='status'>";
-   echo "<option value='new' ".($status=="new"?" selected ":"").">".$LANG['joblist'][9]."</option>";
-   echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$LANG['joblist'][18].
-         "</option>";
-   echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$LANG['joblist'][19].
-         "</option>";
-   echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$LANG['joblist'][26].
-         "</option>";
-   echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$LANG['joblist'][10].
-         "</option>";
-   echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".
-         $LANG['joblist'][17]."</option>";
-   echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG['joblist'][24].
-         "</option>";
-   echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG['joblist'][21].
-         "</option>";
-   echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG['joblist'][25]."</option>";
-   echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG['common'][66]."</option>";
-   echo "</select></td>";
+   dropdownStatus('status',$status,1);
+   echo "</td>";
 
    if (haveRight("show_group_ticket",1)) {
       echo "<td class='center'>";
@@ -999,25 +982,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    echo "<tr class='tab_bg_1'>";
    echo "<td colspan='1' class='center'>".$LANG['joblist'][0]."&nbsp;:<br>";
-   echo "<select name='status'>";
-   echo "<option value='new' ".($status=="new"?" selected ":"").">".$LANG['joblist'][9]."</option>";
-   echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$LANG['joblist'][18].
-         "</option>";
-   echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$LANG['joblist'][19].
-         "</option>";
-   echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$LANG['joblist'][26].
-         "</option>";
-   echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$LANG['joblist'][10].
-         "</option>";
-   echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".
-         $LANG['joblist'][17]."</option>";
-   echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG['joblist'][24].
-         "</option>";
-   echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG['joblist'][21].
-         "</option>";
-   echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG['joblist'][25]."</option>";
-   echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG['common'][66]."</option>";
-   echo "</select></td>";
+   dropdownStatus('status',$status,1);
+   echo "</td>";
 
    echo "<td colspan='1' class='center'>".$LANG['joblist'][2]."&nbsp;:<br>";
    dropdownPriority("priority",$priority,1);
@@ -1801,8 +1767,22 @@ function showJobDetails($target, $ID,$array=array()) {
       $showuserlink=1;
    }
    if (!$job->getFromDB($ID) || !haveAccessToEntity($job->fields['entities_id'])) {
-      echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";
-      return false;
+      $job->getEmpty();
+      $job->fields["users_id"] = $array["users_id"];
+      $job->fields["group"] = $array["group"];
+      $job->fields["users_id_assign"] = $array["users_id_assign"];
+      $job->fields["groups_id_assign"] = $array["groups_id_assign"];
+      $job->fields["name"] = $array["name"];
+      $job->fields["content"] = $array["content"];
+      $job->fields["ticketscategories_id"] = $array["ticketscategories_id"];
+      $job->fields["priority"] = $array["priority"];
+      $job->fields["request_type"] = $array["request_type"];
+      $job->fields["hour"] = $array["hour"];
+      $job->fields["minute"] = $array["minute"];
+      $job->fields["date"] = $array["date"];
+      $job->fields["entity_restrict"] = $array["entity_restrict"];
+      $job->fields["status"] = $array["status"];
+      $job->fields["followup"] = $array["followup"];
    }
    if (!$job->canView()) {
       return false;
@@ -1819,7 +1799,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
    if ($ID == '0') {
       echo '<tr>';
-      echo '<th colspan="4">'/$LANG['job'][13].'</th>';
+      echo '<th colspan="4">'.$LANG['job'][13].'</th>';
       echo '</tr>';
    }
    // Optional line
