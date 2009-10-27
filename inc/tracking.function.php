@@ -1766,7 +1766,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight('user','r')) {
       $showuserlink=1;
    }
-   if (!$job->getFromDB($ID) || !haveAccessToEntity($job->fields['entities_id'])) {
+   if (!$ID) {
       $job->getEmpty();
       $job->fields["users_id"] = $array["users_id"];
       $job->fields["group"] = $array["group"];
@@ -1783,8 +1783,8 @@ function showJobDetails($target, $ID,$array=array()) {
       $job->fields["entity_restrict"] = $array["entity_restrict"];
       $job->fields["status"] = $array["status"];
       $job->fields["followup"] = $array["followup"];
-   }
-   if (!$job->canView()) {
+   } else if (!$job->getFromDB($ID) || !$job->can($ID,'r')) {
+      echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";
       return false;
    }
 
@@ -1797,7 +1797,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo '<div class="center" id="tabsbody">';
    echo "<table class='tab_cadre_fixe'>";
 
-   if ($ID == '0') {
+   if (!$ID) {
       echo '<tr>';
       echo '<th colspan="4">'.$LANG['job'][13].'</th>';
       echo '</tr>';
@@ -1806,11 +1806,11 @@ function showJobDetails($target, $ID,$array=array()) {
    if (isMultiEntitiesMode()) {
       echo '<tr>';
       echo '<th colspan="4">';
-      if ($ID == 0) {
+      if ($ID) {
+         echo getDropdownName('glpi_entities',$job->fields['entities_id']);
+      } else {
          echo $LANG['job'][46]."&nbsp;:&nbsp;".getDropdownName("glpi_entities",
                                                                $job->fields['entity_restrict']);
-      } else {
-         echo getDropdownName('glpi_entities',$job->fields['entities_id']);
       }
       echo '</th>';
       echo '</tr>';
@@ -1823,13 +1823,13 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr>";
    echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
    echo "<td>";
-   if ($ID == "0") {
-      showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
-   } else {
+   if ($ID) {
       showDateTimeFormItem("date",$job->fields["date"],1,false,$canupdate);
+   } else {
+      showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
    }
    echo "</td>";
-   if ($ID > 0) {
+   if ($ID) {
       echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp; </span>";
       if ($canupdate) {
          dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,
@@ -1855,7 +1855,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "</th>";
 
    echo "<th colspan='2' width='50%'>";
-   if ($ID > 0 ) {
+   if ($ID) {
       echo "<span class='tracking_small'>".$LANG['common'][26]."&nbsp;:<br>";
       echo convDateTime($job->fields["date_mod"])."\n";
       echo "</span>";
@@ -1881,7 +1881,7 @@ function showJobDetails($target, $ID,$array=array()) {
    // TODO : PUT Urgence
    echo "</td>";
    echo "<td class='left'>";
-   if ($ID == "0" && haveRight("update_ticket","1")) {
+   if (!$ID && haveRight("update_ticket","1")) {
       echo $LANG['job'][4]."&nbsp;: </td>";
       echo "<td>";
 
@@ -2027,7 +2027,7 @@ function showJobDetails($target, $ID,$array=array()) {
       } else {
          echo $item->getType()." ".$item->getNameID();
       }
-      if ($ID  == 0) {
+      if (!$ID) {
          dropdownMyDevices($array["users_id"],$array["entity_restrict"]);
       }
       dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
@@ -2036,21 +2036,21 @@ function showJobDetails($target, $ID,$array=array()) {
    }
    echo "</td>";
 
-   if (haveRight("assign_ticket","1") && $ID != "0") {
+   if (haveRight("assign_ticket","1") && $ID) {
       echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       echo "<td>";
       dropdownValue("glpi_suppliers","suppliers_id_assign",$job->fields["suppliers_id_assign"],1,
                     $job->fields["entities_id"]);
       echo "</td>";
    } else {
-      if ($ID != "0") {
+      if ($ID) {
          echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
          echo "<td>";
          echo getDropdownName("glpi_suppliers",$job->fields["suppliers_id_assign"]);
          echo "</td>";
       } else {
          // Need comment right to add a followup with the realtime
-         if (haveRight("comment_all_ticket","1") && $ID == "0") {
+         if (haveRight("comment_all_ticket","1") && !$ID) {
             echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
             echo "<td class='center' colspan='3'>";
             dropdownInteger('hour',$array['hour'],0,100);
@@ -2091,7 +2091,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
       echo "<div id='viewname$rand'>\n";
       echo "</div>\n";
-      if ($ID == 0) {
+      if (!$ID) {
          echo "<script type='text/javascript' >\n
          showName$rand();
          </script>";
@@ -2135,7 +2135,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "</div>\n";
 
       echo "<div id='viewdesc$rand'></div>\n";
-      if ($ID == 0) {
+      if (!$ID) {
          echo "<script type='text/javascript' >\n
          showDesc$rand();
          </script>";
@@ -2148,7 +2148,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if ($CFG_GLPI["use_mailing"]==1) {
       echo "<td class='left'>".$LANG['job'][19]."&nbsp;: </td>";
       echo "<td>";
-      if ($ID == 0) {
+      if (!$ID) {
          $query = "SELECT `email`
                    FROM `glpi_users`
                    WHERE `id` ='".$job->fields["users_id"]."'";
@@ -2180,7 +2180,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if ($CFG_GLPI["use_mailing"] == 1) {
       echo "<td class='left'>".$LANG['joblist'][27]."&nbsp;: </td>";
       echo "<td>";
-      if ($ID == 0) {
+      if (!$ID) {
          echo "<input type='text' size='30' name='user_email' value='$email'>";
       } else {
          if ($canupdate) {
@@ -2265,15 +2265,15 @@ function showJobDetails($target, $ID,$array=array()) {
        || haveRight("steal_ticket","1")) {
 
       echo "<tr class='tab_bg_1'>";
-      if ($ID == "0") {
+      if ($ID) {
+         echo "<td colspan='4' class='center'>";
+         echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'>";
+      } else {
          echo "<td colspan='2' class='center'>";
          echo "<a href='$target'>";
          echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'/></a></td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='add' value='".$LANG['buttons'][2]."' class='submit'>";
-      } else {
-         echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'>";
       }
       echo "</td></tr>";
    }
@@ -2282,7 +2282,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<input type='hidden' name='id' value='$ID'>";
    echo "</div>";
 
-   if ($ID == 0) {
+   if (!$ID) {
       $commentall = haveRight("update_followups","1");
       $prefix = "";
       $postfix = "";
