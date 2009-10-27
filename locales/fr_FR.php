@@ -1821,6 +1821,7 @@ $LANG['title'][43]="Registre";
 $LANG['tracking'][1]="Mes matériels";
 $LANG['tracking'][2]="Ou recherche complète";
 $LANG['tracking'][3]="Dates invalides. Modification annulée.";
+$LANG['tracking'][4]="Votre ticket ne contient pas de priorité, veuillez corriger.";
 $LANG['tracking'][8]="Votre ticket ne contient pas de description, veuillez corriger.";
 $LANG['tracking'][24]="Document Ticket";
 $LANG['tracking'][29]="Nombre";

@@ -1769,7 +1769,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if (!$ID) {
       $job->getEmpty();
       $job->fields["users_id"] = $array["users_id"];
-      $job->fields["group"] = $array["group"];
+      $job->fields["groups_id"] = $array["groups_id"];
       $job->fields["users_id_assign"] = $array["users_id_assign"];
       $job->fields["groups_id_assign"] = $array["groups_id_assign"];
       $job->fields["name"] = $array["name"];
@@ -1780,9 +1780,12 @@ function showJobDetails($target, $ID,$array=array()) {
       $job->fields["hour"] = $array["hour"];
       $job->fields["minute"] = $array["minute"];
       $job->fields["date"] = $array["date"];
-      $job->fields["entity_restrict"] = $array["entity_restrict"];
+      $job->fields["entities_id"] = $array["entities_id"];
       $job->fields["status"] = $array["status"];
       $job->fields["followup"] = $array["followup"];
+      $job->fields["itemtype"] = $array["itemtype"];
+      $job->fields["items_id"] = $array["items_id"];
+
    } else if (!$job->getFromDB($ID) || !$job->can($ID,'r')) {
       echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";
       return false;
@@ -1810,7 +1813,7 @@ function showJobDetails($target, $ID,$array=array()) {
          echo getDropdownName('glpi_entities',$job->fields['entities_id']);
       } else {
          echo $LANG['job'][46]."&nbsp;:&nbsp;".getDropdownName("glpi_entities",
-                                                               $job->fields['entity_restrict']);
+                                                               $job->fields['entities_id']);
       }
       echo '</th>';
       echo '</tr>';
@@ -1867,7 +1870,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left' width='60'>".$LANG['joblist'][0]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      dropdownStatus("status",$job->fields["status"]);
+      dropdownStatus("status",$job->fields["status"],2); // Allowed status
    } else {
       echo getStatusName($job->fields["status"]);
    }
@@ -1908,18 +1911,18 @@ function showJobDetails($target, $ID,$array=array()) {
 
       $count = count($values);
 
-      if ($count>0 && !in_array($array["entity_restrict"],$values)) {
+      if ($count>0 && !in_array($job->fields["entities_id"],$values)) {
          // If entity is not in the list of user's entities,
          // then use as default value the first value of the user's entites list
-         $entity_restrict = $values[0];
+         $job->fields["entities_id"] = $values[0];
       }
 
       //If user have access to more than one entity, then display a combobox
       if ($count > 1) {
-         $rand = dropdownValue("glpi_entities", "entities_id", $array["entity_restrict"], 1,
+         $rand = dropdownValue("glpi_entities", "entities_id", $job->fields["entities_id"], 1,
                                $values,'',array(),1);
       } else {
-         echo "<input type='hidden' name='entities_id' value='".$array["entity_restrict"]."'>";
+         echo "<input type='hidden' name='entities_id' value='".$job->fields["entities_id"]."'>";
       }
    } else if ($canupdate){
       echo $LANG['common'][34]."&nbsp;: </td>";
@@ -2028,7 +2031,8 @@ function showJobDetails($target, $ID,$array=array()) {
          echo $item->getType()." ".$item->getNameID();
       }
       if (!$ID) {
-         dropdownMyDevices($array["users_id"],$array["entity_restrict"]);
+         dropdownMyDevices($array["users_id"],$job->fields["entities_id"],
+                           $job->fields["itemtype"], $job->fields["items_id"]);
       }
       dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
    } else {

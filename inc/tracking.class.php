@@ -645,6 +645,11 @@ class Job extends CommonDBTM {
       if (!isset($input['_auto_import'])) {
          $_SESSION["helpdeskSaved"]=$input;
 
+         if (!isset($input["priority"])) {
+
+            addMessageAfterRedirect($LANG['tracking'][4],false,ERROR);
+            $mandatory_ok=false;
+         }
          if ($CFG_GLPI["is_ticket_content_mandatory"]
              && (!isset($input['content']) || empty($input['content']))) {
 
