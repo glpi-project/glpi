@@ -1833,7 +1833,7 @@ function showJobDetails($target, $ID,$array=array()) {
    }
    echo "</td>";
    if ($ID) {
-      echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp; </span>";
+      echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp;: </span>";
       if ($canupdate) {
          dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,
                           $job->fields["entities_id"]);
@@ -1843,13 +1843,11 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "</td>";
       if (strstr($job->fields["status"],"old_")) {
          echo "<td>";
-         echo "<table><tr>";
+         echo "</tr><tr>";
          echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </td>";
          echo "<td>";
          showDateTimeFormItem("closedate",$job->fields["closedate"],1,false,$canupdate);
          echo "</span>";
-         echo "</td>";
-         echo "</tr></table>\n";
          echo "</td>";
       }
       echo "</tr>";
