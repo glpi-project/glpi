@@ -944,9 +944,12 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1) {
  *
  * @param $userID User ID for my device section
  * @param $entity_restrict restrict to a specific entity
+ * @param $itemtype of selected item
+ * @param $items_id of selected item
+ *
  * @return nothing (print out an HTML select box)
  */
-function dropdownMyDevices($userID=0,$entity_restrict=-1) {
+function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0) {
    global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
    if ($userID==0) {
@@ -960,11 +963,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1) {
       $my_devices="";
 
       $ci=new CommonItem();
-      $my_item="";
-
-      if (isset($_SESSION["helpdeskSaved"]["_my_items"])) {
-         $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
-      }
+      $my_item= $itemtype.'_'.$items_id;
 
       // My items
       foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -2068,6 +2067,31 @@ function getAllStatus($withmetaforsearch=false) {
    }
    return $tab;
 }
+
+/**
+ * get the Ticket status allowed for a current status
+ *
+ * @param $current status
+ * @return an array
+ */
+function getAllowedStatus($current) {
+   global $LANG;
+
+   $tab = getAllStatus();
+   if (!isset($current)) {
+      $current = 'new';
+   }
+   foreach ($tab as $status => $label) {
+      if ($status != $current
+          && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status])
+          && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status]) {
+         unset($tab[$status]);
+      }
+   }
+   return $tab;
+}
+
+
 /**
  * Dropdown of ticket status
  *
@@ -2077,9 +2101,11 @@ function getAllStatus($withmetaforsearch=false) {
  *
  * @return nothing (display)
  */
-function dropdownStatus($name, $value=0, $option=0) {
+function dropdownStatus($name, $value='new', $option=0) {
 
-   if ($option==1) {
+   if ($option == 2) {
+      $tab = getAllowedStatus($value);
+   } else if ($option == 1) {
       $tab = getAllStatus(true);
    } else {
       $tab = getAllStatus(false);
