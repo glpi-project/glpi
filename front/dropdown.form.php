@@ -73,6 +73,13 @@ if (isset($_POST["add"])) {
    logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
+} else if (isset($_POST["execute"])) {
+   if (method_exists($ci->obj, $_POST["_method"])) {
+      call_user_func(array(&$ci->obj,$_POST["_method"]),$_POST);
+      glpi_header($_SERVER['HTTP_REFERER']);
+   } else {
+      displayErrorAndDie($LANG['common'][24]);
+   }
 } else {
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns",$itemtype);
    $ci->obj->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
