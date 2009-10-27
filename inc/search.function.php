@@ -2855,9 +2855,9 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= "<a href=\"".$CFG_GLPI["root_doc"]."/".
-                                  $INFOFORM_PAGES[$SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]].
-                                  "?id=".$split2[1]."\">";
+                        $page = $INFOFORM_PAGES[$SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]];
+                        $page .= (strpos($page,'?') ? '&id' : '?id');
+                        $out .= "<a href=\"".$CFG_GLPI["root_doc"]."/$page=".$split2[1]."\">";
                         $out .= $split2[0].$unit;
                         if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                            $out .= " (".$split2[1].")";

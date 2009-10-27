@@ -375,7 +375,20 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<td>".$data['comment']."</td>";
          echo "</tr>\n";
       }
-      echo "</table></div>\n";
+      echo "</table>\n";
+
+      // Minimal form for quick input.
+      echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[$this->type]."' method='post'>";
+      echo "<br><table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
+      echo "<td>".$LANG['common'][16]."&nbsp;: ";
+      autocompletionTextField("name",$this->table,"name");
+      echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+      echo "<input type='hidden' name='".$this->keyid."' value='$ID'></td>";
+      echo "<td><input type='submit' name='add' value=\"".
+           $LANG['buttons'][8]."\" class='submit'></td>";
+      echo "</tr>\n";
+      echo "</table></form></div>\n";
    }
 
    /**
@@ -623,6 +636,38 @@ class Location extends CommonTreeDropdown {
             echo "</table></form>\n";
          }
       }
+      if ($canedit) {
+         // Minimal form for quick input.
+         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[NETPOINT_TYPE]."' method='post'>";
+         echo "<br><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
+         echo "<td>".$LANG['common'][16]."&nbsp;: ";
+         autocompletionTextField("name",$this->table,"name");
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<td><input type='submit' name='add' value=\"".
+              $LANG['buttons'][8]."\" class='submit'></td>";
+         echo "</tr>\n";
+         echo "</table></form>\n";
+
+         // Minimal form for massive input.
+         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[NETPOINT_TYPE]."' method='post'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
+         echo "<td>".$LANG['common'][16]."&nbsp;: ";
+         echo "<input type='text' maxlength='100' size='10' name='_before'>";
+         dropdownInteger('_from', 0, 0, 400);
+         echo "-->";
+         dropdownInteger('_to', 0, 0, 400);
+         echo "<input type='text' maxlength='100' size='10' name='_after'><br>";
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         echo "<input type='hidden' name='locations_id' value='$ID'></td>";
+         echo "<input type='hidden' name='_method' value='addMulti'></td>";
+         echo "<td><input type='submit' name='execute' value=\"".
+              $LANG['buttons'][8]."\" class='submit'></td>";
+         echo "</tr>\n";
+         echo "</table></form>\n";
+      }
       echo "</div>\n";
    }
 }
@@ -669,8 +714,27 @@ class Netpoint extends CommonDropdown {
       $tab[3]['field']         = 'completename';
       $tab[3]['linkfield']     = 'locations_id';
       $tab[3]['name']          = $LANG['common'][15];
+      $tab[3]['datatype']      = 'itemlink';
+      $tab[3]['itemlink_type'] = LOCATION_TYPE;
 
       return $tab;
+   }
+
+   /**
+    * Handled Multi add item
+    *
+    * @param : $input array of values
+    *
+    */
+   function addMulti ($input) {
+      global $LANG;
+
+      $this->check(-1,'w',$input);
+      for ($i=$input["_from"];$i<=$input["_to"];$i++){
+         $input["name"]=$input["_before"].$i.$input["_after"];
+         $this->add($input);
+      }
+      logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    }
 }
 
