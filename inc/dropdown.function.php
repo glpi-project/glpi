@@ -2046,28 +2046,44 @@ function displayActiveEntities($target,$myname) {
 /**
  * get the Ticket status list
  *
+ * @param $withmetaforsearch boolean
  * @return an array
  */
-function getAllStatus() {
+function getAllStatus($withmetaforsearch=false) {
    global $LANG;
 
-   return array(
+   $tab = array(
       'new'          => $LANG['joblist'][9],
       'assign'       => $LANG['joblist'][18],
       'plan'         => $LANG['joblist'][19],
       'waiting'      => $LANG['joblist'][26],
       'old_done'     => $LANG['joblist'][10],
       'old_notdone'  => $LANG['joblist'][17]);
+
+   if ($withmetaforsearch) {
+      $tab['notold']  = $LANG['joblist'][24];
+      $tab['process'] = $LANG['joblist'][21];
+      $tab['old']     = $LANG['joblist'][25];
+      $tab['all']     = $LANG['common'][66];
+   }
+   return $tab;
 }
 /**
  * Dropdown of ticket status
  *
  * @param $name select name
  * @param $value default value
+ * @param $option list proposed 0:normal, 1:search, 2:allowed
+ *
+ * @return nothing (display)
  */
-function dropdownStatus($name, $value=0) {
+function dropdownStatus($name, $value=0, $option=0) {
 
-   $tab = getAllStatus();
+   if ($option==1) {
+      $tab = getAllStatus(true);
+   } else {
+      $tab = getAllStatus(false);
+   }
    echo "<select name='$name'>";
    foreach ($tab as $key => $val) {
       echo "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
