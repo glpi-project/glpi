@@ -1765,7 +1765,7 @@ function getRandomString($length) {
 **/
 function timestampToString($sec,$display_sec=true) {
    global $LANG;
-
+   /// TODO : rewrite to have simple code
    $sec=floor($sec);
    if ($sec<0) {
       $sec=0;
@@ -1777,7 +1777,7 @@ function timestampToString($sec,$display_sec=true) {
       $min = floor($sec/MINUTE_TIMESTAMP);
       $sec = $sec%MINUTE_TIMESTAMP;
       $out=$min." ".$LANG['stats'][33];
-      if ($display_sec) {
+      if ($display_sec && $sec >0) {
          $out.=" ".$sec." ".$LANG['stats'][34];
       }
       return $out;
@@ -1785,8 +1785,11 @@ function timestampToString($sec,$display_sec=true) {
       $heure = floor($sec/HOUR_TIMESTAMP);
       $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
       $sec = $sec%MINUTE_TIMESTAMP;
-      $out=$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
-      if ($display_sec) {
+      $out=$heure." ".$LANG['job'][21];
+      if ($min>0){
+         $out.=" ".$min." ".$LANG['stats'][33];
+      }
+      if ($display_sec && $sec >0) {
          $out.=" ".$sec." ".$LANG['stats'][34];
       }
       return $out;
@@ -1795,8 +1798,16 @@ function timestampToString($sec,$display_sec=true) {
       $heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
       $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
       $sec = $sec%MINUTE_TIMESTAMP;
-      $out=$jour." ".$LANG['stats'][31]." ".$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
-      if ($display_sec) {
+      $out=$jour." ".$LANG['stats'][31];
+      if ($heure>0){
+         $out.=" ".$heure." ".$LANG['job'][21];
+      }
+
+      if ($min>0){
+         $out.=" ".$min." ".$LANG['stats'][33];
+      }
+
+      if ($display_sec && $sec >0) {
          $out.=" ".$sec." ".$LANG['stats'][34];
       }
       return $out;

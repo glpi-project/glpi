@@ -3981,6 +3981,7 @@ $SEARCH_OPTION[CRONTASK_TYPE][6]['table']     = 'glpi_crontasks';
 $SEARCH_OPTION[CRONTASK_TYPE][6]['field']     = 'frequency';
 $SEARCH_OPTION[CRONTASK_TYPE][6]['linkfield'] = '';
 $SEARCH_OPTION[CRONTASK_TYPE][6]['name']      = $LANG['crontask'][37];
+$SEARCH_OPTION[CRONTASK_TYPE][6]['datatype']  = 'timestamp';
 
 $SEARCH_OPTION[CRONTASK_TYPE][7]['table']     = 'glpi_crontasks';
 $SEARCH_OPTION[CRONTASK_TYPE][7]['field']     = 'lastrun';

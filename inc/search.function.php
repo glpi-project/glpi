@@ -2878,6 +2878,8 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
 
          case "datetime" :
             return convDateTime($data[$NAME.$num]);
+         case "timestamp" :
+            return timestampToString($data[$NAME.$num]);
 
          case "realtime" :
             return getRealtime($data[$NAME.$num]);
