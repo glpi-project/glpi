@@ -748,9 +748,9 @@ class CronTask extends CommonDBTM{
    /**
    * Display statistics of a task
    *
-   * @param $ID : crontasks_id
+   * @return nothing
    */
-   function showStatistics($ID) {
+   function showStatistics() {
       global $DB, $CFG_GLPI, $LANG;
 
       echo "<br><div class='center'>";
@@ -759,9 +759,9 @@ class CronTask extends CommonDBTM{
       echo "</tr>\n";
 
       $nbstart = countElementsInTable('glpi_crontaskslogs',
-            "`crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_START."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_START."'");
       $nbstop = countElementsInTable('glpi_crontaskslogs',
-            "`crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
 
       echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][50]."&nbsp;:</td><td class='right'>";
       if ($nbstart==$nbstop) {
@@ -783,7 +783,8 @@ class CronTask extends CommonDBTM{
                      AVG(`volume`) AS volavg,
                      SUM(`volume`) AS voltot
                   FROM `glpi_crontaskslogs`
-                  WHERE `crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'";
+                  WHERE `crontasks_id`='".$this->fields['id']."'
+                    AND `state`='".CRONTASKLOG_STATE_STOP."'";
          $result = $DB->query($query);
          if ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td>".$LANG['search'][8]."&nbsp;:</td>";
@@ -825,13 +826,13 @@ class CronTask extends CommonDBTM{
    /**
    * Display list of a runned tasks
    *
-   * @param $ID : crontasks_id
+   * @return nothing
    */
-   function showHistory($ID) {
+   function showHistory() {
       global $DB, $CFG_GLPI, $LANG;
 
       if (isset($_REQUEST["crontaskslogs_id"]) && $_REQUEST["crontaskslogs_id"]) {
-         return $this->showHistoryDetail($ID,$_REQUEST["crontaskslogs_id"]);
+         return $this->showHistoryDetail($_REQUEST["crontaskslogs_id"]);
       }
 
       if (isset($_REQUEST["start"])) {
@@ -842,7 +843,7 @@ class CronTask extends CommonDBTM{
 
       // Total Number of events
       $number = countElementsInTable('glpi_crontaskslogs',
-            "`crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
 
       echo "<br><div class='center'>";
       if ($number < 1) {
@@ -858,7 +859,7 @@ class CronTask extends CommonDBTM{
 
       $query = "SELECT *
          FROM `glpi_crontaskslogs`
-         WHERE `crontasks_id`='$ID' AND `state`='".CRONTASKLOG_STATE_STOP."'
+         WHERE `crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'
          ORDER BY `id` DESC
          LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -892,10 +893,11 @@ class CronTask extends CommonDBTM{
    /**
    * Display detail of a runned task
    *
-   * @param $ID : crontasks_id
    * @param $logid : crontaskslogs_id
+   *
+   * @return nothing
    */
-   function showHistoryDetail($ID,$logid) {
+   function showHistoryDetail($logid) {
       global $DB, $CFG_GLPI, $LANG;
 
       echo "<br><div class='center'>";
