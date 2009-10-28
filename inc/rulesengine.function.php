@@ -446,23 +446,6 @@ function getRegexResultById($action,$regex_results) {
    return $action;
 }
 
-/**
- * Get category name to display in commonheader by sub_type
-**/
-function getCategoryNameToDisplay($sub_type) {
-
-   switch ($sub_type) {
-      case RULE_OCS_AFFECT_COMPUTER :
-      case RULE_AFFECT_RIGHTS :
-      case RULE_SOFTWARE_CATEGORY :
-      case RULE_TRACKING_AUTO_ACTION :
-         return "rule";
-
-      default :
-         return "dictionnary";
-   }
-}
-
 function getAlreadyUsedActionsByRuleID($rules_id,$sub_type) {
    global $DB,$RULES_ACTIONS;
 

@@ -97,7 +97,7 @@ if (isset($_GET["action"])){
 	$max = get_cfg_var("max_execution_time");
 	$max = $start + ($max>0 ? $max/2.0 : 30.0);
 
-	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",$headerType,$headerOption);
+	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",$rulecollection->menu_type,$rulecollection->menu_option);
 
 	if (!(isset($_POST['replay_confirm']) || isset($_GET['offset'])) && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
 		commonFooter();
@@ -144,7 +144,7 @@ if (isset($_GET["action"])){
 	exit();
 }
 
-commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",$headerType,$headerOption);
+commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",$rulecollection->menu_type,$rulecollection->menu_option);
 
 $rulecollection->title();
 $rulecollection->showForm($_SERVER['PHP_SELF']);

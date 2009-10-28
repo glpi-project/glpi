@@ -146,7 +146,7 @@ elseif (isset($_POST["update_rule"]))
 	glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
 }
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin",$rulecollection->menu_type,$rulecollection->menu_option);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 if (!empty($_GET["id"])&&$_GET["id"] >0) {

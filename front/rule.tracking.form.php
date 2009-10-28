@@ -41,8 +41,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new TrackingBusinessRuleCollection();
 
-$headerType='rule';
-$headerOption='tracking';
-
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

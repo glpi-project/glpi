@@ -47,6 +47,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
       $this->rule_class_name = 'SoftwareCategoriesRule';
       $this->stop_on_first_match=true;
       $this->right="rule_softwarescategories";
+      $this->menu_option="softwarecategories";
    }
 
    function getTitle() {
