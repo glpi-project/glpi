@@ -1031,6 +1031,7 @@ $LANG['Menu'][37]="Entités";
 $LANG['Menu'][38]="Inventaire";
 $LANG['Menu'][39]="Collecteurs";
 $LANG['Menu'][40]="Marque-pages";
+$LANG['Menu'][41]="Droits";
 
 $LANG['monitors'][14]="Microphone";
 $LANG['monitors'][15]="Enceintes";
