@@ -2364,6 +2364,8 @@ function dropdownFrequency($name,$value=0) {
 
    $tab = array();
 
+   $tab[MINUTE_TIMESTAMP] = '1 ' .$LANG['job'][22];
+
    // Minutes
    for ($i=5 ; $i<60 ; $i+=5) {
       $tab[$i*MINUTE_TIMESTAMP] = $i . ' ' .$LANG['job'][22];
