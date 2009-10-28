@@ -573,6 +573,34 @@ class CommonDBTM {
    }
 
    /**
+    * Get the link to an item
+    *
+    * @param $withid boolean display ID
+    *
+    * @return string : HTML link
+    */
+   function getLink($withid=false) {
+      global $INFOFORM_PAGES, $CFG_GLPI;
+
+      $name = '';
+      if (isset($this->fields["name"])) {
+         $name = $this->fields["name"];
+      }
+      if ($withid || $_SESSION['glpiis_ids_visible'] || empty($name)) {
+         $name .= " (".$this->fields['id'].")";
+      }
+
+      if (!isset($INFOFORM_PAGES[$this->type])) {
+         return $name;
+      }
+
+      $link  = $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type];
+      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
+      $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
+
+      return "<a href='$link'>$name</a>";
+   }
+   /**
    * Add a message on add action
    *
    *@param $input array : the _POST vars returned bye the item form when press add
@@ -593,21 +621,8 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
 
-      $name = '';
-      if (isset($this->fields["name"])) {
-         $name = $this->fields["name"];
-      }
-      if ($_SESSION['glpiis_ids_visible']
-          || !isset($this->fields["name"])
-          || empty($this->fields["name"])) {
-         $name .= " (".$this->fields['id'].")";
-      }
-
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][70] . ": <a href='" . $CFG_GLPI["root_doc"].
-                                 "/".$INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] .
-                                 (isset($input['is_template']) ? "&amp;withtemplate=1" : "").
-                                 "'>" .$name . "</a>");
+         addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink(true));
       }
    }
 
@@ -735,11 +750,7 @@ class CommonDBTM {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".
-                                 $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
-                                 ? stripslashes($this->fields["name"])
-                                 : "(".$this->fields['id'].")") . "</a>");
+         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink(true));
       }
    }
 
@@ -866,11 +877,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][72] . ": <a href='" . $CFG_GLPI["root_doc"]."/".
-                                 $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
-                                 ? stripslashes($this->fields["name"])
-                                 : "(".$this->fields['id'].")") . "</a>");
+         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " . $this->getLink(true));
       }
    }
 
@@ -895,9 +902,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) &&
-                                 !empty($this->fields["name"]) ? stripslashes($this->fields["name"])
-                                 : "(".$this->fields['id'].")"));
+         addMessageAfterRedirect($LANG['common'][73] . "&nbsp;: " . $this->getLink(true));
       }
    }
 
@@ -968,11 +973,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][74] . ": <a href='" . $CFG_GLPI["root_doc"]."/".
-                                 $INFOFORM_PAGES[$this->type] . "?id=" . $this->fields['id'] . "'>" .
-                                 (isset($this->fields["name"]) && !empty($this->fields["name"])
-                                 ? stripslashes($this->fields["name"])
-                                 : "(".$this->fields['id'].")") . "</a>");
+         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " . $this->getLink(true));
       }
    }
 

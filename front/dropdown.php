@@ -48,7 +48,8 @@ checkTypeRight($itemtype, 'r');
 $ci = new CommonItem();
 $ci->setType($itemtype,true);
 
-commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",str_replace('glpi_','',$ci->obj->table));
+commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
+             str_replace('glpi_','',$ci->obj->table));
 
 manageGetValuesInSearch($itemtype);
 

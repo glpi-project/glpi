@@ -81,7 +81,8 @@ if (isset($_POST["add"])) {
       displayErrorAndDie($LANG['common'][24]);
    }
 } else {
-   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns",$itemtype);
+   commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
+                str_replace('glpi_','',$ci->obj->table));
    $ci->obj->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
    commonFooter();
 }
