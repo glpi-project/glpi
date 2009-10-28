@@ -138,51 +138,77 @@ function showDeviceBudget($budgets_id) {
  *
  **/
 function showDeviceBudgetValue($budgets_id) {
-   global $DB,$LANG;
+   global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
    if (!haveRight("budget","r")) {
       return false;
    }
-
-   $query = "SELECT DISTINCT `itemtype`, SUM(`value`) AS sumvalue
-             FROM `glpi_infocoms`
-             WHERE `budgets_id` = '$budgets_id'
+   
+   $query = "SELECT DISTINCT `itemtype` 
+             FROM `glpi_infocoms` 
+             WHERE `budgets_id` = '$budgets_id' 
              GROUP BY `itemtype`";
 
    $result = $DB->query($query);
-   $number = $DB->numrows($result);
-   $i = 0;
    $total = 0;
 
-   $ci=new CommonItem;
-   $budget = new Budget();
-   $budget->getFromDB($budgets_id);
+   $entities_values = array();
 
-   echo "<br><br><div class='center'><table class='tab_cadre'>";
-   echo "<tr>";
-   echo "<th colspan='2'>".$LANG['financial'][108]." ".$budget->fields['name']."</th></tr>";
-   echo "<tr><th>".$LANG['common'][17]."</th>";
-   echo "<th>".$LANG['financial'][21]."</th>";
-   echo "</tr>";
-   while ($i < $number) {
-      $itemtype=$DB->result($result, $i, "itemtype");
-      $value = $DB->result($result, $i, "sumvalue");
-      $ci->setType($itemtype);
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".$ci->getType()."</td>";
-      echo "<td class='center'>".formatNumber($value)."</td>";
+   if ( $DB->numrows($result) ) {
+   	while ($types = $DB->fetch_array($result)) {
+        $table = $LINK_ID_TABLE[$types['itemtype']];
+         $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`, 
+                     `$table`.`entities_id`, 
+                        `$table`.`entities_id` as `entities_id`      
+                  FROM `glpi_infocoms`, `$table`
+                     LEFT JOIN `glpi_entities` ON (`$table`.`entities_id` = `glpi_entities`.`id`)
+                     WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id'
+                     AND `glpi_infocoms`.`items_id` = `$table`.`id`".
+                        getEntitiesRestrictRequest(" AND",$table,"entities_id"). 
+                   " GROUP BY `$table`.`entities_id`          
+                  ORDER BY `glpi_entities`.`completename` ASC";
+
+         $result_infos = $DB->query($query_infos);
+         
+         //Store, for each entity, the budget spent
+         while ($values = $DB->fetch_array($result_infos)) {
+            if (!isset($entities_values[$values['entities_id']])) {
+            	$entities_values[$values['entities_id']] = 0;
+            }
+            $entities_values[$values['entities_id']]+=$values['sumvalue']; 
+         }
+      }  	
+
+      $ci=new CommonItem;
+      $budget = new Budget();
+      $budget->getFromDB($budgets_id);
+   
+      echo "<br><br><div class='center'><table class='tab_cadre'>";
+      echo "<tr>";
+      echo "<th colspan='2'>".$LANG['financial'][108]."</th></tr>";
+      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['financial'][21]."</th>";
       echo "</tr>";
-      $total +=$value;
-      $i++;
-   }
+ 
+      foreach ($entities_values as $entity => $value) {
+         echo "<tr class='tab_bg_1'><td>".getDropdownName('glpi_entities',$entity)."</th>";
+         echo "<td class='center'>".formatNumber($value)."</td>";
+         echo "</tr>";
+         $total+=$value;
+         	
+         }
+   
+      echo "<tr class='tab_bg_1'><th colspan='2'><br></th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='right'>".$LANG['financial'][108]."</td>";
+      echo "<td class='right' colspan='2'><strong>".formatNumber($total)."</strong></td></tr>";
+      if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) { 
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='right'>".$LANG['financial'][109]."</td>";
+         echo "<td><strong>".formatNumber($budget->fields['value'] - $total)."</strong></td></tr>";      
+      }
+      echo "</table></div>";
 
-   echo "<tr class='tab_bg_1'><th colspan='2'><br></th></tr>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<td class='right'>".$LANG['financial'][108]."</td>";
-   echo "<td><strong>".formatNumber($total)."</strong></td></tr>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<td class='right'>".$LANG['financial'][109]."</td>";
-   echo "<td><strong>".formatNumber($budget->fields['value'] - $total)."</strong></td></tr>";
-   echo "</table></div>";
+   }
 }
 ?>
