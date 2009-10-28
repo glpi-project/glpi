@@ -533,7 +533,36 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
       $menu['admin']['content']['rule']['shortcut']='r';
       $menu['admin']['content']['rule']['page']='/front/rule.php';
-      switch($option) {
+
+      $menu['admin']['content']['rule']['options']['ocs']['title']=$LANG['Menu'][33];
+      $menu['admin']['content']['rule']['options']['ocs']['page']='/front/rule.ocs.php';
+      $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/rule.ocs.php';
+      if (haveRight("rule_ocs","w")) {
+         $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/rule.ocs.form.php';
+      }
+
+      $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];
+      $menu['admin']['content']['rule']['options']['right']['page']='/front/rule.right.php';
+      $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/rule.right.php';
+      if (haveRight("rule_ldap","w")) {
+         $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/rule.right.form.php';
+      }
+
+      $menu['admin']['content']['rule']['options']['tracking']['title']=$LANG['Menu'][5];
+      $menu['admin']['content']['rule']['options']['tracking']['page']='/front/rule.tracking.php';
+      $menu['admin']['content']['rule']['options']['tracking']['links']['search']='/front/rule.tracking.php';
+      if (haveRight("rule_ticket","w")) {
+         $menu['admin']['content']['rule']['options']['tracking']['links']['add']='/front/rule.tracking.form.php';
+      }
+
+      $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
+      $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rule.softwarecategories.php';
+      $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rule.softwarecategories.php';
+      if (haveRight("rule_softwarescategories","w")) {
+         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rule.softwarecategories.form.php';
+      }
+
+/*      switch($option) {
          case RULE_OCS_AFFECT_COMPUTER :
             $menu['admin']['content']['rule']['links']['search']='/front/rule.ocs.php';
             if (haveRight("rule_ocs","w")) {
@@ -562,6 +591,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             }
             break;
       }
+*/
    }
 
    if (haveRight("rule_dictionnary_dropdown","r") || haveRight("rule_dictionnary_software","r")) {
@@ -994,15 +1024,41 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (isset($menu[$sector]['content'][$item])) {
       // Title
+      $with_option=false;
+      if ( !empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+         $with_option=true;
+      }
       echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page'].
-                 "' class='here' title='".$menu[$sector]['content'][$item]['title']."' >".
-                 $menu[$sector]['content'][$item]['title']." </a></li>";
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 "' ".($with_option?"":"class='here'")." title='".$menu[$sector]['content'][$item]['title']."' >".
+                 $menu[$sector]['content'][$item]['title']." </a>".(!$with_option?"":" > ")."</li>";
+
+      if ($with_option) {
+         echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['options'][$option]['page'].
+              "' class='here' title='".$menu[$sector]['content'][$item]['options'][$option]['title']."' >".
+                 $menu[$sector]['content'][$item]['options'][$option]['title']." </a></li>";
+      }
+
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;</li>";
+
+      $links=array();
+      // Item with Option case
+      if ( !empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+         $links=$menu[$sector]['content'][$item]['options'][$option]['links'];
+      // Without option case : only item links
+      } else if (isset($menu[$sector]['content'][$item]['links'])
+          && is_array($menu[$sector]['content'][$item]['links'])) {
+         $links=$menu[$sector]['content'][$item]['links'];
+      } 
+
       // Add item
       echo "<li>";
-      if (isset($menu[$sector]['content'][$item]['links']['add'])) {
-         echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."'>";
+      if (isset($links['add'])) {
+         echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title='".
                   $LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'></a>";
       } else {
@@ -1010,10 +1066,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                   $LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'>";
       }
       echo "</li>";
+
       // Search Item
-      if (isset($menu[$sector]['content'][$item]['links']['search'])) {
+      if (isset($links['search'])) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].
-                     $menu[$sector]['content'][$item]['links']['search']."'>";
+                     $links['search']."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".
                   $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></a></li>";
       } else {
@@ -1021,10 +1078,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                      $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></li>";
       }
       // Links
-      if (isset($menu[$sector]['content'][$item]['links'])
-          && is_array($menu[$sector]['content'][$item]['links'])) {
-
-         foreach ($menu[$sector]['content'][$item]['links'] as $key => $val) {
+      if (count($links)>0) {
+         foreach ($links as $key => $val) {
             switch ($key) {
                case "add" :
 
@@ -1062,7 +1117,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
       }
    } else {
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
             "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
             "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
@@ -1109,7 +1164,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "</table></td></tr></table>";
 
    echo "</div>";
-   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
          "&nbsp;&nbsp;&nbsp;";
    echo "</li>";
 

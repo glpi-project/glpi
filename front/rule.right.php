@@ -41,5 +41,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new RightRuleCollection();
 
+$headerType='rule';
+$headerOption='right';
+
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

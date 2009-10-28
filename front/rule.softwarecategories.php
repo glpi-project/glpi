@@ -41,5 +41,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new SoftwareCategoriesRuleCollection();
 
+$headerType='rule';
+$headerOption='softwarecategories';
+
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>
