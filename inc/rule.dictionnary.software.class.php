@@ -49,6 +49,9 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
       $this->rule_class_name = 'DictionnarySoftwareRule';
       $this->stop_on_first_match = true;
       $this->right = "rule_dictionnary_software";
+      $this->menu_type="dictionnary";
+      $this->menu_option="manufacturers";
+
 
       //Init cache system values
       $this->initCache("glpi_rulescachesoftwares", array("name" => "old_value",

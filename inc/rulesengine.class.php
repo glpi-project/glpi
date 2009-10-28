@@ -86,6 +86,10 @@ class RuleCollection {
    var $can_replay_rules=false;
    /// List of rules of the rule collection
    var $RuleList=NULL;
+   /// Menu type
+   var $menu_type="rule";
+   /// Menu option
+   var $menu_option="";
 
    /**
    * Constructor

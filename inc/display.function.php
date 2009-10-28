@@ -186,7 +186,7 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
  *
  **/
 function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
-   global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES,$DB ;
+   global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES,$DB, $LINK_ID_TABLE ;
 
    // Print a nice HTML-head for every page
    if ($HEADER_LOADED) {
@@ -534,223 +534,163 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['admin']['content']['rule']['shortcut']='r';
       $menu['admin']['content']['rule']['page']='/front/rule.php';
 
-      $menu['admin']['content']['rule']['options']['ocs']['title']=$LANG['Menu'][33];
-      $menu['admin']['content']['rule']['options']['ocs']['page']='/front/rule.ocs.php';
-      $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/rule.ocs.php';
-      if (haveRight("rule_ocs","w")) {
-         $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/rule.ocs.form.php';
+      if ($sector=='admin' && $item == 'rule') {
+
+         $menu['admin']['content']['rule']['options']['ocs']['title']=$LANG['Menu'][33];
+         $menu['admin']['content']['rule']['options']['ocs']['page']='/front/rule.ocs.php';
+         $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/rule.ocs.php';
+         if (haveRight("rule_ocs","w")) {
+            $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/rule.ocs.form.php';
+         }
+
+         $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];
+         $menu['admin']['content']['rule']['options']['right']['page']='/front/rule.right.php';
+         $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/rule.right.php';
+         if (haveRight("rule_ldap","w")) {
+            $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/rule.right.form.php';
+         }
+
+         $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
+         $menu['admin']['content']['rule']['options']['ticket']['page']='/front/rule.tracking.php';
+         $menu['admin']['content']['rule']['options']['ticket']['links']['search']='/front/rule.tracking.php';
+         if (haveRight("rule_ticket","w")) {
+            $menu['admin']['content']['rule']['options']['ticket']['links']['add']='/front/rule.tracking.form.php';
+         }
+
+         $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
+         $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rule.softwarecategories.php';
+         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rule.softwarecategories.php';
+         if (haveRight("rule_softwarescategories","w")) {
+            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rule.softwarecategories.form.php';
+         }
       }
-
-      $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];
-      $menu['admin']['content']['rule']['options']['right']['page']='/front/rule.right.php';
-      $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/rule.right.php';
-      if (haveRight("rule_ldap","w")) {
-         $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/rule.right.form.php';
-      }
-
-      $menu['admin']['content']['rule']['options']['tracking']['title']=$LANG['Menu'][5];
-      $menu['admin']['content']['rule']['options']['tracking']['page']='/front/rule.tracking.php';
-      $menu['admin']['content']['rule']['options']['tracking']['links']['search']='/front/rule.tracking.php';
-      if (haveRight("rule_ticket","w")) {
-         $menu['admin']['content']['rule']['options']['tracking']['links']['add']='/front/rule.tracking.form.php';
-      }
-
-      $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
-      $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rule.softwarecategories.php';
-      $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rule.softwarecategories.php';
-      if (haveRight("rule_softwarescategories","w")) {
-         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rule.softwarecategories.form.php';
-      }
-
-/*      switch($option) {
-         case RULE_OCS_AFFECT_COMPUTER :
-            $menu['admin']['content']['rule']['links']['search']='/front/rule.ocs.php';
-            if (haveRight("rule_ocs","w")) {
-               $menu['admin']['content']['rule']['links']['add']='/front/rule.ocs.form.php';
-            }
-            break;
-
-         case RULE_AFFECT_RIGHTS :
-            $menu['admin']['content']['rule']['links']['search']='/front/rule.right.php';
-            if (haveRight("rule_ldap","w")) {
-               $menu['admin']['content']['rule']['links']['add']='/front/rule.right.form.php';
-            }
-            break;
-
-         case RULE_TRACKING_AUTO_ACTION :
-            $menu['admin']['content']['rule']['links']['search']='/front/rule.tracking.php';
-            if (haveRight("rule_ticket","w")) {
-               $menu['admin']['content']['rule']['links']['add']='/front/rule.tracking.form.php';
-            }
-            break;
-
-         case RULE_SOFTWARE_CATEGORY :
-            $menu['admin']['content']['rule']['links']['search']='/front/rule.softwarecategories.php';
-            if (haveRight("rule_softwarescategories","w")) {
-               $menu['admin']['content']['rule']['links']['add']='/front/rule.softwarecategories.form.php';
-            }
-            break;
-      }
-*/
    }
 
    if (haveRight("rule_dictionnary_dropdown","r") || haveRight("rule_dictionnary_software","r")) {
       $menu['admin']['content']['dictionnary']['title']=$LANG['rulesengine'][77];
       $menu['admin']['content']['dictionnary']['shortcut']='r';
       $menu['admin']['content']['dictionnary']['page']='/front/dictionnary.php';
-      switch($option) {
-         case RULE_DICTIONNARY_MANUFACTURER :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.manufacturer.php';
-            if (haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.manufacturer.form.php';
-            }
-            break;
 
-         case RULE_DICTIONNARY_SOFTWARE :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.software.php';
-            if (haveRight("rule_dictionnary_software","w")) {
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.software.form.php';
-            }
-            break;
+      if ($sector=='admin' && $item == 'dictionnary') {
 
-         case RULE_DICTIONNARY_MODEL_COMPUTER :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.computer.php';
-            if (haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.computer.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']=$LANG['common'][5];
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']='/front/rule.dictionnary.manufacturer.php';
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']='/front/rule.dictionnary.manufacturer.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['add']='/front/rule.dictionnary.manufacturer.form.php';
+         }
 
-         case RULE_DICTIONNARY_MODEL_MONITOR :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.monitor.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.monitor.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['software']['title']=$LANG['Menu'][4];
+         $menu['admin']['content']['dictionnary']['options']['software']['page']='/front/rule.dictionnary.software.php';
+         $menu['admin']['content']['dictionnary']['options']['software']['links']['search']='/front/rule.dictionnary.software.php';
+         if (haveRight("rule_dictionnary_software","w")) {
+            $menu['admin']['content']['dictionnary']['options']['software']['links']['add']='/front/rule.dictionnary.software.form.php';
+         }
 
-         case RULE_DICTIONNARY_MODEL_PRINTER :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.printer.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.printer.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['title']=$LANG['setup'][91];
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['page']='/front/rule.dictionnary.model.computer.php';
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']='/front/rule.dictionnary.model.computer.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['add']='/front/rule.dictionnary.model.computer.form.php';
+         }
 
-         case RULE_DICTIONNARY_MODEL_PERIPHERAL :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.peripheral.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.peripheral.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']=$LANG['setup'][94];
+         $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']='/front/rule.dictionnary.model.monitor.php';
+         $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']='/front/rule.dictionnary.model.monitor.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['add']='/front/rule.dictionnary.model.monitor.form.php';
+         }
 
-         case RULE_DICTIONNARY_MODEL_NETWORKING :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.networking.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.networking.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.printer']['title']=$LANG['setup'][96];
+         $menu['admin']['content']['dictionnary']['options']['model.printer']['page']='/front/rule.dictionnary.model.printer.php';
+         $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']='/front/rule.dictionnary.model.printer.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['add']='/front/rule.dictionnary.model.printer.form.php';
+         }
 
-         case RULE_DICTIONNARY_MODEL_PHONE :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.model.phone.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.model.phone.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.peripheral']['title']=$LANG['setup'][97];
+         $menu['admin']['content']['dictionnary']['options']['model.peripheral']['page']='/front/rule.dictionnary.model.peripheral.php';
+         $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']='/front/rule.dictionnary.model.peripheral.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['add']='/front/rule.dictionnary.model.peripheral.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_COMPUTER :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.computer.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.computer.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.networking']['title']=$LANG['setup'][95];
+         $menu['admin']['content']['dictionnary']['options']['model.networking']['page']='/front/rule.dictionnary.model.networking.php';
+         $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['search']='/front/rule.dictionnary.model.networking.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['add']='/front/rule.dictionnary.model.networking.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_MONITOR :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.monitor.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.monitor.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['model.phone']['title']=$LANG['setup'][503];
+         $menu['admin']['content']['dictionnary']['options']['model.phone']['page']='/front/rule.dictionnary.model.phone.php';
+         $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']='/front/rule.dictionnary.model.phone.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['add']='/front/rule.dictionnary.model.phone.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_PRINTER :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.printer.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.printer.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.computer']['title']=$LANG['setup'][4];
+         $menu['admin']['content']['dictionnary']['options']['type.computer']['page']='/front/rule.dictionnary.type.computer.php';
+         $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']='/front/rule.dictionnary.type.computer.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['add']='/front/rule.dictionnary.type.computer.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_PERIPHERAL :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.peripheral.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.peripheral.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.monitor']['title']=$LANG['setup'][44];
+         $menu['admin']['content']['dictionnary']['options']['type.monitor']['page']='/front/rule.dictionnary.type.monitor.php';
+         $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']='/front/rule.dictionnary.type.monitor.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['add']='/front/rule.dictionnary.type.monitor.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_NETWORKING :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.networking.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.networking.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.printer']['title']=$LANG['setup'][43];
+         $menu['admin']['content']['dictionnary']['options']['type.printer']['page']='/front/rule.dictionnary.type.printer.php';
+         $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']='/front/rule.dictionnary.type.printer.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['add']='/front/rule.dictionnary.type.printer.form.php';
+         }
 
-         case RULE_DICTIONNARY_TYPE_PHONE :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.type.phone.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.type.phone.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']=$LANG['setup'][69];
+         $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']='/front/rule.dictionnary.type.peripheral.php';
+         $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']='/front/rule.dictionnary.type.peripheral.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['add']='/front/rule.dictionnary.type.peripheral.form.php';
+         }
 
-         case RULE_DICTIONNARY_OS :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.os.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.os.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.networking']['title']=$LANG['setup'][42];
+         $menu['admin']['content']['dictionnary']['options']['type.networking']['page']='/front/rule.dictionnary.type.networking.php';
+         $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']='/front/rule.dictionnary.type.networking.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['add']='/front/rule.dictionnary.type.networking.form.php';
+         }
 
-         case RULE_DICTIONNARY_OS_SP :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.os_sp.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.os_sp.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['type.phone']['title']=$LANG['setup'][504];
+         $menu['admin']['content']['dictionnary']['options']['type.phone']['page']='/front/rule.dictionnary.type.phone.php';
+         $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']='/front/rule.dictionnary.type.phone.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['add']='/front/rule.dictionnary.type.phone.form.php';
+         }
 
-         case RULE_DICTIONNARY_OS_VERSION :
-            $menu['admin']['content']['dictionnary']['links']['search']=
-                    '/front/rule.dictionnary.os_version.php';
-            if (haveRight("rule_dictionnary_dropdown","w")){
-               $menu['admin']['content']['dictionnary']['links']['add']=
-                    '/front/rule.dictionnary.os_version.form.php';
-            }
-            break;
+         $menu['admin']['content']['dictionnary']['options']['os']['title']=$LANG['computers'][9];
+         $menu['admin']['content']['dictionnary']['options']['os']['page']='/front/rule.dictionnary.os.php';
+         $menu['admin']['content']['dictionnary']['options']['os']['links']['search']='/front/rule.dictionnary.os.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['os']['links']['add']='/front/rule.dictionnary.os.form.php';
+         }
+
+         $menu['admin']['content']['dictionnary']['options']['os_sp']['title']=$LANG['computers'][53];
+         $menu['admin']['content']['dictionnary']['options']['os_sp']['page']='/front/rule.dictionnary.os_sp.php';
+         $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']='/front/rule.dictionnary.os_sp.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['add']='/front/rule.dictionnary.os_sp.form.php';
+         }
+
+         $menu['admin']['content']['dictionnary']['options']['os_version']['title']=$LANG['computers'][52];
+         $menu['admin']['content']['dictionnary']['options']['os_version']['page']='/front/rule.dictionnary.os_version.php';
+         $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']='/front/rule.dictionnary.os_version.php';
+         if (haveRight("rule_dictionnary_dropdown","w")) {
+            $menu['admin']['content']['dictionnary']['options']['os_version']['links']['add']='/front/rule.dictionnary.os_version.form.php';
+         }
       }
    }
 
@@ -797,11 +737,25 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("dropdown","w") || haveRight("entity_dropdown","w")) {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
-      if ($option) {
-         $menu['config']['content']['dropdowns']['links']['search']
-                  = '/front/dropdown.php?itemtype='.$option;
-         $menu['config']['content']['dropdowns']['links']['add']
-                  = '/front/dropdown.form.php?itemtype='.$option;
+
+
+      if ($item=="dropdowns") {
+         $dps=getAllDropdowns();
+
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               /// TODO condition for already converted dropdown : clean when finish
+               if (is_integer($key) && isset($LINK_ID_TABLE[$key])) {
+                  $dpname=str_replace('glpi_','',$LINK_ID_TABLE[$key]);
+                  if ($dpname == $option) {
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['title']=$val;
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['page']='/front/dropdown.php?itemtype='.$key;
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['search']='/front/dropdown.php?itemtype='.$key;
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['add']='/front/dropdown.form.php?itemtype='.$key;
+                  }
+               }
+            }
+         }
       }
    }
 
@@ -823,19 +777,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       switch ($option) {
          case "ldap" : // LDAP
             $menu['config']['content']['extauth']['links']['search']='/front/auth.ldap.php';
-            break;
-
-         case "imap" : // IMAP
-            $menu['config']['content']['extauth']['links']['search']='/front/auth.imap.php';
-            break;
-      }
-      switch ($option) {
-         case "ldap" : // LDAP
             $menu['config']['content']['extauth']['links']['add']='' .
                     '/front/auth.ldap.php?next=extauth_ldap';
             break;
 
          case "imap" : // IMAP
+            $menu['config']['content']['extauth']['links']['search']='/front/auth.imap.php';
             $menu['config']['content']['extauth']['links']['add']='' .
                     '/front/auth.imap.php?next=extauth_mail';
             break;
@@ -1036,11 +983,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
       if ($with_option) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['options'][$option]['page'].
-              "' class='here' title='".$menu[$sector]['content'][$item]['options'][$option]['title']."' >".
-                 $menu[$sector]['content'][$item]['options'][$option]['title']." </a></li>";
+              "' class='here' title='".$menu[$sector]['content'][$item]['options'][$option]['title']."' >";
+         echo resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],17)." </a></li>";
       }
 
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 &nbsp;&nbsp;&nbsp;</li>";
 
       $links=array();
@@ -1117,7 +1064,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
       }
    } else {
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
             "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
             "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
@@ -1164,7 +1111,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "</table></td></tr></table>";
 
    echo "</div>";
-   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
          "&nbsp;&nbsp;&nbsp;";
    echo "</li>";
 

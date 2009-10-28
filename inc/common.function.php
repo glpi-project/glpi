@@ -826,6 +826,22 @@ function resume_text($string,$length=255) {
 }
 
 /**
+ *  Resume a name for display
+ *
+ * @param $string string: string to resume
+ * @param $length integer: resume length
+ * @return cut string
+ */
+function resume_name($string,$length=255) {
+
+   if (strlen($string)>$length) {
+      $string=utf8_substr($string,0,$length)."...";
+   }
+   return $string;
+}
+
+
+/**
  *  Format mail row
  *
  * @param $string string: label string

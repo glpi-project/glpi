@@ -52,6 +52,7 @@ class OcsRuleCollection extends RuleCollection {
       $this->ocsservers_id = $ocsservers_id;
       $this->stop_on_first_match=true;
       $this->right="rule_ocs";
+      $this->menu_option="ocs";
    }
 
    function getTitle() {

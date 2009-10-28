@@ -41,8 +41,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new OcsRuleCollection(-1);
 
-$headerType='rule';
-$headerOption='ocs';
-
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

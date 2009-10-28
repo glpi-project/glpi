@@ -47,6 +47,7 @@ class TrackingBusinessRuleCollection extends RuleCollection {
       $this->rule_class_name="TrackingBusinessRule";
       $this->right="rule_ticket";
       $this->use_output_rule_process_as_next_input=true;
+      $this->menu_option="ticket";
    }
 
    function getTitle() {

@@ -350,6 +350,7 @@ class RightRuleCollection extends RuleCollection {
       $this->stop_on_first_match=false;
       $this->right="rule_ldap";
       $this->orderby="name";
+      $this->menu_option="right";
    }
 
    function getTitle() {
