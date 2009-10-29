@@ -46,7 +46,6 @@ if (!defined('GLPI_ROOT')){
 */
 function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate='') {
    global $CFG_GLPI,$LANG;
-
    // Show Infocom or blank form
    if (!haveRight("infocom","r")) {
       return false;
@@ -69,10 +68,11 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
       $entity=$ci->getField("entities_id");
 
       if (!$ic->getFromDBforDevice($itemtype,$dev_ID)) {
-         if ($ic->can(-1,"w",$entity) && $withtemplate!=2) {
+         $input=array('entities_id'=>$entity);
+         if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
             echo "<table class='tab_cadre'><tr><th>";
-            echo "<strong><a href='$target?itemtype=$itemtype&amp;items_id=$dev_ID&amp;add=add'>".
-                   $LANG['financial'][68]."</a></strong></th></tr></table>";
+            echo "<a href='$target?itemtype=$itemtype&amp;items_id=$dev_ID&amp;add=add'>".
+                   $LANG['financial'][68]."</a></th></tr></table>";
          }
       } else { // getFromDBforDevice
          $canedit = ($ic->can($ic->fields['id'], "w") && $withtemplate!=2);

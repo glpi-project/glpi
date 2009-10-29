@@ -82,14 +82,14 @@ if ($_POST["id"]>=0) {
       case 4 :
          showEntityAdvancedOptions($_POST['target'],$_POST["id"]);
          break;
-      
-      case 5 :
-            showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
-            break;
 
-         default :
-            if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            }
+      case 5 :
+         showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         }
    }
 }
 

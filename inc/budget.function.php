@@ -75,8 +75,8 @@ function showDeviceBudget($budgets_id) {
    $num=0;
    while ($i < $number) {
       $itemtype=$DB->result($result, $i, "itemtype");
-      if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLE_TYPE
-          && $itemtype!=CARTRIDGE_TYPE && $itemtype!=SOFTWARELICENSE_TYPE) {
+      if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLEITEM_TYPE
+          && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
          $query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*
                    FROM `glpi_infocoms`
                    INNER JOIN ".$LINK_ID_TABLE[$itemtype]."
@@ -143,10 +143,10 @@ function showDeviceBudgetValue($budgets_id) {
    if (!haveRight("budget","r")) {
       return false;
    }
-   
-   $query = "SELECT DISTINCT `itemtype` 
-             FROM `glpi_infocoms` 
-             WHERE `budgets_id` = '$budgets_id' 
+
+   $query = "SELECT DISTINCT `itemtype`
+             FROM `glpi_infocoms`
+             WHERE `budgets_id` = '$budgets_id'
              GROUP BY `itemtype`";
 
    $result = $DB->query($query);
@@ -154,61 +154,71 @@ function showDeviceBudgetValue($budgets_id) {
 
    $entities_values = array();
 
+   // Type for which infocom are only template
+   $ignore = array(CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE, SOFTWARE_TYPE);
+
    if ( $DB->numrows($result) ) {
-   	while ($types = $DB->fetch_array($result)) {
+      while ($types = $DB->fetch_array($result)) {
+        if (in_array($types['itemtype'], $ignore)) {
+           continue;
+        }
         $table = $LINK_ID_TABLE[$types['itemtype']];
-         $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`, 
-                     `$table`.`entities_id`, 
-                        `$table`.`entities_id` as `entities_id`      
-                  FROM `glpi_infocoms`, `$table`
-                     LEFT JOIN `glpi_entities` ON (`$table`.`entities_id` = `glpi_entities`.`id`)
-                     WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id'
-                     AND `glpi_infocoms`.`items_id` = `$table`.`id`".
-                        getEntitiesRestrictRequest(" AND",$table,"entities_id"). 
-                   " GROUP BY `$table`.`entities_id`          
-                  ORDER BY `glpi_entities`.`completename` ASC";
+        $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
+                               `$table`.`entities_id`
+                        FROM `$table`
+                        INNER JOIN `glpi_infocoms`
+                           ON (`glpi_infocoms`.`items_id` = `$table`.`id`
+                               AND `glpi_infocoms`.`itemtype` = '".$types['itemtype']."')
+                        LEFT JOIN `glpi_entities` ON (`$table`.`entities_id` = `glpi_entities`.`id`)
+                        WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                              getEntitiesRestrictRequest(" AND",$table,"entities_id");
+         if (in_array($table,$CFG_GLPI["template_tables"])) {
+            $query_infos .= " AND `$table`.`is_template`='0' ";
+         }
+         $query_infos .= "GROUP BY `$table`.`entities_id`
+                          ORDER BY `glpi_entities`.`completename` ASC";
 
          $result_infos = $DB->query($query_infos);
-         
+
          //Store, for each entity, the budget spent
          while ($values = $DB->fetch_array($result_infos)) {
             if (!isset($entities_values[$values['entities_id']])) {
-            	$entities_values[$values['entities_id']] = 0;
+               $entities_values[$values['entities_id']] = 0;
             }
-            $entities_values[$values['entities_id']]+=$values['sumvalue']; 
+            $entities_values[$values['entities_id']] += $values['sumvalue'];
          }
-      }  	
+      }
 
       $ci=new CommonItem;
       $budget = new Budget();
       $budget->getFromDB($budgets_id);
-   
+
       echo "<br><br><div class='center'><table class='tab_cadre'>";
       echo "<tr>";
       echo "<th colspan='2'>".$LANG['financial'][108]."</th></tr>";
       echo "<tr><th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['financial'][21]."</th>";
       echo "</tr>";
- 
+
       foreach ($entities_values as $entity => $value) {
          echo "<tr class='tab_bg_1'><td>".getDropdownName('glpi_entities',$entity)."</th>";
-         echo "<td class='center'>".formatNumber($value)."</td>";
+         echo "<td class='right'>".formatNumber($value)."</td>";
          echo "</tr>";
-         $total+=$value;
-         	
-         }
-   
+         $total += $value;
+      }
+
       echo "<tr class='tab_bg_1'><th colspan='2'><br></th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='right'>".$LANG['financial'][108]."</td>";
-      echo "<td class='right' colspan='2'><strong>".formatNumber($total)."</strong></td></tr>";
-      if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) { 
+      echo "<td class='right b' colspan='2'>".formatNumber($total)."</td></tr>";
+      if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='right'>".$LANG['financial'][109]."</td>";
-         echo "<td><strong>".formatNumber($budget->fields['value'] - $total)."</strong></td></tr>";      
+         echo "<td class='right b'>".formatNumber($budget->fields['value'] - $total)."</td></tr>";
       }
       echo "</table></div>";
 
    }
 }
+
 ?>
