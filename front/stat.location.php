@@ -104,7 +104,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	$params=array("type"=>$type,"field"=>$field,"table"=>$_POST["dropdown"],"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],STAT_TYPE,$params);
 
-	displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
+	displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
 
 
 } else {
@@ -116,7 +116,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	$params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],STAT_TYPE,$params);
 
-	displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
+	displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
 }
 
 

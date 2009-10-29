@@ -156,7 +156,7 @@ $items=array(
 	$params=array("type"=>$_POST["type"],"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],STAT_TYPE,$params);
 
-	displayStats($_POST["type"],$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
+	displayStats($_POST["type"],$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 	commonFooter();
 ?>
