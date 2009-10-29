@@ -144,7 +144,7 @@ class CronTask extends CommonDBTM{
       $query = "UPDATE `".$this->table."`
                 SET `state`='".CRONTASK_STATE_RUNNING."', `lastrun`=NOW()
                 WHERE `id`='".$this->fields['id']."'
-                  AND `state`='".CRONTASK_STATE_WAITING."'";
+                  AND `state`!='".CRONTASK_STATE_RUNNING."'";
       $result = $DB->query($query);
       if ($DB->affected_rows($result)>0) {
          $this->timer = microtime(true);
@@ -196,7 +196,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->table."`
-                SET `state`='".CRONTASK_STATE_WAITING."',
+                SET `state`='".$this->fields['state']."',
                     `lastrun`=NOW()
                 WHERE `id`='".$this->fields['id']."'
                   AND `state`='".CRONTASK_STATE_RUNNING."'";
@@ -251,7 +251,8 @@ class CronTask extends CommonDBTM{
    /**
     * read the first task which need to be run by cron
     *
-    * @param $mode : allow retrieve task for this mode
+    * @param $mode : >0 retrieve task configured for this mode
+    *                <0 retrieve task allowed for this mode (force, no time check)
     * @param $name : one specify action
     *
     * @return false if no task to run
@@ -261,45 +262,52 @@ class CronTask extends CommonDBTM{
 
       $hour=date('H');
       $query = "SELECT * FROM `".$this->table."`
-         WHERE `state`='".CRONTASK_STATE_WAITING."'
-           AND (`plugin` IS NULL";
+         WHERE (`plugin` IS NULL";
 
       if (count($_SESSION['glpi_plugins'])) {
+         // Only activated plugins
          $query .= " OR `plugin` IN ('".implode("','", $_SESSION['glpi_plugins'])."'))";
       } else {
          $query .= ')';
-      }
-      if ($mode) {
-         $query .= " AND `mode`='$mode' ";
       }
       if ($name) {
          $query .= " AND `name`='".addslashes($name)."' ";
       }
 
-      // Get system lock
-      if (is_file(GLPI_CRON_DIR. '/all.lock')) {
-         // Global lock
-         return false;
-      }
-      $locks=array();
-      foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
-         if (preg_match('!.*/(.*).lock$!', $lock, $reg)) {
-            $locks[]=$reg[1];
-         }
-      }
-      if (count($locks)) {
-         $lock = "AND `name` NOT IN ('".implode("','",$locks)."')";
+      // In force mode
+      if ($mode<0) {
+         $query .= " AND `state`!='".CRONTASK_STATE_RUNNING."'
+                     AND (`allowmode` & ".(-intval($mode)).") ";
       } else {
-         $lock = '';
+         $query .= " AND `state`='".CRONTASK_STATE_WAITING."'";
+         if ($mode>0) {
+            $query .= " AND `mode`='$mode' ";
+         }
+         // Get system lock
+         if (is_file(GLPI_CRON_DIR. '/all.lock')) {
+            // Global lock
+            return false;
+         }
+         $locks=array();
+         foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+            if (preg_match('!.*/(.*).lock$!', $lock, $reg)) {
+               $locks[]=$reg[1];
+            }
+         }
+         if (count($locks)) {
+            $lock = "AND `name` NOT IN ('".implode("','",$locks)."')";
+         } else {
+            $lock = '';
+         }
+         // Build query for frequency and allowed hour
+         $query .= " AND ((`hourmin`<`hourmax` AND  '$hour'>=`hourmin` AND '$hour'<`hourmax`)
+                       OR (`hourmin`>`hourmax` AND ('$hour'>=`hourmin` OR  '$hour'<`hourmax`)))
+                     AND (`lastrun` IS NULL
+                       OR unix_timestamp(`lastrun`)+`frequency`<unix_timestamp(now()))
+                     $lock ";
       }
-
-      // Build query for frequency and allowed hour
-      $query .= " AND ((`hourmin`<`hourmax` AND  '$hour'>=`hourmin` AND '$hour'<`hourmax`)
-                    OR (`hourmin`>`hourmax` AND ('$hour'>=`hourmin` OR  '$hour'<`hourmax`)))
-                  AND (`lastrun` IS NULL
-                    OR unix_timestamp(`lastrun`)+`frequency`<unix_timestamp(now()))
-                  $lock
-                ORDER BY `plugin`, unix_timestamp(`lastrun`)+`frequency`";
+      // Core task before plugins
+      $query .= "ORDER BY `plugin`, unix_timestamp(`lastrun`)+`frequency`";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -414,12 +422,15 @@ class CronTask extends CommonDBTM{
          dropdownInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
-      $launch=false;
+      if ($tmpstate == CRONTASK_STATE_RUNNING) {
+         $launch=false;
+      } else {
+         $launch = $this->fields['allowmode']&CRONTASK_MODE_INTERNAL;
+      }
       if ($tmpstate!=CRONTASK_STATE_WAITING) {
          echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
          echo $LANG['crontask'][42];
-         $launch=true;
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $h=date('H',$next);
@@ -439,7 +450,6 @@ class CronTask extends CommonDBTM{
          }
          if ($next<time()) {
             echo $LANG['crontask'][42].' ('.convDateTime($disp).') ';
-            $launch=true;
          } else {
             echo convDateTime($disp);
          }
@@ -619,7 +629,7 @@ class CronTask extends CommonDBTM{
    /**
     * Launch the need cron tasks
     *
-    * @param $mode (internal/external)
+    * @param $mode (internal/external, <0 to force)
     * @param $max number of task to launch ()
     * @param $name of task to run
     *
