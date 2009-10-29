@@ -1429,6 +1429,7 @@ class Followup  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
+      global $LANG;
 
       $input["_isadmin"] = haveRight("comment_all_ticket","1");
       $input["_job"] = new Job;
@@ -1442,6 +1443,14 @@ class Followup  extends CommonDBTM {
          }
       } else {
          return false;
+      }
+
+      // Manage File attached (from mailgate)
+      $docadded=$input["_job"]->addFiles($input["tickets_id"]);
+      if (count($docadded)>0) {
+         foreach ($docadded as $name) {
+            $input['content'] .= "\n".$LANG['mailing'][26]." $name";
+         }
       }
 
       // Pass old assign From Job in case of assign change
