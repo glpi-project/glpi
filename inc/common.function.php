@@ -1787,23 +1787,23 @@ function timestampToString($sec,$display_sec=true) {
       $sec=0;
    }
 
-   if($sec < MINUTE_TIMESTAMP) {
+   if ($sec < MINUTE_TIMESTAMP) {
       return $sec." ".$LANG['stats'][34];
    } else if ($sec < HOUR_TIMESTAMP) {
       $min = floor($sec/MINUTE_TIMESTAMP);
       $sec = $sec%MINUTE_TIMESTAMP;
-      $out=$min." ".$LANG['stats'][33];
+      $out = $min." ".$LANG['stats'][33];
       if ($display_sec && $sec >0) {
-         $out.=" ".$sec." ".$LANG['stats'][34];
+         $out .= " ".$sec." ".$LANG['stats'][34];
       }
       return $out;
-   } else if($sec <  DAY_TIMESTAMP) {
+   } else if ($sec <  DAY_TIMESTAMP) {
       $heure = floor($sec/HOUR_TIMESTAMP);
       $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
       $sec = $sec%MINUTE_TIMESTAMP;
-      $out=$heure." ".$LANG['job'][21];
-      if ($min>0){
-         $out.=" ".$min." ".$LANG['stats'][33];
+      $out = $heure." ".$LANG['job'][21];
+      if ($min>0) {
+         $out .= " ".$min." ".$LANG['stats'][33];
       }
       if ($display_sec && $sec >0) {
          $out.=" ".$sec." ".$LANG['stats'][34];
@@ -1814,12 +1814,12 @@ function timestampToString($sec,$display_sec=true) {
       $heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
       $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
       $sec = $sec%MINUTE_TIMESTAMP;
-      $out=$jour." ".$LANG['stats'][31];
-      if ($heure>0){
-         $out.=" ".$heure." ".$LANG['job'][21];
+      $out = $jour." ".$LANG['stats'][31];
+      if ($heure>0) {
+         $out .= " ".$heure." ".$LANG['job'][21];
       }
 
-      if ($min>0){
+      if ($min>0) {
          $out.=" ".$min." ".$LANG['stats'][33];
       }
 

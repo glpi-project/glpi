@@ -784,33 +784,38 @@ class CronTask extends CommonDBTM{
 
       if ($nbstop) {
          $query = "SELECT MIN(`date`) AS datemin,
-                     MIN(`elapsed`) AS elapsedmin,
-                     MAX(`elapsed`) AS elapsedmax,
-                     AVG(`elapsed`) AS elapsedavg,
-                     SUM(`elapsed`) AS elapsedtot,
-                     MIN(`volume`) AS volmin,
-                     MAX(`volume`) AS volmax,
-                     AVG(`volume`) AS volavg,
-                     SUM(`volume`) AS voltot
-                  FROM `glpi_crontaskslogs`
-                  WHERE `crontasks_id`='".$this->fields['id']."'
-                    AND `state`='".CRONTASKLOG_STATE_STOP."'";
+                          MIN(`elapsed`) AS elapsedmin,
+                          MAX(`elapsed`) AS elapsedmax,
+                          AVG(`elapsed`) AS elapsedavg,
+                          SUM(`elapsed`) AS elapsedtot,
+                          MIN(`volume`) AS volmin,
+                          MAX(`volume`) AS volmax,
+                          AVG(`volume`) AS volavg,
+                          SUM(`volume`) AS voltot
+                   FROM `glpi_crontaskslogs`
+                   WHERE `crontasks_id`='".$this->fields['id']."'
+                         AND `state`='".CRONTASKLOG_STATE_STOP."'";
          $result = $DB->query($query);
+
          if ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td>".$LANG['search'][8]."&nbsp;:</td>";
             echo "<td class='right'>".convDateTime($data['datemin'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:</td>";
-            echo "<td class='right'>".number_format($data['elapsedmin'],2)." ".$LANG['stats'][34]."</td></tr>";
+            echo "<td class='right'>".number_format($data['elapsedmin'],2)." ".$LANG['stats'][34];
+            echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][52]."&nbsp;:</td>";
-            echo "<td class='right'>".number_format($data['elapsedmax'],2)." ".$LANG['stats'][34]."</td></tr>";
+            echo "<td class='right'>".number_format($data['elapsedmax'],2)." ".$LANG['stats'][34];
+            echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][53]."&nbsp;:</td>";
-            echo "<td class='right'><strong>".number_format($data['elapsedavg'],2)." ".$LANG['stats'][34]."</strong></td></tr>";
+            echo "<td class='right'><strong>".number_format($data['elapsedavg'],2)." ".
+                  $LANG['stats'][34]."</strong></td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][54]."&nbsp;:</td>";
-            echo "<td class='right'>".number_format($data['elapsedtot'],2)." ".$LANG['stats'][34]."</td></tr>";
+            echo "<td class='right'>".number_format($data['elapsedtot'],2)." ".$LANG['stats'][34];
+            echo "</td></tr>";
          }
          if ($data && $data['voltot']>0) {
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][55]."&nbsp;:</td>";
@@ -820,13 +825,15 @@ class CronTask extends CommonDBTM{
             echo "<td class='right'>".$data['volmax']." ".$LANG['crontask'][62]."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][57]."&nbsp;:</td>";
-            echo "<td class='right'><strong>".number_format($data['volavg'],2)." ".$LANG['crontask'][62]."</strong></td></tr>";
+            echo "<td class='right'><strong>".number_format($data['volavg'],2)." ".
+                  $LANG['crontask'][62]."</strong></td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][58]."&nbsp;:</td>";
             echo "<td class='right'>".$data['voltot']." ".$LANG['crontask'][62]."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][59]."&nbsp;:</td>";
-            echo "<td class='left'>".number_format($data['voltot']/$data['elapsedtot'],2)." ".$LANG['crontask'][62]." / ".$LANG['stats'][34]."</td></tr>";
+            echo "<td class='left'>".number_format($data['voltot']/$data['elapsedtot'],2)." ".
+                  $LANG['crontask'][62]." / ".$LANG['stats'][34]."</td></tr>";
          }
       }
       echo "</table></div>";
@@ -868,13 +875,14 @@ class CronTask extends CommonDBTM{
       printAjaxPager($LANG['crontask'][47],$start,$number);
 
       $query = "SELECT *
-         FROM `glpi_crontaskslogs`
-         WHERE `crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'
-         ORDER BY `id` DESC
-         LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+                FROM `glpi_crontaskslogs`
+                WHERE `crontasks_id`='".$this->fields['id']."'
+                      AND `state`='".CRONTASKLOG_STATE_STOP."'
+                ORDER BY `id` DESC
+                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-      if ($result=$DB->query($query)){
-         if ($data=$DB->fetch_assoc($result)){
+      if ($result=$DB->query($query)) {
+         if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".$LANG['common'][27]."</th>"; // Date
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
@@ -885,7 +893,7 @@ class CronTask extends CommonDBTM{
             do {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='javascript:reloadTab(\"crontaskslogs_id=".
-                  $data['crontaskslogs_id']."\");'>".$data['date']."</a></td>";
+                          $data['crontaskslogs_id']."\");'>".$data['date']."</a></td>";
                echo "<td class='right'>".number_format($data['elapsed'],3)."s</td>";
                echo "<td class='right'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
@@ -900,6 +908,7 @@ class CronTask extends CommonDBTM{
       } // Query
       echo "</div>";
    }
+
    /**
    * Display detail of a runned task
    *
