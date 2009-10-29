@@ -70,15 +70,15 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 				switch ($params["type"]){
 					case "comp_champ":
 						$val=getStatsItems($params["date1"],$params["date2"],$params["table"]);
-					displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
+					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
 					break;
 					case "device":
 						$val=getStatsItems($params["date1"],$params["date2"],$params["field"]);
-					displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
+					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
 					break;
 					default:
 					$val=getStatsItems($params["date1"],$params["date2"],$params["type"]);
-					displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val);
+					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val);
 					break;
 				}
 			} else if (isset($_GET["type"])&&$_GET["type"]=="hardwares"){

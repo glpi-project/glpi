@@ -130,7 +130,7 @@ function getStatsItems($date1,$date2,$type) {
 }
 
 
-function displayStats($type,$field,$date1,$date2,$start,$value,$value2="") {
+function displayStats($type,$date1,$date2,$start,$value,$value2="") {
    global $LANG,$CFG_GLPI;
 
    // Set display type for export if define
