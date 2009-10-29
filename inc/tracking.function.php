@@ -1768,23 +1768,23 @@ function showJobDetails($target, $ID,$array=array()) {
    }
    if (!$ID) {
       $job->getEmpty();
-      $job->fields["users_id"] = $array["users_id"];
-      $job->fields["groups_id"] = $array["groups_id"];
-      $job->fields["users_id_assign"] = $array["users_id_assign"];
-      $job->fields["groups_id_assign"] = $array["groups_id_assign"];
-      $job->fields["name"] = $array["name"];
-      $job->fields["content"] = $array["content"];
+      $job->fields["users_id"]             = $array["users_id"];
+      $job->fields["groups_id"]            = $array["groups_id"];
+      $job->fields["users_id_assign"]      = $array["users_id_assign"];
+      $job->fields["groups_id_assign"]     = $array["groups_id_assign"];
+      $job->fields["name"]                 = $array["name"];
+      $job->fields["content"]              = $array["content"];
       $job->fields["ticketscategories_id"] = $array["ticketscategories_id"];
-      $job->fields["priority"] = $array["priority"];
-      $job->fields["request_type"] = $array["request_type"];
-      $job->fields["hour"] = $array["hour"];
-      $job->fields["minute"] = $array["minute"];
-      $job->fields["date"] = $array["date"];
-      $job->fields["entities_id"] = $array["entities_id"];
-      $job->fields["status"] = $array["status"];
-      $job->fields["followup"] = $array["followup"];
-      $job->fields["itemtype"] = $array["itemtype"];
-      $job->fields["items_id"] = $array["items_id"];
+      $job->fields["priority"]             = $array["priority"];
+      $job->fields["request_type"]         = $array["request_type"];
+      $job->fields["hour"]                 = $array["hour"];
+      $job->fields["minute"]               = $array["minute"];
+      $job->fields["date"]                 = $array["date"];
+      $job->fields["entities_id"]          = $array["entities_id"];
+      $job->fields["status"]               = $array["status"];
+      $job->fields["followup"]             = $array["followup"];
+      $job->fields["itemtype"]             = $array["itemtype"];
+      $job->fields["items_id"]             = $array["items_id"];
 
    } else if (!$job->getFromDB($ID) || !$job->can($ID,'r')) {
       echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";

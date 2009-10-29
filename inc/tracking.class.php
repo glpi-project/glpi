@@ -646,7 +646,6 @@ class Job extends CommonDBTM {
          $_SESSION["helpdeskSaved"]=$input;
 
          if (!isset($input["priority"])) {
-
             addMessageAfterRedirect($LANG['tracking'][4],false,ERROR);
             $mandatory_ok=false;
          }
