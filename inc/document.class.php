@@ -404,19 +404,19 @@ class Document extends CommonDBTM {
 
    /**
     * Check is the curent user is allowed to see the file
-    * 
+    *
     * @return boolean
     */
    function canViewFile() {
       global $DB, $CFG_GLPI;
-      
+
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
          // My doc Check and Common doc right access
          if ($this->can($_GET['docid'],'r') || $this->fields["users_id"]==$_SESSION["glpiID"]) {
             return true;
          }
-   
+
          // Knowbase Case
          if (haveRight("knowbase","r")) {
             $query = "SELECT *
@@ -426,13 +426,13 @@ class Document extends CommonDBTM {
                WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'".
                   getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
-   
+
             $result=$DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
             }
          }
-   
+
          if (haveRight("faq","r")) {
             $query = "SELECT *
                FROM `glpi_documents_items`
@@ -442,17 +442,17 @@ class Document extends CommonDBTM {
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
                   AND `glpi_knowbaseitems`.`is_faq`='1'".
                   getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
-   
+
             $result=$DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
             }
          }
-   
+
          // Tracking Case
          if (isset($_GET["tickets_id"])) {
             $job=new Job;
-   
+
             if ($job->can($_GET["tickets_id"],'r')) {
                $query = "SELECT *
                   FROM `glpi_documents_items`
@@ -466,11 +466,11 @@ class Document extends CommonDBTM {
             }
          }
       } else if (isset($_SESSION["glpiID"])) { // ! central
-   
+
          // Check if it is my doc
          if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
             return true;
-         } 
+         }
          if (haveRight("faq","r")) {
             // Check if it is a FAQ document
             $query = "SELECT *
@@ -504,7 +504,7 @@ class Document extends CommonDBTM {
                }
             }
          }
-      } 
+      }
       // Public FAQ for not connected user
       if ($CFG_GLPI["use_public_faq"]) {
          $query = "SELECT *
@@ -543,5 +543,15 @@ class DocumentItem extends CommonDBRelation{
       $this->items_id_2 = 'items_id';
    }
 
+   function prepareInputForAdd($input) {
+      // Avoid duplicate entry
+      $restrict = "`documents_id` = '".$input['documents_id']."'
+                   AND `itemtype` = '".$input['itemtype']."'
+                   AND `items_id` = '".$input['items_id']."'";
+      if (countElementsInTable($this->table,$restrict)>0) {
+         return false;
+      }
+      return $input;
+   }
 }
 ?>
