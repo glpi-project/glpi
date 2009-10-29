@@ -81,10 +81,11 @@ abstract class CommonDropdown extends CommonDBTM {
    function showTabContent ($ID, $tab) {
       if ($ID>0) {
          switch ($tab) {
-            case -1:
+            case -1 :
                displayPluginAction($this->type,$ID,$tab);
                return false;
-            default:
+
+            default :
                return displayPluginAction($this->type,$ID,$tab);
          }
       }
@@ -237,6 +238,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             case 1 :
                $this->showChildren($ID);
                return true;
+
             case -1 :
                $this->showChildren($ID);
                return false;
@@ -678,12 +680,11 @@ class Netpoint extends CommonDropdown {
    /**
     * Constructor
     **/
-   function __construct(){
+   function __construct() {
       $this->type = NETPOINT_TYPE;
       $this->table = 'glpi_netpoints';
       $this->entity_assign = true;
    }
-
 
    function getAdditionalFields() {
       global $LANG;
@@ -730,7 +731,7 @@ class Netpoint extends CommonDropdown {
       global $LANG;
 
       $this->check(-1,'w',$input);
-      for ($i=$input["_from"];$i<=$input["_to"];$i++){
+      for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
          $input["name"]=$input["_before"].$i.$input["_after"];
          $this->add($input);
       }
