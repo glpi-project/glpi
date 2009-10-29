@@ -53,6 +53,20 @@ class kbitem extends CommonDBTM {
    }
 
    /**
+    * Get The Name of the Object
+    *
+    * @param $with_comment add comments to name (not used for this type)
+    * @return String: name of the object in the current language
+    */
+   function getName($with_comment=0) {
+      if (isset($this->fields["question"])
+          && !empty($this->fields["question"])) {
+         return $this->fields["question"];
+      }
+      return "N/A";
+   }
+
+   /**
     * Actions done at the end of the getEmpty function
     *
     *@return nothing

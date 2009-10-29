@@ -451,16 +451,10 @@ class CommonItem {
     */
    function getField($field) {
 
-      if ($this->obj==NULL) {
-         return false;
+      if ($this->itemtype && isset($this->obj)) {
+         return ($this->obj->getField($field));
       }
-      if ($this->itemtype==0) {
-         return false;
-      } else if (isset($this->obj->fields[$field])) {
-         return $this->obj->fields[$field];
-      } else {
-         return false;
-      }
+      return false;
    }
 
    /**
@@ -469,35 +463,11 @@ class CommonItem {
     * @return String: name of the object in the current language
     */
    function getName($with_comment=0) {
-      global $LANG;
 
-      if ($this->itemtype==0) {
-         return "";
+      if ($this->itemtype && isset($this->obj)) {
+         return ($this->obj->getName($with_comment));
       }
-
-      $toadd="";
-      if ($with_comment) {
-         $toadd="&nbsp;".$this->getComments();
-      }
-
-      if ($this->itemtype==KNOWBASE_TYPE && $this->obj!=NULL && isset($this->obj->fields["question"])
-          && $this->obj->fields["question"]!="") {
-
-         return $this->obj->fields["question"];
-      } else if (($this->itemtype==CARTRIDGEITEM_TYPE || $this->itemtype==CONSUMABLEITEM_TYPE)
-                 && $this->obj!=NULL && $this->obj->fields["name"]!="") {
-
-         $name=$this->obj->fields["name"];
-         if (isset($this->obj->fields["ref"]) && !empty($this->obj->fields["ref"])) {
-            $name.=" - ".$this->obj->fields["ref"];
-         }
-         return $name.$toadd;
-      } else if ($this->obj!=NULL && isset($this->obj->fields["name"])
-                 && $this->obj->fields["name"]!="") {
-         return $this->obj->fields["name"].$toadd;
-      } else {
-         return "N/A";
-      }
+      return "N/A";
    }
 
    /**
@@ -506,21 +476,11 @@ class CommonItem {
     * @return String: name of the object in the current language
     */
    function getNameID($with_comment=0) {
-      global $CFG_GLPI;
 
-      $toadd="";
-      if ($with_comment) {
-         $toadd="&nbsp;".$this->getComments();
+      if ($this->itemtype && isset($this->obj)) {
+         return ($this->obj->getNameID($with_comment));
       }
-      if ($_SESSION['glpiis_ids_visible']) {
-         if ($this->itemtype==0) {
-            return $this->getName().$toadd;
-         } else {
-            return $this->getName()." (".$this->items_id.")".$toadd;
-         }
-      } else {
-         return $this->getName().$toadd;
-      }
+      return "N/A";
    }
 
    /**
@@ -529,24 +489,11 @@ class CommonItem {
     * @return String: link to the object type in the current language
     */
    function getLink($with_comment=0) {
-      global $CFG_GLPI,$INFOFORM_PAGES;
 
-      $ID="";
-      switch ($this->itemtype) {
-         case GENERAL_TYPE :
-
-         case CARTRIDGE_TYPE :
-
-         case CONSUMABLE_TYPE :
-            return $this->getName($with_comment);
-            break;
-
-         default :
-            return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?id=".
-                     $this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".
-                     $this->getNameID($with_comment)."</a>";
-            break;
+      if ($this->itemtype && isset($this->obj)) {
+         return ($this->obj->getLink($with_comment));
       }
+      return '';
    }
 
    /**
@@ -555,57 +502,11 @@ class CommonItem {
     * @return String: comments of the object in the current language
     */
    function getComments() {
-      global $LANG,$CFG_GLPI;
 
-      $comment="";
-      if ($tmp=$this->getField('serial')) {
-         $comment.="<strong>".$LANG['common'][19]."&nbsp;: "."</strong>".$tmp."<br>";
+      if ($this->itemtype && isset($this->obj)) {
+         return ($this->obj->getComments());
       }
-      if ($tmp=$this->getField('otherserial')) {
-         $comment.="<strong>".$LANG['common'][20]."&nbsp;: "."</strong>".$tmp."<br>";
-      }
-      if ($tmp=$this->getField('locations_id')) {
-         $tmp=getDropdownName("glpi_locations",$tmp);
-         if (!empty($tmp)&&$tmp!='&nbsp;'){
-            $comment.="<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
-         }
-      }
-      if ($tmp=$this->getField('users_id')) {
-         $tmp=getUserName($tmp);
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
-            $comment.="<strong>".$LANG['common'][34]."&nbsp;: "."</strong>".$tmp."<br>";
-         }
-      }
-      if ($tmp=$this->getField('groups_id')) {
-         $tmp=getDropdownName("glpi_groups",$tmp);
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
-            $comment.="<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
-         }
-      }
-      if ($tmp=$this->getField('users_id_tech')) {
-         $tmp=getUserName($tmp);
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
-            $comment.="<strong>".$LANG['common'][10]."&nbsp;: "."</strong>".$tmp."<br>";
-         }
-      }
-      if ($tmp=$this->getField('contact')) {
-         $comment.="<strong>".$LANG['common'][18]."&nbsp;: "."</strong>".$tmp."<br>";
-      }
-      if ($tmp=$this->getField('contact_num')) {
-         $comment.="<strong>".$LANG['common'][21]."&nbsp;: "."</strong>".$tmp."<br>";
-      }
-
-      if (!empty($comment)) {
-         $rand=mt_rand();
-         $comment_display=" onmouseout=\"cleanhide('comment_commonitem$rand')\"
-                            onmouseover=\"cleandisplay('comment_commonitem$rand')\" ";
-         $comment_display2="<span class='over_link' id='comment_commonitem$rand'>".nl2br($comment).
-                           "</span>";
-
-         $comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comment_display> ";
-         $comment.=$comment_display2;
-      }
-      return $comment;
+      return '';
    }
 }
 

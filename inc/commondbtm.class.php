@@ -575,31 +575,24 @@ class CommonDBTM {
    /**
     * Get the link to an item
     *
-    * @param $withid boolean display ID
+    * @param $with_comment Display comments
     *
     * @return string : HTML link
     */
-   function getLink($withid=false) {
+   function getLink($with_comment=0) {
       global $INFOFORM_PAGES, $CFG_GLPI;
 
-      $name = '';
-      if (isset($this->fields["name"])) {
-         $name = $this->fields["name"];
-      }
-      if ($withid || $_SESSION['glpiis_ids_visible'] || empty($name)) {
-         $name .= " (".$this->fields['id'].")";
-      }
-
       if (!isset($INFOFORM_PAGES[$this->type])) {
-         return $name;
+         return $this->getNameID($with_comment);
       }
 
       $link  = $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type];
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
       $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
 
-      return "<a href='$link'>$name</a>";
+      return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
+
    /**
    * Add a message on add action
    *
@@ -622,7 +615,7 @@ class CommonDBTM {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink(true));
+         addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink());
       }
    }
 
@@ -750,7 +743,7 @@ class CommonDBTM {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink(true));
+         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink());
       }
    }
 
@@ -877,7 +870,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " . $this->getLink(true));
+         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " . $this->getLink());
       }
    }
 
@@ -902,7 +895,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][73] . "&nbsp;: " . $this->getLink(true));
+         addMessageAfterRedirect($LANG['common'][73] . "&nbsp;: " . $this->getLink());
       }
    }
 
@@ -973,7 +966,7 @@ class CommonDBTM {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " . $this->getLink(true));
+         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " . $this->getLink());
       }
    }
 
@@ -1612,6 +1605,114 @@ class CommonDBTM {
    */
    function getSelectLinkedItem() {
       return '';
+   }
+
+
+   /*
+    * Return a field Value if exists
+    * @param $field field name
+    * @return value of the field / false if not exists
+    */
+   function getField ($field) {
+      if (isset($this->fields[$field])) {
+         return $this->fields[$field];
+      }
+      return false;
+   }
+
+   /**
+    * Get comments of the Object
+    *
+    * @return String: comments of the object in the current language (HTML)
+    */
+   function getComments() {
+      global $LANG,$CFG_GLPI;
+
+      $comment="";
+      if ($tmp=$this->getField('serial')) {
+         $comment.="<strong>".$LANG['common'][19]."&nbsp;: "."</strong>".$tmp."<br>";
+      }
+      if ($tmp=$this->getField('otherserial')) {
+         $comment.="<strong>".$LANG['common'][20]."&nbsp;: "."</strong>".$tmp."<br>";
+      }
+      if ($tmp=$this->getField('locations_id')) {
+         $tmp=getDropdownName("glpi_locations",$tmp);
+         if (!empty($tmp)&&$tmp!='&nbsp;'){
+            $comment.="<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
+         }
+      }
+      if ($tmp=$this->getField('users_id')) {
+         $tmp=getUserName($tmp);
+         if (!empty($tmp)&&$tmp!='&nbsp;') {
+            $comment.="<strong>".$LANG['common'][34]."&nbsp;: "."</strong>".$tmp."<br>";
+         }
+      }
+      if ($tmp=$this->getField('groups_id')) {
+         $tmp=getDropdownName("glpi_groups",$tmp);
+         if (!empty($tmp)&&$tmp!='&nbsp;') {
+            $comment.="<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
+         }
+      }
+      if ($tmp=$this->getField('users_id_tech')) {
+         $tmp=getUserName($tmp);
+         if (!empty($tmp)&&$tmp!='&nbsp;') {
+            $comment.="<strong>".$LANG['common'][10]."&nbsp;: "."</strong>".$tmp."<br>";
+         }
+      }
+      if ($tmp=$this->getField('contact')) {
+         $comment.="<strong>".$LANG['common'][18]."&nbsp;: "."</strong>".$tmp."<br>";
+      }
+      if ($tmp=$this->getField('contact_num')) {
+         $comment.="<strong>".$LANG['common'][21]."&nbsp;: "."</strong>".$tmp."<br>";
+      }
+
+      if (!empty($comment)) {
+         $rand=mt_rand();
+         $comment_display=" onmouseout=\"cleanhide('comment_commonitem$rand')\"
+                            onmouseover=\"cleandisplay('comment_commonitem$rand')\" ";
+         $comment_display2="<span class='over_link' id='comment_commonitem$rand'>".nl2br($comment).
+                           "</span>";
+
+         $comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comment_display> ";
+         $comment.=$comment_display2;
+      }
+      return $comment;
+   }
+
+   /**
+    * Get The Name of the Object
+    *
+    * @param $with_comment add comments to name
+    * @return String: name of the object in the current language
+    */
+   function getName($with_comment=0) {
+      $toadd="";
+      if ($with_comment) {
+         $toadd="&nbsp;".$this->getComments();
+      }
+
+      if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
+         return $this->fields["name"].$toadd;
+      }
+      return "N/A";
+   }
+
+   /**
+    * Get The Name of the Object with the ID if the config is set
+    * @param $with_comment add comments to name
+    * @return String: name of the object in the current language
+    */
+   function getNameID($with_comment=0) {
+      global $CFG_GLPI;
+
+      $toadd="";
+      if ($with_comment) {
+         $toadd="&nbsp;".$this->getComments();
+      }
+      if ($_SESSION['glpiis_ids_visible']) {
+         return $this->getName()." (".$this->items_id.")".$toadd;
+      }
+      return $this->getName().$toadd;
    }
 }
 
