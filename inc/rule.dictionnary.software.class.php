@@ -50,7 +50,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
       $this->stop_on_first_match = true;
       $this->right = "rule_dictionnary_software";
       $this->menu_type="dictionnary";
-      $this->menu_option="manufacturers";
+      $this->menu_option="software";
 
 
       //Init cache system values
