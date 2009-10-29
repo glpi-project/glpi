@@ -142,23 +142,24 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->table."`
-                SET `state`='".CRONTASK_STATE_RUNNING."', `lastrun`=NOW()
-                WHERE `id`='".$this->fields['id']."'
-                  AND `state`!='".CRONTASK_STATE_RUNNING."'";
+                SET `state` = '".CRONTASK_STATE_RUNNING."',
+                    `lastrun` = NOW()
+                WHERE `id` = '".$this->fields['id']."'
+                      AND `state` != '".CRONTASK_STATE_RUNNING."'";
       $result = $DB->query($query);
+
       if ($DB->affected_rows($result)>0) {
          $this->timer = microtime(true);
          $log = new CronTaskLog();
-         $this->startlog = $log->add(array(
-            'crontasks_id' => $this->fields['id'],
-            'date' => $_SESSION['glpi_currenttime'],
-            'content' => $this->getModeName(isCommandLine() ? CRONTASK_MODE_EXTERNAL
-                                                            : CRONTASK_MODE_INTERNAL),
-            'crontaskslogs_id' => 0,
-            'state' => CRONTASKLOG_STATE_START,
-            'volume' => 0,
-            'elapsed' => 0
-            ));
+         $this->startlog = $log->add(array('crontasks_id' => $this->fields['id'],
+                                           'date' => $_SESSION['glpi_currenttime'],
+                                           'content' => $this->getModeName(isCommandLine()
+                                                                           ? CRONTASK_MODE_EXTERNAL
+                                                                           : CRONTASK_MODE_INTERNAL),
+                                           'crontaskslogs_id' => 0,
+                                           'state' => CRONTASKLOG_STATE_START,
+                                           'volume' => 0,
+                                           'elapsed' => 0));
          return true;
       }
       return false;
@@ -196,11 +197,12 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->table."`
-                SET `state`='".$this->fields['state']."',
-                    `lastrun`=NOW()
-                WHERE `id`='".$this->fields['id']."'
-                  AND `state`='".CRONTASK_STATE_RUNNING."'";
+                SET `state` = '".$this->fields['state']."',
+                    `lastrun` = NOW()
+                WHERE `id` = '".$this->fields['id']."'
+                      AND `state` = '".CRONTASK_STATE_RUNNING."'";
       $result = $DB->query($query);
+
       if ($DB->affected_rows($result)>0) {
          if ($retcode < 0) {
             $content = $LANG['crontask'][44]; // Partial
@@ -210,15 +212,13 @@ class CronTask extends CommonDBTM{
             $content = $LANG['crontask'][46]; // Nothing to do
          }
          $log = new CronTaskLog();
-         $log->add(array(
-            'crontasks_id' => $this->fields['id'],
-            'date' => $_SESSION['glpi_currenttime'],
-            'content' => $content,
-            'crontaskslogs_id' => $this->startlog,
-            'state' => CRONTASKLOG_STATE_STOP,
-            'volume' => $this->volume,
-            'elapsed' => (microtime(true)-$this->timer)
-            ));
+         $log->add(array('crontasks_id'     => $this->fields['id'],
+                         'date'             => $_SESSION['glpi_currenttime'],
+                         'content'          => $content,
+                         'crontaskslogs_id' => $this->startlog,
+                         'state'            => CRONTASKLOG_STATE_STOP,
+                         'volume'           => $this->volume,
+                         'elapsed'          => (microtime(true)-$this->timer)));
          return true;
       }
       return false;
@@ -237,15 +237,13 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $log = new CronTaskLog();
-      return $log->add(array(
-            'crontasks_id' => $this->fields['id'],
-            'date' => $_SESSION['glpi_currenttime'],
-            'content' => $content,
-            'crontaskslogs_id' => $this->startlog,
-            'state' => CRONTASKLOG_STATE_RUN,
-            'volume' => $this->volume,
-            'elapsed' => (microtime(true)-$this->timer)
-            ));
+      return $log->add(array('crontasks_id'     => $this->fields['id'],
+                             'date'             => $_SESSION['glpi_currenttime'],
+                             'content'          => $content,
+                             'crontaskslogs_id' => $this->startlog,
+                             'state'            => CRONTASKLOG_STATE_RUN,
+                             'volume'           => $this->volume,
+                             'elapsed'          => (microtime(true)-$this->timer)));
    }
 
    /**
@@ -261,8 +259,9 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       $hour=date('H');
-      $query = "SELECT * FROM `".$this->table."`
-         WHERE (`plugin` IS NULL";
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE (`plugin` IS NULL";
 
       if (count($_SESSION['glpi_plugins'])) {
          // Only activated plugins
@@ -300,10 +299,11 @@ class CronTask extends CommonDBTM{
             $lock = '';
          }
          // Build query for frequency and allowed hour
-         $query .= " AND ((`hourmin`<`hourmax` AND  '$hour'>=`hourmin` AND '$hour'<`hourmax`)
-                       OR (`hourmin`>`hourmax` AND ('$hour'>=`hourmin` OR  '$hour'<`hourmax`)))
+         $query .= " AND ((`hourmin` < `hourmax` AND  '$hour' >= `hourmin` AND '$hour' < `hourmax`)
+                          OR (`hourmin` > `hourmax`
+                              AND ('$hour' >= `hourmin` OR '$hour' < `hourmax`)))
                      AND (`lastrun` IS NULL
-                       OR unix_timestamp(`lastrun`)+`frequency`<unix_timestamp(now()))
+                          OR unix_timestamp(`lastrun`) + `frequency` < unix_timestamp(now()))
                      $lock ";
       }
       // Core task before plugins

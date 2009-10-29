@@ -972,35 +972,40 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (isset($menu[$sector]['content'][$item])) {
       // Title
       $with_option=false;
-      if ( !empty($option)
-               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
-               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+      if (!empty($option)
+          && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+          && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
          $with_option=true;
       }
-      echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page'].
-                 "' ".($with_option?"":"class='here'")." title='".$menu[$sector]['content'][$item]['title']."' >".
-                 $menu[$sector]['content'][$item]['title']." </a>".(!$with_option?"":" > ")."</li>";
+      echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+                 ($with_option?"":"class='here'")." title='".
+                 $menu[$sector]['content'][$item]['title']."' >".
+                 $menu[$sector]['content'][$item]['title']." </a>".
+                 (!$with_option?"":" > ")."</li>";
 
       if ($with_option) {
-         echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['options'][$option]['page'].
-              "' class='here' title='".$menu[$sector]['content'][$item]['options'][$option]['title']."' >";
-         echo resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],17)." </a></li>";
+         echo "<li><a href='".$CFG_GLPI["root_doc"].
+                    $menu[$sector]['content'][$item]['options'][$option]['page'].
+                    "' class='here' title='".
+                    $menu[$sector]['content'][$item]['options'][$option]['title']."' >";
+         echo resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],17).
+              " </a></li>";
       }
 
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;</li>";
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       $links=array();
       // Item with Option case
-      if ( !empty($option)
-               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
-               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+      if (!empty($option)
+          && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+          && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+
          $links=$menu[$sector]['content'][$item]['options'][$option]['links'];
       // Without option case : only item links
       } else if (isset($menu[$sector]['content'][$item]['links'])
-          && is_array($menu[$sector]['content'][$item]['links'])) {
+                 && is_array($menu[$sector]['content'][$item]['links'])) {
          $links=$menu[$sector]['content'][$item]['links'];
-      } 
+      }
 
       // Add item
       echo "<li>";
@@ -1016,13 +1021,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
       // Search Item
       if (isset($links['search'])) {
-         echo "<li><a href='".$CFG_GLPI["root_doc"].
-                     $links['search']."'>";
+         echo "<li><a href='".$CFG_GLPI["root_doc"].$links['search']."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".
-                  $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></a></li>";
+                $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></a></li>";
       } else {
          echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title='".
-                     $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></li>";
+                    $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></li>";
       }
       // Links
       if (count($links)>0) {
@@ -1064,8 +1068,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
       }
    } else {
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
-            "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
             "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
    }
@@ -1111,8 +1114,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "</table></td></tr></table>";
 
    echo "</div>";
-   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
-         "&nbsp;&nbsp;&nbsp;";
+   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
    echo "</li>";
 
    /// Bookmark load
