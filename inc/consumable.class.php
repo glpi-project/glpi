@@ -54,6 +54,29 @@ class ConsumableType extends CommonDBTM {
       $this->entity_assign=true;
    }
 
+   /**
+    * Get The Name + Ref of the Object
+    *
+    * @param $with_comment add comments to name
+    * @return String: name of the object in the current language
+    */
+   function getName($with_comment=0) {
+      $toadd="";
+      if ($with_comment) {
+         $toadd="&nbsp;".$this->getComments();
+      }
+
+      if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
+         $name = $this->fields["name"];
+
+         if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
+            $name .= " - ".$this->fields["ref"];
+         }
+         return $name.$toadd;
+      }
+      return "N/A";
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 
