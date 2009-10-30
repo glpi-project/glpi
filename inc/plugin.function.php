@@ -467,11 +467,16 @@ function registerPluginType($plugin,$name,$itemtype,$attrib) {
       if (isset($attrib['typename']) && !empty($attrib['typename'])) {
          $PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
       }
-      if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
-         $INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
-      }
-      if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
-         $SEARCH_PAGES[$itemtype]="plugins/$plugin/".$attrib['searchpage'];
+      if (isset($attrib['dropdown']) && $attrib['dropdown']) {
+            $INFOFORM_PAGES[$itemtype]="front/dropdown.form.php?itemtype=".$itemtype;
+            $SEARCH_PAGES[$itemtype]="front/dropdown.php?itemtype=".$itemtype;
+      } else {
+         if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
+            $INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
+         }
+         if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
+            $SEARCH_PAGES[$itemtype]="plugins/$plugin/".$attrib['searchpage'];
+         }
       }
       if (isset($attrib['tablename']) && !empty($attrib['tablename'])) {
          $LINK_ID_TABLE[$itemtype] = $attrib['tablename'];
