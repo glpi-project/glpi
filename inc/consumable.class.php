@@ -238,7 +238,7 @@ class ConsumableType extends CommonDBTM {
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'FK_glpi_enteprise';
+      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab[3]['table']     = 'glpi_locations';
