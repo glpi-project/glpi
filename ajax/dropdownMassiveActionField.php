@@ -55,7 +55,8 @@ switch ($_POST["itemtype"]) {
 }
 
 if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
-   $search=$SEARCH_OPTION[$_POST["itemtype"]][$_POST["id_field"]];
+   $search = getSearchOptions($_POST["itemtype"]);
+   $search = $search[$_POST["id_field"]];
 
    // Specific budget case
    if ($_POST["id_field"]==50) {
@@ -91,7 +92,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_tickets.priority" :
             dropdownPriority($search["linkfield"]);
             break;
-          
+
          case "glpi_tickets.request_type" :
             dropdownRequestType($search["linkfield"]);
             break;

@@ -189,6 +189,59 @@ class Group extends CommonDBTM {
       }
       displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", $LANG['Menu'][36], $title, $buttons);
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_groups';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = GROUP_TYPE;
+
+      $tab[2]['table']     = 'glpi_groups';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[16]['table']     = 'glpi_groups';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[3]['table']     = 'glpi_groups';
+      $tab[3]['field']     = 'ldap_field';
+      $tab[3]['linkfield'] = 'ldap_field';
+      $tab[3]['name']      = $LANG['setup'][260];
+
+      $tab[4]['table']     = 'glpi_groups';
+      $tab[4]['field']     = 'ldap_value';
+      $tab[4]['linkfield'] = 'ldap_value';
+      $tab[4]['name']      = $LANG['setup'][601];
+
+      $tab[5]['table']     = 'glpi_groups';
+      $tab[5]['field']     = 'ldap_group_dn';
+      $tab[5]['linkfield'] = 'ldap_group_dn';
+      $tab[5]['name']      = $LANG['setup'][261];
+
+      $tab[6]['table']     = 'glpi_groups';
+      $tab[6]['field']     = 'is_recursive';
+      $tab[6]['linkfield'] = 'is_recursive';
+      $tab[6]['name']      = $LANG['entity'][9];
+      $tab[6]['datatype']  = 'bool';
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      return $tab;
+   }
 }
 
 ?>

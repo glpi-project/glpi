@@ -263,6 +263,124 @@ class Contract extends CommonDBTM {
 
       return true;
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_contracts';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = CONTRACT_TYPE;
+
+      $tab[2]['table']     = 'glpi_contracts';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = 'glpi_contracts';
+      $tab[3]['field']     = 'num';
+      $tab[3]['linkfield'] = 'num';
+      $tab[3]['name']      = $LANG['financial'][4];
+
+      $tab[4]['table']     = 'glpi_contractstypes';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'contractstypes_id';
+      $tab[4]['name']      = $LANG['common'][17];
+
+      $tab[5]['table']     = 'glpi_contracts';
+      $tab[5]['field']     = 'begin_date';
+      $tab[5]['linkfield'] = 'begin_date';
+      $tab[5]['name']      = $LANG['search'][8];
+      $tab[5]['datatype']  = 'date';
+
+      $tab[6]['table']     = 'glpi_contracts';
+      $tab[6]['field']     = 'duration';
+      $tab[6]['linkfield'] = 'duration';
+      $tab[6]['name']      = $LANG['financial'][8];
+
+      $tab[20]['table']         = 'glpi_contracts';
+      $tab[20]['field']         = 'end_date';
+      $tab[20]['linkfield']     = '';
+      $tab[20]['name']          = $LANG['search'][9];
+      $tab[20]['datatype']      = 'date_delay';
+      $tab[20]['datafields'][1] = 'begin_date';
+      $tab[20]['datafields'][2] = 'duration';
+
+      $tab[7]['table']     = 'glpi_contracts';
+      $tab[7]['field']     = 'notice';
+      $tab[7]['linkfield'] = 'notice';
+      $tab[7]['name']      = $LANG['financial'][10];
+
+      $tab[11]['table']     = 'glpi_contracts';
+      $tab[11]['field']     = 'cost';
+      $tab[11]['linkfield'] = 'cost';
+      $tab[11]['name']      = $LANG['financial'][5];
+      $tab[11]['datatype']  = 'decimal';
+
+      $tab[21]['table']     = 'glpi_contracts';
+      $tab[21]['field']     = 'periodicity';
+      $tab[21]['linkfield'] = '';
+      $tab[21]['name']      = $LANG['financial'][69];
+
+      $tab[22]['table']     = 'glpi_contracts';
+      $tab[22]['field']     = 'billing';
+      $tab[22]['linkfield'] = '';
+      $tab[22]['name']      = $LANG['financial'][11];
+
+      $tab[10]['table']     = 'glpi_contracts';
+      $tab[10]['field']     = 'accounting_number';
+      $tab[10]['linkfield'] = 'accounting_number';
+      $tab[10]['name']      = $LANG['financial'][13];
+
+      $tab[23]['table']     = 'glpi_contracts';
+      $tab[23]['field']     = 'renewal';
+      $tab[23]['linkfield'] = '';
+      $tab[23]['name']      = $LANG['financial'][107];
+
+      $tab[12]['table']     = 'glpi_contracts';
+      $tab[12]['field']     = 'expire';
+      $tab[12]['linkfield'] = '';
+      $tab[12]['name']      = $LANG['financial'][98];
+
+      $tab[13]['table']     = 'glpi_contracts';
+      $tab[13]['field']     = 'expire_notice';
+      $tab[13]['linkfield'] = '';
+      $tab[13]['name']      = $LANG['financial'][99];
+
+      $tab[16]['table']     = 'glpi_contracts';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[90]['table']     = 'glpi_contracts';
+      $tab[90]['field']     = 'notepad';
+      $tab[90]['linkfield'] = '';
+      $tab[90]['name']      = $LANG['title'][37];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[59]['table']     = 'glpi_contracts';
+      $tab[59]['field']     = 'alert';
+      $tab[59]['linkfield'] = 'alert';
+      $tab[59]['name']      = $LANG['common'][41];
+
+      $tab[86]['table']     = 'glpi_contracts';
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = 'is_recursive';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 
 // Relation between Contracts and Items

@@ -118,6 +118,37 @@ class Link extends CommonDBTM {
 
       return true;
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_links';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = LINK_TYPE;
+
+      $tab[2]['table']     = 'glpi_links';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = 'glpi_links';
+      $tab[3]['field']     = 'link';
+      $tab[3]['linkfield'] = 'link';
+      $tab[3]['name']      = $LANG['links'][1];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      return $tab;
+   }
 }
 
 ?>

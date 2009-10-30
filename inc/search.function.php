@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
  * Generic functions for Search Engine
  */
 // Get search_option array / Already include in includes.php
-if (!isset($SEARCH_OPTION)) {
-   $SEARCH_OPTION=getSearchOptions();
-}
+//if (!isset($SEARCH_OPTION)) {
+//   $SEARCH_OPTION=getSearchOptions();
+//}
 
 /**
  * Clean search options depending of user active profile
@@ -48,9 +48,10 @@ if (!isset($SEARCH_OPTION)) {
  * @return clean $SEARCH_OPTION array
  */
 function cleanSearchOption($itemtype,$action='r') {
-   global $CFG_GLPI,$SEARCH_OPTION;
+   global $CFG_GLPI;
 
-   $options=$SEARCH_OPTION[$itemtype];
+logInFile('php-errors',"cleanSearchOption($itemtype)\n");
+   $options=getSearchOptions($itemtype);
    $todel=array();
    if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
       $todel=array_merge($todel,array('financial',
@@ -198,7 +199,7 @@ function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true) {
  *
  **/
 function searchForm($itemtype,$params) {
-   global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES;
+   global $LANG,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES;
 
    // Default values of parameters
    $default_values["link"]="";
@@ -507,7 +508,7 @@ function searchForm($itemtype,$params) {
  *
  **/
 function showList ($itemtype,$params) {
-   global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$LINK_ID_TABLE,$SEARCH_OPTION,$SEARCH_PAGES,
+   global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$LINK_ID_TABLE,$SEARCH_PAGES,
           $PLUGIN_HOOKS;
 
    // Default values of parameters
@@ -657,22 +658,24 @@ function showList ($itemtype,$params) {
    $COMMONLEFTJOIN = addDefaultJoin($itemtype,$itemtable,$already_link_tables);
    $FROM .= $COMMONLEFTJOIN;
 
+   $searchopt=array();
+   $searchopt[$itemtype]=getSearchOptions($itemtype);
    // Add all table for toview items
    foreach ($toview as $key => $val) {
       $FROM .= addLeftJoin($itemtype,$itemtable,$already_link_tables,
-                           $SEARCH_OPTION[$itemtype][$val]["table"],
-                           $SEARCH_OPTION[$itemtype][$val]["linkfield"]);
+                           $searchopt[$itemtype][$val]["table"],
+                           $searchopt[$itemtype][$val]["linkfield"]);
    }
 
    /// TODO to delete : manage Left Join when need of search or display
    // Search all case :
    if (count($SEARCH_ALL)>0) {
-      foreach ($SEARCH_OPTION[$itemtype] as $key => $val) {
+      foreach ($searchopt[$itemtype] as $key => $val) {
          // Do not search on Group Name
          if (is_array($val)) {
             $FROM .= addLeftJoin($itemtype,$itemtable,$already_link_tables,
-                                 $SEARCH_OPTION[$itemtype][$key]["table"],
-                                 $SEARCH_OPTION[$itemtype][$key]["linkfield"]);
+                                 $searchopt[$itemtype][$key]["table"],
+                                 $searchopt[$itemtype][$key]["linkfield"]);
          }
       }
    }
@@ -749,7 +752,7 @@ function showList ($itemtype,$params) {
                   $tmplink=" AND ";
                }
 
-               if (isset($SEARCH_OPTION[$itemtype][$field[$key]]["usehaving"])) {
+               if (isset($searchopt[$itemtype][$field[$key]]["usehaving"])) {
                   // Manage Link if not first item
                   if (!empty($HAVING)) {
                      $LINK=$tmplink;
@@ -806,7 +809,7 @@ function showList ($itemtype,$params) {
 
                foreach ($toview as $key2 => $val2) {
                   // Add Where clause if not to be done in HAVING CLAUSE
-                  if (!isset($SEARCH_OPTION[$itemtype][$val2]["usehaving"])) {
+                  if (!isset($searchopt[$itemtype][$val2]["usehaving"])) {
                      $tmplink=$LINK;
                      if ($first2) {
                         $tmplink=" ";
@@ -858,7 +861,7 @@ function showList ($itemtype,$params) {
                $WHERE .= " ( ";
                $first2=true;
 
-               foreach ($SEARCH_OPTION[$itemtype] as $key2 => $val2) {
+               foreach ($searchopt[$itemtype] as $key2 => $val2) {
                   if (is_array($val2)) {
                      // Add Where clause if not to be done ine HAVING CLAUSE
                      if (!isset($val2["usehaving"])) {
@@ -917,12 +920,15 @@ function showList ($itemtype,$params) {
       for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
          if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
-            if (!in_array($SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],
+            if (!isset($searchopt[$itemtype2[$i]])) {
+               $searchopt[$itemtype2[$i]]=getSearchOptions($itemtype2[$i]);
+            }
+            if (!in_array($searchopt[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],
                           $already_link_tables2)) {
 
                $FROM .= addLeftJoin($itemtype2[$i],$LINK_ID_TABLE[$itemtype2[$i]],$already_link_tables2,
-                                    $SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["table"],
-                                    $SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["linkfield"],
+                                    $searchopt[$itemtype2[$i]][$field2[$i]]["table"],
+                                    $searchopt[$itemtype2[$i]][$field2[$i]]["linkfield"],
                                     0,1,$itemtype2[$i]);
             }
          }
@@ -949,7 +955,7 @@ function showList ($itemtype,$params) {
          if (!empty($GROUPBY)) {
             break;
          }
-         if (isset($SEARCH_OPTION[$itemtype][$val2]["forcegroupby"])) {
+         if (isset($searchopt[$itemtype][$val2]["forcegroupby"])) {
             $GROUPBY = " GROUP BY `$itemtable`.`id`";
          }
       }
@@ -964,7 +970,7 @@ function showList ($itemtype,$params) {
 
             // For AND NOT statement need to take into account all the group by items
             if (strstr($link2[$key],"AND NOT")
-                || isset($SEARCH_OPTION[$itemtype2[$key]][$field2[$key]]["usehaving"])) {
+                || isset($searchopt[$itemtype2[$key]][$field2[$key]]["usehaving"])) {
 
                $NOT=0;
                if (strstr($link2[$key],"NOT")) {
@@ -1017,7 +1023,7 @@ function showList ($itemtype,$params) {
       $LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
       // Force group by for all the type -> need to count only on table ID
-      if (!isset($SEARCH_OPTION[$itemtype][1]['forcegroupby'])) {
+      if (!isset($searchopt[$itemtype]['forcegroupby'])) {
          $count = "count(*)";
       } else {
          $count = "count(DISTINCT `$itemtable`.`id`)";
@@ -1304,7 +1310,7 @@ function showList ($itemtype,$params) {
          foreach ($toview as $key => $val) {
             $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC").
                       "&amp;start=$start".$globallinkto;
-            echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$itemtype][$val]["name"],
+            echo displaySearchHeaderItem($output_type,$searchopt[$itemtype][$val]["name"],
                                          $header_num,$linkto,$sort==$val,$order);
          }
 
@@ -1316,7 +1322,7 @@ function showList ($itemtype,$params) {
                    ||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
 
                   echo displaySearchHeaderItem($output_type,$names[$itemtype2[$i]]." - ".
-                                               $SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["name"],
+                                               $searchopt[$itemtype2[$i]][$field2[$i]]["name"],
                                                $header_num);
                }
             }
@@ -1399,16 +1405,16 @@ function showList ($itemtype,$params) {
 
             // Print first element - specific case for user
             echo displaySearchItem($output_type,giveItem($itemtype,1,$data,0),$item_num,$row_num,
-                              displayConfigItem($itemtype,$SEARCH_OPTION[$itemtype][1]["table"].".".
-                                                          $SEARCH_OPTION[$itemtype][1]["field"]));
+                              displayConfigItem($itemtype,$searchopt[$itemtype][1]["table"].".".
+                                                          $searchopt[$itemtype][1]["field"]));
             // Print other toview items
             foreach ($toview as $key => $val) {
                // Do not display first item
                if ($key>0) {
                   echo displaySearchItem($output_type,giveItem($itemtype,$val,$data,$key),$item_num,
                                          $row_num,
-                           displayConfigItem($itemtype,$SEARCH_OPTION[$itemtype][$val]["table"].".".
-                                                       $SEARCH_OPTION[$itemtype][$val]["field"]));
+                           displayConfigItem($itemtype,$searchopt[$itemtype][$val]["table"].".".
+                                                       $searchopt[$itemtype][$val]["field"]));
                }
             }
 
@@ -1430,13 +1436,13 @@ function showList ($itemtype,$params) {
                         $count_display=0;
                         $out="";
                         $unit="";
-                        if (isset($SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['unit'])) {
-                           $unit=$SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['unit'];
+                        if (isset($searchopt[$itemtype2[$j]][$field2[$j]]['unit'])) {
+                           $unit=$searchopt[$itemtype2[$j]][$field2[$j]]['unit'];
                         }
                         for ($k=0 ; $k<count($split) ; $k++) {
                            if ($contains2[$j]=="NULL" || strlen($contains2[$j])==0
                                ||preg_match('/'.$contains2[$j].'/i',$split[$k])
-                               || isset($SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['forcegroupby'])) {
+                               || isset($searchopt[$itemtype2[$j]][$field2[$j]]['forcegroupby'])) {
 
                               if ($count_display) {
                                  $out.= "<br>";
@@ -1541,7 +1547,7 @@ function showList ($itemtype,$params) {
                            break;
 
                         default :
-                           $title .= $SEARCH_OPTION[$itemtype][$field[$key]]["name"];
+                           $title .= $searchopt[$itemtype][$field[$key]]["name"];
                      }
                      $title .= " = ".$contains[$key];
                   }
@@ -1554,7 +1560,7 @@ function showList ($itemtype,$params) {
                         $title .= " ".$link2[$key]." ";
                      }
                      $title .= $names[$itemtype2[$key]]."/";
-                     $title .= $SEARCH_OPTION[$itemtype2[$key]][$field2[$key]]["name"];
+                     $title .= $searchopt[$itemtype2[$key]][$field2[$key]]["name"];
                      $title .= " = ".$contains2[$key];
                   }
                }
@@ -1615,10 +1621,10 @@ function showList ($itemtype,$params) {
  *
  **/
 function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
-   global $SEARCH_OPTION;
 
-   $table=$SEARCH_OPTION[$itemtype][$ID]["table"];
-   $field=$SEARCH_OPTION[$itemtype][$ID]["field"];
+   $searchopt = getSearchOptions($itemtype);
+   $table=$searchopt[$ID]["table"];
+   $field=$searchopt[$ID]["field"];
 
    $NAME="ITEM_";
    if ($meta) {
@@ -1661,8 +1667,8 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
    }
 
    // Preformat items
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])) {
-      switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
+   if (isset($searchopt[$ID]["datatype"])) {
+      switch ($searchopt[$ID]["datatype"]) {
          case "number" :
          case "decimal" :
             $search=array("/\&lt;/","/\&gt;/");
@@ -1680,17 +1686,17 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
                return " $LINK (`$NAME$num` ".$regs[1]." ".$regs[3]." ) ";
             } else {
                if (is_numeric($val)) {
-                  if (isset($SEARCH_OPTION[$itemtype][$ID]["width"])) {
+                  if (isset($searchopt[$ID]["width"])) {
                      if (!$NOT) {
                         return " $LINK (`$NAME$num` < ".
-                                 (intval($val) + $SEARCH_OPTION[$itemtype][$ID]["width"])."
+                                 (intval($val) + $searchopt[$ID]["width"])."
                                  AND `$NAME$num` > ".
-                                 (intval($val) - $SEARCH_OPTION[$itemtype][$ID]["width"]).") ";
+                                 (intval($val) - $searchopt[$ID]["width"]).") ";
                      } else {
                         return " $LINK (`$NAME$num` > ".
-                                 (intval($val) + $SEARCH_OPTION[$itemtype][$ID]["width"])."
+                                 (intval($val) + $searchopt[$ID]["width"])."
                                  OR `$NAME$num` < ".
-                                 (intval($val) - $SEARCH_OPTION[$itemtype][$ID]["width"])." ) ";
+                                 (intval($val) - $searchopt[$ID]["width"])." ) ";
                      }
                   } else { // Exact search
                      if (!$NOT) {
@@ -1729,16 +1735,17 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
  *
  **/
 function addOrderBy($itemtype,$ID,$order,$key=0) {
-   global $SEARCH_OPTION,$CFG_GLPI,$PLUGIN_HOOKS;
+   global $CFG_GLPI,$PLUGIN_HOOKS;
 
    // Security test for order
    if ($order!="ASC") {
       $order="DESC";
    }
+   $searchopt = getSearchOptions($itemtype);
 
-   $table=$SEARCH_OPTION[$itemtype][$ID]["table"];
-   $field=$SEARCH_OPTION[$itemtype][$ID]["field"];
-   $linkfield=$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
+   $table=$searchopt[$ID]["table"];
+   $field=$searchopt[$ID]["field"];
+   $linkfield=$searchopt[$ID]["linkfield"];
 
    if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
       return " ORDER BY ITEM_$key $order ";
@@ -1775,8 +1782,8 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
          break;
 
       case "glpi_users.name" :
-         if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"])) {
-            $linkfield="_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
+         if (!empty($searchopt[$ID]["linkfield"])) {
+            $linkfield="_".$searchopt[$ID]["linkfield"];
             return " ORDER BY ".$table.$linkfield.".realname $order, ".
                                 $table.$linkfield.".firstname $order, ".
                                 $table.$linkfield.".name $order";
@@ -1807,11 +1814,11 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
    }
 
    // Preformat items
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])) {
-      switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
+   if (isset($searchopt[$ID]["datatype"])) {
+      switch ($searchopt[$ID]["datatype"]) {
          case "date_delay" :
-            return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].",
-                                      INTERVAL $table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]."
+            return " ORDER BY ADDDATE($table.".$searchopt[$ID]["datafields"][1].",
+                                      INTERVAL $table.".$searchopt[$ID]["datafields"][2]."
                                       MONTH) $order ";
             break;
       }
@@ -1902,10 +1909,11 @@ function addDefaultSelect ($itemtype) {
  *
  **/
 function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
-   global $LINK_ID_TABLE,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
+   global $LINK_ID_TABLE,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $table=$SEARCH_OPTION[$itemtype][$ID]["table"];
-   $field=$SEARCH_OPTION[$itemtype][$ID]["field"];
+   $searchopt=getSearchOptions($itemtype);
+   $table=$searchopt[$ID]["table"];
+   $field=$searchopt[$ID]["field"];
    $addtable="";
    $NAME="ITEM";
    if ($meta) {
@@ -1947,8 +1955,8 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
       case "glpi_users.name" :
          if ($itemtype!=USER_TYPE) {
             $linkfield="";
-            if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"])) {
-               $linkfield="_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
+            if (!empty($searchopt[$ID]["linkfield"])) {
+               $linkfield="_".$searchopt[$ID]["linkfield"];
             }
             return "`$table$linkfield$addtable`.`$field` AS ".$NAME."_$num,
                     `$table$linkfield$addtable`.`realname` AS ".$NAME."_".$num."_2,
@@ -2103,35 +2111,35 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
 
    $tocompute="`$table$addtable`.`$field`";
 
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["computation"])) {
-      $tocompute = $SEARCH_OPTION[$itemtype][$ID]["computation"];
+   if (isset($searchopt[$ID]["computation"])) {
+      $tocompute = $searchopt[$ID]["computation"];
       $tocompute = str_replace("TABLE",$table.$addtable,$tocompute);
    }
 
    // Preformat items
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])) {
-      switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
+   if (isset($searchopt[$ID]["datatype"])) {
+      switch ($searchopt[$ID]["datatype"]) {
          case "date_delay" :
             if ($meta) {
                return " GROUP_CONCAT
                            (DISTINCT ADDDATE
-                              (`$table$addtable`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].",
+                              (`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
                                INTERVAL
-                               `$table$addtable`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]."
+                               `$table$addtable`.".$searchopt[$ID]["datafields"][2]."
                                MONTH)
                             SEPARATOR '$$$$') AS ".$NAME."_$num, ";
             } else {
-               return "`$table$addtable`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1]."
+               return "`$table$addtable`.".$searchopt[$ID]["datafields"][1]."
                            AS ".$NAME."_$num,
-                       `$table$addtable`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]."
+                       `$table$addtable`.".$searchopt[$ID]["datafields"][2]."
                            AS ".$NAME."_".$num."_2, ";
             }
             break;
 
          case "itemlink" :
             if ($meta
-                || (isset($SEARCH_OPTION[$itemtype][$ID]["itemlink_type"])
-                    && $SEARCH_OPTION[$itemtype][$ID]["itemlink_type"] != $itemtype)) {
+                || (isset($searchopt[$ID]["itemlink_type"])
+                    && $searchopt[$ID]["itemlink_type"] != $itemtype)) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
                                                      `$table$addtable`.`id`)
                                      SEPARATOR '$$$$') AS ".$NAME."_$num, ";
@@ -2145,8 +2153,8 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
 
    // Default case
    if ($meta
-       || (isset($SEARCH_OPTION[$itemtype][$ID]["forcegroupby"])
-           && $SEARCH_OPTION[$itemtype][$ID]["forcegroupby"])) {
+       || (isset($searchopt[$ID]["forcegroupby"])
+           && $searchopt[$ID]["forcegroupby"])) {
       return " GROUP_CONCAT(DISTINCT $tocompute SEPARATOR '$$$$') AS ".$NAME."_$num, ";
    } else {
       return "$tocompute AS ".$NAME."_$num, ";
@@ -2195,10 +2203,11 @@ function addDefaultWhere ($itemtype) {
  *
  **/
 function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
-   global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
+   global $LINK_ID_TABLE,$LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $table = $SEARCH_OPTION[$itemtype][$ID]["table"];
-   $field = $SEARCH_OPTION[$itemtype][$ID]["field"];
+   $searchopt=getSearchOptions($itemtype);
+   $table = $searchopt[$ID]["table"];
+   $field = $searchopt[$ID]["field"];
 
    $inittable = $table;
    if ($meta && $LINK_ID_TABLE[$itemtype]!=$table) {
@@ -2228,8 +2237,8 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    switch ($inittable.".".$field) {
       case "glpi_users.name" :
          $linkfield="";
-         if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"])) {
-            $linkfield = "_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
+         if (!empty($searchopt[$ID]["linkfield"])) {
+            $linkfield = "_".$searchopt[$ID]["linkfield"];
 
             if ($meta && $LINK_ID_TABLE[$itemtype]!=$inittable) {
                $table = $inittable;
@@ -2394,23 +2403,23 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
       }
    }
    $tocompute="`$table`.`$field`";
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["computation"])) {
-      $tocompute=$SEARCH_OPTION[$itemtype][$ID]["computation"];
+   if (isset($searchopt[$ID]["computation"])) {
+      $tocompute=$searchopt[$ID]["computation"];
    }
 
    // Preformat items
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])) {
-      switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
+   if (isset($searchopt[$ID]["datatype"])) {
+      switch ($searchopt[$ID]["datatype"]) {
          case "date" :
          case "datetime" :
          case "date_delay" :
             $date_computation=$tocompute;
             $interval_search=" MONTH ";
 
-            if ($SEARCH_OPTION[$itemtype][$ID]["datatype"]=="date_delay") {
-               $date_computation="ADDDATE(`$table`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].",
+            if ($searchopt[$ID]["datatype"]=="date_delay") {
+               $date_computation="ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
                                           INTERVAL
-                                          `$table`.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]."
+                                          `$table`.".$searchopt[$ID]["datafields"][2]."
                                           MONTH)";
             }
             $search=array("/\&lt;/","/\&gt;/");
@@ -2464,22 +2473,22 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
                $regs[1].=$regs[2];
                return $link." ($tocompute ".$regs[1]." ".$regs[3].") ";
             } else if (is_numeric($val)) {
-               if (isset($SEARCH_OPTION[$itemtype][$ID]["width"])) {
+               if (isset($searchopt[$ID]["width"])) {
                   $ADD = "";
                   if ($nott && $val!="NULL") {
                      $ADD = " OR $tocompute IS NULL";
                   }
                   if ($nott) {
                      return $link." ($tocompute < ".(intval($val)
-                                                       - $SEARCH_OPTION[$itemtype][$ID]["width"])."
+                                                       - $searchopt[$ID]["width"])."
                                      OR $tocompute > ".(intval($val)
-                                                          + $SEARCH_OPTION[$itemtype][$ID]["width"])."
+                                                          + $searchopt[$ID]["width"])."
                                      $ADD) ";
                   } else {
                      return $link." (($tocompute >= ".(intval($val)
-                                                         - $SEARCH_OPTION[$itemtype][$ID]["width"])."
+                                                         - $searchopt[$ID]["width"])."
                                       AND $tocompute <= ".(intval($val)
-                                                             + $SEARCH_OPTION[$itemtype][$ID]["width"]).").
+                                                             + $searchopt[$ID]["width"]).").
                                      $ADD) ";
                   }
                } else {
@@ -2548,10 +2557,11 @@ function displayConfigItem ($itemtype,$field) {
  *
  **/
 function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
-   global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
+   global $CFG_GLPI,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
+   $searchopt=getSearchOptions($itemtype);
    if (isset($CFG_GLPI["union_search_type"][$itemtype])
-       && $CFG_GLPI["union_search_type"][$itemtype]==$SEARCH_OPTION[$itemtype][$ID]["table"]) {
+       && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
       return giveItem ($data["TYPE"],$ID,$data,$num);
    }
 
@@ -2572,9 +2582,9 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    if ($meta) {
       $NAME="META_";
    }
-   $table=$SEARCH_OPTION[$itemtype][$ID]["table"];
-   $field=$SEARCH_OPTION[$itemtype][$ID]["field"];
-   $linkfield=$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
+   $table=$searchopt[$ID]["table"];
+   $field=$searchopt[$ID]["field"];
+   $linkfield=$searchopt[$ID]["linkfield"];
 
    switch ($table.'.'.$field) {
       case "glpi_users.name" :
@@ -2825,13 +2835,13 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
       }
    }
    $unit='';
-   if (isset($SEARCH_OPTION[$itemtype][$ID]['unit'])) {
-      $unit=$SEARCH_OPTION[$itemtype][$ID]['unit'];
+   if (isset($searchopt[$ID]['unit'])) {
+      $unit=$searchopt[$ID]['unit'];
    }
 
    // Preformat items
-   if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])) {
-      switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]) {
+   if (isset($searchopt[$ID]["datatype"])) {
+      switch ($searchopt[$ID]["datatype"]) {
          case "itemlink" :
             if (!empty($data[$NAME.$num."_2"])) {
                $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype];
@@ -2843,7 +2853,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
                }
                $out .= "</a>";
                return $out;
-            } else if (isset($SEARCH_OPTION[$itemtype][$ID]["itemlink_type"])) {
+            } else if (isset($searchopt[$ID]["itemlink_type"])) {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $count_display=0;
@@ -2855,7 +2865,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $page = $INFOFORM_PAGES[$SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]];
+                        $page = $INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
                         $page .= (strpos($page,'?') ? '&id' : '?id');
                         $out .= "<a href=\"".$CFG_GLPI["root_doc"]."/$page=".$split2[1]."\">";
                         $out .= $split2[0].$unit;
@@ -2912,8 +2922,8 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
             return "&nbsp;";
 
          case "number" :
-            if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby'])
-                && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) {
+            if (isset($searchopt[$ID]['forcegroupby'])
+                && $searchopt[$ID]['forcegroupby']) {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $count_display=0;
@@ -2931,8 +2941,8 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
             return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num],false,0)).$unit;
 
          case "decimal" :
-            if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby'])
-                && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) {
+            if (isset($searchopt[$ID]['forcegroupby'])
+                && $searchopt[$ID]['forcegroupby']) {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $count_display=0;
@@ -2955,8 +2965,8 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    }
 
    // Manage items with need group by / group_concat
-   if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby'])
-       && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) {
+   if (isset($searchopt[$ID]['forcegroupby'])
+       && $searchopt[$ID]['forcegroupby']) {
       $out="";
       $split=explode("$$$$",$data[$NAME.$num]);
       $count_display=0;
@@ -3525,7 +3535,7 @@ function getMultiSearchItemForLink($name,$array) {
  * Is the search item related to infocoms
  *
  * @param $itemtype item type
- * @param $searchID ID of the element in $SEARCH_OPTION
+ * @param $searchID ID of the element in $SEARCHOPTION
  * @return boolean
  *
  */

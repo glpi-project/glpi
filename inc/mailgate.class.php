@@ -166,6 +166,32 @@ class Mailgate  extends CommonDBTM {
       return true;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][16];
+
+      $tab[1]['table']         = 'glpi_mailcollectors';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = MAILGATE_TYPE;
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[2]['table']     = 'glpi_mailcollectors';
+      $tab[2]['field']     = 'is_active';
+      $tab[2]['linkfield'] = 'is_active';
+      $tab[2]['name']      = $LANG['common'][60];
+      $tab[2]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 
 

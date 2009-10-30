@@ -1324,6 +1324,60 @@ class Job extends CommonDBTM {
       return $docadded;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      // TRACKING_TYPE - used for massive actions
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[2]['table']     = 'glpi_tickets';
+      $tab[2]['field']     = 'status';
+      $tab[2]['linkfield'] = 'status';
+      $tab[2]['name']      = $LANG['joblist'][0];
+
+      $tab[3]['table']     = 'glpi_tickets';
+      $tab[3]['field']     = 'priority';
+      $tab[3]['linkfield'] = 'priority';
+      $tab[3]['name']      = $LANG['joblist'][2];
+
+      $tab[4]['table']     = 'glpi_users';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'users_id';
+      $tab[4]['name']      = $LANG['job'][4];
+
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['linkfield'] = 'groups_id';
+      $tab[71]['name']      = $LANG['common'][35];
+
+      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['field']     = 'name';
+      $tab[5]['linkfield'] = 'users_id_assign';
+      $tab[5]['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
+
+      $tab[6]['table']     = 'glpi_suppliers';
+      $tab[6]['field']     = 'name';
+      $tab[6]['linkfield'] = 'suppliers_id_assign';
+      $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+
+      $tab[8]['table']     = 'glpi_groups';
+      $tab[8]['field']     = 'name';
+      $tab[8]['linkfield'] = 'groups_id_assign';
+      $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+
+      $tab[7]['table']     = 'glpi_ticketscategories';
+      $tab[7]['field']     = 'name';
+      $tab[7]['linkfield'] = 'ticketscategories_id';
+      $tab[7]['name']      = $LANG['common'][36];
+
+      $tab[9]['table']     = 'glpi_tickets';
+      $tab[9]['field']     = 'request_type';
+      $tab[9]['linkfield'] = 'request_type';
+      $tab[9]['name']      = $LANG['job'][44];
+
+      return $tab;
+   }
 }
 
 

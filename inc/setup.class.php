@@ -68,7 +68,7 @@ class SetupSearchDisplay extends CommonDBTM {
     *
     **/
    function activatePerso($input) {
-      global $DB,$SEARCH_OPTION;
+      global $DB;
 
       if (!haveRight("search_config","w")) {
          return false;
@@ -89,9 +89,10 @@ class SetupSearchDisplay extends CommonDBTM {
          }
       } else {
          // No items in the global config
-         if (count($SEARCH_OPTION[$input["itemtype"]])>1) {
+         $searchopt=getSearchOptions($input["itemtype"]);
+         if (count($searchopt)>1) {
             $done=false;
-            foreach($SEARCH_OPTION[$input["itemtype"]] as $key => $val) {
+            foreach($searchopt as $key => $val) {
                if (is_array($val) && $key!=1 && !$done) {
                   $data["users_id"]=$input["users_id"];
                   $data["itemtype"]=$input["itemtype"];
@@ -168,7 +169,8 @@ class SetupSearchDisplay extends CommonDBTM {
    function showFormPerso($target,$itemtype) {
       global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
-      if (!isset($SEARCH_OPTION[$itemtype])) {
+      $searchopt=getSearchOptions($itemtype);
+      if (!is_array($searchopt)) {
          return false;
       }
 
@@ -226,16 +228,16 @@ class SetupSearchDisplay extends CommonDBTM {
 
          // print first element
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' width='50%'>".$SEARCH_OPTION[$itemtype][1]["name"]."</td>";
+         echo "<td class='center' width='50%'>".$searchopt[1]["name"]."</td>";
          echo "<td colspan='3'>&nbsp;</td>";
          echo "</tr>";
          $i=0;
          if ($numrows) {
             while ($data=$DB->fetch_array($result)) {
-               if ($data["num"]!=1 && isset($SEARCH_OPTION[$itemtype][$data["num"]])) {
+               if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='center' width='50%' >";
-                  echo $SEARCH_OPTION[$itemtype][$data["num"]]["name"]."</td>";
+                  echo $searchopt[$data["num"]]["name"]."</td>";
                   if ($i!=0) {
                      echo "<td class='center middle'>";
                      echo "<form method='post' action=\"$target\">";
@@ -292,9 +294,10 @@ class SetupSearchDisplay extends CommonDBTM {
     *@return nothing
     **/
    function showFormGlobal($target,$itemtype) {
-      global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
+      global $CFG_GLPI,$LANG,$DB;
 
-      if (!isset($SEARCH_OPTION[$itemtype])) {
+      $searchopt=getSearchOptions($itemtype);
+      if (!is_array($searchopt)) {
          return false;
       }
       $IDuser=0;
@@ -345,7 +348,7 @@ class SetupSearchDisplay extends CommonDBTM {
 
       // print first element
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' width='50%'>".$SEARCH_OPTION[$itemtype][1]["name"];
+      echo "<td class='center' width='50%'>".$searchopt[1]["name"];
       if ($global_write) {
          echo "</td><td colspan='3'>&nbsp;</td>";
       }
@@ -353,9 +356,9 @@ class SetupSearchDisplay extends CommonDBTM {
       $i=0;
       if ($numrows) {
          while ($data=$DB->fetch_array($result)) {
-            if ($data["num"]!=1 && isset($SEARCH_OPTION[$itemtype][$data["num"]])) {
+            if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
                echo "<tr class='tab_bg_2'><td class='center' width='50%' >";
-               echo $SEARCH_OPTION[$itemtype][$data["num"]]["name"];
+               echo $searchopt[$data["num"]]["name"];
                echo "</td>";
                if ($global_write) {
                   if ($i!=0) {

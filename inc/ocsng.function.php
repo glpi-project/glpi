@@ -1697,7 +1697,7 @@ function ocsUnlockItems($computers_id,$field) {
 }
 
 function ocsEditLock($target, $ID) {
-   global $DB, $LANG, $SEARCH_OPTION;
+   global $DB, $LANG;
 
    if (!haveRight("computer","w")) {
       return false;

@@ -967,6 +967,64 @@ class CronTask extends CommonDBTM{
 
       echo "</div>";
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][32];;
+      $tab[1]['table']         = 'glpi_crontasks';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_link'] = CRONTASK_TYPE;
+
+      $tab[2]['table']     = 'glpi_crontasks';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = 'glpi_crontasks';
+      $tab[3]['field']     = 'description';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['crontask'][30];
+
+      $tab[4]['table']     = 'glpi_crontasks';
+      $tab[4]['field']     = 'state';
+      $tab[4]['linkfield'] = '';
+      $tab[4]['name']      = $LANG['joblist'][0];
+
+      $tab[5]['table']     = 'glpi_crontasks';
+      $tab[5]['field']     = 'mode';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name']      = $LANG['crontask'][36];
+
+      $tab[6]['table']     = 'glpi_crontasks';
+      $tab[6]['field']     = 'frequency';
+      $tab[6]['linkfield'] = '';
+      $tab[6]['name']      = $LANG['crontask'][37];
+      $tab[6]['datatype']  = 'timestamp';
+
+      $tab[7]['table']     = 'glpi_crontasks';
+      $tab[7]['field']     = 'lastrun';
+      $tab[7]['linkfield'] = '';
+      $tab[7]['name']      = $LANG['crontask'][40];
+      $tab[7]['datatype']  = 'datetime';
+
+      $tab[8]['table']     = 'glpi_crontasks';
+      $tab[8]['field']     = 'plugin';
+      $tab[8]['linkfield'] = '';
+      $tab[8]['name']      = $LANG['common'][29];
+
+      $tab[16]['table']     = 'glpi_crontasks';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      return $tab;
+   }
 }
 
 /**
