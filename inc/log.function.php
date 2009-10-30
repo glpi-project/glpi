@@ -90,23 +90,24 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
    global $LINK_ID_TABLE, $LANG ;
 
    if (count($oldvalues)) {
-      // needed to have  $SEARCH_OPTION
-      $SEARCH_OPTION=getSearchOptions();
+      // needed to have  $SEARCHOPTION
       foreach ($oldvalues as $key => $oldval) {
          $changes=array();
-         // Parsing $SEARCH_OPTIONS to find infocom
+         // Parsing $SEARCHOPTION to find infocom
          if ($itemtype==INFOCOM_TYPE) {
             $ic=new Infocom();
             if ($ic->getFromDB($values['id'])) {
                $real_type=$ic->fields['itemtype'];
                $items_id=$ic->fields['items_id'];
-               if (isset($SEARCH_OPTION[$real_type])) {
-                  foreach($SEARCH_OPTION[$real_type] as $key2 => $val2) {
+
+               $searchopt=getSearchOptions($real_type);
+               if (is_array($searchopt)) {
+                  foreach($searchopt as $key2 => $val2) {
                      if (($val2["field"]==$key && strpos($val2['table'],'infocoms'))
                          || ($key=='budgets_id' && $val2['table']=='glpi_budgets')
                          || ($key=='suppliers_id' && $val2['table']=='glpi_suppliers_infocoms')) {
 
-                        $id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+                        $id_search_option=$key2; // Give ID of the $SEARCHOPTION
                         if ($val2["table"]=="glpi_infocoms") {
                            // 1st case : text field -> keep datas
                            $changes=array($id_search_option,
@@ -130,14 +131,15 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
             }
          } else {
             $real_type=$itemtype;
-            // Parsing $SEARCH_OPTION, check if an entry exists matching $key
-            if (isset($SEARCH_OPTION[$itemtype])) {
-               foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2) {
+            // Parsing $SEARCHOPTION, check if an entry exists matching $key
+            $searchopt=getSearchOptions($real_type);
+            if (is_array($searchopt)) {
+               foreach($searchopt as $key2 => $val2) {
                   // Linkfield or standard field not massive action enable
                   if ($val2["linkfield"]==$key
                       || (empty($val2["linkfield"]) && $key == $val2["field"])){
 
-                     $id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+                     $id_search_option=$key2; // Give ID of the $SEARCHOPTION
                      if ($val2["table"]==$LINK_ID_TABLE[$itemtype]) {
                         // 1st case : text field -> keep datas
                         $changes=array($id_search_option,
@@ -172,7 +174,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 function showHistory($itemtype,$items_id) {
    global $DB, $LINK_ID_TABLE,$LANG;
 
-   $SEARCH_OPTION=getSearchOptions();
+   $SEARCHOPTION=getSearchOptions($itemtype);
    if (isset($_REQUEST["start"])) {
       $start = $_REQUEST["start"];
    } else {
@@ -343,7 +345,7 @@ function showHistory($itemtype,$items_id) {
       } else {
          $fieldname="";
          // It's not an internal device
-         foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2) {
+         foreach($SEARCHOPTION as $key2 => $val2) {
             if ($key2==$data["id_search_option"]) {
                $field= $val2["name"];
                $fieldname=$val2["field"];

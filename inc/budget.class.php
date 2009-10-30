@@ -170,6 +170,54 @@ class Budget extends CommonDBTM{
       }
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab[1]['table']         = 'glpi_budgets';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = BUDGET_TYPE;
+
+      $tab[2]['table']     = 'glpi_budgets';
+      $tab[2]['field']     = 'begin_date';
+      $tab[2]['linkfield'] = 'begin_date';
+      $tab[2]['name']      = $LANG['search'][8];
+      $tab[2]['datatype']  = 'date';
+
+      $tab[3]['table']     = 'glpi_budgets';
+      $tab[3]['field']     = 'end_date';
+      $tab[3]['linkfield'] = 'end_date';
+      $tab[3]['name']      = $LANG['search'][9];
+      $tab[3]['datatype']  = 'date';
+
+      $tab[4]['table']     = 'glpi_budgets';
+      $tab[4]['field']     = 'value';
+      $tab[4]['linkfield'] = 'value';
+      $tab[4]['name']      = $LANG['financial'][21];
+      $tab[4]['datatype']  = 'integer';
+
+      $tab[16]['table']     = 'glpi_budgets';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[86]['table']     = 'glpi_budgets';
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = 'is_recursive';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 
 ?>

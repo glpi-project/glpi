@@ -1714,6 +1714,30 @@ class CommonDBTM {
       }
       return $this->getName().$toadd;
    }
+
+   /**
+    * Get the Search options for the givem Type
+    *
+    * This should be overloaded in Class
+    *
+    * @return an array of seach options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][32];;
+
+      $tab[1]['table']         = $this->table;
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_link'] = $this->type;
+
+      return $tab;
+   }
 }
 
 /// Common DataBase Relation Table Manager Class

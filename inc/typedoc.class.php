@@ -122,6 +122,52 @@ class Typedoc  extends CommonDBTM {
       return true;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_documentstypes';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = TYPEDOC_TYPE;
+
+      $tab[2]['table']     = 'glpi_documentstypes';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = 'glpi_documentstypes';
+      $tab[3]['field']     = 'ext';
+      $tab[3]['linkfield'] = 'ext';
+      $tab[3]['name']      = $LANG['document'][9];
+
+      $tab[6]['table']     = 'glpi_documentstypes';
+      $tab[6]['field']     = 'icon';
+      $tab[6]['linkfield'] = '';
+      $tab[6]['name']      = $LANG['document'][10];
+
+      $tab[4]['table']     = 'glpi_documentstypes';
+      $tab[4]['field']     = 'mime';
+      $tab[4]['linkfield'] = 'mime';
+      $tab[4]['name']      = $LANG['document'][4];
+
+      $tab[5]['table']     = 'glpi_documentstypes';
+      $tab[5]['field']     = 'is_uploadable';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name']      = $LANG['document'][15];
+
+      $tab[16]['table']     = 'glpi_documentstypes';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      return $tab;
+   }
 }
 
 ?>

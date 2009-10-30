@@ -884,5 +884,32 @@ class Profile extends CommonDBTM {
 
       $this->showLegend();
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][16];
+
+      $tab[1]['table']         = 'glpi_profiles';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = PROFILE_TYPE;
+
+      $tab[2]['table']     = 'glpi_profiles';
+      $tab[2]['field']     = 'interface';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['profiles'][2];
+
+      $tab[3]['table']     = 'glpi_profiles';
+      $tab[3]['field']     = 'is_default';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['profiles'][13];
+      $tab[3]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 ?>

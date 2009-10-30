@@ -1325,6 +1325,123 @@ class User extends CommonDBTM {
 			$DB->query($sql);
 		}
 	}
+
+
+   function getSearchOptions() {
+      global $LANG;
+
+      // forcegroup by on name set force group by for all items
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_users';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['setup'][18];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = USER_TYPE;
+      $tab[1]['forcegroupby']  = true;
+
+      $tab[2]['table']     = 'glpi_users';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[34]['table']     = 'glpi_users';
+      $tab[34]['field']     = 'realname';
+      $tab[34]['linkfield'] = 'realname';
+      $tab[34]['name']      = $LANG['common'][48];
+
+      $tab[9]['table']     = 'glpi_users';
+      $tab[9]['field']     = 'firstname';
+      $tab[9]['linkfield'] = 'firstname';
+      $tab[9]['name']      = $LANG['common'][43];
+
+      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['field']     = 'email';
+      $tab[5]['linkfield'] = 'email';
+      $tab[5]['name']      = $LANG['setup'][14];
+      $tab[5]['datatype']  = 'email';
+
+      $tab[3]['table']     = 'glpi_locations';
+      $tab[3]['field']     = 'completename';
+      $tab[3]['linkfield'] = 'locations_id';
+      $tab[3]['name']      = $LANG['common'][15];
+
+      $tab[8]['table']     = 'glpi_users';
+      $tab[8]['field']     = 'is_active';
+      $tab[8]['linkfield'] = 'is_active';
+      $tab[8]['name']      = $LANG['common'][60];
+      $tab[8]['datatype']  = 'bool';
+
+      $tab[6]['table']     = 'glpi_users';
+      $tab[6]['field']     = 'phone';
+      $tab[6]['linkfield'] = 'phone';
+      $tab[6]['name']      = $LANG['help'][35];
+
+      $tab[10]['table']     = 'glpi_users';
+      $tab[10]['field']     = 'phone2';
+      $tab[10]['linkfield'] = 'phone2';
+      $tab[10]['name']      = $LANG['help'][35]." 2";
+
+      $tab[11]['table']     = 'glpi_users';
+      $tab[11]['field']     = 'mobile';
+      $tab[11]['linkfield'] = 'mobile';
+      $tab[11]['name']      = $LANG['common'][42];
+
+      $tab[16]['table']     = 'glpi_users';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[13]['table']        = 'glpi_groups';
+      $tab[13]['field']        = 'name';
+      $tab[13]['linkfield']    = '';
+      $tab[13]['name']         = $LANG['common'][35];
+      $tab[13]['forcegroupby'] = true;
+
+      $tab[14]['table']     = 'glpi_users';
+      $tab[14]['field']     = 'last_login';
+      $tab[14]['linkfield'] = '';
+      $tab[14]['name']      = $LANG['login'][0];
+      $tab[14]['datatype']  = 'datetime';
+
+      $tab[15]['table']     = 'glpi_auth_tables';
+      $tab[15]['field']     = 'name';
+      $tab[15]['linkfield'] = '';
+      $tab[15]['name']      = $LANG['login'][10];
+
+      $tab[19]['table']     = 'glpi_users';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
+      $tab[20]['table']        = 'glpi_profiles';
+      $tab[20]['field']        = 'name';
+      $tab[20]['linkfield']    = '';
+      $tab[20]['name']         = $LANG['Menu'][35];
+      $tab[20]['forcegroupby'] = true;
+
+      $tab[80]['table']        = 'glpi_entities';
+      $tab[80]['field']        = 'completename';
+      $tab[80]['linkfield']    = 'entities_id';
+      $tab[80]['name']         = $LANG['entity'][0];
+      $tab[80]['forcegroupby'] = true;
+
+      $tab[81]['table']     = 'glpi_userstitles';
+      $tab[81]['field']     = 'name';
+      $tab[81]['linkfield'] = 'userstitles_id';
+      $tab[81]['name']      = $LANG['users'][1];
+
+      $tab[82]['table']     = 'glpi_userscategories';
+      $tab[82]['field']     = 'name';
+      $tab[82]['linkfield'] = 'userscategories_id';
+      $tab[82]['name']      = $LANG['users'][2];
+
+      return $tab;
+   }
 }
 
 

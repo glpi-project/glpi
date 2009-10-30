@@ -88,166 +88,207 @@ class CommonItem {
       if ($init_object) {
          switch ($itemtype) {
             case COMPUTER_TYPE :
+               require_once(GLPI_ROOT.'/inc/computer.class.php');
                $this->obj=new Computer;
                break;
 
             case NETWORKING_TYPE :
+               require_once(GLPI_ROOT.'/inc/networking.class.php');
                $this->obj=new Netdevice;
                break;
 
             case PRINTER_TYPE :
+               require_once(GLPI_ROOT.'/inc/printer.class.php');
                $this->obj=new Printer;
                break;
 
             case MONITOR_TYPE :
+               require_once(GLPI_ROOT.'/inc/monitor.class.php');
                $this->obj= new Monitor;
                break;
 
             case PERIPHERAL_TYPE :
+               require_once(GLPI_ROOT.'/inc/peripheral.class.php');
                $this->obj= new Peripheral;
                break;
 
             case SOFTWARE_TYPE :
+               require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new Software;
                break;
 
             case CONTACT_TYPE :
+               require_once(GLPI_ROOT.'/inc/contact.class.php');
                $this->obj= new Contact;
                break;
 
             case ENTERPRISE_TYPE :
+               require_once(GLPI_ROOT.'/inc/enterprise.class.php');
                $this->obj= new Enterprise;
                break;
 
             case CONTRACT_TYPE :
+               require_once(GLPI_ROOT.'/inc/contract.class.php');
                $this->obj= new Contract;
                break;
 
             case CARTRIDGEITEM_TYPE :
+               require_once(GLPI_ROOT.'/inc/cartridge.class.php');
                $this->obj= new CartridgeType;
                break;
 
             case TYPEDOC_TYPE :
+               require_once(GLPI_ROOT.'/inc/typedoc.class.php');
                $this->obj= new TypeDoc;
                break;
 
             case DOCUMENT_TYPE :
+               require_once(GLPI_ROOT.'/inc/document.class.php');
                $this->obj= new Document;
                break;
 
             case KNOWBASE_TYPE :
+               require_once(GLPI_ROOT.'/inc/knowbase.class.php');
                $this->obj= new kbitem;
                break;
 
             case USER_TYPE :
+               require_once(GLPI_ROOT.'/inc/user.class.php');
                $this->obj= new User;
                break;
 
             case TRACKING_TYPE :
+               require_once(GLPI_ROOT.'/inc/tracking.class.php');
                $this->obj= new Job;
                break;
 
             case CONSUMABLEITEM_TYPE :
+               require_once(GLPI_ROOT.'/inc/consumable.class.php');
                $this->obj= new ConsumableType;
                break;
 
             case CARTRIDGE_TYPE :
+               require_once(GLPI_ROOT.'/inc/cartridge.class.php');
                $this->obj= new Cartridge;
                break;
 
             case CONSUMABLE_TYPE :
+               require_once(GLPI_ROOT.'/inc/consumable.class.php');
                $this->obj= new Consumable;
                break;
 
             case SOFTWARELICENSE_TYPE :
+               require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new SoftwareLicense;
                break;
 
             case SOFTWAREVERSION_TYPE :
+               require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new SoftwareVersion;
                break;
 
             case LINK_TYPE :
+               require_once(GLPI_ROOT.'/inc/link.class.php');
                $this->obj= new Link;
                break;
 
             case PHONE_TYPE :
+               require_once(GLPI_ROOT.'/inc/phone.class.php');
                $this->obj= new Phone;
                break;
 
             case REMINDER_TYPE :
+               require_once(GLPI_ROOT.'/inc/reminder.class.php');
                $this->obj= new Reminder;
                break;
 
             case GROUP_TYPE :
+               require_once(GLPI_ROOT.'/inc/group.class.php');
                $this->obj= new Group;
                break;
 
             case ENTITY_TYPE :
+               require_once(GLPI_ROOT.'/inc/entity.class.php');
                $this->obj= new Entity;
                break;
 
             case AUTH_MAIL_TYPE:
+               require_once(GLPI_ROOT.'/inc/auth.class.php');
                $this->obj = new AuthMail;
                break;
 
             case AUTH_LDAP_TYPE:
+               require_once(GLPI_ROOT.'/inc/auth.class.php');
                $this->obj = new AuthLDAP;
                break;
 
             case OCSNG_TYPE:
+               require_once(GLPI_ROOT.'/inc/ocsng.class.php');
                $this->obj = new Ocsng;
                break;
 
             case REGISTRY_TYPE:
+               require_once(GLPI_ROOT.'/inc/registry.class.php');
                $this->obj = new Registry;
                break;
 
             case PROFILE_TYPE:
+               require_once(GLPI_ROOT.'/inc/profile.class.php');
                $this->obj = new Profile;
                break;
 
             case MAILGATE_TYPE:
+               require_once(GLPI_ROOT.'/inc/mailgate.class.php');
                $this->obj = new Mailgate;
                break;
 
             case INFOCOM_TYPE:
+               require_once(GLPI_ROOT.'/inc/infocom.class.php');
                $this->obj = new InfoCom;
                break;
 
             case TRANSFER_TYPE:
+               require_once(GLPI_ROOT.'/inc/transfer.class.php');
                $this->obj = new Transfer;
                break;
 
             case BOOKMARK_TYPE:
+               require_once(GLPI_ROOT.'/inc/bookmark.class.php');
                $this->obj = new Bookmark;
                break;
 
             case BUDGET_TYPE:
+               require_once(GLPI_ROOT.'/inc/budget.class.php');
                $this->obj = new Budget;
                break;
 
             case CRONTASK_TYPE:
+               require_once(GLPI_ROOT.'/inc/crontask.class.php');
                $this->obj = new CronTask;
                break;
 
             case CRONTASKLOG_TYPE:
+               require_once(GLPI_ROOT.'/inc/crontask.class.php');
                $this->obj = new CronTaskLog;
                break;
 
             case TICKETCATEGORY_TYPE:
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new TicketCategory();
                break;
 
             case TASKCATEGORY_TYPE:
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new TaskCategory();
                break;
 
             case LOCATION_TYPE:
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Location();
                break;
 
             case NETPOINT_TYPE:
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Netpoint();
                break;
 

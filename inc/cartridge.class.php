@@ -275,6 +275,74 @@ class CartridgeType extends CommonDBTM {
 
       return true;
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_cartridgesitems';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = CARTRIDGEITEM_TYPE;
+
+      $tab[2]['table']     = 'glpi_cartridgesitems';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[34]['table']     = 'glpi_cartridgesitems';
+      $tab[34]['field']     = 'ref';
+      $tab[34]['linkfield'] = 'ref';
+      $tab[34]['name']      = $LANG['consumables'][2];
+
+      $tab[4]['table']     = 'glpi_cartridgesitemstypes';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'cartridgesitemstypes_id';
+      $tab[4]['name']      = $LANG['common'][17];
+
+      $tab[23]['table']     = 'glpi_manufacturers';
+      $tab[23]['field']     = 'name';
+      $tab[23]['linkfield'] = 'manufacturers_id';
+      $tab[23]['name']      = $LANG['common'][5];
+
+      $tab[3]['table']     = 'glpi_locations';
+      $tab[3]['field']     = 'completename';
+      $tab[3]['linkfield'] = 'locations_id';
+      $tab[3]['name']      = $LANG['consumables'][36];
+
+      $tab[24]['table']     = 'glpi_users';
+      $tab[24]['field']     = 'name';
+      $tab[24]['linkfield'] = 'users_id_tech';
+      $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[8]['table']     = 'glpi_cartridgesitems';
+      $tab[8]['field']     = 'alarm_threshold';
+      $tab[8]['linkfield'] = 'alarm_threshold';
+      $tab[8]['name']      = $LANG['consumables'][38];
+      $tab[8]['datatype']  = 'number';
+
+      $tab[16]['table']     = 'glpi_cartridgesitems';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[90]['table']     = 'glpi_cartridgesitems';
+      $tab[90]['field']     = 'notepad';
+      $tab[90]['linkfield'] = '';
+      $tab[90]['name']      = $LANG['title'][37];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      return $tab;
+   }
 }
 
 //!  Cartridge Class

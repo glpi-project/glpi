@@ -755,6 +755,378 @@ class Computer extends CommonDBTM {
               FROM `glpi_computers_items`
               WHERE `computers_id`='" . $this->fields['id']."'";
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_computers';
+      $tab[1]['field']         =  'name';
+      $tab[1]['linkfield']     ='name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = COMPUTER_TYPE;
+
+      $tab[2]['table']     = 'glpi_computers';
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = 'glpi_locations';
+      $tab[3]['field']     = 'completename';
+      $tab[3]['linkfield'] = 'locations_id';
+      $tab[3]['name']      = $LANG['common'][15];
+
+      $tab[4]['table']     = 'glpi_computerstypes';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'computerstypes_id';
+      $tab[4]['name']      = $LANG['common'][17];
+
+      $tab[40]['table']     = 'glpi_computersmodels';
+      $tab[40]['field']     = 'name';
+      $tab[40]['linkfield'] = 'computersmodels_id';
+      $tab[40]['name']      = $LANG['common'][22];
+
+      $tab[31]['table']     = 'glpi_states';
+      $tab[31]['field']     = 'name';
+      $tab[31]['linkfield'] = 'states_id';
+      $tab[31]['name']      = $LANG['state'][0];
+
+      $tab[45]['table']     = 'glpi_operatingsystems';
+      $tab[45]['field']     = 'name';
+      $tab[45]['linkfield'] = 'operatingsystems_id';
+      $tab[45]['name']      = $LANG['computers'][9];
+
+      $tab[46]['table']     = 'glpi_operatingsystemsversions';
+      $tab[46]['field']     = 'name';
+      $tab[46]['linkfield'] = 'operatingsystemsversions_id';
+      $tab[46]['name']      = $LANG['computers'][52];
+
+      $tab[41]['table']     = 'glpi_operatingsystemsservicepacks';
+      $tab[41]['field']     = 'name';
+      $tab[41]['linkfield'] = 'operatingsystemsservicepacks_id';
+      $tab[41]['name']      = $LANG['computers'][53];
+
+      $tab[42]['table']     = 'glpi_autoupdatesystems';
+      $tab[42]['field']     = 'name';
+      $tab[42]['linkfield'] = 'autoupdatesystems_id';
+      $tab[42]['name']      = $LANG['computers'][51];
+
+      $tab[43]['table']     = 'glpi_computers';
+      $tab[43]['field']     = 'os_license_number';
+      $tab[43]['linkfield'] = 'os_license_number';
+      $tab[43]['name']      = $LANG['computers'][10];
+
+      $tab[44]['table']     = 'glpi_computers';
+      $tab[44]['field']     = 'os_licenseid';
+      $tab[44]['linkfield'] = 'os_licenseid';
+      $tab[44]['name']      = $LANG['computers'][11];
+
+      $tab[5]['table']     = 'glpi_computers';
+      $tab[5]['field']     = 'serial';
+      $tab[5]['linkfield'] = 'serial';
+      $tab[5]['name']      = $LANG['common'][19];
+
+      $tab[6]['table']     = 'glpi_computers';
+      $tab[6]['field']     = 'otherserial';
+      $tab[6]['linkfield'] = 'otherserial';
+      $tab[6]['name']      = $LANG['common'][20];
+
+      $tab[16]['table']     = 'glpi_computers';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[90]['table']     = 'glpi_computers';
+      $tab[90]['field']     = 'notepad';
+      $tab[90]['linkfield'] = '';
+      $tab[90]['name']      = $LANG['title'][37];
+
+      $tab[17]['table']     = 'glpi_computers';
+      $tab[17]['field']     = 'contact';
+      $tab[17]['linkfield'] = 'contact';
+      $tab[17]['name']      = $LANG['common'][18];
+
+      $tab[18]['table']     = 'glpi_computers';
+      $tab[18]['field']     = 'contact_num';
+      $tab[18]['linkfield'] = 'contact_num';
+      $tab[18]['name']      = $LANG['common'][21];
+
+      $tab[70]['table']     = 'glpi_users';
+      $tab[70]['field']     = 'name';
+      $tab[70]['linkfield'] = 'users_id';
+      $tab[70]['name']      = $LANG['common'][34];
+
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['linkfield'] = 'groups_id';
+      $tab[71]['name']      = $LANG['common'][35];
+
+      $tab[19]['table']     = 'glpi_computers';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
+      $tab[32]['table']     = 'glpi_networks';
+      $tab[32]['field']     = 'name';
+      $tab[32]['linkfield'] = 'networks_id';
+      $tab[32]['name']      = $LANG['setup'][88];
+
+      $tab[33]['table']     = 'glpi_domains';
+      $tab[33]['field']     = 'name';
+      $tab[33]['linkfield'] = 'domains_id';
+      $tab[33]['name']      = $LANG['setup'][89];
+
+      $tab[23]['table']     = 'glpi_manufacturers';
+      $tab[23]['field']     = 'name';
+      $tab[23]['linkfield'] = 'manufacturers_id';
+      $tab[23]['name']      = $LANG['common'][5];
+
+      $tab[24]['table']     = 'glpi_users';
+      $tab[24]['field']     = 'name';
+      $tab[24]['linkfield'] = 'users_id_tech';
+      $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+
+      $tab['periph'] = $LANG['title'][30];
+
+      $tab[7]['table']        = 'glpi_devicesprocessors';
+      $tab[7]['field']        = 'designation';
+      $tab[7]['linkfield']    = '';
+      $tab[7]['name']         = $LANG['computers'][21];
+      $tab[7]['forcegroupby'] = true;
+      $tab[7]['usehaving']    = true;
+
+      $tab[36]['table']        = 'glpi_devicesprocessors';
+      $tab[36]['field']        = 'specif_default';
+      $tab[36]['linkfield']    = '';
+      $tab[36]['name']         = $LANG['computers'][21]." ".$LANG['setup'][35];
+      $tab[36]['forcegroupby'] = true;
+      $tab[36]['usehaving']    = true;
+      $tab[36]['datatype']     = 'number';
+      $tab[36]['width']        = 100;
+
+      $tab[10]['table']        = 'glpi_devicesmemories';
+      $tab[10]['field']        = 'designation';
+      $tab[10]['linkfield']    = '';
+      $tab[10]['name']         = $LANG['computers'][23];
+      $tab[10]['forcegroupby'] = true;
+      $tab[10]['usehaving']    = true;
+
+      $tab[35]['table']        = 'glpi_devicesmemories';
+      $tab[35]['field']        = 'specif_default';
+      $tab[35]['linkfield']    = '';
+      $tab[35]['name']         = $LANG['computers'][24];
+      $tab[35]['forcegroupby'] = true;
+      $tab[35]['usehaving']    = true;
+      $tab[35]['datatype']     = 'number';
+      $tab[35]['width']        = 100;
+
+      $tab[11]['table']        = 'glpi_devicesnetworkcards';
+      $tab[11]['field']        = 'designation';
+      $tab[11]['linkfield']    = '';
+      $tab[11]['name']         = $LANG['setup'][9];
+      $tab[11]['forcegroupby'] = true;
+
+      $tab[12]['table']        = 'glpi_devicessoundcards';
+      $tab[12]['field']        = 'designation';
+      $tab[12]['linkfield']    = '';
+      $tab[12]['name']         = $LANG['devices'][7];
+      $tab[12]['forcegroupby'] = true;
+
+      $tab[13]['table']        = 'glpi_devicesgraphiccards';
+      $tab[13]['field']        = 'designation';
+      $tab[13]['linkfield']    = '';
+      $tab[13]['name']         = $LANG['devices'][2];
+      $tab[13]['forcegroupby'] = true;
+
+      $tab[14]['table']        = 'glpi_devicesmotherboards';
+      $tab[14]['field']        = 'designation';
+      $tab[14]['linkfield']    ='';
+      $tab[14]['name']         = $LANG['devices'][5];
+      $tab[14]['forcegroupby'] = true;
+
+      $tab[15]['table']        = 'glpi_devicesharddrives';
+      $tab[15]['field']        = 'designation';
+      $tab[15]['linkfield']    = '';
+      $tab[15]['name']         = $LANG['computers'][36];
+      $tab[15]['forcegroupby'] = true;
+      $tab[15]['usehaving']    = true;
+
+      $tab[34]['table']        = 'glpi_devicesharddrives';
+      $tab[34]['field']        = 'specif_default';
+      $tab[34]['linkfield']    = '';
+      $tab[34]['name']         = $LANG['computers'][25];
+      $tab[34]['forcegroupby'] = true;
+      $tab[34]['usehaving']    = true;
+      $tab[34]['datatype']     = 'number';
+      $tab[34]['width']        = 1000;
+
+      $tab[39]['table']        = 'glpi_devicespowersupplies';
+      $tab[39]['field']        = 'designation';
+      $tab[39]['linkfield']    = '';
+      $tab[39]['name']         = $LANG['devices'][23];
+      $tab[39]['forcegroupby'] = true;
+      $tab[39]['usehaving']    = true;
+
+
+      $tab['disk'] = $LANG['computers'][8];
+
+      $tab[156]['table']        = 'glpi_computersdisks';
+      $tab[156]['field']        = 'name';
+      $tab[156]['linkfield']    = '';
+      $tab[156]['name']         = $LANG['common'][16]." ".$LANG['computers'][0];
+      $tab[156]['forcegroupby'] = true;
+
+      $tab[150]['table']        = 'glpi_computersdisks';
+      $tab[150]['field']        = 'totalsize';
+      $tab[150]['linkfield']    = '';
+      $tab[150]['name']         = $LANG['computers'][3];
+      $tab[150]['forcegroupby'] = true;
+      $tab[150]['usehaving']    = true;
+      $tab[150]['datatype']     = 'number';
+      $tab[150]['width']        = 1000;
+
+      $tab[151]['table']        = 'glpi_computersdisks';
+      $tab[151]['field']        = 'freesize';
+      $tab[151]['linkfield']    = '';
+      $tab[151]['name']         = $LANG['computers'][2];
+      $tab[151]['forcegroupby'] = true;
+      $tab[151]['usehaving']    = true;
+      $tab[151]['datatype']     = 'number';
+      $tab[151]['width']        = 1000;
+
+      $tab[152]['table']        = 'glpi_computersdisks';
+      $tab[152]['field']        = 'freepercent';
+      $tab[152]['linkfield']    = '';
+      $tab[152]['name']         = $LANG['computers'][1];
+      $tab[152]['forcegroupby'] = true;
+      $tab[152]['usehaving']    = true;
+      $tab[152]['datatype']     = 'decimal';
+      $tab[152]['width']        = 2;
+      $tab[152]['computation']  = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
+      $tab[152]['unit']         = '%';
+
+      $tab[153]['table']        = 'glpi_computersdisks';
+      $tab[153]['field']        = 'mountpoint';
+      $tab[153]['linkfield']    = '';
+      $tab[153]['name']         = $LANG['computers'][5];
+      $tab[153]['forcegroupby'] = true;
+
+      $tab[154]['table']        = 'glpi_computersdisks';
+      $tab[154]['field']        = 'device';
+      $tab[154]['linkfield']    = '';
+      $tab[154]['name']         = $LANG['computers'][6];
+      $tab[154]['forcegroupby'] = true;
+
+      $tab[155]['table']        = 'glpi_filesystems';
+      $tab[155]['field']        = 'name';
+      $tab[155]['linkfield']    = '';
+      $tab[155]['name']         = $LANG['computers'][4];
+      $tab[155]['forcegroupby'] = true;
+
+
+      $tab['network'] = $LANG['setup'][88];
+
+      $tab[20]['table']        = 'glpi_networkports';
+      $tab[20]['field']        = 'ip';
+      $tab[20]['linkfield']    = '';
+      $tab[20]['name']         = $LANG['networking'][14];
+      $tab[20]['forcegroupby'] = true;
+
+      $tab[21]['table']        = 'glpi_networkports';
+      $tab[21]['field']        = 'mac';
+      $tab[21]['linkfield']    = '';
+      $tab[21]['name']         = $LANG['networking'][15];
+      $tab[21]['forcegroupby'] = true;
+
+      $tab[83]['table']        = 'glpi_networkports';
+      $tab[83]['field']        = 'netmask';
+      $tab[83]['linkfield']    = '';
+      $tab[83]['name']         = $LANG['networking'][60];
+      $tab[83]['forcegroupby'] = true;
+
+      $tab[84]['table']        = 'glpi_networkports';
+      $tab[84]['field']        = 'subnet';
+      $tab[84]['linkfield']    = '';
+      $tab[84]['name']         = $LANG['networking'][61];
+      $tab[84]['forcegroupby'] = true;
+
+      $tab[85]['table']        = 'glpi_networkports';
+      $tab[85]['field']        = 'gateway';
+      $tab[85]['linkfield']    = '';
+      $tab[85]['name']         = $LANG['networking'][59];
+      $tab[85]['forcegroupby'] = true;
+
+      $tab[22]['table']        = 'glpi_netpoints';
+      $tab[22]['field']        = 'name';
+      $tab[22]['linkfield']    = '';
+      $tab[22]['name']         = $LANG['networking'][51];
+      $tab[22]['forcegroupby'] = true;
+
+
+      $tab['tracking'] = $LANG['title'][24];
+
+      $tab[60]['table']        = 'glpi_tickets';
+      $tab[60]['field']        = 'count';
+      $tab[60]['linkfield']    = '';
+      $tab[60]['name']         = $LANG['stats'][13];
+      $tab[60]['forcegroupby'] = true;
+      $tab[60]['usehaving']    = true;
+      $tab[60]['datatype']     = 'number';
+
+
+
+      $tab['ocsng'] = $LANG['Menu'][33];
+
+      $tab[102]['table']     = 'glpi_ocslinks';
+      $tab[102]['field']     = 'last_update';
+      $tab[102]['linkfield'] = '';
+      $tab[102]['name']      = $LANG['ocsng'][13];
+      $tab[102]['datatype']  = 'datetime';
+
+      $tab[103]['table']     = 'glpi_ocslinks';
+      $tab[103]['field']     = 'last_ocs_update';
+      $tab[103]['linkfield'] = '';
+      $tab[103]['name']      = $LANG['ocsng'][14];
+      $tab[103]['datatype']  = 'datetime';
+
+      $tab[100]['table']     = 'glpi_computers';
+      $tab[100]['field']     = 'is_ocs_import';
+      $tab[100]['linkfield'] = '';
+      $tab[100]['name']      = $LANG['ocsng'][7];
+
+      $tab[101]['table']     = 'glpi_ocslinks';
+      $tab[101]['field']     = 'use_auto_update';
+      $tab[101]['linkfield'] = '';
+      $tab[101]['name']      = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
+
+
+      $tab['registry'] = $LANG['title'][43];
+
+      $tab[110]['table']        = 'glpi_registrykeys';
+      $tab[110]['field']        = 'value';
+      $tab[110]['linkfield']    = '';
+      $tab[110]['name']         = $LANG['title'][43]." : ".$LANG['registry'][3];
+      $tab[110]['forcegroupby'] = true;
+
+      $tab[111]['table']        = 'glpi_registrykeys';
+      $tab[111]['field']        = 'ocs_name';
+      $tab[111]['linkfield']    = '';
+      $tab[111]['name']         = $LANG['title'][43]." : ".$LANG['registry'][6];
+      $tab[111]['forcegroupby'] = true;
+
+      return $tab;
+   }
 }
 
 /// Disk class

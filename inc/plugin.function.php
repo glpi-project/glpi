@@ -411,11 +411,13 @@ function getPluginsDatabaseRelations() {
 }
 
 /**
- * Get search options for plugins
+ * Get additional search options managed by plugins
  *
- * @return Array containing plugin search options
+ * @param $itemtype
+ *
+ * @return Array containing plugin search options for given type
  */
-function getPluginSearchOption() {
+function getPluginSearchOptions($itemtype) {
    global $PLUGIN_HOOKS;
 
    $sopt=array();
@@ -425,16 +427,11 @@ function getPluginSearchOption() {
          if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
             include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
          }
-         $function="plugin_".$plug."_getSearchOption";
+         $function="plugin_".$plug."_getAddSearchOptions";
          if (function_exists($function)) {
-            $tmp=$function();
+            $tmp=$function($itemtype);
             if (count($tmp)) {
-               foreach ($tmp as $key => $val) {
-                  if (!isset($sopt[$key])) {
-                     $sopt[$key]=array();
-                  }
-                  $sopt[$key]+=$val;
-               }
+               $sopt += $tmp;
             }
          }
       }
