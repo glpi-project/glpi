@@ -714,7 +714,7 @@ class Profile extends CommonDBTM {
 
       echo "</table><table class='tab_cadre_fixe'>";
       $tabstatus=getAllStatus();
-      
+
       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
       echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
       echo "<input type='hidden' name='_cycles' value='1'</td>";
@@ -737,7 +737,7 @@ class Profile extends CommonDBTM {
          }
          echo "</tr>\n";
       }
-      
+
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
@@ -853,11 +853,11 @@ class Profile extends CommonDBTM {
       dropdownNoneReadWrite("device",$this->fields["device"],1,0,1);
       echo "</td>";
       echo "<td>".$LANG['setup'][0]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("dropdown",$this->fields["dropdown"],1,0,1);
+      dropdownNoneReadWrite("dropdown",$this->fields["dropdown"],1,1,1);
       echo "</td>";
       echo "<td class='tab_bg_2'>".$LANG['setup'][0]." (".$LANG['entity'][0].")&nbsp;:</td>";
       echo "<td class='tab_bg_2'>";
-      dropdownNoneReadWrite("entity_dropdown",$this->fields["entity_dropdown"],1,0,1);
+      dropdownNoneReadWrite("entity_dropdown",$this->fields["entity_dropdown"],1,1,1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";

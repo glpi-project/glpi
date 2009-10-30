@@ -44,7 +44,7 @@ if(!defined('GLPI_ROOT')){
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
+checkSeveralRightsOr(array("dropdown"=>"r","entity_dropdown"=>"r"));
 
 
 

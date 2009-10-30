@@ -734,7 +734,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    $menu['config']['title']=$LANG['common'][12];
    $menu['config']['default']='/front/setup.php';
 
-   if (haveRight("dropdown","w") || haveRight("entity_dropdown","w")) {
+   if (haveRight("dropdown","r") || haveRight("entity_dropdown","r")) {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
 
@@ -749,9 +749,14 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                   $dpname=str_replace('glpi_','',$LINK_ID_TABLE[$key]);
                   if ($dpname == $option) {
                      $menu['config']['content']['dropdowns']['options'][$dpname]['title']=$val;
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['page']='/front/dropdown.php?itemtype='.$key;
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['search']='/front/dropdown.php?itemtype='.$key;
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['add']='/front/dropdown.form.php?itemtype='.$key;
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['page']=
+                                                   '/front/dropdown.php?itemtype='.$key;
+                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['search']=
+                                                   '/front/dropdown.php?itemtype='.$key;
+                     if (haveTypeRight($key,'w')) {
+                        $menu['config']['content']['dropdowns']['options'][$dpname]['links']['add']=
+                                                   '/front/dropdown.form.php?itemtype='.$key;
+                     }
                   }
                }
             }
