@@ -380,17 +380,19 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "</table>\n";
 
       // Minimal form for quick input.
-      echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[$this->type]."' method='post'>";
-      echo "<br><table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
-      echo "<td>".$LANG['common'][16]."&nbsp;: ";
-      autocompletionTextField("name",$this->table,"name");
-      echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-      echo "<input type='hidden' name='".$this->keyid."' value='$ID'></td>";
-      echo "<td><input type='submit' name='add' value=\"".
-           $LANG['buttons'][8]."\" class='submit'></td>";
-      echo "</tr>\n";
-      echo "</table></form></div>\n";
+      if ($this->canCreate()) {
+         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[$this->type]."' method='post'>";
+         echo "<br><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
+         echo "<td>".$LANG['common'][16]."&nbsp;: ";
+         autocompletionTextField("name",$this->table,"name");
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         echo "<input type='hidden' name='".$this->keyid."' value='$ID'></td>";
+         echo "<td><input type='submit' name='add' value=\"".
+              $LANG['buttons'][8]."\" class='submit'></td>";
+         echo "</tr>\n";
+         echo "</table></form></div>\n";
+      }
    }
 
    /**

@@ -2853,9 +2853,14 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
          $optgroup=array_merge($optgroup,$plugdrop);
       }
 
-      if (!haveRight("dropdown","w")) {
+      $ci = new CommonItem();
+      if (!haveRight("dropdown","r")) {
          foreach ($optgroup as $label=>$dp) {
             foreach ($dp as $key => $val) {
+               if (is_numeric($key)) {
+                  $ci->setType($key,true);
+                  $key = $ci->obj->table;
+               }
                if (!in_array($key,$CFG_GLPI["specif_entities_tables"])) {
                   unset($optgroup[$label][$key]);
                }
@@ -2866,9 +2871,13 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
          }
       }
 
-      if (!haveRight("entity_dropdown","w")) {
+      if (!haveRight("entity_dropdown","r")) {
          foreach ($optgroup as $label=>$dp) {
             foreach ($dp as $key => $val) {
+               if (is_numeric($key)) {
+                  $ci->setType($key,true);
+                  $key = $ci->obj->table;
+               }
                if (in_array($key,$CFG_GLPI["specif_entities_tables"])) {
                   unset($optgroup[$label][$key]);
                }
