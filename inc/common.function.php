@@ -422,9 +422,9 @@ function filesizeDirectory($path) {
  *
  * @param $itemtype
  *
- * @return the SEARCH_OPTION array for the given item type
+ * @return the reference to  array of search options for the given item type
  **/
-function getSearchOptions($itemtype) {
+function &getSearchOptions($itemtype) {
    global $LANG, $CFG_GLPI;
 
    static $search = array();
@@ -646,6 +646,8 @@ function getSearchOptions($itemtype) {
          $search[$itemtype][138]['name']      = $LANG['financial'][107]." ".$LANG['financial'][1];
          $search[$itemtype][138]['forcegroupby'] = true;
       }
+
+      // && $itemtype !=  CARTRIDGEITEM_TYPE && $itemtype !=  CONSUMABLEITEM_TYPE
       if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
          $search[$itemtype]['financial'] = $LANG['financial'][3];
 

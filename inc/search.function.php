@@ -32,13 +32,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/** \file search.function.php
+/**
+ * file search.function.php
  * Generic functions for Search Engine
  */
-// Get search_option array / Already include in includes.php
-//if (!isset($SEARCH_OPTION)) {
-//   $SEARCH_OPTION=getSearchOptions();
-//}
 
 /**
  * Clean search options depending of user active profile
@@ -50,8 +47,7 @@ if (!defined('GLPI_ROOT')) {
 function cleanSearchOption($itemtype,$action='r') {
    global $CFG_GLPI;
 
-logInFile('php-errors',"cleanSearchOption($itemtype)\n");
-   $options=getSearchOptions($itemtype);
+   $options=&getSearchOptions($itemtype);
    $todel=array();
    if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
       $todel=array_merge($todel,array('financial',
@@ -659,7 +655,7 @@ function showList ($itemtype,$params) {
    $FROM .= $COMMONLEFTJOIN;
 
    $searchopt=array();
-   $searchopt[$itemtype]=getSearchOptions($itemtype);
+   $searchopt[$itemtype]=&getSearchOptions($itemtype);
    // Add all table for toview items
    foreach ($toview as $key => $val) {
       $FROM .= addLeftJoin($itemtype,$itemtable,$already_link_tables,
@@ -921,7 +917,7 @@ function showList ($itemtype,$params) {
          if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
             if (!isset($searchopt[$itemtype2[$i]])) {
-               $searchopt[$itemtype2[$i]]=getSearchOptions($itemtype2[$i]);
+               $searchopt[$itemtype2[$i]]=&getSearchOptions($itemtype2[$i]);
             }
             if (!in_array($searchopt[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],
                           $already_link_tables2)) {
@@ -1622,7 +1618,7 @@ function showList ($itemtype,$params) {
  **/
 function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
 
-   $searchopt = getSearchOptions($itemtype);
+   $searchopt = &getSearchOptions($itemtype);
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
 
@@ -1741,7 +1737,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
    if ($order!="ASC") {
       $order="DESC";
    }
-   $searchopt = getSearchOptions($itemtype);
+   $searchopt = &getSearchOptions($itemtype);
 
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
@@ -1911,7 +1907,7 @@ function addDefaultSelect ($itemtype) {
 function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
    global $LINK_ID_TABLE,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $searchopt=getSearchOptions($itemtype);
+   $searchopt=&getSearchOptions($itemtype);
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
    $addtable="";
@@ -2205,7 +2201,7 @@ function addDefaultWhere ($itemtype) {
 function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    global $LINK_ID_TABLE,$LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $searchopt=getSearchOptions($itemtype);
+   $searchopt=&getSearchOptions($itemtype);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
@@ -2559,7 +2555,7 @@ function displayConfigItem ($itemtype,$field) {
 function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    global $CFG_GLPI,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-   $searchopt=getSearchOptions($itemtype);
+   $searchopt=&getSearchOptions($itemtype);
    if (isset($CFG_GLPI["union_search_type"][$itemtype])
        && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
       return giveItem ($data["TYPE"],$ID,$data,$num);
@@ -3195,6 +3191,14 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
          return $out."
                 LEFT JOIN `$new_table` $AS ON (`glpi_infocoms`.`budgets_id` = `$nt`.`id`) ";
 
+      case "glpi_cartridges" :
+         return " LEFT JOIN `$new_table` $AS
+                        ON (`$rt`.`id` = `$nt`.`cartridgesitems_id` ) ";
+
+      case "glpi_consumables" :
+         return " LEFT JOIN `$new_table` $AS
+                        ON (`$rt`.`id` = `$nt`.`consumablesitems_id` ) ";
+
       case "glpi_infocoms" :
          if ($itemtype == SOFTWARE_TYPE) {
             // Return the infocom linked to the license, not the template linked to the software
@@ -3203,6 +3207,22 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                    LEFT JOIN `$new_table` $AS
                         ON (`glpi_softwareslicenses`.`id` = `$nt`.`items_id`
                             AND `$nt`.`itemtype` = ".SOFTWARELICENSE_TYPE.") ";
+         }
+         if ($itemtype == CARTRIDGEITEM_TYPE) {
+            // Return the infocom linked to the Cartridge, not the template linked to the Type
+            return addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_cartridges",
+                               $linkfield) ."
+                   LEFT JOIN `$new_table` $AS
+                        ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
+                            AND `$nt`.`itemtype` = ".CARTRIDGE_TYPE.") ";
+         }
+         if ($itemtype == CONSUMABLEITEM_TYPE) {
+            // Return the infocom linked to the Comsumable, not the template linked to the Type
+            return addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_consumables",
+                               $linkfield) ."
+                   LEFT JOIN `$new_table` $AS
+                        ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
+                            AND `$nt`.`itemtype` = ".CONSUMABLE_TYPE.") ";
          }
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                  AND `$nt`.`itemtype` = '$itemtype') ";
