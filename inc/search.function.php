@@ -2116,24 +2116,39 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
    if (isset($searchopt[$ID]["datatype"])) {
       switch ($searchopt[$ID]["datatype"]) {
          case "date_delay" :
-            if ($meta) {
-               return " GROUP_CONCAT
+            if ($meta
+                || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
+                ){
+/*               return " GROUP_CONCAT
                            (DISTINCT ADDDATE
                               (`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
                                INTERVAL
                                `$table$addtable`.".$searchopt[$ID]["datafields"][2]."
                                MONTH)
                             SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+*/
+                 return " GROUP_CONCAT(DISTINCT
+                            CONCAT (`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
+                                     ',',
+                                     `$table$addtable`.".$searchopt[$ID]["datafields"][2].")
+                            SEPARATOR '$$$$') AS ".$NAME."_$num, ";
             } else {
-               return "`$table$addtable`.".$searchopt[$ID]["datafields"][1]."
+/*               return "`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`
                            AS ".$NAME."_$num,
-                       `$table$addtable`.".$searchopt[$ID]["datafields"][2]."
+                       `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`
                            AS ".$NAME."_".$num."_2, ";
+*/
+                 return "CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
+                                ',',
+                                `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`)
+                                AS ".$NAME."_$num, ";
             }
             break;
 
          case "itemlink" :
             if ($meta
+                || (isset($searchopt[$ID]["forcegroupby"])
+                    && $searchopt[$ID]["forcegroupby"])
                 || (isset($searchopt[$ID]["itemlink_type"])
                     && $searchopt[$ID]["itemlink_type"] != $itemtype)) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
@@ -2736,18 +2751,42 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
 
       case "glpi_infocoms.sink_time" :
          if (!empty($data[$NAME.$num])) {
-            return $data[$NAME.$num]." ".$LANG['financial'][9];
+            $split=explode("$$$$",$data[$NAME.$num]);
+            $out='';
+            foreach($split as $val) {
+               $out .= (empty($out)?'':'<br>');
+               if ($val>0) {
+                  $out .= $val." ".$LANG['financial'][9];
+               }
+            }
+            return $out;
          }
          return "&nbsp;";
 
       case "glpi_infocoms.warranty_duration" :
          if (!empty($data[$NAME.$num])) {
-            return $data[$NAME.$num]." ".$LANG['financial'][57];
+            $split=explode("$$$$",$data[$NAME.$num]);
+            $out='';
+            foreach($split as $val) {
+               $out .= (empty($out)?'':'<br>');
+               if ($val>0) {
+                  $out .= $val." ".$LANG['financial'][57];
+               }
+               if ($val<0) {
+                  $out .= $LANG['financial'][2];
+               }
+            }
+            return $out;
          }
          return "&nbsp;";
 
       case "glpi_infocoms.sink_type" :
-         return getAmortTypeName($data[$NAME.$num]);
+         $split=explode("$$$$",$data[$NAME.$num]);
+         $out='';
+         foreach($split as $val) {
+            $out .= (empty($out)?'':'<br>').getAmortTypeName($val);
+         }
+         return $out;
 
       case "glpi_infocoms.alert" :
          if ($data[$NAME.$num]==pow(2,ALERT_END)) {
@@ -2877,10 +2916,15 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
             break;
 
          case "text" :
-            return nl2br($data[$NAME.$num]);
+            return str_replace('$$$$','<br>',nl2br($data[$NAME.$num]));
 
          case "date" :
-            return convDate($data[$NAME.$num]);
+            $split=explode("$$$$",$data[$NAME.$num]);
+            $out='';
+            foreach($split as $val) {
+               $out .= (empty($out)?'':'<br>').convDate($val);
+            }
+            return $out;
 
          case "datetime" :
             return convDateTime($data[$NAME.$num]);
@@ -2892,10 +2936,21 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
             return getRealtime($data[$NAME.$num]);
 
          case "date_delay" :
-            if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])) {
+            $split = explode('$$$$',$data[$NAME.$num]);
+            $out='';
+            foreach($split as $val) {
+               if (strpos($val,',')) {
+                  list($dat,$dur)=explode(',',$val);
+                  if (!empty($dat)) {
+                     $out .= (empty($out)?'':'<br>').getWarrantyExpir($dat,$dur);
+                  }
+               }
+            }
+/*          if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])) {
                return getWarrantyExpir($data[$NAME.$num],$data[$NAME.$num."_2"]);
             }
-            return "&nbsp;";
+*/
+            return (empty($out) ? "&nbsp;" : $out);
 
          case "email" :
             $email=trim($data[$NAME.$num]);
