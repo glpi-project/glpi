@@ -535,7 +535,9 @@ class Location extends CommonTreeDropdown {
       global $LANG;
 
       $ong=parent::defineTabs($ID,$withtemplate);
-      $ong[2] = $LANG['networking'][51];
+      if ($ID>0) {
+         $ong[2] = $LANG['networking'][51];
+      }
 
       return $ong;
    }
@@ -738,6 +740,7 @@ class Netpoint extends CommonDropdown {
          $this->add($input);
       }
       logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+      refreshMainWindow();
    }
 }
 

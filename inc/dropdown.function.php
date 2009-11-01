@@ -71,7 +71,7 @@ function dropdown($table,$myname,$display_comment=1,$entity_restrict=-1,$used=ar
 function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
                        $update_item="",$used=array(),$auto_submit=0) {
 
-   global $DB,$CFG_GLPI,$LANG;
+   global $DB,$CFG_GLPI,$LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
    $rand=mt_rand();
    $name="------";
@@ -139,16 +139,16 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
    ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
    // Display comment
-   $which="";
-
-   // Check if table is an dropdown, and user right
-   if (key_exists_deep($table, getAllDropdowns())) {
-      $which=$table;
-   }
    if ($display_comment) {
       echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
              onmouseout=\"cleanhide('comment_$myname$rand')\"
              onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
+
+      $which="";
+      // Check if table is an dropdown, and user right
+      if (key_exists_deep($table, getAllDropdowns())) {
+         $which=$table;
+      }
       if (!empty($which)) {
          if (is_array($entity_restrict) && count($entity_restrict)==1) {
             $entity_restrict=array_pop($entity_restrict);
@@ -162,6 +162,18 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
       }
       echo ">";
       echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
+
+      $type = array_search($table, $LINK_ID_TABLE);
+      if ($type && strstr($INFOFORM_PAGES[$type],'dropdown')
+          && !strstr($_SERVER['PHP_SELF'],'dropdown')
+          && haveTypeRight($type,'w')) {
+            logInFile('php-errors',"DEBUG=".$_SERVER['REQUEST_URI']." => ".$INFOFORM_PAGES[$type]."\n");
+            echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+                  "/pics/menu_add.png' style='cursor:pointer;'  onClick=\"var w = window.open('".
+                  $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$type].
+                  "&amp;popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
+                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+      }
    }
    // Display specific Links
    if ($table=="glpi_suppliers") {
