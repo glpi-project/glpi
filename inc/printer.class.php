@@ -200,7 +200,10 @@ class Printer  extends CommonDBTM {
 					unset($np->fields["ifmac"]);
 					unset($np->fields["netpoint"]);
 					$np->fields["on_device"]=$newID;
-					$np->addToDB();
+               $portid=$np->addToDB();
+               foreach ($DB->request('glpi_networking_vlan', array('FK_port'=>$data["ID"])) as $vlan) {
+                  assignVlan($portid, $vlan['FK_vlan']);
+               }
 				}
 			}
 	
