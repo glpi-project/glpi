@@ -695,8 +695,8 @@ class Mailing {
                      $mmail->Body=$bodys[$lang];
                      $mmail->AltBody=$altbodys[$lang];
                      $mmail->AddAddress($email, "");
-                     $mmail->MessageID="GLPI-".$this->job->fields["id"].".".time().".".rand()."@".
-                                       $_SERVER['HTTP_HOST'];
+                     $mmail->MessageID="GLPI-".$this->job->fields["id"].".".time().".".rand().
+                                       "@".php_uname('n');
 
                      if (!$mmail->Send()) {
                         $senderror=true;
