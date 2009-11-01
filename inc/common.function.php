@@ -1482,6 +1482,18 @@ function glpi_header($dest) {
 }
 
 /**
+ * Call from a popup Windows, refresh the main Window
+ */
+function refreshMainWindow() {
+   if (isset($_SESSION["glpipopup"]["rand"])) {
+      echo "<script type='text/javascript' >\n";
+      echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
+      echo "</script>";
+   }
+
+}
+
+/**
  * Call cron without time check
  *
  * @return boolean : true if launched
