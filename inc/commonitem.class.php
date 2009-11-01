@@ -292,6 +292,11 @@ class CommonItem {
                $this->obj = new Netpoint();
                break;
 
+            case ITEMSTATE_TYPE:
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
+               $this->obj = new ItemState();
+               break;
+
             default :
                // Plugin case
                if ($itemtype>1000) {

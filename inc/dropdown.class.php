@@ -744,4 +744,21 @@ class Netpoint extends CommonDropdown {
    }
 }
 
+/// Class ItemState
+class ItemState extends CommonDropdown {
+   /**
+    * Constructor
+    **/
+   function __construct() {
+      $this->type = ITEMSTATE_TYPE;
+      $this->table = 'glpi_states';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][83];
+   }
+
+}
 ?>

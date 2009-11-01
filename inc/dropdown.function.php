@@ -2804,7 +2804,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
    if (is_null($optgroup)) {
       $optgroup =
          array($LANG['setup'][139] => array(LOCATION_TYPE        => $LANG['common'][15],
-                                            "glpi_states"        => $LANG['setup'][83],
+                                            ITEMSTATE_TYPE       => $LANG['setup'][83],
                                             "glpi_manufacturers" => $LANG['common'][5]),
 
                $LANG['setup'][140] => array("glpi_computerstypes"         => $LANG['setup'][4],
@@ -2871,9 +2871,11 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
             foreach ($dp as $key => $val) {
                if (is_numeric($key)) {
                   $ci->setType($key,true);
-                  $key = $ci->obj->table;
+                  $table = $ci->obj->table;
+               } else {
+                  $table = $key;
                }
-               if (!in_array($key,$CFG_GLPI["specif_entities_tables"])) {
+               if (!in_array($table,$CFG_GLPI["specif_entities_tables"])) {
                   unset($optgroup[$label][$key]);
                }
             }
@@ -2888,9 +2890,11 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
             foreach ($dp as $key => $val) {
                if (is_numeric($key)) {
                   $ci->setType($key,true);
-                  $key = $ci->obj->table;
+                  $table = $ci->obj->table;
+               } else {
+                  $table = $key;
                }
-               if (in_array($key,$CFG_GLPI["specif_entities_tables"])) {
+               if (in_array($table,$CFG_GLPI["specif_entities_tables"])) {
                   unset($optgroup[$label][$key]);
                }
             }

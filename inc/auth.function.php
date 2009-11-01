@@ -244,6 +244,10 @@ function haveTypeRight($itemtype, $right) {
       case NETPOINT_TYPE :
          return haveRight("entity_dropdown",$right);
          break;
+         
+      case ITEMSTATE_TYPE :
+         return haveRight("dropdown",$right);
+         break;
 
       default :
          // Plugin case
