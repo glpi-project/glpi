@@ -64,7 +64,7 @@ class Computer extends CommonDBTM {
 			if (haveRight("software","r"))	{
 				$ong[2]=$LANG['Menu'][4];
 			}
-			if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r")){	
+			if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r")){
 				$ong[3]=$LANG['title'][27];
 			}
 			if (haveRight("contract","r") || haveRight("infocom","r")){
@@ -73,7 +73,7 @@ class Computer extends CommonDBTM {
 			if (haveRight("document","r")){
 				$ong[5]=$LANG['Menu'][27];
 			}
-	
+
 			if(empty($withtemplate)){
 				if ($CFG_GLPI["ocs_mode"]){
 					$ong[14]=$LANG['title'][43];
@@ -90,16 +90,16 @@ class Computer extends CommonDBTM {
 				if (haveRight("reservation_central","r")){
 					$ong[11]=$LANG['Menu'][17];
 				}
-					
+
 				$ong[12]=$LANG['title'][38];
-	
+
 				if ($CFG_GLPI["ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
 					$ong[13]=$LANG['Menu'][33];
 				}
 			}
 		} else { // New item
 			$ong[1]=$LANG['title'][26];
-		}	
+		}
 		return $ong;
 	}
 	/**
@@ -113,10 +113,10 @@ class Computer extends CommonDBTM {
 		global $DB;
 
 		if ($this->getFromDB($ID)){
-			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity 
-				FROM glpi_computer_device 
-				WHERE FK_computers = '$ID' 
-				GROUP BY device_type, FK_device, specificity 
+			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity
+				FROM glpi_computer_device
+				WHERE FK_computers = '$ID'
+				GROUP BY device_type, FK_device, specificity
 				ORDER BY device_type, ID";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) {
@@ -127,14 +127,14 @@ class Computer extends CommonDBTM {
 					}
 				}
 				return true;
-			} 
+			}
 		}
 		return false;
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB,$LANG,$CFG_GLPI;
-		
+
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
 		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
@@ -142,8 +142,8 @@ class Computer extends CommonDBTM {
 		}
 
 		if (isset($input["_auto_update_ocs"])){
-			$query="UPDATE glpi_ocs_link 
-				SET auto_update='".$input["_auto_update_ocs"]."' 
+			$query="UPDATE glpi_ocs_link
+				SET auto_update='".$input["_auto_update_ocs"]."'
 				WHERE glpi_id='".$input["ID"]."'";
 			$DB->query($query);
 		}
@@ -151,7 +151,7 @@ class Computer extends CommonDBTM {
 		for ($i=0; $i < count($updates); $i++) {
 
 			// Update contact of attached items
-			
+
 			if (($updates[$i]=="contact" ||$updates[$i]=="contact_num")&&$CFG_GLPI["autoupdate_link_contact"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
@@ -160,8 +160,8 @@ class Computer extends CommonDBTM {
 				$updates3[1]="contact_num";
 
 				foreach ($items as $t){
-					$query = "SELECT * 
-						FROM glpi_connect_wire 
+					$query = "SELECT *
+						FROM glpi_connect_wire
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -198,8 +198,8 @@ class Computer extends CommonDBTM {
 				$updates4[1]="FK_groups";
 
 				foreach ($items as $t){
-					$query = "SELECT * 
-						FROM glpi_connect_wire 
+					$query = "SELECT *
+						FROM glpi_connect_wire
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -240,8 +240,8 @@ class Computer extends CommonDBTM {
 				$update_done=false;
 
 				foreach ($items as $t){
-					$query = "SELECT * 
-						FROM glpi_connect_wire 
+					$query = "SELECT *
+						FROM glpi_connect_wire
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -279,8 +279,8 @@ class Computer extends CommonDBTM {
 				$updates2[0]="location";
 
 				foreach ($items as $t){
-					$query = "SELECT * 
-						FROM glpi_connect_wire 
+					$query = "SELECT *
+						FROM glpi_connect_wire
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -356,8 +356,8 @@ class Computer extends CommonDBTM {
 			}
 
        			// ADD volumes
-			$query="SELECT ID 
-				FROM glpi_computerdisks 
+			$query="SELECT ID
+				FROM glpi_computerdisks
 				WHERE FK_computers='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -372,8 +372,8 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD software
-			$query="SELECT vID 
-				FROM glpi_inst_software 
+			$query="SELECT vID
+				FROM glpi_inst_software
 				WHERE cID='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -382,8 +382,8 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Contract
-			$query="SELECT FK_contract 
-				FROM glpi_contract_device 
+			$query="SELECT FK_contract
+				FROM glpi_contract_device
 				WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -392,8 +392,8 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Documents
-			$query="SELECT FK_doc 
-				FROM glpi_doc_device 
+			$query="SELECT FK_doc
+				FROM glpi_doc_device
 				WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -402,8 +402,8 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Ports
-			$query="SELECT ID 
-				FROM glpi_networking_ports 
+			$query="SELECT ID
+				FROM glpi_networking_ports
 				WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -415,15 +415,18 @@ class Computer extends CommonDBTM {
 					unset($np->fields["ifmac"]);
 					unset($np->fields["netpoint"]);
 					$np->fields["on_device"]=$newID;
-					$np->addToDB();
+					$portid=$np->addToDB();
+               foreach ($DB->request('glpi_networking_vlan', array('FK_port'=>$data["ID"])) as $vlan) {
+                  assignVlan($portid, $vlan['FK_vlan']);
+               }
 				}
 			}
-	
+
 			// Add connected devices
-			$query="SELECT * 
-				FROM glpi_connect_wire 
+			$query="SELECT *
+				FROM glpi_connect_wire
 				WHERE end2='".$input["_oldID"]."';";
-	
+
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
@@ -439,23 +442,23 @@ class Computer extends CommonDBTM {
 
 		$job=new Job;
 
-		$query = "SELECT * 
-			FROM glpi_tracking 
+		$query = "SELECT *
+			FROM glpi_tracking
 			WHERE (computer = '$ID'  AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tracking 
-						SET computer = '0', device_type='0' 
+					$query = "UPDATE glpi_tracking
+						SET computer = '0', device_type='0'
 						WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
 		$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
-		$result = $DB->query($query);		
+		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
@@ -467,8 +470,8 @@ class Computer extends CommonDBTM {
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
-			$result2 = $DB->query($q);					
-		}	
+			$result2 = $DB->query($q);
+		}
 
 		$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
@@ -531,11 +534,11 @@ class Computer extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$use_cache=false;
 			$this->getEmpty();
-		} 
+		}
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
@@ -544,7 +547,7 @@ class Computer extends CommonDBTM {
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
-		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+		} elseif(!empty($withtemplate) && $withtemplate == 1) {
 			$use_cache=false;
 			$template = "newtemplate";
 			$datestring = $LANG['computers'][14].": ";
@@ -573,7 +576,7 @@ class Computer extends CommonDBTM {
 			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $LANG['common'][6].": ";
-			autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);	
+			autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
 		}
 		if (isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
@@ -597,7 +600,7 @@ class Computer extends CommonDBTM {
 			autocompletionTextField("name","glpi_computers","name",$objectName,40,$this->fields["FK_entities"]);
 
 			echo "</td>";
-				
+
 			echo "<td>".$LANG['common'][18].":	</td><td>";
 			autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 
@@ -620,7 +623,7 @@ class Computer extends CommonDBTM {
 			echo "<td >";
 			dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
 			echo "</td>";
-			
+
 			echo "<td >".$LANG['common'][34].": 	</td>";
 			echo "<td >";
 			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
@@ -631,7 +634,7 @@ class Computer extends CommonDBTM {
 			echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
 			echo "</td>";
-			
+
 			echo "<td>".$LANG['common'][35].":</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
@@ -645,12 +648,12 @@ class Computer extends CommonDBTM {
 			echo "<td >";
 			dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
-			
+
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$LANG['computers'][9].":</td><td>";
 			dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
 			echo "</td>";
-			
+
 			echo "<td>".$LANG['setup'][88].":</td><td>";
 			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
 			echo "</td></tr>";
@@ -690,7 +693,7 @@ class Computer extends CommonDBTM {
 			echo "<td>".$LANG['computers'][11]."</td><td>";
 			autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["FK_entities"]);
 			echo"</td>";
-			
+
 			echo "<td>".$LANG['state'][0].":</td><td>";
 			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 			echo "</td>";
@@ -698,8 +701,8 @@ class Computer extends CommonDBTM {
 			// Get OCS Datas :
 			$dataocs=array();
 			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
-				$query="SELECT * 
-					FROM glpi_ocs_link 
+				$query="SELECT *
+					FROM glpi_ocs_link
 					WHERE glpi_id='$ID'";
 
 				$result=$DB->query($query);
@@ -723,9 +726,9 @@ class Computer extends CommonDBTM {
 			echo "</td>";
 
 			echo "</tr>";
-			
+
 			echo "<tr class='tab_bg_1'>";
-			
+
 			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
 				echo "<td colspan='2' align='center'>";
 				echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
@@ -748,15 +751,15 @@ class Computer extends CommonDBTM {
 
 					if ($data_version["ocs_agent_version"] != NULL)
 						echo " , ".$LANG['ocsng'][49]." : ".$data_version["ocs_agent_version"];
-					
-							
+
+
 				} else {
-					echo $LANG['common'][52]." ".getOCSServerNameByID($ID);	
+					echo $LANG['common'][52]." ".getOCSServerNameByID($ID);
 					echo "</td>";
 				}
-				
+
 			} else	{
-				echo "<td colspan=2></td>";	
+				echo "<td colspan=2></td>";
 			}
 			echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 			echo "</tr>";
@@ -764,7 +767,7 @@ class Computer extends CommonDBTM {
 				$CFG_GLPI["cache"]->end();
 			}
 		}
-		
+
 
 		if (haveRight("computer","w")) {
 			echo "<tr>\n";
@@ -847,7 +850,7 @@ class ComputerDisk extends CommonDBTM {
 			return $computer->fields['FK_entities'];
 		}
 		return  -1;
-	}	
+	}
 
 	/**
 	 * Print the version form
@@ -857,7 +860,7 @@ class ComputerDisk extends CommonDBTM {
 	 *@param $cID ID of the computer for add process
 	 *
 	 *@return true if displayed  false if item not found or not right to display
-	 **/	
+	 **/
 	function showForm($target,$ID,$cID=-1){
 		global $CFG_GLPI,$LANG;
 
@@ -866,14 +869,14 @@ class ComputerDisk extends CommonDBTM {
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
-			// Create item 
+			// Create item
 			$this->check(-1,'w');
 			$use_cache=false;
 			$this->getEmpty();
-		} 
+		}
 
 		$this->showTabs($ID, '', $_SESSION['glpi_tab']);
-		
+
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -921,7 +924,7 @@ class ComputerDisk extends CommonDBTM {
 		autocompletionTextField("freesize","glpi_computerdisks","freesize",$this->fields["freesize"],40);
 		echo "&nbsp;".$LANG['common'][82]."</td>";
 		echo "</tr>";
-	
+
 		echo "<tr  class='tab_bg_2'>";
 
 		if ($ID>0) {
@@ -942,7 +945,7 @@ class ComputerDisk extends CommonDBTM {
 
 		}
 		echo "</table></div></form>";
-				
+
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
