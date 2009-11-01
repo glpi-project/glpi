@@ -167,7 +167,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
       if ($type && strstr($INFOFORM_PAGES[$type],'dropdown')
           && !strstr($_SERVER['PHP_SELF'],'dropdown')
           && haveTypeRight($type,'w')) {
-            logInFile('php-errors',"DEBUG=".$_SERVER['REQUEST_URI']." => ".$INFOFORM_PAGES[$type]."\n");
+
             echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
                   "/pics/menu_add.png' style='cursor:pointer;'  onClick=\"var w = window.open('".
                   $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$type].
