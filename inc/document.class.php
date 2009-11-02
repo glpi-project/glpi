@@ -413,7 +413,7 @@ class Document extends CommonDBTM {
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
          // My doc Check and Common doc right access
-         if ($this->can($_GET['docid'],'r') || $this->fields["users_id"]==$_SESSION["glpiID"]) {
+         if ($this->can($this->fields["id"],'r') || $this->fields["users_id"]==$_SESSION["glpiID"]) {
             return true;
          }
 
