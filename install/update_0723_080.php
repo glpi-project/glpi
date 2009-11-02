@@ -1863,11 +1863,16 @@ function update0723to080() {
    // For RULE_SOFTWARE_CATEGORY
    $changes[RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarescategories_id','comment'=>'comment');
    // For RULE_TRACKING_AUTO_ACTION
-   $changes[RULE_TRACKING_AUTO_ACTION]=array('category'=>'ticketscategories_id',
-                           'author'=>'users_id','author_location'=>'users_locations',
-                           'FK_group'=>'groups_id','assign'=>'users_id_assign',
-                           'assign_group'=>'groups_id_assign','device_type'=>'itemtype',
-                           'FK_entities'=>'entities_id','contents'=>'content',);
+   $changes[RULE_TRACKING_AUTO_ACTION]=array('category'        => 'ticketscategories_id',
+                                             'author'          => 'users_id',
+                                             'author_location' => 'users_locations',
+                                             'FK_group'        => 'groups_id',
+                                             'assign'          => 'users_id_assign',
+                                             'assign_group'    => 'groups_id_assign',
+                                             'device_type'     => 'itemtype',
+                                             'FK_entities'     => 'entities_id',
+                                             'contents'        => 'content',
+                                             'request_type'    => 'requesttypes_id');
 
    $DB->query("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {
