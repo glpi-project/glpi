@@ -798,7 +798,7 @@ function getTrackingFormFields($_POST) {
                    'priority'             => 3,
                    'hour'                 => 0,
                    'minute'               => 0,
-                   'request_type'         => 1,
+                   'requesttypes_id'      => 1,
                    'name'                 => '',
                    'content'              => '',
                    'target'               => '');
@@ -916,7 +916,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",
                             $users_id=0,$group=0,$showfollowups=0,$ticketscategories_id=0,
                             $users_id_assign=0,$suppliers_id_assign=0,$groups_id_assign=0,
-                            $priority=0,$request_type=0,$items_id=0,$itemtype=0,$field="",
+                            $priority=0,$requesttypes_id=0,$items_id=0,$itemtype=0,$field="",
                             $contains="",$date1="",$date2="",$computers_search="",$enddate1="",
                             $enddate2="",$datemod1="",$datemod2="",$recipient=0) {
    global $CFG_GLPI,  $LANG, $DB;
@@ -994,7 +994,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][44]."&nbsp;:<br>";
-   dropdownRequestType("request_type",$request_type);
+   getDropdownName('glpi_requesttypes',"requesttypes_id",$requesttypes_id);
    echo "</td>";
    echo "</tr>";
 
@@ -1169,7 +1169,7 @@ function getCommonLeftJoinForTrackingSearch() {
 function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",
                           $search="",$users_id=0,$group=0,$showfollowups=0,$ticketscategories_id=0,
                           $users_id_assign=0,$suppliers_id_assign=0,$groups_id_assign=0,$priority=0,
-                          $request_type=0,$items_id=0,$itemtype=0,$field="",$contains="",$date1="",
+                          $requesttypes_id=0,$items_id=0,$itemtype=0,$field="",$contains="",$date1="",
                           $date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",
                           $datemod2="",$recipient=0) {
    global $DB,$CFG_GLPI, $LANG;
@@ -1384,8 +1384,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
       }
    }
 
-   if ($request_type!=0) {
-      $where .= " AND `glpi_tickets`.`request_type` = '$request_type'";
+   if ($requesttypes_id!=0) {
+      $where .= " AND `glpi_tickets`.`requesttypes_id` = '$requesttypes_id'";
    }
    if ($priority>0) {
       $where .= " AND `glpi_tickets`.`priority` = '$priority'";
@@ -1519,7 +1519,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                         "$ticketscategories_id&amp;priority=$priority&amp;itemtype=$itemtype&amp;".
                         "showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=".
                         "$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;items_id=".
-                        "$items_id&amp;request_type=$request_type";
+                        "$items_id&amp;requesttypes_id=$requesttypes_id";
 
          // Specific case of showing tickets of an item
          if (isset($_GET["id"])) {
@@ -1639,8 +1639,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                                                                              $suppliers_id_assign);
                }
             }
-            if ($request_type!=0) {
-               $title .= " - ".$LANG['job'][44]." = ".getRequestTypeName($request_type);
+            if ($requesttypes_id!=0) {
+               $title .= " - ".$LANG['job'][44]." = ".getDropdownName('glpi_requesttypes',
+                                                                      $requesttypes_id);
             }
             if ($ticketscategories_id!=0) {
                $title .= " - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",
@@ -1776,7 +1777,7 @@ function showJobDetails($target, $ID,$array=array()) {
       $job->fields["content"]              = $array["content"];
       $job->fields["ticketscategories_id"] = $array["ticketscategories_id"];
       $job->fields["priority"]             = $array["priority"];
-      $job->fields["request_type"]         = $array["request_type"];
+      $job->fields["requesttypes_id"]      = $array["requesttypes_id"];
       $job->fields["hour"]                 = $array["hour"];
       $job->fields["minute"]               = $array["minute"];
       $job->fields["date"]                 = $array["date"];
@@ -2000,9 +2001,9 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      dropdownRequestType("request_type",$job->fields["request_type"]);
+      dropdownValue('glpi_requesttypes',"requesttypes_id",$job->fields["requesttypes_id"]);
    } else {
-      echo getRequestTypeName($job->fields["request_type"]);
+      echo getDropdownName('glpi_requesttypes', $job->fields["requesttypes_id"]);
    }
    echo "</td>";
    if (haveRight("assign_ticket","1")) {

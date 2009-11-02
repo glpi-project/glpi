@@ -196,11 +196,11 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id_assign']['name']      = $
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id_assign']['linkfield'] = 'groups_id_assign';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['groups_id_assign']['type']      = 'dropdown';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['table']     = 'glpi_tickets';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['field']     = 'request_type';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['name']      = $LANG['job'][44];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['linkfield'] = 'request_type';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['type']      = 'dropdown_request_type';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['requesttypes_id']['table']     = 'glpi_requesttypes';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['requesttypes_id']['field']     = 'name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['requesttypes_id']['name']      = $LANG['job'][44];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['requesttypes_id']['linkfield'] = 'requesttypes_id';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['requesttypes_id']['type']      = 'dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['table']     = 'glpi_tickets';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['field']     = 'itemtype';

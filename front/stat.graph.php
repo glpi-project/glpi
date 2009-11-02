@@ -160,13 +160,13 @@ switch($_GET["type"]){
 		$prev=getPreviousItem("glpi_userscategories",$_GET["id"]);
 		$title=$LANG['users'][2].": ".getDropdownName("glpi_userscategories",$_GET["id"]);
 		break;
-	case "request_type":
+	case "requesttypes_id":
 		$val1=$_GET["id"];
 		$val2="";
 		$next=$prev=0;
 		if ($val1<6) $next=$val1+1;
 		if ($val1>0) $prev=$val1-1;
-		$title=$LANG['job'][44].": ".getRequestTypeName($_GET["id"]);
+		$title=$LANG['job'][44].": ".getDropdownName('glpi_requesttypes', $_GET["id"]);
 		break;
 	case "device":
 		$val1=$_GET["id"];

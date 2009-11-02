@@ -427,7 +427,7 @@ class MailCollect {
          // No hardware associated
          $tkt['itemtype']="0";
          // Mail request type
-         $tkt['request_type']="2";
+         $tkt['requesttypes_id']="2";
       } else {
          // Reopen if needed
          $tkt['add_reopen']=1;

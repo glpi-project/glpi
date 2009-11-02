@@ -1786,7 +1786,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
    echo "<form method='post' name=\"helpdeskform\" action=\"".
           $CFG_GLPI["root_doc"]."/front/tracking.injector.php\" enctype=\"multipart/form-data\">";
    echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
-   echo "<input type='hidden' name='request_type' value='1'>";
+   echo "<input type='hidden' name='requesttypes_id' value='1'>";
    echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
    echo "<div class='center'><table class='tab_cadre'>";
 

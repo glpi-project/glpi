@@ -260,7 +260,7 @@ class Job extends CommonDBTM {
          $input["_old_group"]          = $this->fields["groups_id"];
          $input["_old_priority"]       = $this->fields["priority"];
          $input["_old_status"]         = $this->fields["status"];
-         $input["_old_request_type"]   = $this->fields["request_type"];
+         $input["_old_requesttypes_id"]= $this->fields["requesttypes_id"];
          $input["_old_cost_time"]      = $this->fields["cost_time"];
          $input["_old_cost_fixed"]     = $this->fields["cost_fixed"];
          $input["_old_cost_material"]  = $this->fields["cost_material"];
@@ -478,13 +478,14 @@ class Job extends CommonDBTM {
                      $global_mail_change_count++;
                      break;
 
-                  case "request_type" :
-                     $new_request_type = $this->fields["request_type"];
-                     $old_request_type_name = getRequestTypeName($input["_old_request_type"]);
-                     $new_request_type_name = getRequestTypeName($new_request_type);
+                  case "requesttypes_id" :
+                     $old_requesttype_name = getDropdownName('glpi_requesttypes', 
+                                                             $input["_old_requesttypes_id"]);
+                     $new_requesttype_name = getDropdownName('glpi_requesttypes', 
+                                                             $this->fields["requesttypes_id"]);
                      $change_followup_content .= $LANG['mailing'][21]."&nbsp;: ".
-                                                 $old_request_type_name." -> ".
-                                                 $new_request_type_name."\n";
+                                                 $old_requesttype_name." -> ".
+                                                 $new_requesttype_name."\n";
                      $global_mail_change_count++;
                      break;
 
@@ -699,8 +700,8 @@ class Job extends CommonDBTM {
          $input["users_id_recipient"] = $input["users_id"];
       }
 
-      if (!isset($input["request_type"])) {
-         $input["request_type"]=1;
+      if (!isset($input["requesttypes_id"])) {
+         $input["requesttypes_id"]=1;
       }
       if (!isset($input["status"])) {
          $input["status"]="new";
@@ -755,7 +756,7 @@ class Job extends CommonDBTM {
 
       // Set default dropdown
       $dropdown_fields = array('entities_id','groups_id','groups_id_assign','itemtype',
-                               'request_type','users_id_assign','users_id','ticketscategories_id');
+                               'requesttypes_id','users_id_assign','users_id','ticketscategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field]=0;
@@ -1102,7 +1103,8 @@ class Job extends CommonDBTM {
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['search'][8]."&nbsp;:</span> ".convDateTime($this->fields["date"])."\n";
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
-                      $LANG['job'][44]."&nbsp;:</span> ".getRequestTypeName($this->fields["request_type"])."\n";
+                      $LANG['job'][44]."&nbsp;:</span> ".
+                      getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"])."\n";
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['mailing'][7]."&nbsp;:</span> ".$name."\n";
          if (!empty($tech)) {
@@ -1167,7 +1169,8 @@ class Job extends CommonDBTM {
          }
          $message .= mailRow($LANG['job'][4],$users_id);
          $message .= mailRow($LANG['search'][8],convDateTime($this->fields["date"]));
-         $message .= mailRow($LANG['job'][44],getRequestTypeName($this->fields["request_type"]));
+         $message .= mailRow($LANG['job'][44],getDropdownName('glpi_requesttypes',
+                                                              $this->fields["requesttypes_id"]));
          $message .= mailRow($LANG['mailing'][7],$name);
          if (!empty($tech)) {
             $message .= mailRow($LANG['common'][10],$tech);
@@ -1371,9 +1374,9 @@ class Job extends CommonDBTM {
       $tab[7]['linkfield'] = 'ticketscategories_id';
       $tab[7]['name']      = $LANG['common'][36];
 
-      $tab[9]['table']     = 'glpi_tickets';
-      $tab[9]['field']     = 'request_type';
-      $tab[9]['linkfield'] = 'request_type';
+      $tab[9]['table']     = 'glpi_requesttypes';
+      $tab[9]['field']     = 'name';
+      $tab[9]['linkfield'] = 'requesttypes_id';
       $tab[9]['name']      = $LANG['job'][44];
 
       return $tab;

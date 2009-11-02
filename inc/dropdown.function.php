@@ -2206,62 +2206,23 @@ function getPriorityName($value) {
 }
 
 /**
- * Get ticket request type name
+ * Get ticket request type name  ***** TODO : to be removed
  *
  * @param $value status ID
  */
 function getRequestTypeName($value) {
-   global $LANG;
-
-   switch ($value) {
-      case 1 :
-         return $LANG['Menu'][31];
-         break;
-
-      case 2 :
-         return $LANG['setup'][14];
-         break;
-
-      case 3 :
-         return $LANG['help'][35];
-         break;
-
-      case 4 :
-         return $LANG['tracking'][34];
-         break;
-
-      case 5 :
-         return $LANG['tracking'][35];
-         break;
-
-      case 6 :
-         return $LANG['common'][62];
-         break;
-
-      default :
-         return "";
-   }
+   getDropdownName('glpi_requesttypes', $value);
 }
 
 /**
- * Dropdown of ticket request type
+ * Dropdown of ticket request type ***** TODO : to be removed
+ * 
  *
  * @param $name select name
  * @param $value default value
  */
 function dropdownRequestType($name,$value=0) {
-   global $LANG;
-
-   echo "<select name='$name'>";
-   echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
-   echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['Menu'][31]."</option>"; // Helpdesk
-   echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['setup'][14]."</option>"; // mail
-   echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][35]."</option>"; // phone
-   echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['tracking'][34]."</option>"; // direct
-   echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['tracking'][35]."</option>"; // writing
-   echo "<option value='6' ".($value==6?" selected ":"").">".$LANG['common'][62]."</option>"; // other
-
-   echo "</select>";
+   dropdownValue('glpi_requesttypes',$name,$value,1);
 }
 
 /**
@@ -2836,8 +2797,9 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 
                $LANG['Menu'][18] => array("glpi_knowbaseitemscategories" => $LANG['title'][5]),
 
-               $LANG['title'][24] => array (TICKETCATEGORY_TYPE => $LANG['setup'][79],
-                                            TASKCATEGORY_TYPE => $LANG['setup'][98]),
+               $LANG['title'][24] => array (TICKETCATEGORY_TYPE   => $LANG['setup'][79],
+                                            TASKCATEGORY_TYPE     => $LANG['setup'][98],
+                                            REQUESTTYPE_TYPE      => $LANG['job'][44]),
 
                $LANG['setup'][145] => array("glpi_operatingsystems"      => $LANG['setup'][5],
                                             "glpi_operatingsystemsversions"

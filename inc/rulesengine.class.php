@@ -1703,9 +1703,6 @@ class Rule extends CommonDBTM {
             case "dropdown_users" :
                return getUserName($pattern);
 
-            case "dropdown_request_type" :
-               return getRequestTypeName($pattern);
-
             case "dropdown_tracking_itemtype" :
                $ci =new CommonItem();
                $ci->setType($pattern);
@@ -1741,11 +1738,6 @@ class Rule extends CommonDBTM {
 
             case "dropdown_users" :
                dropdownAllUsers($name,$value);
-               $display=true;
-               break;
-
-            case "dropdown_request_type" :
-               dropdownRequestType($name,$value);
                $display=true;
                break;
 
@@ -2063,9 +2055,6 @@ class RuleCriteria extends CommonDBTM {
 
             case "dropdown_users" :
                return getUserName($initValue);
-
-            case "dropdown_request_type" :
-               return getRequestTypeName($initValue);
 
             case "dropdown_tracking_itemtype" :
                $ci =new CommonItem();
