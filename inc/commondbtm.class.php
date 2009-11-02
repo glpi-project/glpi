@@ -1710,7 +1710,7 @@ class CommonDBTM {
          $toadd="&nbsp;".$this->getComments();
       }
       if ($_SESSION['glpiis_ids_visible']) {
-         return $this->getName()." (".$this->items_id.")".$toadd;
+         return $this->getName()." (".$this->fields['id'].")".$toadd;
       }
       return $this->getName().$toadd;
    }
