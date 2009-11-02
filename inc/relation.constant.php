@@ -185,6 +185,8 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_ticketscategories" => array("glpi_tickets"=>"ticketscategories_id"),
 
+                "glpi_requesttypes" => array("glpi_tickets"=>"requesttypes_id"),
+
                 "glpi_userstitles" => array("glpi_users"=>"userstitles_id"),
 
                 "glpi_userscategories" => array("glpi_users"=>"userscategories_id"),

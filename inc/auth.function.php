@@ -246,6 +246,7 @@ function haveTypeRight($itemtype, $right) {
          break;
          
       case ITEMSTATE_TYPE :
+      case REQUESTTYPE_TYPE :
          return haveRight("dropdown",$right);
          break;
 

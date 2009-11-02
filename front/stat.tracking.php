@@ -98,9 +98,9 @@ $items=array(
 			"title"=>$LANG['joblist'][2],
 			"field"=>"glpi_tickets.priority"
 			),
-		"request_type"=>array(
+		"requesttypes_id"=>array(
 			"title"=>$LANG['job'][44],
-			"field"=>"glpi_tickets.request_type"
+			"field"=>"glpi_tickets.requesttypes_id"
 			),
 	),
 	$LANG['job'][5] => array(

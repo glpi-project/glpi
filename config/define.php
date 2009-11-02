@@ -125,6 +125,7 @@ define("TASKCATEGORY_TYPE",52);
 define("LOCATION_TYPE",53);
 define("NETPOINT_TYPE",54);
 define("ITEMSTATE_TYPE",55);
+define("REQUESTTYPE_TYPE",56);
 
 
 // GLPI MODE
@@ -294,7 +295,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
                        TASKCATEGORY_TYPE     => "glpi_taskscategories",
                        LOCATION_TYPE         => "glpi_locations",
                        NETPOINT_TYPE         => "glpi_netpoints",
-                       ITEMSTATE_TYPE        => "glpi_states");
+                       ITEMSTATE_TYPE        => "glpi_states",
+                       REQUESTTYPE_TYPE      => 'glpi_requesttypes');
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -351,7 +353,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE,
                         LOCATION_TYPE        => "front/dropdown.form.php?itemtype=".LOCATION_TYPE,
                         NETPOINT_TYPE        => "front/dropdown.form.php?itemtype=".NETPOINT_TYPE,
-                        ITEMSTATE_TYPE       => "front/dropdown.form.php?itemtype=".ITEMSTATE_TYPE);
+                        ITEMSTATE_TYPE       => "front/dropdown.form.php?itemtype=".ITEMSTATE_TYPE,
+                        REQUESTTYPE_TYPE     => "front/dropdown.form.php?itemtype=".REQUESTTYPE_TYPE);
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
@@ -371,7 +374,8 @@ $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
                       TASKCATEGORY_TYPE    => "front/dropdown.php?itemtype=".TASKCATEGORY_TYPE,
                       LOCATION_TYPE        => "front/dropdown.php?itemtype=".LOCATION_TYPE,
                       NETPOINT_TYPE        => "front/dropdown.php?itemtype=".NETPOINT_TYPE,
-                      ITEMSTATE_TYPE       => "front/dropdown.php?itemtype=".ITEMSTATE_TYPE);
+                      ITEMSTATE_TYPE       => "front/dropdown.php?itemtype=".ITEMSTATE_TYPE,
+                      REQUESTTYPE_TYPE     => "front/dropdown.php?itemtype=".REQUESTTYPE_TYPE);
 
 
 define("AUTH_DB_GLPI",1);
@@ -566,7 +570,7 @@ $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1;
 
 
 // User Prefs fields which override $CFG_GLPI config
-$CFG_GLPI['user_pref_field'] = array('date_format','default_request_type','dropdown_chars_limit',
+$CFG_GLPI['user_pref_field'] = array('date_format','default_requesttypes_id','dropdown_chars_limit',
       'followup_private','is_categorized_soft_expanded','is_ids_visible',
       'is_not_categorized_soft_expanded','language','list_limit','number_format','priority_1',
       'priority_2','priority_3','priority_4','priority_5','show_jobs_at_login','use_flat_dropdowntree');

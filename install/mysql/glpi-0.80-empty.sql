@@ -472,7 +472,7 @@ CREATE TABLE `glpi_configs` (
   `followup_private` tinyint(1) NOT NULL default '0',
   `default_software_helpdesk_visible` tinyint(1) NOT NULL default '1',
   `names_format` int(11) NOT NULL default '0' COMMENT 'see *NAME_BEFORE constant in define.php',
-  `default_request_type` int(11) NOT NULL default '1',
+  `default_requesttypes_id` int(11) NOT NULL default '1',
   `use_noright_users_add` tinyint(1) NOT NULL default '1',
   `cron_limit` tinyint(4) NOT NULL default '1' COMMENT 'Number of tasks execute by external cron',
   PRIMARY KEY  (`id`)
@@ -2382,6 +2382,25 @@ CREATE TABLE `glpi_reminders` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_reservations
+
+DROP TABLE IF EXISTS `glpi_requesttypes`;
+CREATE TABLE `glpi_requesttypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_protected` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=100 ;
+
+
+INSERT INTO `glpi_requesttypes` VALUES(1, 'Helpdesk', 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(2, 'E-Mail', 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(3, 'Phone', 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(4, 'Direct', 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(5, 'Written', 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(6, 'Other', 0, NULL);
 
 ### Dump table glpi_reservations
 
@@ -2950,7 +2969,7 @@ CREATE TABLE `glpi_tickets` (
   `users_id` int(11) NOT NULL default '0',
   `users_id_recipient` int(11) NOT NULL default '0',
   `groups_id` int(11) NOT NULL default '0',
-  `request_type` int(11) NOT NULL default '0',
+  `requesttypes_id` int(11) NOT NULL default '0',
   `users_id_assign` int(11) NOT NULL default '0',
   `suppliers_id_assign` int(11) NOT NULL default '0',
   `groups_id_assign` int(11) NOT NULL default '0',
@@ -2970,7 +2989,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `closedate` (`closedate`),
   KEY `status` (`status`),
   KEY `priority` (`priority`),
-  KEY `request_type` (`request_type`),
+  KEY `request_type` (`requesttypes_id`),
   KEY `date_mod` (`date_mod`),
   KEY `users_id_assign` (`users_id_assign`),
   KEY `groups_id_assign` (`groups_id_assign`),
@@ -3130,7 +3149,7 @@ CREATE TABLE `glpi_users` (
   `is_categorized_soft_expanded` tinyint(1) default NULL,
   `is_not_categorized_soft_expanded` tinyint(1) default NULL,
   `followup_private` tinyint(1) default NULL,
-  `default_request_type` int(11) default NULL,
+  `default_requesttypes_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

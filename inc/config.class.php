@@ -680,7 +680,7 @@ class Config extends CommonDBTM {
          dropdownYesNo("followup_private", $data["followup_private"]);
          echo "</td>";
          echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
-         dropdownRequestType("default_request_type", $data["default_request_type"]);
+         dropdownValue('glpi_requesttypes', 'default_requesttypes_id', $data["default_requesttypes_id"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][114] . "</td>";

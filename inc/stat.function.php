@@ -88,7 +88,7 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervPriority($date1,$date2);
          break;
 
-      case "request_type" :
+      case "requesttypes_id" :
          $val = getNbIntervRequestType($date1,$date2);
          break;
 
@@ -568,7 +568,7 @@ function getNbIntervPriority($date1,$date2) {
 function getNbIntervRequestType($date1,$date2) {
    global $DB;
 
-   $query = "SELECT DISTINCT `request_type`
+   $query = "SELECT DISTINCT `requesttypes_id`
              FROM `glpi_tickets` ".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
@@ -576,14 +576,14 @@ function getNbIntervRequestType($date1,$date2) {
       $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
       $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
    }
-   $query .= " ORDER BY `request_type`";
+   $query .= " ORDER BY `requesttypes_id`";
 
    $result = $DB->query($query);
    $tab=array();
    if ($DB->numrows($result) >=1) {
       while ($line = $DB->fetch_assoc($result)) {
-         $tmp['id']= $line["request_type"];
-         $tmp['link']=getRequestTypeName($line["request_type"]);
+         $tmp['id']= $line["requesttypes_id"];
+         $tmp['link']=getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
          $tab[]=$tmp;
       }
    }
@@ -734,8 +734,8 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND `glpi_tickets`.`priority` = '$value'";
          break;
 
-      case "request_type" :
-         $WHERE .= " AND `glpi_tickets`.`request_type` = '$value'";
+      case "requesttypes_id" :
+         $WHERE .= " AND `glpi_tickets`.`requesttypes_id` = '$value'";
          break;
 
       case "userstitles_id" :

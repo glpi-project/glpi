@@ -296,6 +296,11 @@ class CommonItem {
                require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new ItemState();
                break;
+               
+            case REQUESTTYPE_TYPE :
+               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
+               $this->obj = new RequestType();
+               break;
 
             default :
                // Plugin case

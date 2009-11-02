@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
                    'content'              => '',
                    'ticketscategories_id' => 0,
                    'priority'             => 3,
-                   'request_type'         => $_SESSION["glpidefault_request_type"],
+                   'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
                    'hour'                 => 0,
                    'minute'               => 0,
                    'date'                 => date("Y-m-d H:i:s"),

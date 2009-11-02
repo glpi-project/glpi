@@ -147,7 +147,11 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "</td></tr>\n";
       }
 
-      $this->showFormButtons($ID,'',2);
+      $candel=true;
+      if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
+         $candel=false;
+      }
+      $this->showFormButtons($ID,'',2,$candel);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -155,6 +159,12 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
+   function pre_deleteItem($id) {
+      if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
+         return false;
+      }
+      return true;
+   }
    /**
     * Get search function for the class
     *
@@ -758,6 +768,24 @@ class ItemState extends CommonDropdown {
       global $LANG;
 
       return $LANG['setup'][83];
+   }
+
+}
+
+/// Class ItemState
+class RequestType extends CommonDropdown {
+   /**
+    * Constructor
+    **/
+   function __construct() {
+      $this->type = REQUESTTYPE_TYPE;
+      $this->table = 'glpi_requesttypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['job'][44];
    }
 
 }
