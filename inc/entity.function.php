@@ -327,7 +327,7 @@ function getEntityIDByField($field,$value) {
    if ($DB->numrows($result)==1) {
       return $DB->result($result,0,"entities_id");
    } else {
-      return "";
+      return -1;
    }
 }
 
