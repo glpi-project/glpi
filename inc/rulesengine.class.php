@@ -1734,7 +1734,7 @@ class Rule extends CommonDBTM {
                $display=true;
                break;
 
-             case "dropdown_tracking_itemtype" :
+            case "dropdown_tracking_itemtype" :
                dropdownDeviceTypes($name,0,array_keys(getAllTypesForHelpdesk()));
                $display=true;
                break;
