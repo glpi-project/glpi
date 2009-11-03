@@ -384,42 +384,59 @@ class User extends CommonDBTM {
 
 			//purge dynamic rights
 			$this->purgeDynamicProfiles();
-
-			//For each affectation -> write it in DB
-			foreach($entities_rules as $entity){
-				$affectation["entities_id"] = $entity[0];
-				$affectation["profiles_id"] = $entity[1];
-				$affectation["is_recursive"] = $entity[2];
-				$affectation["users_id"] = $input["id"];
-				$affectation["is_dynamic"] = 1;
-				addUserProfileEntity($affectation);
-			}
+         
+         //For each affectation -> write it in DB
+         foreach($entities_rules as $entity){
+            //Multiple entities assignation
+            if (is_array($entity[0])) {
+               foreach ($entity[0] as $tmp => $ent) {
+                  $affectation["entities_id"] = $ent[0];
+                  $affectation["profiles_id"] = $entity[1];
+                  $affectation["is_recursive"] = $entity[2];
+                  $affectation["users_id"] = $input["id"];
+                  $affectation["is_dynamic"] = 1;
+                  addUserProfileEntity($affectation);
+               }
+            }
+            else {
+               $affectation["entities_id"] = $entity[0];
+               $affectation["profiles_id"] = $entity[1];
+               $affectation["is_recursive"] = $entity[2];
+               $affectation["users_id"] = $input["id"];
+               $affectation["is_dynamic"] = 1;
+               addUserProfileEntity($affectation);
+            }
+         }
 
 			if (count($entities)>0&&count($rights)==0){
 				//If no dynamics profile is provided : get the profil by default if not existing profile
-				$exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$input["id"]."'";
+				/*
+            $exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$input["id"]."'";
 				$result = $DB->query($exist_profile);
 				if ($DB->numrows($result)==0){
+            */
 					$sql_default_profile = "SELECT id FROM glpi_profiles WHERE is_default=1";
 					$result = $DB->query($sql_default_profile);
 					if ($DB->numrows($result))
 					{
 						$rights[]=$DB->result($result,0,0);
 					}
-				}
+				//}
 			}
 
 			if (count($rights)>0&&count($entities)>0){
-				foreach($entities as $entity){
-					foreach($rights as $right){
-						$affectation["entities_id"] = $entity[0];
-						$affectation["profiles_id"] = $right;
-						$affectation["users_id"] = $input["id"];
-						$affectation["is_recursive"] = $entity[1];
-						$affectation["is_dynamic"] = 1;
-						addUserProfileEntity($affectation);
-					}
-				}
+            foreach($rights as $right){
+               foreach($entities as $entity_tab){
+                  foreach ($entity_tab as $entity) {
+                     $affectation["entities_id"] = $entity[0];
+                     $affectation["profiles_id"] = $right;
+                     $affectation["users_id"] = $input["id"];
+                     $affectation["is_recursive"] = $entity[1];
+                     $affectation["is_dynamic"] = 1;
+                     addUserProfileEntity($affectation);
+                  }
+               }
+            }
 			}
 
 			//Unset all the temporary tables

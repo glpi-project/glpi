@@ -709,7 +709,7 @@ class RuleCollection {
    }
 
    function preProcessPreviewResults($output) {
-      return $output;
+      return $this->cleanTestOutputCriterias($output);
    }
 
    /**
@@ -1388,14 +1388,14 @@ class Rule extends CommonDBTM {
          // Positive condition : Need to match one
          } else {
             $res = false;
-            foreach($input[$criteria->fields["criteria"]] as $tmp) {
+            foreach($input[$criteria->fields["criteria"]] as $crit) {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
-                                              $criteria->fields["condition"],$tmp);
+                                              $criteria->fields["condition"],$crit);
                $res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],
                                   $regex_result);
-               if ($res) {
-                  break;
-               }
+               //if ($res) {
+               //   break;
+               //}
             }
          }
       }
@@ -1611,13 +1611,6 @@ class Rule extends CommonDBTM {
       echo "<td class='center' colspan='2'>".$LANG['rulesengine'][41]." : ";
       echo "<strong> ".getYesNo($global_result)."</strong></td>";
 
-      //If output array contains keys begining with _ : drop it
-      foreach($output as $criteria => $value) {
-         if ($criteria[0]=='_') {
-            unset($output[$criteria]);
-         }
-      }
-
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
@@ -1741,7 +1734,7 @@ class Rule extends CommonDBTM {
                $display=true;
                break;
 
-            case "dropdown_tracking_itemtype" :
+             case "dropdown_tracking_itemtype" :
                dropdownDeviceTypes($name,0,array_keys(getAllTypesForHelpdesk()));
                $display=true;
                break;

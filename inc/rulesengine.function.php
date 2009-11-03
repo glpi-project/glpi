@@ -434,7 +434,8 @@ function getCacheTableByRuleType($type) {
 }
 
 function getRegexResultById($action,$regex_results) {
-
+   $results = array();
+   
    if (count($regex_results)>0) {
       if (preg_match_all("/#([0-9])/",$action,$results)>0) {
          foreach($results[1] as $result) {
