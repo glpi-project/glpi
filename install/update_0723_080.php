@@ -2371,48 +2371,49 @@ function update0723to080() {
       $query="CREATE TABLE `glpi_requesttypes` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-              `is_protected` tinyint(1) NOT NULL DEFAULT '0',
+              `is_helpdesk_default` tinyint(1) NOT NULL DEFAULT '0',
+              `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
               `comment` text COLLATE utf8_unicode_ci,
               PRIMARY KEY (`id`),
               KEY `name` (`name`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=100";
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_requesttypes" . $LANG['update'][90] . $DB->error());
-      
+
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(1, '".
-                  addslashes($LANG['Menu'][31])."', 1, NULL)");
+                  addslashes($LANG['Menu'][31])."', 1, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(2, '".
-                  addslashes($LANG['setup'][14])."', 1, NULL)");
+                  addslashes($LANG['setup'][14])."', 0, 1, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(3, '".
-                  addslashes($LANG['help'][35])."', 1, NULL)");
+                  addslashes($LANG['help'][35])."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(4, '".
-                  addslashes($LANG['tracking'][34])."', 1, NULL)");
+                  addslashes($LANG['tracking'][34])."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(5, '".
-                  addslashes($LANG['tracking'][35])."', 1, NULL)");
+                  addslashes($LANG['tracking'][35])."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(6, '".
-                  addslashes($LANG['common'][62])."', 0, NULL)");
+                  addslashes($LANG['common'][62])."', 0, 0, NULL)");
    }
    if (!FieldExists('glpi_tickets','request_type')) {
-      $query = "ALTER TABLE `glpi_tickets` 
+      $query = "ALTER TABLE `glpi_tickets`
                       CHANGE `request_type` `requesttypes_id` INT( 11 ) NOT NULL DEFAULT '0'";
 
       $DB->query($query) or die("0.80 change requesttypes_id in glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists('glpi_configs','default_request_type')) {
-      $query = "ALTER TABLE `glpi_configs` 
+      $query = "ALTER TABLE `glpi_configs`
             CHANGE `default_request_type` `default_requesttypes_id` INT( 11 ) NOT NULL DEFAULT '1'";
 
       $DB->query($query) or die("0.80 change requesttypes_id in glpi_configs" .
                                  $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists('glpi_users','default_request_type')) {
-      $query = "ALTER TABLE `glpi_users` 
+      $query = "ALTER TABLE `glpi_users`
                 CHANGE `default_request_type` `default_requesttypes_id` INT( 11 ) NULL DEFAULT NULL";
 
       $DB->query($query) or die("0.80 change requesttypes_id in glpi_users" .
                                  $LANG['update'][90] . $DB->error());
    }
-    
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }

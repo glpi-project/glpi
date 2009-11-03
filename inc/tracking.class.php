@@ -479,9 +479,9 @@ class Job extends CommonDBTM {
                      break;
 
                   case "requesttypes_id" :
-                     $old_requesttype_name = getDropdownName('glpi_requesttypes', 
+                     $old_requesttype_name = getDropdownName('glpi_requesttypes',
                                                              $input["_old_requesttypes_id"]);
-                     $new_requesttype_name = getDropdownName('glpi_requesttypes', 
+                     $new_requesttype_name = getDropdownName('glpi_requesttypes',
                                                              $this->fields["requesttypes_id"]);
                      $change_followup_content .= $LANG['mailing'][21]."&nbsp;: ".
                                                  $old_requesttype_name." -> ".
@@ -701,7 +701,7 @@ class Job extends CommonDBTM {
       }
 
       if (!isset($input["requesttypes_id"])) {
-         $input["requesttypes_id"]=1;
+         $input["requesttypes_id"]=RequestType::getDefault('helpdesk');
       }
       if (!isset($input["status"])) {
          $input["status"]="new";

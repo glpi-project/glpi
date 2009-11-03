@@ -2388,19 +2388,19 @@ DROP TABLE IF EXISTS `glpi_requesttypes`;
 CREATE TABLE `glpi_requesttypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_protected` tinyint(1) NOT NULL DEFAULT '0',
+  `is_helpdesk_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=100 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-INSERT INTO `glpi_requesttypes` VALUES(1, 'Helpdesk', 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(2, 'E-Mail', 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(3, 'Phone', 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(4, 'Direct', 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(5, 'Written', 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(6, 'Other', 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(1, 'Helpdesk', 1, 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(2, 'E-Mail', 0, 1, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(3, 'Phone', 0, 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(4, 'Direct', 0, 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(5, 'Written', 0, 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES(6, 'Other', 0, 0, NULL);
 
 ### Dump table glpi_reservations
 
