@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 /**
  *  OCS Administration Information management class
  */
-class AdminInfo extends CommonDBTM {
+class OcsAdminInfosLink extends CommonDBTM {
 
    /**
     * Constructor

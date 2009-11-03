@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('admininfo', 'computer', 'crontask', 'device', 'document', 'enterprise',
+$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'crontask', 'device', 'document', 'enterprise',
    'group', 'infocom', 'mailgate', 'mailing', 'monitor', 'networking', 'ocsng', 'peripheral',
    'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
    'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
