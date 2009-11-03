@@ -126,6 +126,56 @@ define("LOCATION_TYPE",53);
 define("NETPOINT_TYPE",54);
 define("ITEMSTATE_TYPE",55);
 define("REQUESTTYPE_TYPE",56);
+define("MANUFACTURER_TYPE",57);
+define("COMPUTERTYPE_TYPE",58);
+define("COMPUTERMODEL_TYPE",59);
+define("NETWORKEQUIPMENTTYPE_TYPE",60);
+define("NETWORKEQUIPMENTMODEL_TYPE",61);
+define("PRINTERTYPE_TYPE",62);
+define("PRINTERMODEL_TYPE",63);
+define("MONITORTYPE_TYPE",64);
+define("MONITORMODEL_TYPE",65);
+define("PERIPHERALTYPE_TYPE",66);
+define("PERIPHERALMODEL_TYPE",67);
+define("PHONETYPE_TYPE",68);
+define("PHONEMODEL_TYPE",69);
+define("SOFTWARELICENSETYPE_TYPE",70);
+define("CARTRIDGEITEMTYPE_TYPE",71);
+define("CONSUMABLEITEMTYPE_TYPE",72);
+define("CONTRACTTYPE_TYPE",73);
+define("CONTACTTYPE_TYPE",74);
+define("DEVICEMEMORYTYPE_TYPE",75);
+define("SUPPLIERTYPE_TYPE",76);
+define("INTERFACE_TYPE",77);
+define("DEVICECASETYPE_TYPE",78);
+define("PHONEPOWERSUPPLY_TYPE",79);
+define("FILESYSTEM_TYPE",80);
+define("DOCUMENTCATEGORY_TYPE",81);
+define("KNOWBASEITEMCATEGORY_TYPE",82);
+define("OPERATINGSYSTEM_TYPE",83);
+define("OPERATINGSYSTEMVERSION_TYPE",84);
+define("OPERATINGSYSTEMSERVICEPACK_TYPE",85);
+define("AUTOUPDATESYSTEM_TYPE",86);
+define("NETWORKINTERFACE_TYPE",87);
+define("NETWORKEQUIPMENTFIRMWARE_TYPE",88);
+define("DOMAIN_TYPE",89);
+define("NETWORK_TYPE",90);
+define("VLAN_TYPE",91);
+define("SOFTWARECATEGORY_TYPE",92);
+define("USERTITLE_TYPE",93);
+define("USERCATEGORY_TYPE",94);
+
+$CFG_GLPI['dropdown_types']= array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE, NETPOINT_TYPE,
+   ITEMSTATE_TYPE, REQUESTTYPE_TYPE, MANUFACTURER_TYPE, COMPUTERTYPE_TYPE, COMPUTERMODEL_TYPE,
+   NETWORKEQUIPMENTTYPE_TYPE, NETWORKEQUIPMENTMODEL_TYPE, PRINTERTYPE_TYPE, PRINTERMODEL_TYPE,
+   MONITORTYPE_TYPE, MONITORMODEL_TYPE, PERIPHERALTYPE_TYPE, PERIPHERALMODEL_TYPE, PHONETYPE_TYPE,
+   PHONEMODEL_TYPE, SOFTWARELICENSETYPE_TYPE, CARTRIDGEITEMTYPE_TYPE, CONSUMABLEITEMTYPE_TYPE,
+   CONTRACTTYPE_TYPE, CONTACTTYPE_TYPE, DEVICEMEMORYTYPE_TYPE, SUPPLIERTYPE_TYPE, INTERFACE_TYPE,
+   DEVICECASETYPE_TYPE, PHONEPOWERSUPPLY_TYPE, FILESYSTEM_TYPE, DOCUMENTCATEGORY_TYPE, 
+   KNOWBASEITEMCATEGORY_TYPE, OPERATINGSYSTEM_TYPE, OPERATINGSYSTEMVERSION_TYPE,
+   OPERATINGSYSTEMSERVICEPACK_TYPE, AUTOUPDATESYSTEM_TYPE, NETWORKINTERFACE_TYPE,
+   NETWORKEQUIPMENTFIRMWARE_TYPE, DOMAIN_TYPE, NETWORK_TYPE, VLAN_TYPE, SOFTWARECATEGORY_TYPE,
+   USERTITLE_TYPE, USERCATEGORY_TYPE);
 
 
 // GLPI MODE
@@ -241,62 +291,100 @@ define("FIRSTNAME_BEFORE",1);
 define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 
 // Database Table for each type (order by type number)
-$LINK_ID_TABLE = array(COMPUTER_TYPE         => "glpi_computers",
-                       NETWORKING_TYPE       => "glpi_networkequipments",
-                       PRINTER_TYPE          => "glpi_printers",
-                       MONITOR_TYPE          => "glpi_monitors",
-                       PERIPHERAL_TYPE       => "glpi_peripherals",
-                       SOFTWARE_TYPE         => "glpi_softwares",
-                       CONTACT_TYPE          => "glpi_contacts",
-                       ENTERPRISE_TYPE       => "glpi_suppliers",
-                       INFOCOM_TYPE          => "glpi_infocoms",
-                       CONTRACT_TYPE         => "glpi_contracts",
-                       CARTRIDGEITEM_TYPE    => "glpi_cartridgesitems",
-                       TYPEDOC_TYPE          => "glpi_documentstypes",
-                       DOCUMENT_TYPE         => "glpi_documents",
-                       KNOWBASE_TYPE         => "glpi_knowbaseitems",
-                       USER_TYPE             => "glpi_users",
-                       TRACKING_TYPE         => "glpi_tickets",
-                       CONSUMABLEITEM_TYPE   => "glpi_consumablesitems",
-                       CONSUMABLE_TYPE       => "glpi_consumables",
-                       CARTRIDGE_TYPE        => "glpi_cartridges",
-                       SOFTWARELICENSE_TYPE  => "glpi_softwareslicenses",
-                       LINK_TYPE             => "glpi_links",
-                       STATE_TYPE            => "",
-                       PHONE_TYPE            => "glpi_phones",
-// DEVICE_TYPE => "???",
-                       REMINDER_TYPE         => "glpi_reminders",
-// STAT_TYPE => "???",
-                       GROUP_TYPE            => "glpi_groups",
-                       ENTITY_TYPE           => "glpi_entities",
-                       RESERVATION_TYPE      => "glpi_reservationsitems",
-                       AUTH_MAIL_TYPE        => "glpi_authmails",
-                       AUTH_LDAP_TYPE        => "glpi_authldaps",
-                       OCSNG_TYPE            => "glpi_ocsservers",
-                       REGISTRY_TYPE         => "glpi_registrykeys",
-                       PROFILE_TYPE          => "glpi_profiles",
-                       MAILGATE_TYPE         => "glpi_mailcollectors",
-                       RULE_TYPE             => "glpi_rules",
-                       TRANSFER_TYPE         => "glpi_transfers",
-                       BOOKMARK_TYPE         => "glpi_bookmarks",
-                       SOFTWAREVERSION_TYPE  => "glpi_softwaresversions",
-                       PLUGIN_TYPE           => "glpi_plugins",
-                       COMPUTERDISK_TYPE     => "glpi_computersdisks",
-                       NETWORKING_PORT_TYPE  => "glpi_networkports",
-                       FOLLOWUP_TYPE         => "glpi_ticketsfollowups",
-                       BUDGET_TYPE           => "glpi_budgets",
-                       CONTRACTITEM_TYPE     => "glpi_contracts_items",
-                       CONTACTSUPPLIER_TYPE  => "glpi_contacts_suppliers",
-                       CONTRACTSUPPLIER_TYPE => "glpi_contracts_suppliers",
-                       DOCUMENTITEM_TYPE     => "glpi_documents_items",
-                       CRONTASK_TYPE         => "glpi_crontasks",
-                       CRONTASKLOG_TYPE      => "glpi_crontaskslogs",
-                       TICKETCATEGORY_TYPE   => "glpi_ticketscategories",
-                       TASKCATEGORY_TYPE     => "glpi_taskscategories",
-                       LOCATION_TYPE         => "glpi_locations",
-                       NETPOINT_TYPE         => "glpi_netpoints",
-                       ITEMSTATE_TYPE        => "glpi_states",
-                       REQUESTTYPE_TYPE      => 'glpi_requesttypes');
+$LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
+                       NETWORKING_TYPE                   => 'glpi_networkequipments',
+                       PRINTER_TYPE                      => 'glpi_printers',
+                       MONITOR_TYPE                      => 'glpi_monitors',
+                       PERIPHERAL_TYPE                   => 'glpi_peripherals',
+                       SOFTWARE_TYPE                     => 'glpi_softwares',
+                       CONTACT_TYPE                      => 'glpi_contacts',
+                       ENTERPRISE_TYPE                   => 'glpi_suppliers',
+                       INFOCOM_TYPE                      => 'glpi_infocoms',
+                       CONTRACT_TYPE                     => 'glpi_contracts',
+                       CARTRIDGEITEM_TYPE                => 'glpi_cartridgesitems',
+                       TYPEDOC_TYPE                      => 'glpi_documentstypes',
+                       DOCUMENT_TYPE                     => 'glpi_documents',
+                       KNOWBASE_TYPE                     => 'glpi_knowbaseitems',
+                       USER_TYPE                         => 'glpi_users',
+                       TRACKING_TYPE                     => 'glpi_tickets',
+                       CONSUMABLEITEM_TYPE               => 'glpi_consumablesitems',
+                       CONSUMABLE_TYPE                   => 'glpi_consumables',
+                       CARTRIDGE_TYPE                    => 'glpi_cartridges',
+                       SOFTWARELICENSE_TYPE              => 'glpi_softwareslicenses',
+                       LINK_TYPE                         => 'glpi_links',
+                       STATE_TYPE                        => '',
+                       PHONE_TYPE                        => 'glpi_phones',
+// DEVICE_TYPE             => '???',
+                       REMINDER_TYPE                     => 'glpi_reminders',
+// STAT_TYPE             => '???',
+                       GROUP_TYPE                        => 'glpi_groups',
+                       ENTITY_TYPE                       => 'glpi_entities',
+                       RESERVATION_TYPE                  => 'glpi_reservationsitems',
+                       AUTH_MAIL_TYPE                    => 'glpi_authmails',
+                       AUTH_LDAP_TYPE                    => 'glpi_authldaps',
+                       OCSNG_TYPE                        => 'glpi_ocsservers',
+                       REGISTRY_TYPE                     => 'glpi_registrykeys',
+                       PROFILE_TYPE                      => 'glpi_profiles',
+                       MAILGATE_TYPE                     => 'glpi_mailcollectors',
+                       RULE_TYPE                         => 'glpi_rules',
+                       TRANSFER_TYPE                     => 'glpi_transfers',
+                       BOOKMARK_TYPE                     => 'glpi_bookmarks',
+                       SOFTWAREVERSION_TYPE              => 'glpi_softwaresversions',
+                       PLUGIN_TYPE                       => 'glpi_plugins',
+                       COMPUTERDISK_TYPE                 => 'glpi_computersdisks',
+                       NETWORKING_PORT_TYPE              => 'glpi_networkports',
+                       FOLLOWUP_TYPE                     => 'glpi_ticketsfollowups',
+                       BUDGET_TYPE                       => 'glpi_budgets',
+                       CONTRACTITEM_TYPE                 => 'glpi_contracts_items',
+                       CONTACTSUPPLIER_TYPE              => 'glpi_contacts_suppliers',
+                       CONTRACTSUPPLIER_TYPE             => 'glpi_contracts_suppliers',
+                       DOCUMENTITEM_TYPE                 => 'glpi_documents_items',
+                       CRONTASK_TYPE                     => 'glpi_crontasks',
+                       CRONTASKLOG_TYPE                  => 'glpi_crontaskslogs',
+                       TICKETCATEGORY_TYPE               => 'glpi_ticketscategories',
+                       TASKCATEGORY_TYPE                 => 'glpi_taskscategories',
+                       LOCATION_TYPE                     => 'glpi_locations',
+                       NETPOINT_TYPE                     => 'glpi_netpoints',
+                       ITEMSTATE_TYPE                    => 'glpi_states',
+                       REQUESTTYPE_TYPE                  => 'glpi_requesttypes',
+                       MANUFACTURER_TYPE                 => 'glpi_manufacturers',
+                       COMPUTERTYPE_TYPE                 => 'glpi_computerstypes',
+                       COMPUTERMODEL_TYPE                => 'glpi_computersmodels',
+                       NETWORKEQUIPMENTTYPE_TYPE         => 'glpi_networkequipmentstypes',
+                       NETWORKEQUIPMENTMODEL_TYPE        => 'glpi_networkequipmentsmodels',
+                       PRINTERTYPE_TYPE                  => 'glpi_printerstypes',
+                       PRINTERMODEL_TYPE                 => 'glpi_printersmodels',
+                       MONITORTYPE_TYPE                  => 'glpi_monitorstypes',
+                       MONITORMODEL_TYPE                 => 'glpi_monitorsmodels',
+                       PERIPHERALTYPE_TYPE               => 'glpi_peripheralstypes',
+                       PERIPHERALMODEL_TYPE              => 'glpi_peripheralsmodels',
+                       PHONETYPE_TYPE                    => 'glpi_phonestypes',
+                       PHONEMODEL_TYPE                   => 'glpi_phonesmodels',
+                       SOFTWARELICENSETYPE_TYPE          => 'glpi_softwareslicensestypes',
+                       CARTRIDGEITEMTYPE_TYPE            => 'glpi_cartridgesitemstypes',
+                       CONSUMABLEITEMTYPE_TYPE           => 'glpi_consumablesitemstypes',
+                       CONTRACTTYPE_TYPE                 => 'glpi_contractstypes',
+                       CONTACTTYPE_TYPE                  => 'glpi_contactstypes',
+                       DEVICEMEMORYTYPE_TYPE             => 'glpi_devicesmemoriestypes',
+                       SUPPLIERTYPE_TYPE                 => 'glpi_supplierstypes',
+                       INTERFACE_TYPE                    => 'glpi_interfaces',
+                       DEVICECASETYPE_TYPE               => 'glpi_devicescasestypes',
+                       PHONEPOWERSUPPLY_TYPE             => 'glpi_phonespowersupplies',
+                       FILESYSTEM_TYPE                   => 'glpi_filesystems',
+                       DOCUMENTCATEGORY_TYPE             => 'glpi_documentscategories',
+                       KNOWBASEITEMCATEGORY_TYPE         => 'glpi_knowbaseitemscategories',
+                       OPERATINGSYSTEM_TYPE              => 'glpi_operatingsystems',
+                       OPERATINGSYSTEMVERSION_TYPE       => 'glpi_operatingsystemsversions',
+                       OPERATINGSYSTEMSERVICEPACK_TYPE   => 'glpi_operatingsystemsservicepacks',
+                       AUTOUPDATESYSTEM_TYPE             => 'glpi_autoupdatesystems',
+                       NETWORKINTERFACE_TYPE             => 'glpi_networkinterfaces',
+                       NETWORKEQUIPMENTFIRMWARE_TYPE     => 'glpi_networkequipmentsfirmwares',
+                       DOMAIN_TYPE                       => 'glpi_domains',
+                       NETWORK_TYPE                      => 'glpi_networks',
+                       VLAN_TYPE                         => 'glpi_vlans',
+                       SOFTWARECATEGORY_TYPE             => 'glpi_softwarescategories',
+                       USERTITLE_TYPE                    => 'glpi_userstitles',
+                       USERCATEGORY_TYPE                 => 'glpi_userscategories');
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -347,14 +435,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // CONTACTSUPPLIER_TYPE => "???",
 // CONTRACTSUPPLIER_TYPE => "???",
 // DOCUMENTITEM_TYPE => "???",
-                        CRONTASK_TYPE        => "front/crontask.form.php",
+                        CRONTASK_TYPE        => "front/crontask.form.php");
 // CRONTASKLOG_TYPE => "???",
-                        TICKETCATEGORY_TYPE  => "front/dropdown.form.php?itemtype=".TICKETCATEGORY_TYPE,
-                        TASKCATEGORY_TYPE    => "front/dropdown.form.php?itemtype=".TASKCATEGORY_TYPE,
-                        LOCATION_TYPE        => "front/dropdown.form.php?itemtype=".LOCATION_TYPE,
-                        NETPOINT_TYPE        => "front/dropdown.form.php?itemtype=".NETPOINT_TYPE,
-                        ITEMSTATE_TYPE       => "front/dropdown.form.php?itemtype=".ITEMSTATE_TYPE,
-                        REQUESTTYPE_TYPE     => "front/dropdown.form.php?itemtype=".REQUESTTYPE_TYPE);
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
@@ -369,14 +451,12 @@ $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
                       DOCUMENT_TYPE        => "front/document.php",
                       OCSNG_TYPE           => "front/setup.ocsng.php",
                       BUDGET_TYPE          => "front/budget.php",
-                      CRONTASK_TYPE        => "front/crontask.php",
-                      TICKETCATEGORY_TYPE  => "front/dropdown.php?itemtype=".TICKETCATEGORY_TYPE,
-                      TASKCATEGORY_TYPE    => "front/dropdown.php?itemtype=".TASKCATEGORY_TYPE,
-                      LOCATION_TYPE        => "front/dropdown.php?itemtype=".LOCATION_TYPE,
-                      NETPOINT_TYPE        => "front/dropdown.php?itemtype=".NETPOINT_TYPE,
-                      ITEMSTATE_TYPE       => "front/dropdown.php?itemtype=".ITEMSTATE_TYPE,
-                      REQUESTTYPE_TYPE     => "front/dropdown.php?itemtype=".REQUESTTYPE_TYPE);
+                      CRONTASK_TYPE        => "front/crontask.php");
 
+foreach ($CFG_GLPI['dropdown_types'] as $type) {
+   $INFOFORM_PAGES[$type] = "front/dropdown.form.php?itemtype=".$type;
+   $SEARCH_PAGES[$type] = "front/dropdown.php?itemtype=".$type;
+   }
 
 define("AUTH_DB_GLPI",1);
 define("AUTH_MAIL",2);
@@ -489,6 +569,18 @@ $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monit
 $CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemscategories',
                                          'glpi_locations', 'glpi_taskscategories',
                                          'glpi_ticketscategories');
+                                         
+$CFG_GLPI["dropdown_types"]= array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE, NETPOINT_TYPE,
+   ITEMSTATE_TYPE, REQUESTTYPE_TYPE, MANUFACTURER_TYPE, COMPUTERTYPE_TYPE, COMPUTERMODEL_TYPE,
+   NETWORKEQUIPMENTTYPE_TYPE, NETWORKEQUIPMENTMODEL_TYPE, PRINTERTYPE_TYPE, PRINTERMODEL_TYPE,
+   MONITORTYPE_TYPE, MONITORMODEL_TYPE, PERIPHERALTYPE_TYPE, PERIPHERALMODEL_TYPE, PHONETYPE_TYPE,
+   PHONEMODEL_TYPE, SOFTWARELICENSETYPE_TYPE, CARTRIDGEITEMTYPE_TYPE, CONSUMABLEITEMTYPE_TYPE,
+   CONTRACTTYPE_TYPE, CONTACTTYPE_TYPE, DEVICEMEMORYTYPE_TYPE, SUPPLIERTYPE_TYPE, INTERFACE_TYPE,
+   DEVICECASETYPE_TYPE, PHONEPOWERSUPPLY_TYPE, FILESYSTEM_TYPE, DOCUMENTCATEGORY_TYPE, 
+   KNOWBASEITEMCATEGORY_TYPE, OPERATINGSYSTEM_TYPE, OPERATINGSYSTEMVERSION_TYPE,
+   OPERATINGSYSTEMSERVICEPACK_TYPE, AUTOUPDATESYSTEM_TYPE, NETWORKINTERFACE_TYPE,
+   NETWORKEQUIPMENTFIRMWARE_TYPE, DOMAIN_TYPE, NETWORK_TYPE, VLAN_TYPE, SOFTWARECATEGORY_TYPE,
+   USERTITLE_TYPE, USERCATEGORY_TYPE);
 
 $CFG_GLPI["state_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                  PERIPHERAL_TYPE, PHONE_TYPE);

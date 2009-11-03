@@ -78,7 +78,7 @@ function haveRight($module, $right) {
  * @return Boolean : session variable have more than the right specified for the module type
 **/
 function haveTypeRight($itemtype, $right) {
-   global $LANG,$PLUGIN_HOOKS;
+   global $LANG,$PLUGIN_HOOKS,$CFG_GLPI,$LINK_ID_TABLE;
 
    switch ($itemtype) {
       case GENERAL_TYPE :
@@ -182,7 +182,7 @@ function haveTypeRight($itemtype, $right) {
          break;
 
       case REMINDER_TYPE :
-      return haveRight("reminder_public", $right);
+         return haveRight("reminder_public", $right);
       break;
 
       case GROUP_TYPE :
@@ -238,19 +238,13 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("budget",$right);
          break;
 
-      case LOCATION_TYPE :
-      case TICKETCATEGORY_TYPE :
-      case TASKCATEGORY_TYPE :
-      case NETPOINT_TYPE :
-         return haveRight("entity_dropdown",$right);
-         break;
-         
-      case ITEMSTATE_TYPE :
-      case REQUESTTYPE_TYPE :
-         return haveRight("dropdown",$right);
-         break;
-
       default :
+         if (in_array($itemtype, $CFG_GLPI['dropdown_types'])) {
+            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["specif_entities_tables"])) {
+               return haveRight("entity_dropdown",$right);
+            }
+            return haveRight("dropdown",$right);
+         }
          // Plugin case
          if ($itemtype>1000) {
             if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
