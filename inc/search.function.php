@@ -2128,7 +2128,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
                             SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 */
                  return " GROUP_CONCAT(DISTINCT
-                            CONCAT (`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
+                            CONCAT(`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
                                      ',',
                                      `$table$addtable`.".$searchopt[$ID]["datafields"][2].")
                             SEPARATOR '$$$$') AS ".$NAME."_$num, ";
