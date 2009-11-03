@@ -247,68 +247,60 @@ class RightAffectRule extends Rule {
                   break;
 
                case "regex_result" :
-                  switch ($action->fields["field"])
-                  {
-                     case "_affect_entity_by_dn":
-                     case "_affect_entity_by_tag":
+                  switch ($action->fields["field"]) {
+                     case "_affect_entity_by_dn" :
+                     case "_affect_entity_by_tag" :
                         $match_entity = false;
                         $entity = array();
                         foreach ($regex_results as $regex_result) {
                            $res = getRegexResultById($action->fields["value"],array($regex_result));
                            if ($res != null) {
-                              
-                              if ($action->fields["field"] == "_affect_entity_by_dn" ) {
+                              if ($action->fields["field"] == "_affect_entity_by_dn") {
                                  $entity_found = getEntityIDByDN($res);
+                              } else {
+                                $entity_found = getEntityIDByTag($res);
                               }
-                              else {
-                                $entity_found = getEntityIDByTag($res); 
-                              }
-                              
                               //If an entity was found
                               if ($entity > -1) {
-                                 array_push($entity, array($entity_found,$is_recursive)); 
+                                 array_push($entity, array($entity_found,
+                                                           $is_recursive));
                                  $match_entity=true;
                               }
                            }
                         }
-
                         if (!$match_entity) {
                            //Not entity assigned : action processing must be stopped for this rule
-                           $continue=false;                             
+                           $continue = false;
                         }
-                     break;
+                        break;
                   } // switch (field)
-               break;
-
+                  break;
             } // switch (action_type)
          } // foreach (action)
       } // count (actions)
 
-      if ($continue)
-      {
+      if ($continue) {
          //Nothing to be returned by the function :
          //Store in session the entity and/or right
          if ($entity != '' && $right != '') {
-            $output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$is_recursive);
-         }
-         elseif ($entity != '') {
+            $output["_ldap_rules"]["rules_entities_rights"][] = array($entity,
+                                                                      $right,
+                                                                      $is_recursive);
+         } else if ($entity != '') {
             if (!is_array($entity)) {
               $entities_array=array($entity,$is_recursive);
-              $output["_ldap_rules"]["rules_entities"][]=array($entities_array); 
-            }
+              $output["_ldap_rules"]["rules_entities"][]=array($entities_array);
             //If it comes from a regex with multiple results
-            else {
+            } else {
                $output["_ldap_rules"]["rules_entities"][] = $entity;
             }
-         } 
-         elseif ($right != '') {
-         	$output["_ldap_rules"]["rules_rights"][]=$right;
+         } else if ($right != '') {
+            $output["_ldap_rules"]["rules_rights"][]=$right;
          }
-            
+
          return $output;
-      }
-      else {
-      	return $output_src;
+      } else {
+         return $output_src;
       }
    }
 
@@ -403,8 +395,9 @@ class RightRuleCollection extends RuleCollection {
          foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
             foreach ($entities as $entity) {
                $this->displayActionByName("entity",$entity[0]);
-               if (isset($entity[1]))
+               if (isset($entity[1])) {
                   $this->displayActionByName("recursive",$entity[1]);
+               }
             }
          }
       }
