@@ -951,7 +951,9 @@ function showList ($itemtype,$params) {
          if (!empty($GROUPBY)) {
             break;
          }
-         if (isset($searchopt[$itemtype][$val2]["forcegroupby"])) {
+         if (isset($searchopt[$itemtype][$val2]["forcegroupby"])
+             || (isset($searchopt[$itemtype][$val2]["itemlink_type"])
+                    && $searchopt[$itemtype][$val2]["itemlink_type"] != $itemtype)) {
             $GROUPBY = " GROUP BY `$itemtable`.`id`";
          }
       }
