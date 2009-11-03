@@ -2392,21 +2392,21 @@ function update0723to080() {
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(6, '".
                   addslashes($LANG['common'][62])."', 0, 0, NULL)");
    }
-   if (!FieldExists('glpi_tickets','request_type')) {
+   if (FieldExists('glpi_tickets','request_type')) {
       $query = "ALTER TABLE `glpi_tickets`
                       CHANGE `request_type` `requesttypes_id` INT( 11 ) NOT NULL DEFAULT '0'";
 
       $DB->query($query) or die("0.80 change requesttypes_id in glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists('glpi_configs','default_request_type')) {
+   if (FieldExists('glpi_configs','default_request_type')) {
       $query = "ALTER TABLE `glpi_configs`
             CHANGE `default_request_type` `default_requesttypes_id` INT( 11 ) NOT NULL DEFAULT '1'";
 
       $DB->query($query) or die("0.80 change requesttypes_id in glpi_configs" .
                                  $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists('glpi_users','default_request_type')) {
+   if (FieldExists('glpi_users','default_request_type')) {
       $query = "ALTER TABLE `glpi_users`
                 CHANGE `default_request_type` `default_requesttypes_id` INT( 11 ) NULL DEFAULT NULL";
 
