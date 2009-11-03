@@ -40,22 +40,51 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
-if (!$itemtype) {
-   displayErrorAndDie($LANG['login'][5]);
+if ($itemtype) {
+   checkTypeRight($itemtype, 'r');
+   
+   $ci = new CommonItem();
+   $ci->setType($itemtype,true);
+   
+   commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
+                str_replace('glpi_','',$ci->obj->table));
+   
+   manageGetValuesInSearch($itemtype);
+   searchForm($itemtype,$_GET);
+   showList($itemtype,$_GET);
+} else {
+   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
+
+   $optgroup = getAllDropdowns();
+   
+   echo "<div align='center'>";
+   
+   $nb=0;
+   foreach($optgroup as $label => $dp) {
+      $nb += count($dp);
+   }
+   $step = ($nb/3)+1;
+   
+   echo "<table><tr class='top'><td><table class='tab_cadre'>";
+   $i=1;
+   foreach($optgroup as $label => $dp) {
+
+      echo "<tr><th>$label</th></tr>\n";
+
+      foreach ($dp as $key => $val) {
+         echo "<tr class='tab_bg_1'><td><a href='".GLPI_ROOT.'/'.$SEARCH_PAGES[$key]."'>";
+         echo "$val</td></tr>\n";
+         $i++;
+      }
+      if ($i>=$step) {
+         echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
+         $step += $step;
+      }
+   }
+   echo "</table></td></tr></table>";
+   
+   echo "</table></div>";
 }
-checkTypeRight($itemtype, 'r');
-
-$ci = new CommonItem();
-$ci->setType($itemtype,true);
-
-commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
-             str_replace('glpi_','',$ci->obj->table));
-
-manageGetValuesInSearch($itemtype);
-
-searchForm($itemtype,$_GET);
-
-showList($itemtype,$_GET);
 
 commonFooter();
 
