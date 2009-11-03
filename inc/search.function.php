@@ -951,9 +951,7 @@ function showList ($itemtype,$params) {
          if (!empty($GROUPBY)) {
             break;
          }
-         if (isset($searchopt[$itemtype][$val2]["forcegroupby"])
-             || (isset($searchopt[$itemtype][$val2]["itemlink_type"])
-                    && $searchopt[$itemtype][$val2]["itemlink_type"] != $itemtype)) {
+         if (isset($searchopt[$itemtype][$val2]["forcegroupby"])) {
             $GROUPBY = " GROUP BY `$itemtable`.`id`";
          }
       }
@@ -2151,7 +2149,8 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
             if ($meta
                 || (isset($searchopt[$ID]["forcegroupby"])
                     && $searchopt[$ID]["forcegroupby"])
-                || (isset($searchopt[$ID]["itemlink_type"])
+                || (empty($searchopt[$ID]["linkfield"])
+                    && isset($searchopt[$ID]["itemlink_type"])
                     && $searchopt[$ID]["itemlink_type"] != $itemtype)) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`, '$$' ,
                                                      `$table$addtable`.`id`)
