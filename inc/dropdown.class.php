@@ -772,7 +772,6 @@ class ItemState extends CommonDropdown {
 
       return $LANG['setup'][83];
    }
-
 }
 
 /// Class ItemState
@@ -887,4 +886,575 @@ class RequestType extends CommonDropdown {
       return 0;
    }
 }
+
+/// Class Manufacturer
+class Manufacturer extends CommonDropdown {
+
+   function __construct() {
+      $this->type = MANUFACTURER_TYPE;
+      $this->table = 'glpi_manufacturers';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][5];
+   }
+}
+
+/// Class ComputerType
+class ComputerType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = COMPUTERTYPE_TYPE;
+      $this->table = 'glpi_computerstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][4];
+   }
+}
+
+/// Class ComputerModel
+class ComputerModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = COMPUTERMODEL_TYPE;
+      $this->table = 'glpi_computersmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][91];
+   }
+}
+
+/// Class NetworkEquipementType
+class NetworkEquipmentType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = NETWORKEQUIPMENTTYPE_TYPE;
+      $this->table = 'glpi_networkequipmentstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][42];
+   }
+}
+
+/// Class NetworkEquipementModel
+class NetworkEquipementModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = NETWORKEQUIPMENTMODEL_TYPE;
+      $this->table = 'glpi_networkequipmentsmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][95];
+   }
+}
+
+/// Class PrinterType
+class PrinterType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PRINTERTYPE_TYPE;
+      $this->table = 'glpi_printerstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][43];
+   }
+}
+
+/// Class PrinterModel
+class PrinterModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PRINTERMODEL_TYPE;
+      $this->table = 'glpi_printersmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][96];
+   }
+}
+
+/// Class MonitorType
+class MonitorType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = MONITORTYPE_TYPE;
+      $this->table = 'glpi_monitorstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][44];
+   }
+}
+
+/// Class MonitorModel
+class MonitorModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = MONITORMODEL_TYPE;
+      $this->table = 'glpi_monitorsmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][94];
+   }
+}
+
+/// Class PeripheralType
+class PeripheralType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PERIPHERALTYPE_TYPE;
+      $this->table = 'glpi_peripheralstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][69];
+   }
+}
+
+/// Class PeripheralModel
+class PeripheralModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PERIPHERALMODEL_TYPE;
+      $this->table = 'glpi_peripheralsmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][97];
+   }
+}
+
+/// Class PhoneType
+class PhoneType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PHONETYPE_TYPE;
+      $this->table = 'glpi_phonestypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][504];
+   }
+}
+
+/// Class PhoneModel
+class PhoneModel extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PHONEMODEL_TYPE;
+      $this->table = 'glpi_phonesmodels';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][503];
+   }
+}
+
+/// Class SoftwareLicenseType
+class SoftwareLicenseType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = SOFTWARELICENSETYPE_TYPE;
+      $this->table = 'glpi_softwareslicensestypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['software'][30];
+   }
+}
+
+/// Class CartdridgeItemType
+class CartdridgeItemType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = CARTRIDGEITEMTYPE_TYPE;
+      $this->table = 'glpi_cartridgesitemstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][84];
+   }
+}
+
+/// Class ConsumableItemType
+class ConsumableItemType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = CONSUMABLEITEMTYPE_TYPE;
+      $this->table = 'glpi_consumablesitemstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][92];
+   }
+}
+
+/// Class ContractType
+class ContractType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = CONTRACTTYPE_TYPE;
+      $this->table = 'glpi_contractstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][85];
+   }
+}
+
+/// Class ContactType
+class ContactType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = CONTACTTYPE_TYPE;
+      $this->table = 'glpi_contactstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][82];
+   }
+}
+
+/// Class DeviceMemoryType
+class DeviceMemoryType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = DEVICEMEMORYTYPE_TYPE;
+      $this->table = 'glpi_devicesmemoriestypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][86];
+   }
+}
+
+/// Class SupplierType
+class SupplierType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = SUPPLIERTYPE_TYPE;
+      $this->table = 'glpi_supplierstypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][80];
+   }
+}
+
+/// Class InterfaceType (Interface is a reserved keyword)
+class InterfaceType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = INTERFACE_TYPE;
+      $this->table = 'glpi_interfaces';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][93];
+   }
+}
+
+/// Class DeviceCaseType (Interface is a reserved keyword)
+class DeviceCaseType extends CommonDropdown {
+
+   function __construct() {
+      $this->type = DEVICECASETYPE_TYPE;
+      $this->table = 'glpi_devicescasestypes';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][45];
+   }
+}
+
+/// Class PhonePowerSupply
+class PhonePowerSupply extends CommonDropdown {
+
+   function __construct() {
+      $this->type = PHONEPOWERSUPPLY_TYPE;
+      $this->table = 'glpi_phonespowersupplies';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][505];
+   }
+}
+
+/// Class Filesystem
+class Filesystem extends CommonDropdown {
+
+   function __construct() {
+      $this->type = FILESYSTEM_TYPE;
+      $this->table = 'glpi_filesystems';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['computers'][4];
+   }
+}
+
+/// Class DocumentCategory
+class DocumentCategory extends CommonDropdown {
+
+   function __construct() {
+      $this->type = DOCUMENTCATEGORY_TYPE;
+      $this->table = 'glpi_documentscategories';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][81];
+   }
+}
+
+/// Class KnowbaseItemCategory
+class KnowbaseItemCategory extends CommonDropdown {
+
+   function __construct() {
+      $this->type = KNOWBASEITEMCATEGORY_TYPE;
+      $this->table = 'glpi_knowbaseitemscategories';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['title'][5];
+   }
+}
+
+/// Class OperatingSystem
+class OperatingSystem extends CommonDropdown {
+
+   function __construct() {
+      $this->type = OPERATINGSYSTEM_TYPE;
+      $this->table = 'glpi_operatingsystems';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][5];
+   }
+}
+
+/// Class OperatingSystemVersion
+class OperatingSystemVersion extends CommonDropdown {
+
+   function __construct() {
+      $this->type = OPERATINGSYSTEMVERSION_TYPE;
+      $this->table = 'glpi_operatingsystemsversions';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['computers'][52];
+   }
+}
+
+/// Class OperatingSystemServicePack
+class OperatingSystemServicePack extends CommonDropdown {
+
+   function __construct() {
+      $this->type = OPERATINGSYSTEMSERVICEPACK_TYPE;
+      $this->table = 'glpi_operatingsystemsservicepacks';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['computers'][53];
+   }
+}
+
+/// Class AutoUpdateSystem
+class AutoUpdateSystem extends CommonDropdown {
+
+   function __construct() {
+      $this->type = AUTOUPDATESYSTEM_TYPE;
+      $this->table = 'glpi_autoupdatesystems';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['computers'][51];
+   }
+}
+
+/// Class NetworkInterface
+class NetworkInterface extends CommonDropdown {
+
+   function __construct() {
+      $this->type = NETWORKINTERFACE_TYPE;
+      $this->table = 'glpi_networkinterfaces';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][9];
+   }
+}
+
+/// Class NetworkEquipmentFirmware
+class NetworkEquipmentFirmware extends CommonDropdown {
+
+   function __construct() {
+      $this->type = NETWORKEQUIPMENTFIRMWARE_TYPE;
+      $this->table = 'glpi_networkequipmentsfirmwares';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][71];
+   }
+}
+
+/// Class Domain
+class Domain extends CommonDropdown {
+
+   function __construct() {
+      $this->type = DOMAIN_TYPE;
+      $this->table = 'glpi_domains';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][89];
+   }
+}
+
+/// Class Network
+class Network extends CommonDropdown {
+
+   function __construct() {
+      $this->type = NETWORK_TYPE;
+      $this->table = 'glpi_networks';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][88];
+   }
+}
+
+/// Class Vlan
+class Vlan extends CommonDropdown {
+
+   function __construct() {
+      $this->type = VLAN_TYPE;
+      $this->table = 'glpi_vlans';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][90];
+   }
+}
+
+/// Class SoftwareCategory
+class SoftwareCategory extends CommonDropdown {
+
+   function __construct() {
+      $this->type = SOFTWARECATEGORY_TYPE;
+      $this->table = 'glpi_softwarescategories';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['softwarecategories'][5];
+   }
+}
+
+/// Class UserTitle
+class UserTitle extends CommonDropdown {
+
+   function __construct() {
+      $this->type = USERTITLE_TYPE;
+      $this->table = 'glpi_userstitles';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['users'][1];
+   }
+}
+
+/// Class UserCategory
+class UserCategory extends CommonDropdown {
+
+   function __construct() {
+      $this->type = USERCATEGORY_TYPE;
+      $this->table = 'glpi_userscategories';
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['users'][1];
+   }
+}
+
 ?>

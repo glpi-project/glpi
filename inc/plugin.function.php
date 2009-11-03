@@ -467,6 +467,7 @@ function registerPluginType($plugin,$name,$itemtype,$attrib) {
       if (isset($attrib['dropdown']) && $attrib['dropdown']) {
             $INFOFORM_PAGES[$itemtype]="front/dropdown.form.php?itemtype=".$itemtype;
             $SEARCH_PAGES[$itemtype]="front/dropdown.php?itemtype=".$itemtype;
+            array_push($CFG_GLPI['dropdown_types'],$itemtype);
       } else {
          if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
             $INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
