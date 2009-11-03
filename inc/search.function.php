@@ -3203,6 +3203,10 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                 LEFT JOIN `$new_table` $AS ON (`glpi_networkports`.`netpoints_id` = `$nt`.`id`) ";
 
       case "glpi_tickets" :
+         if (!empty($linkfield)) {
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+         }
+         // nobreak;
       case "glpi_contracts_items" :
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                  AND `$nt`.`itemtype` = '$itemtype') ";
