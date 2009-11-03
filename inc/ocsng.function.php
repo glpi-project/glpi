@@ -332,7 +332,7 @@ function ocsCheckConfig($what=1) {
    if ($what & 4) {
       if (!$DBocs->query("UPDATE
                           `hardware`
-                          SET `CHECKSUM` = 'CHECKSUM'
+                          SET `CHECKSUM` = CHECKSUM
                           LIMIT 1")) {
       return false;
       }

@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'infocom', 'monitor',
+$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'device', 'enterprise', 'infocom', 'monitor',
    'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'setup', 'software', 'tracking');
 
 define('GLPI_ROOT', '..');

@@ -580,11 +580,11 @@ class Ocsng extends CommonDBTM {
           || isset ($tab["import_group"]) || isset ($tab["import_network"])
           || isset ($tab["import_contact_num"])) {
 
-         $adm = new AdminInfo();
+         $adm = new OcsAdminInfosLink();
          $adm->cleanDBonPurge($tab["id"]);
          if (isset ($tab["import_location"])) {
             if ($tab["import_location"]!="") {
-               $adm = new AdminInfo();
+               $adm = new OcsAdminInfosLink();
                $adm->fields["ocsservers_id"] = $tab["id"];
                $adm->fields["glpi_column"] = "locations_id";
                $adm->fields["ocs_column"] = $tab["import_location"];
@@ -593,7 +593,7 @@ class Ocsng extends CommonDBTM {
          }
          if (isset ($tab["import_otherserial"])) {
             if ($tab["import_otherserial"]!="") {
-               $adm = new AdminInfo();
+               $adm = new OcsAdminInfosLink();
                $adm->fields["ocsservers_id"] =  $tab["id"];
                $adm->fields["glpi_column"] = "otherserial";
                $adm->fields["ocs_column"] = $tab["import_otherserial"];
@@ -602,7 +602,7 @@ class Ocsng extends CommonDBTM {
          }
          if (isset ($tab["import_group"])) {
             if ($tab["import_group"]!="") {
-               $adm = new AdminInfo();
+               $adm = new OcsAdminInfosLink();
                $adm->fields["ocsservers_id"] = $tab["id"];
                $adm->fields["glpi_column"] = "groups_id";
                $adm->fields["ocs_column"] = $tab["import_group"];
@@ -611,7 +611,7 @@ class Ocsng extends CommonDBTM {
          }
          if (isset ($tab["import_network"])) {
             if ($tab["import_network"]!="") {
-               $adm = new AdminInfo();
+               $adm = new OcsAdminInfosLink();
                $adm->fields["ocsservers_id"] = $tab["id"];
                $adm->fields["glpi_column"] = "networks_id";
                $adm->fields["ocs_column"] = $tab["import_network"];
@@ -620,7 +620,7 @@ class Ocsng extends CommonDBTM {
          }
          if (isset ($tab["import_contact_num"])) {
             if ($tab["import_contact_num"]!="") {
-               $adm = new AdminInfo();
+               $adm = new OcsAdminInfosLink();
                $adm->fields["ocsservers_id"] = $tab["id"];
                $adm->fields["glpi_column"] = "contact_num";
                $adm->fields["ocs_column"] = $tab["import_contact_num"];

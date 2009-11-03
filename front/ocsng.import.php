@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('admininfo', 'computer', 'device', 'enterprise', 'entity', 'group',
+$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'device', 'enterprise', 'entity', 'group',
    'infocom', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'registry',
    'reservation', 'rulesengine', 'rule.dictionnary.dropdown', 'rule.dictionnary.software',
    'rule.ocs', 'rule.softwarecategories', 'setup', 'software', 'tracking');
