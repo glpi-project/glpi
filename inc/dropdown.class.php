@@ -1097,8 +1097,8 @@ class SoftwareLicenseType extends CommonDropdown {
    }
 }
 
-/// Class CartdridgeItemType
-class CartdridgeItemType extends CommonDropdown {
+/// Class CartridgeItemType
+class CartridgeItemType extends CommonDropdown {
 
    function __construct() {
       $this->type = CARTRIDGEITEMTYPE_TYPE;
@@ -1187,12 +1187,12 @@ class SupplierType extends CommonDropdown {
    }
 }
 
-/// Class InterfaceType (Interface is a reserved keyword)
-class InterfaceType extends CommonDropdown {
+/// Class InterfacesType (Interface is a reserved keyword)
+class InterfacesType extends CommonDropdown {
 
    function __construct() {
-      $this->type = INTERFACE_TYPE;
-      $this->table = 'glpi_interfaces';
+      $this->type = INTERFACESTYPE_TYPE;
+      $this->table = 'glpi_interfacestypes';
    }
 
    static function getTypeName() {

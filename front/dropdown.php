@@ -63,7 +63,7 @@ if ($itemtype) {
    foreach($optgroup as $label => $dp) {
       $nb += count($dp);
    }
-   $step = ($nb/3)+1;
+   $step = ($nb>15 ? ($nb/3) : $nb);      
    
    echo "<table><tr class='top'><td><table class='tab_cadre'>";
    $i=1;

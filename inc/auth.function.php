@@ -64,9 +64,8 @@ function haveRight($module, $right) {
    if (isset ($_SESSION["glpiactiveprofile"][$module])
        && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
       return true;
-   } else {
-      return false;
    }
+   return false;
 }
 
 /**
@@ -83,160 +82,122 @@ function haveTypeRight($itemtype, $right) {
    switch ($itemtype) {
       case GENERAL_TYPE :
          return true;
-         break;
 
       case COMPUTERDISK_TYPE:
-
       case COMPUTER_TYPE :
          return haveRight("computer", $right);
-         break;
 
       case NETWORKING_TYPE :
          return haveRight("networking", $right);
-         break;
 
       case PRINTER_TYPE :
          return haveRight("printer", $right);
-         break;
 
       case MONITOR_TYPE :
          return haveRight("monitor", $right);
-         break;
 
       case PERIPHERAL_TYPE :
          return haveRight("peripheral", $right);
-         break;
 
       case SOFTWARE_TYPE :
-
       case SOFTWAREVERSION_TYPE :
-
       case SOFTWARELICENSE_TYPE :
          return haveRight("software", $right);
-         break;
 
       case CONTACT_TYPE :
          return haveRight("contact_enterprise", $right);
-         break;
 
       case ENTERPRISE_TYPE :
          return haveRight("contact_enterprise", $right);
-         break;
 
       case INFOCOM_TYPE :
          return haveRight("infocom", $right);
-         break;
 
       case CONTRACT_TYPE :
          return haveRight("contract", $right);
-         break;
 
       case CARTRIDGEITEM_TYPE :
          return haveRight("cartridge", $right);
-         break;
 
       case TYPEDOC_TYPE :
          return haveRight("typedoc", $right);
-         break;
 
       case DOCUMENT_TYPE :
          return haveRight("document", $right);
-         break;
 
       case KNOWBASE_TYPE :
          return (haveRight("knowbase", $right)||haveRight("faq", $right));
-         break;
 
       case USER_TYPE :
          return haveRight("user", $right);
-         break;
 
       case TRACKING_TYPE :
          if ($right=='r') {
             return haveRight("show_all_ticket", 1);
          } else if ($right=='w') {
             return haveRight("update_ticket", 1);
-         } else {
-            return haveRight("show_all_ticket", $right);
          }
-         break;
+         return haveRight("show_all_ticket", $right);
 
       case CONSUMABLEITEM_TYPE :
          return haveRight("consumable", $right);
-         break;
 
       case CARTRIDGE_TYPE :
          return haveRight("cartridge", $right);
-         break;
 
       case CONSUMABLE_TYPE :
          return haveRight("consumable", $right);
-         break;
 
       case LINK_TYPE :
          return haveRight("link", $right);
-         break;
 
       case PHONE_TYPE :
          return haveRight("phone", $right);
-         break;
 
       case REMINDER_TYPE :
          return haveRight("reminder_public", $right);
-      break;
 
       case GROUP_TYPE :
          return haveRight("group", $right);
-         break;
 
       case ENTITY_TYPE :
          return haveRight("entity", $right);
-         break;
 
       case CRONTASK_TYPE :
          return haveRight("config",$right);
-         break;
 
       case AUTH_MAIL_TYPE :
          return haveRight("config",$right);
-         break;
 
       case AUTH_LDAP_TYPE :
          return haveRight("config",$right);
-         break;
 
       case OCSNG_TYPE :
          return haveRight("ocsng",$right);
-         break;
 
       case REGISTRY_TYPE :
          return haveRight("ocsng",$right);
-         break;
 
       case PROFILE_TYPE :
          return haveRight("profile",$right);
-         break;
 
       case MAILGATE_TYPE :
          return haveRight("config",$right);
-         break;
 
       case RULE_TYPE :
-         return haveRight("rule_ticket",$right) || haveRight("rule_ocs",$right)
-                ||haveRight("rule_ldap",$right) || haveRight("rule_softwarescategories",$right);
-         break;
+         return haveRight("rule_ticket",$right)
+                || haveRight("rule_ocs",$right)
+                || haveRight("rule_ldap",$right)
+                || haveRight("rule_softwarescategories",$right);
 
       case TRANSFER_TYPE :
          return haveRight("transfer",$right);
-         break;
 
       case BOOKMARK_TYPE :
          return haveRight("bookmark_public",$right);
-         break;
 
       case BUDGET_TYPE :
          return haveRight("budget",$right);
-         break;
 
       default :
          if (in_array($itemtype, $CFG_GLPI['dropdown_types'])) {
@@ -281,14 +242,10 @@ function displayNotFoundError() {
    if (!$HEADER_LOADED) {
       if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
          nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-      } else {
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-            commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-         } else {
-            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-               helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
-            }
-         }
+      } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+      } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
       }
    }
    echo "<div class='center'><br><br>";

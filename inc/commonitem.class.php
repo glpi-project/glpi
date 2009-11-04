@@ -296,7 +296,7 @@ class CommonItem {
                require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new ItemState();
                break;
-               
+
             case REQUESTTYPE_TYPE :
                require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new RequestType();
@@ -374,7 +374,7 @@ class CommonItem {
 
             case CARTRIDGEITEMTYPE_TYPE :
                require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new CartdridgeItemType();
+               $this->obj = new CartridgeItemType();
                break;
 
             case CONSUMABLEITEMTYPE_TYPE :
@@ -402,9 +402,9 @@ class CommonItem {
                $this->obj = new SupplierType();
                break;
 
-            case INTERFACE_TYPE :
+            case INTERFACESTYPE_TYPE :
                require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new InterfaceType();
+               $this->obj = new InterfacesType();
                break;
 
             case DEVICECASETYPE_TYPE :
