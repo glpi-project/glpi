@@ -763,11 +763,11 @@ CREATE TABLE `glpi_devicescontrols` (
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfaces_id` int(11) NOT NULL default '0',
+  `interfacestypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfaces_id` (`interfaces_id`)
+  KEY `interfacestypes_id` (`interfacestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -782,11 +782,11 @@ CREATE TABLE `glpi_devicesdrives` (
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfaces_id` int(11) NOT NULL default '0',
+  `interfacestypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfaces_id` (`interfaces_id`)
+  KEY `interfacestypes_id` (`interfacestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -796,14 +796,14 @@ DROP TABLE IF EXISTS `glpi_devicesgraphiccards`;
 CREATE TABLE `glpi_devicesgraphiccards` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfaces_id` int(11) NOT NULL default '0',
+  `interfacestypes_id` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfaces_id` (`interfaces_id`)
+  KEY `interfacestypes_id` (`interfacestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -814,7 +814,7 @@ CREATE TABLE `glpi_devicesharddrives` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `rpm` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfaces_id` int(11) NOT NULL default '0',
+  `interfacestypes_id` int(11) NOT NULL default '0',
   `cache` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
@@ -822,7 +822,7 @@ CREATE TABLE `glpi_devicesharddrives` (
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfaces_id` (`interfaces_id`)
+  KEY `interfacestypes_id` (`interfacestypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

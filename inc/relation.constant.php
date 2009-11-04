@@ -88,10 +88,10 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_networkinterfaces" => array("glpi_networkports"=>"networkinterfaces_id"),
 
-                "glpi_interfaces" => array("glpi_devicesharddrives"=>"interfaces_id",
-                                           "glpi_devicesdrives"=>"interfaces_id",
-                                           "glpi_devicesgraphiccards"=>"interfaces_id",
-                                           "glpi_devicescontrols"=>"interfaces_id"),
+                "glpi_interfaces" => array("glpi_devicesharddrives"=>"interfacestypes_id",
+                                           "glpi_devicesdrives"=>"interfacestypes_id",
+                                           "glpi_devicesgraphiccards"=>"interfacestypes_id",
+                                           "glpi_devicescontrols"=>"interfacestypes_id"),
 
                 "glpi_knowbaseitemscategories" => array("glpi_knowbaseitemscategories"
                                                             =>"knowbaseitemscategories_id",

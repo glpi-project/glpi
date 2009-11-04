@@ -2781,7 +2781,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
                                             CONTACTTYPE_TYPE          => $LANG['setup'][82],
                                             DEVICEMEMORYTYPE_TYPE     => $LANG['setup'][86],
                                             SUPPLIERTYPE_TYPE         => $LANG['setup'][80],
-                                            INTERFACE_TYPE            => $LANG['setup'][93],
+                                            INTERFACESTYPE_TYPE       => $LANG['setup'][93],
                                             DEVICECASETYPE_TYPE       => $LANG['setup'][45],
                                             PHONEPOWERSUPPLY_TYPE     => $LANG['setup'][505],
                                             FILESYSTEM_TYPE           => $LANG['computers'][4]),
