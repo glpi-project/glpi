@@ -169,7 +169,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
           && haveTypeRight($type,'w')) {
 
             echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
-                  "/pics/menu_add.png' style='cursor:pointer;'  onClick=\"var w = window.open('".
+                  "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
                   $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$type].
                   "&amp;popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
