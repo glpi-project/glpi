@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: contact.tabs.php 8003 2009-02-26 11:03:19Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,22 +29,30 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file: Nelly Lasson
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array('transfer');
 
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
+$NEEDED_ITEMS = array ('transfer', 'computer', 'printer', 'monitor');
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("transfer","r");
+if (!isset($_POST['id'])) {
+   exit();
+}
 
-if (isset($_POST["id"]) && $_POST["id"]>0) {
-   $transfer=new Transfer();
-   $transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["id"]);
+if (empty($_POST['id'])) {
+   $_POST['id'] = -1;
+}
+
+switch ($_REQUEST['glpi_tab']) {
+   default :
+      if (!displayPluginAction(TRANSFER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+      }
 }
 
 ajaxFooter();

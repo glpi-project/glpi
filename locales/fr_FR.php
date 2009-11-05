@@ -1840,7 +1840,7 @@ $LANG['tracking'][38]="Un mail de suivi a été envoyé à";
 
 $LANG['transfer'][1]="Transfert";
 $LANG['transfer'][2]="Ajouter une configuration de transfert";
-$LANG['transfer'][3]="Si n'est plus utilisé";
+$LANG['transfer'][3]="si n'est plus utilisé";
 $LANG['transfer'][4]="Vider la liste des éléments à transférer";
 $LANG['transfer'][5]="Vous pouvez continuer d'ajouter des éléments à transférer ou transférer dès maintenant ces éléments";
 $LANG['transfer'][6]="Pensez à faire une sauvegarde avant de transférer des éléments.";

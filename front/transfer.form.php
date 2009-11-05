@@ -70,7 +70,6 @@ else if (isset($_POST["delete"]))
 
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
-$transfer->showTabs($_GET["id"], '',getActiveTab(TRANSFER_TYPE));
 $transfer->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
