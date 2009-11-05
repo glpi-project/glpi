@@ -608,7 +608,7 @@ class Config extends CommonDBTM {
 	**/	
 	function showFormUserPrefs($target,$data=array()) {
 	
-		global $DB, $LANG;
+		global $DB, $LANG, $CFG_GLPI;
 
 		$oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
 		$userpref=false;
@@ -700,7 +700,7 @@ class Config extends CommonDBTM {
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
-		dropdownInteger("list_limit",$data["list_limit"],5,200,5);
+		dropdownInteger("list_limit",$data["list_limit"],5,$CFG_GLPI['list_limit_max'],5);
 		
 		echo "</td>";
 		echo "<td class='center'>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . " </td><td>";

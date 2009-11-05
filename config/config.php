@@ -155,6 +155,9 @@
 				$_SESSION["glpi$field"]=$CFG_GLPI[$field];
 			}
 		}
+      if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
+         $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
+      }
 
 		if ((!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 			loadLanguage();
