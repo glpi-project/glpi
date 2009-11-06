@@ -582,12 +582,15 @@ class CommonDBTM {
    function getLink($with_comment=0) {
       global $INFOFORM_PAGES, $CFG_GLPI;
 
+      if (!isset($this->getfields['id'])) {
+         return '';
+      }
       if (!isset($INFOFORM_PAGES[$this->type])) {
          return $this->getNameID($with_comment);
       }
 
       $link  = $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type];
-      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
+      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->getfields['id'];
       $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
 
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
@@ -703,12 +706,12 @@ class CommonDBTM {
             }
             list($input,$updates)=$this->pre_updateInDB($input,$updates,$oldvalues);
 
-            // CLean old_values history not needed
-            if (!$this->dohistory || !$history) {
-               $oldvalues=array();
-            }
+            // CLean old_values history not needed  => Keep old value for plugin hook
+            //if (!$this->dohistory || !$history) {
+            //   $oldvalues=array();
+            //}
 
-            if ($this->updateInDB($updates,$oldvalues)) {
+            if ($this->updateInDB($updates, ($this->dohistory && $history ? $oldvalues : array()))) {
                $this->addMessageOnUpdateAction($input);
                doHook("item_update",array("type"=>$this->type, "id" => $input["id"],
                       "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
@@ -1710,7 +1713,7 @@ class CommonDBTM {
          $toadd="&nbsp;".$this->getComments();
       }
       if ($_SESSION['glpiis_ids_visible']) {
-         return $this->getName()." (".$this->fields['id'].")".$toadd;
+         return $this->getName()." (".$this->getField('id').")".$toadd;
       }
       return $this->getName().$toadd;
    }
