@@ -700,8 +700,10 @@ class Config extends CommonDBTM {
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
-		dropdownInteger("list_limit",$data["list_limit"],5,$CFG_GLPI['list_limit_max'],5);
-		
+      dropdownInteger('list_limit',
+                      ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit'] 
+                                                                       : $CFG_GLPI['list_limit_max']),
+                      5,$CFG_GLPI['list_limit_max'],5);
 		echo "</td>";
 		echo "<td class='center'>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . " </td><td>";
 		
