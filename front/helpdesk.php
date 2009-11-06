@@ -34,9 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'document', 'group', 'infocom', 'monitor', 'networking',
-   'peripheral', 'phone', 'planning', 'printer', 'rulesengine', 'rule.tracking', 'software',
-   'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'document', 'enterprise', 'group', 'infocom', 'monitor',
+   'networking', 'peripheral', 'phone', 'planning', 'printer', 'rulesengine', 'rule.tracking',
+   'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
