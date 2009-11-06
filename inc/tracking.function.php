@@ -2270,7 +2270,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<tr class='tab_bg_1'>";
       if ($ID) {
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'>";
+         echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
       } else {
          echo "<td colspan='2' class='center'>";
          echo "<a href='$target'>";
