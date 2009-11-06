@@ -2021,8 +2021,8 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "</tr>";
 
    echo "<tr class='tab_bg_1'>";
-   echo "<td class='left'>".$LANG['common'][1]."&nbsp;: </td>";
-   echo "<td>";
+   echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
+   echo "<td rowspan='2''>";
    if ($canupdate) {
       if (haveTypeRight($job->fields["itemtype"],'r')) {
          echo $item->getType()." - ".$item->getLink(1);
@@ -2039,33 +2039,30 @@ function showJobDetails($target, $ID,$array=array()) {
    }
    echo "</td>";
 
-   if (haveRight("assign_ticket","1") && $ID) {
+   if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_suppliers","suppliers_id_assign",$job->fields["suppliers_id_assign"],1,
-                    $job->fields["entities_id"]);
+      dropdownValue("glpi_suppliers","suppliers_id_assign",
+                    $job->fields["suppliers_id_assign"],1,$job->fields["entities_id"]);
       echo "</td>";
    } else {
-      if ($ID) {
-         echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
-         echo "<td>";
-         echo getDropdownName("glpi_suppliers",$job->fields["suppliers_id_assign"]);
-         echo "</td>";
-      } else {
-         // Need comment right to add a followup with the realtime
-         if (haveRight("comment_all_ticket","1") && !$ID) {
-            echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
-            echo "<td class='center' colspan='3'>";
-            dropdownInteger('hour',$array['hour'],0,100);
-            echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-            dropdownInteger('minute',$array['minute'],0,59);
-            echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
-         } else {
-            echo "<td colspan='2'>";
-         }
-         echo "</td>";
-      }
+      echo "<td colspan='2'>&nbsp;</td>";
    }
+   echo "</tr>\n";
+
+   echo "<tr class='tab_bg_1'>";
+   // Need comment right to add a followup with the realtime
+   if (haveRight("comment_all_ticket","1") && !$ID) {
+      echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
+      echo "<td class='center' colspan='3'>";
+      dropdownInteger('hour',$array['hour'],0,100);
+      echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+      dropdownInteger('minute',$array['minute'],0,59);
+      echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
+   } else {
+      echo "<td colspan='2'>&nbsp;";
+   }
+   echo "</td>";
    echo "</tr>";
 
    echo "<tr class='tab_bg_1'>";
