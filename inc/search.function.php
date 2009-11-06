@@ -2880,8 +2880,13 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
       switch ($searchopt[$ID]["datatype"]) {
          case "itemlink" :
             if (!empty($data[$NAME.$num."_2"])) {
-               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype];
-               $out .= (strstr($INFOFORM_PAGES[$itemtype],'?') ?'&amp;' :  '?');
+               if (isset($searchopt[$ID]["itemlink_type"])) {
+                  $link=$INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
+               } else {
+                  $link=$INFOFORM_PAGES[$itemtype];
+               }
+               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/".$link;
+               $out .= (strstr($link,'?') ?'&amp;' :  '?');
                $out .= 'id='.$data[$NAME.$num."_2"]."\">";
                $out .= $data[$NAME.$num].$unit;
                if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
