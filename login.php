@@ -181,32 +181,50 @@ if (!$identificat->auth_succeded) {
 // Ok, we have gathered sufficient data, if the first return false the user
 // is not present on the DB, so we add him.
 // if not, we update him.
-if (!$DB->isSlave() && $identificat->auth_succeded) {
+if ($identificat->auth_succeded) {
    // Prepare data
    $identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
    if ($identificat->extauth) {
       $identificat->user->fields["_extauth"] = 1;
    }
-   // Need auto add user ?
-   if (!$identificat->user_present && $CFG_GLPI["is_users_auto_add"]) {
-      $input = $identificat->user->fields;
-      unset ($identificat->user->fields);
-      $identificat->user->add($input);
-   } else if (!$identificat->user_present) { // Auto add not enable so auth failed
-      $identificat->addToError($LANG['login'][11]);
-      $identificat->auth_succeded = false;
-   } else if ($identificat->user_present) {
-      // update user and Blank PWD to clean old database for the external auth
-      $identificat->user->update($identificat->user->fields);
-       if ($identificat->extauth) {
-         $identificat->user->blankPassword();
+   if ($DB->isSlave()) {
+      if (!$identificat->user_present) { // Can't add in slave mode
+         $identificat->addToError($LANG['login'][11]);
+         $identificat->auth_succeded = false;
+      }      
+   } else {
+      // Need auto add user ?
+      if (!$identificat->user_present && $CFG_GLPI["is_users_auto_add"]) {
+         $input = $identificat->user->fields;
+         unset ($identificat->user->fields);
+         $identificat->user->add($input);
+      } else if (!$identificat->user_present) { // Auto add not enable so auth failed
+         $identificat->addToError($LANG['login'][11]);
+         $identificat->auth_succeded = false;
+      } else if ($identificat->user_present) {
+         // update user and Blank PWD to clean old database for the external auth
+         $identificat->user->update($identificat->user->fields);
+          if ($identificat->extauth) {
+            $identificat->user->blankPassword();
+         }
       }
    }
 }
 
-// GET THE IP OF THE CLIENT
-$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+// Log Event (if possible)
+if (!$DB->isSlave()) {
+   // GET THE IP OF THE CLIENT
+   $ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
+   if ($identificat->auth_succeded) {
+      $logged = (GLPI_DEMO_MODE ? "logged in" : $LANG['log'][40]);
+      logEvent(-1, "system", 3, "login", $_POST['login_name'] . " $logged: " . $ip);
+
+   } else {
+      $logged = (GLPI_DEMO_MODE ? "connection failed" : $LANG['log'][41]);
+      logEvent(-1, "system", 1, "login", $logged . ": " . $_POST['login_name'] . " ($ip)");
+   }
+}
 $identificat->initSession();
 
 // Redirect management
@@ -219,13 +237,6 @@ if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0) {
 
 // now we can continue with the process...
 if ($identificat->auth_succeded) {
-   // Log Event
-   $logged = " ";
-   if (GLPI_DEMO_MODE) {
-      $logged = " logged in.";
-   }
-   logEvent("-1","system",3,"login",$_POST['login_name'] . $logged . $LANG['log'][40] . " : " . $ip);
-
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
@@ -240,11 +251,6 @@ if ($identificat->auth_succeded) {
    // Logout whit noAUto to manage auto_login with errors
    echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.str_replace("?","&",$REDIRECT).'">' .
           $LANG['login'][1] . '</a></div>';
-   if (GLPI_DEMO_MODE) {
-      logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
-   } else {
-      logEvent(-1, "system", 1, "login", $LANG['log'][41] . ": " . $_POST['login_name'] . " ($ip)");
-   }
    nullFooter();
    exit();
 }
