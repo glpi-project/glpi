@@ -736,7 +736,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("dropdown","r") || haveRight("entity_dropdown","r")) {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
-      $menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
+      $menu['config']['content']['dropdowns']['page']='/front/dropdown.php';
 
 
       if ($item=="dropdowns") {
