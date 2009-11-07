@@ -444,6 +444,188 @@ class Identification {
       }
    }
 
+   /**
+    * Manage use authentication and initialize the session
+    * 
+    * @param $login_name string
+    * @param $login_password string
+    * @param $noauto boolean
+    * 
+    * @return boolean (success)
+    */
+   function Login ($login_name, $login_password, $noauto=false) {
+      global $DB, $CFG_GLPI, $LANG;
+      
+      $this->getAuthMethods();
+      $this->user_present=1;
+      $this->auth_succeded = false;
+      
+      
+      if (!$noauto && $authtype=checkAlternateAuthSystems()) {
+         if ($this->getAlternateAuthSystemsUserLogin($authtype)
+             && !empty($this->user->fields['name'])) {
+      
+            $user=$identificat->user->fields['name'];
+            // Used for log when login process failed
+            $login_name=$user;
+      
+            $this->auth_succeded = true;
+            $this->extauth = 1;
+            $this->user_present = $identificat->user->getFromDBbyName(addslashes($user));
+            $this->user->fields['authtype'] = $authtype;
+      
+            // if LDAP enabled too, get user's infos from LDAP
+            $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
+            if (canUseLdap()) {
+               if (isset($this->authtypes["ldap"][$identificat->user->fields["auths_id"]])) {
+                  $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
+                  $ds = connect_ldap($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
+                                     $ldap_method["rootdn_password"], $ldap_method["use_tls"],
+                                     $ldap_method["deref_option"]);
+                  if ($ds) {
+                     $user_dn = ldap_search_user_dn($ds, $ldap_method["basedn"], 
+                                                    $ldap_method["login_field"],
+                                                    $user, $ldap_method["condition"]);
+                     if ($user_dn) {
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $ldap_method["rootdn"],
+                                                        $ldap_method["rootdn_password"]);
+                     }
+                  }
+               }
+            }
+            // Reset to secure it
+            $this->user->fields['name'] = $user;
+            $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
+         } else {
+            $this->addToError($LANG['login'][8]);
+         }
+      }
+      
+      if ($noauto) {
+         $_SESSION["noAUTO"] = 1;
+      }
+      
+      // If not already auth
+      if (!$this->auth_succeded) {
+         if (empty($login_name) || empty($login_password)) {
+            $this->addToError($LANG['login'][8]);
+         } else {
+            // exists=0 -> no exist
+            // exists=1 -> exist with password
+            // exists=2 -> exist without password
+            $exists = $this->userExists(addslashes($login_name));
+      
+            // Pas en premier car sinon on ne fait pas le blankpassword
+            // First try to connect via le DATABASE
+            if ($exists == 1) {
+               // Without UTF8 decoding
+               if (!$this->auth_succeded) {
+                  $this->auth_succeded = $this->connection_db(addslashes($login_name),
+                                                              $login_password);
+                  if ($this->auth_succeded) {
+                     $this->extauth=0;
+                     $this->user_present
+                              = $this->user->getFromDBbyName(addslashes($login_name));
+                     $this->user->fields["authtype"] = AUTH_DB_GLPI;
+                     $this->user->fields["password"] = $login_password;
+                  }
+               }
+            } else if ($exists == 2) {
+               //The user is not authenticated on the GLPI DB, but we need to get informations about him
+               //The determine authentication method
+               $this->user->getFromDBbyName(addslashes($login_name));
+      
+               //If the user has already been logged, the method_auth and auths_id are already set
+               //so we test this connection first
+               switch ($this->user->fields["authtype"]) {
+                  case AUTH_EXTERNAL :
+                  case AUTH_LDAP :
+                     if (canUseLdap()) {
+                        error_reporting(0);
+                        try_ldap_auth($this, $login_name, $login_password,
+                                      $this->user->fields["auths_id"]);
+                     }
+                     break;
+      
+                  case AUTH_MAIL :
+                     if (canUseImapPop()) {
+                        try_mail_auth($this, $login_name, $login_password,
+                                      $this->user->fields["auths_id"]);
+                     }
+                     break;
+      
+                  case NOT_YET_AUTHENTIFIED :
+                     break;
+               }
+            }
+      
+            //If the last good auth method is not valid anymore, we test all methods !
+            //test all ldap servers
+            if (!$this->auth_succeded && canUseLdap()) {
+               error_reporting(0);
+               try_ldap_auth($this,$login_name,$login_password);
+            }
+      
+            //test all imap/pop servers
+            if (!$this->auth_succeded && canUseImapPop()) {
+               try_mail_auth($this,$login_name,$login_password);
+            }
+            // Fin des tests de connexion
+         }
+      }
+      
+      // Ok, we have gathered sufficient data, if the first return false the user
+      // is not present on the DB, so we add him.
+      // if not, we update him.
+      if ($this->auth_succeded) {
+         // Prepare data
+         $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
+         if ($this->extauth) {
+            $this->user->fields["_extauth"] = 1;
+         }
+         if ($DB->isSlave()) {
+            if (!$this->user_present) { // Can't add in slave mode
+               $this->addToError($LANG['login'][11]);
+               $this->auth_succeded = false;
+            }      
+         } else {
+             if ($this->user_present) {
+               // update user and Blank PWD to clean old database for the external auth
+               $this->user->update($this->user->fields);
+               if ($this->extauth) {
+                  $this->user->blankPassword();
+               } 
+            } else if ($CFG_GLPI["is_users_auto_add"]) {
+               // Auto add user 
+               $input = $this->user->fields;
+               unset ($this->user->fields);
+               $this->user->add($input);
+            } else { 
+               // Auto add not enable so auth failed
+               $this->addToError($LANG['login'][11]);
+               $this->auth_succeded = false;
+            }
+         }
+      }
+      
+      // Log Event (if possible)
+      if (!$DB->isSlave()) {
+         // GET THE IP OF THE CLIENT
+         $ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+      
+         if ($this->auth_succeded) {
+            $logged = (GLPI_DEMO_MODE ? "logged in" : $LANG['log'][40]);
+            logEvent(-1, "system", 3, "login", $login_name . " $logged: " . $ip);
+      
+         } else {
+            $logged = (GLPI_DEMO_MODE ? "connection failed" : $LANG['log'][41]);
+            logEvent(-1, "system", 1, "login", $logged . ": " . $login_name . " ($ip)");
+         }
+      }
+      $this->initSession();
+      
+      return $this->auth_succeded;
+   }
 }
 
 /**
