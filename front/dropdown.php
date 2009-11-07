@@ -42,13 +42,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
 if ($itemtype) {
    checkTypeRight($itemtype, 'r');
-   
+
    $ci = new CommonItem();
    $ci->setType($itemtype,true);
-   
+
    commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
                 str_replace('glpi_','',$ci->obj->table));
-   
+
    manageGetValuesInSearch($itemtype);
    searchForm($itemtype,$_GET);
    showList($itemtype,$_GET);
@@ -56,15 +56,15 @@ if ($itemtype) {
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 
    $optgroup = getAllDropdowns();
-   
+
    echo "<div align='center'>";
-   
+   /*
    $nb=0;
    foreach($optgroup as $label => $dp) {
       $nb += count($dp);
    }
-   $step = ($nb>15 ? ($nb/3) : $nb);      
-   
+   $step = ($nb>15 ? ($nb/3) : $nb);
+
    echo "<table><tr class='top'><td><table class='tab_cadre'>";
    $i=1;
    foreach($optgroup as $label => $dp) {
@@ -82,8 +82,30 @@ if ($itemtype) {
       }
    }
    echo "</table></td></tr></table>";
-   
-   echo "</table></div>";
+
+   echo "</table>";
+   */
+   echo "<table class='tab_cadre_fixe'>";
+
+   $i=1;
+   foreach($optgroup as $label => $dp) {
+
+      echo "<tr><th>";
+      echo "<a  href=\"javascript:showHideDiv('dropdowncat$i','imgcat$i','" .
+           GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
+      echo "<img alt='' name='imgcat$i' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;$label";
+      echo "</a></th></tr>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>";
+      echo "<div id='dropdowncat$i' style='display:none;'><ul>";
+
+      foreach ($dp as $key => $val) {
+         echo "<li><a href='".GLPI_ROOT.'/'.$SEARCH_PAGES[$key]."'>$val</a></li>\n";
+      }
+
+      echo "</ul></div></td></tr>";
+      $i++;
+   }
+   echo "</table>";
 }
 
 commonFooter();
