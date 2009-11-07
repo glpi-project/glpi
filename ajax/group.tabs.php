@@ -52,11 +52,16 @@ if ($_POST["id"]>0) {
       case -1 :
          showGroupUsers($_POST['target'],$_POST["id"]);
          showGroupDevice($_POST["id"]);
+         $group->showLDAPForm($_POST['target'],$_POST["id"]);
          displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
          showGroupDevice($_POST["id"]);
+         break;
+
+      case 3 :
+         $group->showLDAPForm($_POST['target'],$_POST["id"]);
          break;
 
       default :

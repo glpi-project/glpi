@@ -75,6 +75,9 @@ class Group extends CommonDBTM {
             $ong[1]=$LANG['Menu'][14];
          }
          $ong[2]=$LANG['common'][1];
+		 if (haveRight("config","r") && useAuthLdap()) {
+		 	$ong[3]=$LANG['setup'][3];
+		 }	
       } else { // New item
          $ong[1]=$LANG['title'][26];
       }
@@ -115,15 +118,9 @@ class Group extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
                               $this->fields["entities_id"]);
       echo "</td>";
-      if (useAuthLdap()) {
-         echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
-         echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >".
-                  $this->fields["comment"]."</textarea>";
-      } else {
-         echo "<td rowspan='2' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
-         echo "<td class='center middle' rowspan='2'>.<textarea cols='45' rows='3' name='comment' >".
-                  $this->fields["comment"]."</textarea>";
-      }
+      echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='3'>.<textarea cols='45' rows='3' name='comment' >".
+               $this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -134,35 +131,18 @@ class Group extends CommonDBTM {
       dropdownUsers('users_id',$this->fields["users_id"],'all',0,1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
-      if (useAuthLdap()) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][260]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'>";
+      if(!$ID) {
+         $template = "newtemplate";
+	      echo "<td>".$LANG['computers'][14]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_field",$this->table,"ldap_field",
-                                 $this->fields["ldap_field"],40,$this->fields["entities_id"]);
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][601]."&nbsp;:</td>";
+         echo convDateTime($_SESSION["glpi_currenttime"]);
+      } else {
+         echo "<td>".$LANG['common'][26]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_value",$this->table,"ldap_value",
-                                 $this->fields["ldap_value"],40,$this->fields["entities_id"]);
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".$LANG['setup'][257]."&nbsp;:</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][261]."&nbsp;:</td>";
-         echo "<td>";
-         autocompletionTextField("ldap_group_dn",$this->table,"ldap_group_dn",
-                                 $this->fields["ldap_group_dn"],40,$this->fields["entities_id"]);
-         echo "</td></tr>";
+         echo  convDateTime($this->fields["date_mod"]);
       }
+      echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
 
@@ -235,6 +215,12 @@ class Group extends CommonDBTM {
       $tab[6]['name']      = $LANG['entity'][9];
       $tab[6]['datatype']  = 'bool';
 
+      $tab[19]['table']     = 'glpi_groups';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
       $tab[80]['linkfield'] = 'entities_id';
@@ -242,6 +228,60 @@ class Group extends CommonDBTM {
 
       return $tab;
    }
+
+   function showLDAPForm ($target,$ID) {
+      global $CFG_GLPI, $LANG;
+
+      if (!haveRight("group","r")) {
+         return false;
+      }
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
+
+		echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+      if (useAuthLdap()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['setup'][260]."&nbsp;:</td>";
+         echo "<td>";
+         autocompletionTextField("ldap_field",$this->table,"ldap_field",
+                                 $this->fields["ldap_field"],40,$this->fields["entities_id"]);
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['setup'][601]."&nbsp;:</td>";
+         echo "<td>";
+         autocompletionTextField("ldap_value",$this->table,"ldap_value",
+                                 $this->fields["ldap_value"],40,$this->fields["entities_id"]);
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' class='center'>".$LANG['setup'][257]."&nbsp;:</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['setup'][261]."&nbsp;:</td>";
+         echo "<td>";
+         autocompletionTextField("ldap_group_dn",$this->table,"ldap_group_dn",
+                                 $this->fields["ldap_group_dn"],40,$this->fields["entities_id"]);
+         echo "</td></tr>";
+      }
+
+      $this->showFormButtons($ID,'',2, false);
+
+		echo "</table></div></form>";      
+   }
+
 }
 
 ?>
