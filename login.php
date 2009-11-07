@@ -193,20 +193,21 @@ if ($identificat->auth_succeded) {
          $identificat->auth_succeded = false;
       }      
    } else {
-      // Need auto add user ?
-      if (!$identificat->user_present && $CFG_GLPI["is_users_auto_add"]) {
+       if ($identificat->user_present) {
+         // update user and Blank PWD to clean old database for the external auth
+         $identificat->user->update($identificat->user->fields);
+         if ($identificat->extauth) {
+            $identificat->user->blankPassword();
+         } 
+      } else if ($CFG_GLPI["is_users_auto_add"]) {
+         // Auto add user 
          $input = $identificat->user->fields;
          unset ($identificat->user->fields);
          $identificat->user->add($input);
-      } else if (!$identificat->user_present) { // Auto add not enable so auth failed
+      } else { 
+         // Auto add not enable so auth failed
          $identificat->addToError($LANG['login'][11]);
          $identificat->auth_succeded = false;
-      } else if ($identificat->user_present) {
-         // update user and Blank PWD to clean old database for the external auth
-         $identificat->user->update($identificat->user->fields);
-          if ($identificat->extauth) {
-            $identificat->user->blankPassword();
-         }
       }
    }
 }
