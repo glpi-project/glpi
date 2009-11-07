@@ -460,6 +460,24 @@ class TicketCategory extends CommonTreeDropdown {
                           'list'  => true));
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[70]['table']     = 'glpi_users';
+      $tab[70]['field']     = 'name';
+      $tab[70]['linkfield'] = 'users_id';
+      $tab[70]['name']      = $LANG['common'][10];
+
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['linkfield'] = 'groups_id';
+      $tab[71]['name']      = $LANG['common'][35];
+
+      return $tab;
+   }
+
    static function getTypeName() {
       global $LANG;
 

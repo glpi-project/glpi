@@ -1966,7 +1966,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td >";
    if ($canupdate) {
       dropdownValue("glpi_ticketscategories","ticketscategories_id",
-                    $job->fields["ticketscategories_id"]);
+                    $job->fields["ticketscategories_id"],1,$job->fields["entities_id"]);
    } else {
       echo getDropdownName("glpi_ticketscategories",$job->fields["ticketscategories_id"]);
    }
