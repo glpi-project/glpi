@@ -699,28 +699,27 @@ class Job extends CommonDBTM {
       } else if ($input["users_id"]) {
          $input["users_id_recipient"] = $input["users_id"];
       }
-
       if (!isset($input["requesttypes_id"])) {
          $input["requesttypes_id"]=RequestType::getDefault('helpdesk');
       }
       if (!isset($input["status"])) {
          $input["status"]="new";
       }
-      if (!isset($input["users_id_assign"])) {
-         $input["users_id_assign"]=0;
-      }
       if (!isset($input["date"]) || empty($input["date"])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
-      if (isset($input["items_id"]) && $input["items_id"]==0) {
-         $input["itemtype"]=0;
-      }
-      if ($input["itemtype"]==0) {
-         $input["items_id"]=0;
-      }
 
-      // Auto group define
-      if (isset($input["items_id"]) && $input["items_id"] && $input["itemtype"]) {
+      // Set default dropdown
+      $dropdown_fields = array('entities_id','groups_id','groups_id_assign', 'itemtype','items_id',
+                               'users_id','users_id_assign', 'suppliers_id_assign',
+                               'ticketscategories_id');
+      foreach ($dropdown_fields as $field ) {
+         if (!isset($input[$field])) {
+            $input[$field]=0;
+         }
+      }
+      // Auto group define from item
+      if ($input["items_id"]>0 && $input["itemtype"]>0) {
          $ci=new CommonItem;
          $ci->getFromDB($input["itemtype"],$input["items_id"]);
          if ($tmp=$ci->getField('groups_id')) {
@@ -728,19 +727,32 @@ class Job extends CommonDBTM {
          }
       }
 
-      if ($CFG_GLPI["use_auto_assign_to_tech"]
-          && $input["users_id_assign"]==0
-          && isset($input["items_id"])
-          && $input["items_id"]>0
-          && isset($input["itemtype"])
-          && $input["itemtype"]>0) {
+      if ($CFG_GLPI["use_auto_assign_to_tech"]) {
 
-         $ci=new CommonItem;
-         $ci->getFromDB($input["itemtype"],$input["items_id"]);
-         if ($tmp=$ci->getField('users_id_tech')) {
-            $input["users_id_assign"] = $tmp;
-            if ($input["users_id_assign"]>0) {
-               $input["status"] = "assign";
+         // Auto assign tech from item
+         if ($input["users_id_assign"]==0 && $input["items_id"]>0 && $input["itemtype"]>0) {
+
+            $ci = new CommonItem();
+            $ci->getFromDB($input["itemtype"],$input["items_id"]);
+            if ($tmp=$ci->getField('users_id_tech')) {
+               $input["users_id_assign"] = $tmp;
+               if ($input["users_id_assign"]>0) {
+                  $input["status"] = "assign";
+               }
+            }
+         }
+
+         // Auto assign tech/group from Category
+         if ($input['ticketscategories_id']>0
+             && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
+
+            $cat = new TicketCategory();
+            $cat->getFromDB($input['ticketscategories_id']);
+            if (!$input['users_id_assign'] && $tmp=$cat->getField('users_id')) {
+               $input['users_id_assign'] = $tmp;
+            }
+            if (!$input['groups_id_assign'] && $tmp=$cat->getField('groups_id')) {
+               $input['groups_id_assign'] = $tmp;
             }
          }
       }
@@ -754,14 +766,6 @@ class Job extends CommonDBTM {
          $input['users_locations']=$user->fields['locations_id'];
       }
 
-      // Set default dropdown
-      $dropdown_fields = array('entities_id','groups_id','groups_id_assign','itemtype',
-                               'requesttypes_id','users_id_assign','users_id','ticketscategories_id');
-      foreach ($dropdown_fields as $field ) {
-         if (!isset($input[$field])) {
-            $input[$field]=0;
-         }
-      }
 
       $input=$rules->processAllRules($input,$input);
 
@@ -774,10 +778,9 @@ class Job extends CommonDBTM {
          $input["user_email"] = $user->fields["email"];
       }
 
-      if (((isset($input["users_id_assign"]) && $input["users_id_assign"]>0)
-           || (isset($input["groups_id_assign"]) && $input["groups_id_assign"]>0)
-           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0)
-          )
+      if (($input["users_id_assign"]>0
+            || $input["groups_id_assign"]>0
+            || $input["suppliers_id_assign"]>0)
           && $input["status"]=="new") {
 
          $input["status"] = "assign";
