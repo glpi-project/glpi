@@ -47,7 +47,7 @@ if (!isset($_POST["id"])) {
    exit();
 }
 
-$ent=new Enterprise();
+$supplier=new Enterprise();
 
 if (!isset($_POST["start"])) {
    $_POST["start"]=0;
@@ -59,21 +59,17 @@ if (!isset($_POST["order"])) {
    $_POST["order"]="";
 }
 
-$ent->check($_POST["id"],'r');
+$supplier->check($_POST["id"],'r');
 
 if ($_POST["id"]>0) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showAssociatedContact($_POST["id"]);
+         $supplier->showContacts();
          showContractAssociatedEnterprise($_POST["id"]);
          showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"]);
          showJobListForEnterprise($_POST["id"]);
          showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
          displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
-         break;
-
-      case 1 :
-         showAssociatedContact($_POST["id"]);
          break;
 
       case 4 :
@@ -97,12 +93,12 @@ if ($_POST["id"]>0) {
          break;
 
       case 15 :
-         showInfocomEnterprise($_POST["id"]);
+         $supplier->showInfocoms();
          break;
 
       default :
          if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showAssociatedContact($_POST["id"]);
+            $supplier->showContacts();
          }
    }
 }

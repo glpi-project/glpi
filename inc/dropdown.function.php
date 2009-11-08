@@ -177,7 +177,10 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
    }
    // Display specific Links
    if ($table=="glpi_suppliers") {
-      echo getEnterpriseLinks($value);
+      $supplier = new Enterprise();
+      if ($supplier->getFromDB($value)) {
+         echo $supplier->getLinks();
+      }
    }
 
    return $rand;
@@ -2216,7 +2219,7 @@ function getRequestTypeName($value) {
 
 /**
  * Dropdown of ticket request type ***** TODO : to be removed
- * 
+ *
  *
  * @param $name select name
  * @param $value default value
