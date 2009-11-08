@@ -381,10 +381,6 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
     * Move licenses from a software to another
     * @param $ID old software ID
     * @param $new_software_id new software ID
-    * @param $version_id version ID to move
-    * @param $old_version old version
-    * @param $new_version new version
-    * @param $entity entity ID
     */
    function moveLicenses($ID, $new_software_id) {
       global $DB;

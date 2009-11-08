@@ -47,7 +47,7 @@ class Plugin extends CommonDBTM {
    /**
     * Retrieve an item from the database using its directory
     *
-    *@param $name name of the plugin
+    *@param $dir directory of the plugin
     *@return true if succeed else false
     *
    **/

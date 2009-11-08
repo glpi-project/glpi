@@ -43,7 +43,6 @@ if (!defined('GLPI_ROOT')){
  * CartridgeType Class
  * This class is used to manage the various types of cartridges.
  * \see Cartridge
- * \users_id Julien Dombre
  */
 class CartridgeType extends CommonDBTM {
 

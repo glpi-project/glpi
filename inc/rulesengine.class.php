@@ -1160,8 +1160,6 @@ class Rule extends CommonDBTM {
    /**
     * Filter actions if needed
     *  @param $actions the actions array
-    *  @param $new_action indicates if the function is called when adding a new action
-    *  or when displaying an already added action
     * @return the filtered actions array
     */
    function filterActions($actions) {

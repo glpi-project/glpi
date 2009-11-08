@@ -230,9 +230,6 @@ class MailCollect {
    /**
    * Constructor
    * @param $mailgateID ID of the mailgate
-   * @param $username IMAP/POP user name
-    * @param $password IMAP/POP password
-   * @param $entity entity ID used
    * @param $display display messages in MessageAfterRedirect or just return error
    * @return if $display = false return messages result string
    */

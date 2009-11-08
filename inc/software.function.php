@@ -1143,6 +1143,7 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
  * @param $data data used to display
  * @param $computers_ID ID of the computer
  * @param $withtemplate template case of the view process
+ * @param $canedit boolean user can edit software ?
 
  * @return array of found license id
  */
@@ -1208,6 +1209,8 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
  * @param $data data used to display
  * @param $computers_ID ID of the computer
  * @param $withtemplate template case of the view process
+ * @param $canedit boolean user can edit software ?
+
  * @return nothing
  */
 function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {

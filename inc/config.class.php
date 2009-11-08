@@ -726,6 +726,7 @@ class Config extends CommonDBTM {
     * Print the mailing config form
     *
     *@param $target filename : where to go when done.
+    *@param $tabs integer : ID of the tab to display
     *
     *@return Nothing (display)
     *

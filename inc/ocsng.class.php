@@ -96,8 +96,6 @@ class Ocsng extends CommonDBTM {
     *
     *@param $target form target
     *@param $ID Integer : Id of the ocs config
-    *@param $withtemplate template or basic computer
-    *@param $templateid Integer : Id of the template used
     *@todo clean template process
     *@return Nothing (display)
     *

@@ -351,10 +351,10 @@ class DBmysql {
     *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
     *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
     *
-    * @param $field name or array of field names
-    * @param $orderby filed name or array of field names
-    * @param $limit max of row to retrieve
-    * @param $start first rox to retrieve
+    * param 'field' name or array of field names
+    * param 'orderby' filed name or array of field names
+    * param 'limit' max of row to retrieve
+    * param 'start' first row to retrieve
     *
     * @return DBIterator
     **/
@@ -380,8 +380,8 @@ class DBmysqlIterator  implements Iterator {
    /**
     * Constructor
     *
-    * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
-    * @param $tableorsql table name, array of names or SQL query
+    * @param $dbconnexion Database Connnexion (must be a CommonDBTM object)
+    * @param $table table name
     * @param $crit string or array of filed/values, ex array("id"=>1), if empty => all rows
     *
     **/
