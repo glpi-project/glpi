@@ -2024,12 +2024,13 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
    echo "<td rowspan='2''>";
    if ($canupdate) {
-      if (haveTypeRight($job->fields["itemtype"],'r')) {
-         echo $item->getType()." - ".$item->getLink(1);
+      if ($ID) {
+         if (haveTypeRight($job->fields["itemtype"],'r')) {
+            echo $item->getType()." - ".$item->getLink(true);
+         } else {
+            echo $item->getType()." ".$item->getNameID();
+         }
       } else {
-         echo $item->getType()." ".$item->getNameID();
-      }
-      if (!$ID) {
          dropdownMyDevices($array["users_id"],$job->fields["entities_id"],
                            $job->fields["itemtype"], $job->fields["items_id"]);
       }
