@@ -45,14 +45,6 @@ class Script_Timer {
    //! Timer value
    var $timer=0;
 
-
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      return true;
-   }
-
    //! Start the Timer
    function Start_Timer () {
       $this->timer=microtime(true);

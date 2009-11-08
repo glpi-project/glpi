@@ -39,18 +39,17 @@ if (!defined('GLPI_ROOT')) {
 /// Rule class for Rights management
 class RightAffectRule extends Rule {
 
+   // From Rule
+   public $sub_type = RULE_AFFECT_RIGHTS;
+   public $right='rule_ldap';
+   public $orderby="name";
+
    /**
     * Constructor
    **/
    function __construct() {
-      global $RULES_CRITERIAS;
-
-      parent::__construct(RULE_AFFECT_RIGHTS);
-
       //Dynamically add all the ldap criterias to the current list of rule's criterias
       $this->addLdapCriteriasToArray();
-      $this->right="rule_ldap";
-      $this->orderby="name";
    }
 
    function preProcessPreviewResults($output) {
@@ -346,26 +345,21 @@ class RightAffectRule extends Rule {
 /// Rule collection class for Rights management
 class RightRuleCollection extends RuleCollection {
 
+   // From RuleCollection
+   public $sub_type = RULE_AFFECT_RIGHTS;
+   public $rule_class_name = 'RightAffectRule';
+   public $stop_on_first_match=false;
+   public $right = 'rule_ldap';
+   public $orderby="name";
+   public $menu_option='ticket';
+
+   // Specific ones
    /// Array containing results : entity + right
    var $rules_entity_rights = array();
    /// Array containing results : only entity
    var $rules_entity = array();
    /// Array containing results : only right
    var $rules_rights = array();
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      global $DB;
-
-      $this->sub_type = RULE_AFFECT_RIGHTS;
-      $this->rule_class_name = 'RightAffectRule';
-      $this->stop_on_first_match=false;
-      $this->right="rule_ldap";
-      $this->orderby="name";
-      $this->menu_option="right";
-   }
 
    function getTitle() {
       global $LANG;

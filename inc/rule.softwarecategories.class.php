@@ -39,16 +39,13 @@ if (!defined('GLPI_ROOT')) {
 
 class SoftwareCategoriesRuleCollection extends RuleCollection {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->sub_type = RULE_SOFTWARE_CATEGORY;
-      $this->rule_class_name = 'SoftwareCategoriesRule';
-      $this->stop_on_first_match=true;
-      $this->right="rule_softwarescategories";
-      $this->menu_option="softwarecategories";
-   }
+   // From RuleCollection
+   public $sub_type = RULE_SOFTWARE_CATEGORY;
+   public $rule_class_name = 'SoftwareCategoriesRule';
+   public $stop_on_first_match=true;
+   public $right='rule_softwarescategories';
+   public $menu_option='softwarecategories';
+
 
    function getTitle() {
       global $LANG;
@@ -86,15 +83,10 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 **/
 class SoftwareCategoriesRule extends Rule {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      parent::__construct(RULE_SOFTWARE_CATEGORY);
-
-      $this->right="rule_softwarescategories";
-      $this->can_sort=true;
-   }
+   // From Rule
+   public $sub_type = RULE_SOFTWARE_CATEGORY;
+   public $right='rule_softwarescategories';
+   public $can_sort=true;
 
    function getTitle() {
       global $LANG;

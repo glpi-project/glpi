@@ -45,13 +45,13 @@ if (!defined('GLPI_ROOT')){
 /// XML class
 class XML {
 	/// Array of SQL requests to export
-	var $SqlString;
+	var $SqlString ="";
 	/// 1 there is a problem !!!
-	var $IsError;
+	var $IsError = 0;
 	/// If there is an error, this string explains it
-	var $ErrorString;
+	var $ErrorString = "NO errors ;)";
 	/// Which format do you want your XML ?
-	var $Type;
+	var $Type = 1;
 	///path where the file will be saved.	
 	var $FilePath;  
 
@@ -116,18 +116,6 @@ class XML {
 
 
 	 */
-	/**
-	 * Constructor
-	**/
-	function __construct()
-	{
-		// Initialize the values with DEFAULT value
-		$this->IsError=0;
-		$this->Type=1;
-		$this->ErrorString="NO errors ;)";
-		$this->SqlString="";
-	}
-
 
 	/**
 	 * Do XML export
