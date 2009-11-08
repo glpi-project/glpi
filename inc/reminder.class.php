@@ -41,16 +41,12 @@ if (!defined('GLPI_ROOT')) {
 /// Reminder class
 class Reminder extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_reminders";
-      $this->type=REMINDER_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-      $this->may_be_private=true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_reminders";
+   public $type = REMINDER_TYPE;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
+   public $may_be_private=true;
 
    function prepareInputForAdd($input) {
       global $LANG;

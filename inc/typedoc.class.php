@@ -40,14 +40,9 @@ if (!defined('GLPI_ROOT')) {
 /// TypeDoc class
 class Typedoc  extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table="glpi_documentstypes";
-      $this->type=TYPEDOC_TYPE;
-   }
-
+   // From CommonDBTM
+   public $table = "glpi_documentstypes";
+   public $type = TYPEDOC_TYPE;
 
    function defineTabs($ID,$withtemplate){
       global $LANG;

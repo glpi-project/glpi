@@ -40,13 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Reservation item class
 class ReservationItem extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_reservationsitems";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = "glpi_reservationsitems";
 
    /**
     * Retrieve an item from the database for a specific item
@@ -98,13 +93,8 @@ class ReservationItem extends CommonDBTM {
 /// Reservation class
 class ReservationResa extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_reservations";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = "glpi_reservations";
 
    function pre_deleteItem($ID) {
       global $CFG_GLPI;

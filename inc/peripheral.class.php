@@ -41,15 +41,11 @@ if (!defined('GLPI_ROOT')){
 
 class Peripheral  extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_peripherals";
-      $this->type=PERIPHERAL_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_peripherals";
+   public $type = PERIPHERAL_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

@@ -39,13 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 class Registry extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_registrykeys";
-      $this->type=REGISTRY_TYPE;
-   }
+   // From CommonDBTM
+   public $table = "glpi_registrykeys";
+   public $type = REGISTRY_TYPE;
 
    function cleanDBonPurge($ID) {
       global $DB;
