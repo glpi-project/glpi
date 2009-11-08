@@ -62,7 +62,7 @@ class SingletonRuleList {
 
 class RuleCollection {
    /// Rule type
-   var $sub_type;
+   public $sub_type;
    /// Name of the class used to rule
    var $rule_class_name="Rule";
    /// process collection stop on first matched rule
@@ -86,8 +86,10 @@ class RuleCollection {
    * Constructor
    * @param sub_type the rule type used for the collection
    **/
-   function __construct($sub_type) {
-      $this->sub_type = $sub_type;
+   function __construct($sub_type=-1) {
+      if ($sub_type > 0){
+         $this->sub_type = $sub_type;
+      }
    }
 
    /**
