@@ -41,15 +41,11 @@ if (!defined('GLPI_ROOT')){
 
 class Phone extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_phones";
-      $this->type=PHONE_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_phones";
+   public $type = PHONE_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;

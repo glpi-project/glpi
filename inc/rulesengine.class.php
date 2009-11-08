@@ -38,17 +38,9 @@ if (!defined('GLPI_ROOT')) {
 
 class SingletonRuleList {
    /// Items list
-   var $list;
+   var $list = array();
    /// Items loaded ?
-   var $load;
-
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->list = array();
-      $this->load = 0;
-   }
+   var $load = 0;
 
    /**
    * get a unique instance of a SingletonRuleList for a type of RuleCollection
@@ -67,7 +59,6 @@ class SingletonRuleList {
 
 
 }
-
 
 class RuleCollection {
    /// Rule type
@@ -730,6 +721,11 @@ class RuleCollection {
  *   - actions
 **/
 class Rule extends CommonDBTM {
+   // From CommonDBTM
+   public $table = "glpi_rules";
+   public $type = RULE_TYPE;
+
+   // Specific ones
    ///Actions affected to this rule
    var $actions = array();
    ///Criterias affected to this rule
@@ -739,7 +735,7 @@ class Rule extends CommonDBTM {
    /// Right needed to use this rule
    var $right="config";
    /// Rules can be sorted ?
-   var $can_sort;
+   var $can_sort=false;
    /// field used to order rules
    var $orderby="ranking";
 
@@ -748,10 +744,7 @@ class Rule extends CommonDBTM {
    * @param sub_type the rule type used for the collection
    **/
    function __construct($sub_type=0) {
-      $this->table = "glpi_rules";
-      $this->type = RULE_TYPE;
       $this->sub_type=$sub_type;
-      $this->can_sort=false;
    }
 
    function post_getEmpty () {
@@ -1904,13 +1897,8 @@ class Rule extends CommonDBTM {
 
 class RuleAction extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_rulesactions";
-      $this->type = -1;
-   }
+   // From CommonDBTM
+   public $table = "glpi_rulesactions";
 
    /**
     * Get all actions for a given rule
@@ -1956,14 +1944,8 @@ class RuleAction extends CommonDBTM {
 
 /// Criteria Rule class
 class RuleCriteria extends CommonDBTM {
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_rulescriterias";
-      $this->type = -1;
-   }
+   // From CommonDBTM
+   public $table = "glpi_rulescriterias";
 
    /**
     * Get all criterias for a given rule

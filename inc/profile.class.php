@@ -40,6 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Profile class
 class Profile extends CommonDBTM {
 
+   // From CommonDBTM
+   public $table = "glpi_profiles";
+   public $type = PROFILE_TYPE;
+
+   // Specific ones
+
    /// Helpdesk fields of helpdesk profiles
    var $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','comment_ticket',
                               'observe_ticket','password_update','helpdesk_hardware',
@@ -50,14 +56,6 @@ class Profile extends CommonDBTM {
    /// Fields not related to a basic right
    var $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
                              'show_group_hardware','own_ticket','helpdesk_status');
-
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_profiles";
-      $this->type=PROFILE_TYPE;
-   }
 
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;

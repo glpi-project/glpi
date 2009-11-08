@@ -41,16 +41,12 @@ if (!defined('GLPI_ROOT')) {
 
 class Printer  extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_printers";
-      $this->type=PRINTER_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_printers";
+   public $type = PRINTER_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;

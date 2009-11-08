@@ -40,13 +40,8 @@ if (!defined('GLPI_ROOT')){
 
 class SetupSearchDisplay extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_displayprefs";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = "glpi_displayprefs";
 
    function prepareInputForAdd($input) {
       global $DB;

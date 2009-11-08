@@ -41,12 +41,8 @@ if (!defined('GLPI_ROOT')){
 
 class PlanningTracking extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_ticketsplannings";
-   }
+   // From CommonDBTM
+   public $table = "glpi_ticketsplannings";
 
    function prepareInputForUpdate($input) {
 

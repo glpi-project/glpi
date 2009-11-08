@@ -40,13 +40,9 @@ if (!defined('GLPI_ROOT')) {
 
 class Plugin extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_plugins";
-      $this->type=PLUGIN_TYPE;
-   }
+   // From CommonDBTM
+   public $table = "glpi_plugins";
+   public $type = PLUGIN_TYPE;
 
    /**
     * Retrieve an item from the database using its directory
