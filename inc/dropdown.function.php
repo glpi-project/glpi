@@ -1351,7 +1351,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 	//error_log($query);
 	$result=$DB->query($query);
 
-	echo "<select name='_rubdoc' id='rubdoc'>\n";
+	echo "<select name='_rubdoc' id='rubdoc$rand'>\n";
 	echo "<option value='0'>------</option>\n";
 	while ($data=$DB->fetch_assoc($result)){
 		echo "<option value='".$data['ID']."'>".$data['name']."</option>\n";
@@ -1365,7 +1365,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 			'used'=>$used
 			);
 
-	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",$params);
+	ajaxUpdateItemOnSelectEvent("rubdoc$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",$params);
 
 	echo "<span id='show_$myname$rand'>";
 	$_POST["entity_restrict"]=$entity_restrict;
