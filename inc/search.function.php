@@ -2673,7 +2673,11 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          return "&nbsp;";
 
       case "glpi_documents.filename" :
-         return getDocumentLink($data['id']);
+         $doc = new Document();
+         if ($doc->getFromDB($data['id'])) {
+            return $doc->getDownloadLink();
+         }
+         return "N/A";
 
       case "glpi_devicesharddrives.specif_default" :
       case "glpi_devicesmemories.specif_default" :
