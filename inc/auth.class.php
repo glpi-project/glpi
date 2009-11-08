@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Identification {
    //! Error string
-   var $err;
+   var $err ='';
    /** User class variable
     * @see User
     */
@@ -64,7 +64,6 @@ class Identification {
     * Constructor
    **/
    function __construct() {
-      $this->err = "";
       $this->user = new User();
    }
 
@@ -633,13 +632,9 @@ class Identification {
 **/
 class AuthMail extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      $this->table = "glpi_authmails";
-      $this->type = AUTH_MAIL_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_authmails';
+   public $type = AUTH_MAIL_TYPE;
 
    function prepareInputForUpdate($input) {
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
@@ -737,15 +732,9 @@ class AuthMail extends CommonDBTM {
 **/
 class AuthLDAP extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      global $CFG_GLPI;
-
-      $this->table = "glpi_authldaps";
-      $this->type = AUTH_LDAP_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_authldaps';
+   public $type = AUTH_LDAP_TYPE;
 
    function post_getEmpty () {
       $this->fields['port']='389';
@@ -1024,12 +1013,9 @@ class AuthLDAP extends CommonDBTM {
  *  Class used to manage LDAP replicate config
 **/
 class AuthLdapReplicate extends CommonDBTM {
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      $this->table ="glpi_authldapsreplicates";
-   }
+
+   // From CommonDBTM
+   public $table = 'glpi_authldapsreplicates';
 
    function prepareInputForAdd($input) {
       if (isset($input["port"]) && intval($input["port"])==0) {

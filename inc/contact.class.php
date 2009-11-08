@@ -42,15 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class Contact extends CommonDBTM{
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table="glpi_contacts";
-      $this->type=CONTACT_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_contacts';
+   public $type = CONTACT_TYPE;
+   public $may_be_recursive = true;
+   public $entity_assign = true;
 
    function cleanDBonPurge($ID) {
       global $DB;
@@ -464,19 +460,16 @@ class Contact extends CommonDBTM{
 
 class ContactSupplier extends CommonDBRelation{
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table = 'glpi_contacts_suppliers';
-      $this->type = CONTACTSUPPLIER_TYPE;
+   // From CommonDBTM
+   public $table = 'glpi_contacts_suppliers';
+   public $type = CONTACTSUPPLIER_TYPE;
 
-      $this->itemtype_1 = CONTACT_TYPE;
-      $this->items_id_1 = 'contacts_id';
+   // From CommonDBRelation
+   public $itemtype_1 = CONTACT_TYPE;
+   public $items_id_1 = 'documents_id';
 
-      $this->itemtype_2 = ENTERPRISE_TYPE;
-      $this->items_id_2 = 'suppliers_id';
-   }
+   public $itemtype_2 = ENTERPRISE_TYPE;
+   public $items_id_2 = 'contacts_id';
 
 }
 ?>

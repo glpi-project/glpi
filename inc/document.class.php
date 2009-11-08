@@ -42,15 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class Document extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_documents";
-      $this->type=DOCUMENT_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_documents';
+   public $type = DOCUMENT_TYPE;
+   public $may_be_recursive = true;
+   public $entity_assign = true;
 
    /**
     * Retrieve an item from the database using the filename
@@ -1005,19 +1001,16 @@ class Document extends CommonDBTM {
 // Relation between Documents and Items
 class DocumentItem extends CommonDBRelation{
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table = 'glpi_documents_items';
-      $this->type = DOCUMENTITEM_TYPE;
+   // From CommonDBTM
+   public $table = 'glpi_documents_items';
+   public $type = DOCUMENTITEM_TYPE;
 
-      $this->itemtype_1 = DOCUMENT_TYPE;
-      $this->items_id_1 = 'documents_id';
+   // From CommonDBRelation
+   public $itemtype_1 = DOCUMENT_TYPE;
+   public $items_id_1 = 'documents_id';
 
-      $this->itemtype_2 = 'itemtype';
-      $this->items_id_2 = 'items_id';
-   }
+   public $itemtype_2 = 'itemtype';
+   public $items_id_2 = 'items_id';
 
    function prepareInputForAdd($input) {
 
