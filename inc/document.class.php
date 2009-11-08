@@ -1008,7 +1008,7 @@ class Document extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
       $ID = $item->getField('id');
-      if (!(is_a($item,'kbItem') && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
+      if (!(($item instanceof kbItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
          if (!$ID || !$item->can($item->fields['id'],'r')) {
             return false;
          }
