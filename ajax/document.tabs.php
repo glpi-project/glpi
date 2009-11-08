@@ -47,32 +47,30 @@ if (!isset($_POST["id"])) {
 }
 
 $doc= new Document();
-$doc->check($_POST["id"],'r');
 
-switch ($_REQUEST['glpi_tab']) {
-   case -1 :
-      showDeviceDocument($_POST["id"]);
-      showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
-      displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
-      break;
+if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
+   switch ($_REQUEST['glpi_tab']) {
+      case -1 :
+         $doc->showItems();
+         showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+         displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         break;
 
-   case 5 :
-      showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
-      break;
+      case 5 :
+         showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+         break;
 
-   case 10 :
-      showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
-      break;
+      case 10 :
+         showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
+         break;
 
-   default :
-      if ($_POST["id"]) {
+      default :
          if (!displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showDeviceDocument($_POST["id"]);
+            $doc->showItems();
          }
-      }
-      break;
+         break;
+   }
 }
-
 ajaxFooter();
 
 ?>
