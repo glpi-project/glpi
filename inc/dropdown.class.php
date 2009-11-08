@@ -37,18 +37,8 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-///
+/// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
-
-   /**
-    * Constructor
-    **/
-   function __construct($itemtype){
-      global $LINK_ID_TABLE;
-
-      $this->type=$itemtype;
-      $this->table=$LINK_ID_TABLE[$itemtype];
-   }
 
    /**
     * Return Additional Fileds for this type
@@ -213,25 +203,12 @@ abstract class CommonDropdown extends CommonDBTM {
 abstract class CommonTreeDropdown extends CommonDropdown {
 
    /**
-    * Constructor
-    **/
-   function __construct($itemtype){
-      global $LINK_ID_TABLE;
-
-      $this->type=$itemtype;
-      $this->table=$LINK_ID_TABLE[$itemtype];
-      $this->keyid=getForeignKeyFieldForTable($this->table);
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
-
-   /**
     * Return Additional Fileds for this type
     */
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => $this->keyid,
+      return array(array('name'  => getForeignKeyFieldForTable($this->table),
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false));
@@ -264,13 +241,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $parent = clone $this;
 
-      if (isset($input[$this->keyid])
-          && $input[$this->keyid]>0
-          && $parent->getFromDB($input[$this->keyid])) {
+      if (isset($input[getForeignKeyFieldForTable($this->table)])
+          && $input[getForeignKeyFieldForTable($this->table)]>0
+          && $parent->getFromDB($input[getForeignKeyFieldForTable($this->table)])) {
          $input['level'] = $parent->fields['level']+1;
          $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
       } else {
-         $input[$this->keyid] = 0;
+         $input[getForeignKeyFieldForTable($this->table)] = 0;
          $input['level'] = 1;
          $input['completename'] = $input['name'];
       }
@@ -281,14 +258,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function pre_deleteItem($ID) {
       global $DB;
 
-      $parent = $this->fields[$this->keyid];
+      $parent = $this->fields[getForeignKeyFieldForTable($this->table)];
 
       CleanFields($this->table, 'sons_cache', 'ancestors_cache');
       $tmp = clone $this;
       $crit = array('FIELDS'=>'id',
-                    $this->keyid=>$ID);
+                    getForeignKeyFieldForTable($this->table)=>$ID);
       foreach ($DB->request($this->table, $crit) as $data) {
-         $data[$this->keyid] = $parent;
+         $data[getForeignKeyFieldForTable($this->table)] = $parent;
          $tmp->update($data);
       }
       return true;
@@ -296,16 +273,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
       // Can't move a parent under a child
-      if (isset($input[$this->keyid])
-          && in_array($input[$this->keyid], getSonsOf($this->table, $input['id']))) {
+      if (isset($input[getForeignKeyFieldForTable($this->table)])
+          && in_array($input[getForeignKeyFieldForTable($this->table)],
+                      getSonsOf($this->table, $input['id']))) {
          return false;
       }
       return $input;
    }
 
    function post_updateItem($input,$updates,$history=1) {
-      if (in_array('name', $updates) || in_array($this->keyid, $updates)) {
-         if (in_array($this->keyid, $updates)) {
+      if (in_array('name', $updates) || in_array(getForeignKeyFieldForTable($this->table), $updates)) {
+         if (in_array(getForeignKeyFieldForTable($this->table), $updates)) {
             CleanFields($this->table, 'sons_cache', 'ancestors_cache');
          }
          regenerateTreeCompleteNameUnderID($this->table, $input['id']);
@@ -321,9 +299,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $INFOFORM_PAGES;
 
       $link = '';
-      if ($this->fields[$this->keyid]) {
+      if ($this->fields[getForeignKeyFieldForTable($this->table)]) {
          $papa = clone $this;
-         if ($papa->getFromDB($this->fields[$this->keyid])) {
+         if ($papa->getFromDB($this->fields[getForeignKeyFieldForTable($this->table)])) {
             $link = $papa->getTreeLink() . " > ";
          }
       }
@@ -363,7 +341,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "<th>".$LANG['common'][25]."</th>";
       echo "</tr>\n";
 
-      $crit = array($this->keyid  => $ID,
+      $crit = array(getForeignKeyFieldForTable($this->table)  => $ID,
                     'entities_id' => $_SESSION['glpiactiveentities']);
       foreach ($DB->request($this->table, $crit) as $data) {
          echo "<tr class='tab_bg_1'>";
@@ -400,7 +378,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
          autocompletionTextField("name",$this->table,"name");
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         echo "<input type='hidden' name='".$this->keyid."' value='$ID'></td>";
+         echo "<input type='hidden' name='".getForeignKeyFieldForTable($this->table)."' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
@@ -429,20 +407,19 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 }
 
-/// TicketCategory class
-class TicketCategory extends CommonTreeDropdown {
+/// TicketsCategory class
+class TicketsCategory extends CommonTreeDropdown {
 
-   /**
-    * Constructor
-    **/
-   function __construct(){
-      parent::__construct(TICKETCATEGORY_TYPE);
-   }
+   // From CommonDBTM
+   public $table = 'glpi_ticketscategories';
+   public $type = TICKETCATEGORY_TYPE;
+   public $entity_assign = true;
+   public $may_be_recursive = true;
 
    function getAdditionalFields() {
       global $LANG;
 
-      return  array(array('name'  => $this->keyid,
+      return  array(array('name'  => getForeignKeyFieldForTable($this->table),
                           'label' => $LANG['setup'][75],
                           'type'  => 'parent',
                           'list'  => false),
@@ -485,16 +462,14 @@ class TicketCategory extends CommonTreeDropdown {
    }
 }
 
-/// TaskCategory class
-class TaskCategory extends CommonTreeDropdown {
+/// TasksCategory class
+class TasksCategory extends CommonTreeDropdown {
 
-   /**
-    * Constructor
-    **/
-   function __construct(){
-      parent::__construct(TASKCATEGORY_TYPE);
-   }
-
+   // From CommonDBTM
+   public $table = 'glpi_taskscategories';
+   public $type = TASKCATEGORY_TYPE;
+   public $entity_assign = true;
+   public $may_be_recursive = true;
 
    static function getTypeName() {
       global $LANG;
@@ -506,18 +481,16 @@ class TaskCategory extends CommonTreeDropdown {
 /// Location class
 class Location extends CommonTreeDropdown {
 
-   /**
-    * Constructor
-    **/
-   function __construct(){
-      parent::__construct(LOCATION_TYPE);
-   }
-
+   // From CommonDBTM
+   public $table = 'glpi_locations';
+   public $type = LOCATION_TYPE;
+   public $entity_assign = true;
+   public $may_be_recursive = true;
 
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => $this->keyid,
+      return array(array('name'  => getForeignKeyFieldForTable($this->table),
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false),
@@ -712,14 +685,10 @@ class Location extends CommonTreeDropdown {
 /// Netpoint class
 class Netpoint extends CommonDropdown {
 
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      $this->type = NETPOINT_TYPE;
-      $this->table = 'glpi_netpoints';
-      $this->entity_assign = true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_netpoints';
+   public $type = NETPOINT_TYPE;
+   public $entity_assign = true;
 
    function getAdditionalFields() {
       global $LANG;
@@ -775,15 +744,12 @@ class Netpoint extends CommonDropdown {
    }
 }
 
-/// Class ItemState
-class ItemState extends CommonDropdown {
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      $this->type = ITEMSTATE_TYPE;
-      $this->table = 'glpi_states';
-   }
+/// Class State
+class State extends CommonDropdown {
+
+   // From CommonDBTM
+   public $table = 'glpi_states';
+   public $type = ITEMSTATE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -792,15 +758,12 @@ class ItemState extends CommonDropdown {
    }
 }
 
-/// Class ItemState
+/// Class RequestType
 class RequestType extends CommonDropdown {
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      $this->type = REQUESTTYPE_TYPE;
-      $this->table = 'glpi_requesttypes';
-   }
+
+   // From CommonDBTM
+   public $table = 'glpi_requesttypes';
+   public $type = REQUESTTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -908,10 +871,9 @@ class RequestType extends CommonDropdown {
 /// Class Manufacturer
 class Manufacturer extends CommonDropdown {
 
-   function __construct() {
-      $this->type = MANUFACTURER_TYPE;
-      $this->table = 'glpi_manufacturers';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_manufacturers';
+   public $type = MANUFACTURER_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -920,13 +882,12 @@ class Manufacturer extends CommonDropdown {
    }
 }
 
-/// Class ComputerType
-class ComputerType extends CommonDropdown {
+/// Class ComputersType
+class ComputersType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = COMPUTERTYPE_TYPE;
-      $this->table = 'glpi_computerstypes';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_computerstypes';
+   public $type = COMPUTERTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -935,13 +896,12 @@ class ComputerType extends CommonDropdown {
    }
 }
 
-/// Class ComputerModel
-class ComputerModel extends CommonDropdown {
+/// Class ComputersModel
+class ComputersModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = COMPUTERMODEL_TYPE;
-      $this->table = 'glpi_computersmodels';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_computersmodels';
+   public $type = COMPUTERMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -950,13 +910,12 @@ class ComputerModel extends CommonDropdown {
    }
 }
 
-/// Class NetworkEquipementType
-class NetworkEquipmentType extends CommonDropdown {
+/// Class NetworkEquipementsType
+class NetworkEquipmentsType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = NETWORKEQUIPMENTTYPE_TYPE;
-      $this->table = 'glpi_networkequipmentstypes';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_networkequipmentstypes';
+   public $type = NETWORKEQUIPMENTTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -965,13 +924,12 @@ class NetworkEquipmentType extends CommonDropdown {
    }
 }
 
-/// Class NetworkEquipementModel
-class NetworkEquipementModel extends CommonDropdown {
+/// Class NetworkEquipementsModel
+class NetworkEquipementsModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = NETWORKEQUIPMENTMODEL_TYPE;
-      $this->table = 'glpi_networkequipmentsmodels';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_networkequipmentsmodels';
+   public $type = NETWORKEQUIPMENTMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -980,13 +938,12 @@ class NetworkEquipementModel extends CommonDropdown {
    }
 }
 
-/// Class PrinterType
-class PrinterType extends CommonDropdown {
+/// Class PrintersType
+class PrintersType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PRINTERTYPE_TYPE;
-      $this->table = 'glpi_printerstypes';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_printerstypes';
+   public $type = PRINTERTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -995,13 +952,12 @@ class PrinterType extends CommonDropdown {
    }
 }
 
-/// Class PrinterModel
-class PrinterModel extends CommonDropdown {
+/// Class PrintersModel
+class PrintersModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PRINTERMODEL_TYPE;
-      $this->table = 'glpi_printersmodels';
-   }
+   // From CommonDBTM
+   public $table = 'glpi_printersmodels';
+   public $type = PRINTERMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1010,13 +966,12 @@ class PrinterModel extends CommonDropdown {
    }
 }
 
-/// Class MonitorType
-class MonitorType extends CommonDropdown {
+/// Class MonitorsType
+class MonitorsType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = MONITORTYPE_TYPE;
-      $this->table = 'glpi_monitorstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_monitorstypes';
+   public $type = MONITORTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1025,13 +980,12 @@ class MonitorType extends CommonDropdown {
    }
 }
 
-/// Class MonitorModel
-class MonitorModel extends CommonDropdown {
+/// Class MonitorsModel
+class MonitorsModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = MONITORMODEL_TYPE;
-      $this->table = 'glpi_monitorsmodels';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_monitorsmodels';
+   public $type = MONITORMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1040,13 +994,12 @@ class MonitorModel extends CommonDropdown {
    }
 }
 
-/// Class PeripheralType
-class PeripheralType extends CommonDropdown {
+/// Class PeripheralsType
+class PeripheralsType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PERIPHERALTYPE_TYPE;
-      $this->table = 'glpi_peripheralstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_peripheralstypes';
+   public $type = PERIPHERALTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1055,13 +1008,12 @@ class PeripheralType extends CommonDropdown {
    }
 }
 
-/// Class PeripheralModel
-class PeripheralModel extends CommonDropdown {
+/// Class PeripheralsModel
+class PeripheralsModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PERIPHERALMODEL_TYPE;
-      $this->table = 'glpi_peripheralsmodels';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_peripheralsmodels';
+   public $type = PERIPHERALMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1070,13 +1022,12 @@ class PeripheralModel extends CommonDropdown {
    }
 }
 
-/// Class PhoneType
-class PhoneType extends CommonDropdown {
+/// Class Phonesype
+class PhonesType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PHONETYPE_TYPE;
-      $this->table = 'glpi_phonestypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_phonestypes';
+   public $type = PHONETYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1085,13 +1036,12 @@ class PhoneType extends CommonDropdown {
    }
 }
 
-/// Class PhoneModel
-class PhoneModel extends CommonDropdown {
+/// Class PhonesModel
+class PhonesModel extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PHONEMODEL_TYPE;
-      $this->table = 'glpi_phonesmodels';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_phonesmodels';
+   public $type = PHONEMODEL_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1103,10 +1053,9 @@ class PhoneModel extends CommonDropdown {
 /// Class SoftwareLicenseType
 class SoftwareLicenseType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = SOFTWARELICENSETYPE_TYPE;
-      $this->table = 'glpi_softwareslicensestypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_softwareslicensestypes';
+   public $type = SOFTWARELICENSETYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1118,10 +1067,9 @@ class SoftwareLicenseType extends CommonDropdown {
 /// Class CartridgeItemType
 class CartridgeItemType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = CARTRIDGEITEMTYPE_TYPE;
-      $this->table = 'glpi_cartridgesitemstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_cartridgesitemstypes';
+   public $type = CARTRIDGEITEMTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1133,10 +1081,9 @@ class CartridgeItemType extends CommonDropdown {
 /// Class ConsumableItemType
 class ConsumableItemType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = CONSUMABLEITEMTYPE_TYPE;
-      $this->table = 'glpi_consumablesitemstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_consumablesitemstypes';
+   public $type = CONSUMABLEITEMTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1145,13 +1092,12 @@ class ConsumableItemType extends CommonDropdown {
    }
 }
 
-/// Class ContractType
-class ContractType extends CommonDropdown {
+/// Class ContractsType
+class ContractsType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = CONTRACTTYPE_TYPE;
-      $this->table = 'glpi_contractstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_contractstypes';
+   public $type = CONTRACTTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1160,13 +1106,12 @@ class ContractType extends CommonDropdown {
    }
 }
 
-/// Class ContactType
-class ContactType extends CommonDropdown {
+/// Class ContactsType
+class ContactsType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = CONTACTTYPE_TYPE;
-      $this->table = 'glpi_contactstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_contactstypes';
+   public $type = CONTACTTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1178,10 +1123,9 @@ class ContactType extends CommonDropdown {
 /// Class DeviceMemoryType
 class DeviceMemoryType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = DEVICEMEMORYTYPE_TYPE;
-      $this->table = 'glpi_devicesmemoriestypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_devicesmemoriestypes';
+   public $type = DEVICEMEMORYTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1193,10 +1137,9 @@ class DeviceMemoryType extends CommonDropdown {
 /// Class SupplierType
 class SupplierType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = SUPPLIERTYPE_TYPE;
-      $this->table = 'glpi_supplierstypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_supplierstypes';
+   public $type = SUPPLIERTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1208,10 +1151,9 @@ class SupplierType extends CommonDropdown {
 /// Class InterfacesType (Interface is a reserved keyword)
 class InterfacesType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = INTERFACESTYPE_TYPE;
-      $this->table = 'glpi_interfacestypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_interfacestypes';
+   public $type = INTERFACESTYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1223,10 +1165,9 @@ class InterfacesType extends CommonDropdown {
 /// Class DeviceCaseType (Interface is a reserved keyword)
 class DeviceCaseType extends CommonDropdown {
 
-   function __construct() {
-      $this->type = DEVICECASETYPE_TYPE;
-      $this->table = 'glpi_devicescasestypes';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_devicescasestypes';
+   public $type = DEVICECASETYPE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1238,10 +1179,9 @@ class DeviceCaseType extends CommonDropdown {
 /// Class PhonePowerSupply
 class PhonePowerSupply extends CommonDropdown {
 
-   function __construct() {
-      $this->type = PHONEPOWERSUPPLY_TYPE;
-      $this->table = 'glpi_phonespowersupplies';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_phonespowersupplies';
+   public $type = PHONEPOWERSUPPLY_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1253,10 +1193,9 @@ class PhonePowerSupply extends CommonDropdown {
 /// Class Filesystem
 class Filesystem extends CommonDropdown {
 
-   function __construct() {
-      $this->type = FILESYSTEM_TYPE;
-      $this->table = 'glpi_filesystems';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_filesystems';
+   public $type = FILESYSTEM_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1268,10 +1207,9 @@ class Filesystem extends CommonDropdown {
 /// Class DocumentCategory
 class DocumentCategory extends CommonDropdown {
 
-   function __construct() {
-      $this->type = DOCUMENTCATEGORY_TYPE;
-      $this->table = 'glpi_documentscategories';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_documentscategories';
+   public $type = DOCUMENTCATEGORY_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1283,10 +1221,9 @@ class DocumentCategory extends CommonDropdown {
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonDropdown {
 
-   function __construct() {
-      $this->type = KNOWBASEITEMCATEGORY_TYPE;
-      $this->table = 'glpi_knowbaseitemscategories';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_knowbaseitemscategories';
+   public $type = KNOWBASEITEMCATEGORY_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1298,10 +1235,9 @@ class KnowbaseItemCategory extends CommonDropdown {
 /// Class OperatingSystem
 class OperatingSystem extends CommonDropdown {
 
-   function __construct() {
-      $this->type = OPERATINGSYSTEM_TYPE;
-      $this->table = 'glpi_operatingsystems';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_operatingsystems';
+   public $type = OPERATINGSYSTEM_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1313,10 +1249,9 @@ class OperatingSystem extends CommonDropdown {
 /// Class OperatingSystemVersion
 class OperatingSystemVersion extends CommonDropdown {
 
-   function __construct() {
-      $this->type = OPERATINGSYSTEMVERSION_TYPE;
-      $this->table = 'glpi_operatingsystemsversions';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_operatingsystemsversions';
+   public $type = OPERATINGSYSTEMVERSION_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1328,10 +1263,9 @@ class OperatingSystemVersion extends CommonDropdown {
 /// Class OperatingSystemServicePack
 class OperatingSystemServicePack extends CommonDropdown {
 
-   function __construct() {
-      $this->type = OPERATINGSYSTEMSERVICEPACK_TYPE;
-      $this->table = 'glpi_operatingsystemsservicepacks';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_operatingsystemsservicepacks';
+   public $type = OPERATINGSYSTEMSERVICEPACK_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1343,10 +1277,9 @@ class OperatingSystemServicePack extends CommonDropdown {
 /// Class AutoUpdateSystem
 class AutoUpdateSystem extends CommonDropdown {
 
-   function __construct() {
-      $this->type = AUTOUPDATESYSTEM_TYPE;
-      $this->table = 'glpi_autoupdatesystems';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_autoupdatesystems';
+   public $type = AUTOUPDATESYSTEM_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1358,10 +1291,9 @@ class AutoUpdateSystem extends CommonDropdown {
 /// Class NetworkInterface
 class NetworkInterface extends CommonDropdown {
 
-   function __construct() {
-      $this->type = NETWORKINTERFACE_TYPE;
-      $this->table = 'glpi_networkinterfaces';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_networkinterfaces';
+   public $type = NETWORKINTERFACE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1371,12 +1303,11 @@ class NetworkInterface extends CommonDropdown {
 }
 
 /// Class NetworkEquipmentFirmware
-class NetworkEquipmentFirmware extends CommonDropdown {
+class NetworkEquipmentsFirmware extends CommonDropdown {
 
-   function __construct() {
-      $this->type = NETWORKEQUIPMENTFIRMWARE_TYPE;
-      $this->table = 'glpi_networkequipmentsfirmwares';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_networkequipmentsfirmwares';
+   public $type = NETWORKEQUIPMENTFIRMWARE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1388,10 +1319,9 @@ class NetworkEquipmentFirmware extends CommonDropdown {
 /// Class Domain
 class Domain extends CommonDropdown {
 
-   function __construct() {
-      $this->type = DOMAIN_TYPE;
-      $this->table = 'glpi_domains';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_domains';
+   public $type = DOMAIN_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1403,10 +1333,9 @@ class Domain extends CommonDropdown {
 /// Class Network
 class Network extends CommonDropdown {
 
-   function __construct() {
-      $this->type = NETWORK_TYPE;
-      $this->table = 'glpi_networks';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_networks';
+   public $type = NETWORK_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1418,10 +1347,9 @@ class Network extends CommonDropdown {
 /// Class Vlan
 class Vlan extends CommonDropdown {
 
-   function __construct() {
-      $this->type = VLAN_TYPE;
-      $this->table = 'glpi_vlans';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_vlans';
+   public $type = VLAN_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1431,12 +1359,11 @@ class Vlan extends CommonDropdown {
 }
 
 /// Class SoftwareCategory
-class SoftwareCategory extends CommonDropdown {
+class SoftwaresCategory extends CommonDropdown {
 
-   function __construct() {
-      $this->type = SOFTWARECATEGORY_TYPE;
-      $this->table = 'glpi_softwarescategories';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_softwarescategories';
+   public $type = SOFTWARECATEGORY_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1445,13 +1372,12 @@ class SoftwareCategory extends CommonDropdown {
    }
 }
 
-/// Class UserTitle
-class UserTitle extends CommonDropdown {
+/// Class UsersTitle
+class UsersTitle extends CommonDropdown {
 
-   function __construct() {
-      $this->type = USERTITLE_TYPE;
-      $this->table = 'glpi_userstitles';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_userstitles';
+   public $type = USERTITLE_TYPE;
 
    static function getTypeName() {
       global $LANG;
@@ -1460,13 +1386,12 @@ class UserTitle extends CommonDropdown {
    }
 }
 
-/// Class UserCategory
-class UserCategory extends CommonDropdown {
+/// Class UsersCategory
+class UsersCategory extends CommonDropdown {
 
-   function __construct() {
-      $this->type = USERCATEGORY_TYPE;
-      $this->table = 'glpi_userscategories';
-   }
+      // From CommonDBTM
+   public $table = 'glpi_userscategories';
+   public $type = USERCATEGORY_TYPE;
 
    static function getTypeName() {
       global $LANG;
