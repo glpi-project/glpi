@@ -296,7 +296,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return string
     */
    function getTreeLink() {
-      global $INFOFORM_PAGES;
 
       $link = '';
       if ($this->fields[getForeignKeyFieldForTable($this->table)]) {
@@ -305,12 +304,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $link = $papa->getTreeLink() . " > ";
          }
       }
-      $name = $this->fields['name'];
-      if (empty($name) || $_SESSION['glpiis_ids_visible']) {
-         $name .= " (".$this->fields['id'].")";
-      }
-      return $link . "<a href='".GLPI_ROOT.'/'.$INFOFORM_PAGES[$this->type].
-                     "&amp;id=".$this->fields['id']."'>$name</a>";
+      return $link . $this->getLink();
    }
    /**
     * Print the HTML array children of a TreeDropdown
