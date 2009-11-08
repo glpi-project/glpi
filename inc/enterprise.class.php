@@ -504,15 +504,15 @@ class Enterprise extends CommonDBTM {
                              getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$linktype]) ."
                        ORDER BY `entities_id`, `".$LINK_ID_TABLE[$linktype]."`.`name`";
 
-            // Set $linktype for link to search engine pnly
-            if ($itemtype==SOFTWARELICENSE_TYPE ) {
-               $linktype = SOFTWARE_TYPE;
-               $linkfield = 'softwares_id';
-            }
-
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
             $ci->setType($itemtype);
+
+            // Set $linktype for link to search engine pnly
+            if ($itemtype==SOFTWARELICENSE_TYPE && $nb>$_SESSION['glpilist_limit']) {
+               $linktype = SOFTWARE_TYPE;
+               $linkfield = 'softwares_id';
+            }
             if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$linktype])) {
                echo "<tr class='tab_bg_1'>";
                echo "<td class='center'>".$ci->getType()."&nbsp;:&nbsp;$nb</td>";
