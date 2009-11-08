@@ -49,11 +49,12 @@ if(empty($_POST["id"])) {
    $_POST["id"] = -1;
 }
 
-if ($_POST['id']>0) {
+$budget = new Budget();
+if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          showDeviceBudget($_POST["id"]);
-         showDocumentAssociated(BUDGET_TYPE,$_POST["id"]);
+         Document::showAssociated($budget);
          showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
          displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
@@ -63,7 +64,7 @@ if ($_POST['id']>0) {
          break;
 
       case 5 :
-         showDocumentAssociated(BUDGET_TYPE,$_POST["id"]);
+         Document::showAssociated($budget);
          break;
 
       case 7 :

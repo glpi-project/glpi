@@ -62,8 +62,10 @@ if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
 
-if (!empty($_POST["withtemplate"])) {
-   if ($_POST["id"]>0) {
+$phone = new Phone();
+
+if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
+   if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,
@@ -72,7 +74,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          case 5 :
-            showDocumentAssociated(PHONE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Document::showAssociated($phone,$_POST["withtemplate"]);
             break;
 
          default :
@@ -84,57 +86,57 @@ if (!empty($_POST["withtemplate"])) {
                showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
             }
       }
-   }
-} else {
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
-         showPortsAdd($_POST["id"],PHONE_TYPE);
-         showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
-         showContractAssociated(PHONE_TYPE,$_POST["id"]);
-         showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
-         showJobListForItem(PHONE_TYPE,$_POST["id"]);
-         showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-         displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
-         break;
-
-      case 4 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
-         showContractAssociated(PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 5 :
-         showDocumentAssociated(PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 6 :
-         showJobListForItem(PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 7 :
-         showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 10 :
-         showNotesForm($_POST['target'],PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 11 :
-         showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["id"]);
-         break;
-
-      case 12 :
-         showHistory(PHONE_TYPE,$_POST["id"]);
-         break;
-
-      default :
-         if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                  $_POST["withtemplate"])) {
+   } else {
+      switch($_REQUEST['glpi_tab']) {
+         case -1 :
             showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
             showPortsAdd($_POST["id"],PHONE_TYPE);
             showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
-         }
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
+            showContractAssociated(PHONE_TYPE,$_POST["id"]);
+            Document::showAssociated($phone);
+            showJobListForItem(PHONE_TYPE,$_POST["id"]);
+            showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+            displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            break;
+
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
+            showContractAssociated(PHONE_TYPE,$_POST["id"]);
+            break;
+
+         case 5 :
+            Document::showAssociated($phone);
+            break;
+
+         case 6 :
+            showJobListForItem(PHONE_TYPE,$_POST["id"]);
+            break;
+
+         case 7 :
+            showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+            break;
+
+         case 10 :
+            showNotesForm($_POST['target'],PHONE_TYPE,$_POST["id"]);
+            break;
+
+         case 11 :
+            showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["id"]);
+            break;
+
+         case 12 :
+            showHistory(PHONE_TYPE,$_POST["id"]);
+            break;
+
+         default :
+            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
+                                     $_POST["withtemplate"])) {
+               showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
+               showPortsAdd($_POST["id"],PHONE_TYPE);
+               showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+            }
+      }
    }
 }
 

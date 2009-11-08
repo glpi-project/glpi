@@ -51,12 +51,12 @@ if (!isset($_POST["id"])) {
 
 $contract=new Contract();
 
-if ($_POST['id']>0) {
+if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          showEnterpriseContract($_POST["id"]);
          showItemContract($_POST["id"]);
-         showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
+         Document::showAssociated($contract);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
          displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
@@ -66,7 +66,7 @@ if ($_POST['id']>0) {
          break;
 
       case 5 :
-         showDocumentAssociated(CONTRACT_TYPE,$_POST["id"]);
+         Document::showAssociated($contract);
          break;
 
       case 7 :

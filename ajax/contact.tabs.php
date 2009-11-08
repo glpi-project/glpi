@@ -53,13 +53,13 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $contact->showSuppliers();
-         showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
+         Document::showAssociated($contact);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
          displayPluginAction(CONTACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 5 :
-         showDocumentAssociated(CONTACT_TYPE,$_POST["id"]);
+         Document::showAssociated($contact);
          break;
 
       case 7 :

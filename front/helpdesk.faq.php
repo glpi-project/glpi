@@ -69,8 +69,9 @@ if (isset($_GET["redirect"])){
 
 	if (isset($_GET["id"])){
 
-		if (ShowKbItemFull($_GET["id"],0)){
-			showDocumentAssociated(KNOWBASE_TYPE,$_GET["id"],3);
+      $kb=new kbItem;
+		if ($kb->getFromDB($_GET["id"]) && ShowKbItemFull($_GET["id"],0)){
+         Document::showAssociated($kb);
 		}
 
 	} else {

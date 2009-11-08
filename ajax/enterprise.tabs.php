@@ -59,14 +59,12 @@ if (!isset($_POST["order"])) {
    $_POST["order"]="";
 }
 
-$supplier->check($_POST["id"],'r');
-
-if ($_POST["id"]>0) {
+if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $supplier->showContacts();
          showContractAssociatedEnterprise($_POST["id"]);
-         showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"]);
+         Document::showAssociated($supplier);
          showJobListForEnterprise($_POST["id"]);
          showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
          displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
@@ -77,7 +75,7 @@ if ($_POST["id"]>0) {
          break;
 
       case 5 :
-         showDocumentAssociated(ENTERPRISE_TYPE,$_POST["id"],0);
+         Document::showAssociated($supplier);
          break;
 
       case 6 :

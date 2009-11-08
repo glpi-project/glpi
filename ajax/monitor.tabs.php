@@ -55,9 +55,9 @@ if (!isset($_POST["order"])) {
 if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
-
-if (!empty($_POST["withtemplate"])) {
-   if ($_POST["id"]>0) {
+$monitor = new Monitor();
+if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
+   if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
@@ -66,59 +66,59 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          case 5 :
-            showDocumentAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Document::showAssociated($monitor,$_POST["withtemplate"]);
             break;
 
          default :
             displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
       }
-   }
-} else {
-   switch($_REQUEST['glpi_tab']) {
-      case -1:
-         showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-         showContractAssociated(MONITOR_TYPE,$_POST["id"]);
-         showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);
-         showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-         showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-         displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
-         break;
-
-      case 4 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-         showContractAssociated(MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 5 :
-         showDocumentAssociated(MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 6 :
-         showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 7 :
-         showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 10 :
-         showNotesForm($_POST['target'],MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 11 :
-         showDeviceReservations($_POST['target'],MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      case 12 :
-         showHistory(MONITOR_TYPE,$_POST["id"]);
-         break;
-
-      default :
-         if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                  $_POST["withtemplate"])) {
+   } else  {
+      switch($_REQUEST['glpi_tab']) {
+         case -1:
             showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
-         }
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+            showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+            Document::showAssociated($monitor,$_POST["withtemplate"]);
+            showJobListForItem(MONITOR_TYPE,$_POST["id"]);
+            showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            break;
+
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+            showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         case 5 :
+            Document::showAssociated($monitor,$_POST["withtemplate"]);
+            break;
+
+         case 6 :
+            showJobListForItem(MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         case 7 :
+            showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         case 10 :
+            showNotesForm($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         case 11 :
+            showDeviceReservations($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         case 12 :
+            showHistory(MONITOR_TYPE,$_POST["id"]);
+            break;
+
+         default :
+            if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
+                                     $_POST["withtemplate"])) {
+               showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
+            }
+      }
    }
 }
 

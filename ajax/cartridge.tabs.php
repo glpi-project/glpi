@@ -48,44 +48,46 @@ if(!isset($_POST["id"])) {
 
 checkRight("cartridge","r");
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      showCompatiblePrinters($_POST["id"]);
-      showCartridgesAdd($_POST["id"]);
-      showCartridges($_POST["id"]);
-      showCartridges($_POST["id"],1);
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
-      showDocumentAssociated(CARTRIDGEITEM_TYPE,$_POST["id"]);
-      showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
-      displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
-      break;
-
-   case 4 :
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
-      break;
-
-   case 5 :
-      showDocumentAssociated(CARTRIDGEITEM_TYPE,$_POST["id"]);
-      break;
-
-   case 7 :
-      showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
-      break;
-
-   case 10 :
-      showNotesForm($_POST['target'],CARTRIDGEITEM_TYPE,$_POST["id"]);
-      break;
-
-   default :
-      if (!displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+$cartridge = new CartridgeType();
+if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
          showCompatiblePrinters($_POST["id"]);
          showCartridgesAdd($_POST["id"]);
          showCartridges($_POST["id"]);
          showCartridges($_POST["id"],1);
-      }
-      break;
-}
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
+         Document::showAssociated($cartridge);
+         showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
+         displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         break;
 
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
+         break;
+
+      case 5 :
+         Document::showAssociated($cartridge);
+         break;
+
+      case 7 :
+         showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],CARTRIDGEITEM_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+            showCompatiblePrinters($_POST["id"]);
+            showCartridgesAdd($_POST["id"]);
+            showCartridges($_POST["id"]);
+            showCartridges($_POST["id"],1);
+         }
+         break;
+   }
+}
 ajaxFooter();
 
 ?>
