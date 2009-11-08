@@ -164,9 +164,11 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
       echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 
       $type = array_search($table, $LINK_ID_TABLE);
-      if ($type && strstr($INFOFORM_PAGES[$type],'dropdown')
-          && !strstr($_SERVER['PHP_SELF'],'dropdown')
-          && haveTypeRight($type,'w')) {
+      if ($type
+            && isset($INFOFORM_PAGES[$type]) // For type without infoform : ex: problem on ldap rules
+            && strstr($INFOFORM_PAGES[$type],'dropdown')
+            && !strstr($_SERVER['PHP_SELF'],'dropdown')
+            && haveTypeRight($type,'w')) {
 
             echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
                   "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".

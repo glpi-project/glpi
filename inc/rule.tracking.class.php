@@ -39,17 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class TrackingBusinessRuleCollection extends RuleCollection {
 
    // From RuleCollection
+   public $sub_type = RULE_TRACKING_AUTO_ACTION;
    public $rule_class_name = 'TrackingBusinessRule';
    public $right = 'rule_ticket';
    public $use_output_rule_process_as_next_input=true;
    public $menu_option='ticket';
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      parent::__construct(RULE_TRACKING_AUTO_ACTION);
-   }
 
    function getTitle() {
       global $LANG;
@@ -65,10 +59,6 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 
 
 class TrackingBusinessRule extends Rule {
-
-   // From CommonDBTM
-   public $table = 'glpi_rules';
-   public $type = -1;
 
    // From Rule
    public $sub_type = RULE_TRACKING_AUTO_ACTION;

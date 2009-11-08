@@ -39,6 +39,14 @@ if (!defined('GLPI_ROOT')) {
 /// OCS Rules collection class
 class OcsRuleCollection extends RuleCollection {
 
+   // From RuleCollection
+   public $sub_type = RULE_OCS_AFFECT_COMPUTER;
+   public $rule_class_name = 'OcsAffectEntityRule';
+   public $stop_on_first_match=true;
+   public $right = 'rule_ocs';
+   public $menu_option='ocs';
+
+   // Specific ones
    ///Store the id of the ocs server
    var $ocsservers_id;
 
@@ -47,12 +55,7 @@ class OcsRuleCollection extends RuleCollection {
     * @param $ocsservers_id ID of the OCS server
    **/
    function __construct($ocsservers_id=-1) {
-      $this->sub_type = RULE_OCS_AFFECT_COMPUTER;
-      $this->rule_class_name = 'OcsAffectEntityRule';
       $this->ocsservers_id = $ocsservers_id;
-      $this->stop_on_first_match=true;
-      $this->right="rule_ocs";
-      $this->menu_option="ocs";
    }
 
    function getTitle() {
@@ -209,16 +212,10 @@ class OcsRuleCollection extends RuleCollection {
 /// OCS Rules class
 class OcsAffectEntityRule extends Rule {
 
-   /**
-    * Constructor
-    * @param $ocsservers_id ID of the OCS server
-   **/
-   function __construct($ocsservers_id=-1) {
-      parent::__construct(RULE_OCS_AFFECT_COMPUTER);
-
-      $this->right="rule_ocs";
-      $this->can_sort=true;
-   }
+   // From Rule
+   public $sub_type = RULE_OCS_AFFECT_COMPUTER;
+   public $right='rule_ocs';
+   public $can_sort=true;
 
    function getTitle() {
       global $LANG;
