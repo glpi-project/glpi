@@ -114,7 +114,7 @@ if ($_GET["id"]=="new"){
 
 	if (ShowKbItemFull($_GET["id"])){
 		kbItemMenu($_GET["id"]);
-		showDocumentAssociated(KNOWBASE_TYPE,$_GET["id"]);
+      Document::showAssociated($kb);
 	}
 	commonFooter();
 }

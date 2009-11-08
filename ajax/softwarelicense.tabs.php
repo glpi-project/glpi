@@ -58,29 +58,31 @@ if (!isset($_POST["withtemplate"])) {
 
 checkRight("software","r");
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
-      showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
-      break;
+$license = new SoftwareLicense();
+if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
+         Document::showAssociated($license);
+         displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+         break;
 
-   case 4 :
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
-      break;
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["id"]);
+         break;
 
-   case 5 :
-      showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["id"],$_POST["withtemplate"]);
-      break;
+      case 5 :
+         Document::showAssociated($license);
+         break;
 
-   case 12 :
-      showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
-      break;
+      case 12 :
+         showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
+         break;
 
-   default :
-      displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+      default :
+         displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+   }
 }
-
 ajaxFooter();
 
 ?>

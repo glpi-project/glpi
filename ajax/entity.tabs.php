@@ -53,13 +53,11 @@ if (!isset($_POST["start"])) {
    $_POST["start"]=0;
 }
 
-$entity->check($_POST["id"],'r');
-
-if ($_POST["id"]>=0) {
+if ($_POST["id"]>=0 && $entity->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          showEntityUser($_POST['target'],$_POST["id"]);
-         showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+         Document::showAssociated($entity);
          $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
          if ($CFG_GLPI["use_ocs_mode"]) {
             $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
@@ -84,7 +82,7 @@ if ($_POST["id"]>=0) {
          break;
 
       case 5 :
-         showDocumentAssociated(ENTITY_TYPE,$_POST["id"]);
+         Document::showAssociated($entity);
          break;
 
       default :

@@ -66,7 +66,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          case 5 :
-            showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Document::showAssociated($netdevice,$_POST["withtemplate"]);
             break;
 
          default :
@@ -87,7 +87,7 @@ if (!empty($_POST["withtemplate"])) {
          showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,
                          $_POST["id"]);
          showContractAssociated(NETWORKING_TYPE,$_POST["id"]);
-         showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+         Document::showAssociated($netdevice,$_POST["withtemplate"]);
          showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
          showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
          displayPluginAction(NETWORKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
@@ -100,7 +100,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 5 :
-         showDocumentAssociated(NETWORKING_TYPE,$_POST["id"],$_POST["withtemplate"]);
+         Document::showAssociated($netdevice,$_POST["withtemplate"]);
          break;
 
       case 6 :

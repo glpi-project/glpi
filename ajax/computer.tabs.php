@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group', 'infocom', 
+$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group', 'infocom',
                        'link', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
-                       'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown', 
-                       'rule.dictionnary.software', 'rule.softwarecategories', 'search', 'setup', 
+                       'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown',
+                       'rule.dictionnary.software', 'rule.softwarecategories', 'search', 'setup',
                        'software', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
@@ -60,9 +60,11 @@ if (!isset($_POST["withtemplate"])) {
 
 checkRight("computer","r");
 
+$computer = new Computer();
+
 //show computer form to add
-if (!empty($_POST["withtemplate"])) {
-   if ($_POST["id"]>0) {
+if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
+   if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 2 :
             showSoftwareInstalled($_POST["id"],$_POST["withtemplate"]);
@@ -83,7 +85,7 @@ if (!empty($_POST["withtemplate"])) {
             break;
 
          case 5 :
-            showDocumentAssociated(COMPUTER_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Document::showAssociated($computer,$_POST["withtemplate"]);
             break;
 
          case 20 :
@@ -97,82 +99,82 @@ if (!empty($_POST["withtemplate"])) {
             }
             break;
       }
-   }
-} else {
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
-         showComputerDisks($_POST["id"],$_POST["withtemplate"]);
-         showSoftwareInstalled($_POST["id"]);
-         showConnections($_POST['target'],$_POST["id"]);
-         showPortsAdd($_POST["id"],COMPUTER_TYPE);
-         showPorts($_POST["id"], COMPUTER_TYPE);
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
-         showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
-         showDocumentAssociated(COMPUTER_TYPE,$_POST["id"]);
-         showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
-         showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
-         showRegistry($_POST["id"]);
-         displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
-         break;
-
-      case 2 :
-         showSoftwareInstalled($_POST["id"]);
-         break;
-
-      case 3 :
-         showConnections($_POST['target'],$_POST["id"]);
-         showPortsAdd($_POST["id"],COMPUTER_TYPE);
-         showPorts($_POST["id"], COMPUTER_TYPE);
-         break;
-
-      case 4 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
-         showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 5 :
-         showDocumentAssociated(COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 6 :
-         showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 7 :
-         showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 10 :
-         showNotesForm($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 11 :
-         showDeviceReservations($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 12 :
-         showHistory(COMPUTER_TYPE,$_POST["id"]);
-         break;
-
-      case 13 :
-         ocsEditLock($_POST['target'],$_POST["id"]);
-         break;
-
-      case 14:
-         showRegistry($_POST["id"]);
-         break;
-
-      case 20 :
-         showComputerDisks($_POST["id"], $_POST["withtemplate"]);
-         break;
-
-      default :
-         if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                  $_POST["withtemplate"])) {
+   } else {
+      switch($_REQUEST['glpi_tab']) {
+         case -1 :
             showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
-         }
-         break;
+            showComputerDisks($_POST["id"],$_POST["withtemplate"]);
+            showSoftwareInstalled($_POST["id"]);
+            showConnections($_POST['target'],$_POST["id"]);
+            showPortsAdd($_POST["id"],COMPUTER_TYPE);
+            showPorts($_POST["id"], COMPUTER_TYPE);
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
+            showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
+            Document::showAssociated($computer);
+            showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
+            showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
+            showRegistry($_POST["id"]);
+            displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            break;
+
+         case 2 :
+            showSoftwareInstalled($_POST["id"]);
+            break;
+
+         case 3 :
+            showConnections($_POST['target'],$_POST["id"]);
+            showPortsAdd($_POST["id"],COMPUTER_TYPE);
+            showPorts($_POST["id"], COMPUTER_TYPE);
+            break;
+
+         case 4 :
+            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
+            showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 5 :
+            Document::showAssociated($computer);
+            break;
+
+         case 6 :
+            showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 7 :
+            showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 10 :
+            showNotesForm($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 11 :
+            showDeviceReservations($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 12 :
+            showHistory(COMPUTER_TYPE,$_POST["id"]);
+            break;
+
+         case 13 :
+            ocsEditLock($_POST['target'],$_POST["id"]);
+            break;
+
+         case 14:
+            showRegistry($_POST["id"]);
+            break;
+
+         case 20 :
+            showComputerDisks($_POST["id"], $_POST["withtemplate"]);
+            break;
+
+         default :
+            if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
+                                     $_POST["withtemplate"])) {
+               showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+            }
+            break;
+      }
    }
 }
 

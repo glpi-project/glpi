@@ -47,41 +47,43 @@ if (!isset($_POST["id"])) {
 
 checkRight("consumable","r");
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      showConsumableAdd($_POST["id"]);
-      showConsumables($_POST["id"]);
-      showConsumables($_POST["id"],1);
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
-      showDocumentAssociated(CONSUMABLEITEM_TYPE,$_POST["id"]);
-      showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
-      displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
-      break;
-
-   case 4 :
-      showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
-      break;
-
-   case 5 :
-      showDocumentAssociated(CONSUMABLEITEM_TYPE,$_POST["id"]);
-      break;
-
-   case 7 :
-      showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
-      break;
-
-   case 10 :
-      showNotesForm($_POST['target'],CONSUMABLEITEM_TYPE,$_POST["id"]);
-      break;
-
-   default :
-      if (!displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+$consumable = new ConsumableType();
+if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
          showConsumableAdd($_POST["id"]);
          showConsumables($_POST["id"]);
          showConsumables($_POST["id"],1);
-      }
-      break;
-}
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
+         Document::showAssociated($consumable);
+         showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
+         displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         break;
 
+      case 4 :
+         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
+         break;
+
+      case 5 :
+         Document::showAssociated($consumable);
+         break;
+
+      case 7 :
+         showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
+         break;
+
+      case 10 :
+         showNotesForm($_POST['target'],CONSUMABLEITEM_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+            showConsumableAdd($_POST["id"]);
+            showConsumables($_POST["id"]);
+            showConsumables($_POST["id"],1);
+         }
+         break;
+   }
+}
 ajaxFooter();
 ?>

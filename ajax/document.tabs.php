@@ -52,12 +52,12 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
    switch ($_REQUEST['glpi_tab']) {
       case -1 :
          $doc->showItems();
-         showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+         Document::showAssociated($doc);
          displayPluginAction(DOCUMENT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 5 :
-         showDocumentAssociated(DOCUMENT_TYPE,$_POST["id"]);
+         Document::showAssociated($doc);
          break;
 
       case 10 :
