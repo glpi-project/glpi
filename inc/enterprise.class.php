@@ -305,6 +305,252 @@ class Enterprise extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * Get links for an enterprise (website / edit)
+    *
+    * @param $withname boolean : also display name ?
+    */
+   function getLinks($withname=false) {
+      global $CFG_GLPI,$LANG;
+
+      $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
+
+      if ($withname) {
+         $ret .= $this->fields["name"];
+         $ret .= "&nbsp;&nbsp;";
+      }
+
+      if (!empty($this->fields['website'])) {
+         $ret.= "<a href='".formatOutputWebLink($this->fields['website'])."' target='_blank'>
+                 <img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle'
+                 alt='".$LANG['common'][4]."' title='".$LANG['common'][4]."'></a>";
+         $ret .= "&nbsp;&nbsp;";
+      }
+      if ($this->can($this->fields['id'],'r')) {
+         $ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$this->fields['id'].
+            "'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".
+            $LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
+      }
+      return $ret;
+   }
+
+   /**
+    * Show contacts asociated to an enterprise
+    *
+    */
+   function showContacts() {
+      global $DB,$CFG_GLPI, $LANG;
+
+      $instID = $this->fields['id'];
+      if (!$this->can($instID,'r')) {
+         return false;
+      }
+      $canedit=$this->can($instID,'w');
+
+      $query = "SELECT `glpi_contacts`.*, `glpi_contacts_suppliers`.`id` AS ID_ent,
+                       `glpi_entities`.`id` AS entity
+                FROM `glpi_contacts_suppliers`, `glpi_contacts`
+                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_contacts`.`entities_id`)
+                WHERE `glpi_contacts_suppliers`.`contacts_id`=`glpi_contacts`.`id`
+                      AND `glpi_contacts_suppliers`.`suppliers_id` = '$instID' " .
+                          getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) ."
+                ORDER BY `glpi_entities`.`completename`, `glpi_contacts`.`name`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i = 0;
+
+      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='9'>".$LANG['financial'][46]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['help'][35]."</th>";
+      echo "<th>".$LANG['help'][35]." 2</th>";
+      echo "<th>".$LANG['common'][42]."</th>";
+      echo "<th>".$LANG['financial'][30]."</th>";
+      echo "<th>".$LANG['setup'][14]."</th>";
+      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>&nbsp;</th></tr>";
+
+      $used=array();
+      if ($number) {
+         initNavigateListItems(CONTACT_TYPE,$LANG['financial'][26]." = ".$this->fields['name']);
+
+         while ($data=$DB->fetch_array($result)) {
+            $ID=$data["ID_ent"];
+            $used[$data["id"]]=$data["id"];
+            addToNavigateListItems(CONTACT_TYPE,$data["id"]);
+            echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
+            echo "<td class='center'>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
+                   $data["name"]." ".$data["firstname"]."</a></td>";
+            echo "<td class='center' width='100'>".getDropdownName("glpi_entities",$data["entity"]);
+            echo "</td>";
+            echo "<td class='center' width='100'>".$data["phone"]."</td>";
+            echo "<td class='center' width='100'>".$data["phone2"]."</td>";
+            echo "<td class='center' width='100'>".$data["mobile"]."</td>";
+            echo "<td class='center' width='100'>".$data["fax"]."</td>";
+            echo "<td class='center'>";
+            echo "<a href='mailto:".$data["email"]."'>".
+                   $DB->result($result, $i, "glpi_contacts.email")."</a></td>";
+            echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["contactstypes_id"]);
+            echo "</td>";
+            echo "<td class='center' class='tab_bg_2'>";
+            if ($canedit) {
+               echo "<a href='".$CFG_GLPI["root_doc"].
+                     "/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=".
+                     $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
+                     $LANG['buttons'][6]."'></a>";
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td></tr>";
+            $i++;
+         }
+      }
+
+      echo "</table><br>"    ;
+      if ($canedit) {
+         if ($this->fields["is_recursive"]) {
+            $nb=countElementsInTableForEntity("glpi_contacts",
+                  getSonsOf("glpi_entities",$this->fields["entities_id"]));
+         } else {
+            $nb=countElementsInTableForEntity("glpi_contacts",$this->fields["entities_id"]);
+         }
+         if ($nb>count($used)) {
+            echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
+            echo "<table  class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr>";
+            echo "<tr><td class='tab_bg_2 center'>";
+            echo "<input type='hidden' name='suppliers_id' value='$instID'>";
+            if ($this->fields["is_recursive"]) {
+               dropdown("glpi_contacts","contacts_id",1,
+                        getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
+            } else {
+               dropdown("glpi_contacts","contacts_id",1,$this->fields["entities_id"],$used);
+            }
+            echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='submit' name='addcontactsupplier' value=\"".
+                   $LANG['buttons'][8]."\" class='submit'>";
+            echo "</td></tr>";
+         }
+         echo "</table></form>";
+      }
+      echo "</div>";
+   }
+
+   /**
+    * Print the HTML array for infocoms linked
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showInfocoms() {
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
+
+      $instID = $this->fields['id'];
+      if (!$this->can($instID,'r')) {
+         return false;
+      }
+
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_infocoms`
+                WHERE `suppliers_id` = '$instID'
+                ORDER BY `itemtype`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i = 0;
+
+      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>";
+      printPagerForm();
+      echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][19]."</th>";
+      echo "<th>".$LANG['common'][20]."</th>";
+      echo "</tr>";
+      $ci=new CommonItem;
+      $num=0;
+      while ($i < $number) {
+         $itemtype=$DB->result($result, $i, "itemtype");
+         if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLEITEM_TYPE
+             && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
+            $linktype = $itemtype;
+            $linkfield = 'id';
+            $query = "SELECT `entities_id`,`name`,`".$LINK_ID_TABLE[$itemtype]."`.*
+                      FROM `glpi_infocoms`
+                      INNER JOIN `".$LINK_ID_TABLE[$itemtype]."`
+                            ON (`".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_infocoms`.`items_id`) ";
+            if ($itemtype==CARTRIDGE_TYPE) {
+               $query .= "INNER JOIN `glpi_cartridgesitems`
+                               ON (`glpi_cartridgesitems`.`id`=`glpi_cartridges`.`cartridgesitems_id`) ";
+               $linktype = CARTRIDGEITEM_TYPE;
+               $linkfield = 'cartridgesitems_id';
+            }
+            if ($itemtype==CONSUMABLE_TYPE ) {
+               $query .= "INNER JOIN `glpi_consumablesitems`
+                               ON (`glpi_consumablesitems`.`id`=`glpi_consumables`.`consumablesitems_id`) ";
+               $table = 'glpi_consumablesitems';
+               $linktype = CONSUMABLEITEM_TYPE;
+               $linkfield = 'consumablesitems_id';
+            }
+            $query .= "WHERE `glpi_infocoms`.`itemtype`='$itemtype'
+                             AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
+                             getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$linktype]) ."
+                       ORDER BY `entities_id`, `".$LINK_ID_TABLE[$linktype]."`.`name`";
+
+            $result_linked=$DB->query($query);
+            $nb=$DB->numrows($result_linked);
+            $ci->setType($itemtype);
+            if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$linktype])) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td class='center'>".$ci->getType()."&nbsp;:&nbsp;$nb</td>";
+               echo "<td class='center' colspan='2'>";
+               echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$linktype] . "?" .
+                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
+                      rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
+                      $LANG['reports'][57]."</a></td>";
+
+               echo "<td class='center'>-</td><td class='center'>-</td></tr>";
+            } else if ($nb) {
+               for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false) {
+                  $ID="";
+                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                     $ID= " (".$data["id"].")";
+                  }
+                  $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$linktype]."?id=".
+                           $data[$linkfield]."\">".$data["name"]."$ID</a>";
+
+                  echo "<tr class='tab_bg_1'>";
+                  if ($prem) {
+                     echo "<td class='center top' rowspan='$nb'>".$ci->getType()
+                            .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
+                  }
+                  echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+                  echo "<td class='center";
+                  echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+                  echo ">".$name."</td>";
+                  echo "<td class='center'>".
+                         (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+                  echo "<td class='center'>".
+                         (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                  echo "</tr>";
+               }
+            }
+            $num+=$nb;
+         }
+         $i++;
+      }
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num</td>" : "&nbsp;</td>");
+      echo "<td colspan='4'>&nbsp;</td></tr> ";
+      echo "</table></div>"    ;
+   }
+
 }
 
 ?>
