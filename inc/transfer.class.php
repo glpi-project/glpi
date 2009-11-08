@@ -38,10 +38,13 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// Tracking Classes
-
 class Transfer extends CommonDBTM {
 
+   // From CommonDBTM
+   public $table = "glpi_transfers";
+   public $type = TRANSFER_TYPE;
+
+   // Specific ones
    /// Already transfer item
    var $already_transfer = array();
    /// Items simulate to move - non recursive item or recursive item not visible in destination entity
@@ -74,13 +77,7 @@ class Transfer extends CommonDBTM {
                                 CONSUMABLEITEM_TYPE, PHONE_TYPE);
 
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_transfers";
-      $this->type  = TRANSFER_TYPE;
-   }
+
 
 
    function defineTabs($ID,$withtemplate) {

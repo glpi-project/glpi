@@ -42,16 +42,13 @@ if (!defined('GLPI_ROOT')) {
 /// Software class
 class Software extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_softwares";
-      $this->type = SOFTWARE_TYPE;
-      $this->dohistory = true;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+
+   // From CommonDBTM
+   public $table = "glpi_softwares";
+   public $type = SOFTWARE_TYPE;
+   public $dohistory = true;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG, $CFG_GLPI;
@@ -540,16 +537,12 @@ class Software extends CommonDBTM {
 /// Version class
 class SoftwareVersion extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_softwaresversions";
-      $this->type = SOFTWAREVERSION_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-      $this->dohistory = true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_softwaresversions";
+   public $type = SOFTWAREVERSION_TYPE;
+   public $dohistory = true;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
 
    function cleanDBonPurge($ID) {
       global $DB;
@@ -690,16 +683,12 @@ class SoftwareVersion extends CommonDBTM {
 /// License class
 class SoftwareLicense extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_softwareslicenses";
-      $this->type = SOFTWARELICENSE_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-      $this->dohistory = true;
-   }
+   // From CommonDBTM
+   public $table = "glpi_softwareslicenses";
+   public $type = SOFTWARELICENSE_TYPE;
+   public $dohistory = true;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
 
    function pre_updateInDB($input,$updates,$oldvalues=array()) {
 

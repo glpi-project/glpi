@@ -42,13 +42,9 @@ if (!defined('GLPI_ROOT')){
  */
 class Alert extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function  __construct () {
-      $this->table="glpi_alerts";
-      $this->type=0;
-   }
+   // From CommonDBTM
+   public $table = "glpi_alerts";
+   public $type = 0;
 
    function prepareInputForAdd($input) {
       if (!isset($input['date']) || empty($input['date'])) {

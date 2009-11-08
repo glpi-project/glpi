@@ -40,20 +40,17 @@ if (!defined('GLPI_ROOT')) {
 /// Tracking class
 class Job extends CommonDBTM {
 
+
+   // From CommonDBTM
+   public $table = "glpi_tickets";
+   public $type = TRACKING_TYPE;
+   public $entity_assign = true;
+
+   // Specific ones
    /// Hardware datas used by getFromDBwithData
    var $hardwaredatas = array();
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
-
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table="glpi_tickets";
-      $this->type=TRACKING_TYPE;
-      $this->entity_assign=true;
-   }
 
 
    function defineTabs($ID,$withtemplate) {
@@ -1403,14 +1400,10 @@ class Job extends CommonDBTM {
 /// Followup class
 class Followup  extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table = "glpi_ticketsfollowups";
-      $this->type = FOLLOWUP_TYPE;
-   }
 
+   // From CommonDBTM
+   public $table = "glpi_ticketsfollowups";
+   public $type = FOLLOWUP_TYPE;
 
    function cleanDBonPurge($ID) {
       global $DB;

@@ -53,7 +53,7 @@ class CommonDBTM {
    var $may_be_private=false;
    /// Black list fields for history log or date mod update
    var $history_blacklist	= array();
-   /// set false to desactivate automatic message on action
+   /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
 
    /**
