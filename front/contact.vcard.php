@@ -47,8 +47,7 @@ if (empty($_GET["id"])) {
 
    $contact = new Contact();
    $contact->check($_GET["id"],'r');
-
-   generateContactVcard($_GET["id"]);
+   $contact->generateVcard();
 
 }
 
