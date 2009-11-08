@@ -189,51 +189,6 @@ function uploadDocument(&$input,$FILEDESC) {
 }
 
 /**
- * Upload a new file
- *
- * @param $FILEDESC FILE descriptor
- * @param $old_file old file name to replace : to unlink it
- * @return nothing
-function uploadDocument($FILEDESC,$old_file='') {
-   global $CFG_GLPI,$LANG;
-
-   // Is a file uploaded ?
-   if (count($FILEDESC)>0 && !empty($FILEDESC['name'])) {
-      // Clean is name
-      $filename=cleanFilenameDocument($FILEDESC['name']);
-      $force=0;
-      // Is it a valid file ?
-      $dir=isValidDoc($filename);
-      if (!empty($old_file) && $dir."/".$filename==$old_file) {
-         $force=1;
-      }
-      $new_path=getUploadFileValidLocationName($dir,$filename,$force);
-
-      if (!empty($new_path)) {
-         // Delete old file
-         if (!empty($old_file) && is_file(GLPI_DOC_DIR."/".$old_file)
-             && !is_dir(GLPI_DOC_DIR."/".$old_file)) {
-            if (unlink(GLPI_DOC_DIR."/".$old_file)) {
-               addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
-            } else {
-               addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
-                                       $old_file,false,ERROR);
-            }
-         }
-         // Move uploaded file
-         if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$new_path)) {
-            addMessageAfterRedirect($LANG['document'][26]);
-            return $new_path;
-         } else {
-            addMessageAfterRedirect($LANG['document'][27],false,ERROR);
-         }
-      }
-   }
-   return "";
-}
- **/
-
-/**
  * Find a valid path for the new file
  *
  * @param $dir dir to search a free path for the file
@@ -263,65 +218,6 @@ function getUploadFileValidLocationName($dir,$sha1sum) {
    }
    return $subdir.'/'.substr($sha1sum,2).'.'.$dir;
 }
-
-/**
- * Find a valid path for the new file
- *
- * @param $dir dir to search a free path for the file
- * @param $filename new filename
- * @param $force may replace an existing doc ?
- * @return nothing
-
-function getUploadFileValidLocationName($dir,$filename,$force) {
-   global $CFG_GLPI,$LANG;
-
-   if (!empty($dir)) {
-      // Test existance repertoire DOCS
-      if (is_dir(GLPI_DOC_DIR)) {
-         // Test existance sous-repertoire type dans DOCS -> sinon cr�tion
-         if (!is_dir(GLPI_DOC_DIR."/".$dir)) {
-            addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$dir);
-            @mkdir(GLPI_DOC_DIR."/".$dir);
-         }
-         // Copy du fichier upload�si r�ertoire existe
-         if (is_dir(GLPI_DOC_DIR."/".$dir)) {
-            if (!$force) {
-               if (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)) {
-                  $original_split=explode('.',$filename);
-                  $where_to_add=count($original_split)-2;
-                  $splitted=$original_split;
-                  $number=2;
-                  $splitted[$where_to_add]=preg_replace('/_[0-9]*$/','',
-                                           $splitted[$where_to_add])."_".$number;
-                  $filename=implode('.',$splitted);
-                  // Rename file if exists
-                  while (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)) {
-                     $number++;
-                     $splitted=$original_split;
-                     $splitted[$where_to_add]=preg_replace('/_[0-9]*$/','',
-                                              $splitted[$where_to_add])."_".$number;
-                     $filename=implode('.',$splitted);
-                  }
-               }
-            }
-            if ($force || !is_file(GLPI_DOC_DIR."/".$dir."/".$filename)) {
-               return $dir."/".$filename;
-            } else {
-               addMessageAfterRedirect($LANG['document'][28],false,ERROR);
-            }
-         } else {
-            addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$dir." ".
-                                    $LANG['document'][30],false,ERROR);
-         }
-      } else {
-         addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR,false,ERROR);
-      }
-   } else {
-      addMessageAfterRedirect($LANG['document'][32],false,ERROR);
-   }
-   return "";
-}
- **/
 
 /**
  * Show devices links to a document
@@ -491,46 +387,6 @@ function showDeviceDocument($instID) {
    }
 
 }
-
-/**
- * Add a document to an item
- *
- * @param $docID document ID
- * @param $ID item ID
- * @param $itemtype item type
- **/
-function addDeviceDocument($docID,$itemtype,$ID) {
-   global $DB;
-
-   // TODO : to remove this function (stil used when cloning a template)
-
-   // Do not insert circular link for document
-   if ($itemtype==DOCUMENT_TYPE && $ID == $docID) {
-      return;
-   }
-   if ($docID>0 && $ID>0 && $itemtype>0){
-      $docitem=new DocumentItem();
-      return $docitem->add(array('documents_id' => $docID,
-                                 'itemtype' => $itemtype,
-                                 'items_id' => $ID));
-   }
-   return false;
-}
-
-/** TODO : clean unused function
- *
- * Delete a document to an item
- *
- * @param $ID doc_device ID
-function deleteDeviceDocument($ID) {
-   global $DB;
-
-   $query="DELETE
-           FROM `glpi_documents_items`
-           WHERE id= '$ID';";
-   $result = $DB->query($query);
-}
- **/
 
 /**
  * Show documents associated to an item
@@ -757,23 +613,6 @@ function getDocumentLink($id, $params='', $len=20){
       return $doc->getDownloadLink($params,$len);
    }
    return "&nbsp;";
-}
-
-/**
- * Clean a filename to keep alphanum chars + -_.
- *
- * @param name filename to clean
- **/
-function cleanFilenameDocument($name) {
-   $name = encodeInUtf8($name, 'HTML-ENTITIES');
-
-   // See http://en.wikipedia.org/wiki/Filename
-   $bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
-   $name = str_replace($bad_chars, '_', $name);
-   $name = preg_replace("/%(\w{2})/", '_', $name);
-   $name = preg_replace("/\\x00-\\x1f/u", '_', $name);
-   // lowercase because MySQL is case insensitive (getFromDBbyFilename)
-   return utf8_strtolower($name);
 }
 
 /**

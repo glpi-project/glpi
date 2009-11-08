@@ -168,8 +168,11 @@ class Software extends CommonDBTM {
                          AND `itemtype` = '" . $this->type . "'";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_array($result)) {
-               addDeviceDocument($data["documents_id"], $this->type, $newID);
+            $docitem=new DocumentItem();
+            while ($data=$DB->fetch_array($result)) {
+               $docitem->add(array('documents_id' => $data["documents_id"],
+                                   'itemtype' => $this->type,
+                                   'items_id' => $newID));
             }
          }
       }

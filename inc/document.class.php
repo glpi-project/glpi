@@ -614,6 +614,11 @@ class DocumentItem extends CommonDBRelation{
    }
 
    function prepareInputForAdd($input) {
+
+      // Do not insert circular link for document
+      if ($input['itemtype']==DOCUMENT_TYPE && $input['items_id']==$input['documents_id']) {
+         return false;
+      }
       // Avoid duplicate entry
       $restrict = "`documents_id` = '".$input['documents_id']."'
                    AND `itemtype` = '".$input['itemtype']."'

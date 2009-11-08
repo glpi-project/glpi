@@ -54,7 +54,9 @@ if (isset($_POST["add"])) {
    if (isset($_POST['itemtype']) && isset($_POST['items_id'])  // From item
        && isset($_FILES['filename']['tmp_name'])
        && $doc->getFromDBbyContent($_POST["entities_id"], $_FILES['filename']['tmp_name'])) {
-      addDeviceDocument($doc->fields['id'], $_POST['itemtype'], $_POST['items_id']);
+      $documentitem->add(array('documents_id' => $doc->fields['id'],
+                               'itemtype' => $_POST['itemtype'],
+                               'items_id' => $_POST['items_id']));
    } else {
       $newID=$doc->add($_POST);
       $name="";
