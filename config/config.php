@@ -85,8 +85,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $config_object=new Config();
    $config_ok=false;
 
-   if (isset($TRY_OLD_CONFIG_FIRST) // index case
-       || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST'])) { // backup case
+   if (!isset($_GET['donotcheckversion']) && // use normal config table on restore process
+         (isset($TRY_OLD_CONFIG_FIRST) // index case
+         || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
 
       if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
          unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
