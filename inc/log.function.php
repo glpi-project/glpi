@@ -395,9 +395,9 @@ function logEvent ($items_id, $type, $level, $service, $event) {
    if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) {
       $query = "INSERT INTO
                 `glpi_events`
-                VALUES (NULL, '".addslashes($items_id)."', '".addslashes($type)."', '".
+                VALUES (NULL, '".intval($items_id)."', '".addslashes($type)."', '".
                         $_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".
-                        addslashes($level)."', '".addslashes($event)."')";
+                        intval($level)."', '".addslashes($event)."')";
       $result = $DB->query($query);
    }
 }
