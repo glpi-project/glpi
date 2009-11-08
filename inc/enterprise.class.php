@@ -485,6 +485,8 @@ class Enterprise extends CommonDBTM {
                       FROM `glpi_infocoms`
                       INNER JOIN `".$LINK_ID_TABLE[$itemtype]."`
                             ON (`".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_infocoms`.`items_id`) ";
+
+            // Set $linktype for entity restriction AND link to search engine
             if ($itemtype==CARTRIDGE_TYPE) {
                $query .= "INNER JOIN `glpi_cartridgesitems`
                                ON (`glpi_cartridgesitems`.`id`=`glpi_cartridges`.`cartridgesitems_id`) ";
@@ -494,7 +496,6 @@ class Enterprise extends CommonDBTM {
             if ($itemtype==CONSUMABLE_TYPE ) {
                $query .= "INNER JOIN `glpi_consumablesitems`
                                ON (`glpi_consumablesitems`.`id`=`glpi_consumables`.`consumablesitems_id`) ";
-               $table = 'glpi_consumablesitems';
                $linktype = CONSUMABLEITEM_TYPE;
                $linkfield = 'consumablesitems_id';
             }
@@ -502,6 +503,12 @@ class Enterprise extends CommonDBTM {
                              AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
                              getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$linktype]) ."
                        ORDER BY `entities_id`, `".$LINK_ID_TABLE[$linktype]."`.`name`";
+
+            // Set $linktype for link to search engine pnly
+            if ($itemtype==SOFTWARELICENSE_TYPE ) {
+               $linktype = SOFTWARE_TYPE;
+               $linkfield = 'softwares_id';
+            }
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
