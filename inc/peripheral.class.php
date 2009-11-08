@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')){
 class Peripheral  extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_peripherals";
+   public $table = 'glpi_peripherals';
    public $type = PERIPHERAL_TYPE;
    public $dohistory=true;
    public $entity_assign=true;

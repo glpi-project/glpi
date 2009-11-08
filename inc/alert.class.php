@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')){
 class Alert extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_alerts";
+   public $table = 'glpi_alerts';
    public $type = 0;
 
    function prepareInputForAdd($input) {

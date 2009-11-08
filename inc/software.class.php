@@ -44,7 +44,7 @@ class Software extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = "glpi_softwares";
+   public $table = 'glpi_softwares';
    public $type = SOFTWARE_TYPE;
    public $dohistory = true;
    public $entity_assign=true;
@@ -538,7 +538,7 @@ class Software extends CommonDBTM {
 class SoftwareVersion extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_softwaresversions";
+   public $table = 'glpi_softwaresversions';
    public $type = SOFTWAREVERSION_TYPE;
    public $dohistory = true;
    public $entity_assign=true;
@@ -684,7 +684,7 @@ class SoftwareVersion extends CommonDBTM {
 class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_softwareslicenses";
+   public $table = 'glpi_softwareslicenses';
    public $type = SOFTWARELICENSE_TYPE;
    public $dohistory = true;
    public $entity_assign=true;

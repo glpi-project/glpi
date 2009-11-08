@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class Reminder extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_reminders";
+   public $table = 'glpi_reminders';
    public $type = REMINDER_TYPE;
    public $entity_assign=true;
    public $may_be_recursive=true;

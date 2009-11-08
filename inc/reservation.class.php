@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_reservationsitems";
+   public $table = 'glpi_reservationsitems';
 
    /**
     * Retrieve an item from the database for a specific item
@@ -94,7 +94,7 @@ class ReservationItem extends CommonDBTM {
 class ReservationResa extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_reservations";
+   public $table = 'glpi_reservations';
 
    function pre_deleteItem($ID) {
       global $CFG_GLPI;

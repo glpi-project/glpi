@@ -42,15 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class Group extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table="glpi_groups";
-      $this->type=GROUP_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_groups';
+   public $type = GROUP_TYPE;
+   public $may_be_recursive=true;
+   public $entity_assign=true;
 
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LINK_ID_TABLE;

@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class Plugin extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_plugins";
+   public $table = 'glpi_plugins';
    public $type = PLUGIN_TYPE;
 
    /**

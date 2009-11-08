@@ -41,15 +41,11 @@ if (!defined('GLPI_ROOT')){
 
 class Monitor extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_monitors";
-      $this->type=MONITOR_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_monitors';
+   public $type = MONITOR_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;

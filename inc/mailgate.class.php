@@ -40,13 +40,9 @@ if (!defined('GLPI_ROOT')){
 /// Mailgate class
 class Mailgate  extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_mailcollectors";
-      $this->type=MAILGATE_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_mailcollectors';
+   public $type = MAILGATE_TYPE;
 
    function post_getEmpty () {
       global $CFG_GLPI;

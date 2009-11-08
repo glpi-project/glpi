@@ -42,7 +42,7 @@ class Job extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = "glpi_tickets";
+   public $table = 'glpi_tickets';
    public $type = TRACKING_TYPE;
    public $entity_assign = true;
 
@@ -1402,7 +1402,7 @@ class Followup  extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = "glpi_ticketsfollowups";
+   public $table = 'glpi_ticketsfollowups';
    public $type = FOLLOWUP_TYPE;
 
    function cleanDBonPurge($ID) {

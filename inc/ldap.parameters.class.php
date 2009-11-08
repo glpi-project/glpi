@@ -40,12 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class LdapCriteria extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_rulesldapparameters";
-   }
+   // From CommonDBTM
+   public $table = 'glpi_rulesldapparameters';
 
    /// Get parameters list
    function getParametersList() {

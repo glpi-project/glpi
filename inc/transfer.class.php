@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')){
 class Transfer extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_transfers";
+   public $table = 'glpi_transfers';
    public $type = TRANSFER_TYPE;
 
    // Specific ones

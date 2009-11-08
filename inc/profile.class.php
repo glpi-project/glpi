@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class Profile extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_profiles";
+   public $table = 'glpi_profiles';
    public $type = PROFILE_TYPE;
 
    // Specific ones

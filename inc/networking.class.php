@@ -41,17 +41,12 @@ if (!defined('GLPI_ROOT')){
 
 class Netdevice extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-
-      $this->table="glpi_networkequipments";
-      $this->type=NETWORKING_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_networkequipments';
+   public $type = NETWORKING_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
+   public $may_be_recursive=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;
@@ -419,6 +414,11 @@ class Netdevice extends CommonDBTM {
 /// Netport class
 class Netport extends CommonDBTM {
 
+   // From CommonDBTM
+   public $table = 'glpi_networkports';
+   public $type = NETWORKING_PORT_TYPE;
+
+   // Specific ones
    /// ID of the port connected to the current one
    var $contact_id		= 0;
    /// hardare data : name
@@ -435,14 +435,6 @@ class Netport extends CommonDBTM {
    var $is_recursive = 0;
    /// hardare data : is_deleted
    var $is_deleted = 0;
-
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_networkports";
-      $this->type = NETWORKING_PORT_TYPE;
-   }
 
    function post_updateItem($input,$updates,$history=1) {
 

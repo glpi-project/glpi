@@ -72,13 +72,9 @@ class DBocs extends DBmysql {
 /// OCS config class
 class Ocsng extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_ocsservers";
-      $this->type = OCSNG_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_ocsservers';
+   public $type = OCSNG_TYPE;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

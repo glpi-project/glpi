@@ -42,18 +42,15 @@ if (!defined('GLPI_ROOT')) {
  */
 class Computer extends CommonDBTM {
 
+   // From CommonDBTM
+   public $table = 'glpi_computers';
+   public $type = COMPUTER_TYPE;
+   public $dohistory=true;
+   public $entity_assign=true;
+
+   // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices	= array();
-
-   /**
-   * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_computers";
-      $this->type=COMPUTER_TYPE;
-      $this->dohistory=true;
-      $this->entity_assign=true;
-   }
 
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
