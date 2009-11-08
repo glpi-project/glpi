@@ -703,7 +703,7 @@ class CronTask extends CommonDBTM{
     * @param $plugin : name of the plugin
     * @param $name : of the task
     * @param $frequency : of execution
-    * @param $array of optional options
+    * @param $options array of optional options
     *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
     *
     * @return bool for success

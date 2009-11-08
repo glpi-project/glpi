@@ -173,8 +173,6 @@ class RightAffectRule extends Rule {
    /**
     * Filter actions if needed
    *  @param $actions the actions array
-   *  @param $new_action indicates if the function is called when adding a new action
-   *  or when displaying an already added action
     * @return the filtered actions array
     */
    function filterActions($actions) {
@@ -206,6 +204,7 @@ class RightAffectRule extends Rule {
    * Execute the actions as defined in the rule
    * @param $output the result of the actions
    * @param $params the parameters
+   * @param $regex_results array results of the regex match if used in criteria
    * @return the fields modified
    */
    function executeActions($output,$params,$regex_results) {

@@ -48,7 +48,7 @@ class Document extends CommonDBTM {
    public $may_be_recursive = true;
    public $entity_assign = true;
 
-   /**
+   /*
     * Retrieve an item from the database using the filename
     *
     *@param $filename filename of the document
@@ -780,13 +780,15 @@ class Document extends CommonDBTM {
     * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
     *
     * @param $filename filename to move
-    * @param $old_file old file name to replace : to unlink it
+    * @param $input array of data used in adding process (need current_filename)
     *
-    * @return boolean for success
+    * @return boolean for success / $input array is updated
     *
     **/
    static function moveUploadedDocument(&$input,$filename) {
       global $CFG_GLPI,$LANG;
+
+      /// TODO add check of $input['current_filename']
 
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
@@ -910,7 +912,7 @@ class Document extends CommonDBTM {
     * Find a valid path for the new file
     *
     * @param $dir dir to search a free path for the file
-    * @param $filename new filename
+    * @param $sha1sum SHA1 of the file
 
     * @return nothing
     **/
@@ -1000,8 +1002,7 @@ class Document extends CommonDBTM {
    /**
     * Show documents associated to an item
     *
-    * @param $itemtype item type
-    * @param $ID item ID
+    * @param $item CommonDBTM object for which associated documents must be displayed
     * @param $withtemplate
     **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {

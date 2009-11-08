@@ -984,6 +984,7 @@ class CommonDBTM {
    /**
    * Define tabs to display
    *
+   *@param $ID integer ID of the item
    *@param $withtemplate is a template view ?
    *
    *@return array containing the onglets
@@ -1611,7 +1612,7 @@ class CommonDBTM {
    }
 
 
-   /*
+   /**
     * Return a field Value if exists
     * @param $field field name
     * @return value of the field / false if not exists
@@ -1620,6 +1621,7 @@ class CommonDBTM {
       if (isset($this->fields[$field])) {
          return $this->fields[$field];
       }
+      /// TODO find a new value : can be valid for boolean value
       return false;
    }
 
@@ -1829,7 +1831,7 @@ abstract class CommonDBRelation extends CommonDBTM {
     * @return nothing
     *
    **/
-   function post_addItem($newID,$inpt) {
+   function post_addItem($newID,$input) {
 
       $ci1 = new CommonItem();
       $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :

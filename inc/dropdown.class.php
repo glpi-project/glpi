@@ -722,7 +722,7 @@ class Netpoint extends CommonDropdown {
    /**
     * Handled Multi add item
     *
-    * @param : $input array of values
+    * @param $input array of values
     *
     */
    function addMulti ($input) {

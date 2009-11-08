@@ -760,6 +760,8 @@ class User extends CommonDBTM {
     * @param $user_dn Basedn of the user
     * @param $group_condition group search condition
     * @param $group_member_field group field member in a user object
+    * @param $use_dn boolean search dn of user ($login_field=$user_dn) in group_member_field
+    * @param $login_field string user login field
     *
     * @return String : basedn of the user / false if not founded
     */
