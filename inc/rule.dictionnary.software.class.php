@@ -40,18 +40,18 @@ if (!defined('GLPI_ROOT')) {
 
 class DictionnarySoftwareCollection extends RuleCachedCollection {
 
+   // From RuleCollection
+   public sub_type = RULE_DICTIONNARY_SOFTWARE;
+   public rule_class_name = 'DictionnarySoftwareRule';
+   public stop_on_first_match = true;
+   public right = "rule_dictionnary_software";
+   public menu_type="dictionnary";
+   public menu_option="software";
+
    /**
     * Constructor
    **/
    function __construct() {
-
-      $this->sub_type = RULE_DICTIONNARY_SOFTWARE;
-      $this->rule_class_name = 'DictionnarySoftwareRule';
-      $this->stop_on_first_match = true;
-      $this->right = "rule_dictionnary_software";
-      $this->menu_type="dictionnary";
-      $this->menu_option="software";
-
 
       //Init cache system values
       $this->initCache("glpi_rulescachesoftwares", array("name" => "old_value",
@@ -431,14 +431,10 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 **/
 class DictionnarySoftwareRule extends RuleCached {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      parent :: __construct(RULE_DICTIONNARY_SOFTWARE);
-      $this->right = "rule_dictionnary_software";
-      $this->can_sort = true;
-   }
+   // From Rule
+   public $sub_type=RULE_DICTIONNARY_SOFTWARE;
+   public $right='rule_dictionnary_software';
+   public $can_sort=true;
 
    function getTitle() {
       global $LANG;

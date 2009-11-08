@@ -35,15 +35,16 @@
 
 class RuleDictionnaryDropdown extends RuleCached {
 
+   // From Rule
+   public $right='rule_dictionnary_dropdown';
+   public $can_sort=true;
+
    /**
     * Constructor
     * @param $type dropdown type
    **/
    function __construct($type) {
       parent::__construct($type);
-
-      $this->can_sort=true;
-      $this->right="rule_dictionnary_dropdown";
    }
 
    function maxActionsCount() {
@@ -160,6 +161,13 @@ class RuleDictionnaryDropdown extends RuleCached {
 
 
 class DictionnaryDropdownCollection extends RuleCachedCollection {
+
+   // From RuleCollection
+   public $rule_class_name = 'RuleDictionnaryDropdown';
+   public $right='rule_dictionnary_dropdown';
+   public $menu_option='dictionnary';
+
+   // Specific ones
    /// dropdown table
    var $item_table="";
 
@@ -170,9 +178,6 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
    function __construct($type) {
 
       $this->sub_type = $type;
-      $this->rule_class_name = 'RuleDictionnaryDropdown';
-      $this->right="rule_dictionnary_dropdown";
-      $this->menu_type="dictionnary";
 
       switch ($this->sub_type) {
          case RULE_DICTIONNARY_MANUFACTURER :
