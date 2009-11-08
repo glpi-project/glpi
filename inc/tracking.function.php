@@ -1127,7 +1127,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    echo "<td class='center' colspan='1'>";
    echo "<input type='submit' name='reset' value='".$LANG['buttons'][16]."' class='submit'>&nbsp;";
-   showSaveBookmarkButton(BOOKMARK_SEARCH,TRACKING_TYPE);
+   Bookmark::showSaveButton(BOOKMARK_SEARCH,TRACKING_TYPE);
    // Needed for bookmark
    echo "<input type='hidden' name='extended' value='$extended'>";
    echo "</td>";

@@ -474,7 +474,7 @@ function searchForm($itemtype,$params) {
          "reset_search&amp;itemtype=$itemtype' >";
    echo "<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
           $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
-   showSaveBookmarkButton(BOOKMARK_SEARCH,$itemtype);
+   Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
    echo "</td>\n";
 
    // Display submit button
