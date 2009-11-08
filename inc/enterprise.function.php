@@ -39,9 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 
 /**
- * Print the HTML array for infocoms linked 
+ * Print the HTML array for infocoms linked
  *
- * Print the HTML array for infocoms linked 
+ * Print the HTML array for infocoms linked
  *
  *@param $instID array : Manufacturer identifier.
  *
@@ -54,9 +54,9 @@ function showInfocomEnterprise($instID) {
 
 	if (!haveRight("contact_enterprise","r")) return false;
 
-	$query = "SELECT DISTINCT device_type 
-		FROM glpi_infocoms 
-		WHERE FK_enterprise = '$instID' 
+	$query = "SELECT DISTINCT device_type
+		FROM glpi_infocoms
+		WHERE FK_enterprise = '$instID'
 		ORDER BY device_type";
 
 	$result = $DB->query($query);
@@ -77,26 +77,30 @@ function showInfocomEnterprise($instID) {
 	$num=0;
 	while ($i < $number) {
 		$type=$DB->result($result, $i, "device_type");
-		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=SOFTWARELICENSE_TYPE){
+		if (haveTypeRight($type,"r")
+         // Don't list type where infocom are Template
+         && $type!=CONSUMABLE_TYPE && $type!=CARTRIDGE_TYPE && $type!=SOFTWARE_TYPE
+         // Don't list type we don't know how to display'
+         && $type!=CONSUMABLE_ITEM_TYPE && $type!=CARTRIDGE_ITEM_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".* "
 				." FROM glpi_infocoms "
 				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) "
 				." WHERE glpi_infocoms.device_type='$type' AND glpi_infocoms.FK_enterprise = '$instID' "
-				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type]) 
+				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
 				." ORDER BY FK_entities, ".$LINK_ID_TABLE[$type].".name";
-				
+
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
 			$ci->setType($type);
 			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
-				
+
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
 					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
-				
-				echo "<td class='center'>-</td><td class='center'>-</td></tr>";		
+
+				echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
@@ -109,14 +113,14 @@ function showInfocomEnterprise($instID) {
 							.($nb>1?"<br />$nb</td>":"</td>");
 					}
 					echo "<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>";
-					
+
 					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "</tr>";
 				}
 			}
-			$num+=$nb;		
+			$num+=$nb;
 		}
 		$i++;
 	}
@@ -145,7 +149,7 @@ function showAssociatedContact($instID) {
 		. " FROM glpi_contact_enterprise, glpi_contacts "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.FK_entities) "
 		. " WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' "
-		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) 
+		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true)
 		. " ORDER BY glpi_entities.completename, glpi_contacts.name";
 
 	$result = $DB->query($query);
