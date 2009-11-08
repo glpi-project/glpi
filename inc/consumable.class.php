@@ -45,14 +45,10 @@ if (!defined('GLPI_ROOT')){
  */
 class ConsumableType extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table="glpi_consumablesitems";
-      $this->type=CONSUMABLEITEM_TYPE;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_consumablesitems';
+   public $type = CONSUMABLEITEM_TYPE;
+   public $entity_assign = true;
 
    /**
     * Get The Name + Ref of the Object
@@ -285,15 +281,11 @@ class ConsumableType extends CommonDBTM {
  */
 class Consumable extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table="glpi_consumables";
-      $this->type=CONSUMABLE_TYPE;
-      // by the Consumable type
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_consumables';
+   public $type = CONSUMABLE_TYPE;
+   // by the Consumable type
+   public $entity_assign = true;
 
    function cleanDBonPurge($ID) {
       global $DB;

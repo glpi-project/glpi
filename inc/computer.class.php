@@ -1135,14 +1135,11 @@ class Computer extends CommonDBTM {
 
 /// Disk class
 class ComputerDisk extends CommonDBTM {
-   /**
-   * Constructor
-   **/
-   function __construct() {
-      $this->table = "glpi_computersdisks";
-      $this->type = COMPUTERDISK_TYPE;
-      $this->entity_assign=true;
-   }
+
+   // From CommonDBTM
+   public $table = 'glpi_computersdisks';
+   public $type = COMPUTERDISK_TYPE;
+   public $entity_assign = true;
 
    function prepareInputForAdd($input) {
       // Not attached to software -> not added

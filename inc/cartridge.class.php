@@ -47,13 +47,10 @@ if (!defined('GLPI_ROOT')){
  */
 class CartridgeType extends CommonDBTM {
 
-   /**Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_cartridgesitems";
-      $this->type=CARTRIDGEITEM_TYPE;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_cartridgesitems';
+   public $type = CARTRIDGEITEM_TYPE;
+   public $entity_assign = true;
 
    /**
     * Get The Name + Ref of the Object
@@ -353,15 +350,11 @@ class CartridgeType extends CommonDBTM {
  **/
 class Cartridge extends CommonDBTM {
 
-   /**
-   * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_cartridges";
-      $this->type=CARTRIDGE_TYPE;
-      // by the Cartridge Type
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_cartridges';
+   public $type = CARTRIDGE_TYPE;
+   // by the Cartridge Type
+   public $entity_assign = true;
 
    function prepareInputForAdd($input) {
       return array("cartridgesitems_id"=>$input["tID"],

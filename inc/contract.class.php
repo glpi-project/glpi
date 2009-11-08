@@ -42,15 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class Contract extends CommonDBTM {
 
-    /**
-     * Constructor
-    **/
-   function __construct () {
-      $this->table="glpi_contracts";
-      $this->type=CONTRACT_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_contracts';
+   public $type = CONTRACT_TYPE;
+   public $may_be_recursive = true;
+   public $entity_assign = true;
 
    function post_getEmpty () {
       global $CFG_GLPI;
@@ -386,19 +382,16 @@ class Contract extends CommonDBTM {
 // Relation between Contracts and Items
 class ContractItem extends CommonDBRelation{
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table = 'glpi_contracts_items';
-      $this->type = CONTRACTITEM_TYPE;
+   // From CommonDBTM
+   public $table = 'glpi_contracts_items';
+   public $type = CONTRACTITEM_TYPE;
 
-      $this->itemtype_1 = CONTRACT_TYPE;
-      $this->items_id_1 = 'contracts_id';
+   // From CommonDBRelation
+   public $itemtype_1 = CONTRACT_TYPE;
+   public $items_id_1 = 'contracts_id';
 
-      $this->itemtype_2 = 'itemtype';
-      $this->items_id_2 = 'items_id';
-   }
+   public $itemtype_2 = 'itemtype';
+   public $items_id_2 = 'items_id';
 
    /**
     * Check right on an contract - overloaded to check max_links_allowed
@@ -433,19 +426,15 @@ class ContractItem extends CommonDBRelation{
 // Relation between Contracts and Suppliers
 class ContractSupplier extends CommonDBRelation {
 
-   /**
-    * Constructor
-    **/
-   function __construct () {
-      $this->table = 'glpi_contracts_suppliers';
-      $this->type = CONTRACTSUPPLIER_TYPE;
+   // From CommonDBTM
+   public $table = 'glpi_contracts_suppliers';
+   public $type = CONTRACTSUPPLIER_TYPE;
 
-      $this->itemtype_1 = CONTRACT_TYPE;
-      $this->items_id_1 = 'contracts_id';
+   // From CommonDBRelation
+   public $itemtype_1 = CONTRACT_TYPE;
+   public $items_id_1 = 'contracts_id';
 
-      $this->itemtype_2 = ENTERPRISE_TYPE;
-      $this->items_id_2 = 'suppliers_id';
-   }
-
+   public $itemtype_2 = ENTERPRISE_TYPE;
+   public $items_id_2 = 'suppliers_id';
 }
 ?>

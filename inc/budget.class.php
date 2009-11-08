@@ -38,16 +38,12 @@ if (!defined('GLPI_ROOT')) {
  */
 class Budget extends CommonDBTM{
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_budgets";
-      $this->type=BUDGET_TYPE;
-      $this->entity_assign = true;
-      $this->may_be_recursive = true;
-      $this->dohistory=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_budgets';
+   public $type = BUDGET_TYPE;
+   public $dohistory = true;
+   public $entity_assign = true;
+   public $may_be_recursive = true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

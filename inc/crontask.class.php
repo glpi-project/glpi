@@ -38,18 +38,15 @@ if (!defined('GLPI_ROOT')) {
  */
 class CronTask extends CommonDBTM{
 
+   // From CommonDBTM
+   public $table = 'glpi_crontasks';
+   public $type = CRONTASK_TYPE;
+
+   // Specific ones
    static private $lockname='';
    private $timer=0.0;
    private $startlog=0;
    private $volume=0;
-
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_crontasks";
-      $this->type=CRONTASK_TYPE;
-   }
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;
@@ -1032,12 +1029,9 @@ class CronTask extends CommonDBTM{
  */
 class CronTaskLog extends CommonDBTM{
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_crontaskslogs";
-      $this->type=CRONTASKLOG_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_crontaskslogs';
+   public $type = CRONTASKLOG_TYPE;
+
 }
 ?>

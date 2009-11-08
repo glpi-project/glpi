@@ -42,13 +42,8 @@ if (!defined('GLPI_ROOT')){
  */
 class Config extends CommonDBTM {
 
-    /**
-     * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_configs";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_configs';
 
    /**
     * Prepare input datas for updating the item
@@ -986,13 +981,8 @@ class Config extends CommonDBTM {
 /// OCS Config class
 class ConfigOCS extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_ocsservers";
-   $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_ocsservers';
 
    /**
     * Prepare input datas for updating the item

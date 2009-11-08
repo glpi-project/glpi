@@ -36,6 +36,12 @@ if (!defined('GLPI_ROOT')){
  * Class Devices
  */
 class Device extends CommonDBTM {
+
+   // From CommonDBTM
+   public $type = DEVICE_TYPE;
+   public $auto_message_on_action = false;
+
+   // Specific ones
    /// Current device type
    var $devtype=0;
 
@@ -46,8 +52,6 @@ class Device extends CommonDBTM {
    function __construct($dev_type) {
       $this->devtype=$dev_type;
       $this->table=getDeviceTable($dev_type);
-      $this->type=DEVICE_TYPE;
-      $this->auto_message_on_action=false;
    }
 
    function prepareInputForAdd($input) {

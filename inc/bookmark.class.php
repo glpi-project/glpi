@@ -35,13 +35,9 @@ if (!defined('GLPI_ROOT')) {
 
 class SetupDefaultDisplay extends CommonDBTM{
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_bookmarks_users";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_bookmarks_users';
+
 }
 
 /**
@@ -49,19 +45,13 @@ class SetupDefaultDisplay extends CommonDBTM{
  */
 class Bookmark extends CommonDBTM {
 
-   /**
-    * Constructor
-    **/
-   function __construct() {
-      global $CFG_GLPI;
-
-      $this->table = "glpi_bookmarks";
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-      $this->may_be_private=true;
-      // To allow "can" method (canView & canCreate)
-      $this->type = BOOKMARK_TYPE;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_bookmarks';
+   // To allow "can" method (canView & canCreate)
+   public $type = BOOKMARK_TYPE;
+   public $entity_assign = true;
+   public $may_be_recursive=true;
+   public $may_be_private=true;
 
    function prepareInputForAdd($input) {
       if (!isset($input['url'])||!isset($input['type'])) {
