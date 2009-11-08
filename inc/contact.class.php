@@ -315,6 +315,151 @@ class Contact extends CommonDBTM{
 
       return $tab;
    }
+
+   /**
+    * Print the HTML array for entreprises on the current contact
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showSuppliers() {
+      global $DB,$CFG_GLPI, $LANG;
+
+      $instID = $this->fields['id'];
+      if (!$this->can($instID,'r')) {
+         return false;
+      }
+      $canedit = $this->can($instID,'w');
+
+      $query = "SELECT `glpi_contacts_suppliers`.`id`, `glpi_suppliers`.`id` AS entID,
+                       `glpi_suppliers`.`name` AS name, `glpi_suppliers`.`website` AS website,
+                       `glpi_suppliers`.`fax` AS fax, `glpi_suppliers`.`phonenumber` AS phone,
+                       `glpi_suppliers`.`supplierstypes_id` AS type, `glpi_suppliers`.`is_deleted`,
+                       `glpi_entities`.`id` AS entity
+                FROM `glpi_contacts_suppliers`, `glpi_suppliers`
+                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
+                WHERE `glpi_contacts_suppliers`.`contacts_id` = '$instID'
+                      AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`".
+                           getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) ."
+                ORDER BY `glpi_entities`.`completename`, `name`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i = 0;
+
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
+      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='7'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['financial'][26]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['financial'][79]."</th>";
+      echo "<th>".$LANG['help'][35]."</th>";
+      echo "<th>".$LANG['financial'][30]."</th>";
+      echo "<th>".$LANG['financial'][45]."</th>";
+      echo "<th>&nbsp;</th></tr>";
+
+      $used=array();
+      if ($number>0) {
+         initNavigateListItems(ENTERPRISE_TYPE,$LANG['common'][18]." = ".$this->fields['name']);
+         while ($data= $DB->fetch_array($result)) {
+            $ID=$data["id"];
+            addToNavigateListItems(ENTERPRISE_TYPE,$data["entID"]);
+            $used[$data["entID"]]=$data["entID"];
+            $website=$data["website"];
+            if (!empty($website)) {
+               $website=$data["website"];
+               if (!preg_match("?https*://?",$website)) {
+                  $website="http://".$website;
+               }
+               $website="<a target=_blank href='$website'>".$data["website"]."</a>";
+            }
+            echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
+            echo "<td class='center'>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$data["entID"]."'>".
+                   getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
+            echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
+            echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
+            echo "<td class='center' width='80'>".$data["phone"]."</td>";
+            echo "<td class='center' width='80'>".$data["fax"]."</td>";
+            echo "<td class='center'>".$website."</td>";
+            echo "<td class='tab_bg_2 center'>";
+            if ($canedit) {
+               echo "<a href='".
+                      $CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1&amp;id=
+                      $ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td></tr>";
+         }
+      }
+      if ($canedit) {
+         if ($this->fields["is_recursive"]) {
+            $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",
+                                              $this->fields["entities_id"]));
+         } else {
+            $nb=countElementsInTableForEntity("glpi_suppliers",$this->fields["entities_id"]);
+         }
+         if ($nb>count($used)) {
+            echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
+            echo "<div class='software-instal'>";
+            echo "<input type='hidden' name='contacts_id' value='$instID'>";
+            if ($this->fields["is_recursive"]) {
+               dropdown("glpi_suppliers","suppliers_id",1,
+                        getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
+            } else {
+               dropdown("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
+            }
+            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
+                               $LANG['buttons'][8]."\" class='submit'>";
+            echo "</div>";
+            echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table></div></form>";
+   }
+
+   /**
+    * Generate the Vcard for the current Contact
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function generateVcard() {
+
+      if (!$this->can($this->fields['id'],'r')) {
+         return false;
+      }
+      // build the Vcard
+      $vcard = new vCard();
+
+      $vcard->setName($this->fields["name"], $this->fields["firstname"], "", "");
+
+      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
+      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
+      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
+
+      $addr=$this->GetAddress();
+      if (is_array($addr)) {
+         $vcard->setAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
+                            $addr["postcode"], $addr["country"],"WORK;POSTAL");
+      }
+      $vcard->setEmail($this->fields["email"]);
+      $vcard->setNote($this->fields["comment"]);
+      $vcard->setURL($this->GetWebsite(), "WORK");
+
+      // send the  VCard
+      $output = $vcard->getVCard();
+      $filename =$vcard->getFileName();      // "xxx xxx.vcf"
+
+      @Header("Content-Disposition: attachment; filename=\"$filename\"");
+      @Header("Content-Length: ".utf8_strlen($output));
+      @Header("Connection: close");
+      @Header("content-type: text/x-vcard; charset=UTF-8");
+
+      echo $output;
+   }
 }
 
 class ContactSupplier extends CommonDBRelation{
