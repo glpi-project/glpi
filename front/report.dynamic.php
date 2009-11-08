@@ -92,25 +92,17 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 				showItemStats("",$_GET["date1"],$_GET["date2"],$_GET['start']);
 			}
 			break;
-		default :
-			// Plugin case
-			if ($_GET["item_type"]>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]].'_dynamicReport';
-					if (function_exists($function)){
-						if ($function($_GET)){
-							// If display done exit else do normal display
-							exit();
-						}
-					}
-				}
-			}
-
-
-			manageGetValuesInSearch($_GET["item_type"]);
-
-			showList($_GET["item_type"],$_GET);
-			break;
-	}
+      default :
+         // Plugin case
+         if ($_GET["item_type"]>1000){
+            if (isset($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]])){
+               if (doOneHook($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]], 'dynamicReport', $_GET)) {
+                  exit();
+               }
+            }
+         }
+         manageGetValuesInSearch($_GET["item_type"]);
+         showList($_GET["item_type"],$_GET);
+   }
 }
 ?>
