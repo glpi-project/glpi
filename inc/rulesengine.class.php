@@ -2146,6 +2146,8 @@ class RuleCached extends Rule {
  *
 **/
 class RuleCachedCollection extends RuleCollection {
+
+   // Specific ones
    /// Cache table used
    var $cache_table;
    /// Cache parameters

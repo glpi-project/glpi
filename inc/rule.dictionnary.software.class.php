@@ -39,20 +39,18 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class DictionnarySoftwareCollection extends RuleCachedCollection {
-
    // From RuleCollection
-   public sub_type = RULE_DICTIONNARY_SOFTWARE;
-   public rule_class_name = 'DictionnarySoftwareRule';
-   public stop_on_first_match = true;
-   public right = "rule_dictionnary_software";
-   public menu_type="dictionnary";
-   public menu_option="software";
+   public $sub_type = RULE_DICTIONNARY_SOFTWARE;
+   public $rule_class_name = 'DictionnarySoftwareRule';
+   public $stop_on_first_match = true;
+   public $right = 'rule_dictionnary_software';
+   public $menu_type = 'dictionnary';
+   public $menu_option = 'software';
 
    /**
     * Constructor
    **/
    function __construct() {
-
       //Init cache system values
       $this->initCache("glpi_rulescachesoftwares", array("name" => "old_value",
                                                          "manufacturer" => "manufacturer"),
