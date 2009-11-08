@@ -757,7 +757,7 @@ class MailCollect {
                                 getSize($structure->bytes) . "): ".$filename;
             return false;
          }
-         if (!isValidDoc($filename)) {
+         if (!Document::isValidDoc($filename)) {
             $this->addtobody .= "<br>".$LANG['mailgate'][5]." (" .
                                 $this->get_mime_type($structure) . "): ".$filename;
             return false;
