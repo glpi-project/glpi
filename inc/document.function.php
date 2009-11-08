@@ -407,7 +407,6 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
    if (empty($withtemplate)) {
       $withtemplate=0;
    }
-
    $ci=new CommonItem();
    $ci->getFromDB($itemtype,$ID);
    $canread=$ci->obj->can($ID,'r');
@@ -416,15 +415,6 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
    if ($ci->getField('is_recursive')) {
       $is_recursive=1;
    }
-   $needed_fields=array('id',
-                        'name',
-                        'filename',
-                        'mime',
-                        'documentscategories_id',
-                        'link',
-                        'is_deleted',
-                        'entities_id',
-                        'is_recursive');
 
    $query = "SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity,
                     `glpi_documents`.`name` AS assocName, `glpi_documents`.*
@@ -490,8 +480,12 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
          initNavigateListItems(DOCUMENT_TYPE,$ci->getType()." = ".$ci->getName());
       }
 
+      $document = new Document();
       while ($data=$DB->fetch_assoc($result)) {
          $docID=$data["id"];
+         if (!$document->getFromDB($docID)) {
+            continue;
+         }
          if ($itemtype!=DOCUMENT_TYPE) {
             addToNavigateListItems(DOCUMENT_TYPE,$docID);
          }
@@ -499,29 +493,12 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
          $assocID=$data["assocID"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-         if ($withtemplate!=3 && $canread
-             && (in_array($data['entities_id'],$_SESSION['glpiactiveentities'])
-                 || $data["is_recursive"])) {
-
-            echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?id=$docID'><strong>".
-                   $data["name"];
-            if ($_SESSION["glpiis_ids_visible"]) {
-               echo " (".$docID.")";
-            }
-            echo "</strong></a></td>";
-         } else {
-            echo "<td class='center'><strong>".$data["name"];
-            if ($_SESSION["glpiis_ids_visible"]) {
-               echo " (".$docID.")";
-            }
-            echo "</strong></td>";
-         }
+         echo "<td class='center'>".$document->getLink()."</td>";
          echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
-         echo "<td class='center'>".getDocumentLink($docID)."</td>";
+         echo "<td class='center'>".$document->getDownloadLink()."</td>";
          echo "<td class='center'>";
          if (!empty($data["link"])) {
-            echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
+            echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"]."</a>";
          } else {;
             echo "&nbsp;";
          }
@@ -596,23 +573,6 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate='') {
    }
    echo "</table></div>"    ;
    echo "</form>";
-}
-
-/**
- * Get download link for a document
- *
- * @param $id of the document
- * @param $params additonal parameters to be added to the link
- * @param $len maximum length of displayed string
- *
- **/
-function getDocumentLink($id, $params='', $len=20){
-
-   $doc = new Document();
-   if ($doc->getFromDB($id)) {
-      return $doc->getDownloadLink($params,$len);
-   }
-   return "&nbsp;";
 }
 
 /**

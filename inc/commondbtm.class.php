@@ -585,7 +585,7 @@ class CommonDBTM {
       if (!isset($this->fields['id'])) {
          return '';
       }
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      if (!isset($INFOFORM_PAGES[$this->type]) || !$this->can($this->fields['id'],'r')) {
          return $this->getNameID($with_comment);
       }
 
