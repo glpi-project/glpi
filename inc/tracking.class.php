@@ -234,13 +234,18 @@ class Job extends CommonDBTM {
       }
 
       if (isset($input["document"]) && $input["document"]>0) {
-         addDeviceDocument($input["document"],$this->type,$input["id"]);
          $doc=new Document();
-         $doc->getFromDB($input["document"]);
+         if ($doc->getFromDB($input["document"])) {
+            $docitem=new DocumentItem();
+            if ($docitem->add(array('documents_id' => $input["document"],
+                                    'itemtype' => $this->type,
+                                    'items_id' => $input["id"]))) {
+               // Force date_mod of tracking
+               $input["date_mod"]=$_SESSION["glpi_currenttime"];
+               $input['_doc_added'][]=$doc->fields["name"];
+            }
+         }
          unset($input["document"]);
-         // Force date_mod of tracking
-         $input["date_mod"]=$_SESSION["glpi_currenttime"];
-         $input['_doc_added'][]=$doc->fields["name"];
       }
 
       // Old values for add followup in change
@@ -1287,8 +1292,12 @@ class Job extends CommonDBTM {
    function addFiles ($id) {
       global $LANG, $CFG_GLPI;
 
+      if (!isset($_FILES)) {
+         return array();
+      }
       $docadded=array();
       $doc=new Document();
+      $docitem=new DocumentItem();
 
       // add Document if exists
       if (isset($_FILES['multiple']) ) {
@@ -1316,7 +1325,9 @@ class Job extends CommonDBTM {
                $docID = $doc->add($input2);
             }
             if ($docID>0) {
-               if (addDeviceDocument($docID,$this->type,$id)) {
+               if ($docitem->add(array('documents_id' => $docID,
+                                       'itemtype' => $this->type,
+                                       'items_id' => $id))) {
                   $docadded[]=stripslashes($doc->fields["name"]);
                }
             }
@@ -1327,6 +1338,7 @@ class Job extends CommonDBTM {
             addMessageAfterRedirect($LANG['document'][46],false,ERROR);
          }
       }
+      unset ($_FILES);
       return $docadded;
    }
 
