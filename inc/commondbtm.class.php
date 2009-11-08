@@ -582,7 +582,7 @@ class CommonDBTM {
    function getLink($with_comment=0) {
       global $INFOFORM_PAGES, $CFG_GLPI;
 
-      if (!isset($this->getfields['id'])) {
+      if (!isset($this->fields['id'])) {
          return '';
       }
       if (!isset($INFOFORM_PAGES[$this->type])) {
@@ -590,7 +590,7 @@ class CommonDBTM {
       }
 
       $link  = $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type];
-      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->getfields['id'];
+      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
       $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
 
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
