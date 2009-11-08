@@ -41,92 +41,92 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["sort"])) $_GET["sort"] = "";
-if(!isset($_GET["order"])) $_GET["order"] = "";
-
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
+if(!isset($_GET["sort"])) {
+   $_GET["sort"] = "";
+}
+if(!isset($_GET["order"])) {
+   $_GET["order"] = "";
+}
+if(!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
 
 $print=new Printer();
-if (isset($_POST["add"]))
-{
-	$print->check(-1,'w',$_POST);
+if (isset($_POST["add"])) {
+   $print->check(-1,'w',$_POST);
 
-	$newID=$print->add($_POST);
-	logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][20]."  ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	$print->check($_POST["id"],'w');
+   if ($newID=$print->add($_POST)) {
+      logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][20]."  ".$_POST["name"].".");
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	if (!empty($_POST["withtemplate"]))
-		$print->delete($_POST,1);
-	else $print->delete($_POST);
-	logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"]))
-		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else
-		glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
-}
-else if (isset($_POST["restore"]))
-{
-	checkRight("printer","w");
-	$print->restore($_POST);
-	logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
-}
-else if (isset($_POST["purge"]) || isset($_GET["purge"]))
-{
-	if (isset($_POST["purge"]))
-		$input["id"]=$_POST["id"];
-	else
-		$input["id"] = $_GET["id"];
+} else if (isset($_POST["delete"])) {
+   $print->check($_POST["id"],'w');
 
-	$print->check($input["id"],'w');
+   if (!empty($_POST["withtemplate"])) {
+      $print->delete($_POST,1);
+   } else {
+      $print->delete($_POST);
+   }
+   logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   if(!empty($_POST["withtemplate"])) {
+      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
+   } else {
+      glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
+   }
+} else if (isset($_POST["restore"])) {
+   checkRight("printer","w");
+   $print->restore($_POST);
+   logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 
-	$print->delete($input,1);
-	logEvent($input["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
-}
-else if (isset($_POST["update"]))
-{
-	$print->check($_POST["id"],'w');
+} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
+   if (isset($_POST["purge"])) {
+      $input["id"]=$_POST["id"];
+   } else {
+      $input["id"] = $_GET["id"];
+   }
+   $print->check($input["id"],'w');
 
-	$print->update($_POST);
-	logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["unglobalize"]))
-{
-	$print->check($_GET["id"],'w');
+   $print->delete($input,1);
+   logEvent($input["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 
-	unglobalizeDevice(PRINTER_TYPE,$_GET["id"]);
-	logEvent($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
-}
-else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["id"]))
-{
-	$print->check($_GET["dID"],"w");
-	Disconnect($_GET["id"]);
-	logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][26]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
-{
-	$print->check($_GET["id"],"w");
-	Connect($_POST["sID"],$_POST["item"],PRINTER_TYPE);
-	logEvent($_POST["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][27]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["sID"]);
-}
-else
-{
-	commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
+} else if (isset($_POST["update"])) {
+   $print->check($_POST["id"],'w');
 
-	$print->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $print->update($_POST);
+   logEvent($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	commonFooter();
+} else if (isset($_GET["unglobalize"])) {
+   $print->check($_GET["id"],'w');
+
+   unglobalizeDevice(PRINTER_TYPE,$_GET["id"]);
+   logEvent($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
+
+} else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["id"])) {
+   $print->check($_GET["dID"],"w");
+   Disconnect($_GET["id"]);
+   logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][26]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0) {
+   $print->check($_GET["id"],"w");
+   Connect($_POST["sID"],$_POST["item"],PRINTER_TYPE);
+   logEvent($_POST["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][27]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["sID"]);
+
+} else {
+   commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
+
+   $print->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+
+   commonFooter();
 }
-
 
 ?>

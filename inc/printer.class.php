@@ -158,6 +158,21 @@ class Printer  extends CommonDBTM {
       unset($input['id']);
       unset($input['withtemplate']);
 
+      if (isset($input['init_pages_counter'])) {
+         $input['init_pages_counter'] = intval($input['init_pages_counter']);
+      } else {
+         $input['init_pages_counter'] = 0;
+      }
+
+      return $input;
+   }
+
+   function prepareInputForUpdate($input) {
+
+      if (isset($input['init_pages_counter'])) {
+         $input['init_pages_counter'] = intval($input['init_pages_counter']);
+      }
+
       return $input;
    }
 
