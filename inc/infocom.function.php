@@ -65,7 +65,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
    }
 
    if ($ci->getFromDB($itemtype,$dev_ID)) {
-      $entity=$ci->getField("entities_id");
+      $entity=$ci->obj->getEntityID();
 
       if (!$ic->getFromDBforDevice($itemtype,$dev_ID)) {
          $input=array('entities_id'=>$entity);
