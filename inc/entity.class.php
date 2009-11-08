@@ -42,16 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class EntityData extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_entitiesdatas";
-      $this->type=-1;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_entitiesdatas';
 
    function getIndexName() {
-      return "entities_id";
+      return 'entities_id';
    }
 
 }
@@ -62,15 +57,11 @@ class EntityData extends CommonDBTM {
  */
 class Entity extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_entities";
-      $this->type=ENTITY_TYPE;
-      $this->entity_assign=true;
-      $this->may_be_recursive=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_entities';
+   public $type = ENTITY_TYPE;
+   public $may_be_recursive=true;
+   public $entity_assign=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

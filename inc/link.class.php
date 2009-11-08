@@ -40,15 +40,11 @@ if (!defined('GLPI_ROOT')){
 // CLASSES link
 class Link extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct () {
-      $this->table="glpi_links";
-      $this->type=LINK_TYPE;
-      $this->may_be_recursive=true;
-      $this->entity_assign=true;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_links';
+   public $type = LINK_TYPE;
+   public $may_be_recursive=true;
+   public $entity_assign=true;
 
    function defineTabs($ID,$withtemplate) {
       global $LANG;

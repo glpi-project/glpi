@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')){
 class Phone extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_phones";
+   public $table = 'glpi_phones';
    public $type = PHONE_TYPE;
    public $dohistory=true;
    public $entity_assign=true;

@@ -722,7 +722,7 @@ class RuleCollection {
 **/
 class Rule extends CommonDBTM {
    // From CommonDBTM
-   public $table = "glpi_rules";
+   public $table = 'glpi_rules';
    public $type = RULE_TYPE;
 
    // Specific ones
@@ -733,11 +733,11 @@ class Rule extends CommonDBTM {
    /// Rule type
    var $sub_type;
    /// Right needed to use this rule
-   var $right="config";
+   var $right='config';
    /// Rules can be sorted ?
    var $can_sort=false;
    /// field used to order rules
-   var $orderby="ranking";
+   var $orderby='ranking';
 
    /**
    * Constructor
@@ -1898,7 +1898,7 @@ class Rule extends CommonDBTM {
 class RuleAction extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_rulesactions";
+   public $table = 'glpi_rulesactions';
 
    /**
     * Get all actions for a given rule
@@ -1945,7 +1945,7 @@ class RuleAction extends CommonDBTM {
 /// Criteria Rule class
 class RuleCriteria extends CommonDBTM {
    // From CommonDBTM
-   public $table = "glpi_rulescriterias";
+   public $table = 'glpi_rulescriterias';
 
    /**
     * Get all criterias for a given rule

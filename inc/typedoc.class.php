@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class Typedoc  extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_documentstypes";
+   public $table = 'glpi_documentstypes';
    public $type = TYPEDOC_TYPE;
 
    function defineTabs($ID,$withtemplate){

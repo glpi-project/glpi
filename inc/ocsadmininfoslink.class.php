@@ -41,15 +41,9 @@ if (!defined('GLPI_ROOT')){
  */
 class OcsAdminInfosLink extends CommonDBTM {
 
-   /**
-    * Constructor
-    *
-    *@return nothing
-    *
-   **/
-   function __construct () {
-      $this->table="glpi_ocsadmininfoslinks";
-   }
+   // From CommonDBTM
+   public $table = 'glpi_ocsadmininfoslinks';
+
    /**
     * Actions done when item is deleted from the database
     *

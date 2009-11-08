@@ -39,10 +39,10 @@ if (!defined('GLPI_ROOT')) {
 class TrackingBusinessRuleCollection extends RuleCollection {
 
    // From RuleCollection
-   public $rule_class_name = "TrackingBusinessRule";
-   public $right = "rule_ticket";
+   public $rule_class_name = 'TrackingBusinessRule';
+   public $right = 'rule_ticket';
    public $use_output_rule_process_as_next_input=true;
-   public $menu_option="ticket";
+   public $menu_option='ticket';
 
    /**
     * Constructor
@@ -67,12 +67,12 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 class TrackingBusinessRule extends Rule {
 
    // From CommonDBTM
-   public $table = "glpi_rules";
+   public $table = 'glpi_rules';
    public $type = -1;
 
    // From Rule
    public $sub_type = RULE_TRACKING_AUTO_ACTION;
-   public $right="rule_ticket";
+   public $right='rule_ticket';
    public $can_sort=true;
 
    function maxActionsCount() {

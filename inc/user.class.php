@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 class User extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_users";
+   public $table = 'glpi_users';
    public $type = USER_TYPE;
    public $dohistory = true;
    public $history_blacklist = array('last_login');

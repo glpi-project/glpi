@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class Registry extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_registrykeys";
+   public $table = 'glpi_registrykeys';
    public $type = REGISTRY_TYPE;
 
    function cleanDBonPurge($ID) {

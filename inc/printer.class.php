@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class Printer  extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_printers";
+   public $table = 'glpi_printers';
    public $type = PRINTER_TYPE;
    public $dohistory=true;
    public $entity_assign=true;

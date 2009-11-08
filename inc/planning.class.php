@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')){
 class PlanningTracking extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = "glpi_ticketsplannings";
+   public $table = 'glpi_ticketsplannings';
 
    function prepareInputForUpdate($input) {
 

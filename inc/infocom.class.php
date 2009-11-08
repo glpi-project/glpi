@@ -42,15 +42,11 @@ if (!defined('GLPI_ROOT')){
  */
 class InfoCom extends CommonDBTM {
 
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      $this->table="glpi_infocoms";
-      $this->type=INFOCOM_TYPE;
-      $this->dohistory=true;
-      $this->auto_message_on_action=false;
-   }
+   // From CommonDBTM
+   public $table = 'glpi_infocoms';
+   public $type = INFOCOM_TYPE;
+   public $dohistory=true;
+   public $auto_message_on_action=true;
 
    function post_getEmpty() {
       global $CFG_GLPI;
