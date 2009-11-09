@@ -53,7 +53,7 @@ function showCentralGlobalView() {
    }
    if (haveRight("contract","r")) {
       echo "<tr><td class='top' width='450px'>";
-      showCentralContract();
+      Contract::showCentral();
       echo "</td></tr>";
    }
    echo "</table></td>";

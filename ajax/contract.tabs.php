@@ -54,15 +54,15 @@ $contract=new Contract();
 if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showSupplierContract($_POST["id"]);
-         showItemContract($_POST["id"]);
+         $contract->showSuppliers();
+         $contract->showItems();
          Document::showAssociated($contract);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
          displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
-         showItemContract($_POST["id"]);
+         $contract->showItems();
          break;
 
       case 5 :
@@ -79,7 +79,7 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
 
       default :
          if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showSupplierContract($_POST["id"]);
+            $contract->showSuppliers();
          }
          break;
    }
