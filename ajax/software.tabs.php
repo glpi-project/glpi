@@ -67,7 +67,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
-            showContractAssociated(SOFTWARE_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Contract::showAssociated($soft,$_POST["withtemplate"]);
             break;
 
          case 5 :
@@ -84,7 +84,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             showLicenses($_POST["id"]);
             showInstallations($_POST["id"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
-            showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
+            Contract::showAssociated($soft);
             Document::showAssociated($soft);
             showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
             showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
@@ -97,7 +97,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
 
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["id"]);
-            showContractAssociated(SOFTWARE_TYPE,$_POST["id"]);
+            Contract::showAssociated($soft);
             break;
 
          case 5 :

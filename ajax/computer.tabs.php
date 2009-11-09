@@ -81,7 +81,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
-            showContractAssociated(COMPUTER_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Contract::showAssociated($computer,$_POST["withtemplate"]);
             break;
 
          case 5 :
@@ -109,7 +109,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             showPortsAdd($_POST["id"],COMPUTER_TYPE);
             showPorts($_POST["id"], COMPUTER_TYPE);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
-            showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
+            Contract::showAssociated($computer,$_POST["withtemplate"]);
             Document::showAssociated($computer);
             showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
             showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
@@ -129,7 +129,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
-            showContractAssociated(COMPUTER_TYPE,$_POST["id"]);
+            Contract::showAssociated($computer);
             break;
 
          case 5 :
