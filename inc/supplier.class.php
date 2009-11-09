@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -38,9 +37,9 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * Enterprise class (suppliers)
+ * Supplier class (suppliers)
  */
-class Enterprise extends CommonDBTM {
+class Supplier extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_suppliers';
@@ -103,7 +102,7 @@ class Enterprise extends CommonDBTM {
    function showForm ($target,$ID,$withtemplate='') {
       global $CFG_GLPI,$LANG;
 
-      // Show Enterprise or blank form
+      // Show Supplier or blank form
       if (!haveRight("contact_enterprise","r")) {
          return false;
       }
@@ -324,7 +323,7 @@ class Enterprise extends CommonDBTM {
          $ret .= "&nbsp;&nbsp;";
       }
       if ($this->can($this->fields['id'],'r')) {
-         $ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$this->fields['id'].
+         $ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$this->fields['id'].
             "'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".
             $LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
       }
@@ -552,6 +551,107 @@ class Enterprise extends CommonDBTM {
       echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num</td>" : "&nbsp;</td>");
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>"    ;
+   }
+
+   /**
+    * Print an HTML array with contracts associated to the enterprise
+    *
+    *@return Nothing (display)
+    *
+    **/
+   function showContracts() {
+      global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
+   
+      $ID = $this->fields['id'];
+      if (!haveRight("contract","r") || !$this->can($ID,'r')) {
+         return false;
+      }
+      $canedit=$this->can($ID,'w');
+   
+      $query = "SELECT `glpi_contracts`.*, `glpi_contracts_suppliers`.`id` AS assocID,
+                       `glpi_entities`.`id` AS entity
+                FROM `glpi_contracts_suppliers`, `glpi_contracts`
+                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_contracts`.`entities_id`)
+                WHERE `glpi_contracts_suppliers`.`suppliers_id` = '$ID'
+                      AND `glpi_contracts_suppliers`.`contracts_id`=`glpi_contracts`.`id`".
+                      getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name`";
+   
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i = 0;
+   
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
+      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['financial'][4]."</th>";
+      echo "<th>".$LANG['financial'][6]."</th>";
+      echo "<th>".$LANG['search'][8]."</th>";
+      echo "<th>".$LANG['financial'][8]."</th>";
+      echo "<th>&nbsp;</th>";
+      echo "</tr>";
+   
+      $used=array();
+      while ($data=$DB->fetch_array($result)) {
+         $cID=$data["id"];
+         $used[$cID]=$cID;
+         $assocID=$data["assocID"];;
+         echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
+         echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>";
+         echo "<strong>".$data["name"];
+         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+            echo " (".$data["id"].")";
+         }
+         echo "</strong></a></td>";
+         echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
+         echo "<td class='center'>".$data["num"]."</td>";
+         echo "<td class='center'>".getDropdownName("glpi_contractstypes",$data["contractstypes_id"]);
+         echo "</td>";
+         echo "<td class='center'>".convDate($data["begin_date"])."</td>";
+         echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
+         if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
+            echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
+         }
+         echo "</td>";
+   
+         echo "<td class='tab_bg_2 center'>";
+         if ($canedit) {
+            echo "<a href='".$CFG_GLPI["root_doc"].
+                   "/front/contract.form.php?deletecontractsupplier=1&amp;id=$assocID&amp;contracts_id=$cID'>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".$LANG['buttons'][6]."'></a>";
+         } else {
+            echo "&nbsp;";
+         }
+         echo "</td></tr>";
+         $i++;
+      }
+      if ($canedit) {
+         if ($this->fields["is_recursive"]) {
+            $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",
+                                                                  $this->fields["entities_id"]));
+         } else {
+            $nb=countElementsInTableForEntity("glpi_contracts",$this->fields["entities_id"]);
+         }
+   
+         if ($nb>count($used)) {
+            echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
+            echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";
+            if ($this->fields["is_recursive"]) {
+               dropdownContracts("contracts_id",getSonsOf("glpi_entities",$this->fields["entities_id"]),
+                                                          $used,true);
+            } else {
+               dropdownContracts("contracts_id",$this->fields['entities_id'],$used,true);
+            }
+            echo "</div></td><td class='center'>";
+            echo "<input type='submit' name='addcontractsupplier' value=\"".
+                   $LANG['buttons'][8]."\" class='submit'>";
+            echo "</td>";
+            echo "<td>&nbsp;</td></tr>";
+         }
+      }
+      echo "</table></div></form>";
    }
 
 }

@@ -106,6 +106,10 @@ if (isset($AJAX_INCLUDE)) {
 
 if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
    foreach ($NEEDED_ITEMS as $item) {
+      // TODO : hack waiting for autoload
+      if ($item=='enterprise') {
+         $item='supplier';
+      }
       if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
          include_once (GLPI_ROOT . "/inc/$item.class.php");
       }

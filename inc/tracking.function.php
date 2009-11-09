@@ -363,7 +363,7 @@ function showJobListForItem($itemtype,$items_id) {
 }
 
 
-function showJobListForEnterprise($entID) {
+function showJobListForSupplier($entID) {
    global $DB,$CFG_GLPI, $LANG;
 
    if (!haveRight("show_all_ticket","1")) {
@@ -380,7 +380,7 @@ function showJobListForEnterprise($entID) {
    $number = $DB->numrows($result);
 
    if ($number > 0) {
-      $ent=new Enterprise();
+      $ent=new Supplier();
       $ent->getFromDB($entID);
       initNavigateListItems(TRACKING_TYPE,$LANG['financial'][26]." = ".$ent->fields['name']);
 

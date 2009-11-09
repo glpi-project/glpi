@@ -179,7 +179,7 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
    }
    // Display specific Links
    if ($table=="glpi_suppliers") {
-      $supplier = new Enterprise();
+      $supplier = new Supplier();
       if ($supplier->getFromDB($value)) {
          echo $supplier->getLinks();
       }

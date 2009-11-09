@@ -123,8 +123,8 @@ class CommonItem {
                break;
 
             case ENTERPRISE_TYPE :
-               require_once(GLPI_ROOT.'/inc/enterprise.class.php');
-               $this->obj= new Enterprise;
+               require_once(GLPI_ROOT.'/inc/supplier.class.php');
+               $this->obj= new Supplier;
                break;
 
             case CONTRACT_TYPE :

@@ -353,7 +353,7 @@ function addDeviceContract($conID,$itemtype,$ID) {
  *@return Nothing (display)
  *
  **/
-function showEnterpriseContract($instID) {
+function showSupplierContract($instID) {
    global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 
    if (!haveRight("contract","r") || !haveRight("contact_enterprise","r")) {
@@ -404,7 +404,7 @@ function showEnterpriseContract($instID) {
       $entname=getDropdownName("glpi_suppliers",$entID);
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=$entID'>".$entname;
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
       if ($_SESSION["glpiis_ids_visible"] || empty($entname)) {
          echo " ($entID)";
       }
@@ -462,7 +462,7 @@ function showEnterpriseContract($instID) {
  *@return integer enterprise identifier
  *
  **/
-function getContractEnterprises($ID) {
+function getContractSuppliers($ID) {
    global $DB;
 
    $query = "SELECT `glpi_suppliers`.*
@@ -552,7 +552,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate='') {
       echo "<td class='center'>".$con->fields["num"]."</td>";
       echo "<td class='center'>".
              getDropdownName("glpi_contractstypes",$con->fields["contractstypes_id"])."</td>";
-      echo "<td class='center'>".getContractEnterprises($cID)."</td>";
+      echo "<td class='center'>".getContractSuppliers($cID)."</td>";
       echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
       echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
       if ($con->fields["begin_date"]!='' && !empty($con->fields["begin_date"])) {
@@ -600,111 +600,6 @@ function showContractAssociated($itemtype,$ID,$withtemplate='') {
    if ($withtemplate!=2) {
       echo "</form>";
    }
-}
-
-/**
- * Print an HTML array with contracts associated to a enterprise
- *
- * Print an HTML array with contracts associated to the enterprise identified by $ID
- *
- *@param $ID integer device ID
- *
- *@return Nothing (display)
- *
- **/
-function showContractAssociatedEnterprise($ID) {
-   global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
-
-   if (!haveRight("contract","r") || !haveRight("contact_enterprise","r")) {
-      return false;
-   }
-   $ent=new Enterprise();
-   $canedit=$ent->can($ID,'w');
-
-   $query = "SELECT `glpi_contracts`.*, `glpi_contracts_suppliers`.`id` AS assocID,
-                    `glpi_entities`.`id` AS entity
-             FROM `glpi_contracts_suppliers`, `glpi_contracts`
-             LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_contracts`.`entities_id`)
-             WHERE `glpi_contracts_suppliers`.`suppliers_id` = '$ID'
-                   AND `glpi_contracts_suppliers`.`contracts_id`=`glpi_contracts`.`id`".
-                   getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
-             ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name`";
-
-   $result = $DB->query($query);
-   $number = $DB->numrows($result);
-   $i = 0;
-
-   echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-   echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
-   echo "<tr><th>".$LANG['common'][16]."</th>";
-   echo "<th>".$LANG['entity'][0]."</th>";
-   echo "<th>".$LANG['financial'][4]."</th>";
-   echo "<th>".$LANG['financial'][6]."</th>";
-   echo "<th>".$LANG['search'][8]."</th>";
-   echo "<th>".$LANG['financial'][8]."</th>";
-   echo "<th>&nbsp;</th>";
-   echo "</tr>";
-
-   $used=array();
-   while ($data=$DB->fetch_array($result)) {
-      $cID=$data["id"];
-      $used[$cID]=$cID;
-      $assocID=$data["assocID"];;
-      echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-      echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>";
-      echo "<strong>".$data["name"];
-      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-         echo " (".$data["id"].")";
-      }
-      echo "</strong></a></td>";
-      echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-      echo "<td class='center'>".$data["num"]."</td>";
-      echo "<td class='center'>".getDropdownName("glpi_contractstypes",$data["contractstypes_id"]);
-      echo "</td>";
-      echo "<td class='center'>".convDate($data["begin_date"])."</td>";
-      echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
-      if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
-         echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
-      }
-      echo "</td>";
-
-      echo "<td class='tab_bg_2 center'>";
-      if ($canedit) {
-         echo "<a href='".$CFG_GLPI["root_doc"].
-                "/front/contract.form.php?deletecontractsupplier=1&amp;id=$assocID&amp;contracts_id=$cID'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".$LANG['buttons'][6]."'></a>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td></tr>";
-      $i++;
-   }
-   if ($canedit) {
-      if ($ent->fields["is_recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",
-                                                               $ent->fields["entities_id"]));
-      } else {
-         $nb=countElementsInTableForEntity("glpi_contracts",$ent->fields["entities_id"]);
-      }
-
-      if ($nb>count($used)) {
-         echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-         echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";
-         if ($ent->fields["is_recursive"]) {
-            dropdownContracts("contracts_id",getSonsOf("glpi_entities",$ent->fields["entities_id"]),
-                                                       $used,true);
-         } else {
-            dropdownContracts("contracts_id",$ent->fields['entities_id'],$used,true);
-         }
-         echo "</div></td><td class='center'>";
-         echo "<input type='submit' name='addcontractsupplier' value=\"".
-                $LANG['buttons'][8]."\" class='submit'>";
-         echo "</td>";
-         echo "<td>&nbsp;</td></tr>";
-      }
-   }
-   echo "</table></div></form>";
 }
 
 /**
