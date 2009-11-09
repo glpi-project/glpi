@@ -153,8 +153,11 @@ class Software extends CommonDBTM {
                          AND `itemtype` = '" . $this->type . "'";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_array($result)) {
-               addDeviceContract($data["contracts_id"], $this->type, $newID);
+            $contractitem=new ContractItem();
+            while ($data=$DB->fetch_array($result)) {
+               $contractitem->add(array('contracts_id' => $data["contracts_id"],
+                                        'itemtype' => $this->type,
+                                        'items_id' => $newID));
             }
          }
 

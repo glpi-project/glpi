@@ -38,30 +38,6 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * Link a contract to a device
- *
- * Link the contract $conID to the device $ID witch intem type is $itemtype.
- *
- *@param $conID integer : contract identifier.
- *@param $type integer : device type identifier.
- *@param $ID integer : device identifier.
- *
- *@return Nothing ()
- *
- **/
-function addDeviceContract($conID,$itemtype,$ID) {
-   global $DB;
-
-   // TODO : to remove this function (stil used when cloning a template)
-   if ($ID>0&&$conID>0){
-      $contractitem=new ContractItem();
-      $contractitem->add(array('contracts_id' => $conID,
-                               'itemtype' => $itemtype,
-                               'items_id' => $ID));
-   }
-}
-
-/**
  * Get the entreprise identifier from a contract
  *
  * Get the entreprise identifier for the contract $ID
