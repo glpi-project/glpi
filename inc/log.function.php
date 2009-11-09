@@ -438,7 +438,8 @@ function logArray() {
                       'entity'      => $LANG['log'][63],
                       'rules'       => $LANG['log'][65],
                       'reminder'    => $LANG['log'][81],
-                      'transfers'   => $LANG['transfer'][1]);
+                      'transfers'   => $LANG['transfer'][1],
+                      'budget'      => $LANG['financial'][87]);
 
    $logService=array('inventory'    => $LANG['Menu'][38],
                      'tracking'     => $LANG['Menu'][5],
