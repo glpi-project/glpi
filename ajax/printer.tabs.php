@@ -72,7 +72,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
-            showContractAssociated(PRINTER_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Contract::showAssociated($printer,$_POST["withtemplate"]);
             break;
 
          case 5 :
@@ -92,7 +92,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             showPortsAdd($_POST["id"],PRINTER_TYPE);
             showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"]);
-            showContractAssociated(PRINTER_TYPE,$_POST["id"]);
+            Contract::showAssociated($printer);
             Document::showAssociated($printer);
             showJobListForItem(PRINTER_TYPE,$_POST["id"]);
             showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
@@ -107,7 +107,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
 
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"]);
-            showContractAssociated(PRINTER_TYPE,$_POST["id"]);
+            Contract::showAssociated($printer);
             break;
 
          case 5 :

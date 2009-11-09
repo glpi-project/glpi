@@ -62,7 +62,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
                             MONITOR_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
-            showContractAssociated(MONITOR_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Contract::showAssociated($monitor,$_POST["withtemplate"]);
             break;
 
          case 5 :
@@ -77,7 +77,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
          case -1:
             showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-            showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+            Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
             showJobListForItem(MONITOR_TYPE,$_POST["id"]);
             showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
@@ -86,7 +86,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
 
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
-            showContractAssociated(MONITOR_TYPE,$_POST["id"]);
+            Contract::showAssociated($monitor);
             break;
 
          case 5 :

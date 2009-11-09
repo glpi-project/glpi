@@ -64,7 +64,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,
                             $_POST["id"],1,$_POST["withtemplate"]);
-            showContractAssociated(PERIPHERAL_TYPE,$_POST["id"],$_POST["withtemplate"]);
+            Contract::showAssociated($periph,$_POST["withtemplate"]);
             break;
 
          case 5 :
@@ -88,7 +88,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,
                             $_POST["id"]);
-            showContractAssociated(PERIPHERAL_TYPE,$_POST["id"]);
+            Contract::showAssociated($periph);
             Document::showAssociated($periph);
             showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
             showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
@@ -98,7 +98,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          case 4 :
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,
                             $_POST["id"]);
-            showContractAssociated(PERIPHERAL_TYPE,$_POST["id"]);
+            Contract::showAssociated($periph);
             break;
 
          case 5 :
