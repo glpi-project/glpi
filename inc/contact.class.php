@@ -371,7 +371,7 @@ class Contact extends CommonDBTM{
             }
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".$data["entID"]."'>".
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$data["entID"]."'>".
                    getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
             echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
             echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -34,9 +33,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","contact","contract","device","document","enterprise","group",
-                    "infocom","link","monitor","networking","peripheral","phone","printer",
-                    "software","tracking","user");
+$NEEDED_ITEMS=array('computer', 'contact', 'contract', 'device', 'document', 'group',
+                    'infocom', 'link', 'monitor', 'networking', 'peripheral', 'phone', 'printer',
+                    'software', 'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -47,7 +46,7 @@ if (!isset($_POST["id"])) {
    exit();
 }
 
-$supplier=new Enterprise();
+$supplier=new Supplier();
 
 if (!isset($_POST["start"])) {
    $_POST["start"]=0;
@@ -63,15 +62,15 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $supplier->showContacts();
-         showContractAssociatedEnterprise($_POST["id"]);
+         $supplier->showContracts();
          Document::showAssociated($supplier);
-         showJobListForEnterprise($_POST["id"]);
+         showJobListForSupplier($_POST["id"]);
          showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
          displayPluginAction(ENTERPRISE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         showContractAssociatedEnterprise($_POST["id"]);
+         $supplier->showContracts();
          break;
 
       case 5 :
@@ -79,7 +78,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          break;
 
       case 6 :
-         showJobListForEnterprise($_POST["id"]);
+         showJobListForSupplier($_POST["id"]);
          break;
 
       case 7 :

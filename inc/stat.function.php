@@ -61,7 +61,7 @@ function getStatsItems($date1,$date2,$type) {
          break;
 
       case "enterprise" :
-         $val = getNbIntervEnterprise($date1,$date2);
+         $val = getNbIntervSupplier($date1,$date2);
          break;
 
       case "user" :
@@ -349,7 +349,7 @@ function getNbIntervTechFollowup($date1,$date2) {
 * @param $date2 date : end date
 * @return array contains the distinct enterprises which have any tickets assigned to.
 */
-function getNbIntervEnterprise($date1,$date2) {
+function getNbIntervSupplier($date1,$date2) {
    global $DB,$CFG_GLPI;
 
    $query = "SELECT DISTINCT `glpi_tickets`.`suppliers_id_assign` AS suppliers_id_assign,
@@ -370,7 +370,7 @@ function getNbIntervEnterprise($date1,$date2) {
    if ($DB->numrows($result) >0) {
       while ($line = $DB->fetch_assoc($result)) {
          $tmp["id"]=$line["suppliers_id_assign"];
-         $tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?id=".
+         $tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
                         $line["suppliers_id_assign"]."'>";
          $tmp["link"].=$line["name"];
          $tmp["link"].="</a>";

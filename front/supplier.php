@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -34,14 +33,14 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('contact', 'contract', 'enterprise', 'search');
+$NEEDED_ITEMS = array ('contact', 'contract', 'supplier', 'search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","enterprise");
+commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","supplier");
 
 manageGetValuesInSearch(ENTERPRISE_TYPE);
 

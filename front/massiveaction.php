@@ -212,7 +212,7 @@ if (isset($_POST["itemtype"])){
 						$link_entity_type=-1;
 						/// Specific entity item
 						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_suppliers_infocoms"){
-							$ent=new Enterprise();
+							$ent=new Supplier();
 							if ($ent->getFromDB($_POST[$_POST["field"]])){
 								$link_entity_type=$ent->fields["entities_id"];
 							}

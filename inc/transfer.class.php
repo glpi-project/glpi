@@ -571,7 +571,7 @@ class Transfer extends CommonDBTM {
                $this->createSearchConditionUsingArray($this->needtobe_transfer[CONTRACT_TYPE]);
       $this->item_recurs[CONTRACT_TYPE] =
                $this->createSearchConditionUsingArray($this->noneedtobe_transfer[CONTRACT_TYPE]);
-      // Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
+      // Supplier (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 
       if ($this->options['keep_supplier']) {
          // Clean DB
@@ -608,7 +608,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-         // Enterprise Contract
+         // Supplier Contract
          $query = "SELECT DISTINCT `suppliers_id`, `glpi_suppliers`.`is_recursive`,
                                    `glpi_suppliers`.`entities_id`
                    FROM `glpi_contracts_suppliers`
@@ -628,7 +628,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-         // Ticket Enterprise
+         // Ticket Supplier
          $query = "SELECT DISTINCT `suppliers_id_assign`, `glpi_suppliers`.`is_recursive`,
                                    `glpi_suppliers`.`entities_id`
                    FROM `glpi_tickets`
@@ -649,7 +649,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-         // Enterprise infocoms
+         // Supplier infocoms
          if ($this->options['keep_infocom']) {
             foreach ($this->INFOCOMS_TYPES as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
@@ -701,7 +701,7 @@ class Transfer extends CommonDBTM {
       $this->item_recurs[ENTERPRISE_TYPE] =
                $this->createSearchConditionUsingArray($this->noneedtobe_transfer[ENTERPRISE_TYPE]);
 
-      // Contact / Enterprise : keep / delete + clean unused / keep unused
+      // Contact / Supplier : keep / delete + clean unused / keep unused
       if ($this->options['keep_contact']) {
          // Clean DB
          $query = "SELECT `glpi_contacts_suppliers`.`id`
@@ -737,7 +737,7 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-         // Enterprise Contact
+         // Supplier Contact
          $query = "SELECT DISTINCT `contacts_id`, `glpi_contacts`.`is_recursive`,
                                    `glpi_contacts`.`entities_id`
                    FROM `glpi_contacts_suppliers`
@@ -943,9 +943,9 @@ class Transfer extends CommonDBTM {
                $this->transferContracts($itemtype,$ID,$newID);
             }
 
-            // Contact / Enterprise : keep / delete + clean unused / keep unused
+            // Contact / Supplier : keep / delete + clean unused / keep unused
             if ($itemtype==ENTERPRISE_TYPE) {
-               $this->transferEnterpriseContacts($ID,$newID);
+               $this->transferSupplierContacts($ID,$newID);
             }
 
             // Document : keep / delete + clean unused / keep unused
@@ -2037,7 +2037,7 @@ class Transfer extends CommonDBTM {
                      $suppliers_id_assign = 0;
                      if ($data['suppliers_id_assign'] >0) {
                         $suppliers_id_assign
-                           = $this->transferSingleEnterprise($data['suppliers_id_assign']);
+                           = $this->transferSingleSupplier($data['suppliers_id_assign']);
                      }
                      $job->update(array('id'                  => $data['id'],
                                         'entities_id'         => $this->to,
@@ -2055,7 +2055,7 @@ class Transfer extends CommonDBTM {
                      $suppliers_id_assign = 0;
                      if ($data['suppliers_id_assign'] >0) {
                         $suppliers_id_assign
-                           = $this->transferSingleEnterprise($data['suppliers_id_assign']);
+                           = $this->transferSingleSupplier($data['suppliers_id_assign']);
                      }
                      $job->update(array('id'                  => $data['id'],
                                         'itemtype'            => 0,
@@ -2196,7 +2196,7 @@ class Transfer extends CommonDBTM {
                // transfert enterprise
                $suppliers_id = 0;
                if ($ic->fields['suppliers_id']>0) {
-                  $suppliers_id = $this->transferSingleEnterprise($ic->fields['suppliers_id']);
+                  $suppliers_id = $this->transferSingleSupplier($ic->fields['suppliers_id']);
                }
                // Copy : copy infocoms
                if ($ID != $newID) {
@@ -2226,11 +2226,11 @@ class Transfer extends CommonDBTM {
    *
    *@param $ID ID of the enterprise
    **/
-   function transferSingleEnterprise($ID) {
+   function transferSingleSupplier($ID) {
       global $DB;
 
       // TODO clean system : needed ?
-      $ent = new Enterprise();
+      $ent = new Supplier();
       if ($this->options['keep_supplier'] && $ent->getFromDB($ID)) {
          if (isset($this->noneedtobe_transfer[ENTERPRISE_TYPE][$ID])) {
             // recursive enterprise
@@ -2311,7 +2311,7 @@ class Transfer extends CommonDBTM {
    *@param $ID original ID of the enterprise
    *@param $newID new ID of the enterprise
    **/
-   function transferEnterpriseContacts($ID,$newID) {
+   function transferSupplierContacts($ID,$newID) {
       global $DB;
 
       $need_clean_process = false;

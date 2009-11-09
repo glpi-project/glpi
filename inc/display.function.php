@@ -363,14 +363,14 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['financial']['content']['contact']['shortcut']='t';
       $menu['financial']['content']['contact']['page']='/front/contact.php';
       $menu['financial']['content']['contact']['links']['search']='/front/contact.php';
-      $menu['financial']['content']['enterprise']['title']=$LANG['Menu'][23];
-      $menu['financial']['content']['enterprise']['shortcut']='e';
-      $menu['financial']['content']['enterprise']['page']='/front/enterprise.php';
-      $menu['financial']['content']['enterprise']['links']['search']='/front/enterprise.php';
+      $menu['financial']['content']['supplier']['title']=$LANG['Menu'][23];
+      $menu['financial']['content']['supplier']['shortcut']='e';
+      $menu['financial']['content']['supplier']['page']='/front/supplier.php';
+      $menu['financial']['content']['supplier']['links']['search']='/front/supplier.php';
 
       if (haveRight("contact_enterprise","w")) {
          $menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
-         $menu['financial']['content']['enterprise']['links']['add']='/front/enterprise.form.php';
+         $menu['financial']['content']['supplier']['links']['add']='/front/supplier.form.php';
       }
    }
 
