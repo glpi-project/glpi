@@ -522,8 +522,8 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       // First column
       $first_col = "ID : ".$data["id"];
       if ($output_type==HTML_OUTPUT) {
-         $first_col .= "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".
-                        png\" alt='".getStatusName($data["status"])."' title='".
+         $first_col .= "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png\"
+                        alt='".getStatusName($data["status"])."' title='".
                         getStatusName($data["status"])."'>";
       } else {
          $first_col .= " - ".getStatusName($data["status"]);
