@@ -104,20 +104,40 @@ if (isset($AJAX_INCLUDE)) {
    $HEADER_LOADED=true;
 }
 
-if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
-   foreach ($NEEDED_ITEMS as $item) {
-      // TODO : hack waiting for autoload
-      if ($item=='enterprise') {
-         $item='supplier';
-      }
-      if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
-         include_once (GLPI_ROOT . "/inc/$item.class.php");
-      }
-      if (file_exists(GLPI_ROOT . "/inc/$item.function.php")) {
-         include_once (GLPI_ROOT . "/inc/$item.function.php");
+if (isset($_REQUEST['autoload'])){
+   function __autoload($classname) {
+         $dir=GLPI_ROOT . "/inc/";
+         if (preg_match("/Plugin([A-Z][a-z]+)(\w+)/",$classname,$matches) ){
+            $dir=GLPI_ROOT . "/plugins/".strtolower($matches[1])."/";
+            $item=strtolower($matches[2]);
+         } else { // Standard case
+            $item=strtolower($classname);
+         }
+         if (file_exists("$dir$item.class.php")) {
+            include_once ("$dir$item.class.php");
+         }
+         if (file_exists("$dir$item.function.php")) {
+            include_once ("$dir$item.function.php");
+         }
+   }
+} else {
+   if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
+      foreach ($NEEDED_ITEMS as $item) {
+         // TODO : hack waiting for autoload
+         if ($item=='enterprise') {
+            $item='supplier';
+         }
+         if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
+            include_once (GLPI_ROOT . "/inc/$item.class.php");
+         }
+         if (file_exists(GLPI_ROOT . "/inc/$item.function.php")) {
+            include_once (GLPI_ROOT . "/inc/$item.function.php");
+         }
       }
    }
 }
+
+
 
 /* On startup, register all plugins configured for use. */
 if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
