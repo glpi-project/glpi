@@ -421,6 +421,8 @@ class Netport extends CommonDBTM {
    public $table = 'glpi_networkports';
    public $type = NETWORKING_PORT_TYPE;
 
+   /// TODO manage access right on this object
+
    // Specific ones
    /// ID of the port connected to the current one
    var $contact_id		= 0;
