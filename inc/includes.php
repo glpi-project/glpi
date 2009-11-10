@@ -109,7 +109,7 @@ if (isset($_REQUEST['autoload'])){
          $dir=GLPI_ROOT . "/inc/";
 //         $classname="PluginWebapplicationsProfile";
          if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$classname,$matches) ){
-            $dir=GLPI_ROOT . "/plugins/".strtolower($matches[1])."/";
+            $dir=GLPI_ROOT . "/plugins/".strtolower($matches[1])."/inc/";
             $item=strtolower($matches[2]);
          } else { // Standard case
             $item=strtolower($classname);
