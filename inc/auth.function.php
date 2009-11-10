@@ -88,6 +88,7 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("computer", $right);
 
       case NETWORKING_TYPE :
+      case NETWORKING_PORT_TYPE :
          return haveRight("networking", $right);
 
       case PRINTER_TYPE :
