@@ -107,7 +107,8 @@ if (isset($AJAX_INCLUDE)) {
 if (isset($_REQUEST['autoload'])){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
-         if (preg_match("/Plugin([A-Z][a-z]+)(\w+)/",$classname,$matches) ){
+//         $classname="PluginWebapplicationsProfile";
+         if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$classname,$matches) ){
             $dir=GLPI_ROOT . "/plugins/".strtolower($matches[1])."/";
             $item=strtolower($matches[2]);
          } else { // Standard case
