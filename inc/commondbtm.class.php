@@ -1132,11 +1132,17 @@ class CommonDBTM {
          $replacements[1] = 'tabs';
          $tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
          $tabs=array();
+
+         /// TODO :  To delete when autload is OK
+         $autoload="";
+         if (isset($_REQUEST['autoload'])){
+            $autoload="&autoload=1";
+         }
          foreach ($onglets as $key => $val ) {
             $tabs[$key]=array('title'=>$val,
                               'url'=>$CFG_GLPI['root_doc']."/$tabpage",
                               'params'=>"target=$target&itemtype=".$this->type.
-                                        "&glpi_tab=$key&id=$ID$template$extraparam");
+                                        "&glpi_tab=$key&id=$ID$template$extraparam$autoload");
          }
          $plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
          $tabs+=$plug_tabs;
