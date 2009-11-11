@@ -220,7 +220,7 @@ class Profile extends CommonDBTM {
                   break;
 
                default :
-                  $query.=" AND `".$this->table."`.`$key` IS NULL OR `".$this->table."`.`$key` = '' ";
+                  $query.=" AND (`".$this->table."`.`$key` IS NULL OR `".$this->table."`.`$key` = '') ";
             }
          }
       }
