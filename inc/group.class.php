@@ -71,9 +71,9 @@ class Group extends CommonDBTM {
             $ong[1]=$LANG['Menu'][14];
          }
          $ong[2]=$LANG['common'][1];
-		 if (haveRight("config","r") && useAuthLdap()) {
-		 	$ong[3]=$LANG['setup'][3];
-		 }	
+         if (haveRight("config","r") && useAuthLdap()) {
+            $ong[3]=$LANG['setup'][3];
+         }
       } else { // New item
          $ong[1]=$LANG['title'][26];
       }
@@ -128,16 +128,21 @@ class Group extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      if(!$ID) {
+      if (!$ID) {
          $template = "newtemplate";
-	      echo "<td>".$LANG['computers'][14]."&nbsp;:</td>";
+         echo "<td>".$LANG['computers'][14]."&nbsp;:</td>";
          echo "<td>";
          echo convDateTime($_SESSION["glpi_currenttime"]);
       } else {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
+      // TODO le champ "date_mod" n'existe pas dans la table glpi_groups
+      /* else {
          echo "<td>".$LANG['common'][26]."&nbsp;:</td>";
          echo "<td>";
          echo  convDateTime($this->fields["date_mod"]);
       }
+      */
       echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
@@ -210,13 +215,14 @@ class Group extends CommonDBTM {
       $tab[6]['linkfield'] = 'is_recursive';
       $tab[6]['name']      = $LANG['entity'][9];
       $tab[6]['datatype']  = 'bool';
-
+// TODO champ inconnu dans la table
+/*
       $tab[19]['table']     = 'glpi_groups';
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
-
+*/
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
       $tab[80]['linkfield'] = 'entities_id';
@@ -224,6 +230,7 @@ class Group extends CommonDBTM {
 
       return $tab;
    }
+
 
    function showLDAPForm ($target,$ID) {
       global $CFG_GLPI, $LANG;
@@ -240,7 +247,7 @@ class Group extends CommonDBTM {
          $this->getEmpty();
       }
 
-		echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";
+      echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
       if (useAuthLdap()) {
@@ -275,7 +282,7 @@ class Group extends CommonDBTM {
 
       $this->showFormButtons($ID,'',2, false);
 
-		echo "</table></div></form>";      
+      echo "</table></div></form>";
    }
 
 }
