@@ -1019,7 +1019,7 @@ function showList ($itemtype,$params) {
       $LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
       // Force group by for all the type -> need to count only on table ID
-      if (!isset($searchopt[$itemtype]['forcegroupby'])) {
+      if (!isset($searchopt[$itemtype][1]['forcegroupby'])) {
          $count = "count(*)";
       } else {
          $count = "count(DISTINCT `$itemtable`.`id`)";

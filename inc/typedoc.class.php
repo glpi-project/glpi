@@ -42,14 +42,13 @@ class Typedoc  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_documentstypes';
-   public $type = TYPEDOC_TYPE;
+   public $type  = TYPEDOC_TYPE;
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($ID,$withtemplate) {
       global $LANG;
 
-      $ong=array();
-
-      $ong[1]=$LANG['title'][26];
+      $ong = array();
+      $ong[1] = $LANG['title'][26];
 
       return $ong;
    }
