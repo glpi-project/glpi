@@ -152,7 +152,7 @@ function doHookFunction($name,$parm=NULL) {
  * This function executes a hook for 1 plugin.
  * @param $plugname Name of the plugin
  * @param $suffixe_of_function to be called
- * @param other params passed to the function
+ * @param $args params passed to the function
  *
  * @return mixed $data
  */

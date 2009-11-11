@@ -513,12 +513,12 @@ function displayItemLogID($type,$items_id) {
  * Print a great tab to present lasts events occured on glpi
  *
  * @param $target where to go when complete
- * @param $order order by clause occurences (eg: )
- * @param $sort order by clause occurences (eg: date)
- * @param $user
+ * @param $user user to search on message
  **/
 function showAddEvents($target,$user="") {
    global $DB,$CFG_GLPI, $LANG;
+
+   /// TODO clean $user param mau be more generic
 
    // Show events from $result in table form
    list($logItemtype,$logService)=logArray();

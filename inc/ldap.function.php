@@ -250,7 +250,8 @@ function getGroupsFromLDAP($ldap_connection,$config_ldap,$filter,$search_in_grou
 
 /**
  * Get the group's cn by giving his DN
- * @param dn the group's dn
+ * @param $ldap_connection ldap connection to use
+ * @param $group_dn the group's dn
  * @return the group cn
  */
 function getGroupCNByDn($ldap_connection,$group_dn) {
@@ -267,8 +268,10 @@ function getGroupCNByDn($ldap_connection,$group_dn) {
 /** Get all LDAP groups from a ldap server which are not already in an entity
  *
  * @param   $auths_id ID of the server to use
- * @param   $myfilter ldap filter to use
+ * @param   $filter ldap filter to use
+ * @param   $filter2 second ldap filter to use if needed
  * @param   $entity entity to search
+ * @param   $order order to use
  * @return  array of the groups
  */
 function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC') {
@@ -321,6 +324,7 @@ function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC') {
             }
          }
       }
+      /// TODO : is this sort correct ? ksort sort on key but not a reverse sort ?
       if ($order=='DESC') {
          ksort($groups);
       } else {
@@ -337,6 +341,7 @@ function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC') {
  * @param   $start where to start the list
  * @param   $sync synchronise or add ?
  * @param   $filter ldap filter to use
+ * @param   $filter2 second ldap filter to use (which case ?)
  * @param   $entity working entity
  * @param   $order display order
  * @return  nothing
@@ -415,6 +420,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
  * @param   $auths_id ID of the server to use
  * @param   $sync user to synchronise or add ?
  * @param   $myfilter ldap filter to use
+ * @param   $order display order
  * @return  array of the user
  */
 function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
@@ -541,6 +547,7 @@ function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
  * @param   $start where to start the list
  * @param   $sync synchronise or add ?
  * @param   $filter ldap filter to use
+ * @param   $order display order
  * @return  nothing
  */
 function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DESC') {

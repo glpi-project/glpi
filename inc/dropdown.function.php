@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')){
  * @param $myname the name of the HTML select
  * @param $display_comment display the comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
- * @param $used Already used items : not to display in dropdown
+ * @param $used Already used items ID: not to display in dropdown
  * @return nothing (display the select box)
  **/
 function dropdown($table,$myname,$display_comment=1,$entity_restrict=-1,$used=array()) {
@@ -64,7 +64,8 @@ function dropdown($table,$myname,$display_comment=1,$entity_restrict=-1,$used=ar
  * @param $display_comment display the comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
- * @param $used Already used items : not to display in dropdown
+ * @param $used Already used items ID: not to display in dropdown
+ * @param $auto_submit boolean : use auto submit on change ?
  * @return nothing (display the select box)
  *
  */
@@ -348,7 +349,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
  * @param $right limit user who have specific right
  * @param $entity_restrict Restrict to a defined entity
  * @param $value default value
- * @param $used array of user ID
+ * @param $used Already used items ID: not to display in dropdown
  * @param $search pattern
  *
  * @return mysql result set.
@@ -461,7 +462,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $display_comment display comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
- * @param $used array of user ID
+ * @param $used Already used items ID: not to display in dropdown
  *
  * @return nothing (print out an HTML select box)
  *
@@ -544,7 +545,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comment=1,$entity_r
  * @param $display_comment display comment near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
- * @param $used array of user ID
+ * @param $used Already used items ID: not to display in dropdown
  *
  * @return nothing (print out an HTML select box)
  *
@@ -1286,6 +1287,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
  * @param $myname select name
  * @param $entity_restrict Restrict to a defined entity
  * @param $onlyglobal display only global devices (used for templates)
+ * @param $used Already used items ID: not to display in dropdown
  *
  * @return nothing (print out an HTML select box)
  */
@@ -1326,7 +1328,6 @@ function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlygl
  * Make a select box for  connected port
  *
  * @param $ID ID of the current port to connect
- * @param $itemtype type of device where to search ports
  * @param $myname select name
  * @param $entity_restrict Restrict to a defined entity (or an array of entities)
  * @return nothing (print out an HTML select box)
@@ -1364,7 +1365,7 @@ function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
  *
  * @param $myname name of the select box
  * @param $entity_restrict restrict multi entity
- * @param $used Already used items : not to display in dropdown
+ * @param $used Already used items ID: not to display in dropdown
  * @return nothing (print out an HTML select box)
  */
 function dropdownDocument($myname,$entity_restrict='',$used=array()) {
@@ -1603,6 +1604,7 @@ function device_selecter($target,$computers_id,$withtemplate='') {
  *
  * @param $itemtype item type
  * @param $is_deleted massive action for deleted items ?
+ * @param $extraparams array of extra parameters
  */
 function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
    global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
@@ -2313,7 +2315,7 @@ function dropdownPlanningState($name,$value='') {
  * @param $name select name
  * @param $elements array of elements to display
  * @param $value default value
- * @param $used already used elements key (do not display)
+ * @param $used Already used items ID: not to display in dropdown
  *
  */
 function dropdownArrayValues($name,$elements,$value='',$used=array()) {

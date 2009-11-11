@@ -1141,7 +1141,7 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
  * Display a installed software for a category
  *
  * @param $data data used to display
- * @param $computers_ID ID of the computer
+ * @param $computers_id ID of the computer
  * @param $withtemplate template case of the view process
  * @param $canedit boolean user can edit software ?
 
@@ -1207,7 +1207,7 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
  * Display a software for a License (not installed)
  *
  * @param $data data used to display
- * @param $computers_ID ID of the computer
+ * @param $computers_id ID of the computer
  * @param $withtemplate template case of the view process
  * @param $canedit boolean user can edit software ?
 

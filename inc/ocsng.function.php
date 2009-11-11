@@ -3303,7 +3303,6 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
  *@param $ocsid integer : ocs computer id (ID).
  *@param $ocsservers_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
- *@param $entity integer : entity of the computer
  *@param $import_disk array : already imported softwares
  *
  *@return Nothing (void).
@@ -3946,9 +3945,9 @@ function ocsMigrateImportIP($computers_id,$import_ip) {
 
 /**
  * Get a direct link to the computer in ocs console
- * @param ocsservers_id the ID of the OCS server
- * @param computers_id ID of the computer in OCS hardware table
- * @param todisplay the link's label to display
+ * @param $ocsservers_id the ID of the OCS server
+ * @param $ocsid ID of the computer in OCS hardware table
+ * @param $todisplay the link's label to display
  * @return the html link to the computer in ocs console
  */
 function getComputerLinkToOcsConsole ($ocsservers_id,$ocsid,$todisplay) {

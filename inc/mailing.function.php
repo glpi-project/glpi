@@ -284,13 +284,13 @@ function isValidEmail($email,$checkdns=false) {
    return $isValid;
 }
 
-
+/*
 /**
  * Determine if email is valid
  * @param $email email to check
  * @return boolean
- */
-/*function isValidEmail($email="") {
+ *
+function isValidEmail($email="") {
 
    if ( !preg_match( "/^" .
                      "[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user

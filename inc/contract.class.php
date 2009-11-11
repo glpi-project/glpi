@@ -784,11 +784,10 @@ class Contract extends CommonDBTM {
    }
 
    /**
-    * Print an HTML array with contracts associated to a device
+    * Print an HTML array of contract associated to an object
     *
     *
-    *@param $itemtype string : HTML select name
-    *@param $ID integer device ID
+    *@param $item CommonDBTM : object wanted
     *@param $withtemplate='' not used (to be deleted)
     *
     *@return Nothing (display)
