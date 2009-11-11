@@ -134,9 +134,6 @@ class Group extends CommonDBTM {
          echo "<td>";
          echo convDateTime($_SESSION["glpi_currenttime"]);
       } else {
-         echo "<td colspan='2'>&nbsp;</td>";
-      }
-      else {
          echo "<td>".$LANG['common'][26]."&nbsp;:</td>";
          echo "<td>";
          echo  convDateTime($this->fields["date_mod"]);
