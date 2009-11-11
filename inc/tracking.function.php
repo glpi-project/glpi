@@ -277,7 +277,7 @@ function showCentralJobCount() {
  * Will also display tickets of linked items
  *
  * @param $itemtype
- * @param $tems_id
+ * @param $items_id
  *
  * @return nothing (display a table)
  */

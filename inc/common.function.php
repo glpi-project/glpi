@@ -220,7 +220,7 @@ function encodeInUtf8($string,$from_charset="ISO-8859-1") {
 /**
 * Decode string from UTF-8 to specified charset
 * @param $string string: string to convert
-* @param $from_charset string: destination charset (default is ISO-8859-1)
+* @param $to_charset string: destination charset (default is ISO-8859-1)
 *
 * @return converted string
 **/
@@ -1576,7 +1576,7 @@ function optimize_tables ($progress_fct=NULL){
 /**
 * Is a string seems to be UTF-8 one ?
 *
-* @param $Str string: string to analyze
+* @param $str string: string to analyze
 * @return  boolean
 **/
 function seems_utf8($str) {

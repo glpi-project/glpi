@@ -748,8 +748,9 @@ function removeConnector($ID, $dohistory = true) {
 
 /**
  * Get an Object ID by his IP address (only if one result is found in the entity)
- * @param ip the ip address
- * @param entity the entity to look for
+ * @param $value the ip address
+ * @param $type type to search : MAC or IP
+ * @param $entity the entity to look for
  * @return an array containing the object ID or an empty array is no value of serverals ID where found
  */
 function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {

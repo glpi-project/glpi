@@ -2114,6 +2114,10 @@ function printAjaxPager($title,$start,$numrows) {
  * @param $time_step step for time in minute (-1 use default config)
  * @param $maybeempty may be empty ?
  * @param $can_edit could not modify element
+ * @param $minDate minimum allowed date
+ * @param $maxDate maximum allowed date
+ * @param $minTime minimum allowed time
+ * @param $maxTime maximum allowed time
  * @return nothing
  */
 function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,$can_edit=true,
@@ -2196,6 +2200,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
  * @param $value default value to display
  * @param $maybeempty may be empty ?
  * @param $can_edit could not modify element
+ * @param $minDate minimum allowed date
+ * @param $maxDate maximum allowed date
  * @return nothing
  */
 function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$minDate='',

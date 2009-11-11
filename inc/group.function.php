@@ -225,8 +225,8 @@ function deleteUserGroup($ID) {
 
 /**
  * Indicates if a group is present in an entity
- * @param group the group ID to look for
- * @param entity_request the entity to search into
+ * @param $group the group ID to look for
+ * @param $entity_restrict the entity to search into
  * @return true if group was found, false is not
  */
 function isGroupVisibleInEntity($group,$entity_restrict) {
