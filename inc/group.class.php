@@ -136,13 +136,12 @@ class Group extends CommonDBTM {
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
-      // TODO le champ "date_mod" n'existe pas dans la table glpi_groups
-      /* else {
+      else {
          echo "<td>".$LANG['common'][26]."&nbsp;:</td>";
          echo "<td>";
          echo  convDateTime($this->fields["date_mod"]);
       }
-      */
+      
       echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);
@@ -215,14 +214,13 @@ class Group extends CommonDBTM {
       $tab[6]['linkfield'] = 'is_recursive';
       $tab[6]['name']      = $LANG['entity'][9];
       $tab[6]['datatype']  = 'bool';
-// TODO champ inconnu dans la table
-/*
+
       $tab[19]['table']     = 'glpi_groups';
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
-*/
+
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
       $tab[80]['linkfield'] = 'entities_id';
