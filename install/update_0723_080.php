@@ -2414,7 +2414,7 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   if (FieldExists('glpi_groups','date_mod')) {
+   if (!FieldExists('glpi_groups','date_mod')) {
       $query = "ALTER TABLE `glpi_groups`
                 ADD `date_mod` DATETIME NULL";
 
