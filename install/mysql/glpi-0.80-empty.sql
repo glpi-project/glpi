@@ -1334,6 +1334,7 @@ CREATE TABLE `glpi_groups` (
   `ldap_field` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_value` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_group_dn` varchar(255) collate utf8_unicode_ci default NULL,
+  `date_mod` datetime NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
