@@ -55,7 +55,9 @@ if (!isset($_GET["order"])) {
 }
 
 
-$user=new User();
+$user = new User();
+$groupuser = new GroupUser();
+
 if (empty($_GET["id"])&&isset($_GET["name"])) {
 
    $user->getFromDBbyName($_GET["name"]);
@@ -67,29 +69,29 @@ if(empty($_GET["name"])) {
 }
 
 if (isset($_POST["add"])) {
-   checkRight("user","w");
+   $user->check(-1,'w',$_POST);
 
    // Pas de nom pas d'ajout
-   if (!empty($_POST["name"])) {
-      $newID=$user->add($_POST);
+   if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
       logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
-   checkRight("user","w");
 
+} else if (isset($_POST["delete"])) {
+   $user->check($_POST['id'],'w',$_POST);
    $user->delete($_POST);
    logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][22]." ".$_POST["id"].".");
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+
 } else if (isset($_POST["restore"])) {
-   checkRight("user","w");
+   $user->check($_POST['id'],'w',$_POST);
    $user->restore($_POST);
    logEvent($_POST["id"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
-} else if (isset($_POST["purge"])) {
-   checkRight("user","w");
-   $user->delete($_POST,1);
 
+} else if (isset($_POST["purge"])) {
+   $user->check($_POST['id'],'w',$_POST);
+   $user->delete($_POST,1);
    logEvent($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
@@ -99,27 +101,29 @@ if (isset($_POST["add"])) {
    $user->getFromDB($_POST["id"]);
    ldapImportUserByServerId($user->fields["name"],true,$user->fields["auths_id"],true);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["update"])) {
-   checkRight("user","w");
 
+} else if (isset($_POST["update"])) {
+   $user->check($_POST['id'],'w',$_POST);
    $user->update($_POST);
    logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["addgroup"])) {
-   checkRight("user","w");
-
-   addUserGroup($_POST["users_id"],$_POST["groups_id"]);
-
+   $groupuser->check(-1,'w',$_POST);
+   $groupuser->add($_POST);
    logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["deletegroup"])) {
    checkRight("user","w");
    if (count($_POST["item"]))
       foreach ($_POST["item"] as $key => $val)
-         deleteUserGroup($key);
-
+         if ($groupuser->can($key,'w')) {
+            deleteUserGroup($key);
+         }
    logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["addright"])) {
    checkRight("user","w");
 
@@ -130,6 +134,7 @@ if (isset($_POST["add"])) {
    }
 
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["deleteright"])) {
    checkRight("user","w");
 
@@ -139,8 +144,8 @@ if (isset($_POST["add"])) {
       }
       logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
    }
-
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["switch_auth_internal"])) {
    checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 
@@ -150,6 +155,7 @@ if (isset($_POST["add"])) {
    $input["auths_id"]=0;
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } elseif (isset($_POST["switch_auth_ldap"])) {
    checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 
@@ -159,6 +165,7 @@ if (isset($_POST["add"])) {
    $input["auths_id"]=$_POST["auths_id"];
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } elseif (isset($_POST["switch_auth_mail"])) {
    checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
 
@@ -168,6 +175,7 @@ if (isset($_POST["add"])) {
    $input["auths_id"]=$_POST["auths_id"];
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else {
 
    if (!isset($_GET["ext_auth"])) {
@@ -182,13 +190,13 @@ if (isset($_POST["add"])) {
       checkRight("user","w");
 
       if (isset($_GET['add_ext_auth_ldap'])) {
-         if (isset($_GET['login'])&&!empty($_GET['login'])) {
+         if (isset($_GET['login']) && !empty($_GET['login'])) {
             import_user_from_ldap_servers($_GET['login']);
          }
          glpi_header($_SERVER['HTTP_REFERER']);
       }
       if (isset($_GET['add_ext_auth_simple'])) {
-         if (isset($_GET['login'])&&!empty($_GET['login'])) {
+         if (isset($_GET['login']) && !empty($_GET['login'])) {
             $newID=$user->add(array('name'=>$_GET['login'],'_extauth'=>1,'add'=>1));
             logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
          }
@@ -200,9 +208,5 @@ if (isset($_POST["add"])) {
       commonFooter();
    }
 }
-
-
-
-
 
 ?>

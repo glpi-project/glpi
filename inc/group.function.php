@@ -83,112 +83,110 @@ function showGroupDevice($ID) {
 function showGroupUsers($target,$ID) {
    global $DB,$CFG_GLPI, $LANG;
 
-   if (!haveRight("user","r") || !haveRight("group","r")) {
+   $group=new Group();
+   if (!haveRight("user","r") || !$group->can($ID,'r')) {
       return false;
    }
+   $canedit=$group->can($ID,"w");
 
-   $group=new Group();
    $rand=mt_rand();
-   if ($group->getFromDB($ID)) {
-      $canedit=$group->can($ID,"w");
-      $nb_per_line=3;
-      if ($canedit) {
-         $headerspan=$nb_per_line*2;
-         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
-      } else {
-         $headerspan=$nb_per_line;
-      }
+   $nb_per_line=3;
+   if ($canedit) {
+      $headerspan=$nb_per_line*2;
+      echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
+   } else {
+      $headerspan=$nb_per_line;
+   }
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
-      $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID
-              FROM `glpi_groups_users`
-              LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-              WHERE `glpi_groups_users`.`groups_id`='$ID'
-              ORDER BY `glpi_users`.`name`, `glpi_users`.`realname`, `glpi_users`.`firstname`";
+   echo "<div class='center'><table class='tab_cadre_fixe'>";
+   echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
+   $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID
+           FROM `glpi_groups_users`
+           LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
+           WHERE `glpi_groups_users`.`groups_id`='$ID'
+           ORDER BY `glpi_users`.`name`, `glpi_users`.`realname`, `glpi_users`.`firstname`";
 
-      $used = array();
+   $used = array();
 
-      $result=$DB->query($query);
-      if ($DB->numrows($result)>0) {
-         $i=0;
-         while ($data=$DB->fetch_array($result)) {
-            if ($i%$nb_per_line==0) {
-               if ($i!=0) {
-                  echo "</tr>";
-               }
-               echo "<tr class='tab_bg_1'>";
+   $result=$DB->query($query);
+   if ($DB->numrows($result)>0) {
+      $i=0;
+      while ($data=$DB->fetch_array($result)) {
+         if ($i%$nb_per_line==0) {
+            if ($i!=0) {
+               echo "</tr>";
             }
-            if ($canedit) {
-               echo "<td width='10'>";
-               $sel="";
-               if (isset($_GET["select"]) && $_GET["select"]=="all") {
-                  $sel="checked";
-               }
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-               echo "</td>";
+            echo "<tr class='tab_bg_1'>";
+         }
+         if ($canedit) {
+            echo "<td width='10'>";
+            $sel="";
+            if (isset($_GET["select"]) && $_GET["select"]=="all") {
+               $sel="checked";
             }
-
-            $used[$data["id"]]=$data["id"];
-            echo "<td".($data["is_deleted"]=='1'?"_2":"")."'>";
-            echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
+            echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
             echo "</td>";
-            $i++;
          }
-         while ($i%$nb_per_line!=0) {
-            echo "<td>&nbsp;</td>";
-            if ($canedit) {
-               echo "<td>&nbsp;</td>";
-            }
-            $i++;
-         }
-         echo "</tr>";
+
+         $used[$data["id"]]=$data["id"];
+         echo "<td".($data["is_deleted"]=='1'?"_2":"")."'>";
+         echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
+         echo "</td>";
+         $i++;
       }
+      while ($i%$nb_per_line!=0) {
+         echo "<td>&nbsp;</td>";
+         if ($canedit) {
+            echo "<td>&nbsp;</td>";
+         }
+         $i++;
+      }
+      echo "</tr>";
+   }
+   echo "</table></div>";
+
+   if ($canedit) {
+      echo "<div class='center'>";
+      echo "<table width='80%' class='tab_glpi'>";
+      echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+      echo "<td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') )
+             return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
+             $LANG['buttons'][18]."</a></td>";
+      echo "<td>/</td>";
+      echo "<td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') )
+             return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
+             $LANG['buttons'][19]."</a>";
+      echo "</td><td class='left' width='80%'>";
+      echo "<input type='hidden' name='groups_id' value='$ID'>";
+      echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+      echo "</td>";
       echo "</table></div>";
 
-      if ($canedit) {
-         echo "<div class='center'>";
-         echo "<table width='80%' class='tab_glpi'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') )
-                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
-                $LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td>";
-         echo "<td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') )
-                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
-                $LANG['buttons'][19]."</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='hidden' name='groups_id' value='$ID'>";
-         echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-         echo "</td>";
-         echo "</table></div>";
-
-         if ($group->fields["is_recursive"]) {
-            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",
-                                      $group->fields["entities_id"]), 0, $used);
-         } else {
-            $res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
-         }
-         $nb=($res ? $DB->result($res,0,"CPT") : 0);
-
-         if ($nb) {
-            echo "<div class='center'>";
-            echo "<table  class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
-            echo "<tr><td class='tab_bg_2 center'>";
-            if ($group->fields["is_recursive"]) {
-               dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",
-                                                        $group->fields["entities_id"]),0,$used);
-            } else {
-               dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);
-            }
-            echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-            echo "</td></tr>";
-            echo "</table></div>";
-         }
-         echo "</form>";
+      if ($group->fields["is_recursive"]) {
+         $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",
+                                   $group->fields["entities_id"]), 0, $used);
+      } else {
+         $res=dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
       }
+      $nb=($res ? $DB->result($res,0,"CPT") : 0);
+
+      if ($nb) {
+         echo "<div class='center'>";
+         echo "<table  class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
+         echo "<tr><td class='tab_bg_2 center'>";
+         if ($group->fields["is_recursive"]) {
+            dropdownUsers("users_id",0,"all",-1,1,getSonsOf("glpi_entities",
+                                                     $group->fields["entities_id"]),0,$used);
+         } else {
+            dropdownUsers("users_id",0,"all",-1,1,$group->fields["entities_id"],0,$used);
+         }
+         echo "</td><td class='tab_bg_2 center'>";
+         echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</td></tr>";
+         echo "</table></div>";
+      }
+      echo "</form>";
    }
 }
 

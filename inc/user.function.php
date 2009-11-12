@@ -223,16 +223,13 @@ function showDeviceUser($ID) {
 function showGroupAssociated($target,$ID) {
    global $DB,$CFG_GLPI, $LANG;
 
-   if (!haveRight("user","r" )|| !haveRight("group","r")) {
+   $user = new User();
+   if (!haveRight("user","r" )|| !$user->can($ID,'r')) {
       return false;
    }
 
-   $canedit = haveRight("user","w");
-   $strict_entities = getUserEntities($ID,true);
-   if (!haveAccessToOneOfEntities($strict_entities) && !isViewAllEntities()) {
-      $canedit = false;
-   }
-
+   $canedit = $user->can($ID,'w');
+   
    $rand = mt_rand();
    $nb_per_line = 3;
    if ($canedit) {
@@ -318,6 +315,16 @@ function showGroupAssociated($target,$ID) {
       echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</tr>";
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<input type='hidden' name='users_id' value='$ID'>";
+
+      // All entities "edited user" have access
+      $strict_entities = getUserEntities($ID,true);
+
+      // Keep only entities "connected user" have access 
+      foreach ($strict_entities as $key => $val) {
+         if (!haveAccessToEntity($val)) {
+            unset($strict_entities[$key]);
+         }
+      }
 
       if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
          dropdownValue("glpi_groups", "groups_id", "", 1, $strict_entities, "", $used);
