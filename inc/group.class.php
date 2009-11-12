@@ -282,4 +282,23 @@ class Group extends CommonDBTM {
 
 }
 
+// TODO : Name:  GroupUser of Group_User
+// TODO : Move to groupuser.class.php
+
+/// GroupUser class - Relation between Group and User
+class GroupUser extends CommonDBRelation{
+
+   // From CommonDBTM
+   public $table = 'glpi_groups_users';
+   public $type = GROUPUSER_TYPE;
+
+   // From CommonDBRelation
+   public $itemtype_1 = USER_TYPE;
+   public $items_id_1 = 'users_id';
+
+   public $itemtype_2 = GROUP_TYPE;
+   public $items_id_2 = 'groups_id';
+
+}
+
 ?>
