@@ -224,7 +224,7 @@ function showGroupAssociated($target,$ID) {
    global $DB,$CFG_GLPI, $LANG;
 
    $user = new User();
-   if (!haveRight("user","r" )|| !$user->can($ID,'r')) {
+   if (!haveRight("group","r" )|| !$user->can($ID,'r')) {
       return false;
    }
 
