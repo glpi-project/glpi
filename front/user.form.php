@@ -110,17 +110,19 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["addgroup"])) {
    $groupuser->check(-1,'w',$_POST);
-   $groupuser->add($_POST);
-   logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+   if ($groupuser->add($_POST)) {
+      logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deletegroup"])) {
-   checkRight("user","w");
-   if (count($_POST["item"]))
-      foreach ($_POST["item"] as $key => $val)
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
             deleteUserGroup($key);
          }
+      }
+   }
    logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
