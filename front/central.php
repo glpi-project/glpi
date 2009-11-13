@@ -34,79 +34,75 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('central', 'computer', 'contract', 'enterprise', 'group', 'monitor',
-   'networking', 'peripheral', 'phone', 'planning', 'printer', 'profile', 'reminder', 'setup',
-   'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('central', 'computer', 'contract', 'group', 'monitor', 'networking',
+                       'peripheral', 'phone', 'planning', 'printer', 'profile', 'reminder', 'setup',
+                       'software', 'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 
-	checkCentralAccess();
+checkCentralAccess();
 
-	// Change profile system
-	if (isset ($_POST['newprofile'])) {
-		if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
-			changeProfile($_POST['newprofile']);
-			if ($_SESSION["glpiactiveprofile"]["interface"]=="helpdesk"){
-				glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
-			} else {
-				glpi_header($_SERVER['PHP_SELF']);
-			}
-		} else {
-			glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
-		}
-	}
-	// Manage entity change
-	if (isset($_GET["active_entity"])){
-		if (!isset($_GET["is_recursive"])) {
-			$_GET["is_recursive"]=0;
-		}
-		changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
-		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
-			glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
-		}
-	}
+// Change profile system
+if (isset ($_POST['newprofile'])) {
+   if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
+      changeProfile($_POST['newprofile']);
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
+         glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+      }
+      glpi_header($_SERVER['PHP_SELF']);
+   }
+   glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+}
 
-	commonHeader($LANG['title'][0],$_SERVER['PHP_SELF']);
+// Manage entity change
+if (isset($_GET["active_entity"])) {
+   if (!isset($_GET["is_recursive"])) {
+      $_GET["is_recursive"] = 0;
+   }
+   changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
+   if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+      glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+   }
+}
 
-	// Redirect management
-	if (isset($_GET["redirect"])){
-		manageRedirect($_GET["redirect"]);
-	}
+commonHeader($LANG['title'][0],$_SERVER['PHP_SELF']);
 
+// Redirect management
+if (isset($_GET["redirect"])) {
+   manageRedirect($_GET["redirect"]);
+}
 
-	// Greet the user
+// Greet the user
+echo "<br><span class='icon_consol'>".$LANG['central'][0]." ";
+echo formatUserName($_SESSION["glpiID"], $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                    $_SESSION["glpifirstname"]);
+echo ", ".$LANG['central'][1]."</span>";
+echo "<br><br>";
 
-	echo "<br><span class='icon_consol'>".$LANG['central'][0]." ";
+$tabs['my'] = array('title'  => $LANG['central'][12],
+                    'url'    => $CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+                    'params' => "target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=my");
 
-	echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
-	echo ", ".$LANG['central'][1]."</span>";
+$tabs['group'] = array('title'  => $LANG['central'][14],
+                       'url'    => $CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+                       'params' => "target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=group");
 
-	echo "<br><br>";
+$tabs['global'] = array('title'  => $LANG['central'][13],
+                        'url'    => $CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+                        'params' => "target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=global");
 
+$plug_tabs = getPluginTabs($_SERVER['PHP_SELF'],"central","","");
+$tabs += $plug_tabs;
 
-	$tabs['my']=array('title'=>$LANG['central'][12],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=my");
-	$tabs['group']=array('title'=>$LANG['central'][14],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=group");
-	$tabs['global']=array('title'=>$LANG['central'][13],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=global");
+$tabs[-1] = array('title'  => $LANG['common'][66],
+                  'url'    => $CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+                  'params' => "target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=-1");
 
-	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"central","","");
-	$tabs+=$plug_tabs;
-
-	$tabs[-1]=array('title'=>$LANG['common'][66],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=-1");
-
-	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('central'));
-	echo "<div id='tabcontent'></div>";
-	echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+echo "<div id='tabspanel' class='center-h'></div>";
+createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('central'));
+echo "<div id='tabcontent'></div>";
+echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 commonFooter();
 

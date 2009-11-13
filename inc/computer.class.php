@@ -722,7 +722,7 @@ class Computer extends CommonDBTM {
                echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
             }
          } else {
-            echo $LANG['common'][52]." ".getOCSServerNameByID($ID)."</td>";
+            echo $LANG['common'][52]." ".getOCSServerNameByID($ID);
          }
       }
       echo "</td></tr>\n";
