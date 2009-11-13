@@ -40,56 +40,54 @@ $NEEDED_ITEMS = array ('computer');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["computers_id"])) $_GET["computers_id"] = "";
-
-$disk=new ComputerDisk();
-if (isset($_POST["add"]))
-{
-	$computer=new Computer();
-	if ($computer->getFromDB($_POST['computers_id'])){
-
-		$disk->check(-1,'w',$computer->fields);
-
-		if ($newID=$disk->add($_POST)){
-			logEvent($_POST['computers_id'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
-			glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].($computer->fields['is_template']?"&withtemplate=1":""));
-		} else {
-			glpi_header($_SERVER['HTTP_REFERER']);
-		}
-	}
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
-else if (isset($_POST["delete"]))
-{
-	$disk->check($_POST["id"],'w');
-
-	$disk->delete($_POST);
-
-	logEvent($disk->fields['computers_id'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
-	$computer=new Computer();
-	$computer->getFromDB($disk->fields['computers_id']);
-
-	glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].($computer->fields['is_template']?"&withtemplate=1":""));
+if (!isset($_GET["computers_id"])) {
+   $_GET["computers_id"] = "";
 }
-else if (isset($_POST["update"]))
-{
-	$disk->check($_POST["id"],'w');
 
-	$disk->update($_POST);
-	logEvent($disk->fields['computers_id'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
-	$computer=new Computer();
-	$computer->getFromDB($disk->fields['computers_id']);
+$disk = new ComputerDisk();
+if (isset($_POST["add"])) {
+   $computer = new Computer();
+   if ($computer->getFromDB($_POST['computers_id'])) {
+      $disk->check(-1,'w',$computer->fields);
 
-	glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].($computer->fields['is_template']?"&withtemplate=1":""));
-}
-else
-{
+      if ($newID = $disk->add($_POST)) {
+         logEvent($_POST['computers_id'], "computer", 4, "inventory",
+                  $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
+         glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].
+                     ($computer->fields['is_template']?"&withtemplate=1":""));
+      }
+      glpi_header($_SERVER['HTTP_REFERER']);
+   }
 
-	commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
-	$disk->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["computers_id"]);
+} else if (isset($_POST["delete"])) {
+   $disk->check($_POST["id"],'w');
 
-	commonFooter();
+   $disk->delete($_POST);
+   logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+            $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
+   $computer = new Computer();
+   $computer->getFromDB($disk->fields['computers_id']);
+   glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].
+               ($computer->fields['is_template']?"&withtemplate=1":""));
+
+} else if (isset($_POST["update"])) {
+   $disk->check($_POST["id"],'w');
+
+   $disk->update($_POST);
+   logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+            $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
+   $computer = new Computer();
+   $computer->getFromDB($disk->fields['computers_id']);
+   glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].
+               ($computer->fields['is_template']?"&withtemplate=1":""));
+
+} else {
+   commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
+   $disk->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["computers_id"]);
+   commonFooter();
 }
 
 ?>

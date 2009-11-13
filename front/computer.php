@@ -34,33 +34,35 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("search","computer","infocom");
+$NEEDED_ITEMS = array('computer', 'infocom', 'search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_GET["add_search_count"])){
-	$_SESSION["glpisearchcount"][$_GET["itemtype"]]++;
-	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
-}
-if (isset($_GET["delete_search_count"])){
-	$_SESSION["glpisearchcount"][$_GET["itemtype"]]--;
-	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
+if (isset($_GET["add_search_count"])) {
+   $_SESSION["glpisearchcount"][$_GET["itemtype"]]++;
+   glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
-if (isset($_GET["add_search_count2"])){
-	$_SESSION["glpisearchcount2"][$_GET["itemtype"]]++;
-	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
-}
-if (isset($_GET["delete_search_count2"])){
-	$_SESSION["glpisearchcount2"][$_GET["itemtype"]]--;
-	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
+if (isset($_GET["delete_search_count"])) {
+   $_SESSION["glpisearchcount"][$_GET["itemtype"]]--;
+   glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
-if (isset($_GET["reset_search"])){
-	unset($_SESSION["glpisearchcount2"][$_GET["itemtype"]]);
-	unset($_SESSION["glpisearchcount"][$_GET["itemtype"]]);
-	unset($_SESSION["glpisearch"][$_GET["itemtype"]]);
+if (isset($_GET["add_search_count2"])) {
+   $_SESSION["glpisearchcount2"][$_GET["itemtype"]]++;
+   glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
+}
+
+if (isset($_GET["delete_search_count2"])) {
+   $_SESSION["glpisearchcount2"][$_GET["itemtype"]]--;
+   glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
+}
+
+if (isset($_GET["reset_search"])) {
+   unset($_SESSION["glpisearchcount2"][$_GET["itemtype"]]);
+   unset($_SESSION["glpisearchcount"][$_GET["itemtype"]]);
+   unset($_SESSION["glpisearch"][$_GET["itemtype"]]);
    if (isset($SEARCH_PAGES[$_GET["itemtype"]])) {
       $REDIRECT = GLPI_ROOT.'/'.$SEARCH_PAGES[$_GET["itemtype"]];
    } else if ($cut=strpos($_SERVER['HTTP_REFERER'],"?")) {
@@ -68,7 +70,7 @@ if (isset($_GET["reset_search"])){
    } else {
       $REDIRECT = $_SERVER['HTTP_REFERER'];
    }
-	glpi_header($REDIRECT);
+   glpi_header($REDIRECT);
 }
 
 checkRight("computer","r");
@@ -76,10 +78,9 @@ checkRight("computer","r");
 commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
 
 manageGetValuesInSearch(COMPUTER_TYPE);
-
 searchForm(COMPUTER_TYPE,$_GET);
-
 showList(COMPUTER_TYPE,$_GET);
 
 commonFooter();
+
 ?>
