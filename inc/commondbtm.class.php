@@ -523,7 +523,7 @@ class CommonDBTM {
    *
    *@param $input array : the _POST vars returned by the item form when press add
    *
-   *@return integer the new ID of the added item
+   *@return integer the new ID of the added item (or false if fail)
    **/
    function add($input) {
       global $DB;
@@ -543,7 +543,7 @@ class CommonDBTM {
       }
       $input=$this->prepareInputForAdd($input);
 
-      if ($input&&is_array($input)) {
+      if ($input && is_array($input)) {
          $this->fields=array();
          $table_fields=$DB->list_fields($this->table);
 
@@ -563,13 +563,9 @@ class CommonDBTM {
             $this->post_addItem($newID,$input);
             doHook("item_add",array("type"=>$this->type, "id" => $newID, "input" => $input));
             return $newID;
-         } else {
-            return false;
          }
-
-      } else {
-         return false;
       }
+      return false;
    }
 
    /**
@@ -652,7 +648,7 @@ class CommonDBTM {
    *@param $input array : the _POST vars returned by the item form when press update
    *@param $history boolean : do history log ?
    *
-   *@return Nothing (call to the class member)
+   *@return boolean : true on success
    *
    **/
    function update($input,$history=1) {
@@ -796,7 +792,7 @@ class CommonDBTM {
    *@param $force boolean : force deletion
    *@param $history boolean : do history log ?
    *
-   *@return Nothing ()
+   *@return boolean : true on success
    *
    **/
    function delete($input,$force=0,$history=1) {
@@ -917,7 +913,7 @@ class CommonDBTM {
    *@param $input array : the _POST vars returned by the item form when press restore
    *@param $history boolean : do history log ?
    *
-   *@return Nothing ()
+   *@return boolean : true on success
    *@todo specific ones : cartridges / consumables : more reuse than restore
    *
    **/
@@ -941,8 +937,11 @@ class CommonDBTM {
             }
             doHook("item_restore",array("type"=>$this->type, "id" => $input["id"],
                    "input" => $input));
+
+            return true;
          }
       }
+      return false;
    }
 
    /**
