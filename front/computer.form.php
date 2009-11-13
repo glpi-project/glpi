@@ -72,11 +72,14 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'],'w');
 
    if (!empty($_POST["withtemplate"])) {
-      $computer->delete($_POST,1);
+      $ok = $computer->delete($_POST,1);
    } else {
-      $computer->delete($_POST);
+      $ok = $computer->delete($_POST);
    }
-   logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   if ($ok) {
+      logEvent($_POST["id"], "computers", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$computer->getField('name'));
+   }
    if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    }
@@ -85,28 +88,33 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["restore"])) {
    $computer->check($_POST['id'],'w');
 
-   $computer->restore($_POST);
-   logEvent($_POST["id"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   if ($computer->restore($_POST)) {
+      logEvent($_POST["id"],"computers", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$computer->getField('name'));
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
+   $input["id"] = $_GET["id"];
    if (isset($_POST["purge"])) {
       $input["id"] = $_POST["id"];
    }
-   $input["id"] = $_GET["id"];
 
    $computer->check($input['id'],'w');
 
-   $computer->delete($input,1);
-   logEvent($input["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   if ($computer->delete($input,1)) {
+      logEvent($input["id"], "computers", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$computer->getField('name'));
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 
 //update a computer
 } else if (isset($_POST["update"])) {
    $computer->check($_POST['id'],'w');
 
-   $computer->update($_POST);
-   logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   if ($computer->update($_POST)) {
+      logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 //Disconnect a device
