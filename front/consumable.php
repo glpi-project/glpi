@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('consumable', 'enterprise', 'search');
+$NEEDED_ITEMS = array ('consumable', 'search', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -43,18 +43,15 @@ checkRight("consumable","r");
 
 commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
-if (isset($_GET["synthese"])){
-	showConsumableSummary();
+if (isset($_GET["synthese"])) {
+   showConsumableSummary();
 
 } else {
-
-	manageGetValuesInSearch(CONSUMABLEITEM_TYPE);
-
-	searchForm(CONSUMABLEITEM_TYPE,$_GET);
-
-	showList(CONSUMABLEITEM_TYPE,$_GET);
-
+   manageGetValuesInSearch(CONSUMABLEITEM_TYPE);
+   searchForm(CONSUMABLEITEM_TYPE,$_GET);
+   showList(CONSUMABLEITEM_TYPE,$_GET);
 }
+
 commonFooter();
 
 ?>

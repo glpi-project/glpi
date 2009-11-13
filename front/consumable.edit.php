@@ -39,55 +39,58 @@ $NEEDED_ITEMS = array ('consumable', 'infocom');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["tID"])) $_GET["tID"] = "";
-if(!isset($_GET["cID"])) $_GET["cID"] = "";
-
-$con=new Consumable();
-$constype=new ConsumableType();
-
-if (isset($_POST["add_several"]))
-{
-	$constype->check($_POST["tID"],'w');
-
-	for ($i=0;$i<$_POST["to_add"];$i++){
-		unset($con->fields["id"]);
-		$con->add($_POST);
-	}
-	logEvent($_POST["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][89].": ".$_POST["to_add"]);
-
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["tID"])) {
+   $_GET["tID"] = "";
 }
-else if (isset($_GET["delete"]))
-{
-	$constype->check($_GET["tID"],'w');
-
-	$con->delete($_GET);
-	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][91]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["give"]))
-{
-	$constype->check($_POST["tID"],'w');
-
-	if ($_POST["users_id"]>0){
-		if (isset($_POST["out"]))
-			foreach ($_POST["out"] as $key => $val)
-				$con->out($key,$_POST["users_id"]);
-
-		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["restore"]))
-{
-	$constype->check($_GET["tID"],'w');
-
-	$con->restore($_GET);
-	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][93]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["cID"])) {
+   $_GET["cID"] = "";
 }
 
-glpi_header($_SERVER['HTTP_REFERER']);
+$con = new Consumable();
+$constype = new ConsumableType();
 
+if (isset($_POST["add_several"])) {
+   $constype->check($_POST["tID"],'w');
+
+   for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
+      unset($con->fields["id"]);
+      $con->add($_POST);
+   }
+   logEvent($_POST["tID"], "consumables", 4, "inventory",
+            $_SESSION["glpiname"]." ".$LANG['log'][89].": ".$_POST["to_add"]);
+
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["delete"])) {
+   $constype->check($_GET["tID"],'w');
+
+   $con->delete($_GET);
+   logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][91]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["give"])) {
+   $constype->check($_POST["tID"],'w');
+
+   if ($_POST["users_id"] >0) {
+      if (isset($_POST["out"])) {
+         foreach ($_POST["out"] as $key => $val) {
+            $con->out($key,$_POST["users_id"]);
+         }
+      }
+      logEvent($_POST["tID"], "consumables", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["restore"])) {
+   $constype->check($_GET["tID"],'w');
+
+   $con->restore($_GET);
+   logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][93]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
 
 ?>

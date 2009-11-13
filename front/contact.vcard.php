@@ -33,22 +33,19 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('contact', 'enterprise');
+$NEEDED_ITEMS = array ('contact', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
 if (empty($_GET["id"])) {
-
    glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
-}else {
-
+} else {
    $contact = new Contact();
    $contact->check($_GET["id"],'r');
    $contact->generateVcard();
-
 }
 
 ?>
