@@ -714,10 +714,9 @@ class CommonDBTM {
             }
          }
          $this->post_updateItem($input,$updates,$history);
-      } else {
-         return false;
+         return true;
       }
-      return true;
+      return false;
    }
 
    /**
