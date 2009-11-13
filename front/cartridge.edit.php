@@ -35,73 +35,68 @@
 
 $NEEDED_ITEMS = array ('cartridge', 'infocom');
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["tID"])) $_GET["tID"] = "";
-if(!isset($_GET["cID"])) $_GET["cID"] = "";
-
-//print_r($_POST);
-
-$cart= new Cartridge();
-$cartype=new CartridgeType();
-
-if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
-{
-	/// TODO : maybe right on printer and not on cartridge type for such a thing ?
-	$cart->check($_POST["cID"],'w');
-
-	$cart->updatePages($_POST["cID"],$_POST['pages']);
-
-	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
-
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["tID"])) {
+   $_GET["tID"] = "";
 }
-else if (isset($_POST["add_several"]))
-{
-	$cartype->check($_POST["tID"],'w');
-
-	for ($i=0;$i<$_POST["to_add"];$i++){
-		unset($cart->fields["id"]);
-		$cart->add($_POST);
-	}
-	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][88].": ".$_POST["to_add"]);
-
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["cID"])) {
+   $_GET["cID"] = "";
 }
-else if (isset($_GET["delete"]))
-{
-	$cartype->check($_GET["tID"],'w');
 
-	checkRight("cartridge","w");
-	$cart->delete($_GET);
-	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][90]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["restore"]))
-{
-	$cartype->check($_GET["tID"],'w');
-	$cart->restore($_GET);
-	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][92]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["install"]))
-{
-	$cartype->check($_POST["tID"],'w');
-	$cart->install($_POST["pID"],$_POST["tID"]);
-	logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][95]);
+$cart = new Cartridge();
+$cartype = new CartridgeType();
 
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
-}
-else if (isset($_GET["uninstall"]))
-{
-	$cartype->check($_GET["tID"],'w');
-	$cart->uninstall($_GET["id"]);
-	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][96]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-glpi_header($_SERVER['HTTP_REFERER']);
+if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
+   /// TODO : maybe right on printer and not on cartridge type for such a thing ?
+   $cart->check($_POST["cID"],'w');
 
+   $cart->updatePages($_POST["cID"],$_POST['pages']);
+   logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
+} else if (isset($_POST["add_several"])) {
+   $cartype->check($_POST["tID"],'w');
+
+   for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
+      unset($cart->fields["id"]);
+      $cart->add($_POST);
+   }
+   logEvent($_POST["tID"], "cartridges", 4, "inventory",
+            $_SESSION["glpiname"]." ".$LANG['log'][88].": ".$_POST["to_add"]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["delete"])) {
+   $cartype->check($_GET["tID"],'w');
+
+   checkRight("cartridge","w");
+   $cart->delete($_GET);
+   logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][90]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["restore"])) {
+   $cartype->check($_GET["tID"],'w');
+
+   $cart->restore($_GET);
+   logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][92]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["install"])) {
+   $cartype->check($_POST["tID"],'w');
+
+   $cart->install($_POST["pID"],$_POST["tID"]);
+   logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][95]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
+
+} else if (isset($_GET["uninstall"])) {
+   $cartype->check($_GET["tID"],'w');
+
+   $cart->uninstall($_GET["id"]);
+   logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][96]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
 ?>
