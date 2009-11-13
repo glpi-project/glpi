@@ -521,7 +521,7 @@ class CommonDBTM {
    /**
    * Add an item in the database with all it's items.
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    *@return integer the new ID of the added item
    **/
@@ -599,7 +599,7 @@ class CommonDBTM {
    /**
    * Add a message on add action
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    **/
    function addMessageOnAddAction($input) {
@@ -649,7 +649,7 @@ class CommonDBTM {
    /**
    * Update some elements of an item in the database.
    *
-   *@param $input array : the _POST vars returned bye the item form when press update
+   *@param $input array : the _POST vars returned by the item form when press update
    *@param $history boolean : do history log ?
    *
    *@return Nothing (call to the class member)
@@ -727,7 +727,7 @@ class CommonDBTM {
    /**
    * Add a message on update action
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    **/
    function addMessageOnUpdateAction($input) {
@@ -792,7 +792,7 @@ class CommonDBTM {
    /**
    * Delete an item in the database.
    *
-   *@param $input array : the _POST vars returned bye the item form when press delete
+   *@param $input array : the _POST vars returned by the item form when press delete
    *@param $force boolean : force deletion
    *@param $history boolean : do history log ?
    *
@@ -852,7 +852,7 @@ class CommonDBTM {
    /**
    * Add a message on delete action
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    **/
    function addMessageOnDeleteAction($input) {
@@ -880,7 +880,7 @@ class CommonDBTM {
    /**
    * Add a message on purge action
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    **/
    function addMessageOnPurgeAction($input) {
@@ -917,7 +917,7 @@ class CommonDBTM {
    /**
    * Restore an item trashed in the database.
    *
-   *@param $input array : the _POST vars returned bye the item form when press restore
+   *@param $input array : the _POST vars returned by the item form when press restore
    *@param $history boolean : do history log ?
    *
    *@return Nothing ()
@@ -951,7 +951,7 @@ class CommonDBTM {
    /**
    * Add a message on restore action
    *
-   *@param $input array : the _POST vars returned bye the item form when press add
+   *@param $input array : the _POST vars returned by the item form when press add
    *
    **/
    function addMessageOnRestoreAction($input) {

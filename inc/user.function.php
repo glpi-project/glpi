@@ -224,12 +224,12 @@ function showGroupAssociated($target,$ID) {
    global $DB,$CFG_GLPI, $LANG;
 
    $user = new User();
-   if (!haveRight("group","r" )|| !$user->can($ID,'r')) {
+   if (!haveRight("group","r") || !$user->can($ID,'r')) {
       return false;
    }
 
    $canedit = $user->can($ID,'w');
-   
+
    $rand = mt_rand();
    $nb_per_line = 3;
    if ($canedit) {
@@ -319,7 +319,7 @@ function showGroupAssociated($target,$ID) {
       // All entities "edited user" have access
       $strict_entities = getUserEntities($ID,true);
 
-      // Keep only entities "connected user" have access 
+      // Keep only entities "connected user" have access
       foreach ($strict_entities as $key => $val) {
          if (!haveAccessToEntity($val)) {
             unset($strict_entities[$key]);

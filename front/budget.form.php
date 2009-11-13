@@ -33,58 +33,60 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('budget', 'document', 'enterprise', 'link');
+$NEEDED_ITEMS = array ('budget', 'document', 'link', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["id"])) $_GET["id"] = '';
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = '';
+if (empty($_GET["id"])) {
+   $_GET["id"] = '';
+}
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = '';
+}
 
-$budget=new Budget;
+$budget = new Budget;
 if (isset($_POST["add"])) {
-	$budget->check(-1,'w',$_POST);
+   $budget->check(-1,'w',$_POST);
 
-	$newID=$budget->add($_POST);
-	logEvent($newID, "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if ($newID = $budget->add($_POST)) {
+      logEvent($newID, "budget", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["delete"])) {
+   $budget->check($_POST["id"],'w');
+
+   $budget->delete($_POST);
+   logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+
+} else if (isset($_POST["restore"])) {
+   $budget->check($_POST["id"],'w');
+
+   $budget->restore($_POST);
+   logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+
+} else if (isset($_POST["purge"])) {
+   $budget->check($_POST["id"],'w');
+
+   $budget->delete($_POST,1);
+   logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+
+} else if (isset($_POST["update"])) {
+   $budget->check($_POST["id"],'w');
+
+   $budget->update($_POST);
+   logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
+   $budget->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
+   commonFooter();
 }
-else if (isset($_POST["delete"])) {
-	$budget->check($_POST["id"],'w');
-
-	$budget->delete($_POST);
-	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
-}
-else if (isset($_POST["restore"])) {
-	$budget->check($_POST["id"],'w');
-
-	$budget->restore($_POST);
-	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
-}
-else if (isset($_POST["purge"])) {
-	$budget->check($_POST["id"],'w');
-
-	$budget->delete($_POST,1);
-	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
-}
-else if (isset($_POST["update"])) {
-	$budget->check($_POST["id"],'w');
-
-	$budget->update($_POST);
-	logEvent($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-else {
-	commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
-
-	$budget->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
-
-	commonFooter();
-}
-
 
 ?>
