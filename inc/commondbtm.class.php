@@ -839,14 +839,11 @@ class CommonDBTM {
                   doHook("item_delete",array("type"=>$this->type, "id" => $this->fields["id"],
                          "input" => $input));
                }
+               return true;
             }
-            return true;
-         } else {
-            return false;
          }
-      } else {
-      return false;
       }
+   return false;
    }
 
    /**

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('contact', 'enterprise', 'search');
+$NEEDED_ITEMS = array ('contact', 'search', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -43,7 +43,6 @@ checkRight("contact_enterprise","r");
 
 commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
 
-
 manageGetValuesInSearch(CONTACT_TYPE);
 
 searchForm(CONTACT_TYPE,$_GET);
@@ -51,4 +50,5 @@ searchForm(CONTACT_TYPE,$_GET);
 showList(CONTACT_TYPE,$_GET);
 
 commonFooter();
+
 ?>

@@ -34,80 +34,77 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('contact', 'document', 'enterprise', 'link');
+$NEEDED_ITEMS = array ('contact', 'document', 'link', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["id"])) $_GET["id"] = -1;
+if (empty($_GET["id"])) {
+   $_GET["id"] = -1;
+}
 
 $contact = new Contact();
 $contactsupplier = new ContactSupplier();
 
-if (isset($_POST["add"])){
-	$contact->check(-1,'w',$_POST);
+if (isset($_POST["add"])) {
+   $contact->check(-1,'w',$_POST);
 
-	$newID=$contact->add($_POST);
-	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	$contact->check($_POST["id"],'w');
+   if ($newID = $contact->add($_POST)) {
+      logEvent($newID, "contacts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$contact->delete($_POST);
-	logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
-}
-else if (isset($_POST["restore"]))
-{
-	$contact->check($_POST["id"],'w');
+} else if (isset($_POST["delete"])) {
+   $contact->check($_POST["id"],'w');
 
-	$contact->restore($_POST);
-	logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
-}
-else if (isset($_POST["purge"]))
-{
-	$contact->check($_POST["id"],'w');
+   $contact->delete($_POST);
+   logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
-	$contact->delete($_POST,1);
-	logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
-}
-else if (isset($_POST["update"]))
-{
-	$contact->check($_POST["id"],'w');
+} else if (isset($_POST["restore"])) {
+   $contact->check($_POST["id"],'w');
 
-	$contact->update($_POST);
-	logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["addcontactsupplier"]))
-{
+   $contact->restore($_POST);
+   logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+
+} else if (isset($_POST["purge"])) {
+   $contact->check($_POST["id"],'w');
+
+   $contact->delete($_POST,1);
+   logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+
+} else if (isset($_POST["update"])) {
+   $contact->check($_POST["id"],'w');
+
+   $contact->update($_POST);
+   logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["addcontactsupplier"])) {
    $contactsupplier->check(-1,'w',$_POST);
+
    if ($contactsupplier->add($_POST)) {
-      logEvent($_POST["contacts_id"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][34]);
+      logEvent($_POST["contacts_id"], "contacts", 4, "financial",
+      $_SESSION["glpiname"]."  ".$LANG['log'][34]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deletecontactsupplier"]))
-{
+
+} else if (isset($_GET["deletecontactsupplier"])) {
    $contactsupplier->check($_GET["id"],'w');
+
    if ($contactsupplier->delete($_GET)) {
-      logEvent($_GET["contacts_id"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG['log'][35]);
+      logEvent($_GET["contacts_id"], "contacts", 4, "financial",
+               $_SESSION["glpiname"]."  ".$LANG['log'][35]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
+   $contact->showForm($_SERVER['PHP_SELF'],$_GET["id"],'');
+   commonFooter();
 }
-
-else
-{
-	commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
-
-	$contact->showForm($_SERVER['PHP_SELF'],$_GET["id"],'');
-
-	commonFooter();
-}
-
 
 ?>

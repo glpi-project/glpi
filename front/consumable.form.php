@@ -34,61 +34,58 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('consumable', 'contract', 'document', 'enterprise', 'infocom', 'link',
-   'printer');
+$NEEDED_ITEMS = array ('consumable', 'contract', 'document', 'infocom', 'link', 'printer', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-
-$constype=new ConsumableType();
-
-if (isset($_POST["add"]))
-{
-	$constype->check(-1,'w',$_POST);
-
-	$newID=$constype->add($_POST);
-	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
-else if (isset($_POST["delete"]))
-{
-	$constype->check($_POST["id"],'w');
 
-	$constype->delete($_POST);
-	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
-}
-else if (isset($_POST["restore"]))
-{
-	$constype->check($_POST["id"],'w');
+$constype = new ConsumableType();
 
-	$constype->restore($_POST);
-	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
-}
-else if (isset($_POST["purge"]))
-{
-	$constype->check($_POST["id"],'w');
+if (isset($_POST["add"])) {
+   $constype->check(-1,'w',$_POST);
 
-	$constype->delete($_POST,1);
-	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
-}
-else if (isset($_POST["update"]))
-{
-	$constype->check($_POST["id"],'w');
+   if ($newID = $constype->add($_POST)) {
+      logEvent($newID, "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$constype->update($_POST);
-	logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
-	$constype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-	commonFooter();
+} else if (isset($_POST["delete"])) {
+   $constype->check($_POST["id"],'w');
+
+   $constype->delete($_POST);
+   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
+
+} else if (isset($_POST["restore"])) {
+   $constype->check($_POST["id"],'w');
+
+   $constype->restore($_POST);
+   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
+
+} else if (isset($_POST["purge"])) {
+   $constype->check($_POST["id"],'w');
+
+   $constype->delete($_POST,1);
+   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
+
+} else if (isset($_POST["update"])) {
+   $constype->check($_POST["id"],'w');
+
+   $constype->update($_POST);
+   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+   $constype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   commonFooter();
 }
 
 ?>
