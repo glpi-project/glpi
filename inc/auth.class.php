@@ -828,10 +828,9 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (canUseLdap()) {
-         echo "<form action=\"$target\" method='post'>";
 
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
+	      $this->showTabs($ID, '',getActiveTab($this->type));
+	      $this->showFormHeader($target,$ID,'',2);
          echo "<tr><th colspan='4'>" . $LANG['login'][2] . "</th></tr>";
          if (empty($ID)) {
             echo "<tr class='tab_bg_2'><td class='center' >".$LANG['ldap'][16].":</td> ";
@@ -897,6 +896,12 @@ class AuthLDAP extends CommonDBTM {
          dropdownArrayValues("deref_option",$alias_options,$this->fields["deref_option"]);
          echo"</td></tr>";
 
+	      $this->showFormButtons($ID,'',2);
+	
+	      echo "<div id='tabcontent'></div>";
+	      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
+/*
          echo "<tr class='tab_bg_1'>";
          echo "<th class='center' colspan='4'>" . $LANG['setup'][259] . "</th></tr>";
 
@@ -1006,6 +1011,222 @@ class AuthLDAP extends CommonDBTM {
          echo "<p class='red'>" . $LANG['setup'][157] . "</p>";
          echo "<p>" . $LANG['setup'][158] . "</p></td></tr></table></div>";
       }
+	*/
+   	}
+   }
+
+	function showFormReplicatesConfig($ID, $target) {
+		global $LANG, $CFG_GLPI, $DB;
+	   
+	   AuthLdapReplicate::addNewReplicateForm($target, $ID);
+	
+	   $sql = "SELECT *
+	           FROM `glpi_authldapsreplicates`
+	           WHERE `authldaps_id` = '".$ID."'
+	           ORDER BY `name`";
+	   $result = $DB->query($sql);
+
+	   if ($DB->numrows($result)>0) {
+	      echo "<br>";
+	      $canedit = haveRight("config", "w");
+	      echo "<form action=\"$target\" method='post' name='ldap_replicates_form'
+	             id='ldap_replicates_form'>";
+	      echo "<div class='center'>";
+	      echo "<table class='tab_cadre_fixe'>";
+	
+	      echo "<tr><th colspan='4'><div class='relative'><span>";
+	      echo"<input type='hidden' name='id' value='" . $ID . "'>";
+	      echo "<strong>" . $LANG['ldap'][18] . "</strong></span></div></th></tr>";
+
+	      if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
+	      	echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+	         echo $_SESSION["LDAP_TEST_MESSAGE"];
+	         echo"</td></tr>";
+	         unset($_SESSION["LDAP_TEST_MESSAGE"]);
+	      }
+
+	      echo "<tr class='tab_bg_1'><td></td>";
+	      echo "<td class='center'>".$LANG['common'][16]."</td>";
+	      echo "<td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td></tr>";
+	      while ($ldap_replicate = $DB->fetch_array($result)) {
+	         echo "<tr class='tab_bg_2'><td class='center'>";
+	         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+	            $sel = "checked";
+	         } else {
+	            $sel="";
+	         }
+	         echo "<input type='checkbox' name='item[" . $ldap_replicate["id"] . "]'
+	                value='1' $sel>";
+	         echo "</td>";
+	         echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
+	         echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"] . "</td>";
+	         echo "<td class='center'>";
+	         echo"<input type='submit' name='test_ldap_replicate[".$ldap_replicate["id"]."]'
+	               class='submit' value=\"" . $LANG['buttons'][50] . "\" ></td>";
+	         echo"</tr>";
+	      }
+	      echo "</table>";
+	      echo "<table class='tab_cadre_fixe'>";
+	
+	      echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
+	      echo "<td class='center'>";
+	      echo "<a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\"
+	             href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" .
+	             $LANG['buttons'][18] . "</a></td>";
+	      echo "<td>/</td><td class='center'>";
+	      echo "<a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\"
+	             href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" .
+	             $LANG['buttons'][19] . "</a>";
+	      echo "</td><td class='left' width='80%'>";
+	      echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\"
+	             class='submit'></td>";
+	      echo "</tr></table></div></form>";
+	   }
+	}
+
+	function showFormGroupsConfig($ID, $target) {
+      global $LANG,$CFG_GLPI;
+
+ 	   echo "<form method='post' action=\"$target\">";
+      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<input type='hidden' name='id' value='" . $ID . "'>";
+
+      echo "<th class='center' colspan='4'>" . $LANG['setup'][259] . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][254] . "</td><td>";
+      $group_search_type = $this->fields["group_search_type"];
+
+      echo "<select name='group_search_type'>";
+      echo "<option value='0' " . (($group_search_type == 0) ? " selected " : "") . ">" .
+             $LANG['setup'][256] . "</option>";
+      echo "<option value='1' " . (($group_search_type == 1) ? " selected " : "") . ">" .
+             $LANG['setup'][257] . "</option>";
+      echo "<option value='2' " . (($group_search_type == 2) ? " selected " : "") . ">" .
+             $LANG['setup'][258] . "</option>";
+      echo "</select></td>";
+      echo "<td class='center'>" . $LANG['setup'][260] . "</td>";
+      echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][253] . "</td><td>";
+      echo "<input type='text' name='group_condition' value='".
+             $this->fields["group_condition"]."'></td>";
+      echo "<td class='center'>" . $LANG['setup'][255] . "</td>";
+      echo "<td><input type='text' name='group_member_field' value='".
+                 $this->fields["group_member_field"]."'></td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][262] . "</td>";
+      echo "<td>";
+      dropdownYesNo("use_dn",$this->fields["use_dn"]);
+      echo"</td>";
+      echo "<td class='center' colspan='2'></td></tr>";
+	   echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<input type='submit' name='update_ldap' class='submit' value='".
+                $LANG['buttons'][2]."'></td>";
+		echo "</td></tr>";
+		echo "</table></form></div>"; 		
+	}
+	
+
+	function showFormTestLDAP ($ID, $target) {
+      global $LANG,$CFG_GLPI;
+
+ 	   echo "<form method='post' action=\"$target\">";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<input type='hidden' name='id' value='" . $ID . "'>";
+      echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
+      if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
+      	echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+         echo $_SESSION["LDAP_TEST_MESSAGE"];
+         echo"</td></tr>";
+         unset($_SESSION["LDAP_TEST_MESSAGE"]);
+      }
+      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<input type='submit' name='test_ldap' class='submit' value='".
+            $LANG['buttons'][2]."'></td></tr>";
+      echo "</table></div>";
+	}
+	
+	function showFormUserConfig($ID,$target) {
+      global $LANG,$CFG_GLPI;
+
+ 	   echo "<form method='post' action=\"$target\">";
+      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<input type='hidden' name='id' value='" . $ID . "'>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<th class='center' colspan='4'>" . $LANG['Menu'][14] . "</th></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][48] . "</td>";
+         echo "<td><input type='text' name='realname_field' value='".
+                    $this->fields["realname_field"]."'></td>";
+         echo "<td class='center'>" . $LANG['common'][43] . "</td>";
+         echo "<td><input type='text' name='firstname_field' value='".
+                    $this->fields["firstname_field"]."'></td></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . "</td>";
+         echo "<td><input type='text' name='comment_field' value='".
+                    $this->fields["comment_field"]."'></td>";
+         echo "<td class='center'>" . $LANG['setup'][14] . "</td>";
+         echo "<td><input type='text' name='email_field' value='".$this->fields["email_field"]."'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['help'][35] . "</td>";
+         echo "<td><input type='text' name='phone_field'value='".$this->fields["phone_field"]."'>";
+         echo "</td>";
+         echo "<td class='center'>" . $LANG['help'][35] . " 2</td>";
+         echo "<td><input type='text' name='phone2_field'value='".$this->fields["phone2_field"]."'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][42] . "</td>";
+         echo "<td><input type='text' name='mobile_field'value='".$this->fields["mobile_field"]."'>";
+         echo "</td>";
+         echo "<td class='center'>" . $LANG['users'][1] . " </td>";
+         echo "<td><input type='text' name='title_field' value='".$this->fields["title_field"]."'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['users'][2] . "</td>";
+         echo "<td><input type='text' name='category_field' value='".
+                    $this->fields["category_field"]."'></td>";
+         echo "<td class='center'>" . $LANG['setup'][41] . " </td>";
+         echo "<td><input type='text' name='language_field' value='".
+                    $this->fields["language_field"]. "'></td></tr>";
+
+	      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+         echo "<input type='submit' name='update_ldap' class='submit' value='".
+                   $LANG['buttons'][2]."'></td>";
+			echo "</td></tr>";
+			echo "</table></form></div>"; 		
+	}
+
+   function defineTabs($ID,$withtemplate) {
+      global $LANG;
+      $ong=array();
+      $ong[1]=$LANG['title'][26];
+
+      if ($ID>0) {
+            $ong[2]=$LANG['ldap'][22];
+            $ong[3]=$LANG['Menu'][14];
+            $ong[4]=$LANG['Menu'][36];
+      }
+
+      return $ong;
+   }
+	
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['login'][2];
+
+      $tab[1]['table']         = 'glpi_authldaps';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = AUTH_LDAP_TYPE;
+
+      return $tab;
    }
 }
 
@@ -1030,5 +1251,35 @@ class AuthLdapReplicate extends CommonDBTM {
       }
       return $input;
    }
+
+	/**
+	 * Form to add a replicate to a ldap server
+	 *
+	 * @param $target : target page for add new replicate
+	 * @param $master_id : master ldap server ID
+	**/
+	static function addNewReplicateForm($target, $master_id) {
+	   global $LANG;
+	
+	   echo "<form action=\"$target\" method='post' name='add_replicate_form' id='add_replicate_form'>";
+	   echo "<div class='center'>";
+	   echo "<table class='tab_cadre_fixe'>";
+	
+	   echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG['ldap'][20] . "</strong>";
+	   echo "</span></div></th></tr>";
+	   echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td>";
+	   echo "<td class='center'>".$LANG['common'][52]."</td>";
+	   echo "<td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
+	   echo "<tr class='tab_bg_1'>";
+	   echo "<td class='center'><input type='text' name='name'></td>";
+	   echo "<td class='center'><input type='text' name='host'></td>";
+	   echo "<td class='center'><input type='text' name='port'></td>";
+	   echo "<td class='center'><input type='hidden' name='next' value=\"extauth_ldap\">";
+	   echo "<input type='hidden' name='authldaps_id' value=\"".$master_id."\">";
+	   echo "<input type='submit' name='add_replicate' value=\"" .
+	                             $LANG['buttons'][2] . "\" class='submit'></td>";
+	   echo "</tr></table></div></form>";
+	}
+
 }
 ?>
