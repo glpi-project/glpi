@@ -45,16 +45,17 @@ $config = new Config();
 $config_ldap = new AuthLDAP();
 
 if (!isset($_GET['id'])) {
-	$_GET['id'] = 0;
+   $_GET['id'] = 0;
 }
 //LDAP Server add/update/delete
 if (isset ($_POST["update"])) {
    $config_ldap->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset ($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
-      if ($newID=$config_ldap->add($_POST)) {
+      if ($newID = $config_ldap->add($_POST)) {
          if (testLDAPConnection($newID)) {
             addMessageAfterRedirect($LANG['login'][22]);
          } else {
@@ -64,42 +65,47 @@ if (isset ($_POST["update"])) {
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset ($_POST["delete"])) {
    $config_ldap->delete($_POST);
-   $_SESSION['glpi_authconfig']=1;
+   $_SESSION['glpi_authconfig'] = 1;
    glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php");
+
 } else if (isset ($_POST["test_ldap"])) {
    $ldap = new AuthLDAP;
    $ldap->getFromDB($_POST["id"]);
 
    if (testLDAPConnection($_POST["id"])) {
-      $_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][21]." : ".
-                                                           $ldap->fields["name"].")";;
+      $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
+                                       " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
    } else {
-      $_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][21]." : ".
-                                                           $ldap->fields["name"].")";;
+      $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][23].
+                                       " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset ($_POST["test_ldap_replicate"])) {
-   foreach($_POST["test_ldap_replicate"] as $replicate_id => $value) {
+   foreach ($_POST["test_ldap_replicate"] as $replicate_id => $value) {
       $replicate = new AuthLdapReplicate;
       $replicate->getFromDB($replicate_id);
 
       if (testLDAPConnection($_POST["id"],$replicate_id)) {
-         $_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][19]." : ".
-                                                              $replicate->fields["name"].")";
+         $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
+                                          " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
       } else {
-         $_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][19]." : ".
-                                                              $replicate->fields["name"].")";
+         $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][23].
+                                          " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["delete_replicate"])) {
    $replicate = new AuthLdapReplicate;
    foreach ($_POST["item"] as $index=>$val) {
-      $replicate->delete(array("id"=>$index));
+      $replicate->delete(array("id" => $index));
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["add_replicate"])) {
    $replicate = new AuthLdapReplicate;
    unset($_POST["next"]);
@@ -112,4 +118,5 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","ldap")
 $config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
 
 commonFooter();
+
 ?>
