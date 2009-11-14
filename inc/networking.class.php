@@ -282,21 +282,9 @@ class Netdevice extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name",$objectName,40,
                               $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id",
-                    $this->fields["networkequipmentstypes_id"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
-      echo "</td>";
-      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id",
-                    $this->fields["networkequipmentsfirmwares_id"]);
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -305,10 +293,10 @@ class Netdevice extends CommonDBTM {
       dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['networking'][5]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("ram",$this->table,"ram",$this->fields["ram"],40,
-                              $this->fields["entities_id"]);
+      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id",
+                    $this->fields["networkequipmentstypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -317,9 +305,9 @@ class Netdevice extends CommonDBTM {
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -365,22 +353,20 @@ class Netdevice extends CommonDBTM {
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td rowspan='6'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='6'>
-            <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      echo "</td>";
+      echo "<td rowspan='6'>";
+      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='6'>
+            <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -394,6 +380,20 @@ class Netdevice extends CommonDBTM {
       echo "<td>".$LANG['networking'][15]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField("mac",$this->table,"mac",$this->fields["mac"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id",
+                    $this->fields["networkequipmentsfirmwares_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['networking'][5]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("ram",$this->table,"ram",$this->fields["ram"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
