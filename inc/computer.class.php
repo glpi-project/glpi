@@ -556,19 +556,19 @@ class Computer extends CommonDBTM {
                                $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
-      echo "<td >";
+      echo "<td>";
       dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >".$LANG['common'][15]."&nbsp;: </td>";
-      echo "<td >";
+      echo "<td>".$LANG['common'][15]."&nbsp;: </td>";
+      echo "<td>";
       dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                      $this->fields["entities_id"]);
-      echo "<td >".$LANG['common'][17]."&nbsp;: </td>";
-      echo "<td >";
-      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
       echo "</td>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -594,7 +594,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]." :</td>";
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField("contact",$this->table,"contact",
                               $this->fields["contact"],40,$this->fields["entities_id"]);
@@ -606,12 +606,12 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >".$LANG['common'][34]."&nbsp;: </td>";
-      echo "<td >";
+      echo "<td>".$LANG['common'][34]."&nbsp;: </td>";
+      echo "<td>";
       dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
-      echo "<td >";
+      echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
       autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,

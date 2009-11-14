@@ -237,10 +237,9 @@ class Phone extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name", $objectName, 40,
                               $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                               $CFG_GLPI["phones_management_restrict"]);
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -260,21 +259,9 @@ class Phone extends CommonDBTM {
       dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_phonespowersupplies","phonespowersupplies_id",
-                    $this->fields["phonespowersupplies_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
-      echo "</td>";
-      echo "<td>".$LANG['phones'][18]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("brand",$this->table,"brand",$this->fields["brand"],40,
-                              $this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -283,26 +270,15 @@ class Phone extends CommonDBTM {
       autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],
                               40,$this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("firmware",$this->table,"firmware",$this->fields["firmware"],40,
-                              $this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]."&nbsp;:</td><td>";
-      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
-                              $this->fields["entities_id"]);
-      echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_phonesmodels", "phonesmodels_id", $this->fields["phonesmodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td><td>";
+      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
+                              $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
@@ -311,9 +287,9 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_groups","groups_id",$this->fields["groups_id"],1,$this->fields["entities_id"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
@@ -324,14 +300,40 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      dropdownValue("glpi_groups","groups_id",$this->fields["groups_id"],1,$this->fields["entities_id"]);
       echo "</td>";
-      echo "<td rowspan='4'>";
+      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>";
+      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
+                               $CFG_GLPI["phones_management_restrict"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['phones'][18]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("brand",$this->table,"brand",$this->fields["brand"],40,
+                              $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td rowspan='6'>";
       echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='4'>
-            <textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='6'>
+            <textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_phonespowersupplies","phonespowersupplies_id",
+                    $this->fields["phonespowersupplies_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField("firmware",$this->table,"firmware",$this->fields["firmware"],40,
+                              $this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

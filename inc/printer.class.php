@@ -301,7 +301,7 @@ class Printer  extends CommonDBTM {
          $template = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } elseif (!empty($withtemplate) && $withtemplate == 1) {
+      } else if (!empty($withtemplate) && $withtemplate == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -321,16 +321,9 @@ class Printer  extends CommonDBTM {
                              $this->type,$this->fields["entities_id"]);
       autocompletionTextField("name",$this->table,"name",$objectName,40,$this->fields["entities_id"]);
       echo "</td>\n";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
-      if ($this->can($ID,'w')) {
-         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                                  $CFG_GLPI["printers_management_restrict"]);
-      } else {
-         // Use printers_management_restrict to disallow change this
-         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                                  $this->fields["is_global"]);
-      }
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -350,21 +343,9 @@ class Printer  extends CommonDBTM {
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td>\n";
-      echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
-      echo "<td>";
-      autocompletionTextField("memory_size",$this->table,"memory_size",$this->fields["memory_size"],
-                              40,$this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>\n";
       echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
-      echo "</td>\n";
-      echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
-      echo "<td>";
-      autocompletionTextField("init_pages_counter",$this->table,"init_pages_counter",
-                              $this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -373,9 +354,9 @@ class Printer  extends CommonDBTM {
       autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],
                               40,$this->fields["entities_id"]);
       echo "</td>\n";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      dropdownValue("glpi_printersmodels", "printersmodels_id", $this->fields["printersmodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -384,16 +365,6 @@ class Printer  extends CommonDBTM {
       autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
                               $this->fields["entities_id"]);
       echo "</td>\n";
-      echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
-      echo "<td>";
-      dropdownValue("glpi_printersmodels", "printersmodels_id", $this->fields["printersmodels_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
-      echo "<td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
-      echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
       autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
@@ -401,10 +372,9 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
-                    $this->fields["entities_id"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td>\n";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
@@ -415,19 +385,49 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+                    $this->fields["entities_id"]);
       echo "</td>\n";
-      echo "<td rowspan='4'>";
-      echo $LANG['common'][25]."&nbsp;:</td>\n";
-      echo "<td rowspan='4'><textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>";
+      if ($this->can($ID,'w')) {
+         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
+                                  $CFG_GLPI["printers_management_restrict"]);
+      } else {
+         // Use printers_management_restrict to disallow change this
+         globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
+                                  $this->fields["is_global"]);
+      }
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>\n";
       echo "<td>";
       dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
+      echo "<td>";
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
+      echo "<td>";
+      autocompletionTextField("memory_size",$this->table,"memory_size",$this->fields["memory_size"],
+                              40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td rowspan='4'>";
+      echo $LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='4'><textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
+      echo "<td>";
+      autocompletionTextField("init_pages_counter",$this->table,"init_pages_counter",
+                              $this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
