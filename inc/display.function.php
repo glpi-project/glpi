@@ -779,11 +779,15 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['mailing']['page']='/front/setup.mailing.php';
       $menu['config']['content']['extauth']['title']=$LANG['login'][10];
       $menu['config']['content']['extauth']['page']='/front/setup.auth.php';
+      $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];
+      $menu['config']['content']['extauth']['options']['ldap']['page']='/front/auth.ldap.php';
+      
+      
       switch ($option) {
          case "ldap" : // LDAP
-            $menu['config']['content']['extauth']['links']['search']='/front/auth.ldap.php';
-            $menu['config']['content']['extauth']['links']['add']='' .
-                    '/front/auth.ldap.php?next=extauth_ldap';
+            $menu['config']['content']['extauth']['options']['ldap']['links']['search']='/front/auth.ldap.php';
+            $menu['config']['content']['extauth']['options']['ldap']['links']['add']='' .
+                    '/front/auth.ldap.form.php';
             break;
 
          case "imap" : // IMAP

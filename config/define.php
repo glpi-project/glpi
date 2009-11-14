@@ -612,9 +612,9 @@ $CFG_GLPI["helpdesk_visible_types"] = array(SOFTWARE_TYPE);
 $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE,
                                    PHONE_TYPE);
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, OCSNG_TYPE, PROFILE_TYPE);
+$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, OCSNG_TYPE, PROFILE_TYPE, AUTH_LDAP_TYPE);
 
-$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, CRONTASK_TYPE);
+$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, CRONTASK_TYPE, AUTH_LDAP_TYPE);
 
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgesitems','glpi_computers',
       'glpi_consumablesitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',

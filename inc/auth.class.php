@@ -831,7 +831,6 @@ class AuthLDAP extends CommonDBTM {
 
 	      $this->showTabs($ID, '',getActiveTab($this->type));
 	      $this->showFormHeader($target,$ID,'',2);
-         echo "<tr><th colspan='4'>" . $LANG['login'][2] . "</th></tr>";
          if (empty($ID)) {
             echo "<tr class='tab_bg_2'><td class='center' >".$LANG['ldap'][16].":</td> ";
             echo "<td colspan='3'>";
@@ -1225,6 +1224,26 @@ class AuthLDAP extends CommonDBTM {
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = AUTH_LDAP_TYPE;
+
+	   $tab[2]['table']         = 'glpi_authldaps';
+      $tab[2]['field']         = 'host';
+      $tab[2]['linkfield']     = 'host';
+      $tab[2]['name']          = $LANG['common'][52];
+
+	   $tab[3]['table']         = 'glpi_authldaps';
+      $tab[3]['field']         = 'port';
+      $tab[3]['linkfield']     = 'port';
+      $tab[3]['name']          = $LANG['setup'][175];
+
+	   $tab[4]['table']         = 'glpi_authldaps';
+      $tab[4]['field']         = 'basedn';
+      $tab[4]['linkfield']     = 'basedn';
+      $tab[4]['name']          = $LANG['setup'][154];
+
+	   $tab[5]['table']         = 'glpi_authldaps';
+      $tab[5]['field']         = 'condition';
+      $tab[5]['linkfield']     = 'condition';
+      $tab[5]['name']          = $LANG['setup'][159];
 
       return $tab;
    }
