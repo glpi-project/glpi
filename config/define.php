@@ -417,8 +417,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         GROUP_TYPE           => "front/group.form.php",
                         ENTITY_TYPE          => "front/entity.form.php",
 // RESERVATION_TYPE => "???",
-								AUTH_MAIL_TYPE 		=> "front/auth.mail.form.php",
-								AUTH_LDAP_TYPE 		=> "front/auth.ldap.form.php",
+                        AUTH_MAIL_TYPE       => "front/auth.mail.form.php",
+                        AUTH_LDAP_TYPE       => "front/auth.ldap.form.php",
                         OCSNG_TYPE           => "front/ocsng.form.php",
 // REGISTRY_TYPE => "???",
                         PROFILE_TYPE         => "front/profile.form.php",
@@ -612,9 +612,9 @@ $CFG_GLPI["helpdesk_visible_types"] = array(SOFTWARE_TYPE);
 $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE,
                                    PHONE_TYPE);
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, OCSNG_TYPE, PROFILE_TYPE, AUTH_LDAP_TYPE);
+$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
 
-$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, CRONTASK_TYPE, AUTH_LDAP_TYPE);
+$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, CRONTASK_TYPE);
 
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgesitems','glpi_computers',
       'glpi_consumablesitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
