@@ -259,9 +259,8 @@ class Software extends CommonDBTM {
       autocompletionTextField("name", $this->table, "name", $this->fields["name"], 40,
                               $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_softwarescategories", "softwarescategories_id",
-                    $this->fields["softwarescategories_id"]);
+      echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
+      dropdownValue("glpi_manufacturers", "manufacturers_id", $this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -269,9 +268,9 @@ class Software extends CommonDBTM {
       dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
                     $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_operatingsystems", "operatingsystems_id",
-                    $this->fields["operatingsystems_id"]);
+      echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
+      dropdownValue("glpi_softwarescategories", "softwarescategories_id",
+                    $this->fields["softwarescategories_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -279,17 +278,9 @@ class Software extends CommonDBTM {
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"], "interface", 1,
                       $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
-      dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_manufacturers", "manufacturers_id", $this->fields["manufacturers_id"]);
-      echo "</td>";
-      echo "<td rowspan='4' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='4'><textarea cols='45' rows='6' name='comment' >" .
-             $this->fields["comment"] . "</textarea>";
+      echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
+      dropdownValue("glpi_operatingsystems", "operatingsystems_id",
+                    $this->fields["operatingsystems_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -297,12 +288,19 @@ class Software extends CommonDBTM {
       echo "<td >";
       dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
       echo "</td>";
+      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"], 1,
                     $this->fields["entities_id"]);
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td rowspan='3' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='3'><textarea cols='45' rows='5' name='comment' >" .
+             $this->fields["comment"] . "</textarea>";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;

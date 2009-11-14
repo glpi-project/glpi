@@ -215,10 +215,9 @@ class Monitor extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name",$objectName,40,
                               $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                               $CFG_GLPI["monitors_management_restrict"]);
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -238,20 +237,9 @@ class Monitor extends CommonDBTM {
       dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['monitors'][21]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("size",$this->table,"size",$this->fields["size"],2,
-                              $this->fields["entities_id"]);
-      echo "\"</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
-      echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_monitorsmodels", "monitorsmodels_id", $this->fields["monitorsmodels_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -260,10 +248,9 @@ class Monitor extends CommonDBTM {
       autocompletionTextField("contact_num",$this->table,"contact_num",
                               $this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;: </td>";
+      echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                              $this->fields["entities_id"]);
+      dropdownValue("glpi_monitorsmodels", "monitorsmodels_id", $this->fields["monitorsmodels_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -271,6 +258,17 @@ class Monitor extends CommonDBTM {
       echo "<td>";
       autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
                               $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][19]."&nbsp;: </td>";
+      echo "<td>";
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
+                              $this->fields["entities_id"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
@@ -281,27 +279,27 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
-      echo "</td>";
-      echo "<td rowspan='5'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='5'>
-            <textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                     $this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>";
+      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
+                               $CFG_GLPI["monitors_management_restrict"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>".$LANG['monitors'][21]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      autocompletionTextField("size",$this->table,"size",$this->fields["size"],2,
+                              $this->fields["entities_id"]);
+      echo "\"</td>";
+      echo "<td rowspan='3'>";
+      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='3'>
+            <textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
