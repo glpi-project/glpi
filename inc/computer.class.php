@@ -555,9 +555,9 @@ class Computer extends CommonDBTM {
       autocompletionTextField("name",$this->table,"name",$objectName,40,
                                $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td >".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -565,11 +565,10 @@ class Computer extends CommonDBTM {
       echo "<td >";
       dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                      $this->fields["entities_id"]);
-      echo "</td>";
-      echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
+      echo "<td >".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id",
-                     $this->fields["operatingsystemsservicepacks_id"]);
+      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
+      echo "</td>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -578,19 +577,9 @@ class Computer extends CommonDBTM {
       dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
                        $this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
-      echo "<td>";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
       echo "<td>";
       dropdownValue("glpi_manufacturers","manufacturers_id", $this->fields["manufacturers_id"]);
-      echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
-      echo "<td>";
-      dropdownValue("glpi_computersmodels", "computersmodels_id",$this->fields["computersmodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -599,10 +588,9 @@ class Computer extends CommonDBTM {
       autocompletionTextField("contact_num",$this->table,"contact_num",
                               $this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
-      echo "<td >";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                               $this->fields["entities_id"]);
+      echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
+      echo "<td>";
+      dropdownValue("glpi_computersmodels", "computersmodels_id",$this->fields["computersmodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -610,6 +598,17 @@ class Computer extends CommonDBTM {
       echo "<td>";
       autocompletionTextField("contact",$this->table,"contact",
                               $this->fields["contact"],40,$this->fields["entities_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td >";
+      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
+                               $this->fields["entities_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['common'][34]."&nbsp;: </td>";
+      echo "<td >";
+      dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td >";
@@ -620,32 +619,24 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >".$LANG['common'][34]."&nbsp;: </td>";
-      echo "<td >";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
-      echo "</td>";
-      echo "<td rowspan='9'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='9' class='middle'>";
-      echo "<textarea  cols='45' rows='14' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
-      echo "<td >";
+      echo "<td>";
       dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                      $this->fields["entities_id"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
-      echo "<td >";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>";
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td >";
       dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      echo "</td>";
+      echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='7' class='middle'>";
+      echo "<textarea cols='45' rows='11' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -654,6 +645,14 @@ class Computer extends CommonDBTM {
       dropdownValue("glpi_operatingsystems", "operatingsystems_id",
                      $this->fields["operatingsystems_id"]);
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
+      echo "<td >";
+      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id",
+                     $this->fields["operatingsystemsservicepacks_id"]);
+      echo "</td></tr>\n";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
