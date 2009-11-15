@@ -54,7 +54,7 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
       case -1 :
          $authldap->showFormUserConfig($_POST['id'],$_POST['target']);
          $authldap->showFormGroupsConfig($_POST['id'],$_POST['target']);
-			$authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
+         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          break;
 
@@ -70,18 +70,17 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          $authldap->showFormGroupsConfig($_POST['id'],$_POST['target']);
          break;
 
-		case 4 :
-			$authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
-			break;
+      case 4 :
+         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
+         break;
 
       case 5 :
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          break;
-			
+
       default :
          if (!displayPluginAction(AUTH_LDAP_TYPE,$_POST['id'],$_REQUEST['glpi_tab'])) {
          }
-         break;
    }
 }
 
