@@ -52,7 +52,6 @@ $authldap = new AuthLDAP;
 if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $authldap->showFormTestLDAP ($_POST['id'], $_POST['target']);
          $authldap->showFormUserConfig($_POST['id'],$_POST['target']);
          $authldap->showFormGroupsConfig($_POST['id'],$_POST['target']);
 			$authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);

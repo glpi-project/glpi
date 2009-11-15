@@ -839,8 +839,8 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input type='text' name='name' value='" . $this->fields["name"] . "'></td>";
-         echo "<td>" . $LANG['common'][88] . "&nbsp;:</td>";
-         echo "<td class='b'>" . $this->fields["id"] . "</td></tr>";
+         echo "<td></td>";
+         echo "<td></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
          echo "<td><input type='text' name='host' value='" . $this->fields["host"] . "'></td>";
@@ -1017,17 +1017,19 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][253] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][253] . "&nbsp;:</td><td colspan='3'>";
       echo "<input type='text' name='group_condition' value='".
-             $this->fields["group_condition"]."'></td>";
-      echo "<td>" . $LANG['setup'][255] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='group_member_field' value='".
-                 $this->fields["group_member_field"]."'></td></tr>";
+             $this->fields["group_condition"]."' size='100'></td>";
+		echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][262] . "&nbsp;:</td>";
-      echo "<td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][255] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='group_member_field' value='".
+                 $this->fields["group_member_field"]."'></td>"; 
+
+      echo "<td>" . $LANG['setup'][262] . "&nbsp;:</td>";
+      echo "<td>";
       dropdownYesNo("use_dn",$this->fields["use_dn"]);
-      echo"</td>";
+      echo"</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value='".
                 $LANG['buttons'][2]."'></td>";
