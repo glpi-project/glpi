@@ -45,7 +45,7 @@ $config = new Config();
 $config_ldap = new AuthLDAP();
 
 if (!isset($_GET['id'])) {
-   $_GET['id'] = 0;
+   $_GET['id'] = "";
 }
 //LDAP Server add/update/delete
 if (isset ($_POST["update"])) {
