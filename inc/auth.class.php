@@ -876,7 +876,7 @@ class AuthLDAP extends CommonDBTM {
 												'title_field', 'use_dn');
 												
 				foreach ($hidden_fields as $hidden_field) {
-					echo "<input type='hiddend' name='$hidden_field'>";
+					echo "<input type='hidden' name='$hidden_field'>";
 				}								
 			}
 
