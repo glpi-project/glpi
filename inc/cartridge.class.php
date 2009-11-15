@@ -145,7 +145,8 @@ class CartridgeType extends CommonDBTM {
    *
    *@param $cartridgesitems_id integer: cartridge type identifier
    *@param printersmodels_id integer: printer type identifier
-   *@return nothing ()
+   *
+   *@return boolean : true for success
    *
    **/
    function addCompatibleType($cartridgesitems_id,$printersmodels_id) {
@@ -156,8 +157,11 @@ class CartridgeType extends CommonDBTM {
                  INTO `glpi_cartridges_printersmodels`
                       (`cartridgesitems_id`, `printersmodels_id`)
                  VALUES ('$cartridgesitems_id','$printersmodels_id');";
-      $result = $DB->query($query);
+         if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+            return true;
+         }
       }
+      return false;
    }
 
    /**
@@ -167,7 +171,7 @@ class CartridgeType extends CommonDBTM {
    *
    *@param $ID integer: glpi_cartridge_assoc identifier.
    *
-   *@return nothing ()
+   *@return boolean : true for success
    *
    **/
    function deleteCompatibleType($ID) {
@@ -176,7 +180,10 @@ class CartridgeType extends CommonDBTM {
       $query="DELETE
               FROM `glpi_cartridges_printersmodels`
               WHERE `id`= '$ID';";
-      $result = $DB->query($query);
+      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+         return true;
+      }
+      return false;
    }
 
    /**
@@ -385,11 +392,10 @@ class Cartridge extends CommonDBTM {
                 `".$this->table."`
                 SET `date_out` = NULL, `date_use` = NULL, `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
          return true;
-      } else {
-         return false;
       }
+      return false;
    }
 
    // SPECIFIC FUNCTIONS
@@ -399,6 +405,7 @@ class Cartridge extends CommonDBTM {
    *@param $ID ID of the cartridge
    *@param $pages  count pages value
    *
+   *@return boolean : true for success
    **/
    function updatePages($ID,$pages) {
       global $DB;
@@ -407,7 +414,10 @@ class Cartridge extends CommonDBTM {
               `".$this->table."`
               SET `pages`='$pages'
               WHERE `id`='$ID'";
-      $DB->query($query);
+      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+         return true;
+      }
+      return false;
    }
 
    /**
@@ -418,7 +428,7 @@ class Cartridge extends CommonDBTM {
    *@param $tID : cartridge type identifier
    *@param $pID : printer identifier
    *
-   *@return nothing
+   *@return boolean : true for success
    *
    **/
    function install($pID,$tID) {
@@ -437,15 +447,13 @@ class Cartridge extends CommonDBTM {
                    SET `date_use` = '".date("Y-m-d")."', `printers_id` = '$pID'
                    WHERE (`id`='".$DB->result($result,0,0)."'
                          AND `date_use` IS NULL)";
-         if ($result = $DB->query($query)) {
+         if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
             return true;
-         } else {
-            return false;
          }
       } else {
          addMessageAfterRedirect($LANG['cartridges'][34],false,ERROR);
-         return false;
       }
+      return false;
    }
 
    /**
@@ -465,11 +473,10 @@ class Cartridge extends CommonDBTM {
                 `".$this->table."`
                 SET `date_out` = '".date("Y-m-d")."'
                 WHERE `id`='$ID'";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
          return true;
-      } else {
-         return false;
       }
+      return false;
    }
 
    /**

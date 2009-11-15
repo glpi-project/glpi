@@ -65,9 +65,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $disk->check($_POST["id"],'w');
 
-   $disk->delete($_POST);
-   logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
-            $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
+   if ($disk->delete($_POST)) {
+      logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
+   }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].
@@ -76,9 +77,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $disk->check($_POST["id"],'w');
 
-   $disk->update($_POST);
-   logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
-            $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
+   if ($disk->update($_POST)) {
+      logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
+   }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].

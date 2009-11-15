@@ -64,8 +64,10 @@ if (isset($_POST["add_several"])) {
 } else if (isset($_GET["delete"])) {
    $constype->check($_GET["tID"],'w');
 
-   $con->delete($_GET);
-   logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][91]);
+   if ($con->delete($_GET)) {
+      logEvent($_GET["tID"], "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][91]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["give"])) {
@@ -85,8 +87,10 @@ if (isset($_POST["add_several"])) {
 } else if (isset($_GET["restore"])) {
    $constype->check($_GET["tID"],'w');
 
-   $con->restore($_GET);
-   logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][93]);
+   if ($con->restore($_GET)) {
+      logEvent($_GET["tID"], "consumables", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][93]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {

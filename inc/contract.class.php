@@ -148,7 +148,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][4]."&nbsp:</td>";
+      echo "<td>".$LANG['financial'][4]."&nbsp;</td>";
       echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -387,11 +387,11 @@ class Contract extends CommonDBTM {
     **/
    static function showCentral() {
       global $DB,$CFG_GLPI, $LANG;
-   
+
       if (!haveRight("contract","r")) {
          return false;
       }
-   
+
       // No recursive contract, not in local management
       // contrats echus depuis moins de 30j
       $query = "SELECT count(*)
@@ -404,7 +404,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'0'";
       $result = $DB->query($query);
       $contract0=$DB->result($result,0,0);
-   
+
       // contrats  echeance j-7
       $query = "SELECT count(*)
                 FROM `glpi_contracts`
@@ -416,7 +416,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<='7'";
       $result = $DB->query($query);
       $contract7= $DB->result($result,0,0);
-   
+
       // contrats echeance j -30
       $query = "SELECT count(*)
                 FROM `glpi_contracts`
@@ -428,7 +428,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'30'";
       $result = $DB->query($query);
       $contract30= $DB->result($result,0,0);
-   
+
       // contrats avec préavis echeance j-7
       $query = "SELECT count(*)
                 FROM `glpi_contracts`
@@ -443,7 +443,7 @@ class Contract extends CommonDBTM {
                                            MONTH),CURDATE() )<='7'";
       $result = $DB->query($query);
       $contractpre7= $DB->result($result,0,0);
-   
+
       // contrats avec préavis echeance j -30
       $query = "SELECT count(*)
                 FROM `glpi_contracts`
@@ -458,12 +458,12 @@ class Contract extends CommonDBTM {
                                            MONTH),CURDATE() )<'30'";
       $result = $DB->query($query);
       $contractpre30= $DB->result($result,0,0);
-   
+
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".
              $LANG['financial'][1]."</a></th></tr>";
-   
+
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
                  "glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;".
@@ -505,14 +505,14 @@ class Contract extends CommonDBTM {
     **/
    function showSuppliers() {
       global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
-   
+
       $instID = $this->fields['id'];
-      
+
       if (!$this->can($instID,'r') || !haveRight("contact_enterprise","r")) {
          return false;
       }
       $canedit=$this->can($instID,'w');
-   
+
       $query = "SELECT `glpi_contracts_suppliers`.`id`, `glpi_suppliers`.`id` AS entID,
                        `glpi_suppliers`.`name` AS name, `glpi_suppliers`.`website` AS website,
                        `glpi_suppliers`.`phonenumber` AS phone,
@@ -523,11 +523,11 @@ class Contract extends CommonDBTM {
                       AND `glpi_contracts_suppliers`.`suppliers_id`=`glpi_suppliers`.`id`".
                       getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true). "
                 ORDER BY `glpi_entities`.`completename`, `name`";
-   
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $i = 0;
-   
+
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
@@ -537,7 +537,7 @@ class Contract extends CommonDBTM {
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".$LANG['financial'][45]."</th>";
       echo "<th>&nbsp;</th></tr>";
-   
+
       $used=array();
       while ($i < $number) {
          $ID=$DB->result($result, $i, "id");
@@ -611,9 +611,9 @@ class Contract extends CommonDBTM {
     **/
    function showItems() {
       global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
-   
+
       $instID = $this->fields['id'];
-      
+
       if (!$this->can($instID,'r')) {
          return false;
       }
@@ -624,18 +624,18 @@ class Contract extends CommonDBTM {
                 FROM `glpi_contracts_items`
                 WHERE `glpi_contracts_items`.`contracts_id` = '$instID'
                 ORDER BY `itemtype`";
-   
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $i = 0;
-   
+
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
       if ($canedit) {
          echo "</table></div>";
-   
+
          echo "<form method='post' name='contract_form$rand' id='contract_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/front/contract.form.php\">";
          echo "<div class='center'>";
@@ -650,7 +650,7 @@ class Contract extends CommonDBTM {
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th></tr>";
-   
+
       $ci=new CommonItem;
       $totalnb=0;
       while ($i < $number) {
@@ -667,14 +667,14 @@ class Contract extends CommonDBTM {
             $query .= " WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_contracts_items`.`items_id`
                               AND `glpi_contracts_items`.`itemtype`='$itemtype'
                               AND `glpi_contracts_items`.`contracts_id` = '$instID'";
-   
+
             if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
                $query.=" AND `".$LINK_ID_TABLE[$itemtype]."`.`is_template`='0'";
             }
             $query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype],'','',
                                                  $ci->obj->maybeRecursive())."
                       ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`name`";
-   
+
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
             if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
@@ -697,7 +697,7 @@ class Contract extends CommonDBTM {
                   }
                   $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
                            $data["id"]."\">".$data["name"]."$ID</a>";
-   
+
                   echo "<tr class='tab_bg_1'>";
                   if ($canedit) {
                      $sel="";
@@ -729,11 +729,11 @@ class Contract extends CommonDBTM {
       echo "<td class='center' colspan='2'>".($totalnb>0? $LANG['common'][33].
              "&nbsp;=&nbsp;$totalnb</td>" : "&nbsp;</td>");
       echo "<td colspan='4'>&nbsp;</td></tr> ";
-   
+
       if ($canedit) {
          if ($this->fields['max_links_allowed']==0
              || $this->fields['max_links_allowed'] > $totalnb) {
-   
+
             echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
             echo "<div class='software-instal'>";
             dropdownAllItems("items_id",0,0,($this->fields['is_recursive']?-1:
@@ -743,7 +743,7 @@ class Contract extends CommonDBTM {
             echo "</td><td>&nbsp;</td></tr>";
          }
          echo "</table></div>";
-   
+
          echo "<div class='center'>";
          echo "<table width='950px' class='tab_glpi'>";
          echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
@@ -770,7 +770,7 @@ class Contract extends CommonDBTM {
     **/
    function getSuppliersNames() {
       global $DB;
-   
+
       $query = "SELECT `glpi_suppliers`.`id`
                 FROM `glpi_contracts_suppliers`, `glpi_suppliers`
                 WHERE `glpi_contracts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`
@@ -795,16 +795,16 @@ class Contract extends CommonDBTM {
     **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
-   
+
       $itemtype = $item->type;
       $ID = $item->fields['id'];
-      
+
       if (!haveRight("contract","r") || !$item->can($ID,"r")) {
          return false;
       }
-   
+
       $canedit=$item->can($ID,"w");
-   
+
       $query = "SELECT `glpi_contracts_items`.*
                 FROM `glpi_contracts_items`, `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id`=`glpi_entities`.`id`)
@@ -813,11 +813,11 @@ class Contract extends CommonDBTM {
                       AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
                           getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
                 ORDER BY `glpi_contracts`.`name`";
-   
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $i = 0;
-   
+
       if ($withtemplate!=2) {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       }
@@ -834,7 +834,7 @@ class Contract extends CommonDBTM {
          echo "<th>&nbsp;</th>";
       }
       echo "</tr>";
-   
+
       if ($number>0) {
          initNavigateListItems(CONTRACT_TYPE,$item->getName()); // TODO $ci->getType()." = ".
       }
@@ -864,7 +864,7 @@ class Contract extends CommonDBTM {
             echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
          }
          echo "</td>";
-   
+
          if ($withtemplate!=2) {
             echo "<td class='tab_bg_2 center'>";
             if ($canedit) {
@@ -887,7 +887,7 @@ class Contract extends CommonDBTM {
                                            $item->getEntityID(),true);;
       $result = $DB->query($q);
       $nb = $DB->numrows($result);
-   
+
       if ($canedit) {
          if ($withtemplate!=2 && $nb>count($contracts)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
@@ -901,7 +901,7 @@ class Contract extends CommonDBTM {
          }
       }
       echo "</table></div>";
-   
+
       if ($withtemplate!=2) {
          echo "</form>";
       }

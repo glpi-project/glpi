@@ -37,15 +37,15 @@
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 
-$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'crontask', 'device', 'document', 'enterprise',
-   'group', 'infocom', 'mailgate', 'mailing', 'monitor', 'networking', 'ocsng', 'peripheral',
-   'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
-   'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
-   'rule.softwarecategories', 'rule.tracking', 'setup', 'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'crontask', 'device', 'document','group', 'infocom', 'mailgate',
+                       'mailing', 'monitor', 'networking', 'ocsadmininfoslink', 'ocsng', 'peripheral',
+                       'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
+                       'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
+                       'rule.softwarecategories', 'rule.tracking', 'setup', 'software', 'supplier',
+                       'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-
 
 if (!is_writable(GLPI_LOCK_DIR)) {
    echo "\tERROR : " .GLPI_LOCK_DIR. " not writable\n";
@@ -70,7 +70,6 @@ if (!isCommandLine()) {
    CronTask::launch(CRONTASK_MODE_INTERNAL);
 
 } else if (isset($_SERVER['argc']) && $_SERVER['argc']>1){
-
    // Parse command line options
    for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
       if (is_numeric($_SERVER['argv'][$i])) {
@@ -81,6 +80,7 @@ if (!isCommandLine()) {
          CronTask::launch(CRONTASK_MODE_EXTERNAL, $CFG_GLPI['cron_limit'], $_SERVER['argv'][$i]);
       }
    }
+
 } else {
    // Default from configuration
    CronTask::launch(CRONTASK_MODE_EXTERNAL, $CFG_GLPI['cron_limit']);

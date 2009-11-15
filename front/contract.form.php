@@ -34,108 +34,113 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'enterprise', 'infocom', 'link',
-   'monitor', 'networking', 'peripheral', 'phone', 'printer', 'software');
+$NEEDED_ITEMS = array ('computer', 'contract', 'document', 'infocom', 'link', 'monitor',
+                       'networking', 'peripheral', 'phone', 'printer', 'software', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = -1;
-
-$contract=new Contract();
-$contractitem=new ContractItem();
-$contractsupplier=new ContractSupplier();
-
-if (isset($_POST["add"]))
-{
-	$contract->check(-1,'w',$_POST);
-
-	$newID=$contract->add($_POST);
-	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["id"])) {
+   $_GET["id"] = -1;
 }
-else if (isset($_POST["delete"]))
-{
-	$contract->check($_POST['id'],'w');
 
-	$contract->delete($_POST);
-	logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
-}
-else if (isset($_POST["restore"]))
-{
-	$contract->check($_POST['id'],'w');
+$contract = new Contract();
+$contractitem = new ContractItem();
+$contractsupplier = new ContractSupplier();
 
-	$contract->restore($_POST);
-	logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
-}
-else if (isset($_POST["purge"]))
-{
-	$contract->check($_POST['id'],'w');
+if (isset($_POST["add"])) {
+   $contract->check(-1,'w',$_POST);
 
-	$contract->delete($_POST,1);
-	logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
-}
-else if (isset($_POST["update"]))
-{
-	$contract->check($_POST['id'],'w');
-
-	$contract->update($_POST);
-	logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["additem"]))
-{
-   $contractitem->check(-1,'w',$_POST);
-   if ($contractitem->add($_POST)) {
-      logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+   if ($newID = $contract->add($_POST)) {
+      logEvent($newID, "contracts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["deleteitem"]))
-{
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val) {
+
+} else if (isset($_POST["delete"])) {
+   $contract->check($_POST['id'],'w');
+
+   if ($contract->delete($_POST)) {
+      logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+
+} else if (isset($_POST["restore"])) {
+   $contract->check($_POST['id'],'w');
+
+   if ($contract->restore($_POST)) {
+      logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+
+} else if (isset($_POST["purge"])) {
+   $contract->check($_POST['id'],'w');
+
+   if ($contract->delete($_POST,1)) {
+      logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+
+} else if (isset($_POST["update"])) {
+   $contract->check($_POST['id'],'w');
+
+   if ($contract->update($_POST)) {
+      logEvent($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["additem"])) {
+   $contractitem->check(-1,'w',$_POST);
+
+   if ($contractitem->add($_POST)) {
+      logEvent($_POST["contracts_id"], "contracts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][32]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["deleteitem"])) {
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
          if ($contractitem->can($key,'w')) {
             $contractitem->delete(array('id' => $key));
          }
-		}
-	logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deleteitem"]))
-{
+      }
+   }
+   logEvent($_POST["contracts_id"], "contracts", 4, "financial",
+            $_SESSION["glpiname"]." ".$LANG['log'][33]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["deleteitem"])) {
    $contractitem->check($_GET["id"], 'w');
+
    if ($contractitem->delete($_GET)) {
-      logEvent($_GET["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+      logEvent($_GET["contracts_id"], "contracts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["addcontractsupplier"]))
-{
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["addcontractsupplier"])) {
    $contractsupplier->check(-1,'w',$POST);
+
    if ($contractsupplier->add($_POST)) {
-      logEvent($_POST["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][34]);
+      logEvent($_POST["contracts_id"], "contracts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][34]);
    }
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deletecontractsupplier"]))
-{
-	$contractsupplier->check($_GET['id'],'w');
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["deletecontractsupplier"])) {
+   $contractsupplier->check($_GET['id'],'w');
+
    if ($contractsupplier->delete($_GET)) {
-      logEvent($_GET["contracts_id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
+      logEvent($_GET["contracts_id"], "contracts", 4, "financial",
+               $_SESSION["glpiname"]." ".$LANG['log'][35]);
    }
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$contract->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-
-	commonFooter();
+} else {
+   commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
+   $contract->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   commonFooter();
 }
 
 ?>

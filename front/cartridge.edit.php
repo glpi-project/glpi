@@ -52,8 +52,9 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    /// TODO : maybe right on printer and not on cartridge type for such a thing ?
    $cart->check($_POST["cID"],'w');
 
-   $cart->updatePages($_POST["cID"],$_POST['pages']);
-   logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+   if ($cart->updatePages($_POST["cID"],$_POST['pages'])) {
+      logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_several"])) {
@@ -71,29 +72,37 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    $cartype->check($_GET["tID"],'w');
 
    checkRight("cartridge","w");
-   $cart->delete($_GET);
-   logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][90]);
+   if ($cart->delete($_GET)) {
+      logEvent($_GET["tID"], "cartridges", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][90]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["restore"])) {
    $cartype->check($_GET["tID"],'w');
 
-   $cart->restore($_GET);
-   logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][92]);
+   if ($cart->restore($_GET)) {
+      logEvent($_GET["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][92]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["install"])) {
    $cartype->check($_POST["tID"],'w');
 
-   $cart->install($_POST["pID"],$_POST["tID"]);
-   logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][95]);
+   if ($cart->install($_POST["pID"],$_POST["tID"])) {
+      logEvent($_POST["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][95]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
 
 } else if (isset($_GET["uninstall"])) {
    $cartype->check($_GET["tID"],'w');
 
-   $cart->uninstall($_GET["id"]);
-   logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][96]);
+   if ($cart->uninstall($_GET["id"])) {
+      logEvent($_GET["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][96]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
