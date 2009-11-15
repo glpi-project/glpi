@@ -398,7 +398,7 @@ class CronTask extends CommonDBTM{
       dropdownInteger('hourmax', $this->fields['hourmax'],0,24);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][109]." : </td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][130]." : </td><td>";
       dropdownInteger('logs_lifetime', $this->fields['logs_lifetime'],0,360,10);
       echo "&nbsp;".$LANG['stats'][31]."</td><td>".$LANG['crontask'][40]."&nbsp;:</td><td>";
       if (empty($this->fields['lastrun'])) {
