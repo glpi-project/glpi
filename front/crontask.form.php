@@ -33,21 +33,19 @@
 // Purpose of file: Form to edit Cron Task
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array('crontask');
+$NEEDED_ITEMS = array('crontask');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$crontask=new CronTask();
+$crontask = new CronTask();
 
 if (isset($_POST["update"])) {
-
    checkRight('config','w');
    $crontask->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET['resetdate']) && isset($_GET["id"])) {
-
    checkRight('config','w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetDate();
@@ -55,14 +53,12 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-
-   if(!isset($_GET["id"]) || empty($_GET["id"])) {
+   if (!isset($_GET["id"]) || empty($_GET["id"])) {
       exit();
    }
    commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
    $crontask->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
    commonFooter();
 }
-
 
 ?>

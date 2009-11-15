@@ -34,11 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'crontask', 'device', 'document', 'enterprise',
-   'group', 'infocom', 'mailgate', 'mailing', 'monitor', 'networking', 'ocsng', 'peripheral',
-   'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
-   'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
-   'rule.softwarecategories', 'rule.tracking', 'search', 'setup', 'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'crontask', 'device', 'document', 'group', 'infocom', 'mailgate',
+                       'mailing', 'monitor', 'networking', 'ocsadmininfoslink', 'ocsng', 'peripheral',
+                       'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
+                       'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
+                       'rule.softwarecategories', 'rule.tracking', 'search', 'setup', 'software',
+                       'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -62,9 +63,9 @@ commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CRONTASK_MODE_INTERNAL)) {
-   displayTitle(GLPI_ROOT.'/pics/warning.png',$LANG['crontask'][41],
-      $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
-      array($_SERVER['PHP_SELF']."?execute=1"=>$LANG['buttons'][57]));
+   displayTitle(GLPI_ROOT.'/pics/warning.png', $LANG['crontask'][41],
+                $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
+                array($_SERVER['PHP_SELF']."?execute=1" => $LANG['buttons'][57]));
 } else {
    displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
 }
@@ -74,4 +75,5 @@ searchForm(CRONTASK_TYPE,$_GET);
 showList(CRONTASK_TYPE,$_GET);
 
 commonFooter();
+
 ?>

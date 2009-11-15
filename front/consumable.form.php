@@ -57,29 +57,37 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $constype->check($_POST["id"],'w');
 
-   $constype->delete($_POST);
-   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   if ($constype->delete($_POST)) {
+      logEvent($_POST["id"], "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 
 } else if (isset($_POST["restore"])) {
    $constype->check($_POST["id"],'w');
 
-   $constype->restore($_POST);
-   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   if ($constype->restore($_POST)) {
+      logEvent($_POST["id"], "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 
 } else if (isset($_POST["purge"])) {
    $constype->check($_POST["id"],'w');
 
-   $constype->delete($_POST,1);
-   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   if ($constype->delete($_POST,1)) {
+      logEvent($_POST["id"], "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 
 } else if (isset($_POST["update"])) {
    $constype->check($_POST["id"],'w');
 
-   $constype->update($_POST);
-   logEvent($_POST["id"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   if ($constype->update($_POST)) {
+      logEvent($_POST["id"], "consumables", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
