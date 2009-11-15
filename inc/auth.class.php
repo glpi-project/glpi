@@ -791,7 +791,6 @@ class AuthLDAP extends CommonDBTM {
             break;
       }
    }
-
    function prepareInputForUpdate($input) {
       if (isset($input["rootdn_password"]) && empty($input["rootdn_password"])) {
          unset($input["rootdn_password"]);
@@ -833,9 +832,9 @@ class AuthLDAP extends CommonDBTM {
          if (empty($ID)) {
             echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][16]."&nbsp;:</td> ";
             echo "<td colspan='3'>";
-            echo "<a href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG['ldap'][17]."</a>";
+            echo "<a href='$target?preconfig=AD'>".$LANG['ldap'][17]."</a>";
             echo "&nbsp;&nbsp;/&nbsp;&nbsp;";
-            echo "<a href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG['common'][44];
+            echo "<a href='$target?preconfig=default'>".$LANG['common'][44];
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
@@ -866,8 +865,7 @@ class AuthLDAP extends CommonDBTM {
 	      echo "<td colspan='3'><input type='text' name='condition' value='".
 	                              $this->fields["condition"]."' size='100'></td></tr>";
 
-         $this->showFormButtons($ID,'',2);
-
+			//Fill fields when using preconfiguration models
 			if (!$ID) {
 				$hidden_fields = array ('port', 'condition' , 'login_field', 'use_tls', 'group_field', 
 												'group_condition', 'group_search_type', 'group_member_field', 
@@ -876,9 +874,11 @@ class AuthLDAP extends CommonDBTM {
 												'title_field', 'use_dn');
 												
 				foreach ($hidden_fields as $hidden_field) {
-					echo "<input type='hidden' name='$hidden_field'>";
+					echo "<input type='hidden' name='$hidden_field' value='".$this->fields[$hidden_field]."'>";
 				}								
 			}
+
+         $this->showFormButtons($ID,'',2);
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";
