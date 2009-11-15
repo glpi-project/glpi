@@ -275,7 +275,9 @@ function showCompatiblePrinters($instID) {
    }
 
    if ($instID > 0) {
-      $query = "SELECT `glpi_printersmodels`.`name` as type, `glpi_cartridges_printersmodels`.`id`
+      $query = "SELECT `glpi_cartridges_printersmodels`.`id`,
+                       `glpi_printersmodels`.`name` as `type`,
+                       `glpi_printersmodels`.`id` as `pmid`
                 FROM `glpi_cartridges_printersmodels`, `glpi_printersmodels`
                 WHERE `glpi_cartridges_printersmodels`.`printersmodels_id` = `glpi_printersmodels`.`id`
                       AND `glpi_cartridges_printersmodels`.`cartridgesitems_id` = '$instID'
@@ -286,25 +288,27 @@ function showCompatiblePrinters($instID) {
       $i = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
       while ($i < $number) {
          $ID=$DB->result($result, $i, "id");
          $type=$DB->result($result, $i, "type");
+         $pmid=$DB->result($result, $i, "pmid");
          echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
          echo "<td class='center'>$type</td>";
          echo "<td class='tab_bg_2 center'>";
          echo "<a href='".$CFG_GLPI['root_doc'].
             "/front/cartridge.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
          echo "<strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+         $used[]=$pmid;
          $i++;
       }
       if (haveRight("cartridge","w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-         dropdown("glpi_printersmodels","printersmodels_id");
+         dropdown("glpi_printersmodels","printersmodels_id",1,-1,$used);
          echo "</div></td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\"
                 class='submit'>";

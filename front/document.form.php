@@ -35,13 +35,13 @@
 
 
 $NEEDED_ITEMS = array ('budget', 'cartridge', 'computer', 'consumable', 'contact', 'contract',
-   'document', 'enterprise', 'entity', 'knowbase', 'monitor', 'networking', 'peripheral', 'phone',
-   'printer', 'software', 'tracking');
+                       'document', 'entity', 'knowbase', 'monitor', 'networking', 'peripheral',
+                       'phone', 'printer', 'software', 'supplier', 'tracking');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }
 
@@ -51,19 +51,21 @@ $documentitem = new DocumentItem();
 if (isset($_POST["add"])) {
    $doc->check(-1,'w',$_POST);
 
-   if (isset($_POST['itemtype']) && isset($_POST['items_id'])  // From item
+   if (isset($_POST['itemtype'])
+       && isset($_POST['items_id'])  // From item
        && isset($_FILES['filename']['tmp_name'])
        && $doc->getFromDBbyContent($_POST["entities_id"], $_FILES['filename']['tmp_name'])) {
+
       $documentitem->add(array('documents_id' => $doc->fields['id'],
-                               'itemtype' => $_POST['itemtype'],
-                               'items_id' => $_POST['items_id']));
+                               'itemtype'     => $_POST['itemtype'],
+                               'items_id'     => $_POST['items_id']));
    } else {
-      $newID=$doc->add($_POST);
-      $name="";
-      if (isset($_POST["name"])){
-         $name=$_POST["name"];
+      $newID = $doc->add($_POST);
+      $name = "";
+      if (isset($_POST["name"])) {
+         $name = $_POST["name"];
       } else if (isset($_FILES['filename']) && isset($_FILES['filename']['name'])) {
-         $name=$_FILES['filename']['name'];
+         $name = $_FILES['filename']['name'];
       }
       logEvent($newID, "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$name.".");
@@ -72,31 +74,35 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-	$doc->check($_POST["id"],'w');
+   $doc->check($_POST["id"],'w');
 
-	$doc->delete($_POST);
-	logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
+   if ($doc->delete($_POST)) {
+      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
 } else if (isset($_POST["restore"])) {
    $doc->check($_POST["id"],'w');
 
-   $doc->restore($_POST);
-   logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   if ($doc->restore($_POST)) {
+      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
 } else if (isset($_POST["purge"])) {
    $doc->check($_POST["id"],'w');
 
-   $doc->delete($_POST,1);
-   logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   if ($doc->delete($_POST,1)) {
+      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
 } else if (isset($_POST["update"])) {
    $doc->check($_POST["id"],'w');
 
-   $doc->update($_POST);
-   logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   if ($doc->update($_POST)) {
+      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["adddocumentitem"])) {
@@ -109,10 +115,10 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["deletedocumentitem"])) {
 
-   if (count($_POST["item"])){
+   if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($documentitem->can($key, 'w')) {
-            $documentitem->delete(array('id'=>$key));
+            $documentitem->delete(array('id' => $key));
          }
       }
    }
@@ -121,10 +127,11 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["deletedocumentitem"])
-           && isset($_GET["documents_id"]) && isset($_GET["id"])) {
+           && isset($_GET["documents_id"])
+           && isset($_GET["id"])) {
 
    $documentitem->check($_GET["id"],'w');
-   if ($documentitem->delete(array('id'=>$_GET["id"]))) {
+   if ($documentitem->delete(array('id' => $_GET["id"]))) {
       logEvent($_GET["documents_id"], "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
