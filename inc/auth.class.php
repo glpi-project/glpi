@@ -838,9 +838,8 @@ class AuthLDAP extends CommonDBTM {
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='name' value='" . $this->fields["name"] . "'></td>";
-         echo "<td></td>";
-         echo "<td></td></tr>";
+         echo "<td colspan='3'><input type='text' name='name' value='". $this->fields["name"] ."'>";
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
          echo "<td><input type='text' name='host' value='" . $this->fields["host"] . "'></td>";
@@ -861,22 +860,23 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
-	      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
-	      echo "<td colspan='3'><input type='text' name='condition' value='".
-	                              $this->fields["condition"]."' size='100'></td></tr>";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
+         echo "<td colspan='3'><input type='text' name='condition' value='".
+                                 $this->fields["condition"]."' size='100'></td></tr>";
 
-			//Fill fields when using preconfiguration models
-			if (!$ID) {
-				$hidden_fields = array ('port', 'condition' , 'login_field', 'use_tls', 'group_field', 
-												'group_condition', 'group_search_type', 'group_member_field', 
-												'email_field', 'realname_field', 'firstname_field',
-												'phone_field', 'phone2_field', 'mobile_field', 'comment_field', 
-												'title_field', 'use_dn');
-												
-				foreach ($hidden_fields as $hidden_field) {
-					echo "<input type='hidden' name='$hidden_field' value='".$this->fields[$hidden_field]."'>";
-				}								
-			}
+         //Fill fields when using preconfiguration models
+         if (!$ID) {
+            $hidden_fields = array ('port', 'condition' , 'login_field', 'use_tls', 'group_field',
+                                    'group_condition', 'group_search_type', 'group_member_field',
+                                    'email_field', 'realname_field', 'firstname_field',
+                                    'phone_field', 'phone2_field', 'mobile_field', 'comment_field',
+                                    'title_field', 'use_dn');
+
+            foreach ($hidden_fields as $hidden_field) {
+               echo "<input type='hidden' name='$hidden_field' value='".
+                     $this->fields[$hidden_field]."'>";
+            }
+         }
 
          $this->showFormButtons($ID,'',2);
 
@@ -885,8 +885,9 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
-	function showFormAdvancedConfig($ID, $target) {
+   function showFormAdvancedConfig($ID, $target) {
       global $LANG, $CFG_GLPI, $DB;
+
       echo "<form method='post' action='$target'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
@@ -925,7 +926,7 @@ class AuthLDAP extends CommonDBTM {
                 $LANG['buttons'][2]."'></td>";
       echo "</td></tr>";
       echo "</table></form></div>";
-	}
+   }
 
    function showFormReplicatesConfig($ID, $target) {
       global $LANG, $CFG_GLPI, $DB;
@@ -1019,17 +1020,17 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][253] . "&nbsp;:</td><td colspan='3'>";
       echo "<input type='text' name='group_condition' value='".
-             $this->fields["group_condition"]."' size='100'></td>";
-		echo "</td></tr>";
+             $this->fields["group_condition"]."' size='100'>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][255] . "&nbsp;:</td>";
       echo "<td><input type='text' name='group_member_field' value='".
-                 $this->fields["group_member_field"]."'></td>"; 
+                 $this->fields["group_member_field"]."'></td>";
 
       echo "<td>" . $LANG['setup'][262] . "&nbsp;:</td>";
       echo "<td>";
       dropdownYesNo("use_dn",$this->fields["use_dn"]);
-      echo"</td></tr>";
+      echo "</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value='".
                 $LANG['buttons'][2]."'></td>";
