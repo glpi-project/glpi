@@ -33,8 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array ('device', 'enterprise');
+$NEEDED_ITEMS = array ('device', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -55,20 +54,22 @@ if (!empty($_GET["devicetype"])) {
 
 echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
 echo "<table class='tab_cadre_fixe'>";
-echo "<tr class='tab_bg_1'><td><strong>".$LANG['devices'][17]."</strong>&nbsp;: <select name='devicetype'>";
+echo "<tr class='tab_bg_1'><td class='b'>".$LANG['devices'][17]."&nbsp;: <select name='devicetype'>";
 
-$dp=getDictDeviceLabel();
+$dp = getDictDeviceLabel();
 
 foreach ($dp as $key=>$val) {
-   $sel="";
-   if ($_GET["devicetype"]==$key) {
-      $sel="selected";
+   $sel = "";
+   if ($_GET["devicetype"] == $key) {
+      $sel = "selected";
    }
    echo "<option value='$key' $sel>".$val."</option>";
 }
 echo "</select></td>";
-echo "<td>".$LANG['common'][16]."&nbsp;: <input  type='text' size='20' name='name' value='".$_GET['name']."'></td>";
-echo "<td class='tab_bg_2'><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
+echo "<td>".$LANG['common'][16]."&nbsp;: ";
+echo "<input  type='text' size='20' name='name' value='".$_GET['name']."'></td>";
+echo "<td class='tab_bg_2'><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
+echo "</td></tr>";
 echo "</table></form>";
 
 if (!empty($_GET["devicetype"])) {
@@ -76,4 +77,5 @@ if (!empty($_GET["devicetype"])) {
 }
 
 commonFooter();
+
 ?>

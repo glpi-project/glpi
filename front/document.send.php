@@ -43,7 +43,7 @@ if (!$CFG_GLPI["use_public_faq"]) {
    checkLoginUser();
 }
 
-$doc=new Document;
+$doc = new Document;
 
 if (isset($_GET['docid'])) { // docid for document
    if (!$doc->getFromDB($_GET['docid'])) {
@@ -55,7 +55,8 @@ if (isset($_GET['docid'])) { // docid for document
 
    } else if ($doc->canViewFile()) {
       if ($doc->fields['sha1sum']
-          && $doc->fields['sha1sum']!=sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
+          && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
+
          displayErrorAndDie($LANG['document'][49],true); // Doc alterated
       } else {
          $doc->send();
@@ -63,16 +64,13 @@ if (isset($_GET['docid'])) { // docid for document
    } else {
       displayErrorAndDie($LANG['document'][45],true); // No right
    }
-}
-else if (isset($_GET["file"])) { // for other file
 
-   $splitter=explode("/",$_GET["file"]);
-
-   if (count($splitter)==2) {
-      $send=false;
-
-      if ($splitter[0]=="_dumps" && haveRight("backup","w")) {
-         $send=true;
+} else if (isset($_GET["file"])) { // for other file
+   $splitter = explode("/",$_GET["file"]);
+   if (count($splitter) == 2) {
+      $send = false;
+      if ($splitter[0] == "_dumps" && haveRight("backup","w")) {
+         $send = true;
       }
 
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {

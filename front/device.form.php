@@ -33,49 +33,55 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array ('device', 'enterprise');
+$NEEDED_ITEMS = array ('device', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-
-if(!isset($_GET["id"])) $_GET["id"] = "";
-
-if (isset($_SERVER['HTTP_REFERER'])) $REFERER=$_SERVER['HTTP_REFERER'];
-if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
-else if (isset($_POST["referer"])) {
-	$REFERER=$_POST["referer"];
-	unset($_POST["referer"]);
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
 
+if (isset($_SERVER['HTTP_REFERER'])) {
+   $REFERER = $_SERVER['HTTP_REFERER'];
+}
+if (isset($_GET["referer"])) {
+   $REFERER = $_GET["referer"];
+} else if (isset($_POST["referer"])) {
+   $REFERER = $_POST["referer"];
+   unset($_POST["referer"]);
+}
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 if (isset($_POST["add"])) {
-	$device=new Device($_POST["devicetype"]);
+   $device = new Device($_POST["devicetype"]);
    $device->check(-1,"w");
-	$newID=$device->add($_POST);
 
-	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
-	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
-}
-else if (isset($_POST["delete"])) {
-	$device=new Device($_POST["devicetype"]);
-   $device->check($_POST["id"],"w");
-	$device->delete($_POST);
-	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
-}
-else if (isset($_POST["update"])) {
-	$device=new Device($_POST["devicetype"]);
-   $device->check($_POST["id"],"w");
-	$device->update($_POST);
-	logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
-}
-else {
+   if ($newID = $device->add($_POST)) {
+      logEvent(0, "devices", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
 
+} else if (isset($_POST["delete"])) {
+   $device = new Device($_POST["devicetype"]);
+   $device->check($_POST["id"],"w");
+
+   if ($device->delete($_POST)) {
+      logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
+
+} else if (isset($_POST["update"])) {
+   $device = new Device($_POST["devicetype"]);
+   $device->check($_POST["id"],"w");
+
+   if ($device->update($_POST)) {
+      logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
+
+} else {
    commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
    if (isset($_GET["devicetype"])) {
       $device = new Device($_GET["devicetype"]);
@@ -85,6 +91,5 @@ else {
    }
    commonFooter();
 }
-
 
 ?>
