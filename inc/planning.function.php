@@ -207,25 +207,6 @@ function showPlanning($who,$who_group,$when,$type) {
       $dayofweek=7;
    }
 
-   // Print Headers
-   echo "<div class='center'><table class='tab_cadre_fixe'>";
-   // Print Headers
-   echo "<tr class='tab_bg_1'>";
-   switch ($type) {
-      case "month" :
-
-      case "week" :
-         for ($i=1;$i<=7;$i++) {
-            echo "<th width='12%'>".$LANG['calendarDay'][$i%7]."</th>";
-         }
-         break;
-
-      case "day" :
-         echo "<th width='12%'>".$LANG['calendarDay'][$dayofweek%7]."</th>";
-         break;
-   }
-   echo "</tr>\n";
-
    // Get begin and duration
    $begin=0;
    $end=0;
@@ -236,7 +217,7 @@ function showPlanning($who,$who_group,$when,$type) {
          break;
 
       case "week" :
-         $begin=$time+mktime(0,0,0,0,1,0)-mktime(0,0,0,0,$dayofweek,0);
+         $tbegin=$begin=$time+mktime(0,0,0,0,1,0)-mktime(0,0,0,0,$dayofweek,0);
          $end=$begin+WEEK_TIMESTAMP;
          break;
 
@@ -248,6 +229,26 @@ function showPlanning($who,$who_group,$when,$type) {
    }
    $begin=date("Y-m-d H:i:s",$begin);
    $end=date("Y-m-d H:i:s",$end);
+
+   // Print Headers
+   echo "<div class='center'><table class='tab_cadre_fixe'>";
+   // Print Headers
+   echo "<tr class='tab_bg_1'>";
+   switch ($type) {
+      case "month" :
+
+      case "week" :
+         for ($i=1 ; $i<=7 ; $i++, $tbegin+=DAY_TIMESTAMP) {
+            echo "<th width='12%'>".$LANG['calendarDay'][$i%7]." ".date('d',$tbegin)."</th>";
+         }
+         break;
+
+      case "day" :
+         echo "<th width='12%'>".$LANG['calendarDay'][$dayofweek%7]."</th>";
+         break;
+   }
+   echo "</tr>\n";
+
 
    // Get items to print
    $ASSIGN="";
