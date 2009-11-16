@@ -1569,7 +1569,11 @@ function showList ($itemtype,$params) {
          // Delete selected item
          if ($output_type==HTML_OUTPUT) {
             if ($isadmin) {
-               echo "<table width='80%' class='tab_glpi'>";
+               OpenArrowMassive("massiveaction_form");
+               dropdownMassiveAction($itemtype,$is_deleted);
+               CloseArrowMassive();
+
+/*               echo "<table width='80%' class='tab_glpi'>";
                echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
                echo "<td class='center'>";
                echo "<a onclick= \"if (markCheckboxes('massiveaction_form')) return false;\" href='".
@@ -1581,7 +1585,7 @@ function showList ($itemtype,$params) {
                dropdownMassiveAction($itemtype,$is_deleted);
                echo "</td>";
                echo "</table>\n";
-
+*/
                // End form for delete item
                echo "</form>\n";
             } else {

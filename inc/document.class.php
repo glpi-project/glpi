@@ -733,7 +733,10 @@ class Document extends CommonDBTM {
          echo "</table></div>" ;
 
          echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
+         OpenArrowMassive("document_form$rand", true);
+         CloseArrowMassive('deletedocumentitem', $LANG['buttons'][6]);
+
+/*         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
          echo "<td class='center'>";
          echo "<a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".
@@ -746,7 +749,7 @@ class Document extends CommonDBTM {
                 $LANG['buttons'][6]."\" class='submit'>";
          echo "</td>";
          echo "</table>";
-         echo "</div>";
+*/         echo "</div>";
 
       } else {
          echo "</table></div>";

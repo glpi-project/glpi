@@ -2341,4 +2341,47 @@ function addToNavigateListItems($itemtype,$ID,$sub_type=-1) {
    }
 }
 
+
+/**
+* show arrow for massives actions : opening
+*
+* @param $formname string
+* @param $fixed boolean - used tab_cadre_fixe in both tables
+**/
+function openArrowMassive($formname, $fixed=false) {
+   global $CFG_GLPI,$LANG;
+
+   if ($fixed) {
+      echo "<table class='tab_glpi' width='950px'>";
+   } else {
+      echo "<table class='tab_glpi' width='80%'>";
+   }
+   echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+   echo "<td class='center'>";
+   echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
+            href='#'>".$LANG['buttons'][18]."</a></td>";
+   echo "<td>/</td><td class='center'>";
+   echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
+         href='#'>".$LANG['buttons'][19]."</a>";
+   echo "</td>";
+   echo "<td class='left' width='80%'>";
+}
+
+
+/**
+* show arrow for massives actions : closing
+*
+* @param $name string name of submit button, none if empty
+* @param $label string label of submit button
+**/
+function closeArrowMassive($name='',$label='') {
+   global $LANG;
+
+   if (!empty($name)) {
+      echo "<input type='submit' name='$name' value='$label' class='submit'>";
+   }
+   echo "</td></tr>";
+   echo "</table>";
+}
+
 ?>
