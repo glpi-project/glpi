@@ -280,7 +280,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                           "glpi_softwares"=>"softwares_id"),
 
                 "glpi_softwaresversions" => array("glpi_computers_softwaresversions"
-                                                      =>"softwaresversions_id_buy",
+                                                      =>"softwaresversions_id",
                                                   "glpi_softwareslicenses"
                                                       =>array("softwaresversions_id_buy",
                                                               "softwaresversions_id_use")),
