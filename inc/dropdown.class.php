@@ -622,22 +622,12 @@ class Location extends CommonTreeDropdown {
          }
          echo "</table>\n";
          if ($canedit) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-            echo "<td class='center'>";
-            echo "<a onclick= \"if (markCheckboxes('massiveaction_form')) return false;\"".
-                  " href='#'>".$LANG['buttons'][18]."</a></td>";
-            echo "<td>/</td><td class='center'>";
-            echo "<a onclick= \"if (unMarkCheckboxes('massiveaction_form')) return false;\"".
-                  " href='#'>".$LANG['buttons'][19]."</a>";
-            echo "</td><td class='left' width='80%'>";
+            openArrowMassive("massiveaction_form", true);
             echo "<input type='hidden' name='itemtype' value='".NETPOINT_TYPE."'>";
             echo "<input type='hidden' name='action' value='delete'>";
-            echo "<input type='submit' name='massiveaction' class='submit' value=\"".
-                  $LANG['buttons'][6]."\" >\n";
+            closeArrowMassive('massiveaction', $LANG['buttons'][6]);
 
-            echo "</td></tr>";
-            echo "</table></form>\n";
+            echo "</form>\n";
          }
       }
       if ($canedit) {

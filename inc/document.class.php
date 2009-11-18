@@ -732,24 +732,8 @@ class Document extends CommonDBTM {
          echo "</td></tr>";
          echo "</table></div>" ;
 
-         echo "<div class='center'>";
-         OpenArrowMassive("document_form$rand", true);
-         CloseArrowMassive('deletedocumentitem', $LANG['buttons'][6]);
-
-/*         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".
-                $_SERVER['PHP_SELF']."?id=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".
-                $_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='submit' name='deletedocumentitem' value=\"".
-                $LANG['buttons'][6]."\" class='submit'>";
-         echo "</td>";
-         echo "</table>";
-*/         echo "</div>";
+         openArrowMassive("document_form$rand", true);
+         closeArrowMassive('deletedocumentitem', $LANG['buttons'][6]);
 
       } else {
          echo "</table></div>";
@@ -757,6 +741,7 @@ class Document extends CommonDBTM {
       echo "</form>";
 
    }
+
 
    /**
     * Move a file to a new location

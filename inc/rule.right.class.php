@@ -137,18 +137,8 @@ class RightAffectRule extends Rule {
       echo "</table></div>";
 
       if ($canedit) {
-         echo "<table class='tab_glpi' width='80%'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if ( markCheckboxes('ldapaffectation_form') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a>";
-         echo "</td><td>/</td><td class='center'>";
-         echo "<a onclick= \"if ( unMarkCheckboxes('ldapaffectation_form') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG['buttons'][6] .
-                "\" class='submit'>";
-         echo "</td></tr></table>";
+         openArrowMassive("ldapaffectation_form", true);
+         closeArrowMassive('delete_user_rule', $LANG['buttons'][6]);
       }
       echo "</form>";
    }

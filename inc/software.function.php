@@ -212,17 +212,10 @@ function showSoftwareMergeCandidates($ID) {
       }
       echo "</table>\n";
 
-      echo "<table width='950px' class='tab_glpi'>";
-      echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-      echo "<td><a onclick= \"if (markCheckboxes('mergesoftware_form$rand')) return false;\" href='".
-                 $_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
-      echo "<td>/</td><td>";
-      echo "<a onclick=\"if (unMarkCheckboxes('mergesoftware_form$rand')) return false;\" href='".
-             $_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a></td>";
-      echo "<td class='left' width='80%'>";
+      openArrowMassive("mergesoftware_form$rand",true);
       echo "<input type='hidden' name='id' value='$ID'>";
-      echo "<input type='submit' name='mergesoftware' value='".$LANG['software'][48]."' class='submit'>";
-      echo "</td></table>\n";
+      closeArrowMassive('mergesoftware', $LANG['software'][48]);
+
       echo "</form>";
    } else {
       echo $LANG['search'][15];
@@ -511,18 +504,10 @@ function showLicenses($softwares_id) {
          echo "</table>\n";
 
          if ($canedit) {
-            echo "<table width='950px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-            echo "<td><a onclick= \"if (markCheckboxes('massiveactionlicense_form$rand')) ".
-                       "return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".
-                       $LANG['buttons'][18]."</a></td>";
-            echo "<td>/</td><td>";
-            echo "<a onclick=\"if (unMarkCheckboxes('massiveactionlicense_form$rand')) ".
-                   "return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".
-                   $LANG['buttons'][19]."</a></td>";
-            echo "<td class='left' width='80%'>";
+            openArrowMassive("massiveactionlicense_form$rand",true);
             dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('softwares_id'=>$softwares_id));
-            echo "</td></tr></table>\n";
+            closeArrowMassive();
+
             echo "</form>";
          }
       } else {
@@ -745,22 +730,13 @@ function showInstallations($searchID, $crit="softwares_id") {
          echo "</table>\n";
 
          if ($canedit) {
-            echo "<table width='950px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-            echo "<td class='left' width='100%'>";
-            echo "<a onclick= \"if (markCheckboxes('softinstall".$rand."')) return false;\" href='".
-                   $_SERVER['PHP_SELF']."?id=$softwares_id&amp;select=all'>".$LANG['buttons'][18];
-            echo "</a>&nbsp;/&nbsp;";
-            echo "<a onclick= \"if (unMarkCheckboxes('softinstall".$rand."')) return false;\" href='".
-                   $_SERVER['PHP_SELF']."?id=$softwares_id&amp;select=none'>".$LANG['buttons'][19].
-                 "</a>";
+            openArrowMassive("softinstall".$rand."",true);
             dropdownSoftwareVersions("versionID",$softwares_id);
             echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".
                   $LANG['buttons'][20]."\" class='submit'>&nbsp;";
-            echo "<input type='submit' name='deleteinstalls' value=\"".
-                  $LANG['buttons'][6]."\" class='submit'>";
-            echo "</td></tr>\n";
-            echo "</table></form>";
+            closeArrowMassive('deleteinstalls', $LANG['buttons'][6]);
+
+            echo "</form>";
          }
       } else { // Not found
          echo $LANG['search'][15];
@@ -1053,31 +1029,32 @@ function displayCategoryFooter($cat,$rand,$canedit) {
       echo "</table>";
 
       if ($canedit) {
-         echo "<table width='950px'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
-			echo "</td><td class='left' width='80%'>";
+         openArrowMassive("lic_form$cat$rand",true);
 
-			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
-			echo "<option value=''>-----</option>";
-			if (isset($cat)) {
-				echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
-			} else {
-				echo "<option value='install_license'>".$LANG['buttons'][4]."</option>";
-			}
-			echo "</select>";
+         echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
+         echo "<option value=''>------</option>";
+         if (isset($cat)) {
+            echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
+         } else {
+            echo "<option value='install_license'>".$LANG['buttons'][4]."</option>";
+         }
+         echo "</select>";
 
-			$params=array('actiontype'=>'__VALUE__');
-			ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+         $params = array('actiontype' => '__VALUE__');
+         ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand",
+                                     "update_licenses_view$cat$rand",
+                                     $CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",
+                                     $params,
+                                     false);
 
-			echo "<span id='update_licenses_view$cat$rand'>\n";
-			echo "&nbsp;";
-			echo "</span>\n";
-			echo "</td></tr></table>";
-		}
-		echo "</form>";
-		echo "</div></td></tr>";
-	}
+         echo "<span id='update_licenses_view$cat$rand'>\n";
+         echo "&nbsp;</span>\n";
+
+         closeArrowMassive();
+      }
+      echo "</form>";
+      echo "</div></td></tr>";
+   }
 }
 
 /**

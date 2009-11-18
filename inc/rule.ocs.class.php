@@ -99,7 +99,7 @@ class OcsRuleCollection extends RuleCollection {
       if ($select_sql != "") {
          //Build the all request
          $sql = "SELECT $select_sql
-                 $from_sql 
+                 $from_sql
                  WHERE `hardware`.`ID` = '$computers_id'";
 
          checkOCSconnection($this->ocsservers_id);
@@ -261,7 +261,7 @@ class OcsAffectEntityRule extends Rule {
          echo "</td></tr>\n";
          echo "</table></div><br>";
       }
-      echo "<div class='center'><table class='tab_cadrehov'>";
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='3'>" . $LANG['entity'][5] . "</th></tr>\n";
 
       //Get all rules and actions
@@ -295,20 +295,8 @@ class OcsAffectEntityRule extends Rule {
       echo "</table></div>\n";
 
       if ($canedit) {
-         echo "<div class='center'>";
-         echo "<table class='tab_glpi' width='80%'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if (markCheckboxes('entityaffectation_form')) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if (unMarkCheckboxes('entityaffectation_form')) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a></td>";
-         echo "<td class='left' width='80%'>";
-         echo "<input type='submit' name='delete_computer_rule' value=\"" . $LANG['buttons'][6] .
-               "\" class='submit'>";
-         echo "</td></tr>";
-         echo "</table></div>\n";
+         openArrowMassive("entityaffectation_form", true);
+         closeArrowMassive('delete_computer_rule', $LANG['buttons'][6]);
       }
       echo "</form>";
    }

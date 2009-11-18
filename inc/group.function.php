@@ -146,21 +146,9 @@ function showGroupUsers($target,$ID) {
    echo "</table></div>";
 
    if ($canedit) {
-      echo "<div class='center'>";
-      echo "<table width='80%' class='tab_glpi'>";
-      echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-      echo "<td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') )
-             return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
-             $LANG['buttons'][18]."</a></td>";
-      echo "<td>/</td>";
-      echo "<td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') )
-             return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
-             $LANG['buttons'][19]."</a>";
-      echo "</td><td class='left' width='80%'>";
+      openArrowMassive("groupuser_form$rand", true);
       echo "<input type='hidden' name='groups_id' value='$ID'>";
-      echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-      echo "</td>";
-      echo "</table></div>";
+      closeArrowMassive('deleteuser', $LANG['buttons'][6]);
 
       if ($group->fields["is_recursive"]) {
          $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",
@@ -172,7 +160,7 @@ function showGroupUsers($target,$ID) {
 
       if ($nb) {
          echo "<div class='center'>";
-         echo "<table  class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          if ($group->fields["is_recursive"]) {

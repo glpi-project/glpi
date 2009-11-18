@@ -1569,23 +1569,10 @@ function showList ($itemtype,$params) {
          // Delete selected item
          if ($output_type==HTML_OUTPUT) {
             if ($isadmin) {
-               OpenArrowMassive("massiveaction_form");
+               openArrowMassive("massiveaction_form");
                dropdownMassiveAction($itemtype,$is_deleted);
-               CloseArrowMassive();
+               closeArrowMassive();
 
-/*               echo "<table width='80%' class='tab_glpi'>";
-               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-               echo "<td class='center'>";
-               echo "<a onclick= \"if (markCheckboxes('massiveaction_form')) return false;\" href='".
-                      $_SERVER['PHP_SELF']."?select=all' >".$LANG['buttons'][18]."</a></td>";
-               echo "<td>/</td><td class='center'>";
-               echo "<a onclick= \"if (unMarkCheckboxes('massiveaction_form')) return false;\" href='".
-                      $_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
-               echo "</td><td class='left' width='80%'>";
-               dropdownMassiveAction($itemtype,$is_deleted);
-               echo "</td>";
-               echo "</table>\n";
-*/
                // End form for delete item
                echo "</form>\n";
             } else {

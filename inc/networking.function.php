@@ -143,24 +143,9 @@ function showPorts($device, $itemtype, $withtemplate = '') {
          echo "</table></div>\n";
 
          if ($canedit && $withtemplate != 2) {
-            echo "\n<div class='center'>";
-            echo "<table width='80%' class='tab_glpi'>\n<tr>";
-            echo "<td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>\n";
-            echo "<td class='center'>";
-            echo "<a onclick= \"if (markCheckboxes('networking_ports$rand')) return false;\" href='" .
-                   $_SERVER['PHP_SELF'] . "?id=$device&amp;select=all'>" . $LANG['buttons'][18];
-            echo "</a></td>\n";
-
-            echo "<td>/</td><td class='center'>";
-            echo "<a onclick= \"if (unMarkCheckboxes('networking_ports$rand')) return false;\" href='" .
-                   $_SERVER['PHP_SELF'] . "?id=$device&amp;select=none'>" . $LANG['buttons'][19];
-            echo "</a></td>\n";
-
-            echo "<td width='80%' class='left'>";
+            openArrowMassive("networking_ports$rand", true);
             dropdownMassiveActionPorts($itemtype);
-            echo "</td>\n";
-
-            echo "</table></div>";
+            closeArrowMassive();
          } else {
             echo "<br>";
          }

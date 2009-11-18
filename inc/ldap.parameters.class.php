@@ -116,19 +116,8 @@ class LdapCriteria extends CommonDBTM {
          echo "</table></div>";
 
          if ($canedit) {
-            echo "<div class='center'>";
-            echo "<table class='tab_glpi' width='80%'>";
-            echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''>";
-            echo "</td><td class='center'>";
-            echo "<a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" .
-                   $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a>";
-            echo "</td><td>/</td><td class='center'>";
-            echo "<a onclick= \"if ( unMarkCheckboxes('ldapcriterias_form') ) return false;\" href='" .
-                   $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
-            echo "</td><td class='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
-                   "\" class='submit'>";
-            echo "</td></table></div>";
+            openArrowMassive("ldapcriterias_form");
+            closeArrowMassive('delete', $LANG['buttons'][6]);
          }
       }
       echo "</form>";

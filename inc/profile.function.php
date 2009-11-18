@@ -93,26 +93,11 @@ function showProfileEntityUser($target,$ID,$prof) {
                if ($i!=0) {
                   echo "</table>";
                   if ($canedit) {
-                     echo "<div class='center'>";
-                     echo "<table width='100%' class='tab_glpi'>";
-                     echo "<tr><td>";
-                     echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-                     echo "<td class='center'>";
-                     echo "<a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') )
-                            return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
-                            $LANG['buttons'][18]."</a></td>";
-                     echo "<td>/</td><td class='center'>";
-                     echo "<a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') )
-                            return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
-                            $LANG['buttons'][19]."</a>";
-                     echo "</td><td class='left' width='80%'>";
+                     openArrowMassive("profileuser_form".$rand."_$temp", true);
                      dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
                      echo "&nbsp;<input type='submit' name='moveentity' value=\"".
-                           $LANG['buttons'][20]."\" class='submit'>";
-                     echo "&nbsp;<input type='submit' name='deleteuser' value=\"".
-                           $LANG['buttons'][6]."\" class='submit'>";
-                     echo "</td></tr>";
-                     echo "</table></div>\n";
+                           $LANG['buttons'][20]."\" class='submit'>&nbsp;";
+                     closeArrowMassive('deleteuser', $LANG['buttons'][6]);
                   }
                   echo "</div></form></td></tr>\n";
                }
@@ -183,25 +168,11 @@ function showProfileEntityUser($target,$ID,$prof) {
          if ($i!=0) {
             echo "</table>\n";
             if ($canedit) {
-               echo "<div class='center'>";
-               echo "<table width='100%' class='tab_glpi'>";
-               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-               echo "<td class='center'>";
-               echo "<a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') )
-                      return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
-                      $LANG['buttons'][18]."</a></td>";
-               echo "<td>/</td><td class='center'>";
-               echo "<a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') )
-                      return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".
-                      $LANG['buttons'][19]."</a>";
-               echo "</td><td class='left' width='80%'>";
+               openArrowMassive("profileuser_form".$rand."_$temp", true);
                dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
                echo "&nbsp;<input type='submit' name='moveentity' value=\"".
-                            $LANG['buttons'][20]."\" class='submit'>";
-               echo "&nbsp;<input type='submit' name='deleteuser' value=\"".
-                            $LANG['buttons'][6]."\" class='submit'>";
-               echo "</td>";
-               echo "</table></div>\n";
+                            $LANG['buttons'][20]."\" class='submit'>&nbsp;";
+               closeArrowMassive('deleteuser', $LANG['buttons'][6]);
             }
             echo "</div></form></td></tr>\n";
          }
