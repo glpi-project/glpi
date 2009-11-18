@@ -103,18 +103,10 @@ function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1) 
          echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
          echo "<input type='hidden' name='value2' value='$locations_id'>";
 
-         echo "<table width='950px' class='tab_glpi'>";
-         $parameters="which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td><a onclick= \"if (markCheckboxes('massiveaction_form')) return false;\" href='".
-                $_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td>";
-         echo "<td><a onclick=\"if (unMarkCheckboxes('massiveaction_form')) return false;\" href='".
-                $_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG['buttons'][19]."</a></td>";
-         echo "<td class='left' width='80%'>";
-         echo "<input type='submit' class='submit' name='mass_delete' value='".$LANG['buttons'][6]."'>";
-         echo "&nbsp;<strong>".$LANG['setup'][1]."</strong>";
-         echo "</td></tr></table>";
+         openArrowMassive("massiveaction_form", true);
+         closeArrowMassive('mass_delete',
+                           $LANG['buttons'][6]."&nbsp;<strong>".$LANG['setup'][1]."</strong>");
+
          echo "</form>";
       } else {
          echo "<strong>".$LANG['search'][15]."</strong>";

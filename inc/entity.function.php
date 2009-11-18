@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * 
+ *
  */
 function showEntityAdvancedOptions($target,$ID) {
 	global $DB, $LANG;
@@ -105,7 +105,7 @@ function showEntityAdvancedOptions($target,$ID) {
       }
 
       echo "</table></form>";
-   
+
 }
 /**
  * Show users of an entity
@@ -152,7 +152,7 @@ function showEntityUser($target,$ID) {
          echo "</td></tr>";
          echo "</table></div><br>";
       }
-      echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".
+      echo "<div class='center'><table class='tab_cadre_fixehov'><tr><th colspan='$headerspan'>".
              $LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
       $query="SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
@@ -231,24 +231,14 @@ function showEntityUser($target,$ID) {
       echo "</table></div>";
 
       if ($canedit) {
-         echo "<div class='center'>";
-         echo "<table width='80%' class='tab_glpi'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') )
-                return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".
-                $LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td><td class='center'>
-               <a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".
-                  $_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='submit' name='deleteuser' value=\"".
-                $LANG['buttons'][6]."\" class='submit'>";
-         echo "</td>";
-         echo "</table></div>";
+         openArrowMassive("entityuser_form$rand", true);
+         closeArrowMassive('deleteuser', $LANG['buttons'][6]);
+
       }
       echo "</form>";
    }
 }
+
 
 /**
  * Add a right to a user

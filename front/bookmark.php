@@ -109,7 +109,7 @@ if ($_GET["action"] == "edit") {
                        'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=".BOOKMARK_TYPE);
    }
    echo "<div id='tabspanel' class='center-h'></div>";
-   createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab(BOOKMARK_TYPE));
+   createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab(BOOKMARK_TYPE),480);
    echo "<div id='tabcontent'></div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }

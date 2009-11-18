@@ -367,7 +367,7 @@ class Bookmark extends CommonDBTM {
          echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
          echo "<div class='center' id='tabsbody' >";
 
-         echo "<table class='tab_cadrehov' style='width:100%'>";
+         echo "<table class='tab_cadrehov'>";
          echo "<tr>";
          echo "<th class='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
          echo "<th width='20px'>&nbsp;</th>";
@@ -422,25 +422,14 @@ class Bookmark extends CommonDBTM {
             }
             echo "</table></div>";
 
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_report'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-            echo "<td class='center'>";
-            echo "<a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\"
-                   href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
-            echo "<td>/</td><td class='center'>";
-            echo "<a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\"
-                   href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
-            echo "</td><td class='left' width='80%'>";
-            echo "<input type='submit' name='delete_several' value=\"".$LANG['buttons'][6]."\"
-                   class='submit'>";
-            echo "</td></tr>";
-            echo "</table>";
+            openArrowMassive("form_load_bookmark$rand");
+            closeArrowMassive('delete_several', $LANG['buttons'][6]);
+
          }
          else {
             echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";
          }
-         echo '</div></form>';
+         echo '</form>';
       }
    }
 

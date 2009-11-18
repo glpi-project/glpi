@@ -295,18 +295,8 @@ function showGroupAssociated($target,$ID) {
    if ($canedit) {
       echo "<div class='center'>";
       if (count($used)) {
-         echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>".
-              "<a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".
-               $_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td><td class='center'>".
-              "<a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".
-               $_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='submit' name='deletegroup' value='".$LANG['buttons'][6]."' class='submit'>";
-         echo "</td></tr>";
-         echo "</table>";
+         openArrowMassive("groupuser_form$rand",true);
+         closeArrowMassive('deletegroup', $LANG['buttons'][6]);
       } else {
          echo "<br>";
       }
@@ -446,21 +436,8 @@ function showUserRights($target,$ID) {
    echo "</table></div>";
 
    if ($canedit) {
-      echo "<div class='center'>";
-      echo "<table width='950px' class='tab_glpi'>";
-      echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-      echo "<td class='center'>";
-      echo "<a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".
-            $_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-
-      echo "<td>/</td><td class='center'>";
-      echo "<a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".
-            $_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-      echo "</td><td class='left' width='80%'>";
-      echo "<input type='submit' name='deleteright' value='".$LANG['buttons'][6]."' class='submit'>";
-      echo "</td></tr>";
-      echo "</table>";
-      echo "</div>";
+      openArrowMassive("entityuser_form$rand",true);
+      closeArrowMassive('deleteright', $LANG['buttons'][6]);
    }
    echo "</form>";
 }

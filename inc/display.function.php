@@ -781,8 +781,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['extauth']['page']='/front/setup.auth.php';
       $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];
       $menu['config']['content']['extauth']['options']['ldap']['page']='/front/auth.ldap.php';
-      
-      
+
+
       switch ($option) {
          case "ldap" : // LDAP
             $menu['config']['content']['extauth']['options']['ldap']['links']['search']='/front/auth.ldap.php';
@@ -2278,17 +2278,18 @@ function getActiveTab($itemtype) {
  * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
  * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
  * @param $active_tabs active tab key
+ * @param $width of tabs panel
  * @return nothing
  */
 function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$tabs=array(),
-                        $active_tabs=''){
+                        $active_tabs='', $size=950){
    global $CFG_GLPI;
 
    if (count($tabs)>0) {
       echo "<script type='text/javascript'>";
          echo " var tabpanel = new Ext.TabPanel({
             applyTo: '$tabdiv_id',
-            width:950,
+            width:$size,
             enableTabScroll: true,
             resizeTabs: false,
             collapsed: true,
@@ -2623,4 +2624,49 @@ function displayToolTip ($message, $link='',$ajax=array()) {
             $CFG_GLPI["root_doc"]."/ajax/comments.php", $ajax);
    }
 }
+
+
+/**
+* show arrow for massives actions : opening
+*
+* @param $formname string
+* @param $fixed boolean - used tab_cadre_fixe in both tables
+**/
+function openArrowMassive($formname, $fixed=false) {
+   global $CFG_GLPI,$LANG;
+
+   if ($fixed) {
+      echo "<table class='tab_glpi' width='950px'>";
+   } else {
+      echo "<table class='tab_glpi' width='80%'>";
+   }
+
+   echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+   echo "<td class='center'>";
+   echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
+            href='#'>".$LANG['buttons'][18]."</a></td>";
+   echo "<td>/</td><td class='center'>";
+   echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
+         href='#'>".$LANG['buttons'][19]."</a>";
+   echo "</td>";
+   echo "<td class='left' width='80%'>";
+}
+
+
+/**
+* show arrow for massives actions : closing
+*
+* @param $name string name of submit button, none if empty
+* @param $label string label of submit button
+**/
+function closeArrowMassive($name='',$label='') {
+   global $LANG;
+
+   if (!empty($name)) {
+      echo "<input type='submit' name='$name' value='$label' class='submit'>";
+   }
+   echo "</td></tr>";
+   echo "</table>";
+}
+
 ?>

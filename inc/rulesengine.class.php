@@ -261,16 +261,9 @@ class RuleCollection {
          addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['id'],$this->sub_type);
       }
       echo "</table>\n";
-      if ($canedit&&$nb>0) {
-         echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if (markCheckboxes('entityaffectation_form')) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if (unMarkCheckboxes('entityaffectation_form')) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a></td>";
-         echo "<td class='left' width='80%'>";
+      if ($canedit && $nb>0) {
+         openArrowMassive("ruleactions_form", true);
+
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>------</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
@@ -293,8 +286,8 @@ class RuleCollection {
             echo "<td><input type='submit' name='replay_rule' value=\"" . $LANG['rulesengine'][76] .
                        "\" class='submit'></td>";
          }
-         echo "</tr></table>\n";
-         echo "</div>";
+
+         closeArrowMassive();
       }
       echo "</form>";
       echo "<br><span class='icon_consol'>";
@@ -968,19 +961,9 @@ class Rule extends CommonDBTM {
       echo "</table></div>\n";
 
       if ($canedit && $nb>0) {
-         echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if ( markCheckboxes('actionsform') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if ( unMarkCheckboxes('actionsform') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a></td>";
-         echo "<td class='left' width='80%'>";
-         echo "<input type='submit' name='delete_action' value=\"" . $LANG['buttons'][6] .
-                "\" class='submit'>";
+         openArrowMassive("actionsform", true);
          echo "<input type='hidden' name='rules_id' value='$rules_id'>";
-         echo "</td></tr></table>\n";
+         closeArrowMassive('delete_action', $LANG['buttons'][6]);
       }
       echo "</form>";
    }
@@ -1087,23 +1070,9 @@ class Rule extends CommonDBTM {
       echo "</table></div>\n";
 
       if ($canedit && $maxsize>0) {
-         echo "<div class='center'>\n";
-         echo "<table width='950px' class='tab_glpi'>\n";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=".$this->fields["id"]."&amp;select=all'>" .
-                $LANG['buttons'][18] . "</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" .
-                $_SERVER['PHP_SELF'] . "?id=".$this->fields["id"]."&amp;select=none'>" .
-                $LANG['buttons'][19] . "</a></td>";
-         echo "<td class='left' width='80%'>";
-         echo "<input type='submit' name='delete_criteria' value=\"" . $LANG['buttons'][6] .
-                "\" class='submit'>";
+         openArrowMassive("criteriasform", true);
          echo "<input type='hidden' name='rules_id' value='$rules_id'>";
-         echo "</td></tr>\n";
-         echo "</table></div>";
+         closeArrowMassive('delete_criteria', $LANG['buttons'][6]);
       }
       echo "</form>\n";
    }

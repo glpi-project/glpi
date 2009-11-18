@@ -148,7 +148,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][4]."&nbsp;</td>";
+      echo "<td>".$LANG['financial'][4]."&nbsp;:</td>";
       echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -744,24 +744,16 @@ class Contract extends CommonDBTM {
          }
          echo "</table></div>";
 
-         echo "<div class='center'>";
-         echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>
-               <a onclick= \"if ( markCheckboxes('contract_form$rand') ) return false;\" href='".
-                $_SERVER['PHP_SELF']."?id=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-         echo "<td>/</td><td class='center'>
-               <a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".
-                $_SERVER['PHP_SELF']."?id=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-         echo "</td><td class='left' width='80%'>";
+         openArrowMassive("contract_form$rand", true);
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
-         echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-         echo "</td>";
-         echo "</table></div></form>";
+         closeArrowMassive('deleteitem', $LANG['buttons'][6]);
+
       } else {
          echo "</table></div>";
       }
+      echo "</form>";
    }
+
 
    /**
     * Get the entreprise name  for the contract

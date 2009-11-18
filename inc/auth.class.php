@@ -948,7 +948,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<input type='hidden' name='id' value='$ID'>";
-         echo $LANG['ldap'][18] . "</th></tr>";
+         echo "<tr><th colspan='4'>".$LANG['ldap'][18] . "</th></tr>";
 
          if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
             echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
@@ -961,7 +961,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td class='center b'>".$LANG['common'][16]."</td>";
          echo "<td class='center b'>".$LANG['ldap'][18]."</td><td class='center'></td></tr>";
          while ($ldap_replicate = $DB->fetch_array($result)) {
-            echo "<tr class='tab_bg_1'><td class='center'>";
+            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
             if (isset ($_GET["select"]) && $_GET["select"] == "all") {
                $sel = "checked";
             }
@@ -978,20 +978,10 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "</table>";
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td>";
-         echo "<td class='center'>";
-         echo "<a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\"
-                href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=all'>" .
-                $LANG['buttons'][18] . "</a></td>";
-         echo "<td>/</td><td class='center'>";
-         echo "<a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\"
-                href='" . $_SERVER['PHP_SELF'] . "?id=$ID&amp;select=none'>" .
-                $LANG['buttons'][19] . "</a>";
-         echo "</td><td class='left' width='80%'>";
-         echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\"
-                class='submit'></td>";
-         echo "</tr></table></div></form>";
+         openArrowMassive("ldap_replicates_form", true);
+         closeArrowMassive('delete_replicate', $LANG['buttons'][6]);
+
+         echo "</div></form>";
       }
    }
 
