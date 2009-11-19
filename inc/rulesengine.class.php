@@ -612,7 +612,13 @@ class RuleCollection {
    function showRulesEnginePreviewResultsForm($target,$input) {
       global $LANG,$RULES_ACTIONS;
 
-      $output = $this->testAllRules($input,array(),$input);
+      $output = array();
+
+      if ($this->use_output_rule_process_as_next_input){
+         $output=$input;
+      }
+
+      $output = $this->testAllRules($input,$output,$input);
       $rule = getRuleClass($this->sub_type);
 
       echo "<div class='center'>";
@@ -686,10 +692,12 @@ class RuleCollection {
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
-         echo "<td>".$rule->getActionValue($criteria,$value)."</td>";
-         echo "</tr>\n";
+         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
+            echo "<td>".$rule->getActionValue($criteria,$value)."</td>";
+            echo "</tr>\n";
+         }
       }
       echo "</tr></table>\n";
    }
@@ -739,7 +747,9 @@ class Rule extends CommonDBTM {
    * @param sub_type the rule type used for the collection
    **/
    function __construct($sub_type=0) {
-      $this->sub_type=$sub_type;
+      if ($sub_type > 0) {
+         $this->sub_type=$sub_type;
+      }
    }
 
    function post_getEmpty () {
