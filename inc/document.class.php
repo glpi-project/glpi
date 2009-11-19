@@ -998,7 +998,7 @@ class Document extends CommonDBTM {
 
       $ID = $item->getField('id');
       if (!(($item instanceof kbItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
-         if (!$ID || !$item->can($item->fields['id'],'r')) {
+         if (!$ID || !haveRight('document','r') || !$item->can($item->fields['id'],'r')) {
             return false;
          }
       }
