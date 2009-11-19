@@ -48,8 +48,9 @@ function showPorts($device, $device_type, $withtemplate = '') {
 	$rand = mt_rand();
 	$ci = new CommonItem();
 	$ci->setType($device_type, true);
-	if (!$ci->obj->can($device, 'r'))
-		return false;
+   if (!haveRight('networking','r') || !$ci->obj->can($device, 'r')) {
+      return false;
+   }
 	$canedit = $ci->obj->can($device, 'w');
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
