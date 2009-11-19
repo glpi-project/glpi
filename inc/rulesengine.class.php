@@ -642,7 +642,11 @@ class RuleCollection {
 		global $LANG,$RULES_ACTIONS;
 		$output = array();
 
-		$output = $this->testAllRules($input,array(),$input);
+      if ($this->use_output_rule_process_as_next_input){
+         $output=$input;
+      }
+
+		$output = $this->testAllRules($input,$output,$input);
 		$rule = getRuleClass($this->sub_type);
 
 		echo "<div class='center'>"; 
@@ -719,14 +723,17 @@ class RuleCollection {
 		$output = $this->preProcessPreviewResults($output);
 		
 		foreach ($output as $criteria => $value){
-			echo "<tr  class='tab_bg_2'>";
-			echo "<td class='tab_bg_2'>";
-			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
-			echo "</td>";
-			echo "<td class='tab_bg_2'>";
-			echo $rule->getActionValue($criteria,$value);
-			echo "</td>";
-			echo "</tr>";
+         // If action exist (may not exists if use_output_rule_process_as_next_input)
+         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) {
+            echo "<tr  class='tab_bg_2'>";
+            echo "<td class='tab_bg_2'>";
+            echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
+            echo "</td>";
+            echo "<td class='tab_bg_2'>";
+            echo $rule->getActionValue($criteria,$value);
+            echo "</td>";
+            echo "</tr>";
+         }
 		}
 		echo "</tr>";
 	}
