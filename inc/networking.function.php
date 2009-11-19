@@ -56,17 +56,17 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
 
-	$query = "SELECT ID FROM glpi_networking_ports 
-		WHERE (on_device = '$device' AND device_type = '$device_type') 
+	$query = "SELECT ID FROM glpi_networking_ports
+		WHERE (on_device = '$device' AND device_type = '$device_type')
 		ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
 			$colspan = 9;
 			if ($withtemplate != 2) {
-				if ($canedit) {					
+				if ($canedit) {
 					$colspan++;
-					echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">";				
-				}	
+					echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">";
+				}
 			}
 
 			echo "<div class='center'><table class='tab_cadrehov'>";
@@ -129,14 +129,14 @@ function showPorts($device, $device_type, $withtemplate = '') {
 				echo "<td width='300' class='tab_bg_2'>";
 				showConnection($ci, $netport, $withtemplate);
 				echo "</td>";
-				
+
 				echo "<td class='tab_bg_2'>";
-				
+
 				if ($netport->getContact($netport->fields["ID"])) {
 					echo $netport->fields["ifaddr"] . "<br>";
 					echo $netport->fields["ifmac"];
 				}
-				
+
 				echo "</td></tr>";
 			}
 			echo "</table>";
@@ -176,7 +176,7 @@ function showPortVLAN($ID, $withtemplate) {
 	$canedit = haveRight("networking", "w");
 
 	$used = array();
-	
+
 	$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$ID'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
@@ -226,7 +226,7 @@ function showPortVLANForm ($ID) {
 
 		echo "</div>";
 
-	}	
+	}
 }
 
 function assignVlan($port, $vlan) {
@@ -299,16 +299,16 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 				$netport->fields[$key] = $_POST[$key];
 	}
 
-	
+
 	$netport->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"device_type=$devtype AND on_device=$ondevice");
-	
+
 	echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">";
 
 	echo "<table class='tab_cadre_fixe'><tr>";
 
 	echo "<th colspan='4'>" . $LANG['networking'][20] . ":</th>";
 	echo "</tr>";
-	
+
 	$ci=new CommonItem();
 	if ($ci->getFromDB($netport->device_type,$netport->device_ID)) {
 		echo "<tr class='tab_bg_1'><td>" . $ci->getType() . ":</td><td colspan='2'>";
@@ -429,7 +429,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	echo "</table></form></div>";
-	
+
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
@@ -461,12 +461,12 @@ function showPortsAdd($ID, $devtype) {
 }
 
 /**
- * Display a connection of a networking port 
- * 
+ * Display a connection of a networking port
+ *
  * @param $device1 the device of the port
  * @param $netport to be displayed
- * @param $withtemplate 
- * 
+ * @param $withtemplate
+ *
  */
 function showConnection(& $device1, & $netport, $withtemplate = '') {
 
@@ -553,8 +553,8 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
  *@param $dport : destination port ID
  *@param $dohistory : add event in the history
  *@param $addmsg : display HTML message on success
- * 
- *@return true on success 
+ *
+ *@return true on success
 **/
 function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 
@@ -578,6 +578,8 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		'netmask' => $LANG['networking'][60],
 		'gateway' => $LANG['networking'][59]
 	);
+*/
+   $items_to_check = array ('netpoint' => $LANG['networking'][51]);
 
 	$update_items = array ();
 	$conflict_items = array ();
@@ -603,7 +605,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 				}
 				break;
 		}
-		
+
 		// Update Item
 		$updates[0] = $item;
 		if (empty ($source) && !empty ($destination)) {
@@ -644,8 +646,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		}
 		addMessageAfterRedirect($message);
 	}
-*/
-	
+
 	// Manage VLAN : use networkings one as defaults
 	$npnet = -1;
 	$npdev = -1;
@@ -719,8 +720,8 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
  *
  *@param $ID : ID a network port
  *@param $dohistory : add event in the history
- * 
- *@return true on success 
+ *
+ *@return true on success
 **/
 function removeConnector($ID, $dohistory = true) {
 
@@ -746,9 +747,9 @@ function removeConnector($ID, $dohistory = true) {
 					$npnet = $ID;
 					$npdev = $ID2;
 				}
-				
-				/*
+
 				if ($npnet != -1 && $npdev != -1) {
+               // If address egal, was copied from device in GLPI 0.71 : clear it
 					// Unset MAC and IP from networking device
 					if ($np1->fields["ifmac"] == $np2->fields["ifmac"]) {
 						$query = "UPDATE glpi_networking_ports SET ifmac='' WHERE ID='$npnet'";
@@ -762,8 +763,7 @@ function removeConnector($ID, $dohistory = true) {
 					$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";
 					$DB->query($query);
 				}
-				*/
-				
+
 				if ($dohistory) {
 					$device = new CommonItem();
 
@@ -819,18 +819,18 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	}
 
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
-	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type 
+	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type
 		FROM `glpi_networking_ports` as gnp
-		LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
-							AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ") 
-		LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0
+							AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ")
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0
 							AND gp.is_template=0 AND device_type=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
-							AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")  
-		LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
-							AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ") 
-		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 
-							AND gpe.is_template=0 AND device_type=" . PERIPHERAL_TYPE . ") 
+		LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0
+							AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0
+							AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ")
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0
+							AND gpe.is_template=0 AND device_type=" . PERIPHERAL_TYPE . ")
 	 	WHERE gnp.$field='" . $value . "'";
 
 	$result = $DB->query($query);
@@ -863,7 +863,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			//We can face different configurations :
 			//the 2 ports aren't linked -> can do nothing (how to know which one is the good one)
 			//the 2 ports are linked but no ports are connected on a network device (for example 2 computers connected)-> can do nothin (how to know which one is the good one)
-			//thez 2 ports are linked and one port in connected on a network device -> use the port not connected on the network device as the good one 
+			//thez 2 ports are linked and one port in connected on a network device -> use the port not connected on the network device as the good one
 			$port1 = $DB->fetch_array($result);
 			$port2 = $DB->fetch_array($result);
 
@@ -876,8 +876,8 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			//If one port is connected on a network device
 			if ($network_port != -1) {
 				//If the 2 ports are linked each others
-				$query = "SELECT ID FROM glpi_networking_wire 
-					WHERE (end1='".$port1["portID"]."' AND end2='".$port2["portID"]."') 
+				$query = "SELECT ID FROM glpi_networking_wire
+					WHERE (end1='".$port1["portID"]."' AND end2='".$port2["portID"]."')
 						OR (end1='".$port2["portID"]."' AND end2='".$port1["portID"]."')";
 				$query = $DB->query($query);
 				if ($DB->numrows($query) == 1)
