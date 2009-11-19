@@ -576,6 +576,29 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
       return false;
    }
 
+   // Check netpoint for copy
+   $source = "";
+   $destination = "";
+   if (isset ($ps->fields['netpoints_id']) && $ps->fields['netpoints_id'] != 0) {
+      $source = $ps->fields['netpoints_id'];
+   }
+   if (isset ($pd->fields['netpoints_id']) && $pd->fields['netpoints_id'] != 0) {
+      $destination = $pd->fields['netpoints_id'];
+   }
+  // Update Item
+   $updates[0] = 'netpoints_id';
+   if (empty ($source) && !empty ($destination)) {
+      $ps->fields['netpoints_id'] = $destination;
+      $ps->updateInDB($updates);
+      addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+   } else if (!empty ($source) && empty ($destination)) {
+      $pd->fields['netpoints_id'] = $source;
+      $pd->updateInDB($updates);
+      addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+   } else if ($source != $destination) {
+      addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;: " . $LANG['networking'][51]);
+   }
+
    // Manage VLAN : use networkings one as defaults
    $npnet = -1;
    $npdev = -1;
@@ -694,6 +717,27 @@ function removeConnector($ID, $dohistory = true) {
 
                $npnet = $ID;
                $npdev = $ID2;
+            }
+            if ($npnet != -1 && $npdev != -1) {
+               // If addresses are egal, was copied from device in GLPI 0.71 : clear it
+               // Unset MAC and IP from networking device
+               if ($np1->fields['mac'] == $np2->fields['mac']) {
+                  $query = "UPDATE `glpi_networkports`
+                            SET `mac`=''
+                            WHERE `id`='$npnet'";
+                  $DB->query($query);
+               }
+               if ($np1->fields['ip'] == $np2->fields['ip']) {
+                  $query = "UPDATE `glpi_networkports`
+                            SET `ip`='',`netmask`='', `subnet`='',`gateway`=''
+                            WHERE `id`='$npnet'";
+                  $DB->query($query);
+               }
+               // Unset netpoint from common device
+               $query = "UPDATE `glpi_networkports`
+                         SET `netpoints_id`='0'
+                         WHERE `id`='$npdev'";
+               $DB->query($query);
             }
             if ($dohistory) {
                $device = new CommonItem();
