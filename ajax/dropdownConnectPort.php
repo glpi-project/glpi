@@ -41,15 +41,14 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("networking","w");
-
+logInFile('php-errors','Dropdown='.print_r($_POST,true),true);
 // Make a select box
 if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
    $table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
                     `glpi_networkports`.`id` AS did, `$table`.`name` AS cname,
-                    `glpi_networkports`.`name` AS nname, `glpi_networkports`.`ip`,
-                    `glpi_networkports`.`mac`
+                    `glpi_networkports`.`name` AS nname, `glpi_netpoints`.`name` as npname
              FROM `$table`
              LEFT JOIN `glpi_networkports`
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
@@ -58,6 +57,8 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
              LEFT JOIN `glpi_networkports_networkports`
                ON (`glpi_networkports_networkports`.`networkports_id_1` = `glpi_networkports`.`id`
                    OR `glpi_networkports_networkports`.`networkports_id_2`=`glpi_networkports`.`id`)
+             LEFT JOIN `glpi_netpoints`
+               ON (`glpi_netpoints`.`id`=`glpi_networkports`.`netpoints_id`)
              WHERE `glpi_networkports_networkports`.`id` IS NULL
                    AND `glpi_networkports`.`id` IS NOT NULL
                    AND `glpi_networkports`.`id` <> '".$_POST['current']."'
@@ -71,26 +72,24 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
    echo "<option value='0'>------</option>";
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_array($result)) {
-         $output = $data['cname'];
-         $output_long="";
-         if (!empty($data['ip'])) {
-            $output.= " - ".$data['ip'];
-         }
-         if (!empty($data['mac'])) {
-            $output_long.= " - ".$data['mac'];
-         }
+         // Device name + port name
+         $output = $output_long = $data['cname'];
          if (!empty($data['nname'])) {
-            $output_long.= utf8_substr(" - ".$data['nname'],0,$_SESSION["glpidropdown_chars_limit"]);
+            $output .= " - ".$data['nname'];
+            $output_long .= " - " . $LANG['networking'][44] . " " . $data['nname'];
+         }
+         // display netpoint (which will be copied)
+         if (!empty($data['npname'])) {
+            $output .= " - ".$data['npname'];
+            $output_long .= " - " . $LANG['networking'][51] . " " . $data['npname'];
          }
          $ID = $data['did'];
-         if (empty($data["ip"])) {
-            $output.=$output_long;
-            $output_long="";
-         }
          if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
             $output .= " ($ID)";
+            $output_long .= " ($ID)";
          }
-         echo "<option value='$ID' title=\"".cleanInputText($output.$output_long)."\">".$output;
+         $output = utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
+         echo "<option value='$ID' title=\"".cleanInputText($output_long)."\">".$output;
          echo "</option>";
       }
    }
