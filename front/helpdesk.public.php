@@ -34,100 +34,125 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'document', 'enterprise', 'group', 'infocom', 'knowbase',
-   'monitor', 'networking', 'peripheral', 'phone', 'printer', 'profile', 'reservation',
-   'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'document', 'group', 'infocom', 'knowbase', 'monitor',
+                       'networking', 'peripheral', 'phone', 'printer', 'profile', 'reservation',
+                       'software', 'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-	// Change profile system
-	if (isset ($_POST['newprofile'])) {
-		if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
-			changeProfile($_POST['newprofile']);
-			if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-				glpi_header($CFG_GLPI['root_doc']."/front/central.php");
-			} else {
-				glpi_header($_SERVER['PHP_SELF']);
-			}
-		} else {
-			glpi_header(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
-		}
-	}
+// Change profile system
+if (isset ($_POST['newprofile'])) {
+   if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
+      changeProfile($_POST['newprofile']);
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         glpi_header($CFG_GLPI['root_doc']."/front/central.php");
+      } else {
+         glpi_header($_SERVER['PHP_SELF']);
+      }
+   } else {
+      glpi_header(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
+   }
+}
 
-	// Manage entity change
-	if (isset($_GET["active_entity"])){
-		if (!isset($_GET["is_recursive"])) {
-			$_GET["is_recursive"]=0;
-		}
-		changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
-		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
-			glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
-		}
-	}
+// Manage entity change
+if (isset($_GET["active_entity"])) {
+   if (!isset($_GET["is_recursive"])) {
+      $_GET["is_recursive"] = 0;
+   }
+   changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
+   if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+      glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+   }
+}
 
 // Redirect management
-if (isset($_GET["redirect"])){
-	manageRedirect($_GET["redirect"]);
+if (isset($_GET["redirect"])) {
+   manageRedirect($_GET["redirect"]);
 }
 
-if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
-{
+if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
+   checkHelpdeskAccess();
 
-	checkHelpdeskAccess();
-	//*******************
-	// Affichage interventions en cours
-	//******************
-	if (isset($_POST['add'])&&haveRight("comment_ticket","1")) {
-		$fup=new Followup();
-		$newID=$fup->add($_POST);
+   //*******************
+   // Affichage interventions en cours
+   //******************
+   if (isset($_POST['add']) && haveRight("comment_ticket","1")) {
+      $fup = new Followup();
+      $newID = $fup->add($_POST);
 
-		logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-		glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".$_POST["tickets_id"]);
-	}
-	if (!isset($_GET["start"])) $_GET["start"]=0;
+      logEvent($_POST["tickets_id"], "tracking", 4, "tracking",
+               $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
+      glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
+                  $_POST["tickets_id"]);
+   }
+   if (!isset($_GET["start"])) {
+      $_GET["start"] = 0;
+   }
 
-	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
-	if (!isset($_GET["id"])) {
-		if (!isset($_GET["start"])) $_GET["start"]=0;
-		if (!isset($_GET["status"])) $_GET["status"]="all";
-		if (!isset($_GET["sort"])) $_GET["sort"]="";
-		if (!isset($_GET["search"])) $_GET["search"]="";
-		if (!isset($_GET["tosearch"])) $_GET["tosearch"]="name_content";
-		if (!isset($_GET["order"])) $_GET["order"]="DESC";
-		if (!isset($_GET["group"])) $_GET["group"]=0;
-		if (!isset($_GET["ticketscategories_id"])) $_GET["ticketscategories_id"]=0;
-		if (!isset($_GET["showfollowups"])) $_GET["showfollowups"]=0;
-		if (!isset($_GET["extended"])) $_GET["extended"]=0;
+   if (!isset($_GET["id"])) {
+      if (!isset($_GET["start"])) {
+         $_GET["start"] = 0;
+      }
+      if (!isset($_GET["status"])) {
+         $_GET["status"] = "all";
+      }
+      if (!isset($_GET["sort"])) {
+         $_GET["sort"] = "";
+      }
+      if (!isset($_GET["search"])) {
+         $_GET["search"] = "";
+      }
+      if (!isset($_GET["tosearch"])) {
+         $_GET["tosearch"] = "name_content";
+      }
+      if (!isset($_GET["order"])) {
+         $_GET["order"] = "DESC";
+      }
+      if (!isset($_GET["group"])) {
+         $_GET["group"] = 0;
+      }
+      if (!isset($_GET["ticketscategories_id"])) {
+         $_GET["ticketscategories_id"] = 0;
+      }
+      if (!isset($_GET["showfollowups"])) {
+         $_GET["showfollowups"] = 0;
+      }
+      if (!isset($_GET["extended"])) {
+         $_GET["extended"] = 0;
+      }
 
-		searchSimpleFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["group"],$_GET["showfollowups"],$_GET["ticketscategories_id"]);
-		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_SESSION["glpiID"],$_GET["group"],$_GET["showfollowups"],$_GET["ticketscategories_id"]);
-	}
-	else {
-		if (isset($_POST["update"])){
-			$track=new Job();
-			$track->update($_POST);
-			glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
-		}
-		$track=new Job();
-		$track->check($_GET["id"],'r');
-		$track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
-		echo "<div id='tabcontent'></div>";
+      searchSimpleFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["status"],
+                               $_GET["tosearch"],$_GET["search"],$_GET["group"],
+                               $_GET["showfollowups"],$_GET["ticketscategories_id"]);
 
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
-	}
-}
+      showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],
+                       $_GET["status"],$_GET["tosearch"],$_GET["search"],$_SESSION["glpiID"],
+                       $_GET["group"],$_GET["showfollowups"],$_GET["ticketscategories_id"]);
+
+   } else {
+      if (isset($_POST["update"])) {
+         $track = new Job();
+         $track->update($_POST);
+         glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
+      }
+      $track = new Job();
+      $track->check($_GET["id"],'r');
+      $track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   }
 
 //*******************
 // fin  Affichage Module r�ervation
 //*******************
 
-
-else {
-	checkHelpdeskAccess();
-	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	printHelpDesk($_SESSION["glpiID"],1);
+} else {
+   checkHelpdeskAccess();
+   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   printHelpDesk($_SESSION["glpiID"],1);
 }
 
 helpFooter();

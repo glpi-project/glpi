@@ -38,7 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 $itemtype = (isset($_REQUEST['itemtype']) ? intval($_REQUEST['itemtype']) : 0);
@@ -55,8 +55,7 @@ if (isset($_POST["add"])) {
 
    if ($newID=$ci->obj->add($_POST)) {
       refreshMainWindow();
-      logEvent($newID, "dropdown", 4, "setup",
-               $_SESSION["glpiname"]." added ".$_POST["name"].".");
+      logEvent($newID, "dropdown", 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -83,6 +82,7 @@ if (isset($_POST["add"])) {
    } else {
       displayErrorAndDie($LANG['common'][24]);
    }
+
 } else if (isset($_GET['popup'])) {
    popHeader($ci->getType(),$_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
@@ -92,6 +92,7 @@ if (isset($_POST["add"])) {
    echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
    echo "</div>";
    popFooter();
+
 } else {
    commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
                 str_replace('glpi_','',$ci->obj->table));

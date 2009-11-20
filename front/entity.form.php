@@ -41,102 +41,95 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("entity","r");
 
-$entity=new Entity();
-$entitydata=new EntityData();
+$entity = new Entity();
+$entitydata = new EntityData();
 
-if (isset($_POST["update"]))
-{
-	$entity->check($_POST["entities_id"],'w');
+if (isset($_POST["update"])) {
+   $entity->check($_POST["entities_id"],'w');
 
    if (isset($_POST["comment"])) {
-      $entity->update(array(
-         'id' => $_POST["entities_id"],
-         'comment' => $_POST["comment"]));
+      $entity->update(array('id'      => $_POST["entities_id"],
+                            'comment' => $_POST["comment"]));
       unset($_POST["comment"]);
    }
-	$entitydata->update($_POST);
 
-	logEvent($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["adduser"]))
-{
-	$entity->check($_POST["entities_id"],'w');
+   $entitydata->update($_POST);
+   logEvent($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	addUserProfileEntity($_POST);
+} else if (isset($_POST["adduser"])) {
+   $entity->check($_POST["entities_id"],'w');
 
-	logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["add_rule"]))
-{
-	$entity->check($_POST["affectentity"],'w');
+   addUserProfileEntity($_POST);
 
+   logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$rule = new OcsAffectEntityRule;
-	$ruleid = $rule->add($_POST);
+} else if (isset($_POST["add_rule"])) {
+   $entity->check($_POST["affectentity"],'w');
 
-	if ($ruleid)
-	{
-		//Add an action associated to the rule
-		$ruleAction = new RuleAction;
-		//Action is : affect computer to this entity
-		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
-	}
+   $rule = new OcsAffectEntityRule;
+   $ruleid = $rule->add($_POST);
 
-	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["add_user_rule"]))
-{
-	$entity->check($_POST["affectentity"],'w');
+   if ($ruleid) {
+      //Add an action associated to the rule
+      $ruleAction = new RuleAction;
+      //Action is : affect computer to this entity
+      $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
+   }
 
+   logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$rule = new RightAffectRule;
-	$ruleid = $rule->add($_POST);
+} else if (isset($_POST["add_user_rule"])) {
+   $entity->check($_POST["affectentity"],'w');
 
-	if ($ruleid)
-	{
-		//Add an action associated to the rule
-		$ruleAction = new RuleAction;
-		//Action is : affect computer to this entity
-		$ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
-		if ($_POST["profiles_id"]){
-			$ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
-		}
-		$ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
-	}
+   $rule = new RightAffectRule;
+   $ruleid = $rule->add($_POST);
 
-	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if ($ruleid) {
+      //Add an action associated to the rule
+      $ruleAction = new RuleAction;
+      //Action is : affect computer to this entity
+      $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
+      if ($_POST["profiles_id"]) {
+         $ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
+      }
+      $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
+   }
 
-} else if (isset($_POST["deleteuser"]))
-{
-	$entity->check($_POST["entities_id"],'w');
+   logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	if (count($_POST["item"])){
-		foreach ($_POST["item"] as $key => $val){
-			deleteUserProfileEntity($key);
-		}
-	}
+} else if (isset($_POST["deleteuser"])) {
+   $entity->check($_POST["entities_id"],'w');
 
-	logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
-{
-	$entity->check($_POST["affectentity"],'w');
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         deleteUserProfileEntity($key);
+      }
+   }
 
-	if (isset($_POST["delete_computer_rule"])){
-		$rule = new OcsAffectEntityRule;
-	} else {
-		$rule = new RightAffectRule;
-	}
+   logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	if (count($_POST["item"])){
-		foreach ($_POST["item"] as $key => $val){
-			$rule->delete(array('id'=>$key));
-		}
-	}
+} else if (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"])) {
+   $entity->check($_POST["affectentity"],'w');
 
-	logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if (isset($_POST["delete_computer_rule"])) {
+      $rule = new OcsAffectEntityRule;
+   } else {
+      $rule = new RightAffectRule;
+   }
+
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         $rule->delete(array('id' => $key));
+      }
+   }
+
+   logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
@@ -144,4 +137,5 @@ commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 $entity->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
+
 ?>

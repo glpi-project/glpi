@@ -39,11 +39,11 @@ $NEEDED_ITEMS = array('user');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if($CFG_GLPI["use_anonymous_helpdesk"]){
-	$id = new Identification();
-	$id->initSession();
+if ($CFG_GLPI["use_anonymous_helpdesk"]) {
+   $id = new Identification();
+   $id->initSession();
 } else {
-	exit();
+   exit();
 }
 
 // Send UTF8 Headers
@@ -58,9 +58,10 @@ header("Content-Type: text/html; charset=UTF-8");
 
 <?php
 // Appel CSS
-echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' ".
+      "media='screen' >";
 // Appel javascript
-echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
+echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
 
 ?>
 
@@ -68,196 +69,101 @@ echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'
 
 <body>
 <script language="javascript" type="text/javascript">
-function fillidfield(Type,Id){
-	window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;
-	window.opener.document.forms["helpdeskform"].elements["itemtype"].value = Type;
-	window.close();}
-	</script>
+function fillidfield(Type,Id) {
+   window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;
+   window.opener.document.forms["helpdeskform"].elements["itemtype"].value = Type;
+   window.close();
+}
+</script>
 
-	<?php
+<?php
 
-	echo "<div align='center'>";
-	echo "<p><strong>".$LANG['help'][22]."</strong></p>";
-	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER['PHP_SELF']."\">";
+echo "<div class='center'>";
+echo "<p class='b'>".$LANG['help'][22]."</p>";
+echo " <form name='form1' method='post'  action='".$_SERVER['PHP_SELF']."'>";
 
-	echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
-	echo "<tr><th align='center'  width='100%' height='29'>".$LANG['help'][23]."</th>";
-	echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>";
-	echo "<input name='NomContact' type='text' id='NomContact' >";
-	echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
-	echo "<input type='submit' name='send' value=\"". $LANG['buttons'][0]."\">";
-	echo "</td>  </tr> </table> </form></div>";
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr><th height='29'>".$LANG['help'][23]."</th></tr>";
+echo "<tr><td class='tab_bg_1 center'>";
+echo "<input name='NomContact' type='text' id='NomContact' >";
+echo "<input type='hidden' name='send' value='1'>"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
+echo "<input type='submit' name='send' value='". $LANG['buttons'][0]."'>";
+echo "</td></tr></table></form></div>";
 
+if (isset($_POST["send"])) {
+   echo "<table class='tab_cadre_fixe'>";
+   echo " <tr class='tab_bg3'>";
+   echo " <td class='center b' width='30%'>".$LANG['reports'][19]."</td>";
+   echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
+   echo " <td class='center b' width='30%'>".$LANG['common'][1]."</td>";
+   echo " <td class='center b' width='5%'>".$LANG['common'][2]."</td>";
+   echo " <td class='center b' width='20%'>".$LANG['common'][19]."&nbsp;/&nbsp;".
+                                             $LANG['common'][20]."</td>";
+   echo " </tr>";
 
-	if(isset($_POST["send"]))
-{
-	echo "<table width='100%' class='tab_cadre'>";
-	echo " <tr class='tab_bg3'>";
-	echo " <td align='center' width='30%'><b>".$LANG['reports'][19]."</b></td>";
-	echo " <td align='center' width='20%'><b>".$LANG['help'][24]."</b></td>";
-	echo " <td align='center' width='30%'><b>".$LANG['common'][1]."</b></td>";
-	echo " <td align='center' width='5%'><b>".$LANG['common'][2]."</b></td>";
-	echo " <td align='center' width='20%'><b>".$LANG['common'][19]."&nbsp;/&nbsp;".$LANG['common'][20]."</b></td>";
-	echo " </tr>";
+   $types = array(COMPUTER_TYPE   => $LANG['help'][25],
+                  NETWORKING_TYPE => $LANG['help'][26],
+                  PRINTER_TYPE    => $LANG['help'][27],
+                  MONITOR_TYPE    => $LANG['help'][28],
+                  PERIPHERAL_TYPE => $LANG['help'][29]);
+   foreach ($types as $type => $label) {
+      $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
+                FROM `".$LINK_ID_TABLE[$type]."`
+                WHERE `is_template` = '0'
+                      AND `is_deleted` = '0'
+                      AND (`contact` LIKE '%".$_POST["NomContact"]."%'
+                           OR `name` LIKE '%".$_POST["NomContact"]."%'
+                           OR `serial` LIKE '%".$_POST["NomContact"]."%'
+                           OR `otherserial` LIKE '%".$_POST["NomContact"]."%')
+                ORDER BY `name`";
+      $result = $DB->query($query);
 
+      while ($ligne = $DB->fetch_array($result)) {
+         $Comp_num = $ligne['id'];
+         $Contact = $ligne['contact'];
+         $Computer = $ligne['name'];
+         $s1 = $ligne['serial'];
+         $s2 = $ligne['otherserial'];
+         echo " <tr class='tab_find' onClick=\"fillidfield(".$type.",".$Comp_num.")\">";
+         echo "<td class='center'>&nbsp;$Contact&nbsp;</td>";
+         echo "<td class='center'>&nbsp;$label&nbsp;</td>";
+         echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
+         echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
+         echo "<td class='center'>";
+         if ($s1 != "") {
+            echo $s1;
+         }
+         if ($s1!="" && $s2!="") {
+            echo "&nbsp;/&nbsp;";
+         }
+         if ($s2 != "") {
+            echo $s2;
+         }
+         echo "</td></tr>";
+      }
+   }
 
-	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_computers
-		WHERE is_template='0' AND is_deleted='0'
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
-				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Contact = $ligne['contact'];
-		$Computer = $ligne['name'];
-		$s1 = $ligne['serial'];
-		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".COMPUTER_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'><b>&nbsp;$Contact</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][25]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer&nbsp;</b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		if ($s1!="") echo $s1;
-		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
-		if ($s2!="") echo $s2;
-		echo "</td>";
-		echo "</tr>";
-	}
+   $query = "SELECT `name`, `id`
+             FROM `glpi_softwares`
+             WHERE `is_template` = '0'
+                   AND `is_deleted` = '0'
+                   AND (`name` LIKE '%".$_POST["NomContact"]."%' )
+             ORDER BY `name`";
+   $result = $DB->query($query);
 
-	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_networkequipments
-		WHERE is_template='0' AND is_deleted='0'
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
-				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Contact = $ligne['contact'];
-		$Computer = $ligne['name'];
-		$s1 = $ligne['serial'];
-		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".NETWORKING_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][26]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		if ($s1!="") echo $s1;
-		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
-		if ($s2!="") echo $s2;
-		echo "</td>";
-		echo "</tr>";
-	}
+   while ($ligne = $DB->fetch_array($result)) {
+      $Comp_num = $ligne['id'];
+      $Computer = $ligne['name'];
+      echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
+      echo "<td class='center'>&nbsp;</td>";
+      echo "<td class='center'>&nbsp;".$LANG['help'][31]."&nbsp;</td>";
+      echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
+      echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
+      echo "<td class='center'>&nbsp;</td></tr>";
+   }
 
-	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_printers
-		WHERE is_template='0' AND is_deleted='0'
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
-				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Contact = $ligne['contact'];
-		$Computer = $ligne['name'];
-		$s1 = $ligne['serial'];
-		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".PRINTER_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][27]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		if ($s1!="") echo $s1;
-		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
-		if ($s2!="") echo $s2;
-		echo "</td>";
-		echo "</tr>";
-	}
-
-	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_monitors
-		WHERE is_template='0' AND is_deleted='0'
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
-				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Contact = $ligne['contact'];
-		$Computer = $ligne['name'];
-		$s1 = $ligne['serial'];
-		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".MONITOR_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][28]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		if ($s1!="") echo $s1;
-		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
-		if ($s2!="") echo $s2;
-		echo "</td>";
-		echo "</tr>";
-	}
-
-	$query = "SELECT name, id, contact, serial, otherserial
-		FROM glpi_peripherals
-		WHERE is_template='0' AND is_deleted='0'
-			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%'
-				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Contact = $ligne['contact'];
-		$Computer = $ligne['name'];
-		$s1 = $ligne['serial'];
-		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".PERIPHERAL_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][29]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		if ($s1!="") echo $s1;
-		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
-		if ($s2!="") echo $s2;
-		echo "</td>";
-		echo "</tr>";
-	}
-
-	$query = "SELECT name, id
-		FROM glpi_softwares
-		WHERE is_template='0' AND is_deleted='0'
-			AND (name LIKE '%".$_POST["NomContact"]."%' )";
-	$result = $DB->query($query);
-	while($ligne = $DB->fetch_array($result))
-	{
-		$Comp_num = $ligne['id'];
-		$Computer = $ligne['name'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'>&nbsp;</td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][31]."</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b>&nbsp;$Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		echo "&nbsp;";
-		echo "</td>";
-		echo "</tr>";
-	}
-
-	echo "</table>";
+   echo "</table>";
 }
 echo '</body></html>';
+
 ?>
