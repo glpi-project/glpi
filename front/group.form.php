@@ -39,7 +39,9 @@ $NEEDED_ITEMS = array ('group', 'user');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["id"])) $_GET["id"] = "";
+if (empty($_GET["id"])) {
+   $_GET["id"] = "";
+}
 
 $group = new Group;
 $groupuser = new GroupUser();
@@ -83,11 +85,8 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
-
    $group->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-
    commonFooter();
 }
-
 
 ?>

@@ -34,9 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'document', 'enterprise', 'group', 'infocom', 'monitor',
-   'networking', 'peripheral', 'phone', 'planning', 'printer', 'rulesengine', 'rule.tracking',
-   'software', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'document', 'group', 'infocom', 'monitor', 'networking',
+                       'peripheral', 'phone', 'planning', 'printer', 'rulesengine', 'rule.tracking',
+                       'software', 'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -45,23 +45,22 @@ checkRight("create_ticket","1");
 
 commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 
-
 if (isset($_POST["add"])) {
-   $track=new Job();
-
+   $track = new Job();
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
-      $splitter=explode("_",$_POST["_my_items"]);
-      if (count($splitter)==2) {
-         $_POST["itemtype"]=$splitter[0];
-         $_POST["items_id"]=$splitter[1];
+      $splitter = explode("_",$_POST["_my_items"]);
+      if (count($splitter) == 2) {
+         $_POST["itemtype"] = $splitter[0];
+         $_POST["items_id"] = $splitter[1];
       }
    }
    if ($newID=$track->add($_POST)) {
       logEvent($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else {
-   // TODO chekc the use of real name of field...(could also use Job->getEmpty)
+   // TODO check the use of real name of field...(could also use Job->getEmpty)
    // Set default value...
    $values = array('users_id'             => $_SESSION["glpiID"],
                    'groups_id'            => 0,
@@ -102,4 +101,5 @@ if (isset($_POST["add"])) {
 }
 
 commonFooter();
+
 ?>

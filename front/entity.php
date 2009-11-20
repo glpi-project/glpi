@@ -43,9 +43,8 @@ checkRight("entity","r");
 
 commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 
-$entity=new Entity();
+$entity = new Entity();
 $entity->title();
-
 
 manageGetValuesInSearch(ENTITY_TYPE);
 
@@ -54,4 +53,5 @@ searchForm(ENTITY_TYPE,$_GET);
 showList(ENTITY_TYPE,$_GET);
 
 commonFooter();
+
 ?>

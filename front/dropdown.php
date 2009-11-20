@@ -57,7 +57,7 @@ if ($itemtype) {
 
    $optgroup = getAllDropdowns();
 
-   echo "<div align='center'>";
+   echo "<div class='center'>";
    /*
    $nb=0;
    foreach($optgroup as $label => $dp) {
@@ -91,7 +91,7 @@ if ($itemtype) {
    foreach($optgroup as $label => $dp) {
 
       echo "<tr><th>";
-      echo "<a  href=\"javascript:showHideDiv('dropdowncat$i','imgcat$i','" .
+      echo "<a href=\"javascript:showHideDiv('dropdowncat$i','imgcat$i','" .
            GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
       echo "<img alt='' name='imgcat$i' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;$label";
       echo "</a></th></tr>\n";
