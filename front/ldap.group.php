@@ -36,24 +36,39 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsAnd(array("group"=>"w", "user_authtype"=>"w"));
+checkSeveralRightsAnd(array('group'         => 'w',
+                            'user_authtype' => 'w'));
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
-if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
-if (isset($_SESSION["ldap_import_entities"])) unset($_SESSION["ldap_import_entities"]);
-if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
-if (isset($_SESSION["entity"])) unset($_SESSION["entity"]);
-if (isset($_SESSION["ldap_sortorder"])) unset($_SESSION["ldap_sortorder"]);
+
+if (isset($_SESSION["ldap_import"])) {
+   unset($_SESSION["ldap_import"]);
+}
+if (isset($_SESSION["ldap_import_entities"])) {
+   unset($_SESSION["ldap_import_entities"]);
+}
+if (isset($_SESSION["ldap_server"])) {
+   unset($_SESSION["ldap_server"]);
+}
+if (isset($_SESSION["entity"])) {
+   unset($_SESSION["entity"]);
+}
+if (isset($_SESSION["ldap_sortorder"])) {
+   unset($_SESSION["ldap_sortorder"]);
+}
 
 //Reset session variable related to filters
-if (isset($_SESSION["ldap_group_filter"])) unset($_SESSION["ldap_group_filter"]);
-if (isset($_SESSION["ldap_group_filter2"])) unset($_SESSION["ldap_group_filter2"]);
+if (isset($_SESSION["ldap_group_filter"])) {
+   unset($_SESSION["ldap_group_filter"]);
+}
+if (isset($_SESSION["ldap_group_filter2"])) {
+   unset($_SESSION["ldap_group_filter2"]);
+}
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$LANG['ldap'][23]."</th></tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"ldap.group.import.php?next=servers\"><b>".$LANG['ldap'][24]."</b></a></td> </tr>";
-
+echo "<div class='center'><table class='tab_cadre'>";
+echo "<tr><th>&nbsp;".$LANG['ldap'][23]."&nbsp;</th></tr>";
+echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.group.import.php?next=servers\">".
+      $LANG['ldap'][24]."</a></td></tr>";
 echo "</table></div>";
 
 commonFooter();

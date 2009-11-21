@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 $NEEDED_ITEMS = array ('ldap.parameters');
 
 define('GLPI_ROOT', '..');
@@ -41,18 +40,17 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $criteria = new LdapCriteria;
 
-if (isset($_POST["delete"])){
+if (isset($_POST["delete"])) {
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         $input["id"] = $key;
+         $criteria->delete($input);
+      }
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-		{
-			$input["id"]=$key;
-			$criteria->delete($input);
-		}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($_POST["add"]))
-{
-	$criteria->add($_POST);
+} else if (isset($_POST["add"])) {
+   $criteria->add($_POST);
 }
 
 checkRight("user","w");

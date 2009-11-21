@@ -33,38 +33,40 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 $NEEDED_ITEMS = array('knowbase');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkSeveralRightsOr(array('knowbase' => 'r',
+                           'faq'      => 'r'));
 
-checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
-
-if (isset($_GET["id"])){
-	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=".$_GET["id"]);
+if (isset($_GET["id"])) {
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=".$_GET["id"]);
 }
 
 commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
+if (!isset($_GET["start"])) {
+   $_GET["start"] = 0;
+}
+if (!isset($_GET["contains"])) {
+   $_GET["contains"] = "";
+}
+if (!isset($_GET["knowbaseitemscategories_id"])) {
+   $_GET["knowbaseitemscategories_id"] = "0";
+}
 
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if(!isset($_GET["knowbaseitemscategories_id"])) $_GET["knowbaseitemscategories_id"] = "0";
+$faq = !haveRight("knowbase","r");
 
-	$faq=!haveRight("knowbase","r");
-
-	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemscategories_id"],$faq);
-	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemscategories_id"],$faq );
-	showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],$_GET["knowbaseitemscategories_id"],$faq);
-	if (!$_GET["knowbaseitemscategories_id"] && strlen($_GET["contains"])==0) {
-		showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
-	}
-
+searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemscategories_id"],$faq);
+showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemscategories_id"],$faq );
+showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],
+               $_GET["knowbaseitemscategories_id"],$faq);
+if (!$_GET["knowbaseitemscategories_id"] && strlen($_GET["contains"])==0) {
+   showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
+}
 
 commonFooter();
-
-
 
 ?>

@@ -292,6 +292,7 @@ function showCompatiblePrinters($instID) {
       echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
+      $used = array();
       while ($i < $number) {
          $ID=$DB->result($result, $i, "id");
          $type=$DB->result($result, $i, "type");

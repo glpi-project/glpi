@@ -55,7 +55,7 @@ $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 if (isset($_POST["add"])) {
    $device = new Device($_POST["devicetype"]);
-   $device->check(-1,"w");
+   $device->check(-1,"w",$_POST);
 
    if ($newID = $device->add($_POST)) {
       logEvent(0, "devices", 4, "inventory",

@@ -36,20 +36,32 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsAnd(array("user"=>"w", "user_authtype"=>"w"));
+checkSeveralRightsAnd(array('user'          => 'w',
+                            'user_authtype' => 'w'));
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
-if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
-if (isset($_SESSION["ldap_sync"])) unset($_SESSION["ldap_sync"]);
-if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
-if (isset($_SESSION["ldap_sortorder"])) unset($_SESSION["ldap_sortorder"]);
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$LANG['ldap'][0]."</th></tr>";
+if (isset($_SESSION["ldap_import"])) {
+   unset($_SESSION["ldap_import"]);
+}
+if (isset($_SESSION["ldap_sync"])) {
+   unset($_SESSION["ldap_sync"]);
+}
+if (isset($_SESSION["ldap_server"])) {
+   unset($_SESSION["ldap_server"]);
+}
+if (isset($_SESSION["ldap_sortorder"])) {
+   unset($_SESSION["ldap_sortorder"]);
+}
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ldap.sync.php?next=listservers\"><b>".$LANG['ldap'][1]."</b></a></td></tr>";
+echo "<div class='center'><table class='tab_cadre'>";
+echo "<tr><th>&nbsp;".$LANG['ldap'][0]."&nbsp;</th></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"ldap.import.php?next=listservers\"><b>".$LANG['ldap'][2]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.sync.php?next=listservers\">".
+      $LANG['ldap'][1]."</a></td></tr>";
+
+echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.import.php?next=listservers\">".
+      $LANG['ldap'][2]."</a></td> </tr>";
 
 echo "</table></div>";
 

@@ -124,19 +124,17 @@ class kbitem extends CommonDBTM {
    * @return nothing (display the form)
    **/
    function showForm($target,$ID) {
-      global  $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       // show kb item form
-      if (!haveRight("knowbase","w" )&& !haveRight("faq","w")) {
+      if (!haveRight("knowbase","w" ) && !haveRight("faq","w")) {
          return false;
       }
-      $spotted = false;
-      if ($ID>0) {
-         if($this->can($ID,'r')) {
-            $spotted = true;
-         }
-      } else if ($this->getEmpty() && $this->can(-1,'w')) {
-         $spotted = true;
+      if ($ID >0) {
+         $this->check($ID,'r');
+      } else {
+        $this->check(-1,'w');
+        $this->getEmpty();
       }
 
       $canedit=$this->can($ID,'w');
