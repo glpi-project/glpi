@@ -33,38 +33,34 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'infocom', 'monitor',
-   'networking', 'peripheral', 'phone', 'printer', 'software');
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'infocom', 'monitor', 'networking',
+                       'peripheral', 'phone', 'printer', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$ic=new Infocom();
+$ic = new Infocom();
 
-if (isset($_GET["add"]))
-{
-	checkRight("infocom","w");
+if (isset($_GET["add"])) {
+   $ic->check(-1,'w',$_GET);
 
-	$newID=$ic->add($_GET, false);
-	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	checkRight("infocom","w");
+   $newID = $ic->add($_GET, false);
+   logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$ic->delete($_POST);
-	logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["update"]))
-{
-	checkRight("infocom","w");
+} else if (isset($_POST["delete"])) {
+   $ic->check($_POST["id"],'w');
 
-	$ic->update($_POST);
-	logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $ic->delete($_POST);
+   logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["update"])) {
+   $ic->check($_POST["id"],'w');
+
+   $ic->update($_POST);
+   logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 glpi_header($_SERVER['HTTP_REFERER']);
