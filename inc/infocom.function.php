@@ -65,10 +65,12 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
    }
 
    if ($ci->getFromDB($itemtype,$dev_ID)) {
-      $entity=$ci->obj->getEntityID();
+      //$entity=$ci->obj->getEntityID();
 
       if (!$ic->getFromDBforDevice($itemtype,$dev_ID)) {
-         $input=array('entities_id'=>$entity);
+         //$input=array('entities_id'=>$entity);
+         $input=array('itemtype' => $itemtype,
+                      'items_id' => $dev_ID);
          if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
             echo "<table class='tab_cadre'><tr><th>";
             echo "<a href='$target?itemtype=$itemtype&amp;items_id=$dev_ID&amp;add=add'>".
