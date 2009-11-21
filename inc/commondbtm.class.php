@@ -1447,26 +1447,30 @@ class CommonDBTM {
    function can($ID,$right,&$input=NULL) {
 
       $entity_to_check=-1;
-      $recursive_state_to_check=0;
-      // Get item if not already loaded
       if (empty($ID)||$ID<=0) {
-         // No entity define : adding process : use active entity
+         /* No entity define : adding process : use active entity
          if (isset($input['entities_id'])) {
             $entity_to_check = $input['entities_id'];
          } else {
             $entity_to_check = $_SESSION["glpiactive_entity"];
+         }*/
+         $this->getEmpty();
+         if (is_array($input)) {
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+               if (isset($this->fields[$key])) {
+                  $this->fields[$key] = $val;
+               }
+            }
          }
+
       } else {
+         // Get item if not already loaded
          if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
                return false;
-            }
-         }
-         if ($this->isEntityAssign()) {
-            $entity_to_check=$this->getEntityID();
-            if ($this->maybeRecursive()) {
-               $recursive_state_to_check=$this->isRecursive();
             }
          }
       }
@@ -1484,9 +1488,9 @@ class CommonDBTM {
                   if ($this->isEntityAssign()) {
                      // Can be recursive check
                      if ($this->maybeRecursive()) {
-                        return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
+                        return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
                      } else { // Non recursive item
-                        return haveAccessToEntity($entity_to_check);
+                        return haveAccessToEntity($this->getEntityID());
                      }
                   } else { // Global item
                      return true;
@@ -1506,7 +1510,7 @@ class CommonDBTM {
                   // Is an item assign to an entity
                   if ($this->isEntityAssign()) {
                      // Have access to entity
-                     return haveAccessToEntity($entity_to_check);
+                     return haveAccessToEntity($this->getEntityID());
                   } else { // Global item
                      return true;
                   }
@@ -1516,9 +1520,9 @@ class CommonDBTM {
 
          case 'recursive':
             if ($this->isEntityAssign() && $this->maybeRecursive()) {
-               if ($this->canCreate() && haveAccessToEntity($entity_to_check)) {
+               if ($this->canCreate() && haveAccessToEntity($this->getEntityID())) {
                   // Can make recursive if recursive access to entity
-                  return haveRecursiveAccessToEntity($entity_to_check);
+                  return haveRecursiveAccessToEntity($this->getEntityID());
                }
             }
             break;
