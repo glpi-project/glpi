@@ -60,7 +60,7 @@ function header_html($etape)
 	echo "<meta name=\"generator\" content=\"\">";
 	echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
 	echo "<title>Setup GLPI</title>";
-	// CSS 
+	// CSS
 	echo "<link rel='stylesheet'  href='../css/style_install.css' type='text/css' media='screen' >";
 	echo "</head>";
 	echo "<body>";
@@ -86,7 +86,7 @@ function choose_language()
 	echo "<p class='center'>";
 
 	dropdownLanguages("language", "en_GB");
-	echo "</p>"; 
+	echo "</p>";
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\"></p>";
 	echo "</form>";
@@ -97,7 +97,7 @@ function choose_language()
 function loadLang($LANGuage) {
 	if (isset($LANG)){
 		unset($LANG);
-	}	
+	}
 	global $LANG;
 	$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 	if (file_exists($file)){
@@ -169,7 +169,7 @@ function step1($update)
 
 	echo "</table>";
 	switch ($error) {
-		case 0 :       
+		case 0 :
 			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\">";
@@ -177,7 +177,7 @@ function step1($update)
 			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 			echo "</form>";
 			break;
-		case 1 :       
+		case 1 :
 			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\">";
@@ -190,7 +190,7 @@ function step1($update)
 			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][27]."\"></p>";
 			echo "</form>";
 			break;
-		case 2 :       
+		case 2 :
 			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
@@ -293,7 +293,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	function prev_form($host,$user,$password) {
 		global $LANG;
-		
+
 		echo "<br><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
@@ -307,7 +307,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function next_form()
 	{
 		global $LANG;
-	
+
 		echo "<br><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\">";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
@@ -317,20 +317,14 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	//Fill the database
 	function fill_db()
 	{
-		global $LANG, $CFG_GLPI;		
+		global $LANG, $CFG_GLPI;
 
 		include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 		include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-		$DB = new DB;
-		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql";
-		$DBf_handle = fopen($DB_file, "rt");
-		$sql_query = fread($DBf_handle, filesize($DB_file));
-		fclose($DBf_handle);
-		foreach ( explode(";\n", "$sql_query") as $sql_line) {
-			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
-			if (!empty($sql_line)) $DB->query($sql_line);
-		}
+      $DB = new DB;
+      $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
+
 		// update default language
 		$query = "UPDATE `glpi_configs` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
@@ -340,11 +334,11 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	$link = mysql_connect($host,$user,$password);
 
-	if(!empty($databasename)) { // use db already created 
+	if(!empty($databasename)) { // use db already created
 		$DB_selected = mysql_select_db($databasename, $link);
 
 		if (!$DB_selected) {
-			
+
 			echo $LANG['install'][41];
 			echo "<br>";
 			echo $LANG['install'][36]." ". mysql_error();
@@ -364,9 +358,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			}
 		}
 	} elseif(!empty($newdatabasename)) { // create new db
-		// Try to connect 
+		// Try to connect
 		if (mysql_select_db($newdatabasename, $link)){
-		
+
 			echo "<p>".$LANG['install'][82]."</p>";
 			if (create_conn_file($host,$user,$password,$newdatabasename)){
 				fill_db();
@@ -380,16 +374,16 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			}
 		} else { // try to create the DB
 			if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){
-	
+
 				echo "<p>".$LANG['install'][82]."</p>";
-				
+
 				if (mysql_select_db($newdatabasename, $link)&&create_conn_file($host,$user,$password,$newdatabasename)) {
 					fill_db();
 					echo "<p>".$LANG['install'][43]."</p>";
 					echo "<p>".$LANG['install'][44]."</p>";
 					echo "<p>".$LANG['install'][46]."</p>";
 					next_form();
-	
+
 				}
 				else { // can't create config_db file
 					echo "<p>".$LANG['install'][47]."</p>";
@@ -420,7 +414,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		require_once (GLPI_CONFIG_DIR . "/config_db.php");
 		$DB = new DB;
 
-		// hack for IIS who did'nt know $_SERVER['REQUEST_URI']  
+		// hack for IIS who did'nt know $_SERVER['REQUEST_URI']
 		if ( !isset($_SERVER['REQUEST_URI']) ) {
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
@@ -456,7 +450,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	function update1($host,$user,$password,$DBname) {
 
-		global $LANG;	
+		global $LANG;
 		if(create_conn_file($host,$user,$password,$DBname) && !empty($DBname)) {
 
 			$from_install = true;
@@ -486,8 +480,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		setGlpiSessionPath();
 	}
 	startGlpiSession();
-	error_reporting(0); // we want to check system before affraid the user. 
-	
+	error_reporting(0); // we want to check system before affraid the user.
+
 
 	if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
 	if(isset($_POST["language"])) $_SESSION["glpilanguage"] = $_POST["language"];
@@ -514,7 +508,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		}
 
 
-		
+
 		switch ($_POST["install"]) {
 
 			case "lang_select" : // lang ok, go accept licence
@@ -531,19 +525,19 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				step1($_POST["update"]);
 			break;
 			case "Etape_1" : // check ok, go import mysql settings.
-				
+
 				$_SESSION['glpi_use_mode']=DEBUG_MODE; // check system ok, we can use specific parameters for debug
-				$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
+				$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0;
 				$CFG_GLPI["use_errorlog"]=1;
-				ini_set('display_errors','On'); 
-				error_reporting(E_ALL | E_STRICT); 
+				ini_set('display_errors','On');
+				error_reporting(E_ALL | E_STRICT);
 				set_error_handler("userErrorHandlerDebug");
-				
+
 				header_html($LANG['install'][77]." 1");
 				step2($_POST["update"]);
 			break;
 			case "Etape_2" : // mysql settings ok, go test mysql settings and select database.
-				header_html($LANG['install'][77]." 2"); 
+				header_html($LANG['install'][77]." 2");
 				step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
 			break;
 			case "Etape_3" : // Create and fill database
@@ -559,12 +553,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				step7();
 			break;
 
-			case "update_1" : 
+			case "update_1" :
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				update1($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"]);
 			break;
 		}
 	}
 	footer_html();
-	
+
 ?>
