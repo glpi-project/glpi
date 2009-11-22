@@ -41,21 +41,14 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
-
 // Make a select box
 if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0
     && (isPossibleToAssignType($_POST["itemtype"]))) {
 
    $table=$LINK_ID_TABLE[$_POST["itemtype"]];
-   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
-      echo "<div class='center'>".$LANG['help'][23]."&nbsp;:&nbsp;";
-   }
    $rand=mt_rand();
-   ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,15);
-   echo "</div>";
-   if (isset($_POST["admin"]) && $_POST["admin"]==1) {
-      echo "<br>";
-   }
+   echo "&nbsp;";
+   ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);
    $paramstrackingdt=array('searchText'=>'__VALUE__',
                            'myname'=>$_POST["myname"],
                            'table'=>$table,
@@ -69,6 +62,9 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0
    echo "<span id='results_ID$rand'>";
    echo "<select name='id'><option value='0'>------</option></select>";
    echo "</span>\n";
+   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
+      echo "<br>".$LANG['help'][23];
+   }
 }
 
 ?>

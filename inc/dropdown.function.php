@@ -1222,12 +1222,13 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
  * Make a select box for Tracking All Devices
  *
  * @param $myname select name
- * @param $value preselected value.
+ * @param $itemtype preselected value.for item type
+ * @param $items_id preselected value for item ID
  * @param $admin is an admin access ?
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1) {
+function dropdownTrackingAllDevices($myname,$itemtype,$items_id=0,$admin=0,$entity_restrict=-1) {
    global $LANG,$CFG_GLPI,$DB,$LINK_ID_TABLE;
 
    $rand=mt_rand();
@@ -1241,15 +1242,15 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
          // Display a message if view my hardware
          if (!$admin
              && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
-            echo $LANG['tracking'][2].":";
+            echo $LANG['tracking'][2]."&nbsp;: ";
          }
 
          $types = getAllTypesForHelpdesk();
          echo "<select id='search_$myname$rand' name='$myname'>\n";
          echo "<option value='-1' >-----</option>\n";
-         echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG['help'][30]."</option>";
-         foreach ($types as $itemtype => $label) {
-            echo "<option value='".$itemtype."' ".(($value==$itemtype)?" selected":"").">".$label;
+         echo "<option value='0' ".(($itemtype==0)?" selected":"").">".$LANG['help'][30]."</option>";
+         foreach ($types as $type => $label) {
+            echo "<option value='".$type."' ".(($type==$itemtype)?" selected":"").">".$label;
             echo "</option>\n";
          }
          echo "</select>";
@@ -1264,11 +1265,11 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 
          echo "<span id='results_$myname$rand'>\n";
 
-         if (isset($_SESSION["helpdeskSaved"]["items_id"])) {
+         if ($itemtype && $items_id) {
             $ci=new CommonItem();
-            if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["items_id"])) {
+            if ($ci->getFromDB($itemtype, $items_id)) {
                echo "<select name='items_id'>\n";
-               echo "<option value='".$_SESSION["helpdeskSaved"]["items_id"]."'>".$ci->getName();
+               echo "<option value='$items_id'>".$ci->getName();
                echo "</option></select>";
             }
          }
