@@ -334,6 +334,22 @@ class DBmysql {
    }
 
    /**
+    * Execute all the request in a file
+    *
+    * @param $path string with file full path
+    */
+   function runFile ($path) {
+
+      $DBf_handle = fopen($path, "rt");
+      $sql_query = fread($DBf_handle, filesize($path));
+      fclose($DBf_handle);
+      foreach ( explode(";\n", "$sql_query") as $sql_line) {
+         if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
+         if (!empty($sql_line)) $this->query($sql_line);
+      }
+   }
+
+   /**
     * Instanciate a Simple DBIterator
     *
     * Examples =
