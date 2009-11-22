@@ -348,17 +348,19 @@ class DBmysql {
       }
       $sql_query = fread($DBf_handle, filesize($path));
       fclose($DBf_handle);
+
+      $result = true;
       foreach ( explode(";\n", "$sql_query") as $sql_line) {
          if (get_magic_quotes_runtime()) {
             $sql_line=stripslashes_deep($sql_line);
          }
          if (!empty($sql_line)) {
             if (!$this->query($sql_line)) {
-               return false;
+               $result = false;
             }
          }
       }
-      return true;
+      return $result;
    }
 
    /**
