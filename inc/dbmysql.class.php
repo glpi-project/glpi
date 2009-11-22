@@ -337,16 +337,28 @@ class DBmysql {
     * Execute all the request in a file
     *
     * @param $path string with file full path
+    *
+    * @return boolean true if all query are successfull
     */
    function runFile ($path) {
 
       $DBf_handle = fopen($path, "rt");
+      if (!$DBf_handle) {
+         return false;
+      }
       $sql_query = fread($DBf_handle, filesize($path));
       fclose($DBf_handle);
       foreach ( explode(";\n", "$sql_query") as $sql_line) {
-         if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
-         if (!empty($sql_line)) $this->query($sql_line);
+         if (get_magic_quotes_runtime()) {
+            $sql_line=stripslashes_deep($sql_line);
+         }
+         if (!empty($sql_line)) {
+            if (!$this->query($sql_line)) {
+               return false;
+            }
+         }
       }
+      return true;
    }
 
    /**
