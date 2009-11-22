@@ -2025,7 +2025,8 @@ function showJobDetails($target, $ID,$array=array()) {
          dropdownMyDevices($array["users_id"],$job->fields["entities_id"],
                            $job->fields["itemtype"], $job->fields["items_id"]);
       }
-      dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
+      dropdownTrackingAllDevices("itemtype", $job->fields["itemtype"], $job->fields["items_id"],
+                                 1, $job->fields["entities_id"]);
    } else {
       echo $item->getType()." ".$item->getNameID();
    }
