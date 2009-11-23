@@ -113,9 +113,12 @@ function doHook ($name,$param=NULL) {
          if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
             include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
          }
-         if (function_exists($function)) {
-            $function($data);
+         if (is_callable($function)) {
+            call_user_func($function,$data);
          }
+         //if (function_exists($function)) {
+         //   $function($data);
+         //}
       }
    }
    /* Variable-length argument lists have a slight problem when */
