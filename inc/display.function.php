@@ -856,7 +856,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    /// Prefs / Logout link
    echo "<div id='c_preference' >";
-   echo "<ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php";
+   echo "<ul>";
+
+   echo "<li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php";
    /// logout witout noAuto login for extauth
    if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
       echo "?noAUTO=1";
@@ -867,12 +869,19 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                         $_SESSION["glpifirstname"],0,20);
    echo ")</li>\n";
 
+
+
+
    echo "<li><a href='".
          (empty($CFG_GLPI["central_doc_url"])?"http://glpi-project.org/help-central":$CFG_GLPI["central_doc_url"]).
          "' target='_blank' title='".$LANG['central'][7]."'>".$LANG['central'][7]."</a></li>";
 
    echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".
               $LANG['Menu'][11]."\" >".$LANG['Menu'][11]."</a></li>";
+
+   // Temporary autoload test
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php?toggle_autoload=1'>".(isset($_SESSION['glpiautoload'])&&$_SESSION['glpiautoload']?"Disable autoload":"Activate Autoload")."</a></li>";
+
    echo "</ul>";
    echo "<div class='sep'></div>";
    echo "</div>\n";
