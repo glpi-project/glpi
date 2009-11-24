@@ -311,7 +311,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        CONSUMABLEITEM_TYPE               => 'glpi_consumableitems',
                        CONSUMABLE_TYPE                   => 'glpi_consumables',
                        CARTRIDGE_TYPE                    => 'glpi_cartridges',
-                       SOFTWARELICENSE_TYPE              => 'glpi_softwareslicenses',
+                       SOFTWARELICENSE_TYPE              => 'glpi_softwarelicenses',
                        LINK_TYPE                         => 'glpi_links',
                        STATE_TYPE                        => '',
                        PHONE_TYPE                        => 'glpi_phones',
@@ -330,11 +330,11 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        RULE_TYPE                         => 'glpi_rules',
                        TRANSFER_TYPE                     => 'glpi_transfers',
                        BOOKMARK_TYPE                     => 'glpi_bookmarks',
-                       SOFTWAREVERSION_TYPE              => 'glpi_softwaresversions',
+                       SOFTWAREVERSION_TYPE              => 'glpi_softwareversions',
                        PLUGIN_TYPE                       => 'glpi_plugins',
                        COMPUTERDISK_TYPE                 => 'glpi_computerdisks',
                        NETWORKING_PORT_TYPE              => 'glpi_networkports',
-                       FOLLOWUP_TYPE                     => 'glpi_ticketsfollowups',
+                       FOLLOWUP_TYPE                     => 'glpi_ticketfollowups',
                        BUDGET_TYPE                       => 'glpi_budgets',
                        CONTRACTITEM_TYPE                 => 'glpi_contracts_items',
                        CONTACTSUPPLIER_TYPE              => 'glpi_contacts_suppliers',
@@ -342,8 +342,8 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        DOCUMENTITEM_TYPE                 => 'glpi_documents_items',
                        CRONTASK_TYPE                     => 'glpi_crontasks',
                        CRONTASKLOG_TYPE                  => 'glpi_crontasklogs',
-                       TICKETCATEGORY_TYPE               => 'glpi_ticketscategories',
-                       TASKCATEGORY_TYPE                 => 'glpi_taskscategories',
+                       TICKETCATEGORY_TYPE               => 'glpi_ticketcategories',
+                       TASKCATEGORY_TYPE                 => 'glpi_taskcategories',
                        LOCATION_TYPE                     => 'glpi_locations',
                        NETPOINT_TYPE                     => 'glpi_netpoints',
                        ITEMSTATE_TYPE                    => 'glpi_states',
@@ -367,7 +367,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        CONTRACTTYPE_TYPE                 => 'glpi_contracttypes',
                        CONTACTTYPE_TYPE                  => 'glpi_contacttypes',
                        DEVICEMEMORYTYPE_TYPE             => 'glpi_devicememorytypes',
-                       SUPPLIERTYPE_TYPE                 => 'glpi_supplierstypes',
+                       SUPPLIERTYPE_TYPE                 => 'glpi_suppliertypes',
                        INTERFACESTYPE_TYPE               => 'glpi_interfacetypes',
                        DEVICECASETYPE_TYPE               => 'glpi_devicecasetypes',
                        PHONEPOWERSUPPLY_TYPE             => 'glpi_phonepowersupplies',
@@ -383,9 +383,9 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        DOMAIN_TYPE                       => 'glpi_domains',
                        NETWORK_TYPE                      => 'glpi_networks',
                        VLAN_TYPE                         => 'glpi_vlans',
-                       SOFTWARECATEGORY_TYPE             => 'glpi_softwarescategories',
-                       USERTITLE_TYPE                    => 'glpi_userstitles',
-                       USERCATEGORY_TYPE                 => 'glpi_userscategories');
+                       SOFTWARECATEGORY_TYPE             => 'glpi_softwarecategories',
+                       USERTITLE_TYPE                    => 'glpi_usertitles',
+                       USERCATEGORY_TYPE                 => 'glpi_usercategories');
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -570,8 +570,8 @@ $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monit
                                      'reservation_types','state_types');
 
 $CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemcategories',
-                                         'glpi_locations', 'glpi_taskscategories',
-                                         'glpi_ticketscategories');
+                                         'glpi_locations', 'glpi_taskcategories',
+                                         'glpi_ticketcategories');
 
 $CFG_GLPI["state_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                  PERIPHERAL_TYPE, PHONE_TYPE);
@@ -620,8 +620,8 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems'
       'glpi_consumableitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
       'glpi_links','glpi_locations','glpi_mailcollectors','glpi_monitors','glpi_netpoints',
       'glpi_networkequipments','glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
-      'glpi_softwareslicenses','glpi_suppliers','glpi_tickets','glpi_taskscategories',
-      'glpi_ticketscategories','reservation_types','state_types');
+      'glpi_softwarelicenses','glpi_suppliers','glpi_tickets','glpi_taskcategories',
+      'glpi_ticketcategories','reservation_types','state_types');
 
 $CFG_GLPI["union_search_type"] = array(RESERVATION_TYPE=>"reservation_types",
                                        STATE_TYPE=>"state_types");
@@ -634,12 +634,12 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     CONTRACT_TYPE        => "glpi_contracts",
                                     DOCUMENT_TYPE        => "glpi_documents",
                                     KNOWBASE_TYPE        => "glpi_knowbaseitems",
-                                    SOFTWARELICENSE_TYPE => "glpi_softwareslicenses",
+                                    SOFTWARELICENSE_TYPE => "glpi_softwarelicenses",
                                     LINK_TYPE            => "glpi_links",
                                     GROUP_TYPE           => "glpi_groups",
                                     BUDGET_TYPE          => "glpi_budgets",
-                                    TICKETCATEGORY_TYPE  => "glpi_ticketscategories",
-                                    TASKCATEGORY_TYPE    => "glpi_taskscategories",
+                                    TICKETCATEGORY_TYPE  => "glpi_ticketcategories",
+                                    TASKCATEGORY_TYPE    => "glpi_taskcategories",
                                     LOCATION_TYPE        => "glpi_locations");
 
 

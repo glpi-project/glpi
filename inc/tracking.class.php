@@ -118,20 +118,20 @@ class Job extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `glpi_ticketsfollowups`
+                FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '$ID'";
       $result=$DB->query($query);
 
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
             $querydel = "DELETE
-                         FROM `glpi_ticketsplannings`
-                         WHERE `ticketsfollowups_id` = '".$data['id']."'";
+                         FROM `glpi_ticketplannings`
+                         WHERE `ticketfollowups_id` = '".$data['id']."'";
             $DB->query($querydel);
          }
       }
       $query1 = "DELETE
-                 FROM `glpi_ticketsfollowups`
+                 FROM `glpi_ticketfollowups`
                  WHERE `tickets_id` = '$ID'";
       $DB->query($query1);
    }
@@ -254,7 +254,7 @@ class Job extends CommonDBTM {
                                                              ENTERPRISE_TYPE);
          $input["_old_groups_id_assign_name"] = getAssignName($this->fields["groups_id_assign"],
                                                               GROUP_TYPE);
-         $input["_old_ticketscategories_id"]  = $this->fields["ticketscategories_id"];
+         $input["_old_ticketcategories_id"]  = $this->fields["ticketcategories_id"];
          $input["_old_items_id"]       = $this->fields["items_id"];
          $input["_old_itemtype"]       = $this->fields["itemtype"];
          $input["_old_users_id"]       = $this->fields["users_id"];
@@ -467,14 +467,14 @@ class Job extends CommonDBTM {
                      $global_mail_change_count++;
                      break;
 
-                  case "ticketscategories_id" :
-                     $new_ticketscategories_id = $this->fields["ticketscategories_id"];
+                  case "ticketcategories_id" :
+                     $new_ticketcategories_id = $this->fields["ticketcategories_id"];
                      $old_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      getDropdownName("glpi_ticketscategories",
-                                                                      $input["_old_ticketscategories_id"]));
+                                                      getDropdownName("glpi_ticketcategories",
+                                                                      $input["_old_ticketcategories_id"]));
                      $new_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      getDropdownName("glpi_ticketscategories",
-                                                                      $new_ticketscategories_id));
+                                                      getDropdownName("glpi_ticketcategories",
+                                                                      $new_ticketcategories_id));
                      $change_followup_content .= $LANG['mailing'][14]."&nbsp;: ".
                                                  $old_category_name." -> ".$new_category_name."\n";
                      $global_mail_change_count++;
@@ -665,7 +665,7 @@ class Job extends CommonDBTM {
             $mandatory_ok=false;
          }
          if ($CFG_GLPI["is_ticket_category_mandatory"]
-             && (!isset($input['ticketscategories_id']) || empty($input['ticketscategories_id']))) {
+             && (!isset($input['ticketcategories_id']) || empty($input['ticketcategories_id']))) {
 
             addMessageAfterRedirect($LANG['help'][41],false,ERROR);
             $mandatory_ok=false;
@@ -714,7 +714,7 @@ class Job extends CommonDBTM {
       // Set default dropdown
       $dropdown_fields = array('entities_id','groups_id','groups_id_assign', 'itemtype','items_id',
                                'users_id','users_id_assign', 'suppliers_id_assign',
-                               'ticketscategories_id');
+                               'ticketcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field]=0;
@@ -745,11 +745,11 @@ class Job extends CommonDBTM {
          }
 
          // Auto assign tech/group from Category
-         if ($input['ticketscategories_id']>0
+         if ($input['ticketcategories_id']>0
              && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
 
             $cat = new TicketCategory();
-            $cat->getFromDB($input['ticketscategories_id']);
+            $cat->getFromDB($input['ticketcategories_id']);
             if (!$input['users_id_assign'] && $tmp=$cat->getField('users_id')) {
                $input['users_id_assign'] = $tmp;
             }
@@ -894,7 +894,7 @@ class Job extends CommonDBTM {
       }
       // Set number of followups
       $query = "SELECT count(*)
-                FROM `glpi_ticketsfollowups`
+                FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '".$this->fields["id"]."'
                       $RESTRICT";
       $result = $DB->query($query);
@@ -914,7 +914,7 @@ class Job extends CommonDBTM {
 
       // update Status of Job
       $query = "SELECT SUM(`realtime`)
-                FROM `glpi_ticketsfollowups`
+                FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '$ID'";
 
       if ($result = $DB->query($query)) {
@@ -961,7 +961,7 @@ class Job extends CommonDBTM {
       // get the last followup for this job and give its content as
       if (isset($this->fields["id"])) {
          $query = "SELECT *
-                   FROM `glpi_ticketsfollowups`
+                   FROM `glpi_ticketfollowups`
                    WHERE `tickets_id` = '".$this->fields["id"]."' ".
                          ($sendprivate?"":" AND `is_private` = '0' ")."
                    ORDER by `date` DESC";
@@ -993,8 +993,8 @@ class Job extends CommonDBTM {
                                "text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
 
                   $query2 = "SELECT *
-                             FROM `glpi_ticketsplannings`
-                             WHERE `ticketsfollowups_id` = '".$data['id']."'";
+                             FROM `glpi_ticketplannings`
+                             WHERE `ticketfollowups_id` = '".$data['id']."'";
                   $result2=$DB->query($query2);
 
                   if ($DB->numrows($result2)==0) {
@@ -1025,8 +1025,8 @@ class Job extends CommonDBTM {
                   $message .= $LANG['mailing'][25]." ";
 
                   $query2 = "SELECT *
-                             FROM `glpi_ticketsplannings`
-                             WHERE `ticketsfollowups_id` = '".$data['id']."'";
+                             FROM `glpi_ticketplannings`
+                             WHERE `ticketfollowups_id` = '".$data['id']."'";
                   $result2=$DB->query($query2);
 
                   if ($DB->numrows($result2)==0) {
@@ -1152,11 +1152,11 @@ class Job extends CommonDBTM {
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['common'][36]."&nbsp;:</span> ";
 
-         if (isset($this->fields["ticketscategories_id"])
-             && $this->fields["ticketscategories_id"]) {
+         if (isset($this->fields["ticketcategories_id"])
+             && $this->fields["ticketcategories_id"]) {
 
-            $message .= getDropdownName("glpi_ticketscategories",
-                                        $this->fields["ticketscategories_id"]);
+            $message .= getDropdownName("glpi_ticketcategories",
+                                        $this->fields["ticketcategories_id"]);
          } else {
             $message .= $LANG['mailing'][100];
          }
@@ -1208,12 +1208,12 @@ class Job extends CommonDBTM {
             $message .= mailRow($LANG['mailing'][103],$LANG['choice'][0]);
          }
 
-         if (isset($this->fields["ticketscategories_id"])
-             && $this->fields["ticketscategories_id"]) {
+         if (isset($this->fields["ticketcategories_id"])
+             && $this->fields["ticketcategories_id"]) {
 
             $message .= mailRow($LANG['common'][36],
-                                getDropdownName("glpi_ticketscategories",
-                                                $this->fields["ticketscategories_id"]));
+                                getDropdownName("glpi_ticketcategories",
+                                                $this->fields["ticketcategories_id"]));
          } else {
             $message .= mailRow($LANG['common'][36],$LANG['mailing'][100]);
          }
@@ -1381,9 +1381,9 @@ class Job extends CommonDBTM {
       $tab[8]['linkfield'] = 'groups_id_assign';
       $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
 
-      $tab[7]['table']     = 'glpi_ticketscategories';
+      $tab[7]['table']     = 'glpi_ticketcategories';
       $tab[7]['field']     = 'name';
-      $tab[7]['linkfield'] = 'ticketscategories_id';
+      $tab[7]['linkfield'] = 'ticketcategories_id';
       $tab[7]['name']      = $LANG['common'][36];
 
       $tab[9]['table']     = 'glpi_requesttypes';
@@ -1402,15 +1402,15 @@ class Followup  extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_ticketsfollowups';
+   public $table = 'glpi_ticketfollowups';
    public $type = FOLLOWUP_TYPE;
 
    function cleanDBonPurge($ID) {
       global $DB;
 
       $querydel = "DELETE
-                   FROM `glpi_ticketsplannings`
-                   WHERE `ticketsfollowups_id` = '$ID'";
+                   FROM `glpi_ticketplannings`
+                   WHERE `ticketfollowups_id` = '$ID'";
       $DB->query($querydel);
    }
 
@@ -1468,7 +1468,7 @@ class Followup  extends CommonDBTM {
          $pt = new PlanningTracking();
          // Update case
          if (isset($input["_plan"]["id"])) {
-            $input["_plan"]['ticketsfollowups_id'] = $input["id"];
+            $input["_plan"]['ticketfollowups_id'] = $input["id"];
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = $mailsend;
 
@@ -1478,7 +1478,7 @@ class Followup  extends CommonDBTM {
             unset($input["_plan"]);
          // Add case
          } else {
-            $input["_plan"]['ticketsfollowups_id'] = $input["id"];
+            $input["_plan"]['ticketfollowups_id'] = $input["id"];
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = 1;
 
@@ -1575,7 +1575,7 @@ class Followup  extends CommonDBTM {
 
       if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input["_plan"])) {
-            $input["_plan"]['ticketsfollowups_id'] = $newID;
+            $input["_plan"]['ticketfollowups_id'] = $newID;
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = 1;
             $pt = new PlanningTracking();

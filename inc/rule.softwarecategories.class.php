@@ -43,7 +43,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
    public $sub_type = RULE_SOFTWARE_CATEGORY;
    public $rule_class_name = 'SoftwareCategoriesRule';
    public $stop_on_first_match=true;
-   public $right='rule_softwarescategories';
+   public $right='rule_softwarecategories';
    public $menu_option='softwarecategories';
 
 
@@ -85,7 +85,7 @@ class SoftwareCategoriesRule extends Rule {
 
    // From Rule
    public $sub_type = RULE_SOFTWARE_CATEGORY;
-   public $right='rule_softwarescategories';
+   public $right='rule_softwarecategories';
    public $can_sort=true;
 
    function getTitle() {

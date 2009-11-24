@@ -185,13 +185,13 @@ else
 
 if (isset($_POST["install"])){
 	checkRight("software","w");
-	installSoftwareVersion($_POST["computers_id"],$_POST["softwaresversions_id"]);
+	installSoftwareVersion($_POST["computers_id"],$_POST["softwareversions_id"]);
 	logEvent($_POST["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["install"])){
 	checkRight("software","w");
-	installSoftwareVersion($_GET["computers_id"],$_GET["softwaresversions_id"]);
+	installSoftwareVersion($_GET["computers_id"],$_GET["softwareversions_id"]);
 	logEvent($_GET["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

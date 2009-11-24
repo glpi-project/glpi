@@ -189,7 +189,7 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("rule_ticket",$right)
                 || haveRight("rule_ocs",$right)
                 || haveRight("rule_ldap",$right)
-                || haveRight("rule_softwarescategories",$right);
+                || haveRight("rule_softwarecategories",$right);
 
       case TRANSFER_TYPE :
          return haveRight("transfer",$right);

@@ -240,7 +240,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $search=makeTextSearch($_POST['searchText']);
       $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
-      if ($_POST['table']=="glpi_softwareslicenses") {
+      if ($_POST['table']=="glpi_softwarelicenses") {
          $where.=" OR `glpi_softwares`.`name` ".$search;
       }
       $where.=')';
@@ -255,13 +255,13 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
                    $where";
          break;
 
-      case "glpi_softwareslicenses" :
+      case "glpi_softwarelicenses" :
          $query = "SELECT `".$_POST['table']."`.*,
-                          CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwareslicenses`.`name`)
+                          CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwarelicenses`.`name`)
                                  AS $field
                    FROM `".$_POST['table']."`
                    LEFT JOIN `glpi_softwares`
-                        ON (`glpi_softwareslicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
                    $where";
          break;
 

@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')){
 class PlanningTracking extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_ticketsplannings';
+   public $table = 'glpi_ticketplannings';
 
    function prepareInputForUpdate($input) {
 
@@ -82,7 +82,7 @@ class PlanningTracking extends CommonDBTM {
 
       // Auto update realtime
       $fup=new Followup();
-      $fup->getFromDB($input["ticketsfollowups_id"]);
+      $fup->getFromDB($input["ticketfollowups_id"]);
       $tmp_beg=explode(" ",$input["begin"]);
       $tmp_end=explode(" ",$input["end"]);
       $tmp_dbeg=explode("-",$tmp_beg[0]);
@@ -141,7 +141,7 @@ class PlanningTracking extends CommonDBTM {
 
       // Auto update realtime
       $fup=new Followup();
-      $fup->getFromDB($input["ticketsfollowups_id"]);
+      $fup->getFromDB($input["ticketfollowups_id"]);
       if ($fup->fields["realtime"]==0) {
          $tmp_beg=explode(" ",$this->fields["begin"]);
          $tmp_end=explode(" ",$this->fields["end"]);
@@ -178,7 +178,7 @@ class PlanningTracking extends CommonDBTM {
 
             // Auto update realtime
             $fup=new Followup();
-            $fup->getFromDB($this->fields["ticketsfollowups_id"]);
+            $fup->getFromDB($this->fields["ticketfollowups_id"]);
             $updates2[]="realtime";
             $fup->fields["realtime"]=0;
             $fup->updateInDB($updates2);

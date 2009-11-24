@@ -752,8 +752,8 @@ class User extends CommonDBTM {
                      // Not set value : managed but user class
                      break;
 
-                  case "userstitles_id" :
-                  case "userscategories_id" :
+                  case "usertitles_id" :
+                  case "usercategories_id" :
                      $this->fields[$k] = 0;
                      break;
 
@@ -769,8 +769,8 @@ class User extends CommonDBTM {
                      }
                      break;
 
-                  case "userstitles_id" :
-                  case "userscategories_id" :
+                  case "usertitles_id" :
+                  case "usercategories_id" :
                      $this->fields[$k] = externalImportDropdown(getTableNameForForeignKeyField($k),
                                                                 addslashes($v[0][$e][0]), -1,
                                                                 array(), '', true);
@@ -1138,8 +1138,8 @@ class User extends CommonDBTM {
       autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_userscategories", "userscategories_id",
-                    $this->fields["userscategories_id"], 1, -1);
+      dropdownValue("glpi_usercategories", "usercategories_id",
+                    $this->fields["usercategories_id"], 1, -1);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1162,7 +1162,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_userstitles", "userstitles_id", $this->fields["userstitles_id"], 1, -1);
+      dropdownValue("glpi_usertitles", "usertitles_id", $this->fields["usertitles_id"], 1, -1);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
@@ -1544,14 +1544,14 @@ class User extends CommonDBTM {
       $tab[80]['name']         = $LANG['entity'][0];
       $tab[80]['forcegroupby'] = true;
 
-      $tab[81]['table']     = 'glpi_userstitles';
+      $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
-      $tab[81]['linkfield'] = 'userstitles_id';
+      $tab[81]['linkfield'] = 'usertitles_id';
       $tab[81]['name']      = $LANG['users'][1];
 
-      $tab[82]['table']     = 'glpi_userscategories';
+      $tab[82]['table']     = 'glpi_usercategories';
       $tab[82]['field']     = 'name';
-      $tab[82]['linkfield'] = 'userscategories_id';
+      $tab[82]['linkfield'] = 'usercategories_id';
       $tab[82]['name']      = $LANG['users'][2];
 
       return $tab;

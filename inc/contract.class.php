@@ -516,7 +516,7 @@ class Contract extends CommonDBTM {
       $query = "SELECT `glpi_contracts_suppliers`.`id`, `glpi_suppliers`.`id` AS entID,
                        `glpi_suppliers`.`name` AS name, `glpi_suppliers`.`website` AS website,
                        `glpi_suppliers`.`phonenumber` AS phone,
-                       `glpi_suppliers`.`supplierstypes_id` AS type, `glpi_entities`.`id` AS entity
+                       `glpi_suppliers`.`suppliertypes_id` AS type, `glpi_entities`.`id` AS entity
                 FROM `glpi_contracts_suppliers`, `glpi_suppliers`
                 LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
                 WHERE `glpi_contracts_suppliers`.`contracts_id` = '$instID'
@@ -562,7 +562,7 @@ class Contract extends CommonDBTM {
          echo "</a></td>";
          echo "<td class='center'>".getDropdownName("glpi_entities",$entity)."</td>";
          echo "<td class='center'>";
-         echo getDropdownName("glpi_supplierstypes",$DB->result($result, $i, "type"))."</td>";
+         echo getDropdownName("glpi_suppliertypes",$DB->result($result, $i, "type"))."</td>";
          echo "<td class='center'>".$DB->result($result, $i, "phone")."</td>";
          echo "<td class='center'>".$website."</td>";
          echo "<td class='tab_bg_2 center'>";

@@ -77,7 +77,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             echo " ".$LANG['financial'][57];
             break;
 
-         case "glpi_softwareslicenses.number" :
+         case "glpi_softwarelicenses.number" :
             dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
             break;
 
@@ -195,10 +195,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
          break;
 
-         case "glpi_softwaresversions":
+         case "glpi_softwareversions":
             switch ($search["linkfield"]) {
-               case "softwaresversions_id_use" :
-               case "softwaresversions_id_buy" :
+               case "softwareversions_id_use" :
+               case "softwareversions_id_buy" :
                   $_POST['softwares_id']=$_POST['extra_softwares_id'];
                   $_POST['myname']=$search['linkfield'];
                   include("dropdownInstallVersion.php");

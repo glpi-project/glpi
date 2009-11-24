@@ -633,8 +633,8 @@ function getLDAPSyncFields($authtype_array) {
                    'phone2_field'    => 'phone2',
                    'mobile_field'    => 'mobile',
                    'comment_field'   => 'comment',
-                   'title_field'     => 'userstitles_id',
-                   'category_field'  => 'userscategories_id',
+                   'title_field'     => 'usertitles_id',
+                   'category_field'  => 'usercategories_id',
                    'language_field'  => 'language');
 
    foreach ($fields as $key => $val) {

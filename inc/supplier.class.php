@@ -126,7 +126,7 @@ class Supplier extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_supplierstypes", "supplierstypes_id", $this->fields["supplierstypes_id"]);
+      dropdownValue("glpi_suppliertypes", "suppliertypes_id", $this->fields["suppliertypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -263,9 +263,9 @@ class Supplier extends CommonDBTM {
       $tab[6]['name']      = $LANG['setup'][14];
       $tab[6]['datatype']  = 'email';
 
-      $tab[9]['table']     = 'glpi_supplierstypes';
+      $tab[9]['table']     = 'glpi_suppliertypes';
       $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'supplierstypes_id';
+      $tab[9]['linkfield'] = 'suppliertypes_id';
       $tab[9]['name']      = $LANG['financial'][79];
 
       $tab[8]['table']         = 'glpi_contacts';

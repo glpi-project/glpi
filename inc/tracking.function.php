@@ -59,7 +59,7 @@ function &getTrackingSortOptions() {
       $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
       $items[$LANG['common'][1]]    = "glpi_tickets.itemtype,glpi_tickets.items_id";
-      $items[$LANG['common'][36]]   = "glpi_ticketscategories.completename";
+      $items[$LANG['common'][36]]   = "glpi_ticketcategories.completename";
       $items[$LANG['common'][57]]   = "glpi_tickets.name";
    }
    return ($items);
@@ -794,7 +794,7 @@ function getTrackingFormFields($_POST) {
                    'itemtype'             => 0,
                    'users_id_assign'      => 0,
                    'groups_id_assign'     => 0,
-                   'ticketscategories_id' => 0,
+                   'ticketcategories_id' => 0,
                    'priority'             => 3,
                    'hour'                 => 0,
                    'minute'               => 0,
@@ -825,7 +825,7 @@ function getRealtime($realtime) {
 
 
 function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch='',$search='',
-                                  $group=-1,$showfollowups=0,$ticketscategories_id=0) {
+                                  $group=-1,$showfollowups=0,$ticketcategories_id=0) {
    global $CFG_GLPI,  $LANG;
 
    echo "<div class='center' >";
@@ -872,7 +872,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    if ($extended) {
       echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      dropdownValue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
+      dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td class='center' colspan='2'>";
@@ -914,7 +914,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
 
 function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",
-                            $users_id=0,$group=0,$showfollowups=0,$ticketscategories_id=0,
+                            $users_id=0,$group=0,$showfollowups=0,$ticketcategories_id=0,
                             $users_id_assign=0,$suppliers_id_assign=0,$groups_id_assign=0,
                             $priority=0,$requesttypes_id=0,$items_id=0,$itemtype=0,$field="",
                             $contains="",$date1="",$date2="",$computers_search="",$enddate1="",
@@ -990,7 +990,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['common'][36]."&nbsp;:<br>";
-   dropdownValue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
+   dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][44]."&nbsp;:<br>";
@@ -1146,7 +1146,7 @@ function getCommonSelectForTrackingSearch() {
    }
 
    return " DISTINCT `glpi_tickets`.*,
-                     `glpi_ticketscategories`.`completename` AS catname,
+                     `glpi_ticketcategories`.`completename` AS catname,
                      `glpi_groups`.`name` AS groupname
                      $SELECT";
 }
@@ -1160,14 +1160,14 @@ function getCommonLeftJoinForTrackingSearch() {
    }
 
    return " LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id` = `glpi_groups`.`id`)
-            LEFT JOIN `glpi_ticketscategories`
-               ON (`glpi_tickets`.`ticketscategories_id` = `glpi_ticketscategories`.`id`)
+            LEFT JOIN `glpi_ticketcategories`
+               ON (`glpi_tickets`.`ticketcategories_id` = `glpi_ticketcategories`.`id`)
             $FROM";
 }
 
 
 function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",
-                          $search="",$users_id=0,$group=0,$showfollowups=0,$ticketscategories_id=0,
+                          $search="",$users_id=0,$group=0,$showfollowups=0,$ticketcategories_id=0,
                           $users_id_assign=0,$suppliers_id_assign=0,$groups_id_assign=0,$priority=0,
                           $requesttypes_id=0,$items_id=0,$itemtype=0,$field="",$contains="",$date1="",
                           $date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",
@@ -1248,8 +1248,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
              getCommonLeftJoinForTrackingSearch();
 
    if ($search!="" && strpos($tosearch,"followup")!==false) {
-      $FROM .= " LEFT JOIN `glpi_ticketsfollowups`
-                     ON (`glpi_ticketsfollowups`.`tickets_id` = `glpi_tickets`.`id`)";
+      $FROM .= " LEFT JOIN `glpi_ticketfollowups`
+                     ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)";
    }
    $where = " WHERE ";
 
@@ -1299,9 +1299,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
          $where .= " (1)";
    }
 
-   if ($ticketscategories_id > 0) {
-      $where .= " AND ".getRealQueryForTreeItem("glpi_ticketscategories",$ticketscategories_id,
-                                                "glpi_tickets.ticketscategories_id");
+   if ($ticketcategories_id > 0) {
+      $where .= " AND ".getRealQueryForTreeItem("glpi_ticketcategories",$ticketcategories_id,
+                                                "glpi_tickets.ticketcategories_id");
    }
 
    if ($date1 || $date2) {
@@ -1403,7 +1403,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
       $first = true;
       if (strpos($tosearch,"followup")!== false) {
          $first = false;
-         $TMPWHERE.= " OR `glpi_ticketsfollowups`.`content` $SEARCH2 ";
+         $TMPWHERE.= " OR `glpi_ticketfollowups`.`content` $SEARCH2 ";
       }
       if (strpos($tosearch,"name")!== false) {
          if ($first) {
@@ -1515,8 +1515,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                         "&amp;search=$search&amp;users_id_assign=$users_id_assign".
                         "&amp;suppliers_id_assign=$suppliers_id_assign&amp;groups_id_assign=".
                         "$groups_id_assign&amp;users_id=$users_id&amp;group=$group&amp;start=".
-                        "$start&amp;status=$status&amp;ticketscategories_id=".
-                        "$ticketscategories_id&amp;priority=$priority&amp;itemtype=$itemtype&amp;".
+                        "$start&amp;status=$status&amp;ticketcategories_id=".
+                        "$ticketcategories_id&amp;priority=$priority&amp;itemtype=$itemtype&amp;".
                         "showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=".
                         "$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;items_id=".
                         "$items_id&amp;requesttypes_id=$requesttypes_id";
@@ -1643,9 +1643,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                $title .= " - ".$LANG['job'][44]." = ".getDropdownName('glpi_requesttypes',
                                                                       $requesttypes_id);
             }
-            if ($ticketscategories_id!=0) {
-               $title .= " - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",
-                                                                         $ticketscategories_id);
+            if ($ticketcategories_id!=0) {
+               $title .= " - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketcategories",
+                                                                         $ticketcategories_id);
             }
             if ($priority!=0) {
                $title .= " - ".$LANG['joblist'][2]." = ".getPriorityName($priority);
@@ -1697,7 +1697,7 @@ function showFollowupsShort($ID) {
 
    // Get Number of Followups
    $query = "SELECT *
-             FROM `glpi_ticketsfollowups`
+             FROM `glpi_ticketfollowups`
              WHERE `tickets_id` = '$ID'
                    $RESTRICT
              ORDER BY `date` DESC";
@@ -1766,7 +1766,7 @@ function showJobDetails($target, $ID,$array=array()) {
       $job->fields["groups_id_assign"]     = $array["groups_id_assign"];
       $job->fields["name"]                 = $array["name"];
       $job->fields["content"]              = $array["content"];
-      $job->fields["ticketscategories_id"] = $array["ticketscategories_id"];
+      $job->fields["ticketcategories_id"] = $array["ticketcategories_id"];
       $job->fields["priority"]             = $array["priority"];
       $job->fields["requesttypes_id"]      = $array["requesttypes_id"];
       $job->fields["hour"]                 = $array["hour"];
@@ -1956,10 +1956,10 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][36]."&nbsp;: </td>";
    echo "<td >";
    if ($canupdate) {
-      dropdownValue("glpi_ticketscategories","ticketscategories_id",
-                    $job->fields["ticketscategories_id"],1,$job->fields["entities_id"]);
+      dropdownValue("glpi_ticketcategories","ticketcategories_id",
+                    $job->fields["ticketcategories_id"],1,$job->fields["entities_id"]);
    } else {
-      echo getDropdownName("glpi_ticketscategories",$job->fields["ticketscategories_id"]);
+      echo getDropdownName("glpi_ticketcategories",$job->fields["ticketcategories_id"]);
    }
    echo "</td>";
    if (haveRight("assign_ticket","1")) {
@@ -2326,7 +2326,7 @@ function showFollowupsSummary($tID) {
                          OR `users_id` ='".$_SESSION["glpiID"]."') ";
    }
    $query = "SELECT *
-             FROM `glpi_ticketsfollowups`
+             FROM `glpi_ticketfollowups`
              WHERE `tickets_id` = '$tID'
                    $RESTRICT
              ORDER BY `date` DESC";
@@ -2383,8 +2383,8 @@ function showFollowupsSummary($tID) {
          }
          echo "<td>";
          $query2 = "SELECT *
-                    FROM `glpi_ticketsplannings`
-                    WHERE `ticketsfollowups_id` = '".$data['id']."'";
+                    FROM `glpi_ticketplannings`
+                    WHERE `ticketfollowups_id` = '".$data['id']."'";
          $result2=$DB->query($query2);
 
          if ($DB->numrows($result2)==0) {
@@ -2678,8 +2678,8 @@ function showUpdateFollowupForm($ID) {
       echo "<tr><td>".$LANG['job'][35]."</td>";
       echo "<td>";
       $query2 = "SELECT *
-                 FROM `glpi_ticketsplannings`
-                 WHERE `ticketsfollowups_id` = '".$fup->fields['id']."'";
+                 FROM `glpi_ticketplannings`
+                 WHERE `ticketfollowups_id` = '".$fup->fields['id']."'";
       $result2=$DB->query($query2);
 
       if ($DB->numrows($result2)==0) {

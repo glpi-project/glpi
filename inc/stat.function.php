@@ -72,7 +72,7 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervRecipient($date1,$date2);
          break;
 
-      case "ticketscategories_id" :
+      case "ticketcategories_id" :
          $val = getNbIntervCategory($date1,$date2);
          break;
 
@@ -92,11 +92,11 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervRequestType($date1,$date2);
          break;
 
-      case "userstitles_id" :
+      case "usertitles_id" :
          $val = getNbIntervTitleOrType($date1,$date2,true);
          break;
 
-      case "userscategories_id" :
+      case "usercategories_id" :
          $val = getNbIntervTitleOrType($date1,$date2,false);
          break;
 
@@ -312,21 +312,21 @@ function getNbIntervTech($date1,$date2) {
 function getNbIntervTechFollowup($date1,$date2) {
    global $DB;
 
-   $query = "SELECT DISTINCT `glpi_ticketsfollowups`.`users_id` AS users_id,
+   $query = "SELECT DISTINCT `glpi_ticketfollowups`.`users_id` AS users_id,
                     `glpi_users`.`name` AS name, `glpi_users`.`realname` AS realname,
                     `glpi_users`.`firstname` AS firstname
              FROM `glpi_tickets`
-             LEFT JOIN `glpi_ticketsfollowups`
-                       ON (`glpi_tickets`.`id` = `glpi_ticketsfollowups`.`tickets_id`)
-             LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketsfollowups`.`users_id`)".
+             LEFT JOIN `glpi_ticketfollowups`
+                       ON (`glpi_tickets`.`id` = `glpi_ticketfollowups`.`tickets_id`)
+             LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
              getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
    if (!empty($date1)||!empty($date2)) {
       $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
       $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
    }
-   $query .="     AND `glpi_ticketsfollowups`.`users_id` <> '0'
-                  AND `glpi_ticketsfollowups`.`users_id` IS NOT NULL
+   $query .="     AND `glpi_ticketfollowups`.`users_id` <> '0'
+                  AND `glpi_ticketfollowups`.`users_id` IS NOT NULL
               ORDER BY realname, firstname, name";
 
    $result = $DB->query($query);
@@ -462,11 +462,11 @@ function getNbIntervTitleOrType($date1,$date2,$title=true) {
    global $DB;
 
    if ($title) {
-      $table = "glpi_userstitles";
-      $field = "userstitles_id";
+      $table = "glpi_usertitles";
+      $field = "usertitles_id";
    } else {
-      $table = "glpi_userscategories";
-      $field = "userscategories_id";
+      $table = "glpi_usercategories";
+      $field = "usercategories_id";
    }
 
    $query = "SELECT DISTINCT `glpi_users`.`$field`
@@ -600,9 +600,9 @@ function getNbIntervCategory($date1,$date2) {
    global $DB;
 
    // Get all ticket categories for tree merge management
-   $query = "SELECT DISTINCT `glpi_ticketscategories`.`id`,
-                    `glpi_ticketscategories`.`completename` AS category
-             FROM `glpi_ticketscategories`
+   $query = "SELECT DISTINCT `glpi_ticketcategories`.`id`,
+                    `glpi_ticketcategories`.`completename` AS category
+             FROM `glpi_ticketcategories`
              ORDER BY category";
 
    $result = $DB->query($query);
@@ -695,9 +695,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "technicien_followup" :
-         $WHERE .= " AND `glpi_ticketsfollowups`.`users_id` = '$value'";
-         $LEFTJOIN = "LEFT JOIN `glpi_ticketsfollowups`
-                           ON (`glpi_ticketsfollowups`.`tickets_id` = `glpi_tickets`.`id`)";
+         $WHERE .= " AND `glpi_ticketfollowups`.`users_id` = '$value'";
+         $LEFTJOIN = "LEFT JOIN `glpi_ticketfollowups`
+                           ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)";
          break;
 
       case "enterprise" :
@@ -712,13 +712,13 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND `glpi_tickets`.`users_id_recipient` = '$value'";
          break;
 
-      case "ticketscategories_id" :
+      case "ticketcategories_id" :
          if (!empty($value)) {
-            $categories=getSonsOf("glpi_ticketscategories",$value);
+            $categories=getSonsOf("glpi_ticketcategories",$value);
             $condition=implode("','",$categories);
-            $WHERE .= " AND `glpi_tickets`.`ticketscategories_id` IN ('$condition')";
+            $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` IN ('$condition')";
          } else {
-            $WHERE .= " AND `glpi_tickets`.`ticketscategories_id` = '$value' ";
+            $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` = '$value' ";
          }
          break;
 
@@ -738,14 +738,14 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          $WHERE .= " AND `glpi_tickets`.`requesttypes_id` = '$value'";
          break;
 
-      case "userstitles_id" :
+      case "usertitles_id" :
          $LEFTJOIN = "INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`
-                                                  AND `glpi_users`.`userstitles_id` = '$value')";
+                                                  AND `glpi_users`.`usertitles_id` = '$value')";
          break;
 
-      case "userscategories_id" :
+      case "usercategories_id" :
          $LEFTJOIN = "INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`
-                                                  AND `glpi_users`.`userscategories_id` = '$value')";
+                                                  AND `glpi_users`.`usercategories_id` = '$value')";
          break;
 
       case "device":
@@ -817,7 +817,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
       case "inter_avgrealtime" :
          if ($param=="technicien_followup") {
-            $realtime_table = "glpi_ticketsfollowups";
+            $realtime_table = "glpi_ticketfollowups";
          } else {
             $realtime_table = "glpi_tickets";
          }
@@ -845,13 +845,13 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
                                AS date_unix,
                           MIN(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`)
                               - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
-                          MIN(UNIX_TIMESTAMP(`glpi_ticketsfollowups`.`date`)
+                          MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
                               - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST
                    FROM `glpi_tickets`
-                   LEFT JOIN `glpi_ticketsfollowups`
-                        ON (`glpi_ticketsfollowups`.`tickets_id` = `glpi_tickets`.`id`) ";
+                   LEFT JOIN `glpi_ticketfollowups`
+                        ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`) ";
 
-         if (!strstr($LEFTJOIN,"glpi_ticketsfollowups")) {
+         if (!strstr($LEFTJOIN,"glpi_ticketfollowups")) {
             $query .= $LEFTJOIN;
          }
          $query .= "$WHERE

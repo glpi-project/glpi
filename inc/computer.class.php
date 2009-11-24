@@ -385,13 +385,13 @@ class Computer extends CommonDBTM {
          }
 
          // ADD software
-         $query="SELECT `softwaresversions_id`
+         $query="SELECT `softwareversions_id`
                  FROM `glpi_computers_softwareversions`
                  WHERE `computers_id`='".$input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               installSoftwareVersion($newID,$data['softwaresversions_id']);
+               installSoftwareVersion($newID,$data['softwareversions_id']);
             }
          }
 

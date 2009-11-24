@@ -405,7 +405,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 class TicketsCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_ticketscategories';
+   public $table = 'glpi_ticketcategories';
    public $type = TICKETCATEGORY_TYPE;
    public $entity_assign = true;
    public $may_be_recursive = true;
@@ -460,7 +460,7 @@ class TicketsCategory extends CommonTreeDropdown {
 class TasksCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_taskscategories';
+   public $table = 'glpi_taskcategories';
    public $type = TASKCATEGORY_TYPE;
    public $entity_assign = true;
    public $may_be_recursive = true;
@@ -1122,7 +1122,7 @@ class DeviceMemoryType extends CommonDropdown {
 class SupplierType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_supplierstypes';
+   public $table = 'glpi_suppliertypes';
    public $type = SUPPLIERTYPE_TYPE;
 
    static function getTypeName() {
@@ -1346,7 +1346,7 @@ class Vlan extends CommonDropdown {
 class SoftwaresCategory extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_softwarescategories';
+   public $table = 'glpi_softwarecategories';
    public $type = SOFTWARECATEGORY_TYPE;
 
    static function getTypeName() {
@@ -1360,7 +1360,7 @@ class SoftwaresCategory extends CommonDropdown {
 class UsersTitle extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_userstitles';
+   public $table = 'glpi_usertitles';
    public $type = USERTITLE_TYPE;
 
    static function getTypeName() {
@@ -1374,7 +1374,7 @@ class UsersTitle extends CommonDropdown {
 class UsersCategory extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_userscategories';
+   public $table = 'glpi_usercategories';
    public $type = USERCATEGORY_TYPE;
 
    static function getTypeName() {
