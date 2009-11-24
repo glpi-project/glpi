@@ -104,7 +104,7 @@ if (isset($AJAX_INCLUDE)) {
    $HEADER_LOADED=true;
 }
 
-if (isset($_REQUEST['autoload'])){
+if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
 //         $classname="PluginWebapplicationsProfile";
@@ -117,9 +117,10 @@ if (isset($_REQUEST['autoload'])){
          if (file_exists("$dir$item.class.php")) {
             include_once ("$dir$item.class.php");
          }
-         if (file_exists("$dir$item.function.php")) {
+/*         if (file_exists("$dir$item.function.php")) {
             include_once ("$dir$item.function.php");
          }
+*/
    }
 } else {
    if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
