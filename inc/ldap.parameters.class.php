@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class LdapCriteria extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_rulesldapparameters';
+   public $table = 'glpi_ruleldapparameters';
 
    /// Get parameters list
    function getParametersList() {

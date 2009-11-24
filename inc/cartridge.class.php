@@ -83,7 +83,7 @@ class CartridgeType extends CommonDBTM {
       $DB->query($query);
       // Delete all cartridge assoc
       $query2 = "DELETE
-                 FROM `glpi_cartridges_printersmodels`
+                 FROM `glpi_cartridges_printermodels`
                  WHERE `cartridgeitems_id` = '$ID'";
       $result2 = $DB->query($query2);
    }
@@ -154,7 +154,7 @@ class CartridgeType extends CommonDBTM {
 
       if ($cartridgeitems_id>0 && $printersmodels_id>0) {
          $query="INSERT
-                 INTO `glpi_cartridges_printersmodels`
+                 INTO `glpi_cartridges_printermodels`
                       (`cartridgeitems_id`, `printersmodels_id`)
                  VALUES ('$cartridgeitems_id','$printersmodels_id');";
          if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
@@ -178,7 +178,7 @@ class CartridgeType extends CommonDBTM {
       global $DB;
 
       $query="DELETE
-              FROM `glpi_cartridges_printersmodels`
+              FROM `glpi_cartridges_printermodels`
               WHERE `id`= '$ID';";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
          return true;

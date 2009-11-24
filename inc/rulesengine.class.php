@@ -593,10 +593,10 @@ class RuleCollection {
       global $DB;
 
       $input = array();
-      $res = $DB->query("SELECT DISTINCT `glpi_rulescriterias`.`criteria`
-                         FROM `glpi_rulescriterias`, `glpi_rules`
+      $res = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
+                         FROM `glpi_rulecriterias`, `glpi_rules`
                          WHERE `glpi_rules`.`is_active` = '1'
-                               AND `glpi_rulescriterias`.`rules_id`=`glpi_rules`.`id`
+                               AND `glpi_rulecriterias`.`rules_id`=`glpi_rules`.`id`
                                AND `glpi_rules`.`sub_type`='".$this->sub_type."'");
       while ($data = $DB->fetch_array($res)) {
          $input[]=$data["criteria"];
@@ -1423,12 +1423,12 @@ class Rule extends CommonDBTM {
 
       // Delete a rule and all associated criterias and actions
       $sql = "DELETE
-              FROM `glpi_rulesactions`
+              FROM `glpi_ruleactions`
               WHERE `rules_id` = '$ID'";
       $DB->query($sql);
 
       $sql = "DELETE
-              FROM `glpi_rulescriterias`
+              FROM `glpi_rulecriterias`
               WHERE `rules_id` = '$ID'";
       $DB->query($sql);
    }
@@ -1718,7 +1718,7 @@ class Rule extends CommonDBTM {
          }
       }
       if (!$display) {
-         autocompletionTextField($name, "glpi_rulescriterias", "pattern", $value, 40);
+         autocompletionTextField($name, "glpi_rulecriterias", "pattern", $value, 40);
       }
    }
 
@@ -1877,7 +1877,7 @@ class Rule extends CommonDBTM {
 class RuleAction extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_rulesactions';
+   public $table = 'glpi_ruleactions';
 
    /**
     * Get all actions for a given rule
@@ -1888,7 +1888,7 @@ class RuleAction extends CommonDBTM {
       global $DB;
 
       $sql = "SELECT *
-              FROM `glpi_rulesactions`
+              FROM `glpi_ruleactions`
               WHERE `rules_id` = '$ID'";
       $result = $DB->query($sql);
 
@@ -1924,7 +1924,7 @@ class RuleAction extends CommonDBTM {
 /// Criteria Rule class
 class RuleCriteria extends CommonDBTM {
    // From CommonDBTM
-   public $table = 'glpi_rulescriterias';
+   public $table = 'glpi_rulecriterias';
 
    /**
     * Get all criterias for a given rule
@@ -1935,7 +1935,7 @@ class RuleCriteria extends CommonDBTM {
       global $DB;
 
       $sql = "SELECT *
-              FROM `glpi_rulescriterias`
+              FROM `glpi_rulecriterias`
               WHERE `rules_id` = '$ID'";
       $result = $DB->query($sql);
 

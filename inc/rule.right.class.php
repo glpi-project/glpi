@@ -150,7 +150,7 @@ class RightAffectRule extends Rule {
       global $DB,$RULES_CRITERIAS;
 
       $sql = "SELECT `name`, `value`
-              FROM `glpi_rulesldapparameters`";
+              FROM `glpi_ruleldapparameters`";
       $result = $DB->query($sql);
       while ($datas = $DB->fetch_array($result)) {
          $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['name']=$datas["name"];
@@ -305,11 +305,11 @@ class RightAffectRule extends Rule {
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
       $sql = "SELECT `glpi_rules`.`id`
-              FROM `glpi_rulesactions`, `glpi_rules`
-              WHERE `glpi_rulesactions`.`rules_id` = `glpi_rules`.`id`
-                    AND `glpi_rulesactions`.`field` = 'entities_id'
+              FROM `glpi_ruleactions`, `glpi_rules`
+              WHERE `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
+                    AND `glpi_ruleactions`.`field` = 'entities_id'
                     AND `glpi_rules`.`sub_type` = '".$this->sub_type."'
-                    AND `glpi_rulesactions`.`value` = '$ID'";
+                    AND `glpi_ruleactions`.`value` = '$ID'";
       $result = $DB->query($sql);
       while ($rule = $DB->fetch_array($result)) {
          $affect_rule = new Rule;
@@ -456,10 +456,10 @@ class RightRuleCollection extends RuleCollection {
 
       $params = array();
       $sql = "SELECT DISTINCT `value`
-              FROM `glpi_rules`, `glpi_rulescriterias`, `glpi_rulesldapparameters`
+              FROM `glpi_rules`, `glpi_rulecriterias`, `glpi_ruleldapparameters`
               WHERE `glpi_rules`.`sub_type` = '".$this->sub_type."'
-                    AND `glpi_rulescriterias`.`rules_id` = `glpi_rules`.`id`
-                    AND `glpi_rulescriterias`.`criteria` = `glpi_rulesldapparameters`.`value`";
+                    AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
+                    AND `glpi_rulecriterias`.`criteria` = `glpi_ruleldapparameters`.`value`";
       $result = $DB->query($sql);
 
       while ($param = $DB->fetch_array($result)) {

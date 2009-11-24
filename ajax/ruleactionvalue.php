@@ -53,7 +53,7 @@ switch ($_POST["action_type"]) {
    //If a regex value is used, then always display an autocompletiontextfield
    case "regex_result" :
    case "append_regex_result" :
-      autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
+      autocompletionTextField("value", "glpi_ruleactions", "value", "", 40);
       break;
 
    default :
@@ -91,7 +91,7 @@ switch ($_POST["action_type"]) {
          }
       }
       if (!$display) {
-         autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
+         autocompletionTextField("value", "glpi_ruleactions", "value", "", 40);
       }
 }
 

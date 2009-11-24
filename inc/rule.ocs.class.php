@@ -314,11 +314,11 @@ class OcsAffectEntityRule extends Rule {
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
       $sql = "SELECT `glpi_rules`.`id`
-              FROM `glpi_rulesactions`, `glpi_rules`
-              WHERE `glpi_rulesactions`.`rules_id` = `glpi_rules`.`id`
-                    AND `glpi_rulesactions`.`field` = 'entities_id'
+              FROM `glpi_ruleactions`, `glpi_rules`
+              WHERE `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
+                    AND `glpi_ruleactions`.`field` = 'entities_id'
                     AND `glpi_rules`.`sub_type` = '".$this->sub_type."'
-                    AND `glpi_rulesactions`.`value` = '$ID'";
+                    AND `glpi_ruleactions`.`value` = '$ID'";
 
       $result = $DB->query($sql);
       while ($rule = $DB->fetch_array($result)) {

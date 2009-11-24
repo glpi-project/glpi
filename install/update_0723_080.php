@@ -57,10 +57,10 @@ function update0723to080() {
       'glpi_dropdown_budget'              => 'glpi_budgets',
       'glpi_cartridges'                   => 'glpi_cartridges',
       'glpi_cartridges_type'              => 'glpi_cartridgeitems',
-      'glpi_cartridges_assoc'             => 'glpi_cartridges_printersmodels',
+      'glpi_cartridges_assoc'             => 'glpi_cartridges_printermodels',
       'glpi_dropdown_cartridge_type'      => 'glpi_cartridgeitemtypes',
       'glpi_computers'                    => 'glpi_computers',
-      'glpi_computerdisks'                => 'glpi_computersdisks',
+      'glpi_computerdisks'                => 'glpi_computerdisks',
       'glpi_dropdown_model'               => 'glpi_computersmodels',
       'glpi_type_computers'               => 'glpi_computerstypes',
       'glpi_computer_device'              => 'glpi_computers_devices',
@@ -151,26 +151,26 @@ function update0723to080() {
       'glpi_reservation_resa'             => 'glpi_reservations',
       'glpi_reservation_item'             => 'glpi_reservationsitems',
       'glpi_rules_descriptions'           => 'glpi_rules',
-      'glpi_rules_actions'                => 'glpi_rulesactions',
-      'glpi_rule_cache_model_computer'    => 'glpi_rulescachecomputersmodels',
-      'glpi_rule_cache_type_computer'     => 'glpi_rulescachecomputerstypes',
-      'glpi_rule_cache_manufacturer'      => 'glpi_rulescachemanufacturers',
-      'glpi_rule_cache_model_monitor'     => 'glpi_rulescachemonitorsmodels',
-      'glpi_rule_cache_type_monitor'      => 'glpi_rulescachemonitorstypes',
-      'glpi_rule_cache_model_networking'  => 'glpi_rulescachenetworkequipmentsmodels',
-      'glpi_rule_cache_type_networking'   => 'glpi_rulescachenetworkequipmentstypes',
-      'glpi_rule_cache_os'                => 'glpi_rulescacheoperatingsystems',
-      'glpi_rule_cache_os_sp'             => 'glpi_rulescacheoperatingsystemsservicepacks',
-      'glpi_rule_cache_os_version'        => 'glpi_rulescacheoperatingsystemsversions',
-      'glpi_rule_cache_model_peripheral'  => 'glpi_rulescacheperipheralsmodels',
-      'glpi_rule_cache_type_peripheral'   => 'glpi_rulescacheperipheralstypes',
-      'glpi_rule_cache_model_phone'       => 'glpi_rulescachephonesmodels',
-      'glpi_rule_cache_type_phone'        => 'glpi_rulescachephonestypes',
-      'glpi_rule_cache_model_printer'     => 'glpi_rulescacheprintersmodels',
-      'glpi_rule_cache_type_printer'      => 'glpi_rulescacheprinterstypes',
+      'glpi_rules_actions'                => 'glpi_ruleactions',
+      'glpi_rule_cache_model_computer'    => 'glpi_rulecachecomputermodels',
+      'glpi_rule_cache_type_computer'     => 'glpi_rulecachecomputertypes',
+      'glpi_rule_cache_manufacturer'      => 'glpi_rulecachemanufacturers',
+      'glpi_rule_cache_model_monitor'     => 'glpi_rulecachemonitormodels',
+      'glpi_rule_cache_type_monitor'      => 'glpi_rulecachemonitortypes',
+      'glpi_rule_cache_model_networking'  => 'glpi_rulecachenetworkequipmentmodels',
+      'glpi_rule_cache_type_networking'   => 'glpi_rulecachenetworkequipmenttypes',
+      'glpi_rule_cache_os'                => 'glpi_rulecacheoperatingsystems',
+      'glpi_rule_cache_os_sp'             => 'glpi_rulecacheoperatingsystemsservicepacks',
+      'glpi_rule_cache_os_version'        => 'glpi_rulecacheoperatingsystemsversions',
+      'glpi_rule_cache_model_peripheral'  => 'glpi_rulecacheperipheralmodels',
+      'glpi_rule_cache_type_peripheral'   => 'glpi_rulecacheperipheraltypes',
+      'glpi_rule_cache_model_phone'       => 'glpi_rulecachephonemodels',
+      'glpi_rule_cache_type_phone'        => 'glpi_rulecachephonetypes',
+      'glpi_rule_cache_model_printer'     => 'glpi_rulecacheprintermodels',
+      'glpi_rule_cache_type_printer'      => 'glpi_rulecacheprintertypes',
       'glpi_rule_cache_software'          => 'glpi_rulescachesoftwares',
-      'glpi_rules_criterias'              => 'glpi_rulescriterias',
-      'glpi_rules_ldap_parameters'        => 'glpi_rulesldapparameters',
+      'glpi_rules_criterias'              => 'glpi_rulecriterias',
+      'glpi_rules_ldap_parameters'        => 'glpi_ruleldapparameters',
       'glpi_software'                     => 'glpi_softwares',
       'glpi_dropdown_software_category'   => 'glpi_softwarescategories',
       'glpi_softwarelicenses'             => 'glpi_softwareslicenses',
@@ -333,7 +333,7 @@ function update0723to080() {
                            'tables' => array('glpi_bookmarks_users')),
                      ),
    'FK_computers' => array(array('to' => 'computers_id',
-                           'tables' => array('glpi_computers_devices','glpi_computersdisks',
+                           'tables' => array('glpi_computers_devices','glpi_computerdisks',
                                        'glpi_softwareslicenses',)),
                      ),
    'FK_contact' => array(array('to' => 'contacts_id',
@@ -377,11 +377,11 @@ function update0723to080() {
                            'default'=> array('glpi_bookmarks' => "-1")),
                      ),
    'FK_filesystems' => array(array('to' => 'filesystems_id',
-                           'tables' => array('glpi_computersdisks',)),
+                           'tables' => array('glpi_computerdisks',)),
                      ),
    'FK_glpi_cartridges_type' => array(array('to' => 'cartridgeitems_id',
                            'tables' => array('glpi_cartridges',
-                              'glpi_cartridges_printersmodels')),
+                              'glpi_cartridges_printermodels')),
                      ),
    'FK_glpi_consumables_type' => array(array('to' => 'consumablesitems_id',
                            'noindex' => array(''),
@@ -392,8 +392,8 @@ function update0723to080() {
                            'tables' => array('glpi_logs')),
                      ),
    'FK_glpi_dropdown_model_printers' => array(array('to' => 'printersmodels_id',
-                           'noindex' => array('glpi_cartridges_printersmodels'),
-                           'tables' => array('glpi_cartridges_printersmodels',)),
+                           'noindex' => array('glpi_cartridges_printermodels'),
+                           'tables' => array('glpi_cartridges_printermodels',)),
                      ),
    'FK_glpi_enterprise' => array(array('to' => 'manufacturers_id',
                      'tables' => array('glpi_cartridgeitems','glpi_computers',
@@ -434,7 +434,7 @@ function update0723to080() {
                            'tables' => array('glpi_profiles_users','glpi_users')),
                      ),
    'FK_rules' => array(array('to' => 'rules_id',
-                           'tables' => array('glpi_rulescriterias','glpi_rulesactions')),
+                           'tables' => array('glpi_rulecriterias','glpi_ruleactions')),
                      ),
    'FK_tracking' => array(array('to' => 'tickets_id',
                            'tables' => array('glpi_documents')),
@@ -561,15 +561,15 @@ function update0723to080() {
                            'tables' => array('glpi_documents')),
                      ),
    'rule_id' => array(array('to' => 'rules_id',
-                           'tables' => array('glpi_rulescachemanufacturers',
-                              'glpi_rulescachecomputersmodels','glpi_rulescachemonitorsmodels',
-                              'glpi_rulescachenetworkequipmentsmodels','glpi_rulescacheperipheralsmodels',
-                              'glpi_rulescachephonesmodels','glpi_rulescacheprintersmodels',
-                              'glpi_rulescacheoperatingsystems','glpi_rulescacheoperatingsystemsservicepacks',
-                              'glpi_rulescacheoperatingsystemsversions','glpi_rulescachesoftwares',
-                              'glpi_rulescachecomputerstypes','glpi_rulescachemonitorstypes',
-                              'glpi_rulescachenetworkequipmentstypes','glpi_rulescacheperipheralstypes',
-                              'glpi_rulescachephonestypes','glpi_rulescacheprinterstypes',)),
+                           'tables' => array('glpi_rulecachemanufacturers',
+                              'glpi_rulecachecomputermodels','glpi_rulecachemonitormodels',
+                              'glpi_rulecachenetworkequipmentmodels','glpi_rulecacheperipheralmodels',
+                              'glpi_rulecachephonemodels','glpi_rulecacheprintermodels',
+                              'glpi_rulecacheoperatingsystems','glpi_rulecacheoperatingsystemsservicepacks',
+                              'glpi_rulecacheoperatingsystemsversions','glpi_rulescachesoftwares',
+                              'glpi_rulecachecomputertypes','glpi_rulecachemonitortypes',
+                              'glpi_rulecachenetworkequipmenttypes','glpi_rulecacheperipheraltypes',
+                              'glpi_rulecachephonetypes','glpi_rulecacheprintertypes',)),
                      ),
    'server_id' => array(array('to' => 'authldaps_id',
                            'tables' => array('glpi_authldapreplicates')),
@@ -1220,7 +1220,7 @@ function update0723to080() {
                      ),
       'glpi_ticketsplannings' => array(array('from' => 'state', 'to' => 'state', 'default' =>1,),//
                      ),
-      'glpi_rulescriterias' => array(array('from' => 'condition', 'to' => 'condition', 'default' =>0,'comments'=>'see define.php PATTERN_* and REGEX_* constant'),//
+      'glpi_rulecriterias' => array(array('from' => 'condition', 'to' => 'condition', 'default' =>0,'comments'=>'see define.php PATTERN_* and REGEX_* constant'),//
                      ),
       'glpi_rules' => array(array('from' => 'sub_type', 'to' => 'sub_type', 'default' =>0,'comments'=>'see define.php RULE_* constant'),//
                      ),
@@ -1416,10 +1416,10 @@ function update0723to080() {
       $changes['glpi_users'][]="DROP `tracking_order`";
    }
 
-   if (FieldExists('glpi_rulesldapparameters', 'sub_type')) {
-//       $query="ALTER TABLE `glpi_rulesldapparameters` DROP `sub_type`";
-//       $DB->query($query) or die("0.80 drop sub_type field in glpi_rulesldapparameters " . $LANG['update'][90] . $DB->error());
-      $changes['glpi_rulesldapparameters'][]="DROP `sub_type`";
+   if (FieldExists('glpi_ruleldapparameters', 'sub_type')) {
+//       $query="ALTER TABLE `glpi_ruleldapparameters` DROP `sub_type`";
+//       $DB->query($query) or die("0.80 drop sub_type field in glpi_ruleldapparameters " . $LANG['update'][90] . $DB->error());
+      $changes['glpi_ruleldapparameters'][]="DROP `sub_type`";
    }
 
    if (FieldExists('glpi_softwares', 'oldstate')) {
@@ -1453,8 +1453,8 @@ function update0723to080() {
       $changes['glpi_alerts'][]="ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )";
    }
 
-   if (!isIndex('glpi_cartridges_printersmodels', 'unicity')) {
-      $changes['glpi_cartridges_printersmodels'][]="ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgeitems_id`)";
+   if (!isIndex('glpi_cartridges_printermodels', 'unicity')) {
+      $changes['glpi_cartridges_printermodels'][]="ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgeitems_id`)";
    }
 
    if (!isIndex('glpi_computers_items', 'unicity')) {
@@ -1694,7 +1694,7 @@ function update0723to080() {
 
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
-         'glpi_cartridges_printersmodels' => array('FK_glpi_type_printer'),
+         'glpi_cartridges_printermodels' => array('FK_glpi_type_printer'),
          'glpi_computers_devices' => array('FK_device'),
          'glpi_computers_items' => array('connect','type','end1','end1_2'),
          'glpi_consumables' => array('FK_glpi_cartridges_type'),
@@ -1880,12 +1880,12 @@ function update0723to080() {
             $rules=$DB->result($result,0,0);
             // Update actions
             foreach ($tab as $old => $new) {
-               $query = "UPDATE glpi_rulesactions SET field='$new' WHERE field='$old' AND rules_id IN ($rules);";
+               $query = "UPDATE glpi_ruleactions SET field='$new' WHERE field='$old' AND rules_id IN ($rules);";
                $DB->query($query) or die("0.80 update datas for rules actions " . $LANG['update'][90] . $DB->error());
             }
             // Update criterias
             foreach ($tab as $old => $new) {
-               $query = "UPDATE glpi_rulescriterias SET criteria='$new' WHERE criteria='$old' AND rules_id IN ($rules);";
+               $query = "UPDATE glpi_rulecriterias SET criteria='$new' WHERE criteria='$old' AND rules_id IN ($rules);";
                $DB->query($query) or die("0.80 update datas for rules criterias " . $LANG['update'][90] . $DB->error());
             }
          }

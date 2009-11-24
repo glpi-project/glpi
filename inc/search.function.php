@@ -3165,16 +3165,16 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
       case "glpi_reservationsitems" :
          return "";
 
-      case "glpi_computersdisks" :
+      case "glpi_computerdisks" :
          if ($meta) {
             return " INNER JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
          }
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
 
       case "glpi_filesystems" :
-         $out = addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_computersdisks",$linkfield);
+         $out = addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_computerdisks",$linkfield);
          return $out."
-                LEFT JOIN `$new_table` $AS ON (`glpi_computersdisks`.`filesystems_id` = `$nt`.`id`) ";
+                LEFT JOIN `$new_table` $AS ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
 
       case "glpi_entitiesdatas" :
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
