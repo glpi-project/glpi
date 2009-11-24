@@ -756,7 +756,7 @@ function replaceDropDropDown($input) {
    // Need to be done on entity class
    if ($input["tablename"]=="glpi_entities") {
       $query = "DELETE
-                FROM `glpi_entitiesdatas`
+                FROM `glpi_entitydatas`
                 WHERE `entities_id` = '" . $input["oldID"] . "'";
       $DB->query($query);
 

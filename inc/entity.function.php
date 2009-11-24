@@ -88,11 +88,11 @@ function showEntityAdvancedOptions($target,$ID) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);
+      autocompletionTextField("tag","glpi_entitydatas","tag",$entdata->fields["tag"],40);
       echo "</td>";
       echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],40);
+      autocompletionTextField("ldap_dn","glpi_entitydatas","ldap_dn",$entdata->fields["ldap_dn"],40);
       echo "</td></tr>";
 
       if ($canedit) {
@@ -310,7 +310,7 @@ function getEntityIDByField($field,$value) {
    global $DB;
 
    $sql = "SELECT `entities_id`
-           FROM `glpi_entitiesdatas`
+           FROM `glpi_entitydatas`
            WHERE ".$field."='".$value."'";
 
    $result = $DB->query($sql);

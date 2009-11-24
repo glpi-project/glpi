@@ -441,7 +441,7 @@ CREATE TABLE `glpi_configs` (
   `decimal_number` int(11) default '2',
   `helpdesk_doc_url` varchar(255) collate utf8_unicode_ci default NULL,
   `central_doc_url` varchar(255) collate utf8_unicode_ci default NULL,
-  `documentscategories_id_forticket` int(11) NOT NULL default '0' COMMENT 'default category for documents added with a ticket',
+  `documentcategories_id_forticket` int(11) NOT NULL default '0' COMMENT 'default category for documents added with a ticket',
   `monitors_management_restrict` int(11) NOT NULL default '2',
   `phones_management_restrict` int(11) NOT NULL default '2',
   `peripherals_management_restrict` int(11) NOT NULL default '2',
@@ -724,27 +724,27 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-### Dump table glpi_devicescases
+### Dump table glpi_devicecases
 
-DROP TABLE IF EXISTS `glpi_devicescases`;
-CREATE TABLE `glpi_devicescases` (
+DROP TABLE IF EXISTS `glpi_devicecases`;
+CREATE TABLE `glpi_devicecases` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `devicescasestypes_id` int(11) NOT NULL default '0',
+  `devicecasetypes_id` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `devicescasestypes_id` (`devicescasestypes_id`)
+  KEY `devicecasetypes_id` (`devicecasetypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicescasestypes
+### Dump table glpi_devicecasetypes
 
-DROP TABLE IF EXISTS `glpi_devicescasestypes`;
-CREATE TABLE `glpi_devicescasestypes` (
+DROP TABLE IF EXISTS `glpi_devicecasetypes`;
+CREATE TABLE `glpi_devicecasetypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -753,28 +753,28 @@ CREATE TABLE `glpi_devicescasestypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicescontrols
+### Dump table glpi_devicecontrols
 
-DROP TABLE IF EXISTS `glpi_devicescontrols`;
-CREATE TABLE `glpi_devicescontrols` (
+DROP TABLE IF EXISTS `glpi_devicecontrols`;
+CREATE TABLE `glpi_devicecontrols` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `is_raid` tinyint(1) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfacestypes_id` int(11) NOT NULL default '0',
+  `interfacetypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacestypes_id` (`interfacestypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesdrives
+### Dump table glpi_devicedrives
 
-DROP TABLE IF EXISTS `glpi_devicesdrives`;
-CREATE TABLE `glpi_devicesdrives` (
+DROP TABLE IF EXISTS `glpi_devicedrives`;
+CREATE TABLE `glpi_devicedrives` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `is_writer` tinyint(1) NOT NULL default '1',
@@ -782,39 +782,39 @@ CREATE TABLE `glpi_devicesdrives` (
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfacestypes_id` int(11) NOT NULL default '0',
+  `interfacetypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacestypes_id` (`interfacestypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesgraphiccards
+### Dump table glpi_devicegraphiccards
 
-DROP TABLE IF EXISTS `glpi_devicesgraphiccards`;
-CREATE TABLE `glpi_devicesgraphiccards` (
+DROP TABLE IF EXISTS `glpi_devicegraphiccards`;
+CREATE TABLE `glpi_devicegraphiccards` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfacestypes_id` int(11) NOT NULL default '0',
+  `interfacetypes_id` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacestypes_id` (`interfacestypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesharddrives
+### Dump table glpi_deviceharddrives
 
-DROP TABLE IF EXISTS `glpi_devicesharddrives`;
-CREATE TABLE `glpi_devicesharddrives` (
+DROP TABLE IF EXISTS `glpi_deviceharddrives`;
+CREATE TABLE `glpi_deviceharddrives` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `rpm` varchar(255) collate utf8_unicode_ci default NULL,
-  `interfacestypes_id` int(11) NOT NULL default '0',
+  `interfacetypes_id` int(11) NOT NULL default '0',
   `cache` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
@@ -822,32 +822,32 @@ CREATE TABLE `glpi_devicesharddrives` (
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacestypes_id` (`interfacestypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesmemories
+### Dump table glpi_devicememories
 
-DROP TABLE IF EXISTS `glpi_devicesmemories`;
-CREATE TABLE `glpi_devicesmemories` (
+DROP TABLE IF EXISTS `glpi_devicememories`;
+CREATE TABLE `glpi_devicememories` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `frequence` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
-  `devicesmemoriestypes_id` int(11) NOT NULL default '0',
+  `devicememorytypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `devicesmemoriestypes_id` (`devicesmemoriestypes_id`)
+  KEY `devicememorytypes_id` (`devicememorytypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesmemoriestypes
+### Dump table glpi_devicememorytypes
 
-DROP TABLE IF EXISTS `glpi_devicesmemoriestypes`;
-CREATE TABLE `glpi_devicesmemoriestypes` (
+DROP TABLE IF EXISTS `glpi_devicememorytypes`;
+CREATE TABLE `glpi_devicememorytypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -855,15 +855,15 @@ CREATE TABLE `glpi_devicesmemoriestypes` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_devicesmemoriestypes` VALUES ('1','EDO',NULL);
-INSERT INTO `glpi_devicesmemoriestypes` VALUES ('2','DDR',NULL);
-INSERT INTO `glpi_devicesmemoriestypes` VALUES ('3','SDRAM',NULL);
-INSERT INTO `glpi_devicesmemoriestypes` VALUES ('4','SDRAM-2',NULL);
+INSERT INTO `glpi_devicememorytypes` VALUES ('1','EDO',NULL);
+INSERT INTO `glpi_devicememorytypes` VALUES ('2','DDR',NULL);
+INSERT INTO `glpi_devicememorytypes` VALUES ('3','SDRAM',NULL);
+INSERT INTO `glpi_devicememorytypes` VALUES ('4','SDRAM-2',NULL);
 
-### Dump table glpi_devicesmotherboards
+### Dump table glpi_devicemotherboards
 
-DROP TABLE IF EXISTS `glpi_devicesmotherboards`;
-CREATE TABLE `glpi_devicesmotherboards` (
+DROP TABLE IF EXISTS `glpi_devicemotherboards`;
+CREATE TABLE `glpi_devicemotherboards` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `chipset` varchar(255) collate utf8_unicode_ci default NULL,
@@ -876,10 +876,10 @@ CREATE TABLE `glpi_devicesmotherboards` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesnetworkcards
+### Dump table glpi_devicenetworkcards
 
-DROP TABLE IF EXISTS `glpi_devicesnetworkcards`;
-CREATE TABLE `glpi_devicesnetworkcards` (
+DROP TABLE IF EXISTS `glpi_devicenetworkcards`;
+CREATE TABLE `glpi_devicenetworkcards` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `bandwidth` varchar(255) collate utf8_unicode_ci default NULL,
@@ -892,10 +892,10 @@ CREATE TABLE `glpi_devicesnetworkcards` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicespcis
+### Dump table glpi_devicepcis
 
-DROP TABLE IF EXISTS `glpi_devicespcis`;
-CREATE TABLE `glpi_devicespcis` (
+DROP TABLE IF EXISTS `glpi_devicepcis`;
+CREATE TABLE `glpi_devicepcis` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -907,10 +907,10 @@ CREATE TABLE `glpi_devicespcis` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicespowersupplies
+### Dump table glpi_devicepowersupplies
 
-DROP TABLE IF EXISTS `glpi_devicespowersupplies`;
-CREATE TABLE `glpi_devicespowersupplies` (
+DROP TABLE IF EXISTS `glpi_devicepowersupplies`;
+CREATE TABLE `glpi_devicepowersupplies` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `power` varchar(255) collate utf8_unicode_ci default NULL,
@@ -924,10 +924,10 @@ CREATE TABLE `glpi_devicespowersupplies` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicesprocessors
+### Dump table glpi_deviceprocessors
 
-DROP TABLE IF EXISTS `glpi_devicesprocessors`;
-CREATE TABLE `glpi_devicesprocessors` (
+DROP TABLE IF EXISTS `glpi_deviceprocessors`;
+CREATE TABLE `glpi_deviceprocessors` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `frequence` int(11) NOT NULL default '0',
@@ -940,10 +940,10 @@ CREATE TABLE `glpi_devicesprocessors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_devicessoundcards
+### Dump table glpi_devicesoundcards
 
-DROP TABLE IF EXISTS `glpi_devicessoundcards`;
-CREATE TABLE `glpi_devicessoundcards` (
+DROP TABLE IF EXISTS `glpi_devicesoundcards`;
+CREATE TABLE `glpi_devicesoundcards` (
   `id` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
   `type` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1080,7 +1080,7 @@ CREATE TABLE `glpi_documents` (
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `filename` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'for display and transfert',
   `filepath` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'file storage path',
-  `documentscategories_id` int(11) NOT NULL default '0',
+  `documentcategories_id` int(11) NOT NULL default '0',
   `mime` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -1096,7 +1096,7 @@ CREATE TABLE `glpi_documents` (
   KEY `entities_id` (`entities_id`),
   KEY `tickets_id` (`tickets_id`),
   KEY `users_id` (`users_id`),
-  KEY `documentscategories_id` (`documentscategories_id`),
+  KEY `documentcategories_id` (`documentcategories_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `sha1sum` (`sha1sum`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -1116,10 +1116,10 @@ CREATE TABLE `glpi_documents_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_documentscategories
+### Dump table glpi_documentcategories
 
-DROP TABLE IF EXISTS `glpi_documentscategories`;
-CREATE TABLE `glpi_documentscategories` (
+DROP TABLE IF EXISTS `glpi_documentcategories`;
+CREATE TABLE `glpi_documentcategories` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -1128,10 +1128,10 @@ CREATE TABLE `glpi_documentscategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_documentstypes
+### Dump table glpi_documenttypes
 
-DROP TABLE IF EXISTS `glpi_documentstypes`;
-CREATE TABLE `glpi_documentstypes` (
+DROP TABLE IF EXISTS `glpi_documenttypes`;
+CREATE TABLE `glpi_documenttypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ext` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1147,73 +1147,73 @@ CREATE TABLE `glpi_documentstypes` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_documentstypes` VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('3','GIF','gif','gif-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('4','BMP','bmp','bmp-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('5','Photoshop','psd','psd-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('6','TIFF','tif','tif-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('7','AIFF','aiff','aiff-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('8','Windows Media','asf','asf-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('9','Windows Media','avi','avi-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('44','C source','c','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('27','RealAudio','rm','rm-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('16','Midi','mid','mid-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('17','QuickTime','mov','mov-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('18','MP3','mp3','mp3-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('19','MPEG','mpg','mpg-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('20','Ogg Vorbis','ogg','ogg-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('24','QuickTime','qt','qt-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('10','BZip','bz2','bz2-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('25','RealAudio','ra','ra-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('26','RealAudio','ram','ram-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('11','Word','doc','doc-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('12','DjVu','djvu','','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('42','MNG','mng','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('13','PostScript','eps','ps-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('14','GZ','gz','gz-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('37','WAV','wav','wav-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('15','HTML','html','html-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('34','Flash','swf','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('21','PDF','pdf','pdf-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('22','PowerPoint','ppt','ppt-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('23','PostScript','ps','ps-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('40','Windows Media','wmv','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('28','RTF','rtf','rtf-dist.png','','1','2004-12-13 19:47:21',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('29','StarOffice','sdd','sdd-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('30','StarOffice','sdw','sdw-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('31','Stuffit','sit','sit-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('43','Adobe Illustrator','ai','ai-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('32','OpenOffice Impress','sxi','sxi-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('33','OpenOffice','sxw','sxw-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('46','DVI','dvi','dvi-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('35','TGZ','tgz','tgz-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('36','texte','txt','txt-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('49','RedHat/Mandrake/SuSE','rpm','rpm-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('38','Excel','xls','xls-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('39','XML','xml','xml-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('41','Zip','zip','zip-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('45','Debian','deb','deb-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('47','C header','h','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('48','Pascal','pas','','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('51','LaTeX','tex','tex-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','1','2004-12-13 19:47:22',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('53','JPEG','jpeg','jpg-dist.png','','1','2005-03-07 22:23:17',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('54','Oasis Open Office Writer','odt','odt-dist.png','','1','2006-01-21 17:41:13',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('55','Oasis Open Office Calc','ods','ods-dist.png','','1','2006-01-21 17:41:31',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('56','Oasis Open Office Impress','odp','odp-dist.png','','1','2006-01-21 17:42:54',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('57','Oasis Open Office Impress Template','otp','odp-dist.png','','1','2006-01-21 17:43:58',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('58','Oasis Open Office Writer Template','ott','odt-dist.png','','1','2006-01-21 17:44:41',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('59','Oasis Open Office Calc Template','ots','ods-dist.png','','1','2006-01-21 17:45:30',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('60','Oasis Open Office Math','odf','odf-dist.png','','1','2006-01-21 17:48:05',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('61','Oasis Open Office Draw','odg','odg-dist.png','','1','2006-01-21 17:48:31',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('62','Oasis Open Office Draw Template','otg','odg-dist.png','','1','2006-01-21 17:49:46',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('63','Oasis Open Office Base','odb','odb-dist.png','','1','2006-01-21 18:03:34',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('64','Oasis Open Office HTML','oth','oth-dist.png','','1','2006-01-21 18:05:27',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('65','Oasis Open Office Writer Master','odm','odm-dist.png','','1','2006-01-21 18:06:34',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('66','Oasis Open Office Chart','odc','','','1','2006-01-21 18:07:48',NULL);
-INSERT INTO `glpi_documentstypes` VALUES ('67','Oasis Open Office Image','odi','','','1','2006-01-21 18:08:18',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('3','GIF','gif','gif-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('4','BMP','bmp','bmp-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('5','Photoshop','psd','psd-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('6','TIFF','tif','tif-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('7','AIFF','aiff','aiff-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('8','Windows Media','asf','asf-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('9','Windows Media','avi','avi-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('44','C source','c','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('27','RealAudio','rm','rm-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('16','Midi','mid','mid-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('17','QuickTime','mov','mov-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('18','MP3','mp3','mp3-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('19','MPEG','mpg','mpg-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('20','Ogg Vorbis','ogg','ogg-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('24','QuickTime','qt','qt-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('10','BZip','bz2','bz2-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('25','RealAudio','ra','ra-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('26','RealAudio','ram','ram-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('11','Word','doc','doc-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('12','DjVu','djvu','','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('42','MNG','mng','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('13','PostScript','eps','ps-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('14','GZ','gz','gz-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('37','WAV','wav','wav-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('15','HTML','html','html-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('34','Flash','swf','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('21','PDF','pdf','pdf-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('22','PowerPoint','ppt','ppt-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('23','PostScript','ps','ps-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('40','Windows Media','wmv','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('28','RTF','rtf','rtf-dist.png','','1','2004-12-13 19:47:21',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('29','StarOffice','sdd','sdd-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('30','StarOffice','sdw','sdw-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('31','Stuffit','sit','sit-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('43','Adobe Illustrator','ai','ai-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('32','OpenOffice Impress','sxi','sxi-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('33','OpenOffice','sxw','sxw-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('46','DVI','dvi','dvi-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('35','TGZ','tgz','tgz-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('36','texte','txt','txt-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('49','RedHat/Mandrake/SuSE','rpm','rpm-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('38','Excel','xls','xls-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('39','XML','xml','xml-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('41','Zip','zip','zip-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('45','Debian','deb','deb-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('47','C header','h','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('48','Pascal','pas','','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('51','LaTeX','tex','tex-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','1','2004-12-13 19:47:22',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('53','JPEG','jpeg','jpg-dist.png','','1','2005-03-07 22:23:17',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('54','Oasis Open Office Writer','odt','odt-dist.png','','1','2006-01-21 17:41:13',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('55','Oasis Open Office Calc','ods','ods-dist.png','','1','2006-01-21 17:41:31',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('56','Oasis Open Office Impress','odp','odp-dist.png','','1','2006-01-21 17:42:54',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('57','Oasis Open Office Impress Template','otp','odp-dist.png','','1','2006-01-21 17:43:58',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('58','Oasis Open Office Writer Template','ott','odt-dist.png','','1','2006-01-21 17:44:41',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('59','Oasis Open Office Calc Template','ots','ods-dist.png','','1','2006-01-21 17:45:30',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('60','Oasis Open Office Math','odf','odf-dist.png','','1','2006-01-21 17:48:05',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('61','Oasis Open Office Draw','odg','odg-dist.png','','1','2006-01-21 17:48:31',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('62','Oasis Open Office Draw Template','otg','odg-dist.png','','1','2006-01-21 17:49:46',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('63','Oasis Open Office Base','odb','odb-dist.png','','1','2006-01-21 18:03:34',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('64','Oasis Open Office HTML','oth','oth-dist.png','','1','2006-01-21 18:05:27',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('65','Oasis Open Office Writer Master','odm','odm-dist.png','','1','2006-01-21 18:06:34',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('66','Oasis Open Office Chart','odc','','','1','2006-01-21 18:07:48',NULL);
+INSERT INTO `glpi_documenttypes` VALUES ('67','Oasis Open Office Image','odi','','','1','2006-01-21 18:08:18',NULL);
 
 ### Dump table glpi_domains
 
@@ -1245,10 +1245,10 @@ CREATE TABLE `glpi_entities` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_entitiesdatas
+### Dump table glpi_entitydatas
 
-DROP TABLE IF EXISTS `glpi_entitiesdatas`;
-CREATE TABLE `glpi_entitiesdatas` (
+DROP TABLE IF EXISTS `glpi_entitydatas`;
+CREATE TABLE `glpi_entitydatas` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
   `address` text collate utf8_unicode_ci,
@@ -1391,10 +1391,10 @@ CREATE TABLE `glpi_infocoms` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_interfacestypes
+### Dump table glpi_interfacetypes
 
-DROP TABLE IF EXISTS `glpi_interfacestypes`;
-CREATE TABLE `glpi_interfacestypes` (
+DROP TABLE IF EXISTS `glpi_interfacetypes`;
+CREATE TABLE `glpi_interfacetypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -1402,14 +1402,14 @@ CREATE TABLE `glpi_interfacestypes` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_interfacestypes` VALUES ('1','IDE',NULL);
-INSERT INTO `glpi_interfacestypes` VALUES ('2','SATA',NULL);
-INSERT INTO `glpi_interfacestypes` VALUES ('3','SCSI',NULL);
-INSERT INTO `glpi_interfacestypes` VALUES ('4','USB',NULL);
-INSERT INTO `glpi_interfacestypes` VALUES ('5','AGP','');
-INSERT INTO `glpi_interfacestypes` VALUES ('6','PCI','');
-INSERT INTO `glpi_interfacestypes` VALUES ('7','PCIe','');
-INSERT INTO `glpi_interfacestypes` VALUES ('8','PCI-X','');
+INSERT INTO `glpi_interfacetypes` VALUES ('1','IDE',NULL);
+INSERT INTO `glpi_interfacetypes` VALUES ('2','SATA',NULL);
+INSERT INTO `glpi_interfacetypes` VALUES ('3','SCSI',NULL);
+INSERT INTO `glpi_interfacetypes` VALUES ('4','USB',NULL);
+INSERT INTO `glpi_interfacetypes` VALUES ('5','AGP','');
+INSERT INTO `glpi_interfacetypes` VALUES ('6','PCI','');
+INSERT INTO `glpi_interfacetypes` VALUES ('7','PCIe','');
+INSERT INTO `glpi_interfacetypes` VALUES ('8','PCI-X','');
 
 ### Dump table glpi_knowbaseitems
 

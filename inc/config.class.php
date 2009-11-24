@@ -179,8 +179,8 @@ class Config extends CommonDBTM {
       dropdownYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][409] . "</td><td>";
-      dropdownValue("glpi_documentscategories","documentscategories_id_forticket",
-                    $CFG_GLPI["documentscategories_id_forticket"]);
+      dropdownValue("glpi_documentcategories","documentcategories_id_forticket",
+                    $CFG_GLPI["documentcategories_id_forticket"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][608] . "</td><td>";

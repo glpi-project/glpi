@@ -1381,8 +1381,8 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
    }
 
    $query="SELECT *
-           FROM `glpi_documentscategories`
-           WHERE `id` IN (SELECT DISTINCT `documentscategories_id`
+           FROM `glpi_documentcategories`
+           WHERE `id` IN (SELECT DISTINCT `documentcategories_id`
                           FROM `glpi_documents`
                           $where)
            ORDER BY `name`";

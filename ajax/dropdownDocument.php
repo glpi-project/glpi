@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE `glpi_documents`.`documentscategories_id` = '".$_POST['rubdoc']."'
+$where=" WHERE `glpi_documents`.`documentcategories_id` = '".$_POST['rubdoc']."'
                AND `glpi_documents`.`is_deleted` = '0' ";
 
 if (isset($_POST["entity_restrict"])) {

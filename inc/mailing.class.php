@@ -185,7 +185,7 @@ class Mailing {
                      // ADMIN ENTITY SEND
                      case ADMIN_ENTITY_MAILING :
                         $query2 = "SELECT `admin_email` AS email
-                                   FROM `glpi_entitiesdatas`
+                                   FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
                         if ($result2 = $DB->query($query2)) {
                            if ($DB->numrows($result2)==1) {
@@ -518,7 +518,7 @@ class Mailing {
       global $CFG_GLPI,$DB;
 
       $query = "SELECT `admin_email` AS email
-                FROM `glpi_entitiesdatas`
+                FROM `glpi_entitydatas`
                 WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -590,7 +590,7 @@ class Mailing {
       $replyto=$CFG_GLPI["admin_email"];
       // Entity conf
       $query = "SELECT `admin_email` AS email, `admin_reply` AS reply
-                FROM `glpi_entitiesdatas`
+                FROM `glpi_entitydatas`
                 WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -803,7 +803,7 @@ class MailingResa {
                         }
                         if ($entity>=0) {
                            $query2 = "SELECT `admin_email` AS email
-                                      FROM `glpi_entitiesdatas`
+                                      FROM `glpi_entitydatas`
                                       WHERE `entities_id` = '".$entity."'";
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
@@ -925,7 +925,7 @@ class MailingResa {
       }
       if ($entity>=0) {
          $query = "SELECT `admin_email` AS email
-                   FROM `glpi_entitiesdatas`
+                   FROM `glpi_entitydatas`
                    WHERE `entities_id` = '$entity'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)) {
@@ -1118,7 +1118,7 @@ class MailingAlert {
                      // ADMIN ENTITY SEND
                      case ADMIN_ENTITY_MAILING :
                         $query2 = "SELECT `admin_email` AS email
-                                   FROM `glpi_entitiesdatas`
+                                   FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->entity."'";
                         if ($result2 = $DB->query($query2)) {
                            if ($DB->numrows($result2)==1) {
@@ -1240,7 +1240,7 @@ class MailingAlert {
       global $CFG_GLPI,$DB;
 
       $query = "SELECT `admin_email` AS email
-                FROM `glpi_entitiesdatas`
+                FROM `glpi_entitydatas`
                 WHERE `entities_id` = '".$this->entity."'";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {

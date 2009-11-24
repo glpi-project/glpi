@@ -1108,7 +1108,7 @@ class ContactsType extends CommonDropdown {
 class DeviceMemoryType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_devicesmemoriestypes';
+   public $table = 'glpi_devicememorytypes';
    public $type = DEVICEMEMORYTYPE_TYPE;
 
    static function getTypeName() {
@@ -1136,7 +1136,7 @@ class SupplierType extends CommonDropdown {
 class InterfacesType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_interfacestypes';
+   public $table = 'glpi_interfacetypes';
    public $type = INTERFACESTYPE_TYPE;
 
    static function getTypeName() {
@@ -1150,7 +1150,7 @@ class InterfacesType extends CommonDropdown {
 class DeviceCaseType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_devicescasestypes';
+   public $table = 'glpi_devicecasetypes';
    public $type = DEVICECASETYPE_TYPE;
 
    static function getTypeName() {
@@ -1192,7 +1192,7 @@ class Filesystem extends CommonDropdown {
 class DocumentCategory extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_documentscategories';
+   public $table = 'glpi_documentcategories';
    public $type = DOCUMENTCATEGORY_TYPE;
 
    static function getTypeName() {
