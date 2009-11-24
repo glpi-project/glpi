@@ -54,7 +54,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && $CFG_GLPI["use_an
 //$status = "new";
 
 // Sauvegarde des donn�s dans le cas de retours avec des navigateurs pourris style IE
-/*$varstosav = array('use_email_notification', 'user_email', 'items_id', 'itemtype', 'content','_my_items','ticketscategories_id');
+/*$varstosav = array('use_email_notification', 'user_email', 'items_id', 'itemtype', 'content','_my_items','ticketcategories_id');
 
 	foreach ($varstosav as $v){
 		if (isset($_POST[$v]))
@@ -86,7 +86,7 @@ if (empty($_POST)||count($_POST)==0){
 	nullFooter();
 	exit;
 }
-if (!empty($_POST["priority"]) && !$_POST["ticketscategories_id"])
+if (!empty($_POST["priority"]) && !$_POST["ticketcategories_id"])
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);

@@ -80,19 +80,19 @@ $items=array(
 			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tickets.groups_id"
 			),
-		"userstitles_id"=>array(
+		"usertitles_id"=>array(
 			"title"=>$LANG['users'][1],
-			"field"=>"glpi_userstitles.userstitles_id"
+			"field"=>"glpi_usertitles.usertitles_id"
 			),
-		"userscategories_id"=>array(
+		"usercategories_id"=>array(
 			"title"=>$LANG['users'][2],
-			"field"=>"glpi_users.userscategories_id"
+			"field"=>"glpi_users.usercategories_id"
 			),
 	),
 	$LANG['common'][32] => array(
-		"ticketscategories_id"=>array(
+		"ticketcategories_id"=>array(
 			"title"=>$LANG['common'][36],
-			"field"=>"glpi_tickets.ticketscategories_id"
+			"field"=>"glpi_tickets.ticketcategories_id"
 			),
 		"priority"=>array(
 			"title"=>$LANG['joblist'][2],

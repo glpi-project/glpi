@@ -818,7 +818,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".$LANG['rulesengine'][37]."&nbsp;:</td><td>";
-      dropdownNoneReadWrite("rule_softwarescategories",$this->fields["rule_softwarescategories"],
+      dropdownNoneReadWrite("rule_softwarecategories",$this->fields["rule_softwarecategories"],
                             1,1,1);
       echo "</td>";
       echo "<td>".$LANG['rulesengine'][33]."&nbsp;:</td><td>";

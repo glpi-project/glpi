@@ -63,7 +63,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 		case TRACKING_TYPE :
          showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],
                           $_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["users_id"],
-                          $_GET["group"],$_GET["showfollowups"],$_GET["ticketscategories_id"],
+                          $_GET["group"],$_GET["showfollowups"],$_GET["ticketcategories_id"],
                           $_GET["users_id_assign"],$_GET["suppliers_id_assign"],
                           $_GET["groups_id_assign"],$_GET["priority"],$_GET["requesttypes_id"],
                           $_GET["items_id"],$_GET["itemtype"],$_GET["field"],$_GET["contains"],

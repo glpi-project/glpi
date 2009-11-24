@@ -528,7 +528,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
    if (haveRight("rule_ldap","r") || haveRight("rule_ocs","r") || haveRight("rule_ticket","r")
-       || haveRight("rule_softwarescategories","r")) {
+       || haveRight("rule_softwarecategories","r")) {
 
       $menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
       $menu['admin']['content']['rule']['shortcut']='r';
@@ -560,7 +560,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
          $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rule.softwarecategories.php';
          $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rule.softwarecategories.php';
-         if (haveRight("rule_softwarescategories","w")) {
+         if (haveRight("rule_softwarecategories","w")) {
             $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rule.softwarecategories.form.php';
          }
       }
@@ -1769,7 +1769,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
    $computer="";
    $content="";
    $title="";
-   $ticketscategories_id = 0;
+   $ticketcategories_id = 0;
    $priority  = 3;
 
    if (isset($_SESSION["helpdeskSaved"]["use_email_notification"])) {
@@ -1787,8 +1787,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
    if (isset($_SESSION["helpdeskSaved"]["name"])) {
       $title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
    }
-   if (isset($_SESSION["helpdeskSaved"]["ticketscategories_id"])) {
-      $ticketscategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketscategories_id"]);
+   if (isset($_SESSION["helpdeskSaved"]["ticketcategories_id"])) {
+      $ticketcategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketcategories_id"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["priority"])) {
       $priority = stripslashes($_SESSION["helpdeskSaved"]["priority"]);
@@ -1837,7 +1837,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-   dropdownValue("glpi_ticketscategories","ticketscategories_id",$ticketscategories_id);
+   dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
    echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";

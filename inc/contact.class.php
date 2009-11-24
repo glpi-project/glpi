@@ -330,7 +330,7 @@ class Contact extends CommonDBTM{
       $query = "SELECT `glpi_contacts_suppliers`.`id`, `glpi_suppliers`.`id` AS entID,
                        `glpi_suppliers`.`name` AS name, `glpi_suppliers`.`website` AS website,
                        `glpi_suppliers`.`fax` AS fax, `glpi_suppliers`.`phonenumber` AS phone,
-                       `glpi_suppliers`.`supplierstypes_id` AS type, `glpi_suppliers`.`is_deleted`,
+                       `glpi_suppliers`.`suppliertypes_id` AS type, `glpi_suppliers`.`is_deleted`,
                        `glpi_entities`.`id` AS entity
                 FROM `glpi_contacts_suppliers`, `glpi_suppliers`
                 LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
@@ -374,7 +374,7 @@ class Contact extends CommonDBTM{
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$data["entID"]."'>".
                    getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
             echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-            echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
+            echo "<td class='center'>".getDropdownName("glpi_suppliertypes",$data["type"])."</td>";
             echo "<td class='center' width='80'>".$data["phone"]."</td>";
             echo "<td class='center' width='80'>".$data["fax"]."</td>";
             echo "<td class='center'>".$website."</td>";

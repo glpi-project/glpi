@@ -322,7 +322,7 @@ class Mailing {
                            }
 
                            //don't send email if last followup from user, STOP spamming user!
-                           $query3 = "SELECT * FROM glpi_ticketsfollowups 
+                           $query3 = "SELECT * FROM glpi_ticketfollowups 
                                           WHERE tickets_id = '".$this->job->fields["id"]."'  
                                           ORDER by date DESC LIMIT 1"; 
                            $result3=$DB->query($query3); 

@@ -847,13 +847,13 @@ function getUserName($ID,$link=0) {
                $user["comment"].=$LANG['common'][15]."&nbsp;: ".
                                  getDropdownName("glpi_locations",$data["locations_id"])."<br>";
             }
-            if ($data["userstitles_id"]>0) {
+            if ($data["usertitles_id"]>0) {
                $user["comment"].=$LANG['users'][1]."&nbsp;: ".
-                                 getDropdownName("glpi_userstitles",$data["userstitles_id"])."<br>";
+                                 getDropdownName("glpi_usertitles",$data["usertitles_id"])."<br>";
             }
-            if ($data["userscategories_id"]>0) {
+            if ($data["usercategories_id"]>0) {
                $user["comment"].=$LANG['users'][2]."&nbsp;: ".
-                                 getDropdownName("glpi_userscategories",$data["userscategories_id"]).
+                                 getDropdownName("glpi_usercategories",$data["usercategories_id"]).
                                  "<br>";
             }
          } else {

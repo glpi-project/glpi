@@ -114,8 +114,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
       if (!isset($_GET["group"])) {
          $_GET["group"] = 0;
       }
-      if (!isset($_GET["ticketscategories_id"])) {
-         $_GET["ticketscategories_id"] = 0;
+      if (!isset($_GET["ticketcategories_id"])) {
+         $_GET["ticketcategories_id"] = 0;
       }
       if (!isset($_GET["showfollowups"])) {
          $_GET["showfollowups"] = 0;
@@ -126,11 +126,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
 
       searchSimpleFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["status"],
                                $_GET["tosearch"],$_GET["search"],$_GET["group"],
-                               $_GET["showfollowups"],$_GET["ticketscategories_id"]);
+                               $_GET["showfollowups"],$_GET["ticketcategories_id"]);
 
       showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],
                        $_GET["status"],$_GET["tosearch"],$_GET["search"],$_SESSION["glpiID"],
-                       $_GET["group"],$_GET["showfollowups"],$_GET["ticketscategories_id"]);
+                       $_GET["group"],$_GET["showfollowups"],$_GET["ticketcategories_id"]);
 
    } else {
       if (isset($_POST["update"])) {

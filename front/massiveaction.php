@@ -275,7 +275,7 @@ if (isset($_POST["itemtype"])){
 					if ($val==1) {
 						$comp=new Computer;
 						if ($comp->getFromDB($key)&&$comp->fields["entities_id"]==$_SESSION["glpiactive_entity"]){
-							installSoftwareVersion($key,$_POST["softwaresversions_id"]);
+							installSoftwareVersion($key,$_POST["softwareversions_id"]);
 						}
 					}
 				}

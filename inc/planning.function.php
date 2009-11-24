@@ -290,7 +290,7 @@ function showPlanning($who,$who_group,$when,$type) {
 
    // ---------------Tracking
    $query = "SELECT *
-             FROM `glpi_ticketsplannings`
+             FROM `glpi_ticketplannings`
              WHERE $ASSIGN
                    '$begin' < `end` AND '$end' > `begin`
              ORDER BY `begin`";
@@ -303,10 +303,10 @@ function showPlanning($who,$who_group,$when,$type) {
    $i=0;
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         $fup->getFromDB($data["ticketsfollowups_id"]);
+         $fup->getFromDB($data["ticketfollowups_id"]);
          $job->getFromDBwithData($fup->fields["tickets_id"],0);
          if (haveAccessToEntity($job->fields["entities_id"])) {
-            $interv[$data["begin"]."$$$".$i]["ticketsfollowups_id"]=$data["ticketsfollowups_id"];
+            $interv[$data["begin"]."$$$".$i]["ticketfollowups_id"]=$data["ticketfollowups_id"];
             $interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
             $interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
             $interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
@@ -744,7 +744,7 @@ function showPlanningCentral($who) {
    $INTERVAL=" 1 DAY "; // we want to show planning of the day
 
    $query = "SELECT *
-             FROM `glpi_ticketsplannings`
+             FROM `glpi_ticketplannings`
              WHERE $ASSIGN
                   AND `end` > '$debut' and `begin` < adddate('$debut' , INTERVAL $INTERVAL)
              ORDER BY `begin`";
@@ -757,10 +757,10 @@ function showPlanningCentral($who) {
 
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         if ($fup->getFromDB($data["ticketsfollowups_id"])) {
+         if ($fup->getFromDB($data["ticketfollowups_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                if (haveAccessToEntity($job->fields["entities_id"])) {
-                  $interv[$data["begin"]."$$".$i]["ticketsfollowups_id"]=$data["ticketsfollowups_id"];
+                  $interv[$data["begin"]."$$".$i]["ticketfollowups_id"]=$data["ticketfollowups_id"];
                   $interv[$data["begin"]."$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
                   $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
                   $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
@@ -888,7 +888,7 @@ function generateIcal($who) {
 
    // export job
    $query = "SELECT *
-             FROM `glpi_ticketsplannings`
+             FROM `glpi_ticketplannings`
              WHERE `users_id`='$who'
                    AND `end` > '$begin'
                    AND `begin` < '$end' ";
@@ -899,14 +899,14 @@ function generateIcal($who) {
    $i=0;
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         if ($fup->getFromDB($data["ticketsfollowups_id"])) {
+         if ($fup->getFromDB($data["ticketfollowups_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                $interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,
                                                                       $CFG_GLPI["cut"]);
                $interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
             }
          }
-         $interv[$data["begin"]."$$".$i]["tickets_id"]=$data['ticketsfollowups_id'];
+         $interv[$data["begin"]."$$".$i]["tickets_id"]=$data['ticketfollowups_id'];
          $interv[$data["begin"]."$$".$i]["users_id"]=$data['users_id'];
          $interv[$data["begin"]."$$".$i]["id"]=$data['id'];
          $interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
@@ -914,7 +914,7 @@ function generateIcal($who) {
          $interv[$data["begin"]."$$".$i]["content"]="";
          $interv[$data["begin"]."$$".$i]["device"]="";
 
-         if ($fup->getFromDB($data["ticketsfollowups_id"])) {
+         if ($fup->getFromDB($data["ticketfollowups_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                $interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,
                                                                       $CFG_GLPI["cut"]);

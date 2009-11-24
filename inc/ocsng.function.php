@@ -3109,10 +3109,10 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
 
          //For each element of the table, add instID=>name.version
          foreach ($import_software as $key => $value) {
-            $query_softs = "SELECT `glpi_softwaresversions`.`name` AS version
-                            FROM `glpi_computers_softwareversions`, `glpi_softwaresversions`
-                            WHERE `glpi_computers_softwareversions`.softwaresversions_id`
-                                       =`glpi_softwaresversions`.`id`
+            $query_softs = "SELECT `glpi_softwareversions`.`name` AS version
+                            FROM `glpi_computers_softwareversions`, `glpi_softwareversions`
+                            WHERE `glpi_computers_softwareversions`.softwareversions_id`
+                                       =`glpi_softwareversions`.`id`
                                   AND `glpi_computers_softwareversions`.`computers_id`='$computers_id'
                                   AND `glpi_computers_softwareversions`.`id`='$key'";
             $result_softs = $DB->query($query_softs);
@@ -3222,11 +3222,11 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
                   $instID = array_search($initname . OCS_FIELD_SEPARATOR. $version, $import_software);
                   $query_soft = "SELECT `glpi_softwares`.`id`, `glpi_softwares`.`name`
                                  FROM `glpi_softwares`, `glpi_computers_softwareversions`,
-                                      `glpi_softwaresversions`
+                                      `glpi_softwareversions`
                                  WHERE `glpi_computers_softwareversions`.`id` = '$instID'
-                                       AND `glpi_computers_softwareversions`.`softwaresversions_id`
-                                             =`glpi_softwaresversions`.`id`
-                                       AND `glpi_softwaresversions`.`softwares_id`=`glpi_softwares`.`id`";
+                                       AND `glpi_computers_softwareversions`.`softwareversions_id`
+                                             =`glpi_softwareversions`.`id`
+                                       AND `glpi_softwareversions`.`softwares_id`=`glpi_softwares`.`id`";
                   $result_soft = $DB->query($query_soft);
                   $tmpsoft = $DB->fetch_array($result_soft);
                   $softName = $tmpsoft["name"];
@@ -3270,21 +3270,21 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
                if ($data = $DB->fetch_assoc($result)) {
                   uninstallSoftwareVersion($key, $dohistory);
                   if (countElementsInTable('glpi_computers_softwareversions',
-                           "softwaresversions_id = '" .$data['softwaresversions_id']. "'") == 0
-                      && countElementsInTable('glpi_softwareslicenses',
-                           "softwaresversions_id_buy = '" .$data['softwaresversions_id']. "'") == 0) {
+                           "softwareversions_id = '" .$data['softwareversions_id']. "'") == 0
+                      && countElementsInTable('glpi_softwarelicenses',
+                           "softwareversions_id_buy = '" .$data['softwareversions_id']. "'") == 0) {
 
                      $vers = new SoftwareVersion;
 
-                     if ($vers->getFromDB($data['softwaresversions_id'])
-                         && countElementsInTable('glpi_softwareslicenses',
+                     if ($vers->getFromDB($data['softwareversions_id'])
+                         && countElementsInTable('glpi_softwarelicenses',
                                  "softwares_id = '" .$vers->fields['softwares_id']. "'") == 0
-                         && countElementsInTable('glpi_softwaresversions',
+                         && countElementsInTable('glpi_softwareversions',
                                  "softwares_id = '" .$vers->fields['softwares_id']. "'") == 1) {
                         // 1 is the current to be removed
                         putSoftwareInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
                      }
-                     $vers->delete(array ("id" => $data['softwaresversions_id']));
+                     $vers->delete(array ("id" => $data['softwareversions_id']));
                   }
                }
             }
@@ -3404,7 +3404,7 @@ function ocsImportVersion($software, $version) {
 
    $isNewVers = 0;
    $query = "SELECT `id`
-             FROM `glpi_softwaresversions`
+             FROM `glpi_softwareversions`
              WHERE `softwares_id` = '$software'
                    AND `name` = '$version'";
    $result = $DB->query($query);
@@ -3462,20 +3462,20 @@ function ocsResetSoftwares($glpi_computers_id) {
       while ($data = $DB->fetch_assoc($result)) {
          $query2 = "SELECT COUNT(*)
                     FROM `glpi_computers_softwareversions`
-                    WHERE `softwaresversions_id` = '" . $data['softwaresversions_id'] . "'";
+                    WHERE `softwareversions_id` = '" . $data['softwareversions_id'] . "'";
          $result2 = $DB->query($query2);
          if ($DB->result($result2, 0, 0) == 1) {
             $vers = new SoftwareVersion;
-            $vers->getFromDB($data['softwaresversions_id']);
+            $vers->getFromDB($data['softwareversions_id']);
             $query3 = "SELECT COUNT(*)
-                       FROM `glpi_softwaresversions`
+                       FROM `glpi_softwareversions`
                        WHERE `softwares_id`='" . $vers->fields['softwares_id'] . "'";
             $result3 = $DB->query($query3);
             if ($DB->result($result3, 0, 0) == 1) {
                $soft = new Software();
                $soft->delete(array('id' => $vers->fields['softwares_id']), 1);
             }
-            $vers->delete(array("id" => $data['softwaresversions_id']));
+            $vers->delete(array("id" => $data['softwareversions_id']));
          }
       }
       $query = "DELETE

@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
                    'groups_id_assign'     => 0,
                    'name'                 => '',
                    'content'              => '',
-                   'ticketscategories_id' => 0,
+                   'ticketcategories_id' => 0,
                    'priority'             => 3,
                    'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
                    'hour'                 => 0,

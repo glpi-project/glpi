@@ -154,12 +154,12 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['field']     = 'content';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['name']      = $LANG['joblist'][6];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['content']['linkfield'] = 'content';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['table'] = 'glpi_ticketscategories';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['field'] = 'name';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['name']  = $LANG['common'][36];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['linkfield']
-                                                                             = 'ticketscategories_id';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['type']  = 'dropdown';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['table'] = 'glpi_ticketcategories';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['field'] = 'name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['name']  = $LANG['common'][36];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['linkfield']
+                                                                             = 'ticketcategories_id';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['type']  = 'dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['users_id']['table']     = 'glpi_users';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['users_id']['field']     = 'name';
@@ -224,9 +224,9 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['linkfield'] = '_mailga
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['type']      = 'dropdown';
 
 
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['name']  = $LANG['common'][36];
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['type']  = 'dropdown';
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketscategories_id']['table'] = 'glpi_ticketscategories';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['name']  = $LANG['common'][36];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['type']  = 'dropdown';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['ticketcategories_id']['table'] = 'glpi_ticketcategories';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['users_id']['name'] = $LANG['job'][4]." - ".
                                                                 $LANG['common'][34];
@@ -271,9 +271,9 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['field'] = 'comment';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['name']  = $LANG['common'][25];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comment']['table'] = 'glpi_softwares';
 
-$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarescategories_id']['name']  = $LANG['common'][36];
-$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarescategories_id']['type']  = 'dropdown';
-$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarescategories_id']['table'] = 'glpi_softwarescategories';
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarecategories_id']['name']  = $LANG['common'][36];
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarecategories_id']['type']  = 'dropdown';
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['softwarecategories_id']['table'] = 'glpi_softwarecategories';
 
 //Dictionnary Software
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['field'] = 'name';

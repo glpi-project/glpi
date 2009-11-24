@@ -130,7 +130,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "install" :
-         dropdownSoftwareToInstall("softwaresversions_id",$_SESSION["glpiactive_entity"],1);
+         dropdownSoftwareToInstall("softwareversions_id",$_SESSION["glpiactive_entity"],1);
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][4]."\" >";
          break;
