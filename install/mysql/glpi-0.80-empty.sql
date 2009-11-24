@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-10-19 19:05
+#GLPI Dump database on 2009-11-24 19:37
 
 ### Dump table glpi_alerts
 
@@ -13,6 +13,20 @@ CREATE TABLE `glpi_alerts` (
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`type`),
   KEY `type` (`type`),
   KEY `date` (`date`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_authldapreplicates
+
+DROP TABLE IF EXISTS `glpi_authldapreplicates`;
+CREATE TABLE `glpi_authldapreplicates` (
+  `id` int(11) NOT NULL auto_increment,
+  `authldaps_id` int(11) NOT NULL default '0',
+  `host` varchar(255) collate utf8_unicode_ci default NULL,
+  `port` int(11) NOT NULL default '389',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `authldaps_id` (`authldaps_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -48,20 +62,6 @@ CREATE TABLE `glpi_authldaps` (
   `category_field` varchar(255) collate utf8_unicode_ci default NULL,
   `language_field` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_authldapreplicates
-
-DROP TABLE IF EXISTS `glpi_authldapreplicates`;
-CREATE TABLE `glpi_authldapreplicates` (
-  `id` int(11) NOT NULL auto_increment,
-  `authldaps_id` int(11) NOT NULL default '0',
-  `host` varchar(255) collate utf8_unicode_ci default NULL,
-  `port` int(11) NOT NULL default '389',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `authldaps_id` (`authldaps_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -150,36 +150,6 @@ CREATE TABLE `glpi_budgets` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_cartridges
-
-DROP TABLE IF EXISTS `glpi_cartridges`;
-CREATE TABLE `glpi_cartridges` (
-  `id` int(11) NOT NULL auto_increment,
-  `cartridgeitems_id` int(11) NOT NULL default '0',
-  `printers_id` int(11) NOT NULL default '0',
-  `date_in` date default NULL,
-  `date_use` date default NULL,
-  `date_out` date default NULL,
-  `pages` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `cartridgeitems_id` (`cartridgeitems_id`),
-  KEY `printers_id` (`printers_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_cartridges_printermodels
-
-DROP TABLE IF EXISTS `glpi_cartridges_printermodels`;
-CREATE TABLE `glpi_cartridges_printermodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `cartridgeitems_id` int(11) NOT NULL default '0',
-  `printermodels_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `unicity` (`printermodels_id`,`cartridgeitems_id`),
-  KEY `cartridgeitems_id` (`cartridgeitems_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_cartridgeitems
 
 DROP TABLE IF EXISTS `glpi_cartridgeitems`;
@@ -212,6 +182,71 @@ CREATE TABLE `glpi_cartridgeitems` (
 
 DROP TABLE IF EXISTS `glpi_cartridgeitemtypes`;
 CREATE TABLE `glpi_cartridgeitemtypes` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_cartridges
+
+DROP TABLE IF EXISTS `glpi_cartridges`;
+CREATE TABLE `glpi_cartridges` (
+  `id` int(11) NOT NULL auto_increment,
+  `cartridgeitems_id` int(11) NOT NULL default '0',
+  `printers_id` int(11) NOT NULL default '0',
+  `date_in` date default NULL,
+  `date_use` date default NULL,
+  `date_out` date default NULL,
+  `pages` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `cartridgeitems_id` (`cartridgeitems_id`),
+  KEY `printers_id` (`printers_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_cartridges_printermodels
+
+DROP TABLE IF EXISTS `glpi_cartridges_printermodels`;
+CREATE TABLE `glpi_cartridges_printermodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `cartridgeitems_id` int(11) NOT NULL default '0',
+  `printermodels_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `unicity` (`printermodels_id`,`cartridgeitems_id`),
+  KEY `cartridgeitems_id` (`cartridgeitems_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_computerdisks
+
+DROP TABLE IF EXISTS `glpi_computerdisks`;
+CREATE TABLE `glpi_computerdisks` (
+  `id` int(11) NOT NULL auto_increment,
+  `computers_id` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `device` varchar(255) collate utf8_unicode_ci default NULL,
+  `mountpoint` varchar(255) collate utf8_unicode_ci default NULL,
+  `filesystems_id` int(11) NOT NULL default '0',
+  `totalsize` int(11) NOT NULL default '0',
+  `freesize` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`),
+  KEY `device` (`device`),
+  KEY `mountpoint` (`mountpoint`),
+  KEY `totalsize` (`totalsize`),
+  KEY `freesize` (`freesize`),
+  KEY `computers_id` (`computers_id`),
+  KEY `filesystems_id` (`filesystems_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_computermodels
+
+DROP TABLE IF EXISTS `glpi_computermodels`;
+CREATE TABLE `glpi_computermodels` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -319,41 +354,6 @@ CREATE TABLE `glpi_computers_softwareversions` (
   PRIMARY KEY  (`id`),
   KEY `computers_id` (`computers_id`),
   KEY `softwareversions_id` (`softwareversions_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computerdisks
-
-DROP TABLE IF EXISTS `glpi_computerdisks`;
-CREATE TABLE `glpi_computerdisks` (
-  `id` int(11) NOT NULL auto_increment,
-  `computers_id` int(11) NOT NULL default '0',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `device` varchar(255) collate utf8_unicode_ci default NULL,
-  `mountpoint` varchar(255) collate utf8_unicode_ci default NULL,
-  `filesystems_id` int(11) NOT NULL default '0',
-  `totalsize` int(11) NOT NULL default '0',
-  `freesize` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`),
-  KEY `device` (`device`),
-  KEY `mountpoint` (`mountpoint`),
-  KEY `totalsize` (`totalsize`),
-  KEY `freesize` (`freesize`),
-  KEY `computers_id` (`computers_id`),
-  KEY `filesystems_id` (`filesystems_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_computermodels
-
-DROP TABLE IF EXISTS `glpi_computermodels`;
-CREATE TABLE `glpi_computermodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -480,23 +480,6 @@ CREATE TABLE `glpi_configs` (
 
 INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50',' 0.80','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','443','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','','100','*','0','50','1','1','0','0','0','50','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1',NULL,'1',NULL,'0','1','0','2097152','0','1','0','1','1','1');
 
-### Dump table glpi_consumables
-
-DROP TABLE IF EXISTS `glpi_consumables`;
-CREATE TABLE `glpi_consumables` (
-  `id` int(11) NOT NULL auto_increment,
-  `consumableitems_id` int(11) NOT NULL default '0',
-  `date_in` date default NULL,
-  `date_out` date default NULL,
-  `users_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `date_in` (`date_in`),
-  KEY `date_out` (`date_out`),
-  KEY `consumableitems_id` (`consumableitems_id`),
-  KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_consumableitems
 
 DROP TABLE IF EXISTS `glpi_consumableitems`;
@@ -534,6 +517,23 @@ CREATE TABLE `glpi_consumableitemtypes` (
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_consumables
+
+DROP TABLE IF EXISTS `glpi_consumables`;
+CREATE TABLE `glpi_consumables` (
+  `id` int(11) NOT NULL auto_increment,
+  `consumableitems_id` int(11) NOT NULL default '0',
+  `date_in` date default NULL,
+  `date_out` date default NULL,
+  `users_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `date_in` (`date_in`),
+  KEY `date_out` (`date_out`),
+  KEY `consumableitems_id` (`consumableitems_id`),
+  KEY `users_id` (`users_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -671,6 +671,25 @@ CREATE TABLE `glpi_contracttypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_crontasklogs
+
+DROP TABLE IF EXISTS `glpi_crontasklogs`;
+CREATE TABLE `glpi_crontasklogs` (
+  `id` int(11) NOT NULL auto_increment,
+  `crontasks_id` int(11) NOT NULL,
+  `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+  `date` datetime NOT NULL,
+  `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
+  `elapsed` float NOT NULL COMMENT 'time elapsed since start',
+  `volume` int(11) NOT NULL COMMENT 'for statistics',
+  `content` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'message',
+  PRIMARY KEY  (`id`),
+  KEY `crontasks_id` (`crontasks_id`),
+  KEY `crontasklogs_id` (`crontasklogs_id`),
+  KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_crontasks
 
 DROP TABLE IF EXISTS `glpi_crontasks`;
@@ -705,24 +724,6 @@ INSERT INTO `glpi_crontasks` VALUES ('9',NULL,'mailgate','600','10','1','1','3',
 INSERT INTO `glpi_crontasks` VALUES ('10',NULL,'dbreplicate','60',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('11',NULL,'check_update','604800',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('12',NULL,'session','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
-
-### Dump table glpi_crontasklogs
-
-DROP TABLE IF EXISTS `glpi_crontasklogs`;
-CREATE TABLE `glpi_crontasklogs` (
-  `id` int(11) NOT NULL auto_increment,
-  `crontasks_id` int(11) NOT NULL,
-  `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
-  `date` datetime NOT NULL,
-  `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
-  `elapsed` float NOT NULL COMMENT 'time elapsed since start',
-  `volume` int(11) NOT NULL COMMENT 'for statistics',
-  `content` varchar(255) collate utf8_unicode_ci NOT NULL COMMENT 'message',
-  PRIMARY KEY  (`id`),
-  KEY `crontasks_id` (`crontasks_id`),
-  KEY `crontasklogs_id` (`crontasklogs_id`),
-  KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicecases
 
@@ -1070,6 +1071,18 @@ INSERT INTO `glpi_displayprefs` VALUES ('126','49','3','2','0');
 INSERT INTO `glpi_displayprefs` VALUES ('127','49','4','3','0');
 INSERT INTO `glpi_displayprefs` VALUES ('128','49','7','4','0');
 
+### Dump table glpi_documentcategories
+
+DROP TABLE IF EXISTS `glpi_documentcategories`;
+CREATE TABLE `glpi_documentcategories` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_documents
 
 DROP TABLE IF EXISTS `glpi_documents`;
@@ -1116,18 +1129,6 @@ CREATE TABLE `glpi_documents_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_documentcategories
-
-DROP TABLE IF EXISTS `glpi_documentcategories`;
-CREATE TABLE `glpi_documentcategories` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_documenttypes
 
 DROP TABLE IF EXISTS `glpi_documenttypes`;
@@ -1139,7 +1140,7 @@ CREATE TABLE `glpi_documenttypes` (
   `mime` varchar(255) collate utf8_unicode_ci default NULL,
   `is_uploadable` tinyint(1) NOT NULL default '1',
   `date_mod` datetime default NULL,
-  `comment` text COLLATE utf8_unicode_ci,
+  `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`ext`),
   KEY `name` (`name`),
@@ -1287,7 +1288,9 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2009-10-19 19:05:38','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-10-04 21:30:45','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-11-24 19:37:34','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1334,7 +1337,7 @@ CREATE TABLE `glpi_groups` (
   `ldap_field` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_value` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_group_dn` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NULL,
+  `date_mod` datetime default NULL,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
@@ -1411,6 +1414,22 @@ INSERT INTO `glpi_interfacetypes` VALUES ('6','PCI','');
 INSERT INTO `glpi_interfacetypes` VALUES ('7','PCIe','');
 INSERT INTO `glpi_interfacetypes` VALUES ('8','PCI-X','');
 
+### Dump table glpi_knowbaseitemcategories
+
+DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
+CREATE TABLE `glpi_knowbaseitemcategories` (
+  `id` int(11) NOT NULL auto_increment,
+  `knowbaseitemcategories_id` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `completename` text collate utf8_unicode_ci,
+  `comment` text collate utf8_unicode_ci,
+  `level` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `unicity` (`knowbaseitemcategories_id`,`name`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_knowbaseitems
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;
@@ -1433,22 +1452,6 @@ CREATE TABLE `glpi_knowbaseitems` (
   KEY `is_faq` (`is_faq`),
   KEY `date_mod` (`date_mod`),
   FULLTEXT KEY `fulltext` (`question`,`answer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_knowbaseitemcategories
-
-DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitemcategories` (
-  `id` int(11) NOT NULL auto_increment,
-  `knowbaseitemcategories_id` int(11) NOT NULL default '0',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `completename` text collate utf8_unicode_ci,
-  `comment` text collate utf8_unicode_ci,
-  `level` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `unicity` (`knowbaseitemcategories_id`,`name`),
-  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1486,16 +1489,16 @@ DROP TABLE IF EXISTS `glpi_locations`;
 CREATE TABLE `glpi_locations` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
   `completename` text collate utf8_unicode_ci,
   `comment` text collate utf8_unicode_ci,
   `level` int(11) NOT NULL default '0',
-  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
-  `sons_cache` longtext COLLATE utf8_unicode_ci,
-  `building` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `room` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ancestors_cache` longtext collate utf8_unicode_ci,
+  `sons_cache` longtext collate utf8_unicode_ci,
+  `building` varchar(255) collate utf8_unicode_ci default NULL,
+  `room` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`locations_id`,`name`),
   KEY `locations_id` (`locations_id`),
@@ -1582,6 +1585,18 @@ CREATE TABLE `glpi_manufacturers` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_monitormodels
+
+DROP TABLE IF EXISTS `glpi_monitormodels`;
+CREATE TABLE `glpi_monitormodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_monitors
 
 DROP TABLE IF EXISTS `glpi_monitors`;
@@ -1633,18 +1648,6 @@ CREATE TABLE `glpi_monitors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_monitormodels
-
-DROP TABLE IF EXISTS `glpi_monitormodels`;
-CREATE TABLE `glpi_monitormodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_monitortypes
 
 DROP TABLE IF EXISTS `glpi_monitortypes`;
@@ -1670,6 +1673,30 @@ CREATE TABLE `glpi_netpoints` (
   KEY `name` (`name`),
   KEY `complete` (`entities_id`,`locations_id`,`name`),
   KEY `location_name` (`locations_id`,`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_networkequipmentfirmwares
+
+DROP TABLE IF EXISTS `glpi_networkequipmentfirmwares`;
+CREATE TABLE `glpi_networkequipmentfirmwares` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_networkequipmentmodels
+
+DROP TABLE IF EXISTS `glpi_networkequipmentmodels`;
+CREATE TABLE `glpi_networkequipmentmodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1723,30 +1750,6 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `networkequipmenttypes_id` (`networkequipmenttypes_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_networkequipmentfirmwares
-
-DROP TABLE IF EXISTS `glpi_networkequipmentfirmwares`;
-CREATE TABLE `glpi_networkequipmentfirmwares` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_networkequipmentmodels
-
-DROP TABLE IF EXISTS `glpi_networkequipmentmodels`;
-CREATE TABLE `glpi_networkequipmentmodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1972,6 +1975,18 @@ CREATE TABLE `glpi_operatingsystemversions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_peripheralmodels
+
+DROP TABLE IF EXISTS `glpi_peripheralmodels`;
+CREATE TABLE `glpi_peripheralmodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS `glpi_peripherals`;
@@ -2018,10 +2033,10 @@ CREATE TABLE `glpi_peripherals` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_peripheralmodels
+### Dump table glpi_peripheraltypes
 
-DROP TABLE IF EXISTS `glpi_peripheralmodels`;
-CREATE TABLE `glpi_peripheralmodels` (
+DROP TABLE IF EXISTS `glpi_peripheraltypes`;
+CREATE TABLE `glpi_peripheraltypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -2030,10 +2045,22 @@ CREATE TABLE `glpi_peripheralmodels` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_peripheraltypes
+### Dump table glpi_phonemodels
 
-DROP TABLE IF EXISTS `glpi_peripheraltypes`;
-CREATE TABLE `glpi_peripheraltypes` (
+DROP TABLE IF EXISTS `glpi_phonemodels`;
+CREATE TABLE `glpi_phonemodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_phonepowersupplies
+
+DROP TABLE IF EXISTS `glpi_phonepowersupplies`;
+CREATE TABLE `glpi_phonepowersupplies` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -2094,30 +2121,6 @@ CREATE TABLE `glpi_phones` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_phonemodels
-
-DROP TABLE IF EXISTS `glpi_phonemodels`;
-CREATE TABLE `glpi_phonemodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_phonepowersupplies
-
-DROP TABLE IF EXISTS `glpi_phonepowersupplies`;
-CREATE TABLE `glpi_phonepowersupplies` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_phonetypes
 
 DROP TABLE IF EXISTS `glpi_phonetypes`;
@@ -2144,6 +2147,18 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_printermodels
+
+DROP TABLE IF EXISTS `glpi_printermodels`;
+CREATE TABLE `glpi_printermodels` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2199,18 +2214,6 @@ CREATE TABLE `glpi_printers` (
   KEY `printertypes_id` (`printertypes_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_printermodels
-
-DROP TABLE IF EXISTS `glpi_printermodels`;
-CREATE TABLE `glpi_printermodels` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2383,25 +2386,41 @@ CREATE TABLE `glpi_reminders` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-### Dump table glpi_reservations
+
+### Dump table glpi_requesttypes
 
 DROP TABLE IF EXISTS `glpi_requesttypes`;
 CREATE TABLE `glpi_requesttypes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_helpdesk_default` tinyint(1) NOT NULL DEFAULT '0',
-  `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
-  `comment` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `is_helpdesk_default` tinyint(1) NOT NULL default '0',
+  `is_mail_default` tinyint(1) NOT NULL default '0',
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_requesttypes` VALUES(1, 'Helpdesk', 1, 0, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(2, 'E-Mail', 0, 1, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(3, 'Phone', 0, 0, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(4, 'Direct', 0, 0, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(5, 'Written', 0, 0, NULL);
-INSERT INTO `glpi_requesttypes` VALUES(6, 'Other', 0, 0, NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','0',NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','1',NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('3','Téléphone','0','0',NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('4','Directe','0','0',NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('5','Écrite','0','0',NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('6','Autre','0','0',NULL);
+
+### Dump table glpi_reservationitems
+
+DROP TABLE IF EXISTS `glpi_reservationitems`;
+CREATE TABLE `glpi_reservationitems` (
+  `id` int(11) NOT NULL auto_increment,
+  `itemtype` int(11) NOT NULL default '0',
+  `items_id` int(11) NOT NULL default '0',
+  `comment` text collate utf8_unicode_ci,
+  `is_active` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`id`),
+  KEY `is_active` (`is_active`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_reservations
 
@@ -2420,43 +2439,6 @@ CREATE TABLE `glpi_reservations` (
   KEY `users_id` (`users_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-### Dump table glpi_reservationitems
-
-DROP TABLE IF EXISTS `glpi_reservationitems`;
-CREATE TABLE `glpi_reservationitems` (
-  `id` int(11) NOT NULL auto_increment,
-  `itemtype` int(11) NOT NULL default '0',
-  `items_id` int(11) NOT NULL default '0',
-  `comment` text collate utf8_unicode_ci,
-  `is_active` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`id`),
-  KEY `is_active` (`is_active`),
-  KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_rules
-
-DROP TABLE IF EXISTS `glpi_rules`;
-CREATE TABLE `glpi_rules` (
-  `id` int(11) NOT NULL auto_increment,
-  `entities_id` int(11) NOT NULL default '0',
-  `sub_type` int(11) NOT NULL default '0' COMMENT 'see define.php RULE_* constant',
-  `ranking` int(11) NOT NULL default '0',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `description` text collate utf8_unicode_ci,
-  `match` char(10) collate utf8_unicode_ci default NULL COMMENT 'see define.php *_MATCHING constant',
-  `is_active` tinyint(1) NOT NULL default '1',
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `entities_id` (`entities_id`),
-  KEY `is_active` (`is_active`),
-  KEY `sub_type` (`sub_type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_rules` VALUES ('1','-1','0','0','Root','','AND','1',NULL);
-INSERT INTO `glpi_rules` VALUES ('2','-1','1','1','Root','','OR','1',NULL);
 
 ### Dump table glpi_ruleactions
 
@@ -2704,25 +2686,6 @@ CREATE TABLE `glpi_rulecacheprintertypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_rulescachesoftwares
-
-DROP TABLE IF EXISTS `glpi_rulescachesoftwares`;
-CREATE TABLE `glpi_rulescachesoftwares` (
-  `id` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
-  `manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rules_id` int(11) NOT NULL default '0',
-  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
-  `version` varchar(255) collate utf8_unicode_ci default NULL,
-  `new_manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `ignore_ocs_import` char(1) collate utf8_unicode_ci default NULL,
-  `is_helpdesk_visible` char(1) collate utf8_unicode_ci default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `old_value` (`old_value`),
-  KEY `rules_id` (`rules_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_rulecriterias
 
 DROP TABLE IF EXISTS `glpi_rulecriterias`;
@@ -2765,47 +2728,44 @@ INSERT INTO `glpi_ruleldapparameters` VALUES ('10','(LDAP)DistinguishedName','dn
 INSERT INTO `glpi_ruleldapparameters` VALUES ('12','(AD)User ID','samaccountname');
 INSERT INTO `glpi_ruleldapparameters` VALUES ('13','(LDAP) Title','title');
 
-### Dump table glpi_softwares
+### Dump table glpi_rules
 
-DROP TABLE IF EXISTS `glpi_softwares`;
-CREATE TABLE `glpi_softwares` (
+DROP TABLE IF EXISTS `glpi_rules`;
+CREATE TABLE `glpi_rules` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
-  `is_recursive` tinyint(1) NOT NULL default '0',
+  `sub_type` int(11) NOT NULL default '0' COMMENT 'see define.php RULE_* constant',
+  `ranking` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `description` text collate utf8_unicode_ci,
+  `match` char(10) collate utf8_unicode_ci default NULL COMMENT 'see define.php *_MATCHING constant',
+  `is_active` tinyint(1) NOT NULL default '1',
   `comment` text collate utf8_unicode_ci,
-  `locations_id` int(11) NOT NULL default '0',
-  `users_id_tech` int(11) NOT NULL default '0',
-  `operatingsystems_id` int(11) NOT NULL default '0',
-  `is_update` tinyint(1) NOT NULL default '0',
-  `softwares_id` int(11) NOT NULL default '0',
-  `manufacturers_id` int(11) NOT NULL default '0',
-  `is_deleted` tinyint(1) NOT NULL default '0',
-  `is_template` tinyint(1) NOT NULL default '0',
-  `template_name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime default NULL,
-  `notepad` longtext collate utf8_unicode_ci,
-  `users_id` int(11) NOT NULL default '0',
-  `groups_id` int(11) NOT NULL default '0',
-  `ticket_tco` decimal(20,4) default '0.0000',
-  `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
-  `softwarecategories_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `date_mod` (`date_mod`),
-  KEY `name` (`name`),
-  KEY `is_template` (`is_template`),
-  KEY `is_update` (`is_update`),
-  KEY `softwarecategories_id` (`softwarecategories_id`),
   KEY `entities_id` (`entities_id`),
-  KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `groups_id` (`groups_id`),
-  KEY `users_id` (`users_id`),
-  KEY `locations_id` (`locations_id`),
-  KEY `operatingsystems_id` (`operatingsystems_id`),
-  KEY `users_id_tech` (`users_id_tech`),
-  KEY `softwares_id` (`softwares_id`),
-  KEY `is_deleted` (`is_deleted`),
-  KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
+  KEY `is_active` (`is_active`),
+  KEY `sub_type` (`sub_type`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_rules` VALUES ('1','-1','0','0','Root','','AND','1',NULL);
+INSERT INTO `glpi_rules` VALUES ('2','-1','1','1','Root','','OR','1',NULL);
+
+### Dump table glpi_rulescachesoftwares
+
+DROP TABLE IF EXISTS `glpi_rulescachesoftwares`;
+CREATE TABLE `glpi_rulescachesoftwares` (
+  `id` int(11) NOT NULL auto_increment,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `rules_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `version` varchar(255) collate utf8_unicode_ci default NULL,
+  `new_manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `ignore_ocs_import` char(1) collate utf8_unicode_ci default NULL,
+  `is_helpdesk_visible` char(1) collate utf8_unicode_ci default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `old_value` (`old_value`),
+  KEY `rules_id` (`rules_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2865,6 +2825,50 @@ CREATE TABLE `glpi_softwarelicensetypes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_softwarelicensetypes` VALUES ('1','OEM','');
+
+### Dump table glpi_softwares
+
+DROP TABLE IF EXISTS `glpi_softwares`;
+CREATE TABLE `glpi_softwares` (
+  `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
+  `is_recursive` tinyint(1) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  `locations_id` int(11) NOT NULL default '0',
+  `users_id_tech` int(11) NOT NULL default '0',
+  `operatingsystems_id` int(11) NOT NULL default '0',
+  `is_update` tinyint(1) NOT NULL default '0',
+  `softwares_id` int(11) NOT NULL default '0',
+  `manufacturers_id` int(11) NOT NULL default '0',
+  `is_deleted` tinyint(1) NOT NULL default '0',
+  `is_template` tinyint(1) NOT NULL default '0',
+  `template_name` varchar(255) collate utf8_unicode_ci default NULL,
+  `date_mod` datetime default NULL,
+  `notepad` longtext collate utf8_unicode_ci,
+  `users_id` int(11) NOT NULL default '0',
+  `groups_id` int(11) NOT NULL default '0',
+  `ticket_tco` decimal(20,4) default '0.0000',
+  `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
+  `softwarecategories_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `name` (`name`),
+  KEY `is_template` (`is_template`),
+  KEY `is_update` (`is_update`),
+  KEY `softwarecategories_id` (`softwarecategories_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `operatingsystems_id` (`operatingsystems_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `softwares_id` (`softwares_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_softwareversions
 
@@ -2956,54 +2960,6 @@ CREATE TABLE `glpi_taskcategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_tickets
-
-DROP TABLE IF EXISTS `glpi_tickets`;
-CREATE TABLE `glpi_tickets` (
-  `id` int(11) NOT NULL auto_increment,
-  `entities_id` int(11) NOT NULL default '0',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date` datetime default NULL,
-  `closedate` datetime default NULL,
-  `date_mod` datetime default NULL,
-  `status` varchar(255) collate utf8_unicode_ci default 'new',
-  `users_id` int(11) NOT NULL default '0',
-  `users_id_recipient` int(11) NOT NULL default '0',
-  `groups_id` int(11) NOT NULL default '0',
-  `requesttypes_id` int(11) NOT NULL default '0',
-  `users_id_assign` int(11) NOT NULL default '0',
-  `suppliers_id_assign` int(11) NOT NULL default '0',
-  `groups_id_assign` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
-  `items_id` int(11) NOT NULL default '0',
-  `content` longtext collate utf8_unicode_ci,
-  `priority` int(11) NOT NULL default '1',
-  `user_email` varchar(255) collate utf8_unicode_ci default NULL,
-  `use_email_notification` tinyint(1) NOT NULL default '0',
-  `realtime` float NOT NULL default '0',
-  `ticketcategories_id` int(11) NOT NULL default '0',
-  `cost_time` decimal(20,4) NOT NULL default '0.0000',
-  `cost_fixed` decimal(20,4) NOT NULL default '0.0000',
-  `cost_material` decimal(20,4) NOT NULL default '0.0000',
-  PRIMARY KEY  (`id`),
-  KEY `date` (`date`),
-  KEY `closedate` (`closedate`),
-  KEY `status` (`status`),
-  KEY `priority` (`priority`),
-  KEY `request_type` (`requesttypes_id`),
-  KEY `date_mod` (`date_mod`),
-  KEY `users_id_assign` (`users_id_assign`),
-  KEY `groups_id_assign` (`groups_id_assign`),
-  KEY `suppliers_id_assign` (`suppliers_id_assign`),
-  KEY `users_id` (`users_id`),
-  KEY `ticketcategories_id` (`ticketcategories_id`),
-  KEY `entities_id` (`entities_id`),
-  KEY `groups_id` (`groups_id`),
-  KEY `users_id_recipient` (`users_id_recipient`),
-  KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_ticketcategories
 
 DROP TABLE IF EXISTS `glpi_ticketcategories`;
@@ -3069,6 +3025,54 @@ CREATE TABLE `glpi_ticketplannings` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_tickets
+
+DROP TABLE IF EXISTS `glpi_tickets`;
+CREATE TABLE `glpi_tickets` (
+  `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `date` datetime default NULL,
+  `closedate` datetime default NULL,
+  `date_mod` datetime default NULL,
+  `status` varchar(255) collate utf8_unicode_ci default 'new',
+  `users_id` int(11) NOT NULL default '0',
+  `users_id_recipient` int(11) NOT NULL default '0',
+  `groups_id` int(11) NOT NULL default '0',
+  `requesttypes_id` int(11) NOT NULL default '0',
+  `users_id_assign` int(11) NOT NULL default '0',
+  `suppliers_id_assign` int(11) NOT NULL default '0',
+  `groups_id_assign` int(11) NOT NULL default '0',
+  `itemtype` int(11) NOT NULL default '0',
+  `items_id` int(11) NOT NULL default '0',
+  `content` longtext collate utf8_unicode_ci,
+  `priority` int(11) NOT NULL default '1',
+  `user_email` varchar(255) collate utf8_unicode_ci default NULL,
+  `use_email_notification` tinyint(1) NOT NULL default '0',
+  `realtime` float NOT NULL default '0',
+  `ticketcategories_id` int(11) NOT NULL default '0',
+  `cost_time` decimal(20,4) NOT NULL default '0.0000',
+  `cost_fixed` decimal(20,4) NOT NULL default '0.0000',
+  `cost_material` decimal(20,4) NOT NULL default '0.0000',
+  PRIMARY KEY  (`id`),
+  KEY `date` (`date`),
+  KEY `closedate` (`closedate`),
+  KEY `status` (`status`),
+  KEY `priority` (`priority`),
+  KEY `request_type` (`requesttypes_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id_assign` (`users_id_assign`),
+  KEY `groups_id_assign` (`groups_id_assign`),
+  KEY `suppliers_id_assign` (`suppliers_id_assign`),
+  KEY `users_id` (`users_id`),
+  KEY `ticketcategories_id` (`ticketcategories_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id_recipient` (`users_id_recipient`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_transfers
 
 DROP TABLE IF EXISTS `glpi_transfers`;
@@ -3107,6 +3111,18 @@ CREATE TABLE `glpi_transfers` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_transfers` VALUES ('1','complete','2','2','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1');
+
+### Dump table glpi_usercategories
+
+DROP TABLE IF EXISTS `glpi_usercategories`;
+CREATE TABLE `glpi_usercategories` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comment` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_users
 
@@ -3166,22 +3182,10 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-10-19 19:05:37','2009-10-19 19:05:37','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-11-24 19:37:34','2009-11-24 19:37:34','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
-
-### Dump table glpi_usercategories
-
-DROP TABLE IF EXISTS `glpi_usercategories`;
-CREATE TABLE `glpi_usercategories` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 ### Dump table glpi_usertitles
 
