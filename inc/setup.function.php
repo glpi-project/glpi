@@ -591,7 +591,7 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
       case "glpi_operatingsystems" :
       case "glpi_operatingsystemsservicepacks" :
       case "glpi_operatingsystemsversions" :
-      case "glpi_computerstypes" :
+      case "glpi_computertypes" :
       case "glpi_monitorstypes" :
       case "glpi_printerstypes" :
       case "glpi_peripheralstypes" :
@@ -600,7 +600,7 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
          $process = true;
          break;
 
-      case "glpi_computersmodels" :
+      case "glpi_computermodels" :
       case "glpi_monitorsmodels" :
       case "glpi_printersmodels" :
       case "glpi_peripheralsmodels" :

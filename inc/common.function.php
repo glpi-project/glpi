@@ -336,7 +336,7 @@ function cron_logs($task) {
          $secs = $data['logs_lifetime'] * DAY_TIMESTAMP;
 
          $query_exp = "DELETE
-                    FROM `glpi_crontaskslogs`
+                    FROM `glpi_crontasklogs`
                     WHERE `crontasks_id`='".$data['id']."'
                       AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 

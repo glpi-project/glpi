@@ -100,8 +100,8 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervTitleOrType($date1,$date2,false);
          break;
 
-      case "glpi_computerstypes" :
-      case "glpi_computersmodels" :
+      case "glpi_computertypes" :
+      case "glpi_computermodels" :
       case "glpi_operatingsystems" :
       case "glpi_locations" :
          $val = getNbIntervDropdown($type);

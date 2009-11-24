@@ -57,12 +57,12 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	foreach ($_POST["item_type"] as $key => $val)
 	if (in_array($val,$items)){
 		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".is_deleted AS itemdeleted, ";
-		$query[$val].= " glpi_locations.completename AS location, glpi_contractstypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.id as entID ";
+		$query[$val].= " glpi_locations.completename AS location, glpi_contracttypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.id as entID ";
 		$query[$val].= " FROM glpi_contracts_items ";
 		$query[$val].= " INNER JOIN glpi_contracts ON (glpi_contracts_items.contracts_id=glpi_contracts.id) ";
 		$query[$val].= " INNER JOIN ".$LINK_ID_TABLE[$val]." ON (glpi_contracts_items.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_contracts_items.items_id )";
 		$query[$val].= " LEFT JOIN glpi_infocoms ON ( glpi_infocoms.itemtype = '$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_infocoms.items_id ) ";
-		$query[$val].= " LEFT JOIN glpi_contractstypes ON (glpi_contracts.contractstypes_id = glpi_contractstypes.id) ";
+		$query[$val].= " LEFT JOIN glpi_contracttypes ON (glpi_contracts.contracttypes_id = glpi_contracttypes.id) ";
 		$query[$val].= " LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$val].".locations_id = glpi_locations.id) ";
 		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".entities_id = glpi_entities.id) ";
 

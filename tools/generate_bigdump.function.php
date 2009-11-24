@@ -246,7 +246,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['consumable_type'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="type de consommable $i";
-		$query="INSERT INTO glpi_consumablesitemstypes VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_consumableitemtypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 		
@@ -279,7 +279,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['contact_type'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="type de contact $i";
-		$query="INSERT INTO glpi_contactstypes VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_contacttypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	
@@ -335,7 +335,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['model'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="Modele $i";
-		$query="INSERT INTO glpi_computersmodels VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_computermodels VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	
@@ -434,7 +434,7 @@ function generateGlobalDropdowns(){
 
 	for ($i=0;$i<$MAX['licensetype'];$i++){
 		$val="type $i";
-		$query="INSERT INTO glpi_softwareslicensestypes VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_softwarelicensetypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	
@@ -458,7 +458,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['type_computers'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="type ordinateur $i";
-		$query="INSERT INTO glpi_computerstypes VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_computertypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	
@@ -912,9 +912,9 @@ function generate_entity($ID_entity){
 	$LAST["contacts"]=getMaxItem("glpi_contacts");
 	
 	// TYPE DE CONSOMMABLES
-	$FIRST["type_of_consumables"]=getMaxItem("glpi_consumablesitems")+1;
+	$FIRST["type_of_consumables"]=getMaxItem("glpi_consumableitems")+1;
 	for ($i=0;$i<$MAX['type_of_consumables'];$i++){
-		$query="INSERT INTO glpi_consumablesitems VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes consumable type $i')";
+		$query="INSERT INTO glpi_consumableitems VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes consumable type $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$consID=$DB->insert_id();
 		addDocuments(CONSUMABLEITEM_TYPE,$consID);
@@ -948,7 +948,7 @@ function generate_entity($ID_entity){
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
-	$LAST["type_of_consumables"]=getMaxItem("glpi_consumablesitems");
+	$LAST["type_of_consumables"]=getMaxItem("glpi_consumableitems");
 	
 	
 	// TYPE DE CARTOUCHES
@@ -1389,7 +1389,7 @@ function generate_entity($ID_entity){
 			$versID=$DB->insert_id();
 			$val3=mt_rand(1,$MAX['softwareinstall']);
 			for ($k=0;$k<$val3;$k++){
-				$query="INSERT INTO glpi_computers_softwaresversions VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
+				$query="INSERT INTO glpi_computers_softwareversions VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}
 		}

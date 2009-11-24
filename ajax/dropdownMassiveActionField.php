@@ -67,7 +67,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    if ($search["table"]==$LINK_ID_TABLE[$_POST["itemtype"]]) { // field type
       switch ($search["table"].".".$search["linkfield"]) {
          case "glpi_cartridgeitems.alarm_threshold" :
-         case "glpi_consumablesitems.alarm_threshold" :
+         case "glpi_consumableitems.alarm_threshold" :
             dropdownInteger($search["linkfield"],0,-1,100);
             break;
 

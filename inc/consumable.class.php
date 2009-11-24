@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')){
 class ConsumableType extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_consumablesitems';
+   public $table = 'glpi_consumableitems';
    public $type = CONSUMABLEITEM_TYPE;
    public $entity_assign = true;
 
@@ -79,7 +79,7 @@ class ConsumableType extends CommonDBTM {
       // Delete cartridconsumablesges
       $query = "DELETE
                 FROM `glpi_consumables`
-                WHERE (`consumablesitems_id` = '$ID')";
+                WHERE (`consumableitems_id` = '$ID')";
       $DB->query($query);
    }
 
@@ -167,8 +167,8 @@ class ConsumableType extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_consumablesitemstypes","consumablesitemstypes_id",
-                    $this->fields["consumablesitemstypes_id"]);
+      dropdownValue("glpi_consumableitemtypes","consumableitemtypes_id",
+                    $this->fields["consumableitemtypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -210,26 +210,26 @@ class ConsumableType extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_consumablesitems';
+      $tab[1]['table']         = 'glpi_consumableitems';
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = CONSUMABLEITEM_TYPE;
 
-      $tab[2]['table']     = 'glpi_consumablesitems';
+      $tab[2]['table']     = 'glpi_consumableitems';
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[34]['table']     = 'glpi_consumablesitems';
+      $tab[34]['table']     = 'glpi_consumableitems';
       $tab[34]['field']     = 'ref';
       $tab[34]['linkfield'] = 'ref';
       $tab[34]['name']      = $LANG['consumables'][2];
 
-      $tab[4]['table']     = 'glpi_consumablesitemstypes';
+      $tab[4]['table']     = 'glpi_consumableitemtypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'consumablesitemstypes_id';
+      $tab[4]['linkfield'] = 'consumableitemtypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
       $tab[23]['table']     = 'glpi_manufacturers';
@@ -247,19 +247,19 @@ class ConsumableType extends CommonDBTM {
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[8]['table']     = 'glpi_consumablesitems';
+      $tab[8]['table']     = 'glpi_consumableitems';
       $tab[8]['field']     = 'alarm_threshold';
       $tab[8]['linkfield'] = 'alarm_threshold';
       $tab[8]['name']      = $LANG['consumables'][38];
       $tab[8]['datatype']  = 'number';
 
-      $tab[16]['table']     = 'glpi_consumablesitems';
+      $tab[16]['table']     = 'glpi_consumableitems';
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_consumablesitems';
+      $tab[90]['table']     = 'glpi_consumableitems';
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -298,7 +298,7 @@ class Consumable extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      return array("consumablesitems_id"=>$input["tID"],
+      return array("consumableitems_id"=>$input["tID"],
                    "date_in"=>date("Y-m-d"));
    }
 
@@ -307,7 +307,7 @@ class Consumable extends CommonDBTM {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
-      if ($ic->getFromDBforDevice(CONSUMABLEITEM_TYPE,$this->fields["consumablesitems_id"])) {
+      if ($ic->getFromDBforDevice(CONSUMABLEITEM_TYPE,$this->fields["consumableitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
          $ic->fields["itemtype"]=$this->type;
@@ -370,7 +370,7 @@ class Consumable extends CommonDBTM {
    **/
    function getEntityID () {
       $ci=new ConsumableType();
-      $ci->getFromDB($this->fields["consumablesitems_id"]);
+      $ci->getFromDB($this->fields["consumableitems_id"]);
 
       return $ci->getEntityID();
    }

@@ -317,7 +317,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MANUFACTURER]['name']['force_actions'] = array('
 //Dictionnary Model Computer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['name']  =  $LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['table'] ='glpi_computersmodels';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['table'] ='glpi_computermodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['name']  = $LANG['common'][5];
@@ -388,7 +388,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['force_actions'] = arr
 //Dictionnary Type Computer
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['name']  = $LANG['common'][17];
-$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['table'] = 'glpi_computerstypes';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['table'] = 'glpi_computertypes';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['name']          = $LANG['common'][17];
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['force_actions'] = array('assign',

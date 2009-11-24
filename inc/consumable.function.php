@@ -94,7 +94,7 @@ function showConsumables ($tID,$show_old=0) {
    if ($cartype->getFromDB($tID)) {
       $query = "SELECT count(*) AS COUNT
                 FROM `glpi_consumables`
-                WHERE (`consumablesitems_id` = '$tID')";
+                WHERE (`consumableitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
          if ($DB->result($result,0,0)!=0) {
@@ -160,7 +160,7 @@ function showConsumables ($tID,$show_old=0) {
       }
       $query = "SELECT `glpi_consumables`.* $addselect
                 FROM `glpi_consumables` $leftjoin
-                WHERE (`consumablesitems_id` = '$tID') $where";
+                WHERE (`consumableitems_id` = '$tID') $where";
 
       if ($result = $DB->query($query)) {
          $number=$DB->numrows($result);
@@ -280,7 +280,7 @@ function getConsumablesNumber($tID) {
 
    $query = "SELECT `id`
              FROM `glpi_consumables`
-             WHERE `consumablesitems_id` = '$tID'";
+             WHERE `consumableitems_id` = '$tID'";
    $result = $DB->query($query);
    return $DB->numrows($result);
 }
@@ -300,7 +300,7 @@ function getOldConsumablesNumber($tID) {
 
    $query = "SELECT `id`
              FROM `glpi_consumables`
-             WHERE (`consumablesitems_id` = '$tID'
+             WHERE (`consumableitems_id` = '$tID'
                     AND `date_out` IS NOT NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -321,7 +321,7 @@ function getUnusedConsumablesNumber($tID) {
 
    $query = "SELECT `id`
              FROM `glpi_consumables`
-             WHERE (`consumablesitems_id` = '$tID'
+             WHERE (`consumableitems_id` = '$tID'
                     AND `date_out` IS NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -400,45 +400,45 @@ function showConsumableSummary(){
       return false;
    }
 
-   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id`, `users_id`
+   $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`, `users_id`
              FROM `glpi_consumables`
              WHERE `date_out` IS NOT NULL
-                   AND `consumablesitems_id` IN (SELECT `id`
-                                                 FROM `glpi_consumablesitems`
+                   AND `consumableitems_id` IN (SELECT `id`
+                                                 FROM `glpi_consumableitems`
                                                  ".getEntitiesRestrictRequest(
-                                                 "WHERE","glpi_consumablesitems").")
-             GROUP BY `users_id`, `consumablesitems_id`";
+                                                 "WHERE","glpi_consumableitems").")
+             GROUP BY `users_id`, `consumableitems_id`";
    $used=array();
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
-            $used[$data["users_id"]][$data["consumablesitems_id"]]=$data["COUNT"];
+            $used[$data["users_id"]][$data["consumableitems_id"]]=$data["COUNT"];
          }
       }
    }
-   $query = "SELECT COUNT(*) AS COUNT, `consumablesitems_id`
+   $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`
              FROM `glpi_consumables`
              WHERE `date_out` IS NULL
-                   AND `consumablesitems_id` IN (SELECT `id`
-                                                 FROM `glpi_consumablesitems`
+                   AND `consumableitems_id` IN (SELECT `id`
+                                                 FROM `glpi_consumableitems`
                                                  ".getEntitiesRestrictRequest(
-                                                 "WHERE","`glpi_consumablesitems`").")
-             GROUP BY `consumablesitems_id`";
+                                                 "WHERE","`glpi_consumableitems`").")
+             GROUP BY `consumableitems_id`";
    $new=array();
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
-            $new[$data["consumablesitems_id"]]=$data["COUNT"];
+            $new[$data["consumableitems_id"]]=$data["COUNT"];
          }
       }
    }
 
    $types=array();
    $query="SELECT *
-           FROM `glpi_consumablesitems`
-           ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
+           FROM `glpi_consumableitems`
+           ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
@@ -521,17 +521,17 @@ function cron_consumable($task=NULL) {
    loadLanguage($CFG_GLPI["language"]);
 
    // Get cartridges type with alarm activated and last warning > config
-   $query="SELECT `glpi_consumablesitems`.`id` AS consID,
-                  `glpi_consumablesitems`.`entities_id` as entity,
-                  `glpi_consumablesitems`.`ref` as consref,
-                  `glpi_consumablesitems`.`name` AS consname,
-                  `glpi_consumablesitems`.`alarm_threshold` AS threshold,
+   $query="SELECT `glpi_consumableitems`.`id` AS consID,
+                  `glpi_consumableitems`.`entities_id` as entity,
+                  `glpi_consumableitems`.`ref` as consref,
+                  `glpi_consumableitems`.`name` AS consname,
+                  `glpi_consumableitems`.`alarm_threshold` AS threshold,
                   `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-          FROM `glpi_consumablesitems`
-          LEFT JOIN `glpi_alerts` ON (`glpi_consumablesitems`.`id` = `glpi_alerts`.`items_id`
+          FROM `glpi_consumableitems`
+          LEFT JOIN `glpi_alerts` ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
                                        AND `glpi_alerts`.`itemtype`='".CONSUMABLEITEM_TYPE."')
-          WHERE `glpi_consumablesitems`.`is_deleted`='0'
-                AND `glpi_consumablesitems`.`alarm_threshold`>='0'
+          WHERE `glpi_consumableitems`.`is_deleted`='0'
+                AND `glpi_consumableitems`.`alarm_threshold`>='0'
                 AND (`glpi_alerts`.`date` IS NULL
                      OR (`glpi_alerts`.date+".$CFG_GLPI["consumables_alert_repeat"].
                          ") < CURRENT_TIMESTAMP());";
