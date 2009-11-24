@@ -94,6 +94,9 @@ echo formatUserName($_SESSION["glpiID"], $_SESSION["glpiname"], $_SESSION["glpir
 echo ", ".$LANG['central'][1]."</span>";
 echo "<br><br>";
 
+$central = new Central();
+$central->show();
+/*
 $tabs['my'] = array('title'  => $LANG['central'][12],
                     'url'    => $CFG_GLPI['root_doc']."/ajax/central.tabs.php",
                     'params' => "target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=my");
@@ -117,7 +120,7 @@ echo "<div id='tabspanel' class='center-h'></div>";
 createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('central'));
 echo "<div id='tabcontent'></div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+*/
 commonFooter();
 
 ?>
