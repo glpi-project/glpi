@@ -36,12 +36,12 @@ if (!defined('GLPI_ROOT')) {
 // _ before the link table name => no clean cache on this relation
 
 $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
-                                          "glpi_authldapsreplicates"=>"authldaps_id"),
+                                          "glpi_authldapreplicates"=>"authldaps_id"),
 
                 "glpi_bookmarks" => array("glpi_bookmarks_users"=>"bookmarks_id"),
 
-                "glpi_cartridgesitems" => array("glpi_cartridges"=>"cartridgesitems_id",
-                                                "glpi_cartridges_printersmodels"=>"cartridgesitems_id"),
+                "glpi_cartridgeitems" => array("glpi_cartridges"=>"cartridgeitems_id",
+                                                "glpi_cartridges_printersmodels"=>"cartridgeitems_id"),
 
                 "glpi_computers" => array("glpi_computers_devices"=>"computers_id",
                                           "glpi_computersdisks"=>"computers_id",
@@ -64,7 +64,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_budgets" => array("glpi_infocoms"=>"budgets_id"),
 
-                "glpi_cartridgesitemstypes" => array("glpi_cartridgesitems"=>"cartridgesitemstypes_id"),
+                "glpi_cartridgeitemtypes" => array("glpi_cartridgeitems"=>"cartridgeitemtypes_id"),
 
                 "glpi_devicescasestypes" => array("glpi_devicescases"=>"devicescasestypes_id"),
 
@@ -101,7 +101,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                 "glpi_softwareslicensestypes" => array("glpi_softwareslicenses"
                                                          =>"softwareslicensestypes_id"),
 
-                "glpi_locations" => array("glpi_cartridgesitems"=>"locations_id",
+                "glpi_locations" => array("glpi_cartridgeitems"=>"locations_id",
                                           "glpi_consumablesitems"=>"locations_id",
                                           "glpi_computers"=>"locations_id",
                                           "glpi_netpoints"=>"locations_id",
@@ -114,7 +114,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                           "glpi_softwares"=>"locations_id",
                                           "glpi_users"=>"locations_id"),
 
-                "glpi_manufacturers" => array("glpi_cartridgesitems"=>"manufacturers_id",
+                "glpi_manufacturers" => array("glpi_cartridgeitems"=>"manufacturers_id",
                                               "glpi_computers"=>"manufacturers_id",
                                               "glpi_consumablesitems"=>"manufacturers_id",
                                               "glpi_devicescases"=>"manufacturers_id",
@@ -199,7 +199,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                           "glpi_tickets"=>"suppliers_id_assign"),
 
                 "glpi_entities" => array("glpi_bookmarks"=>"entities_id",
-                                         "glpi_cartridgesitems"=>"entities_id",
+                                         "glpi_cartridgeitems"=>"entities_id",
                                          "glpi_computers"=>"entities_id",
                                          "glpi_consumablesitems"=>"entities_id",
                                          "glpi_contacts"=>"entities_id",
@@ -302,7 +302,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                 "glpi_printerstypes"=> array("glpi_printers"=>"printerstypes_id"),
 
                 "glpi_users"=> array("glpi_bookmarks"=>"users_id",
-                                     "glpi_cartridgesitems"=>"users_id_tech",
+                                     "glpi_cartridgeitems"=>"users_id_tech",
                                      "glpi_computers"=>array("users_id_tech",
                                                              "users_id"),
                                      "glpi_consumables"=>"users_id",

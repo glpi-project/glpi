@@ -302,7 +302,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        ENTERPRISE_TYPE                   => 'glpi_suppliers',
                        INFOCOM_TYPE                      => 'glpi_infocoms',
                        CONTRACT_TYPE                     => 'glpi_contracts',
-                       CARTRIDGEITEM_TYPE                => 'glpi_cartridgesitems',
+                       CARTRIDGEITEM_TYPE                => 'glpi_cartridgeitems',
                        TYPEDOC_TYPE                      => 'glpi_documentstypes',
                        DOCUMENT_TYPE                     => 'glpi_documents',
                        KNOWBASE_TYPE                     => 'glpi_knowbaseitems',
@@ -362,7 +362,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        PHONETYPE_TYPE                    => 'glpi_phonestypes',
                        PHONEMODEL_TYPE                   => 'glpi_phonesmodels',
                        SOFTWARELICENSETYPE_TYPE          => 'glpi_softwareslicensestypes',
-                       CARTRIDGEITEMTYPE_TYPE            => 'glpi_cartridgesitemstypes',
+                       CARTRIDGEITEMTYPE_TYPE            => 'glpi_cartridgeitemtypes',
                        CONSUMABLEITEMTYPE_TYPE           => 'glpi_consumablesitemstypes',
                        CONTRACTTYPE_TYPE                 => 'glpi_contractstypes',
                        CONTACTTYPE_TYPE                  => 'glpi_contactstypes',
@@ -557,7 +557,7 @@ define("CRONTASKLOG_STATE_STOP",2);
 // tables in alphabetic order
 // type in numeric order
 // *** Please respect ***
-$CFG_GLPI["deleted_tables"] = array('glpi_budgets','glpi_cartridgesitems','glpi_computers',
+$CFG_GLPI["deleted_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
                                     'glpi_consumablesitems','glpi_contacts','glpi_contracts',
                                     'glpi_documents','glpi_monitors','glpi_networkequipments',
                                     'glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
@@ -616,7 +616,7 @@ $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, O
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, CRONTASK_TYPE);
 
-$CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgesitems','glpi_computers',
+$CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
       'glpi_consumablesitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
       'glpi_links','glpi_locations','glpi_mailcollectors','glpi_monitors','glpi_netpoints',
       'glpi_networkequipments','glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',

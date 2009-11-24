@@ -1862,7 +1862,7 @@ function addDefaultSelect ($itemtype) {
          break;
 
       case CARTRIDGEITEM_TYPE :
-         $ret = "`glpi_cartridgesitems`.`alarm_threshold` AS ALARM, ";
+         $ret = "`glpi_cartridgeitems`.`alarm_threshold` AS ALARM, ";
          break;
 
       case CONSUMABLEITEM_TYPE :
@@ -3253,7 +3253,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 
       case "glpi_cartridges" :
          return " LEFT JOIN `$new_table` $AS
-                        ON (`$rt`.`id` = `$nt`.`cartridgesitems_id` ) ";
+                        ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
 
       case "glpi_consumables" :
          return " LEFT JOIN `$new_table` $AS

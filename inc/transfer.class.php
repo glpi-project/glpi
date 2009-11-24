@@ -816,14 +816,14 @@ class Transfer extends CommonDBTM {
       // printer -> cartridges : keep / delete + clean
       if ($this->options['keep_cartridgesitem']) {
          if (isset($this->item_search[PRINTER_TYPE])) {
-            $query = "SELECT `cartridgesitems_id`
+            $query = "SELECT `cartridgeitems_id`
                       FROM `glpi_cartridges`
                       WHERE `printers_id` IN ".$this->item_search[PRINTER_TYPE];
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
                   while ($data=$DB->fetch_array($result)) {
-                     $this->addToBeTransfer(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id']);
+                     $this->addToBeTransfer(CARTRIDGEITEM_TYPE,$data['cartridgeitems_id']);
                   }
                }
             }
@@ -1147,15 +1147,15 @@ class Transfer extends CommonDBTM {
                   $newcarttypeID = -1;
                   // 1 - Search carttype destination ?
                   // Already transfer carttype :
-                  if (isset($this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgesitems_id']])){
+                  if (isset($this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgeitems_id']])){
                      $newcarttypeID
-                        = $this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgesitems_id']];
+                        = $this->already_transfer[CARTRIDGEITEM_TYPE][$data['cartridgeitems_id']];
                   } else {
                      // Not already transfer cartype
                      $query = "SELECT count(*) AS CPT
                                FROM `glpi_cartridges`
-                               WHERE `glpi_cartridges`.`cartridgesitems_id`
-                                      = '".$data['cartridgesitems_id']."'
+                               WHERE `glpi_cartridges`.`cartridgeitems_id`
+                                      = '".$data['cartridgeitems_id']."'
                                      AND `glpi_cartridges`.`printers_id` > '0'
                                      AND `glpi_cartridges`.`printers_id`
                                           NOT IN ".$this->item_search[PRINTER_TYPE];
@@ -1165,16 +1165,16 @@ class Transfer extends CommonDBTM {
                      if ($DB->result($result_search,0,'CPT')==0) {
                         // Yes : transfer
                         $need_clean_process = false;
-                        $this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id'],
-                                            $data['cartridgesitems_id']);
-                        $newcarttypeID = $data['cartridgesitems_id'];
+                        $this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgeitems_id'],
+                                            $data['cartridgeitems_id']);
+                        $newcarttypeID = $data['cartridgeitems_id'];
                      } else {
                         // No : copy carttype
                         $need_clean_process = true;
-                        $carttype->getFromDB($data['cartridgesitems_id']);
+                        $carttype->getFromDB($data['cartridgeitems_id']);
                         // Is existing carttype in the destination entity ?
                         $query = "SELECT *
-                                  FROM `glpi_cartridgesitems`
+                                  FROM `glpi_cartridgeitems`
                                   WHERE `entities_id` = '".$this->to."'
                                         AND `name` = '".addslashes($carttype->fields['name'])."'";
                         if ($result_search=$DB->query($query)) {
@@ -1191,7 +1191,7 @@ class Transfer extends CommonDBTM {
                            unset($carttype->fields);
                            $newcarttypeID = $carttype->add($input);
                            // 2 - transfer as copy
-                           $this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgesitems_id'],
+                           $this->transferItem(CARTRIDGEITEM_TYPE,$data['cartridgeitems_id'],
                                                $newcarttypeID);
                         }
                         // Founded -> use to link : nothing to do
@@ -1199,9 +1199,9 @@ class Transfer extends CommonDBTM {
                   }
 
                   // Update cartridge if needed
-                  if ($newcarttypeID>0 && $newcarttypeID!=$data['cartridgesitems_id']) {
+                  if ($newcarttypeID>0 && $newcarttypeID!=$data['cartridgeitems_id']) {
                      $cart->update(array('id'                 => $data['id'],
-                                         'cartridgesitems_id' => $newcarttypeID));
+                                         'cartridgeitems_id' => $newcarttypeID));
                   }
                } else { // Do not keep
                   // If same printer : delete cartridges
@@ -1218,15 +1218,15 @@ class Transfer extends CommonDBTM {
                   // Clean carttype
                   $query2 = "SELECT COUNT(*) AS CPT
                              FROM `glpi_cartridges`
-                             WHERE `cartridgesitems_id` = '" . $data['cartridgesitems_id'] . "'";
+                             WHERE `cartridgeitems_id` = '" . $data['cartridgeitems_id'] . "'";
                   $result2 = $DB->query($query2);
 
                   if ($DB->result($result2, 0, 'CPT') == 0) {
                      if ($this->options['clean_cartridgesitem']==1) { // delete
-                        $carttype->delete(array('id' => $data['cartridgesitems_id']));
+                        $carttype->delete(array('id' => $data['cartridgeitems_id']));
                      }
                      if ($this->options['clean_cartridgesitem']==2) { // purge
-                        $carttype->delete(array('id' => $data['cartridgesitems_id']),1);
+                        $carttype->delete(array('id' => $data['cartridgeitems_id']),1);
                      }
                   }
                }
@@ -2150,7 +2150,7 @@ class Transfer extends CommonDBTM {
       if ($ID != $newID) {
          $query = "SELECT *
                    FROM `glpi_cartridges_printersmodels`
-                   WHERE `cartridgesitems_id` = '$ID'";
+                   WHERE `cartridgeitems_id` = '$ID'";
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) != 0) {

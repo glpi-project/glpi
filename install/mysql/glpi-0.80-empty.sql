@@ -51,10 +51,10 @@ CREATE TABLE `glpi_authldaps` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_authldapsreplicates
+### Dump table glpi_authldapreplicates
 
-DROP TABLE IF EXISTS `glpi_authldapsreplicates`;
-CREATE TABLE `glpi_authldapsreplicates` (
+DROP TABLE IF EXISTS `glpi_authldapreplicates`;
+CREATE TABLE `glpi_authldapreplicates` (
   `id` int(11) NOT NULL auto_increment,
   `authldaps_id` int(11) NOT NULL default '0',
   `host` varchar(255) collate utf8_unicode_ci default NULL,
@@ -155,14 +155,14 @@ CREATE TABLE `glpi_budgets` (
 DROP TABLE IF EXISTS `glpi_cartridges`;
 CREATE TABLE `glpi_cartridges` (
   `id` int(11) NOT NULL auto_increment,
-  `cartridgesitems_id` int(11) NOT NULL default '0',
+  `cartridgeitems_id` int(11) NOT NULL default '0',
   `printers_id` int(11) NOT NULL default '0',
   `date_in` date default NULL,
   `date_use` date default NULL,
   `date_out` date default NULL,
   `pages` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `cartridgesitems_id` (`cartridgesitems_id`),
+  KEY `cartridgeitems_id` (`cartridgeitems_id`),
   KEY `printers_id` (`printers_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -172,24 +172,24 @@ CREATE TABLE `glpi_cartridges` (
 DROP TABLE IF EXISTS `glpi_cartridges_printersmodels`;
 CREATE TABLE `glpi_cartridges_printersmodels` (
   `id` int(11) NOT NULL auto_increment,
-  `cartridgesitems_id` int(11) NOT NULL default '0',
+  `cartridgeitems_id` int(11) NOT NULL default '0',
   `printersmodels_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `unicity` (`printersmodels_id`,`cartridgesitems_id`),
-  KEY `cartridgesitems_id` (`cartridgesitems_id`)
+  UNIQUE KEY `unicity` (`printersmodels_id`,`cartridgeitems_id`),
+  KEY `cartridgeitems_id` (`cartridgeitems_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_cartridgesitems
+### Dump table glpi_cartridgeitems
 
-DROP TABLE IF EXISTS `glpi_cartridgesitems`;
-CREATE TABLE `glpi_cartridgesitems` (
+DROP TABLE IF EXISTS `glpi_cartridgeitems`;
+CREATE TABLE `glpi_cartridgeitems` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ref` varchar(255) collate utf8_unicode_ci default NULL,
   `locations_id` int(11) NOT NULL default '0',
-  `cartridgesitemstypes_id` int(11) NOT NULL default '0',
+  `cartridgeitemtypes_id` int(11) NOT NULL default '0',
   `manufacturers_id` int(11) NOT NULL default '0',
   `users_id_tech` int(11) NOT NULL default '0',
   `is_deleted` tinyint(1) NOT NULL default '0',
@@ -202,16 +202,16 @@ CREATE TABLE `glpi_cartridgesitems` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `locations_id` (`locations_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `cartridgesitemstypes_id` (`cartridgesitemstypes_id`),
+  KEY `cartridgeitemtypes_id` (`cartridgeitemtypes_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `alarm_threshold` (`alarm_threshold`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_cartridgesitemstypes
+### Dump table glpi_cartridgeitemtypes
 
-DROP TABLE IF EXISTS `glpi_cartridgesitemstypes`;
-CREATE TABLE `glpi_cartridgesitemstypes` (
+DROP TABLE IF EXISTS `glpi_cartridgeitemtypes`;
+CREATE TABLE `glpi_cartridgeitemtypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,

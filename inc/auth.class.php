@@ -934,7 +934,7 @@ class AuthLDAP extends CommonDBTM {
       AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
       $sql = "SELECT *
-              FROM `glpi_authldapsreplicates`
+              FROM `glpi_authldapreplicates`
               WHERE `authldaps_id` = '".$ID."'
               ORDER BY `name`";
       $result = $DB->query($sql);
@@ -1159,7 +1159,7 @@ class AuthLDAP extends CommonDBTM {
 class AuthLdapReplicate extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_authldapsreplicates';
+   public $table = 'glpi_authldapreplicates';
 
    function prepareInputForAdd($input) {
       if (isset($input["port"]) && intval($input["port"]) == 0) {
