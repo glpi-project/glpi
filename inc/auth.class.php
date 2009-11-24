@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Identification class used to login
 **/
-class Identification {
+class Auth {
    //! Error string
    var $err ='';
    /** User class variable
@@ -464,19 +464,19 @@ class Identification {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
-            $user=$identificat->user->fields['name'];
+            $user=$this->user->fields['name'];
             // Used for log when login process failed
             $login_name=$user;
 
             $this->auth_succeded = true;
             $this->extauth = 1;
-            $this->user_present = $identificat->user->getFromDBbyName(addslashes($user));
+            $this->user_present = $this->user->getFromDBbyName(addslashes($user));
             $this->user->fields['authtype'] = $authtype;
 
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
             if (canUseLdap()) {
-               if (isset($this->authtypes["ldap"][$identificat->user->fields["auths_id"]])) {
+               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
                   $ds = connect_ldap($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
                                      $ldap_method["rootdn_password"], $ldap_method["use_tls"],

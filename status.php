@@ -106,7 +106,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 	}
 	
 	// Check Auth connections
-	$auth = new Identification();
+	$auth = new Auth();
 	$auth->getAuthMethods();
 	$ldap_methods = $auth->authtypes["ldap"];
 		

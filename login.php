@@ -68,11 +68,11 @@ if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0) {
    $REDIRECT = "?redirect=" .$_GET['redirect'];
 }
 
-$identificat = new Identification();
+$auth = new Auth();
 
 
 // now we can continue with the process...
-if ($identificat->Login($_POST['login_name'], 
+if ($auth->Login($_POST['login_name'],
                         $_POST['login_password'], 
                         (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
    // Redirect to Command Central if not post-only
