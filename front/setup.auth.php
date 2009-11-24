@@ -45,8 +45,8 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth",-1);
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>" . $LANG['setup'][67] . "</th></tr>";
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"auth.ldap.php\"><strong>" . $LANG['login'][2] ."</strong></a></td></tr>";
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"auth.imap.php\"><strong>" .$LANG['login'][3] . "</strong></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"authldap.php\"><strong>" . $LANG['login'][2] ."</strong></a></td></tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"authmail.php\"><strong>" .$LANG['login'][3] . "</strong></a></td> </tr>";
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"auth.others.php\"><strong>" . $LANG['common'][67] . "</strong></a></td></tr>";
 echo "</table></div>";
 

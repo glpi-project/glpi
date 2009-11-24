@@ -78,6 +78,12 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/log.function.php");
    include_once (GLPI_ROOT . "/inc/bookmark.class.php");
    include_once (GLPI_ROOT . "/inc/alert.class.php");
+
+   // TODO : clean it after autoload
+   include_once (GLPI_ROOT . "/inc/authmail.class.php");
+   include_once (GLPI_ROOT . "/inc/authldap.class.php");
+   include_once (GLPI_ROOT . "/inc/authldapreplicate.class.php");
+
 }
 
 // Security system

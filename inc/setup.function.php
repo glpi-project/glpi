@@ -996,49 +996,6 @@ function listTemplates($itemtype, $target, $add = 0) {
    }
 }
 
-function showLdapAuthList($target) {
-   global $DB, $LANG, $CFG_GLPI;
-
-   if (!haveRight("config", "w")) {
-      return false;
-   }
-
-   echo "<div class='center'>";
-
-   if (canUseLdap()) {
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2' class='b'>". $LANG['login'][2] . "</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td>";
-      echo "<td class='center'>" . $LANG['common'][52] . "</td></tr>\n";
-
-      $sql = "SELECT *
-              FROM `glpi_authldaps`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result)) {
-         while ($ldap_method = $DB->fetch_array($result)) {
-            echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<a href='$target?next=extauth_ldap&amp;id=" . $ldap_method["id"] . "' >";
-            echo $ldap_method["name"] . "</a>" ."</td>";
-            echo "<td class='center'>" . $LANG['ldap'][21]."&nbsp;: ".$ldap_method["host"]."&nbsp;:".
-                   $ldap_method["port"];
-            $replicates=getAllReplicatesNamesForAMaster($ldap_method["id"]);
-            if (!empty($replicates)) {
-               echo "<br>".$LANG['ldap'][22]."&nbsp;: ".$replicates. "</td>";
-            }
-            echo '</tr>';
-         }
-      }
-      echo "</table>\n";
-   } else {
-      echo '<input type="hidden" name="LDAP_Test" value="1">';
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" . $LANG['setup'][152] . "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center><p class='red'>" . $LANG['setup'][157] . "</p>";
-      echo "<p>" . $LANG['setup'][158] . "</p></td></tr></table>\n";
-   }
-   echo "</div>";
-}
-
 function showOtherAuthList($target) {
    global $DB, $LANG, $CFG_GLPI;
 
@@ -1128,6 +1085,7 @@ function showOtherAuthList($target) {
    echo "</table></div></form>\n";
 }
 
+// TODO : use common search engine
 function showImapAuthList($target) {
    global $DB, $LANG, $CFG_GLPI;
 
@@ -1148,7 +1106,7 @@ function showImapAuthList($target) {
       if ($DB->numrows($result)) {
          while ($mail_method = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<a href='$target?next=extauth_mail&amp;id=" . $mail_method["id"] . "' >";
+            echo "<a href='$target?id=" . $mail_method["id"] . "' >";
             echo $mail_method["name"] . "</a></td>";
             echo "<td class='center'>" . $mail_method["host"] . "</td></tr>\n";
          }
