@@ -256,10 +256,10 @@ function showComputerDisks($ID,$withtemplate='') {
 
    echo "<div class='center'>";
 
-   $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computersdisks`.*
-             FROM `glpi_computersdisks`
+   $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computerdisks`.*
+             FROM `glpi_computerdisks`
              LEFT JOIN `glpi_filesystems`
-                       ON (`glpi_computersdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
+                       ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
              WHERE (`computers_id` = '$ID')";
 
    if ($result=$DB->query($query)) {

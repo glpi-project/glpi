@@ -275,12 +275,12 @@ function showCompatiblePrinters($instID) {
    }
 
    if ($instID > 0) {
-      $query = "SELECT `glpi_cartridges_printersmodels`.`id`,
+      $query = "SELECT `glpi_cartridges_printermodels`.`id`,
                        `glpi_printersmodels`.`name` as `type`,
                        `glpi_printersmodels`.`id` as `pmid`
-                FROM `glpi_cartridges_printersmodels`, `glpi_printersmodels`
-                WHERE `glpi_cartridges_printersmodels`.`printersmodels_id` = `glpi_printersmodels`.`id`
-                      AND `glpi_cartridges_printersmodels`.`cartridgeitems_id` = '$instID'
+                FROM `glpi_cartridges_printermodels`, `glpi_printersmodels`
+                WHERE `glpi_cartridges_printermodels`.`printersmodels_id` = `glpi_printersmodels`.`id`
+                      AND `glpi_cartridges_printermodels`.`cartridgeitems_id` = '$instID'
                 ORDER BY `glpi_printersmodels`.`name`";
 
       $result = $DB->query($query);
@@ -639,15 +639,15 @@ function dropdownCompatibleCartridges($pID) {
                     `glpi_cartridgeitems`.`ref` as ref, `glpi_cartridgeitems`.`name` as name,
                     `glpi_cartridgeitems`.`id` as tID
              FROM `glpi_cartridgeitems`
-             INNER JOIN `glpi_cartridges_printersmodels`
+             INNER JOIN `glpi_cartridges_printermodels`
                         ON (`glpi_cartridgeitems`.`id` =
-                           `glpi_cartridges_printersmodels`.`cartridgeitems_id`)
+                           `glpi_cartridges_printermodels`.`cartridgeitems_id`)
              INNER JOIN `glpi_cartridges`
                         ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                             AND `glpi_cartridges`.`date_use` IS NULL)
              LEFT JOIN `glpi_locations`
                        ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
-             WHERE `glpi_cartridges_printersmodels`.`printersmodels_id` =
+             WHERE `glpi_cartridges_printermodels`.`printersmodels_id` =
                      '".$p->fields["printersmodels_id"]."'
                    AND `glpi_cartridgeitems`.`entities_id` ='".$p->fields["entities_id"]."'
              GROUP BY tID

@@ -371,7 +371,7 @@ class Computer extends CommonDBTM {
 
          // ADD volumes
          $query="SELECT `id`
-                 FROM `glpi_computersdisks`
+                 FROM `glpi_computerdisks`
                  WHERE `computers_id`='".$input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -498,7 +498,7 @@ class Computer extends CommonDBTM {
       $result = $DB->query($query);
 
       $query = "DELETE
-                FROM `glpi_computersdisks`
+                FROM `glpi_computerdisks`
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
    }
@@ -987,13 +987,13 @@ class Computer extends CommonDBTM {
 
       $tab['disk'] = $LANG['computers'][8];
 
-      $tab[156]['table']        = 'glpi_computersdisks';
+      $tab[156]['table']        = 'glpi_computerdisks';
       $tab[156]['field']        = 'name';
       $tab[156]['linkfield']    = '';
       $tab[156]['name']         = $LANG['common'][16]." ".$LANG['computers'][0];
       $tab[156]['forcegroupby'] = true;
 
-      $tab[150]['table']        = 'glpi_computersdisks';
+      $tab[150]['table']        = 'glpi_computerdisks';
       $tab[150]['field']        = 'totalsize';
       $tab[150]['linkfield']    = '';
       $tab[150]['name']         = $LANG['computers'][3];
@@ -1002,7 +1002,7 @@ class Computer extends CommonDBTM {
       $tab[150]['datatype']     = 'number';
       $tab[150]['width']        = 1000;
 
-      $tab[151]['table']        = 'glpi_computersdisks';
+      $tab[151]['table']        = 'glpi_computerdisks';
       $tab[151]['field']        = 'freesize';
       $tab[151]['linkfield']    = '';
       $tab[151]['name']         = $LANG['computers'][2];
@@ -1011,7 +1011,7 @@ class Computer extends CommonDBTM {
       $tab[151]['datatype']     = 'number';
       $tab[151]['width']        = 1000;
 
-      $tab[152]['table']        = 'glpi_computersdisks';
+      $tab[152]['table']        = 'glpi_computerdisks';
       $tab[152]['field']        = 'freepercent';
       $tab[152]['linkfield']    = '';
       $tab[152]['name']         = $LANG['computers'][1];
@@ -1022,13 +1022,13 @@ class Computer extends CommonDBTM {
       $tab[152]['computation']  = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
       $tab[152]['unit']         = '%';
 
-      $tab[153]['table']        = 'glpi_computersdisks';
+      $tab[153]['table']        = 'glpi_computerdisks';
       $tab[153]['field']        = 'mountpoint';
       $tab[153]['linkfield']    = '';
       $tab[153]['name']         = $LANG['computers'][5];
       $tab[153]['forcegroupby'] = true;
 
-      $tab[154]['table']        = 'glpi_computersdisks';
+      $tab[154]['table']        = 'glpi_computerdisks';
       $tab[154]['field']        = 'device';
       $tab[154]['linkfield']    = '';
       $tab[154]['name']         = $LANG['computers'][6];
@@ -1139,7 +1139,7 @@ class Computer extends CommonDBTM {
 class ComputerDisk extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_computersdisks';
+   public $table = 'glpi_computerdisks';
    public $type = COMPUTERDISK_TYPE;
    public $entity_assign = true;
 

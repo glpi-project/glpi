@@ -1671,7 +1671,7 @@ function ocsUnlockItems($computers_id,$field) {
 
                   case "import_disk" :
                      $querySearchLocked = "SELECT `id`
-                                           FROM `glpi_computersdisks`
+                                           FROM `glpi_computerdisks`
                                            WHERE `id` = '$key'";
                      break;
 
@@ -1929,7 +1929,7 @@ function ocsEditLock($target, $ID) {
       $locked = importOcsArrayFromDB($data["import_disk"]);
       foreach ($locked as $key => $val) {
          $querySearchLocked = "SELECT `id`
-                               FROM `glpi_computersdisks`
+                               FROM `glpi_computerdisks`
                                WHERE `id` = '$key'";
          $resultSearch = $DB->query($querySearchLocked);
          if ($DB->numrows($resultSearch) == 0) {
@@ -3436,7 +3436,7 @@ function ocsResetDisks($glpi_computers_id) {
    global $DB;
 
    $query = "DELETE
-             FROM `glpi_computersdisks`
+             FROM `glpi_computerdisks`
              WHERE `computers_id` = '$glpi_computers_id'";
    $DB->query($query);
 }

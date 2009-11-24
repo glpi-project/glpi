@@ -978,7 +978,7 @@ function generate_entity($ID_entity){
 	
 		}
 		// Assoc printer type to cartridge type
-		$query="INSERT INTO glpi_cartridges_printersmodels VALUES (NULL,'$cartID','".mt_rand(1,$MAX['type_printers'])."')";
+		$query="INSERT INTO glpi_cartridges_printermodels VALUES (NULL,'$cartID','".mt_rand(1,$MAX['type_printers'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 
 	}
@@ -1072,7 +1072,7 @@ function generate_entity($ID_entity){
 
 		// Add Cartouches 
 		// Get compatible cartridge
-		$query="SELECT cartridgeitems_id FROM glpi_cartridges_printersmodels WHERE printersmodels_id='$typeID'";
+		$query="SELECT cartridgeitems_id FROM glpi_cartridges_printermodels WHERE printersmodels_id='$typeID'";
 		$result2=$DB->query($query) or die("PB REQUETE ".$query);
 		if ($DB->numrows($result2)>0){
 			$ctypeID=$DB->result($result2,0,0) or die (" PB RESULT ".$query);
@@ -1185,7 +1185,7 @@ function generate_entity($ID_entity){
 		for ($j=1;$j<=$nb_disk;$j++){
 			$totalsize=mt_rand(10000,1000000);
 			$freesize=mt_rand(0,$totalsize);
-			$query="INSERT INTO glpi_computersdisks VALUES (NULL,'$compID','disk $j','/dev/disk$j','/mnt/disk$j','".mt_rand(1,10)."','$totalsize','$freesize')";
+			$query="INSERT INTO glpi_computerdisks VALUES (NULL,'$compID','disk $j','/dev/disk$j','/mnt/disk$j','".mt_rand(1,10)."','$totalsize','$freesize')";
 			$DB->query($query) or die("PB REQUETE ".$query);	
 		}
 
@@ -1299,7 +1299,7 @@ function generate_entity($ID_entity){
 	
 			// Add Cartouches 
 			// Get compatible cartridge
-			$query="SELECT cartridgeitems_id FROM glpi_cartridges_printersmodels WHERE printersmodels_id='$typeID'";
+			$query="SELECT cartridgeitems_id FROM glpi_cartridges_printermodels WHERE printersmodels_id='$typeID'";
 			$result=$DB->query($query) or die("PB REQUETE ".$query);
 			if ($DB->numrows($result)>0){
 				$ctypeID=$DB->result($result,0,0) or die (" PB RESULT ".$query);
