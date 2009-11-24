@@ -33,13 +33,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class SetupDefaultDisplay extends CommonDBTM{
-
-   // From CommonDBTM
-   public $table = 'glpi_bookmarks_users';
-
-}
-
 /**
  * Bookmark class
  */
@@ -283,7 +276,7 @@ class Bookmark extends CommonDBTM {
 
       // Get bookmark / Only search bookmark
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
-         $dd=new SetupDefaultDisplay();
+         $dd=new Bookmark_User();
          // Is default view for this itemtype already exists ?
          $query="SELECT `id`
                  FROM `glpi_bookmarks_users`
@@ -314,7 +307,7 @@ class Bookmark extends CommonDBTM {
 
       // Get bookmark / Only search bookmark
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
-         $dd=new SetupDefaultDisplay();
+         $dd=new Bookmark_User();
          // Is default view for this itemtype already exists ?
          $query="SELECT `id`
                  FROM `glpi_bookmarks_users`
