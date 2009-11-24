@@ -1391,10 +1391,10 @@ CREATE TABLE `glpi_infocoms` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_interfaces
+### Dump table glpi_interfacestypes
 
-DROP TABLE IF EXISTS `glpi_interfaces`;
-CREATE TABLE `glpi_interfaces` (
+DROP TABLE IF EXISTS `glpi_interfacestypes`;
+CREATE TABLE `glpi_interfacestypes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -1402,14 +1402,14 @@ CREATE TABLE `glpi_interfaces` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_interfaces` VALUES ('1','IDE',NULL);
-INSERT INTO `glpi_interfaces` VALUES ('2','SATA',NULL);
-INSERT INTO `glpi_interfaces` VALUES ('3','SCSI',NULL);
-INSERT INTO `glpi_interfaces` VALUES ('4','USB',NULL);
-INSERT INTO `glpi_interfaces` VALUES ('5','AGP','');
-INSERT INTO `glpi_interfaces` VALUES ('6','PCI','');
-INSERT INTO `glpi_interfaces` VALUES ('7','PCIe','');
-INSERT INTO `glpi_interfaces` VALUES ('8','PCI-X','');
+INSERT INTO `glpi_interfacestypes` VALUES ('1','IDE',NULL);
+INSERT INTO `glpi_interfacestypes` VALUES ('2','SATA',NULL);
+INSERT INTO `glpi_interfacestypes` VALUES ('3','SCSI',NULL);
+INSERT INTO `glpi_interfacestypes` VALUES ('4','USB',NULL);
+INSERT INTO `glpi_interfacestypes` VALUES ('5','AGP','');
+INSERT INTO `glpi_interfacestypes` VALUES ('6','PCI','');
+INSERT INTO `glpi_interfacestypes` VALUES ('7','PCIe','');
+INSERT INTO `glpi_interfacestypes` VALUES ('8','PCI-X','');
 
 ### Dump table glpi_knowbaseitems
 

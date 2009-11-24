@@ -311,7 +311,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['interface'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="type de disque dur $i";
-		$query="INSERT INTO glpi_interfaces VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_interfacestypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	
@@ -730,7 +730,7 @@ function generate_entity($ID_entity){
 	// glpi_groups
 	$FIRST["groups"]=getMaxItem("glpi_groups")+1;
 	for ($i=0;$i<$MAX['groups'];$i++){
-		$query="INSERT INTO glpi_groups VALUES (NULL,'$ID_entity',0,'group $i','comment group $i','0','','','')";
+		$query="INSERT INTO glpi_groups VALUES (NULL,'$ID_entity',0,'group $i','comment group $i','0','','','',NOW())";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["groups"]=$DB->insert_id();
