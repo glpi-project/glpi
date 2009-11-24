@@ -87,9 +87,9 @@ function display_infocoms_report($itemtype,$begin,$end) {
 
    switch ($itemtype) {
       case CONSUMABLE_TYPE :
-         $query.=" INNER JOIN `glpi_consumablesitems`
-                      ON (`glpi_consumables`.`consumablesitems_id` = `glpi_consumablesitems`.`id`) ".
-                   getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
+         $query.=" INNER JOIN `glpi_consumableitems`
+                      ON (`glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`) ".
+                   getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
          break;
 
       case CARTRIDGE_TYPE :

@@ -389,7 +389,7 @@ class Supplier extends CommonDBTM {
             echo "<td class='center'>";
             echo "<a href='mailto:".$data["email"]."'>".
                    $DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-            echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["contactstypes_id"]);
+            echo "<td class='center'>".getDropdownName("glpi_contacttypes",$data["contacttypes_id"]);
             echo "</td>";
             echo "<td class='center' class='tab_bg_2'>";
             if ($canedit) {
@@ -489,10 +489,10 @@ class Supplier extends CommonDBTM {
                $linkfield = 'cartridgeitems_id';
             }
             if ($itemtype==CONSUMABLE_TYPE ) {
-               $query .= "INNER JOIN `glpi_consumablesitems`
-                               ON (`glpi_consumablesitems`.`id`=`glpi_consumables`.`consumablesitems_id`) ";
+               $query .= "INNER JOIN `glpi_consumableitems`
+                               ON (`glpi_consumableitems`.`id`=`glpi_consumables`.`consumableitems_id`) ";
                $linktype = CONSUMABLEITEM_TYPE;
-               $linkfield = 'consumablesitems_id';
+               $linkfield = 'consumableitems_id';
             }
             $query .= "WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
@@ -607,7 +607,7 @@ class Supplier extends CommonDBTM {
          echo "</strong></a></td>";
          echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
          echo "<td class='center'>".$data["num"]."</td>";
-         echo "<td class='center'>".getDropdownName("glpi_contractstypes",$data["contractstypes_id"]);
+         echo "<td class='center'>".getDropdownName("glpi_contracttypes",$data["contracttypes_id"]);
          echo "</td>";
          echo "<td class='center'>".convDate($data["begin_date"])."</td>";
          echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];

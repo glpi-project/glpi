@@ -63,15 +63,15 @@ if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_P
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 if (isset($_GET["dropdown"])) $_POST["dropdown"] = $_GET["dropdown"];
-if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_computerstypes";
+if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_computertypes";
 
 echo "<form method=\"post\" name=\"form\" action=\"stat.location.php\">";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
 
-echo "<option value=\"glpi_computerstypes\" ".($_POST["dropdown"]=="glpi_computerstypes"?"selected":"").">".$LANG['common'][17]."</option>";
-echo "<option value=\"glpi_computersmodels\" ".($_POST["dropdown"]=="glpi_computersmodels"?"selected":"").">".$LANG['common'][22]."</option>";
+echo "<option value=\"glpi_computertypes\" ".($_POST["dropdown"]=="glpi_computertypes"?"selected":"").">".$LANG['common'][17]."</option>";
+echo "<option value=\"glpi_computermodels\" ".($_POST["dropdown"]=="glpi_computermodels"?"selected":"").">".$LANG['common'][22]."</option>";
 
 echo "<option value=\"glpi_operatingsystems\" ".($_POST["dropdown"]=="glpi_operatingsystems"?"selected":"").">".$LANG['computers'][9]."</option>";
 echo "<option value=\"glpi_locations\" ".($_POST["dropdown"]=="glpi_locations"?"selected":"").">".$LANG['common'][15]."</option>";

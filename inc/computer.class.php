@@ -386,7 +386,7 @@ class Computer extends CommonDBTM {
 
          // ADD software
          $query="SELECT `softwaresversions_id`
-                 FROM `glpi_computers_softwaresversions`
+                 FROM `glpi_computers_softwareversions`
                  WHERE `computers_id`='".$input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -466,7 +466,7 @@ class Computer extends CommonDBTM {
       global $DB,$CFG_GLPI;
 
       $query = "DELETE
-                FROM `glpi_computers_softwaresversions`
+                FROM `glpi_computers_softwareversions`
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
 
@@ -568,7 +568,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
+      dropdownValue("glpi_computertypes", "computertypes_id", $this->fields["computertypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -590,7 +590,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_computersmodels", "computersmodels_id",$this->fields["computersmodels_id"]);
+      dropdownValue("glpi_computermodels", "computermodels_id",$this->fields["computermodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -785,14 +785,14 @@ class Computer extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_computerstypes';
+      $tab[4]['table']     = 'glpi_computertypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'computerstypes_id';
+      $tab[4]['linkfield'] = 'computertypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_computersmodels';
+      $tab[40]['table']     = 'glpi_computermodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'computersmodels_id';
+      $tab[40]['linkfield'] = 'computermodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';

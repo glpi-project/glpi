@@ -380,7 +380,7 @@ function getRuleCollectionClassByTableName($tablename) {
       case "glpi_manufacturers" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MANUFACTURER);
 
-      case "glpi_computersmodels" :
+      case "glpi_computermodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_COMPUTER);
 
       case "glpi_monitorsmodels" :
@@ -398,7 +398,7 @@ function getRuleCollectionClassByTableName($tablename) {
       case "glpi_phonesmodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PHONE);
 
-      case "glpi_computerstypes" :
+      case "glpi_computertypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_COMPUTER);
 
       case "glpi_monitorstypes" :

@@ -62,7 +62,7 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       $query = "DELETE
-                FROM `glpi_crontaskslogs`
+                FROM `glpi_crontasklogs`
                 WHERE `crontasks_id` = '$id'";
       $result = $DB->query($query);
    }
@@ -153,7 +153,7 @@ class CronTask extends CommonDBTM{
                                            'content' => $this->getModeName(isCommandLine()
                                                                            ? CRONTASK_MODE_EXTERNAL
                                                                            : CRONTASK_MODE_INTERNAL),
-                                           'crontaskslogs_id' => 0,
+                                           'crontasklogs_id' => 0,
                                            'state' => CRONTASKLOG_STATE_START,
                                            'volume' => 0,
                                            'elapsed' => 0));
@@ -212,7 +212,7 @@ class CronTask extends CommonDBTM{
          $log->add(array('crontasks_id'     => $this->fields['id'],
                          'date'             => $_SESSION['glpi_currenttime'],
                          'content'          => $content,
-                         'crontaskslogs_id' => $this->startlog,
+                         'crontasklogs_id' => $this->startlog,
                          'state'            => CRONTASKLOG_STATE_STOP,
                          'volume'           => $this->volume,
                          'elapsed'          => (microtime(true)-$this->timer)));
@@ -237,7 +237,7 @@ class CronTask extends CommonDBTM{
       return $log->add(array('crontasks_id'     => $this->fields['id'],
                              'date'             => $_SESSION['glpi_currenttime'],
                              'content'          => $content,
-                             'crontaskslogs_id' => $this->startlog,
+                             'crontasklogs_id' => $this->startlog,
                              'state'            => CRONTASKLOG_STATE_RUN,
                              'volume'           => $this->volume,
                              'elapsed'          => (microtime(true)-$this->timer)));
@@ -765,9 +765,9 @@ class CronTask extends CommonDBTM{
       echo "<th colspan='2'>&nbsp;".$LANG['Menu'][13]."&nbsp;</th>"; // Date
       echo "</tr>\n";
 
-      $nbstart = countElementsInTable('glpi_crontaskslogs',
+      $nbstart = countElementsInTable('glpi_crontasklogs',
             "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_START."'");
-      $nbstop = countElementsInTable('glpi_crontaskslogs',
+      $nbstop = countElementsInTable('glpi_crontasklogs',
             "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
 
       echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][50]."&nbsp;:</td><td class='right'>";
@@ -789,7 +789,7 @@ class CronTask extends CommonDBTM{
                           MAX(`volume`) AS volmax,
                           AVG(`volume`) AS volavg,
                           SUM(`volume`) AS voltot
-                   FROM `glpi_crontaskslogs`
+                   FROM `glpi_crontasklogs`
                    WHERE `crontasks_id`='".$this->fields['id']."'
                          AND `state`='".CRONTASKLOG_STATE_STOP."'";
          $result = $DB->query($query);
@@ -845,8 +845,8 @@ class CronTask extends CommonDBTM{
    function showHistory() {
       global $DB, $CFG_GLPI, $LANG;
 
-      if (isset($_REQUEST["crontaskslogs_id"]) && $_REQUEST["crontaskslogs_id"]) {
-         return $this->showHistoryDetail($_REQUEST["crontaskslogs_id"]);
+      if (isset($_REQUEST["crontasklogs_id"]) && $_REQUEST["crontasklogs_id"]) {
+         return $this->showHistoryDetail($_REQUEST["crontasklogs_id"]);
       }
 
       if (isset($_REQUEST["start"])) {
@@ -856,7 +856,7 @@ class CronTask extends CommonDBTM{
       }
 
       // Total Number of events
-      $number = countElementsInTable('glpi_crontaskslogs',
+      $number = countElementsInTable('glpi_crontasklogs',
             "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
 
       echo "<br><div class='center'>";
@@ -872,7 +872,7 @@ class CronTask extends CommonDBTM{
       printAjaxPager($LANG['crontask'][47],$start,$number);
 
       $query = "SELECT *
-                FROM `glpi_crontaskslogs`
+                FROM `glpi_crontasklogs`
                 WHERE `crontasks_id`='".$this->fields['id']."'
                       AND `state`='".CRONTASKLOG_STATE_STOP."'
                 ORDER BY `id` DESC
@@ -889,8 +889,8 @@ class CronTask extends CommonDBTM{
 
             do {
                echo "<tr class='tab_bg_2'>";
-               echo "<td><a href='javascript:reloadTab(\"crontaskslogs_id=".
-                          $data['crontaskslogs_id']."\");'>".$data['date']."</a></td>";
+               echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
+                          $data['crontasklogs_id']."\");'>".$data['date']."</a></td>";
                echo "<td class='right'>".number_format($data['elapsed'],3)."s</td>";
                echo "<td class='right'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
@@ -909,7 +909,7 @@ class CronTask extends CommonDBTM{
    /**
    * Display detail of a runned task
    *
-   * @param $logid : crontaskslogs_id
+   * @param $logid : crontasklogs_id
    *
    * @return nothing
    */
@@ -917,11 +917,11 @@ class CronTask extends CommonDBTM{
       global $DB, $CFG_GLPI, $LANG;
 
       echo "<br><div class='center'>";
-      echo "<p><a href='javascript:reloadTab(\"crontaskslogs_id=0\");'>".$LANG['crontask'][47]."</a></p>";
+      echo "<p><a href='javascript:reloadTab(\"crontasklogs_id=0\");'>".$LANG['crontask'][47]."</a></p>";
 
       $query = "SELECT *
-         FROM `glpi_crontaskslogs`
-         WHERE `id`='$logid' OR `crontaskslogs_id`='$logid'
+         FROM `glpi_crontasklogs`
+         WHERE `id`='$logid' OR `crontasklogs_id`='$logid'
          ORDER BY `id` ASC";
 
       if ($result=$DB->query($query)){
@@ -1030,7 +1030,7 @@ class CronTask extends CommonDBTM{
 class CronTaskLog extends CommonDBTM{
 
    // From CommonDBTM
-   public $table = 'glpi_crontaskslogs';
+   public $table = 'glpi_crontasklogs';
    public $type = CRONTASKLOG_TYPE;
 
 }

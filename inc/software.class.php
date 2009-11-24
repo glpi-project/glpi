@@ -336,7 +336,7 @@ class Software extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `glpi_computers_softwaresversions`
+                FROM `glpi_computers_softwareversions`
                 WHERE `softwares_id` = '".$this->fields["id"]."'";
 
       if ($result = $DB->query($query)) {
@@ -439,7 +439,7 @@ class Software extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[72]['table']        = 'glpi_computers_softwaresversions';
+      $tab[72]['table']        = 'glpi_computers_softwareversions';
       $tab[72]['field']        = 'count';
       $tab[72]['linkfield']    = '';
       $tab[72]['name']       = $LANG['tracking'][29]." - ".$LANG['software'][19];
@@ -498,7 +498,7 @@ class Software extends CommonDBTM {
       $tab[163]['usehaving']    = true;
       $tab[163]['datatype']     = 'number';
 
-      $tab[164]['table']        = 'glpi_softwareslicensestypes';
+      $tab[164]['table']        = 'glpi_softwarelicensetypes';
       $tab[164]['field']        = 'name';
       $tab[164]['linkfield']    = '';
       $tab[164]['name']         = $LANG['software'][30];
@@ -550,7 +550,7 @@ class SoftwareVersion extends CommonDBTM {
 
       // Delete Installations
       $query2 = "DELETE
-                 FROM `glpi_computers_softwaresversions`
+                 FROM `glpi_computers_softwareversions`
                  WHERE `softwaresversions_id` = '$ID'";
       $DB->query($query2);
    }
@@ -819,7 +819,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_softwareslicensestypes", "softwareslicensestypes_id", $this->fields["softwareslicensestypes_id"]);
+      dropdownValue("glpi_softwarelicensetypes", "softwarelicensetypes_id", $this->fields["softwarelicensetypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -933,9 +933,9 @@ class SoftwareLicense extends CommonDBTM {
       $tab[4]['name']      = $LANG['tracking'][29];
       $tab[4]['datatype']  = 'number';
 
-      $tab[5]['table']     = 'glpi_softwareslicensestypes';
+      $tab[5]['table']     = 'glpi_softwarelicensetypes';
       $tab[5]['field']     = 'name';
-      $tab[5]['linkfield'] = 'softwareslicensestypes_id';
+      $tab[5]['linkfield'] = 'softwarelicensetypes_id';
       $tab[5]['name']      = $LANG['common'][17];
 
       $tab[6]['table']     = 'glpi_softwaresversions';

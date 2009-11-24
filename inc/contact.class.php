@@ -208,7 +208,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_contactstypes","contactstypes_id",$this->fields["contactstypes_id"]);
+      dropdownValue("glpi_contacttypes","contacttypes_id",$this->fields["contacttypes_id"]);
       echo "</td>";
       echo "<td></td><td class='center'>";
       if ($ID>0) {
@@ -274,9 +274,9 @@ class Contact extends CommonDBTM{
       $tab[6]['name']      = $LANG['setup'][14];
       $tab[6]['datatype']  = 'email';
 
-      $tab[9]['table']     = 'glpi_contactstypes';
+      $tab[9]['table']     = 'glpi_contacttypes';
       $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'contactstypes_id';
+      $tab[9]['linkfield'] = 'contacttypes_id';
       $tab[9]['name']      = $LANG['common'][17];
 
       $tab[8]['table']         = 'glpi_suppliers';

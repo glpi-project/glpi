@@ -188,7 +188,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_MODEL_COMPUTER :
-            $this->item_table="glpi_computersmodels";
+            $this->item_table="glpi_computermodels";
             //Init cache system values
             $this->initCache("glpi_rulecachecomputermodels",array("name"=>"old_value",
                                                                     "manufacturer"=>"manufacturer"));
@@ -196,7 +196,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_TYPE_COMPUTER :
-            $this->item_table="glpi_computerstypes";
+            $this->item_table="glpi_computertypes";
             //Init cache system values
             $this->initCache("glpi_rulecachecomputertypes");
             $this->menu_option="type.computer";

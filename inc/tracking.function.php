@@ -938,8 +938,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
       $option["comp.id"]                                 = $LANG['common'][2];
       $option["comp.name"]                               = $LANG['common'][16];
       $option["glpi_locations.name"]                     = $LANG['common'][15];
-      $option["glpi_computerstypes.name"]                = $LANG['common'][17];
-      $option["glpi_computersmodels.name"]               = $LANG['common'][22];
+      $option["glpi_computertypes.name"]                = $LANG['common'][17];
+      $option["glpi_computermodels.name"]               = $LANG['common'][22];
       $option["glpi_operatingsystems.name"]              = $LANG['computers'][9];
       $option["glpi_operatingsystemsversions.name"]      = $LANG['computers'][52];
       $option["glpi_operatingsystemsservicepacks.name"]  = $LANG['computers'][53];
@@ -1476,10 +1476,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                                     ON (`glpi_manufacturers`.`id` = comp.`manufacturers_id`)
                               LEFT JOIN `glpi_locations`
                                     ON (`glpi_locations`.`id` = comp.`locations_id`)
-                              LEFT JOIN `glpi_computersmodels`
-                                    ON (`glpi_computersmodels`.`id` = comp.`computersmodels_id`)
-                              LEFT JOIN `glpi_computerstypes`
-                                    ON (`glpi_computerstypes`.`id` = comp.`computerstypes_id`)
+                              LEFT JOIN `glpi_computermodels`
+                                    ON (`glpi_computermodels`.`id` = comp.`computermodels_id`)
+                              LEFT JOIN `glpi_computertypes`
+                                    ON (`glpi_computertypes`.`id` = comp.`computertypes_id`)
                               LEFT JOIN `glpi_suppliers`
                                     ON (`glpi_suppliers`.`id` = comp.`manufacturers_id`)
                               LEFT JOIN `glpi_users` AS resptech

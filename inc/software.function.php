@@ -267,7 +267,7 @@ function mergeSoftware($ID, $item) {
 
             // Move installation to existing version in destination software
             $sql = "UPDATE
-                    `glpi_computers_softwaresversions`
+                    `glpi_computers_softwareversions`
                     SET `softwaresversions_id` = '".$dest["id"]."'
                     WHERE `softwaresversions_id` = '".$from["id"]."'";
             $found=$DB->query($sql);
@@ -373,7 +373,7 @@ function showLicenses($softwares_id) {
                     `buyvers`.`name` AS buyname,
                     `usevers`.`name` AS usename,
                     `glpi_entities`.`completename` AS entity,
-                    `glpi_softwareslicensestypes`.`name` AS typename
+                    `glpi_softwarelicensetypes`.`name` AS typename
              FROM `glpi_softwareslicenses`
              LEFT JOIN `glpi_softwaresversions` AS buyvers
                   ON (`buyvers`.`id` = `glpi_softwareslicenses`.`softwaresversions_id_buy`)
@@ -381,9 +381,9 @@ function showLicenses($softwares_id) {
                   ON (`usevers`.`id` = `glpi_softwareslicenses`.`softwaresversions_id_use`)
              LEFT JOIN `glpi_entities`
                   ON (`glpi_entities`.`id` = `glpi_softwareslicenses`.`entities_id`)
-             LEFT JOIN `glpi_softwareslicensestypes`
-                  ON (`glpi_softwareslicensestypes`.`id`
-                       = `glpi_softwareslicenses`.`softwareslicensestypes_id`)
+             LEFT JOIN `glpi_softwarelicensetypes`
+                  ON (`glpi_softwarelicensetypes`.`id`
+                       = `glpi_softwareslicenses`.`softwarelicensetypes_id`)
              WHERE (`glpi_softwareslicenses`.`softwares_id` = '$softwares_id') " .
                     getEntitiesRestrictRequest('AND', 'glpi_softwareslicenses', '', '', true) ."
              ORDER BY $sort $order
@@ -465,11 +465,11 @@ function showLicenses($softwares_id) {
                // should be same as name of used_version, except for multiple installation
                $sql = "SELECT `glpi_softwaresversions`.`name`
                        FROM `glpi_softwaresversions`,
-                            `glpi_computers_softwaresversions`
+                            `glpi_computers_softwareversions`
                        WHERE `glpi_softwaresversions`.`softwares_id` = '$softwares_id'
-                              AND `glpi_computers_softwaresversions`.`softwaresversions_id`
+                              AND `glpi_computers_softwareversions`.`softwaresversions_id`
                                    =`glpi_softwaresversions`.`id`
-                              AND `glpi_computers_softwaresversions`.`computers_id`
+                              AND `glpi_computers_softwareversions`.`computers_id`
                                    ='".$data['computers_id']."'
                        ORDER BY `name`";
 
@@ -558,19 +558,19 @@ function showInstallations($searchID, $crit="softwares_id") {
    // Total Number of events
    if ($crit=="softwares_id") {
       // Software ID
-      $number = countElementsInTable("glpi_computers_softwaresversions, glpi_computers,
+      $number = countElementsInTable("glpi_computers_softwareversions, glpi_computers,
                                       glpi_softwaresversions",
-             "glpi_computers_softwaresversions.computers_id = glpi_computers.id
-              AND glpi_computers_softwaresversions.softwaresversions_id = glpi_softwaresversions.id
+             "glpi_computers_softwareversions.computers_id = glpi_computers.id
+              AND glpi_computers_softwareversions.softwaresversions_id = glpi_softwaresversions.id
               AND glpi_softwaresversions.softwares_id=$searchID" .
               getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
               AND glpi_computers.is_deleted=0
               AND glpi_computers.is_template=0");
    } else {
       //SoftwareVersion ID
-      $number = countElementsInTable("glpi_computers_softwaresversions, glpi_computers",
-                           "glpi_computers_softwaresversions.computers_id = glpi_computers.id
-                            AND glpi_computers_softwaresversions.softwaresversions_id = $searchID" .
+      $number = countElementsInTable("glpi_computers_softwareversions, glpi_computers",
+                           "glpi_computers_softwareversions.computers_id = glpi_computers.id
+                            AND glpi_computers_softwareversions.softwaresversions_id = $searchID" .
                             getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                             AND glpi_computers.is_deleted=0
                             AND glpi_computers.is_template=0");
@@ -587,7 +587,7 @@ function showInstallations($searchID, $crit="softwares_id") {
    // Display the pager
    printAjaxPager($LANG['software'][19],$start,$number);
 
-   $query = "SELECT `glpi_computers_softwaresversions`.*,
+   $query = "SELECT `glpi_computers_softwareversions`.*,
                     `glpi_computers`.`name` AS compname,
                     `glpi_computers`.`id` AS cID,
                     `glpi_computers`.`serial`,
@@ -603,12 +603,12 @@ function showInstallations($searchID, $crit="softwares_id") {
                     `glpi_groups`.`name` AS groupe,
                     `glpi_softwareslicenses`.`name` AS lname,
                     `glpi_softwareslicenses`.`id` AS lID
-             FROM `glpi_computers_softwaresversions`
+             FROM `glpi_computers_softwareversions`
              INNER JOIN `glpi_softwaresversions`
-                  ON (`glpi_computers_softwaresversions`.`softwaresversions_id`
+                  ON (`glpi_computers_softwareversions`.`softwaresversions_id`
                        = `glpi_softwaresversions`.`id`)
              INNER JOIN `glpi_computers`
-                  ON (`glpi_computers_softwaresversions`.`computers_id` = `glpi_computers`.`id`)
+                  ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
              LEFT JOIN `glpi_entities` ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
              LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)
              LEFT JOIN `glpi_states` ON (`glpi_computers`.`states_id` = `glpi_states`.`id`)
@@ -759,7 +759,7 @@ function installSoftwareVersion($computers_id, $softwaresversions_id, $dohistory
 
    if (!empty ($softwaresversions_id) && $softwaresversions_id > 0) {
       $query_exists = "SELECT `id`
-                       FROM `glpi_computers_softwaresversions`
+                       FROM `glpi_computers_softwareversions`
                        WHERE (`computers_id` = '$computers_id'
                               AND `softwaresversions_id` = '$softwaresversions_id')";
       $result = $DB->query($query_exists);
@@ -767,7 +767,7 @@ function installSoftwareVersion($computers_id, $softwaresversions_id, $dohistory
          return $DB->result($result, 0, "id");
       } else {
          $query = "INSERT INTO
-                   `glpi_computers_softwaresversions` (`computers_id`,`softwaresversions_id`)
+                   `glpi_computers_softwareversions` (`computers_id`,`softwaresversions_id`)
                    VALUES ('$computers_id','$softwaresversions_id')";
 
          if ($result = $DB->query($query)) {
@@ -822,7 +822,7 @@ function updateInstalledVersion($instID, $newvID, $dohistory=1) {
    global $DB;
 
    $query_exists = "SELECT *
-                    FROM `glpi_computers_softwaresversions`
+                    FROM `glpi_computers_softwareversions`
                     WHERE `id` = '$instID'";
    $result = $DB->query($query_exists);
    if ($DB->numrows($result) > 0) {
@@ -847,7 +847,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
    global $DB;
 
    $query2 = "SELECT *
-              FROM `glpi_computers_softwaresversions`
+              FROM `glpi_computers_softwareversions`
               WHERE `id` = '$ID'";
    $result2 = $DB->query($query2);
    $data = $DB->fetch_array($result2);
@@ -857,7 +857,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
    }
 
    $query = "DELETE
-             FROM `glpi_computers_softwaresversions`
+             FROM `glpi_computers_softwareversions`
              WHERE `id` = '$ID'";
 
    if ($result = $DB->query($query)) {
@@ -921,19 +921,19 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 
    $query = "SELECT `glpi_softwares`.`softwarescategories_id`,
                     `glpi_softwares`.`name` AS softname,
-                    `glpi_computers_softwaresversions`.`id`,
+                    `glpi_computers_softwareversions`.`id`,
                     `glpi_states`.`name` AS state,
                     `glpi_softwaresversions`.`id` AS verid,
                     `glpi_softwaresversions`.`softwares_id`,
                     `glpi_softwaresversions`.`name` AS version
-             FROM `glpi_computers_softwaresversions`
+             FROM `glpi_computers_softwareversions`
              LEFT JOIN `glpi_softwaresversions`
-                  ON (`glpi_computers_softwaresversions`.`softwaresversions_id`
+                  ON (`glpi_computers_softwareversions`.`softwaresversions_id`
                        = `glpi_softwaresversions`.`id`)
              LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwaresversions`.`states_id`)
              LEFT JOIN `glpi_softwares`
                   ON (`glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`)
-             WHERE `glpi_computers_softwaresversions`.`computers_id` = '$computers_id'
+             WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
              ORDER BY `softwarescategories_id`, `softname`, `version`";
    $result = $DB->query($query);
    $i = 0;
@@ -1149,10 +1149,10 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
    }
    echo "</td><td>";
 
-   $query = "SELECT `glpi_softwareslicenses`.*, `glpi_softwareslicensestypes`.`name` as type
+   $query = "SELECT `glpi_softwareslicenses`.*, `glpi_softwarelicensetypes`.`name` as type
              FROM `glpi_softwareslicenses`
-             LEFT JOIN `glpi_softwareslicensestypes`
-                  ON `glpi_softwareslicenses`.`softwareslicensestypes_id`=`glpi_softwareslicensestypes`.`id`
+             LEFT JOIN `glpi_softwarelicensetypes`
+                  ON `glpi_softwareslicenses`.`softwarelicensetypes_id`=`glpi_softwarelicensetypes`.`id`
              WHERE `glpi_softwareslicenses`.`computers_id`='$computers_id'
                AND (`glpi_softwareslicenses`.`softwaresversions_id_use`='$verid'
                     OR (`glpi_softwareslicenses`.`softwaresversions_id_use`=0
@@ -1218,8 +1218,8 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
       echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
    }
    echo "</td></td><strong>" . $data["name"] . "</strong>&nbsp; ";
-   if ($data["softwareslicensestypes_id"]) {
-      echo " (". getDropdownName("glpi_softwareslicensestypes",$data["softwareslicensestypes_id"]).")&nbsp; ";
+   if ($data["softwarelicensetypes_id"]) {
+      echo " (". getDropdownName("glpi_softwarelicensetypes",$data["softwarelicensetypes_id"]).")&nbsp; ";
    }
    displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
                    $LANG['common'][19]."&nbsp;: ".$data['serial']."<br>".$data['comment'],
@@ -1282,13 +1282,13 @@ function countInstallations($softwares_id, $nohtml = 0) {
 function countInstallationsForSoftware($softwares_id) {
    global $DB;
 
-   $query = "SELECT COUNT(`glpi_computers_softwaresversions`.`id`)
+   $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
              FROM `glpi_softwaresversions`
-             INNER JOIN `glpi_computers_softwaresversions`
+             INNER JOIN `glpi_computers_softwareversions`
                    ON (`glpi_softwaresversions`.`id`
-                       = `glpi_computers_softwaresversions`.`softwaresversions_id`)
+                       = `glpi_computers_softwareversions`.`softwaresversions_id`)
              INNER JOIN `glpi_computers`
-                   ON (`glpi_computers_softwaresversions`.`computers_id` = `glpi_computers`.`id`)
+                   ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
              WHERE `glpi_softwaresversions`.`softwares_id` = '$softwares_id'
                    AND `glpi_computers`.`is_deleted` = '0'
                    AND `glpi_computers`.`is_template` = '0' " .
@@ -1315,11 +1315,11 @@ function countInstallationsForSoftware($softwares_id) {
 function countInstallationsForVersion($softwaresversions_id, $entity='') {
    global $DB;
 
-   $query = "SELECT COUNT(`glpi_computers_softwaresversions`.`id`)
-             FROM `glpi_computers_softwaresversions`
+   $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
+             FROM `glpi_computers_softwareversions`
              INNER JOIN `glpi_computers`
-                   ON (`glpi_computers_softwaresversions`.`computers_id` = `glpi_computers`.`id`)
-             WHERE `glpi_computers_softwaresversions`.`softwaresversions_id`='$softwaresversions_id'
+                   ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
+             WHERE `glpi_computers_softwareversions`.`softwaresversions_id`='$softwaresversions_id'
                    AND `glpi_computers`.`is_deleted` = '0'
                    AND `glpi_computers`.`is_template` = '0' " .
                    getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);

@@ -1175,12 +1175,12 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
          if (in_array(SOFTWARE_TYPE,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             $query = "SELECT DISTINCT `glpi_softwaresversions`.`name` AS version,
                                       `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
-                      FROM `glpi_computers_softwaresversions`, `glpi_softwares`,
+                      FROM `glpi_computers_softwareversions`, `glpi_softwares`,
                            `glpi_softwaresversions`
-                      WHERE `glpi_computers_softwaresversions`.`softwaresversions_id`=
+                      WHERE `glpi_computers_softwareversions`.`softwaresversions_id`=
                                `glpi_softwaresversions`.`id`
                             AND `glpi_softwaresversions`.`softwares_id` = `glpi_softwares`.`id`
-                            AND ".str_replace("XXXX","`glpi_computers_softwaresversions`.`computers_id`",
+                            AND ".str_replace("XXXX","`glpi_computers_softwareversions`.`computers_id`",
                                               $search_computer)."
                             AND `glpi_softwares`.`is_helpdesk_visible`='1' ".
                             getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict)."

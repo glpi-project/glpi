@@ -144,7 +144,7 @@ class Contract extends CommonDBTM {
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
-      dropdownValue("glpi_contractstypes","contractstypes_id",$this->fields["contractstypes_id"]);
+      dropdownValue("glpi_contracttypes","contracttypes_id",$this->fields["contracttypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -283,9 +283,9 @@ class Contract extends CommonDBTM {
       $tab[3]['linkfield'] = 'num';
       $tab[3]['name']      = $LANG['financial'][4];
 
-      $tab[4]['table']     = 'glpi_contractstypes';
+      $tab[4]['table']     = 'glpi_contracttypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'contractstypes_id';
+      $tab[4]['linkfield'] = 'contracttypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
       $tab[5]['table']     = 'glpi_contracts';
@@ -848,7 +848,7 @@ class Contract extends CommonDBTM {
          echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
          echo "<td class='center'>".$con->fields["num"]."</td>";
          echo "<td class='center'>".
-                getDropdownName("glpi_contractstypes",$con->fields["contractstypes_id"])."</td>";
+                getDropdownName("glpi_contracttypes",$con->fields["contracttypes_id"])."</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
          echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
          echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];

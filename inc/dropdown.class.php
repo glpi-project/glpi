@@ -870,7 +870,7 @@ class Manufacturer extends CommonDropdown {
 class ComputersType extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_computerstypes';
+   public $table = 'glpi_computertypes';
    public $type = COMPUTERTYPE_TYPE;
 
    static function getTypeName() {
@@ -884,7 +884,7 @@ class ComputersType extends CommonDropdown {
 class ComputersModel extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_computersmodels';
+   public $table = 'glpi_computermodels';
    public $type = COMPUTERMODEL_TYPE;
 
    static function getTypeName() {
@@ -1038,7 +1038,7 @@ class PhonesModel extends CommonDropdown {
 class SoftwareLicenseType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_softwareslicensestypes';
+   public $table = 'glpi_softwarelicensetypes';
    public $type = SOFTWARELICENSETYPE_TYPE;
 
    static function getTypeName() {
@@ -1066,7 +1066,7 @@ class CartridgeItemType extends CommonDropdown {
 class ConsumableItemType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_consumablesitemstypes';
+   public $table = 'glpi_consumableitemtypes';
    public $type = CONSUMABLEITEMTYPE_TYPE;
 
    static function getTypeName() {
@@ -1080,7 +1080,7 @@ class ConsumableItemType extends CommonDropdown {
 class ContractsType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_contractstypes';
+   public $table = 'glpi_contracttypes';
    public $type = CONTRACTTYPE_TYPE;
 
    static function getTypeName() {
@@ -1094,7 +1094,7 @@ class ContractsType extends CommonDropdown {
 class ContactsType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_contactstypes';
+   public $table = 'glpi_contacttypes';
    public $type = CONTACTTYPE_TYPE;
 
    static function getTypeName() {

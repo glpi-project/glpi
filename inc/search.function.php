@@ -1866,7 +1866,7 @@ function addDefaultSelect ($itemtype) {
          break;
 
       case CONSUMABLEITEM_TYPE :
-         $ret = "`glpi_consumablesitems`.`alarm_threshold` AS ALARM, ";
+         $ret = "`glpi_consumableitems`.`alarm_threshold` AS ALARM, ";
          break;
 
       case CRONTASK_TYPE :
@@ -1970,8 +1970,8 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
                   MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2, ";
          break;
 
-      case "glpi_computers_softwaresversions.count" :
-         return " COUNT(DISTINCT `glpi_computers_softwaresversions$addtable`.`id`)
+      case "glpi_computers_softwareversions.count" :
+         return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
                      AS ".$NAME."_".$num.", ";
          break;
 
@@ -3257,7 +3257,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 
       case "glpi_consumables" :
          return " LEFT JOIN `$new_table` $AS
-                        ON (`$rt`.`id` = `$nt`.`consumablesitems_id` ) ";
+                        ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
 
       case "glpi_infocoms" :
          if ($itemtype == SOFTWARE_TYPE) {
@@ -3354,11 +3354,11 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                 LEFT JOIN `$new_table` $AS
                      ON (`glpi_contracts_items$addmetanum`.`contracts_id` = `$nt`.`id`) ";
 
-      case "glpi_softwareslicensestypes" :
+      case "glpi_softwarelicensetypes" :
          $tt = translate_table("glpi_softwareslicenses",$meta,$meta_type);
          return addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwareslicenses",$linkfield,
                             $devicetype,$meta,$meta_type) ."
-                LEFT JOIN `$new_table` $AS ON (`$tt`.`softwareslicensestypes_id` = `$nt`.`id`)";
+                LEFT JOIN `$new_table` $AS ON (`$tt`.`softwarelicensetypes_id` = `$nt`.`id`)";
 
       case "glpi_softwareslicenses" :
          if (!$meta) {
@@ -3374,7 +3374,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
          }
          return "";
 
-      case "glpi_computers_softwaresversions" :
+      case "glpi_computers_softwareversions" :
          $out = addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwaresversions",$linkfield,
                             $devicetype,$meta,$meta_type);
          return $out."
@@ -3509,7 +3509,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
             case SOFTWARE_TYPE :
                /// TODO: link licenses via installed software OR by affected/computers_id ???
                array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
-               return " $LINK `glpi_computers_softwaresversions` AS inst_$to_type
+               return " $LINK `glpi_computers_softwareversions` AS inst_$to_type
                            ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id`)
                         $LINK `glpi_softwaresversions` AS glpi_softwaresversions_$to_type
                            ON (`inst_$to_type`.`softwaresversions_id`
@@ -3579,7 +3579,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
                array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
                return " $LINK `glpi_softwaresversions` AS glpi_softwaresversions_$to_type
                            ON (`glpi_softwaresversions_$to_type`.`softwares_id` = `glpi_softwares`.`id`)
-                        $LINK `glpi_computers_softwaresversions` AS inst_$to_type
+                        $LINK `glpi_computers_softwareversions` AS inst_$to_type
                            ON (`inst_$to_type`.`softwaresversions_id`
                                = `glpi_softwaresversions_$to_type`.`id`)
                         $LINK `glpi_computers`

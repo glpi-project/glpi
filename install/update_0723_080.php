@@ -61,20 +61,20 @@ function update0723to080() {
       'glpi_dropdown_cartridge_type'      => 'glpi_cartridgeitemtypes',
       'glpi_computers'                    => 'glpi_computers',
       'glpi_computerdisks'                => 'glpi_computerdisks',
-      'glpi_dropdown_model'               => 'glpi_computersmodels',
-      'glpi_type_computers'               => 'glpi_computerstypes',
+      'glpi_dropdown_model'               => 'glpi_computermodels',
+      'glpi_type_computers'               => 'glpi_computertypes',
       'glpi_computer_device'              => 'glpi_computers_devices',
       'glpi_connect_wire'                 => 'glpi_computers_items',
-      'glpi_inst_software'                => 'glpi_computers_softwaresversions',
+      'glpi_inst_software'                => 'glpi_computers_softwareversions',
       'glpi_config'                       => 'glpi_configs',
       'glpi_consumables'                  => 'glpi_consumables',
-      'glpi_consumables_type'             => 'glpi_consumablesitems',
-      'glpi_dropdown_consumable_type'     => 'glpi_consumablesitemstypes',
+      'glpi_consumables_type'             => 'glpi_consumableitems',
+      'glpi_dropdown_consumable_type'     => 'glpi_consumableitemtypes',
       'glpi_contact_enterprise'           => 'glpi_contacts_suppliers',
       'glpi_contacts'                     => 'glpi_contacts',
-      'glpi_dropdown_contact_type'        => 'glpi_contactstypes',
+      'glpi_dropdown_contact_type'        => 'glpi_contacttypes',
       'glpi_contracts'                    => 'glpi_contracts',
-      'glpi_dropdown_contract_type'       => 'glpi_contractstypes',
+      'glpi_dropdown_contract_type'       => 'glpi_contracttypes',
       'glpi_contract_device'              => 'glpi_contracts_items',
       'glpi_contract_enterprise'          => 'glpi_contracts_suppliers',
       'glpi_device_case'                  => 'glpi_devicescases',
@@ -174,7 +174,7 @@ function update0723to080() {
       'glpi_software'                     => 'glpi_softwares',
       'glpi_dropdown_software_category'   => 'glpi_softwarescategories',
       'glpi_softwarelicenses'             => 'glpi_softwareslicenses',
-      'glpi_dropdown_licensetypes'        => 'glpi_softwareslicensestypes',
+      'glpi_dropdown_licensetypes'        => 'glpi_softwarelicensetypes',
       'glpi_softwareversions'             => 'glpi_softwaresversions',
       'glpi_dropdown_state'               => 'glpi_states',
       'glpi_enterprises'                  => 'glpi_suppliers',
@@ -267,7 +267,7 @@ function update0723to080() {
                            'comments' => array('glpi_configs'=>'category applyed when a software is deleted')),
                      ),
    'cID' => array(array('to' => 'computers_id',
-                           'tables' => array('glpi_computers_softwaresversions')),
+                           'tables' => array('glpi_computers_softwareversions')),
                      ),
    'computer' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_tickets'),
@@ -276,7 +276,7 @@ function update0723to080() {
    'computer_id' => array(array('to' => 'computers_id',
                            'tables' => array('glpi_registrykeys')),
                      ),
-   'contract_type' => array(array('to' => 'contractstypes_id',
+   'contract_type' => array(array('to' => 'contracttypes_id',
                            'tables' => array('glpi_contracts')),
                      ),
    'default_rubdoc_tracking' => array(array('to' => 'documentscategories_id_forticket',
@@ -365,7 +365,7 @@ function update0723to080() {
                            'noindex' => array('glpi_locations','glpi_netpoints',
                               'glpi_entitiesdatas',),
                            'tables' => array('glpi_bookmarks','glpi_cartridgeitems',
-                              'glpi_computers','glpi_consumablesitems','glpi_contacts',
+                              'glpi_computers','glpi_consumableitems','glpi_contacts',
                               'glpi_contracts','glpi_documents','glpi_locations',
                               'glpi_netpoints','glpi_suppliers','glpi_entitiesdatas',
                               'glpi_groups','glpi_knowbaseitems','glpi_links',
@@ -383,7 +383,7 @@ function update0723to080() {
                            'tables' => array('glpi_cartridges',
                               'glpi_cartridges_printermodels')),
                      ),
-   'FK_glpi_consumables_type' => array(array('to' => 'consumablesitems_id',
+   'FK_glpi_consumables_type' => array(array('to' => 'consumableitems_id',
                            'noindex' => array(''),
                            'tables' => array('glpi_consumables',)),
                      ),
@@ -397,7 +397,7 @@ function update0723to080() {
                      ),
    'FK_glpi_enterprise' => array(array('to' => 'manufacturers_id',
                      'tables' => array('glpi_cartridgeitems','glpi_computers',
-                        'glpi_consumablesitems','glpi_devicescases','glpi_devicescontrols',
+                        'glpi_consumableitems','glpi_devicescases','glpi_devicescontrols',
                         'glpi_devicesdrives','glpi_devicesgraphiccards','glpi_devicesharddrives',
                         'glpi_devicesnetworkcards','glpi_devicesmotherboards','glpi_devicespcis',
                         'glpi_devicespowersupplies','glpi_devicesprocessors','glpi_devicesmemories',
@@ -493,11 +493,11 @@ function update0723to080() {
    'location' => array(array('to' => 'locations_id',
                            'noindex' => array('glpi_netpoints'),
                            'tables' => array('glpi_cartridgeitems','glpi_computers',
-                              'glpi_consumablesitems','glpi_netpoints','glpi_monitors',
+                              'glpi_consumableitems','glpi_netpoints','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_users','glpi_softwares')),
                      ),
-   'model' => array(array('to' => 'computersmodels_id',
+   'model' => array(array('to' => 'computermodels_id',
                            'tables' => array('glpi_computers')),
                      array('to' => 'monitorsmodels_id',
                            'tables' => array('glpi_monitors')),
@@ -584,7 +584,7 @@ function update0723to080() {
                      ),
    'tech_num' => array(array('to' => 'users_id_tech',
                               'tables' => array('glpi_cartridgeitems','glpi_computers',
-                              'glpi_consumablesitems','glpi_monitors',
+                              'glpi_consumableitems','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
                      ),
@@ -596,11 +596,11 @@ function update0723to080() {
                      ),
    'type' => array(array('to' => 'cartridgeitemtypes_id',
                            'tables' => array('glpi_cartridgeitems')),
-                  array('to' => 'computerstypes_id',
+                  array('to' => 'computertypes_id',
                            'tables' => array('glpi_computers')),
-                  array('to' => 'consumablesitemstypes_id',
-                           'tables' => array('glpi_consumablesitems')),
-                  array('to' => 'contactstypes_id',
+                  array('to' => 'consumableitemtypes_id',
+                           'tables' => array('glpi_consumableitems')),
+                  array('to' => 'contacttypes_id',
                            'tables' => array('glpi_contacts')),
                   array('to' => 'devicescasestypes_id',
                            'tables' => array('glpi_devicescases')),
@@ -618,7 +618,7 @@ function update0723to080() {
                            'tables' => array('glpi_phones')),
                   array('to' => 'printerstypes_id',
                            'tables' => array('glpi_printers')),
-                  array('to' => 'softwareslicensestypes_id',
+                  array('to' => 'softwarelicensetypes_id',
                            'tables' => array('glpi_softwareslicenses')),
                   array('to' => 'userscategories_id',
                            'tables' => array('glpi_users')),
@@ -632,7 +632,7 @@ function update0723to080() {
                            'tables' => array('glpi_softwareslicenses')),
                      ),
    'vID' => array(array('to' => 'softwaresversions_id',
-                           'tables' => array('glpi_computers_softwaresversions')),
+                           'tables' => array('glpi_computers_softwareversions')),
                      ),
    );
 
@@ -732,7 +732,7 @@ function update0723to080() {
                            array('from' => 'followup_private', 'to' => 'followup_private', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'software_helpdesk_visible', 'to' => 'default_software_helpdesk_visible', 'default' =>1, 'noindex'=>true ),//
                      ),
-   'glpi_consumablesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+   'glpi_consumableitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                      ),
    'glpi_contacts' => array(array('from' => 'recursive','to' => 'is_recursive', 'default' =>0, 'noindex'=>true ),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
@@ -925,14 +925,14 @@ function update0723to080() {
    $textfields=array(
    'comments' => array('to' => 'comment',
                            'tables' => array('glpi_cartridgeitems','glpi_computers',
-                                 'glpi_consumablesitems','glpi_contacts','glpi_contracts',
+                                 'glpi_consumableitems','glpi_contacts','glpi_contracts',
                                  'glpi_documents','glpi_autoupdatesystems','glpi_budgets',
-                                 'glpi_cartridgeitemtypes','glpi_devicescasestypes','glpi_consumablesitemstypes',
-                                 'glpi_contactstypes','glpi_contractstypes','glpi_domains',
+                                 'glpi_cartridgeitemtypes','glpi_devicescasestypes','glpi_consumableitemtypes',
+                                 'glpi_contacttypes','glpi_contracttypes','glpi_domains',
                                  'glpi_supplierstypes','glpi_filesystems','glpi_networkequipmentsfirmwares',
                                  'glpi_networkinterfaces','glpi_interfacestypes',
-                                 'glpi_knowbaseitemscategories','glpi_softwareslicensestypes','glpi_locations',
-                                 'glpi_manufacturers','glpi_computersmodels','glpi_monitorsmodels',
+                                 'glpi_knowbaseitemscategories','glpi_softwarelicensetypes','glpi_locations',
+                                 'glpi_manufacturers','glpi_computermodels','glpi_monitorsmodels',
                                  'glpi_networkequipmentsmodels','glpi_peripheralsmodels','glpi_phonesmodels',
                                  'glpi_printersmodels','glpi_netpoints','glpi_networks',
                                  'glpi_operatingsystems','glpi_operatingsystemsservicepacks','glpi_operatingsystemsversions',
@@ -943,13 +943,13 @@ function update0723to080() {
                                  'glpi_infocoms','glpi_monitors','glpi_phones',
                                  'glpi_printers','glpi_peripherals','glpi_networkequipments',
                                  'glpi_reservationsitems','glpi_rules','glpi_softwares',
-                                 'glpi_softwareslicenses','glpi_softwaresversions','glpi_computerstypes',
+                                 'glpi_softwareslicenses','glpi_softwaresversions','glpi_computertypes',
                                  'glpi_monitorstypes','glpi_networkequipmentstypes','glpi_peripheralstypes',
                                  'glpi_phonestypes','glpi_printerstypes','glpi_users',),
                      ),
       'notes' =>  array('to' => 'notepad', 'long'=>true,
                            'tables' => array('glpi_cartridgeitems','glpi_computers',
-                              'glpi_consumablesitems','glpi_contacts','glpi_contracts',
+                              'glpi_consumableitems','glpi_contacts','glpi_contracts',
                               'glpi_documents','glpi_suppliers','glpi_entitiesdatas',
                               'glpi_printers','glpi_monitors','glpi_phones','glpi_peripherals',
                               'glpi_networkequipments','glpi_softwares')),
@@ -1184,7 +1184,7 @@ function update0723to080() {
                               array('from' => 'smtp_mode', 'to' => 'smtp_mode', 'default' =>0, 'noindex'=>true,'comments'=>'see define.php MAIL_* constant'),//
                               array('from' => 'mailgate_filesize_max', 'to' => 'default_mailcollector_filesize_max', 'default' =>2097152, 'noindex'=>true),//
                               ),
-      'glpi_consumablesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
+      'glpi_consumableitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
       'glpi_contracts' => array(array('from' => 'duration', 'to' => 'duration', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'notice', 'to' => 'notice', 'default' =>0, 'noindex'=>true),//
@@ -1712,7 +1712,7 @@ function update0723to080() {
          'glpi_events' => array('comp','itemtype'),
          'glpi_logs' => array('FK_glpi_device'),
          'glpi_infocoms' => array('FK_device'),
-         'glpi_computers_softwaresversions' => array('sID'),
+         'glpi_computers_softwareversions' => array('sID'),
          'glpi_links_itemtypes' => array('link'),
          'glpi_mailingsettings' => array('mailings','FK_item'),
          'glpi_networkports' => array('device_type'),
@@ -2089,11 +2089,11 @@ function update0723to080() {
       $DB->query($query) or die("0.80 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 
-   if (!TableExists('glpi_crontaskslogs')) {
-      $query = "CREATE TABLE `glpi_crontaskslogs` (
+   if (!TableExists('glpi_crontasklogs')) {
+      $query = "CREATE TABLE `glpi_crontasklogs` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `crontasks_id` int(11) NOT NULL,
-        `crontaskslogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
+        `crontasklogs_id` int(11) NOT NULL COMMENT 'id of ''start'' event',
         `date` datetime NOT NULL,
         `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
         `elapsed` float NOT NULL COMMENT 'time elapsed since start',
@@ -2101,10 +2101,10 @@ function update0723to080() {
         `content` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'message',
         PRIMARY KEY (`id`),
         KEY `crontasks_id` (`crontasks_id`),
-        KEY `crontasklogs_id` (`crontaskslogs_id`),
-        KEY `crontaskslogs_id_state` (`crontaskslogs_id`,`state`)
+        KEY `crontasklogs_id` (`crontasklogs_id`),
+        KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
-      $DB->query($query) or die("0.80 create glpi_crontaskslogs" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 create glpi_crontasklogs" . $LANG['update'][90] . $DB->error());
    }
    // Retrieve core task lastrun date
    $tasks=array('ocsng','cartridge','consumable','software','contract','infocom',
