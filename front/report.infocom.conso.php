@@ -93,9 +93,9 @@ function display_infocoms_report($itemtype,$begin,$end) {
          break;
 
       case CARTRIDGE_TYPE :
-         $query.=" INNER JOIN `glpi_cartridgesitems`
-                      ON (`glpi_cartridges`.`cartridgesitems_id` = `glpi_cartridgesitems`.`id`) ".
-                   getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
+         $query.=" INNER JOIN `glpi_cartridgeitems`
+                      ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`) ".
+                   getEntitiesRestrictRequest("WHERE","glpi_cartridgeitems");
          break;
 
       case SOFTWARELICENSE_TYPE :

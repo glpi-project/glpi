@@ -1052,7 +1052,7 @@ class SoftwareLicenseType extends CommonDropdown {
 class CartridgeItemType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_cartridgesitemstypes';
+   public $table = 'glpi_cartridgeitemtypes';
    public $type = CARTRIDGEITEMTYPE_TYPE;
 
    static function getTypeName() {

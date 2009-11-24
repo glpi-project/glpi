@@ -537,7 +537,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
                      // Get compatible cartridge type
                      $carttype=array();
                      while ($data=$DB->fetch_array($result)) {
-                        $carttype[]=$data['cartridgesitems_id'];
+                        $carttype[]=$data['cartridgeitems_id'];
                      }
                      // Delete cartrodges_assoc
                      if ($deletecartmodel) {

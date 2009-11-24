@@ -90,7 +90,7 @@ function showCartridges ($tID,$show_old=0) {
 
       $query = "SELECT count(*) AS COUNT
                 FROM `glpi_cartridges`
-                WHERE (`cartridgesitems_id` = '$tID')";
+                WHERE (`cartridgeitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
          if ($DB->result($result,0,0)!=0) {
@@ -153,7 +153,7 @@ function showCartridges ($tID,$show_old=0) {
                        `glpi_printers`.`name` as printname, `glpi_printers`.`init_pages_counter`
                 FROM `glpi_cartridges`
                 LEFT JOIN `glpi_printers` ON (`glpi_cartridges`.`printers_id` = `glpi_printers`.`id`)
-                WHERE (`glpi_cartridges`.`cartridgesitems_id` = '$tID') $where
+                WHERE (`glpi_cartridges`.`cartridgeitems_id` = '$tID') $where
                 ORDER BY $ORDER";
 
       $pages=array();
@@ -280,7 +280,7 @@ function showCompatiblePrinters($instID) {
                        `glpi_printersmodels`.`id` as `pmid`
                 FROM `glpi_cartridges_printersmodels`, `glpi_printersmodels`
                 WHERE `glpi_cartridges_printersmodels`.`printersmodels_id` = `glpi_printersmodels`.`id`
-                      AND `glpi_cartridges_printersmodels`.`cartridgesitems_id` = '$instID'
+                      AND `glpi_cartridges_printersmodels`.`cartridgeitems_id` = '$instID'
                 ORDER BY `glpi_printersmodels`.`name`";
 
       $result = $DB->query($query);
@@ -338,24 +338,24 @@ function showCartridgeInstalled($instID,$old=0) {
    }
    $canedit=haveRight("cartridge","w");
 
-   $query = "SELECT `glpi_cartridgesitems`.`id` as tID, `glpi_cartridgesitems`.`is_deleted`,
-                    `glpi_cartridgesitems`.`ref` as ref, `glpi_cartridgesitems`.`name` as type,
+   $query = "SELECT `glpi_cartridgeitems`.`id` as tID, `glpi_cartridgeitems`.`is_deleted`,
+                    `glpi_cartridgeitems`.`ref` as ref, `glpi_cartridgeitems`.`name` as type,
                     `glpi_cartridges`.`id`, `glpi_cartridges`.`pages` as pages,
                     `glpi_cartridges`.`date_use` as date_use,
                     `glpi_cartridges`.`date_out` as date_out,
                     `glpi_cartridges`.`date_in` as date_in";
    if ($old==0) {
-      $query.= " FROM `glpi_cartridges`, `glpi_cartridgesitems`
+      $query.= " FROM `glpi_cartridges`, `glpi_cartridgeitems`
                  WHERE `glpi_cartridges`.`date_out` IS NULL
                        AND `glpi_cartridges`.`printers_id` = '$instID'
-                       AND `glpi_cartridges`.`cartridgesitems_id` = `glpi_cartridgesitems`.`id`
+                       AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                  ORDER BY `glpi_cartridges`.`date_out` ASC, `glpi_cartridges`.`date_use` DESC,
                           `glpi_cartridges`.`date_in`";
    } else {
-      $query.= " FROM `glpi_cartridges`, `glpi_cartridgesitems`
+      $query.= " FROM `glpi_cartridges`, `glpi_cartridgeitems`
                  WHERE `glpi_cartridges`.`date_out` IS NOT NULL
                        AND `glpi_cartridges`.`printers_id` = '$instID'
-                       AND `glpi_cartridges`.`cartridgesitems_id` = `glpi_cartridgesitems`.`id`
+                       AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                  ORDER BY `glpi_cartridges`.`date_out` ASC, `glpi_cartridges`.`date_use` DESC,
                           `glpi_cartridges`.`date_in`";
    }
@@ -550,7 +550,7 @@ function getCartridgesNumber($tID) {
 
    $query = "SELECT id
              FROM `glpi_cartridges`
-             WHERE (`cartridgesitems_id` = '$tID')";
+             WHERE (`cartridgeitems_id` = '$tID')";
    $result = $DB->query($query);
    return $DB->numrows($result);
 }
@@ -570,7 +570,7 @@ function getUsedCartridgesNumber($tID) {
 
    $query = "SELECT id
              FROM `glpi_cartridges`
-             WHERE (`cartridgesitems_id` = '$tID'
+             WHERE (`cartridgeitems_id` = '$tID'
                     AND `date_use` IS NOT NULL
                     AND `date_out` IS NULL)";
    $result = $DB->query($query);
@@ -592,7 +592,7 @@ function getOldCartridgesNumber($tID) {
 
    $query = "SELECT id
              FROM `glpi_cartridges`
-             WHERE (`cartridgesitems_id` = '$tID'
+             WHERE (`cartridgeitems_id` = '$tID'
                     AND `date_out` IS NOT NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -613,7 +613,7 @@ function getUnusedCartridgesNumber($tID) {
 
    $query = "SELECT id
              FROM `glpi_cartridges`
-             WHERE (`cartridgesitems_id` = '$tID'
+             WHERE (`cartridgeitems_id` = '$tID'
                     AND `date_use` IS NULL)";
    $result = $DB->query($query);
    return $DB->numrows($result);
@@ -636,20 +636,20 @@ function dropdownCompatibleCartridges($pID) {
    $p->getFromDB($pID);
 
    $query = "SELECT COUNT(*) AS cpt, `glpi_locations`.`completename` as location,
-                    `glpi_cartridgesitems`.`ref` as ref, `glpi_cartridgesitems`.`name` as name,
-                    `glpi_cartridgesitems`.`id` as tID
-             FROM `glpi_cartridgesitems`
+                    `glpi_cartridgeitems`.`ref` as ref, `glpi_cartridgeitems`.`name` as name,
+                    `glpi_cartridgeitems`.`id` as tID
+             FROM `glpi_cartridgeitems`
              INNER JOIN `glpi_cartridges_printersmodels`
-                        ON (`glpi_cartridgesitems`.`id` =
-                           `glpi_cartridges_printersmodels`.`cartridgesitems_id`)
+                        ON (`glpi_cartridgeitems`.`id` =
+                           `glpi_cartridges_printersmodels`.`cartridgeitems_id`)
              INNER JOIN `glpi_cartridges`
-                        ON (`glpi_cartridges`.`cartridgesitems_id` = `glpi_cartridgesitems`.`id`
+                        ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                             AND `glpi_cartridges`.`date_use` IS NULL)
              LEFT JOIN `glpi_locations`
-                       ON (`glpi_locations`.`id` = `glpi_cartridgesitems`.`locations_id`)
+                       ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
              WHERE `glpi_cartridges_printersmodels`.`printersmodels_id` =
                      '".$p->fields["printersmodels_id"]."'
-                   AND `glpi_cartridgesitems`.`entities_id` ='".$p->fields["entities_id"]."'
+                   AND `glpi_cartridgeitems`.`entities_id` ='".$p->fields["entities_id"]."'
              GROUP BY tID
              ORDER BY `name`, `ref`";
    if ($result = $DB->query($query)) {
@@ -704,17 +704,17 @@ function cron_cartridge($task=NULL) {
    loadLanguage($CFG_GLPI["language"]);
 
    // Get cartridges type with alarm activated and last warning > X days depending on config
-   $query="SELECT `glpi_cartridgesitems`.`id` AS cartID,
-                  `glpi_cartridgesitems`.`entities_id` as entity,
-                  `glpi_cartridgesitems`.`ref` as cartref, `glpi_cartridgesitems`.`name` AS cartname,
-                  `glpi_cartridgesitems`.`alarm_threshold` AS threshold,
+   $query="SELECT `glpi_cartridgeitems`.`id` AS cartID,
+                  `glpi_cartridgeitems`.`entities_id` as entity,
+                  `glpi_cartridgeitems`.`ref` as cartref, `glpi_cartridgeitems`.`name` AS cartname,
+                  `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
                   `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-           FROM `glpi_cartridgesitems`
+           FROM `glpi_cartridgeitems`
            LEFT JOIN `glpi_alerts`
-                     ON (`glpi_cartridgesitems`.`id` = `glpi_alerts`.`items_id`
+                     ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
                          AND `glpi_alerts`.`itemtype` = '".CARTRIDGEITEM_TYPE."')
-           WHERE `glpi_cartridgesitems`.`is_deleted` = '0'
-                 AND `glpi_cartridgesitems`.`alarm_threshold` >= '0'
+           WHERE `glpi_cartridgeitems`.`is_deleted` = '0'
+                 AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
                  AND (`glpi_alerts`.`date` IS NULL
                       OR (`glpi_alerts`.date+".$CFG_GLPI["cartridges_alert_repeat"].")
                           < CURRENT_TIMESTAMP())

@@ -1192,7 +1192,7 @@ function getAllReplicateForAMaster($master_id) {
 
    $replicates = array();
    $query="SELECT `id`, `host`, `port`
-           FROM `glpi_authldapsreplicates`
+           FROM `glpi_authldapreplicates`
            WHERE `authldaps_id` = '".$master_id."'";
    $result = $DB->query($query);
    if ($DB->numrows($result)>0) {

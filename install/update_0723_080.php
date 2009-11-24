@@ -49,16 +49,16 @@ function update0723to080() {
    $glpi_tables=array(
       'glpi_alerts'                       => 'glpi_alerts',
       'glpi_auth_ldap'                    => 'glpi_authldaps',
-      'glpi_auth_ldap_replicate'          => 'glpi_authldapsreplicates',
+      'glpi_auth_ldap_replicate'          => 'glpi_authldapreplicates',
       'glpi_auth_mail'                    => 'glpi_authmails',
       'glpi_dropdown_auto_update'         => 'glpi_autoupdatesystems',
       'glpi_bookmark'                     => 'glpi_bookmarks',
       'glpi_display_default'              => 'glpi_bookmarks_users',
       'glpi_dropdown_budget'              => 'glpi_budgets',
       'glpi_cartridges'                   => 'glpi_cartridges',
-      'glpi_cartridges_type'              => 'glpi_cartridgesitems',
+      'glpi_cartridges_type'              => 'glpi_cartridgeitems',
       'glpi_cartridges_assoc'             => 'glpi_cartridges_printersmodels',
-      'glpi_dropdown_cartridge_type'      => 'glpi_cartridgesitemstypes',
+      'glpi_dropdown_cartridge_type'      => 'glpi_cartridgeitemtypes',
       'glpi_computers'                    => 'glpi_computers',
       'glpi_computerdisks'                => 'glpi_computersdisks',
       'glpi_dropdown_model'               => 'glpi_computersmodels',
@@ -364,7 +364,7 @@ function update0723to080() {
    'FK_entities' => array(array('to' => 'entities_id',
                            'noindex' => array('glpi_locations','glpi_netpoints',
                               'glpi_entitiesdatas',),
-                           'tables' => array('glpi_bookmarks','glpi_cartridgesitems',
+                           'tables' => array('glpi_bookmarks','glpi_cartridgeitems',
                               'glpi_computers','glpi_consumablesitems','glpi_contacts',
                               'glpi_contracts','glpi_documents','glpi_locations',
                               'glpi_netpoints','glpi_suppliers','glpi_entitiesdatas',
@@ -379,7 +379,7 @@ function update0723to080() {
    'FK_filesystems' => array(array('to' => 'filesystems_id',
                            'tables' => array('glpi_computersdisks',)),
                      ),
-   'FK_glpi_cartridges_type' => array(array('to' => 'cartridgesitems_id',
+   'FK_glpi_cartridges_type' => array(array('to' => 'cartridgeitems_id',
                            'tables' => array('glpi_cartridges',
                               'glpi_cartridges_printersmodels')),
                      ),
@@ -396,7 +396,7 @@ function update0723to080() {
                            'tables' => array('glpi_cartridges_printersmodels',)),
                      ),
    'FK_glpi_enterprise' => array(array('to' => 'manufacturers_id',
-                     'tables' => array('glpi_cartridgesitems','glpi_computers',
+                     'tables' => array('glpi_cartridgeitems','glpi_computers',
                         'glpi_consumablesitems','glpi_devicescases','glpi_devicescontrols',
                         'glpi_devicesdrives','glpi_devicesgraphiccards','glpi_devicesharddrives',
                         'glpi_devicesnetworkcards','glpi_devicesmotherboards','glpi_devicespcis',
@@ -492,7 +492,7 @@ function update0723to080() {
                      ),
    'location' => array(array('to' => 'locations_id',
                            'noindex' => array('glpi_netpoints'),
-                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                           'tables' => array('glpi_cartridgeitems','glpi_computers',
                               'glpi_consumablesitems','glpi_netpoints','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_users','glpi_softwares')),
@@ -572,7 +572,7 @@ function update0723to080() {
                               'glpi_rulescachephonestypes','glpi_rulescacheprinterstypes',)),
                      ),
    'server_id' => array(array('to' => 'authldaps_id',
-                           'tables' => array('glpi_authldapsreplicates')),
+                           'tables' => array('glpi_authldapreplicates')),
                      ),
    'sID' => array(array('to' => 'softwares_id',
                            'tables' => array('glpi_softwareslicenses','glpi_softwaresversions')),
@@ -583,7 +583,7 @@ function update0723to080() {
                               'glpi_printers','glpi_softwaresversions')),
                      ),
    'tech_num' => array(array('to' => 'users_id_tech',
-                              'tables' => array('glpi_cartridgesitems','glpi_computers',
+                              'tables' => array('glpi_cartridgeitems','glpi_computers',
                               'glpi_consumablesitems','glpi_monitors',
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
@@ -594,8 +594,8 @@ function update0723to080() {
    'tracking' => array(array('to' => 'tickets_id',
                            'tables' => array('glpi_ticketsfollowups')),
                      ),
-   'type' => array(array('to' => 'cartridgesitemstypes_id',
-                           'tables' => array('glpi_cartridgesitems')),
+   'type' => array(array('to' => 'cartridgeitemtypes_id',
+                           'tables' => array('glpi_cartridgeitems')),
                   array('to' => 'computerstypes_id',
                            'tables' => array('glpi_computers')),
                   array('to' => 'consumablesitemstypes_id',
@@ -692,7 +692,7 @@ function update0723to080() {
    'glpi_bookmarks' => array(array('from' => 'private', 'to' => 'is_private', 'default' =>1 ),//
                            array('from' => 'recursive','to' => 'is_recursive', 'default' =>0 ),//
                      ),
-   'glpi_cartridgesitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
+   'glpi_cartridgeitems' => array(array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
                      ),
    'glpi_computers' => array(array('from' => 'is_template', 'to' => 'is_template', 'default' =>0),//
                            array('from' => 'deleted', 'to' => 'is_deleted', 'default' =>0 ),//
@@ -924,10 +924,10 @@ function update0723to080() {
 
    $textfields=array(
    'comments' => array('to' => 'comment',
-                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                           'tables' => array('glpi_cartridgeitems','glpi_computers',
                                  'glpi_consumablesitems','glpi_contacts','glpi_contracts',
                                  'glpi_documents','glpi_autoupdatesystems','glpi_budgets',
-                                 'glpi_cartridgesitemstypes','glpi_devicescasestypes','glpi_consumablesitemstypes',
+                                 'glpi_cartridgeitemtypes','glpi_devicescasestypes','glpi_consumablesitemstypes',
                                  'glpi_contactstypes','glpi_contractstypes','glpi_domains',
                                  'glpi_supplierstypes','glpi_filesystems','glpi_networkequipmentsfirmwares',
                                  'glpi_networkinterfaces','glpi_interfacestypes',
@@ -948,7 +948,7 @@ function update0723to080() {
                                  'glpi_phonestypes','glpi_printerstypes','glpi_users',),
                      ),
       'notes' =>  array('to' => 'notepad', 'long'=>true,
-                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                           'tables' => array('glpi_cartridgeitems','glpi_computers',
                               'glpi_consumablesitems','glpi_contacts','glpi_contracts',
                               'glpi_documents','glpi_suppliers','glpi_entitiesdatas',
                               'glpi_printers','glpi_monitors','glpi_phones','glpi_peripherals',
@@ -999,7 +999,7 @@ function update0723to080() {
                         array('from' => 'ldap_field_type', 'to' => 'category_field', 'noindex'=>true),//
                         array('from' => 'ldap_field_language', 'to' => 'language_field', 'noindex'=>true),//
                      ),
-      'glpi_authldapsreplicates' => array(array('from' => 'ldap_host', 'to' => 'host', 'noindex'=>true),//
+      'glpi_authldapreplicates' => array(array('from' => 'ldap_host', 'to' => 'host', 'noindex'=>true),//
                      ),
       'glpi_authmails' => array(array('from' => 'imap_auth_server', 'to' => 'connect_string', 'noindex'=>true),//
                         array('from' => 'imap_host', 'to' => 'host', 'noindex'=>true),//
@@ -1155,11 +1155,11 @@ function update0723to080() {
                      array('from' => 'ldap_opt_deref', 'to' => 'deref_option', 'default' =>0, 'noindex'=>true),//
                      array('from' => 'timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               ),
-      'glpi_authldapsreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true,'checkdatas'=>true),//
+      'glpi_authldapreplicates' => array(array('from' => 'ldap_port', 'to' => 'port', 'default' =>389, 'noindex'=>true,'checkdatas'=>true),//
                      ),
       'glpi_bookmarks' => array(array('from' => 'type', 'to' => 'type', 'default' =>0, 'noindex'=>true,'comments'=>'see define.php BOOKMARK_* constant'),//
                      ),
-      'glpi_cartridgesitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
+      'glpi_cartridgeitems' => array(array('from' => 'alarm', 'to' => 'alarm_threshold', 'default' =>10,),//
                               ),
       'glpi_configs' => array(array('from' => 'glpi_timezone', 'to' => 'time_offset', 'default' =>0, 'noindex'=>true,'comments'=>'in seconds'),//
                               array('from' => 'cartridges_alarm', 'to' => 'default_alarm_threshold', 'default' =>10, 'noindex'=>true),//
@@ -1450,15 +1450,11 @@ function update0723to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
    if (!isIndex('glpi_alerts', 'unicity')) {
-//       $query=" ALTER TABLE `glpi_alerts` ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )  ";
-//       $DB->query($query) or die("0.80 add unicity index in glpi_alerts " . $LANG['update'][90] . $DB->error());
       $changes['glpi_alerts'][]="ADD UNIQUE `unicity` ( `itemtype` , `items_id` , `type` )";
    }
 
    if (!isIndex('glpi_cartridges_printersmodels', 'unicity')) {
-//       $query=" ALTER TABLE `glpi_cartridges_printersmodels` ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)  ";
-//       $DB->query($query) or die("0.80 add unicity index in glpi_cartridges_printersmodels " . $LANG['update'][90] . $DB->error());
-      $changes['glpi_cartridges_printersmodels'][]="ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgesitems_id`)";
+      $changes['glpi_cartridges_printersmodels'][]="ADD UNIQUE `unicity` ( `printersmodels_id` , `cartridgeitems_id`)";
    }
 
    if (!isIndex('glpi_computers_items', 'unicity')) {

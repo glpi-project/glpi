@@ -483,10 +483,10 @@ class Supplier extends CommonDBTM {
 
             // Set $linktype for entity restriction AND link to search engine
             if ($itemtype==CARTRIDGE_TYPE) {
-               $query .= "INNER JOIN `glpi_cartridgesitems`
-                               ON (`glpi_cartridgesitems`.`id`=`glpi_cartridges`.`cartridgesitems_id`) ";
+               $query .= "INNER JOIN `glpi_cartridgeitems`
+                               ON (`glpi_cartridgeitems`.`id`=`glpi_cartridges`.`cartridgeitems_id`) ";
                $linktype = CARTRIDGEITEM_TYPE;
-               $linkfield = 'cartridgesitems_id';
+               $linkfield = 'cartridgeitems_id';
             }
             if ($itemtype==CONSUMABLE_TYPE ) {
                $query .= "INNER JOIN `glpi_consumablesitems`
