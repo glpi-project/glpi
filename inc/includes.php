@@ -83,7 +83,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/authmail.class.php");
    include_once (GLPI_ROOT . "/inc/authldap.class.php");
    include_once (GLPI_ROOT . "/inc/authldapreplicate.class.php");
-
+   include_once (GLPI_ROOT . "/inc/bookmark_user.class.php");
 }
 
 // Security system
@@ -135,6 +135,8 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='enterprise') {
             $item='supplier';
          }
+
+
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
             include_once (GLPI_ROOT . "/inc/$item.class.php");
          }
