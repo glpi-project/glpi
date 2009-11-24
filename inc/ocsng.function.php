@@ -1093,13 +1093,13 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
          }
       }
       $sql_computer = "SELECT `glpi_operatingsystems`.`name` AS os_name,
-                              `glpi_operatingsystemsservicepacks`.`name` AS os_sp
+                              `glpi_operatingsystemservicepacks`.`name` AS os_sp
                        FROM `glpi_computers`, `glpi_ocslinks`, `glpi_operatingsystems`,
-                            `glpi_operatingsystemsservicepacks`
+                            `glpi_operatingsystemservicepacks`
                        WHERE `glpi_ocslinks`.`computers_id`=`glpi_computers`.`id`
                              AND `glpi_operatingsystems`.`id`=`glpi_computers`.`operatingsystems_id`
-                             AND `glpi_operatingsystemsservicepacks`.`id`
-                                  =`glpi_computers`.`operatingsystemsservicepacks_id`
+                             AND `glpi_operatingsystemservicepacks`.`id`
+                                  =`glpi_computers`.`operatingsystemservicepacks_id`
                              AND `glpi_ocslinks`.`ocsid`='$ocsid'
                              AND `glpi_ocslinks`.`ocsservers_id`='$ocsservers_id'";
 
@@ -1124,13 +1124,13 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
             $compupdate["operatingsystems_id"] = externalImportDropdown('glpi_operatingsystems',
                                                                         $osname);
          }
-         if (!in_array("operatingsystemsversions_id", $computer_updates)) {
-            $compupdate["operatingsystemsversions_id"]
-                  = externalImportDropdown('glpi_operatingsystemsversions', $line["OSVERSION"]);
+         if (!in_array("operatingsystemversions_id", $computer_updates)) {
+            $compupdate["operatingsystemversions_id"]
+                  = externalImportDropdown('glpi_operatingsystemversions', $line["OSVERSION"]);
          }
          if (!strpos($line["OSCOMMENTS"],"CEST")
-             && !in_array("operatingsystemsservicepacks_id", $computer_updates)) {// Not linux comment
-            $compupdate["operatingsystemsservicepacks_id"] = externalImportDropdown('glpi_operatingsystemsservicepacks', $line["OSCOMMENTS"]);
+             && !in_array("operatingsystemservicepacks_id", $computer_updates)) {// Not linux comment
+            $compupdate["operatingsystemservicepacks_id"] = externalImportDropdown('glpi_operatingsystemservicepacks', $line["OSCOMMENTS"]);
          }
       }
       if ($cfg_ocs["import_general_domain"] && !in_array("domains_id", $computer_updates)) {
@@ -1573,8 +1573,8 @@ function getOcsLockableFields() {
                 "domains_id"=>$LANG['setup'][89],
                 "networks_id"=>$LANG['setup'][88],
                 "operatingsystems_id"=>$LANG['computers'][9],
-                "operatingsystemsservicepacks_id"=>$LANG['computers'][53],
-                "operatingsystemsversions_id"=>$LANG['computers'][52],
+                "operatingsystemservicepacks_id"=>$LANG['computers'][53],
+                "operatingsystemversions_id"=>$LANG['computers'][52],
                 "os_license_number"=>$LANG['computers'][10],
                 "os_licenseid"=>$LANG['computers'][11],
                 "users_id"=>$LANG['common'][34],
@@ -1592,8 +1592,8 @@ function ocsMigrateComputerUpdates($computers_id,$computer_update) {
                   'tech_num' => 'users_id_tech',
                   'comments' => 'comment',
                   'os' => 'operatingsystems_id',
-                  'os_version' => 'operatingsystemsversions_id',
-                  'os_sp' => 'operatingsystemsservicepacks_id',
+                  'os_version' => 'operatingsystemversions_id',
+                  'os_sp' => 'operatingsystemservicepacks_id',
                   'os_license_id' => 'os_licenseid',
                   'auto_update' => 'autoupdatesystems_id',
                   'location' => 'locations_id',
@@ -2874,8 +2874,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
                      if ($line["INTERFACE"] != "NULL") {
                         $periph["comment"] = $line["INTERFACE"];
                      }
-                     $periph["peripheralstypes_id"]
-                           = externalImportDropdown("glpi_peripheralstypes", $line["TYPE"]);
+                     $periph["peripheraltypes_id"]
+                           = externalImportDropdown("glpi_peripheraltypes", $line["TYPE"]);
                      $id_periph = 0;
 
                      if ($cfg_ocs["import_periph"] == 1) {

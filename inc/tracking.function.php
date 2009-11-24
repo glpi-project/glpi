@@ -941,8 +941,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
       $option["glpi_computertypes.name"]                = $LANG['common'][17];
       $option["glpi_computermodels.name"]               = $LANG['common'][22];
       $option["glpi_operatingsystems.name"]              = $LANG['computers'][9];
-      $option["glpi_operatingsystemsversions.name"]      = $LANG['computers'][52];
-      $option["glpi_operatingsystemsservicepacks.name"]  = $LANG['computers'][53];
+      $option["glpi_operatingsystemversions.name"]      = $LANG['computers'][52];
+      $option["glpi_operatingsystemservicepacks.name"]  = $LANG['computers'][53];
       $option["glpi_autoupdatesystems.name"]             = $LANG['computers'][51];
       $option["glpi_manufacturers.name"]                 = $LANG['common'][5];
       $option["glpi_deviceprocessors.designation"]      = $LANG['computers'][21];
@@ -1464,12 +1464,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                                     ON (`glpi_netpoints`.`id` = `glpi_networkports`.`netpoints_id`)
                               LEFT JOIN `glpi_operatingsystems`
                                     ON (`glpi_operatingsystems`.`id` = comp.`operatingsystems_id`)
-                              LEFT JOIN `glpi_operatingsystemsversions`
-                                    ON (`glpi_operatingsystemsversions`.`id`
-                                         = comp.`operatingsystemsversions_id`)
-                              LEFT JOIN `glpi_operatingsystemsservicepacks`
-                                    ON (`glpi_operatingsystemsservicepacks`.`id`
-                                         = comp.`operatingsystemsservicepacks_id`)
+                              LEFT JOIN `glpi_operatingsystemversions`
+                                    ON (`glpi_operatingsystemversions`.`id`
+                                         = comp.`operatingsystemversions_id`)
+                              LEFT JOIN `glpi_operatingsystemservicepacks`
+                                    ON (`glpi_operatingsystemservicepacks`.`id`
+                                         = comp.`operatingsystemservicepacks_id`)
                               LEFT JOIN `glpi_autoupdatesystems`
                                     ON (`glpi_autoupdatesystems`.`id` = comp.`autoupdatesystems_id`)
                               LEFT JOIN `glpi_manufacturers`

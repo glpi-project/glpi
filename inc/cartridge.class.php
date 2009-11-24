@@ -144,19 +144,19 @@ class CartridgeType extends CommonDBTM {
    * Add the compatible printer $type type for the cartridge type $tID
    *
    *@param $cartridgeitems_id integer: cartridge type identifier
-   *@param printersmodels_id integer: printer type identifier
+   *@param printermodels_id integer: printer type identifier
    *
    *@return boolean : true for success
    *
    **/
-   function addCompatibleType($cartridgeitems_id,$printersmodels_id) {
+   function addCompatibleType($cartridgeitems_id,$printermodels_id) {
       global $DB;
 
-      if ($cartridgeitems_id>0 && $printersmodels_id>0) {
+      if ($cartridgeitems_id>0 && $printermodels_id>0) {
          $query="INSERT
                  INTO `glpi_cartridges_printermodels`
-                      (`cartridgeitems_id`, `printersmodels_id`)
-                 VALUES ('$cartridgeitems_id','$printersmodels_id');";
+                      (`cartridgeitems_id`, `printermodels_id`)
+                 VALUES ('$cartridgeitems_id','$printermodels_id');";
          if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
             return true;
          }

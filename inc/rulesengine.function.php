@@ -383,46 +383,46 @@ function getRuleCollectionClassByTableName($tablename) {
       case "glpi_computermodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_COMPUTER);
 
-      case "glpi_monitorsmodels" :
+      case "glpi_monitormodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_MONITOR);
 
-      case "glpi_printersmodels" :
+      case "glpi_printermodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PRINTER);
 
-      case "glpi_peripheralsmodels" :
+      case "glpi_peripheralmodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PERIPHERAL);
 
-      case "glpi_networkequipmentsmodels" :
+      case "glpi_networkequipmentmodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_NETWORKING);
 
-      case "glpi_phonesmodels" :
+      case "glpi_phonemodels" :
          return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PHONE);
 
       case "glpi_computertypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_COMPUTER);
 
-      case "glpi_monitorstypes" :
+      case "glpi_monitortypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_MONITOR);
 
-      case "glpi_printerstypes" :
+      case "glpi_printertypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PRINTER);
 
-      case "glpi_peripheralstypes" :
+      case "glpi_peripheraltypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PERIPHERAL);
 
-      case "glpi_networkequipmentstypes" :
+      case "glpi_networkequipmenttypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_NETWORKING);
 
-      case "glpi_phonestypes" :
+      case "glpi_phonetypes" :
          return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PHONE);
 
       case "glpi_operatingsystems" :
          return getRuleCollectionClass(RULE_DICTIONNARY_OS);
 
-      case "glpi_operatingsystemsservicepacks" :
+      case "glpi_operatingsystemservicepacks" :
          return getRuleCollectionClass(RULE_DICTIONNARY_OS_SP);
 
-      case "glpi_operatingsystemsversions" :
+      case "glpi_operatingsystemversions" :
          return getRuleCollectionClass(RULE_DICTIONNARY_OS_VERSION);
    }
 }

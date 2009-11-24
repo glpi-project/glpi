@@ -1858,7 +1858,7 @@ function addDefaultSelect ($itemtype) {
 
    switch ($itemtype) {
       case RESERVATION_TYPE :
-         $ret = "`glpi_reservationsitems`.`is_active` AS ACTIVE, ";
+         $ret = "`glpi_reservationitems`.`is_active` AS ACTIVE, ";
          break;
 
       case CARTRIDGEITEM_TYPE :
@@ -2827,7 +2827,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          return getAuthMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
                                   $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 
-      case "glpi_reservationsitems.comment" :
+      case "glpi_reservationitems.comment" :
          if (empty($data[$NAME.$num])) {
             return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".
                      $data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49].
@@ -3162,7 +3162,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                   LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".AUTH_MAIL."
                                                  AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
 
-      case "glpi_reservationsitems" :
+      case "glpi_reservationitems" :
          return "";
 
       case "glpi_computerdisks" :

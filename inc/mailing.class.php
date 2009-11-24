@@ -796,7 +796,7 @@ class MailingResa {
                         $ri=new ReservationItem();
                         $ci=new CommonItem();
                         $entity=-1;
-                        if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])) {
+                        if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
                               $entity=$ci->getField('entities_id');
                            }
@@ -826,7 +826,7 @@ class MailingResa {
                      // TECH SEND
                      case TECH_MAILING :
                         $ri=new ReservationItem();
-                        if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])) {
+                        if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            $ci=new CommonItem();
                            $ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
                            if ($tmp=$ci->getField('users_id_tech')) {
@@ -846,7 +846,7 @@ class MailingResa {
                      // USER SEND
                      case USER_MAILING :
                         $ri=new ReservationItem();
-                        if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])) {
+                        if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            $ci=new CommonItem();
                            $ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
                            if ($tmp=$ci->getField('users_id')) {
@@ -868,7 +868,7 @@ class MailingResa {
                case PROFILE_MAILING_TYPE :
                   // Get entity
                   $ri=new ReservationItem();
-                  $ri->getFromDB($this->resa->fields['reservationsitems_id']);
+                  $ri->getFromDB($this->resa->fields['reservationitems_id']);
                   $ci = new CommonItem();
                   $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
                   $entities_id=$ci->getField('entities_id');
@@ -918,7 +918,7 @@ class MailingResa {
       $ri=new ReservationItem();
       $ci=new CommonItem();
       $entity=-1;
-      if ($ri->getFromDB($this->resa->fields["reservationsitems_id"])) {
+      if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
          if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
             $entity=$ci->getField('entities_id');
          }

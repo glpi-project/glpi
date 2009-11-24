@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["addtype"])) {
    $cartype->check($_POST["tID"],'w');
 
-   if ($cartype->addCompatibleType($_POST["tID"],$_POST["printersmodels_id"])) {
+   if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
       logEvent($_POST["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][30]);
    }

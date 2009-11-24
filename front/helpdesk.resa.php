@@ -51,7 +51,7 @@ checkRight("reservation_helpdesk","1");
 $rr = new ReservationResa();
 if (isset($_POST["edit_resa"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin_date"]);
-   $reservationsitems_id = key($_POST["items"]);
+   $reservationitems_id = key($_POST["items"]);
    if ($_SESSION["glpiID"] == $_POST["users_id"]) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item'] = key($_POST["items"]);
@@ -68,7 +68,7 @@ if (isset($_POST["edit_resa"])) {
 helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 if (isset($_POST["clear_resa"])) {
-   $reservationsitems_id = key($_POST["items"]);
+   $reservationitems_id = key($_POST["items"]);
    if ($rr->delete($_POST)) { // delete() need an array !
       logEvent($_POST["id"], "reservation", 4, "inventory",
                $_SESSION["glpiname"]." delete a reservation.");
@@ -76,7 +76,7 @@ if (isset($_POST["clear_resa"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin_date"]);
    $_GET["mois_courant"] = $begin_month;
    $_GET["annee_courant"] = $begin_year;
-   printCalendrier($_SERVER['PHP_SELF'],$reservationsitems_id);
+   printCalendrier($_SERVER['PHP_SELF'],$reservationitems_id);
 }
 
 if (isset($_GET["id"])) {
@@ -93,9 +93,9 @@ if (isset($_GET["id"])) {
 
 } else if (isset($_POST["add_resa"])) {
    $all_ok = true;
-   $reservationsitems_id = 0;
-   foreach ($_POST['items'] as $reservationsitems_id) {
-      $_POST['reservationsitems_id'] = $reservationsitems_id;
+   $reservationitems_id = 0;
+   foreach ($_POST['items'] as $reservationitems_id) {
+      $_POST['reservationitems_id'] = $reservationitems_id;
       $ok = true;
       $times = $_POST["periodicity_times"];
       $begin = $_POST["begin"];
@@ -121,7 +121,7 @@ if (isset($_GET["id"])) {
       $_GET["annee_courant"] = $begin_year;
 
       if ($_POST['_ok']) {
-         logEvent($_POST["reservationsitems_id"], "reservation", 4, "inventory",
+         logEvent($_POST["reservationitems_id"], "reservation", 4, "inventory",
                   $_SESSION["glpiname"]." add a reservation.");
       } else {
          $all_ok = false;
@@ -133,7 +133,7 @@ if (isset($_GET["id"])) {
             glpi_header($CFG_GLPI["root_doc"] . "/front/helpdesk.resa.php?id=");
          } else { // Only one reservation
             glpi_header($CFG_GLPI["root_doc"] . "/front/helpdesk.resa.php?id=".
-                        $_POST['reservationsitems_id']);
+                        $_POST['reservationitems_id']);
          }
       }
    }

@@ -589,23 +589,23 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
    switch ($dpdTable) {
       case "glpi_manufacturers" :
       case "glpi_operatingsystems" :
-      case "glpi_operatingsystemsservicepacks" :
-      case "glpi_operatingsystemsversions" :
+      case "glpi_operatingsystemservicepacks" :
+      case "glpi_operatingsystemversions" :
       case "glpi_computertypes" :
-      case "glpi_monitorstypes" :
-      case "glpi_printerstypes" :
-      case "glpi_peripheralstypes" :
-      case "glpi_phonestypes" :
-      case "glpi_networkequipmentstypes" :
+      case "glpi_monitortypes" :
+      case "glpi_printertypes" :
+      case "glpi_peripheraltypes" :
+      case "glpi_phonetypes" :
+      case "glpi_networkequipmenttypes" :
          $process = true;
          break;
 
       case "glpi_computermodels" :
-      case "glpi_monitorsmodels" :
-      case "glpi_printersmodels" :
-      case "glpi_peripheralsmodels" :
-      case "glpi_phonesmodels" :
-      case "glpi_networkequipmentsmodels" :
+      case "glpi_monitormodels" :
+      case "glpi_printermodels" :
+      case "glpi_peripheralmodels" :
+      case "glpi_phonemodels" :
+      case "glpi_networkequipmentmodels" :
          $process = true;
          $input_values["manufacturer"] = $external_params["manufacturer"];
          break;
@@ -790,10 +790,10 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
          return;
       }
 
-      if ($table == "glpi_knowbaseitemscategories") {
+      if ($table == "glpi_knowbaseitemcategories") {
          $query = "SELECT COUNT(*) AS cpt
                    FROM `glpi_knowbaseitems`
-                   WHERE `knowbaseitemscategories_id` = '$ID'";
+                   WHERE `knowbaseitemcategories_id` = '$ID'";
          $result = $DB->query($query);
          if ($DB->result($result, 0, "cpt") > 0) {
             echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";

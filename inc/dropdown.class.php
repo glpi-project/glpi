@@ -425,7 +425,7 @@ class TicketsCategory extends CommonTreeDropdown {
                           'label' => $LANG['common'][35],
                           'type'  => 'dropdownValue',
                           'list'  => true),
-                    array('name'  => 'knowbaseitemscategories_id',
+                    array('name'  => 'knowbaseitemcategories_id',
                           'label' => $LANG['title'][5],
                           'type'  => 'dropdownValue',
                           'list'  => true));
@@ -898,7 +898,7 @@ class ComputersModel extends CommonDropdown {
 class NetworkEquipmentsType extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_networkequipmentstypes';
+   public $table = 'glpi_networkequipmenttypes';
    public $type = NETWORKEQUIPMENTTYPE_TYPE;
 
    static function getTypeName() {
@@ -912,7 +912,7 @@ class NetworkEquipmentsType extends CommonDropdown {
 class NetworkEquipementsModel extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_networkequipmentsmodels';
+   public $table = 'glpi_networkequipmentmodels';
    public $type = NETWORKEQUIPMENTMODEL_TYPE;
 
    static function getTypeName() {
@@ -926,7 +926,7 @@ class NetworkEquipementsModel extends CommonDropdown {
 class PrintersType extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_printerstypes';
+   public $table = 'glpi_printertypes';
    public $type = PRINTERTYPE_TYPE;
 
    static function getTypeName() {
@@ -940,7 +940,7 @@ class PrintersType extends CommonDropdown {
 class PrintersModel extends CommonDropdown {
 
    // From CommonDBTM
-   public $table = 'glpi_printersmodels';
+   public $table = 'glpi_printermodels';
    public $type = PRINTERMODEL_TYPE;
 
    static function getTypeName() {
@@ -954,7 +954,7 @@ class PrintersModel extends CommonDropdown {
 class MonitorsType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_monitorstypes';
+   public $table = 'glpi_monitortypes';
    public $type = MONITORTYPE_TYPE;
 
    static function getTypeName() {
@@ -968,7 +968,7 @@ class MonitorsType extends CommonDropdown {
 class MonitorsModel extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_monitorsmodels';
+   public $table = 'glpi_monitormodels';
    public $type = MONITORMODEL_TYPE;
 
    static function getTypeName() {
@@ -982,7 +982,7 @@ class MonitorsModel extends CommonDropdown {
 class PeripheralsType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_peripheralstypes';
+   public $table = 'glpi_peripheraltypes';
    public $type = PERIPHERALTYPE_TYPE;
 
    static function getTypeName() {
@@ -996,7 +996,7 @@ class PeripheralsType extends CommonDropdown {
 class PeripheralsModel extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_peripheralsmodels';
+   public $table = 'glpi_peripheralmodels';
    public $type = PERIPHERALMODEL_TYPE;
 
    static function getTypeName() {
@@ -1010,7 +1010,7 @@ class PeripheralsModel extends CommonDropdown {
 class PhonesType extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_phonestypes';
+   public $table = 'glpi_phonetypes';
    public $type = PHONETYPE_TYPE;
 
    static function getTypeName() {
@@ -1024,7 +1024,7 @@ class PhonesType extends CommonDropdown {
 class PhonesModel extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_phonesmodels';
+   public $table = 'glpi_phonemodels';
    public $type = PHONEMODEL_TYPE;
 
    static function getTypeName() {
@@ -1164,7 +1164,7 @@ class DeviceCaseType extends CommonDropdown {
 class PhonePowerSupply extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_phonespowersupplies';
+   public $table = 'glpi_phonepowersupplies';
    public $type = PHONEPOWERSUPPLY_TYPE;
 
    static function getTypeName() {
@@ -1206,7 +1206,7 @@ class DocumentCategory extends CommonDropdown {
 class KnowbaseItemCategory extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_knowbaseitemscategories';
+   public $table = 'glpi_knowbaseitemcategories';
    public $type = KNOWBASEITEMCATEGORY_TYPE;
 
    static function getTypeName() {
@@ -1234,7 +1234,7 @@ class OperatingSystem extends CommonDropdown {
 class OperatingSystemVersion extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_operatingsystemsversions';
+   public $table = 'glpi_operatingsystemversions';
    public $type = OPERATINGSYSTEMVERSION_TYPE;
 
    static function getTypeName() {
@@ -1248,7 +1248,7 @@ class OperatingSystemVersion extends CommonDropdown {
 class OperatingSystemServicePack extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_operatingsystemsservicepacks';
+   public $table = 'glpi_operatingsystemservicepacks';
    public $type = OPERATINGSYSTEMSERVICEPACK_TYPE;
 
    static function getTypeName() {
@@ -1290,7 +1290,7 @@ class NetworkInterface extends CommonDropdown {
 class NetworkEquipmentsFirmware extends CommonDropdown {
 
       // From CommonDBTM
-   public $table = 'glpi_networkequipmentsfirmwares';
+   public $table = 'glpi_networkequipmentfirmwares';
    public $type = NETWORKEQUIPMENTFIRMWARE_TYPE;
 
    static function getTypeName() {

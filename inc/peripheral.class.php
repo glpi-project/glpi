@@ -245,8 +245,8 @@ class Peripheral  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_peripheralstypes", "peripheralstypes_id",
-                    $this->fields["peripheralstypes_id"]);
+      dropdownValue("glpi_peripheraltypes", "peripheraltypes_id",
+                    $this->fields["peripheraltypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -268,8 +268,8 @@ class Peripheral  extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_peripheralsmodels", "peripheralsmodels_id",
-                    $this->fields["peripheralsmodels_id"]);
+      dropdownValue("glpi_peripheralmodels", "peripheralmodels_id",
+                    $this->fields["peripheralmodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -372,14 +372,14 @@ class Peripheral  extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_peripheralstypes';
+      $tab[4]['table']     = 'glpi_peripheraltypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'peripheralstypes_id';
+      $tab[4]['linkfield'] = 'peripheraltypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_peripheralsmodels';
+      $tab[40]['table']     = 'glpi_peripheralmodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'peripheralsmodels_id';
+      $tab[40]['linkfield'] = 'peripheralmodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';

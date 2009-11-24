@@ -649,16 +649,16 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemsservicepacks", "operatingsystemsservicepacks_id",
-                     $this->fields["operatingsystemsservicepacks_id"]);
+      dropdownValue("glpi_operatingsystemservicepacks", "operatingsystemservicepacks_id",
+                     $this->fields["operatingsystemservicepacks_id"]);
       echo "</td></tr>\n";
 
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemsversions", "operatingsystemsversions_id",
-                     $this->fields["operatingsystemsversions_id"]);
+      dropdownValue("glpi_operatingsystemversions", "operatingsystemversions_id",
+                     $this->fields["operatingsystemversions_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -805,14 +805,14 @@ class Computer extends CommonDBTM {
       $tab[45]['linkfield'] = 'operatingsystems_id';
       $tab[45]['name']      = $LANG['computers'][9];
 
-      $tab[46]['table']     = 'glpi_operatingsystemsversions';
+      $tab[46]['table']     = 'glpi_operatingsystemversions';
       $tab[46]['field']     = 'name';
-      $tab[46]['linkfield'] = 'operatingsystemsversions_id';
+      $tab[46]['linkfield'] = 'operatingsystemversions_id';
       $tab[46]['name']      = $LANG['computers'][52];
 
-      $tab[41]['table']     = 'glpi_operatingsystemsservicepacks';
+      $tab[41]['table']     = 'glpi_operatingsystemservicepacks';
       $tab[41]['field']     = 'name';
-      $tab[41]['linkfield'] = 'operatingsystemsservicepacks_id';
+      $tab[41]['linkfield'] = 'operatingsystemservicepacks_id';
       $tab[41]['name']      = $LANG['computers'][53];
 
       $tab[42]['table']     = 'glpi_autoupdatesystems';

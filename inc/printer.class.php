@@ -334,7 +334,7 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_printerstypes", "printerstypes_id", $this->fields["printerstypes_id"]);
+      dropdownValue("glpi_printertypes", "printertypes_id", $this->fields["printertypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -356,7 +356,7 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      dropdownValue("glpi_printersmodels", "printersmodels_id", $this->fields["printersmodels_id"]);
+      dropdownValue("glpi_printermodels", "printermodels_id", $this->fields["printermodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -497,14 +497,14 @@ class Printer  extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_printerstypes';
+      $tab[4]['table']     = 'glpi_printertypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'printerstypes_id';
+      $tab[4]['linkfield'] = 'printertypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_printersmodels';
+      $tab[40]['table']     = 'glpi_printermodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'printersmodels_id';
+      $tab[40]['linkfield'] = 'printermodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';

@@ -390,10 +390,10 @@ function printReservation($target,$ID,$date) {
       $debut=$date." 00:00:00";
       $fin=$date." 23:59:59";
 
-      $query = "SELECT DISTINCT `glpi_reservationsitems`.`id`
-                FROM `glpi_reservationsitems`
+      $query = "SELECT DISTINCT `glpi_reservationitems`.`id`
+                FROM `glpi_reservationitems`
                 INNER JOIN `glpi_reservations`
-                  ON (`glpi_reservationsitems`.`id` = `glpi_reservations`.`reservationsitems_id`)
+                  ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`)
                 WHERE `is_active` = '1'
                       AND '".$debut."' < `end`
                       AND '".$fin."' > `begin`
@@ -412,11 +412,11 @@ function printReservation($target,$ID,$date) {
 
                $typename=$ci->getType();
                if ($m->fields["itemtype"]==PERIPHERAL_TYPE) {
-                  if (isset($ci->obj->fields["peripheralstypes_id"])
-                      && $ci->obj->fields["peripheralstypes_id"]!=0) {
+                  if (isset($ci->obj->fields["peripheraltypes_id"])
+                      && $ci->obj->fields["peripheraltypes_id"]!=0) {
 
-                     $typename=getDropdownName("glpi_peripheralstypes",
-                                               $ci->obj->fields["peripheralstypes_id"]);
+                     $typename=getDropdownName("glpi_peripheraltypes",
+                                               $ci->obj->fields["peripheraltypes_id"]);
                   }
                }
 
@@ -448,7 +448,7 @@ function printReservationItem($target,$ID,$date) {
              FROM `glpi_reservations`
              WHERE '$debut' < `end`
                    AND '$fin' > `begin`
-                   AND `reservationsitems_id` = '$ID'
+                   AND `reservationitems_id` = '$ID'
              ORDER BY `begin`";
 
    if ($result=$DB->query($query)) {
@@ -522,18 +522,18 @@ function printReservationItems($target) {
 
    foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
       $ci->setType($itemtype);
-      $query = "SELECT `glpi_reservationsitems`.`id`, `glpi_reservationsitems`.`comment`,".
+      $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
                        $LINK_ID_TABLE[$itemtype].".`name` AS name, ".
                        $LINK_ID_TABLE[$itemtype].".`entities_id` AS entities_id,
                        `glpi_locations`.`completename` AS location,
-                       `glpi_reservationsitems`.`items_id` AS items_id
-                FROM `glpi_reservationsitems`
+                       `glpi_reservationitems`.`items_id` AS items_id
+                FROM `glpi_reservationitems`
                 INNER JOIN ".$LINK_ID_TABLE[$itemtype]."
-                     ON (`glpi_reservationsitems`.`itemtype` = '$itemtype'
-                         AND `glpi_reservationsitems`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
+                     ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
+                         AND `glpi_reservationitems`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
                 LEFT JOIN `glpi_locations`
                      ON (".$LINK_ID_TABLE[$itemtype].".`locations_id` = `glpi_locations`.`id`)
-                WHERE `glpi_reservationsitems`.`is_active` = '1'
+                WHERE `glpi_reservationitems`.`is_active` = '1'
                      AND ".$LINK_ID_TABLE[$itemtype].".`is_deleted` = '0'".
                      getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype])."
                 ORDER BY ".$LINK_ID_TABLE[$itemtype].".`entities_id`, ".
@@ -546,11 +546,11 @@ function printReservationItems($target) {
             $typename=$ci->getType();
             if ($itemtype==PERIPHERAL_TYPE) {
                $ci->getFromDB($itemtype,$row['items_id']);
-               if (isset($ci->obj->fields["peripheralstypes_id"])
-                   && $ci->obj->fields["peripheralstypes_id"]!=0) {
+               if (isset($ci->obj->fields["peripheraltypes_id"])
+                   && $ci->obj->fields["peripheraltypes_id"]!=0) {
 
-                  $typename=getDropdownName("glpi_peripheralstypes",
-                                            $ci->obj->fields["peripheralstypes_id"]);
+                  $typename=getDropdownName("glpi_peripheraltypes",
+                                            $ci->obj->fields["peripheraltypes_id"]);
                }
             }
             echo "<td><a href='".$target."?show=resa&amp;id=".$row['id']."'>$typename - ".
@@ -634,7 +634,7 @@ function showDeviceReservations($target,$itemtype,$ID) {
       $query = "SELECT *
                 FROM `glpi_reservations`
                 WHERE `end` > '$now'
-                      AND `reservationsitems_id` = '$resaID'
+                      AND `reservationitems_id` = '$resaID'
                 ORDER BY `begin`";
       $result=$DB->query($query);
 
@@ -678,7 +678,7 @@ function showDeviceReservations($target,$itemtype,$ID) {
       $query = "SELECT *
                 FROM `glpi_reservations`
                 WHERE `end` <= '$now'
-                      AND `reservationsitems_id` = '$resaID'
+                      AND `reservationitems_id` = '$resaID'
                 ORDER BY `begin` DESC";
       $result=$DB->query($query);
 
@@ -760,7 +760,7 @@ function showUserReservations($target,$ID) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center'>".convDateTime($data["begin"])."</td>";
          echo "<td class='center'>".convDateTime($data["end"])."</td>";
-         if ($ri->getFromDB($data["reservationsitems_id"])) {
+         if ($ri->getFromDB($data["reservationitems_id"])) {
             $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
             echo "<td class='center'>".$ci->getLink()."</td>";
          } else {
@@ -771,7 +771,7 @@ function showUserReservations($target,$ID) {
          echo "<td class='center'>";
          list($annee,$mois,$jour)=explode("-",$data["begin"]);
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".
-               $data["reservationsitems_id"]."&amp;mois_courant=$mois&amp;".
+               $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
                "annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".
                $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
          echo "</td></tr>\n";
@@ -802,7 +802,7 @@ function showUserReservations($target,$ID) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center'>".convDateTime($data["begin"])."</td>";
          echo "<td class='center'>".convDateTime($data["end"])."</td>";
-         if ($ri->getFromDB($data["reservationsitems_id"])) {
+         if ($ri->getFromDB($data["reservationitems_id"])) {
             $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
             echo "<td class='center'>".$ci->getLink()."</td>";
          } else {
@@ -813,7 +813,7 @@ function showUserReservations($target,$ID) {
          echo "<td class='center'>";
          list($annee,$mois,$jour)=explode("-",$data["begin"]);
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".
-               $data["reservationsitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
+               $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
                "title='".$LANG['reservation'][21]."'>";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
          echo "</td></tr>\n";
@@ -827,7 +827,7 @@ function isReservable($itemtype,$items_id) {
    global $DB;
 
    $query = "SELECT `id`
-             FROM `glpi_reservationsitems`
+             FROM `glpi_reservationitems`
              WHERE `itemtype` = '$itemtype'
                    AND `items_id` = '$items_id'";
    $result=$DB->query($query);

@@ -295,8 +295,8 @@ class Netdevice extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id",
-                    $this->fields["networkequipmentstypes_id"]);
+      dropdownValue("glpi_networkequipmenttypes", "networkequipmenttypes_id",
+                    $this->fields["networkequipmenttypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -318,8 +318,8 @@ class Netdevice extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentsmodels", "networkequipmentsmodels_id",
-                    $this->fields["networkequipmentsmodels_id"]);
+      dropdownValue("glpi_networkequipmentmodels", "networkequipmentmodels_id",
+                    $this->fields["networkequipmentmodels_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -386,8 +386,8 @@ class Netdevice extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentsfirmwares", "networkequipmentsfirmwares_id",
-                    $this->fields["networkequipmentsfirmwares_id"]);
+      dropdownValue("glpi_networkequipmentfirmwares", "networkequipmentfirmwares_id",
+                    $this->fields["networkequipmentfirmwares_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -563,14 +563,14 @@ class Netport extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_networkequipmentstypes';
+      $tab[4]['table']     = 'glpi_networkequipmenttypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'networkequipmentstypes_id';
+      $tab[4]['linkfield'] = 'networkequipmenttypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_networkequipmentsmodels';
+      $tab[40]['table']     = 'glpi_networkequipmentmodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'networkequipmentsmodels_id';
+      $tab[40]['linkfield'] = 'networkequipmentmodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';
@@ -625,9 +625,9 @@ class Netport extends CommonDBTM {
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
 
-      $tab[11]['table']     = 'glpi_networkequipmentsfirmwares';
+      $tab[11]['table']     = 'glpi_networkequipmentfirmwares';
       $tab[11]['field']     = 'name';
-      $tab[11]['linkfield'] = 'networkequipmentsfirmwares_id';
+      $tab[11]['linkfield'] = 'networkequipmentfirmwares_id';
       $tab[11]['name']      = $LANG['setup'][71];
 
       $tab[14]['table']     = 'glpi_networkequipments';

@@ -137,7 +137,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    }
    $display_selected=true;
    switch ($_POST["table"]) {
-      case "glpi_knowbaseitemscategories" :
+      case "glpi_knowbaseitemcategories" :
          echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
          break;
 

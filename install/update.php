@@ -579,9 +579,9 @@ function updateTreeDropdown(){
 		$query= "ALTER TABLE `glpi_locations` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in glpi_locations ".$LANG['update'][90].$DB->error());
 	}
-	if(TableExists("glpi_knowbaseitemscategories")&& !FieldExists("glpi_knowbaseitemscategories","completename")) {
-		$query= "ALTER TABLE `glpi_knowbaseitemscategories` ADD `completename` TEXT NOT NULL ;";
-		$DB->query($query) or die("0.6 add completename in glpi_knowbaseitemscategories ".$LANG['update'][90].$DB->error());
+	if(TableExists("glpi_knowbaseitemcategories")&& !FieldExists("glpi_knowbaseitemcategories","completename")) {
+		$query= "ALTER TABLE `glpi_knowbaseitemcategories` ADD `completename` TEXT NOT NULL ;";
+		$DB->query($query) or die("0.6 add completename in glpi_knowbaseitemcategories ".$LANG['update'][90].$DB->error());
 	}
 }
 

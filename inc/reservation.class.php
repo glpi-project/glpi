@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_reservationsitems';
+   public $table = 'glpi_reservationitems';
 
    /**
     * Retrieve an item from the database for a specific item
@@ -72,7 +72,7 @@ class ReservationItem extends CommonDBTM {
 
       $query2 = "DELETE
                  FROM `glpi_reservations`
-                 WHERE `reservationsitems_id` = '$ID'";
+                 WHERE `reservationitems_id` = '$ID'";
       $result2 = $DB->query($query2);
    }
 
@@ -168,17 +168,17 @@ class ReservationResa extends CommonDBTM {
          $target=$input['_target'];
       }
       // set new date.
-      $this->fields["reservationsitems_id"] = $input["reservationsitems_id"];
+      $this->fields["reservationitems_id"] = $input["reservationitems_id"];
       $this->fields["begin"] = $input["begin"];
       $this->fields["end"] = $input["end"];
 
       if (!$this->test_valid_date()) {
-         $this->displayError("date",$input["reservationsitems_id"],$target);
+         $this->displayError("date",$input["reservationitems_id"],$target);
          return false;
       }
 
       if ($this->is_reserved()) {
-         $this->displayError("is_res",$input["reservationsitems_id"],$target);
+         $this->displayError("is_res",$input["reservationitems_id"],$target);
          return false;
       }
 
@@ -204,8 +204,8 @@ class ReservationResa extends CommonDBTM {
    function is_reserved() {
       global $DB;
 
-      if (!isset($this->fields["reservationsitems_id"])
-          || empty($this->fields["reservationsitems_id"])) {
+      if (!isset($this->fields["reservationitems_id"])
+          || empty($this->fields["reservationitems_id"])) {
          return true;
       }
 
@@ -217,7 +217,7 @@ class ReservationResa extends CommonDBTM {
       $query = "SELECT *
                 FROM `".$this->table."`
                 WHERE $ID_where
-                         `reservationsitems_id` = '".$this->fields["reservationsitems_id"]."'
+                         `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
                      AND '".$this->fields["begin"]."' < `end`
                      AND '".$this->fields["end"]."' > `begin`";
       if ($result=$DB->query($query)) {
@@ -275,7 +275,7 @@ class ReservationResa extends CommonDBTM {
       $ci=new CommonItem();
       $name="";
       $tech="";
-      if ($ri->getFromDB($this->fields["reservationsitems_id"])) {
+      if ($ri->getFromDB($this->fields["reservationitems_id"])) {
          if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
             $name=$ci->getType()." ".$ci->getName();
             if ($ci->getField('users_id_tech')) {
@@ -341,7 +341,7 @@ class ReservationResa extends CommonDBTM {
          return false;
       }
       $item=new ReservationItem();
-      if (!$item->getFromDB($this->fields["reservationsitems_id"])) {
+      if (!$item->getFromDB($this->fields["reservationitems_id"])) {
          return false;
       }
       $ci=new CommonItem();
