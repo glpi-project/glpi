@@ -58,7 +58,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 	switch ($_GET["item_type"]){
 		case KNOWBASE_TYPE :
-			showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["knowbaseitemscategories_id"],$_GET["is_faq"]);
+			showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["knowbaseitemcategories_id"],$_GET["is_faq"]);
 			break;
 		case TRACKING_TYPE :
          showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],

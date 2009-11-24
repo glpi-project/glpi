@@ -434,7 +434,7 @@ function &getSearchOptions($itemtype) {
       // Pseudo type first
       if ($itemtype==RESERVATION_TYPE) {
 
-         $search[RESERVATION_TYPE][4]['table']     = 'glpi_reservationsitems';
+         $search[RESERVATION_TYPE][4]['table']     = 'glpi_reservationitems';
          $search[RESERVATION_TYPE][4]['field']     = 'comment';
          $search[RESERVATION_TYPE][4]['linkfield'] = 'comment';
          $search[RESERVATION_TYPE][4]['name']      = $LANG['common'][25];

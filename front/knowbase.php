@@ -53,17 +53,17 @@ if (!isset($_GET["start"])) {
 if (!isset($_GET["contains"])) {
    $_GET["contains"] = "";
 }
-if (!isset($_GET["knowbaseitemscategories_id"])) {
-   $_GET["knowbaseitemscategories_id"] = "0";
+if (!isset($_GET["knowbaseitemcategories_id"])) {
+   $_GET["knowbaseitemcategories_id"] = "0";
 }
 
 $faq = !haveRight("knowbase","r");
 
-searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemscategories_id"],$faq);
-showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemscategories_id"],$faq );
+searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemcategories_id"],$faq);
+showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemcategories_id"],$faq );
 showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],
-               $_GET["knowbaseitemscategories_id"],$faq);
-if (!$_GET["knowbaseitemscategories_id"] && strlen($_GET["contains"])==0) {
+               $_GET["knowbaseitemcategories_id"],$faq);
+if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
    showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
 }
 

@@ -203,7 +203,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_MODEL_MONITOR :
-            $this->item_table="glpi_monitorsmodels";
+            $this->item_table="glpi_monitormodels";
             //Init cache system values
             $this->initCache("glpi_rulecachemonitormodels",array("name"=>"old_value",
                                                                    "manufacturer"=>"manufacturer"));
@@ -211,14 +211,14 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_TYPE_MONITOR :
-            $this->item_table="glpi_monitorstypes";
+            $this->item_table="glpi_monitortypes";
             //Init cache system values
             $this->initCache("glpi_rulecachemonitortypes");
             $this->menu_option="type.monitor";
             break;
 
          case RULE_DICTIONNARY_MODEL_PRINTER :
-            $this->item_table="glpi_printersmodels";
+            $this->item_table="glpi_printermodels";
             //Init cache system values
             $this->initCache("glpi_rulecacheprintermodels",array("name"=>"old_value",
                                                                    "manufacturer"=>"manufacturer"));
@@ -226,39 +226,39 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_TYPE_PRINTER :
-            $this->item_table="glpi_printerstypes";
+            $this->item_table="glpi_printertypes";
             $this->initCache("glpi_rulecacheprintertypes");
             $this->menu_option="type.printer";
             break;
 
          case RULE_DICTIONNARY_MODEL_PHONE :
-            $this->item_table="glpi_phonesmodels";
+            $this->item_table="glpi_phonemodels";
             $this->initCache("glpi_rulecachephonemodels",array("name"=>"old_value",
                                                                  "manufacturer"=>"manufacturer"));
             $this->menu_option="model.phone";
             break;
 
          case RULE_DICTIONNARY_TYPE_PHONE :
-            $this->item_table="glpi_phonestypes";
+            $this->item_table="glpi_phonetypes";
             $this->initCache("glpi_rulecachephonetypes");
             $this->menu_option="type.phone";
             break;
 
          case RULE_DICTIONNARY_MODEL_PERIPHERAL :
-            $this->item_table="glpi_peripheralsmodels";
+            $this->item_table="glpi_peripheralmodels";
             $this->initCache("glpi_rulecacheperipheralmodels",array("name"=>"old_value",
                                                                       "manufacturer"=>"manufacturer"));
             $this->menu_option="model.peripheral";
             break;
 
          case RULE_DICTIONNARY_TYPE_PERIPHERAL :
-            $this->item_table="glpi_peripheralstypes";
+            $this->item_table="glpi_peripheraltypes";
             $this->initCache("glpi_rulecacheperipheraltypes");
             $this->menu_option="type.peripheral";
             break;
 
          case RULE_DICTIONNARY_MODEL_NETWORKING :
-            $this->item_table="glpi_networkequipmentsmodels";
+            $this->item_table="glpi_networkequipmentmodels";
             $this->initCache("glpi_rulecachenetworkequipmentmodels",
                              array("name"=>"old_value",
                                    "manufacturer"=>"manufacturer"));
@@ -266,7 +266,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_TYPE_NETWORKING :
-            $this->item_table="glpi_networkequipmentstypess";
+            $this->item_table="glpi_networkequipmenttypess";
             $this->initCache("glpi_rulecachenetworkequipmenttypes");
             $this->menu_option="type.networking";
             break;
@@ -278,14 +278,14 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             break;
 
          case RULE_DICTIONNARY_OS_SP :
-            $this->item_table="glpi_operatingsystemsservicepacks";
-            $this->initCache("glpi_rulecacheoperatingsystemsservicepacks");
+            $this->item_table="glpi_operatingsystemservicepacks";
+            $this->initCache("glpi_rulecacheoperatingsystemservicepacks");
             $this->menu_option="os_sp";
             break;
 
          case RULE_DICTIONNARY_OS_VERSION :
-            $this->item_table="glpi_operatingsystemsversions";
-            $this->initCache("glpi_rulecacheoperatingsystemsversions");
+            $this->item_table="glpi_operatingsystemversions";
+            $this->initCache("glpi_rulecacheoperatingsystemversions");
             $this->menu_option="os_version";
             break;
       }
@@ -531,7 +531,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
             if ($this->sub_type==RULE_DICTIONNARY_MODEL_PRINTER) {
                $sql = "SELECT *
                        FROM `glpi_cartridges_printermodels`
-                       WHERE `printersmodels_id` = '$ID'";
+                       WHERE `printermodels_id` = '$ID'";
                if ($result=$DB->query($sql)) {
                   if ($DB->numrows($result)) {
                      // Get compatible cartridge type
@@ -543,7 +543,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
                      if ($deletecartmodel) {
                         $sql = "DELETE
                                 FROM `glpi_cartridges_printermodels`
-                                WHERE `printersmodels_id` = 'id'";
+                                WHERE `printermodels_id` = 'id'";
                         $DB->query($sql);
                      }
                      // Add new assoc

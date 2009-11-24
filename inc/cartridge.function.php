@@ -276,12 +276,12 @@ function showCompatiblePrinters($instID) {
 
    if ($instID > 0) {
       $query = "SELECT `glpi_cartridges_printermodels`.`id`,
-                       `glpi_printersmodels`.`name` as `type`,
-                       `glpi_printersmodels`.`id` as `pmid`
-                FROM `glpi_cartridges_printermodels`, `glpi_printersmodels`
-                WHERE `glpi_cartridges_printermodels`.`printersmodels_id` = `glpi_printersmodels`.`id`
+                       `glpi_printermodels`.`name` as `type`,
+                       `glpi_printermodels`.`id` as `pmid`
+                FROM `glpi_cartridges_printermodels`, `glpi_printermodels`
+                WHERE `glpi_cartridges_printermodels`.`printermodels_id` = `glpi_printermodels`.`id`
                       AND `glpi_cartridges_printermodels`.`cartridgeitems_id` = '$instID'
-                ORDER BY `glpi_printersmodels`.`name`";
+                ORDER BY `glpi_printermodels`.`name`";
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -309,7 +309,7 @@ function showCompatiblePrinters($instID) {
       if (haveRight("cartridge","w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-         dropdown("glpi_printersmodels","printersmodels_id",1,-1,$used);
+         dropdown("glpi_printermodels","printermodels_id",1,-1,$used);
          echo "</div></td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\"
                 class='submit'>";
@@ -647,8 +647,8 @@ function dropdownCompatibleCartridges($pID) {
                             AND `glpi_cartridges`.`date_use` IS NULL)
              LEFT JOIN `glpi_locations`
                        ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
-             WHERE `glpi_cartridges_printermodels`.`printersmodels_id` =
-                     '".$p->fields["printersmodels_id"]."'
+             WHERE `glpi_cartridges_printermodels`.`printermodels_id` =
+                     '".$p->fields["printermodels_id"]."'
                    AND `glpi_cartridgeitems`.`entities_id` ='".$p->fields["entities_id"]."'
              GROUP BY tID
              ORDER BY `name`, `ref`";

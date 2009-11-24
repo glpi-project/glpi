@@ -83,8 +83,8 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_filesystems" => array("glpi_computerdisks"=>"filesystems_id"),
 
-                "glpi_networkequipmentsfirmwares" => array("glpi_networkequipments"
-                                                               =>"networkequipmentsfirmwares_id"),
+                "glpi_networkequipmentfirmwares" => array("glpi_networkequipments"
+                                                               =>"networkequipmentfirmwares_id"),
 
                 "glpi_networkinterfaces" => array("glpi_networkports"=>"networkinterfaces_id"),
 
@@ -93,10 +93,10 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                            "glpi_devicegraphiccards"=>"interfacetypes_id",
                                            "glpi_devicecontrols"=>"interfacetypes_id"),
 
-                "glpi_knowbaseitemscategories" => array("glpi_knowbaseitemscategories"
-                                                            =>"knowbaseitemscategories_id",
+                "glpi_knowbaseitemcategories" => array("glpi_knowbaseitemcategories"
+                                                            =>"knowbaseitemcategories_id",
                                                         "glpi_knowbaseitems"
-                                                            =>"knowbaseitemscategories_id"),
+                                                            =>"knowbaseitemcategories_id"),
 
                 "glpi_softwarelicensetypes" => array("glpi_softwareslicenses"
                                                          =>"softwarelicensetypes_id"),
@@ -138,17 +138,17 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_computermodels" => array("glpi_computers"=>"computermodels_id"),
 
-                "glpi_monitorsmodels" => array("glpi_monitors"=>"monitorsmodels_id"),
+                "glpi_monitormodels" => array("glpi_monitors"=>"monitormodels_id"),
 
-                "glpi_networkequipmentsmodels" => array("glpi_networkequipments"
-                                                            =>"networkequipmentsmodels_id"),
+                "glpi_networkequipmentmodels" => array("glpi_networkequipments"
+                                                            =>"networkequipmentmodels_id"),
 
-                "glpi_peripheralsmodels" => array("glpi_peripherals"=>"peripheralsmodels_id"),
+                "glpi_peripheralmodels" => array("glpi_peripherals"=>"peripheralmodels_id"),
 
-                "glpi_phonesmodels" => array("glpi_phones"=>"phonesmodels_id"),
+                "glpi_phonemodels" => array("glpi_phones"=>"phonemodels_id"),
 
-                "glpi_printersmodels" => array("glpi_printers"=>"printersmodels",
-                                               "glpi_cartridges_printermodels"=>"printersmodels_id"),
+                "glpi_printermodels" => array("glpi_printers"=>"printermodels",
+                                               "glpi_cartridges_printermodels"=>"printermodels_id"),
 
                 "glpi_netpoints" => array("glpi_networkports"=>"netpoints_id"),
 
@@ -159,13 +159,13 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                 "glpi_operatingsystems" => array("glpi_computers"=>"operatingsystems_id",
                                                  "glpi_softwares"=>"operatingsystems_id"),
 
-                "glpi_operatingsystemsservicepacks" => array("glpi_computers"
-                                                               =>"operatingsystemsservicepacks_id"),
+                "glpi_operatingsystemservicepacks" => array("glpi_computers"
+                                                               =>"operatingsystemservicepacks_id"),
 
-                "glpi_operatingsystemsversions" => array("glpi_computers"
-                                                            =>"operatingsystemsversions_id"),
+                "glpi_operatingsystemversions" => array("glpi_computers"
+                                                            =>"operatingsystemversions_id"),
 
-                "glpi_phonespowersupplies" => array("glpi_phones"=>"phonespowersupplies_id"),
+                "glpi_phonepowersupplies" => array("glpi_phones"=>"phonepowersupplies_id"),
 
                 "glpi_devicememorytypes" => array("glpi_devicememories"=>"devicememorytypes_id"),
 
@@ -253,7 +253,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                 "glpi_profiles" => array("glpi_users"=>"profiles_id",
                                          "glpi_profiles_users"=>"profiles_id"),
 
-                "glpi_reservationsitems" => array("glpi_reservations"=>"reservationsitems_id"),
+                "glpi_reservationitems" => array("glpi_reservations"=>"reservationitems_id"),
 
                 "glpi_rules" => array("glpi_ruleactions"=>"rules_id",
                                       "glpi_rulecriterias"=>"rules_id",
@@ -272,8 +272,8 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                       "glpi_rulecachenetworkequipmenttypes"=>"rules_id",
                                       "glpi_rulescachesoftwares"=>"rules_id",
                                       "glpi_rulecacheoperatingsystems"=>"rules_id",
-                                      "glpi_rulecacheoperatingsystemsservicepacks"=>"rules_id",
-                                      "glpi_rulecacheoperatingsystemsversions"=>"rules_id"),
+                                      "glpi_rulecacheoperatingsystemservicepacks"=>"rules_id",
+                                      "glpi_rulecacheoperatingsystemversions"=>"rules_id"),
 
                 "glpi_softwares" => array("glpi_softwareslicenses"=>"softwares_id",
                                           "glpi_softwaresversions"=>"softwares_id",
@@ -290,16 +290,16 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_computertypes"=> array("glpi_computers"=>"computertypes_id"),
 
-                "glpi_monitorstypes"=> array("glpi_monitors"=>"monitorstypes_id"),
+                "glpi_monitortypes"=> array("glpi_monitors"=>"monitortypes_id"),
 
-                "glpi_networkequipmentstypes"=> array("glpi_networkequipments"
-                                                         =>"networkequipmentstypes_id"),
+                "glpi_networkequipmenttypes"=> array("glpi_networkequipments"
+                                                         =>"networkequipmenttypes_id"),
 
-                "glpi_peripheralstypes"=> array("glpi_peripherals"=>"peripheralstypes_id"),
+                "glpi_peripheraltypes"=> array("glpi_peripherals"=>"peripheraltypes_id"),
 
-                "glpi_phonestypes"=> array("glpi_phones"=>"phonestypes_id"),
+                "glpi_phonetypes"=> array("glpi_phones"=>"phonetypes_id"),
 
-                "glpi_printerstypes"=> array("glpi_printers"=>"printerstypes_id"),
+                "glpi_printertypes"=> array("glpi_printers"=>"printertypes_id"),
 
                 "glpi_users"=> array("glpi_bookmarks"=>"users_id",
                                      "glpi_cartridgeitems"=>"users_id_tech",

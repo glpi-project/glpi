@@ -2157,7 +2157,7 @@ class Transfer extends CommonDBTM {
                $cartype = new CartridgeType();
                while ($data = $DB->fetch_array($result)) {
                   $data = addslashes_deep($data);
-                  $cartype->addCompatibleType($newID,$data["printersmodels_id"]);
+                  $cartype->addCompatibleType($newID,$data["printermodels_id"]);
                }
             }
          }

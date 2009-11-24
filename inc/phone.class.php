@@ -250,7 +250,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonestypes", "phonestypes_id", $this->fields["phonestypes_id"]);
+      dropdownValue("glpi_phonetypes", "phonetypes_id", $this->fields["phonetypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -272,7 +272,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonesmodels", "phonesmodels_id", $this->fields["phonesmodels_id"]);
+      dropdownValue("glpi_phonemodels", "phonemodels_id", $this->fields["phonemodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -325,8 +325,8 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonespowersupplies","phonespowersupplies_id",
-                    $this->fields["phonespowersupplies_id"]);
+      dropdownValue("glpi_phonepowersupplies","phonepowersupplies_id",
+                    $this->fields["phonepowersupplies_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -408,14 +408,14 @@ class Phone extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_phonestypes';
+      $tab[4]['table']     = 'glpi_phonetypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'phonestypes_id';
+      $tab[4]['linkfield'] = 'phonetypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_phonesmodels';
+      $tab[40]['table']     = 'glpi_phonemodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'phonesmodels_id';
+      $tab[40]['linkfield'] = 'phonemodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';
@@ -485,9 +485,9 @@ class Phone extends CommonDBTM {
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[42]['table']     = 'glpi_phonespowersupplies';
+      $tab[42]['table']     = 'glpi_phonepowersupplies';
       $tab[42]['field']     = 'name';
-      $tab[42]['linkfield'] = 'phonespowersupplies_id';
+      $tab[42]['linkfield'] = 'phonepowersupplies_id';
       $tab[42]['name']      = $LANG['phones'][36];
 
       $tab[43]['table']     = 'glpi_phones';

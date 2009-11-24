@@ -228,7 +228,7 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_monitorstypes", "monitorstypes_id", $this->fields["monitorstypes_id"]);
+      dropdownValue("glpi_monitortypes", "monitortypes_id", $this->fields["monitortypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -250,7 +250,7 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_monitorsmodels", "monitorsmodels_id", $this->fields["monitorsmodels_id"]);
+      dropdownValue("glpi_monitormodels", "monitormodels_id", $this->fields["monitormodels_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -382,14 +382,14 @@ class Monitor extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[4]['table']     = 'glpi_monitorstypes';
+      $tab[4]['table']     = 'glpi_monitortypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'monitorstypes_id';
+      $tab[4]['linkfield'] = 'monitortypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_monitorsmodels';
+      $tab[40]['table']     = 'glpi_monitormodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'monitorsmodels_id';
+      $tab[40]['linkfield'] = 'monitormodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';

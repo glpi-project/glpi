@@ -331,7 +331,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['force_actions'] = array
 //Dictionnary Model Monitor
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['name']  = $LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['table'] = 'glpi_monitorsmodels';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['table'] = 'glpi_monitormodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['name']  = $LANG['common'][5];
@@ -345,7 +345,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['force_actions'] = array(
 //Dictionnary Model Printer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']  = $LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table'] = 'glpi_printersmodels';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table'] = 'glpi_printermodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['name']  = $LANG['common'][5];
@@ -360,7 +360,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['force_actions'] = array(
 //Dictionnary Model Peripheral
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['name']  = $LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['table'] = 'glpi_peripheralsmodels';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['table'] = 'glpi_peripheralmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['name']  = $LANG['common'][5];
@@ -374,7 +374,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['force_actions'] = arr
 //Dictionnary Model Networking
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['name']  = $LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['table'] = 'glpi_networkequipmentsmodels';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['table'] = 'glpi_networkequipmentmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['name']  = $LANG['common'][5];
@@ -398,7 +398,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['force_actions'] = array(
 //Dictionnary Type Monitor
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['name']  = $LANG['common'][17];
-$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['table'] = 'glpi_monitorstypes';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['table'] = 'glpi_monitortypes';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['name']          = $LANG['common'][17];
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['force_actions'] = array('assign',
@@ -408,7 +408,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['force_actions'] = array('
 //Dictionnary Type Printer
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['name']  = $LANG['common'][17];
-$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['table'] = 'glpi_printerstypes';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['table'] = 'glpi_printertypes';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['name']          = $LANG['common'][17];
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['force_actions'] = array('assign',
@@ -418,7 +418,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['force_actions'] = array('
 //Dictionnary Type Peripheral
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['name']  = $LANG['common'][17];
-$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['table'] = 'glpi_peripheralstypes';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['table'] = 'glpi_peripheraltypes';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['name']          = $LANG['common'][17];
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['force_actions'] = array('assign',
@@ -428,7 +428,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['force_actions'] = arra
 //Dictionnary Type Networking
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['name']  = $LANG['common'][17];
-$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['table'] = 'glpi_networkequipmentstypes';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['table'] = 'glpi_networkequipmenttypes';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['name']          = $LANG['common'][17];
 $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['force_actions'] = array('assign',
@@ -448,7 +448,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['force_actions'] = array('assign',
 //Dictionnary OS SP
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['name']  = $LANG['computers'][53];
-$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['table'] = 'glpi_operatingsystemsservicepacks';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['table'] = 'glpi_operatingsystemservicepacks';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['name']          = $LANG['computers'][53];
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['force_actions'] = array('assign',
@@ -458,7 +458,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['force_actions'] = array('assign'
 //Dictionnary OS Version
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['field'] = 'name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['name']  = $LANG['rulesengine'][78];
-$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['table'] = 'glpi_operatingsystemsversions';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['table'] = 'glpi_operatingsystemversions';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['name']          = $LANG['rulesengine'][78];
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['force_actions'] = array('assign',

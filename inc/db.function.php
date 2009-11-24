@@ -173,7 +173,7 @@ function getTreeLeafValueName($table,$ID,$withcomment=false) {
    $comment="";
    if ($ID==0 && $table=="glpi_entities") {
       $name = $LANG['entity'][2];
-   } else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
+   } else if ($ID==0 && $table=="glpi_knowbaseitemcategories") {
       $name = $LANG['knowbase'][12];
    } else {
       $query = "SELECT *
@@ -210,7 +210,7 @@ function getTreeValueCompleteName($table,$ID,$withcomment=false) {
 
    if ($ID==0 && $table=="glpi_entities") {
       $name = $LANG['entity'][2];
-   } else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
+   } else if ($ID==0 && $table=="glpi_knowbaseitemcategories") {
       $name = $LANG['knowbase'][12];
    } else {
       $query = "SELECT *
