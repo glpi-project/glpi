@@ -594,7 +594,7 @@ function getAuthMethodName($authtype, $auths_id, $link=0, $name='') {
          $out = $LANG['login'][3];
          if ($link && haveRight("config", "w")) {
             return $out. "&nbsp " . $LANG['common'][52] . " <a href=\"" .
-                   $CFG_GLPI["root_doc"] . "/front/auth.imap.php?next=extauth_mail&amp;id=" .
+                   $CFG_GLPI["root_doc"] . "/front/authmail.form.php" .
                    $auths_id . "\">" . $name . "</a>";
          }
          return  $out. "&nbsp " . $LANG['common'][52] . " " . $name;
