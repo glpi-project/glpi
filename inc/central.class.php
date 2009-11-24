@@ -32,6 +32,8 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
+// TODO this class should probably extends a minimal class providing interface tools
+// like show/defineTabs :  CommonGLPI => CommonDBTM => Computer
 class Central extends CommonDBTM {
 
    public $type = 'central';
@@ -39,8 +41,8 @@ class Central extends CommonDBTM {
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
-      $tabs['my'] = $LANG['central'][12];
-      $tabs['group'] = $LANG['central'][14];
+      $tabs['my']     = $LANG['central'][12];
+      $tabs['group']  = $LANG['central'][14];
       $tabs['global'] = $LANG['central'][13];
 
       return $tabs;
