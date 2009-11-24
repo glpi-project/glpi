@@ -48,7 +48,7 @@ if (isset($_POST["rubdoc"])) {
    $rand=$_POST['rand'];
    $use_ajax=false;
    if ($CFG_GLPI["use_ajax"]
-       && countElementsInTable('glpi_documents',"glpi_documents.documentscategories_id='".
+       && countElementsInTable('glpi_documents',"glpi_documents.documentcategories_id='".
                                $_POST["rubdoc"]."' ".
                                getEntitiesRestrictRequest("AND", "glpi_documents","",
                                                           $_POST["entity_restrict"],true)

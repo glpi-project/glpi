@@ -282,8 +282,8 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][3]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_documentscategories","documentscategories_id",
-                    $this->fields["documentscategories_id"]);
+      dropdownValue("glpi_documentcategories","documentcategories_id",
+                    $this->fields["documentcategories_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -355,7 +355,7 @@ class Document extends CommonDBTM {
       if (count($splitter)) {
 
          $query="SELECT *
-                 FROM `glpi_documentstypes`
+                 FROM `glpi_documenttypes`
                  WHERE `ext` LIKE '".$splitter[0]."'
                        AND `icon` <> ''";
 
@@ -566,9 +566,9 @@ class Document extends CommonDBTM {
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
 
-      $tab[7]['table']     = 'glpi_documentscategories';
+      $tab[7]['table']     = 'glpi_documentcategories';
       $tab[7]['field']     = 'name';
-      $tab[7]['linkfield'] = 'documentscategories_id';
+      $tab[7]['linkfield'] = 'documentcategories_id';
       $tab[7]['name']      = $LANG['document'][3];
 
       $tab[80]['table']     = 'glpi_entities';
@@ -976,7 +976,7 @@ class Document extends CommonDBTM {
       $ext=end($splitter);
 
       $query="SELECT *
-              FROM `glpi_documentstypes`
+              FROM `glpi_documenttypes`
               WHERE `ext` LIKE '$ext'
                     AND `is_uploadable`='1'";
       if ($result = $DB->query($query)) {
@@ -1096,8 +1096,8 @@ class Document extends CommonDBTM {
                echo "&nbsp;";
             }
             echo "</td>";
-            echo "<td class='center'>".getDropdownName("glpi_documentscategories",
-                                                       $data["documentscategories_id"])."</td>";
+            echo "<td class='center'>".getDropdownName("glpi_documentcategories",
+                                                       $data["documentcategories_id"])."</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
 
             if ($withtemplate<2) {

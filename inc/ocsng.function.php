@@ -2021,8 +2021,8 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
                      if (!in_array(RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"],
                                    $import_device)) {
                         $ram["frequence"] = $line2["SPEED"];
-                        $ram["devicesmemoriestypes_id"]
-                              = externalImportDropdown("glpi_devicesmemoriestypes", $line2["TYPE"]);
+                        $ram["devicememorytypes_id"]
+                              = externalImportDropdown("glpi_devicememorytypes", $line2["TYPE"]);
                         $ram_id = ocsAddDevice(RAM_DEVICE, $ram);
                         if ($ram_id) {
                            $devID = compdevice_add($computers_id, RAM_DEVICE, $ram_id,
@@ -2516,7 +2516,7 @@ function ocsAddDevice($devicetype, $dev_array) {
 
    switch ($table) {
       //For network interfaces, check designation AND speed
-      case "glpi_devicesnetworkcards" :
+      case "glpi_devicenetworkcards" :
          if (isset($dev_array["SPEED"])) {
             $query.=" AND `bandwidth` = '".$dev_array["SPEED"]."'";
          }

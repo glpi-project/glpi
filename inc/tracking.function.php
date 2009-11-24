@@ -945,15 +945,15 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
       $option["glpi_operatingsystemsservicepacks.name"]  = $LANG['computers'][53];
       $option["glpi_autoupdatesystems.name"]             = $LANG['computers'][51];
       $option["glpi_manufacturers.name"]                 = $LANG['common'][5];
-      $option["glpi_devicesprocessors.designation"]      = $LANG['computers'][21];
+      $option["glpi_deviceprocessors.designation"]      = $LANG['computers'][21];
       $option["comp.serial"]                             = $LANG['common'][19];
       $option["comp.otherserial"]                        = $LANG['common'][20];
-      $option["glpi_devicesmemories.designation"]        = $LANG['computers'][23];
-      $option["glpi_devicesnetworkcards.designation"]    = $LANG['setup'][9];
-      $option["glpi_devicessoundcards.designation"]      = $LANG['devices'][7];
-      $option["glpi_devicesgraphiccards.designation"]    = $LANG['devices'][2];
-      $option["glpi_devicesmotherboards.designation"]    = $LANG['devices'][5];
-      $option["glpi_devicesharddrives.designation"]      = $LANG['computers'][36];
+      $option["glpi_devicememories.designation"]        = $LANG['computers'][23];
+      $option["glpi_devicenetworkcards.designation"]    = $LANG['setup'][9];
+      $option["glpi_devicesoundcards.designation"]      = $LANG['devices'][7];
+      $option["glpi_devicegraphiccards.designation"]    = $LANG['devices'][2];
+      $option["glpi_devicemotherboards.designation"]    = $LANG['devices'][5];
+      $option["glpi_deviceharddrives.designation"]      = $LANG['computers'][36];
       $option["comp.comment"]                            = $LANG['common'][25];
       $option["comp.contact"]                            = $LANG['common'][18];
       $option["comp.contact_num"]                        = $LANG['common'][21];
@@ -1224,13 +1224,13 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
             }
          }
          // Add devices
-         $wherecomp .= " OR `glpi_devicesmotherboards`.`designation` $SEARCH
-                         OR `glpi_devicesprocessors`.`designation` $SEARCH
-                         OR `glpi_devicesgraphiccards`.`designation` $SEARCH
-                         OR `glpi_devicesharddrives`.`designation` $SEARCH
-                         OR `glpi_devicesnetworkcards`.`designation` $SEARCH
-                         OR `glpi_devicesmemories`.`designation` $SEARCH
-                         OR `glpi_devicessoundcards`.`designation` $SEARCH
+         $wherecomp .= " OR `glpi_devicemotherboards`.`designation` $SEARCH
+                         OR `glpi_deviceprocessors`.`designation` $SEARCH
+                         OR `glpi_devicegraphiccards`.`designation` $SEARCH
+                         OR `glpi_deviceharddrives`.`designation` $SEARCH
+                         OR `glpi_devicenetworkcards`.`designation` $SEARCH
+                         OR `glpi_devicememories`.`designation` $SEARCH
+                         OR `glpi_devicesoundcards`.`designation` $SEARCH
                          OR `glpi_networkports`.`ip` $SEARCH
                          OR `glpi_networkports`.`mac` $SEARCH
                          OR `glpi_netpoints`.`name` $SEARCH
@@ -1436,26 +1436,26 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                               FROM `glpi_computers` AS comp
                               LEFT JOIN `glpi_computers_devices` AS gcdev
                                     ON (comp.`id` = gcdev.`computers_id`)
-                              LEFT JOIN `glpi_devicesmotherboards`
-                                    ON (`glpi_devicesmotherboards`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_devicemotherboards`
+                                    ON (`glpi_devicemotherboards`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".MOBOARD_DEVICE."')
-                              LEFT JOIN `glpi_devicesprocessors`
-                                    ON (`glpi_devicesprocessors`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_deviceprocessors`
+                                    ON (`glpi_deviceprocessors`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".PROCESSOR_DEVICE."')
-                              LEFT JOIN `glpi_devicesgraphiccards`
-                                    ON (`glpi_devicesgraphiccards`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_devicegraphiccards`
+                                    ON (`glpi_devicegraphiccards`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".GFX_DEVICE."')
-                              LEFT JOIN `glpi_devicesharddrives`
-                                    ON (`glpi_devicesharddrives`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_deviceharddrives`
+                                    ON (`glpi_deviceharddrives`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".HDD_DEVICE."')
-                              LEFT JOIN `glpi_devicesnetworkcards`
-                                    ON (`glpi_devicesnetworkcards`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_devicenetworkcards`
+                                    ON (`glpi_devicenetworkcards`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".NETWORK_DEVICE."')
-                              LEFT JOIN `glpi_devicesmemories`
-                                    ON (`glpi_devicesmemories`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_devicememories`
+                                    ON (`glpi_devicememories`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".RAM_DEVICE."')
-                              LEFT JOIN `glpi_devicessoundcards`
-                                    ON (`glpi_devicessoundcards`.`id` = gcdev.`devices_id`
+                              LEFT JOIN `glpi_devicesoundcards`
+                                    ON (`glpi_devicesoundcards`.`id` = gcdev.`devices_id`
                                         AND gcdev.`devicetype` = '".SND_DEVICE."')
                               LEFT JOIN `glpi_networkports`
                                     ON (comp.`id` = `glpi_networkports`.`items_id`

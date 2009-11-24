@@ -171,7 +171,7 @@ class Device extends CommonDBTM {
 
       // table particuliere
       switch($this->table) {
-         case "glpi_devicesmotherboards" :
+         case "glpi_devicemotherboards" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_moboard'][0]."&nbsp;:</td>";
             echo "<td>";
@@ -182,7 +182,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicesprocessors" :
+         case "glpi_deviceprocessors" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_ram'][1]."&nbsp;:</td><td>";
             autocompletionTextField("frequence",$this->table,"frequence",
@@ -192,12 +192,12 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicesmemories" :
+         case "glpi_devicememories" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_devicesmemoriestypes","devicesmemoriestypes_id",
-                          $this->fields["devicesmemoriestypes_id"]);
+            dropdownValue("glpi_devicememorytypes","devicememorytypes_id",
+                          $this->fields["devicememorytypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_ram'][1]."&nbsp;:</td><td>";
@@ -207,7 +207,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicesharddrives" :
+         case "glpi_deviceharddrives" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_hdd'][0]."&nbsp;:</td><td>";
             autocompletionTextField("rpm",$this->table,"rpm",$this->fields["rpm"],40);
@@ -219,11 +219,11 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_interfacestypes","interfacestypes_id",$this->fields["interfacestypes_id"]);
+            dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             break;
 
-         case "glpi_devicesnetworkcards" :
+         case "glpi_devicenetworkcards" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_iface'][0]."&nbsp;:</td><td>";
             autocompletionTextField("bandwidth",$this->table,"bandwidth",
@@ -233,7 +233,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicesdrives" :
+         case "glpi_devicedrives" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_drive'][0]."&nbsp;:</td>";
             echo "<td>";
@@ -242,7 +242,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_interfacestypes","interfacestypes_id",$this->fields["interfacestypes_id"]);
+            dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_drive'][1]."&nbsp;:</td><td>";
@@ -251,7 +251,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case  "glpi_devicescontrols" :
+         case  "glpi_devicecontrols" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_control'][0]."&nbsp;:</td>";
             echo "<td>";
@@ -260,12 +260,12 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_interfacestypes","interfacestypes_id",$this->fields["interfacestypes_id"]);
+            dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicesgraphiccards" :
+         case "glpi_devicegraphiccards" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_gfxcard'][0]."&nbsp;:</td><td>";
             autocompletionTextField("specif_default",$this->table,"specif_default",$this->fields["specif_default"],40);
@@ -273,12 +273,12 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_interfacestypes","interfacestypes_id",$this->fields["interfacestypes_id"]);
+            dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicessoundcards" :
+         case "glpi_devicesoundcards" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][17]."&nbsp;:</td><td>";
             autocompletionTextField("type",$this->table,"type",$this->fields["type"],40);
@@ -288,26 +288,26 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicespcis" :
+         case "glpi_devicepcis" :
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicescases" :
+         case "glpi_devicecases" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_case'][0]."&nbsp;:</td>";
             echo "<td>";
-            dropdownValue("glpi_devicescasestypes","devicescasestypes_id",
-                          $this->fields["devicescasestypes_id"]);
+            dropdownValue("glpi_devicecasetypes","devicecasetypes_id",
+                          $this->fields["devicecasetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
 
-         case "glpi_devicespowersupplies" :
+         case "glpi_devicepowersupplies" :
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_power'][0]."&nbsp;:</td><td>";
             autocompletionTextField("power",$this->table,"power",$this->fields["power"],40);

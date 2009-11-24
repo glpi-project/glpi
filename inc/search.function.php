@@ -1975,19 +1975,19 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
                      AS ".$NAME."_".$num.", ";
          break;
 
-      case "glpi_devicesharddrives.specif_default" :
+      case "glpi_deviceharddrives.specif_default" :
          return " SUM(`DEVICE_".HDD_DEVICE."`.`specificity`)
                   / COUNT(`DEVICE_".HDD_DEVICE."`.`id`)
                   * COUNT(DISTINCT `DEVICE_".HDD_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
          break;
 
-      case "glpi_devicesmemories.specif_default" :
+      case "glpi_devicememories.specif_default" :
          return " SUM(`DEVICE_".RAM_DEVICE."`.`specificity`)
                   / COUNT(`DEVICE_".RAM_DEVICE."`.`id`)
                   * COUNT(DISTINCT `DEVICE_".RAM_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
          break;
 
-      case "glpi_devicesprocessors.specif_default" :
+      case "glpi_deviceprocessors.specif_default" :
          return " SUM(`DEVICE_".PROCESSOR_DEVICE."`.`specificity`)
                   / COUNT(`DEVICE_".PROCESSOR_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
          break;
@@ -2656,7 +2656,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          }
          break;
 
-      case "glpi_documentstypes.icon" :
+      case "glpi_documenttypes.icon" :
          if (!empty($data[$NAME.$num])) {
             return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".
                      $data[$NAME.$num]."'>";
@@ -2670,9 +2670,9 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          }
          return "N/A";
 
-      case "glpi_devicesharddrives.specif_default" :
-      case "glpi_devicesmemories.specif_default" :
-      case "glpi_devicesprocessors.specif_default" :
+      case "glpi_deviceharddrives.specif_default" :
+      case "glpi_devicememories.specif_default" :
+      case "glpi_deviceprocessors.specif_default" :
          return $data[$NAME.$num];
 
       case "glpi_networkports.mac" :
@@ -3176,7 +3176,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
          return $out."
                 LEFT JOIN `$new_table` $AS ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
 
-      case "glpi_entitiesdatas" :
+      case "glpi_entitydatas" :
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
 
       case "glpi_ocslinks" :
@@ -3389,37 +3389,37 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                         ON (`$rt`.`id` = `DEVICE_".$devicetype."`.`computers_id`
                             AND `DEVICE_".$devicetype."`.`devicetype` = '$devicetype') ";
 
-      case "glpi_devicesprocessors" :
-      case "glpi_devicespowersupplies" :
-      case "glpi_devicesmemories" :
-      case "glpi_devicesnetworkcards" :
-      case "glpi_devicessoundcards" :
-      case "glpi_devicesgraphiccards" :
-      case "glpi_devicesmotherboards" :
-      case "glpi_devicesharddrives" :
+      case "glpi_deviceprocessors" :
+      case "glpi_devicepowersupplies" :
+      case "glpi_devicememories" :
+      case "glpi_devicenetworkcards" :
+      case "glpi_devicesoundcards" :
+      case "glpi_devicegraphiccards" :
+      case "glpi_devicemotherboards" :
+      case "glpi_deviceharddrives" :
          switch ($new_table) {
-            case "glpi_devicesprocessors" :
+            case "glpi_deviceprocessors" :
                $type = PROCESSOR_DEVICE;
                break;
-            case "glpi_devicespowersupplies" :
+            case "glpi_devicepowersupplies" :
                $type = POWER_DEVICE;
                break;
-            case "glpi_devicesmemories" :
+            case "glpi_devicememories" :
                $type = RAM_DEVICE;
                break;
-            case "glpi_devicesnetworkcards" :
+            case "glpi_devicenetworkcards" :
                $type = NETWORK_DEVICE;
                break;
-            case "glpi_devicessoundcards" :
+            case "glpi_devicesoundcards" :
                $type = SND_DEVICE;
                break;
-            case "glpi_devicesgraphiccards" :
+            case "glpi_devicegraphiccards" :
                $type = GFX_DEVICE;
                break;
-            case "glpi_devicesmotherboards" :
+            case "glpi_devicemotherboards" :
                $type = MOBOARD_DEVICE;
                break;
-            case "glpi_devicesharddrives" :
+            case "glpi_deviceharddrives" :
                $type = HDD_DEVICE;
                break;
          }

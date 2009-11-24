@@ -1316,7 +1316,7 @@ class Job extends CommonDBTM {
                $input2["name"]         = addslashes($LANG['tracking'][24]." $id");
                $input2["tickets_id"]   = $id;
                $input2["entities_id"]  = $this->fields["entities_id"];
-               $input2["documentscategories_id"]   = $CFG_GLPI["documentscategories_id_forticket"];
+               $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
                $input2["_only_if_upload_succeed"]  = 1;
                $input2["entities_id"]  = $this->fields["entities_id"];
                $docID = $doc->add($input2);
