@@ -975,112 +975,112 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
 /**
  * Try to authentify a user by checking all the directories
- * @param $identificat : identification object
+ * @param $auth : identification object
  * @param $login : user login
  * @param $password : user password
  * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_ldap_auth($identificat,$login,$password, $auths_id = 0) {
+function try_ldap_auth($auth,$login,$password, $auths_id = 0) {
 
    //If no specific source is given, test all ldap directories
    if ($auths_id <= 0) {
-      foreach  ($identificat->authtypes["ldap"] as $ldap_method) {
-         if (!$identificat->auth_succeded) {
-            $identificat = ldap_auth($identificat, $login,$password,$ldap_method);
+      foreach  ($auth->authtypes["ldap"] as $ldap_method) {
+         if (!$auth->auth_succeded) {
+            $auth = ldap_auth($auth, $login,$password,$ldap_method);
          } else {
             break;
          }
       }
    //Check if the ldap server indicated as the last good one still exists !
-   } else if(array_key_exists($auths_id,$identificat->authtypes["ldap"])) {
+   } else if(array_key_exists($auths_id,$auth->authtypes["ldap"])) {
       //A specific ldap directory is given, test it and only this one !
-      $identificat = ldap_auth($identificat, $login,$password,
-                               $identificat->authtypes["ldap"][$auths_id]);
+      $auth = ldap_auth($auth, $login,$password,
+                               $auth->authtypes["ldap"][$auths_id]);
    }
-   return $identificat;
+   return $auth;
 }
 
 /**
  * Authentify a user by checking a specific directory
- * @param $identificat : identification object
+ * @param $auth : identification object
  * @param $login : user login
  * @param $password : user password
  * @param $ldap_method : ldap_method array to use
  * @return identification object
 **/
-function ldap_auth($identificat,$login,$password, $ldap_method) {
+function ldap_auth($auth,$login,$password, $ldap_method) {
 
-   $user_dn = $identificat->connection_ldap($ldap_method["id"],$ldap_method["host"],
+   $user_dn = $auth->connection_ldap($ldap_method["id"],$ldap_method["host"],
                                             $ldap_method["port"], $ldap_method["basedn"],
                                             $ldap_method["rootdn"], $ldap_method["rootdn_password"],
                                             $ldap_method["login_field"],$login, $password,
                                             $ldap_method["condition"], $ldap_method["use_tls"],
                                             $ldap_method["deref_option"]);
    if ($user_dn) {
-      $identificat->auth_succeded = true;
-      $identificat->extauth = 1;
-      $identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
-      $identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login,
+      $auth->auth_succeded = true;
+      $auth->extauth = 1;
+      $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+      $auth->user->getFromLDAP($auth->ldap_connection,$ldap_method, $user_dn, $login,
                                       $password);
-      $identificat->auth_parameters = $ldap_method;
-      $identificat->user->fields["authtype"] = AUTH_LDAP;
-      $identificat->user->fields["auths_id"] = $ldap_method["id"];
+      $auth->auth_parameters = $ldap_method;
+      $auth->user->fields["authtype"] = AUTH_LDAP;
+      $auth->user->fields["auths_id"] = $ldap_method["id"];
    }
-   return $identificat;
+   return $auth;
 }
 
 /**
  * Try to authentify a user by checking all the mail server
- * @param $identificat : identification object
+ * @param $auth : identification object
  * @param $login : user login
  * @param $password : user password
  * @param $auths_id : auths_id already used for the user
  * @return identification object
 **/
-function try_mail_auth($identificat, $login,$password,$auths_id = 0) {
+function try_mail_auth($auth, $login,$password,$auths_id = 0) {
    if ($auths_id <= 0) {
-      foreach ($identificat->authtypes["mail"] as $mail_method) {
-         if (!$identificat->auth_succeded) {
-            $identificat = mail_auth($identificat, $login,$password,$mail_method);
+      foreach ($auth->authtypes["mail"] as $mail_method) {
+         if (!$auth->auth_succeded) {
+            $auth = mail_auth($auth, $login,$password,$mail_method);
          } else {
             break;
          }
       }
-   } else if(array_key_exists($auths_id,$identificat->authtypes["mail"])){
+   } else if(array_key_exists($auths_id,$auth->authtypes["mail"])){
       //Check if the mail server indicated as the last good one still exists !
-      $identificat = mail_auth($identificat, $login,$password,
-                               $identificat->authtypes["mail"][$auths_id]);
+      $auth = mail_auth($auth, $login,$password,
+                               $auth->authtypes["mail"][$auths_id]);
    }
-   return $identificat;
+   return $auth;
 }
 
 /**
  * Authentify a user by checking a specific mail server
- * @param $identificat : identification object
+ * @param $auth : identification object
  * @param $login : user login
  * @param $password : user password
  * @param $mail_method : mail_method array to use
  * @return identification object
 **/
-function mail_auth($identificat, $login,$password,$mail_method) {
+function mail_auth($auth, $login,$password,$mail_method) {
 
    if (isset($mail_method["connect_string"]) && !empty ($mail_method["connect_string"])) {
-      $identificat->auth_succeded = $identificat->connection_imap($mail_method["connect_string"],
+      $auth->auth_succeded = $auth->connection_imap($mail_method["connect_string"],
                                                                   decodeFromUtf8($login),
                                                                   decodeFromUtf8($password));
-      if ($identificat->auth_succeded) {
-         $identificat->extauth = 1;
-         $identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
-         $identificat->auth_parameters = $mail_method;
-         $identificat->user->getFromIMAP($mail_method, decodeFromUtf8($login));
+      if ($auth->auth_succeded) {
+         $auth->extauth = 1;
+         $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+         $auth->auth_parameters = $mail_method;
+         $auth->user->getFromIMAP($mail_method, decodeFromUtf8($login));
 
          //Update the authentication method for the current user
-         $identificat->user->fields["authtype"] = AUTH_MAIL;
-         $identificat->user->fields["auths_id"] = $mail_method["id"];
+         $auth->user->fields["authtype"] = AUTH_MAIL;
+         $auth->user->fields["auths_id"] = $mail_method["id"];
       }
    }
-   return $identificat;
+   return $auth;
 }
 
 /**
@@ -1091,8 +1091,8 @@ function mail_auth($identificat, $login,$password,$mail_method) {
  * @return authentification succeeded ?
 **/
 function test_auth_mail($connect_string,$login,$password) {
-   $identificat = new Identification();
-   return $identificat->connection_imap($connect_string, decodeFromUtf8($login), decodeFromUtf8($password));
+   $auth = new Auth();
+   return $auth->connection_imap($connect_string, decodeFromUtf8($login), decodeFromUtf8($password));
 }
 
 /**
@@ -1103,13 +1103,13 @@ function test_auth_mail($connect_string,$login,$password) {
 function import_user_from_ldap_servers($login) {
    global $LANG;
 
-   $identificat = new Identification;
-   $identificat->user_present = $identificat->userExists($login);
+   $auth = new Auth;
+   $auth->user_present = $auth->userExists($login);
 
    //If the user does not exists
-   if ($identificat->user_present == 0) {
-      $identificat->getAuthMethods();
-      $ldap_methods = $identificat->authtypes["ldap"];
+   if ($auth->user_present == 0) {
+      $auth->getAuthMethods();
+      $ldap_methods = $auth->authtypes["ldap"];
       $userid = -1;
 
       foreach ($ldap_methods as $ldap_method) {
