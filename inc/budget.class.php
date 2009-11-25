@@ -221,15 +221,15 @@ class Budget extends CommonDBTM{
    /**
    * Print the HTML array of Items on a budget
    *
-   *@param $budgets_id array : Budget identifier.
-   *
    *@return Nothing (display)
    *
    **/
-   function showDevices($budgets_id) {
+   function showDevices() {
       global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
 
-      if (!haveRight("budget","r")) {
+      $budgets_id = $this->fields['id'];
+
+      if (!$this->can($budgets_id,'r')) {
          return false;
       }
 
@@ -314,15 +314,15 @@ class Budget extends CommonDBTM{
    /**
    * Print the HTML array of value consumed for a budget
    *
-   *@param $budgets_id array : Budget identifier.
-   *
    *@return Nothing (display)
    *
    **/
-   function showValuesByEntity($budgets_id) {
+   function showValuesByEntity() {
       global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-      if (!haveRight("budget","r")) {
+      $budgets_id = $this->fields['id'];
+
+      if (!$this->can($budgets_id,'r')) {
          return false;
       }
 
