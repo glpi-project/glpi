@@ -438,7 +438,7 @@ class Plugin extends CommonDBTM {
 
                // Initialize profile for the plugin
                if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])
-                   && function_exists($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
+                   && is_callable($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
 
                   call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
                }
