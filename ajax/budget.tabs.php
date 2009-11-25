@@ -53,14 +53,14 @@ $budget = new Budget();
 if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $budget->showDevices($_POST["id"]);
+         $budget->showDevices();
          Document::showAssociated($budget);
          showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
          displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
-         $budget->showDevices($_POST["id"]);
+         $budget->showDevices();
          break;
 
       case 5 :
@@ -81,7 +81,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
 
       default :
          if (!displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            $budget->showValuesByEntity($_POST["id"]);
+            $budget->showValuesByEntity();
          }
          break;
    }
