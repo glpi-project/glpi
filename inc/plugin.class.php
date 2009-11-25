@@ -431,7 +431,7 @@ class Plugin extends CommonDBTM {
 
                // Initialize session for the plugin
                if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
-                   && function_exists($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
+                   && is_callable($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
 
                   call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);
                }
