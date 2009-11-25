@@ -1,0 +1,102 @@
+<?php
+/*
+ * @version $Id: document.class.php 9112 2009-10-13 20:17:16Z moyo $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
+
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ */
+
+// ----------------------------------------------------------------------
+// Original Author of file: Remi Collet
+// Purpose of file:
+// ----------------------------------------------------------------------
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
+/// Netpoint class
+class Netpoint extends CommonDropdown {
+
+   // From CommonDBTM
+   public $table = 'glpi_netpoints';
+   public $type = NETPOINT_TYPE;
+   public $entity_assign = true;
+
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'locations_id',
+                         'label' => $LANG['common'][15],
+                         'type'  => 'dropdownValue',
+                         'list'  => true));
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][73];
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[3]['table']         = 'glpi_locations';
+      $tab[3]['field']         = 'completename';
+      $tab[3]['linkfield']     = 'locations_id';
+      $tab[3]['name']          = $LANG['common'][15];
+      $tab[3]['datatype']      = 'itemlink';
+      $tab[3]['itemlink_type'] = LOCATION_TYPE;
+
+      return $tab;
+   }
+
+   /**
+    * Handled Multi add item
+    *
+    * @param $input array of values
+    *
+    */
+   function addMulti ($input) {
+      global $LANG;
+
+      $this->check(-1,'w',$input);
+      for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
+         $input["name"]=$input["_before"].$i.$input["_after"];
+         $this->add($input);
+      }
+      logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+      refreshMainWindow();
+   }
+}
+
+?>
