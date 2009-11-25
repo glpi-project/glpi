@@ -47,11 +47,6 @@ abstract class CommonDropdown extends CommonDBTM {
       return array();
    }
 
-   /**
-    * Get the localized display name of the type
-    */
-   abstract static function getTypeName();
-
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
