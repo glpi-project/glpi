@@ -724,6 +724,12 @@ function haveRecursiveAccessToEntity($ID) {
  * @return Boolean : read access to entity
 **/
 function haveAccessToEntity($ID, $is_recursive=0) {
+
+   // Quick response when passing wrong ID : default value of getEntityID is -1
+   if ($ID<0){
+      return false;
+   }
+
    if (!isset ($_SESSION['glpiactiveentities'])) {
       return false;
    }
