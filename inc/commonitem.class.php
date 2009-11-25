@@ -273,223 +273,179 @@ class CommonItem {
                break;
 
             case TICKETCATEGORY_TYPE:
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new TicketsCategory();
+               $this->obj = new TicketCategory();
                break;
 
             case TASKCATEGORY_TYPE:
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new TasksCategory();
+               $this->obj = new TaskCategory();
                break;
 
             case LOCATION_TYPE:
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Location();
                break;
 
             case NETPOINT_TYPE:
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Netpoint();
                break;
 
             case ITEMSTATE_TYPE:
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new State();
                break;
 
             case REQUESTTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new RequestType();
                break;
 
             case MANUFACTURER_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Manufacturer();
                break;
 
             case COMPUTERTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new ComputersType();
+               $this->obj = new ComputerType();
                break;
 
             case COMPUTERMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new ComputersModel();
+               $this->obj = new ComputerModel();
                break;
 
             case NETWORKEQUIPMENTTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new NetworkEquipmentsType();
+               $this->obj = new NetworkEquipmentType();
                break;
 
             case NETWORKEQUIPMENTMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new NetworkEquipementsModel();
+               $this->obj = new NetworkEquipementModel();
                break;
 
             case PRINTERTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PrintersType();
+               $this->obj = new PrinterType();
                break;
 
             case PRINTERMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PrintersModel();
+               $this->obj = new PrinterModel();
                break;
 
             case MONITORTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new MonitorsType();
+               $this->obj = new MonitorType();
                break;
 
             case MONITORMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new MonitorsModel();
+               $this->obj = new MonitorModel();
                break;
 
             case PERIPHERALTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PeripheralsType();
+               $this->obj = new PeripheralType();
                break;
 
             case PERIPHERALMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PeripheralsModel();
+               $this->obj = new PeripheralModel();
                break;
 
             case PHONETYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PhonesType();
+               $this->obj = new PhoneType();
                break;
 
             case PHONEMODEL_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new PhonesModel();
+               $this->obj = new PhoneModel();
                break;
 
             case SOFTWARELICENSETYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new SoftwareLicenseType();
                break;
 
             case CARTRIDGEITEMTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new CartridgeItemType();
                break;
 
             case CONSUMABLEITEMTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new ConsumableItemType();
                break;
 
             case CONTRACTTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new ContractsType();
+               $this->obj = new ContractType();
                break;
 
             case CONTACTTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new ContactsType();
+               $this->obj = new ContactType();
                break;
 
             case DEVICEMEMORYTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new DeviceMemoryType();
                break;
 
             case SUPPLIERTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new SupplierType();
                break;
 
             case INTERFACESTYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new InterfacesType();
+               $this->obj = new InterfaceType();
                break;
 
             case DEVICECASETYPE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new DeviceCaseType();
                break;
 
             case PHONEPOWERSUPPLY_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new PhonePowerSupply();
                break;
 
             case FILESYSTEM_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Filesystem();
                break;
 
             case DOCUMENTCATEGORY_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new DocumentCategory();
                break;
 
             case KNOWBASEITEMCATEGORY_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new KnowbaseItemCategory();
                break;
 
             case OPERATINGSYSTEM_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new OperatingSystem();
                break;
 
             case OPERATINGSYSTEMVERSION_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new OperatingSystemVersion();
                break;
 
             case OPERATINGSYSTEMSERVICEPACK_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new OperatingSystemServicePack();
                break;
 
             case AUTOUPDATESYSTEM_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new AutoUpdateSystem();
                break;
 
             case NETWORKINTERFACE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new NetworkInterface();
                break;
 
             case NETWORKEQUIPMENTFIRMWARE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new NetworkEquipmentsFirmware();
+               $this->obj = new NetworkEquipmentFirmware();
                break;
 
             case DOMAIN_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Domain();
                break;
 
             case NETWORK_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Network();
                break;
 
             case VLAN_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
                $this->obj = new Vlan();
                break;
 
             case SOFTWARECATEGORY_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new SoftwaresCategory();
+               $this->obj = new SoftwareCategory();
                break;
 
             case USERTITLE_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new UsersTitle();
+               $this->obj = new UserTitle();
                break;
 
             case USERCATEGORY_TYPE :
-               require_once(GLPI_ROOT.'/inc/dropdown.class.php');
-               $this->obj = new UsersCategory();
+               $this->obj = new UserCategory();
                break;
 
             default :
