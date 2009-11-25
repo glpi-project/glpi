@@ -128,6 +128,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/softwarecategory.class.php");
    include_once (GLPI_ROOT . "/inc/usertitle.class.php");
    include_once (GLPI_ROOT . "/inc/usercategory.class.php");
+   include_once (GLPI_ROOT . "/inc/domain.class.php");
 }
 
 // Security system

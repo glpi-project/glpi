@@ -437,6 +437,7 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // CONTRACTSUPPLIER_TYPE => "???",
 // DOCUMENTITEM_TYPE => "???",
                         CRONTASK_TYPE        => "front/crontask.form.php",
+                        LOCATION_TYPE        => "front/location.form.php",
 // CRONTASKLOG_TYPE => "???",
                         // TODO temporary hack for tabs page name
                         'central'            => "front/central.form.php");
@@ -456,12 +457,15 @@ $SEARCH_PAGES = array(COMPUTER_TYPE        => "front/computer.php",
                       CONSUMABLEITEM_TYPE  => "front/consumable.php",
                       OCSNG_TYPE           => "front/setup.ocsng.php",
                       BUDGET_TYPE          => "front/budget.php",
-                      CRONTASK_TYPE        => "front/crontask.php");
+                      CRONTASK_TYPE        => "front/crontask.php",
+                      LOCATION_TYPE        => "front/location.php");
 
 foreach ($CFG_GLPI['dropdown_types'] as $type) {
-   $INFOFORM_PAGES[$type] = "front/dropdown.form.php?itemtype=".$type;
-   $SEARCH_PAGES[$type]   = "front/dropdown.php?itemtype=".$type;
+   if (!isset($INFOFORM_PAGES[$type])) {
+      $INFOFORM_PAGES[$type] = "front/dropdown.form.php?itemtype=".$type;
+      $SEARCH_PAGES[$type]   = "front/dropdown.php?itemtype=".$type;
    }
+}
 
 define("AUTH_DB_GLPI",1);
 define("AUTH_MAIL",2);
