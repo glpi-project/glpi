@@ -44,7 +44,7 @@ if (empty($_GET["id"])) {
 }
 
 $contact = new Contact();
-$contactsupplier = new ContactSupplier();
+$contactsupplier = new Contact_Supplier();
 
 if (isset($_POST["add"])) {
    $contact->check(-1,'w',$_POST);

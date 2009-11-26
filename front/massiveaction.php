@@ -313,7 +313,7 @@ if (isset($_POST["itemtype"])){
             break;
          case "add_contact":
             if ($_POST["itemtype"] == ENTERPRISE_TYPE) {
-               $contactsupplier=new ContactSupplier();
+               $contactsupplier=new Contact_Supplier();
                foreach ($_POST["item"] as $key => $val){
                   $input=array(
                      'suppliers_id' => $key,
@@ -340,7 +340,7 @@ if (isset($_POST["itemtype"])){
             break;
          case "add_enterprise":
             if ($_POST["itemtype"] == CONTACT_TYPE) {
-               $contactsupplier=new ContactSupplier();
+               $contactsupplier=new Contact_Supplier();
                foreach ($_POST["item"] as $key => $val){
                   $input=array(
                      'suppliers_id' => $_POST['entID'],
