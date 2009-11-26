@@ -212,7 +212,7 @@ class Contact extends CommonDBTM{
       echo "</td>";
       echo "<td></td><td class='center'>";
       if ($ID>0) {
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?id=$ID'>".
+         echo "<a target=_blank href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?getvcard=1&amp;id=$ID'>".
                 $LANG['common'][46]."</a>";
       }
       echo "</td></tr>";
@@ -423,6 +423,8 @@ class Contact extends CommonDBTM{
     *
     **/
    function generateVcard() {
+
+      include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
       if (!$this->can($this->fields['id'],'r')) {
          return false;
