@@ -812,12 +812,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
    if (haveRight("typedoc","r")) {
-      $menu['config']['content']['typedoc']['title']=$LANG['document'][7];
-      $menu['config']['content']['typedoc']['page']='/front/typedoc.php';
-      $menu['config']['content']['typedoc']['hide']=true;
-      $menu['config']['content']['typedoc']['links']['search']='/front/typedoc.php';
+      $menu['config']['content']['documenttype']['title']=$LANG['document'][7];
+      $menu['config']['content']['documenttype']['page']='/front/documenttype.php';
+      $menu['config']['content']['documenttype']['hide']=true;
+      $menu['config']['content']['documenttype']['links']['search']='/front/documenttype.php';
       if (haveRight("typedoc","w")) {
-         $menu['config']['content']['typedoc']['links']['add']="/front/typedoc.form.php";
+         $menu['config']['content']['documenttype']['links']['add']="/front/documenttype.form.php";
       }
    }
 /*
@@ -1856,7 +1856,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
    echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." Mb max)&nbsp;:";
    echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".
           $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-          "/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+          "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
    echo "</td>";
    echo "<td><input type='file' name='filename' value=\"\" size='25'></td></tr>";
 
