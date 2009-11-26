@@ -180,6 +180,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='enterprise') {
             $item='supplier';
          }
+         if ($item=='registry') {
+            $item='registrykey';
+         }
 
          if ($item=='computer') {
             include_once (GLPI_ROOT . "/inc/computerdisk.class.php");

@@ -228,8 +228,8 @@ class CommonItem {
                break;
 
             case REGISTRY_TYPE:
-               require_once(GLPI_ROOT.'/inc/registry.class.php');
-               $this->obj = new Registry;
+               require_once(GLPI_ROOT.'/inc/registrykey.class.php');
+               $this->obj = new RegistryKey;
                break;
 
             case PROFILE_TYPE:
