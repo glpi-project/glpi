@@ -38,21 +38,6 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * Entity Data class
- */
-class EntityData extends CommonDBTM {
-
-   // From CommonDBTM
-   public $table = 'glpi_entitydatas';
-
-   function getIndexName() {
-      return 'entities_id';
-   }
-
-}
-
-
-/**
  * Entity class
  */
 class Entity extends CommonDBTM {
