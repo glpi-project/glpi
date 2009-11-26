@@ -186,7 +186,8 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
  *
  **/
 function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
-   global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES,$DB, $LINK_ID_TABLE ;
+   global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $SEARCH_PAGES;
+   global $INFOFORM_PAGES, $DB, $LINK_ID_TABLE;
 
    // Print a nice HTML-head for every page
    if ($HEADER_LOADED) {
@@ -750,12 +751,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                   if ($dpname == $option) {
                      $menu['config']['content']['dropdowns']['options'][$dpname]['title']=$val;
                      $menu['config']['content']['dropdowns']['options'][$dpname]['page']=
-                                                   '/front/dropdown.php?itemtype='.$key;
+                                                   '/'.$SEARCH_PAGES[$key];
                      $menu['config']['content']['dropdowns']['options'][$dpname]['links']['search']=
-                                                   '/front/dropdown.php?itemtype='.$key;
+                                                   '/'.$SEARCH_PAGES[$key];
                      if (haveTypeRight($key,'w')) {
                         $menu['config']['content']['dropdowns']['options'][$dpname]['links']['add']=
-                                                   '/front/dropdown.form.php?itemtype='.$key;
+                                                   '/'.$INFOFORM_PAGES[$key];
                      }
                   }
                }

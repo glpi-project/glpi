@@ -177,8 +177,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                     'entities_id' => $_SESSION['glpiactiveentities']);
       foreach ($DB->request($this->table, $crit) as $data) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
-         echo $this->type.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
+         echo "<td><a href='".$this->getFormURL();
+         echo '?id='.$data['id']."'>".$data['name']."</a></td>";
          echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
          foreach ($fields as $field) {
             if ($field['list']) {

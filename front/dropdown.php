@@ -46,12 +46,8 @@ if ($itemtype) {
    $ci = new CommonItem();
    $ci->setType($itemtype,true);
 
-   commonHeader($ci->getType(),$_SERVER['PHP_SELF'],"config","dropdowns",
-                str_replace('glpi_','',$ci->obj->table));
+   glpi_header($ci->obj->getSearchURL());
 
-   manageGetValuesInSearch($itemtype);
-   searchForm($itemtype,$_GET);
-   showList($itemtype,$_GET);
 } else {
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 

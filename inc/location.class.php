@@ -127,6 +127,7 @@ class Location extends CommonTreeDropdown {
       return false;
    }
 
+   // TODO Move this to Netpoint class ?
    /**
     * Print the HTML array of the Netpoint associated to a Location
     *
@@ -138,6 +139,7 @@ class Location extends CommonTreeDropdown {
     function showNetpoints($ID) {
       global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
 
+      $netpoint = new Netpoint();
       $this->check($ID, 'r');
       $canedit = $this->can($ID, 'w');
 
@@ -180,8 +182,8 @@ class Location extends CommonTreeDropdown {
             if ($canedit) {
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
             }
-            echo "<td><a href='".$CFG_GLPI["root_doc"].'/front/dropdown.form.php?itemtype=';
-            echo NETPOINT_TYPE.'&amp;id='.$data['id']."'>".$data['name']."</a></td>";
+            echo "<td><a href='".$netpoint->getFormURL();
+            echo '?id='.$data['id']."'>".$data['name']."</a></td>";
             echo "<td>".$data['comment']."</td>";
             echo "</tr>\n";
          }
@@ -197,7 +199,7 @@ class Location extends CommonTreeDropdown {
       }
       if ($canedit) {
          // Minimal form for quick input.
-         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[NETPOINT_TYPE]."' method='post'>";
+         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
@@ -210,7 +212,7 @@ class Location extends CommonTreeDropdown {
          echo "</table></form>\n";
 
          // Minimal form for massive input.
-         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[NETPOINT_TYPE]."' method='post'>";
+         echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
