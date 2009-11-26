@@ -198,6 +198,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='contact') {
             include_once (GLPI_ROOT . "/inc/contact_supplier.class.php");
          }
+         if ($item=='entity') {
+            include_once (GLPI_ROOT . "/inc/entitydata.class.php");
+         }
 
 
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
