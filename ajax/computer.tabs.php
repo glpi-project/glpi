@@ -113,7 +113,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Document::showAssociated($computer);
             showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
             showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
-            showRegistry($_POST["id"]);
+            RegistryKey::showForComputer($_POST["id"]);
             displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
             break;
 
@@ -161,7 +161,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 14:
-            showRegistry($_POST["id"]);
+            RegistryKey::showForComputer($_POST["id"]);
             break;
 
          case 20 :

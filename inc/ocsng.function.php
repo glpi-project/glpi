@@ -3060,7 +3060,7 @@ function ocsUpdateRegistry($computers_id, $ocsid, $ocsservers_id, $cfg_ocs) {
                 WHERE `HARDWARE_ID` = '$ocsid'";
       $result = $DBocs->query($query);
       if ($DBocs->numrows($result) > 0) {
-         $reg = new Registry();
+         $reg = new RegistryKey();
          //update data
          while ($data = $DBocs->fetch_array($result)) {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
@@ -3634,7 +3634,7 @@ function ocsResetRegistry($glpi_computers_id) {
                     FROM `glpi_registrykeys`
                     WHERE `computers_id` = '" . $data['computers_id'] . "'";
          $result2 = $DB->query($query2);
-         $registry = new Registry();
+         $registry = new RegistryKey();
          if ($DB->result($result2, 0, 0) == 1) {
             $registry->delete(array('id' => $data['computers_id']), 1);
          }
