@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('software');
+$NEEDED_ITEMS = array('computer', 'contract', 'infocom', 'software');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -44,7 +44,69 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["softwares_id"])) $_GET["softwares_id"] = "";
 
 $version=new SoftwareVersion();
-if (isset($_POST["add"]))
+
+/// TODO clean install process : create file for computer_softwareversion actions
+/// Begin of old management of install : 
+if (isset($_REQUEST["install"])){
+	checkRight("software","w");
+	installSoftwareVersion($_REQUEST["computers_id"],$_REQUEST["softwareversions_id"]);
+	logEvent($_REQUEST["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_GET["uninstall"])){
+	checkRight("software","w");
+
+	uninstallSoftwareVersion($_GET["id"]);
+	logEvent($_GET["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["deleteinstalls"])){
+	checkRight("software","w");
+
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1) {
+			uninstallSoftwareVersion($key);
+			logEvent($_POST["softwares_id"], "software", 5, "inventory", $_SESSION["glpiname"]." uninstalled software for several computers.");
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["moveinstalls"])){
+	checkRight("software","w");
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1 && $_POST['versionID']>0) {
+			updateInstalledVersion($key, $_POST['versionID']);
+			logEvent($_POST["softwares_id"], "software", 5, "inventory", $_SESSION["glpiname"]." change version of versions installed on computers.");
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["uninstall_license"])){
+	checkRight("software","w");
+	foreach ($_POST as $key => $val)
+		if (preg_match("/license_([0-9]+)/",$key,$ereg)){
+			$input["id"]=$ereg[1];
+			uninstallSoftwareVersion($input["id"]);
+		}
+	logEvent($_POST["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["install_license"]) && isset($_POST["computers_id"])){
+	checkRight("software","w");
+	foreach ($_POST as $key => $val)
+		if (preg_match("/version_([0-9]+)/",$key,$ereg)){
+			if ($ereg[1]>0) {
+				installSoftwareVersion($_POST["computers_id"],$ereg[1]);
+			}
+		}
+	logEvent($_POST["computers_id"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_GET["back"])){
+	glpi_header($_GET["back"]);
+}
+/// End of old management of install
+else if (isset($_POST["add"]))
 {
 	checkRight("software","w");
 
