@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: document.php 8830 2009-09-01 06:28:12Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,32 +29,16 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Remi collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS = array('search', 'state');
+$NEEDED_ITEMS = array ('search');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
-
-checkCentralAccess();
-
-commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
-
-if ($_GET["synthese"]=="yes"){
-	showStateSummary($_SERVER['PHP_SELF']);
-} else {
-	manageGetValuesInSearch(STATE_TYPE);
-
-	searchForm(STATE_TYPE,$_GET);
-
-	showList(STATE_TYPE,$_GET);
-}
-
-commonFooter();
+$dropdown = new InterfaceType();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>

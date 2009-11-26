@@ -318,9 +318,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if ($showstate){
       $menu['inventory']['content']['state']['title']=$LANG['Menu'][28];
       $menu['inventory']['content']['state']['shortcut']='n';
-      $menu['inventory']['content']['state']['page']='/front/state.php';
-      $menu['inventory']['content']['state']['links']['search']='/front/state.php';
-      $menu['inventory']['content']['state']['links']['summary']='/front/state.php?synthese=yes';
+      $menu['inventory']['content']['state']['page']='/front/states.php';
+      $menu['inventory']['content']['state']['links']['search']='/front/states.php';
+      $menu['inventory']['content']['state']['links']['summary']='/front/states.php?synthese=yes';
    }
 
    // ASSISTANCE
