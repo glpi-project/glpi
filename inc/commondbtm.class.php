@@ -569,6 +569,38 @@ class CommonDBTM {
    }
 
    /**
+    * Get the search page URL for the current classe
+    */
+   function getSearchURL() {
+
+      if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",get_class($this),$matches)) {
+         $dir = GLPI_ROOT . "/plugins/".strtolower($matches[1]);
+         $item = strtolower($matches[2]);
+
+      } else { // Standard case
+         $dir = GLPI_ROOT;
+         $item = strtolower(get_class($this));
+      }
+      return "$dir/front/$item.php";
+   }
+
+   /**
+    * Get the search page URL for the current classe
+    */
+   function getFormURL() {
+
+      if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",get_class($this),$matches)) {
+         $dir = GLPI_ROOT . "/plugins/".strtolower($matches[1]);
+         $item = strtolower($matches[2]);
+
+      } else { // Standard case
+         $dir = GLPI_ROOT;
+         $item = strtolower(get_class($this));
+      }
+      return "$dir/front/$item.form.php";
+   }
+
+   /**
     * Get the link to an item
     *
     * @param $with_comment Display comments

@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    refreshMainWindow();
 
    logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$dropdown->type]);
+   glpi_header($dropdown->getSearchURL());
 
 } else if (isset($_POST["update"])) {
    $dropdown->check($_POST["id"],'w');
