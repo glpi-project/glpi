@@ -1696,6 +1696,10 @@ function update0723to080() {
          }
       }
 
+      // Update bookmarks due to FHS change
+      $query2="UPDATE glpi_bookmarks SET path='front/documenttype.php' WHERE path='front/typedoc.php';";
+      $DB->query($query2) or die("0.80 update typedoc bookmarks " . $LANG['update'][90] . $DB->error());
+
    }
 
    //// Upgrade rules datas
