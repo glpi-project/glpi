@@ -45,8 +45,8 @@ if (!isset($_GET["id"])) {
 }
 
 $contract = new Contract();
-$contractitem = new ContractItem();
-$contractsupplier = new ContractSupplier();
+$contractitem = new Contract_Item();
+$contractsupplier = new Contract_Supplier();
 
 if (isset($_POST["add"])) {
    $contract->check(-1,'w',$_POST);

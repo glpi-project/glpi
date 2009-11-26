@@ -189,9 +189,11 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          }
          if ($item=='software') {
             include_once (GLPI_ROOT . "/inc/softwareversion.class.php");
-         }
-         if ($item=='software') {
             include_once (GLPI_ROOT . "/inc/softwarelicense.class.php");
+         }
+         if ($item=='contract') {
+            include_once (GLPI_ROOT . "/inc/contract_item.class.php");
+            include_once (GLPI_ROOT . "/inc/contract_supplier.class.php");
          }
 
 
