@@ -326,7 +326,7 @@ if (isset($_POST["itemtype"])){
             }
             break;
          case "add_contract":
-            $contractitem=new ContractItem();
+            $contractitem=new Contract_Item();
             foreach ($_POST["item"] as $key => $val){
                $input=array(
                   'itemtype' => $_POST["itemtype"],

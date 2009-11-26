@@ -495,7 +495,7 @@ class CommonDBTM {
 
       // If this type have CONTRACT, clean one associated to purged item
       if (in_array($this->type,$CFG_GLPI['contract_types'])) {
-         $ci = new ContractItem();
+         $ci = new Contract_Item();
          $ci->cleanDBonItemDelete($this->type,$ID);
       }
 

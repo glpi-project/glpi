@@ -57,10 +57,10 @@ class Contract extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $cs = new ContractSupplier();
+      $cs = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->type,$ID);
 
-      $ci = new ContractItem();
+      $ci = new Contract_Item();
       $ci->cleanDBonItemDelete($this->type,$ID);
    }
 
@@ -901,62 +901,4 @@ class Contract extends CommonDBTM {
 
 }
 
-// Relation between Contracts and Items
-class ContractItem extends CommonDBRelation{
-
-   // From CommonDBTM
-   public $table = 'glpi_contracts_items';
-   public $type = CONTRACTITEM_TYPE;
-
-   // From CommonDBRelation
-   public $itemtype_1 = CONTRACT_TYPE;
-   public $items_id_1 = 'contracts_id';
-
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
-
-   /**
-    * Check right on an contract - overloaded to check max_links_allowed
-    *
-    * @param $ID ID of the item (-1 if new item)
-    * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
-    *
-    * @return boolean
-   **/
-   function can($ID,$right,&$input=NULL) {
-
-      if ($ID<0) {
-         // Ajout
-         $contract = new Contract();
-
-         if (!$contract->getFromDB($input['contracts_id'])) {
-            return false;
-         }
-         if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->table,
-                                     "`contracts_id`='".$input['contracts_id']."'") >=
-                                          $contract->fields['max_links_allowed']) {
-               return false;
-         }
-      }
-      return parent::can($ID,$right,$input);
-   }
-
-}
-
-// Relation between Contracts and Suppliers
-class ContractSupplier extends CommonDBRelation {
-
-   // From CommonDBTM
-   public $table = 'glpi_contracts_suppliers';
-   public $type = CONTRACTSUPPLIER_TYPE;
-
-   // From CommonDBRelation
-   public $itemtype_1 = CONTRACT_TYPE;
-   public $items_id_1 = 'contracts_id';
-
-   public $itemtype_2 = ENTERPRISE_TYPE;
-   public $items_id_2 = 'suppliers_id';
-}
 ?>

@@ -145,7 +145,7 @@ class Phone extends CommonDBTM {
                          AND `itemtype` = '".$this->type."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
-            $contractitem=new ContractItem();
+            $contractitem=new Contract_Item();
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype' => $this->type,
