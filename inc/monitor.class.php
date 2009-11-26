@@ -139,7 +139,7 @@ class Monitor extends CommonDBTM {
                          AND `itemtype`='".$this->type."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
-            $docitem=new DocumentItem();
+            $docitem=new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype' => $this->type,

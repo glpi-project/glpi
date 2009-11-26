@@ -760,7 +760,7 @@ function replaceDropDropDown($input) {
                 WHERE `entities_id` = '" . $input["oldID"] . "'";
       $DB->query($query);
 
-      $di = new DocumentItem();
+      $di = new Document_Item();
       $di->cleanDBonItemDelete(ENTITY_TYPE,$input["oldID"]);
 
       // Clean sons / ancestors if needed

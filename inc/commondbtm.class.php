@@ -501,7 +501,7 @@ class CommonDBTM {
 
       // If this type have DOCUMENT, clean one associated to purged item
       if (in_array($this->type,$CFG_GLPI["doc_types"])) {
-         $di = new DocumentItem();
+         $di = new Document_Item();
          $di->cleanDBonItemDelete($this->type,$ID);
       }
    }

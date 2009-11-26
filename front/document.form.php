@@ -46,7 +46,7 @@ if (!isset($_GET["id"])) {
 }
 
 $doc = new Document();
-$documentitem = new DocumentItem();
+$documentitem = new Document_Item();
 
 if (isset($_POST["add"])) {
    $doc->check(-1,'w',$_POST);

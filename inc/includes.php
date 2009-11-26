@@ -183,7 +183,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
 
          if ($item=='computer') {
             include_once (GLPI_ROOT . "/inc/computerdisk.class.php");
-        }
+         }
+         if ($item=='document') {
+            include_once (GLPI_ROOT . "/inc/document_item.class.php");
+         }
 
 
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
