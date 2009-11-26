@@ -105,7 +105,7 @@ function showStateSummary($target) {
       while ($data=$DB->fetch_array($result)) {
          $tot=0;
          echo "<tr class='tab_bg_2'><td class='b'>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=$$$$".
+         echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset_before=1&amp;contains[0]=$$$$".
                 $data["id"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></td>";
 
          foreach ($state_type as $itemtype) {
