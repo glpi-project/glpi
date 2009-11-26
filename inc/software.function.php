@@ -641,7 +641,7 @@ function showInstallations($searchID, $crit="softwares_id") {
                      ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
          if ($canedit) {
             echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".
-                   $CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+                   $CFG_GLPI["root_doc"]."/front/softwareversion.form.php\">";
             echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
             echo "<table class='tab_cadre_fixehov'><tr>";
             echo "<th>&nbsp;</th>";
@@ -942,7 +942,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
 
    if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
       echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-      echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php\">";
+      echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/softwareversion.form.php\">";
       echo "<div class='software-instal'>";
       echo "<input type='hidden' name='computers_id' value='$computers_id'>";
       dropdownSoftwareToInstall("softwareversions_id", $entities_id);
@@ -1100,7 +1100,7 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
 	echo "<tr class='tab_bg_2'>";
 	echo "		<td colspan='5'>
 				     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
-	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/softwareversion.form.php\">";
 	echo "<input type='hidden' name='computers_ID' value='$computers_ID'>";
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
@@ -1143,7 +1143,7 @@ function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
 
 	echo "<td>" . $data["version"];
    if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
-      echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php".
+      echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/softwareversion.form.php".
            "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id\">";
       echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
    }
@@ -1213,7 +1213,7 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
 
    echo "<td>" . $data["version"];
    if ((empty ($withtemplate) || $withtemplate != 2) && $canedit && $ID>0) {
-      echo " - <a href=\"" . $CFG_GLPI["root_doc"] ."/front/software.licenses.php".
+      echo " - <a href=\"" . $CFG_GLPI["root_doc"] ."/front/softwareversion.form.php".
          "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id\">";
       echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
    }

@@ -187,6 +187,12 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='document') {
             include_once (GLPI_ROOT . "/inc/document_item.class.php");
          }
+         if ($item=='software') {
+            include_once (GLPI_ROOT . "/inc/softwareversion.class.php");
+         }
+         if ($item=='software') {
+            include_once (GLPI_ROOT . "/inc/softwarelicense.class.php");
+         }
 
 
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
