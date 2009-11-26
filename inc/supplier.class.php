@@ -55,7 +55,7 @@ class Supplier extends CommonDBTM {
       $cs = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->type,$ID);
 
-      $cs = new ContactSupplier();
+      $cs = new Contact_Supplier();
       $cs->cleanDBonItemDelete($this->type,$ID);
    }
 

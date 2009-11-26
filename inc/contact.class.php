@@ -51,7 +51,7 @@ class Contact extends CommonDBTM{
    function cleanDBonPurge($ID) {
       global $DB;
 
-      $cs = new ContactSupplier();
+      $cs = new Contact_Supplier();
       $cs->cleanDBonItemDelete($this->type,$ID);
    }
 
@@ -458,18 +458,4 @@ class Contact extends CommonDBTM{
    }
 }
 
-class ContactSupplier extends CommonDBRelation{
-
-   // From CommonDBTM
-   public $table = 'glpi_contacts_suppliers';
-   public $type = CONTACTSUPPLIER_TYPE;
-
-   // From CommonDBRelation
-   public $itemtype_1 = CONTACT_TYPE;
-   public $items_id_1 = 'documents_id';
-
-   public $itemtype_2 = ENTERPRISE_TYPE;
-   public $items_id_2 = 'contacts_id';
-
-}
 ?>
