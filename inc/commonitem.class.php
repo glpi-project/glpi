@@ -138,8 +138,8 @@ class CommonItem {
                break;
 
             case TYPEDOC_TYPE :
-               require_once(GLPI_ROOT.'/inc/typedoc.class.php');
-               $this->obj= new TypeDoc;
+               require_once(GLPI_ROOT.'/inc/documenttype.class.php');
+               $this->obj= new DocumentType;
                break;
 
             case DOCUMENT_TYPE :

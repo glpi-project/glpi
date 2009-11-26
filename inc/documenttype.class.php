@@ -37,8 +37,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TypeDoc class
-class Typedoc  extends CommonDBTM {
+
+/// DocumentType class
+class DocumentType  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_documenttypes';
@@ -153,6 +154,7 @@ class Typedoc  extends CommonDBTM {
       $tab[5]['field']     = 'is_uploadable';
       $tab[5]['linkfield'] = '';
       $tab[5]['name']      = $LANG['document'][15];
+      $tab[5]['datatype']      = 'bool';
 
       $tab[16]['table']     = 'glpi_documenttypes';
       $tab[16]['field']     = 'comment';
