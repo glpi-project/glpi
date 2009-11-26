@@ -46,7 +46,13 @@ if (empty($_GET["id"])) {
 $contact = new Contact();
 $contactsupplier = new Contact_Supplier();
 
-if (isset($_POST["add"])) {
+if (isset($_REQUEST['getvcard'])) {
+   if ($_GET["id"]<0) {
+      glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+   }
+   $contact->check($_GET["id"],'r');
+   $contact->generateVcard();
+} else if (isset($_POST["add"])) {
    $contact->check(-1,'w',$_POST);
 
    if ($newID = $contact->add($_POST)) {
