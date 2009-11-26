@@ -70,7 +70,7 @@ class Document extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $di = new DocumentItem();
+      $di = new Document_Item();
       $di->cleanDBonItemDelete($this->type,$ID);
 
       // UNLINK DU FICHIER
@@ -166,7 +166,7 @@ class Document extends CommonDBTM {
       if (isset($input["items_id"]) && isset($input["itemtype"]) && $input["items_id"] > 0
           && $input["itemtype"] > 0){
 
-         $docitem=new DocumentItem();
+         $docitem=new Document_Item();
          $docitem->add(array('documents_id' => $newID,
                              'itemtype' => $input["itemtype"],
                              'items_id' => $input["items_id"]));
@@ -1169,34 +1169,4 @@ class Document extends CommonDBTM {
    }
 }
 
-// Relation between Documents and Items
-class DocumentItem extends CommonDBRelation{
-
-   // From CommonDBTM
-   public $table = 'glpi_documents_items';
-   public $type = DOCUMENTITEM_TYPE;
-
-   // From CommonDBRelation
-   public $itemtype_1 = DOCUMENT_TYPE;
-   public $items_id_1 = 'documents_id';
-
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
-
-   function prepareInputForAdd($input) {
-
-      // Do not insert circular link for document
-      if ($input['itemtype']==DOCUMENT_TYPE && $input['items_id']==$input['documents_id']) {
-         return false;
-      }
-      // Avoid duplicate entry
-      $restrict = "`documents_id` = '".$input['documents_id']."'
-                   AND `itemtype` = '".$input['itemtype']."'
-                   AND `items_id` = '".$input['items_id']."'";
-      if (countElementsInTable($this->table,$restrict)>0) {
-         return false;
-      }
-      return $input;
-   }
-}
 ?>

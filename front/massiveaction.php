@@ -299,7 +299,7 @@ if (isset($_POST["itemtype"])){
 				}
 			break;
 			case "add_document":
-            $documentitem=new DocumentItem();
+            $documentitem=new Document_Item();
             foreach ($_POST["item"] as $key => $val){
                $input=array(
                   'itemtype' => $_POST["itemtype"],

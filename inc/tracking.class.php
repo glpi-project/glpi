@@ -233,7 +233,7 @@ class Job extends CommonDBTM {
       if (isset($input["document"]) && $input["document"]>0) {
          $doc=new Document();
          if ($doc->getFromDB($input["document"])) {
-            $docitem=new DocumentItem();
+            $docitem=new Document_Item();
             if ($docitem->add(array('documents_id' => $input["document"],
                                     'itemtype' => $this->type,
                                     'items_id' => $input["id"]))) {
@@ -1294,7 +1294,7 @@ class Job extends CommonDBTM {
       }
       $docadded=array();
       $doc=new Document();
-      $docitem=new DocumentItem();
+      $docitem=new Document_Item();
 
       // add Document if exists
       if (isset($_FILES['multiple']) ) {
