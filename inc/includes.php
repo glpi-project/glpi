@@ -115,6 +115,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/devicecasetype.class.php");
    include_once (GLPI_ROOT . "/inc/phonepowersupply.class.php");
    include_once (GLPI_ROOT . "/inc/filesystem.class.php");
+   include_once (GLPI_ROOT . "/inc/documenttype.class.php");
    include_once (GLPI_ROOT . "/inc/documentcategory.class.php");
    include_once (GLPI_ROOT . "/inc/knowbaseitemcategory.class.php");
    include_once (GLPI_ROOT . "/inc/operatingsystem.class.php");

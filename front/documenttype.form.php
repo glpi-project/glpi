@@ -34,47 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("documenttype");
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["id"])) $_GET["id"] = "";
-
-
-$typedoc=new DocumentType();
-if (isset($_POST["add"]))
-{
-	$typedoc->check(-1,'w');
-
-	if ($newID=$typedoc->add($_POST))
-	logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	$typedoc->check($_POST["id"],'w');
-
-	$typedoc->delete($_POST,1);
-
-	logEvent($_POST["id"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/documenttype.php");
-
-}
-else if (isset($_POST["update"]))
-{
-	$typedoc->check($_POST["id"],'w');
-
-	$typedoc->update($_POST);
-	logEvent($_POST["id"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","typedoc");
-	$typedoc->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-	commonFooter();
-}
-
-
+$dropdown = new DocumentType();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>

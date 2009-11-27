@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: phone.tabs.php 8933 2009-09-10 18:41:20Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -34,12 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS = array ('search');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $dropdown = new DocumentType();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
+
 ?>

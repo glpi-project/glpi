@@ -789,14 +789,14 @@ function dropdownIcons($myname,$value,$store_path) {
          }
          closedir($dh);
          sort($files);
-         echo '<select name="$myname">';
+         echo "<select name='$myname'>";
          echo "<option value=''>-----</option>";
          foreach ($files as $file) {
             if (preg_match("/\.png$/i",$file)) {
                if ($file == $value) {
-                  echo '<option value="$file" selected>'.$file;
+                  echo "<option value='$file' selected>".$file;
                } else {
-                  echo '<option value="$file">'.$file;
+                  echo "<option value='$file'>".$file;
                }
                echo "</option>";
             }
@@ -2801,7 +2801,8 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
                                             PERIPHERALMODEL_TYPE       => $LANG['setup'][97],
                                             PHONEMODEL_TYPE            => $LANG['setup'][503]),
 
-               $LANG['Menu'][26] => array(DOCUMENTCATEGORY_TYPE => $LANG['setup'][81]),
+               $LANG['Menu'][26] => array(DOCUMENTCATEGORY_TYPE => $LANG['setup'][81],
+                                          TYPEDOC_TYPE          => $LANG['document'][7]),
 
                $LANG['Menu'][18] => array(KNOWBASEITEMCATEGORY_TYPE => $LANG['title'][5]),
 
