@@ -113,21 +113,35 @@ abstract class CommonDropdown extends CommonDBTM {
                dropdownUsersID($field['name'], $this->fields[$field['name']], "interface", 1,
                                 $this->fields["entities_id"]);
                break;
+
             case 'dropdownValue' :
                dropdownValue(getTableNameForForeignKeyField($field['name']),
                               $field['name'], $this->fields[$field['name']],1,
                               $this->fields["entities_id"]);
                break;
+
             case 'text' :
                autocompletionTextField($field['name'],$this->table,$field['name'],
                                        $this->fields[$field['name']],40);
                break;
+
             case 'parent' :
                dropdownValue($this->table, $field['name'],
                              $this->fields[$field['name']], 1,
                              $this->fields["entities_id"], '',
                              ($ID>0 ? getSonsOf($this->table, $ID) : array()));
                break;
+
+            case 'icon' :
+               dropdownIcons($field['name'],
+                             $this->fields[$field['name']],
+                             GLPI_ROOT."/pics/icones");
+               if (!empty($this->fields[$field['name']])) {
+                  echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
+                       $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields[$field['name']]."'>";
+               }
+               break;
+
             case 'bool' :
                dropdownYesNo($field['name'], $this->fields[$field['name']]);
                break;

@@ -811,32 +811,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['ocsng']['links']['add']='/front/ocsng.form.php';
    }
 
-   if (haveRight("typedoc","r")) {
-      $menu['config']['content']['documenttype']['title']=$LANG['document'][7];
-      $menu['config']['content']['documenttype']['page']='/front/documenttype.php';
-      $menu['config']['content']['documenttype']['hide']=true;
-      $menu['config']['content']['documenttype']['links']['search']='/front/documenttype.php';
-      if (haveRight("typedoc","w")) {
-         $menu['config']['content']['documenttype']['links']['add']="/front/documenttype.form.php";
-      }
-   }
-/*
-   if (haveRight("entity_dropdown","r")) {
-      $menu['config']['content']['ticketcategory']['title']=$LANG['setup'][79];
-      $menu['config']['content']['ticketcategory']['page']='/front/ticketcategory.php';
-      $menu['config']['content']['ticketcategory']['links']['search']='/front/ticketcategory.php';
-      if (haveRight("entity_dropdown","w")) {
-         $menu['config']['content']['ticketcategory']['links']['add']="/front/ticketcategory.form.php";
-      }
-
-      $menu['config']['content']['taskcategory']['title']=$LANG['setup'][98];
-      $menu['config']['content']['taskcategory']['page']='/front/taskcategory.php';
-      $menu['config']['content']['taskcategory']['links']['search']='/front/taskcategory.php';
-      if (haveRight("entity_dropdown","w")) {
-         $menu['config']['content']['taskcategory']['links']['add']="/front/taskcategory.form.php";
-      }
-   }
-*/
    if (haveRight("link","r")) {
       $menu['config']['content']['link']['title']=$LANG['title'][33];
       $menu['config']['content']['link']['page']='/front/link.php';

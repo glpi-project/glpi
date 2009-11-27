@@ -37,103 +37,45 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
 /// DocumentType class
-class DocumentType  extends CommonDBTM {
+class DocumentType  extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_documenttypes';
    public $type  = TYPEDOC_TYPE;
 
-   function defineTabs($ID,$withtemplate) {
+   function getAdditionalFields() {
       global $LANG;
 
-      $ong = array();
-      $ong[1] = $LANG['title'][26];
+      return array(array('name'  => 'icon',
+                         'label' => $LANG['document'][10],
+                         'type'  => 'icon'),
+                   array('name'  => 'is_uploadable',
+                         'label' => $LANG['document'][11],
+                         'type'  => 'bool'),
+                   array('name'  => 'ext',
+                         'label' => $LANG['document'][9],
+                         'type'  => 'text'),
+                   array('name'  => 'mime',
+                         'label' => $LANG['document'][4],
+                         'type'  => 'text'));
+   }
 
-      return $ong;
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][15];
    }
 
    /**
-    * Print the typedoc form
+    * Get search function for the class
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the typedoc
-    *
-    *@return boolean : typedoc found
-    **/
-   function showForm ($target,$ID) {
-      global $CFG_GLPI, $LANG;
-
-      if (!haveRight("typedoc","r")) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-         $this->getEmpty();
-      }
-
-      $this->showTabs($ID, '',getActiveTab($this->type));
-      $this->showFormHeader($target,$ID,'',2);
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;: </td><td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
-      echo "</td>";
-      echo "<td rowspan='6' class='middle'>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='6'>";
-      echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['document'][10]."&nbsp;: </td><td>";
-      dropdownIcons("icon",$this->fields["icon"],GLPI_ROOT."/pics/icones");
-      if (!empty($this->fields["icon"])) {
-         echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
-              $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
-      }
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['document'][11]."&nbsp;: </td><td>";
-      dropdownYesNo("is_uploadable",$this->fields["is_uploadable"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['document'][9]."&nbsp;: </td><td>";
-      autocompletionTextField("ext",$this->table,"ext",$this->fields["ext"],40);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['document'][4]."&nbsp;: </td><td>";
-      autocompletionTextField("mime",$this->table,"mime",$this->fields["mime"],40);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".$LANG['common'][26] . "&nbsp;: ";
-      echo convDateTime($this->fields["date_mod"])."</td></tr>\n";
-
-      $this->showFormButtons($ID,'',2);
-
-      return true;
-   }
-
+    * @return array of search option
+    */
    function getSearchOptions() {
       global $LANG;
 
-      $tab = array();
-      $tab['common'] = $LANG['common'][32];
-
-      $tab[1]['table']         = 'glpi_documenttypes';
-      $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = TYPEDOC_TYPE;
-
-      $tab[2]['table']     = 'glpi_documenttypes';
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab = parent::getSearchOptions();
 
       $tab[3]['table']     = 'glpi_documenttypes';
       $tab[3]['field']     = 'ext';
@@ -152,15 +94,9 @@ class DocumentType  extends CommonDBTM {
 
       $tab[5]['table']     = 'glpi_documenttypes';
       $tab[5]['field']     = 'is_uploadable';
-      $tab[5]['linkfield'] = '';
+      $tab[5]['linkfield'] = 'is_uploadable';
       $tab[5]['name']      = $LANG['document'][15];
       $tab[5]['datatype']      = 'bool';
-
-      $tab[16]['table']     = 'glpi_documenttypes';
-      $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
 
       return $tab;
    }
