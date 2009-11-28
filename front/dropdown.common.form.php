@@ -38,7 +38,9 @@ if (!($dropdown instanceof CommonDropdown)) {
    displayErrorAndDie('');
 }
 
-if (!isset($_GET["id"])) {
+if (isset($_POST["id"])) {
+   $_GET["id"] = $_POST["id"];
+} else if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 checkTypeRight($dropdown->type, 'r');
@@ -55,9 +57,23 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
-   $dropdown->delete($_POST,1);
-   refreshMainWindow();
+   if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
+      commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",
+                   str_replace('glpi_','',$dropdown->table));
+      $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+      commonFooter();
+   } else {
+       $dropdown->delete($_POST, 1);
+      refreshMainWindow();
 
+      logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      glpi_header($dropdown->getSearchURL());
+   }
+
+} else if (isset($_POST["replace"])) {
+   $dropdown->check($_POST["id"],'w');
+   $dropdown->replace($_POST["newid"]);
+   $dropdown->delete($_POST, 1);
    logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($dropdown->getSearchURL());
 

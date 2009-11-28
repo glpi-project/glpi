@@ -373,10 +373,10 @@ class CommonDBTM extends CommonGLPI {
       if (isset($RELATION[$this->table])) {
          $newval = 0;
          $fkname = getForeignKeyFieldForTable($this->table);
-         if (isset($this->fields[$fkname])) {
+         //if (isset($this->fields[$fkname])) {
             // When delete a tree item, remplace by is parent
-            $newval = $this->fields[$fkname];
-         }
+            //$newval = $this->fields[$fkname];
+         //}
          foreach ($RELATION[$this->table] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {

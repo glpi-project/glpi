@@ -216,8 +216,10 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return boolean : is the value used ?
     */
-   function isUsed($ID) {
+   function isUsed() {
       global $DB;
+
+      $ID = $this->fields['id'];
 
       $RELATION = getDbRelations();
       if (isset ($RELATION[$this->table])) {
@@ -267,12 +269,12 @@ abstract class CommonDropdown extends CommonDBTM {
    function showDeleteConfirmForm($target) {
       global $DB, $LANG,$CFG_GLPI;
 
-      $this->check($ID=$this->fields['id'],'w');
-
       if ($this->haveChildren()) {
          echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
          return false;
       }
+
+      $ID = $this->fields['id'];
 
       echo "<div class='center'>";
       echo "<p class='red'>" . $LANG['setup'][63] . "</p>";
@@ -294,8 +296,16 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<p>" . $LANG['setup'][65] . "</p>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
-      dropdownNoValue($this->table, "newID", $ID, $this->getEntityID());
-      echo "<input type='hidden' name='oldID' value='$ID'/>";
+
+      if ($this instanceof CommonTreeDropdown) {
+         // TreeDropdown => default replacement is parent
+         $fk=getForeignKeyFieldForTable($this->table);
+         dropdownValue($this->table, 'newid', $this->fields[$fk], 1,
+                       $this->getEntityID(), '', getSonsOf($this->table, $ID));
+      } else {
+         dropdownNoValue($this->table, "newid", $ID, $this->getEntityID());
+      }
+      echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
       echo "<input class='button' type='submit' name='replace' value='".$LANG['buttons'][39]."'/>";
       echo "</td><td>";
@@ -303,6 +313,55 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</tr></table>\n";
       echo "</form>";
       echo "</div>";
+   }
+
+   /** Replace a dropdown item (this) by another one (newID)  and update all linked fields
+    * @param $new integer ID of the replacement item
+    */
+   function replace($newID) {
+      global $DB,$CFG_GLPI;
+
+      $oldID = $this->fields['id'];
+
+      $RELATION = getDbRelations();
+
+      if (isset ($RELATION[$this->table])) {
+         foreach ($RELATION[$this->table] as $table => $field) {
+            if ($table[0]!='_') {
+               if (!is_array($field)) {
+                  // Manage OCS lock for items - no need for array case
+                  if ($table=="glpi_computers" && $CFG_GLPI['use_ocs_mode']) {
+                     $query = "SELECT `id`
+                               FROM `glpi_computers`
+                               WHERE `is_ocs_import` = '1'
+                                     AND `$field` = '$oldID'";
+                     $result=$DB->query($query);
+                     if ($DB->numrows($result)) {
+                        if (!function_exists('mergeOcsArray')) {
+                           include_once (GLPI_ROOT . "/inc/ocsng.function.php");
+                        }
+                        while ($data=$DB->fetch_array($result)) {
+                           mergeOcsArray($data['id'],array($field),"computer_update");
+                        }
+                     }
+                  }
+                  $query = "UPDATE
+                            `$table`
+                            SET `$field` = '$newID'
+                            WHERE `$field` = '$oldID'";
+                  $DB->query($query);
+               } else {
+                  foreach ($field as $f) {
+                     $query = "UPDATE
+                               `$table`
+                               SET `$f` = '$newID'
+                               WHERE `$f` = '$oldID'";
+                     $DB->query($query);
+                  }
+               }
+            }
+         }
+      }
    }
 }
 

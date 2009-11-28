@@ -317,8 +317,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
                 FROM `$table`
                 $where
                 ORDER BY `name`";
-   }
-   else {
+   } else {
       $query = "SELECT `id`, `name`
                 FROM `$table`
                 $where
