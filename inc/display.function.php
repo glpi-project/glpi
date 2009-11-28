@@ -851,7 +851,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          (empty($CFG_GLPI["central_doc_url"])?"http://glpi-project.org/help-central":$CFG_GLPI["central_doc_url"]).
          "' target='_blank' title='".$LANG['central'][7]."'>".$LANG['central'][7]."</a></li>";
 
-   echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".
+   echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/preference.php\" title=\"".
               $LANG['Menu'][11]."\" >".$LANG['Menu'][11]."</a></li>";
 
    // Temporary autoload test
@@ -1241,7 +1241,7 @@ function helpHeader($title,$url='') {
    echo "<li><a href='".(empty($CFG_GLPI["helpdesk_doc_url"])?
               "http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdesk_doc_url"]).
               "' target='_blank' title='".$LANG['central'][7]."'> ".$LANG['central'][7]."</a></li>";
-   echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".
+   echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/preference.php\" title=\"".
                $LANG['Menu'][11]."\" >".$LANG['Menu'][11]."</a></li>\n";
 
    echo "</ul>";

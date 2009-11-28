@@ -483,7 +483,8 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                       USERCATEGORY_TYPE          => "front/usercategory.form.php",
 // CRONTASKLOG_TYPE => "???",
                         // TODO temporary hack for tabs page name
-                        'central'            => "front/central.form.php");
+                        'central'            => "front/central.form.php",
+                        'prefs'              => "front/preference.form.php");
 
 // Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",

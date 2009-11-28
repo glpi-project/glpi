@@ -46,16 +46,12 @@ header_nocache();
 checkCentralAccess();
 
 switch ($_REQUEST['glpi_tab']) {
-   case "my" :
-      showCentralMyView();
-      break;
-
-   case "global" :
-      showCentralGlobalView();
-      break;
-
-   case "group" :
+   case 2 :
       showCentralGroupView();
+      break;
+
+   case 3 :
+      showCentralGlobalView();
       break;
 
    case -1 : // all
@@ -76,5 +72,4 @@ switch ($_REQUEST['glpi_tab']) {
 }
 
 ajaxFooter();
-
 ?>
