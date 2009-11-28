@@ -49,6 +49,22 @@ class KnowbaseItemCategory extends CommonDropdown {
 
       return $LANG['title'][5];
    }
+
+   /**
+    * Report if a dropdown have Child
+    * Used to (dis)allow delete action
+    */
+   function haveChildren() {
+
+      if (parent::haveChildren()) {
+         return true;
+      }
+      $kb = new kbitem();
+      $fk = getForeignKeyFieldForTable($this->table);
+      $id = $this->fields['id'];
+
+      return (countElementsInTable($kb->table,"`$fk`='$id'")>0);
+   }
 }
 
 ?>
