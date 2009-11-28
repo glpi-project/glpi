@@ -305,7 +305,7 @@ class CommonDBTM extends CommonGLPI {
    function deleteFromDB($input,$force=0) {
       global $DB,$CFG_GLPI;
 
-      $ID = $input[$this->getIndexName()];
+      $ID = $this->fields['id'];
 
       if ($force==1 || !in_array($this->table,$CFG_GLPI["deleted_tables"])) {
          $this->cleanDBonPurge($ID);
