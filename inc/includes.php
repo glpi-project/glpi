@@ -44,7 +44,9 @@ $TIMER_DEBUG=new Script_Timer;
 $TIMER_DEBUG->Start_Timer();
 
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
 include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
+include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
 include_once (GLPI_ROOT . "/inc/commonitem.class.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
@@ -130,6 +132,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/usertitle.class.php");
    include_once (GLPI_ROOT . "/inc/usercategory.class.php");
    include_once (GLPI_ROOT . "/inc/domain.class.php");
+   include_once (GLPI_ROOT . "/inc/preference.class.php");
 }
 
 // Security system

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: central.php 9334 2009-11-24 17:48:06Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,40 +28,24 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-$NEEDED_ITEMS = array('group','profile','setup','user');
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkLoginUser();
-
-$user = new User();
-
-switch ($_REQUEST['glpi_tab']) {
-   case 1 :
-      $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", $_SESSION["glpiID"]);
-      break;
-
-   case 2 :
-      $config = new Config();
-      $user->getFromDB($_SESSION["glpiID"]);
-      $user->computePreferences();
-      $config->showFormUserPrefs($_POST['target'],$user->fields);
-      break;
-
-   default :
-      if (!displayPluginAction("prefs","",$_REQUEST['glpi_tab'],"")) {
-         $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", $_SESSION["glpiID"]);
-      }
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
 }
 
-ajaxFooter();
+// TODO this class should probably extends a minimal class providing interface tools
+// like show/defineTabs :  CommonGLPI => CommonDBTM => Computer
+class Preference extends CommonDBTM {
+
+   public $type = 'prefs';
+
+   function defineTabs($ID,$withtemplate){
+      global $LANG;
+
+      $tabs[1] = $LANG['title'][26];
+      $tabs[2] = $LANG['setup'][6];
+
+      return $tabs;
+   }
+}
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id$
+ * @version $Id: user.form.my.php 9112 2009-10-13 20:17:16Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -44,40 +44,26 @@ checkLoginUser();
 $user = new User();
 
 if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
-	$user->update($_POST);
-	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $user->update($_POST);
+   logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
+            $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else {
 
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      commonHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+   } else {
+      helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+   }
 
-	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
-		commonHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
-	else
-		helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+   $pref = new Preference();
+   $pref->show();
 
-
-	//forea
-	$tabs[1]=array('title'=>$LANG['title'][26],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=prefs&glpi_tab=1");
-
-	$tabs[2]=array('title'=>$LANG['setup'][6],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=prefs&glpi_tab=2");
-
-	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
-
-	$tabs+=$plug_tabs;
-
-	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,getActiveTab('prefs'));
-	echo "<div id='tabcontent'></div>";
-	echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-
-if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
-	commonFooter();
-else
-	helpFooter();
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      commonFooter();
+   } else {
+      helpFooter();
+   }
 }
 ?>

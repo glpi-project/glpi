@@ -2052,7 +2052,7 @@ function manageRedirect($where) {
                      break;
 
                   case "prefs":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
+                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
                      break;
 
                   default:
@@ -2075,7 +2075,7 @@ function manageRedirect($where) {
                      break;
 
                   case "prefs":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
+                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
                      break;
 
                   default :

@@ -41,18 +41,11 @@ class Central extends CommonDBTM {
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
-      $tabs['my']     = $LANG['central'][12];
-      $tabs['group']  = $LANG['central'][14];
-      $tabs['global'] = $LANG['central'][13];
+      $tabs[1] = $LANG['central'][12]; // My
+      $tabs[2] = $LANG['central'][14]; // Group
+      $tabs[3] = $LANG['central'][13]; // Global
 
       return $tabs;
-   }
-
-   function show() {
-      $this->showTabs(0, '', getActiveTab($this->type));
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 }
 
