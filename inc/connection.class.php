@@ -70,13 +70,13 @@ class Connection {
     */
    function getComputersContact ($itemtype,$ID) {
       global $DB;
-      
-      $query = "SELECT `glpi_computers_items`.`id` as connectID, 
+
+      $query = "SELECT `glpi_computers_items`.`id` as connectID,
                        `glpi_computers_items`.`computers_id`, `glpi_computers`.*
-                FROM `glpi_computers_items` 
-                INNER JOIN `glpi_computers` 
+                FROM `glpi_computers_items`
+                INNER JOIN `glpi_computers`
                            ON (`glpi_computers`.`id` = `glpi_computers_items`.`computers_id`)
-                WHERE (`glpi_computers_items`.`items_id` = '$ID' 
+                WHERE (`glpi_computers_items`.`items_id` = '$ID'
                        AND `glpi_computers_items`.`itemtype` = '$itemtype'
                        AND `glpi_computers`.`is_template` = '0')" .
                        getEntitiesRestrictRequest(" AND", "glpi_computers");
@@ -100,14 +100,17 @@ class Connection {
    /**
     * Delete connection
     *
-    * @param $ID Connection ID
+    * @param $input array : the _POST vars returned by the item form when press delete
     * @return boolean
     */
-   function deleteFromDB($ID) {
+    // TODO do we need this overload ??
+   function deleteFromDB($input) {
       global $DB;
 
-      $query = "DELETE 
-                FROM `glpi_computers_items` 
+      $ID = $input['id'];
+
+      $query = "DELETE
+                FROM `glpi_computers_items`
                 WHERE (`id` = '$ID')";
       if ($result = $DB->query($query)) {
          return true;
@@ -127,7 +130,7 @@ class Connection {
       global $DB;
 
       // Build query
-      $query = "INSERT INTO 
+      $query = "INSERT INTO
                 `glpi_computers_items` (`items_id`,`computers_id`,`itemtype`)
                 VALUES ('$this->items_id','$this->computers_id','$this->itemtype')";
       $result=$DB->query($query);

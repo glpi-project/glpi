@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       commonFooter();
    } else {
-       $dropdown->delete($_POST, 1);
+      $dropdown->delete($_POST, 1);
       refreshMainWindow();
 
       logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
@@ -72,8 +72,10 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["replace"])) {
    $dropdown->check($_POST["id"],'w');
-   $dropdown->replace($_POST["newid"]);
+   //$dropdown->replace($_POST["newid"]);
    $dropdown->delete($_POST, 1);
+   refreshMainWindow();
+
    logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($dropdown->getSearchURL());
 

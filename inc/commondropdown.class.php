@@ -300,10 +300,10 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
          $fk=getForeignKeyFieldForTable($this->table);
-         dropdownValue($this->table, 'newid', $this->fields[$fk], 1,
+         dropdownValue($this->table, '_replace_by', $this->fields[$fk], 1,
                        $this->getEntityID(), '', getSonsOf($this->table, $ID));
       } else {
-         dropdownNoValue($this->table, "newid", $ID, $this->getEntityID());
+         dropdownNoValue($this->table, "_replace_by", $ID, $this->getEntityID());
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
@@ -317,7 +317,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /** Replace a dropdown item (this) by another one (newID)  and update all linked fields
     * @param $new integer ID of the replacement item
-    */
    function replace($newID) {
       global $DB,$CFG_GLPI;
 
@@ -363,6 +362,7 @@ abstract class CommonDropdown extends CommonDBTM {
          }
       }
    }
+    */
 }
 
 ?>
