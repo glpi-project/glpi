@@ -40,6 +40,9 @@ if (!defined('GLPI_ROOT')){
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
 
+   // For delete operation (entity will overload this value)
+   public $must_be_replace = false;
+
    /**
     * Return Additional Fileds for this type
     */
@@ -205,6 +208,101 @@ abstract class CommonDropdown extends CommonDBTM {
          $tab[86]['datatype']  = 'bool';
       }
       return $tab;
+   }
+
+   /** Check if the dropdown $ID is used into item tables
+    *
+    * @param $ID integer : value ID
+    *
+    * @return boolean : is the value used ?
+    */
+   function isUsed($ID) {
+      global $DB;
+
+      $RELATION = getDbRelations();
+      if (isset ($RELATION[$this->table])) {
+         foreach ($RELATION[$this->table] as $tablename => $field) {
+            if ($tablename[0]!='_') {
+               if (!is_array($field)) {
+                  $query = "SELECT COUNT(*) AS cpt
+                            FROM `$tablename`
+                            WHERE `$field` = '$ID'";
+                  $result = $DB->query($query);
+                  if ($DB->result($result, 0, "cpt") > 0) {
+                     return true;
+                  }
+               } else {
+                  foreach ($field as $f) {
+                     $query = "SELECT COUNT(*) AS cpt
+                               FROM `$tablename`
+                               WHERE `$f` = '$ID'";
+                     $result = $DB->query($query);
+                     if ($DB->result($result, 0, "cpt") > 0) {
+                        return true;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Report if a dropdown have Child
+    * Used to (dis)allow delete action
+    */
+   function haveChildren() {
+      return false;
+   }
+
+   /**
+    * Show a dialog to Confirm delete action
+    * And propose a value to replace
+    *
+    * @param $target string URL
+    *
+    *
+    */
+   function showDeleteConfirmForm($target) {
+      global $DB, $LANG,$CFG_GLPI;
+
+      $this->check($ID=$this->fields['id'],'w');
+
+      if ($this->haveChildren()) {
+         echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
+         return false;
+      }
+
+      echo "<div class='center'>";
+      echo "<p class='red'>" . $LANG['setup'][63] . "</p>";
+
+      if (!$this->must_be_replace) {
+         // Delete form (set to 0)
+         echo "<p>" . $LANG['setup'][64] . "</p>";
+         echo "<form action='$target' method='post'>";
+         echo "<table class='tab_cadre'><tr><td>";
+         echo "<input type='hidden' name='id' value='$ID'/>";
+         echo "<input type='hidden' name='forcedelete' value='1'/>";
+         echo "<input class='button' type='submit' name='delete' value='".$LANG['buttons'][2]."'/></td>";
+         echo "<td><input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."'/>";
+         echo "</td></tr></table>\n";
+         echo "</form>";
+      }
+
+      // Replace form (set to new value)
+      echo "<p>" . $LANG['setup'][65] . "</p>";
+      echo "<form action='$target' method='post'>";
+      echo "<table class='tab_cadre'><tr><td>";
+      dropdownNoValue($this->table, "newID", $ID, $this->getEntityID());
+      echo "<input type='hidden' name='oldID' value='$ID'/>";
+      echo "</td><td>";
+      echo "<input class='button' type='submit' name='replace' value='".$LANG['buttons'][39]."'/>";
+      echo "</td><td>";
+      echo "<input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."' /></td>";
+      echo "</tr></table>\n";
+      echo "</form>";
+      echo "</div>";
    }
 }
 

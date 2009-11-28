@@ -237,6 +237,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       return $tab;
    }
+
+   /**
+    * Report if a dropdown have Child
+    * Used to (dis)allow delete action
+    */
+   function haveChildren() {
+      $fk = getForeignKeyFieldForTable($this->table);
+      $id = $this->fields['id'];
+
+      return (countElementsInTable($this->table,"`$fk`='$id'")>0);
+   }
 }
 
 ?>
