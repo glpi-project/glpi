@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["unglobalize"])) {
    $print->check($_GET["id"],'w');
 
-   unglobalizeDevice(PRINTER_TYPE,$_GET["id"]);
+   Computer_Item::unglobalizeItem($print);
    logEvent($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 

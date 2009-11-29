@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["unglobalize"])) {
    $peripheral->check($_GET["id"],'w');
 
-   unglobalizeDevice(PERIPHERAL_TYPE,$_GET["id"]);
+   Computer_Item::unglobalizeItem($peripheral);
    logEvent($_GET["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_GET["id"]);
 

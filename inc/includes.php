@@ -71,8 +71,6 @@ if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
 
 if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/auth.class.php");
-   include_once (GLPI_ROOT . "/inc/connection.class.php");
-   include_once (GLPI_ROOT . "/inc/connection.function.php");
    include_once (GLPI_ROOT . "/inc/mailing.class.php");
    include_once (GLPI_ROOT . "/inc/mailing.function.php");
    include_once (GLPI_ROOT . "/inc/export.function.php");

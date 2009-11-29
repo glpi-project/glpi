@@ -526,6 +526,46 @@ class Computer_Item extends CommonDBRelation{
       echo "</table></div><br>";
    }
 
+   /**
+    * Unglobalize an item : duplicate item and connections
+    *
+    * @param $item object to unglobalize
+    *
+    */
+   static function unglobalizeItem(CommonDBTM $item) {
+      global $DB;
+
+      // Update item to unit management :
+      if ($item->getField('is_global')) {
+         $input=array('id'        => $item->fields['id'],
+                      'is_global' => 0);
+         $item->update($input);
+
+         // Get connect_wire for this connection
+         $query = "SELECT `glpi_computers_items`.`id`
+                   FROM `glpi_computers_items`
+                   WHERE `glpi_computers_items`.`items_id` = '".$item->fields['id']."'
+                         AND `glpi_computers_items`.`itemtype` = '".$item->type."'";
+         $result=$DB->query($query);
+
+         if ($data=$DB->fetch_array($result)) {
+            // First one, keep the existing one
+
+            // The others = clone the existing object
+            unset($input['id']);
+            $conn = new self();
+            while ($data=$DB->fetch_array($result)) {
+               $temp = clone $item;
+               unset($temp->fields['id']);
+               if ($newID=$temp->add($temp->fields)) {
+                  $conn->update(array('id'       => $data['id'],
+                                      'items_id' => $newID));
+               }
+
+            }
+         }
+      }
+   }
 }
 
 ?>

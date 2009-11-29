@@ -1812,7 +1812,7 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
       echo $LANG['peripherals'][31];
 
       if ($management_restrict == 2) {
-         echo "&nbsp;<a title=\"".$LANG['common'][39]."\" href=\"java_script:confirmAction('".addslashes($LANG['common'][40])."\\n".
+         echo "&nbsp;<a title=\"".$LANG['common'][39]."\" href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".
                       addslashes($LANG['common'][39])."','$target?unglobalize=unglobalize&amp;id=$ID')\">".
                       $LANG['common'][38]."</a>&nbsp;";
          echo "<img alt=\"".$LANG['common'][39]."\" title=\"".$LANG['common'][39]."\" src=\"".
