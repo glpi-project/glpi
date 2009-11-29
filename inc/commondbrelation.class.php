@@ -161,6 +161,9 @@ abstract class CommonDBRelation extends CommonDBTM {
     **/
    function post_deleteFromDB($ID) {
 
+      if (isset($this->input['_no_history'])) {
+         return false;
+      }
       $ci1 = new CommonItem();
       $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :
                     $this->fields[$this->itemtype_1], true);

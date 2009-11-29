@@ -2936,28 +2936,34 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 
    // Disconnect Unexisting Items not found in OCS
    if ($do_clean && count($import_periph)) {
+      $conn = new Computer_Item();
+
       foreach ($import_periph as $key => $val) {
          switch ($itemtype) {
             case MONITOR_TYPE :
                // Only if sync done
                if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
-                  Disconnect($key, $dohistory, $ocsservers_id);
+                  $conn->delete(array('id'=>$key,
+                                      '_ocsservers_id'=>$ocsservers_id));
                   deleteInOcsArray($computers_id, $key, "import_monitor");
                }
                break;
 
             case PRINTER_TYPE :
-               Disconnect($key, $dohistory, $ocsservers_id);
+               $conn->delete(array('id'=>$key,
+                                   '_ocsservers_id'=>$ocsservers_id));
                deleteInOcsArray($computers_id, $key, "import_printer");
                break;
 
             case PERIPHERAL_TYPE :
-               Disconnect($key, $dohistory, $ocsservers_id);
+               $conn->delete(array('id'=>$key,
+                                   '_ocsservers_id'=>$ocsservers_id));
                deleteInOcsArray($computers_id, $key, "import_peripheral");
                break;
 
             default :
-               Disconnect($key, $dohistory, $ocsservers_id);
+               $conn->delete(array('id'=>$key,
+                                   '_ocsservers_id'=>$ocsservers_id));
          }
       }
    }
@@ -3526,8 +3532,9 @@ function ocsResetPeriphs($glpi_computers_id) {
    $result = $DB->query($query);
    $per = new Peripheral();
    if ($DB->numrows($result) > 0) {
+      $conn = new Computer_Item();
       while ($data = $DB->fetch_assoc($result)) {
-         Disconnect($data['id'],1,false);
+         $conn->delete(array('id'=>$data['id']));
 
          $query2 = "SELECT COUNT(*)
                     FROM `glpi_computers_items`
@@ -3562,8 +3569,9 @@ function ocsResetMonitors($glpi_computers_id) {
 
    $mon = new Monitor();
    if ($DB->numrows($result) > 0) {
+      $conn = new Computer_Item();
       while ($data = $DB->fetch_assoc($result)) {
-         Disconnect($data['id'],1,false);
+         $conn->delete(array('id'=>$data['id']));
 
          $query2 = "SELECT COUNT(*)
                     FROM `glpi_computers_items`
@@ -3596,8 +3604,9 @@ function ocsResetPrinters($glpi_computers_id) {
                    AND `itemtype` = '" . PRINTER_TYPE . "'";
    $result = $DB->query($query);
    if ($DB->numrows($result) > 0) {
+      $conn = new Computer_Item();
       while ($data = $DB->fetch_assoc($result)) {
-         Disconnect($data['id'],1,false);
+         $conn->delete(array('id'=>$data['id']));
 
          $query2 = "SELECT COUNT(*)
                     FROM `glpi_computers_items`

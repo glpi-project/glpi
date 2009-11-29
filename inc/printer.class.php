@@ -253,15 +253,16 @@ class Printer  extends CommonDBTM {
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI;
 
-      $query = "SELECT *
-                FROM `glpi_computers_items`
-                WHERE `itemtype` = '".$this->type."'
-                      AND `items_id` = '$ID'";
+      $query="SELECT `id`
+              FROM `glpi_computers_items`
+              WHERE `itemtype` = '".$this->type."'
+                AND `items_id` = '$ID'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
+            $conn = new Computer_Item();
             while ($data = $DB->fetch_array($result)) {
-               // Disconnect without auto actions
-               Disconnect($data["id"],1,false);
+               $data['_no_auto_action']=true;
+               $conn->delete($data);
             }
          }
       }
