@@ -198,7 +198,83 @@ class Computer_Item extends CommonDBRelation{
     *@return nothing
     **/
    function cleanDBonPurge($ID) {
+      global $DB, $CFG_GLPI;
 
+      if (!isset($this->input['_no_auto_action'])) {
+         //Get the computer name
+         $computer = new Computer;
+         $computer->getFromDB($this->fields['computers_id']);
+
+         //Get device fields
+         $device=new CommonItem();
+         $device->getFromDB($this->fields['itemtype'], $this->fields['items_id']);
+
+         if (!$device->getField('is_global')) {
+            $updates=array();
+            if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')) {
+               $updates[]="locations_id";
+               $device->obj->fields['locations_id']=0;
+            }
+            if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
+               $updates[]="users_id";
+               $device->obj->fields['users_id']=0;
+            }
+            if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')) {
+               $updates[]="groups_id";
+               $device->obj->fields['groups_id']=0;
+            }
+            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')) {
+               $updates[]="contact";
+               $device->obj->fields['contact']="";
+            }
+            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')) {
+               $updates[]="contact_num";
+               $device->obj->fields['contact_num']="";
+            }
+            if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->getField('states_id')) {
+               $updates[]="states_id";
+               $device->obj->fields['states_id']=0;
+            }
+            if ($CFG_GLPI["state_autoclean_mode"]>0
+                && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
+               $updates[]="states_id";
+               $device->obj->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
+            }
+            if (count($updates)) {
+               $device->obj->updateInDB($updates);
+            }
+         }
+         if (isset($this->input['_ocsservers_id'])) {
+            $ocsservers_id = $this->input['_ocsservers_id'];
+         } else {
+            $ocsservers_id = getOCSServerByMachineID($this->fields['computers_id']);
+         }
+         if ($ocsservers_id>0) {
+            //Get OCS configuration
+            $ocs_config = getOcsConf($ocsservers_id);
+
+            //Get the management mode for this device
+            $mode = getMaterialManagementMode($ocs_config, $this->fields['itemtype']);
+            $decoConf= $ocs_config["deconnection_behavior"];
+
+            //Change status if :
+            // 1 : the management mode IS NOT global
+            // 2 : a deconnection's status have been defined
+            // 3 : unique with serial
+            if($mode >= 2 && strlen($decoConf)>0) {
+               //Delete periph from glpi
+               if($decoConf == "delete") {
+                  $tmp["id"]=$this->fields['items_id'];
+                  $device->obj->delete($tmp);
+               //Put periph in trash
+               } else if ($decoConf == "trash") {
+                  $tmp["id"]=$this->fields['items_id'];
+                  $tmp["is_deleted"]=1;
+                  $device->obj->update($tmp);
+               }
+            }
+         } // $ocsservers_id>0
+      }
    }
 }
 
