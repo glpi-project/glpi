@@ -100,14 +100,13 @@ class Connection {
    /**
     * Delete connection
     *
-    * @param $input array : the _POST vars returned by the item form when press delete
+    * @param $ID ID of the item
     * @return boolean
     */
     // TODO do we need this overload ??
-   function deleteFromDB($input) {
+   function deleteFromDB($ID) {
       global $DB;
 
-      $ID = $input['id'];
 
       $query = "DELETE
                 FROM `glpi_computers_items`
