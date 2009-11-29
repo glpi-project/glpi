@@ -32,16 +32,20 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// class Preference for the current connected User
-class Preference extends CommonGLPI {
+// Class Notification for setup interface
+class Notification extends CommonDBTM {
 
-   public $type = 'prefs';
+   public $type = 'mailing';
 
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
-      $tabs[1] = $LANG['title'][26];
-      $tabs[2] = $LANG['setup'][6];
+      $tabs[1] = $LANG['common'][12];
+      $tabs[2] = $LANG['setup'][240];
+      $tabs[3] = $LANG['setup'][242];
+
+      $plug_tabs = getPluginTabs($_SERVER['PHP_SELF'],"mailing","","");
+      $tabs += $plug_tabs;
 
       return $tabs;
    }

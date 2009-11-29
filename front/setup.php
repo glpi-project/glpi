@@ -56,7 +56,7 @@ $config=array();
 
 if (haveRight("config","w")){
 	$config["setup.config.php"]=$LANG['setup'][70];
-	$config["setup.mailing.php"]=$LANG['setup'][68];
+	$config["notification.php"]=$LANG['setup'][68];
 	$config["setup.auth.php"]=$LANG['setup'][67];
 	$config["mailgate.php"]=$LANG['Menu'][39];
 	if ($CFG_GLPI["use_ocs_mode"]&&haveRight("ocsng","w"))
@@ -65,13 +65,10 @@ if (haveRight("config","w")){
 
 $data=array();
 if (haveRight("dropdown","r")||haveRight("entity_dropdown","r")){
-	$data["setup.dropdowns.php"]=$LANG['setup'][0];
+	$data["dropdown.php"]=$LANG['setup'][0];
 }
 if (haveRight("device","w")){
 	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG['title'][30];
-}
-if (haveRight("typedoc","r")){
-	$data[$CFG_GLPI["root_doc"]."/front/typedoc.php"]=$LANG['document'][7];
 }
 if (haveRight("link","r")){
 	$data[$CFG_GLPI["root_doc"]."/front/link.php"]=$LANG['setup'][87];

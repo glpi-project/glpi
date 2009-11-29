@@ -32,9 +32,8 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// TODO this class should probably extends a minimal class providing interface tools
-// like show/defineTabs :  CommonGLPI => CommonDBTM => Computer
-class Central extends CommonDBTM {
+// class Central
+class Central extends CommonGLPI {
 
    public $type = 'central';
 
