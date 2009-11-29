@@ -228,7 +228,7 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_monitortypes", "monitortypes_id", $this->fields["monitortypes_id"]);
+      dropdownValue("glpi_monitortypes", "monitortypes_id", $this->fields["monitortypes_id"],1);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

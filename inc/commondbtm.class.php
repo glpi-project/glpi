@@ -296,21 +296,19 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Mark deleted or purge an item in the database
    *
-   *@param $input array : the _POST vars returned by the item form when press delete
+   *@param $ID integer ID of the current item
    *@param $force force the purge of the item (not used if the table do not have a deleted field)
    *
    *@return true if succeed else false
    *
    **/
-   function deleteFromDB($input,$force=0) {
+   function deleteFromDB($ID,$force=0) {
       global $DB,$CFG_GLPI;
-
-      $ID = $this->fields['id'];
 
       if ($force==1 || !in_array($this->table,$CFG_GLPI["deleted_tables"])) {
          $this->cleanDBonPurge($ID);
          $this->cleanHistory($ID);
-         $this->cleanRelationData($ID, (isset($input['_replace_by']) ? $input['_replace_by'] : 0));
+         $this->cleanRelationData($ID);
          $this->cleanRelationTable($ID);
 
          $query = "DELETE
@@ -364,22 +362,16 @@ class CommonDBTM extends CommonGLPI {
    * Clear 1/N Relation
    *
    * @param $ID integer : ID of the item
-   * @param $newval integer : ID of the replacement item
    *
    *@return nothing
    *
    **/
-   function cleanRelationData($ID, $newval) {
+   function cleanRelationData($ID) {
       global $DB, $CFG_GLPI;
 
       $RELATION=getDbRelations();
       if (isset($RELATION[$this->table])) {
-         //$newval = 0;
-         //$fkname = getForeignKeyFieldForTable($this->table);
-         //if (isset($this->fields[$fkname])) {
-            // When delete a tree item, remplace by is parent
-            //$newval = $this->fields[$fkname];
-         //}
+         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
          foreach ($RELATION[$this->table] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {
@@ -851,9 +843,16 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
+      if (is_array($input)) {
+         // Store input in the object to be available in all sub-method / hook
+         $this->input = $input;
+      } else {
+         // $input clear by a hook to cancel delete
+         return false;
+      }
       if ($this->getFromDB($input[$this->getIndexName()])) {
          if ($this->pre_deleteItem($this->fields["id"])) {
-            if ($this->deleteFromDB($input, $force)) {
+            if ($this->deleteFromDB($this->fields["id"], $force)) {
                if ($force) {
                   $this->addMessageOnPurgeAction($input);
                   doHook("item_purge",array("type"=>$this->type, "id" => $this->fields["id"],
