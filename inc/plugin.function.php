@@ -303,7 +303,7 @@ function getPluginTabs($target,$itemtype,$ID,$withtemplate) {
          break;
 
       case "mailing" :
-         $tabpage="ajax/mailing.tabs.php";
+         $tabpage="ajax/notification.tabs.php";
          break;
 
       default :
