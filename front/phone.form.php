@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["unglobalize"])) {
    $phone->check($_GET["id"],'w');
 
-   unglobalizeDevice(PHONE_TYPE,$_GET["id"]);
+   Computer_Item::unglobalizeItem($phone);
    logEvent($_GET["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 

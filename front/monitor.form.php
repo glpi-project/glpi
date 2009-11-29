@@ -106,7 +106,7 @@ if (isset($_POST["add"])){
 } else if (isset($_GET["unglobalize"])) {
    $monitor->check($_GET["id"],'w');
 
-   unglobalizeDevice(MONITOR_TYPE,$_GET["id"]);
+   Computer_Item::unglobalizeItem($monitor);
    logEvent($_GET["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_GET["id"]);
 
