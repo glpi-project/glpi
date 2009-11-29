@@ -110,63 +110,53 @@ if (isset($_POST["itemtype"])){
 		$REDIRECT=$CFG_GLPI['root_doc']."/front/central.php";
 	}
 
-		switch($_POST["action"]){
-			case "connect_to_computer":
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
+      switch($_POST["action"]){
+         case "connect_to_computer":
+            if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
+               $conn = new Computer_Item();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $input = array('computers_id' => $key,
+                                    'itemtype'     => $_POST["itemtype"],
+                                    'items_id'     => $_POST["connect_item"]);
+                     if ($conn->can(-1, 'w', $input)) {
+                        $conn->add($input);
+                     }
+                  }
+               }
+            }
+            break;
 
-				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1&&$ci->getFromDB($_POST["type"],$_POST["connect_item"])) {
-							/// Items exists ?
-							if ($ci2->getFromDB(COMPUTER_TYPE,$key)){
-								/// Entity security
-								if ($ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]){
-									if ($ci->obj->fields["is_global"]
-									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["itemtype"],$key)==0)){
-										Connect($_POST["connect_item"],$key,$_POST["type"]);
-									}
-								}
-							}
-						}
-					}
-				}
+         case "connect":
+            if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
+               $conn = new Computer_Item();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $input = array('computers_id' => $_POST["connect_item"],
+                                    'itemtype'     => $_POST["itemtype"],
+                                    'items_id'     => $key);
+                     if ($conn->can(-1, 'w', $input)) {
+                        $conn->add($input);
+                     }
+                  }
+               }
+            }
+            break;
 
-			break;
-
-			case "connect":
-				$ci=new CommonItem();
-				$ci2=new CommonItem();
-
-				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1&&$ci->getFromDB($_POST["itemtype"],$key)) {
-							/// Items exists ?
-							if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
-								/// Entity security
-								if ($ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]){
-									if ($ci->obj->fields["is_global"]
-                              ||(!$ci->obj->fields["is_global"]
-                                 &&getNumberConnections($_POST["itemtype"],$key)==0)){
-										Connect($key,$_POST["connect_item"],$_POST["itemtype"]);
-									}
-								}
-							}
-						}
-					}
-				}
-
-			break;
 			case "disconnect":
+            $conn = new Computer_Item();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$query="SELECT *
+                  // TODO move this request in class
+						$query="SELECT `id`
 							FROM glpi_computers_items
 							WHERE itemtype='".$_POST["itemtype"]."' AND items_id = '$key'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							while ($data=$DB->fetch_assoc($result)){
-								Disconnect($data["id"]);
+                        if ($conn->can($data["id"],'w')) {
+                           $conn->delete($data);
+                        }
 							}
 						}
 					}
