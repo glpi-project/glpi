@@ -119,7 +119,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 		while ($line=$DB->fetch_array($result)){
 
 			if (isset($line["is_global"])&&$line["is_global"]){
-				$line["value"]*=getNumberConnections($itemtype,$line["items_id"]);
+				$line["value"] *= Computer_Item::countForItem($itemtype,$line["items_id"]);
 			}
 
 			if ($line["value"]>0) $valeursoustot+=$line["value"];

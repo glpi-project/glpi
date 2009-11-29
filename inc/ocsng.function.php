@@ -2727,7 +2727,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
 
                      if ($id_monitor) {
                         //Import unique : Disconnect monitor on other computer done in Connect function
-                        $connID = Connect($id_monitor, $computers_id, MONITOR_TYPE, $dohistory);
+                        $conn = new Computer_Item();
+                        $connID = $conn->add(array('computers_id' => $computers_id,
+                                                   'itemtype'     => MONITOR_TYPE,
+                                                   'items_id'     => $id_monitor));
 
                         if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
                            addToOcsArray($computers_id, array (0 => OCS_IMPORT_TAG_070),
@@ -2829,7 +2832,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
                            $id_printer = $p->add($input);
                         }
                         if ($id_printer) {
-                           $connID = Connect($id_printer, $computers_id, PRINTER_TYPE, $dohistory);
+                           $conn = new Computer_Item();
+                           $connID = $conn->add(array('computers_id' => $computers_id,
+                                                      'itemtype'     => PRINTER_TYPE,
+                                                      'items_id'     => $id_printer));
                            addToOcsArray($computers_id, array ($connID => $print["name"]),
                                          "import_printer");
                            //Update column "is_deleted" set value to 0 and set status to default
@@ -2912,7 +2918,10 @@ function ocsUpdatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsser
                         $id_periph = $p->add($input);
                      }
                      if ($id_periph) {
-                        $connID = Connect($id_periph, $computers_id, PERIPHERAL_TYPE, $dohistory);
+                        $conn = new Computer_Item();
+                        $connID = $conn->add(array('computers_id' => $computers_id,
+                                                   'itemtype'     => PERIPHERAL_TYPE,
+                                                   'items_id'     => $id_periph));
                         addToOcsArray($computers_id, array($connID => $periph["name"]),
                                       "import_peripheral");
                         //Update column "is_deleted" set value to 0 and set status to default
