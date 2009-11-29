@@ -44,9 +44,6 @@ class Notification extends CommonDBTM {
       $tabs[2] = $LANG['setup'][240];
       $tabs[3] = $LANG['setup'][242];
 
-      $plug_tabs = getPluginTabs($_SERVER['PHP_SELF'],"mailing","","");
-      $tabs += $plug_tabs;
-
       return $tabs;
    }
 }
