@@ -470,17 +470,18 @@ class Computer extends CommonDBTM {
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
 
-      $query="SELECT *
+      $query="SELECT `id`
               FROM `glpi_computers_items`
               WHERE `computers_id`='$ID'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
+            $conn = new Computer_Item();
             while ($data = $DB->fetch_array($result)) {
-               // Disconnect without auto actions
-               Disconnect($data["id"],1,false);
+               $data['_no_auto_action']=true;
+               $conn->delete($data);
             }
          }
-         }
+      }
 
       $query = "DELETE
                 FROM `glpi_registrykeys`

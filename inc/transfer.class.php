@@ -334,7 +334,10 @@ class Transfer extends CommonDBTM {
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
                   while ($data=$DB->fetch_array($result)) {
-                     Disconnect($data['id'],0,false);
+                     $conn = new Computer_Item();
+                     $conn->delete(array('id'             => $data['id'],
+                                         '_no_history'    => true,
+                                         '_no_auto_action'=> true));
                   }
                }
             }
@@ -551,7 +554,7 @@ class Transfer extends CommonDBTM {
                                ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.id`)
                          WHERE `glpi_contracts_items`.`itemtype` = '$itemtype'
                                AND `glpi_contracts_items`.`items_id` IN ".$this->item_search[$itemtype];
-   
+
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
                      while ($data=$DB->fetch_array($result)) {
@@ -792,7 +795,7 @@ class Transfer extends CommonDBTM {
                               ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
                          WHERE `itemtype` = '$itemtype'
                                AND `items_id` IN ".$this->item_search[$itemtype];
-   
+
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
                      while ($data=$DB->fetch_array($result)) {
@@ -1930,7 +1933,9 @@ class Transfer extends CommonDBTM {
                      } else {
                         // Else delete link
                         // Call Disconnect for global device (no disconnect behavior, but history )
-                        Disconnect($data['id'],1,false);
+                        $conn = new Computer_Item();
+                        $conn->delete(array('id'              => $data['id'],
+                                            '_no_auto_action' => true));
 
                         $need_clean_process = true;
                         // OCS clean link
@@ -1966,7 +1971,8 @@ class Transfer extends CommonDBTM {
                         $this->transferItem($link_type,$item_ID,$item_ID);
                      } else {
                         // Else delete link (apply disconnect behavior)
-                        Disconnect($data['id']);
+                        $conn = new Computer_Item();
+                        $conn->delete(array('id' => $data['id']));
 
                         //if clean -> delete
                         if ($clean == 1) {
@@ -1985,7 +1991,10 @@ class Transfer extends CommonDBTM {
                   }
                } else {
                   // Unexisting item / Force disconnect
-                  Disconnect($data['id'],0,false);
+                  $conn = new Computer_Item();
+                  $conn->delete(array('id'             => $data['id'],
+                                      '_no_history'    => true,
+                                      '_no_auto_action'=> true));
                }
             }
          }
