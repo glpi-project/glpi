@@ -109,18 +109,6 @@ if (isset($_POST["add"])) {
    logEvent($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
-} else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["id"])) {
-   $print->check($_GET["dID"],"w");
-   Disconnect($_GET["id"]);
-   logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][26]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0) {
-   $print->check($_GET["id"],"w");
-   Connect($_POST["sID"],$_POST["item"],PRINTER_TYPE);
-   logEvent($_POST["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][27]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["sID"]);
-
 } else {
    commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
 

@@ -75,7 +75,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
    } else  {
       switch($_REQUEST['glpi_tab']) {
          case -1:
-            showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
+            Computer_Item::showForItem($monitor);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
@@ -116,7 +116,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
          default :
             if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
-               showConnect($_POST['target'],$_POST['id'],MONITOR_TYPE);
+               Computer_Item::showForItem($monitor);
             }
       }
    }
