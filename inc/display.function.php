@@ -777,7 +777,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['crontask']['page']='/front/crontask.php';
       $menu['config']['content']['crontask']['links']['search']="/front/crontask.php";
       $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
-      $menu['config']['content']['mailing']['page']='/front/setup.mailing.php';
+      $menu['config']['content']['mailing']['page']='/front/notification.php';
       $menu['config']['content']['extauth']['title']=$LANG['login'][10];
       $menu['config']['content']['extauth']['page']='/front/setup.auth.php';
       $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];
