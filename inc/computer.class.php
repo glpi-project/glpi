@@ -455,8 +455,11 @@ class Computer extends CommonDBTM {
 
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
+            $conn = new Computer_Item();
             while ($data=$DB->fetch_array($result)) {
-               Connect($data["items_id"],$newID,$data["itemtype"]);
+               $conn->add(array('computers_id' => $newID,
+                                'itemtype'     => $data["itemtype"],
+                                'items_id'     => $data["items_id"]));
             }
          }
       }

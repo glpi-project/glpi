@@ -52,6 +52,20 @@ class Computer_Item extends CommonDBRelation{
    public $items_id_2 = 'items_id';
 
    /**
+    * Count connection for an item
+    *
+    * @param $itemtype integer type of the item
+    * @param $items_id integer ID of the item
+    *
+    * @return integer: count
+    */
+   static function countForItem($itemtype, $items_id) {
+      return countElementsInTable('glpi_computers_items',
+                                  "`itemtype`='$itemtype'
+                                       AND `items_id`='$items_id'");
+   }
+
+   /**
     * Check right on an item - overloaded to check is_global
     *
     * @param $ID ID of the item (-1 if new item)
@@ -70,9 +84,7 @@ class Computer_Item extends CommonDBRelation{
             return false;
          }
          if ($item->getField('is_global')==0
-             && countElementsInTable($this->table,
-                                     "`itemtype`='".$input['itemtype']."'
-                                      AND `items_id`='".$input['items_id']."'") > 0) {
+             &&  $this->countForItem($input['itemtype'],$input['items_id'])> 0) {
                return false;
          }
       }
