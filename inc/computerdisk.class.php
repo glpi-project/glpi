@@ -157,6 +157,79 @@ class ComputerDisk extends CommonDBTM {
 
       return $ong;
    }
+
+   /**
+    * Print the computers disks
+    *
+    *@param $comp Computer
+    *@param $withtemplate=''  boolean : Template or basic item.
+    *
+    *@return Nothing (call to classes members)
+    *
+    **/
+   static function showForComputer(Computer $comp, $withtemplate='') {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $ID = $comp->fields['id'];
+
+      if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r")) {
+         return false;
+      }
+      $canedit = $comp->can($ID, "w");
+
+      echo "<div class='center'>";
+
+      $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computerdisks`.*
+                FROM `glpi_computerdisks`
+                LEFT JOIN `glpi_filesystems`
+                          ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
+                WHERE (`computers_id` = '$ID')";
+
+      if ($result=$DB->query($query)) {
+         echo "<table class='tab_cadre_fixe'><tr>";
+         echo "<th colspan='6'>".$LANG['computers'][8]."</th></tr>";
+         if ($DB->numrows($result)) {
+            echo "<tr><th>".$LANG['common'][16]."</th>";
+            echo "<th>".$LANG['computers'][6]."</th>";
+            echo "<th>".$LANG['computers'][5]."</th>";
+            echo "<th>".$LANG['computers'][4]."</th>";
+            echo "<th>".$LANG['computers'][3]."</th>";
+            echo "<th>".$LANG['computers'][2]."</th>";
+            echo "</tr>";
+
+            initNavigateListItems(COMPUTERDISK_TYPE, $LANG['help'][25]." = ".
+                                  (empty($comp->fields['name']) ? "($ID)" : $comp->fields['name']));
+
+            while ($data=$DB->fetch_assoc($result)) {
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".
+                             $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+               } else {
+                  echo "<td>".$data['name'].(empty($data['name'])?$data['id']:"")."</td>";
+               }
+               echo "<td>".$data['device']."</td>";
+               echo "<td>".$data['mountpoint']."</td>";
+               echo "<td>".$data['fsname']."</td>";
+               echo "<td class='right'>".formatNumber($data['totalsize'], false, 0)."&nbsp;".
+                      $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+               echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
+                      $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+
+               addToNavigateListItems(COMPUTERDISK_TYPE,$data['id']);
+            }
+         } else {
+            echo "<tr><th colspan='6'>".$LANG['search'][15]."</th></tr>";
+         }
+      if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
+         echo "<tr class='tab_bg_2'><th colspan='6'>";
+         echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+                $withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
+      }
+      echo "</table>";
+      }
+      echo "</div><br>";
+   }
 }
 
 ?>
