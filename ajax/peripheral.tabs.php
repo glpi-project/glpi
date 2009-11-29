@@ -83,7 +83,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
+            Computer_Item::showForItem($periph);
             showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
             showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,
@@ -128,7 +128,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          default :
             if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
-               showConnect($_POST['target'],$_POST["id"],PERIPHERAL_TYPE);
+               Computer_Item::showForItem($periph);
                showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
                showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
             }

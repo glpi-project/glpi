@@ -89,7 +89,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
+            Computer_Item::showForItem($phone);
             showPortsAdd($_POST["id"],PHONE_TYPE);
             showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_POST["id"]);
@@ -132,7 +132,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
          default :
             if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
-               showConnect($_POST['target'],$_POST["id"],PHONE_TYPE);
+               Computer_Item::showForItem($phone);
                showPortsAdd($_POST["id"],PHONE_TYPE);
                showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
             }

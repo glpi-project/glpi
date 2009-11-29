@@ -88,7 +88,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
          case -1 :
             showCartridgeInstalled($_POST["id"]);
             showCartridgeInstalled($_POST["id"],1);
-            showConnect($_POST['target'],$_POST["id"],PRINTER_TYPE);
+            Computer_Item::showForItem($printer);
             showPortsAdd($_POST["id"],PRINTER_TYPE);
             showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["id"]);
@@ -100,7 +100,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 3 :
-            showConnect($_POST['target'],$_POST["id"],PRINTER_TYPE);
+            Computer_Item::showForItem($printer);
             showPortsAdd($_POST["id"],PRINTER_TYPE);
             showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
             break;

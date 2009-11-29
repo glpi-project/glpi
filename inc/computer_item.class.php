@@ -276,6 +276,244 @@ class Computer_Item extends CommonDBRelation{
          } // $ocsservers_id>0
       }
    }
+
+   /**
+    * Print the computers or template local connections form.
+    *
+    * Print the form for computers or templates connections to printers, screens or peripherals
+    *
+    *@param $target
+    *@param $ID integer: Computer or template ID
+    *@param $withtemplate=''  boolean : Template or basic item.
+    *
+    *@return Nothing (call to classes members)
+    *
+    **/
+   static function showForComputer($target, Computer $comp, $withtemplate='') {
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+
+      $ci=new CommonItem;
+      $used = array();
+      $items=array(PRINTER_TYPE=>$LANG['computers'][39],
+                   MONITOR_TYPE=>$LANG['computers'][40],
+                   PERIPHERAL_TYPE=>$LANG['computers'][46],
+                   PHONE_TYPE=>$LANG['computers'][55]);
+
+      $ID = $comp->fields['id'];
+      $canedit=$comp->can($ID,'w');
+
+      foreach ($items as $itemtype => $title) {
+         if (!haveTypeRight($itemtype,"r")) {
+            unset($items[$itemtype]);
+         }
+      }
+      if (count($items)){
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0].":</th></tr>";
+
+         echo "<tr>";
+         $header_displayed=0;
+         foreach ($items as $itemtype => $title) {
+            if ($header_displayed==2) {
+               break;
+            }
+            echo "<th>".$title.":</th>";
+            $header_displayed++;
+         }
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         $items_displayed=0;
+         foreach ($items as $itemtype=>$title) {
+            if ($items_displayed==2) {
+               echo "</tr><tr>";
+               $header_displayed=0;
+               foreach ($items as $tmp_title) {
+                  if ($header_displayed>=2) {
+                     echo "<th>".$tmp_title.":</th>";
+                  }
+                  $header_displayed++;
+               }
+               echo "</tr><tr class='tab_bg_1'>";
+            }
+            echo "<td class='center'>";
+            $query = "SELECT *
+                      FROM `glpi_computers_items`
+                      WHERE `computers_id` = '$ID'
+                            AND `itemtype` = '".$itemtype."'";
+            if ($result=$DB->query($query)) {
+               $resultnum = $DB->numrows($result);
+               if ($resultnum>0) {
+                  echo "<table width='100%'>";
+                  for ($i=0; $i < $resultnum; $i++) {
+                     $tID = $DB->result($result, $i, "items_id");
+                     $connID = $DB->result($result, $i, "id");
+                     $ci->getFromDB($itemtype,$tID);
+                     $used[] = $tID;
+
+                     echo "<tr ".($ci->getField('is_deleted')?"class='tab_bg_2_2'":"").">";
+                     echo "<td class='center'><strong>";
+                     echo $ci->getLink();
+                     echo "</strong>";
+                     echo " - ".getDropdownName("glpi_states",$ci->getField('state'));
+                     echo "</td><td>".$ci->getField('serial');
+                     echo "</td><td>".$ci->getField('otherserial');
+                     echo "</td><td>";
+                     if ($canedit && (empty($withtemplate) || $withtemplate != 2)) {
+                        echo "<td class='center'>";
+                        echo "<a href=\"".$CFG_GLPI["root_doc"].
+                               "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
+                               "disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
+                        echo $LANG['buttons'][10];
+                        echo "</strong></a></td>";
+                     }
+                     echo "</tr>";
+                  }
+                  echo "</table>";
+               } else {
+                  switch ($itemtype) {
+                     case PRINTER_TYPE :
+                        echo $LANG['computers'][38];
+                        break;
+
+                     case MONITOR_TYPE:
+                        echo $LANG['computers'][37];
+                        break;
+
+                     case PERIPHERAL_TYPE:
+                        echo $LANG['computers'][47];
+                        break;
+
+                     case PHONE_TYPE:
+                        echo $LANG['computers'][54];
+                        break;
+                  }
+                  echo "<br>";
+               }
+               if ($canedit) {
+                  if(empty($withtemplate) || $withtemplate != 2) {
+                     echo "<form method='post' action=\"$target\">";
+                     echo "<input type='hidden' name='computers_id' value='$ID'>";
+                     echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
+                     if (!empty($withtemplate)) {
+                        echo "<input type='hidden' name='_no_history' value='1'>";
+                     }
+                     dropdownConnect($itemtype,COMPUTER_TYPE,"items_id",$comp->fields["entities_id"],
+                                     $withtemplate,$used);
+                     echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9].
+                          "\" class='submit'>";
+                     echo "</form>";
+                  }
+               }
+            }
+            echo "</td>";
+            $items_displayed++;
+         }
+         echo "</tr>";
+         echo "</table></div><br>";
+      }
+   }
+
+   /**
+    * Prints a direct connection to a computer
+    *
+    * @param $target the page where we'll print out this.
+    * @param $item the Monitor/Phone/Peripheral/Printer
+    *
+    * @return nothing (print out a table)
+    *
+    */
+   static function showForItem(CommonDBTM $item) {
+      // Prints a direct connection to a computer
+      global $DB, $LANG, $CFG_GLPI;
+
+      $comp = new Computer();
+      $target = $comp->getFormURL();
+
+      $ID = $item->getField('id');
+
+      if (!$item->can($ID,"r")) {
+         return false;
+      }
+      $canedit=$item->can($ID,"w");
+
+      // Is global connection ?
+      $global=$item->getField('is_global');
+
+      $used = array();
+      $compids = array();
+      $crit = array('FIELDS'   => array('id', 'computers_id'),
+                    'itemtype' => $item->type,
+                    'items_id' => $ID);
+      foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+         $compids[$data['id']] = $data['computers_id'];
+      }
+
+      echo "<br><div class='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
+      echo $LANG['connect'][0]."&nbsp;: ".count($compids);
+      echo "</th></tr>";
+
+      if (count($compids)>0) {
+         foreach ($compids as $key => $compid) {
+            $comp->getFromDB($compid);
+            echo "<tr><td class='b tab_bg_1".($comp->fields['is_deleted']?"_2":"")."'>";
+            echo $LANG['help'][25]."&nbsp;: ".$comp->getLink()."</td>";
+            echo "<td class='tab_bg_2".($comp->fields['is_deleted']?"_2":"")." center b'>";
+            if ($canedit) {
+               echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
+                    $LANG['buttons'][10]."</a>";
+            } else {
+               echo "&nbsp;";
+            }
+            $used[] = $compid;
+         }
+      } else {
+         echo "<tr><td class='tab_bg_1'><strong>".$LANG['help'][25].": </strong>";
+         echo "<i>".$LANG['connect'][1]."</i>";
+         echo "</td>";
+         echo "<td class='tab_bg_2' class='center'>";
+         if ($canedit) {
+            echo "<form method='post' action=\"$target\">";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
+            if ($item->getField('is_recursive')) {
+               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+                               getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
+            } else {
+               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+                               $item->getField('entities_id'),0,$used);
+            }
+            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+            echo "</form>";
+         } else {
+            echo "&nbsp;";
+         }
+      }
+
+      if ($global && count($compids)>0) {
+         echo "</td></tr>";
+         echo "<tr><td class='tab_bg_1'>&nbsp;</td>";
+         echo "<td class='tab_bg_2' class='center'>";
+         if ($canedit) {
+            echo "<form method='post' action=\"$target\">";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
+            if ($item->getField('is_recursive')) {
+               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+                               getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
+            } else {
+               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+                               $item->getField('entities_id'),0,$used);
+            }
+            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+            echo "</form>";
+         } else {
+            echo "&nbsp;";
+         }
+      }
+      echo "</td></tr>";
+      echo "</table></div><br>";
+   }
+
 }
 
 ?>

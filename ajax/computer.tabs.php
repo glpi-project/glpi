@@ -71,7 +71,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 3 :
-            showConnections($_POST['target'],$_POST["id"],$_POST["withtemplate"]);
+            Computer_Item::showForComputer($_POST['target'], $computer, $_POST["withtemplate"]);
             if ($_POST["withtemplate"]!=2) {
                showPortsAdd($_POST["id"],COMPUTER_TYPE);
             }
@@ -105,7 +105,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
             showSoftwareInstalled($_POST["id"]);
-            showConnections($_POST['target'],$_POST["id"]);
+            Computer_Item::showForComputer($_POST['target'], $computer);
             showPortsAdd($_POST["id"],COMPUTER_TYPE);
             showPorts($_POST["id"], COMPUTER_TYPE);
             showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_POST["id"]);
@@ -122,7 +122,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 3 :
-            showConnections($_POST['target'],$_POST["id"]);
+            Computer_Item::showForComputer($_POST['target'], $computer);
             showPortsAdd($_POST["id"],COMPUTER_TYPE);
             showPorts($_POST["id"], COMPUTER_TYPE);
             break;

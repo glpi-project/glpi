@@ -134,6 +134,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/domain.class.php");
    include_once (GLPI_ROOT . "/inc/preference.class.php");
    include_once (GLPI_ROOT . "/inc/notification.class.php");
+   include_once (GLPI_ROOT . "/inc/computer_item.class.php");
 }
 
 // Security system

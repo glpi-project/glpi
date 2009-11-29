@@ -117,19 +117,22 @@ if (isset($_POST["add"])) {
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-//Disconnect a device
+// Disconnect a computer from a printer/monitor/phone/peripheral
 } else if (isset($_GET["disconnect"])) {
+   $conn = new Computer_Item();
+   $conn->check($_GET["id"], 'w');
+   $conn->delete($_GET);
    $computer->check($_GET['computers_id'],'w');
 
-   Disconnect($_GET["id"]);
    logEvent($_GET["computers_id"], "computers", 5, "inventory",
             $_SESSION["glpiname"]." ".$LANG['log'][26]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["connect"]) && isset($_POST["item"]) && $_POST["item"] >0) {
-   $computer->check($_POST['computers_id'],'w');
-
-   Connect($_POST["item"],$_POST["computers_id"],$_POST["itemtype"],$_POST["dohistory"]);
+// Connect a computer to a printer/monitor/phone/peripheral
+} else if (isset($_POST["connect"]) && isset($_POST["items_id"]) && $_POST["items_id"]>0) {
+   $conn = new Computer_Item();
+   $conn->check(-1, 'w', $_POST);
+   $conn->add($_POST);
    logEvent($_POST["computers_id"], "computers", 5, "inventory",
             $_SESSION["glpiname"] ." ".$LANG['log'][27]);
    glpi_header($_SERVER['HTTP_REFERER']);
