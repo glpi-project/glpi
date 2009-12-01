@@ -165,7 +165,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
    // From RuleCollection
    public $rule_class_name = 'RuleDictionnaryDropdown';
    public $right='rule_dictionnary_dropdown';
-   public $menu_option='dictionnary';
+   public $menu_type='dictionnary';
 
    // Specific ones
    /// dropdown table
@@ -178,7 +178,6 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
    function __construct($type) {
 
       $this->sub_type = $type;
-
       switch ($this->sub_type) {
          case RULE_DICTIONNARY_MANUFACTURER :
             $this->item_table="glpi_manufacturers";
