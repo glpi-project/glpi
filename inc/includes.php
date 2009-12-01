@@ -221,6 +221,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             include_once (GLPI_ROOT . "/inc/rulerightcollection.class.php");
          }
 
+         if ($item=='ldap.parameters') {
+            $item='ruleldapparameter';
+         }
+
          if ($item=='rulesengine') {
             include_once (GLPI_ROOT . "/inc/rule.class.php");
             include_once (GLPI_ROOT . "/inc/rule.function.php");

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// LDAP criteria class
-class LdapCriteria extends CommonDBTM {
+class RuleLdapParameter extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_ruleldapparameters';
