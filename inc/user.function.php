@@ -448,6 +448,8 @@ function showUserRights($target,$ID) {
 */
 function generateUserVcard($ID) {
 
+   include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
+
    $user = new User;
    $user->getFromDB($ID);
 

@@ -1197,7 +1197,7 @@ class User extends CommonDBTM {
          }
          echo "</td><td colspan='2'class='center'>";
          if ($ID>0) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.vcard.php?id=$ID'>".
+            echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"]."/front/user.form.php?getvcard=1&amp;id=$ID'>".
                   $LANG['common'][46]."</a>";
          }
          echo "</td></tr>";
