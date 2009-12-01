@@ -286,10 +286,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("cartridge","r")) {
       $menu['inventory']['content']['cartridge']['title']=$LANG['Menu'][21];
       $menu['inventory']['content']['cartridge']['shortcut']='c';
-      $menu['inventory']['content']['cartridge']['page']='/front/cartridge.php';
-      $menu['inventory']['content']['cartridge']['links']['search']='/front/cartridge.php';
+      $menu['inventory']['content']['cartridge']['page']='/front/cartridgeitem.php';
+      $menu['inventory']['content']['cartridge']['links']['search']='/front/cartridgeitem.php';
       if (haveRight("cartridge","w")) {
-         $menu['inventory']['content']['cartridge']['links']['add']='/front/cartridge.form.php';
+         $menu['inventory']['content']['cartridge']['links']['add']='/front/cartridgeitem.form.php';
       }
    }
    if (haveRight("consumable","r")) {

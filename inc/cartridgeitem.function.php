@@ -54,7 +54,7 @@ function showCartridgesAdd($ID) {
       return false;
    }
    if ($ID > 0) {
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
       echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<td class='center' class='tab_bg_2'>";
@@ -223,7 +223,7 @@ function showCartridges ($tID,$show_old=0) {
             echo "</td>";
             echo "<td class='center'>";
             if (!is_null($date_use) && $canedit) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;id=".
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?restore=restore&amp;id=".
                   $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
             } else {
                 echo "&nbsp;";
@@ -231,7 +231,7 @@ function showCartridges ($tID,$show_old=0) {
             echo "</td>";
             echo "<td class='center'>";
             if ($canedit) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;id=".
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
                   $data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
             } else {
                 echo "&nbsp;";
@@ -287,7 +287,7 @@ function showCompatiblePrinters($instID) {
       $number = $DB->numrows($result);
       $i = 0;
 
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
@@ -301,7 +301,7 @@ function showCompatiblePrinters($instID) {
          echo "<td class='center'>$type</td>";
          echo "<td class='tab_bg_2 center'>";
          echo "<a href='".$CFG_GLPI['root_doc'].
-            "/front/cartridge.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
+            "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
          echo "<strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
          $used[]=$pmid;
          $i++;
@@ -395,7 +395,7 @@ function showCartridgeInstalled($instID,$old=0) {
       echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'><td class='center'>";
       echo $data["id"];
       echo "</td><td class='center'><strong>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?id=".$data["tID"]."\">";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">";
       echo $data["type"]." - ".$data["ref"];
       echo "</a>";
       echo "</strong></td><td class='center'>";
@@ -427,7 +427,7 @@ function showCartridgeInstalled($instID,$old=0) {
       echo "</td><td class='center'>";
       if ($old!=0) {
          if ($canedit) {
-            echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
+            echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
             echo "<input type='hidden' name='cID' value='".$data['id']."'>";
             echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
             echo "<input type='image' name='update_pages' value='update_pages'
@@ -449,12 +449,12 @@ function showCartridgeInstalled($instID,$old=0) {
          if (is_null($date_out)) {
             echo "&nbsp;&nbsp;&nbsp;";
             echo "<a href='".$CFG_GLPI["root_doc"].
-               "/front/cartridge.edit.php?uninstall=uninstall&amp;id=".$data["id"].
+               "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
                "&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
          } else {
             echo "&nbsp;&nbsp;&nbsp;";
             echo "<a href='".$CFG_GLPI["root_doc"].
-               "/front/cartridge.edit.php?delete=delete&amp;id=".$data["id"].
+               "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
                "&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
          }
          echo "</td></tr>";
@@ -462,7 +462,7 @@ function showCartridgeInstalled($instID,$old=0) {
    }
    if ($old==0&&$canedit) {
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='5'>";
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
       echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
       if (dropdownCompatibleCartridges($instID)) {
          echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"

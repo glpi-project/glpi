@@ -33,80 +33,79 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('cartridge', 'contract', 'document', 'infocom', 'link', 'printer', 'supplier');
+$NEEDED_ITEMS = array ('cartridge', 'infocom');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+if (!isset($_GET["tID"])) {
+   $_GET["tID"] = "";
+}
+if (!isset($_GET["cID"])) {
+   $_GET["cID"] = "";
 }
 
-$cartype = new CartridgeType();
+$cart = new Cartridge();
+$cartype = new CartridgeItem();
 
-if (isset($_POST["add"])) {
-   $cartype->check(-1,'w',$_POST);
+if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
+   /// TODO : maybe right on printer and not on cartridge type for such a thing ?
+   $cart->check($_POST["cID"],'w');
 
-   if ($newID = $cartype->add($_POST)) {
-      logEvent($newID, "cartridges", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   if ($cart->updatePages($_POST["cID"],$_POST['pages'])) {
+      logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["id"],'w');
-
-   if ($cartype->delete($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
-
-} else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["id"],'w');
-
-   if ($cartype->restore($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
-
-} else if (isset($_POST["purge"])) {
-   $cartype->check($_POST["id"],'w');
-
-   if ($cartype->delete($_POST,1)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
-
-} else if (isset($_POST["update"])) {
-   $cartype->check($_POST["id"],'w');
-
-   if ($cartype->update($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["addtype"])) {
+} else if (isset($_POST["add_several"])) {
    $cartype->check($_POST["tID"],'w');
 
-   if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
-      logEvent($_POST["tID"], "cartridges", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][30]);
+   for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
+      unset($cart->fields["id"]);
+      $cart->add($_POST);
+   }
+   logEvent($_POST["tID"], "cartridges", 4, "inventory",
+            $_SESSION["glpiname"]." ".$LANG['log'][88].": ".$_POST["to_add"]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_GET["delete"])) {
+   $cartype->check($_GET["tID"],'w');
+
+   checkRight("cartridge","w");
+   if ($cart->delete($_GET)) {
+      logEvent($_GET["tID"], "cartridges", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][90]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_GET["deletetype"])) {
+} else if (isset($_GET["restore"])) {
    $cartype->check($_GET["tID"],'w');
 
-   if ($cartype->deleteCompatibleType($_GET["id"])) {
-      logEvent($_GET["tID"], "cartridges", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][31]);
+   if ($cart->restore($_GET)) {
+      logEvent($_GET["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][92]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["install"])) {
+   $cartype->check($_POST["tID"],'w');
+
+   if ($cart->install($_POST["pID"],$_POST["tID"])) {
+      logEvent($_POST["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][95]);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
+
+} else if (isset($_GET["uninstall"])) {
+   $cartype->check($_GET["tID"],'w');
+
+   if ($cart->uninstall($_GET["id"])) {
+      logEvent($_GET["tID"], "cartridges", 5, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][96]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
-   $cartype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-   commonFooter();
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-
 ?>

@@ -1139,7 +1139,7 @@ class Transfer extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $cart = new Cartridge();
-            $carttype = new CartridgeType();
+            $carttype = new CartridgeItem();
 
             while ($data=$DB->fetch_array($result)) {
                $need_clean_process = false;
@@ -2163,10 +2163,10 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) != 0) {
-               $cartype = new CartridgeType();
+               $cartitem = new CartridgeItem();
                while ($data = $DB->fetch_array($result)) {
                   $data = addslashes_deep($data);
-                  $cartype->addCompatibleType($newID,$data["printermodels_id"]);
+                  $cartitem->addCompatibleType($newID,$data["printermodels_id"]);
                }
             }
          }
