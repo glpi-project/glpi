@@ -163,8 +163,8 @@ class CommonItem {
                break;
 
             case CONSUMABLEITEM_TYPE :
-               require_once(GLPI_ROOT.'/inc/consumable.class.php');
-               $this->obj= new ConsumableType;
+               require_once(GLPI_ROOT.'/inc/consumableitem.class.php');
+               $this->obj= new ConsumableItem;
                break;
 
             case CARTRIDGE_TYPE :

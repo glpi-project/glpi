@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    if ($cartype->delete($_POST)) {
       logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
 } else if (isset($_POST["restore"])) {
    $cartype->check($_POST["id"],'w');
@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    if ($cartype->restore($_POST)) {
       logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
 } else if (isset($_POST["purge"])) {
    $cartype->check($_POST["id"],'w');
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    if ($cartype->delete($_POST,1)) {
       logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
 } else if (isset($_POST["update"])) {
    $cartype->check($_POST["id"],'w');

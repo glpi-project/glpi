@@ -295,12 +295,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("consumable","r")) {
       $menu['inventory']['content']['consumable']['title']=$LANG['Menu'][32];
       $menu['inventory']['content']['consumable']['shortcut']='g';
-      $menu['inventory']['content']['consumable']['page']='/front/consumable.php';
-      $menu['inventory']['content']['consumable']['links']['search']='/front/consumable.php';
+      $menu['inventory']['content']['consumable']['page']='/front/consumableitem.php';
+      $menu['inventory']['content']['consumable']['links']['search']='/front/consumableitem.php';
       if (haveRight("consumable","w")) {
-         $menu['inventory']['content']['consumable']['links']['add']='/front/consumable.form.php';
+         $menu['inventory']['content']['consumable']['links']['add']='/front/consumableitem.form.php';
       }
-      $menu['inventory']['content']['consumable']['links']['summary']='/front/consumable.php?' .
+      $menu['inventory']['content']['consumable']['links']['summary']='/front/consumableitem.php?' .
             'synthese=yes';
    }
    if (haveRight("phone","r")) {
