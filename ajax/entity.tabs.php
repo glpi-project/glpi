@@ -47,7 +47,7 @@ if (!isset($_POST["id"])) {
 
 $entity = new Entity();
 $ocsrule = new RuleOcs;
-$ldaprule = new RightAffectRule;
+$ldaprule = new RuleRight;
 
 if (!isset($_POST["start"])) {
    $_POST["start"]=0;

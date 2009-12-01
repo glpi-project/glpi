@@ -90,7 +90,6 @@ class RuleCollection {
       if ($sub_type > 0){
          $this->sub_type = $sub_type;
       }
-      echo "ruleco";
    }
 
    /**

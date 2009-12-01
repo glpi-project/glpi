@@ -801,7 +801,7 @@ class User extends CommonDBTM {
          ///Only process rules if working on the master database
          if (!$DB->isSlave()) {
             //Instanciate the affectation's rule
-            $rule = new RightRuleCollection();
+            $rule = new RuleRightCollection();
 
             //Process affectation rules :
             //we don't care about the function's return because all the datas are stored in session temporary
@@ -904,7 +904,7 @@ class User extends CommonDBTM {
 
       if (!$DB->isSlave()) {
          //Instanciate the affectation's rule
-         $rule = new RightRuleCollection();
+         $rule = new RuleRightCollection();
 
          //Process affectation rules :
          //we don't care about the function's return because all the datas are stored in session temporary

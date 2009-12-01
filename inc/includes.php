@@ -216,6 +216,11 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             include_once (GLPI_ROOT . "/inc/ruleocscollection.class.php");
          }
 
+         if ($item=='rule.right') {
+            $item='ruleright';
+            include_once (GLPI_ROOT . "/inc/rulerightcollection.class.php");
+         }
+
          if ($item=='rulesengine') {
             include_once (GLPI_ROOT . "/inc/rule.class.php");
             include_once (GLPI_ROOT . "/inc/rule.function.php");
