@@ -193,7 +193,7 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
          echo "<input class='submit' type='submit' name='import_ok' value='" .$LANG['buttons'][37] ."'>";
          echo "</td></tr>\n";
 
-         $rule = new OcsRuleCollection($ocsservers_id);
+         $rule = new RuleOcsCollection($ocsservers_id);
          foreach ($hardware as $ID => $tab) {
             $comp = new Computer;
             $comp->fields["id"] = $tab["id"];
@@ -494,7 +494,7 @@ function ocsImportComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -
    //No entity predefined, check rules
    if ($defaultentity == -1) {
       //Try to affect computer to an entity
-      $rule = new OcsRuleCollection($ocsservers_id);
+      $rule = new RuleOcsCollection($ocsservers_id);
       $data = array ();
       $data = $rule->processAllRules(array (), array (), $ocsid);
    } else {

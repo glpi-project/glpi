@@ -68,7 +68,7 @@ if (isset($_POST["update"])) {
 } else if (isset($_POST["add_rule"])) {
    $entity->check($_POST["affectentity"],'w');
 
-   $rule = new OcsAffectEntityRule;
+   $rule = new RuleOcs;
    $ruleid = $rule->add($_POST);
 
    if ($ruleid) {
@@ -117,7 +117,7 @@ if (isset($_POST["update"])) {
    $entity->check($_POST["affectentity"],'w');
 
    if (isset($_POST["delete_computer_rule"])) {
-      $rule = new OcsAffectEntityRule;
+      $rule = new RuleOcs;
    } else {
       $rule = new RightAffectRule;
    }
