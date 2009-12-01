@@ -148,8 +148,8 @@ class CommonItem {
                break;
 
             case KNOWBASE_TYPE :
-               require_once(GLPI_ROOT.'/inc/knowbase.class.php');
-               $this->obj= new kbitem;
+               require_once(GLPI_ROOT.'/inc/knowbaseitem.class.php');
+               $this->obj= new KnowbaseItem;
                break;
 
             case USER_TYPE :

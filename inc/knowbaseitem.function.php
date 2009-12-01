@@ -433,7 +433,7 @@ function showKbRecentPopular($target,$type,$faq=0) {
 function kbItemMenu($ID) {
    global $LANG, $CFG_GLPI;
 
-   $ki= new kbitem;
+   $ki= new KnowbaseItem;
    if (!$ki->can($ID,'r')) {
       return false;
    }
@@ -454,23 +454,23 @@ function kbItemMenu($ID) {
       if ($editFAQ) {
          if ($isFAQ) {
             echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
-                  $CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=$ID&amp;removefromfaq=yes\">
+                  $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
                   <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".
                      $LANG['knowbase'][7]."' title='".$LANG['knowbase'][7]."'></a></td>\n";
          } else {
             echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
-                  $CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=$ID&amp;addtofaq=yes\">
+                  $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
                   <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".
                      $LANG['knowbase'][5]."' title='".$LANG['knowbase'][5]."'></a></td>\n";
          }
       }
       echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
-            $CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=$ID&amp;modify=yes\">";
+            $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8].
             "' title='".$LANG['knowbase'][8]."'></a></td>\n";
       echo "<td class='center' width='33%'>";
       echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG['common'][55]).
-            "','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=$ID&amp;delete=yes')\">";
+            "','".$CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9].
             "' title='".$LANG['knowbase'][9]."'></a></td>";
       echo "</tr>";
@@ -500,7 +500,7 @@ function ShowKbItemFull($ID,$linkusers_id=true) {
            WHERE `id` = '$ID'";
    $DB->query($query);
 
-   $ki= new kbitem;
+   $ki= new KnowbaseItem;
    if ($ki->getFromDB($ID)) {
       if ($ki->fields["is_faq"]) {
          if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) {
@@ -517,7 +517,7 @@ function ShowKbItemFull($ID,$linkusers_id=true) {
       echo $LANG['common'][36]."&nbsp;:&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
             (isset($_SESSION['glpiactiveprofile'])
-             && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php").
+             && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbaseitem.php":"helpdesk.faq.php").
             "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
       echo "</th></tr>";
 

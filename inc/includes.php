@@ -198,6 +198,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             include_once (GLPI_ROOT . "/inc/consumable.class.php");
          }
 
+         if ($item=='knowbase') {
+            $item='knowbaseitem';
+         }
+
          if ($item=='computer') {
             include_once (GLPI_ROOT . "/inc/computerdisk.class.php");
          }

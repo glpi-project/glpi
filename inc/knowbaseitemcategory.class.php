@@ -59,7 +59,7 @@ class KnowbaseItemCategory extends CommonDropdown {
       if (parent::haveChildren()) {
          return true;
       }
-      $kb = new kbitem();
+      $kb = new KnowbaseItem();
       $fk = getForeignKeyFieldForTable($this->table);
       $id = $this->fields['id'];
 
