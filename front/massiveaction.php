@@ -434,7 +434,7 @@ if (isset($_POST["itemtype"])){
 			break;
 
 			case "compute_software_category":
-				$softcatrule = new SoftwareCategoriesRuleCollection;
+				$softcatrule = new RuleSoftwareCategoryCollection;
 				$soft = new Software;
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
@@ -452,7 +452,7 @@ if (isset($_POST["itemtype"])){
 			break;
 
 			case "replay_dictionnary":
-				$softdictionnayrule = new RuleDictionnarySoftwareCollection;
+				$softdictionnayrule = new RuleSoftwareCategoryCollection;
 				$ids=array();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1)

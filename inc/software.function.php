@@ -1427,7 +1427,7 @@ function addSoftware($name, $manufacturer, $entity, $comment = '') {
       $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 
       //Process software's category rules
-      $softcatrule = new SoftwareCategoriesRuleCollection;
+      $softcatrule = new RuleSoftwareCategoryCollection;
       $result = $softcatrule->processAllRules(null, null, $input);
       if (!empty ($result) && isset ($result["softwarecategories_id"])) {
          $input["softwarecategories_id"] = $result["softwarecategories_id"];
@@ -1481,7 +1481,7 @@ function removeSoftwareFromTrash($ID) {
 
    $s = new Software;
    $s->getFromDB($ID);
-   $softcatrule = new SoftwareCategoriesRuleCollection;
+   $softcatrule = new RuleSoftwareCategoryCollection;
    $result = $softcatrule->processAllRules(null, null, $s->fields);
 
    if (!empty ($result) && isset ($result["softwarecategories_id"])) {

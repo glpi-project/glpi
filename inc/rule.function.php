@@ -267,22 +267,22 @@ function getRuleClass($type) {
          return new RuleRight();
 
       case RULE_TRACKING_AUTO_ACTION :
-         if (!class_exists('TrackingBusinessRule')) {
+         if (!class_exists('RuleTicket')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
+            include_once(GLPI_ROOT."/inc/ruleticket.class.php");
          }
-         return new TrackingBusinessRule();
+         return new RuleTicket();
 
       case RULE_SOFTWARE_CATEGORY :
-         if (!class_exists('SoftwareCategoriesRule')) {
+         if (!class_exists('RuleSoftwareCategory')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
+            include_once(GLPI_ROOT."/inc/rulesoftwarecategory.class.php");
          }
-         return new SoftwareCategoriesRule();
+         return new RuleSoftwareCategory();
 
       case RULE_DICTIONNARY_SOFTWARE :
          if (!class_exists('RuleDictionnarySoftware')) {
@@ -344,28 +344,31 @@ function getRuleCollectionClass($type) {
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
             include_once(GLPI_ROOT."/inc/ruleright.class.php");
+            include_once(GLPI_ROOT."/inc/rulerightcollection.class.php");
          }
          return new RuleRightCollection();
 
       case RULE_TRACKING_AUTO_ACTION :
-         if (!class_exists('TrackingBusinessRuleCollection')) {
+         if (!class_exists('RuleTicketCollection')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
+            include_once(GLPI_ROOT."/inc/ruleticket.class.php");
+            include_once(GLPI_ROOT."/inc/ruleticketcollection.class.php");
          }
-         return new TrackingBusinessRuleCollection();
+         return new RuleTicketCollection();
 
       case RULE_SOFTWARE_CATEGORY :
-         if (!class_exists('SoftwareCategoriesRuleCollection')) {
+         if (!class_exists('RuleSoftwareCategoryCollection')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
+            include_once(GLPI_ROOT."/inc/rulesoftwarecategory.class.php");
+            include_once(GLPI_ROOT."/inc/rulesoftwarecategorycollection.class.php");
          }
-         return new SoftwareCategoriesRuleCollection();
+         return new RuleSoftwareCategoryCollection();
 
       case RULE_DICTIONNARY_SOFTWARE :
          if (!class_exists('RuleDictionnarySoftwareCollection')) {

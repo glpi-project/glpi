@@ -552,17 +552,17 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
 
          $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
-         $menu['admin']['content']['rule']['options']['ticket']['page']='/front/rule.tracking.php';
-         $menu['admin']['content']['rule']['options']['ticket']['links']['search']='/front/rule.tracking.php';
+         $menu['admin']['content']['rule']['options']['ticket']['page']='/front/ruleticket.php';
+         $menu['admin']['content']['rule']['options']['ticket']['links']['search']='/front/ruleticket.php';
          if (haveRight("rule_ticket","w")) {
-            $menu['admin']['content']['rule']['options']['ticket']['links']['add']='/front/rule.tracking.form.php';
+            $menu['admin']['content']['rule']['options']['ticket']['links']['add']='/front/ruleticket.form.php';
          }
 
          $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
-         $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rule.softwarecategories.php';
-         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rule.softwarecategories.php';
+         $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rulesoftwarecategory.php';
+         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rulesoftwarecategory.php';
          if (haveRight("rule_softwarecategories","w")) {
-            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rule.softwarecategories.form.php';
+            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rulesoftwarecategory.form.php';
          }
       }
    }

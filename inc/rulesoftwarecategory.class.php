@@ -32,30 +32,35 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 
+/**
+* Rule class store all informations about a GLPI rule :
+*   - description
+*   - criterias
+*   - actions
+*
+**/
+class RuleSoftwareCategory extends Rule {
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+   // From Rule
+   public $sub_type = RULE_SOFTWARE_CATEGORY;
+   public $right='rule_softwarecategories';
+   public $can_sort=true;
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","rule",-1);
+   function getTitle() {
+      global $LANG;
 
-	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
-	if ($CFG_GLPI["use_ocs_mode"]&&haveRight("rule_ocs","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ruleocs.php\"><strong>" . $LANG['rulesengine'][18] .
- "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_ldap","r")){
-		echo "<tr class='tab_bg_1'><td align='center'><a href=\"ruleright.php\"><strong>" .$LANG['rulesengine'][19] . "</strong></a></td> </tr>";
-	}
-	if (haveRight("rule_ticket","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ruleticket.php\"><strong>" . $LANG['rulesengine'][28] . "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_softwarecategories","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rulesoftwarecategory.php\"><strong>" . $LANG['rulesengine'][37] . "</strong></a></td></tr>";
-	}
+      return $LANG['rulesengine'][37];
+   }
 
-	echo "</table></div>";
-commonFooter();
+   function maxActionsCount() {
+      return 1;
+   }
+
+}
+
 ?>

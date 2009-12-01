@@ -36,66 +36,23 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
-class SoftwareCategoriesRuleCollection extends RuleCollection {
+class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = RULE_SOFTWARE_CATEGORY;
-   public $rule_class_name = 'SoftwareCategoriesRule';
-   public $stop_on_first_match=true;
-   public $right='rule_softwarecategories';
-   public $menu_option='softwarecategories';
-
-
-   function getTitle() {
-      global $LANG;
-
-      return $LANG['rulesengine'][37];
-   }
-
-   /**
-    * Get the attributes needed for processing the rules
-    * @param $input input data
-    * @param $software software data array
-    * @return an array of attributes
-    */
-   function prepareInputDataForProcess($input,$software) {
-
-      $params["name"]=$software["name"];
-      if (isset($software["comment"])) {
-         $params["comment"]=$software["comment"];
-      }
-      if (isset($software["manufacturers_id"])) {
-         $params["manufacturer"]=getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
-      }
-      return $params;
-   }
-
-}
-
-
-/**
-* Rule class store all informations about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-*
-**/
-class SoftwareCategoriesRule extends Rule {
-
-   // From Rule
-   public $sub_type = RULE_SOFTWARE_CATEGORY;
-   public $right='rule_softwarecategories';
-   public $can_sort=true;
+   public $sub_type = RULE_TRACKING_AUTO_ACTION;
+   public $rule_class_name = 'RuleTicket';
+   public $right = 'rule_ticket';
+   public $use_output_rule_process_as_next_input=true;
+   public $menu_option='ticket';
 
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][37];
+      return $LANG['rulesengine'][28];
    }
 
-   function maxActionsCount() {
-      return 1;
+   function preProcessPreviewResults($output) {
+      return showPreviewAssignAction($output);
    }
 
 }

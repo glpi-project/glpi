@@ -220,6 +220,15 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             $item='ruleright';
             include_once (GLPI_ROOT . "/inc/rulerightcollection.class.php");
          }
+         if ($item=='rule.tracking') {
+            $item='ruleticket';
+            include_once (GLPI_ROOT . "/inc/ruleticketcollection.class.php");
+         }
+
+         if ($item=='rule.softwarecategories') {
+            $item='rulesoftwarecategory';
+            include_once (GLPI_ROOT . "/inc/rulesoftwarecategorycollection.class.php");
+         }
 
          if ($item=='ldap.parameters') {
             $item='ruleldapparameter';
