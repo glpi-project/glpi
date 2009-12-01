@@ -48,7 +48,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 $ONLY_UNDEFINED=true;
 
 
-$softcatrule = new SoftwareCategoriesRuleCollection;
+$softcatrule = new RuleSoftwareCategoryCollection;
 $soft = new Software;
 
 $query="SELECT id, ticketcategories_id FROM glpi_softwares";

@@ -32,15 +32,45 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 
-$NEEDED_ITEMS = array('rulesengine', 'rule.tracking');
+class RuleSoftwareCategoryCollection extends RuleCollection {
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+   // From RuleCollection
+   public $sub_type = RULE_SOFTWARE_CATEGORY;
+   public $rule_class_name = 'RuleSoftwareCategory';
+   public $stop_on_first_match=true;
+   public $right='rule_softwarecategories';
+   public $menu_option='softwarecategories';
 
-$rulecollection = new TrackingBusinessRuleCollection();
 
-include (GLPI_ROOT . "/front/rule.common.php");
+   function getTitle() {
+      global $LANG;
+
+      return $LANG['rulesengine'][37];
+   }
+
+   /**
+    * Get the attributes needed for processing the rules
+    * @param $input input data
+    * @param $software software data array
+    * @return an array of attributes
+    */
+   function prepareInputDataForProcess($input,$software) {
+
+      $params["name"]=$software["name"];
+      if (isset($software["comment"])) {
+         $params["comment"]=$software["comment"];
+      }
+      if (isset($software["manufacturers_id"])) {
+         $params["manufacturer"]=getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
+      }
+      return $params;
+   }
+
+}
 
 ?>

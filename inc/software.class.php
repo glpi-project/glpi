@@ -112,7 +112,7 @@ class Software extends CommonDBTM {
 
       //If category was not set by user (when manually adding a user)
       if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
-         $softcatrule = new SoftwareCategoriesRuleCollection;
+         $softcatrule = new RuleSoftwareCategoryCollection;
          $result = $softcatrule->processAllRules(null,null,$input);
          if (!empty($result) && isset($result["softwarecategories_id"])) {
             $input["softwarecategories_id"]=$result["softwarecategories_id"];

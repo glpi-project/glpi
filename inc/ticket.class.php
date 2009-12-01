@@ -760,7 +760,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Process Business Rules
-      $rules=new TrackingBusinessRuleCollection();
+      $rules=new RuleTicketCollection();
 
       // Set unset variables with are needed
       $user=new User();
