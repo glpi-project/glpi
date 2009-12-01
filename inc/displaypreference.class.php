@@ -57,6 +57,43 @@ class DisplayPreference extends CommonDBTM {
    }
 
    /**
+    * Get display preference for an user for an itemtype
+    *
+    *@param $itemtype itemtype
+    *@param $user_id user ID
+    *
+    **/
+   static function getForTypeUser ($itemtype,$user_id) {
+      global $DB;
+
+      // Add default items for user
+      $query = "SELECT *
+               FROM `glpi_displaypreferences`
+               WHERE `itemtype` = '$itemtype'
+                     AND `users_id` = '$user_id'
+               ORDER BY `rank`";
+      $result=$DB->query($query);
+
+      // GET default serach options
+      if ($DB->numrows($result)==0) {
+         $query = "SELECT *
+                  FROM `glpi_displaypreferences`
+                  WHERE `itemtype` = '$itemtype'
+                        AND `users_id` = '0'
+                  ORDER BY `rank`";
+         $result=$DB->query($query);
+      }
+
+      $prefs=array();
+      if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_array($result)) {
+            array_push($prefs,$data["num"]);
+         }
+      }
+      return $prefs;
+   }
+
+   /**
     * Active personal config based on global one
     *
     *@param $input parameter array (itemtype,users_id)
