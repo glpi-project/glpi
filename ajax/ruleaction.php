@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-include_once (GLPI_ROOT."/inc/rulesengine.function.php");
+include_once (GLPI_ROOT."/inc/rule.function.php");
 
 if (!isset($RULES_ACTIONS)) {
    include(GLPI_ROOT."/inc/rules.constant.php");

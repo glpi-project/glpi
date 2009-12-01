@@ -29,31 +29,57 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-// Direct access to file
-if (strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")) {
-   $NEEDED_ITEMS = array("tracking");
-   define('GLPI_ROOT','..');
-   include (GLPI_ROOT."/inc/includes.php");
-   header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
-}
-
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
 
-include_once (GLPI_ROOT."/inc/rule.function.php");
-checkLoginUser();
+class RuleAction extends CommonDBTM {
 
-// Non define case
-if (isset($_POST["sub_type"])) {
-   $rule=getRuleClass($_POST["sub_type"]);
-   $criterias=$rule->getCriterias();
-   $rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
+   // From CommonDBTM
+   public $table = 'glpi_ruleactions';
+
+   /**
+    * Get all actions for a given rule
+    * @param $ID the rule_description ID
+    * @return an array of RuleAction objects
+   **/
+   function getRuleActions($ID) {
+      global $DB;
+
+      $sql = "SELECT *
+              FROM `glpi_ruleactions`
+              WHERE `rules_id` = '$ID'";
+      $result = $DB->query($sql);
+
+      $rules_actions = array ();
+      while ($rule = $DB->fetch_array($result)) {
+         $tmp = new RuleAction;
+         $tmp->fields = $rule;
+         $rules_actions[] = $tmp;
+      }
+      return $rules_actions;
+   }
+
+   /**
+    * Add an action
+    * @param $action action type
+    * @param $ruleid rule ID
+    * @param $field field name
+    * @param $value value
+   **/
+   function addActionByAttributes($action,$ruleid,$field,$value) {
+
+      $ruleAction = new RuleAction;
+      $input["action_type"]=$action;
+      $input["field"]=$field;
+      $input["value"]=$value;
+      $input["rules_id"]=$ruleid;
+      $ruleAction->add($input);
+   }
+
 }
 
 ?>

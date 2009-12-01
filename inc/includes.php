@@ -200,6 +200,15 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             $item='reservationitem';
             include_once (GLPI_ROOT . "/inc/reservation.class.php");
          }
+         if ($item=='rulesengine') {
+            include_once (GLPI_ROOT . "/inc/rule.class.php");
+            include_once (GLPI_ROOT . "/inc/rule.function.php");
+            include_once (GLPI_ROOT . "/inc/rulecollection.class.php");
+            include_once (GLPI_ROOT . "/inc/rulecriteria.class.php");
+            include_once (GLPI_ROOT . "/inc/ruleaction.class.php");
+            include_once (GLPI_ROOT . "/inc/rulecached.class.php");
+            include_once (GLPI_ROOT . "/inc/rulecachedcollection.class.php");
+         }
          if ($item=='cartridge') {
             $item='cartridgeitem';
             include_once (GLPI_ROOT . "/inc/cartridge.class.php");

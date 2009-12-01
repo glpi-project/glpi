@@ -252,35 +252,44 @@ function getRuleClass($type) {
    switch ($type) {
       case RULE_OCS_AFFECT_COMPUTER :
          if (!class_exists('OcsAffectEntityRule')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
          }
          return new OcsAffectEntityRule();
 
       case RULE_AFFECT_RIGHTS :
          if (!class_exists('RightAffectRule')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rule.right.class.php");
          }
          return new RightAffectRule();
 
       case RULE_TRACKING_AUTO_ACTION :
          if (!class_exists('TrackingBusinessRule')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
          }
          return new TrackingBusinessRule();
 
       case RULE_SOFTWARE_CATEGORY :
          if (!class_exists('SoftwareCategoriesRule')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
+            include_once(GLPI_ROOT."/inc/rulecached.class.php");
+            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
          }
          return new SoftwareCategoriesRule();
 
       case RULE_DICTIONNARY_SOFTWARE :
          if (!class_exists('DictionnarySoftwareRule')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
+            include_once(GLPI_ROOT."/inc/rulecached.class.php");
+            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.dictionnary.software.class.php");
          }
          return new DictionnarySoftwareRule;
@@ -302,7 +311,10 @@ function getRuleClass($type) {
       case RULE_DICTIONNARY_OS_SP :
       case RULE_DICTIONNARY_OS_VERSION :
          if (!class_exists('DictionnaryDropdownCollection')) {
-            include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
+            include_once(GLPI_ROOT."/inc/rule.class.php");
+            include_once(GLPI_ROOT."/inc/rulecached.class.php");
+            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.dictionnary.dropdown.class.php");
          }
          return new RuleDictionnaryDropdown($type);
