@@ -465,7 +465,7 @@ function displayItemLogID($type,$items_id) {
    } else {
       if ($type=="infocom") {
          echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=".
+               "/front/infocom.form.php?id=$items_id','infocoms','location=infocoms,width=".
                "1000,height=400,scrollbars=no')\">$items_id</a>";
       } else {
          if ($items_id=="-1" || $items_id=="0") {
@@ -479,7 +479,7 @@ function displayItemLogID($type,$items_id) {
 
                case "infocom" :
                   echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
-                        "/front/infocom.show.php?id=$items_id','infocoms','location=infocoms,width=".
+                        "/front/infocom.form.php?id=$items_id','infocoms','location=infocoms,width=".
                         "1000,height=400,scrollbars=no')\">$items_id</a>";
                   break;
 
