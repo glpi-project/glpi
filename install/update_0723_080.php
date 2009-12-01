@@ -91,7 +91,7 @@ function update0723to080() {
       'glpi_device_ram'                   => 'glpi_devicememories',
       'glpi_dropdown_ram_type'            => 'glpi_devicememorytypes',
       'glpi_device_sndcard'               => 'glpi_devicesoundcards',
-      'glpi_display'                      => 'glpi_displayprefs',
+      'glpi_display'                      => 'glpi_displaypreferences',
       'glpi_docs'                         => 'glpi_documents',
       'glpi_dropdown_rubdocs'             => 'glpi_documentcategories',
       'glpi_type_docs'                    => 'glpi_documenttypes',
@@ -438,9 +438,9 @@ function update0723to080() {
                            'tables' => array('glpi_documents')),
                      ),
    'FK_users' => array(array('to' => 'users_id',
-                              'noindex' => array('glpi_displayprefs','glpi_bookmarks_users',
+                              'noindex' => array('glpi_displaypreferences','glpi_bookmarks_users',
                                  'glpi_groups_users',),
-                              'tables' => array('glpi_bookmarks', 'glpi_displayprefs',
+                              'tables' => array('glpi_bookmarks', 'glpi_displaypreferences',
                                  'glpi_documents', 'glpi_groups','glpi_reminders',
                                  'glpi_bookmarks_users','glpi_groups_users','glpi_profiles_users',
                                  'glpi_computers', 'glpi_monitors',
@@ -621,7 +621,7 @@ function update0723to080() {
                   array('to' => 'usercategories_id',
                            'tables' => array('glpi_users')),
                   array('to' => 'itemtype', 'noindex' => array('glpi_computers_items'),
-                           'tables' => array('glpi_computers_items','glpi_displayprefs')),
+                           'tables' => array('glpi_computers_items','glpi_displaypreferences')),
                      ),
    'update_software' => array(array('to' => 'softwares_id',
                            'tables' => array('glpi_softwares')),
@@ -1172,7 +1172,7 @@ function update0723to080() {
                               array('from' => 'alert', 'to' => 'alert', 'default' =>0),//
                               array('from' => 'renewal', 'to' => 'renewal', 'default' =>0, 'noindex'=>true),//
                               ),
-      'glpi_displayprefs' => array(array('from' => 'num', 'to' => 'num', 'default' =>0,),//
+      'glpi_displaypreferences' => array(array('from' => 'num', 'to' => 'num', 'default' =>0,),//
                               array('from' => 'rank', 'to' => 'rank', 'default' =>0,),//
                               ),
       'glpi_events' => array(array('from' => 'level', 'to' => 'level', 'default' =>0,),//
@@ -1409,8 +1409,8 @@ function update0723to080() {
       $changes['glpi_contracts_suppliers'][]="ADD UNIQUE `unicity` ( `suppliers_id` , `contracts_id`)";
    }
 
-   if (!isIndex('glpi_displayprefs', 'unicity')) {
-      $changes['glpi_displayprefs'][]="ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)";
+   if (!isIndex('glpi_displaypreferences', 'unicity')) {
+      $changes['glpi_displaypreferences'][]="ADD UNIQUE `unicity` ( `users_id` , `itemtype`, `num`)";
    }
 
    if (!isIndex('glpi_bookmarks_users', 'unicity')) {
@@ -1553,7 +1553,7 @@ function update0723to080() {
          'glpi_contacts_suppliers' => array('FK_enterprise'),
          'glpi_contracts_items' => array('FK_contract_device','device_type'),
          'glpi_contracts_suppliers' => array('FK_enterprise'),
-         'glpi_displayprefs' => array('display','FK_users'),
+         'glpi_displaypreferences' => array('display','FK_users'),
          'glpi_bookmarks_users' => array('FK_users'),
          'glpi_documents_items' => array('FK_doc_device','device_type','FK_device'),
          'glpi_knowbaseitemcategories' => array('parentID_2','parentID'),
@@ -1766,18 +1766,18 @@ function update0723to080() {
 	}
 
    // Change mailgate search pref : add ative
-	$query="SELECT DISTINCT users_id FROM glpi_displayprefs WHERE itemtype=".MAILGATE_TYPE.";";
+	$query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype=".MAILGATE_TYPE.";";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)>0) {
 			while ($data = $DB->fetch_assoc($result)) {
-				$query="SELECT max(rank) FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND itemtype=".MAILGATE_TYPE.";";
+				$query="SELECT max(rank) FROM glpi_displaypreferences WHERE users_id='".$data['users_id']."' AND itemtype=".MAILGATE_TYPE.";";
 				$result=$DB->query($query);
 				$rank=$DB->result($result,0,0);
 				$rank++;
-				$query="SELECT * FROM glpi_displayprefs WHERE users_id='".$data['users_id']."' AND num=2 AND itemtype=".MAILGATE_TYPE.";";
+				$query="SELECT * FROM glpi_displaypreferences WHERE users_id='".$data['users_id']."' AND num=2 AND itemtype=".MAILGATE_TYPE.";";
 				if ($result2=$DB->query($query)) {
 					if ($DB->numrows($result2)==0) {
-						$query="INSERT INTO glpi_displayprefs (itemtype ,`num` ,`rank` ,users_id) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['users_id']."');";
+						$query="INSERT INTO glpi_displaypreferences (itemtype ,`num` ,`rank` ,users_id) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['users_id']."');";
 						$DB->query($query);
 					}
 				}
@@ -1941,10 +1941,10 @@ function update0723to080() {
          (12, NULL, 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_displayprefs` (`itemtype`, `num`, `rank`, `users_id`)
+      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
          VALUES (49, 8, 1, 0), (49, 3, 2, 0),
                 (49, 4, 3, 0),  (49, 7, 4, 0);";
-      $DB->query($query) or die("0.80 populate glpi_displayprefs for glpi_crontasks" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 populate glpi_displaypreferences for glpi_crontasks" . $LANG['update'][90] . $DB->error());
    }
 
    if (!TableExists('glpi_crontasklogs')) {

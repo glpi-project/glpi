@@ -44,7 +44,7 @@ if (!isset($_POST["id"]) || !isset($_POST["itemtype"])) {
    exit();
 }
 
-$setupdisplay=new SetupSearchDisplay();
+$setupdisplay=new DisplayPreference();
 
 checkSeveralRightsOr(array("search_config_global"=>"w",
                            "search_config"=>"w"));

@@ -47,7 +47,7 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")) {
 
 checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
-$setupdisplay=new SetupSearchDisplay();
+$setupdisplay=new DisplayPreference();
 
 if (isset($_POST["activate"])) {
    $setupdisplay->activatePerso($_POST);

@@ -67,7 +67,7 @@ if (isset($_SESSION["glpipopup"]["name"])){
 				echo "window.opener.location.reload();";
 				echo "</script>";
 			}
-			include "setup.display.php";
+			include "displaypreference.form.php";
 			popFooter();
 		break;
 		case "test_rule":
