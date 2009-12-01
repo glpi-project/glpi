@@ -43,36 +43,27 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(!isset($_GET["id"])) $_GET["id"] = "";
 
-$mailgate=new Mailgate();
+$mailgate=new MailCollector();
 
-
-if (isset($_POST["add"]))
-{
+if (isset($_POST["add"])) {
 	$mailgate->check(-1,'w');
 	$newID=$mailgate->add($_POST);
 	logEvent($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
+} else if (isset($_POST["delete"])) {
 	$mailgate->check($_POST['id'],'w');
 	$mailgate->delete($_POST);
 	logEvent($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
-}
-else if (isset($_POST["update"]))
-{
+} else if (isset($_POST["update"])) {
 	$mailgate->check($_POST['id'],'w');
 	$mailgate->update($_POST);
 	logEvent($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["get_mails"]))
-{
+} else if (isset($_POST["get_mails"])) {
 	$mailgate->check($_POST['id'],'w');
 
-	$mc=new MailCollect();
-	$mc->collect($_POST["id"],1);
+	$mailgate->collect($_POST["id"],1);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

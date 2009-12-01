@@ -188,6 +188,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='registry') {
             $item='registrykey';
          }
+         if ($item=='mailgate') {
+            $item='mailcollector';
+         }
          if ($item=='cartridge') {
             $item='cartridgeitem';
             include_once (GLPI_ROOT . "/inc/cartridge.class.php");
