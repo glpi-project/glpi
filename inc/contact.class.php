@@ -212,7 +212,7 @@ class Contact extends CommonDBTM{
       echo "</td>";
       echo "<td></td><td class='center'>";
       if ($ID>0) {
-         echo "<a target=_blank href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?getvcard=1&amp;id=$ID'>".
+         echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?getvcard=1&amp;id=$ID'>".
                 $LANG['common'][46]."</a>";
       }
       echo "</td></tr>";
