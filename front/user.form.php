@@ -56,7 +56,7 @@ if (!isset($_GET["order"])) {
 
 
 $user = new User();
-$groupuser = new GroupUser();
+$groupuser = new Group_User();
 
 if (empty($_GET["id"])&&isset($_GET["name"])) {
 

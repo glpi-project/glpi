@@ -237,6 +237,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='planning') {
             $item='ticketplanning';
          }
+         if ($item=='group') {
+            include_once (GLPI_ROOT . "/inc/group_user.class.php");
+         }
 
          if ($item=='tracking') {
             $item='ticket';
