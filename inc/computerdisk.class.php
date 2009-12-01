@@ -88,7 +88,8 @@ class ComputerDisk extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $this->check(-1,'w');
+         $input=array('computers_id'=>$computers_id);
+         $this->check(-1,'w',$input);
          $this->getEmpty();
       }
 
