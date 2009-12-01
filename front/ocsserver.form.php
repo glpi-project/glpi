@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,45 +34,44 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-$NEEDED_ITEMS = array('ocsadmininfoslink', 'ocsng', 'search', 'setup', 'user');
+
+
+$NEEDED_ITEMS = array ('ocsadmininfoslink', 'ocsng', 'search', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset ($_POST["id"])) {
-   exit ();
-}
 
 checkRight("ocsng", "w");
+$ocs = new OcsServer();
 
-$ocs = new Ocsng();
-switch ($_REQUEST['glpi_tab']) {
-   case -1 :
-      $ocs->showDBConnectionStatus($_POST["id"]);
-      $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
-      $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
-      $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
-      break;
+if(!isset($_GET["id"])) $_GET["id"] = "";
 
-   case 2 :
-      $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
-      break;
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
-   case 3 :
-      $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
-      break;
-
-   case 4 :
-      $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
-      break;
-
-   default :
-      if (!displayPluginAction(OCSNG_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],"")) {
-         $ocs->showDBConnectionStatus($_POST["id"]);
-      }
+//Delete template or server
+if (isset ($_POST["delete"])) {
+	$ocs->delete($_POST);
+	glpi_header($CFG_GLPI["root_doc"] . "/front/ocsserver.php");
 }
+//Update server
+elseif (isset ($_POST["update"])) {
+	$ocs->update($_POST);
+	glpi_header($_SERVER["HTTP_REFERER"]);
+}
+//Update server
+elseif (isset ($_POST["update_server"])) {
+	$ocs->update($_POST);
+	//$ocs->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+	glpi_header($_SERVER["HTTP_REFERER"]);
+}
+//Add new server
+elseif (isset ($_POST["add"])) {
+	$newid = $ocs->add($_POST);
+	glpi_header($_SERVER["HTTP_REFERER"]);
+}
+//Other
+else
+	$ocs->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
 
-ajaxFooter();
+commonFooter();
 ?>
