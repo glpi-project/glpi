@@ -579,7 +579,6 @@ function showList ($itemtype,$params) {
          array_push($toview,$val);
       }
    }
-   
 
    // Add searched items
    if (count($field)>0) {

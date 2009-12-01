@@ -84,9 +84,9 @@ checkRight("reports","r");
 				$ID=$ligne['id'];
 				$lieu=getDropdownName("glpi_locations",$ID);
 				//$etage=$ligne['etage'];
-				$nw=new NetWire();
+				$nw=new NetworkPort_NetworkPort();
 				$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
-				$np=new Netport();
+				$np=new NetworkPort();
 
 				$ordi="";
 				$ip2="";
@@ -105,10 +105,10 @@ checkRight("reports","r");
 				$ip=$ligne['ip'];
 				$mac=$ligne['mac'];
 				$port=$ligne['port'];
-				$np=new Netport();
+				$np=new NetworkPort();
 				$np->getFromDB($ligne['IDport']);
 
-				$nd=new Netdevice();
+				$nd=new NetworkEquipment();
 				$nd->getFromDB($np->fields["items_id"]);
 				$switch=$nd->fields["name"];
 

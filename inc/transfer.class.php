@@ -2541,7 +2541,7 @@ class Transfer extends CommonDBTM {
    function transferNetworkLink($itemtype, $ID, $newID, $ocs_computer=false) {
       global $DB;
 
-      $np = new Netport();
+      $np = new NetworkPort();
 
       $query = "SELECT *
                 FROM `glpi_networkports`

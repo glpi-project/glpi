@@ -247,8 +247,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("networking","r")) {
       $menu['inventory']['content']['networking']['title']=$LANG['Menu'][1];
       $menu['inventory']['content']['networking']['shortcut']='n';
-      $menu['inventory']['content']['networking']['page']='/front/networking.php';
-      $menu['inventory']['content']['networking']['links']['search']='/front/networking.php';
+      $menu['inventory']['content']['networking']['page']='/front/networkequipment.php';
+      $menu['inventory']['content']['networking']['links']['search']='/front/networkequipment.php';
       if (haveRight("networking","w")) {
          $menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?' .
                 'itemtype='.NETWORKING_TYPE.'&amp;add=1';

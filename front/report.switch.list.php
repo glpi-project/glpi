@@ -73,9 +73,9 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 		while( $ligne = $DB->fetch_array($result)){
 			$switch = $ligne['switch'];
 			$port = $ligne['port'];
-			$nw=new NetWire();
+			$nw=new NetworkPort_NetworkPort();
 			$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
-			$np=new Netport();
+			$np=new NetworkPort();
 			$ip2="";
 			$mac2="";
 			$portordi="";

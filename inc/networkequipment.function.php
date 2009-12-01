@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-///// Manage Netdevices /////
+///// Manage NetworkEquipment /////
 
 ///// Manage Ports on Devices /////
 
@@ -68,7 +68,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             if ($canedit) {
                $colspan++;
                echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                      action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">\n";
+                      action=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php\">\n";
             }
          }
          echo "<div class='center'><table class='tab_cadre_fixe'>\n";
@@ -98,7 +98,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
 
          $i = 0;
          while ($devid = $DB->fetch_row($result)) {
-            $netport = new Netport;
+            $netport = new NetworkPort;
             $netport->getFromDB(current($devid));
             addToNavigateListItems(NETWORKING_PORT_TYPE,$netport->fields["id"]);
 
@@ -110,7 +110,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             }
             echo "<td class='center'><strong>";
             if ($canedit && $withtemplate != 2) {
-               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?id=" .
+               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
                       $netport->fields["id"] . "\">";
             }
             echo $netport->fields["logical_number"];
@@ -173,7 +173,7 @@ function showPortVLAN($ID, $withtemplate) {
          echo "<tr><td>" . getDropdownName("glpi_vlans", $line["vlans_id"]);
          echo "</td>\n<td>";
          if ($canedit) {
-            echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=".
+            echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
                   "unassigned&amp;id=" . $line["id"] . "'>";
             echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt='" .
                    $LANG['buttons'][6] . "' title='" . $LANG['buttons'][6] . "'></a>";
@@ -194,7 +194,7 @@ function showPortVLANForm ($ID) {
 
    if ($ID) {
       echo "\n<div class='center'>";
-      echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php'>";
+      echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
       echo "<input type='hidden' name='id' value='$ID'>\n";
 
       echo "<table class='tab_cadre'>";
@@ -222,7 +222,7 @@ function assignVlan($port, $vlan) {
              VALUES ('$port','$vlan')";
    $DB->query($query);
 
-   $np = new NetPort();
+   $np = new NetworkPort();
    if ($np->getContact($port)) {
       $query = "INSERT INTO
                 `glpi_networkports_vlans` (`networkports_id`,`vlans_id`)
@@ -247,7 +247,7 @@ function unassignVlanbyID($ID) {
       $DB->query($query);
 
       // Delete Contact VLAN if set
-      $np = new NetPort();
+      $np = new NetworkPort();
       if ($np->getContact($data['networkports_id'])) {
          $query = "DELETE
                    FROM `glpi_networkports_vlans`
@@ -268,7 +268,7 @@ function unassignVlan($portID, $vlanID) {
    $DB->query($query);
 
    // Delete Contact VLAN if set
-   $np = new NetPort();
+   $np = new NetworkPort();
    if ($np->getContact($portID)) {
       $query = "DELETE
                 FROM `glpi_networkports_vlans`
@@ -285,7 +285,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
       return false;
    }
 
-   $netport = new Netport;
+   $netport = new NetworkPort;
    if ($ID) {
       $netport->getFromDB($ID);
       $netport->getDeviceData($ondevice=$netport->fields["items_id"],
@@ -448,12 +448,12 @@ function showPortsAdd($ID, $devtype) {
    echo "\n<div class='center'><table class='tab_cadre_fixe'>";
    echo "<tr><td class='tab_bg_2 center'>";
    echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-          "/front/networking.port.php?items_id=$ID&amp;itemtype=$devtype\"><strong>";
+          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$devtype\"><strong>";
    echo $LANG['networking'][19];
    echo "</strong></a></td>\n";
    echo "<td class='tab_bg_2 center' width='50%'>";
    echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-          "/front/networking.port.php?items_id=$ID&amp;itemtype=$devtype&amp;several=yes\"><strong>";
+          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$devtype&amp;several=yes\"><strong>";
    echo $LANG['networking'][46];
    echo "</strong></a></td></tr>\n";
    echo "</table></div><br>\n";
@@ -474,7 +474,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
       return false;
    }
 
-   $contact = new Netport;
+   $contact = new NetworkPort;
    $device2 = new CommonItem();
 
    $canedit = $device1->obj->can($device1->obj->fields["id"], 'w');
@@ -488,7 +488,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
       echo "<tr " . ($device2->obj->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
       echo "<td><strong>";
       if ($device2->obj->can($device2->obj->fields["id"], 'r')) {
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?id=" .
+         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
                 $netport->fields["id"] . "\">";
          if (rtrim($netport->fields["name"]) != "") {
             echo $netport->fields["name"];
@@ -512,7 +512,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
          if ($canedit || $device2->obj->can($device2->obj->fields["id"], 'w')) {
             echo "</td>\n<td class='right'><strong>";
             if ($withtemplate != 2) {
-               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?disconnect=".
+               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?disconnect=".
                       "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
             } else {
                "&nbsp;";
@@ -567,11 +567,11 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
    global $DB, $CFG_GLPI, $LANG;
 
    // Get netpoint for $sport and $dport
-   $ps = new Netport;
+   $ps = new NetworkPort;
    if (!$ps->getFromDB($sport)) {
       return false;
    }
-   $pd = new Netport;
+   $pd = new NetworkPort;
    if (!$pd->getFromDB($dport)) {
       return false;
    }
@@ -693,7 +693,7 @@ function removeConnector($ID, $dohistory = true) {
    global $DB, $CFG_GLPI;
 
    // Update to blank networking item
-   $nw = new Netwire;
+   $nw = new NetworkPort_NetworkPort;
    if ($ID2 = $nw->getOppositeContact($ID)) {
       $query = "DELETE
                 FROM `glpi_networkports_networkports`
@@ -701,8 +701,8 @@ function removeConnector($ID, $dohistory = true) {
                       OR `networkports_id_2` = '$ID'";
       if ($result = $DB->query($query)) {
          // clean datas of linked ports if network one
-         $np1 = new Netport;
-         $np2 = new Netport;
+         $np1 = new NetworkPort;
+         $np2 = new NetworkPort;
          if ($np1->getFromDB($ID) && $np2->getFromDB($ID2)) {
             $npnet = -1;
             $npdev = -1;

@@ -71,9 +71,9 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			$lieu=$ligne["completename"];
 			$prise=$ligne['prise'];
 			$port=$ligne['port'];
-			$nw=new NetWire();
+			$nw=new NetworkPort_NetworkPort();
 			$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
-			$np=new Netport();
+			$np=new NetworkPort();
 
 			$ordi="";
 			$ip2="";
@@ -91,10 +91,10 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			$ip=$ligne['ip'];
 			$mac=$ligne['mac'];
 
-			$np=new Netport();
+			$np=new NetworkPort();
 			$np->getFromDB($ligne['IDport']);
 
-			$nd=new Netdevice();
+			$nd=new NetworkEquipment();
 			$nd->getFromDB($np->fields["items_id"]);
 			$switch=$nd->fields["name"];
 

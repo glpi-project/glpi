@@ -45,7 +45,7 @@ if(!isset($_GET["sort"])) $_GET["sort"] = "";
 if(!isset($_GET["order"])) $_GET["order"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
-$netdevice=new Netdevice();
+$netdevice=new NetworkEquipment();
 if (isset($_POST["add"]))
 {
 	$netdevice->check(-1,'w',$_POST);
