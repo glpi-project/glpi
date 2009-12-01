@@ -538,10 +538,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       if ($sector=='admin' && $item == 'rule') {
 
          $menu['admin']['content']['rule']['options']['ocs']['title']=$LANG['Menu'][33];
-         $menu['admin']['content']['rule']['options']['ocs']['page']='/front/rule.ocs.php';
-         $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/rule.ocs.php';
+         $menu['admin']['content']['rule']['options']['ocs']['page']='/front/ruleocs.php';
+         $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/ruleocs.php';
          if (haveRight("rule_ocs","w")) {
-            $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/rule.ocs.form.php';
+            $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/ruleocs.form.php';
          }
 
          $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];

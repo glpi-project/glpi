@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('rulesengine', 'rule.ocs');
+$NEEDED_ITEMS = array('entity', 'ocsng', 'rulesengine', 'rule.ocs');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new OcsRuleCollection(-1);
+$rulecollection = new RuleOcsCollection(-1);
 
-include (GLPI_ROOT . "/front/rule.common.php");
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

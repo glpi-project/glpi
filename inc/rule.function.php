@@ -251,12 +251,12 @@ function getRuleClass($type) {
 
    switch ($type) {
       case RULE_OCS_AFFECT_COMPUTER :
-         if (!class_exists('OcsAffectEntityRule')) {
+         if (!class_exists('RuleOcs')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
+            include_once(GLPI_ROOT."/inc/ruleocs.class.php");
          }
-         return new OcsAffectEntityRule();
+         return new RuleOcs();
 
       case RULE_AFFECT_RIGHTS :
          if (!class_exists('RightAffectRule')) {
@@ -327,14 +327,15 @@ function getRuleCollectionClass($type) {
 
    switch ($type) {
       case RULE_OCS_AFFECT_COMPUTER :
-         if (!class_exists('OcsRuleCollection')) {
+         if (!class_exists('RuleOcsCollection')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
+            include_once(GLPI_ROOT."/inc/ruleocs.class.php");
+            include_once(GLPI_ROOT."/inc/ruleocscollection.class.php");
          }
-         return new OcsRuleCollection();
+         return new RuleOcsCollection();
 
       case RULE_AFFECT_RIGHTS :
          if (!class_exists('RightRuleCollection')) {
