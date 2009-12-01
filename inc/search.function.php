@@ -1101,7 +1101,7 @@ function showList ($itemtype,$params) {
             $tmpquery="";
             // No ref table case
             if (empty($LINK_ID_TABLE[$itemtype])) {
-               $tmpquery = $SELECT.", $ctype AS TYPE ".
+               $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                            $FROM.
                            $WHERE;
                $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
