@@ -92,7 +92,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID) {
          break;
    }
 
-   echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
+   echo "<div class='center'><form method='get' name='form' action='ticketplanning.php'>\n";
    echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
    echo "<td>";
    echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\">";
@@ -146,12 +146,12 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID) {
    echo "</td>\n";
 
    echo "<td>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".
+   echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?genical=1&amp;uID=".$uID."\" title='".
          $LANG['planning'][12]."'><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
    echo "<br>";
    // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-   echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-         "/front/planning.ical.php?uID=".$uID."\" title='".$LANG['planning'][13]."'>";
+   echo "<a  target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
+         "/front/planning.ical.php?genical=1&amp;uID=".$uID."\" title='".$LANG['planning'][13]."'>";
    echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
    echo "</td>\n";
 
@@ -832,7 +832,7 @@ function showPlanningCentral($who) {
    ksort($interv);
 
    echo "<table class='tab_cadrehov'><tr><th>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG['planning'][15]."</a>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticketplanning.php'>".$LANG['planning'][15]."</a>";
    echo "</th></tr>";
    $type='';
    if (count($interv)>0) {

@@ -41,35 +41,46 @@ $NEEDED_ITEMS = array ('computer', 'enterprise', 'monitor', 'networking', 'perip
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
 
-checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
+if (isset($_REQUEST['genical'])) {
+   if (!isset($_GET["uID"])){
+      $_GET["uID"]=$_SESSION["glpiID"];
+   }
+   // Send UTF8 Headers
+   @header ("content-type:text/calendar; charset=UTF-8");
+   @header("Content-disposition: filename=\"glpi.ics\"");
 
-if (!isset($_GET["date"])||empty($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
-if (!isset($_GET["type"])) $_GET["type"]="week";
-if (!isset($_GET["uID"])||!haveRight("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
-if (!isset($_GET["gID"])) $_GET["gID"]=0;
-if (!isset($_GET["usertype"])) $_GET["usertype"]="user";
+   echo generateIcal($_GET["uID"]);
+} else {
 
-switch ($_GET["usertype"]){
-	case "user" :
-		$_GET['gID']=-1;
-		break;
-	case "group" :
-		$_GET['uID']=-1;
-		break;
-	case "user_group":
-		$_GET['gID']="mine";
-		break;
+   commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
+
+   checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
+
+   if (!isset($_GET["date"])||empty($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
+   if (!isset($_GET["type"])) $_GET["type"]="week";
+   if (!isset($_GET["uID"])||!haveRight("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
+   if (!isset($_GET["gID"])) $_GET["gID"]=0;
+   if (!isset($_GET["usertype"])) $_GET["usertype"]="user";
+
+   switch ($_GET["usertype"]){
+      case "user" :
+         $_GET['gID']=-1;
+         break;
+      case "group" :
+         $_GET['uID']=-1;
+         break;
+      case "user_group":
+         $_GET['gID']="mine";
+         break;
+   }
+
+
+   showFormPlanning($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],$_GET["gID"]);
+
+   showPlanning($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
+
+   commonFooter();
 }
-
-
-showFormPlanning($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],$_GET["gID"]);
-
-showPlanning($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
-
-
-
-commonFooter();
 
 ?>

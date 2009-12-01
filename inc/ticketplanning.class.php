@@ -37,9 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES PlanningTracking
+// CLASSES TicketPlanning
 
-class PlanningTracking extends CommonDBTM {
+class TicketPlanning extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_ticketplannings';

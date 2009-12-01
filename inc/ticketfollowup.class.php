@@ -105,7 +105,7 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if (isset($input["_plan"])) {
-         $pt = new PlanningTracking();
+         $pt = new TicketPlanning();
          // Update case
          if (isset($input["_plan"]["id"])) {
             $input["_plan"]['ticketfollowups_id'] = $input["id"];
@@ -218,7 +218,7 @@ class TicketFollowup  extends CommonDBTM {
             $input["_plan"]['ticketfollowups_id'] = $newID;
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = 1;
-            $pt = new PlanningTracking();
+            $pt = new TicketPlanning();
 
             if (!$pt->add($input["_plan"])) {
                return false;
