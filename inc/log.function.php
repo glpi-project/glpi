@@ -182,7 +182,7 @@ function showHistory($itemtype,$items_id) {
    }
 
    // Total Number of events
-   $number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
+   $number = countElementsInTable("glpi_logs", "`items_id`='$items_id' AND `itemtype`='$itemtype'");
 
    // No Events in database
    if ($number < 1) {
