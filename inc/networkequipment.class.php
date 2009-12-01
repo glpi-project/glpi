@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 // CLASSES Networking
 
-class Netdevice extends CommonDBTM {
+class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_networkequipments';
@@ -122,7 +122,7 @@ class Netdevice extends CommonDBTM {
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np= new Netport();
+               $np= new NetworkPort();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);
@@ -412,134 +412,6 @@ class Netdevice extends CommonDBTM {
       return true;
    }
 
-}
-
-/// Netport class
-class Netport extends CommonDBTM {
-
-   // From CommonDBTM
-   public $table = 'glpi_networkports';
-   public $type = NETWORKING_PORT_TYPE;
-
-   /// TODO manage access right on this object
-
-   // Specific ones
-   /// ID of the port connected to the current one
-   var $contact_id		= 0;
-   /// hardare data : name
-   var $device_name	= "";
-   /// hardare data : ID
-   var $device_ID		= 0;
-   /// hardare data : type
-   var $itemtype		= 0;
-   /// hardare data : entity
-   var $entities_id		= -1;
-   /// hardare data : locations_id
-   var $locations_id		= -1;
-   /// hardare data : is_recursive
-   var $is_recursive = 0;
-   /// hardare data : is_deleted
-   var $is_deleted = 0;
-
-   function post_updateItem($input,$updates,$history=1) {
-
-      // Only netpoint updates : ip and mac may be different.
-      $tomatch=array("netpoints_id");
-      $updates=array_intersect($updates,$tomatch);
-      if (count($updates)) {
-         $save_ID=$this->fields["id"];
-         $n=new Netwire;
-         if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
-            $this->updateInDB($updates);
-         }
-         $this->fields["id"]=$save_ID;
-      }
-   }
-
-   function prepareInputForUpdate($input) {
-
-      // Is a preselected mac adress selected ?
-      if (isset($input['pre_mac']) && !empty($input['pre_mac'])) {
-         $input['mac']=$input['pre_mac'];
-         unset($input['pre_mac']);
-      }
-      return $input;
-   }
-
-   function prepareInputForAdd($input) {
-
-      if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
-         unset($input["logical_number"]);
-      }
-      return $input;
-   }
-
-   function cleanDBonPurge($ID) {
-      global $DB;
-
-      $query = "DELETE
-                FROM `glpi_networkports_networkports`
-                WHERE `networkports_id_1` = '$ID'
-                      OR `networkports_id_2` = '$ID'";
-      $result = $DB->query($query);
-   }
-
-   // SPECIFIC FUNCTIONS
-   /**
-    * Retrieve data in the port of the item which belongs to
-    *
-    *@param $ID Integer : Id of the item to print
-    *@param $itemtype item type
-    *
-    *@return boolean item found
-    **/
-   function getDeviceData($ID, $itemtype) {
-      global $DB,$LINK_ID_TABLE;
-
-      $table = $LINK_ID_TABLE[$itemtype];
-
-      $query = "SELECT *
-                FROM `$table`
-                WHERE `id` = '$ID'";
-      if ($result=$DB->query($query)) {
-         $data = $DB->fetch_array($result);
-         $this->device_name = $data["name"];
-         $this->is_deleted = $data["is_deleted"];
-         $this->entities_id = $data["entities_id"];
-         $this->locations_id = $data["locations_id"];
-         $this->device_ID = $ID;
-         $this->itemtype = $itemtype;
-         $this->is_recursive = (isset($data["is_recursive"])?$data["is_recursive"]:0);
-         return true;
-      } else {
-         return false;
-      }
-   }
-
-   /**
-    * Get port opposite port ID if linked item
-    * ID store in contact_id
-    *@param $ID networking port ID
-    *
-    *@return boolean item found
-    **/
-   function getContact($ID) {
-
-      $wire = new Netwire;
-      if ($this->contact_id = $wire->getOppositeContact($ID)) {
-         return true;
-      } else {
-         return false;
-      }
-   }
-
-   function defineTabs($ID,$withtemplate) {
-      global $LANG, $CFG_GLPI;
-
-      $ong[1] = $LANG['title'][26];
-      return $ong;
-   }
-
    function getSearchOptions() {
       global $LANG;
 
@@ -726,47 +598,6 @@ class Netport extends CommonDBTM {
       $tab[60]['datatype']     = 'number';
 
       return $tab;
-   }
-}
-
-/// Netwire class
-class Netwire {
-
-   /// ID of the netwire
-   var $ID = 0;
-   /// first connected port ID
-   var $networkports_id_1 = 0;
-   /// second connected port ID
-   var $networkports_id_2 = 0;
-
-   /**
-    * Get port opposite port ID
-    *
-    *@param $ID networking port ID
-    *
-    *@return integer ID of opposite port. false if not found
-    **/
-   function getOppositeContact ($ID) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `glpi_networkports_networkports`
-                WHERE `networkports_id_1` = '$ID'
-                      OR `networkports_id_2` = '$ID'";
-      if ($result=$DB->query($query)) {
-         $data = $DB->fetch_array($result);
-         if (is_array($data)) {
-            $this->networkports_id_1 = $data["networkports_id_1"];
-            $this->networkports_id_2 = $data["networkports_id_2"];
-         }
-         if ($this->networkports_id_1 == $ID) {
-            return $this->networkports_id_2;
-         } else if ($this->networkports_id_2 == $ID) {
-            return $this->networkports_id_1;
-         } else {
-            return false;
-         }
-      }
    }
 
 }

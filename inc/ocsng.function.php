@@ -2335,7 +2335,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
                      $netport["gateway"] = $line2["IPGATEWAY"];
                      $netport["subnet"] = $line2["IPSUBNET"];
 
-                     $np = new Netport();
+                     $np = new NetworkPort();
                      for ($j = 0; $j < count($ocs_ips); $j++) {
                         //First search : look for the same port (same IP and same MAC)
                         $id_ip = array_search($ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"],

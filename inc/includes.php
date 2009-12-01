@@ -191,6 +191,11 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='mailgate') {
             $item='mailcollector';
          }
+         if ($item=='networking') {
+            $item='networkequipment';
+            include_once (GLPI_ROOT . "/inc/networkport.class.php");
+            include_once (GLPI_ROOT . "/inc/networkport_networkport.class.php");
+         }
          if ($item=='cartridge') {
             $item='cartridgeitem';
             include_once (GLPI_ROOT . "/inc/cartridge.class.php");

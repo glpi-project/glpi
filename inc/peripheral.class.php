@@ -122,7 +122,7 @@ class Peripheral  extends CommonDBTM {
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np= new Netport();
+               $np= new NetworkPort();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);

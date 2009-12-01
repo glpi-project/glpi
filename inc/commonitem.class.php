@@ -93,8 +93,8 @@ class CommonItem {
                break;
 
             case NETWORKING_TYPE :
-               require_once(GLPI_ROOT.'/inc/networking.class.php');
-               $this->obj=new Netdevice;
+               require_once(GLPI_ROOT.'/inc/networkequipment.class.php');
+               $this->obj=new NetworkEquipment;
                break;
 
             case PRINTER_TYPE :

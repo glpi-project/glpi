@@ -53,7 +53,7 @@ if (!isset($_POST["order"])) {
 if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
-$netdevice=new Netdevice();
+$netdevice=new NetworkEquipment();
 $netdevice->check($_POST["id"],'r');
 
 if (!empty($_POST["withtemplate"])) {
