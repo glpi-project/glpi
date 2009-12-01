@@ -48,7 +48,7 @@ if (isset($_GET["redirect"])) {
 // Affichage Module reservation
 //******************
 checkRight("reservation_helpdesk","1");
-$rr = new ReservationResa();
+$rr = new Reservation();
 if (isset($_POST["edit_resa"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin_date"]);
    $reservationitems_id = key($_POST["items"]);

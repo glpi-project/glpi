@@ -37,61 +37,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Reservation item class
-class ReservationItem extends CommonDBTM {
-
-   // From CommonDBTM
-   public $table = 'glpi_reservationitems';
-
-   /**
-    * Retrieve an item from the database for a specific item
-    *
-    *@param $ID ID of the item
-    *@param $itemtype type of the item
-    *@return true if succeed else false
-   **/
-   function getFromDBbyItem($itemtype,$ID) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `".$this->table."`
-                WHERE (`itemtype` = '$itemtype'
-                       AND `items_id` = '$ID')";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)==1) {
-            $this->fields = $DB->fetch_assoc($result);
-            return true;
-         }
-      }
-      return false;
-   }
-
-   function cleanDBonPurge($ID) {
-      global $DB;
-
-      $query2 = "DELETE
-                 FROM `glpi_reservations`
-                 WHERE `reservationitems_id` = '$ID'";
-      $result2 = $DB->query($query2);
-   }
-
-   function prepareInputForAdd($input) {
-
-      if (!$this->getFromDBbyItem($input['itemtype'],$input['items_id'])) {
-         if (!isset($input['is_active'])) {
-            $input['is_active']=1;
-         }
-         return $input;
-      }
-      return false;
-   }
-
-}
-
-
 /// Reservation class
-class ReservationResa extends CommonDBTM {
+class Reservation extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_reservations';

@@ -219,7 +219,7 @@ function printCalendrier($target,$ID="") {
    echo "</td><td class='top' width='100%'>";
 
    // test
-   echo "<table width='100%' class='tab_glpi'><tr>";
+   echo "<table width='100%' class='tab_cadre'><tr>";
    echo "<th width='14%'>".$LANG['calendarD'][1]."</th>";
    echo "<th width='14%'>".$LANG['calendarD'][2]."</th>";
    echo "<th width='14%'>".$LANG['calendarD'][3]."</th>";
@@ -291,7 +291,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1) {
       return false;
    }
 
-   $resa= new ReservationResa;
+   $resa= new Reservation;
 
    if ($resaID!=-1) {
       if (!$resa->getFromDB($resaID)) {
@@ -438,7 +438,7 @@ function printReservationItem($target,$ID,$date) {
    global $DB,$LANG;
 
    $users_id=$_SESSION["glpiID"];
-   $resa = new ReservationResa();
+   $resa = new Reservation();
    $user=new User;
    list($year,$month,$day)=explode("-",$date);
    $debut=$date." 00:00:00";
