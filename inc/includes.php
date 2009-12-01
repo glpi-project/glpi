@@ -58,6 +58,7 @@ include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
 include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/plugin.class.php");
+include_once (GLPI_ROOT . "/inc/displaypreference.class.php");
 
 // Load Language file
 loadLanguage();
@@ -195,9 +196,6 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='consumable') {
             $item='consumableitem';
             include_once (GLPI_ROOT . "/inc/consumable.class.php");
-         }
-         if ($item=='setup') {
-            include_once (GLPI_ROOT . "/inc/displaypreference.class.php");
          }
 
          if ($item=='computer') {

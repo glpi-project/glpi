@@ -572,29 +572,14 @@ function showList ($itemtype,$params) {
    // Get the items to display
    $toview=addDefaultToView($itemtype);
 
-   // Add default items
-   $query = "SELECT *
-             FROM `glpi_displaypreferences`
-             WHERE `itemtype` = '$itemtype'
-                   AND `users_id` = '".$_SESSION["glpiID"]."'
-             ORDER BY `rank`";
-   $result=$DB->query($query);
-
-   // GET default serach options
-   if ($DB->numrows($result)==0) {
-      $query = "SELECT *
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$itemtype'
-                      AND `users_id` = '0'
-                ORDER BY `rank`";
-      $result=$DB->query($query);
-   }
-
-   if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_array($result)) {
-         array_push($toview,$data["num"]);
+   // Add items to display depending of personal prefs
+   $displaypref=DisplayPreference::getForTypeUser($itemtype,$_SESSION["glpiID"]);
+   if (count($displaypref)) {
+      foreach ($displaypref as $val) {
+         array_push($toview,$val);
       }
    }
+   
 
    // Add searched items
    if (count($field)>0) {
