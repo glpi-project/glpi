@@ -502,7 +502,7 @@ function showDisplayInfocomLink($itemtype,$device_id,$update=0) {
    }
    if (haveTypeRight($itemtype,"w")) {
       echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
-            "/front/infocom.show.php?itemtype=$itemtype&amp;device_id=$device_id&amp;update=$update',
+            "/front/infocom.form.php?itemtype=$itemtype&amp;device_id=$device_id&amp;update=$update',
             'infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\" style='cursor:pointer'>
             <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
             </span>";

@@ -33,8 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'infocom', 'monitor', 'networking',
-                       'peripheral', 'phone', 'printer', 'software');
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'contract', 'infocom', 'monitor', 
+                       'networking', 'peripheral', 'phone', 'printer', 'software', 'supplier');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -61,8 +61,39 @@ if (isset($_GET["add"])) {
    $ic->update($_POST);
    logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
-}
+} else {
+   /// TODO clean this part
+   checkRight("infocom","r");
 
-glpi_header($_SERVER['HTTP_REFERER']);
+   popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
+
+   $ci = new CommonItem();
+
+   if (isset($_GET["id"])) {
+      $ic = new Infocom();
+      $ic->getFromDB($_GET["id"]);
+      $_GET["itemtype"] = $ic->fields["itemtype"];
+      $_GET["device_id"] = $ic->fields["items_id"];
+   }
+
+   if (!isset($_GET["itemtype"])
+      || !isset($_GET["device_id"])
+      || !$ci->getFromDB($_GET["itemtype"],$_GET["device_id"])) {
+
+      echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
+
+   } else {
+      echo "<div class='center b'><br><br>".$ci->getType()." - ".$ci->getName()."</div>";
+      if (isset($_GET["update"]) && $_GET["update"]==1) {
+         $withtemplate = 0;
+      } else {
+         $withtemplate = 2;
+      }
+      showInfocomForm ($CFG_GLPI["root_doc"]."/front/infocom.form.php",$_GET["itemtype"],
+                     $_GET["device_id"],1,$withtemplate);
+   }
+
+   popFooter();
+}
 
 ?>
