@@ -38,7 +38,7 @@ $NEEDED_ITEMS = array ('ldap.parameters');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$criteria = new LdapCriteria;
+$criteria = new RuleLdapParameter;
 
 if (isset($_POST["delete"])) {
    if (count($_POST["item"])) {
@@ -57,9 +57,8 @@ checkRight("user","w");
 
 commonHeader($LANG['Menu'][26]." ".$LANG['ruleldap'][1],$_SERVER['PHP_SELF'],"admin","rule","right");
 
-$params = new LdapCriteria;
-$params->title();
-$params->showForm($_SERVER['PHP_SELF']);
+$criteria->title();
+$criteria->showForm($_SERVER['PHP_SELF']);
 
 commonFooter();
 
