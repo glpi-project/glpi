@@ -200,6 +200,17 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             $item='reservationitem';
             include_once (GLPI_ROOT . "/inc/reservation.class.php");
          }
+
+         if ($item=='rule.dictionnary.software') {
+            $item='ruledictionnarysoftware';
+            include_once (GLPI_ROOT . "/inc/ruledictionnarysoftwarecollection.class.php");
+         }
+
+         if ($item=='rule.dictionnary.dropdown') {
+            $item='ruledictionnarydropdown';
+            include_once (GLPI_ROOT . "/inc/ruledictionnarydropdowncollection.class.php");
+         }
+
          if ($item=='rulesengine') {
             include_once (GLPI_ROOT . "/inc/rule.class.php");
             include_once (GLPI_ROOT . "/inc/rule.function.php");
