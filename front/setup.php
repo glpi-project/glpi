@@ -91,10 +91,16 @@ if (count($config)>0){
 
 echo "</tr>";
 
-if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>".$LANG['common'][29]."</b></a></td></tr>";
-if (haveRight("check_update","r"))
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$LANG['setup'][300]."</b></a></td></tr>";
+if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page'])) {
+   echo "<tr class='tab_bg_1'><td  colspan='2' align='center'>";
+   echo "<a href=\"plugin.php\"><b>".$LANG['common'][29]."</b></a>";
+   echo "</td></tr>";
+}
+if (haveRight("check_update","r")) {
+   echo "<tr class='tab_bg_1'><td  colspan='2' align='center'>";
+   echo "<a href=\"setup.version.php\"><b>".$LANG['setup'][300]."</b></a>";
+   echo "</td></tr>";
+}
 
 
 
