@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
                    'entities_id'          => $_SESSION["glpiactive_entity"],
                    'status'               => 'new',
                    'followup'             => array(),
-                   'itemtype'             => 0,
+                   'itemtype'             => '',
                    'items_id'             => 0,
                    'plan'                 => array());
 

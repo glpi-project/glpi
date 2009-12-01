@@ -42,7 +42,8 @@ header_nocache();
 
 checkLoginUser();
 // Make a select box
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0
+
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && !empty($_POST["itemtype"])
     && (isPossibleToAssignType($_POST["itemtype"]))) {
 
    $table=$LINK_ID_TABLE[$_POST["itemtype"]];
