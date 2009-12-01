@@ -234,6 +234,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             $item='ruleldapparameter';
          }
 
+         if ($item=='planning') {
+            $item='ticketplanning';
+         }
+
          if ($item=='tracking') {
             $item='ticket';
             include_once (GLPI_ROOT . "/inc/ticketfollowup.class.php");
