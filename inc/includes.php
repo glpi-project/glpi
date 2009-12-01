@@ -187,6 +187,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='registry') {
             $item='registrykey';
          }
+         if ($item=='cartridge') {
+            $item='cartridgeitem';
+            include_once (GLPI_ROOT . "/inc/cartridge.class.php");
+         }
 
          if ($item=='computer') {
             include_once (GLPI_ROOT . "/inc/computerdisk.class.php");

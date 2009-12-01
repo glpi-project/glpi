@@ -133,8 +133,8 @@ class CommonItem {
                break;
 
             case CARTRIDGEITEM_TYPE :
-               require_once(GLPI_ROOT.'/inc/cartridge.class.php');
-               $this->obj= new CartridgeType;
+               require_once(GLPI_ROOT.'/inc/cartridgeitem.class.php');
+               $this->obj= new CartridgeItem;
                break;
 
             case TYPEDOC_TYPE :

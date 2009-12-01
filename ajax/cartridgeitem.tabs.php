@@ -48,7 +48,7 @@ if(!isset($_POST["id"])) {
 
 checkRight("cartridge","r");
 
-$cartridge = new CartridgeType();
+$cartridge = new CartridgeItem();
 if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :

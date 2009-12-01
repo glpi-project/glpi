@@ -547,10 +547,10 @@ class DictionnaryDropdownCollection extends RuleCachedCollection {
                         $DB->query($sql);
                      }
                      // Add new assoc
-                     if (!class_exists('CartridgeType')) {
-                        include_once (GLPI_ROOT . "/inc/cartridge.function.php");
+                     if (!class_exists('CartridgeItem')) {
+                        include_once (GLPI_ROOT . "/inc/cartridgeitem.function.php");
                      }
-                     $ct=new CartridgeType();
+                     $ct=new CartridgeItem();
                      foreach ($carttype as $cartID) {
                         foreach ($tab as $model) {
                            $ct->addCompatibleType($cartID,$model);
