@@ -69,7 +69,110 @@ define("OCS_IMPORT_TAG_080","_version_080_");
 
 
 // ITEMS TYPE
-define("GENERAL_TYPE",0);
+/// Temporary definition for test
+
+if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
+   define("GENERAL_TYPE",'');
+   define("COMPUTER_TYPE",'Computer');
+   define("NETWORKING_TYPE",'NetworkEquipment');
+   define("PRINTER_TYPE",'Printer');
+   define("MONITOR_TYPE",'Monitor');
+   define("PERIPHERAL_TYPE",'Peripheral');
+   define("SOFTWARE_TYPE",'Software');
+   define("CONTACT_TYPE",'Contact');
+   define("ENTERPRISE_TYPE",'Supplier');
+   define("INFOCOM_TYPE",'Infocom');
+   define("CONTRACT_TYPE",'Contract');
+   define("CARTRIDGEITEM_TYPE",'CartridgeItem');
+   define("TYPEDOC_TYPE",'DocumentType');
+   define("DOCUMENT_TYPE",'Document');
+   define("KNOWBASE_TYPE",'KnowbaseItem');
+   define("USER_TYPE",'User');
+   define("TRACKING_TYPE",'Ticket');
+   define("CONSUMABLEITEM_TYPE",'ConsumableItem');
+   define("CONSUMABLE_TYPE",'Consumbale');
+   define("CARTRIDGE_TYPE",'Cartridge');
+   define("SOFTWARELICENSE_TYPE",'SoftwareLicense');
+   define("LINK_TYPE",'Link');
+   define("STATE_TYPE",'State');
+   define("PHONE_TYPE",'Phone');
+   define("DEVICE_TYPE",'Device');
+   define("REMINDER_TYPE",'Reminder');
+   define("STAT_TYPE",'Stat');
+   define("GROUP_TYPE",'Group');
+   define("ENTITY_TYPE",'Entity');
+   define("RESERVATION_TYPE",'ReservationItem');
+   define("AUTH_MAIL_TYPE",'AuthMail');
+   define("AUTH_LDAP_TYPE",'AuthLDAP');
+   define("OCSNG_TYPE",'OcsServer');
+   define("REGISTRY_TYPE",'RegistryKey');
+   define("PROFILE_TYPE",'Profile');
+   define("MAILGATE_TYPE",'MailCollector');
+   define("RULE_TYPE",'Rule');
+   define("TRANSFER_TYPE",'Transfer');
+   define("BOOKMARK_TYPE",'Bookmark');
+   define("SOFTWAREVERSION_TYPE",'SoftwareVersion');
+   define("PLUGIN_TYPE",'Plugin');
+   define("COMPUTERDISK_TYPE",'ComputerDisk');
+   define("NETWORKING_PORT_TYPE",'NetworkPort');
+   define("FOLLOWUP_TYPE",'TicketFollowup');
+   define("BUDGET_TYPE",'Budget');
+   // Only used in 0.8
+   define("CONTRACTITEM_TYPE",45);
+   define("CONTACTSUPPLIER_TYPE",46);
+   define("CONTRACTSUPPLIER_TYPE",47);
+   define("DOCUMENTITEM_TYPE",48);
+   define("CRONTASK_TYPE",49);
+   define("CRONTASKLOG_TYPE",50);
+   define("TICKETCATEGORY_TYPE",51);
+   define("TASKCATEGORY_TYPE",52);
+   define("LOCATION_TYPE",53);
+   define("NETPOINT_TYPE",54);
+   define("ITEMSTATE_TYPE",55);
+   define("REQUESTTYPE_TYPE",56);
+   define("MANUFACTURER_TYPE",57);
+   define("COMPUTERTYPE_TYPE",58);
+   define("COMPUTERMODEL_TYPE",59);
+   define("NETWORKEQUIPMENTTYPE_TYPE",60);
+   define("NETWORKEQUIPMENTMODEL_TYPE",61);
+   define("PRINTERTYPE_TYPE",62);
+   define("PRINTERMODEL_TYPE",63);
+   define("MONITORTYPE_TYPE",64);
+   define("MONITORMODEL_TYPE",65);
+   define("PERIPHERALTYPE_TYPE",66);
+   define("PERIPHERALMODEL_TYPE",67);
+   define("PHONETYPE_TYPE",68);
+   define("PHONEMODEL_TYPE",69);
+   define("SOFTWARELICENSETYPE_TYPE",70);
+   define("CARTRIDGEITEMTYPE_TYPE",71);
+   define("CONSUMABLEITEMTYPE_TYPE",72);
+   define("CONTRACTTYPE_TYPE",73);
+   define("CONTACTTYPE_TYPE",74);
+   define("DEVICEMEMORYTYPE_TYPE",75);
+   define("SUPPLIERTYPE_TYPE",76);
+   define("INTERFACESTYPE_TYPE",77);
+   define("DEVICECASETYPE_TYPE",78);
+   define("PHONEPOWERSUPPLY_TYPE",79);
+   define("FILESYSTEM_TYPE",80);
+   define("DOCUMENTCATEGORY_TYPE",81);
+   define("KNOWBASEITEMCATEGORY_TYPE",82);
+   define("OPERATINGSYSTEM_TYPE",83);
+   define("OPERATINGSYSTEMVERSION_TYPE",84);
+   define("OPERATINGSYSTEMSERVICEPACK_TYPE",85);
+   define("AUTOUPDATESYSTEM_TYPE",86);
+   define("NETWORKINTERFACE_TYPE",87);
+   define("NETWORKEQUIPMENTFIRMWARE_TYPE",88);
+   define("DOMAIN_TYPE",89);
+   define("NETWORK_TYPE",90);
+   define("VLAN_TYPE",91);
+   define("SOFTWARECATEGORY_TYPE",92);
+   define("USERTITLE_TYPE",93);
+   define("USERCATEGORY_TYPE",94);
+   define("GROUPUSER_TYPE",95);
+   define("COMPUTERITEM_TYPE",96);
+}
+
+/*define("GENERAL_TYPE",0);
 define("COMPUTER_TYPE",1);
 define("NETWORKING_TYPE",2);
 define("PRINTER_TYPE",3);
@@ -166,6 +269,10 @@ define("USERTITLE_TYPE",93);
 define("USERCATEGORY_TYPE",94);
 define("GROUPUSER_TYPE",95);
 define("COMPUTERITEM_TYPE",96);
+*/
+
+
+
 
 $CFG_GLPI['dropdown_types']= array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE, NETPOINT_TYPE,
    ITEMSTATE_TYPE, REQUESTTYPE_TYPE, MANUFACTURER_TYPE, COMPUTERTYPE_TYPE, COMPUTERMODEL_TYPE,

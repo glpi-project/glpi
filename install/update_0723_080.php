@@ -1593,7 +1593,77 @@ function update0723to080() {
    }
 
 
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Update itemtype fields'); // Updating schema
 
+   // Convert itemtype to Class names
+   $typetoname=array(
+      GENERAL_TYPE => "",// For tickets
+      COMPUTER_TYPE => "Computer",
+      NETWORKING_TYPE => "NetworkEquipment",
+      PRINTER_TYPE => "Printer",
+      MONITOR_TYPE => "Monitor",
+      PERIPHERAL_TYPE => "Peripheral",
+      SOFTWARE_TYPE => "Software",
+      CONTACT_TYPE => "Contact",
+      ENTERPRISE_TYPE => "Supplier",
+      INFOCOM_TYPE => "Infocom",
+      CONTRACT_TYPE => "Contract",
+      CARTRIDGEITEM_TYPE => "CartridgeItem",
+      TYPEDOC_TYPE => "DocumentType",
+      DOCUMENT_TYPE => "Document",
+      KNOWBASE_TYPE => "KnowbaseItem",
+      USER_TYPE => "User",
+      TRACKING_TYPE => "Ticket",
+      CONSUMABLEITEM_TYPE => "ConsumableItem",
+      CONSUMABLE_TYPE => "Consumable",
+      CARTRIDGE_TYPE => "Cartridge",
+      SOFTWARELICENSE_TYPE => "SoftwareLicense",
+      LINK_TYPE => "Link",
+      STATE_TYPE => "State",
+      PHONE_TYPE => "Phone",
+      DEVICE_TYPE => "Device",
+      REMINDER_TYPE => "Reminder",
+      STAT_TYPE => "Stat",
+      GROUP_TYPE => "Group",
+      ENTITY_TYPE => "Entity",
+      RESERVATION_TYPE => "ReservationItem",
+      AUTH_MAIL_TYPE => "AuthMail",
+      AUTH_LDAP_TYPE => "AuthLDAP",
+      OCSNG_TYPE => "OcsServer",
+      REGISTRY_TYPE => "RegistryKey",
+      PROFILE_TYPE => "Profile",
+      MAILGATE_TYPE => "MailCollector",
+      RULE_TYPE => "Rule",
+      TRANSFER_TYPE => "Transfer",
+      BOOKMARK_TYPE => "Bookmark",
+      SOFTWAREVERSION_TYPE => "SoftwareVersion",
+      PLUGIN_TYPE => "Plugin",
+      COMPUTERDISK_TYPE => "ComputerDisk",
+      NETWORKING_PORT_TYPE => "NetworkPort",
+      FOLLOWUP_TYPE => "TicketFollowup",
+      BUDGET_TYPE => "Budget",
+      // End is not used in 0.72.x
+   );
+
+   $itemtype_tables=array("glpi_alerts", "glpi_bookmarks", "glpi_bookmarks_users",
+      "glpi_computers_items", "glpi_contracts_items", "glpi_displaypreferences",
+      "glpi_documents_items", "glpi_infocoms", "glpi_links_itemtypes", "glpi_logs",
+      "glpi_networkports", "glpi_reservationitems", "glpi_tickets",
+      );
+
+   foreach ($itemtype_tables as $table) {
+      // Alter itemtype field
+      $query = "ALTER TABLE `$table` CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
+      $DB->query($query) or die("0.80 alter itemtype of table $table " . $LANG['update'][90] . $DB->error());
+
+      // Update values
+      foreach ($typetoname as $key => $val) {
+         $query = "UPDATE `$table` SET `itemtype` = '$val' WHERE `itemtype` = '$key'";
+         $DB->query($query) or die("0.80 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
+      }
+   }
+
+   // Update glpi_profiles item_type
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 
@@ -2152,7 +2222,7 @@ function update0723to080() {
 
                foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
                   if (pow(2,$itemtype)&$types) {
-                     $tostore[$itemtype]=$itemtype;
+                     $tostore[]=$typetoname[$itemtype];
                   }
                }
                $query="UPDATE `glpi_profiles`
