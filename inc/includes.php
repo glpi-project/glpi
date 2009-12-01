@@ -196,6 +196,10 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             include_once (GLPI_ROOT . "/inc/networkport.class.php");
             include_once (GLPI_ROOT . "/inc/networkport_networkport.class.php");
          }
+         if ($item=='reservation') {
+            $item='reservationitem';
+            include_once (GLPI_ROOT . "/inc/reservation.class.php");
+         }
          if ($item=='cartridge') {
             $item='cartridgeitem';
             include_once (GLPI_ROOT . "/inc/cartridge.class.php");

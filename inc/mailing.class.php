@@ -726,8 +726,8 @@ class Mailing {
  *  Mailing class for reservations
  */
 class MailingResa {
-   /** ReservationResa class variable
-    * @see ReservationResa
+   /** Reservation class variable
+    * @see Reservation
     */
    var $resa;
    //! type of mailing (new, update, delete)
@@ -736,7 +736,7 @@ class MailingResa {
    /**
     * Constructor
     * @param $type mailing type (new,attrib,followup,finish)
-    * @param $resa ReservationResa to mail
+    * @param $resa Reservation to mail
     * @return nothing
     */
    function __construct ($resa,$type="new") {

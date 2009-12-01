@@ -45,7 +45,7 @@ checkCentralAccess();
 
 
 $ri=new ReservationItem();
-$rr=new ReservationResa();
+$rr=new Reservation();
 
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 
