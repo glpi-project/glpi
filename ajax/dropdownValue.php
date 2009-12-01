@@ -56,6 +56,7 @@ if (! TableExists($_POST['table']) ) {
    exit();
 }
 
+
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
@@ -123,97 +124,98 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
              $where
              ORDER BY `completename`
              $LIMIT";
-   $result = $DB->query($query);
+   if ($result = $DB->query($query)) {
 
-   echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
-          $_POST['myname']."\" size='1'";
-   if ($_POST['table'] == "glpi_entities" && $_POST["auto_submit"]==1) {
-      echo " onChange='submit()'";
-   }
-   echo ">";
-
-   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-      echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
-   }
-   $display_selected=true;
-   switch ($_POST["table"]) {
-      case "glpi_knowbaseitemcategories" :
-         echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
-         break;
-
-      case "glpi_entities" :
-         // If entity=0 allowed
-         if (isset($_POST["entity_restrict"])&&
-             (($_POST["entity_restrict"]<=0 && in_array(0,$_SESSION['glpiactiveentities']))
-              || (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) {
-
-            echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
-         }
-         // Entity=0 already add above
-         if ($_POST['value']==0) {
-            $display_selected=false;
-         }
-         break;
-
-      default :
-         echo "<option class='tree' value='0'>-----</option>";
-         break;
-   }
-
-   if ($display_selected) {
-      $outputval=getDropdownName($_POST['table'],$_POST['value']);
-      if (!empty($outputval) && $outputval!="&nbsp;") {
-         if (utf8_strlen($outputval)>$_POST["limit"]) {
-            // Completename for tree dropdown : keep right
-            $outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
-         }
-         if ($_SESSION["glpiis_ids_visible"] || empty($outputval)) {
-            $outputval.=" (".$_POST['value'].")";
-         }
-         echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+      echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
+            $_POST['myname']."\" size='1'";
+      if ($_POST['table'] == "glpi_entities" && $_POST["auto_submit"]==1) {
+         echo " onChange='submit()'";
       }
-   }
+      echo ">";
 
-   if ($DB->numrows($result)) {
-      $prev=-1;
-      while ($data =$DB->fetch_array($result)) {
-         $ID = $data['id'];
-         $level = $data['level'];
-         $output=$data['name'];
-         $class=" class='tree' ";
-         $raquo="&raquo;";
-         if ($level==1) {
-            $class=" class='treeroot'";
-            $raquo="";
+      if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+         echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
+      }
+      $display_selected=true;
+      switch ($_POST["table"]) {
+         case "glpi_knowbaseitemcategories" :
+            echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
+            break;
+
+         case "glpi_entities" :
+            // If entity=0 allowed
+            if (isset($_POST["entity_restrict"])&&
+               (($_POST["entity_restrict"]<=0 && in_array(0,$_SESSION['glpiactiveentities']))
+               || (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) {
+
+               echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
+            }
+            // Entity=0 already add above
+            if ($_POST['value']==0) {
+               $display_selected=false;
+            }
+            break;
+
+         default :
+            echo "<option class='tree' value='0'>-----</option>";
+            break;
+      }
+
+      if ($display_selected) {
+         $outputval=getDropdownName($_POST['table'],$_POST['value']);
+         if (!empty($outputval) && $outputval!="&nbsp;") {
+            if (utf8_strlen($outputval)>$_POST["limit"]) {
+               // Completename for tree dropdown : keep right
+               $outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
+            }
+            if ($_SESSION["glpiis_ids_visible"] || empty($outputval)) {
+               $outputval.=" (".$_POST['value'].")";
+            }
+            echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
          }
-         if ($_SESSION['glpiuse_flat_dropdowntree']) {
-            $output=$data['completename'];
-            if ($level>1) {
-               $class="";
+      }
+
+      if ($DB->numrows($result)) {
+         $prev=-1;
+         while ($data =$DB->fetch_array($result)) {
+            $ID = $data['id'];
+            $level = $data['level'];
+            $output=$data['name'];
+            $class=" class='tree' ";
+            $raquo="&raquo;";
+            if ($level==1) {
+               $class=" class='treeroot'";
                $raquo="";
-               $level=0;
             }
-         }
-         if (utf8_strlen($output)>$_POST["limit"]) {
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
-               $output="&hellip;".utf8_substr($output,-$_POST["limit"]);
-            } else {
-               $output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
+               $output=$data['completename'];
+               if ($level>1) {
+                  $class="";
+                  $raquo="";
+                  $level=0;
+               }
             }
+            if (utf8_strlen($output)>$_POST["limit"]) {
+               if ($_SESSION['glpiuse_flat_dropdowntree']) {
+                  $output="&hellip;".utf8_substr($output,-$_POST["limit"]);
+               } else {
+                  $output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
+               }
+            }
+            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+               $output.=" ($ID)";
+            }
+            $style=$class;
+            $addcomment="";
+            if (isset($data["comment"])) {
+               $addcomment=" - ".$data["comment"];
+            }
+            echo "<option value='$ID' $style title=\"".cleanInputText($data['completename'].
+                  $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
          }
-         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output.=" ($ID)";
-         }
-         $style=$class;
-         $addcomment="";
-         if (isset($data["comment"])) {
-            $addcomment=" - ".$data["comment"];
-         }
-         echo "<option value='$ID' $style title=\"".cleanInputText($data['completename'].
-               $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
       }
+      echo "</select>";
    }
-   echo "</select>";
 } else { // Not dropdowntree_tables
    $multi=false;
    if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
@@ -279,58 +281,59 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
       $query.=" ORDER BY $field
                 $LIMIT";
    }
-   $result = $DB->query($query);
+   if ($result = $DB->query($query)){
 
-   echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
-          "\" size='1'>";
+      echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
+            "\" size='1'>";
 
-   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-      echo "<option value='0'>--".$LANG['common'][11]."--</option>";
-   }
-   echo "<option value='0'>------</option>";
-
-   $output=getDropdownName($_POST['table'],$_POST['value']);
-   if (!empty($output) && $output!="&nbsp;") {
-      if ($_SESSION["glpiis_ids_visible"]) {
-         $output.=" (".$_POST['value'].")";
+      if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+         echo "<option value='0'>--".$LANG['common'][11]."--</option>";
       }
-      echo "<option selected value='".$_POST['value']."'>".$output."</option>";
-   }
+      echo "<option value='0'>------</option>";
 
-   if ($DB->numrows($result)) {
-      $prev=-1;
-      while ($data =$DB->fetch_array($result)) {
-         $output = $data[$field];
-         if (isset($_POST['withserial']) && isset($data["serial"]) && !empty($data["serial"])) {
-            $output.=" - ".$data["serial"];
+      $output=getDropdownName($_POST['table'],$_POST['value']);
+      if (!empty($output) && $output!="&nbsp;") {
+         if ($_SESSION["glpiis_ids_visible"]) {
+            $output.=" (".$_POST['value'].")";
          }
-         if (isset($_POST['withotherserial']) && isset($data["otherserial"])
-             && !empty($data["otherserial"])) {
-            $output.=" - ".$data["otherserial"];
-         }
-         $ID = $data['id'];
-         $addcomment="";
-         if (isset($data["comment"])) {
-            $addcomment=" - ".$data["comment"];
-         }
-         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output.=" ($ID)";
-         }
-         if ($multi && $data["entities_id"]!=$prev) {
-            if ($prev>=0) {
-               echo "</optgroup>";
+         echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+      }
+
+      if ($DB->numrows($result)) {
+         $prev=-1;
+         while ($data =$DB->fetch_array($result)) {
+            $output = $data[$field];
+            if (isset($_POST['withserial']) && isset($data["serial"]) && !empty($data["serial"])) {
+               $output.=" - ".$data["serial"];
             }
-            $prev=$data["entities_id"];
-            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+            if (isset($_POST['withotherserial']) && isset($data["otherserial"])
+               && !empty($data["otherserial"])) {
+               $output.=" - ".$data["otherserial"];
+            }
+            $ID = $data['id'];
+            $addcomment="";
+            if (isset($data["comment"])) {
+               $addcomment=" - ".$data["comment"];
+            }
+            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+               $output.=" ($ID)";
+            }
+            if ($multi && $data["entities_id"]!=$prev) {
+               if ($prev>=0) {
+                  echo "</optgroup>";
+               }
+               $prev=$data["entities_id"];
+               echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+            }
+            echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
+                  utf8_substr($output,0,$_POST["limit"])."</option>";
          }
-         echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
-                utf8_substr($output,0,$_POST["limit"])."</option>";
+         if ($multi) {
+            echo "</optgroup>";
+         }
       }
-      if ($multi) {
-         echo "</optgroup>";
-      }
+      echo "</select>";
    }
-   echo "</select>";
 }
 
 if (isset($_POST["comment"]) && $_POST["comment"]) {
