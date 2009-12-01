@@ -259,12 +259,12 @@ function getRuleClass($type) {
          return new RuleOcs();
 
       case RULE_AFFECT_RIGHTS :
-         if (!class_exists('RightAffectRule')) {
+         if (!class_exists('RuleRight')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rule.right.class.php");
+            include_once(GLPI_ROOT."/inc/ruleright.class.php");
          }
-         return new RightAffectRule();
+         return new RuleRight();
 
       case RULE_TRACKING_AUTO_ACTION :
          if (!class_exists('TrackingBusinessRule')) {
@@ -338,14 +338,14 @@ function getRuleCollectionClass($type) {
          return new RuleOcsCollection();
 
       case RULE_AFFECT_RIGHTS :
-         if (!class_exists('RightRuleCollection')) {
+         if (!class_exists('RuleRightCollection')) {
             include_once(GLPI_ROOT."/inc/rulecollection.class.php");
             include_once(GLPI_ROOT."/inc/rule.class.php");
             include_once(GLPI_ROOT."/inc/rulecached.class.php");
             include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.right.class.php");
+            include_once(GLPI_ROOT."/inc/ruleright.class.php");
          }
-         return new RightRuleCollection();
+         return new RuleRightCollection();
 
       case RULE_TRACKING_AUTO_ACTION :
          if (!class_exists('TrackingBusinessRuleCollection')) {

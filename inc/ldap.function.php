@@ -121,7 +121,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
                                      $config_ldap->fields['login_field'], stripslashes($login),
                                      $config_ldap->fields['condition']);
       if ($user_dn) {
-         $rule = new RightRuleCollection;
+         $rule = new RuleRightCollection;
          $groups = array();
          $user = new User();
          //Get informations from LDAP

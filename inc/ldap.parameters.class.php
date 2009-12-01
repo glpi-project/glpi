@@ -135,7 +135,7 @@ class LdapCriteria extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       displayTitle('','','',array($CFG_GLPI["root_doc"].
-                        "/front/rule.right.php"=>$LANG['buttons'][13]));
+                        "/front/ruleright.php"=>$LANG['buttons'][13]));
       echo "<br>";
    }
 

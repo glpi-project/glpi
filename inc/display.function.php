@@ -545,10 +545,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
 
          $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];
-         $menu['admin']['content']['rule']['options']['right']['page']='/front/rule.right.php';
-         $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/rule.right.php';
+         $menu['admin']['content']['rule']['options']['right']['page']='/front/ruleright.php';
+         $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/ruleright.php';
          if (haveRight("rule_ldap","w")) {
-            $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/rule.right.form.php';
+            $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/ruleright.form.php';
          }
 
          $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
