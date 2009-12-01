@@ -64,14 +64,13 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Must can read first Item of the relation
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 : $input[$this->itemtype_1],
-                    true);
+      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 : $input[$this->itemtype_1],true);
       if (!$ci1->obj->can($input[$this->items_id_1],'r')) {
          return false;
       }
       // Must can read second Item of the relation
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 : $input[$this->itemtype_2],
+      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 : $input[$this->itemtype_2],
                     true);
       if (!$ci2->obj->can($input[$this->items_id_2],'r')) {
          return false;
@@ -124,13 +123,13 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :
+      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 :
                     $this->fields[$this->itemtype_1], true);
       if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 :
+      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 :
                     $this->fields[$this->itemtype_2], true);
       if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
          return false;
@@ -165,13 +164,13 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $ci1 = new CommonItem();
-      $ci1->setType(is_numeric($this->itemtype_1) ? $this->itemtype_1 :
+      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 :
                     $this->fields[$this->itemtype_1], true);
       if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
       $ci2 = new CommonItem();
-      $ci2->setType(is_numeric($this->itemtype_2) ? $this->itemtype_2 :
+      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 :
                     $this->fields[$this->itemtype_2], true);
       if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
          return false;
@@ -205,6 +204,8 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       $query = "SELECT `id`
                 FROM `".$this->table."`";
+
+      /// TODO review is_numeric condition ??
 
       if ($itemtype==$this->itemtype_1) {
          $where = " WHERE `".$this->items_id_1."`='$item_id'";
