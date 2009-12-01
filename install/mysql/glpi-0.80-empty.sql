@@ -1,11 +1,11 @@
-#GLPI Dump database on 2009-11-24 19:37
+#GLPI Dump database on 2009-12-01 17:06
 
 ### Dump table glpi_alerts
 
 DROP TABLE IF EXISTS `glpi_alerts`;
 CREATE TABLE `glpi_alerts` (
   `id` int(11) NOT NULL auto_increment,
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '0' COMMENT 'see define.php ALERT_* constant',
   `date` datetime NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE `glpi_bookmarks` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `type` int(11) NOT NULL default '0' COMMENT 'see define.php BOOKMARK_* constant',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `users_id` int(11) NOT NULL default '0',
   `is_private` tinyint(1) NOT NULL default '1',
   `entities_id` int(11) NOT NULL default '-1',
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `glpi_bookmarks_users`;
 CREATE TABLE `glpi_bookmarks_users` (
   `id` int(11) NOT NULL auto_increment,
   `users_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `bookmarks_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`),
@@ -337,7 +337,7 @@ CREATE TABLE `glpi_computers_items` (
   `id` int(11) NOT NULL auto_increment,
   `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to itemtype (ID)',
   `computers_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`computers_id`),
   KEY `computers_id` (`computers_id`)
@@ -638,7 +638,7 @@ CREATE TABLE `glpi_contracts_items` (
   `id` int(11) NOT NULL auto_increment,
   `contracts_id` int(11) NOT NULL default '0',
   `items_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`contracts_id`,`itemtype`,`items_id`),
   KEY `FK_device` (`items_id`,`itemtype`),
@@ -962,7 +962,7 @@ CREATE TABLE `glpi_devicesoundcards` (
 DROP TABLE IF EXISTS `glpi_displaypreferences`;
 CREATE TABLE `glpi_displaypreferences` (
   `id` int(11) NOT NULL auto_increment,
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `num` int(11) NOT NULL default '0',
   `rank` int(11) NOT NULL default '0',
   `users_id` int(11) NOT NULL default '0',
@@ -973,103 +973,102 @@ CREATE TABLE `glpi_displaypreferences` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_displaypreferences` VALUES ('32','1','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('34','1','45','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('33','1','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('31','1','5','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('30','1','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('86','12','3','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('49','4','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('50','4','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('51','4','3','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('52','4','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('44','3','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('38','2','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('39','2','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('45','3','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('46','3','3','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('63','6','4','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('62','6','5','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('61','6','23','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('83','11','4','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('82','11','34','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('57','5','3','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('56','5','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('55','5','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('29','1','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('35','1','3','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('36','1','19','8','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('37','1','17','9','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('40','2','3','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('41','2','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('42','2','11','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('43','2','19','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('47','3','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('48','3','19','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('53','4','19','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('54','4','7','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('58','5','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('59','5','19','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('60','5','7','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('64','7','3','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('65','7','4','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('66','7','5','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('67','7','6','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('68','7','9','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('69','8','9','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('70','8','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('71','8','4','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('72','8','5','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('73','8','10','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('74','8','6','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('75','10','4','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('76','10','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('77','10','5','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('78','10','6','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('79','10','7','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('80','10','11','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('84','11','23','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('85','11','3','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('88','12','6','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('89','12','4','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('90','12','5','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('91','13','3','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('92','13','4','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('93','13','7','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('94','13','5','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('95','13','16','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('96','15','34','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('98','15','5','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('99','15','6','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('100','15','3','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('101','17','34','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('102','17','4','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('103','17','23','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('104','17','3','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('105','2','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('106','3','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('107','4','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('108','5','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('109','15','8','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('110','23','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('111','23','23','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('112','23','3','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('113','23','4','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('114','23','40','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('115','23','19','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('116','23','7','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('117','27','16','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('118','22','31','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('119','29','4','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('120','29','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('121','35','80','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('122','6','72','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('123','6','163','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('124','35','2','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('125','49','8','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('126','49','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('127','49','4','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('128','49','7','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('32','Computer','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('34','Computer','45','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('33','Computer','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('31','Computer','5','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('30','Computer','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('86','DocumentType','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('49','Monitor','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('50','Monitor','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('51','Monitor','3','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('52','Monitor','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('44','Printer','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('38','NetworkEquipment','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('39','NetworkEquipment','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('45','Printer','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('46','Printer','3','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('63','Software','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('62','Software','5','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('61','Software','23','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('83','CartridgeItem','4','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('82','CartridgeItem','34','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('57','Peripheral','3','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('56','Peripheral','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('55','Peripheral','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('29','Computer','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('35','Computer','3','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('36','Computer','19','8','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('37','Computer','17','9','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('40','NetworkEquipment','3','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('41','NetworkEquipment','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('42','NetworkEquipment','11','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('43','NetworkEquipment','19','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('47','Printer','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('48','Printer','19','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('53','Monitor','19','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('54','Monitor','7','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('58','Peripheral','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('59','Peripheral','19','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('60','Peripheral','7','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('64','Contact','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('65','Contact','4','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('66','Contact','5','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('67','Contact','6','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('68','Contact','9','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('69','Supplier','9','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('70','Supplier','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('71','Supplier','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('72','Supplier','5','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('73','Supplier','10','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('74','Supplier','6','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('75','Contract','4','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('76','Contract','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('77','Contract','5','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('78','Contract','6','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('79','Contract','7','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('80','Contract','11','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('84','CartridgeItem','23','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('85','CartridgeItem','3','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('88','DocumentType','6','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('89','DocumentType','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('90','DocumentType','5','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('91','Document','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('92','Document','4','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('93','Document','7','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('94','Document','5','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('95','Document','16','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('96','User','34','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('98','User','5','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('99','User','6','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('100','User','3','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('101','ConsumableItem','34','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('102','ConsumableItem','4','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('103','ConsumableItem','23','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('104','ConsumableItem','3','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('105','NetworkEquipment','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('106','Printer','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('107','Monitor','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('108','Peripheral','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('109','User','8','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('110','Phone','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('111','Phone','23','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('112','Phone','3','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('113','Phone','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('114','Phone','40','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('115','Phone','19','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('116','Phone','7','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('117','Group','16','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('118','State','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('119','ReservationItem','4','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('120','ReservationItem','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('121','MailCollector','80','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('122','Software','72','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('123','Software','163','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('124','49','8','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('125','49','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('126','49','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('127','49','7','4','0');
 
 ### Dump table glpi_documentcategories
 
@@ -1122,7 +1121,7 @@ CREATE TABLE `glpi_documents_items` (
   `id` int(11) NOT NULL auto_increment,
   `documents_id` int(11) NOT NULL default '0',
   `items_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
@@ -1290,7 +1289,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-10-04 21:30:45','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-11-24 19:37:34','login','3','glpi connexion de l\'IP: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2009-12-01 17:06:49','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1367,7 +1366,7 @@ DROP TABLE IF EXISTS `glpi_infocoms`;
 CREATE TABLE `glpi_infocoms` (
   `id` int(11) NOT NULL auto_increment,
   `items_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `buy_date` date default NULL,
   `use_date` date default NULL,
   `warranty_duration` int(11) NOT NULL default '0',
@@ -1476,7 +1475,7 @@ DROP TABLE IF EXISTS `glpi_links_itemtypes`;
 CREATE TABLE `glpi_links_itemtypes` (
   `id` int(11) NOT NULL auto_increment,
   `links_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`links_id`),
   KEY `links_id` (`links_id`)
@@ -1512,7 +1511,7 @@ DROP TABLE IF EXISTS `glpi_logs`;
 CREATE TABLE `glpi_logs` (
   `id` int(11) NOT NULL auto_increment,
   `items_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `devicetype` int(11) NOT NULL default '0',
   `linked_action` int(11) NOT NULL default '0' COMMENT 'see define.php HISTORY_* constant',
   `user_name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1783,7 +1782,7 @@ DROP TABLE IF EXISTS `glpi_networkports`;
 CREATE TABLE `glpi_networkports` (
   `id` int(11) NOT NULL auto_increment,
   `items_id` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `logical_number` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ip` varchar(255) collate utf8_unicode_ci default NULL,
@@ -2147,8 +2146,9 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_plugins` VALUES ('1','example','Plugin Example','0.2.0','2','Julien Dombre','http://glpi-project.org');
 
 ### Dump table glpi_printermodels
 
@@ -2313,10 +2313,10 @@ CREATE TABLE `glpi_profiles` (
   KEY `is_default` (`is_default`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_profiles` VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,'1','1','{\"1\":1,\"6\":6,\"23\":23}',NULL,'0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_profiles` VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','1','0','1','0','1','0','0','1','1','1','{\"1\":1,\"6\":6,\"23\":23}',NULL,'0','0',NULL,NULL,'r');
-INSERT INTO `glpi_profiles` VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','{\"1\":1,\"6\":6,\"23\":23}',NULL,'0','0',NULL,NULL,'w');
-INSERT INTO `glpi_profiles` VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','{\"1\":1,\"6\":6,\"23\":23}',NULL,'0','0','w','w','w');
+INSERT INTO `glpi_profiles` VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,'1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_profiles` VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','1','0','1','0','1','0','0','1','1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'r');
+INSERT INTO `glpi_profiles` VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'w');
+INSERT INTO `glpi_profiles` VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0','w','w','w');
 
 ### Dump table glpi_profiles_users
 
@@ -2412,7 +2412,7 @@ INSERT INTO `glpi_requesttypes` VALUES ('6','Autre','0','0',NULL);
 DROP TABLE IF EXISTS `glpi_reservationitems`;
 CREATE TABLE `glpi_reservationitems` (
   `id` int(11) NOT NULL auto_increment,
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `is_active` tinyint(1) NOT NULL default '1',
@@ -3043,7 +3043,7 @@ CREATE TABLE `glpi_tickets` (
   `users_id_assign` int(11) NOT NULL default '0',
   `suppliers_id_assign` int(11) NOT NULL default '0',
   `groups_id_assign` int(11) NOT NULL default '0',
-  `itemtype` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL default '0',
   `content` longtext collate utf8_unicode_ci,
   `priority` int(11) NOT NULL default '1',
@@ -3182,7 +3182,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-11-24 19:37:34','2009-11-24 19:37:34','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2009-12-01 17:06:49','2009-12-01 17:06:49','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL);
