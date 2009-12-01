@@ -44,7 +44,7 @@ if (empty($_GET["id"])) {
 }
 
 $group = new Group;
-$groupuser = new GroupUser();
+$groupuser = new Group_User();
 
 if (isset($_POST["add"])) {
    $group->check(-1,'w',$_POST);
