@@ -55,7 +55,7 @@ function showConsumableAdd($ID) {
    }
 
    if ($ID > 0) {
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php\">";
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
       echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<td class='tab_bg_2 center'>";
@@ -89,7 +89,7 @@ function showConsumables ($tID,$show_old=0) {
    }
    $canedit=haveRight("consumable","w");
 
-   $cartype=new ConsumableType();
+   $cartype=new ConsumableItem();
 
    if ($cartype->getFromDB($tID)) {
       $query = "SELECT count(*) AS COUNT
@@ -100,7 +100,7 @@ function showConsumables ($tID,$show_old=0) {
          if ($DB->result($result,0,0)!=0) {
             if (!$show_old&&$canedit) {
                echo "<form method='post' action='".
-                      $CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
+                      $CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
                echo "<input type='hidden' name='tID' value=\"$tID\">\n";
             }
             echo "<br><div class='center'><table class='tab_cadre_fixe'>";
@@ -202,13 +202,13 @@ function showConsumables ($tID,$show_old=0) {
             if ($show_old && $canedit) {
                echo "<td class='center'>";
                echo "<a href='".
-                      $CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;id=".
+                      $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
                       $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
                echo "</td>";
             }
             echo "<td class='center'>";
             echo "<a href='".
-                   $CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;id=".
+                   $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
                    $data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
             echo "</td></tr>";
          }

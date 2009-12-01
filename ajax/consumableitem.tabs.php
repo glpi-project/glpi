@@ -47,7 +47,7 @@ if (!isset($_POST["id"])) {
 
 checkRight("consumable","r");
 
-$consumable = new ConsumableType();
+$consumable = new ConsumableItem();
 if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
