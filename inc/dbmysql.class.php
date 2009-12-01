@@ -389,6 +389,7 @@ class DBmysql {
          if (get_magic_quotes_runtime()) {
             $sql_line=stripslashes_deep($sql_line);
          }
+         $sql_line = trim($sql_line);
          if (!empty($sql_line)) {
             if (!$this->query($sql_line)) {
                $result = false;
