@@ -38,10 +38,10 @@ if (!defined('GLPI_ROOT')){
 }
 
 
-class SetupSearchDisplay extends CommonDBTM {
+class DisplayPreference extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_displayprefs';
+   public $table = 'glpi_displaypreferences';
 
    function prepareInputForAdd($input) {
       global $DB;

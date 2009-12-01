@@ -155,7 +155,7 @@ class User extends CommonDBTM {
       $DB->query($query);
 
       $query = "DELETE
-                FROM `glpi_displayprefs`
+                FROM `glpi_displaypreferences`
                 WHERE `users_id` = '$ID'";
       $DB->query($query);
 

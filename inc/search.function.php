@@ -574,7 +574,7 @@ function showList ($itemtype,$params) {
 
    // Add default items
    $query = "SELECT *
-             FROM `glpi_displayprefs`
+             FROM `glpi_displaypreferences`
              WHERE `itemtype` = '$itemtype'
                    AND `users_id` = '".$_SESSION["glpiID"]."'
              ORDER BY `rank`";
@@ -583,7 +583,7 @@ function showList ($itemtype,$params) {
    // GET default serach options
    if ($DB->numrows($result)==0) {
       $query = "SELECT *
-                FROM `glpi_displayprefs`
+                FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '0'
                 ORDER BY `rank`";
