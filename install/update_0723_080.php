@@ -1775,6 +1775,16 @@ function update0723to080() {
       $DB->query($query2) or die("0.80 update cartridge bookmarks " . $LANG['update'][90] . $DB->error());
       $query2="UPDATE glpi_bookmarks SET path='front/ticket.php' WHERE path='front/tracking.php';";
       $DB->query($query2) or die("0.80 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/mailcollector.php' WHERE path='front/mailgate.php';";
+      $DB->query($query2) or die("0.80 update mailcollector bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/ocsserver.php' WHERE path='front/setup.ocsng.php';";
+      $DB->query($query2) or die("0.80 update ocsserver bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/supplier.php' WHERE path='front/enterprise.php';";
+      $DB->query($query2) or die("0.80 update supplier bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/networkequipment.php' WHERE path='front/networking.php';";
+      $DB->query($query2) or die("0.80 update networkequipment bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/states.php' WHERE path='front/state.php';";
+      $DB->query($query2) or die("0.80 update states bookmarks " . $LANG['update'][90] . $DB->error());
 
    }
 
