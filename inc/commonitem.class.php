@@ -450,7 +450,7 @@ class CommonItem {
 
             default :
                // Plugin case
-               if ($itemtype>1000) {
+               //if ($itemtype>1000) {
                   if (isset($PLUGIN_HOOKS['plugin_classes'][$itemtype])) {
                      $class=$PLUGIN_HOOKS['plugin_classes'][$itemtype];
                      $plug=$PLUGIN_HOOKS['plugin_types'][$itemtype];
@@ -461,7 +461,7 @@ class CommonItem {
                         $this->obj = new $class();
                      }
                   }
-               }
+               //}
                break;
          }
       }

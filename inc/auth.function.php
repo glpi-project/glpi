@@ -208,14 +208,14 @@ function haveTypeRight($itemtype, $right) {
             return haveRight("dropdown",$right);
          }
          // Plugin case
-         if ($itemtype>1000) {
+         //if ($itemtype>1000) {
             if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
                $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
                if (function_exists($function)) {
                   return $function($itemtype,$right);
                }
             }
-         }
+         //}
          break;
    }
    return false;
