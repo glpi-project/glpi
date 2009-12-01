@@ -40,7 +40,7 @@ $NEEDED_ITEMS = array('rulesengine', 'rule.dictionnary.dropdown', 'rule.dictionn
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new DictionnarySoftwareCollection;
+$rulecollection = new RuleDictionnarySoftwareCollection;
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

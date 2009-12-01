@@ -3188,7 +3188,7 @@ function ocsUpdateSoftware($computers_id, $entity, $ocsid, $ocsservers_id, $cfg_
             $use_glpi_dictionnary = false;
             if (!$cfg_ocs["use_soft_dict"]) {
                //Software dictionnary
-               $rulecollection = new DictionnarySoftwareCollection;
+               $rulecollection = new RuleDictionnarySoftwareCollection;
                $res_rule = $rulecollection->processAllRules(array("name"=>$name,
                                                                   "manufacturer"=>$manufacturer,
                                                                   "old_version"=>$version),
