@@ -419,10 +419,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("knowbase","r") || haveRight("faq","r")) {
       $menu['utils']['content']['knowbase']['title']=$LANG['Menu'][19];
-      $menu['utils']['content']['knowbase']['page']='/front/knowbase.php';
-      $menu['utils']['content']['knowbase']['links']['search']='/front/knowbase.php';
+      $menu['utils']['content']['knowbase']['page']='/front/knowbaseitem.php';
+      $menu['utils']['content']['knowbase']['links']['search']='/front/knowbaseitem.php';
       if (haveRight("knowbase","w") || haveRight("faq","w")) {
-         $menu['utils']['content']['knowbase']['links']['add']='/front/knowbase.form.php?id=new';
+         $menu['utils']['content']['knowbase']['links']['add']='/front/knowbaseitem.form.php?id=new';
       }
    }
 

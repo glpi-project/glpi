@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 // CLASSE knowledgebase
 
-class kbitem extends CommonDBTM {
+class KnowbaseItem extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_knowbaseitems';

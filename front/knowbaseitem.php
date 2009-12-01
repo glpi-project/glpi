@@ -42,7 +42,7 @@ checkSeveralRightsOr(array('knowbase' => 'r',
                            'faq'      => 'r'));
 
 if (isset($_GET["id"])) {
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=".$_GET["id"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
 commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
@@ -61,10 +61,10 @@ $faq = !haveRight("knowbase","r");
 
 searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemcategories_id"],$faq);
 showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemcategories_id"],$faq );
-showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],
+showKbItemList($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php",$_GET["contains"],$_GET["start"],
                $_GET["knowbaseitemcategories_id"],$faq);
 if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
-   showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
+   showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php",$faq) ;
 }
 
 commonFooter();

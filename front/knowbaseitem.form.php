@@ -54,7 +54,7 @@ if (!isset($_GET["removefromfaq"])) {
    $_GET["removefromfaq"] = "";
 }
 
-$kb = new kbItem;
+$kb = new KnowbaseItem;
 
 if ($_GET["id"] == "new") {
    // on affiche le formulaire de saisie de l'item
@@ -70,7 +70,7 @@ if ($_GET["id"] == "new") {
 
    $newID = $kb->add($_POST);
    logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
@@ -78,7 +78,7 @@ if ($_GET["id"] == "new") {
 
    $kb->update($_POST);
    logEvent($_POST["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?id=".$_POST['id']);
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
    // modifier un item dans la base de connaissance
@@ -94,7 +94,7 @@ if ($_GET["id"] == "new") {
 
    $kb->delete($_GET);
    logEvent($_GET["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {
    // ajouter  un item dans la faq
@@ -111,7 +111,7 @@ if ($_GET["id"] == "new") {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (empty($_GET["id"])) {
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
+   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else {
    // Affiche un item de la base de connaissances

@@ -1013,7 +1013,7 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Have I the right to "create" the Object
    *
-   * May be overloaded if needed (ex kbitem)
+   * May be overloaded if needed (ex KnowbaseItem)
    *
    * @return booleen
    **/
