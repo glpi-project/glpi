@@ -799,9 +799,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       }
 
       $menu['config']['content']['mailgate']['title']=$LANG['Menu'][39];
-      $menu['config']['content']['mailgate']['page']='/front/mailgate.php';
-      $menu['config']['content']['mailgate']['links']['search']='/front/mailgate.php';
-      $menu['config']['content']['mailgate']['links']['add']='/front/mailgate.form.php';
+      $menu['config']['content']['mailgate']['page']='/front/mailcollector.php';
+      $menu['config']['content']['mailgate']['links']['search']='/front/mailcollector.php';
+      $menu['config']['content']['mailgate']['links']['add']='/front/mailcollector.form.php';
    }
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {

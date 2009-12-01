@@ -37,12 +37,39 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Mailgate class
-class Mailgate  extends CommonDBTM {
+/// MailCollector class
+// Merge with collect GLPI system after big modification in it
+// modif and debug by  INDEPNET Development Team.
+/* Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
+ * Description: Reciving mail With Attechment
+ * Email: mitulkoradia@gmail.com
+ */
+class MailCollector  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_mailcollectors';
    public $type = MAILGATE_TYPE;
+
+   // Specific one
+   /// working charset of the mail
+   var $charset="";
+   /// IMAP / POP connection
+   var $marubox='';
+   /// ID of the current message
+   var $mid = -1;
+   /// structure used to store the mail structure
+   var $structure = false;
+   /// structure used to store files attached to a mail
+   var $files;
+   /// Message to add to body to build ticket
+   var $addtobody;
+   /// Number of fetched emails
+   var $fetch_emails=0;
+   /// Maximim number of emails to fetch
+   var $maxfetch_emails=0;
+   /// Max size for attached files
+   var $filesize_max=0;
+
 
    function post_getEmpty () {
       global $CFG_GLPI;
@@ -188,44 +215,7 @@ class Mailgate  extends CommonDBTM {
 
       return $tab;
    }
-}
 
-
-// modif and debug by  INDEPNET Development Team.
-// Merge with collect GLPI system after big modification in it
-/* Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
- * Description: Reciving mail With Attechment
- * Email: mitulkoradia@gmail.com
- */
-/// Mailcollect class
-class MailCollect {
-
-   /// working entity
-   var $entity;
-   /// working charset of the mail
-   var $charset="";
-   /// IMAP / POP server
-   var $server='';
-   /// IMAP / POP login
-   var $username='';
-   /// IMAP / POP password
-   var $password='';
-   /// IMAP / POP connection
-   var $marubox='';
-   /// ID of the current message
-   var $mid = -1;
-   /// structure used to store the mail structure
-   var $structure = false;
-   /// structure used to store files attached to a mail
-   var $files;
-   /// Message to add to body to build ticket
-   var $addtobody;
-   /// Number of fetched emails
-   var $fetch_emails=0;
-   /// Maximim number of emails to fetch
-   var $maxfetch_emails=0;
-   /// Max size for attached files
-   var $filesize_max=0;
 
    /**
    * Constructor
@@ -236,13 +226,7 @@ class MailCollect {
    function collect($mailgateID,$display=0) {
       global $LANG;
 
-      $mailgate=new Mailgate();
-      if ($mailgate->getFromDB($mailgateID)) {
-         $this->entity = $mailgate->fields['entities_id'];
-         $this->server = $mailgate->fields['host'];
-         $this->username = $mailgate->fields['login'];
-         $this->password = $mailgate->fields['password'];
-         $this->filesize_max = $mailgate->fields['filesize_max'];
+      if ($this->getFromDB($mailgateID)) {
          $this->mid = -1;
          $this->fetch_emails = 0;
          //Connect to the Mail Box
@@ -255,7 +239,7 @@ class MailCollect {
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $tkt= $this->buildTicket($i);
                $tkt['_mailgate']=$mailgateID;
-               $this->deleteMails($i); // Delete Mail from Mail box
+               //$this->deleteMails($i); // Delete Mail from Mail box
                $result=imap_fetchheader($this->marubox,$i);
                // Is a mail responding of an already existgin ticket ?
                if (isset($tkt['tickets_id']) ) {
@@ -305,7 +289,7 @@ class MailCollect {
             return 'Could find mailgate '.$mailgateID;
          }
       }
-   } // end function MailCollect
+   } 
 
    /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
    * @param $i mail ID
@@ -319,9 +303,9 @@ class MailCollect {
       $tkt= array ();
 
       // max size = 0 : no import attachments
-      if ($this->filesize_max>0) {
+      if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
-            $_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$this->filesize_max);
+            $_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$this->fields['filesize_max']);
          } else {
             logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
          }
@@ -412,7 +396,7 @@ class MailCollect {
          $tkt['user_email']=$head['from'];
          $tkt['use_email_notification']=1;
          // Which entity ?
-         $tkt['entities_id']=$this->entity;
+         $tkt['entities_id']=$this->fields['entities_id'];;
          //$tkt['Subject']= $head['subject'];   // not use for the moment
          $tkt['name']=$this->textCleaner($head['subject']);
          // Medium
@@ -494,7 +478,7 @@ class MailCollect {
 
     ///Connect To the Mail Box
    function connect() {
-      $this->marubox=@imap_open($this->server,$this->username,$this->password, 1);
+      $this->marubox=@imap_open($this->fields['host'],$this->fields['login'],$this->fields['password'], 1);
    }
 
    /**

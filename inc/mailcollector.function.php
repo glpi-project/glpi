@@ -50,7 +50,7 @@ function cron_mailgate($task) {
    if ($result=$DB->query($query)) {
       $max = $task->fields['param'];
       if ($DB->numrows($result)>0) {
-         $mc=new MailCollect();
+         $mc=new MailCollector();
 
          while ($max>0 && $data=$DB->fetch_assoc($result)) {
             $mc->maxfetch_emails = $max;

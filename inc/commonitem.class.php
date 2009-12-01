@@ -238,8 +238,8 @@ class CommonItem {
                break;
 
             case MAILGATE_TYPE:
-               require_once(GLPI_ROOT.'/inc/mailgate.class.php');
-               $this->obj = new Mailgate;
+               require_once(GLPI_ROOT.'/inc/mailcollector.class.php');
+               $this->obj = new MailCollector;
                break;
 
             case INFOCOM_TYPE:
