@@ -476,13 +476,20 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                    && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
 
                   foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
-                     if (is_array($link)) {
-                        if (isset($link[$option])) {
-                           $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.
-                                                                             $link[$option];
+
+                     // New complete option management
+                     if ($name=="options") {
+                        $menu['plugins']['content'][$key]['options']=$link;
+                     } else { // Keep it for compatibility
+                        if (is_array($link)) {
+                           // Simple link option
+                           if (isset($link[$option])) {
+                              $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.
+                                                                              $link[$option];
+                           }
+                        } else {
+                           $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
                         }
-                     } else {
-                        $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
                      }
                   }
                }
