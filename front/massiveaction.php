@@ -492,7 +492,7 @@ if (isset($_POST["itemtype"])){
 				$REDIRECT=$CFG_GLPI['root_doc'].'/front/transfer.action.php';
 			break;
 			case "add_followup":
-				$fup=new Followup();
+				$fup=new TicketFollowup();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$_POST['tickets_id']=$key;

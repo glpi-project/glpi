@@ -61,7 +61,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && $CFG_GLPI["use_an
 			$_SESSION["helpdeskSaved"][$v] = $_POST[$v];
 	}
 */
-$track=new Job();
+$track=new Ticket();
 
 // Security check
 if (empty($_POST)||count($_POST)==0){

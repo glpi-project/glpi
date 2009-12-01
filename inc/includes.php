@@ -225,6 +225,11 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
             $item='ruleldapparameter';
          }
 
+         if ($item=='tracking') {
+            $item='ticket';
+            include_once (GLPI_ROOT . "/inc/ticketfollowup.class.php");
+         }
+
          if ($item=='rulesengine') {
             include_once (GLPI_ROOT . "/inc/rule.class.php");
             include_once (GLPI_ROOT . "/inc/rule.function.php");

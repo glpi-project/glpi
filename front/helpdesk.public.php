@@ -78,7 +78,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
    // Affichage interventions en cours
    //******************
    if (isset($_POST['add']) && haveRight("comment_ticket","1")) {
-      $fup = new Followup();
+      $fup = new TicketFollowup();
       $newID = $fup->add($_POST);
 
       logEvent($_POST["tickets_id"], "tracking", 4, "tracking",
@@ -134,11 +134,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
 
    } else {
       if (isset($_POST["update"])) {
-         $track = new Job();
+         $track = new Ticket();
          $track->update($_POST);
          glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
       }
-      $track = new Job();
+      $track = new Ticket();
       $track->check($_GET["id"],'r');
       $track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
       echo "<div id='tabcontent'></div>";

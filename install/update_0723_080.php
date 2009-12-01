@@ -1703,6 +1703,8 @@ function update0723to080() {
       $DB->query($query2) or die("0.80 update consumable bookmarks " . $LANG['update'][90] . $DB->error());
       $query2="UPDATE glpi_bookmarks SET path='front/cartridgeitem.php' WHERE path='front/cartridge.php';";
       $DB->query($query2) or die("0.80 update cartridge bookmarks " . $LANG['update'][90] . $DB->error());
+      $query2="UPDATE glpi_bookmarks SET path='front/ticket.php' WHERE path='front/tracking.php';";
+      $DB->query($query2) or die("0.80 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
 
    }
 

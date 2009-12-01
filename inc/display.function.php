@@ -330,12 +330,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("observe_ticket","1") || haveRight("show_all_ticket","1")
        || haveRight("create_ticket","1")) {
 
-      $menu['maintain']['default']='/front/tracking.php';
+      $menu['maintain']['default']='/front/ticket.php';
       $menu['maintain']['content']['tracking']['title']=$LANG['Menu'][5];
       $menu['maintain']['content']['tracking']['shortcut']='t';
-      $menu['maintain']['content']['tracking']['page']='/front/tracking.php';
-      $menu['maintain']['content']['tracking']['links']['search']='/front/tracking.php';
-      $menu['maintain']['content']['helpdesk']['links']['search']='/front/tracking.php';
+      $menu['maintain']['content']['tracking']['page']='/front/ticket.php';
+      $menu['maintain']['content']['tracking']['links']['search']='/front/ticket.php';
+      $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
       $menu['maintain']['content']['helpdesk']['title']=$LANG['Menu'][31];

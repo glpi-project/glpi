@@ -2030,7 +2030,7 @@ class Transfer extends CommonDBTM {
    function transferTickets($itemtype,$ID,$newID) {
       global $DB;
 
-      $job= new Job();
+      $job= new Ticket();
       $query = "SELECT `id`, `suppliers_id_assign`
                 FROM `glpi_tickets`
                 WHERE `items_id` = '$ID'

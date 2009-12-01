@@ -65,7 +65,7 @@ $cleantarget=preg_replace("/[&]date[12]=[0-9-]*/","",$_SERVER['QUERY_STRING']);
 $cleantarget=preg_replace("/[&]*id=([0-9]+[&]{0,1})/","",$cleantarget);
 $cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 
-$job=new Job();
+$job=new Ticket();
 $next=0;
 $prev=0;
 $title="";

@@ -46,7 +46,7 @@ checkRight("create_ticket","1");
 commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 
 if (isset($_POST["add"])) {
-   $track = new Job();
+   $track = new Ticket();
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
       $splitter = explode("_",$_POST["_my_items"]);
       if (count($splitter) == 2) {
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   // TODO check the use of real name of field...(could also use Job->getEmpty)
+   // TODO check the use of real name of field...(could also use Ticket->getEmpty)
    // Set default value...
    $values = array('users_id'             => $_SESSION["glpiID"],
                    'groups_id'            => 0,

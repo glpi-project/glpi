@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Tracking class
-class Job extends CommonDBTM {
+class Ticket extends CommonDBTM {
 
 
    // From CommonDBTM
@@ -56,7 +56,7 @@ class Job extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
-      $job=new Job();
+      $job=new Ticket();
       $job->getFromDB($ID);
 
       $ong[1] = $LANG['job'][38]." ".$ID;
@@ -605,7 +605,7 @@ class Job extends CommonDBTM {
 
                $newinput["type"]="finish";
             }
-            $fup=new Followup();
+            $fup=new TicketFollowup();
             $fup->add($newinput);
             $mail_send=true;
          }
@@ -835,7 +835,7 @@ class Job extends CommonDBTM {
               && isset($input["realtime"])
               && $input["realtime"]>0)) {
 
-         $fup=new Followup();
+         $fup=new TicketFollowup();
          $type="new";
          if (isset($this->fields["status"]) && strstr($this->fields["status"],"old_")) {
             $type="finish";
@@ -912,7 +912,7 @@ class Job extends CommonDBTM {
    function updateRealTime($ID) {
       global $DB;
 
-      // update Status of Job
+      // update Status of Ticket
       $query = "SELECT SUM(`realtime`)
                 FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '$ID'";
@@ -972,7 +972,7 @@ class Job extends CommonDBTM {
             $message = "<div class='description b'>".$LANG['mailing'][4]."&nbsp;: $nbfollow<br></div>\n";
 
             if ($nbfollow>0) {
-               $fup = new Followup();
+               $fup = new TicketFollowup();
                while ($data=$DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
                   $message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".
@@ -1011,7 +1011,7 @@ class Job extends CommonDBTM {
                        $LANG['mailing'][1]."\n";
 
             if ($nbfollow>0) {
-               $fup=new Followup();
+               $fup=new TicketFollowup();
                while ($data=$DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
                   $message .= "[ ".convDateTime($fup->fields["date"])." ]".
@@ -1393,251 +1393,6 @@ class Job extends CommonDBTM {
 
       return $tab;
    }
-}
-
-
-
-/// Followup class
-class Followup  extends CommonDBTM {
-
-
-   // From CommonDBTM
-   public $table = 'glpi_ticketfollowups';
-   public $type = FOLLOWUP_TYPE;
-
-   function cleanDBonPurge($ID) {
-      global $DB;
-
-      $querydel = "DELETE
-                   FROM `glpi_ticketplannings`
-                   WHERE `ticketfollowups_id` = '$ID'";
-      $DB->query($querydel);
-   }
-
-
-   function post_deleteFromDB($ID) {
-
-      $job = new Job();
-      $job->updateRealtime($this->fields['tickets_id']);
-      $job->updateDateMod($this->fields["tickets_id"]);
-   }
-
-
-   function prepareInputForUpdate($input) {
-
-      $input["realtime"] = $input["hour"]+$input["minute"]/60;
-      if (isset($_SESSION["glpiID"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
-      }
-      if (isset($input["plan"])) {
-         $input["_plan"] = $input["plan"];
-         unset($input["plan"]);
-      }
-      return $input;
-   }
-
-
-   function post_updateItem($input,$updates,$history=1) {
-      global $CFG_GLPI;
-
-      $job = new Job;
-      $mailsend = false;
-
-      if ($job->getFromDB($input["tickets_id"])) {
-         $job->updateDateMod($input["tickets_id"]);
-
-         if (count($updates)) {
-            if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$updates) || isset($input['_need_send_mail']))) {
-
-               $user = new User;
-               $user->getFromDB($_SESSION["glpiID"]);
-               $mail = new Mailing("followup",$job,$user,
-                                   (isset($input["is_private"]) && $input["is_private"]));
-               $mail->send();
-               $mailsend = true;
-            }
-
-            if (in_array("realtime",$updates)) {
-               $job->updateRealTime($input["tickets_id"]);
-            }
-         }
-      }
-
-      if (isset($input["_plan"])) {
-         $pt = new PlanningTracking();
-         // Update case
-         if (isset($input["_plan"]["id"])) {
-            $input["_plan"]['ticketfollowups_id'] = $input["id"];
-            $input["_plan"]['tickets_id'] = $input['tickets_id'];
-            $input["_plan"]['_nomail'] = $mailsend;
-
-            if (!$pt->update($input["_plan"])) {
-               return false;
-            }
-            unset($input["_plan"]);
-         // Add case
-         } else {
-            $input["_plan"]['ticketfollowups_id'] = $input["id"];
-            $input["_plan"]['tickets_id'] = $input['tickets_id'];
-            $input["_plan"]['_nomail'] = 1;
-
-            if (!$pt->add($input["_plan"])) {
-               return false;
-            }
-            unset($input["_plan"]);
-            $input['_need_send_mail'] = true;
-         }
-      }
-   }
-
-
-   function prepareInputForAdd($input) {
-      global $LANG;
-
-      $input["_isadmin"] = haveRight("comment_all_ticket","1");
-      $input["_job"] = new Job;
-
-      if ($input["_job"]->getFromDB($input["tickets_id"])) {
-         // Security to add unusers_idized followups
-         if (!isset($input['_do_not_check_users_id'])
-             && $input["_job"]->fields["users_id"]!=$_SESSION["glpiID"]
-             && !$input["_job"]->canAddFollowups()) {
-            return false;
-         }
-      } else {
-         return false;
-      }
-
-      // Manage File attached (from mailgate)
-      $docadded=$input["_job"]->addFiles($input["tickets_id"]);
-      if (count($docadded)>0) {
-         foreach ($docadded as $name) {
-            $input['content'] .= "\n".$LANG['mailing'][26]." $name";
-         }
-      }
-
-      // Pass old assign From Job in case of assign change
-      if (isset($input["_old_assign"])) {
-         $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
-      }
-
-      if (!isset($input["type"])) {
-         $input["type"] = "followup";
-      }
-      $input["_type"] = $input["type"];
-      unset($input["type"]);
-      $input['_close'] = 0;
-      unset($input["add"]);
-
-      if (!isset($input["users_id"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
-      }
-      if ($input["_isadmin"] && $input["_type"]!="update") {
-         if (isset($input['plan'])) {
-            $input['_plan'] = $input['plan'];
-            unset($input['plan']);
-         }
-         if (isset($input["add_close"])) {
-            $input['_close'] = 1;
-         }
-         unset($input["add_close"]);
-         if (isset($input["add_reopen"])) {
-            $input['_reopen'] = 1;
-         }
-         unset($input["add_reopen"]);
-         if (!isset($input["hour"])) {
-            $input["hour"] = 0;
-         }
-         if (!isset($input["minute"])) {
-            $input["minute"] = 0;
-         }
-         if ($input["hour"]>0 || $input["minute"]>0) {
-            $input["realtime"] = $input["hour"]+$input["minute"]/60;
-         }
-      }
-      unset($input["minute"]);
-      unset($input["hour"]);
-      $input["date"] = $_SESSION["glpi_currenttime"];
-
-      return $input;
-   }
-
-
-   function post_addItem($newID,$input) {
-      global $CFG_GLPI;
-
-      $input["_job"]->updateDateMod($input["tickets_id"]);
-
-      if (isset($input["realtime"]) && $input["realtime"]>0) {
-         $input["_job"]->updateRealTime($input["tickets_id"]);
-      }
-
-      if ($input["_isadmin"] && $input["_type"]!="update") {
-         if (isset($input["_plan"])) {
-            $input["_plan"]['ticketfollowups_id'] = $newID;
-            $input["_plan"]['tickets_id'] = $input['tickets_id'];
-            $input["_plan"]['_nomail'] = 1;
-            $pt = new PlanningTracking();
-
-            if (!$pt->add($input["_plan"])) {
-               return false;
-            }
-         }
-
-         if ($input["_close"] && $input["_type"]!="update" && $input["_type"]!="finish") {
-            $updates[] = "status";
-            $updates[] = "closedate";
-            $input["_job"]->fields["status"] = "old_done";
-            $input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
-            $input["_job"]->updateInDB($updates);
-         }
-      }
-
-      // No check on admin because my be used by mailgate
-      if (isset($input["_reopen"])
-          && $input["_reopen"]
-          && strstr($input["_job"]->fields["status"],"old_")) {
-
-         $updates[]="status";
-         if ($input["_job"]->fields["users_id_assign"]>0
-             || $input["_job"]->fields["groups_id_assign"]>0
-             || $input["_job"]->fields["suppliers_id_assign"]>0) {
-
-            $input["_job"]->fields["status"]="assign";
-         } else {
-            $input["_job"]->fields["status"] = "new";
-         }
-         $input["_job"]->updateInDB($updates);
-      }
-
-      if ($CFG_GLPI["use_mailing"]) {
-         if ($input["_close"]) {
-            $input["_type"] = "finish";
-         }
-         $user = new User;
-         if (!isset($input['_auto_import']) && isset($_SESSION["glpiID"])) {
-            $user->getFromDB($_SESSION["glpiID"]);
-         }
-         $mail = new Mailing($input["_type"],$input["_job"],$user,
-                             (isset($input["is_private"]) && $input["is_private"]));
-         $mail->send();
-      }
-   }
-
-
-   // SPECIFIC FUNCTIONS
-
-   /**
-    * Get the users_id name of the followup
-    * @param $link insert link ?
-    *
-    *@return string of the users_id name
-   **/
-   function getAuthorName($link=0) {
-      return getUserName($this->fields["users_id"],$link);
-   }
-
 }
 
 ?>

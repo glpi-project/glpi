@@ -44,8 +44,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 
-$fup=new Followup();
-$track=new Job();
+$fup=new TicketFollowup();
+$track=new Ticket();
 
 if (!isset($_GET['id'])) {
    $_GET['id']="";
@@ -58,7 +58,7 @@ if (isset($_POST['update'])) {
    $track->update($_POST);
    logEvent($_POST["id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
-   glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["id"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
 
 }else if (isset($_POST['add'])||isset($_POST['add_close'])||isset($_POST['add_reopen'])) {
@@ -66,19 +66,19 @@ if (isset($_POST['update'])) {
    $newID=$fup->add($_POST);
 
    logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-   glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]."&glpi_tab=1&itemtype=".TRACKING_TYPE);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]."&glpi_tab=1&itemtype=".TRACKING_TYPE);
 
 } else if (isset($_POST["update_followup"])) {
    checkRight("comment_all_ticket","1");
    $fup->update($_POST);
 
    logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
-   glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
 } else if (isset($_POST["delete_followup"])) {
    checkRight("comment_all_ticket","1");
    $fup->delete($_POST);
    logEvent($_POST["tickets_id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
-   glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$_POST["tickets_id"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
 }
 
 $track->check($_GET["id"],'r');
