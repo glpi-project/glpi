@@ -245,7 +245,7 @@ class MailCollector  extends CommonDBTM {
                if (isset($tkt['tickets_id']) ) {
                   // Deletion of message with sucess
                   if (false === is_array($result)) {
-                     $fup=new Followup();
+                     $fup=new TicketFollowup();
                      $fup->add($tkt);
                   } else {
                      $error++;
@@ -253,7 +253,7 @@ class MailCollector  extends CommonDBTM {
                } else { // New ticket
                   // Deletion of message with sucess
                   if (false === is_array($result)) {
-                     $track=new Job();
+                     $track=new Ticket();
                      $track->add($tkt);
                   } else {
                      $error++;
@@ -360,7 +360,7 @@ class MailCollector  extends CommonDBTM {
       // Found ticket link
       if ( isset($tkt['tickets_id']) ) {
          // it's a reply to a previous ticket
-         $job=new Job();
+         $job=new Ticket();
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])

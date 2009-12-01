@@ -171,25 +171,25 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
       echo "<tr><th colspan='5'>";
       if ($status=="waiting") {
          if ($showgrouptickets) {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                    $LANG['central'][16]."</a>";
          } else {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                    $LANG['central'][11]."</a>";
          }
       } else {
          echo $LANG['central'][17]."&nbsp;: ";
          if ($showgrouptickets) {
             if (haveRight("show_group_ticket",1)) {
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?group=-1&amp;users_id=".
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?group=-1&amp;users_id=".
                       $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ";
             }
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                    $LANG['joblist'][21]."</a>";
          } else {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?users_id=".
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?users_id=".
                    $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ".
-                 "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".
+                 "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                    $LANG['joblist'][21]."</a>";
          }
       }
@@ -244,27 +244,27 @@ function showCentralJobCount() {
    }
    echo "<table class='tab_cadrehov' >";
    echo "<tr><th colspan='2'>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=process&amp;reset=reset_before\">".
           $LANG['title'][10]."</a></th></tr>";
    echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
    echo "<tr class='tab_bg_2'>";
    echo "<td>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=new&amp;reset=reset_before\">".
           $LANG['tracking'][30]."</a> </td>";
    echo "<td>".$status["new"]."</td></tr>";
    echo "<tr class='tab_bg_2'>";
    echo "<td>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=assign&amp;reset=reset_before\">".
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=assign&amp;reset=reset_before\">".
           $LANG['tracking'][31]."</a></td>";
    echo "<td>".$status["assign"]."</td></tr>";
    echo "<tr class='tab_bg_2'>";
    echo "<td>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=plan&amp;reset=reset_before\">".
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=plan&amp;reset=reset_before\">".
           $LANG['tracking'][32]."</a></td>";
    echo "<td>".$status["plan"]."</td></tr>";
    echo "<tr class='tab_bg_2'>";
    echo "<td>";
-   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".
+   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=waiting&amp;reset=reset_before\">".
           $LANG['joblist'][26]."</a></td>";
    echo "<td>".$status["waiting"]."</td></tr>";
    echo "</table><br>";
@@ -308,7 +308,7 @@ function showJobListForItem($itemtype,$items_id) {
       initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
 
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=".
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
             "all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
       echo "</th></tr>";
    } else {
@@ -386,7 +386,7 @@ function showJobListForSupplier($entID) {
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=".
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
             "all&amp;suppliers_id_assign=$entID'>".$LANG['buttons'][40]."</a>";
       echo "</th></tr>";
 
@@ -430,7 +430,7 @@ function showJobListForUser($userID) {
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=".
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
             "all&amp;users_id=$userID'>".$LANG['buttons'][40]."</a>";
       echo "</th></tr>";
 
@@ -472,7 +472,7 @@ function showNewJobList() {
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=".
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
             "new'>".$LANG['buttons'][40]."</a>";
       echo "</th></tr>";
 
@@ -500,7 +500,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
    // Should be called in a <table>-segment
    // Print links or not in case of user view
    // Make new job object and fill it from database, if success, print it
-   $job = new Job;
+   $job = new Ticket;
    $job->fields = $data;
    $candelete = haveRight("delete_ticket","1");
    $canupdate = haveRight("update_ticket","1");
@@ -683,7 +683,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       // Add link
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
          if ($job->canView()) {
-            $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".
+            $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                               $data["id"]."\">$eigth_column</a>";
 
             if ($followups && $output_type==HTML_OUTPUT) {
@@ -720,7 +720,7 @@ function showJobVeryShort($ID) {
    // Should be called in a <table>-segment
    // Print links or not in case of user view
    // Make new job object and fill it from database, if success, print it
-   $job = new Job;
+   $job = new Ticket;
    $viewusers = haveRight("user","r");
    if ($job->getFromDBwithData($ID,0)) {
       $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
@@ -765,7 +765,7 @@ function showJobVeryShort($ID) {
       echo "<td>";
 
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                $job->fields["id"]."\">";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;id=".
@@ -1174,7 +1174,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                           $datemod2="",$recipient=0) {
    global $DB,$CFG_GLPI, $LANG;
 
-   // Lists all Jobs, needs $show which can have keywords
+   // Lists all Tickets, needs $show which can have keywords
    // (individual, unassigned) and $contains with search terms.
    // If $items_id is given, only jobs for a particular machine are listed.
    // group = 0 : not use
@@ -1752,7 +1752,7 @@ function getAssignName($ID,$itemtype,$link=0) {
 function showJobDetails($target, $ID,$array=array()) {
    global $DB,$CFG_GLPI,$LANG;
 
-   $job=new Job();
+   $job=new Ticket();
    $canupdate=haveRight('update_ticket','1');
    $showuserlink=0;
    if (haveRight('user','r')) {
@@ -2314,7 +2314,7 @@ function showFollowupsSummary($tID) {
       return false;
    }
 
-   $job = new Job;
+   $job = new Ticket();
    $job->getFromDB($tID);
    // Display existing Followups
    $showprivate = haveRight("show_full_ticket","1");
@@ -2437,7 +2437,7 @@ function showFollowupsSummary($tID) {
 function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
    global $DB,$LANG,$CFG_GLPI;
 
-   $job=new Job;
+   $job=new Ticket();
    if ($tID>0) {
       $job->getFromDB($tID);
    } else {
@@ -2463,7 +2463,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
    $editticket = haveRight("update_ticket","1");
 
    if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-      $target = $CFG_GLPI["root_doc"]."/front/tracking.form.php";
+      $target = $CFG_GLPI["root_doc"]."/front/ticket.form.php";
    } else {
       $target = $CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user";
    }
@@ -2611,7 +2611,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
 function showUpdateFollowupForm($ID) {
    global $DB,$LANG,$CFG_GLPI;
 
-   $fup=new Followup();
+   $fup=new TicketFollowup();
 
    if ($fup->getFromDB($ID)) {
       if ($fup->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight("update_followups","1")) {
@@ -2621,14 +2621,14 @@ function showUpdateFollowupForm($ID) {
       $commentall = haveRight("update_followups","1");
       $canplan = haveRight("show_planning","1");
 
-      $job=new Job();
+      $job=new Ticket();
       $job->getFromDB($fup->fields["tickets_id"]);
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['job'][39]."</th></tr>";
       echo "<tr class='tab_bg_2'><td>";
-      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php\">\n";
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php\">\n";
 
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td width='50%'>";
@@ -2883,7 +2883,7 @@ function isPossibleToAssignType($itemtype) {
 function showJobCost($target,$ID) {
    global $DB,$LANG;
 
-   $job=new Job();
+   $job=new Ticket();
    $job->getFromDB($ID)&&haveAccessToEntity($job->fields["entities_id"]);
 
    echo "<form method='post' name='form_ticket_cost' action='$target' >\n";

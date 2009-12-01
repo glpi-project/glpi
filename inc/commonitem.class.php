@@ -158,8 +158,8 @@ class CommonItem {
                break;
 
             case TRACKING_TYPE :
-               require_once(GLPI_ROOT.'/inc/tracking.class.php');
-               $this->obj= new Job;
+               require_once(GLPI_ROOT.'/inc/ticket.class.php');
+               $this->obj= new Ticket;
                break;
 
             case CONSUMABLEITEM_TYPE :

@@ -447,7 +447,7 @@ class Document extends CommonDBTM {
 
          // Tracking Case
          if (isset($_GET["tickets_id"])) {
-            $job=new Job;
+            $job=new Ticket;
 
             if ($job->can($_GET["tickets_id"],'r')) {
                $query = "SELECT *
@@ -486,7 +486,7 @@ class Document extends CommonDBTM {
 
          // Tracking Case
          if (isset($_GET["tickets_id"])) {
-            $job=new Job;
+            $job=new Ticket;
 
             if ($job->can($_GET["tickets_id"],'r')) {
                $query = "SELECT *

@@ -327,7 +327,7 @@ class Mailing {
                                           ORDER by date DESC LIMIT 1"; 
                            $result3=$DB->query($query3); 
                            if($data=$DB->fetch_array($result3)){ 
-                              $fup=new Followup(); 
+                              $fup=new TicketFollowup(); 
                               $fup->getFromDB($data['ID']); 
                               if($this->job->fields["users_id"] == $fup->fields["users_id"]) {
                                     $users_idsend=false; 

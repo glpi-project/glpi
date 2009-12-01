@@ -2789,7 +2789,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
 
       case "glpi_tickets.count" :
          if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
-            $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=".
+            $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=".
                     "reset_before&status=all&itemtype=$itemtype&items_id=".$data['id']."\">";
             $out .= $data[$NAME.$num];
             $out .= "</a>";

@@ -297,8 +297,8 @@ function showPlanning($who,$who_group,$when,$type) {
 
    $result=$DB->query($query);
 
-   $fup=new Followup();
-   $job=new Job();
+   $fup=new TicketFollowup();
+   $job=new Ticket();
    $interv=array();
    $i=0;
    if ($DB->numrows($result)>0) {
@@ -609,7 +609,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0) {
             $LANG['planning'][8]."'>&nbsp;&nbsp;";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".
             getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?id=".$val["tickets_id"].
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"].
             "' style='$styleText'";
       if (!$complete) {
          echo "onmouseout=\"cleanhide('content_tracking_".$val["id"].$rand."')\"
@@ -750,8 +750,8 @@ function showPlanningCentral($who) {
              ORDER BY `begin`";
    $result=$DB->query($query);
 
-   $fup=new Followup();
-   $job=new Job();
+   $fup=new TicketFollowup();
+   $job=new Ticket();
    $interv=array();
    $i=0;
 
@@ -894,8 +894,8 @@ function generateIcal($who) {
                    AND `begin` < '$end' ";
    $result=$DB->query($query);
 
-   $job=new Job();
-   $fup=new Followup();
+   $job=new Ticket();
+   $fup=new TicketFollowup();
    $i=0;
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
