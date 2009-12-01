@@ -813,8 +813,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {
       $menu['config']['content']['ocsng']['title']=$LANG['setup'][134];
-      $menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
-      $menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';
+      $menu['config']['content']['ocsng']['page']='/front/ocsserver.php';
+      $menu['config']['content']['ocsng']['links']['search']='/front/ocsserver.php';
       $menu['config']['content']['ocsng']['links']['add']='/front/ocsng.form.php';
    }
 

@@ -185,6 +185,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='enterprise') {
             $item='supplier';
          }
+         if ($item=='ocsng') {
+            $item='ocsserver';
+         }
          if ($item=='registry') {
             $item='registrykey';
          }

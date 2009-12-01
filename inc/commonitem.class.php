@@ -223,8 +223,8 @@ class CommonItem {
                break;
 
             case OCSNG_TYPE:
-               require_once(GLPI_ROOT.'/inc/ocsng.class.php');
-               $this->obj = new Ocsng;
+               require_once(GLPI_ROOT.'/inc/ocsserver.class.php');
+               $this->obj = new OcsServer;
                break;
 
             case REGISTRY_TYPE:
