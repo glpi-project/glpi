@@ -823,7 +823,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("config","w")) {
       $menu['config']['content']['plugins']['title']=$LANG['common'][29];
-      $menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
+      $menu['config']['content']['plugins']['page']='/front/plugin.php';
    }
    echo "<div id='header'>";
    echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".
