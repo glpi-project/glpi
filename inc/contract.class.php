@@ -834,7 +834,7 @@ class Contract extends CommonDBTM {
       echo "</tr>";
 
       if ($number>0) {
-         initNavigateListItems(CONTRACT_TYPE,$item->getName()); // TODO $ci->getType()." = ".
+         initNavigateListItems(CONTRACT_TYPE, $item->getTypeName()." = ".$item->getName());
       }
       $contracts=array();
       while ($i < $number) {
