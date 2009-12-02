@@ -82,7 +82,7 @@ class CommonGLPI {
             $extraparam.="&$key=$val";
          }
       }
-      if (empty($withtemplate) && $ID && $this->type>0) {
+      if (empty($withtemplate) && $ID && $this->type) {
          echo "<div id='menu_navigate'>";
          if (isset($this->sub_type)) {
             $glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->sub_type];
