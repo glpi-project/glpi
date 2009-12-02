@@ -1075,8 +1075,7 @@ class Document extends CommonDBTM {
          // Don't use this for document associated to document
          // To not loose navigation list for current document
          if ($item->type!=DOCUMENT_TYPE) {
-            // TODO add typename when available => $ci->getType()." = "
-            initNavigateListItems(DOCUMENT_TYPE, $item->getName());
+            initNavigateListItems(DOCUMENT_TYPE, $item->getTypeName()." = ".$item->getName());
          }
 
          $document = new Document();
