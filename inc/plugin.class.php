@@ -528,6 +528,80 @@ class Plugin extends CommonDBTM {
       }
    }
 
+   /*
+    * Migrate itemtype from interger (0.72) to string (0.80)
+    *
+    * @param $types array of (num=>name) of type manage by the plugin
+    * @param $glpitables array of GLPI table name used by the plugin
+    * @param $plugtables array of Plugin table name which have an itemtype
+    *
+    * @return nothing
+    */
+   static function migrateItemType ($types=array(), $glpitables=array(), $plugtables=array()) {
+      global $DB, $LANG;
+
+      $typetoname=array(
+         GENERAL_TYPE => "",// For tickets
+         COMPUTER_TYPE => "Computer",
+         NETWORKING_TYPE => "NetworkEquipment",
+         PRINTER_TYPE => "Printer",
+         MONITOR_TYPE => "Monitor",
+         PERIPHERAL_TYPE => "Peripheral",
+         SOFTWARE_TYPE => "Software",
+         CONTACT_TYPE => "Contact",
+         ENTERPRISE_TYPE => "Supplier",
+         INFOCOM_TYPE => "Infocom",
+         CONTRACT_TYPE => "Contract",
+         CARTRIDGEITEM_TYPE => "CartridgeItem",
+         TYPEDOC_TYPE => "DocumentType",
+         DOCUMENT_TYPE => "Document",
+         KNOWBASE_TYPE => "KnowbaseItem",
+         USER_TYPE => "User",
+         TRACKING_TYPE => "Ticket",
+         CONSUMABLEITEM_TYPE => "ConsumableItem",
+         CONSUMABLE_TYPE => "Consumable",
+         CARTRIDGE_TYPE => "Cartridge",
+         SOFTWARELICENSE_TYPE => "SoftwareLicense",
+         LINK_TYPE => "Link",
+         STATE_TYPE => "State",
+         PHONE_TYPE => "Phone",
+         DEVICE_TYPE => "Device",
+         REMINDER_TYPE => "Reminder",
+         STAT_TYPE => "Stat",
+         GROUP_TYPE => "Group",
+         ENTITY_TYPE => "Entity",
+         RESERVATION_TYPE => "ReservationItem",
+         AUTH_MAIL_TYPE => "AuthMail",
+         AUTH_LDAP_TYPE => "AuthLDAP",
+         OCSNG_TYPE => "OcsServer",
+         REGISTRY_TYPE => "RegistryKey",
+         PROFILE_TYPE => "Profile",
+         MAILGATE_TYPE => "MailCollector",
+         RULE_TYPE => "Rule",
+         TRANSFER_TYPE => "Transfer",
+         BOOKMARK_TYPE => "Bookmark",
+         SOFTWAREVERSION_TYPE => "SoftwareVersion",
+         PLUGIN_TYPE => "Plugin",
+         COMPUTERDISK_TYPE => "ComputerDisk",
+         NETWORKING_PORT_TYPE => "NetworkPort",
+         FOLLOWUP_TYPE => "TicketFollowup",
+         BUDGET_TYPE => "Budget");
+
+      foreach ($types as $num => $name) {
+         $typetoname[$num]=$name;
+         foreach ($glpitables as $table) {
+            $query = "UPDATE `$table` SET `itemtype` = '$name' WHERE `itemtype` = '$num'";
+            $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+         }
+      }
+      foreach ($typetoname as $num => $name) {
+         foreach ($plugtables as $table) {
+            $query = "UPDATE `$table` SET `itemtype` = '$name' WHERE `itemtype` = '$num'";
+            $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+         }
+      }
+   }
+
 }
 
 ?>
