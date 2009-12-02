@@ -48,6 +48,12 @@ class Reminder extends CommonDBTM {
    public $may_be_recursive=true;
    public $may_be_private=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['title'][37];
+   }
+
    function prepareInputForAdd($input) {
       global $LANG;
 

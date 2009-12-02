@@ -67,6 +67,12 @@ class Document extends CommonDBTM {
    }
    **/
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][27];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LANG;
 

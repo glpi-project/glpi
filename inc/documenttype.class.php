@@ -64,7 +64,7 @@ class DocumentType  extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['common'][15];
+      return $LANG['document'][7];
    }
 
    /**

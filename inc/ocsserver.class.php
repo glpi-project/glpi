@@ -43,6 +43,12 @@ class OcsServer extends CommonDBTM {
    public $table = 'glpi_ocsservers';
    public $type = OCSNG_TYPE;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['ocsng'][29];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 

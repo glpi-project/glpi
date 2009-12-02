@@ -49,6 +49,13 @@ class SoftwareLicense extends CommonDBTM {
    public $entity_assign=true;
    public $may_be_recursive=true;
 
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['software'][11];
+   }
+
    function pre_updateInDB($input,$updates,$oldvalues=array()) {
 
       // Clean end alert if expire is after old one

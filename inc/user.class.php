@@ -48,6 +48,12 @@ class User extends CommonDBTM {
    public $dohistory = true;
    public $history_blacklist = array('last_login');
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][34];
+   }
+
 
    /**
     * Constructor
@@ -1026,7 +1032,7 @@ class User extends CommonDBTM {
                   return true;
                }
             }
-               
+
             return false;
 
          case 'w':

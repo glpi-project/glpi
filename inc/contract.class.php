@@ -48,6 +48,12 @@ class Contract extends CommonDBTM {
    public $may_be_recursive = true;
    public $entity_assign = true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['financial'][1];
+   }
+
    function post_getEmpty () {
       global $CFG_GLPI;
 

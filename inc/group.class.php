@@ -48,6 +48,12 @@ class Group extends CommonDBTM {
    public $may_be_recursive=true;
    public $entity_assign=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][35];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
@@ -138,7 +144,7 @@ class Group extends CommonDBTM {
          echo "<td>";
          echo  convDateTime($this->fields["date_mod"]);
       }
-      
+
       echo "</td></tr>";
 
       $this->showFormButtons($ID,$withtemplate,2);

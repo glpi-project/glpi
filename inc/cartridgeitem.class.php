@@ -51,6 +51,12 @@ class CartridgeItem extends CommonDBTM {
    public $type = CARTRIDGEITEM_TYPE;
    public $entity_assign = true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['cartridges'][12];
+   }
+
    /**
     * Get The Name + Ref of the Object
     *

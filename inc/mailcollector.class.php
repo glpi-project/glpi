@@ -71,6 +71,12 @@ class MailCollector  extends CommonDBTM {
    var $filesize_max=0;
 
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][39];
+   }
+
    function post_getEmpty () {
       global $CFG_GLPI;
 
@@ -289,7 +295,7 @@ class MailCollector  extends CommonDBTM {
             return 'Could find mailgate '.$mailgateID;
          }
       }
-   } 
+   }
 
    /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
    * @param $i mail ID

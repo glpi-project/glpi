@@ -57,6 +57,12 @@ class Profile extends CommonDBTM {
    var $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
                              'show_group_hardware','own_ticket','helpdesk_status');
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][35];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

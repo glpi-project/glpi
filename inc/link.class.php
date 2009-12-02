@@ -46,6 +46,12 @@ class Link extends CommonDBTM {
    public $may_be_recursive=true;
    public $entity_assign=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][87];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 

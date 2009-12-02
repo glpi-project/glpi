@@ -51,6 +51,12 @@ class Consumable extends CommonDBTM {
    // by the Consumable type
    public $entity_assign = true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['consumables'][0];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 

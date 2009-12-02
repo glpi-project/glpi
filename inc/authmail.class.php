@@ -42,6 +42,12 @@ class AuthMail extends CommonDBTM {
    public $table = 'glpi_authmails';
    public $type = AUTH_MAIL_TYPE;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['login'][3];
+   }
+
    function prepareInputForUpdate($input) {
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["connect_string"] = constructMailServerConfig($input);

@@ -48,6 +48,12 @@ class Contact extends CommonDBTM{
    public $may_be_recursive = true;
    public $entity_assign = true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][18];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 

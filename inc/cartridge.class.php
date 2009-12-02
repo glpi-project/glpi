@@ -52,6 +52,13 @@ class Cartridge extends CommonDBTM {
    // by the Cartridge Type
    public $entity_assign = true;
 
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['cartridges'][0];
+   }
+
    function prepareInputForAdd($input) {
       return array("cartridgeitems_id"=>$input["tID"],
                    "date_in"=>date("Y-m-d"));
