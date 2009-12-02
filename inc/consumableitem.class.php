@@ -50,6 +50,13 @@ class ConsumableItem extends CommonDBTM {
    public $type = CONSUMABLEITEM_TYPE;
    public $entity_assign = true;
 
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['consumables'][12];
+   }
+
    /**
     * Get The Name + Ref of the Object
     *

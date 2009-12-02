@@ -52,6 +52,12 @@ class Computer extends CommonDBTM {
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices	= array();
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['help'][25];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

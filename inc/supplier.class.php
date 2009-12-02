@@ -47,6 +47,12 @@ class Supplier extends CommonDBTM {
    public $may_be_recursive=true;
    public $entity_assign=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['financial'][26];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 
@@ -561,13 +567,13 @@ class Supplier extends CommonDBTM {
     **/
    function showContracts() {
       global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
-   
+
       $ID = $this->fields['id'];
       if (!haveRight("contract","r") || !$this->can($ID,'r')) {
          return false;
       }
       $canedit=$this->can($ID,'w');
-   
+
       $query = "SELECT `glpi_contracts`.*, `glpi_contracts_suppliers`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity
                 FROM `glpi_contracts_suppliers`, `glpi_contracts`
@@ -576,11 +582,11 @@ class Supplier extends CommonDBTM {
                       AND `glpi_contracts_suppliers`.`contracts_id`=`glpi_contracts`.`id`".
                       getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
                 ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name`";
-   
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $i = 0;
-   
+
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
@@ -592,7 +598,7 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['financial'][8]."</th>";
       echo "<th>&nbsp;</th>";
       echo "</tr>";
-   
+
       $used=array();
       while ($data=$DB->fetch_array($result)) {
          $cID=$data["id"];
@@ -615,7 +621,7 @@ class Supplier extends CommonDBTM {
             echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
          }
          echo "</td>";
-   
+
          echo "<td class='tab_bg_2 center'>";
          if ($canedit) {
             echo "<a href='".$CFG_GLPI["root_doc"].
@@ -634,7 +640,7 @@ class Supplier extends CommonDBTM {
          } else {
             $nb=countElementsInTableForEntity("glpi_contracts",$this->fields["entities_id"]);
          }
-   
+
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
             echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";

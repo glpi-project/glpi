@@ -48,6 +48,12 @@ class InfoCom extends CommonDBTM {
    public $dohistory=true;
    public $auto_message_on_action=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['financial'][3];
+   }
+
    function post_getEmpty() {
       global $CFG_GLPI;
 

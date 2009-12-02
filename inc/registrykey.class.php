@@ -43,6 +43,12 @@ class RegistryKey extends CommonDBTM {
    public $table = 'glpi_registrykeys';
    public $type = REGISTRY_TYPE;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['title'][43];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 

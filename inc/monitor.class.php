@@ -47,6 +47,12 @@ class Monitor extends CommonDBTM {
    public $dohistory=true;
    public $entity_assign=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['help'][28];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

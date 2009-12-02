@@ -50,6 +50,12 @@ class Software extends CommonDBTM {
    public $entity_assign=true;
    public $may_be_recursive=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['help'][31];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG, $CFG_GLPI;
 

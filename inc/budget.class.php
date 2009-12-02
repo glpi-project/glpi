@@ -45,6 +45,12 @@ class Budget extends CommonDBTM{
    public $entity_assign = true;
    public $may_be_recursive = true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['financial'][87];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
       $ong=array();

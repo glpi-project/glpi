@@ -47,6 +47,12 @@ class KnowbaseItem extends CommonDBTM {
    public $may_be_recursive=true;
    public $entity_assign=true;
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['title'][5];
+   }
+
    /**
     * Get The Name of the Object
     *

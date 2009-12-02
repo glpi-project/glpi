@@ -63,6 +63,18 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+    * Return the localized name of the current Type
+    * Shoudl be overloaded in each new class
+    *
+    * @return string
+    */
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['help'][30];
+   }
+
+   /**
    * Retrieve an item from the database
    *
    *@param $ID ID of the item to get

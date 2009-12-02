@@ -53,6 +53,12 @@ class Ticket extends CommonDBTM {
    var $computerfound = 0;
 
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['job'][38];
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

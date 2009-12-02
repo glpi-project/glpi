@@ -49,6 +49,13 @@ class SoftwareVersion extends CommonDBTM {
    public $entity_assign=true;
    public $may_be_recursive=true;
 
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['software'][5];
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 
