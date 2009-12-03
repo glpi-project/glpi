@@ -568,10 +568,9 @@ class CommonDBTM extends CommonGLPI {
     */
    function getSearchURL() {
 
-      if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",get_class($this),$matches)) {
-         $dir = GLPI_ROOT . "/plugins/".strtolower($matches[1]);
-         $item = strtolower($matches[2]);
-
+      if ($plug=isPluginItem(get_class($this))) {
+         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
       } else { // Standard case
          $dir = GLPI_ROOT;
          $item = strtolower(get_class($this));
@@ -584,9 +583,9 @@ class CommonDBTM extends CommonGLPI {
     */
    function getFormURL() {
 
-      if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",get_class($this),$matches)) {
-         $dir = GLPI_ROOT . "/plugins/".strtolower($matches[1]);
-         $item = strtolower($matches[2]);
+      if ($plug=isPluginItem(get_class($this))) {
+         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
 
       } else { // Standard case
          $dir = GLPI_ROOT;

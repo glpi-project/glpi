@@ -521,4 +521,24 @@ function loadPluginLang($name) {
    }
 }
 
+/**
+ * Determine if an object name is a plugin one
+ *
+ * @param $classname class name to analyze
+ *
+ * @return false or an object containing plugin name and class name
+ */
+function isPluginItem($classname) {
+
+   if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$classname,$matches)) {
+      $plug=array();
+      $plug['plugin']=$matches[1];
+      $plug['class']=$matches[2];
+      return $plug;
+   } else { // Standard case
+      return false;
+   }
+
+}
+
 ?>
