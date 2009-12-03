@@ -2858,24 +2858,27 @@ function getAllTypesForHelpdesk() {
 function isPossibleToAssignType($itemtype) {
    global $PLUGIN_HOOKS;
 
-   //check the core
-   if ($itemtype < 1000) {
+
+   // Plugin case
+   if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$itemtype,$matches) ){
+      /// TODO maybe only check plugin of itemtype ?
+      /// TODO add isPluginType function / return array of plugin + Class array if yes
+      //If it's not a core's type, then check plugins
+      $types = array();
+      if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
+         foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
+            $types = doOneHook($plugin,'AssignToTicket',$types);
+         }
+         if (array_key_exists($itemtype,$types)) {
+            return true;
+         }
+      }
+   } else { // standard case
       if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          return true;
       }
-      return false;
    }
 
-   //If it's not a core's type, then check plugins
-   $types = array();
-   if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
-      foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-         $types = doOneHook($plugin,'AssignToTicket',$types);
-      }
-      if (array_key_exists($itemtype,$types)) {
-         return true;
-      }
-   }
    return false;
 }
 
