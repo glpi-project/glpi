@@ -163,10 +163,16 @@ if (isset($AJAX_INCLUDE)) {
 if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
-//         $classname="PluginWebapplicationsProfile";
+         //$classname="PluginExampleProfile";
          if ($plug=isPluginItem($classname)) {
-            $dir=GLPI_ROOT . "/plugins/".strtolower($plug['plugin'])."/inc/";
-            $item=strtolower($plug['class']);
+            $plugname=strtolower($plug['plugin']);
+            // Is the plugin activate ?
+            if (in_array($plugname,$_SESSION['glpi_plugins'])) {
+               $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
+               $item=strtolower($plug['class']);
+            } else {
+               return false;
+            }
          } else {
             $item=strtolower($classname);
          }
