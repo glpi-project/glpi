@@ -2860,9 +2860,8 @@ function isPossibleToAssignType($itemtype) {
 
 
    // Plugin case
-   if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$itemtype,$matches) ){
+   if (isPluginItem($itemtype)){
       /// TODO maybe only check plugin of itemtype ?
-      /// TODO add isPluginType function / return array of plugin + Class array if yes
       //If it's not a core's type, then check plugins
       $types = array();
       if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {

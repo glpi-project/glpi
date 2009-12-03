@@ -164,12 +164,13 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
 //         $classname="PluginWebapplicationsProfile";
-         if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$classname,$matches) ){
-            $dir=GLPI_ROOT . "/plugins/".strtolower($matches[1])."/inc/";
-            $item=strtolower($matches[2]);
-         } else { // Standard case
+         if ($plug=isPluginItem($classname)) {
+            $dir=GLPI_ROOT . "/plugins/".strtolower($plug['plugin'])."/inc/";
+            $item=strtolower($plug['class']);
+         } else {
             $item=strtolower($classname);
          }
+
          if (file_exists("$dir$item.class.php")) {
             include_once ("$dir$item.class.php");
          }
