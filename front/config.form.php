@@ -1,4 +1,6 @@
 <?php
+
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,66 +35,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array("dbreplicate","ocsng","setup");
+
+$NEEDED_ITEMS = array('dbreplicate', 'ocsng', 'setup');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if (!isset($_POST["id"])) {
-   exit();
-}
-
-checkRight("config", "r");
-
+checkRight("config", "w");
 $config = new Config();
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      $config->showFormMain($_POST['target']);
-      $config->showFormDisplay($_POST['target']);
-      $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
-      $config->showFormRestrict($_POST['target']);
-      $config->showFormHelpdesk($_POST['target']);
-      $config->showFormConnection($_POST['target']);
-      $config->showFormDBSlave($_POST['target']);
-      showSystemInformations();
-      displayPluginAction(CONFIG_TYPE,0,$_REQUEST['glpi_tab']);
-      break;
 
-   case 2 :
-      $config->showFormDisplay($_POST['target']);
-      break;
-
-   case 3 :
-      $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
-      break;
-
-   case 4 :
-      $config->showFormRestrict($_POST['target']);
-      break;
-
-   case 5 :
-      $config->showFormHelpdesk($_POST['target']);
-      break;
-
-   case 6 :
-      $config->showFormConnection($_POST['target']);
-      break;
-
-   case 7 :
-      $config->showFormDBSlave($_POST['target']);
-      break;
-
-   case 8 :
-      showSystemInformations();
-      break;
-
-   default :
-      if (!displayPluginAction(CONFIG_TYPE,0,$_REQUEST['glpi_tab'])) {
-         $config->showFormMain($_POST['target']);
-      }
+if (!empty ($_POST["update"])) {
+   $config->update($_POST);
+   if (isset($_POST["use_ocs_mode"])
+       && $_POST["use_ocs_mode"]
+       && !$CFG_GLPI["use_ocs_mode"]) {
+      glpi_header($CFG_GLPI["root_doc"] ."/front/ocsserver.php");
+   } else {
+      glpi_header($CFG_GLPI["root_doc"] ."/front/config.form.php");
+   }
 }
+
+commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
+$config->showForm($_SERVER['PHP_SELF'],1);
+commonFooter();
 
 ?>

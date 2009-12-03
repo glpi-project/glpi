@@ -779,7 +779,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("config","w")) {
       $menu['config']['content']['config']['title']=$LANG['setup'][703];
-      $menu['config']['content']['config']['page']='/front/setup.config.php';
+      $menu['config']['content']['config']['page']='/front/config.form.php';
       $menu['config']['content']['crontask']['title']=$LANG['crontask'][0];
       $menu['config']['content']['crontask']['page']='/front/crontask.php';
       $menu['config']['content']['crontask']['links']['search']="/front/crontask.php";

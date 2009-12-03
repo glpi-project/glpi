@@ -55,7 +55,7 @@ echo "<tr><th colspan='2'>".$LANG['setup'][62]."</th></tr>";
 $config=array();
 
 if (haveRight("config","w")){
-	$config["setup.config.php"]=$LANG['setup'][70];
+	$config["config.form.php"]=$LANG['setup'][70];
 	$config["notification.php"]=$LANG['setup'][68];
 	$config["setup.auth.php"]=$LANG['setup'][67];
 	$config["mailgate.php"]=$LANG['Menu'][39];
