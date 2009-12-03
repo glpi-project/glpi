@@ -616,7 +616,7 @@ class Document extends CommonDBTM {
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_documents_items`
                 WHERE `glpi_documents_items`.`documents_id` = '$instID'
-                      AND `glpi_documents_items`.`itemtype` != ".DOCUMENT_TYPE."
+                      AND `glpi_documents_items`.`itemtype` != '".DOCUMENT_TYPE."'
                 ORDER BY `itemtype`";
 
       $result = $DB->query($query);

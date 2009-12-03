@@ -51,7 +51,7 @@ $setupdisplay=new DisplayPreference();
 
 if (isset($_POST["activate"])) {
    $setupdisplay->activatePerso($_POST);
-}else if (isset($_POST["add"])) {
+} else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
 } else if (isset($_POST["delete"])||isset($_POST["delete_x"])) {
    $setupdisplay->delete($_POST);
@@ -60,7 +60,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
    $setupdisplay->orderItem($_POST,'down');
 }
-if ((strpos($_SERVER['PHP_SELF'],"popup")&&$_REQUEST["itemtype"]>0)) {
+if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
 
    $tabs[1]=array('title'=>$LANG['central'][13],
    'url'=>$CFG_GLPI['root_doc']."/ajax/displaypreference.tabs.php",
