@@ -41,6 +41,18 @@ class CommonGLPI {
    var $type = -1;
 
    /**
+    * Return the localized name of the current Type
+    * Shoudl be overloaded in each new class
+    *
+    * @return string
+    */
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['help'][30];
+   }
+
+   /**
    * Define tabs to display
    *
    *@param $ID integer ID of the item

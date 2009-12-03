@@ -37,6 +37,12 @@ class Notification extends CommonDBTM {
 
    public $type = 'mailing';
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][704];
+   }
+
    function defineTabs($ID,$withtemplate){
       global $LANG;
 

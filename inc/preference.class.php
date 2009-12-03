@@ -37,6 +37,12 @@ class Preference extends CommonGLPI {
 
    public $type = 'prefs';
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][11];
+   }
+
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
