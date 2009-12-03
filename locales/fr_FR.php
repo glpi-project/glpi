@@ -577,6 +577,8 @@ $LANG['financial'][109]="Total restant sur le budget";
 $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="heure(s)";
 
+// For priority
+$LANG['help'][2]="Matrice de calcul de la priorité";
 $LANG['help'][3]="Très haute";
 $LANG['help'][4]="Haute";
 $LANG['help'][5]="Moyenne";
@@ -601,6 +603,19 @@ $LANG['help'][31]="Logiciel";
 $LANG['help'][35]="Téléphone";
 $LANG['help'][40]="Votre ticket ne contient pas de titre, veuillez corriger.";
 $LANG['help'][41]="Votre ticket ne contient pas de catégorie, veuillez corriger.";
+// For Urgence
+$LANG['help'][42]="Très haute";
+$LANG['help'][43]="Haute";
+$LANG['help'][44]="Moyenne";
+$LANG['help'][45]="Basse";
+$LANG['help'][46]="Très basse";
+// For Impact
+$LANG['help'][47]="Très haut";
+$LANG['help'][48]="Haut";
+$LANG['help'][49]="Moyen";
+$LANG['help'][50]="Bas";
+$LANG['help'][51]="Très bas";
+
 
 $LANG['install'][0]="Installation ou mise à jour de GLPI";
 $LANG['install'][1]="Choisissez 'Installation' pour  une nouvelle installation complète de GLPI.";

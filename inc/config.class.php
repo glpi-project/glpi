@@ -624,11 +624,25 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
-      echo "</tr>";
+      echo "<tr><th colspan='7'>" . $LANG['help'][2] . "</th></tr>";
 
+      echo "<tr class='tab_bg_1'><td class='b left'>".$LANG['joblist'][29]."</td>";
+      echo "<td class='b right'>".$LANG['joblist'][30]."</td>";
+      for ($impact=1, $msg=51 ; $impact<=5 ; $impact++, $msg--) {
+         echo "<td class='center'>".$LANG['help'][$msg]."</td>";
+      }
+      for ($urgence=1, $msg=46 ; $urgence<=5 ; $urgence++, $msg--) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1' colspan='2'>".$LANG['help'][$msg]."</td>";
+         for ($impact=1 ; $impact<=5 ; $impact++) {
+            echo "<td class='center'>";
+            dropdownPriority("_matrice_${urgence}_${impact}",3);
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
+      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<input type='submit' name='update' class='submit' value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
