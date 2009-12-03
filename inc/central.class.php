@@ -37,6 +37,12 @@ class Central extends CommonGLPI {
 
    public $type = 'central';
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][56];
+   }
+
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
