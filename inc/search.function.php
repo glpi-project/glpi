@@ -1111,7 +1111,7 @@ function showList ($itemtype,$params) {
                   $tmpquery .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
                }
             } else {// Ref table case
-               $tmpquery = $SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$itemtype].".`id` AS refID, ".
+               $tmpquery = $SELECT.", '$ctype' AS TYPE, ".$LINK_ID_TABLE[$itemtype].".`id` AS refID, ".
                                    $LINK_ID_TABLE[$ctype].".`entities_id` AS ENTITY ".
                            $FROM.
                            $WHERE;
