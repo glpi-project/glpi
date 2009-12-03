@@ -44,6 +44,36 @@ class Config extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_configs';
+   public $type = CONFIG_TYPE;
+   public $auto_message_on_action = false;
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['common'][12];
+   }
+
+   function defineTabs($ID,$withtemplate){
+      global $LANG;
+
+      $tabs[1] = $LANG['setup'][70];   // Main
+      $tabs[2] = $LANG['setup'][119];  // Display
+      $tabs[3] = $LANG['setup'][6];    // Prefs
+      $tabs[4] = $LANG['setup'][184];  // Restrict
+      $tabs[5] = $LANG['title'][24];   // Helpdesk
+      $tabs[6] = $LANG['connect'][0];  // Conection
+      $tabs[7] = $LANG['setup'][800];  // Slave
+      $tabs[8] = $LANG['setup'][720];  // SysInfo
+
+      return $tabs;
+   }
+
+   function showForm() {
+      $this->showTabs(0, '', getActiveTab($this->type));
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   }
 
    /**
     * Prepare input datas for updating the item
@@ -576,6 +606,37 @@ class Config extends CommonDBTM {
    }
 
    /**
+    * Print the config form for connections
+    *
+    *@param $target filename : where to go when done.
+    *
+    *@return Nothing (display)
+    *
+   **/
+   function showFormHelpdesk($target) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if (!haveRight("config", "w")) {
+         return false;
+      }
+
+      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
+      echo "</tr>";
+
+
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
+      echo "<input type='submit' name='update' class='submit' value=\"" .
+             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "</table></div>";
+      echo "</form>";
+   }
+
+   /**
     * Print the config form for default user prefs
     *
     *@param $target filename : where to go when done.
@@ -651,7 +712,7 @@ class Config extends CommonDBTM {
       echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
       // TODO Temporary workaround to bug #1918
       dropdownInteger('list_limit',
-                      ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit'] 
+                      ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
                                                                        : $CFG_GLPI['list_limit_max']),
                       5,$CFG_GLPI['list_limit_max'],5);
       echo "</td>";
