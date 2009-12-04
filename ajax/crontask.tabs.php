@@ -50,7 +50,7 @@ if ($_POST['id']>0 && $crontask->getFromDB($_POST['id'])) {
       case -1 :
          $crontask->showStatistics();
          $crontask->showHistory();
-         displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         displayPluginAction('CronTask',$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -58,7 +58,7 @@ if ($_POST['id']>0 && $crontask->getFromDB($_POST['id'])) {
          break;
 
       default :
-         if (!displayPluginAction(CRONTASK_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!displayPluginAction('CronTask',$_POST["id"],$_REQUEST['glpi_tab'])) {
             $crontask->showStatistics();
          }
          break;

@@ -42,7 +42,7 @@ class Computer_Item extends CommonDBRelation{
 
    // From CommonDBTM
    public $table = 'glpi_computers_items';
-   public $type = COMPUTERITEM_TYPE;
+   public $type = 'Computer_Item';
 
    // From CommonDBRelation
    public $itemtype_1 = COMPUTER_TYPE;

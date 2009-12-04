@@ -165,17 +165,18 @@ function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restr
       echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 
       $type = array_search($table, $LINK_ID_TABLE);
-      $ci = new CommonItem();
-      $ci->setType($type,true);
-      if ($type
-            && ($ci->obj instanceof CommonDropdown)
-            && haveTypeRight($type,'w')) {
+      if (class_exists($type)) {
+         $item = new $type();
+         if ($type
+               && ($item instanceof CommonDropdown)
+               && $item->canCreate()) {
 
-            echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
-                  "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
-                  $ci->obj->getFormURL().
-                  "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
-                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+               echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
+                     $item->getFormURL().
+                     "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+         }
       }
    }
    // Display specific Links
@@ -1726,7 +1727,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             }
             break;
 
-         case CRONTASK_TYPE :
+         case 'CronTask' :
             echo "<option value='reset'>".$LANG['buttons'][16].
                " (".$LANG['crontask'][40].")</option>";
             break;

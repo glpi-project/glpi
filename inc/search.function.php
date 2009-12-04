@@ -1853,7 +1853,7 @@ function addDefaultSelect ($itemtype) {
          $ret = "`glpi_consumableitems`.`alarm_threshold` AS ALARM, ";
          break;
 
-      case CRONTASK_TYPE :
+      case 'CronTask' :
          $ret = "`glpi_crontasks`.`plugin` AS plugin, `glpi_crontasks`.`name` AS name, ";
          break;
 

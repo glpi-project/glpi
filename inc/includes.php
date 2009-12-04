@@ -300,6 +300,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='entity') {
             include_once (GLPI_ROOT . "/inc/entitydata.class.php");
          }
+         if ($item=='crontask') {
+            include_once (GLPI_ROOT . "/inc/crontasklog.class.php");
+         }
 
 
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {

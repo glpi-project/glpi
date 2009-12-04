@@ -42,7 +42,7 @@ class Document_Item extends CommonDBRelation{
 
    // From CommonDBTM
    public $table = 'glpi_documents_items';
-   public $type = DOCUMENTITEM_TYPE;
+   public $type = 'Document_Item';
 
    // From CommonDBRelation
    public $itemtype_1 = DOCUMENT_TYPE;

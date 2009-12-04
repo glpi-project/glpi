@@ -265,16 +265,6 @@ class CommonItem {
                $this->obj = new Budget;
                break;
 
-            case CRONTASK_TYPE:
-               require_once(GLPI_ROOT.'/inc/crontask.class.php');
-               $this->obj = new CronTask;
-               break;
-
-            case CRONTASKLOG_TYPE:
-               require_once(GLPI_ROOT.'/inc/crontask.class.php');
-               $this->obj = new CronTaskLog;
-               break;
-
             default :
                // Plugin case
                //if ($itemtype>1000) {

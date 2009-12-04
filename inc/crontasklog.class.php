@@ -1,6 +1,7 @@
 <?php
+
 /*
- * @version $Id$
+ * @version $Id: bookmark.class.php 8095 2009-03-19 18:27:00Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,29 +29,17 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Group_User class - Relation between Group and User
-class Group_User extends CommonDBRelation{
+/**
+ * CronTaskLog class
+ */
+class CronTaskLog extends CommonDBTM{
 
    // From CommonDBTM
-   public $table = 'glpi_groups_users';
-   public $type = 'Group_User';
-
-   // From CommonDBRelation
-   public $itemtype_1 = USER_TYPE;
-   public $items_id_1 = 'users_id';
-
-   public $itemtype_2 = GROUP_TYPE;
-   public $items_id_2 = 'groups_id';
-
+   public $table = 'glpi_crontasklogs';
+   public $type = 'CronTaskLog';
 }
-
 ?>
