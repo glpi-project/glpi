@@ -2358,7 +2358,23 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
-	
+   if (!FieldExists("glpi_configs","priority_matrix")) {
+      $query = "ALTER TABLE `glpi_configs`
+                   ADD `priority_matrix` VARCHAR( 255 ) NULL
+                      COMMENT 'json encoded array for Urgence / Impact to Protority'";
+      $DB->query($query) or die("0.80 add priority_matrix  in glpi_configs " .
+                                $LANG['update'][90] . $DB->error());
+      $matrix = array(1=>array(1=>1,2=>1,3=>2,4=>2,4=>2,5=>2),
+                      2=>array(1=>1,2=>2,3=>2,4=>3,4=>3,5=>3),
+                      3=>array(1=>2,2=>2,3=>3,4=>4,4=>4,5=>4),
+                      4=>array(1=>2,2=>3,3=>4,4=>4,4=>4,5=>5),
+                      5=>array(1=>2,2=>3,3=>4,4=>5,4=>5,5=>5));
+      $matrix = json_encode($matrix);
+      $query = "UPDATE `glpi_configs` SET `priority_matrix`='$matrix' WHERE `id`='1'";
+      $DB->query($query) or die("0.80 set default priority_matrix  in glpi_configs " .
+                                $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }
