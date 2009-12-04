@@ -503,7 +503,7 @@ if (isset($_POST["itemtype"])){
             break;
 
          case 'reset':
-            if ($_POST["itemtype"]==CRONTASK_TYPE) {
+            if ($_POST["itemtype"]=='CronTask') {
                checkRight('config','w');
                $crontask=new CronTask();
                foreach ($_POST["item"] as $key => $val){

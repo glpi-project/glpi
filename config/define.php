@@ -117,15 +117,6 @@ if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
    define("NETWORKING_PORT_TYPE",'NetworkPort');
    define("FOLLOWUP_TYPE",'TicketFollowup');
    define("BUDGET_TYPE",'Budget');
-   // Only used in 0.8
-   define("CONTRACTITEM_TYPE",45);
-   define("CONTACTSUPPLIER_TYPE",46);
-   define("CONTRACTSUPPLIER_TYPE",47);
-   define("DOCUMENTITEM_TYPE",48);
-   define("CRONTASK_TYPE",49);
-   define("CRONTASKLOG_TYPE",50);
-   define("GROUPUSER_TYPE",95);
-   define("COMPUTERITEM_TYPE",96);
 }
 
 /*define("GENERAL_TYPE",0);
@@ -173,14 +164,6 @@ define("COMPUTERDISK_TYPE",41);
 define("NETWORKING_PORT_TYPE",42);
 define("FOLLOWUP_TYPE",43);
 define("BUDGET_TYPE",44);
-define("CONTRACTITEM_TYPE",45);
-define("CONTACTSUPPLIER_TYPE",46);
-define("CONTRACTSUPPLIER_TYPE",47);
-define("DOCUMENTITEM_TYPE",48);
-define("CRONTASK_TYPE",49);
-define("CRONTASKLOG_TYPE",50);
-define("GROUPUSER_TYPE",95);
-define("COMPUTERITEM_TYPE",96);
 */
 
 
@@ -345,12 +328,12 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        FOLLOWUP_TYPE                     => 'glpi_ticketfollowups',
                        BUDGET_TYPE                       => 'glpi_budgets',
                        'Config'                          => 'glpi_config',
-                       CONTRACTITEM_TYPE                 => 'glpi_contracts_items',
-                       CONTACTSUPPLIER_TYPE              => 'glpi_contacts_suppliers',
-                       CONTRACTSUPPLIER_TYPE             => 'glpi_contracts_suppliers',
-                       DOCUMENTITEM_TYPE                 => 'glpi_documents_items',
-                       CRONTASK_TYPE                     => 'glpi_crontasks',
-                       CRONTASKLOG_TYPE                  => 'glpi_crontasklogs',
+                       'Contract_Item'                   => 'glpi_contracts_items',
+                       'Contact_Supplier'                => 'glpi_contacts_suppliers',
+                       'Contract_Supplier'               => 'glpi_contracts_suppliers',
+                       'Document_Item'                   => 'glpi_documents_items',
+                       'CronTask'                     => 'glpi_crontasks',
+                       'CronTaskLog'                  => 'glpi_crontasklogs',
                        'TicketCategory'               => 'glpi_ticketcategories',
                        'TaskCategory'                 => 'glpi_taskcategories',
                        'Location'                     => 'glpi_locations',
@@ -442,11 +425,7 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // FOLLOWUP_TYPE => "???",
                         BUDGET_TYPE          => "front/budget.form.php",
                         'Config'             => "front/config.form.php",
-// CONTRACTITEM_TYPE => "???",
-// CONTACTSUPPLIER_TYPE => "???",
-// CONTRACTSUPPLIER_TYPE => "???",
-// DOCUMENTITEM_TYPE => "???",
-                      CRONTASK_TYPE              => "front/crontask.form.php",
+                      'CronTask'              => "front/crontask.form.php",
                       'TicketCategory'        => "front/ticketcategory.form.php",
                       'TaskCategory'          => "front/taskcategory.form.php",
                       'Location'              => "front/location.form.php",
@@ -516,7 +495,7 @@ $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",
                       TRACKING_TYPE                   => "front/ticket.php",
                       MAILGATE_TYPE                   => "front/mailcollector.php",
                       BUDGET_TYPE                     => "front/budget.php",
-                      CRONTASK_TYPE                   => "front/crontask.php",
+                      'CronTask'                   => "front/crontask.php",
                       'TicketCategory'             => "front/ticketcategory.php",
                       'TaskCategory'               => "front/taskcategory.php",
                       'Location'                   => "front/location.php",
@@ -716,7 +695,7 @@ $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
 
 $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
 
-$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, CRONTASK_TYPE);
+$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
 
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
       'glpi_consumableitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',

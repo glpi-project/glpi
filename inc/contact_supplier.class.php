@@ -41,7 +41,7 @@ class Contact_Supplier extends CommonDBRelation{
 
    // From CommonDBTM
    public $table = 'glpi_contacts_suppliers';
-   public $type = CONTACTSUPPLIER_TYPE;
+   public $type = 'Contact_Supplier';
 
    // From CommonDBRelation
    public $itemtype_1 = CONTACT_TYPE;

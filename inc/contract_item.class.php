@@ -42,7 +42,7 @@ class Contract_Item extends CommonDBRelation{
 
    // From CommonDBTM
    public $table = 'glpi_contracts_items';
-   public $type = CONTRACTITEM_TYPE;
+   public $type = 'Contract_Item';
 
    // From CommonDBRelation
    public $itemtype_1 = CONTRACT_TYPE;

@@ -70,9 +70,9 @@ if ($crontask->getNeedToRun(CRONTASK_MODE_INTERNAL)) {
    displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
 }
 
-manageGetValuesInSearch(CRONTASK_TYPE);
-searchForm(CRONTASK_TYPE,$_GET);
-showList(CRONTASK_TYPE,$_GET);
+manageGetValuesInSearch('CronTask');
+searchForm('CronTask',$_GET);
+showList('CronTask',$_GET);
 
 commonFooter();
 

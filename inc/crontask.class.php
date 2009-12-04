@@ -40,7 +40,7 @@ class CronTask extends CommonDBTM{
 
    // From CommonDBTM
    public $table = 'glpi_crontasks';
-   public $type = CRONTASK_TYPE;
+   public $type = 'CronTask';
 
    // Specific ones
    static private $lockname='';
@@ -56,6 +56,14 @@ class CronTask extends CommonDBTM{
       $ong[2]=$LANG['Menu'][30]; // Logs
 
       return $ong;
+   }
+
+   function canCreate() {
+      return haveRight('config','w');
+   }
+
+   function canView() {
+      return haveRight('config','r');
    }
 
    function cleanDBonPurge($id) {
@@ -975,7 +983,7 @@ class CronTask extends CommonDBTM{
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = CRONTASK_TYPE;
+      $tab[1]['itemlink_link'] = 'CronTask';
 
       $tab[2]['table']     = 'glpi_crontasks';
       $tab[2]['field']     = 'id';
@@ -1022,16 +1030,5 @@ class CronTask extends CommonDBTM{
 
       return $tab;
    }
-}
-
-/**
- * CronTaskLog class
- */
-class CronTaskLog extends CommonDBTM{
-
-   // From CommonDBTM
-   public $table = 'glpi_crontasklogs';
-   public $type = CRONTASKLOG_TYPE;
-
 }
 ?>
