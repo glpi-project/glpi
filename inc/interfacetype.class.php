@@ -42,7 +42,7 @@ class InterfaceType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_interfacetypes';
-   public $type = INTERFACESTYPE_TYPE;
+   public $type = 'InterfaceType';
 
    static function getTypeName() {
       global $LANG;

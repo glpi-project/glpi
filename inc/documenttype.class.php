@@ -100,6 +100,15 @@ class DocumentType  extends CommonDropdown {
 
       return $tab;
    }
+
+   function canCreate() {
+      return haveRight('typedoc','w');
+   }
+
+   function canView() {
+      return haveRight('typedoc','r');
+   }
+
 }
 
 ?>

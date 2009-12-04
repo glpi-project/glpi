@@ -42,7 +42,7 @@ class PeripheralModel extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_peripheralmodels';
-   public $type = PERIPHERALMODEL_TYPE;
+   public $type = 'PeripheralModel';
 
    static function getTypeName() {
       global $LANG;

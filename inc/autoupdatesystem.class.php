@@ -42,7 +42,7 @@ class AutoUpdateSystem extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_autoupdatesystems';
-   public $type = AUTOUPDATESYSTEM_TYPE;
+   public $type = 'AutoUpdateSystem';
 
    static function getTypeName() {
       global $LANG;

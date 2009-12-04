@@ -42,7 +42,7 @@ class OperatingSystem extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_operatingsystems';
-   public $type = OPERATINGSYSTEM_TYPE;
+   public $type = 'OperatingSystem';
 
    static function getTypeName() {
       global $LANG;

@@ -42,7 +42,7 @@ class Network extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_networks';
-   public $type = NETWORK_TYPE;
+   public $type = 'Network';
 
    static function getTypeName() {
       global $LANG;

@@ -42,7 +42,7 @@ class NetworkEquipmentType extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_networkequipmenttypes';
-   public $type = NETWORKEQUIPMENTTYPE_TYPE;
+   public $type = 'NetworkEquipmentType';
 
    static function getTypeName() {
       global $LANG;

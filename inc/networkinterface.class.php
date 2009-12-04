@@ -42,7 +42,7 @@ class NetworkInterface extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_networkinterfaces';
-   public $type = NETWORKINTERFACE_TYPE;
+   public $type = 'NetworkInterface';
 
    static function getTypeName() {
       global $LANG;

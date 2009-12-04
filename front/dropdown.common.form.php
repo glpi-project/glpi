@@ -37,13 +37,16 @@
 if (!($dropdown instanceof CommonDropdown)) {
    displayErrorAndDie('');
 }
+if (!$dropdown->canView()) {
+   displayRightError();
+}
+
 
 if (isset($_POST["id"])) {
    $_GET["id"] = $_POST["id"];
 } else if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-checkTypeRight($dropdown->type, 'r');
 
 
 if (isset($_POST["add"])) {

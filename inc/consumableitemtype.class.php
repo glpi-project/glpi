@@ -42,7 +42,7 @@ class ConsumableItemType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_consumableitemtypes';
-   public $type = CONSUMABLEITEMTYPE_TYPE;
+   public $type = 'ConsumableItemType';
 
    static function getTypeName() {
       global $LANG;

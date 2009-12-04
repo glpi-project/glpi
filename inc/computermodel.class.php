@@ -42,7 +42,7 @@ class ComputerModel extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_computermodels';
-   public $type = COMPUTERMODEL_TYPE;
+   public $type = 'ComputerModel';
 
    static function getTypeName() {
       global $LANG;

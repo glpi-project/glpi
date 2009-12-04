@@ -58,6 +58,29 @@ abstract class CommonDropdown extends CommonDBTM {
       return $ong;
    }
 
+  /**
+   * Have I the right to "create" the Object
+   *
+   * May be overloaded if needed (ex KnowbaseItem)
+   *
+   * @return booleen
+   **/
+   function canCreate() {
+      return haveRight(($this->entity_assign?'entity_dropdown':'dropdown'),'w');
+   }
+
+   /**
+   * Have I the right to "view" the Object
+   *
+   * May be overloaded if needed
+   *
+   * @return booleen
+   **/
+   function canView() {
+      return haveRight(($this->entity_assign?'entity_dropdown':'dropdown'),'r');
+   }
+
+
    /**
     * Display content of Tab
     *

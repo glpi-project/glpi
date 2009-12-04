@@ -42,7 +42,7 @@ class TaskCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_taskcategories';
-   public $type = TASKCATEGORY_TYPE;
+   public $type = 'TaskCategory';
    public $entity_assign = true;
    public $may_be_recursive = true;
 

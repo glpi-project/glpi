@@ -42,7 +42,7 @@ class PhoneModel extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_phonemodels';
-   public $type = PHONEMODEL_TYPE;
+   public $type = 'PhoneModel';
 
    static function getTypeName() {
       global $LANG;

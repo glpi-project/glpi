@@ -37,12 +37,12 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class NetworkEquipementModel
-class NetworkEquipementModel extends CommonDropdown {
+/// Class NetworkEquipmentModel
+class NetworkEquipmentModel extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_networkequipmentmodels';
-   public $type = NETWORKEQUIPMENTMODEL_TYPE;
+   public $type = 'NetworkEquipmentModel';
 
    static function getTypeName() {
       global $LANG;

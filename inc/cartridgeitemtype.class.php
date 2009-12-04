@@ -42,7 +42,7 @@ class CartridgeItemType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_cartridgeitemtypes';
-   public $type = CARTRIDGEITEMTYPE_TYPE;
+   public $type = 'CartridgeItemType';
 
    static function getTypeName() {
       global $LANG;

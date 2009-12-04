@@ -42,7 +42,7 @@ class RequestType extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_requesttypes';
-   public $type = REQUESTTYPE_TYPE;
+   public $type = 'RequestType';
 
    static function getTypeName() {
       global $LANG;

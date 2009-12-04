@@ -42,7 +42,7 @@ class SoftwareLicenseType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_softwarelicensetypes';
-   public $type = SOFTWARELICENSETYPE_TYPE;
+   public $type = 'SoftwareLicenseType';
 
    static function getTypeName() {
       global $LANG;

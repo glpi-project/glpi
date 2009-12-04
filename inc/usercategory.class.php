@@ -42,7 +42,7 @@ class UserCategory extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_usercategories';
-   public $type = USERCATEGORY_TYPE;
+   public $type = 'UserCategory';
 
    static function getTypeName() {
       global $LANG;

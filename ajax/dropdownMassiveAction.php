@@ -65,12 +65,10 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case 'move_under' :
-         if (in_array($_POST["itemtype"], array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE))) {
-            echo '&nbsp;'.$LANG['setup'][75];
-            dropdownValue($LINK_ID_TABLE[$_POST["itemtype"]], 'parent', '', 0);
-            echo "<input type='submit' name='massiveaction' class='submit' value=\"".
-                  $LANG['buttons'][2]."\" >\n";
-         }
+         echo '&nbsp;'.$LANG['setup'][75];
+         dropdownValue($LINK_ID_TABLE[$_POST["itemtype"]], 'parent', '', 0);
+         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >\n";
          break;
 
       case "move_rule" :

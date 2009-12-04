@@ -42,7 +42,7 @@ class DocumentCategory extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_documentcategories';
-   public $type = DOCUMENTCATEGORY_TYPE;
+   public $type = 'DocumentCategory';
 
    static function getTypeName() {
       global $LANG;

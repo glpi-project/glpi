@@ -42,7 +42,7 @@ class MonitorType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_monitortypes';
-   public $type = MONITORTYPE_TYPE;
+   public $type = 'MonitorType';
 
    static function getTypeName() {
       global $LANG;

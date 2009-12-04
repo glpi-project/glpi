@@ -201,12 +201,6 @@ function haveTypeRight($itemtype, $right) {
          return haveRight("budget",$right);
 
       default :
-         if (in_array($itemtype, $CFG_GLPI['dropdown_types'])) {
-            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["specif_entities_tables"])) {
-               return haveRight("entity_dropdown",$right);
-            }
-            return haveRight("dropdown",$right);
-         }
          // Plugin case
          //if ($itemtype>1000) {
             if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {

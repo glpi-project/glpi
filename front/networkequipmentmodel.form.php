@@ -37,6 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$dropdown = new NetworkEquipementModel();
+$dropdown = new NetworkEquipmentModel();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>
