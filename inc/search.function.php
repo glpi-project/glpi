@@ -507,6 +507,12 @@ function showList ($itemtype,$params) {
    global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$LINK_ID_TABLE,$SEARCH_PAGES,
           $PLUGIN_HOOKS;
 
+   // Instanciate an object to access method
+   $item = NULL;
+   if (class_exists($itemtype)) {
+      $item = new $itemtype();
+   }
+
    // Default values of parameters
    $default_values["link"]=array();
    $default_values["field"]=array();
@@ -1218,7 +1224,8 @@ function showList ($itemtype,$params) {
          }
 
          // Form to massive actions
-         $isadmin=(haveTypeRight($itemtype,"w")
+         $isadmin=(($item && $item->canCreate())
+                   || haveTypeRight($itemtype,"w")
                    || (in_array($itemtype,$CFG_GLPI["infocom_types"])
                        && haveTypeRight(INFOCOM_TYPE,"w")));
 
