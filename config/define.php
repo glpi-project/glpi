@@ -118,7 +118,6 @@ if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
    define("FOLLOWUP_TYPE",'TicketFollowup');
    define("BUDGET_TYPE",'Budget');
    // Only used in 0.8
-   define("CONFIG_TYPE",'Config');
    define("CONTRACTITEM_TYPE",45);
    define("CONTACTSUPPLIER_TYPE",46);
    define("CONTRACTSUPPLIER_TYPE",47);
@@ -445,7 +444,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        NETWORKING_PORT_TYPE              => 'glpi_networkports',
                        FOLLOWUP_TYPE                     => 'glpi_ticketfollowups',
                        BUDGET_TYPE                       => 'glpi_budgets',
-                       CONFIG_TYPE                       => 'glpi_config',
+                       'Config'                          => 'glpi_config',
                        CONTRACTITEM_TYPE                 => 'glpi_contracts_items',
                        CONTACTSUPPLIER_TYPE              => 'glpi_contacts_suppliers',
                        CONTRACTSUPPLIER_TYPE             => 'glpi_contracts_suppliers',
@@ -542,7 +541,7 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         NETWORKING_PORT_TYPE => "front/networkport.form.php",
 // FOLLOWUP_TYPE => "???",
                         BUDGET_TYPE          => "front/budget.form.php",
-                        CONFIG_TYPE          => "front/config.form.php",
+                        'Config'             => "front/config.form.php",
 // CONTRACTITEM_TYPE => "???",
 // CONTACTSUPPLIER_TYPE => "???",
 // CONTRACTSUPPLIER_TYPE => "???",

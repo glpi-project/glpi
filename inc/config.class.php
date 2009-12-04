@@ -44,7 +44,7 @@ class Config extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_configs';
-   public $type = CONFIG_TYPE;
+   public $type = 'Config';
    public $auto_message_on_action = false;
 
    static function getTypeName() {
@@ -111,6 +111,18 @@ class Config extends CommonDBTM {
          if (!$input['_dbslave_status'] && $already_active) {
             deleteDBSlaveConfig();
          }
+      }
+
+      // Matrix for Impact / Urgence / Priority
+      if (isset($input['_matrix'])) {
+         $tab = array();
+         for ($urgence=1 ; $urgence<=5 ; $urgence++) {
+            for ($impact=1 ; $impact<=5 ; $impact++) {
+               $priority = $input["_matrix_${urgence}_${impact}"];
+               $tab[$urgence][$impact]=$priority;
+            }
+         }
+         $input['priority_matrix'] = json_encode($tab);
       }
       return $input;
    }
@@ -624,7 +636,8 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='7'>" . $LANG['help'][2] . "</th></tr>";
+      echo "<tr><th colspan='7'>" . $LANG['help'][2];
+      echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
       echo "<tr class='tab_bg_1'><td class='b left'>".$LANG['joblist'][29]."</td>";
       echo "<td class='b right'>".$LANG['joblist'][30]."</td>";
@@ -634,8 +647,14 @@ class Config extends CommonDBTM {
       for ($urgence=1, $msg=46 ; $urgence<=5 ; $urgence++, $msg--) {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1' colspan='2'>".$LANG['help'][$msg]."</td>";
          for ($impact=1 ; $impact<=5 ; $impact++) {
-            echo "<td class='center'>";
-            dropdownPriority("_matrice_${urgence}_${impact}",3);
+            $pri = round(($urgence+$impact)/2);
+            if (isset($CFG_GLPI['priority_matrix'][$urgence][$impact])) {
+               $pri = $CFG_GLPI['priority_matrix'][$urgence][$impact];
+            }
+            $bgcolor=$_SESSION["glpipriority_$pri"];
+
+            echo "<td class='center' bgcolor='$bgcolor'>";
+            dropdownPriority("_matrix_${urgence}_${impact}",$pri);
             echo "</td>";
          }
          echo "</tr>\n";

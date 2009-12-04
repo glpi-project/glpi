@@ -58,7 +58,7 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormConnection($_POST['target']);
       $config->showFormDBSlave($_POST['target']);
       showSystemInformations();
-      displayPluginAction(CONFIG_TYPE,0,$_REQUEST['glpi_tab']);
+      displayPluginAction('Config',0,$_REQUEST['glpi_tab']);
       break;
 
    case 2 :
@@ -90,7 +90,7 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction(CONFIG_TYPE,0,$_REQUEST['glpi_tab'])) {
+      if (!displayPluginAction('Config',0,$_REQUEST['glpi_tab'])) {
          $config->showFormMain($_POST['target']);
       }
 }
