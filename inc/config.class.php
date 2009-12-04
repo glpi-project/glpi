@@ -639,14 +639,29 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='7'>" . $LANG['help'][2];
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
+      echo "<tr class='tab_bg_2'><td class='b right' colspan='2'>".$LANG['joblist'][30]."&nbsp;:</td>";
+      for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
+         echo "<td class='center'>".$LANG['help'][$msg]."</td>";
+      }
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'><td class='b' colspan='2'>".$LANG['joblist'][29]."</td>";
+      for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
+         echo "<td>&nbsp;</td>";
+      }
+      echo "</tr>";
+/*
       echo "<tr class='tab_bg_1'><td class='b left'>".$LANG['joblist'][29]."</td>";
       echo "<td class='b right'>".$LANG['joblist'][30]."</td>";
       for ($impact=1, $msg=51 ; $impact<=5 ; $impact++, $msg--) {
          echo "<td class='center'>".$LANG['help'][$msg]."</td>";
       }
-      for ($urgence=1, $msg=46 ; $urgence<=5 ; $urgence++, $msg--) {
+      echo "</tr>";
+*/
+      //for ($urgence=1, $msg=46 ; $urgence<=5 ; $urgence++, $msg--) {
+      for ($urgence=5, $msg=42 ; $urgence>=1 ; $urgence--, $msg++) {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1' colspan='2'>".$LANG['help'][$msg]."</td>";
-         for ($impact=1 ; $impact<=5 ; $impact++) {
+         //for ($impact=1 ; $impact<=5 ; $impact++) {
+         for ($impact=5 ; $impact>=1 ; $impact--) {
             $pri = round(($urgence+$impact)/2);
             if (isset($CFG_GLPI['priority_matrix'][$urgence][$impact])) {
                $pri = $CFG_GLPI['priority_matrix'][$urgence][$impact];
