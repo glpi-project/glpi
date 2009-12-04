@@ -2382,7 +2382,7 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
 
       // set default trivial values for Impact and Urgence
-      $query = "UPDATE `glpisvn`.`glpi_tickets` SET `urgence` = `priority`, `impact` = `priority`";
+      $query = "UPDATE `glpi_tickets` SET `urgence` = `priority`, `impact` = `priority`";
       $DB->query($query) or die("0.80 set urgence, impact in glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
 
