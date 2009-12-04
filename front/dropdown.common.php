@@ -37,10 +37,12 @@
 if (!($dropdown instanceof CommonDropdown)) {
    displayErrorAndDie('');
 }
-checkTypeRight($dropdown->type, 'r');
+if (!$dropdown->canView()) {
+   displayRightError();
+}
 
 commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",
-             str_replace('glpi_','',$dropdown->table));
+             str_replace('glpi_','',get_class($dropdown)));
 
 manageGetValuesInSearch($dropdown->type);
 searchForm($dropdown->type,$_GET);

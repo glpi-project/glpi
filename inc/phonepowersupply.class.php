@@ -42,7 +42,7 @@ class PhonePowerSupply extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_phonepowersupplies';
-   public $type = PHONEPOWERSUPPLY_TYPE;
+   public $type = 'PhonePowerSupply';
 
    static function getTypeName() {
       global $LANG;

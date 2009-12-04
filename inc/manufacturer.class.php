@@ -42,7 +42,7 @@ class Manufacturer extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_manufacturers';
-   public $type = MANUFACTURER_TYPE;
+   public $type = 'Manufacturer';
 
    static function getTypeName() {
       global $LANG;

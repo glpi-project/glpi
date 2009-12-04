@@ -42,7 +42,7 @@ class UserTitle extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_usertitles';
-   public $type = USERTITLE_TYPE;
+   public $type = 'UserTitle';
 
    static function getTypeName() {
       global $LANG;

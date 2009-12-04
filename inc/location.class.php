@@ -42,7 +42,7 @@ class Location extends CommonTreeDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_locations';
-   public $type = LOCATION_TYPE;
+   public $type = 'Location';
    public $entity_assign = true;
    public $may_be_recursive = true;
 
@@ -175,9 +175,9 @@ class Location extends CommonTreeDropdown {
                        'START'        => $start,
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
-         initNavigateListItems(NETPOINT_TYPE, $this->getTypeName()."= ".$this->fields['name']);
+         initNavigateListItems('Netpoint', $this->getTypeName()."= ".$this->fields['name']);
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
-            addToNavigateListItems(NETPOINT_TYPE,$data["id"]);
+            addToNavigateListItems('Netpoint',$data["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
@@ -190,7 +190,7 @@ class Location extends CommonTreeDropdown {
          echo "</table>\n";
          if ($canedit) {
             openArrowMassive("massiveaction_form", true);
-            echo "<input type='hidden' name='itemtype' value='".NETPOINT_TYPE."'>";
+            echo "<input type='hidden' name='itemtype' value='Netpoint'>";
             echo "<input type='hidden' name='action' value='delete'>";
             closeArrowMassive('massiveaction', $LANG['buttons'][6]);
 

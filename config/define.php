@@ -124,50 +124,6 @@ if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
    define("DOCUMENTITEM_TYPE",48);
    define("CRONTASK_TYPE",49);
    define("CRONTASKLOG_TYPE",50);
-   define("TICKETCATEGORY_TYPE",51);
-   define("TASKCATEGORY_TYPE",52);
-   define("LOCATION_TYPE",53);
-   define("NETPOINT_TYPE",54);
-   define("ITEMSTATE_TYPE",55);
-   define("REQUESTTYPE_TYPE",56);
-   define("MANUFACTURER_TYPE",57);
-   define("COMPUTERTYPE_TYPE",58);
-   define("COMPUTERMODEL_TYPE",59);
-   define("NETWORKEQUIPMENTTYPE_TYPE",60);
-   define("NETWORKEQUIPMENTMODEL_TYPE",61);
-   define("PRINTERTYPE_TYPE",62);
-   define("PRINTERMODEL_TYPE",63);
-   define("MONITORTYPE_TYPE",64);
-   define("MONITORMODEL_TYPE",65);
-   define("PERIPHERALTYPE_TYPE",66);
-   define("PERIPHERALMODEL_TYPE",67);
-   define("PHONETYPE_TYPE",68);
-   define("PHONEMODEL_TYPE",69);
-   define("SOFTWARELICENSETYPE_TYPE",70);
-   define("CARTRIDGEITEMTYPE_TYPE",71);
-   define("CONSUMABLEITEMTYPE_TYPE",72);
-   define("CONTRACTTYPE_TYPE",73);
-   define("CONTACTTYPE_TYPE",74);
-   define("DEVICEMEMORYTYPE_TYPE",75);
-   define("SUPPLIERTYPE_TYPE",76);
-   define("INTERFACESTYPE_TYPE",77);
-   define("DEVICECASETYPE_TYPE",78);
-   define("PHONEPOWERSUPPLY_TYPE",79);
-   define("FILESYSTEM_TYPE",80);
-   define("DOCUMENTCATEGORY_TYPE",81);
-   define("KNOWBASEITEMCATEGORY_TYPE",82);
-   define("OPERATINGSYSTEM_TYPE",83);
-   define("OPERATINGSYSTEMVERSION_TYPE",84);
-   define("OPERATINGSYSTEMSERVICEPACK_TYPE",85);
-   define("AUTOUPDATESYSTEM_TYPE",86);
-   define("NETWORKINTERFACE_TYPE",87);
-   define("NETWORKEQUIPMENTFIRMWARE_TYPE",88);
-   define("DOMAIN_TYPE",89);
-   define("NETWORK_TYPE",90);
-   define("VLAN_TYPE",91);
-   define("SOFTWARECATEGORY_TYPE",92);
-   define("USERTITLE_TYPE",93);
-   define("USERCATEGORY_TYPE",94);
    define("GROUPUSER_TYPE",95);
    define("COMPUTERITEM_TYPE",96);
 }
@@ -223,68 +179,12 @@ define("CONTRACTSUPPLIER_TYPE",47);
 define("DOCUMENTITEM_TYPE",48);
 define("CRONTASK_TYPE",49);
 define("CRONTASKLOG_TYPE",50);
-define("TICKETCATEGORY_TYPE",51);
-define("TASKCATEGORY_TYPE",52);
-define("LOCATION_TYPE",53);
-define("NETPOINT_TYPE",54);
-define("ITEMSTATE_TYPE",55);
-define("REQUESTTYPE_TYPE",56);
-define("MANUFACTURER_TYPE",57);
-define("COMPUTERTYPE_TYPE",58);
-define("COMPUTERMODEL_TYPE",59);
-define("NETWORKEQUIPMENTTYPE_TYPE",60);
-define("NETWORKEQUIPMENTMODEL_TYPE",61);
-define("PRINTERTYPE_TYPE",62);
-define("PRINTERMODEL_TYPE",63);
-define("MONITORTYPE_TYPE",64);
-define("MONITORMODEL_TYPE",65);
-define("PERIPHERALTYPE_TYPE",66);
-define("PERIPHERALMODEL_TYPE",67);
-define("PHONETYPE_TYPE",68);
-define("PHONEMODEL_TYPE",69);
-define("SOFTWARELICENSETYPE_TYPE",70);
-define("CARTRIDGEITEMTYPE_TYPE",71);
-define("CONSUMABLEITEMTYPE_TYPE",72);
-define("CONTRACTTYPE_TYPE",73);
-define("CONTACTTYPE_TYPE",74);
-define("DEVICEMEMORYTYPE_TYPE",75);
-define("SUPPLIERTYPE_TYPE",76);
-define("INTERFACESTYPE_TYPE",77);
-define("DEVICECASETYPE_TYPE",78);
-define("PHONEPOWERSUPPLY_TYPE",79);
-define("FILESYSTEM_TYPE",80);
-define("DOCUMENTCATEGORY_TYPE",81);
-define("KNOWBASEITEMCATEGORY_TYPE",82);
-define("OPERATINGSYSTEM_TYPE",83);
-define("OPERATINGSYSTEMVERSION_TYPE",84);
-define("OPERATINGSYSTEMSERVICEPACK_TYPE",85);
-define("AUTOUPDATESYSTEM_TYPE",86);
-define("NETWORKINTERFACE_TYPE",87);
-define("NETWORKEQUIPMENTFIRMWARE_TYPE",88);
-define("DOMAIN_TYPE",89);
-define("NETWORK_TYPE",90);
-define("VLAN_TYPE",91);
-define("SOFTWARECATEGORY_TYPE",92);
-define("USERTITLE_TYPE",93);
-define("USERCATEGORY_TYPE",94);
 define("GROUPUSER_TYPE",95);
 define("COMPUTERITEM_TYPE",96);
 */
 
 
 
-
-$CFG_GLPI['dropdown_types']= array(TICKETCATEGORY_TYPE, TASKCATEGORY_TYPE, LOCATION_TYPE, NETPOINT_TYPE,
-   ITEMSTATE_TYPE, REQUESTTYPE_TYPE, MANUFACTURER_TYPE, COMPUTERTYPE_TYPE, COMPUTERMODEL_TYPE,
-   NETWORKEQUIPMENTTYPE_TYPE, NETWORKEQUIPMENTMODEL_TYPE, PRINTERTYPE_TYPE, PRINTERMODEL_TYPE,
-   MONITORTYPE_TYPE, MONITORMODEL_TYPE, PERIPHERALTYPE_TYPE, PERIPHERALMODEL_TYPE, PHONETYPE_TYPE,
-   PHONEMODEL_TYPE, SOFTWARELICENSETYPE_TYPE, CARTRIDGEITEMTYPE_TYPE, CONSUMABLEITEMTYPE_TYPE,
-   CONTRACTTYPE_TYPE, CONTACTTYPE_TYPE, DEVICEMEMORYTYPE_TYPE, SUPPLIERTYPE_TYPE, INTERFACESTYPE_TYPE,
-   DEVICECASETYPE_TYPE, PHONEPOWERSUPPLY_TYPE, FILESYSTEM_TYPE, DOCUMENTCATEGORY_TYPE,
-   KNOWBASEITEMCATEGORY_TYPE, OPERATINGSYSTEM_TYPE, OPERATINGSYSTEMVERSION_TYPE,
-   OPERATINGSYSTEMSERVICEPACK_TYPE, AUTOUPDATESYSTEM_TYPE, NETWORKINTERFACE_TYPE,
-   NETWORKEQUIPMENTFIRMWARE_TYPE, DOMAIN_TYPE, NETWORK_TYPE, VLAN_TYPE, SOFTWARECATEGORY_TYPE,
-   USERTITLE_TYPE, USERCATEGORY_TYPE);
 
 
 // GLPI MODE
@@ -451,50 +351,50 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        DOCUMENTITEM_TYPE                 => 'glpi_documents_items',
                        CRONTASK_TYPE                     => 'glpi_crontasks',
                        CRONTASKLOG_TYPE                  => 'glpi_crontasklogs',
-                       TICKETCATEGORY_TYPE               => 'glpi_ticketcategories',
-                       TASKCATEGORY_TYPE                 => 'glpi_taskcategories',
-                       LOCATION_TYPE                     => 'glpi_locations',
-                       NETPOINT_TYPE                     => 'glpi_netpoints',
-                       ITEMSTATE_TYPE                    => 'glpi_states',
-                       REQUESTTYPE_TYPE                  => 'glpi_requesttypes',
-                       MANUFACTURER_TYPE                 => 'glpi_manufacturers',
-                       COMPUTERTYPE_TYPE                 => 'glpi_computertypes',
-                       COMPUTERMODEL_TYPE                => 'glpi_computermodels',
-                       NETWORKEQUIPMENTTYPE_TYPE         => 'glpi_networkequipmenttypes',
-                       NETWORKEQUIPMENTMODEL_TYPE        => 'glpi_networkequipmentmodels',
-                       PRINTERTYPE_TYPE                  => 'glpi_printertypes',
-                       PRINTERMODEL_TYPE                 => 'glpi_printermodels',
-                       MONITORTYPE_TYPE                  => 'glpi_monitortypes',
-                       MONITORMODEL_TYPE                 => 'glpi_monitormodels',
-                       PERIPHERALTYPE_TYPE               => 'glpi_peripheraltypes',
-                       PERIPHERALMODEL_TYPE              => 'glpi_peripheralmodels',
-                       PHONETYPE_TYPE                    => 'glpi_phonetypes',
-                       PHONEMODEL_TYPE                   => 'glpi_phonemodels',
-                       SOFTWARELICENSETYPE_TYPE          => 'glpi_softwarelicensetypes',
-                       CARTRIDGEITEMTYPE_TYPE            => 'glpi_cartridgeitemtypes',
-                       CONSUMABLEITEMTYPE_TYPE           => 'glpi_consumableitemtypes',
-                       CONTRACTTYPE_TYPE                 => 'glpi_contracttypes',
-                       CONTACTTYPE_TYPE                  => 'glpi_contacttypes',
-                       DEVICEMEMORYTYPE_TYPE             => 'glpi_devicememorytypes',
-                       SUPPLIERTYPE_TYPE                 => 'glpi_suppliertypes',
-                       INTERFACESTYPE_TYPE               => 'glpi_interfacetypes',
-                       DEVICECASETYPE_TYPE               => 'glpi_devicecasetypes',
-                       PHONEPOWERSUPPLY_TYPE             => 'glpi_phonepowersupplies',
-                       FILESYSTEM_TYPE                   => 'glpi_filesystems',
-                       DOCUMENTCATEGORY_TYPE             => 'glpi_documentcategories',
-                       KNOWBASEITEMCATEGORY_TYPE         => 'glpi_knowbaseitemcategories',
-                       OPERATINGSYSTEM_TYPE              => 'glpi_operatingsystems',
-                       OPERATINGSYSTEMVERSION_TYPE       => 'glpi_operatingsystemversions',
-                       OPERATINGSYSTEMSERVICEPACK_TYPE   => 'glpi_operatingsystemservicepacks',
-                       AUTOUPDATESYSTEM_TYPE             => 'glpi_autoupdatesystems',
-                       NETWORKINTERFACE_TYPE             => 'glpi_networkinterfaces',
-                       NETWORKEQUIPMENTFIRMWARE_TYPE     => 'glpi_networkequipmentfirmwares',
-                       DOMAIN_TYPE                       => 'glpi_domains',
-                       NETWORK_TYPE                      => 'glpi_networks',
-                       VLAN_TYPE                         => 'glpi_vlans',
-                       SOFTWARECATEGORY_TYPE             => 'glpi_softwarecategories',
-                       USERTITLE_TYPE                    => 'glpi_usertitles',
-                       USERCATEGORY_TYPE                 => 'glpi_usercategories');
+                       'TicketCategory'               => 'glpi_ticketcategories',
+                       'TaskCategory'                 => 'glpi_taskcategories',
+                       'Location'                     => 'glpi_locations',
+                       'Netpoint'                     => 'glpi_netpoints',
+                       'State'                        => 'glpi_states',
+                       'RequestType'                  => 'glpi_requesttypes',
+                       'Manufacturer'                 => 'glpi_manufacturers',
+                       'ComputerType'                 => 'glpi_computertypes',
+                       'ComputerModel'                => 'glpi_computermodels',
+                       'NetworkEquipmentType'         => 'glpi_networkequipmenttypes',
+                       'NetworkEquipmentModel'        => 'glpi_networkequipmentmodels',
+                       'PrinterType'                  => 'glpi_printertypes',
+                       'PrinterModel'                 => 'glpi_printermodels',
+                       'MonitorType'                  => 'glpi_monitortypes',
+                       'MonitorModel'                 => 'glpi_monitormodels',
+                       'PeripheralType'               => 'glpi_peripheraltypes',
+                       'PeripheralModel'              => 'glpi_peripheralmodels',
+                       'PhoneType'                    => 'glpi_phonetypes',
+                       'PhoneModel'                   => 'glpi_phonemodels',
+                       'SoftwareLicenseType'          => 'glpi_softwarelicensetypes',
+                       'CartridgeItemType'            => 'glpi_cartridgeitemtypes',
+                       'ConsumableItemType'           => 'glpi_consumableitemtypes',
+                       'ContractType'                 => 'glpi_contracttypes',
+                       'ContactType'                  => 'glpi_contacttypes',
+                       'DeviceMemoryType'             => 'glpi_devicememorytypes',
+                       'SupplierType'                 => 'glpi_suppliertypes',
+                       'InterfaceType'                => 'glpi_interfacetypes',
+                       'DeviceCaseType'               => 'glpi_devicecasetypes',
+                       'PhonePowerSupply'             => 'glpi_phonepowersupplies',
+                       'Filesystem'                   => 'glpi_filesystems',
+                       'DocumentCategory'             => 'glpi_documentcategories',
+                       'KnowbaseItemCategory'         => 'glpi_knowbaseitemcategories',
+                       'OperatingSystem'              => 'glpi_operatingsystems',
+                       'OperatingSystemVersion'       => 'glpi_operatingsystemversions',
+                       'OperatingSystemServicePack'   => 'glpi_operatingsystemservicepacks',
+                       'AutoUpdateSystem'             => 'glpi_autoupdatesystems',
+                       'NetworkInterface'             => 'glpi_networkinterfaces',
+                       'NetworkEquipmentFirmware'     => 'glpi_networkequipmentfirmwares',
+                       'Domain'                       => 'glpi_domains',
+                       'Network'                      => 'glpi_networks',
+                       'Vlan'                         => 'glpi_vlans',
+                       'SoftwareCategory'             => 'glpi_softwarecategories',
+                       'UserTitle'                    => 'glpi_usertitles',
+                       'UserCategory'                 => 'glpi_usercategories');
 
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
@@ -547,50 +447,50 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
 // CONTRACTSUPPLIER_TYPE => "???",
 // DOCUMENTITEM_TYPE => "???",
                       CRONTASK_TYPE              => "front/crontask.form.php",
-                      TICKETCATEGORY_TYPE        => "front/ticketcategory.form.php",
-                      TASKCATEGORY_TYPE          => "front/taskcategory.form.php",
-                      LOCATION_TYPE              => "front/location.form.php",
-                      NETPOINT_TYPE              => "front/netpoint.form.php",
-                      ITEMSTATE_TYPE             => "front/state.form.php",
-                      REQUESTTYPE_TYPE           => "front/requesttype.form.php",
-                      MANUFACTURER_TYPE          => "front/manufacturer.form.php",
-                      COMPUTERTYPE_TYPE          => "front/computertype.form.php",
-                      COMPUTERMODEL_TYPE         => "front/computermodel.form.php",
-                      NETWORKEQUIPMENTTYPE_TYPE  => "front/networkequipmenttype.form.php",
-                      NETWORKEQUIPMENTMODEL_TYPE => "front/networkequipementmodel.form.php",
-                      PRINTERTYPE_TYPE           => "front/printertype.form.php",
-                      PRINTERMODEL_TYPE          => "front/printermodel.form.php",
-                      MONITORTYPE_TYPE           => "front/monitortype.form.php",
-                      MONITORMODEL_TYPE          => "front/monitormodel.form.php",
-                      PERIPHERALTYPE_TYPE        => "front/peripheraltype.form.php",
-                      PERIPHERALMODEL_TYPE       => "front/peripheralmodel.form.php",
-                      PHONETYPE_TYPE             => "front/phonetype.form.php",
-                      PHONEMODEL_TYPE            => "front/phonemodel.form.php",
-                      SOFTWARELICENSETYPE_TYPE   => "front/softwarelicensetype.form.php",
-                      CARTRIDGEITEMTYPE_TYPE     => "front/cartridgeitemtype.form.php",
-                      CONSUMABLEITEMTYPE_TYPE    => "front/consumableitemtype.form.php",
-                      CONTRACTTYPE_TYPE          => "front/contracttype.form.php",
-                      CONTACTTYPE_TYPE           => "front/contacttype.form.php",
-                      DEVICEMEMORYTYPE_TYPE      => "front/devicememorytype.form.php",
-                      SUPPLIERTYPE_TYPE          => "front/suppliertype.form.php",
-                      INTERFACESTYPE_TYPE        => "front/interfacetype.form.php",
-                      DEVICECASETYPE_TYPE        => "front/devicecasetype.form.php",
-                      PHONEPOWERSUPPLY_TYPE      => "front/phonepowersupply.form.php",
-                      FILESYSTEM_TYPE            => "front/filesystem.form.php",
-                      DOCUMENTCATEGORY_TYPE      => "front/documentcategory.form.php",
-                      KNOWBASEITEMCATEGORY_TYPE  => "front/knowbaseitemcategory.form.php",
-                      OPERATINGSYSTEM_TYPE       => "front/operatingsystem.form.php",
-                      OPERATINGSYSTEMVERSION_TYPE => "front/operatingsystemversion.form.php",
-                      OPERATINGSYSTEMSERVICEPACK_TYPE => "front/operatingsystemservicepack.form.php",
-                      AUTOUPDATESYSTEM_TYPE      => "front/autoupdatesystem.form.php",
-                      NETWORKINTERFACE_TYPE      => "front/networkinterface.form.php",
-                      NETWORKEQUIPMENTFIRMWARE_TYPE => "front/networkequipmentfirmware.form.php",
-                      DOMAIN_TYPE                => "front/domain.form.php",
-                      NETWORK_TYPE               => "front/network.form.php",
-                      VLAN_TYPE                  => "front/vlan.form.php",
-                      SOFTWARECATEGORY_TYPE      => "front/softwarecategory.form.php",
-                      USERTITLE_TYPE             => "front/usertitle.form.php",
-                      USERCATEGORY_TYPE          => "front/usercategory.form.php",
+                      'TicketCategory'        => "front/ticketcategory.form.php",
+                      'TaskCategory'          => "front/taskcategory.form.php",
+                      'Location'              => "front/location.form.php",
+                      'Netpoint'              => "front/netpoint.form.php",
+                      'State'                 => "front/state.form.php",
+                      'RequestType'           => "front/requesttype.form.php",
+                      'Manufacturer'          => "front/manufacturer.form.php",
+                      'ComputerType'          => "front/computertype.form.php",
+                      'ComputerModel'         => "front/computermodel.form.php",
+                      'NetworkEquipmentType'  => "front/networkequipmenttype.form.php",
+                      'NetworkEquipmentModel' => "front/networkequipmentmodel.form.php",
+                      'PrinterType'           => "front/printertype.form.php",
+                      'PrinterModel'          => "front/printermodel.form.php",
+                      'MonitorType'           => "front/monitortype.form.php",
+                      'MonitorModel'          => "front/monitormodel.form.php",
+                      'PeripheralType'        => "front/peripheraltype.form.php",
+                      'PeripheralModel'       => "front/peripheralmodel.form.php",
+                      'PhoneType'             => "front/phonetype.form.php",
+                      'PhoneModel'            => "front/phonemodel.form.php",
+                      'SoftwareLicenseType'   => "front/softwarelicensetype.form.php",
+                      'CartridgeItemType'     => "front/cartridgeitemtype.form.php",
+                      'ConsumableItemType'    => "front/consumableitemtype.form.php",
+                      'ContractType'          => "front/contracttype.form.php",
+                      'ContactType'           => "front/contacttype.form.php",
+                      'DeviceMemoryType'      => "front/devicememorytype.form.php",
+                      'SupplierType'          => "front/suppliertype.form.php",
+                      'InterfaceType'         => "front/interfacetype.form.php",
+                      'DeviceCaseType'        => "front/devicecasetype.form.php",
+                      'PhonePowerSupply'      => "front/phonepowersupply.form.php",
+                      'Filesystem'            => "front/filesystem.form.php",
+                      'DocumentCategory'      => "front/documentcategory.form.php",
+                      'KnowbaseItemCategory'  => "front/knowbaseitemcategory.form.php",
+                      'OperatingSystem'       => "front/operatingsystem.form.php",
+                      'OperatingSystemVersion' => "front/operatingsystemversion.form.php",
+                      'OperatingSystemServicePack' => "front/operatingsystemservicepack.form.php",
+                      'AutoUpdateSystem'      => "front/autoupdatesystem.form.php",
+                      'NetworkInterface'      => "front/networkinterface.form.php",
+                      'NetworkEquipmentFirmware' => "front/networkequipmentfirmware.form.php",
+                      'Domain'                => "front/domain.form.php",
+                      'Network'               => "front/network.form.php",
+                      'Vlan'                  => "front/vlan.form.php",
+                      'SoftwareCategory'      => "front/softwarecategory.form.php",
+                      'UserTitle'             => "front/usertitle.form.php",
+                      'UserCategory'          => "front/usercategory.form.php",
 // CRONTASKLOG_TYPE => "???",
                         // TODO temporary hack for tabs page name
                         'central'            => "front/central.form.php",
@@ -617,50 +517,50 @@ $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",
                       MAILGATE_TYPE                   => "front/mailcollector.php",
                       BUDGET_TYPE                     => "front/budget.php",
                       CRONTASK_TYPE                   => "front/crontask.php",
-                      TICKETCATEGORY_TYPE             => "front/ticketcategory.php",
-                      TASKCATEGORY_TYPE               => "front/taskcategory.php",
-                      LOCATION_TYPE                   => "front/location.php",
-                      NETPOINT_TYPE                   => "front/netpoint.php",
-                      ITEMSTATE_TYPE                  => "front/state.php",
-                      REQUESTTYPE_TYPE                => "front/requesttype.php",
-                      MANUFACTURER_TYPE               => "front/manufacturer.php",
-                      COMPUTERTYPE_TYPE               => "front/computertype.php",
-                      COMPUTERMODEL_TYPE              => "front/computermodel.php",
-                      NETWORKEQUIPMENTTYPE_TYPE       => "front/networkequipmenttype.php",
-                      NETWORKEQUIPMENTMODEL_TYPE      => "front/networkequipementmodel.php",
-                      PRINTERTYPE_TYPE                => "front/printertype.php",
-                      PRINTERMODEL_TYPE               => "front/printermodel.php",
-                      MONITORTYPE_TYPE                => "front/monitortype.php",
-                      MONITORMODEL_TYPE               => "front/monitormodel.php",
-                      PERIPHERALTYPE_TYPE             => "front/peripheraltype.php",
-                      PERIPHERALMODEL_TYPE            => "front/peripheralmodel.php",
-                      PHONETYPE_TYPE                  => "front/phonetype.php",
-                      PHONEMODEL_TYPE                 => "front/phonemodel.php",
-                      SOFTWARELICENSETYPE_TYPE        => "front/softwarelicensetype.php",
-                      CARTRIDGEITEMTYPE_TYPE          => "front/cartridgeitemtype.php",
-                      CONSUMABLEITEMTYPE_TYPE         => "front/consumableitemtype.php",
-                      CONTRACTTYPE_TYPE               => "front/contracttype.php",
-                      CONTACTTYPE_TYPE                => "front/contacttype.php",
-                      DEVICEMEMORYTYPE_TYPE           => "front/devicememorytype.php",
-                      SUPPLIERTYPE_TYPE               => "front/suppliertype.php",
-                      INTERFACESTYPE_TYPE             => "front/interfacetype.php",
-                      DEVICECASETYPE_TYPE             => "front/devicecasetype.php",
-                      PHONEPOWERSUPPLY_TYPE           => "front/phonepowersupply.php",
-                      FILESYSTEM_TYPE                 => "front/filesystem.php",
-                      DOCUMENTCATEGORY_TYPE           => "front/documentcategory.php",
-                      KNOWBASEITEMCATEGORY_TYPE       => "front/knowbaseitemcategory.php",
-                      OPERATINGSYSTEM_TYPE            => "front/operatingsystem.php",
-                      OPERATINGSYSTEMVERSION_TYPE     => "front/operatingsystemversion.php",
-                      OPERATINGSYSTEMSERVICEPACK_TYPE => "front/operatingsystemservicepack.php",
-                      AUTOUPDATESYSTEM_TYPE           => "front/autoupdatesystem.php",
-                      NETWORKINTERFACE_TYPE           => "front/networkinterface.php",
-                      NETWORKEQUIPMENTFIRMWARE_TYPE   => "front/networkequipmentfirmware.php",
-                      DOMAIN_TYPE                     => "front/domain.php",
-                      NETWORK_TYPE                    => "front/network.php",
-                      VLAN_TYPE                       => "front/vlan.php",
-                      SOFTWARECATEGORY_TYPE           => "front/softwarecategory.php",
-                      USERTITLE_TYPE                  => "front/usertitle.php",
-                      USERCATEGORY_TYPE               => "front/usercategory.php");
+                      'TicketCategory'             => "front/ticketcategory.php",
+                      'TaskCategory'               => "front/taskcategory.php",
+                      'Location'                   => "front/location.php",
+                      'Netpoint'                   => "front/netpoint.php",
+                      'State'                      => "front/state.php",
+                      'RequestType'                => "front/requesttype.php",
+                      'Manufacturer'               => "front/manufacturer.php",
+                      'ComputerType'               => "front/computertype.php",
+                      'ComputerModel'              => "front/computermodel.php",
+                      'NetworkEquipmentType'       => "front/networkequipmenttype.php",
+                      'NetworkEquipmentModel'      => "front/networkequipmentmodel.php",
+                      'PrinterType'                => "front/printertype.php",
+                      'PrinterModel'               => "front/printermodel.php",
+                      'MonitorType'                => "front/monitortype.php",
+                      'MonitorModel'               => "front/monitormodel.php",
+                      'PeripheralType'             => "front/peripheraltype.php",
+                      'PeripheralModel'            => "front/peripheralmodel.php",
+                      'PhoneType'                  => "front/phonetype.php",
+                      'PhoneModel'                 => "front/phonemodel.php",
+                      'SoftwareLicenseType'        => "front/softwarelicensetype.php",
+                      'CartridgeItemType'          => "front/cartridgeitemtype.php",
+                      'ConsumableItemType'         => "front/consumableitemtype.php",
+                      'ContractType'               => "front/contracttype.php",
+                      'ContactType'                => "front/contacttype.php",
+                      'DeviceMemoryType'           => "front/devicememorytype.php",
+                      'SupplierType'               => "front/suppliertype.php",
+                      'InterfaceType'              => "front/interfacetype.php",
+                      'DeviceCaseType'             => "front/devicecasetype.php",
+                      'PhonePowerSupply'           => "front/phonepowersupply.php",
+                      'Filesystem'                 => "front/filesystem.php",
+                      'DocumentCategory'           => "front/documentcategory.php",
+                      'KnowbaseItemCategory'       => "front/knowbaseitemcategory.php",
+                      'OperatingSystem'            => "front/operatingsystem.php",
+                      'OperatingSystemVersion'     => "front/operatingsystemversion.php",
+                      'OperatingSystemServicePack' => "front/operatingsystemservicepack.php",
+                      'AutoUpdateSystem'           => "front/autoupdatesystem.php",
+                      'NetworkInterface'           => "front/networkinterface.php",
+                      'NetworkEquipmentFirmware'   => "front/networkequipmentfirmware.php",
+                      'Domain'                     => "front/domain.php",
+                      'Network'                    => "front/network.php",
+                      'Vlan'                       => "front/vlan.php",
+                      'SoftwareCategory'           => "front/softwarecategory.php",
+                      'UserTitle'                  => "front/usertitle.php",
+                      'UserCategory'               => "front/usercategory.php");
 
 
 define("AUTH_DB_GLPI",1);
@@ -840,9 +740,9 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     LINK_TYPE            => "glpi_links",
                                     GROUP_TYPE           => "glpi_groups",
                                     BUDGET_TYPE          => "glpi_budgets",
-                                    TICKETCATEGORY_TYPE  => "glpi_ticketcategories",
-                                    TASKCATEGORY_TYPE    => "glpi_taskcategories",
-                                    LOCATION_TYPE        => "glpi_locations");
+                                    'TicketCategory'  => "glpi_ticketcategories",
+                                    'TaskCategory'    => "glpi_taskcategories",
+                                    'Location'        => "glpi_locations");
 
 
 // New config options which can be missing during migration

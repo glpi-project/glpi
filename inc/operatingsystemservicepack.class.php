@@ -42,7 +42,7 @@ class OperatingSystemServicePack extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_operatingsystemservicepacks';
-   public $type = OPERATINGSYSTEMSERVICEPACK_TYPE;
+   public $type = 'OperatingSystemServicePack';
 
    static function getTypeName() {
       global $LANG;

@@ -1731,9 +1731,9 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
                " (".$LANG['crontask'][40].")</option>";
             break;
 
-         case TICKETCATEGORY_TYPE :
-         case TASKCATEGORY_TYPE :
-         case LOCATION_TYPE :
+         case 'TicketCategory' :
+         case 'TaskCategory' :
+         case 'Location' :
             if ($isadmin) {
                echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
             }
@@ -2707,61 +2707,60 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 
    if (is_null($optgroup)) {
       $optgroup =
-         array($LANG['setup'][139] => array(LOCATION_TYPE        => $LANG['common'][15],
-                                            ITEMSTATE_TYPE       => $LANG['setup'][83],
-                                            MANUFACTURER_TYPE    => $LANG['common'][5]),
+         array($LANG['setup'][139] => array('Location'        => $LANG['common'][15],
+                                            'State'           => $LANG['setup'][83],
+                                            'Manufacturer'    => $LANG['common'][5]),
 
-               $LANG['setup'][140] => array(COMPUTERTYPE_TYPE         => $LANG['setup'][4],
-                                            NETWORKEQUIPMENTTYPE_TYPE => $LANG['setup'][42],
-                                            PRINTERTYPE_TYPE          => $LANG['setup'][43],
-                                            MONITORTYPE_TYPE          => $LANG['setup'][44],
-                                            PERIPHERALTYPE_TYPE       => $LANG['setup'][69],
-                                            PHONETYPE_TYPE            => $LANG['setup'][504],
-                                            SOFTWARELICENSETYPE_TYPE  => $LANG['software'][30],
-                                            CARTRIDGEITEMTYPE_TYPE    => $LANG['setup'][84],
-                                            CONSUMABLEITEMTYPE_TYPE   => $LANG['setup'][92],
-                                            CONTRACTTYPE_TYPE         => $LANG['setup'][85],
-                                            CONTACTTYPE_TYPE          => $LANG['setup'][82],
-                                            DEVICEMEMORYTYPE_TYPE     => $LANG['setup'][86],
-                                            SUPPLIERTYPE_TYPE         => $LANG['setup'][80],
-                                            INTERFACESTYPE_TYPE       => $LANG['setup'][93],
-                                            DEVICECASETYPE_TYPE       => $LANG['setup'][45],
-                                            PHONEPOWERSUPPLY_TYPE     => $LANG['setup'][505],
-                                            FILESYSTEM_TYPE           => $LANG['computers'][4]),
+               $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
+                                            'NetworkEquipmentType' => $LANG['setup'][42],
+                                            'PrinterType'          => $LANG['setup'][43],
+                                            'MonitorType'          => $LANG['setup'][44],
+                                            'PeripheralType'       => $LANG['setup'][69],
+                                            'PhoneType'            => $LANG['setup'][504],
+                                            'SoftwareLicenseType'  => $LANG['software'][30],
+                                            'CartridgeItemType'    => $LANG['setup'][84],
+                                            'ConsumableItemType'   => $LANG['setup'][92],
+                                            'ContractType'         => $LANG['setup'][85],
+                                            'ContactType'          => $LANG['setup'][82],
+                                            'DeviceMemoryType'     => $LANG['setup'][86],
+                                            'SupplierType'         => $LANG['setup'][80],
+                                            'InterfaceType'        => $LANG['setup'][93],
+                                            'DeviceCaseType'       => $LANG['setup'][45],
+                                            'PhonePowerSupply'     => $LANG['setup'][505],
+                                            'Filesystem'           => $LANG['computers'][4]),
 
-               $LANG['common'][22] => array(COMPUTERMODEL_TYPE         => $LANG['setup'][91],
-                                            NETWORKEQUIPMENTMODEL_TYPE => $LANG['setup'][95],
-                                            PRINTERMODEL_TYPE          => $LANG['setup'][96],
-                                            MONITORMODEL_TYPE          => $LANG['setup'][94],
-                                            PERIPHERALMODEL_TYPE       => $LANG['setup'][97],
-                                            PHONEMODEL_TYPE            => $LANG['setup'][503]),
+               $LANG['common'][22] => array('ComputerModel'         => $LANG['setup'][91],
+                                            'NetworkEquipmentModel' => $LANG['setup'][95],
+                                            'PrinterModel'          => $LANG['setup'][96],
+                                            'MonitorModel'          => $LANG['setup'][94],
+                                            'PeripheralModel'       => $LANG['setup'][97],
+                                            'PhoneModel'            => $LANG['setup'][503]),
 
-               $LANG['Menu'][26] => array(DOCUMENTCATEGORY_TYPE => $LANG['setup'][81],
-                                          TYPEDOC_TYPE          => $LANG['document'][7]),
+               $LANG['Menu'][26] => array('DocumentCategory' => $LANG['setup'][81],
+                                          'DocumentType'     => $LANG['document'][7]),
 
-               $LANG['Menu'][18] => array(KNOWBASEITEMCATEGORY_TYPE => $LANG['title'][5]),
+               $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['title'][5]),
 
-               $LANG['title'][24] => array (TICKETCATEGORY_TYPE   => $LANG['setup'][79],
-                                            TASKCATEGORY_TYPE     => $LANG['setup'][98],
-                                            REQUESTTYPE_TYPE      => $LANG['job'][44]),
+               $LANG['title'][24] => array ('TicketCategory'   => $LANG['setup'][79],
+                                            'TaskCategory'     => $LANG['setup'][98],
+                                            'RequestType'      => $LANG['job'][44]),
 
-               $LANG['setup'][145] => array(OPERATINGSYSTEM_TYPE        => $LANG['setup'][5],
-                                            OPERATINGSYSTEMVERSION_TYPE => $LANG['computers'][52],
-                                            OPERATINGSYSTEMSERVICEPACK_TYPE
-                                                                        => $LANG['computers'][53],
-                                            AUTOUPDATESYSTEM_TYPE       => $LANG['computers'][51]),
+               $LANG['setup'][145] => array('OperatingSystem'            => $LANG['setup'][5],
+                                            'OperatingSystemVersion'     => $LANG['computers'][52],
+                                            'OperatingSystemServicePack' => $LANG['computers'][53],
+                                            'AutoUpdateSystem'           => $LANG['computers'][51]),
 
-               $LANG['setup'][88] => array(NETWORKINTERFACE_TYPE         => $LANG['setup'][9],
-                                           NETWORKEQUIPMENTFIRMWARE_TYPE => $LANG['setup'][71],
-                                           NETPOINT_TYPE                 => $LANG['setup'][73],
-                                           DOMAIN_TYPE                   => $LANG['setup'][89],
-                                           NETWORK_TYPE                  => $LANG['setup'][88],
-                                           VLAN_TYPE                     => $LANG['setup'][90]),
+               $LANG['setup'][88] => array('NetworkInterface'         => $LANG['setup'][9],
+                                           'NetworkEquipmentFirmware' => $LANG['setup'][71],
+                                           'Netpoint'                 => $LANG['setup'][73],
+                                           'Domain'                   => $LANG['setup'][89],
+                                           'Network'                  => $LANG['setup'][88],
+                                           'Vlan'                     => $LANG['setup'][90]),
 
-               $LANG['Menu'][4] => array(SOFTWARECATEGORY_TYPE => $LANG['softwarecategories'][5]),
+               $LANG['Menu'][4] => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
 
-               $LANG['common'][34] => array(USERTITLE_TYPE     => $LANG['users'][1],
-                                            USERCATEGORY_TYPE  => $LANG['users'][2])
+               $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
+                                            'UserCategory'  => $LANG['users'][2])
 
               ); //end $opt
 
@@ -2770,42 +2769,15 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
          $optgroup=array_merge($optgroup,$plugdrop);
       }
 
-      $ci = new CommonItem();
-      if (!haveRight("dropdown","r")) {
-         foreach ($optgroup as $label=>$dp) {
-            foreach ($dp as $key => $val) {
-               if (is_numeric($key)) {
-                  $ci->setType($key,true);
-                  $table = $ci->obj->table;
-               } else {
-                  $table = $key;
-               }
-               if (!in_array($table,$CFG_GLPI["specif_entities_tables"])) {
-                  unset($optgroup[$label][$key]);
-               }
-            }
-            if (count($optgroup[$label])==0) {
-               unset($optgroup[$label]);
+      foreach ($optgroup as $label=>$dp) {
+         foreach ($dp as $key => $val) {
+            $tmp = new $key();
+            if (!$tmp->canView()) {
+               unset($optgroup[$label][$key]);
             }
          }
-      }
-
-      if (!haveRight("entity_dropdown","r")) {
-         foreach ($optgroup as $label=>$dp) {
-            foreach ($dp as $key => $val) {
-               if (is_numeric($key)) {
-                  $ci->setType($key,true);
-                  $table = $ci->obj->table;
-               } else {
-                  $table = $key;
-               }
-               if (in_array($table,$CFG_GLPI["specif_entities_tables"])) {
-                  unset($optgroup[$label][$key]);
-               }
-            }
-            if (count($optgroup[$label])==0) {
-               unset($optgroup[$label]);
-            }
+         if (count($optgroup[$label])==0) {
+            unset($optgroup[$label]);
          }
       }
    }

@@ -752,19 +752,16 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
          foreach ($dps as $tab) {
             foreach ($tab as $key => $val) {
-               /// TODO condition for already converted dropdown : clean when finish
-               if (is_integer($key) && isset($LINK_ID_TABLE[$key])) {
-                  $dpname=str_replace('glpi_','',$LINK_ID_TABLE[$key]);
-                  if ($dpname == $option) {
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['title']=$val;
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['page']=
-                                                   '/'.$SEARCH_PAGES[$key];
-                     $menu['config']['content']['dropdowns']['options'][$dpname]['links']['search']=
-                                                   '/'.$SEARCH_PAGES[$key];
-                     if (haveTypeRight($key,'w')) {
-                        $menu['config']['content']['dropdowns']['options'][$dpname]['links']['add']=
-                                                   '/'.$INFOFORM_PAGES[$key];
-                     }
+               if ($key == $option) {
+                  $tmp = new $key();
+                  $menu['config']['content']['dropdowns']['options'][$option]['title']=$val;
+                  $menu['config']['content']['dropdowns']['options'][$option]['page']=
+                                                $tmp->getSearchURL();
+                  $menu['config']['content']['dropdowns']['options'][$option]['links']['search']=
+                                                $tmp->getSearchURL();
+                  if ($tmp->canCreate()) {
+                     $menu['config']['content']['dropdowns']['options'][$option]['links']['add']=
+                                                $tmp->getFormURL();
                   }
                }
             }

@@ -42,7 +42,7 @@ class KnowbaseItemCategory extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_knowbaseitemcategories';
-   public $type = KNOWBASEITEMCATEGORY_TYPE;
+   public $type = 'KnowbaseItemCategory';
 
    static function getTypeName() {
       global $LANG;

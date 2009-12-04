@@ -43,8 +43,9 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
-checkTypeRight($dropdown->type, 'r');
-$dropdown->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
+if ($dropdown->canView()) {
+   $dropdown->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
+}
 
 ajaxFooter();
 

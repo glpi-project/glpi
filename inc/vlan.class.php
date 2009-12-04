@@ -42,7 +42,7 @@ class Vlan extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_vlans';
-   public $type = VLAN_TYPE;
+   public $type = 'Vlan';
 
    static function getTypeName() {
       global $LANG;

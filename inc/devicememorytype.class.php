@@ -42,7 +42,7 @@ class DeviceMemoryType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_devicememorytypes';
-   public $type = DEVICEMEMORYTYPE_TYPE;
+   public $type = 'DeviceMemoryType';
 
    static function getTypeName() {
       global $LANG;

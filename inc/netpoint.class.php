@@ -42,7 +42,7 @@ class Netpoint extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_netpoints';
-   public $type = NETPOINT_TYPE;
+   public $type = 'Netpoint';
    public $entity_assign = true;
 
    function getAdditionalFields() {
@@ -75,7 +75,7 @@ class Netpoint extends CommonDropdown {
       $tab[3]['linkfield']     = 'locations_id';
       $tab[3]['name']          = $LANG['common'][15];
       $tab[3]['datatype']      = 'itemlink';
-      $tab[3]['itemlink_type'] = LOCATION_TYPE;
+      $tab[3]['itemlink_type'] = 'Location';
 
       return $tab;
    }

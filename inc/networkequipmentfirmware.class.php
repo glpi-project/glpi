@@ -42,7 +42,7 @@ class NetworkEquipmentFirmware extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_networkequipmentfirmwares';
-   public $type = NETWORKEQUIPMENTFIRMWARE_TYPE;
+   public $type = 'NetworkEquipmentFirmware';
 
    static function getTypeName() {
       global $LANG;

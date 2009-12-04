@@ -42,7 +42,7 @@ class ContractType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_contracttypes';
-   public $type = CONTRACTTYPE_TYPE;
+   public $type = 'ContractType';
 
    static function getTypeName() {
       global $LANG;

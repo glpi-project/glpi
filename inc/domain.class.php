@@ -42,7 +42,7 @@ class Domain extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_domains';
-   public $type = DOMAIN_TYPE;
+   public $type = 'Domain';
 
    static function getTypeName() {
       global $LANG;

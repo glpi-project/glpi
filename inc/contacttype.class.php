@@ -42,7 +42,7 @@ class ContactType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_contacttypes';
-   public $type = CONTACTTYPE_TYPE;
+   public $type = 'ContactType';
 
    static function getTypeName() {
       global $LANG;

@@ -42,7 +42,7 @@ class Filesystem extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_filesystems';
-   public $type = FILESYSTEM_TYPE;
+   public $type = 'Filesystem';
 
    static function getTypeName() {
       global $LANG;

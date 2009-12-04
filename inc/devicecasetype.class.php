@@ -42,7 +42,7 @@ class DeviceCaseType extends CommonDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_devicecasetypes';
-   public $type = DEVICECASETYPE_TYPE;
+   public $type = 'DeviceCaseType';
 
    static function getTypeName() {
       global $LANG;

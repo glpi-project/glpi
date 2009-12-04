@@ -42,7 +42,7 @@ class State extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_states';
-   public $type = ITEMSTATE_TYPE;
+   public $type = 'State';
 
    static function getTypeName() {
       global $LANG;

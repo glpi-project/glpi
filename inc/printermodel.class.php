@@ -42,7 +42,7 @@ class PrinterModel extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_printermodels';
-   public $type = PRINTERMODEL_TYPE;
+   public $type = 'PrinterModel';
 
    static function getTypeName() {
       global $LANG;
