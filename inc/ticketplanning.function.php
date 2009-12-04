@@ -645,12 +645,12 @@ function displayPlanningItem($val,$who,$type="",$complete=0) {
       echo "</a>";
       if ($complete) {
          echo "<br><strong>".getPlanningState($val["state"])."</strong><br>";
-         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".getPriorityName($val["priority"]);
+         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
       } else {
          echo "<div class='over_link' id='content_tracking_".$val["id"].$rand."'>";
          echo "<strong>".getPlanningState($val["state"])."</strong><br>";
-         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".getPriorityName($val["priority"]);
+         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"]."</div>";
       }
    } else {  // show Reminder

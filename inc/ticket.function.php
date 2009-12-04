@@ -591,7 +591,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       }
 
       // Third Column
-      echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",
+      echo displaySearchItem($output_type,"<strong>".Ticket::getPriorityName($data["priority"])."</strong>",
                              $item_num,$row_num,"$align bgcolor='$bgcolor'");
 
       // Fourth Column
@@ -986,7 +986,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='1' class='center'>".$LANG['joblist'][2]."&nbsp;:<br>";
-   dropdownPriority("priority",$priority,1);
+   Ticket::dropdownPriority("priority",$priority,1);
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['common'][36]."&nbsp;:<br>";
@@ -1648,7 +1648,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                                                                          $ticketcategories_id);
             }
             if ($priority!=0) {
-               $title .= " - ".$LANG['joblist'][2]." = ".getPriorityName($priority);
+               $title .= " - ".$LANG['joblist'][2]." = ".Ticket::getPriorityName($priority);
             }
             if ($itemtype!=0 && $items_id!=0) {
                $ci = new CommonItem();
@@ -1871,7 +1871,11 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][29]."&nbsp;: </td>";
    echo "<td>";
-   // TODO : PUT Urgence
+   if ($canupdate) {
+      $idurgence = Ticket::dropdownUrgence("urgence",$job->fields["urgence"]);
+   } else {
+      echo Ticket::getUrgenceName($job->fields["urgence"]);
+   }
    echo "</td>";
    echo "<td class='left'>";
    if (!$ID && haveRight("update_ticket","1")) {
@@ -1928,7 +1932,11 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][30]."&nbsp;: </td>";
    echo "<td>";
-   // TODO : PUT Impact
+   if ($canupdate) {
+      $idimpact = Ticket::dropdownImpact("impact",$job->fields["impact"]);
+   } else {
+      echo Ticket::getImpactName($job->fields["impact"]);
+   }
    echo "</td>";
    echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
    echo "<td>";
@@ -1943,10 +1951,20 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
    echo "<td>";
-   if ($canupdate) {
-      dropdownPriority("priority",$job->fields["priority"]);
+   if ($canupdate && true) {  // TODO replace true by check priority change right
+      $idpriority = Ticket::dropdownPriority("priority",$job->fields["priority"]);
+      $idajax = 'change_priority_' . mt_rand();
+      echo "&nbsp;<span id='$idajax' style='display:none'></span>";
    } else {
-      echo getPriorityName($job->fields["priority"]);
+      $idajax = 'change_priority_' . mt_rand();
+      echo "&nbsp;<span id='$idajax'>".Ticket::getPriorityName($job->fields["priority"])."</span>";
+   }
+   if ($canupdate) {
+      $params=array('urgence'  => '__VALUE0__',
+                    'impact'   => '__VALUE1__',
+                    'priority' => $idpriority);
+      ajaxUpdateItemOnSelectEvent(array($idurgence, $idimpact), $idajax,
+                                  $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
    }
    echo "</td>";
    echo "<th class='center b' colspan='2'>".$LANG['job'][5]."&nbsp;: </th>";

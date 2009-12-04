@@ -468,8 +468,8 @@ class Ticket extends CommonDBTM {
                   case "priority" :
                      $new_priority = $this->fields["priority"];
                      $change_followup_content .= $LANG['mailing'][15]."&nbsp;: ".
-                                                 getPriorityName($input["_old_priority"])." -> ".
-                                                 getPriorityName($new_priority)."\n";
+                                                 Ticket::getPriorityName($input["_old_priority"])." -> ".
+                                                 Ticket::getPriorityName($new_priority)."\n";
                      $global_mail_change_count++;
                      break;
 
@@ -654,7 +654,7 @@ class Ticket extends CommonDBTM {
       if (!isset($input['_auto_import'])) {
          $_SESSION["helpdeskSaved"]=$input;
 
-         if (!isset($input["priority"])) {
+         if (!isset($input["urgence"])) {
             addMessageAfterRedirect($LANG['tracking'][4],false,ERROR);
             $mandatory_ok=false;
          }
@@ -687,6 +687,16 @@ class Ticket extends CommonDBTM {
             return false;
          }
       }
+      if (!isset($input["urgence"])) {
+         $input["urgence"] = 3;
+      }
+      if (!isset($input["impact"])) {
+         $input["impact"] = 3;
+      }
+      if (!isset($input["priority"])) {
+         $input["priority"] = $this->computePriority($input["urgence"], $input["impact"]);
+      }
+
       unset($_SESSION["helpdeskSaved"]);
 
       // Manage helpdesk.html submission type
@@ -1141,7 +1151,7 @@ class Ticket extends CommonDBTM {
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['mailing'][8]."&nbsp;:</span> ".$assign."\n";
          $message .="<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
-                      $LANG['joblist'][2].":</span> ".getPriorityName($this->fields["priority"])."\n";
+                      $LANG['joblist'][2].":</span> ".Ticket::getPriorityName($this->fields["priority"])."\n";
          if ($this->fields["itemtype"]!=SOFTWARE_TYPE && !empty($contact)) {
             $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                          $LANG['common'][18]."&nbsp;:</span> ".$contact."\n";
@@ -1203,7 +1213,7 @@ class Ticket extends CommonDBTM {
          }
 
          $message .= mailRow($LANG['mailing'][8],$assign);
-         $message .= mailRow($LANG['joblist'][2],getPriorityName($this->fields["priority"]));
+         $message .= mailRow($LANG['joblist'][2],Ticket::getPriorityName($this->fields["priority"]));
          if ($this->fields["itemtype"]!=SOFTWARE_TYPE && !empty($contact)) {
             $message .= mailRow($LANG['common'][18],$contact);
          }
@@ -1398,6 +1408,189 @@ class Ticket extends CommonDBTM {
       $tab[9]['name']      = $LANG['job'][44];
 
       return $tab;
+   }
+
+   /**
+    * Compute Priority
+    *
+    * @param $urgence integer from 1 to 5
+    * @param $impact integer from 1 to 5
+    *
+    * @return integer from 1 to 5 (priority)
+    */
+   static function computePriority ($urgence, $impact) {
+      if (isset($CFG_GLPI['priority_matrix'][$urgence][$impact])) {
+         return $CFG_GLPI['priority_matrix'][$urgence][$impact];
+      }
+      // Failback to trivial
+      return round(($urgence+$impact)/2);
+   }
+
+   /**
+    * Dropdown of ticket priority
+    *
+    * @param $name select name
+    * @param $value default value
+    * @param $complete see also at least selection
+    *
+    * @return string id of the select
+    */
+   static function dropdownPriority($name,$value=0,$complete=0) {
+      global $LANG;
+
+      $id = "select_$name".mt_rand();
+      echo "<select id='$id' name='$name'>";
+      if ($complete) {
+         echo "<option value='0' ".($value==1?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][3]."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][4]."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][5]."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][6]."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][7]."</option>";
+      }
+      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][3]."</option>";
+      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][4]."</option>";
+      echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][5]."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][6]."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][7]."</option>";
+
+      echo "</select>";
+
+      return $id;
+   }
+
+   /**
+    * Get ticket priority Name
+    *
+    * @param $value status ID
+    */
+   static function getPriorityName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 5 :
+            return $LANG['help'][3];
+            break;
+
+         case 4 :
+            return $LANG['help'][4];
+            break;
+
+         case 3 :
+            return $LANG['help'][5];
+            break;
+
+         case 2 :
+            return $LANG['help'][6];
+            break;
+
+         case 1 :
+            return $LANG['help'][7];
+            break;
+      }
+   }
+
+   /**
+    * Dropdown of ticket Urgence
+    *
+    * @param $name select name
+    * @param $value default value
+    *
+    * @return string id of the select
+    */
+   static function dropdownUrgence($name, $value=0) {
+      global $LANG;
+
+      $id = "select_$name".mt_rand();
+      echo "<select id='$id' name='$name'>";
+      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
+      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
+      echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
+      echo "</select>";
+
+      return $id;
+   }
+
+   /**
+    * Get ticket Urgence Name
+    *
+    * @param $value status ID
+    */
+   static function getUrgenceName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 5 :
+            return $LANG['help'][42];
+
+         case 4 :
+            return $LANG['help'][43];
+
+         case 3 :
+            return $LANG['help'][44];
+
+         case 2 :
+            return $LANG['help'][45];
+
+         case 1 :
+            return $LANG['help'][46];
+      }
+   }
+
+   /**
+    * Dropdown of ticket Impact
+    *
+    * @param $name select name
+    * @param $value default value
+    *
+    * @return string id of the select
+    */
+   static function dropdownImpact($name, $value=0) {
+      global $LANG;
+
+      $id = "select_$name".mt_rand();
+      echo "<select id='$id' name='$name'>";
+      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
+      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
+      echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
+      echo "</select>";
+
+      return $id;
+   }
+
+   /**
+    * Get ticket Impact Name
+    *
+    * @param $value status ID
+    */
+   static function getImpactName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 5 :
+            return $LANG['help'][47];
+
+         case 4 :
+            return $LANG['help'][48];
+
+         case 3 :
+            return $LANG['help'][49];
+
+         case 2 :
+            return $LANG['help'][50];
+
+         case 1 :
+            return $LANG['help'][51];
+      }
    }
 }
 

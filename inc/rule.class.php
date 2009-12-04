@@ -993,7 +993,7 @@ class Rule extends CommonDBTM {
                return $ci->getType($pattern);
 
             case "dropdown_priority" :
-               return getPriorityName($pattern);
+               return Ticket::getPriorityName($pattern);
          }
       }
       return $pattern;
@@ -1031,7 +1031,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_priority" :
-               dropdownPriority($name,$value);
+               Ticket::dropdownPriority($name,$value);
                $display=true;
                break;
          }
@@ -1070,7 +1070,7 @@ class Rule extends CommonDBTM {
                }
 
             case "dropdown_priority" :
-               return getPriorityName($value);
+               return Ticket::getPriorityName($value);
          }
       }
       return $value;
@@ -1104,7 +1104,7 @@ class Rule extends CommonDBTM {
                }
 
             case "dropdown_priority" :
-               return getPriorityName($value);
+               return Ticket::getPriorityName($value);
          }
       }
       return $value;

@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array("dbreplicate","ocsng","setup");
+$NEEDED_ITEMS = array("dbreplicate","ocsng","setup",'ticket');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

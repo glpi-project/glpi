@@ -142,7 +142,7 @@ switch($_GET["type"]){
 		$next=$prev=0;
 		if ($val1<5) $next=$val1+1;
 		if ($val1>1) $prev=$val1-1;
-		$title=$LANG['joblist'][2].": ".getPriorityName($_GET["id"]);
+		$title=$LANG['joblist'][2].": ".Ticket::getPriorityName($_GET["id"]);
 		break;
 	case "usertitles_id":
 		$val1=$_GET["id"];

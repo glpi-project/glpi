@@ -75,7 +75,7 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_priority" :
-               dropdownPriority("value");
+               Ticket::dropdownPriority("value");
                $display=true;
                break;
 
