@@ -35,7 +35,7 @@
 
 // Direct access to file
 if (strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")) {
-   $NEEDED_ITEMS = array("tracking");
+   $NEEDED_ITEMS = array("ticket");
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
