@@ -2374,6 +2374,17 @@ function update0723to080() {
       $DB->query($query) or die("0.80 set default priority_matrix  in glpi_configs " .
                                 $LANG['update'][90] . $DB->error());
    }
+   if (!FieldExists('glpi_tickets','urgence')) {
+      $query = "ALTER TABLE `glpi_tickets`
+                      ADD `urgence` INT NOT NULL DEFAULT '1' AFTER `content`,
+                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgence` ";
+      $DB->query($query) or die("0.80 add urgence, impact to glpi_tickets" .
+                                 $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpisvn`.`glpi_tickets` SET `urgence` = `priority`, `impact` = `priority`";
+      $DB->query($query) or die("0.80 set urgence, impact in glpi_tickets" .
+                                 $LANG['update'][90] . $DB->error());
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

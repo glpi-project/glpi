@@ -552,7 +552,7 @@ function getNbIntervPriority($date1,$date2) {
       $i = 0;
       while ($line = $DB->fetch_assoc($result)) {
          $tmp['id']= $line["priority"];
-         $tmp['link']=getPriorityName($line["priority"]);
+         $tmp['link']=Ticket::getPriorityName($line["priority"]);
          $tab[]=$tmp;
       }
    }

@@ -3047,6 +3047,8 @@ CREATE TABLE `glpi_tickets` (
   `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL default '0',
   `content` longtext collate utf8_unicode_ci,
+  `urgence` int(11) NOT NULL default '1',
+  `impact` int(11) NOT NULL default '1',
   `priority` int(11) NOT NULL default '1',
   `user_email` varchar(255) collate utf8_unicode_ci default NULL,
   `use_email_notification` tinyint(1) NOT NULL default '0',

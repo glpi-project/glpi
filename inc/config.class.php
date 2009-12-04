@@ -208,31 +208,6 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['title'][24] . "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
-      dropdownYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
-      echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][405] . "</td><td>";
-      dropdownYesNo("add_followup_on_update_ticket", $CFG_GLPI["add_followup_on_update_ticket"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['tracking'][37] . "</td><td>";
-      dropdownYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][409] . "</td><td>";
-      dropdownValue("glpi_documentcategories","documentcategories_id_forticket",
-                    $CFG_GLPI["documentcategories_id_forticket"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][608] . "</td><td>";
-      dropdownYesNo("default_software_helpdesk_visible",
-                    $CFG_GLPI["default_software_helpdesk_visible"]);
-      echo "</td>";
-      echo "<td class='center' colspan='2'></td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['common'][41] . "</strong></td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -449,28 +424,6 @@ class Config extends CommonDBTM {
       dropdownYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
       echo " </td><td class='center' colspan='2'></td></tr>";
 
-      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][31]. "</th></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";
-      dropdownYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
-      echo "</td><td class='center'>" . $LANG['setup'][610] . "</td><td>";
-      dropdownYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][611] . " </td><td>";
-      dropdownYesNo("is_ticket_content_mandatory", $CFG_GLPI["is_ticket_content_mandatory"]);
-      echo "</td><td class='center'>" . $LANG['setup'][612] . "</td><td>";
-      dropdownYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'> " . $LANG['mailgate'][7] . " (".$LANG['common'][44].")</td><td>";
-      echo "<input type=\"text\" size='15' name=\"default_mailcollector_filesize_max\" value=\"" .
-             $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
-             $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
-      echo "</td><td class='center' colspan='2'>&nbsp;";
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
@@ -636,6 +589,50 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
+
+      echo "<tr><th colspan='4' class='center'>" . $LANG['mailing'][9]. "</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";
+      dropdownYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
+      echo "</td><td class='center'>" . $LANG['setup'][610] . "</td><td>";
+      dropdownYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][611] . " </td><td>";
+      dropdownYesNo("is_ticket_content_mandatory", $CFG_GLPI["is_ticket_content_mandatory"]);
+      echo "</td><td class='center'>" . $LANG['setup'][612] . "</td><td>";
+      dropdownYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
+      echo "</td></tr>";
+
+
+      echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
+      dropdownYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
+      echo "</td>";
+      echo "<td class='center'>" . $LANG['setup'][405] . "</td><td>";
+      dropdownYesNo("add_followup_on_update_ticket", $CFG_GLPI["add_followup_on_update_ticket"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['tracking'][37] . "</td><td>";
+      dropdownYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
+      echo "</td>";
+      echo "<td class='center'>" . $LANG['setup'][409] . "</td><td>";
+      dropdownValue("glpi_documentcategories","documentcategories_id_forticket",
+                    $CFG_GLPI["documentcategories_id_forticket"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][608] . "</td><td>";
+      dropdownYesNo("default_software_helpdesk_visible",
+                    $CFG_GLPI["default_software_helpdesk_visible"]);
+      echo "</td>";
+      echo "<td class='center'> " . $LANG['mailgate'][7] . " (".$LANG['common'][44].")</td><td>";
+      echo "<input type=\"text\" size='8' name=\"default_mailcollector_filesize_max\" value=\"" .
+             $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
+             $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
+      echo "</td></tr>";
+
+      echo "</table><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>" . $LANG['help'][2];
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
@@ -669,7 +666,7 @@ class Config extends CommonDBTM {
             $bgcolor=$_SESSION["glpipriority_$pri"];
 
             echo "<td class='center' bgcolor='$bgcolor'>";
-            dropdownPriority("_matrix_${urgence}_${impact}",$pri);
+            Ticket::dropdownPriority("_matrix_${urgence}_${impact}",$pri);
             echo "</td>";
          }
          echo "</tr>\n";
