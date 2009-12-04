@@ -263,8 +263,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[86]['datatype']  = 'bool';
       }
       return $tab;
-
-      return $tab;
    }
 
    /**
