@@ -130,6 +130,12 @@ class RuleCriteria extends CommonDBTM {
                $ci->setType($initValue);
                return $ci->getType($initValue);
 
+            case "dropdown_urgence" :
+               return Ticket::getUrgenceName($initValue);
+
+            case "dropdown_impact" :
+               return Ticket::getImpactName($initValue);
+
             case "dropdown_priority" :
                return Ticket::getPriorityName($initValue);
          }

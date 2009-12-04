@@ -994,6 +994,12 @@ class Rule extends CommonDBTM {
 
             case "dropdown_priority" :
                return Ticket::getPriorityName($pattern);
+
+            case "dropdown_urgence" :
+               return Ticket::getUrgenceName($pattern);
+
+            case "dropdown_impact" :
+               return Ticket::getImpactName($pattern);
          }
       }
       return $pattern;
@@ -1027,6 +1033,16 @@ class Rule extends CommonDBTM {
 
             case "dropdown_tracking_itemtype" :
                dropdownDeviceTypes($name,0,array_keys(getAllTypesForHelpdesk()));
+               $display=true;
+               break;
+
+            case "dropdown_urgence" :
+               Ticket::dropdownUrgence($name,$value);
+               $display=true;
+               break;
+
+            case "dropdown_impact" :
+               Ticket::dropdownImpact($name,$value);
                $display=true;
                break;
 
@@ -1102,6 +1118,12 @@ class Rule extends CommonDBTM {
                } else {
                   return $LANG['choice'][0];
                }
+
+            case "dropdown_impact" :
+               return Ticket::getImpactName($value);
+
+            case "dropdown_urgence" :
+               return Ticket::getUrgenceName($value);
 
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);
