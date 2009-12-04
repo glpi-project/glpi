@@ -564,6 +564,9 @@ function &getSearchOptions($itemtype) {
          $search[STATE_TYPE][80]['field']     = 'completename';
          $search[STATE_TYPE][80]['linkfield'] = 'entities_id';
          $search[STATE_TYPE][80]['name']      = $LANG['entity'][0];
+      } else if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         $search[$itemtype] = $item->getSearchOptions();
       } else {
          $ci = new CommonItem();
          $ci->setType($itemtype,true);
