@@ -226,14 +226,43 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getSearchOptions() {
       global $LANG;
 
-      $tab = parent::getSearchOptions();
+      $tab = array();
+      $tab['common']           = $LANG['common'][32];;
+
+      $tab[1]['table']         = $this->table;
+      $tab[1]['field']         = 'completename';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['common'][51];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->type;
 
       $tab[14]['table']         = $this->table;
-      $tab[14]['field']         = 'completename';
+      $tab[14]['field']         = 'name';
       $tab[14]['linkfield']     = '';
-      $tab[14]['name']          = $LANG['common'][51];
+      $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
-      $tab[14]['itemlink_type'] = $this->type;
+      $tab[14]['itemlink_link'] = $this->type;
+
+      $tab[16]['table']     = $this->table;
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      if ($this->entity_assign) {
+         $tab[80]['table']     = 'glpi_entities';
+         $tab[80]['field']     = 'completename';
+         $tab[80]['linkfield'] = 'entities_id';
+         $tab[80]['name']      = $LANG['entity'][0];
+      }
+      if ($this->may_be_recursive) {
+         $tab[86]['table']     = $this->table;
+         $tab[86]['field']     = 'is_recursive';
+         $tab[86]['linkfield'] = 'is_recursive';
+         $tab[86]['name']      = $LANG['entity'][9];
+         $tab[86]['datatype']  = 'bool';
+      }
+      return $tab;
 
       return $tab;
    }
