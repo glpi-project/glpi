@@ -36,159 +36,66 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array('computer', 'document', 'enterprise', 'group', 'monitor', 'networking',
-   'peripheral', 'phone', 'printer', 'profile', 'rulesengine', 'rule.tracking', 'software',
-   'tracking', 'user');
+$NEEDED_ITEMS = array('computer', 'document', 'group', 'monitor', 'networking', 'peripheral',
+                      'phone', 'printer', 'profile', 'rulesengine', 'rule.tracking', 'software',
+                      'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && $CFG_GLPI["use_anonymous_helpdesk"])
-{
-} else {
-	checkRight("create_ticket","1");
+if (empty($_POST["type"]) || ($_POST["type"] != "Helpdesk") || !$CFG_GLPI["use_anonymous_helpdesk"]) {
+   checkRight("create_ticket","1");
 }
 
-//$status = "new";
-
-// Sauvegarde des donn�s dans le cas de retours avec des navigateurs pourris style IE
-/*$varstosav = array('use_email_notification', 'user_email', 'items_id', 'itemtype', 'content','_my_items','ticketcategories_id');
-
-	foreach ($varstosav as $v){
-		if (isset($_POST[$v]))
-			$_SESSION["helpdeskSaved"][$v] = $_POST[$v];
-	}
-*/
-$track=new Ticket();
+$track = new Ticket();
 
 // Security check
-if (empty($_POST)||count($_POST)==0){
+if (empty($_POST) || count($_POST) == 0) {
    glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
-/*if (!empty($_POST["priority"]) && empty($_POST["name"]))
-{
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	}
-	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+   nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 
-	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG['help'][200]."<br><br>";
-	displayBackLink();
-	echo "</b></div>";
+} else if ($_POST["_from_helpdesk"]) {
+   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
-	nullFooter();
-	exit;
+} else {
+   commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 }
-if (!empty($_POST["priority"]) && !$_POST["ticketcategories_id"])
-{
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	}
-	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
-	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG['help'][201]."<br><br>";
-	displayBackLink();
-	echo "</b></div>";
-
-	nullFooter();
-	exit;
+if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
+    //TODO revoir l'explode suite changement itemtype en string
+   $splitter = explode("_",$_POST["_my_items"]);
+   if (count($splitter) == 2) {
+      $_POST["itemtype"] = $splitter[0];
+      $_POST["items_id"] = $splitter[1];
+   }
 }
-elseif (!empty($_POST["priority"]) && empty($_POST["content"]))
-{
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	}
-	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
-	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG['tracking'][8]."<br><br>";
-	displayBackLink();
-	echo "</b></div>";
-
-	nullFooter();
-	exit;
+if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype"] != 0)) {
+   $_POST["itemtype"] = '';
+   $_POST["items_id"] = 0;
 }
-elseif (isset($_POST["use_email_notification"]) && $_POST["use_email_notification"] && isset($_POST["user_email"]) && $_POST["user_email"] =="")
-{
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	}
-	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
-	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-
-	echo $LANG['help'][16]."<br><br>";
-	displayBackLink();
-	echo "</b></div>";
-	nullFooter();
-	exit;
-} else
-*/
-
-
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-	}
-	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
-
-
-{
-	if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
-		$splitter=explode("_",$_POST["_my_items"]);
-		if (count($splitter)==2){
-			$_POST["itemtype"]=$splitter[0];
-			$_POST["items_id"]=$splitter[1];
-		}
-	}
-
-	if (!isset($_POST["itemtype"])||(empty($_POST["items_id"])&&$_POST["itemtype"]!=0)) {
-		$_POST["itemtype"]=0;
-		$_POST["items_id"]=0;
-	}
-
-	$ci=new CommonItem;
-
-	if ($newID=$track->add($_POST)){
-		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			echo "<div align='center'>";
-			echo $LANG['help'][18]."<br><br>";
-			displayBackLink();
-			echo "</div>";
-
-		} else {
-			echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
-			echo $LANG['help'][18]." (".$LANG['job'][38]." <a class='b' href='helpdesk.public.php?show=user&amp;id=$newID'>$newID</a>)<br>";
-			echo $LANG['help'][19];
-			echo "</b></div>";
-		}
-	} else {
-		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br></div>";
-		displayMessageAfterRedirect();
-		displayBackLink();
-
-	}
-	nullFooter();
-
+if ($newID = $track->add($_POST)){
+   if (isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+      echo "<div class='center'>".$LANG['help'][18]."<br><br>";
+      displayBackLink();
+      echo "</div>";
+   } else {
+      echo "<div class='center b'>";
+      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br>";
+      echo $LANG['help'][18]." (".$LANG['job'][38];
+      echo "<a href='helpdesk.public.php?show=user&amp;id=$newID'>$newID</a>)<br>";
+      echo $LANG['help'][19]."</div>";
+   }
+} else {
+   echo "<div class='center'>";
+   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt='warning'><br></div>";
+   displayMessageAfterRedirect();
+   displayBackLink();
 }
+nullFooter();
 
 ?>
