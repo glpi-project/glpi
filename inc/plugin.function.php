@@ -160,13 +160,16 @@ function doOneHook() {
 
    $args=func_get_args();
    $plugname = array_shift($args);
-   $function = "plugin_" . $plugname . "_" . array_shift($args);
-
+   $hook = array_shift($args);
+   if (!is_array($hook)) {
+      $hook = "plugin_" . $plugname . "_" . $hook;
+   }
+   // TODO move this in the above test when autoload ready
    if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
       include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
    }
-   if (function_exists($function)) {
-      return call_user_func_array($function,$args);
+   if (is_callable($hook)) {
+      return call_user_func_array($hook, $args);
    }
 }
 

@@ -358,7 +358,7 @@ class CronTask extends CommonDBTM{
          "rows='8' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][30]." : </td><td>";
-      echo $this->getDescription($ID,$this->fields["plugin"],$this->fields["name"]);
+      echo $this->getDescription($ID);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][37]." : </td><td>";
@@ -418,7 +418,7 @@ class CronTask extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      $label = $this->getParameterDescription($ID,$this->fields["plugin"],$this->fields["name"]);
+      $label = $this->getParameterDescription();
       echo "<tr class='tab_bg_1'><td>";
       if (empty($label)) {
          echo "&nbsp;</td><td>&nbsp;";
@@ -496,10 +496,13 @@ class CronTask extends CommonDBTM{
     * @param $name string : name of the task
     * @return string
     */
-   static public function getDescription($id, $plugin, $name) {
+   public function getDescription($id) {
       global $LANG;
 
-      if (empty($plugin)) {
+      if (!isset($this->fields['id']) || $this->fields['id']!=$id) {
+         $this->getFromDB($id);
+      }
+      if (empty($this->fields['plugin'])) {
          if ($id>=1 && $id<=12) {
             return $LANG['crontask'][$id];
          }
@@ -507,8 +510,12 @@ class CronTask extends CommonDBTM{
       }
 
       // Plugin case
-      loadPluginLang($plugin);
-      $info = doOneHook($plugin, "cron_info", $name);
+      loadPluginLang($this->fields['plugin']);
+      $hook = 'cron_info';
+      if ($this->fields['itemtype']) {
+         $hook = array($this->fields['itemtype'], $hook);
+      }
+      $info = doOneHook($this->fields['plugin'], $hook, $this->fields['name']);
       if (isset($info['description'])) {
          return $info['description'];
       }
@@ -523,11 +530,11 @@ class CronTask extends CommonDBTM{
     * @param $name string : name of the task
     * @return string
     */
-   static public function getParameterDescription($id, $plugin, $name) {
+   public function getParameterDescription() {
       global $LANG;
 
-      if (empty($plugin)) {
-         switch ($id) {
+      if (empty($this->fields['plugin'])) {
+         switch ($this->fields['id']) {
             /* TODO set this global ? (no other way to active/inactive server)
             case 1: // ocsng
                return $LANG['ocsconfig'][40];
@@ -548,8 +555,12 @@ class CronTask extends CommonDBTM{
       }
 
       // Plugin case
-      loadPluginLang($plugin);
-      $info = doOneHook($plugin, "cron_info", $name);
+      loadPluginLang($this->fields['plugin']);
+      $hook = 'cron_info';
+      if ($this->fields['itemtype']) {
+         $hook = array($this->fields['itemtype'], $hook);
+      }
+      $info = doOneHook($this->fields['plugin'], $hook, $this->fields['name']);
       if (isset($info['parameter'])) {
          return $info['parameter'];
       }
@@ -667,20 +678,28 @@ class CronTask extends CommonDBTM{
                   }
                } else {
                   // Plugin case / Load hook
+                  // TODO move this in test whenautoload ready
                   usePlugin($task->fields['plugin'],true);
-                  $fonction = 'plugin_'.$task->fields['plugin'].'_cron_' . $task->fields['name'].'_run';
+                  if ($task->fields['itemtype']) {
+                     $fonction = array($task->fields['itemtype'], 'cron_' . $task->fields['name'].'_run');
+                  } else {
+                     $fonction = 'plugin_'.$task->fields['plugin'].'_cron_' . $task->fields['name'].'_run';
+                  }
                }
-               if (function_exists($fonction)) {
+               if (is_callable($fonction)) {
                   if ($task->start()) { // Lock in DB + log start
                      $taskname = $task->fields['name'];
                      logInFile('cron', $prefix."Launch ".$task->fields['name']."\n");
-                     $retcode = $fonction($task);
+                     $retcode = call_user_func($fonction,$task);
                      $task->end($retcode); // Unlock in DB + log end
                   } else {
                      logInFile('cron', $prefix."Can't start ".$task->fields['name']."\n");
                   }
 
                } else {
+                  if (is_array($fonction)) {
+                     $fonction = implode('::',$fonction);
+                  }
                   logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
                   logInFile('cron', $prefix."Can't start ".$task->fields['name'].
                      "\nUndefined function '$fonction'\n");
@@ -719,8 +738,10 @@ class CronTask extends CommonDBTM{
    static public function Register($plugin, $name, $frequency, $options=array()) {
 
       // Check that hook exists
-      if (!function_exists("plugin_${plugin}_cron_${name}_run")
-          || !function_exists("plugin_${plugin}_cron_info")) {
+      if (isset($options['itemtype'])) {
+         // autoload won't work here (not yet activated)'
+      } else if (!function_exists("plugin_${plugin}_cron_${name}_run")
+                 || !function_exists("plugin_${plugin}_cron_info")) {
          return false;
       }
       $input = array (
@@ -729,7 +750,7 @@ class CronTask extends CommonDBTM{
          'frequency' => $frequency
       );
       foreach (array ('state', 'mode', 'allowmode', 'hourmin', 'hourmax',
-                      'logs_lifetime', 'param', 'comment') as $key) {
+                      'logs_lifetime', 'param', 'comment', 'itemtype') as $key) {
          if (isset ($options[$key])) {
             $input[$key] = $options[$key];
          }
