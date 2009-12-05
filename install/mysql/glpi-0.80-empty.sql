@@ -2289,6 +2289,7 @@ CREATE TABLE `glpi_profiles` (
   `comment_ticket` char(1) collate utf8_unicode_ci default NULL,
   `comment_all_ticket` char(1) collate utf8_unicode_ci default NULL,
   `update_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `update_priority` char(1) collate utf8_unicode_ci default NULL,
   `own_ticket` char(1) collate utf8_unicode_ci default NULL,
   `steal_ticket` char(1) collate utf8_unicode_ci default NULL,
   `assign_ticket` char(1) collate utf8_unicode_ci default NULL,

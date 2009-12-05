@@ -2261,6 +2261,18 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_profiles','update_priority')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                ADD `update_priority` CHAR( 1 ) NULL DEFAULT NULL AFTER `update_ticket`";
+      $DB->query($query) or die("0.80 add update_priority in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `update_priority`=`update_ticket`";
+      $DB->query($query) or die("0.80 set update_priority in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+
+   }
+
    if (!TableExists('glpi_taskcategories')) {
       $query = "CREATE TABLE `glpi_taskcategories` (
            `id` int(11) NOT NULL auto_increment,

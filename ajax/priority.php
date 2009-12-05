@@ -45,7 +45,7 @@ checkLoginUser();
 
 if (isset($_POST["urgence"]) && isset($_POST["impact"]) && isset($_POST["priority"])) {
    $priority = Ticket::computePriority($_POST["urgence"], $_POST["impact"]);
-   if (true) { // TODO replace true by check priority change right
+   if ($_POST["priority"]) {
       echo "<script>\n";
       echo "document.getElementById('".$_POST["priority"]."').selectedIndex = ".(5-$priority).";";
       echo "\n</script>";
