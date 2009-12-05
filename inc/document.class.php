@@ -676,7 +676,8 @@ class Document extends CommonDBTM {
 
             if ($result_linked=$DB->query($query)) {
                if ($DB->numrows($result_linked)) {
-                  $ci->setType($itemtype);
+                  $item = new $itemtype();
+                  
                   while ($data=$DB->fetch_assoc($result_linked)) {
                      $ID="";
                      if ($itemtype==ENTITY_TYPE && !$data['entity']) {
@@ -710,7 +711,7 @@ class Document extends CommonDBTM {
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
                      }
-                     echo "<td class='center'>".$ci->getType()."</td>";
+                     echo "<td class='center'>".$item->getTypeName($itemtype)."</td>";
                      echo "<td ".(isset($data['is_deleted']) &&
                                   $data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
                      echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity']);
