@@ -35,38 +35,34 @@
 
 
 $NEEDED_ITEMS = array('cartridge', 'computer', 'consumable', 'contact', 'contract', 'device',
-   'document', 'enterprise', 'group', 'infocom', 'link', 'mailgate', 'monitor', 'networking',
-   'ocsng', 'peripheral', 'phone', 'printer', 'profile', 'reservation', 'rulesengine',
-   'rule.softwarecategories', 'search', 'setup', 'software', 'tracking', 'transfer', 'typedoc',
-   'user');
+                      'document', 'group', 'infocom', 'link', 'mailgate', 'monitor', 'networking',
+                      'ocsng', 'peripheral', 'phone', 'printer', 'profile', 'reservation',
+                      'rulesengine', 'rule.softwarecategories', 'search', 'setup', 'software',
+                      'supplier', 'tracking', 'transfer', 'typedoc', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-
-
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
-$transfer=new Transfer();
+$transfer = new Transfer();
 $transfer->check(-1,"r");
 
-
-if (isset($_POST['transfer'])){
-	if (isset($_SESSION['glpitransfer_list'])){
-		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
-		unset($_SESSION['glpitransfer_list']);
-		echo "<strong>".$LANG['common'][23]."</strong><br>";
-		echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
-		commonFooter();
-		exit();
-	}
+if (isset($_POST['transfer'])) {
+   if (isset($_SESSION['glpitransfer_list'])) {
+      $transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
+      unset($_SESSION['glpitransfer_list']);
+      echo "<strong>".$LANG['common'][23]."</strong><br>";
+      echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
+      commonFooter();
+      exit();
+   }
 } else if (isset($_GET['clear'])){
-	unset($_SESSION['glpitransfer_list']);
-	echo "<strong>".$LANG['common'][23]."</strong><br>";
-	echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
-	commonFooter();
-	exit();
+   unset($_SESSION['glpitransfer_list']);
+   echo "<strong>".$LANG['common'][23]."</strong><br>";
+   echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
+   commonFooter();
+   exit();
 }
 
 unset($_SESSION['glpimassiveactionselected']);

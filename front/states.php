@@ -33,28 +33,26 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
 $NEEDED_ITEMS = array('search', 'states');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
-
+if (!isset($_GET["synthese"])) {
+   $_GET["synthese"] = "no";
+}
 checkCentralAccess();
 
 commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
 
-if ($_GET["synthese"]=="yes"){
-	showStateSummary($_SERVER['PHP_SELF']);
+if ($_GET["synthese"] == "yes") {
+   showStateSummary($_SERVER['PHP_SELF']);
 } else {
-	manageGetValuesInSearch(STATE_TYPE);
-
-	searchForm(STATE_TYPE,$_GET);
-
-	showList(STATE_TYPE,$_GET);
+   manageGetValuesInSearch(STATE_TYPE);
+   searchForm(STATE_TYPE,$_GET);
+   showList(STATE_TYPE,$_GET);
 }
 
 commonFooter();
+
 ?>

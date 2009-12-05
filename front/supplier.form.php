@@ -33,56 +33,57 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('computer', 'contact', 'contract', 'device', 'document',
-   'group', 'infocom', 'link', 'monitor', 'networking', 'peripheral', 'phone', 'printer',
-   'software', 'supplier', 'tracking', 'user');
+$NEEDED_ITEMS = array ('computer', 'contact', 'contract', 'device', 'document', 'group', 'infocom',
+                       'link', 'monitor', 'networking', 'peripheral', 'phone', 'printer', 'software',
+                       'supplier', 'tracking', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = -1;
-
+if (!isset($_GET["id"])) {
+   $_GET["id"] = -1;
+}
 if (!isset($_GET["start"])) {
-   $_GET["start"]=0;
+   $_GET["start"] = 0;
+}
+if (!isset($_GET["sort"])) {
+   $_GET["sort"] = "";
+}
+if (!isset($_GET["order"])) {
+   $_GET["order"] = "";
 }
 
-if (!isset($_GET["sort"])) $_GET["sort"]="";
-if (!isset($_GET["order"])) $_GET["order"]="";
-
-$ent=new Supplier();
+$ent = new Supplier();
 
 if (isset($_POST["add"])) {
    $ent->check(-1,'w',$_POST);
 
-   if ($newID=$ent->add($_POST)) {
-      Event::log($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   if ($newID = $ent->add($_POST)) {
+      Event::log($newID, "enterprises", 4, "financial",
+                 $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $ent->check($_POST["id"],'w');
-
    $ent->delete($_POST);
    Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["restore"])) {
    $ent->check($_POST["id"],'w');
-
    $ent->restore($_POST);
    Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["purge"])) {
    $ent->check($_POST["id"],'w');
-
    $ent->delete($_POST,1);
    Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["update"])) {
    $ent->check($_POST["id"],'w');
-
    $ent->update($_POST);
    Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);

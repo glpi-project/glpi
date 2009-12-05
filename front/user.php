@@ -33,10 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
 $NEEDED_ITEMS = array('search', 'user');
-
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -48,8 +45,6 @@ commonHeader($LANG['Menu'][14],$_SERVER['PHP_SELF'],"admin","user");
 $user=new User();
 $user->title();
 
-
-
 manageGetValuesInSearch(USER_TYPE);
 
 searchForm(USER_TYPE,$_GET);
@@ -57,8 +52,5 @@ searchForm(USER_TYPE,$_GET);
 showList(USER_TYPE,$_GET);
 
 commonFooter();
-
-
-
 
 ?>
