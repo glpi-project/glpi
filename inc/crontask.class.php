@@ -141,7 +141,7 @@ class CronTask extends CommonDBTM{
     * @return bool : true if ok (not start by another)
     */
    function start() {
-      global $DB;
+      global $DB, $LANG;
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -156,11 +156,11 @@ class CronTask extends CommonDBTM{
       if ($DB->affected_rows($result)>0) {
          $this->timer = microtime(true);
          $log = new CronTaskLog();
+         $txt = $LANG['crontask'][36] . " : " .
+                $this->getModeName(isCommandLine() ? CRONTASK_MODE_EXTERNAL : CRONTASK_MODE_INTERNAL);
          $this->startlog = $log->add(array('crontasks_id' => $this->fields['id'],
                                            'date' => $_SESSION['glpi_currenttime'],
-                                           'content' => $this->getModeName(isCommandLine()
-                                                                           ? CRONTASK_MODE_EXTERNAL
-                                                                           : CRONTASK_MODE_INTERNAL),
+                                           'content' => addslashes($txt),
                                            'crontasklogs_id' => 0,
                                            'state' => CRONTASKLOG_STATE_START,
                                            'volume' => 0,
@@ -1107,6 +1107,35 @@ class CronTask extends CommonDBTM{
       }
       $task->setVolume($vol);
       return ($vol>0 ? 1 : 0);
+   }
+
+   /**
+    * Cron job to check if a new version is available
+    *
+    * @param $task for log
+    **/
+   static function cron_check_update($task) {
+      global $CFG_GLPI;
+
+      $result=checkNewVersionAvailable(1);
+      $task->log($result);
+
+      return 1;
+   }
+
+   /**
+    * Clean log cron function
+    *
+    * @param $task for log
+    *
+    **/
+   static function cron_optimize($task) {
+      global $CFG_GLPI,$DB;
+
+      $nb = optimize_tables();
+      $task->setVolume($nb);
+
+      return 1;
    }
 }
 ?>
