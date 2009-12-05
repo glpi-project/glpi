@@ -56,7 +56,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check(-1,'w',$_POST);
 
    if ($newID = $contact->add($_POST)) {
-      logEvent($newID, "contacts", 4, "financial",
+      Event::log($newID, "contacts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -65,7 +65,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST)) {
-      logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
@@ -73,7 +73,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->restore($_POST)) {
-      logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
@@ -81,7 +81,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST,1)) {
-      logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
@@ -89,7 +89,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->update($_POST)) {
-      logEvent($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -97,7 +97,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contactsupplier->check(-1,'w',$_POST);
 
    if ($contactsupplier->add($_POST)) {
-      logEvent($_POST["contacts_id"], "contacts", 4, "financial",
+      Event::log($_POST["contacts_id"], "contacts", 4, "financial",
       $_SESSION["glpiname"]."  ".$LANG['log'][34]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -106,7 +106,7 @@ if (isset($_REQUEST['getvcard'])) {
    $contactsupplier->check($_GET["id"],'w');
 
    if ($contactsupplier->delete($_GET)) {
-      logEvent($_GET["contacts_id"], "contacts", 4, "financial",
+      Event::log($_GET["contacts_id"], "contacts", 4, "financial",
                $_SESSION["glpiname"]."  ".$LANG['log'][35]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

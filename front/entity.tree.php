@@ -93,11 +93,11 @@ if (isset($_POST["id"])) {
 
 if (isset($_POST["move"])) {
    moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
-   logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$LANG['log'][21]);
+   Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$LANG['log'][21]);
    glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["add"])) {
    addDropdown($_POST);
-   logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=".
                "$type");
 
@@ -117,18 +117,18 @@ if (isset($_POST["move"])) {
       }
    } else {
       deleteDropdown($_POST);
-      logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
       glpi_header($_SERVER['PHP_SELF']."?which=$which");
    }
 
 } else if (isset($_POST["update"])) {
    updateDropdown($_POST);
-   logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['PHP_SELF']."?which=$which&id=$ID");
 
 } else if (isset($_POST["replace"])) {
    replaceDropDropDown($_POST);
-   logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['PHP_SELF']."?which=$which");
 
 } else {

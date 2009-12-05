@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $peripheral->check(-1,'w',$_POST);
 
    $newID=$peripheral->add($_POST);
-   logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   Event::log($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
       $peripheral->delete($_POST,1);
    else $peripheral->delete($_POST);
 
-   logEvent($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if(!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $peripheral->check($_POST["id"],'w');
 
    $peripheral->restore($_POST);
-   logEvent($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    $peripheral->check($input["id"],'w');
 
    $peripheral->delete($input,1);
-   logEvent($input["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($input["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 
 } else if (isset($_POST["update"])) {
@@ -101,14 +101,14 @@ if (isset($_POST["add"])) {
 
 
    $peripheral->update($_POST);
-   logEvent($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["unglobalize"])) {
    $peripheral->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($peripheral);
-   logEvent($_GET["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+   Event::log($_GET["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_GET["id"]);
 
 } else {

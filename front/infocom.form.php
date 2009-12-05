@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'contract', 'infocom', 'monitor', 
+$NEEDED_ITEMS = array ('cartridge', 'computer', 'consumable', 'contract', 'infocom', 'monitor',
                        'networking', 'peripheral', 'phone', 'printer', 'software', 'supplier');
 
 define('GLPI_ROOT', '..');
@@ -45,21 +45,21 @@ if (isset($_GET["add"])) {
    $ic->check(-1,'w',$_GET);
 
    $newID = $ic->add($_GET, false);
-   logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->delete($_POST);
-   logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->update($_POST);
-   logEvent($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else {
    /// TODO clean this part

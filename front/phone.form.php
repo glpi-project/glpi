@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    $phone->check(-1,'w',$_POST);
 
    $newID=$phone->add($_POST);
-   logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   Event::log($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    } else {
       $phone->delete($_POST);
    }
-   logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if(!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    $phone->check($_POST["id"],'w');
 
    $phone->restore($_POST);
-   logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
@@ -94,21 +94,21 @@ if (isset($_POST["add"])) {
    }
 
    $phone->delete($input,1);
-   logEvent($input["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($input["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 
 } else if (isset($_POST["update"])) {
    $phone->check($_POST["id"],'w');
 
    $phone->update($_POST);
-   logEvent($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["unglobalize"])) {
    $phone->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($phone);
-   logEvent($_GET["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+   Event::log($_GET["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 
 } else {

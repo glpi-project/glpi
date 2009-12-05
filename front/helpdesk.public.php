@@ -81,7 +81,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
       $fup = new TicketFollowup();
       $newID = $fup->add($_POST);
 
-      logEvent($_POST["tickets_id"], "tracking", 4, "tracking",
+      Event::log($_POST["tickets_id"], "tracking", 4, "tracking",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
       glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
                   $_POST["tickets_id"]);

@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
 
    if ($newID=$dropdown->add($_POST)) {
       refreshMainWindow();
-      logEvent($newID, "dropdown", 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
+      Event::log($newID, "dropdown", 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
       $dropdown->delete($_POST, 1);
       refreshMainWindow();
 
-      logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
       glpi_header($dropdown->getSearchURL());
    }
 
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $dropdown->delete($_POST, 1);
    refreshMainWindow();
 
-   logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($dropdown->getSearchURL());
 
 } else if (isset($_POST["update"])) {
@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
    $dropdown->update($_POST);
    refreshMainWindow();
 
-   logEvent($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["execute"])) {

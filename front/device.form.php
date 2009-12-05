@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    $device->check(-1,"w",$_POST);
 
    if ($newID = $device->add($_POST)) {
-      logEvent(0, "devices", 4, "inventory",
+      Event::log(0, "devices", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $device->check($_POST["id"],"w");
 
    if ($device->delete($_POST)) {
-      logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$_POST["devicetype"]);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    $device->check($_POST["id"],"w");
 
    if ($device->update($_POST)) {
-      logEvent($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
 

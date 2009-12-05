@@ -50,6 +50,39 @@ class Event extends CommonDBTM {
       return $LANG['Menu'][30];
    }
 
+   function prepareInputForAdd($input) {
+      global $CFG_GLPI;
+      if (isset($input['level']) &&  $input['level'] <= $CFG_GLPI["event_loglevel"]) {
+         return $input;
+      }
+      return false;
+   }
+
+   /**
+    * Log an event.
+    *
+    * Log the event $event on the glpi_event table with all the others args, if
+    * $level is above or equal to setting from configuration.
+    *
+    * @param $items_id
+    * @param $type
+    * @param $level
+    * @param $service
+    * @param $event
+    **/
+   static function log ($items_id, $type, $level, $service, $event) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      $input = array('items_id' => intval($items_id),
+                     'type'     => addslashes($type),
+                     'date'     => $_SESSION["glpi_currenttime"],
+                     'service'  => addslashes($service),
+                     'level'    => intval($level),
+                     'message'  => addslashes($event));
+      $tmp = new self();
+      return $tmp->add($input);
+   }
+
    /**
     * Clean old event - Call by cron
     *

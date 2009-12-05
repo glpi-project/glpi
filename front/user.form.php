@@ -81,26 +81,26 @@ if (isset($_REQUEST['getvcard'])) {
 
    // Pas de nom pas d'ajout
    if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
-      logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+      Event::log($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $user->check($_POST['id'],'w',$_POST);
    $user->delete($_POST);
-   logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][22]." ".$_POST["id"].".");
+   Event::log(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][22]." ".$_POST["id"].".");
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset($_POST["restore"])) {
    $user->check($_POST['id'],'w',$_POST);
    $user->restore($_POST);
-   logEvent($_POST["id"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset($_POST["purge"])) {
    $user->check($_POST['id'],'w',$_POST);
    $user->delete($_POST,1);
-   logEvent($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset ($_POST["force_ldap_resynch"])) {
@@ -113,13 +113,13 @@ if (isset($_REQUEST['getvcard'])) {
 } else if (isset($_POST["update"])) {
    $user->check($_POST['id'],'w',$_POST);
    $user->update($_POST);
-   logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
+   Event::log(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["addgroup"])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
-      logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -131,7 +131,7 @@ if (isset($_REQUEST['getvcard'])) {
          }
       }
    }
-   logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
+   Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["addright"])) {
@@ -140,7 +140,7 @@ if (isset($_REQUEST['getvcard'])) {
    $prof=new Profile();
    if ($prof->currentUserHaveMoreRightThan(array($_POST['profiles_id']=>$_POST['profiles_id']))) {
       addUserProfileEntity($_POST);
-      logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
    }
 
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -152,7 +152,7 @@ if (isset($_REQUEST['getvcard'])) {
       foreach ($_POST["item"] as $key => $val) {
          deleteUserProfileEntity($key);
       }
-      logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
+      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -208,7 +208,7 @@ if (isset($_REQUEST['getvcard'])) {
       if (isset($_GET['add_ext_auth_simple'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
             $newID=$user->add(array('name'=>$_GET['login'],'_extauth'=>1,'add'=>1));
-            logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
+            Event::log($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
          }
          glpi_header($_SERVER['HTTP_REFERER']);
       }
