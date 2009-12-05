@@ -733,7 +733,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("logs","r")) {
       $menu['admin']['content']['log']['title']=$LANG['Menu'][30];
       $menu['admin']['content']['log']['shortcut']='l';
-      $menu['admin']['content']['log']['page']='/front/log.php';
+      $menu['admin']['content']['log']['page']='/front/event.php';
    }
 
    /// CONFIG
