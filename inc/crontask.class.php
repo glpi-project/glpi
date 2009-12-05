@@ -242,6 +242,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $log = new CronTaskLog();
+      $content = utf8_substr($content, 0, 200);
       return $log->add(array('crontasks_id'     => $this->fields['id'],
                              'date'             => $_SESSION['glpi_currenttime'],
                              'content'          => addslashes($content),

@@ -45,43 +45,42 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("config", "w");
 $config = new Config();
 
-if (!empty ($_POST["test_cron_consumables"])) {
-	addMessageAfterRedirect($LANG['install'][6]);
-	ConsumableItem::cron_consumable();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (!empty ($_POST["test_cron_cartridges"])) {
-	addMessageAfterRedirect($LANG['install'][6]);
-	CartridgeItem::cron_cartridge();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (!empty ($_POST["test_cron_contracts"])) {
-	addMessageAfterRedirect($LANG['install'][6]);
-	Contract::cron_contract();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (!empty ($_POST["test_cron_infocoms"])) {
-	addMessageAfterRedirect($LANG['install'][6]);
-	cron_infocom();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (!empty ($_POST["test_cron_softwares"])) {
-	addMessageAfterRedirect($LANG['install'][6]);
-	SoftwareLicense::cron_software();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (!empty ($_POST["test_smtp_send"])) {
-	testMail();
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif (!empty ($_POST["update_mailing"])) {
-	$config->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif (!empty ($_POST["update_notifications"])) {
+if (!empty($_POST["test_cron_consumables"])) {
+   addMessageAfterRedirect($LANG['install'][6]);
+   ConsumableItem::cron_consumable();
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	updateMailNotifications($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (!empty($_POST["test_cron_cartridges"])) {
+   addMessageAfterRedirect($LANG['install'][6]);
+   CartridgeItem::cron_cartridge();
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (!empty($_POST["test_cron_contracts"])) {
+   addMessageAfterRedirect($LANG['install'][6]);
+   Contract::cron_contract();
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (!empty($_POST["test_cron_infocoms"])) {
+   addMessageAfterRedirect($LANG['install'][6]);
+   InfoCom::cron_infocom();
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (!empty($_POST["test_cron_softwares"])) {
+   addMessageAfterRedirect($LANG['install'][6]);
+   SoftwareLicense::cron_software();
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (!empty($_POST["test_smtp_send"])) {
+   testMail();
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} elseif (!empty($_POST["update_mailing"])) {
+   $config->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} elseif (!empty($_POST["update_notifications"])) {
+   updateMailNotifications($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 
