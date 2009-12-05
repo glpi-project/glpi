@@ -1874,8 +1874,8 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][29]."&nbsp;: </td>";
    echo "<td>";
-   if ($canupdate && ($canpriority || !$ID)) {
-      // Only change during creation OR when allowed to
+   if ($canupdate && ($canpriority || !$ID || $job->fields["users_id_recipient"]==$_SESSION["glpiID"])) {
+      // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgence = Ticket::dropdownUrgence("urgence",$job->fields["urgence"]);
    } else {
       $idurgence = "value_urgence".mt_rand();
