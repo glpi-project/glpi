@@ -244,7 +244,7 @@ class CronTask extends CommonDBTM{
       $log = new CronTaskLog();
       return $log->add(array('crontasks_id'     => $this->fields['id'],
                              'date'             => $_SESSION['glpi_currenttime'],
-                             'content'          => $content,
+                             'content'          => addslashes($content),
                              'crontasklogs_id' => $this->startlog,
                              'state'            => CRONTASKLOG_STATE_RUN,
                              'volume'           => $this->volume,

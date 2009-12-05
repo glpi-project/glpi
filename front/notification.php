@@ -47,7 +47,7 @@ $config = new Config();
 
 if (!empty ($_POST["test_cron_consumables"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_consumable();
+	ConsumableItem::cron_consumable();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_cartridges"])) {
