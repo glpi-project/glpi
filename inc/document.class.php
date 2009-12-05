@@ -640,6 +640,10 @@ class Document extends CommonDBTM {
 
       while ($i < $number) {
          $itemtype=$DB->result($result, $i, "itemtype");
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+
          if (haveTypeRight($itemtype,"r")) {
             $column="name";
             if ($itemtype==TRACKING_TYPE) {
