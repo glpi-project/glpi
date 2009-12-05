@@ -2773,8 +2773,12 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$noche
 
       foreach ($optgroup as $label=>$dp) {
          foreach ($dp as $key => $val) {
-            $tmp = new $key();
-            if (!$tmp->canView()) {
+            if (class_exists($key)) {
+               $tmp = new $key();
+               if (!$tmp->canView()) {
+                  unset($optgroup[$label][$key]);
+               }
+            } else {
                unset($optgroup[$label][$key]);
             }
          }
