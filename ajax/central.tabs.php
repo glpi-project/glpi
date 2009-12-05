@@ -45,28 +45,30 @@ header_nocache();
 
 checkCentralAccess();
 
+$central = new Central();
+
 switch ($_REQUEST['glpi_tab']) {
    case 2 :
-      showCentralGroupView();
+      $central->showGroupView();
       break;
 
    case 3 :
-      showCentralGlobalView();
+      $central->showGlobalView();
       break;
 
    case -1 : // all
-      showCentralMyView();
+      $central->showMyView();
       echo "<br>";
-      showCentralGroupView();
+      $central->showGroupView();
       echo "<br>";
-      showCentralGlobalView();
+      $central->showGlobalView();
       echo "<br>";
       displayPluginAction("central","",$_REQUEST['glpi_tab'],"");
       break;
 
    default :
       if (!displayPluginAction("central","",$_REQUEST['glpi_tab'],"")) {
-         showCentralMyView();
+         $central->showMyView();
       }
       break;
 }
