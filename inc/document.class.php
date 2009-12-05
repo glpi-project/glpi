@@ -621,7 +621,6 @@ class Document extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
       $rand=mt_rand();
       echo "<form method='post' name='document_form$rand' id='document_form$rand' action=\"".
              $CFG_GLPI["root_doc"]."/front/document.form.php\">";
@@ -638,7 +637,7 @@ class Document extends CommonDBTM {
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
 
-      while ($i < $number) {
+      for ($i=0 ; $i < $number ; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
          if (!class_exists($itemtype)) {
             continue;
@@ -681,7 +680,7 @@ class Document extends CommonDBTM {
             if ($result_linked=$DB->query($query)) {
                if ($DB->numrows($result_linked)) {
                   $item = new $itemtype();
-                  
+
                   while ($data=$DB->fetch_assoc($result_linked)) {
                      $ID="";
                      if ($itemtype==ENTITY_TYPE && !$data['entity']) {
@@ -729,7 +728,6 @@ class Document extends CommonDBTM {
                }
             }
          }
-         $i++;
       }
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
