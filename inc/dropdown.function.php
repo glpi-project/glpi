@@ -860,7 +860,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 
    foreach ($types as $type) {
       $item = new $type();
-      $options[$type]=$item->getTypeName($type);;
+      $options[$type]=$item->getTypeName($type);
    }
    asort($options);
    if (count($options)) {
