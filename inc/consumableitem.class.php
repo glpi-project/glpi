@@ -278,6 +278,100 @@ class ConsumableItem extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * Cron action on consumables : alert if a stock is behind the threshold
+    *
+    * @param $task to log, if NULL display
+    *
+    * @return 0 : nothing to do 1 : done with success
+    **/
+   static function cron_consumable($task=NULL) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["consumables_alert_repeat"]) {
+         return false;
+      }
+      loadLanguage($CFG_GLPI["language"]);
+
+      // Get cartridges type with alarm activated and last warning > config
+      $query="SELECT `glpi_consumableitems`.`id` AS consID,
+                     `glpi_consumableitems`.`entities_id` as entity,
+                     `glpi_consumableitems`.`ref` as consref,
+                     `glpi_consumableitems`.`name` AS consname,
+                     `glpi_consumableitems`.`alarm_threshold` AS threshold,
+                     `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
+             FROM `glpi_consumableitems`
+             LEFT JOIN `glpi_alerts` ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
+                                          AND `glpi_alerts`.`itemtype`='ConsumableItem')
+             WHERE `glpi_consumableitems`.`is_deleted`='0'
+                   AND `glpi_consumableitems`.`alarm_threshold`>='0'
+                   AND (`glpi_alerts`.`date` IS NULL
+                        OR (`glpi_alerts`.date+".$CFG_GLPI["consumables_alert_repeat"].
+                            ") < CURRENT_TIMESTAMP());";
+
+      $result=$DB->query($query);
+      $message=array();
+      $items=array();
+      $alert=new Alert();
+
+      if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_array($result)) {
+            if (($unused=getUnusedConsumablesNumber($data["consID"]))<=$data["threshold"]) {
+               if (!isset($message[$data["entity"]])) {
+                  $message[$data["entity"]]="";
+               }
+               if (!isset($items[$data["entity"]])) {
+                  $items[$data["entity"]]=array();
+               }
+               // define message alert
+               $message[$data["entity"]].=$LANG['mailing'][35]." ".$data["consname"]." - ".
+                                          $LANG['consumables'][2]."&nbsp;: ".$data["consref"]." - ".
+                                          $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+               $items[$data["entity"]][]=$data["consID"];
+
+               // if alert exists -> delete
+               if (!empty($data["alertID"])) {
+                  $alert->delete(array("id"=>$data["alertID"]));
+               }
+            }
+         }
+         if (count($message)>0) {
+            foreach ($message as $entity => $msg) {
+               $mail=new MailingAlert("alertconsumable",$msg,$entity);
+
+               if ($mail->send()) {
+                  if ($task) {
+                     $task->log(getDropdownName("glpi_entities",$entity)." :  $msg\n");
+                     $task->addVolume(1);
+                  } else {
+                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity)." :  $msg");
+                  }
+
+                  $input["type"] = ALERT_THRESHOLD;
+                  $input["itemtype"] = 'ConsumableItem';
+
+                  // add alerts
+                  foreach ($items[$entity] as $ID) {
+                     $input["items_id"]=$ID;
+                     $alert->add($input);
+                     unset($alert->fields['id']);
+                  }
+               } else {
+                  if ($task) {
+                     $task->log(getDropdownName("glpi_entities",$entity).
+                            " : Send consumable alert failed\n");
+                  } else {
+                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
+                                             " : Send consumable alert failed",false,ERROR);
+                  }
+               }
+            }
+            return 1;
+         }
+      }
+      return 0;
+   }
 }
 
 ?>
