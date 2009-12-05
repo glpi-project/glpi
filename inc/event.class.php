@@ -102,6 +102,281 @@ class Event extends CommonDBTM {
       $DB->query($query_exp);
       return $DB->affected_rows();
    }
+
+   /**
+    * Return arrays for function showEvent et lastEvent
+    *
+    **/
+   static function logArray() {
+      global $LANG;
+
+      static $logItemtype = array();
+      static $logService = array();
+
+      if (count($logItemtype)) {
+         return array($logItemtype,$logService);
+      }
+      $logItemtype=array('system'      => $LANG['log'][1],
+                         'computers'   => $LANG['log'][2],
+                         'monitors'    => $LANG['log'][3],
+                         'printers'    => $LANG['log'][4],
+                         'software'    => $LANG['log'][5],
+                         'networking'  => $LANG['log'][6],
+                         'cartridges'  => $LANG['log'][7],
+                         'peripherals' => $LANG['log'][8],
+                         'consumables' => $LANG['log'][9],
+                         'tracking'    => $LANG['log'][10],
+                         'ticket'      => $LANG['log'][10], ///TODO prepare update name : delete when tracking -> ticket
+                         'contacts'    => $LANG['log'][11],
+                         'enterprises' => $LANG['log'][12],
+                         'documents'   => $LANG['log'][13],
+                         'knowbase'    => $LANG['log'][14],
+                         'users'       => $LANG['log'][15],
+                         'infocom'     => $LANG['log'][19],
+                         'devices'     => $LANG['log'][18],
+                         'links'       => $LANG['log'][38],
+                         'typedocs'    => $LANG['log'][39],
+                         'planning'    => $LANG['log'][16],
+                         'reservation' => $LANG['log'][42],
+                         'contracts'   => $LANG['log'][17],
+                         'phones'      => $LANG['log'][43],
+                         'dropdown'    => $LANG['log'][44],
+                         'groups'      => $LANG['log'][47],
+                         'entity'      => $LANG['log'][63],
+                         'rules'       => $LANG['log'][65],
+                         'reminder'    => $LANG['log'][81],
+                         'transfers'   => $LANG['transfer'][1],
+                         'budget'      => $LANG['financial'][87]);
+
+      $logService=array('inventory'    => $LANG['Menu'][38],
+                        'tracking'     => $LANG['Menu'][5],
+                        'planning'     => $LANG['Menu'][29],
+                        'tools'        => $LANG['Menu'][18],
+                        'financial'    => $LANG['Menu'][26],
+                        'login'        => $LANG['log'][55],
+                        'setup'        => $LANG['common'][12],
+                        'security'     => $LANG['log'][66],
+                        'reservation'  => $LANG['log'][58],
+                        'cron'         => $LANG['log'][59],
+                        'document'     => $LANG['Menu'][27],
+                        'plugin'       => $LANG['common'][29]);
+
+      return array($logItemtype,$logService);
+   }
+
+   static function displayItemLogID($type, $items_id) {
+      global $CFG_GLPI;
+
+      if ($items_id=="-1" || $items_id=="0") {
+         echo "&nbsp;";//$item;
+      } else {
+         switch ($type) {
+            case "rules" :
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?id=".
+                     $items_id."\">".$items_id."</a>";
+               break;
+
+            case "infocom" :
+               echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
+                     "/front/infocom.form.php?id=$items_id','infocoms','location=infocoms,width=".
+                     "1000,height=400,scrollbars=no')\">$items_id</a>";
+               break;
+
+            case "devices" :
+               echo $items_id;
+               break;
+
+            case "reservation" :
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".
+                     $items_id."\">$items_id</a>";
+               break;
+
+            default :
+               if ($type[strlen($type)-1]=='s') {
+                  $show=substr($type,0,strlen($type)-1);
+               } else {
+                  $show=$type;
+               }
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=".$items_id;
+               echo "\">$items_id</a>";
+               break;
+         }
+      }
+   }
+
+   /**
+    * Print a nice tab for last event from inventory section
+    *
+    * Print a great tab to present lasts events occured on glpi
+    *
+    * @param $target where to go when complete
+    * @param $user string : name user to search on message
+    **/
+   static function showforUser($target, $user="") {
+      global $DB,$CFG_GLPI, $LANG;
+
+      /// TODO clean $user param mau be more generic
+
+      // Show events from $result in table form
+      list($logItemtype,$logService) = self::logArray();
+
+      // define default sorting
+      $usersearch="%";
+      if (!empty($user)) {
+         $usersearch=$user." ";
+      }
+
+      // Query Database
+      $query = "SELECT *
+                FROM `glpi_events`
+                WHERE `message` LIKE '".$usersearch.addslashes($LANG['log'][20])."%'
+                ORDER BY `date` DESC
+                LIMIT 0,".intval($_SESSION['glpilist_limit']);
+
+      // Get results
+      $result = $DB->query($query);
+
+      // Number of results
+      $number = $DB->numrows($result);
+
+      // No Events in database
+      if ($number < 1) {
+         echo "<br><table class='tab_cadrehov'>";
+         echo "<tr><th>".$LANG['central'][4]."</th></tr>";
+         echo "</table><br>";
+         return;
+      }
+
+      // Output events
+      $i = 0;
+
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr><th colspan='5'>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".$LANG['central'][2]." ".
+             $_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a></th></tr>";
+
+      echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
+      echo "<th>".$LANG['common'][27]."</th>";
+      echo "<th width='8%'>".$LANG['event'][2]."</th>";
+      echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
+
+      while ($i < $number) {
+         $ID = $DB->result($result, $i, "id");
+         $items_id = $DB->result($result, $i, "items_id");
+         $type = $DB->result($result, $i, "type");
+         $date = $DB->result($result, $i, "date");
+         $service = $DB->result($result, $i, "service");
+         $message = $DB->result($result, $i, "message");
+
+         echo "<tr class='tab_bg_2'><td>".$logItemtype[$type].":</td>";
+         echo "<td class='center'>";
+         self::displayItemLogID($type,$items_id);
+         echo "</td><td class='center'>".convDateTime($date)."</td>";
+         echo "<td class='center'>".$logService[$service]."</td><td>$message</td></tr>";
+
+         $i++;
+      }
+      echo "</table><br>";
+   }
+
+   /**
+    * Print a nice tab for last event
+    *
+    * Print a great tab to present lasts events occured on glpi
+    *
+    * @param $target where to go when complete
+    * @param $order order by clause occurences (eg: )
+    * @param $sort order by clause occurences (eg: date)
+    * @param $start
+    **/
+   static function showList($target, $order='DESC', $sort='date', $start=0) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      // Show events from $result in table form
+      list($logItemtype,$logService) = self::logArray();
+
+      // Columns of the Table
+      $items = array("items_id" => array($LANG['event'][0],
+                                         "colspan='2'"),
+                     "date"     => array($LANG['common'][27], ""),
+                     "service"  => array($LANG['event'][2],
+                                         "width='8%'"),
+                     "level"    => array($LANG['event'][3],
+                                         "width='8%'"),
+                     "message"  => array($LANG['event'][4],
+                                         "width='50%'"));
+
+      // define default sorting
+      if (!isset($items[$sort])) {
+         $sort = "date";
+      }
+      if ($order!="ASC") {
+         $order = "DESC";
+      }
+
+      // Query Database
+      $query_limit = "SELECT *
+                      FROM `glpi_events`
+                      ORDER BY `$sort` $order
+                      LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+
+      // Number of results
+      $numrows = countElementsInTable("glpi_events");
+      // Get results
+      $result = $DB->query($query_limit);
+      $number = $DB->numrows($result);
+
+      // No Events in database
+      if ($number < 1) {
+         echo "<div class='center'><strong>".$LANG['central'][4]."</strong></div>";
+         return;
+      }
+
+      // Output events
+      $i = 0;
+
+      echo "<div class='center'>";
+      $parameters="sort=$sort&amp;order=$order";
+      printPager($start,$numrows,$target,$parameters);
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      foreach ($items as $field => $args) {
+         echo "<th ".$args[1].">";
+         if ($sort==$field) {
+            if ($order=="DESC") {
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+            } else {
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+            }
+         }
+         echo "<a href='$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."'>".$args[0].
+               "</a></th>";
+      }
+      echo "</tr>";
+
+      while ($i < $number) {
+         $ID = $DB->result($result, $i, "id");
+         $items_id = $DB->result($result, $i, "items_id");
+         $type = $DB->result($result, $i, "type");
+         $date = $DB->result($result, $i, "date");
+         $service = $DB->result($result, $i, "service");
+         $level = $DB->result($result, $i, "level");
+         $message = $DB->result($result, $i, "message");
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".(isset($logItemtype[$type])?$logItemtype[$type]:"&nbsp;").":</td>";
+         echo "<td class='center'><strong>";
+         self::displayItemLogID($type,$items_id);
+         echo "</strong></td><td>".convDateTime($date)."</td>";
+         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td>";
+         echo "<td class='center'>$level</td><td>$message</td></tr>";
+
+         $i++;
+      }
+      echo "</table></div><br>";
+   }
+
 }
 
 ?>

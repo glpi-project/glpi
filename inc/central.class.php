@@ -82,8 +82,7 @@ class Central extends CommonGLPI {
          echo "<td class='top' width='450px'>";
 
          //Show last add events
-         showAddEvents($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-
+         Event::showforUser($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
          echo "</td>";
       }
       echo "</tr></table>";
