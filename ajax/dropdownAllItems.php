@@ -33,10 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if ($_POST['idtable']<1000) {
-   $AJAX_INCLUDE=1;
-}
-
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");

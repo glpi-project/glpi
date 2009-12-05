@@ -856,12 +856,11 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
       $types=$CFG_GLPI["state_types"];
    }
    $rand=mt_rand();
-   $ci=new CommonItem();
    $options=array();
 
    foreach ($types as $type) {
-      $ci->setType($type);
-      $options[$type]=$ci->getType();
+      $item = new $type();
+      $options[$type]=$item->getTypeName($type);;
    }
    asort($options);
    if (count($options)) {
