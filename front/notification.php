@@ -52,7 +52,7 @@ if (!empty ($_POST["test_cron_consumables"])) {
 }
 else if (!empty ($_POST["test_cron_cartridges"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_cartridge();
+	CartridgeItem::cron_cartridge();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_contracts"])) {
