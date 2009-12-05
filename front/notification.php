@@ -67,7 +67,7 @@ else if (!empty ($_POST["test_cron_infocoms"])) {
 }
 else if (!empty ($_POST["test_cron_softwares"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_software();
+	SoftwareLicense::cron_software();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_smtp_send"])) {

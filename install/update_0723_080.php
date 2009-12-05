@@ -2013,7 +2013,7 @@ function update0723to080() {
          (1,  NULL, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (2,  NULL, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (3,  NULL, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (4,  NULL, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (4,  NULL, 'SoftwareLicense', 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (5,  NULL, 'Contract', 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (6,  NULL, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (7,  NULL, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
