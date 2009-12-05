@@ -309,46 +309,6 @@ function code2utf($num) {
 }
 
 /**
- * Clean log cron function
- *
- * @param $task instance of CronTask
- *
- **/
-function cron_logs($task) {
-   global $CFG_GLPI,$DB;
-
-   $vol = 0;
-
-   // Expire Event Log
-   if ($task->fields['param'] > 0) {
-      $secs = $task->fields['param'] * DAY_TIMESTAMP;
-
-      $query_exp = "DELETE
-                    FROM `glpi_events`
-                    WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-
-      $DB->query($query_exp);
-      $vol += $DB->affected_rows();
-   }
-
-   foreach ($DB->request('glpi_crontasks') as $data) {
-      if ($data['logs_lifetime']>0) {
-         $secs = $data['logs_lifetime'] * DAY_TIMESTAMP;
-
-         $query_exp = "DELETE
-                    FROM `glpi_crontasklogs`
-                    WHERE `crontasks_id`='".$data['id']."'
-                      AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-
-         $DB->query($query_exp);
-         $vol += $DB->affected_rows();
-      }
-   }
-   $task->setVolume($vol);
-   return ($vol>0 ? 1 : 0);
-}
-
-/**
 * Clean log cron function
 *
 * @param $task for log
@@ -363,34 +323,6 @@ function cron_optimize($task=NULL) {
       $task->setVolume($nb);
    }
    return 1;
-}
-
-/**
- * Garbage collector for expired file session
- *
- * @param $task for log
- *
- **/
-function cron_session($task) {
-   global $CFG_GLPI;
-
-   // max time to keep the file session
-   $maxlifetime = session_cache_expire();
-   $nb=0;
-   foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
-      if (filemtime($filename) + $maxlifetime < time()) {
-         // Delete session file if not delete before
-         if (@unlink($filename)) {
-            $nb++;
-         }
-      }
-   }
-   $task->setVolume($nb);
-   if ($nb) {
-      $task->log("Clean $nb session file(s) created since more than $maxlifetime seconds\n");
-      return 1;
-   }
-   return 0;
 }
 
 /**

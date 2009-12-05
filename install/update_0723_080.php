@@ -2010,18 +2010,18 @@ function update0723to080() {
       $DB->query($query) or die("0.80 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_crontasks` (`id`, `plugin`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
-         (1, NULL, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (2, NULL, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (3, NULL, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (4, NULL, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (5, NULL, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (6, NULL, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (7, NULL, NULL, 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (8, NULL, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (9, NULL, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (1,  NULL, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (2,  NULL, NULL, 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (3,  NULL, NULL, 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (4,  NULL, NULL, 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (5,  NULL, NULL, 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (6,  NULL, NULL, 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (7,  NULL, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (8,  NULL, NULL, 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (9,  NULL, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (10, NULL, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (11, NULL, NULL, 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (12, NULL, NULL, 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
+         (12, NULL, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
