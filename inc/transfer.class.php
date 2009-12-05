@@ -138,8 +138,8 @@ class Transfer extends CommonDBTM {
                                'keep_document'        => 0,
                                'clean_document'       => 0,
 
-                               'keep_cartridgesitem'  => 0,
-                               'clean_cartridgesitem' => 0,
+                               'keep_cartridgeitem'  => 0,
+                               'clean_cartridgeitem' => 0,
                                'keep_cartridge'       => 0,
 
                                'keep_consumable'      => 0);
@@ -1217,7 +1217,7 @@ class Transfer extends CommonDBTM {
                   $need_clean_process = true;
                }
                // CLean process
-               if ($need_clean_process && $this->options['clean_cartridgesitem']) {
+               if ($need_clean_process && $this->options['clean_cartridgeitem']) {
                   // Clean carttype
                   $query2 = "SELECT COUNT(*) AS CPT
                              FROM `glpi_cartridges`
@@ -1225,10 +1225,10 @@ class Transfer extends CommonDBTM {
                   $result2 = $DB->query($query2);
 
                   if ($DB->result($result2, 0, 'CPT') == 0) {
-                     if ($this->options['clean_cartridgesitem']==1) { // delete
+                     if ($this->options['clean_cartridgeitem']==1) { // delete
                         $carttype->delete(array('id' => $data['cartridgeitems_id']));
                      }
-                     if ($this->options['clean_cartridgesitem']==2) { // purge
+                     if ($this->options['clean_cartridgeitem']==2) { // purge
                         $carttype->delete(array('id' => $data['cartridgeitems_id']),1);
                      }
                   }
@@ -2731,10 +2731,10 @@ class Transfer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG['cartridges'][12]."&nbsp;:".
             "</td><td>";
-      $fctdropdown('keep_cartridgesitem',$keep,$this->fields['keep_cartridgesitem']);
+      $fctdropdown('keep_cartridgeitem',$keep,$this->fields['keep_cartridgeitem']);
       echo "</td>";
       echo "<td>".$LANG['cartridges'][12]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
-      $fctdropdown('clean_cartridgesitem',$clean,$this->fields['clean_cartridgesitem']);
+      $fctdropdown('clean_cartridgeitem',$clean,$this->fields['clean_cartridgeitem']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

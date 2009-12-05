@@ -3107,8 +3107,8 @@ CREATE TABLE `glpi_transfers` (
   `clean_software` int(11) NOT NULL default '0',
   `keep_document` int(11) NOT NULL default '0',
   `clean_document` int(11) NOT NULL default '0',
-  `keep_cartridgesitem` int(11) NOT NULL default '0',
-  `clean_cartridgesitem` int(11) NOT NULL default '0',
+  `keep_cartridgeitem` int(11) NOT NULL default '0',
+  `clean_cartridgeitem` int(11) NOT NULL default '0',
   `keep_cartridge` int(11) NOT NULL default '0',
   `keep_consumable` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)

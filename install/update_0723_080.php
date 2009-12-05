@@ -1229,8 +1229,8 @@ function update0723to080() {
                               array('from' => 'clean_softwares', 'to' => 'clean_software', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_documents', 'to' => 'keep_document', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'clean_documents', 'to' => 'clean_document', 'default' =>0, 'noindex'=>true),//
-                              array('from' => 'keep_cartridges_type', 'to' => 'keep_cartridgesitem', 'default' =>0, 'noindex'=>true),//
-                              array('from' => 'clean_cartridges_type', 'to' => 'clean_cartridgesitem', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'keep_cartridges_type', 'to' => 'keep_cartridgeitem', 'default' =>0, 'noindex'=>true),//
+                              array('from' => 'clean_cartridges_type', 'to' => 'clean_cartridgeitem', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_cartridges', 'to' => 'keep_cartridge', 'default' =>0, 'noindex'=>true),//
                               array('from' => 'keep_consumables', 'to' => 'keep_consumable', 'default' =>0, 'noindex'=>true),//
                               ),

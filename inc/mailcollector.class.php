@@ -834,7 +834,7 @@ class MailCollector  extends CommonDBTM {
     * @return -1 : done but not finish 1 : done with success
     **/
    static function cron_mailgate($task) {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       $query = "SELECT *
                 FROM `glpi_mailcollectors`
