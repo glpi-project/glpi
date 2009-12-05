@@ -637,7 +637,7 @@ class Document extends CommonDBTM {
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
-      $ci=new CommonItem();
+
       while ($i < $number) {
          $itemtype=$DB->result($result, $i, "itemtype");
          if (haveTypeRight($itemtype,"r")) {
