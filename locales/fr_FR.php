@@ -1270,6 +1270,7 @@ $LANG['profiles'][40]="Édition";
 $LANG['profiles'][41]="Création";
 $LANG['profiles'][42]="Association";
 $LANG['profiles'][43]="Méthode d'authentification et synchronisation des utilisateurs";
+$LANG['profiles'][44]="Modifier la priorité";
 
 $LANG['registry'][1]="Ruche";
 $LANG['registry'][2]="Chemin";

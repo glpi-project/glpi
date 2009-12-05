@@ -1753,7 +1753,8 @@ function showJobDetails($target, $ID,$array=array()) {
    global $DB,$CFG_GLPI,$LANG;
 
    $job=new Ticket();
-   $canupdate=haveRight('update_ticket','1');
+   $canupdate = haveRight('update_ticket','1');
+   $canpriority = haveRight('update_priority','1');
    $showuserlink=0;
    if (haveRight('user','r')) {
       $showuserlink=1;
@@ -1873,9 +1874,12 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][29]."&nbsp;: </td>";
    echo "<td>";
-   if ($canupdate) {
+   if ($canupdate && ($canpriority || !$ID)) {
+      // Only change during creation OR when allowed to
       $idurgence = Ticket::dropdownUrgence("urgence",$job->fields["urgence"]);
    } else {
+      $idurgence = "value_urgence".mt_rand();
+      echo "<input id='$idurgence' type='hidden' name='urgence' value='".$job->fields["urgence"]."'>";
       echo Ticket::getUrgenceName($job->fields["urgence"]);
    }
    echo "</td>";
@@ -1953,13 +1957,14 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
    echo "<td>";
-   if ($canupdate && true) {  // TODO replace true by check priority change right
+   if ($canupdate && $canpriority) {
       $idpriority = Ticket::dropdownPriority("priority",$job->fields["priority"]);
       $idajax = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
    } else {
       $idajax = 'change_priority_' . mt_rand();
-      echo "&nbsp;<span id='$idajax'>".Ticket::getPriorityName($job->fields["priority"])."</span>";
+      $idpriority = 0;
+      echo "<span id='$idajax'>".Ticket::getPriorityName($job->fields["priority"])."</span>";
    }
    if ($canupdate) {
       $params=array('urgence'  => '__VALUE0__',
