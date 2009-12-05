@@ -190,6 +190,124 @@ class InfoCom extends CommonDBTM {
 
       return $ci->obj->isRecursive();
    }
+
+   /**
+    * Cron action on infocom : alert on expired warranty
+    *
+    * @param $task to log, if NULL use display
+    *
+    * @return 0 : nothing to do 1 : done with success
+    **/
+   static function cron_infocom($task=NULL) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      if (!$CFG_GLPI["use_mailing"]) {
+         return false;
+      }
+
+      loadLanguage($CFG_GLPI["language"]);
+
+      $message=array();
+      $items=array();
+
+      // Check notice
+      $query="SELECT `glpi_infocoms`.*
+              FROM `glpi_infocoms`
+              LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
+                                          AND `glpi_alerts`.`itemtype`='InfoCom'
+                                          AND `glpi_alerts`.`type`='".ALERT_END."')
+              WHERE (`glpi_infocoms`.`alert` & ".pow(2,ALERT_END).") >'0'
+                    AND `glpi_infocoms`.`warranty_duration`>'0'
+                    AND `glpi_infocoms`.`buy_date` IS NOT NULL
+                    AND DATEDIFF(ADDDATE(`glpi_infocoms`.`buy_date`, INTERVAL
+                                         (`glpi_infocoms`.`warranty_duration`) MONTH),CURDATE() )<'0'
+                    AND `glpi_alerts`.`date` IS NULL";
+
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+
+         // TODO : remove this when autoload ready
+         $needed=array("computer",
+                       "device",
+                       "printer",
+                       "networking",
+                       "peripheral",
+                       "monitor",
+                       "software",
+                       "infocom",
+                       "phone",
+                       "state",
+                       "tracking",
+                       "enterprise");
+         foreach ($needed as $item) {
+            if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
+               include_once (GLPI_ROOT . "/inc/$item.class.php");
+            }
+            if (file_exists(GLPI_ROOT . "/inc/$item.function.php")) {
+               include_once (GLPI_ROOT . "/inc/$item.function.php");
+            }
+         }
+
+         while ($data=$DB->fetch_array($result)) {
+            if (!class_exists($data["itemtype"])) {
+               continue;
+            }
+            $item = new $data["itemtype"]();
+            if ($item->getFromDB($data["items_id"])) {
+               $entity = $item->getEntityID();
+               if (!isset($message[$entity])) {
+                  $message[$entity]="";
+               }
+               if (!isset($items[$entity])) {
+                  $items[$entity]=array();
+               }
+
+               // define message alert / Not for template items
+               if (!$item->getField('is_template')) {
+                  $message[$entity].=$LANG['mailing'][40]." ".
+                                     $item->getTypeName()." - ".$item->getName()." : ".
+                                     getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>";
+                  $items[$entity][]=$data["id"];
+               }
+            }
+         }
+         if (count($message)>0) {
+            // Mark alert as done
+            $alert=new Alert();
+
+            foreach ($message as $entity => $msg) {
+               $mail=new MailingAlert("alertinfocom",$msg,$entity);
+               if ($mail->send()) {
+                  if ($task) {
+                     $task->log(getDropdownName("glpi_entities",$entity).": $msg\n");
+                     $task->addVolume(1);
+                  } else {
+                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).": $msg");
+                  }
+
+                  $input["type"] = ALERT_END;
+                  $input["itemtype"] = 'InfoCom';
+
+                  //// add alerts
+                  foreach ($items[$entity] as $ID) {
+                     $input["items_id"]=$ID;
+                     $alert->add($input);
+                     unset($alert->fields['id']);
+                  }
+               } else {
+                  if ($task) {
+                     $task->log(getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
+                  } else {
+                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":
+                                             Send infocom alert failed",false,ERROR);
+                  }
+               }
+            }
+            return 1;
+         }
+      }
+      return 0;
+   }
 }
 
 ?>
