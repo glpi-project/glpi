@@ -676,6 +676,9 @@ class CronTask extends CommonDBTM{
                         include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php');
                      }
                   }
+                  if ($task->fields['itemtype']) {
+                     $fonction = array($task->fields['itemtype'], $fonction);
+                  }
                } else {
                   // Plugin case / Load hook
                   // TODO move this in test whenautoload ready
@@ -919,7 +922,7 @@ class CronTask extends CommonDBTM{
             do {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
-                          $data['crontasklogs_id']."\");'>".$data['date']."</a></td>";
+                          $data['crontasklogs_id']."\");'>".convDateTime($data['date'])."</a></td>";
                echo "<td class='right'>".number_format($data['elapsed'],3)."s</td>";
                echo "<td class='right'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
@@ -966,7 +969,7 @@ class CronTask extends CommonDBTM{
             $first=true;
             do {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".($first ? $data['date'] : "&nbsp;")."</a></td>";
+               echo "<td class='center'>".($first ? convDateTime($data['date']) : "&nbsp;")."</a></td>";
                switch ($data['state']) {
                   case CRONTASKLOG_STATE_START:
                      echo "<td>".$LANG['crontask'][48]."</td>";
@@ -1050,6 +1053,60 @@ class CronTask extends CommonDBTM{
       $tab[16]['datatype']  = 'text';
 
       return $tab;
+   }
+
+   /**
+    * Garbage collector for expired file session
+    * TODO : move this in a "tools" class when available
+    *
+    * @param $task for log
+    *
+    **/
+   static function cron_session($task) {
+      global $CFG_GLPI;
+
+      // max time to keep the file session
+      $maxlifetime = session_cache_expire();
+      $nb=0;
+      foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
+         if (filemtime($filename) + $maxlifetime < time()) {
+            // Delete session file if not delete before
+            if (@unlink($filename)) {
+               $nb++;
+            }
+         }
+      }
+      $task->setVolume($nb);
+      if ($nb) {
+         $task->log("Clean $nb session file(s) created since more than $maxlifetime seconds\n");
+         return 1;
+      }
+      return 0;
+   }
+
+   /**
+    * Clean log cron function
+    *
+    * @param $task instance of CronTask
+    *
+    **/
+   static function cron_logs($task) {
+      global $CFG_GLPI,$DB;
+
+      $vol = 0;
+
+      // Expire Event Log
+      if ($task->fields['param'] > 0) {
+         $vol += Event::cleanOld($task->fields['param']);
+      }
+
+      foreach ($DB->request('glpi_crontasks') as $data) {
+         if ($data['logs_lifetime']>0) {
+            $vol += CronTaskLog::cleanOld($data['id'], $data['logs_lifetime']);
+         }
+      }
+      $task->setVolume($vol);
+      return ($vol>0 ? 1 : 0);
    }
 }
 ?>

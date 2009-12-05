@@ -1,7 +1,6 @@
 <?php
-
 /*
- * @version $Id: bookmark.class.php 8095 2009-03-19 18:27:00Z moyo $
+ * @version $Id: link.class.php 9261 2009-11-08 17:12:32Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,39 +28,47 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
+// ----------------------------------------------------------------------
+// Original Author of file: Julien Dombre
+// Purpose of file:
+// ----------------------------------------------------------------------
+
+if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-/**
- * CronTaskLog class
- */
-class CronTaskLog extends CommonDBTM{
+// Event class
+class Event extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_crontasklogs';
-   public $type = 'CronTaskLog';
+   public $table = 'glpi_events';
+   public $type = 'Event';
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][30];
+   }
 
    /**
-    * Clean old event for a task
+    * Clean old event - Call by cron
     *
-    * @param $id integer ID of the CronTask
-    * @param $days integer number of day to keep
+    * @param $day integer
     *
     * @return integer number of events deleted
     */
-   static function cleanOld ($id, $days) {
+   static function cleanOld ($day) {
       global $DB;
 
-      $secs = $days * DAY_TIMESTAMP;
+      $secs = $day * DAY_TIMESTAMP;
 
       $query_exp = "DELETE
-                 FROM `glpi_crontasklogs`
-                 WHERE `crontasks_id`='$id'
-                   AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+                    FROM `glpi_events`
+                    WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 
       $DB->query($query_exp);
       return $DB->affected_rows();
    }
 }
+
 ?>
