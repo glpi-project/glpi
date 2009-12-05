@@ -54,7 +54,7 @@ if (isset($_POST["update"])) {
    }
 
    $entitydata->update($_POST);
-   logEvent($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["adduser"])) {
@@ -62,7 +62,7 @@ if (isset($_POST["update"])) {
 
    addUserProfileEntity($_POST);
 
-   logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+   Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_rule"])) {
@@ -78,7 +78,7 @@ if (isset($_POST["update"])) {
       $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
    }
 
-   logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_user_rule"])) {
@@ -98,7 +98,7 @@ if (isset($_POST["update"])) {
       $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
    }
 
-   logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deleteuser"])) {
@@ -110,7 +110,7 @@ if (isset($_POST["update"])) {
       }
    }
 
-   logEvent($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
+   Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"])) {
@@ -128,7 +128,7 @@ if (isset($_POST["update"])) {
       }
    }
 
-   logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

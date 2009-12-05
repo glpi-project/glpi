@@ -56,7 +56,7 @@ if (isset($_POST["add_several"])) {
       unset($con->fields["id"]);
       $con->add($_POST);
    }
-   logEvent($_POST["tID"], "consumables", 4, "inventory",
+   Event::log($_POST["tID"], "consumables", 4, "inventory",
             $_SESSION["glpiname"]." ".$LANG['log'][89].": ".$_POST["to_add"]);
 
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -65,7 +65,7 @@ if (isset($_POST["add_several"])) {
    $constype->check($_GET["tID"],'w');
 
    if ($con->delete($_GET)) {
-      logEvent($_GET["tID"], "consumables", 4, "inventory",
+      Event::log($_GET["tID"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][91]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -79,7 +79,7 @@ if (isset($_POST["add_several"])) {
             $con->out($key,$_POST["users_id"]);
          }
       }
-      logEvent($_POST["tID"], "consumables", 5, "inventory",
+      Event::log($_POST["tID"], "consumables", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -88,7 +88,7 @@ if (isset($_POST["add_several"])) {
    $constype->check($_GET["tID"],'w');
 
    if ($con->restore($_GET)) {
-      logEvent($_GET["tID"], "consumables", 5, "inventory",
+      Event::log($_GET["tID"], "consumables", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][93]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

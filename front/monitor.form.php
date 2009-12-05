@@ -59,7 +59,7 @@ if (isset($_POST["add"])){
    $monitor->check(-1,'w',$_POST);
 
    $newID=$monitor->add($_POST);
-   logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   Event::log($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -70,7 +70,7 @@ if (isset($_POST["add"])){
    } else {
       $monitor->delete($_POST);
    }
-   logEvent($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if(!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
@@ -80,7 +80,7 @@ if (isset($_POST["add"])){
    $monitor->check($_POST["id"],'w');
 
    $monitor->restore($_POST);
-   logEvent($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
@@ -93,21 +93,21 @@ if (isset($_POST["add"])){
    $monitor->check($input["id"],'w');
 
    $monitor->delete($input,1);
-   logEvent($input["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($input["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 
 } else if (isset($_POST["update"])) {
    $monitor->check($_POST["id"],'w');
 
    $monitor->update($_POST);
-   logEvent($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["unglobalize"])) {
    $monitor->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($monitor);
-   logEvent($_GET["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+   Event::log($_GET["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
    glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_GET["id"]);
 
 } else {

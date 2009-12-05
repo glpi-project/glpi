@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
       $disk->check(-1,'w',$computer->fields);
 
       if ($newID = $disk->add($_POST)) {
-         logEvent($_POST['computers_id'], "computer", 4, "inventory",
+         Event::log($_POST['computers_id'], "computer", 4, "inventory",
                   $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
          glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?id=".$disk->fields['computers_id'].
                      ($computer->fields['is_template']?"&withtemplate=1":""));
@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
    $disk->check($_POST["id"],'w');
 
    if ($disk->delete($_POST)) {
-      logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+      Event::log($disk->fields['computers_id'], "computer", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
    }
    $computer = new Computer();
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    $disk->check($_POST["id"],'w');
 
    if ($disk->update($_POST)) {
-      logEvent($disk->fields['computers_id'], "computer", 4, "inventory",
+      Event::log($disk->fields['computers_id'], "computer", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
    }
    $computer = new Computer();

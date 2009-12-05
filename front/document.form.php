@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
       } else if (isset($_FILES['filename']) && isset($_FILES['filename']['name'])) {
          $name = $_FILES['filename']['name'];
       }
-      logEvent($newID, "documents", 4, "document",
+      Event::log($newID, "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$name.".");
    }
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    $doc->check($_POST["id"],'w');
 
    if ($doc->delete($_POST)) {
-      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $doc->check($_POST["id"],'w');
 
    if ($doc->restore($_POST)) {
-      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    $doc->check($_POST["id"],'w');
 
    if ($doc->delete($_POST,1)) {
-      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 
@@ -101,14 +101,14 @@ if (isset($_POST["add"])) {
    $doc->check($_POST["id"],'w');
 
    if ($doc->update($_POST)) {
-      logEvent($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["adddocumentitem"])) {
    $documentitem->check(-1,'w',$_POST);
    if ($documentitem->add($_POST)) {
-      logEvent($_POST["documents_id"], "documents", 4, "document",
+      Event::log($_POST["documents_id"], "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   logEvent($_POST["documents_id"], "documents", 4, "document",
+   Event::log($_POST["documents_id"], "documents", 4, "document",
             $_SESSION["glpiname"]." ".$LANG['log'][33]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -132,7 +132,7 @@ if (isset($_POST["add"])) {
 
    $documentitem->check($_GET["id"],'w');
    if ($documentitem->delete(array('id' => $_GET["id"]))) {
-      logEvent($_GET["documents_id"], "documents", 4, "document",
+      Event::log($_GET["documents_id"], "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

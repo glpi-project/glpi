@@ -94,7 +94,7 @@ class Netpoint extends CommonDropdown {
          $input["name"]=$input["_before"].$i.$input["_after"];
          $this->add($input);
       }
-      logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+      Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
       refreshMainWindow();
    }
 }

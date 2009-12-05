@@ -60,7 +60,7 @@ if (isset($_GET["action"])){
 					$rulecollection->deleteRuleOrder($rule->fields["ranking"]);
 					$rule->delete(array('id'=>$key));
 				}
-				logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+				Event::log(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 				glpi_header($_SERVER['HTTP_REFERER']);
 			}
 		break;

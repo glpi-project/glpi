@@ -377,32 +377,6 @@ function showHistory($itemtype,$items_id) {
 }
 
 /**
- * Log an event.
- *
- * Log the event $event on the glpi_event table with all the others args, if
- * $level is above or equal to setting from configuration.
- *
- * @param $items_id
- * @param $type
- * @param $level
- * @param $service
- * @param $event
- **/
-function logEvent ($items_id, $type, $level, $service, $event) {
-   global $DB,$CFG_GLPI, $LANG;
-
-   // Logs the event if level is above or equal to setting from configuration
-   if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) {
-      $query = "INSERT INTO
-                `glpi_events`
-                VALUES (NULL, '".intval($items_id)."', '".addslashes($type)."', '".
-                        $_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".
-                        intval($level)."', '".addslashes($event)."')";
-      $result = $DB->query($query);
-   }
-}
-
-/**
  * Return arrays for function showEvent et lastEvent
  *
  **/

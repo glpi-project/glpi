@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $constype->check(-1,'w',$_POST);
 
    if ($newID = $constype->add($_POST)) {
-      logEvent($newID, "consumables", 4, "inventory",
+      Event::log($newID, "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"],'w');
 
    if ($constype->delete($_POST)) {
-      logEvent($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumableitem.php");
@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"],'w');
 
    if ($constype->restore($_POST)) {
-      logEvent($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumableitem.php");
@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"],'w');
 
    if ($constype->delete($_POST,1)) {
-      logEvent($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/consumableitem.php");
@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"],'w');
 
    if ($constype->update($_POST)) {
-      logEvent($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

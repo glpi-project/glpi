@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $cartype->check(-1,'w',$_POST);
 
    if ($newID = $cartype->add($_POST)) {
-      logEvent($newID, "cartridges", 4, "inventory",
+      Event::log($newID, "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->delete($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->restore($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->delete($_POST,1)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/cartridgeitem.php");
 
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->update($_POST)) {
-      logEvent($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["tID"],'w');
 
    if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
-      logEvent($_POST["tID"], "cartridges", 4, "inventory",
+      Event::log($_POST["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][30]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -98,7 +98,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_GET["tID"],'w');
 
    if ($cartype->deleteCompatibleType($_GET["id"])) {
-      logEvent($_GET["tID"], "cartridges", 4, "inventory",
+      Event::log($_GET["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][31]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

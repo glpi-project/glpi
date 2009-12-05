@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $computer->check(-1,'w',$_POST);
 
    if ($newID = $computer->add($_POST)) {
-      logEvent($newID, "computers", 4, "inventory",
+      Event::log($newID, "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
       $ok = $computer->delete($_POST);
    }
    if ($ok) {
-      logEvent($_POST["id"], "computers", 4, "inventory",
+      Event::log($_POST["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$computer->getField('name'));
    }
    if (!empty($_POST["withtemplate"])) {
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'],'w');
 
    if ($computer->restore($_POST)) {
-      logEvent($_POST["id"],"computers", 4, "inventory",
+      Event::log($_POST["id"],"computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$computer->getField('name'));
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    $computer->check($input['id'],'w');
 
    if ($computer->delete($input,1)) {
-      logEvent($input["id"], "computers", 4, "inventory",
+      Event::log($input["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$computer->getField('name'));
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'],'w');
 
    if ($computer->update($_POST)) {
-      logEvent($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -124,7 +124,7 @@ if (isset($_POST["add"])) {
    $conn->delete($_GET);
    $computer->check($_GET['computers_id'],'w');
 
-   logEvent($_GET["computers_id"], "computers", 5, "inventory",
+   Event::log($_GET["computers_id"], "computers", 5, "inventory",
             $_SESSION["glpiname"]." ".$LANG['log'][26]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -133,7 +133,7 @@ if (isset($_POST["add"])) {
    $conn = new Computer_Item();
    $conn->check(-1, 'w', $_POST);
    $conn->add($_POST);
-   logEvent($_POST["computers_id"], "computers", 5, "inventory",
+   Event::log($_POST["computers_id"], "computers", 5, "inventory",
             $_SESSION["glpiname"] ." ".$LANG['log'][27]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -161,7 +161,7 @@ if (isset($_POST["add"])) {
       }
    }
 
-   logEvent($_POST["id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
+   Event::log($_POST["id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 //add a new device

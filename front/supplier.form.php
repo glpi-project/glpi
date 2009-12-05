@@ -3,24 +3,24 @@
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
- 
+
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
- 
+
  LICENSE
- 
+
  This file is part of GLPI.
- 
+
  GLPI is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  GLPI is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,45 +53,45 @@ $ent=new Supplier();
 
 if (isset($_POST["add"])) {
    $ent->check(-1,'w',$_POST);
-   
+
    if ($newID=$ent->add($_POST)) {
-      logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+      Event::log($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $ent->check($_POST["id"],'w');
-   
+
    $ent->delete($_POST);
-   logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["restore"])) {
    $ent->check($_POST["id"],'w');
-   
+
    $ent->restore($_POST);
-   logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["purge"])) {
    $ent->check($_POST["id"],'w');
-   
+
    $ent->delete($_POST,1);
-   logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/supplier.php");
 
 } else if (isset($_POST["update"])) {
    $ent->check($_POST["id"],'w');
-   
+
    $ent->update($_POST);
-   logEvent($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
    commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","supplier");
-   
+
    $ent->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-   
+
    commonFooter();
 }
 

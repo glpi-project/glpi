@@ -70,7 +70,7 @@ helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 if (isset($_POST["clear_resa"])) {
    $reservationitems_id = key($_POST["items"]);
    if ($rr->delete($_POST)) { // delete() need an array !
-      logEvent($_POST["id"], "reservation", 4, "inventory",
+      Event::log($_POST["id"], "reservation", 4, "inventory",
                $_SESSION["glpiname"]." delete a reservation.");
    }
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin_date"]);
@@ -121,7 +121,7 @@ if (isset($_GET["id"])) {
       $_GET["annee_courant"] = $begin_year;
 
       if ($_POST['_ok']) {
-         logEvent($_POST["reservationitems_id"], "reservation", 4, "inventory",
+         Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
                   $_SESSION["glpiname"]." add a reservation.");
       } else {
          $all_ok = false;

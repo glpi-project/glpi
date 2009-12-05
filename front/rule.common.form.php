@@ -46,7 +46,7 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
-		
+
 if (isset($_POST["delete_criteria"]))
 {
 	checkRight($rule->right,"w");
@@ -57,12 +57,12 @@ if (isset($_POST["delete_criteria"]))
 			$input["id"]=$key;
 			$rulecriteria->delete($input);
 		}
-	
+
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
-		
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 if (isset($_POST["delete_action"]))
@@ -80,7 +80,7 @@ if (isset($_POST["delete_action"]))
 	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["add_criteria"]))
@@ -91,7 +91,7 @@ elseif (isset($_POST["add_criteria"]))
 	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rules_id"]);
 	}
-	
+
 	$rulecriteria->add($_POST);
 
 
@@ -120,7 +120,7 @@ elseif (isset($_POST["update_rule"]))
 	}
 
 	$rule->update($_POST);
-	logEvent($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["add_rule"]))
@@ -128,7 +128,7 @@ elseif (isset($_POST["update_rule"]))
 	checkRight($rule->right,"w");
 
 	$newID=$rule->add($_POST);
-	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+	Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 
 	glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 } elseif (isset($_POST["delete_rule"]))
@@ -136,7 +136,7 @@ elseif (isset($_POST["update_rule"]))
 	checkRight($rule->right,"w");
 	$rulecollection->deleteRuleOrder($_POST["ranking"]);
 	$rule->delete($_POST);
-	logEvent($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	Event::log($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){

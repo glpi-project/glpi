@@ -837,7 +837,7 @@ class Ticket extends CommonDBTM {
       $this->addFiles($newID);
 
       // Log this event
-      logEvent($newID,"tracking",4,"tracking",getUserName($input["users_id"])." ".$LANG['log'][20]);
+      Event::log($newID,"tracking",4,"tracking",getUserName($input["users_id"])." ".$LANG['log'][20]);
 
       $already_mail=false;
       if (((isset($input["_followup"])

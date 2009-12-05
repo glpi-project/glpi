@@ -69,7 +69,7 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w',$_POST);
 
    $newID = $kb->add($_POST);
-   logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_POST["update"])) {
@@ -77,7 +77,7 @@ if ($_GET["id"] == "new") {
    $kb->check($_POST["id"],'w');
 
    $kb->update($_POST);
-   logEvent($_POST["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
@@ -93,7 +93,7 @@ if ($_GET["id"] == "new") {
    $kb->check($_GET["id"],'w');
 
    $kb->delete($_GET);
-   logEvent($_GET["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_GET["id"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {

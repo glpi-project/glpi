@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 	$link->check(-1,'w');
 
 	$newID=$link->add($_POST);
-	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+	Event::log($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["delete"]))
@@ -57,7 +57,7 @@ else if (isset($_POST["delete"]))
 	$link->check($_POST["id"],'w');
 
 	$link->delete($_POST);
-	logEvent($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+	Event::log($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["update"]))
@@ -65,21 +65,21 @@ else if (isset($_POST["update"]))
 	$link->check($_POST["id"],'w');
 
 	$link->update($_POST);
-	logEvent($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+	Event::log($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adddevice"])){
 	$link->check($_POST["lID"],'w');
 
 	addLinkDevice($_POST["itemtype"],$_POST["lID"]);
-	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+	Event::log($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
 	$link->check($_GET["lID"],'w');
 
 	deleteLinkDevice($_GET["id"]);
-	logEvent($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+	Event::log($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 

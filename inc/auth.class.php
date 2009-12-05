@@ -614,11 +614,11 @@ class Auth {
 
          if ($this->auth_succeded) {
             $logged = (GLPI_DEMO_MODE ? "logged in" : $LANG['log'][40]);
-            logEvent(-1, "system", 3, "login", $login_name . " $logged: " . $ip);
+            Event::log(-1, "system", 3, "login", $login_name . " $logged: " . $ip);
 
          } else {
             $logged = (GLPI_DEMO_MODE ? "connection failed" : $LANG['log'][41]);
-            logEvent(-1, "system", 1, "login", $logged . ": " . $login_name . " ($ip)");
+            Event::log(-1, "system", 1, "login", $logged . ": " . $login_name . " ($ip)");
          }
       }
       $this->initSession();

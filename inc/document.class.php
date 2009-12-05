@@ -176,7 +176,7 @@ class Document extends CommonDBTM {
          $docitem->add(array('documents_id' => $newID,
                              'itemtype' => $input["itemtype"],
                              'items_id' => $input["items_id"]));
-         logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+         Event::log($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
       }
    }
 
