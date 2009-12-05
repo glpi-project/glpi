@@ -57,7 +57,7 @@ else if (!empty ($_POST["test_cron_cartridges"])) {
 }
 else if (!empty ($_POST["test_cron_contracts"])) {
 	addMessageAfterRedirect($LANG['install'][6]);
-	cron_contract();
+	Contract::cron_contract();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_cron_infocoms"])) {

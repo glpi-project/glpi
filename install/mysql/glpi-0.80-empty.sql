@@ -718,7 +718,7 @@ INSERT INTO `glpi_crontasks` VALUES ('1',NULL,NULL,'ocsng','300',NULL,'0','1','3
 INSERT INTO `glpi_crontasks` VALUES ('2',NULL,NULL,'cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3',NULL,NULL,'consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4',NULL,NULL,'software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5',NULL,NULL,'contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5',NULL,'Contract,'contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6',NULL,NULL,'infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7',NULL,'CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8',NULL,'CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
