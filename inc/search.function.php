@@ -3254,7 +3254,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                                $linkfield) ."
                    LEFT JOIN `$new_table` $AS
                         ON (`glpi_softwarelicenses`.`id` = `$nt`.`items_id`
-                            AND `$nt`.`itemtype` = ".SOFTWARELICENSE_TYPE.") ";
+                            AND `$nt`.`itemtype` = '".SOFTWARELICENSE_TYPE."') ";
          }
          if ($itemtype == CARTRIDGEITEM_TYPE) {
             // Return the infocom linked to the Cartridge, not the template linked to the Type
@@ -3262,7 +3262,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                                $linkfield) ."
                    LEFT JOIN `$new_table` $AS
                         ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-                            AND `$nt`.`itemtype` = ".CARTRIDGE_TYPE.") ";
+                            AND `$nt`.`itemtype` = '".CARTRIDGE_TYPE."') ";
          }
          if ($itemtype == CONSUMABLEITEM_TYPE) {
             // Return the infocom linked to the Comsumable, not the template linked to the Type
@@ -3270,7 +3270,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                                $linkfield) ."
                    LEFT JOIN `$new_table` $AS
                         ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-                            AND `$nt`.`itemtype` = ".CONSUMABLE_TYPE.") ";
+                            AND `$nt`.`itemtype` = '".CONSUMABLE_TYPE."') ";
          }
          return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                  AND `$nt`.`itemtype` = '$itemtype') ";
