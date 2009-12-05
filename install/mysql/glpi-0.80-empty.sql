@@ -722,7 +722,7 @@ INSERT INTO `glpi_crontasks` VALUES ('5',NULL,'Contract,'contract','86400',NULL,
 INSERT INTO `glpi_crontasks` VALUES ('6',NULL,'InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7',NULL,'CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8',NULL,'CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('9',NULL,NULL,'mailgate','600','10','1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('9',NULL,'MailCollector','mailgate','600','10','1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('10',NULL,NULL,'dbreplicate','60',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('11',NULL,'CronTask','check_update','604800',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('12',NULL,'CronTask','session','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);

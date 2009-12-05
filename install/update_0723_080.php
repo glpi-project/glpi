@@ -2018,7 +2018,7 @@ function update0723to080() {
          (6,  NULL, 'InfoCom', 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (7,  NULL, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (8,  NULL, 'CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (9,  NULL, NULL, 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (9,  NULL, 'MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (10, NULL, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (11, NULL, 'CronTask', 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (12, NULL, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";

@@ -829,6 +829,43 @@ class MailCollector  extends CommonDBTM {
       imap_close($this->marubox,CL_EXPUNGE);
    }
 
+   /**
+    * Cron action on mailgate : retrieve mail and create tickets
+    * @return -1 : done but not finish 1 : done with success
+    **/
+   static function cron_mailgate($task) {
+      global $DB,$CFG_GLPI;
+
+      $query = "SELECT *
+                FROM `glpi_mailcollectors`
+                WHERE `is_active` = '1'";
+      if ($result=$DB->query($query)) {
+         $max = $task->fields['param'];
+         if ($DB->numrows($result)>0) {
+            $mc=new MailCollector();
+
+            while ($max>0 && $data=$DB->fetch_assoc($result)) {
+               $mc->maxfetch_emails = $max;
+
+               $task->log("Collect mails from ".$data["host"]." for  ".
+                           getDropdownName("glpi_entities",$data["entities_id"])."\n");
+               $message=$mc->collect($data["id"]);
+
+               $task->log("$message\n");
+               $task->addVolume($mc->fetch_emails);
+
+               $max -= $mc->fetch_emails;
+            }
+         }
+         if ($max == $task->fields['param']) {
+            return 0; // Nothin to do
+         } else if ($max > 0) {
+            return 1; // done
+         }
+         return -1; // still messages to retrieve
+      }
+      return 0;
+   }
 }
 
 ?>
