@@ -245,7 +245,7 @@ class MailCollector  extends CommonDBTM {
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $tkt= $this->buildTicket($i);
                $tkt['_mailgate']=$mailgateID;
-               //$this->deleteMails($i); // Delete Mail from Mail box
+               $this->deleteMails($i); // Delete Mail from Mail box
                $result=imap_fetchheader($this->marubox,$i);
                // Is a mail responding of an already existgin ticket ?
                if (isset($tkt['tickets_id']) ) {
