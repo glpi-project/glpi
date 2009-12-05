@@ -270,13 +270,20 @@ if (isset($_POST["itemtype"])){
 					}
 				}
 			break;
-			case "add_group":
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) {
-						addUserGroup($key,$_POST["group"]);
-					}
-				}
-			break;
+
+         case "add_group":
+            $groupuser = new Group_User();
+            foreach ($_POST["item"] as $key => $val){
+               if ($val==1) {
+                  $input = array('groups_id' => $key,
+                                 'users_id'  => $_POST["group"]);
+                  if ($groupuser->can(-1,'w',$input)) {
+                     $groupuser->add($input);
+                  }
+               }
+            }
+            break;
+
 			case "add_userprofile":
 				$input['entities_id']=$_POST['entities_id'];
 				$input['profiles_id']=$_POST['profiles_id'];

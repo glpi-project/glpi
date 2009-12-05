@@ -69,12 +69,12 @@ if (empty($_POST["id"]) && isset($_POST["name"])) {
 if (empty($_POST["name"])) {
    $_POST["name"] = "";
 }
-
-if ($_POST["id"]>0) {
+$user = new User();
+if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          showUserRights($_POST['target'],$_POST["id"]);
-         showGroupAssociated($_POST['target'],$_POST["id"]);
+         Group_User::showForUser($_POST['target'], $user);
          showDeviceUser($_POST["id"]);
          showUserReservations($_POST['target'],$_POST["id"]);
          if (haveRight("show_all_ticket", "1")) {
@@ -92,7 +92,7 @@ if ($_POST["id"]>0) {
          break;
 
       case 4 :
-         showGroupAssociated($_POST['target'],$_POST["id"]);
+         Group_User::showForUser($_POST['target'], $user);
          break;
 
       case 11 :
