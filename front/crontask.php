@@ -39,7 +39,7 @@ $NEEDED_ITEMS = array ('computer', 'crontask', 'device', 'document', 'group', 'i
                        'phone', 'printer', 'registry', 'reminder', 'reservation', 'rulesengine',
                        'rule.dictionnary.dropdown', 'rule.dictionnary.software', 'rule.ocs',
                        'rule.softwarecategories', 'rule.tracking', 'search', 'setup', 'software',
-                       'supplier', 'tracking', 'user');
+                       'supplier', 'tracking', 'user', 'cartridgeitem');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
