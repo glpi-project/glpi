@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
    if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
-            deleteUserGroup($key);
+            $groupuser->delete(array('id'=>$key));
          }
       }
    }

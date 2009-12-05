@@ -286,6 +286,45 @@ class Group extends CommonDBTM {
       echo "</table></div></form>";
    }
 
+   /**
+    * Show items for the group
+    *
+    */
+   function showItems() {
+      global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
+
+      $ID = $this->fields['id'];
+
+      echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
+      foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item = new $itemtype();
+         $query="SELECT *
+                 FROM ".$item->table."
+                 WHERE `groups_id`='$ID' " .
+                       getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '',
+                                                  isset($CFG_GLPI["recursive_type"][$itemtype]));
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0) {
+            $type_name = $item->getTypeName();
+            $cansee = $item->canView();
+            while ($data=$DB->fetch_array($result)) {
+               $link=($data["name"] ? $data["name"] : "(".$data["id"].")");
+               if ($cansee) {
+                  $link="<a href='".$item->getFormURL()."?id=".
+                           $data["id"]."'>".$link."</a>";
+               }
+               $linktype="";
+               echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
+               echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
+            }
+         }
+      }
+      echo "</table></div>";
+   }
 }
 
 ?>

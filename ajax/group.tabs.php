@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("group","user");
+$NEEDED_ITEMS=array("group","user",'computer','monitor','networking','phone','printer');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -47,17 +47,18 @@ if (!isset($_POST["id"])) {
 checkRight("group","r");
 
 $group=new Group;
-if ($_POST["id"]>0) {
+
+if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showGroupUsers($_POST['target'],$_POST["id"]);
-         showGroupDevice($_POST["id"]);
+         Group_User::showForGroup($_POST['target'],$group);
+         $group->showItems();
          $group->showLDAPForm($_POST['target'],$_POST["id"]);
          displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
-         showGroupDevice($_POST["id"]);
+         $group->showItems();
          break;
 
       case 3 :
@@ -66,7 +67,7 @@ if ($_POST["id"]>0) {
 
       default :
          if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showGroupUsers($_POST['target'],$_POST["id"]);
+            Group_User::showForGroup($_POST['target'],$group);
          }
    }
 }

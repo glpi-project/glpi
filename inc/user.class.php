@@ -554,10 +554,11 @@ class User extends CommonDBTM {
                                $WHERE";
                $result = $DB->query($query);
 
+               $groupuser = new Group_User();
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_array($result)) {
                      if (!in_array($data["groups_id"], $input["_groups"])) {
-                        deleteUserGroup($data["id"]);
+                        $groupuser->delete(array('id'=>$data["id"]));
                      } else {
                         // Delete found item in order not to add it again
                         unset($input["_groups"][array_search($data["groups_id"], $input["_groups"])]);
@@ -568,7 +569,8 @@ class User extends CommonDBTM {
                //If the user needs to be added to one group or more
                if (count($input["_groups"])>0) {
                   foreach ($input["_groups"] as $group) {
-                     addUserGroup($input["id"], $group);
+                     $groupuser->add(array('users_id'=> $input["id"],
+                                           'groups_id' => $group));
                   }
                   unset ($input["_groups"]);
                }
