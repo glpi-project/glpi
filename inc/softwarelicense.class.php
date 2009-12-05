@@ -333,6 +333,97 @@ class SoftwareLicense extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Cron action on softwares : alert on expired licences
+    *
+    * @param $task to log, if NULL display
+    *
+    * @return 0 : nothing to do 1 : done with success
+    **/
+   static function cron_software($task=NULL) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      if (!$CFG_GLPI["use_mailing"]) {
+         return false;
+      }
+
+      loadLanguage($CFG_GLPI["language"]);
+
+      $message=array();
+      $items_notice=array();
+      $items_end=array();
+
+      // Check notice
+      $query = "SELECT `glpi_softwarelicenses`.*, `glpi_softwares`.`name` AS softname
+                FROM `glpi_softwarelicenses`
+                INNER JOIN `glpi_softwares`
+                     ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                LEFT JOIN `glpi_alerts`
+                     ON (`glpi_softwarelicenses`.`id` = `glpi_alerts`.`items_id`
+                         AND `glpi_alerts`.`itemtype` = 'SoftwareLicense'
+                         AND `glpi_alerts`.`type` = '".ALERT_END."')
+                WHERE `glpi_alerts`.`date` IS NULL
+                      AND `glpi_softwarelicenses`.`expire` IS NOT NULL
+                      AND `glpi_softwarelicenses`.`expire` < CURDATE()
+                      AND `glpi_softwares`.`is_template`='0'
+                      AND `glpi_softwares`.`is_deleted`='0'";
+
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_array($result)) {
+            if (!isset($message[$data["entities_id"]])) {
+               $message[$data["entities_id"]]="";
+            }
+            if (!isset($items_notice[$data["entities_id"]])) {
+               $items[$data["entities_id"]]=array();
+            }
+            $name = $data['softname'].' - '.$data['name'].' - '.$data['serial'];
+
+            // define message alert
+            if (strstr($message[$data["entities_id"]],$name)===false) {
+               $message[$data["entities_id"]] .= $LANG['mailing'][51]." ".$name.": ".
+                                                 convDate($data["expire"])."<br>\n";
+            }
+            $items[$data["entities_id"]][]=$data["id"];
+         }
+      }
+
+      if (count($message)>0) {
+         foreach ($message as $entity => $msg) {
+            $mail=new MailingAlert("alertlicense",$msg,$entity);
+            if ($mail->send()) {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity).":  $msg\n");
+                  $task->addVolume(1);
+               } else {
+                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
+               }
+
+               // Mark alert as done
+               $alert=new Alert();
+               $input["itemtype"] = 'SoftwareLicense';
+
+               $input["type"]=ALERT_END;
+               if (isset($items[$entity])) {
+                  foreach ($items[$entity] as $ID) {
+                     $input["items_id"]=$ID;
+                     $alert->add($input);
+                     unset($alert->fields['id']);
+                  }
+               }
+            } else {
+               if ($task) {
+                  $task->log(getDropdownName("glpi_entities",$entity).": Send licenses alert failed\n");
+               } else {
+                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
+                                          ": Send licenses alert failed",false,ERROR);
+               }
+            }
+         }
+         return 1;
+      }
+      return 0;
+   }
 }
 
 ?>
