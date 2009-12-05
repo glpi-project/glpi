@@ -309,23 +309,6 @@ function code2utf($num) {
 }
 
 /**
-* Clean log cron function
-*
-* @param $task for log
-*
-**/
-function cron_optimize($task=NULL) {
-   global $CFG_GLPI,$DB;
-
-   $nb = optimize_tables();
-
-   if ($task) {
-      $task->setVolume($nb);
-   }
-   return 1;
-}
-
-/**
  * Get the filesize of a complete directory (from php.net)
  *
  * @param $path string: directory or file to get size
@@ -1887,20 +1870,6 @@ function checkNewVersionAvailable($auto=true) {
          }
       }
    }
-   return 1;
-}
-
-/**
-* Cron job to check if a new version is available
-*
-* @param $task for log
-**/
-function cron_check_update($task) {
-   global $CFG_GLPI;
-
-   $result=checkNewVersionAvailable(1);
-   $task->log($result);
-
    return 1;
 }
 
