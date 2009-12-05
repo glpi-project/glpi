@@ -2009,7 +2009,9 @@ function update0723to080() {
         COMMENT='Task run by internal / external cron.';";
       $DB->query($query) or die("0.80 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_crontasks` (`id`, `plugin`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) VALUES
+      $query="INSERT INTO `glpi_crontasks`
+         (`id`, `plugin`, `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+         VALUES
          (1,  NULL, NULL, 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (2,  NULL, 'CartridgeItem', 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (3,  NULL, 'ConsumableItem', 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
