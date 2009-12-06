@@ -547,7 +547,7 @@ class CronTask extends CommonDBTM{
             case 9: // mailgate
                return $LANG['crontask'][39];
                break;
-            case 10: // dbreplicate
+            case 10: // DBConnection
                return $LANG['setup'][806];
                break;
          }
