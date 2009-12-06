@@ -289,5 +289,17 @@ class DBConnection {
       }
       echo "\n</pre></td></tr>";
    }
+
+   /**
+    * Enable or disable db replication check cron task
+    * @param enable of disable cron task
+    */
+   static function changeCronTaskStatus($enable=true) {
+      $cron = new CronTask;
+      $cron->getFromDBbyName('check_dbreplicate');
+      $input['id'] = $cron->fields['id'];
+      $input['state'] = ($enable?1:0);
+      $cron->update($input);
+   }
 }
 ?>
