@@ -38,7 +38,7 @@ $NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise
                        'link', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
                        'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown',
                        'rule.dictionnary.software', 'rule.softwarecategories', 'search', 'setup',
-                       'software', 'tracking', 'user');
+                       'software', 'tracking', 'user','computer_device');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -102,7 +102,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+            Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
             showSoftwareInstalled($_POST["id"]);
             Computer_Item::showForComputer($_POST['target'], $computer);
@@ -171,7 +171,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
          default :
             if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
                                      $_POST["withtemplate"])) {
-               showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+               Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             }
             break;
       }
