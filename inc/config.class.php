@@ -102,14 +102,18 @@ class Config extends CommonDBTM {
       // Manage DB Slave process
       if (isset($input['_dbslave_status'])) {
          $already_active=DBConnection::isDBSlaveActive();
-         if ($input['_dbslave_status'] && !$already_active) {
-            DBConnection::createDBSlaveConfig();
-         } else {
-            DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
-                            $input["_dbreplicate_dbpassword"],$input["_dbreplicate_dbdefault"]);
+         if ($input['_dbslave_status']) {
+            DBConnection::changeCronTaskStatus(true);
+         	if (!$already_active) {
+               DBConnection::createDBSlaveConfig();
+            } else {
+               DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
+                               $input["_dbreplicate_dbpassword"],$input["_dbreplicate_dbdefault"]);
+            }
          }
          if (!$input['_dbslave_status'] && $already_active) {
             DBConnection::deleteDBSlaveConfig();
+            DBConnection::changeCronTaskStatus(false);
          }
       }
 
