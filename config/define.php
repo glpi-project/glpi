@@ -90,7 +90,7 @@ if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
    define("USER_TYPE",'User');
    define("TRACKING_TYPE",'Ticket');
    define("CONSUMABLEITEM_TYPE",'ConsumableItem');
-   define("CONSUMABLE_TYPE",'Consumbale');
+   define("CONSUMABLE_TYPE",'Consumable');
    define("CARTRIDGE_TYPE",'Cartridge');
    define("SOFTWARELICENSE_TYPE",'SoftwareLicense');
    define("LINK_TYPE",'Link');

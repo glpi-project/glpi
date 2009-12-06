@@ -67,30 +67,31 @@ if (isset($_GET["add"])) {
 
    popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 
-   $ci = new CommonItem();
-
    if (isset($_GET["id"])) {
       $ic = new Infocom();
       $ic->getFromDB($_GET["id"]);
       $_GET["itemtype"] = $ic->fields["itemtype"];
       $_GET["device_id"] = $ic->fields["items_id"];
    }
+   $item = false;
+   if (isset($_GET["itemtype"]) && class_exists($_GET["itemtype"])) {
+      $item = new $_GET["itemtype"]();
+   }
 
-   if (!isset($_GET["itemtype"])
+   if (!$item
       || !isset($_GET["device_id"])
-      || !$ci->getFromDB($_GET["itemtype"],$_GET["device_id"])) {
+      || !$item->getFromDB($_GET["device_id"])) {
 
       echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
 
    } else {
-      echo "<div class='center b'><br><br>".$ci->getType()." - ".$ci->getName()."</div>";
+      echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
       if (isset($_GET["update"]) && $_GET["update"]==1) {
          $withtemplate = 0;
       } else {
          $withtemplate = 2;
       }
-      showInfocomForm ($CFG_GLPI["root_doc"]."/front/infocom.form.php",$_GET["itemtype"],
-                     $_GET["device_id"],1,$withtemplate);
+      Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$item,1,$withtemplate);
    }
 
    popFooter();
