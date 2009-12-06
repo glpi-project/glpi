@@ -461,6 +461,34 @@ class AuthLDAP extends CommonDBTM {
       return $tab;
    }
 
+   function showSystemInformations($width) {
+      global $LANG;
+
+      $ldap_servers = getLdapServers ();
+
+      if (!empty($ldap_servers)) {
+         echo "\n</pre></td><tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+         foreach ($ldap_servers as $ID => $value) {
+            $fields = array($LANG['common'][52]=>'host',
+                            $LANG['setup'][172]=>'port',
+                            $LANG['setup'][154]=>'basedn',
+                            $LANG['setup'][159]=>'condition',
+                            $LANG['setup'][155]=>'rootdn',
+                            $LANG['setup'][180]=>'use_tls');
+            $msg = '';
+            $first = true;
+            foreach($fields as $label => $field) {
+               $msg .= (!$first?', ':'').$label.': '.($value[$field] != ''?'\''.$value[$field].
+                        '\'':$LANG['common'][49]);
+               $first = false;
+            }
+            echo wordwrap($msg."\n", $width, "\n\t\t");
+         }
+      }
+
+      echo "\n</pre></td></tr>";
+   }
 }
 
 

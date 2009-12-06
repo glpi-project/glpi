@@ -1107,6 +1107,67 @@ class Config extends CommonDBTM {
       }
       echo "</form>";
    }
+
+   /*
+    * Display a HTML report about systeme information / configuration
+    *
+    */
+   function showSystemInformations () {
+      global $DB,$LANG,$CFG_GLPI;
+
+      $width=128;
+
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
+      echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
+
+      echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
+            dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
+
+      echo "\n</pre></td></tr><tr><th>" . $LANG['common'][52] . "</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+      echo wordwrap($LANG['setup'][5]."&nbsp;: ".php_uname()."\n", $width, "\n\t");
+      $exts = get_loaded_extensions();
+      sort($exts);
+      echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
+      $msg = $LANG['common'][12].": ";
+      foreach (array('memory_limit',
+                     'max_execution_time',
+                     'safe_mode') as $key) {
+         $msg.= $key.'="'.ini_get($key).'" ';
+      }
+      echo wordwrap($msg."\n", $width, "\n\t");
+
+      $msg = $LANG['Menu'][4].": ";
+      if (isset($_SERVER["SERVER_SOFTWARE"])) {
+         $msg .= $_SERVER["SERVER_SOFTWARE"];
+      }
+      if (isset($_SERVER["SERVER_SIGNATURE"])) {
+         $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')';
+      }
+      echo wordwrap($msg."\n", $width, "\n\t");
+
+      if (isset($_SERVER["HTTP_USER_AGENT"])) {
+         echo "\t" . $_SERVER["HTTP_USER_AGENT"] . "\n";
+      }
+
+      $version = "???";
+      foreach ($DB->request('SELECT VERSION() as ver') as $data) {
+         $version = $data['ver'];
+      }
+      echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
+
+      foreach ($CFG_GLPI["systeminformations_type"] as $type) {
+      	$tmp = new $type;
+         $tmp->showSystemInformations($width);
+      }
+
+      echo "\n[/code]\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>\n";
+      echo "</tr>\n";
+      echo "</table></div>\n";
+   }
 }
 
 /// OCS Config class
@@ -1204,7 +1265,5 @@ class ConfigOCS extends CommonDBTM {
          $CACHE_CFG->remove("CFG_OCSGLPI_".$input["id"],"GLPI_CFG",true);
       }
    }
-
 }
-
 ?>

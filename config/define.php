@@ -723,6 +723,7 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     'TaskCategory'    => "glpi_taskcategories",
                                     'Location'        => "glpi_locations");
 
+$CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP', 'MailCollector');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]=0;

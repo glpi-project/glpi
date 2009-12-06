@@ -267,6 +267,27 @@ class DBConnection {
       return 0;
    }
 
+   function showSystemInformations($width) {
+      global $LANG;
+      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][800] . "</th></tr>";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+      if (DBConnection::isDBSlaveActive()) {
+         echo $LANG['common'][60]." : ".$LANG['choice'][1]."\n";
 
+         $task = new CronTask;
+         $task->getFromDBbyName('check_dbreplicate');
+         $diff = DBConnection::getReplicateDelay();
+         if ($diff > ($task->fields['param']*60)) {
+            echo $LANG['setup'][807]." ".timestampToString($diff)."\n";
+         }
+         else {
+            echo $LANG['setup'][808]."\n";
+         }
+      }
+      else {
+            echo $LANG['common'][60]." : ".$LANG['choice'][0]."\n";
+      }
+      echo "\n</pre></td></tr>";
+   }
 }
 ?>
