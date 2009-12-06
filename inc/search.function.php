@@ -2312,9 +2312,9 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
          if ($nott && $val!="NULL") {
             $ADD = " OR `$table`.`$field` IS NULL";
          }
-         if (preg_match("/$val/i",getAmortTypeName(1))) {
+         if (preg_match("/$val/i",Infocom::getAmortTypeName(1))) {
             $val=1;
-         } else if (preg_match("/$val/i",getAmortTypeName(2))) {
+         } else if (preg_match("/$val/i",Infocom::getAmortTypeName(2))) {
             $val=2;
          }
          if (is_int($val) && $val>0) {
@@ -2767,7 +2767,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          $split=explode("$$$$",$data[$NAME.$num]);
          $out='';
          foreach($split as $val) {
-            $out .= (empty($out)?'':'<br>').getAmortTypeName($val);
+            $out .= (empty($out)?'':'<br>').Infocom::getAmortTypeName($val);
          }
          return $out;
 
