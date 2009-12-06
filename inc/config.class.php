@@ -116,10 +116,10 @@ class Config extends CommonDBTM {
       // Matrix for Impact / Urgence / Priority
       if (isset($input['_matrix'])) {
          $tab = array();
-         for ($urgence=1 ; $urgence<=5 ; $urgence++) {
+         for ($urgency=1 ; $urgency<=5 ; $urgency++) {
             for ($impact=1 ; $impact<=5 ; $impact++) {
-               $priority = $input["_matrix_${urgence}_${impact}"];
-               $tab[$urgence][$impact]=$priority;
+               $priority = $input["_matrix_${urgency}_${impact}"];
+               $tab[$urgency][$impact]=$priority;
             }
          }
          $input['priority_matrix'] = json_encode($tab);
@@ -654,19 +654,19 @@ class Config extends CommonDBTM {
       }
       echo "</tr>";
 */
-      //for ($urgence=1, $msg=46 ; $urgence<=5 ; $urgence++, $msg--) {
-      for ($urgence=5, $msg=42 ; $urgence>=1 ; $urgence--, $msg++) {
+      //for ($urgency=1, $msg=46 ; $urgency<=5 ; $urgency++, $msg--) {
+      for ($urgency=5, $msg=42 ; $urgency>=1 ; $urgency--, $msg++) {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1' colspan='2'>".$LANG['help'][$msg]."</td>";
          //for ($impact=1 ; $impact<=5 ; $impact++) {
          for ($impact=5 ; $impact>=1 ; $impact--) {
-            $pri = round(($urgence+$impact)/2);
-            if (isset($CFG_GLPI['priority_matrix'][$urgence][$impact])) {
-               $pri = $CFG_GLPI['priority_matrix'][$urgence][$impact];
+            $pri = round(($urgency+$impact)/2);
+            if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
+               $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
             $bgcolor=$_SESSION["glpipriority_$pri"];
 
             echo "<td class='center' bgcolor='$bgcolor'>";
-            Ticket::dropdownPriority("_matrix_${urgence}_${impact}",$pri);
+            Ticket::dropdownPriority("_matrix_${urgency}_${impact}",$pri);
             echo "</td>";
          }
          echo "</tr>\n";

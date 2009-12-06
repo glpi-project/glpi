@@ -406,7 +406,7 @@ class MailCollector  extends CommonDBTM {
          //$tkt['Subject']= $head['subject'];   // not use for the moment
          $tkt['name']=$this->textCleaner($head['subject']);
          // Medium
-         $tkt['urgence']= "3";
+         $tkt['urgency']= "3";
          // No hardware associated
          $tkt['itemtype']="0";
          // Mail request type

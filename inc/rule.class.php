@@ -995,8 +995,8 @@ class Rule extends CommonDBTM {
             case "dropdown_priority" :
                return Ticket::getPriorityName($pattern);
 
-            case "dropdown_urgence" :
-               return Ticket::getUrgenceName($pattern);
+            case "dropdown_urgency" :
+               return Ticket::getUrgencyName($pattern);
 
             case "dropdown_impact" :
                return Ticket::getImpactName($pattern);
@@ -1036,8 +1036,8 @@ class Rule extends CommonDBTM {
                $display=true;
                break;
 
-            case "dropdown_urgence" :
-               Ticket::dropdownUrgence($name,$value);
+            case "dropdown_urgency" :
+               Ticket::dropdownUrgency($name,$value);
                $display=true;
                break;
 
@@ -1122,8 +1122,8 @@ class Rule extends CommonDBTM {
             case "dropdown_impact" :
                return Ticket::getImpactName($value);
 
-            case "dropdown_urgence" :
-               return Ticket::getUrgenceName($value);
+            case "dropdown_urgency" :
+               return Ticket::getUrgencyName($value);
 
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);

@@ -2389,27 +2389,27 @@ function update0723to080() {
       $DB->query($query) or die("0.80 set default priority_matrix  in glpi_configs " .
                                 $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists('glpi_tickets','urgence')) {
+   if (!FieldExists('glpi_tickets','urgency')) {
       $query = "ALTER TABLE `glpi_tickets`
-                      ADD `urgence` INT NOT NULL DEFAULT '1' AFTER `content`,
-                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgence` ";
-      $DB->query($query) or die("0.80 add urgence, impact to glpi_tickets" .
+                      ADD `urgency` INT NOT NULL DEFAULT '1' AFTER `content`,
+                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgency` ";
+      $DB->query($query) or die("0.80 add urgency, impact to glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
 
       // set default trivial values for Impact and Urgence
-      $query = "UPDATE `glpi_tickets` SET `urgence` = `priority`, `impact` = `priority`";
-      $DB->query($query) or die("0.80 set urgence, impact in glpi_tickets" .
+      $query = "UPDATE `glpi_tickets` SET `urgency` = `priority`, `impact` = `priority`";
+      $DB->query($query) or die("0.80 set urgency, impact in glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
 
-      // Replace 'priority' (user choice un 0.72) by 'urgence' as criteria
+      // Replace 'priority' (user choice un 0.72) by 'urgency' as criteria
       // Don't change "action" which is the result of user+tech evaluation.
       $query = "UPDATE `glpi_rulecriterias`
-                SET `criteria`='urgence'
+                SET `criteria`='urgency'
                 WHERE `criteria`='priority'
                   AND `rules_id` IN (SELECT `id`
                                      FROM `glpi_rules`
                                      WHERE `sub_type`='".RULE_TRACKING_AUTO_ACTION."')";
-      $DB->query($query) or die("0.80 fix priority/urgence in business rules " .
+      $DB->query($query) or die("0.80 fix priority/urgency in business rules " .
                                  $LANG['update'][90] . $DB->error());
    }
 

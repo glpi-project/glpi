@@ -1749,7 +1749,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
    $content="";
    $title="";
    $ticketcategories_id = 0;
-   $urgence  = 3;
+   $urgency  = 3;
 
    if (isset($_SESSION["helpdeskSaved"]["use_email_notification"])) {
       $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
@@ -1769,8 +1769,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
    if (isset($_SESSION["helpdeskSaved"]["ticketcategories_id"])) {
       $ticketcategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketcategories_id"]);
    }
-   if (isset($_SESSION["helpdeskSaved"]["urgence"])) {
-      $urgence = stripslashes($_SESSION["helpdeskSaved"]["urgence"]);
+   if (isset($_SESSION["helpdeskSaved"]["urgency"])) {
+      $urgency = stripslashes($_SESSION["helpdeskSaved"]["urgency"]);
    }
 
    unset($_SESSION["helpdeskSaved"]);
@@ -1791,7 +1791,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
    echo "<td>";
-   Ticket::dropdownUrgence("urgence",$urgence);
+   Ticket::dropdownUrgency("urgency",$urgency);
    echo "</td></tr>";
    if (isAuthorMailingActivatedForHelpdesk()) {
       echo "<tr class='tab_bg_1'>";

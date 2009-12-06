@@ -1768,7 +1768,7 @@ function showJobDetails($target, $ID,$array=array()) {
       $job->fields["name"]                 = $array["name"];
       $job->fields["content"]              = $array["content"];
       $job->fields["ticketcategories_id"]  = $array["ticketcategories_id"];
-      $job->fields["urgence"]              = $array["urgence"];
+      $job->fields["urgency"]              = $array["urgency"];
       $job->fields["impact"]               = $array["impact"];
       $job->fields["priority"]             = $array["priority"];
       $job->fields["requesttypes_id"]      = $array["requesttypes_id"];
@@ -1876,11 +1876,11 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td>";
    if ($canupdate && ($canpriority || !$ID || $job->fields["users_id_recipient"]==$_SESSION["glpiID"])) {
       // Only change during creation OR when allowed to change priority OR when user is the creator
-      $idurgence = Ticket::dropdownUrgence("urgence",$job->fields["urgence"]);
+      $idurgency = Ticket::dropdownUrgency("urgency",$job->fields["urgency"]);
    } else {
-      $idurgence = "value_urgence".mt_rand();
-      echo "<input id='$idurgence' type='hidden' name='urgence' value='".$job->fields["urgence"]."'>";
-      echo Ticket::getUrgenceName($job->fields["urgence"]);
+      $idurgency = "value_urgency".mt_rand();
+      echo "<input id='$idurgency' type='hidden' name='urgency' value='".$job->fields["urgency"]."'>";
+      echo Ticket::getUrgencyName($job->fields["urgency"]);
    }
    echo "</td>";
    echo "<td class='left'>";
@@ -1967,10 +1967,10 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<span id='$idajax'>".Ticket::getPriorityName($job->fields["priority"])."</span>";
    }
    if ($canupdate) {
-      $params=array('urgence'  => '__VALUE0__',
+      $params=array('urgency'  => '__VALUE0__',
                     'impact'   => '__VALUE1__',
                     'priority' => $idpriority);
-      ajaxUpdateItemOnSelectEvent(array($idurgence, $idimpact), $idajax,
+      ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
                                   $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
    }
    echo "</td>";
