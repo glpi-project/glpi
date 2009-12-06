@@ -67,7 +67,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             $prof->showFormInventory($_POST['target']);
             $prof->showFormTracking($_POST['target']);
             $prof->showFormAdmin($_POST['target']);
-            showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
+            $prof->showEntityUser($_POST['target'], $prof);
             displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
             break;
 
@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             break;
 
          case 4 :
-            showProfileEntityUser($_POST['target'],$_POST["id"],$prof);
+            $prof->showEntityUser($_POST['target'], $prof);
             break;
 
          default :
