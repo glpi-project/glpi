@@ -60,8 +60,8 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
-                            MONITOR_TYPE,$_POST["id"],1,$_POST["withtemplate"]);
+            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$monitor,
+                                 1,$_POST["withtemplate"]);
             Contract::showAssociated($monitor,$_POST["withtemplate"]);
             break;
 
@@ -76,7 +76,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case -1:
             Computer_Item::showForItem($monitor);
-            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$monitor);
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
             showJobListForItem(MONITOR_TYPE,$_POST["id"]);
@@ -85,7 +85,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["id"]);
+            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$monitor);
             Contract::showAssociated($monitor);
             break;
 

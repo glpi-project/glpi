@@ -56,14 +56,14 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          showCartridgesAdd($_POST["id"]);
          showCartridges($_POST["id"]);
          showCartridges($_POST["id"],1);
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
          Document::showAssociated($cartridge);
          showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
          displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGEITEM_TYPE,$_POST["id"],1);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
          break;
 
       case 5 :

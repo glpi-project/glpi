@@ -54,14 +54,14 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          showConsumableAdd($_POST["id"]);
          showConsumables($_POST["id"]);
          showConsumables($_POST["id"],1);
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
          Document::showAssociated($consumable);
          showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
          displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLEITEM_TYPE,$_POST["id"],1);
+         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
          break;
 
       case 5 :
