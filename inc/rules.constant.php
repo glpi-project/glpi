@@ -214,8 +214,8 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['name']      = $LANG[
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['linkfield'] = 'entities_id';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['type']      = 'dropdown';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['urgence']['name'] = $LANG['joblist'][29];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['urgence']['type'] = 'dropdown_urgence';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['urgency']['name'] = $LANG['joblist'][29];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['urgency']['type'] = 'dropdown_urgency';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['impact']['name'] = $LANG['joblist'][30];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['impact']['type'] = 'dropdown_impact';

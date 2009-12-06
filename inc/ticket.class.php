@@ -654,7 +654,7 @@ class Ticket extends CommonDBTM {
       if (!isset($input['_auto_import'])) {
          $_SESSION["helpdeskSaved"]=$input;
 
-         if (!isset($input["urgence"])) {
+         if (!isset($input["urgency"])) {
             addMessageAfterRedirect($LANG['tracking'][4],false,ERROR);
             $mandatory_ok=false;
          }
@@ -687,14 +687,14 @@ class Ticket extends CommonDBTM {
             return false;
          }
       }
-      if (!isset($input["urgence"])) {
-         $input["urgence"] = 3;
+      if (!isset($input["urgency"])) {
+         $input["urgency"] = 3;
       }
       if (!isset($input["impact"])) {
          $input["impact"] = 3;
       }
       if (!isset($input["priority"])) {
-         $input["priority"] = $this->computePriority($input["urgence"], $input["impact"]);
+         $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
       }
 
       unset($_SESSION["helpdeskSaved"]);
@@ -1413,17 +1413,17 @@ class Ticket extends CommonDBTM {
    /**
     * Compute Priority
     *
-    * @param $urgence integer from 1 to 5
+    * @param $urgency integer from 1 to 5
     * @param $impact integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
     */
-   static function computePriority ($urgence, $impact) {
-      if (isset($CFG_GLPI['priority_matrix'][$urgence][$impact])) {
-         return $CFG_GLPI['priority_matrix'][$urgence][$impact];
+   static function computePriority ($urgency, $impact) {
+      if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
+         return $CFG_GLPI['priority_matrix'][$urgency][$impact];
       }
       // Failback to trivial
-      return round(($urgence+$impact)/2);
+      return round(($urgency+$impact)/2);
    }
 
    /**
@@ -1496,14 +1496,14 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Dropdown of ticket Urgence
+    * Dropdown of ticket Urgency
     *
     * @param $name select name
     * @param $value default value
     *
     * @return string id of the select
     */
-   static function dropdownUrgence($name, $value=0) {
+   static function dropdownUrgency($name, $value=0) {
       global $LANG;
 
       $id = "select_$name".mt_rand();
@@ -1523,7 +1523,7 @@ class Ticket extends CommonDBTM {
     *
     * @param $value status ID
     */
-   static function getUrgenceName($value) {
+   static function getUrgencyName($value) {
       global $LANG;
 
       switch ($value) {

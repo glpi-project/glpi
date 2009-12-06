@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
                    'name'                 => '',
                    'content'              => '',
                    'ticketcategories_id'  => 0,
-                   'urgence'              => 3,
+                   'urgency'              => 3,
                    'impact'               => 3,
                    'priority'             => Ticket::computePriority(3,3),
                    'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
