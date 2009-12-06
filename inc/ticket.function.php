@@ -1958,7 +1958,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate && $canpriority) {
-      $idpriority = Ticket::dropdownPriority("priority",$job->fields["priority"]);
+      $idpriority = Ticket::dropdownPriority("priority",$job->fields["priority"],false,true);
       $idajax = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
    } else {

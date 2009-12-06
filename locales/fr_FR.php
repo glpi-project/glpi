@@ -578,7 +578,8 @@ $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="heure(s)";
 
 // For priority
-$LANG['help'][2]="Matrice de calcul de la priorité";
+$LANG['help'][1]="Matrice de calcul de la priorité";
+$LANG['help'][2]="Majeure";
 $LANG['help'][3]="Très haute";
 $LANG['help'][4]="Haute";
 $LANG['help'][5]="Moyenne";
@@ -615,6 +616,7 @@ $LANG['help'][48]="Haut";
 $LANG['help'][49]="Moyen";
 $LANG['help'][50]="Bas";
 $LANG['help'][51]="Très bas";
+
 
 
 $LANG['install'][0]="Installation ou mise à jour de GLPI";

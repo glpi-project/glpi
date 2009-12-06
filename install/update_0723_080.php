@@ -2398,6 +2398,20 @@ function update0723to080() {
                                 $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_users","priority_6")) {
+      $query = "ALTER TABLE `glpi_users`
+                      ADD `priority_6` CHAR( 20 ) NULL DEFAULT NULL AFTER `priority_5`";
+      $DB->query($query) or die("0.80 add priority_6  in glpi_users " .
+                                $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_configs","priority_6")) {
+      $query = "ALTER TABLE `glpi_configs`
+                       ADD `priority_6` CHAR( 20 ) NOT NULL DEFAULT '#ff5555' AFTER `priority_5`";
+      $DB->query($query) or die("0.80 add priority_6  in glpi_configs " .
+                                $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_tickets','urgency')) {
       $query = "ALTER TABLE `glpi_tickets`
                       ADD `urgency` INT NOT NULL DEFAULT '1' AFTER `content`,

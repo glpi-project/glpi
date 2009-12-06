@@ -644,7 +644,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>" . $LANG['help'][2];
+      echo "<tr><th colspan='7'>" . $LANG['help'][1];
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='b right' colspan='2'>".$LANG['joblist'][30]."&nbsp;:</td>";
@@ -814,20 +814,23 @@ class Config extends CommonDBTM {
 
          echo "<table><tr>";
          echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_1\" size='7' value=\"" .
-                $data["priority_1"] . "\"></td>";
+         echo "<input type='text' name='priority_1' size='7' value='" .
+                $data["priority_1"] . "'></td>";
          echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_2\" size='7' value=\"" .
-                $data["priority_2"] . "\"></td>";
+         echo "<input type='text' name='priority_2' size='7' value='" .
+                $data["priority_2"] . "'></td>";
          echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_3\" size='7' value=\"" .
-                $data["priority_3"] . "\"></td>";
+         echo "<input type='text' name='priority_3' size='7' value='" .
+                $data["priority_3"] . "'></td>";
          echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_4\" size='7' value=\"" .
-                $data["priority_4"] . "\"></td>";
+         echo "<input type='text' name='priority_4' size='7' value='" .
+                $data["priority_4"] . "'></td>";
          echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;:&nbsp;";
-         echo "<input type=\"text\" name=\"priority_5\" size='7' value=\"" .
-                $data["priority_5"] . "\"></td>";
+         echo "<input type='text' name='priority_5' size='7' value='" .
+                $data["priority_5"] . "'></td>";
+         echo "<td bgcolor='" . $data["priority_6"] . "'>5&nbsp;:&nbsp;";
+         echo "<input type='text' name='priority_6' size='7' value='" .
+                $data["priority_6"] . "'></td>";
          echo "</tr></table>";
 
          echo "</td></tr>";
