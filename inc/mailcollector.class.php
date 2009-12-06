@@ -866,6 +866,48 @@ class MailCollector  extends CommonDBTM {
       }
       return 0;
    }
+
+   function showSystemInformations($width) {
+      global $LANG,$CFG_GLPI,$DB;
+
+            echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][704] .
+         " / ". $LANG['mailgate'][0] ."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+      $msg = $LANG['setup'][231].": ";
+      switch($CFG_GLPI['smtp_mode']) {
+         case MAIL_MAIL :
+            $msg .= $LANG['setup'][650];
+            break;
+
+         case MAIL_SMTP :
+            $msg .= $LANG['setup'][651];
+            break;
+
+         case MAIL_SMTPSSL :
+            $msg .= $LANG['setup'][652];
+            break;
+
+         case MAIL_SMTPTLS :
+            $msg .= $LANG['setup'][653];
+            break;
+      }
+      if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
+         $msg .= " (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").
+                    $CFG_GLPI['smtp_host'].")";
+      }
+      echo wordwrap($msg."\n", $width, "\n\t\t");
+
+      echo $LANG['mailgate'][0]."\n";
+      foreach ($DB->request('glpi_mailcollectors') as $mc) {
+         $msg = "\t".$LANG['common'][16].':"'.$mc['name'].'"  ';
+         $msg .= " ".$LANG['common'][52].':'.$mc['host'];
+         $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
+         $msg .= " ".$LANG['login'][7].':'.(empty($mc['password'])?$LANG['choice'][0]:$LANG['choice'][1]);
+         $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
+         echo wordwrap($msg."\n", $width, "\n\t\t");
+      }
+   }
 }
 
 ?>

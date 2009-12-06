@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array("dbconnection","ocsng","setup",'ticket','crontask');
+$NEEDED_ITEMS = array("dbconnection","ocsng","setup",'ticket','crontask','mailcollector',
+                      'authmail');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -57,7 +58,7 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormHelpdesk($_POST['target']);
       $config->showFormConnection($_POST['target']);
       $config->showFormDBSlave($_POST['target']);
-      showSystemInformations();
+      $config->showSystemInformations();
       displayPluginAction('Config',0,$_REQUEST['glpi_tab']);
       break;
 
@@ -86,7 +87,7 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 8 :
-      showSystemInformations();
+      $config->showSystemInformations();
       break;
 
    default :

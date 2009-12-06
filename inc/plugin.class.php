@@ -602,6 +602,48 @@ class Plugin extends CommonDBTM {
       }
    }
 
+   function showSystemInformations($width) {
+      global $LANG;
+      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['plugins'][0] . "</th></tr>";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+      $plug = new Plugin();
+      $pluglist=$plug->find("","name, directory");
+      foreach ($pluglist as $plugin) {
+         $msg = substr(str_pad($plugin['directory'],30),0,16)." ".$LANG['common'][16].":".
+                utf8_substr(str_pad($plugin['name'],40),0,30)." ";
+         $msg .= $LANG['rulesengine'][78]."&nbsp;:".str_pad($plugin['version'],10)." ";
+         $msg .= $LANG['joblist'][0]."&nbsp;:";
+         switch ($plugin['state']) {
+            case PLUGIN_NEW :
+               $msg .=  $LANG['joblist'][9];
+               break;
+
+            case PLUGIN_ACTIVATED :
+               $msg .=  $LANG['setup'][192];
+               break;
+
+            case PLUGIN_NOTINSTALLED :
+               $msg .=  $LANG['plugins'][1];
+               break;
+
+            case PLUGIN_TOBECONFIGURED :
+               $msg .=  $LANG['plugins'][2];
+               break;
+
+            case PLUGIN_NOTACTIVATED :
+               $msg .=  $LANG['plugins'][3];
+               break;
+
+            case PLUGIN_TOBECLEANED :
+            default :
+               $msg .=  $LANG['plugins'][4];
+               break;
+         }
+         echo wordwrap("\t".$msg."\n", $width, "\n\t\t");
+      }
+      echo "\n</pre></td></tr>";
+   }
 }
 
 ?>
