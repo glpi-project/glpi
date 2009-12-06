@@ -123,6 +123,17 @@ class Config extends CommonDBTM {
             }
          }
          $input['priority_matrix'] = json_encode($tab);
+
+         $input['urgency_mask'] = 0;
+         $input['impact_mask'] = 0;
+         for ($i=1 ; $i<=5 ; $i++) {
+            if ($input["_urgency_${i}"]) {
+               $input['urgency_mask'] += (1<<$i);
+            }
+            if ($input["_impact_${i}"]) {
+               $input['impact_mask'] += (1<<$i);
+            }
+         }
       }
       return $input;
    }
@@ -638,7 +649,15 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='b right' colspan='2'>".$LANG['joblist'][30]."&nbsp;:</td>";
       for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
-         echo "<td class='center'>".$LANG['help'][$msg]."</td>";
+         echo "<td class='center'>".$LANG['help'][$msg]."&nbsp;: ";
+         if ($impact==3) {
+            $isimpact[3] = 1;
+            echo "<input type='hidden' name='_impact_3' value='1'>";
+         } else {
+            $isimpact[$impact] = $CFG_GLPI['impact_mask']&(1<<$impact);
+            dropdownYesNo("_impact_${impact}", $isimpact[$impact]);
+         }
+         echo "</td>";
       }
       echo "</tr>";
       echo "<tr class='tab_bg_1'><td class='b' colspan='2'>".$LANG['joblist'][29]."</td>";
@@ -646,28 +665,30 @@ class Config extends CommonDBTM {
          echo "<td>&nbsp;</td>";
       }
       echo "</tr>";
-/*
-      echo "<tr class='tab_bg_1'><td class='b left'>".$LANG['joblist'][29]."</td>";
-      echo "<td class='b right'>".$LANG['joblist'][30]."</td>";
-      for ($impact=1, $msg=51 ; $impact<=5 ; $impact++, $msg--) {
-         echo "<td class='center'>".$LANG['help'][$msg]."</td>";
-      }
-      echo "</tr>";
-*/
-      //for ($urgency=1, $msg=46 ; $urgency<=5 ; $urgency++, $msg--) {
       for ($urgency=5, $msg=42 ; $urgency>=1 ; $urgency--, $msg++) {
-         echo "<tr class='tab_bg_2'><td class='tab_bg_1' colspan='2'>".$LANG['help'][$msg]."</td>";
-         //for ($impact=1 ; $impact<=5 ; $impact++) {
+         echo "<tr class='tab_bg_1'><td>".$LANG['help'][$msg]."&nbsp;:</td>";
+         echo "<td>";
+         if ($urgency==3) {
+            $isurgency[3] = 1;
+            echo "<input type='hidden' name='_urgency_3' value='1'>";
+         } else {
+            $isurgency[$urgency] = $CFG_GLPI['urgency_mask']&(1<<$urgency);
+            dropdownYesNo("_urgency_${urgency}", $isurgency[$urgency]);
+         }
+         echo "</td>";
          for ($impact=5 ; $impact>=1 ; $impact--) {
             $pri = round(($urgency+$impact)/2);
             if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
                $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
-            $bgcolor=$_SESSION["glpipriority_$pri"];
-
-            echo "<td class='center' bgcolor='$bgcolor'>";
-            Ticket::dropdownPriority("_matrix_${urgency}_${impact}",$pri);
-            echo "</td>";
+            if ($isurgency[$urgency] && $isimpact[$impact]) {
+               $bgcolor=$_SESSION["glpipriority_$pri"];
+               echo "<td class='center' bgcolor='$bgcolor'>";
+               Ticket::dropdownPriority("_matrix_${urgency}_${impact}",$pri);
+               echo "</td>";
+            } else {
+               echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'></td>";
+            }
          }
          echo "</tr>\n";
       }
