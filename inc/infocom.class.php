@@ -308,6 +308,23 @@ class InfoCom extends CommonDBTM {
       }
       return 0;
    }
+
+   /**
+    * Dropdown for infocoms alert config
+    *
+    * @param $name select name
+    * @param $value default value
+    */
+   static function dropdownAlert($name,$value=0) {
+      global $LANG;
+
+      echo "<select name=\"$name\">";
+      echo "<option value='0'".($value==0?" selected ":"")." >-----</option>";
+      echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".
+             $LANG['financial'][80]." </option>";
+      echo "</select>";
+   }
+
 }
 
 ?>
