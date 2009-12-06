@@ -1437,7 +1437,7 @@ class Ticket extends CommonDBTM {
     *
     * @return string id of the select
     */
-   static function dropdownPriority($name,$value=0,$complete=0) {
+   static function dropdownPriority($name,$value=0,$complete=false,$major=false) {
       global $LANG;
 
       $id = "select_$name".mt_rand();
@@ -1454,6 +1454,9 @@ class Ticket extends CommonDBTM {
                 $LANG['help'][6]."</option>";
          echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][7]."</option>";
+      }
+      if ($complete || $major) {
+         echo "<option value='6' ".($value==6?" selected ":"").">".$LANG['help'][2]."</option>";
       }
       echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][3]."</option>";
       echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][4]."</option>";
@@ -1475,25 +1478,23 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       switch ($value) {
+         case 6 :
+            return $LANG['help'][2];
+
          case 5 :
             return $LANG['help'][3];
-            break;
 
          case 4 :
             return $LANG['help'][4];
-            break;
 
          case 3 :
             return $LANG['help'][5];
-            break;
 
          case 2 :
             return $LANG['help'][6];
-            break;
 
          case 1 :
             return $LANG['help'][7];
-            break;
       }
    }
 
