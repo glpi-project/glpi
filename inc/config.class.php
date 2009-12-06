@@ -101,15 +101,15 @@ class Config extends CommonDBTM {
 
       // Manage DB Slave process
       if (isset($input['_dbslave_status'])) {
-         $already_active=isDBSlaveActive();
+         $already_active=DBConnection::isDBSlaveActive();
          if ($input['_dbslave_status'] && !$already_active) {
-            createDBSlaveConfig();
+            DBConnection::createDBSlaveConfig();
          } else {
-            saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
+            DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
                             $input["_dbreplicate_dbpassword"],$input["_dbreplicate_dbdefault"]);
          }
          if (!$input['_dbslave_status'] && $already_active) {
-            deleteDBSlaveConfig();
+            DBConnection::deleteDBSlaveConfig();
          }
       }
 
@@ -530,7 +530,7 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
-      $active = isDBSlaveActive();
+      $active = DBConnection::isDBSlaveActive();
 
       echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][800] . "</th></tr>";
 
@@ -539,7 +539,7 @@ class Config extends CommonDBTM {
       echo " </td><td colspan='2'></td></tr>";
 
       if ($active){
-         $DBSlave = getDBSlaveConf();
+         $DBSlave = DBConnection::getDBSlaveConf();
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['install'][30] . " </td>";
          echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" .
@@ -567,7 +567,7 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          if ($DBSlave->connected && !$DB->isSlave()) {
             echo "<td colspan='4' class='center'>" . $LANG['setup'][803] . "&nbsp;: ";
-            echo timestampToString(getReplicateDelay(),1);
+            echo timestampToString(DBConnection::getReplicateDelay(),1);
             echo "</td>";
          } else
             echo "<td colspan='4'></td>";

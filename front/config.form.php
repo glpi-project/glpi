@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('dbreplicate', 'ocsng', 'setup');
+$NEEDED_ITEMS = array('dbconnection', 'ocsng', 'setup');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

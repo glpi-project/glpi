@@ -155,7 +155,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_group" :
-         dropdownValue("glpi_groups","group",0);
+         dropdownValue("glpi_groups","groups_id",0);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;

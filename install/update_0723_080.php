@@ -2021,7 +2021,7 @@ function update0723to080() {
          (7,  NULL, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (8,  NULL, 'CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (9,  NULL, 'MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (10, NULL, NULL, 'dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (10, NULL, 'DBconnection', 'check_dbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (11, NULL, 'CronTask', 'check_update', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          (12, NULL, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
@@ -2051,7 +2051,7 @@ function update0723to080() {
    }
    // Retrieve core task lastrun date
    $tasks=array('ocsng','cartridge','consumable','software','contract','infocom',
-               'logs','optimize','mailgate','dbreplicate','check_update','session');
+               'logs','optimize','mailgate','DBConnection','check_update','session');
    foreach ($tasks as $task) {
       $lock=GLPI_CRON_DIR. '/' . $task . '.lock';
       if (is_readable($lock) && $stat=stat($lock)) {
@@ -2123,7 +2123,7 @@ function update0723to080() {
          if ($DB->numrows($result)>0) {
             $value=$DB->result($result,0,0);
             $value = intval($value/60);
-            $query="UPDATE `glpi_crontasks` SET `state`='1', `frequency`='$value' WHERE `name`='dbreplicate';";
+            $query="UPDATE `glpi_crontasks` SET `state`='1', `frequency`='$value' WHERE `name`='check_dbreplicate';";
             $DB->query($query);
          }
       }

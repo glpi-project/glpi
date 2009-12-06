@@ -140,12 +140,12 @@ function update07to071() {
 		$DB->query($query) or die("0.71 add table glpi_auth_ldap_replicate " . $LANG['update'][90] . $DB->error());
 	}	
 
-	if (!FieldExists("glpi_config","dbreplicate_notify_desynchronization")) {
-		$query = "ALTER TABLE `glpi_config` ADD `dbreplicate_notify_desynchronization` SMALLINT NOT NULL DEFAULT '0',
-				ADD `dbreplicate_email` VARCHAR( 255 ) NULL ,
-				ADD `dbreplicate_maxdelay` INT NOT NULL DEFAULT '3600';";
+	if (!FieldExists("glpi_config","DBConnection_notify_desynchronization")) {
+		$query = "ALTER TABLE `glpi_config` ADD `DBConnection_notify_desynchronization` SMALLINT NOT NULL DEFAULT '0',
+				ADD `DBConnection_email` VARCHAR( 255 ) NULL ,
+				ADD `DBConnection_maxdelay` INT NOT NULL DEFAULT '3600';";
 
-		$DB->query($query) or die("0.71 alter config add config for dbreplicate notif " . $LANG['update'][90] . $DB->error());
+		$DB->query($query) or die("0.71 alter config add config for DBConnection notif " . $LANG['update'][90] . $DB->error());
 	}
 
  	if (FieldExists("glpi_reminder", "author")) {
