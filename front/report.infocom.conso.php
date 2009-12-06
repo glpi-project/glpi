@@ -138,10 +138,10 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeursoustot+=$line["value"];
             }
 
-            $valeurnette=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],
+            $valeurnette=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
                                       $line["sink_coeff"],$line["buy_date"],$line["use_date"],
                                       $CFG_GLPI["date_tax"],"n");
-            $tmp=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],
+            $tmp=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
                               $line["sink_coeff"],$line["buy_date"],$line["use_date"],
                               $CFG_GLPI["date_tax"],"all");
 

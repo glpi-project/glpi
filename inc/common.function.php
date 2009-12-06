@@ -1274,7 +1274,7 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
    // Php 5.3 : number_format() expects parameter 1 to be double,
    if ($number=="") {
       $number=0;
-   } else if ($number=="-") { // used for not defines value (from TableauAmort, p.e.)
+   } else if ($number=="-") { // used for not defines value (from Infocom::Amort, p.e.)
       return "-";
    }
 

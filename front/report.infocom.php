@@ -124,8 +124,12 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 			if ($line["value"]>0) $valeursoustot+=$line["value"];
 
-			$valeurnette=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"n");
-			$tmp=TableauAmort($line["sink_type"],$line["value"],$line["sink_time"],$line["sink_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_tax"],"all");
+         $valeurnette=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
+                                     $line["sink_coeff"],$line["buy_date"],$line["use_date"],
+                                     $CFG_GLPI["date_tax"],"n");
+         $tmp=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
+                             $line["sink_coeff"],$line["buy_date"],$line["use_date"],
+                             $CFG_GLPI["date_tax"],"all");
 
 			if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){
@@ -154,9 +158,11 @@ function display_infocoms_report($itemtype,$begin,$end){
 				}
 			}
 
-			echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".formatNumber($valeurnette)."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
-
-
+         echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".
+               formatNumber($valeurnette)."</td><td class='right'>".
+               Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
+               convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".
+               getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 		}
 
 		$valeurtot+=$valeursoustot;
