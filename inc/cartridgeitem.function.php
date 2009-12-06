@@ -219,7 +219,7 @@ function showCartridges ($tID,$show_old=0) {
                echo "</td>";
             }
             echo "<td class='center'>";
-            showDisplayInfocomLink(CARTRIDGE_TYPE,$data["id"],1);
+            Infocom::showDisplayLink(CARTRIDGE_TYPE,$data["id"],1);
             echo "</td>";
             echo "<td class='center'>";
             if (!is_null($date_use) && $canedit) {

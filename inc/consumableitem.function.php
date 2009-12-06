@@ -191,7 +191,7 @@ function showConsumables ($tID,$show_old=0) {
                echo "</td>";
             }
             echo "<td class='center'>";
-            showDisplayInfocomLink(CONSUMABLE_TYPE,$data["id"],1);
+            Infocom::showDisplayLink(CONSUMABLE_TYPE,$data["id"],1);
             echo "</td>";
 
             if (!$show_old && $canedit) {
