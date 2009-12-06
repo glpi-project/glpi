@@ -143,7 +143,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "sink_type" :
-                  dropdownAmortType("sink_type");
+                  Infocom::dropdownAmortType("sink_type");
                   break;
 
                case "sink_time" :

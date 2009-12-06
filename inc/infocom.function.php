@@ -182,9 +182,9 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
             echo "</td>";
             echo "<td>".$LANG['financial'][22]."&nbsp;:</td><td >";
             if ($withtemplate==2) {
-               echo getAmortTypeName($ic->fields["sink_type"]);
+               echo Infocom::getAmortTypeName($ic->fields["sink_type"]);
             } else {
-               dropdownAmortType("sink_type",$ic->fields["sink_type"]);
+               Infocom::dropdownAmortType("sink_type",$ic->fields["sink_type"]);
             }
             echo "</td></tr>";
 

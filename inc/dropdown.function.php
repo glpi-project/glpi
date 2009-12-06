@@ -2171,44 +2171,6 @@ function dropdownRequestType($name,$value=0) {
 }
 
 /**
- * Dropdown of amortissement type for infocoms
- *
- * @param $name select name
- * @param $value default value
- */
-function dropdownAmortType($name,$value=0) {
-   global $LANG;
-
-   echo "<select name='$name'>";
-   echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-   echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][47]."</option>";
-   echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][48]."</option>";
-   echo "</select>";
-}
-/**
- * Get amortissement type name for infocoms
- *
- * @param $value status ID
- */
-function getAmortTypeName($value) {
-   global $LANG;
-
-   switch ($value) {
-      case 2 :
-         return $LANG['financial'][47];
-         break;
-
-      case 1 :
-         return $LANG['financial'][48];
-         break;
-
-      case 0 :
-         return "";
-         break;
-   }
-}
-
-/**
  * Get planninf state name
  *
  * @param $value status ID
