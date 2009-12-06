@@ -1164,7 +1164,9 @@ class Config extends CommonDBTM {
          $tmp->showSystemInformations($width);
       }
 
-      echo "\n[/code]\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>\n";
+      echo "\n</td></tr>";
+      echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
+      echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>\n";
       echo "</tr>\n";
       echo "</table></div>\n";
    }
