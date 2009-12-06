@@ -1042,9 +1042,9 @@ class CronTask extends CommonDBTM{
       $tab[7]['name']      = $LANG['crontask'][40];
       $tab[7]['datatype']  = 'datetime';
 
-      $tab[8]['table']     = 'glpi_crontasks';
-      $tab[8]['field']     = 'plugin';
-      $tab[8]['linkfield'] = '';
+      $tab[8]['table']     = 'glpi_plugins';
+      $tab[8]['field']     = 'name';
+      $tab[8]['linkfield']     = 'plugin';
       $tab[8]['name']      = $LANG['common'][29];
 
       $tab[16]['table']     = 'glpi_crontasks';
