@@ -832,7 +832,7 @@ class Config extends CommonDBTM {
          echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;:&nbsp;";
          echo "<input type='text' name='priority_5' size='7' value='" .
                 $data["priority_5"] . "'></td>";
-         echo "<td bgcolor='" . $data["priority_6"] . "'>5&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_6"] . "'>6&nbsp;:&nbsp;";
          echo "<input type='text' name='priority_6' size='7' value='" .
                 $data["priority_6"] . "'></td>";
          echo "</tr></table>";
