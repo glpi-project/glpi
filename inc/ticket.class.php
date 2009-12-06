@@ -687,10 +687,12 @@ class Ticket extends CommonDBTM {
             return false;
          }
       }
-      if (!isset($input["urgency"])) {
+      if (!isset($input["urgency"])
+          || !($CFG_GLPI['urgency_mask']&(1<<$input["urgency"]))) {
          $input["urgency"] = 3;
       }
-      if (!isset($input["impact"])) {
+      if (!isset($input["impact"])
+          || !($CFG_GLPI['impact_mask']&(1<<$input["impact"]))) {
          $input["impact"] = 3;
       }
       if (!isset($input["priority"])) {
