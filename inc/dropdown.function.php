@@ -2481,22 +2481,6 @@ function dropdownUnderProfiles($name,$value='') {
 }
 
 /**
- * Dropdown for infocoms alert config
- *
- * @param $name select name
- * @param $value default value
- */
-function dropdownAlertInfocoms($name,$value=0) {
-   global $LANG;
-
-   echo "<select name=\"$name\">";
-   echo "<option value='0'".($value==0?" selected ":"")." >-----</option>";
-   echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".
-          $LANG['financial'][80]." </option>";
-   echo "</select>";
-}
-
-/**
  * Private / Public switch for items which may be assign to a user and/or an entity
  *
  * @param $is_private default is private ?

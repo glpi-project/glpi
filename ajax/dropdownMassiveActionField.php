@@ -133,7 +133,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_infocoms" :  // infocoms case
             switch ($search["field"]) {
                case "alert" :
-                  dropdownAlertInfocoms($search["field"]);
+                  Infocom::dropdownAlert($search["field"]);
                   break;
 
                case "buy_date" :

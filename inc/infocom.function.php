@@ -218,7 +218,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
          if ($CFG_GLPI['use_mailing']) {
             echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247]."&nbsp;:</td>";
             echo "<td>";
-            echo dropdownAlertInfocoms("alert",$ic->fields["alert"]);
+            echo Infocom::dropdownAlert("alert",$ic->fields["alert"]);
             echo "</td>";
             echo "<td>&nbsp;</td>";
             echo "<td >&nbsp;</td></tr>";
