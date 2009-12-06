@@ -2062,7 +2062,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
          break;
 
       case 'glpi_crontasks.description' :
-         return " `name` AS ".$NAME."_".$num.", ";
+         return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", ";
          break;
    }
 
@@ -3415,6 +3415,9 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
                             $linkfield,$type,$meta,$meta_type);
          return $out."
                 LEFT JOIN `$new_table` $AS ON (`DEVICE_$type`.`devices_id` = `$nt`.`id`) ";
+
+      case 'glpi_plugins':
+         return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
 
       default :
          // Link with plugin tables : need to know left join structure
