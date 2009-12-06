@@ -1504,15 +1504,23 @@ class Ticket extends CommonDBTM {
     * @return string id of the select
     */
    static function dropdownUrgency($name, $value=0) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
-      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
-      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
+      if ($CFG_GLPI['urgency_mask'] & (1<<5)) {
+         echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
+      }
+      if ($CFG_GLPI['urgency_mask'] & (1<<4)) {
+         echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
+      }
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
+      if ($CFG_GLPI['urgency_mask'] & (1<<2)) {
+         echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
+      }
+      if ($CFG_GLPI['urgency_mask'] & (1<<1)) {
+         echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
+      }
       echo "</select>";
 
       return $id;
@@ -1553,15 +1561,23 @@ class Ticket extends CommonDBTM {
     * @return string id of the select
     */
    static function dropdownImpact($name, $value=0) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
-      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
-      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
+      if ($CFG_GLPI['impact_mask'] & (1<<5)) {
+         echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
+      }
+      if ($CFG_GLPI['impact_mask'] & (1<<4)) {
+         echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
+      }
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
+      if ($CFG_GLPI['impact_mask'] & (1<<2)) {
+         echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
+      }
+      if ($CFG_GLPI['impact_mask'] & (1<<1)) {
+         echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
+      }
       echo "</select>";
 
       return $id;

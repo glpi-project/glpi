@@ -2389,6 +2389,15 @@ function update0723to080() {
       $DB->query($query) or die("0.80 set default priority_matrix  in glpi_configs " .
                                 $LANG['update'][90] . $DB->error());
    }
+
+   if (!FieldExists("glpi_configs","urgency_mask")) {
+      $query = "ALTER TABLE `glpi_configs`
+                      ADD `urgency_mask` INT( 11 ) NOT NULL DEFAULT '62',
+                      ADD `impact_mask` INT( 11 ) NOT NULL DEFAULT '62'";
+      $DB->query($query) or die("0.80 add urgency/impact_mask  in glpi_configs " .
+                                $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_tickets','urgency')) {
       $query = "ALTER TABLE `glpi_tickets`
                       ADD `urgency` INT NOT NULL DEFAULT '1' AFTER `content`,

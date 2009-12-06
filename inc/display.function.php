@@ -1780,6 +1780,10 @@ function printHelpDesk ($ID,$from_helpdesk) {
    echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
    echo "<input type='hidden' name='requesttypes_id' value='".
         RequestType::getDefault('helpdesk')."'>";
+   if ($CFG_GLPI['urgency_mask']==(1<<3)) {
+      // Dont show dropdown if only 1 value enabled
+      echo "<input 'type='hidden' name='urgency' value='3'>";
+   }
    echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
    echo "<div class='center'><table class='tab_cadre'>";
 
@@ -1788,11 +1792,13 @@ function printHelpDesk ($ID,$from_helpdesk) {
       echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
    }
    echo "</th></tr>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
-   echo "<td>";
-   Ticket::dropdownUrgency("urgency",$urgency);
-   echo "</td></tr>";
+   if ($CFG_GLPI['urgency_mask']!=(1<<3)) {
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
+      echo "<td>";
+      Ticket::dropdownUrgency("urgency",$urgency);
+      echo "</td></tr>";
+   }
    if (isAuthorMailingActivatedForHelpdesk()) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][8]."&nbsp;:</td>";
