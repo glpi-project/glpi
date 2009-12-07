@@ -625,6 +625,38 @@ class Auth {
 
       return $this->auth_succeded;
    }
+
+   /**
+    * Print all the authentication methods
+    * @param name the dropdown name
+    *
+    *@return Nothing (display)
+    */
+   static function dropdown($name) {
+      global $LANG,$DB;
+
+      $methods[0]='-----';
+      $methods[AUTH_DB_GLPI]=$LANG['login'][32];
+
+      $sql = "SELECT count(*) AS cpt
+              FROM `glpi_authldaps`";
+      $result = $DB->query($sql);
+
+      if ($DB->result($result,0,"cpt") > 0) {
+         $methods[AUTH_LDAP]=$LANG['login'][31];
+         $methods[AUTH_EXTERNAL]=$LANG['setup'][67];
+      }
+
+      $sql = "SELECT count(*) AS cpt
+              FROM `glpi_authmails`";
+      $result = $DB->query($sql);
+
+      if ($DB->result($result,0,"cpt") > 0) {
+         $methods[AUTH_MAIL]=$LANG['login'][33];
+      }
+
+      return dropdownArrayValues($name,$methods);
+   }
 }
 
 

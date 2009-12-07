@@ -1694,40 +1694,6 @@ function privatePublicSwitch($is_private,$entity,$is_recursive) {
 }
 
 /**
- * Print all the authentication methods
- * @param name the dropdown name
- *
- *@return Nothing (display)
- */
-function dropdownAuthMethods($name) {
-   global $LANG,$DB;
-
-   $methods[0]='-----';
-   $methods[AUTH_DB_GLPI]=$LANG['login'][32];
-
-   $sql = "SELECT count(*) AS cpt
-           FROM `glpi_authldaps`";
-   $result = $DB->query($sql);
-
-   if ($DB->result($result,0,"cpt") > 0) {
-      $methods[AUTH_LDAP]=$LANG['login'][31];
-      $methods[AUTH_EXTERNAL]=$LANG['setup'][67];
-   }
-
-   $sql = "SELECT count(*) AS cpt
-           FROM `glpi_authmails`";
-   $result = $DB->query($sql);
-
-   if ($DB->result($result,0,"cpt") > 0) {
-      $methods[AUTH_MAIL]=$LANG['login'][33];
-   }
-
-   return dropdownArrayValues($name,$methods);
-}
-
-
-
-/**
  * Get the dropdown list name the user is allowed to edit
  *
  * @return array (group of dropdown) of array (table => localized name)
