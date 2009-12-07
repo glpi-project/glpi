@@ -217,7 +217,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";
-      dropdownContractAlerting("alert",$this->fields["alert"]);
+      Contract::dropdownAlert("alert",$this->fields["alert"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td valign='top'>";
@@ -1142,7 +1142,7 @@ class Contract extends CommonDBTM {
     *
     * @return the ID of the renewal
     */
-   function getContractRenewalIDByName($value) {
+   static function getContractRenewalIDByName($value) {
       global $LANG;
 
       if (preg_match("/^$value\$/i",$LANG['financial'][105])) {
@@ -1153,6 +1153,26 @@ class Contract extends CommonDBTM {
       return 0;
    }
 
+   /**
+    * Dropdown for alerting of contracts
+    *
+   * @param $myname select name
+    * @param $value default value
+    */
+   static function dropdownAlert($myname,$value) {
+      global $LANG;
+
+      echo "<select name='$myname'>";
+      echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
+      echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".
+             $LANG['buttons'][32]."</option>";
+      echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".
+             $LANG['financial'][10]."</option>";
+      echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".
+             ($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".
+             $LANG['buttons'][32]." + ".$LANG['financial'][10]."</option>";
+      echo "</select>";
+   }
 }
 
 ?>

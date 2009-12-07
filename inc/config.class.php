@@ -227,7 +227,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . $LANG['setup'][246] . " (" . $LANG['common'][44] . ")</td><td>";
-      dropdownContractAlerting("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
+      Contract::dropdownAlert("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][247] . " (" . $LANG['common'][44] . ")</td><td>";
       echo "<select name=\"default_infocom_alert\">";
