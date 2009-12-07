@@ -104,7 +104,7 @@ class Computer_Device extends CommonDBRelation{
          echo "</table>";
          echo "</form>";
          //ADD a new device form.
-         device_selecter($target,$comp->fields["id"],$withtemplate);
+         Device::dropdownAllDevices($target,$comp->fields["id"],$withtemplate);
          echo "</div><br>";
       }
    }
