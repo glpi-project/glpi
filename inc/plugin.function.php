@@ -443,7 +443,8 @@ function getPluginSearchOptions($itemtype) {
 }
 
 /**
- * Define a new item type used in a plugin
+ * Deprecated function
+ *
  *
  * @param $plugin plugin of the device type
  * @param $name name of the itemtype to define the constant
@@ -454,50 +455,21 @@ function getPluginSearchOptions($itemtype) {
  *
  * @return nothing
  */
+ // TODO Remove this on 2009-12-14
 function registerPluginType($plugin,$name,$itemtype,$attrib) {
    global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 
+   if (is_numeric($itemtype)) {
+      die("itemtype MUST be a class name ($plugin/$name/$itemtype)");
+   }
+   $tmp = isPluginItem($itemtype);
+   if (strcasecmp($tmp['plugin'],$plugin)) {
+      die("itemtype not standard : $plugin/$name/$itemtype/".$tmp['plugin']);
+   }
    if (!defined($name)) {
       define($name,$itemtype);
-      $PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
 
-      if (isset($attrib['classname']) && !empty($attrib['classname'])) {
-         $PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];
-      }
-      if (isset($attrib['typename']) && !empty($attrib['typename'])) {
-         $PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
-      }
-      if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
-         $INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
-      }
-      if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
-         $SEARCH_PAGES[$itemtype]="plugins/$plugin/".$attrib['searchpage'];
-      }
-      if (isset($attrib['tablename']) && !empty($attrib['tablename'])) {
-         $LINK_ID_TABLE[$itemtype] = $attrib['tablename'];
-
-         if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
-            $CFG_GLPI["recursive_type"][$itemtype] = $attrib['tablename'];
-         }
-         if (isset($attrib['deleted_tables']) && $attrib['deleted_tables']) {
-            array_push($CFG_GLPI["deleted_tables"], $attrib['tablename']);
-         }
-         if (isset($attrib['specif_entities_tables']) && $attrib['specif_entities_tables']) {
-            array_push($CFG_GLPI["specif_entities_tables"], $attrib['tablename']);
-         }
-         if (isset($attrib['template_tables']) && $attrib['template_tables']) {
-            array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
-         }
-      } // is set tablename
-
-      foreach (array('contract_types','doc_types','helpdesk_types','helpdesk_visible_types',
-                     'infocom_types','linkgroup_types','linkuser_types',
-                     'massiveaction_noupdate_types','massiveaction_nodelete_types',
-                     'netport_types','reservation_types') as $att) {
-         if (isset($attrib[$att]) && $attrib[$att]) {
-            array_push($CFG_GLPI[$att], $itemtype);
-         }
-      }
+      Plugin::registerClass($itemtype, $attrib);
    } // not already defined
 }
 
@@ -533,7 +505,7 @@ function loadPluginLang($name) {
  */
 function isPluginItem($classname) {
 
-   if (preg_match("/Plugin([A-Z][a-z]+)([A-Z]\w+)/",$classname,$matches)) {
+   if (preg_match("/Plugin([A-Z][a-z]+[0-9]*)([A-Z]\w+)/",$classname,$matches)) {
       $plug=array();
       $plug['plugin']=$matches[1];
       $plug['class']=$matches[2];
