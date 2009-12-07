@@ -87,8 +87,7 @@ else
 {
 	commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
-	if ($link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]))
-		showLinkDevice($_GET["id"]);
+	$link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]);
 	commonFooter();
 }
 

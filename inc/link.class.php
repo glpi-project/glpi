@@ -117,6 +117,8 @@ class Link extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($ID,'',2);
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
       return true;
    }
