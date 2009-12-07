@@ -111,7 +111,7 @@ class Netpoint extends CommonDropdown {
     * @return nothing (display the select box)
     *
     */
-   static function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$entity_restrict=-1,
+   static function dropdown($myname,$value=0,$locations_id=-1,$display_comment=1,$entity_restrict=-1,
                              $devtype=-1) {
 
       global $DB,$CFG_GLPI,$LANG;
