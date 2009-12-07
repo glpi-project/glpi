@@ -404,6 +404,64 @@ class Entity extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * Display entities of the loaded profile
+    *
+   * @param $myname select name
+    * @param $target target for entity change action
+    */
+   static function displayActiveEntities($target,$myname) {
+      global $CFG_GLPI,$LANG;
+
+      $rand=mt_rand();
+
+      echo "<div class='center' ><span class='b'>".$LANG['entity'][10]." ( <img src=\"".
+             $CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG['entity'][11].")</span><br>";
+      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
+             $LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
+
+      echo "<div class='left' style='width:100%'>";
+
+      echo "<script type='javascript'>";
+      echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
+         dataUrl:'".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php'
+      });";
+
+      echo "var Tree_Category$rand = new Ext.tree.TreePanel({
+         collapsible      : false,
+         animCollapse     : false,
+         border           : false,
+         id               : 'tree_projectcategory$rand',
+         el               : 'tree_projectcategory$rand',
+         autoScroll       : true,
+         animate          : false,
+         enableDD         : true,
+         containerScroll  : true,
+         height           : 320,
+         width            : 770,
+         loader           : Tree_Category_Loader$rand,
+         rootVisible     : false
+      });";
+
+      // SET the root node.
+      echo "var Tree_Category_Root$rand = new Ext.tree.AsyncTreeNode({
+         text     : '',
+         draggable   : false,
+         id    : '-1'                  // this IS the id of the startnode
+      });
+      Tree_Category$rand.setRootNode(Tree_Category_Root$rand);";
+
+      // Render the tree.
+      echo "Tree_Category$rand.render();
+            Tree_Category_Root$rand.expand();";
+
+      echo "</script>";
+
+      echo "<div id='tree_projectcategory$rand' ></div>";
+      echo "</div>";
+   }
+
 }
 
 ?>
