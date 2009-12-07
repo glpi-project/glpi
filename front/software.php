@@ -43,11 +43,11 @@ checkRight("software","r");
 
 commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 
-manageGetValuesInSearch(SOFTWARE_TYPE);
+manageGetValuesInSearch('Software');
 
-searchForm(SOFTWARE_TYPE,$_GET);
+searchForm('Software',$_GET);
 
-showList(SOFTWARE_TYPE,$_GET);
+showList('Software',$_GET);
 
 commonFooter();
 
