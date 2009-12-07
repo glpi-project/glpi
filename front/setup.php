@@ -102,7 +102,7 @@ if (haveRight("check_update","r")) {
    echo "<a href='setup.version.php'>".$LANG['setup'][300]."</a></td></tr>";
 }
 
-echo "</table></div>";
+echo "</table>";
 
 commonFooter();
 
