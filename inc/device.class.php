@@ -353,6 +353,60 @@ class Device extends CommonDBTM {
       dropdownArrayValues($name,$options,$value);
    }
 
-}
+   /**
+    * Make a select box form  for device type
+    *
+    * @param $target URL to post the form
+    * @param $computers_id computer ID
+    * @param $withtemplate is it a template computer ?
+    * @return nothing (print out an HTML select box)
+    */
+   static function dropdownDeviceSelector($target,$computers_id,$withtemplate='') {
+      global $LANG,$CFG_GLPI;
 
+      if (!haveRight("computer","w")) {
+         return false;
+      }
+      if (!empty($withtemplate) && $withtemplate == 2) {
+         //do nothing
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr  class='tab_bg_1'><td colspan='2' class='right' width='30%'>";
+         echo $LANG['devices'][0]."&nbsp;:";
+         echo "</td>";
+         echo "<td colspan='63'>";
+         echo "<form action=\"$target\" method=\"post\">";
+
+         $rand=mt_rand();
+
+         $devices=getDictDeviceLabel();
+
+         echo "<select name='devicetype' id='device$rand'>";
+
+         echo '<option value="-1">-----</option>';
+
+
+         foreach ($devices as $i => $name) {
+            echo '<option value="'.$i.'">'.$name.'</option>';
+         }
+         echo "</select>";
+
+         $params=array('idtable'=>'__VALUE__',
+                       'myname'=>'devices_id');
+
+         ajaxUpdateItemOnSelectEvent("device$rand","showdevice$rand",$CFG_GLPI["root_doc"].
+                                     "/ajax/dropdownDevice.php",$params);
+
+         echo "<span id='showdevice$rand'>&nbsp;</span>\n";
+
+         echo '<input type="hidden" name="withtemplate" value="'.$withtemplate.'" >';
+         echo '<input type="hidden" name="connect_device" value="'.true.'" >';
+         echo '<input type="hidden" name="computers_id" value="'.$computers_id.'" >';
+         echo '<input type="submit" class ="submit" value="'.$LANG['buttons'][2].'" >';
+         echo '</form>';
+         echo '</td>';
+         echo '</tr></table>';
+      }
+   }
+}
 ?>
