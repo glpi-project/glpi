@@ -87,7 +87,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "change_authtype" :
-         $rand = dropdownAuthMethods("authtype");
+         $rand = Auth::dropdown("authtype");
          $paramsmassaction=array('authtype'=>'__VALUE__');
          ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
