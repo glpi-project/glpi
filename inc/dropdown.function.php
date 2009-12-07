@@ -1470,26 +1470,7 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
    }
 }
 
-/**
- * Dropdown for alerting of contracts
- *
-* @param $myname select name
- * @param $value default value
- */
-function dropdownContractAlerting($myname,$value) {
-   global $LANG;
 
-   echo "<select name='$myname'>";
-   echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
-   echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".
-          $LANG['buttons'][32]."</option>";
-   echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".
-          $LANG['financial'][10]."</option>";
-   echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".
-          ($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".
-          $LANG['buttons'][32]." + ".$LANG['financial'][10]."</option>";
-   echo "</select>";
-}
 
 /**
  * Print a select with hours

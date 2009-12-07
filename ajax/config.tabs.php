@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 $NEEDED_ITEMS = array("dbconnection","ocsng","setup",'ticket','crontask','mailcollector',
-                      'authmail');
+                      'authmail','contract');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
