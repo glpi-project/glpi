@@ -36,8 +36,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
 $NEEDED_ITEMS = array('setup');
 
 define('GLPI_ROOT', '..');
@@ -45,69 +43,67 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config");
 
+echo "<table class='tab_cadre'>";
+echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][62]."</th></tr>";
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th colspan='2'>".$LANG['setup'][62]."</th></tr>";
+$config = array();
 
-$config=array();
-
-if (haveRight("config","w")){
-	$config["config.form.php"]=$LANG['setup'][70];
-	$config["notification.php"]=$LANG['setup'][68];
-	$config["setup.auth.php"]=$LANG['setup'][67];
-	$config["mailgate.php"]=$LANG['Menu'][39];
-	if ($CFG_GLPI["use_ocs_mode"]&&haveRight("ocsng","w"))
-		$config["ocsserver.php"]=$LANG['setup'][134];
+if (haveRight("config","w")) {
+   $config["config.form.php"]  = $LANG['setup'][70];
+   $config["notification.php"] = $LANG['setup'][68];
+   $config["setup.auth.php"]   = $LANG['setup'][67];
+   $config["mailcollector.php"]     = $LANG['Menu'][39];
+   if ($CFG_GLPI["use_ocs_mode"] && haveRight("ocsng","w")) {
+      $config["ocsserver.php"] = $LANG['setup'][134];
+   }
 }
 
-$data=array();
-if (haveRight("dropdown","r")||haveRight("entity_dropdown","r")){
-	$data["dropdown.php"]=$LANG['setup'][0];
+$data = array();
+if (haveRight("dropdown","r") || haveRight("entity_dropdown","r")) {
+   $data["dropdown.php"] = $LANG['setup'][0];
 }
-if (haveRight("device","w")){
-	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG['title'][30];
+if (haveRight("device","w")) {
+   $data[$CFG_GLPI["root_doc"]."/front/device.php"] = $LANG['title'][30];
 }
-if (haveRight("link","r")){
-	$data[$CFG_GLPI["root_doc"]."/front/link.php"]=$LANG['setup'][87];
+if (haveRight("link","r")) {
+   $data[$CFG_GLPI["root_doc"]."/front/link.php"] = $LANG['setup'][87];
 }
 
 echo "<tr class='tab_bg_1'>";
-if (count($data)>0){
-	echo "<td><table>";
-	foreach ($data as $page => $title)
-		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
-	echo "</table></td>";
+if (count($data) > 0) {
+   echo "<td><table>";
+   foreach ($data as $page => $title) {
+      echo "<tr><td class='b'><a href='$page'>$title</a>&nbsp;&nbsp;</td></tr>\n";
+   }
+   echo "</table></td>";
 }
 
-if (count($config)>0){
-	echo "<td><table>";
-	foreach ($config as $page => $title)
-		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
-	echo "</table></td>";
+if (count($config) > 0) {
+   echo "<td><table>";
+   foreach ($config as $page => $title) {
+      echo "<tr><td class='b'><a href='$page'>$title</a>&nbsp;&nbsp;</td></tr>\n";
+   }
+   echo "</table></td>";
 }
 
 echo "</tr>";
 
-if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page'])) {
-   echo "<tr class='tab_bg_1'><td  colspan='2' align='center'>";
-   echo "<a href=\"plugin.php\"><b>".$LANG['common'][29]."</b></a>";
-   echo "</td></tr>";
+if (isset($PLUGIN_HOOKS['config_page'])
+    && is_array($PLUGIN_HOOKS['config_page'])
+    && count($PLUGIN_HOOKS['config_page'])) {
+
+   echo "<tr class='tab_bg_1'><td colspan='2' class='center b'>";
+   echo "<a href='plugin.php'>".$LANG['common'][29]."</a></td></tr>";
 }
 if (haveRight("check_update","r")) {
-   echo "<tr class='tab_bg_1'><td  colspan='2' align='center'>";
-   echo "<a href=\"setup.version.php\"><b>".$LANG['setup'][300]."</b></a>";
-   echo "</td></tr>";
+   echo "<tr class='tab_bg_1'><td colspan='2' class='center b'>";
+   echo "<a href='setup.version.php'>".$LANG['setup'][300]."</a></td></tr>";
 }
-
-
 
 echo "</table></div>";
 
-
-
-
 commonFooter();
+
 ?>
