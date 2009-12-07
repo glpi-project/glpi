@@ -93,7 +93,7 @@ function cleanSearchOption($itemtype,$action='r') {
  * @param $save Save params to session
  * @return nothing
  */
-function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true) {
+function manageGetValuesInSearch($itemtype,$usesession=true,$save=true) {
    global $_GET,$DB;
 
    $tab=array();
