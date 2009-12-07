@@ -35,7 +35,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 $NEEDED_ITEMS = array('computer', 'document', 'search', 'software');
 
 define('GLPI_ROOT', '..');
@@ -44,23 +43,22 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 commonHeader($LANG['search'][0],$_SERVER['PHP_SELF']);
 
-if (isset($_GET["globalsearch"])){
-	$_GET["reset_before"]=1;
-	$_GET["display_type"]=GLOBAL_SEARCH;
-	$types=array(COMPUTER_TYPE,MONITOR_TYPE,SOFTWARE_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PRINTER_TYPE,PHONE_TYPE,CONTACT_TYPE,ENTERPRISE_TYPE,DOCUMENT_TYPE);
+if (isset($_GET["globalsearch"])) {
+   $_GET["reset_before"] = 1;
+   $_GET["display_type"] = GLOBAL_SEARCH;
+   $types = array('Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
+                  'Phone', 'Contact', 'Supplier', 'Document');
 
-	$ci=new CommonItem();
-
-	foreach($types as $itemtype){
-		if (haveTypeRight($itemtype,'r')){
-			manageGetValuesInSearch($itemtype,false,false);
-			$_GET["contains"][0]=$_GET["globalsearch"];
-			showList($itemtype,$_GET);
-			echo "<hr>";
-		}
-	}
-
+   foreach($types as $itemtype) {
+      if (haveTypeRight($itemtype,'r')) {
+         manageGetValuesInSearch($itemtype,false,false);
+         $_GET["contains"][0] = $_GET["globalsearch"];
+         showList($itemtype,$_GET);
+         echo "<hr>";
+      }
+   }
 }
 
 commonFooter();
+
 ?>
