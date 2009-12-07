@@ -187,7 +187,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;:</td>";
       echo "<td>";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
+      User::dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td></tr>";
 

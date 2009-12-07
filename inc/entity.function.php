@@ -140,7 +140,7 @@ function showEntityUser($target,$ID) {
          echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
-         dropdownAllUsers("users_id",0,1);
+         User::dropdownAllUsers("users_id",0,1);
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][22]."&nbsp;:&nbsp;";
          dropdownUnderProfiles("profiles_id");

@@ -1007,7 +1007,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td  colspan='2' class='center'>".$LANG['job'][4]."&nbsp;:<br>";
-   dropdownUsersTracking("users_id",$users_id,"users_id");
+   User::dropdownUsersTracking("users_id",$users_id,"users_id");
 
    echo "<br>".$LANG['common'][35]."&nbsp;: ";
    dropdownValue("glpi_groups","group",$group);
@@ -1030,7 +1030,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
          dropdownArrayValues('groups_id_assign',$groups,$groups_id_assign);
       }
    } else {
-      dropdownUsers("users_id_assign",$users_id_assign,"own_ticket",1);
+      User::dropdown("users_id_assign",$users_id_assign,"own_ticket",1);
       echo "<br>".$LANG['common'][35]."&nbsp;: ";
       dropdownValue("glpi_groups","groups_id_assign",$groups_id_assign);
       echo "<br>".$LANG['financial'][26]."&nbsp;:&nbsp;";
@@ -1041,7 +1041,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    if ($extended) {
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>".$LANG['job'][3]."&nbsp;:";
-      dropdownUsersTracking("users_id_recipient",$recipient,"users_id_recipient");
+      User::dropdownUsersTracking("users_id_recipient",$recipient,"users_id_recipient");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1830,7 +1830,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if ($ID) {
       echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp;: </span>";
       if ($canupdate) {
-         dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,
+         User::dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,
                           $job->fields["entities_id"]);
       } else {
          echo getUserName($job->fields["users_id_recipient"],$showuserlink);
@@ -1896,7 +1896,7 @@ function showJobDetails($target, $ID,$array=array()) {
       }
 
       //List all users in the active entity (and all it's sub-entities if needed)
-      $users_id_rand = dropdownAllUsers("users_id",$array["users_id"],1,$entities,1);
+      $users_id_rand = User::dropdownAllUsers("users_id",$array["users_id"],1,$entities,1);
 
       //Get all the user's entities
       $all_entities = getUserEntities($array["users_id"], true);
@@ -1927,7 +1927,7 @@ function showJobDetails($target, $ID,$array=array()) {
    } else if ($canupdate){
       echo $LANG['common'][34]."&nbsp;: </td>";
       echo "<td>";
-      dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
+      User::dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
    } else {
       echo $LANG['common'][34]."&nbsp;: </td>";
       echo "<td>";
@@ -1990,19 +1990,19 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"own_ticket",0,1,
+      User::dropdown("users_id_assign",$job->fields["users_id_assign"],"own_ticket",0,1,
                     $job->fields["entities_id"]);
       echo "</td>";
    } else if (haveRight("steal_ticket","1")) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"id",0,1,
+      User::dropdown("users_id_assign",$job->fields["users_id_assign"],"id",0,1,
                     $job->fields["entities_id"]);
       echo "</td>";
    } else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"id",0,1,
+      User::dropdown("users_id_assign",$job->fields["users_id_assign"],"id",0,1,
                     $job->fields["entities_id"]);
       echo "</td>";
    } else {

@@ -124,7 +124,7 @@ function showConsumables ($tID,$show_old=0) {
 
             if (!$show_old && $canedit) {
                echo "<th>";
-               dropdownAllUsers("users_id",0,1,$cartype->fields["entities_id"]);
+               User::dropdownAllUsers("users_id",0,1,$cartype->fields["entities_id"]);
                echo "&nbsp;<input type='submit' class='submit' name='give' value='".
                             $LANG['consumables'][32]."'>";
                echo "</th>";
