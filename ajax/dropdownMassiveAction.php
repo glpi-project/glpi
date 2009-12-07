@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("enterprise","ocsng","profile","search","tracking","document");
+$NEEDED_ITEMS=array("enterprise","ocsng","profile","search","tracking","document",
+                    "software");
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
@@ -128,7 +129,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "install" :
-         dropdownSoftwareToInstall("softwareversions_id",$_SESSION["glpiactive_entity"],1);
+         Software::dropdownSoftwareToInstall("softwareversions_id",$_SESSION["glpiactive_entity"],1);
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][4]."\" >";
          break;

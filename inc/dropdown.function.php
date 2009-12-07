@@ -398,50 +398,6 @@ function getDropdownArrayNames($table,$ids) {
    return $tabs;
 }
 
-
-/**
- *
- * Make a select box for icons
- *
- *
- * @param $value the preselected value we want
- * @param $myname the name of the HTML select
- * @param $store_path path where icons are stored
- * @return nothing (print out an HTML select box)
- */
-function dropdownIcons($myname,$value,$store_path) {
-   global $LANG;
-
-   if (is_dir($store_path)) {
-      if ($dh = opendir($store_path)) {
-         $files=array();
-         while (($file = readdir($dh)) !== false) {
-            $files[]=$file;
-         }
-         closedir($dh);
-         sort($files);
-         echo "<select name='$myname'>";
-         echo "<option value=''>-----</option>";
-         foreach ($files as $file) {
-            if (preg_match("/\.png$/i",$file)) {
-               if ($file == $value) {
-                  echo "<option value='$file' selected>".$file;
-               } else {
-                  echo "<option value='$file'>".$file;
-               }
-               echo "</option>";
-            }
-         }
-         echo "</select>";
-      } else {
-         echo "Error reading directory $store_path";
-      }
-   } else {
-      echo "Error $store_path is not a directory";
-   }
-}
-
-
 /**
  *
  *Make a select box for all items
@@ -536,33 +492,6 @@ function getYesNo($value) {
    }
 }
 
-/**
- * Make a select box for a None Read Write choice
- *
- *
- *
- * @param $name select name
- * @param $value preselected value.
- * @param $none display none choice ?
- * @param $read display read choice ?
- * @param $write display write choice ?
- * @return nothing (print out an HTML select box)
- */
-function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1) {
-   global $LANG;
-
-   echo "<select name='$name'>\n";
-   if ($none) {
-      echo "<option value='' ".(empty($value)?" selected ":"").">".$LANG['profiles'][12]."</option>";
-   }
-   if ($read) {
-      echo "<option value='r' ".($value=='r'?" selected ":"").">".$LANG['profiles'][10]."</option>";
-   }
-   if ($write) {
-      echo "<option value='w' ".($value=='w'?" selected ":"").">".$LANG['profiles'][11]."</option>";
-   }
-   echo "</select>";
-}
 
 /**
  * Make a select box for Tracking my devices
@@ -970,60 +899,7 @@ function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
 }
 
 
-/**
- * Make a select box for  software to install
- *
- *
- * @param $myname select name
- * @param $massiveaction is it a massiveaction select ?
- * @param $entity_restrict Restrict to a defined entity
- * @return nothing (print out an HTML select box)
- */
-function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
-   global $CFG_GLPI;
 
-   $rand=mt_rand();
-   $use_ajax=false;
-
-   if ($CFG_GLPI["use_ajax"]) {
-      if (countElementsInTableForEntity("glpi_softwares",$entity_restrict)
-          > $CFG_GLPI["ajax_limit_count"]) {
-         $use_ajax=true;
-      }
-   }
-
-   $params=array('searchText'=>'__VALUE__',
-                 'myname'=>$myname,
-                 'entity_restrict'=>$entity_restrict);
-
-   $default="<select name='$myname'><option value='0'>------</option></select>";
-   ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftware.php",$params,$default,$rand);
-
-   return $rand;
-}
-
-/**
- * Make a select box for  software to install
- *
- *
- * @param $myname select name
- * @param $softwares_id ID of the software
- * @param $value value of the selected version
- * @return nothing (print out an HTML select box)
- */
-function dropdownSoftwareVersions($myname,$softwares_id,$value=0) {
-   global $CFG_GLPI;
-
-   $rand=mt_rand();
-   $params=array('softwares_id'=>$softwares_id,
-                 'myname'=>$myname,
-                 'value'=>$value);
-
-   $default="<select name='$myname'><option value='0'>------</option></select>";
-   ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
-
-   return $rand;
-}
 
 /**
  * Show div with auto completion
@@ -1399,44 +1275,6 @@ function dropdownHours($name,$value,$limit_planning=0) {
    echo "</select>";
 }
 
-/**
- * Dropdown licenses for a software
- *
-* @param $myname select name
- * @param $softwares_id software ID
- */
-function dropdownLicenseOfSoftware($myname,$softwares_id) {
-   global $DB,$LANG;
-
-// TODO : this function is probably no more used (no more glpi_licenses)
-
-   $query="SELECT *
-          FROM `glpi_licenses`
-          WHERE `softwares_id`='$softwares_id'
-          GROUP BY `version`, `serial`, `expire`, `oem`, `oem_computer`, `buy`";
-   $result=$DB->query($query);
-   if ($DB->numrows($result)) {
-      echo "<select name='$myname'>";
-      while ($data=$DB->fetch_array($result)) {
-         echo "<option value='".$data["id"]."'>".$data["version"]." - ".$data["serial"];
-         if ($data["expire"]!=NULL) {
-            echo " - ".$LANG['software'][25]." ".$data["expire"];
-         } else {
-            echo " - ".$LANG['software'][26];
-         }
-         if ($data["buy"]) {
-            echo " - ".$LANG['software'][35];
-         } else {
-            echo " - ".$LANG['software'][37];
-         }
-         if ($data["oem"]) {
-            echo " - ".$LANG['software'][28];
-         }
-         echo "</option>";
-      }
-      echo "</select>";
-   }
-}
 
 /**
  * Dropdown integers
