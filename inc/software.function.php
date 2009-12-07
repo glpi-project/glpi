@@ -731,7 +731,7 @@ function showInstallations($searchID, $crit="softwares_id") {
 
          if ($canedit) {
             openArrowMassive("softinstall".$rand."",true);
-            dropdownSoftwareVersions("versionID",$softwares_id);
+            SoftwareVersion::dropdown("versionID",$softwares_id);
             echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".
                   $LANG['buttons'][20]."\" class='submit'>&nbsp;";
             closeArrowMassive('deleteinstalls', $LANG['buttons'][6]);
@@ -945,7 +945,7 @@ function showSoftwareInstalled($computers_id, $withtemplate = '') {
       echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/softwareversion.form.php\">";
       echo "<div class='software-instal'>";
       echo "<input type='hidden' name='computers_id' value='$computers_id'>";
-      dropdownSoftwareToInstall("softwareversions_id", $entities_id);
+      Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
       echo "<input type='submit' name='install' value=\"" . $LANG['buttons'][4] . "\" class='submit'>";
       echo "</div></form>";
       echo "</td></tr>\n";

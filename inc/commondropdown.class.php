@@ -159,7 +159,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'icon' :
-               dropdownIcons($field['name'],
+               CommonDropdown::dropdownIcons($field['name'],
                              $this->fields[$field['name']],
                              GLPI_ROOT."/pics/icones");
                if (!empty($this->fields[$field['name']])) {
@@ -386,6 +386,49 @@ abstract class CommonDropdown extends CommonDBTM {
       }
    }
     */
+
+   /**
+    *
+    * Make a select box for icons
+    *
+    *
+    * @param $value the preselected value we want
+    * @param $myname the name of the HTML select
+    * @param $store_path path where icons are stored
+    * @return nothing (print out an HTML select box)
+    */
+   static function dropdownIcons($myname,$value,$store_path) {
+      global $LANG;
+
+      if (is_dir($store_path)) {
+         if ($dh = opendir($store_path)) {
+            $files=array();
+            while (($file = readdir($dh)) !== false) {
+               $files[]=$file;
+            }
+            closedir($dh);
+            sort($files);
+            echo "<select name='$myname'>";
+            echo "<option value=''>-----</option>";
+            foreach ($files as $file) {
+               if (preg_match("/\.png$/i",$file)) {
+                  if ($file == $value) {
+                     echo "<option value='$file' selected>".$file;
+                  } else {
+                     echo "<option value='$file'>".$file;
+                  }
+                  echo "</option>";
+               }
+            }
+            echo "</select>";
+         } else {
+            echo "Error reading directory $store_path";
+         }
+      } else {
+         echo "Error $store_path is not a directory";
+      }
+   }
+
 }
 
 ?>

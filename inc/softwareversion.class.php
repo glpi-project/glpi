@@ -189,6 +189,29 @@ class SoftwareVersion extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Make a select box for  software to install
+    *
+    *
+    * @param $myname select name
+    * @param $softwares_id ID of the software
+    * @param $value value of the selected version
+    * @return nothing (print out an HTML select box)
+    */
+   static function dropdown($myname,$softwares_id,$value=0) {
+      global $CFG_GLPI;
+
+      $rand=mt_rand();
+      $params=array('softwares_id'=>$softwares_id,
+                    'myname'=>$myname,
+                    'value'=>$value);
+
+      $default="<select name='$myname'><option value='0'>------</option></select>";
+      ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
+
+      return $rand;
+   }
+
 }
 
 
