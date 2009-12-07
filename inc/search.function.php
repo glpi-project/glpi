@@ -2347,7 +2347,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
          break;
 
       case "glpi_contracts.renewal" :
-         $valid=getContractRenewalIDByName($val);
+         $valid=Contract::getContractRenewalIDByName($val);
          if ($valid>0){
             return $link." `$table`.`$field`"."="."'$valid'";
          } else {
@@ -2718,7 +2718,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          return "&nbsp;";
 
       case "glpi_contracts.renewal" :
-         return getContractRenewalName($data[$NAME.$num]);
+         return Contract::getContractRenewalName($data[$NAME.$num]);
 
       case "glpi_contracts.expire_notice" : // ajout jmd
          if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])) {
