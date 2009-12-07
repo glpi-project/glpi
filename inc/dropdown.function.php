@@ -1467,64 +1467,8 @@ function getStatusName($value) {
    return (isset($tab[$value]) ? $tab[$value] : '');
 }
 
-/**
- * Get ticket request type name  ***** TODO : to be removed
- *
- * @param $value status ID
- */
-function getRequestTypeName($value) {
-   getDropdownName('glpi_requesttypes', $value);
-}
 
-/**
- * Dropdown of ticket request type ***** TODO : to be removed
- *
- *
- * @param $name select name
- * @param $value default value
- */
-function dropdownRequestType($name,$value=0) {
-   dropdownValue('glpi_requesttypes',$name,$value,1);
-}
 
-/**
- * Get planninf state name
- *
- * @param $value status ID
- */
-function getPlanningState($value) {
-   global $LANG;
-
-   switch ($value) {
-      case 0 :
-         return $LANG['planning'][16];
-         break;
-
-      case 1 :
-         return $LANG['planning'][17];
-         break;
-
-      case 2 :
-         return $LANG['planning'][18];
-         break;
-   }
-}
-
-/**
- * Dropdown of planning state
- *
- * @param $name select name
- * @param $value default value
- */
-function dropdownPlanningState($name,$value='') {
-   global $LANG;
-
-   echo "<select name='$name' id='$name'>";
-   echo "<option value='0'".($value==0?" selected ":"").">".$LANG['planning'][16]."</option>";
-   echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
-   echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
-   echo "</select>";
-}
 
 /**
  * Dropdown of values in an array

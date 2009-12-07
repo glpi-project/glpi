@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('reminder', 'tracking', 'user');
+$NEEDED_ITEMS = array ('reminder', 'tracking', 'user','ticketplanning');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
