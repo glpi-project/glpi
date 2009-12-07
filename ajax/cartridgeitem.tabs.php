@@ -52,10 +52,10 @@ $cartridge = new CartridgeItem();
 if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showCompatiblePrinters($_POST["id"]);
-         showCartridgesAdd($_POST["id"]);
-         showCartridges($_POST["id"]);
-         showCartridges($_POST["id"],1);
+         $cartridge->showCompatiblePrinters();
+         Cartridge::showAddForm($cartridge);
+         Cartridge::showForCartridgeItem($cartridge);
+         Cartridge::showForCartridgeItem($cartridge, 1);
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
          Document::showAssociated($cartridge);
          showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
@@ -80,10 +80,10 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
 
       default :
          if (!displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showCompatiblePrinters($_POST["id"]);
-            showCartridgesAdd($_POST["id"]);
-            showCartridges($_POST["id"]);
-            showCartridges($_POST["id"],1);
+            $cartridge->showCompatiblePrinters();
+            Cartridge::showAddForm($cartridge);
+            Cartridge::showForCartridgeItem($cartridge);
+            Cartridge::showForCartridgeItem($cartridge, 1);
          }
          break;
    }

@@ -1459,7 +1459,7 @@ function showList ($itemtype,$params) {
             // Specific column display
             if ($itemtype==CARTRIDGEITEM_TYPE) {
                echo displaySearchItem($output_type,
-                                      countCartridges($data["id"],$data["ALARM"],$output_type),
+                                      Cartridge::getCount($data["id"],$data["ALARM"],$output_type),
                                       $item_num,$row_num);
             }
             if ($itemtype==CONSUMABLEITEM_TYPE) {

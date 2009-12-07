@@ -312,12 +312,10 @@ class Consumable extends CommonDBTM {
    /**
     * Print out a link to add directly a new consumable from a consumable item.
     *
-    * Print out the link witch make a new consumable from consumable item idetified by $ID
-    *
-    *@param $ID Consumable item identifier.
+    * @param $consitem oject of ConsumableItem class
     *
     *
-    *@return Nothing (displays)
+    * @return Nothing (displays)
     **/
    static function showAddForm(ConsumableItem $consitem) {
       global $CFG_GLPI,$LANG;
@@ -348,21 +346,19 @@ class Consumable extends CommonDBTM {
    /**
     * Print out the consumables of a defined type
     *
-    * Print out all the consumables that are issued from the consumable item identified by $ID
-    *
-    *@param $tID integer : Consumable item identifier.
+    *@param $consitem oject of ConsumableItem class
     *@param $show_old boolean : show old consumables or not.
     *
     *@return Nothing (displays)
     **/
-   static function showForItem (ConsumableItem $cartype, $show_old=0) {
+   static function showForConsumableItem (ConsumableItem $consitem, $show_old=0) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $tID = $cartype->getField('id');
-      if (!$cartype->can($tID,'r')) {
+      $tID = $consitem->getField('id');
+      if (!$consitem->can($tID,'r')) {
          return false;
       }
-      $canedit = $cartype->can($tID,'w');
+      $canedit = $consitem->can($tID,'w');
 
       $query = "SELECT count(*) AS COUNT
                 FROM `glpi_consumables`
@@ -378,7 +374,7 @@ class Consumable extends CommonDBTM {
             echo "<br><div class='center'><table class='tab_cadre_fixe'>";
             if (!$show_old) {
                echo "<tr><th colspan='7'>";
-               echo Consumable::getCount($tID,-1);
+               echo self::getCount($tID,-1);
                echo "</th></tr>";
             } else { // Old
                echo "<tr><th colspan='8'>";
@@ -396,7 +392,7 @@ class Consumable extends CommonDBTM {
 
             if (!$show_old && $canedit) {
                echo "<th>";
-               User::dropdownAllUsers("users_id",0,1,$cartype->fields["entities_id"]);
+               User::dropdownAllUsers("users_id",0,1,$consitem->fields["entities_id"]);
                echo "&nbsp;<input type='submit' class='submit' name='give' value='".
                             $LANG['consumables'][32]."'>";
                echo "</th>";
@@ -443,7 +439,7 @@ class Consumable extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo $data["id"];
             echo "</td><td class='center'>";
-            echo Consumable::getStatus($data["id"]);
+            echo self::getStatus($data["id"]);
             echo "</td><td class='center'>";
             echo $date_in;
             echo "</td><td class='center'>";

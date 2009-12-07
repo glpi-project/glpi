@@ -131,7 +131,7 @@ class CartridgeItem extends CommonDBTM {
    *@return number of cartridges
    *
    **/
-   function countCartridges() {
+   static function getCount() {
       global $DB;
 
       $query = "SELECT *
@@ -393,7 +393,7 @@ class CartridgeItem extends CommonDBTM {
 
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
-            if (($unused=getUnusedCartridgesNumber($data["cartID"]))<=$data["threshold"]) {
+            if (($unused= Cartridge::getUnusedNumber($data["cartID"]))<=$data["threshold"]) {
                if (!isset($message[$data["entity"]])) {
                   $message[$data["entity"]]="";
                }
@@ -449,6 +449,104 @@ class CartridgeItem extends CommonDBTM {
          }
       }
       return 0;
+   }
+
+   /**
+    * Print a select with compatible cartridge
+    *
+    *@param $printer object Printer
+    *
+    *@return nothing (display)
+    *
+    **/
+   static function dropdownForPrinter(Printer $printer) {
+      global $DB,$LANG;
+
+      $query = "SELECT COUNT(*) AS cpt, `glpi_locations`.`completename` as location,
+                       `glpi_cartridgeitems`.`ref` as ref, `glpi_cartridgeitems`.`name` as name,
+                       `glpi_cartridgeitems`.`id` as tID
+                FROM `glpi_cartridgeitems`
+                INNER JOIN `glpi_cartridges_printermodels`
+                           ON (`glpi_cartridgeitems`.`id` =
+                              `glpi_cartridges_printermodels`.`cartridgeitems_id`)
+                INNER JOIN `glpi_cartridges`
+                           ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
+                               AND `glpi_cartridges`.`date_use` IS NULL)
+                LEFT JOIN `glpi_locations`
+                          ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
+                WHERE `glpi_cartridges_printermodels`.`printermodels_id` =
+                        '".$printer->fields["printermodels_id"]."'
+                      AND `glpi_cartridgeitems`.`entities_id` ='".$printer->fields["entities_id"]."'
+                GROUP BY tID
+                ORDER BY `name`, `ref`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            echo "<select name='tID' size=1>";
+            while ($data= $DB->fetch_assoc($result)) {
+               echo "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]."
+                     (".$data["cpt"]." ".$LANG['cartridges'][13].") - ".$data["location"]."</option>";
+            }
+            echo "</select>";
+            return true;
+         }
+      }
+      return false;
+   }
+   /**
+    * Show the printer types that are compatible with a cartridge type
+    *
+    *@return nothing (display)
+    *
+    **/
+   function showCompatiblePrinters() {
+      global $DB,$CFG_GLPI, $LANG;
+
+      $instID = $this->getField('id');
+      if (!$this->can($instID, 'r')) {
+         return false;
+      }
+
+      $query = "SELECT `glpi_cartridges_printermodels`.`id`,
+                       `glpi_printermodels`.`name` as `type`,
+                       `glpi_printermodels`.`id` as `pmid`
+                FROM `glpi_cartridges_printermodels`, `glpi_printermodels`
+                WHERE `glpi_cartridges_printermodels`.`printermodels_id` = `glpi_printermodels`.`id`
+                      AND `glpi_cartridges_printermodels`.`cartridgeitems_id` = '$instID'
+                ORDER BY `glpi_printermodels`.`name`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i = 0;
+
+      echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
+      echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
+
+      $used = array();
+      while ($i < $number) {
+         $ID=$DB->result($result, $i, "id");
+         $type=$DB->result($result, $i, "type");
+         $pmid=$DB->result($result, $i, "pmid");
+         echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
+         echo "<td class='center'>$type</td>";
+         echo "<td class='tab_bg_2 center'>";
+         echo "<a href='".$CFG_GLPI['root_doc'].
+            "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
+         echo "<strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+         $used[]=$pmid;
+         $i++;
+      }
+      if (haveRight("cartridge","w")) {
+         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
+         echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
+         dropdown("glpi_printermodels","printermodels_id",1,-1,$used);
+         echo "</div></td><td class='tab_bg_2 center'>";
+         echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\"
+                class='submit'>";
+         echo "</td></tr>";
+      }
+      echo "</table></div></form>"    ;
    }
 }
 ?>

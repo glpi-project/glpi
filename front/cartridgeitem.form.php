@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('cartridge', 'contract', 'document', 'infocom', 'link', 'printer', 'supplier');
+$NEEDED_ITEMS = array ('cartridge', 'contract', 'document', 'infocom', 'link', 'printer',
+                       'supplier', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
