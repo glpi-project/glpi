@@ -200,7 +200,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][107]."&nbsp;:</td><td>";
-      dropdownContractRenewal("renewal",$this->fields["renewal"]);
+      Contract::dropdownContractRenewal("renewal",$this->fields["renewal"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
       echo "<td>";
@@ -891,7 +891,7 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
             echo "<div class='software-instal'><input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            dropdownContracts("contracts_id",$item->getEntityID(),$contracts);
+            Contract::dropdownContracts("contracts_id",$item->getEntityID(),$contracts);
             echo "</div></td><td class='center'>";
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td>";
@@ -1029,6 +1029,130 @@ class Contract extends CommonDBTM {
       }
       return 0;
    }
+
+   /**
+    * Print a select with contracts
+    *
+    * Print a select named $name with contracts options and selected value $value
+    *
+    * @param $name string : HTML select name
+    * @param $entity_restrict Restrict to a defined entity
+    * @param $alreadyused : already used contract, do not add to dropdown
+    * @param $nochecklimit : true to disable limit for nomber of device (for supplier)
+    *
+    *@return Nothing (display)
+    *
+    **/
+   static function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false) {
+      global $DB;
+
+      $entrest="";
+      $idrest="";
+      if ($entity_restrict>=0) {
+         $entrest=getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$entity_restrict,true);
+      }
+      if (count($alreadyused)) {
+         foreach ($alreadyused AS $ID) {
+            $idrest .= (empty($idrest) ? "AND `glpi_contracts`.`id` NOT IN(" : ",") . "'".$ID."'";
+         }
+         $idrest .= ")";
+      }
+      $query = "SELECT `glpi_contracts`.*, `glpi_entities`.`completename`
+                FROM `glpi_contracts`
+                LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
+                WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest
+                ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name` ASC,
+                         `glpi_contracts`.`begin_date` DESC";
+      $result=$DB->query($query);
+      echo "<select name='$name'>";
+      echo "<option value='-1'>-----</option>";
+      $prev=-1;
+      while ($data=$DB->fetch_array($result)) {
+         if ($nochecklimit || $data["max_links_allowed"]==0
+             || $data["max_links_allowed"]>countElementsInTable("glpi_contracts_items",
+                                                               "contracts_id = '".$data['id']."'" )) {
+            if ($data["entities_id"]!=$prev) {
+               if ($prev>=0) {
+                  echo "</optgroup>";
+               }
+               $prev=$data["entities_id"];
+               echo "<optgroup label=\"". $data["completename"] ."\">";
+            }
+            echo "<option value='".$data["id"]."'>";
+            echo utf8_substr($data["name"]." - #".$data["num"]." - ".
+                             convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_chars_limit"]);
+            echo "</option>";
+         }
+      }
+      if ($prev>=0) {
+         echo "</optgroup>";
+      }
+      echo "</select>";
+   }
+
+   /**
+    * Print a select with contract renewal
+    *
+    * Print a select named $name with contract renewal options and selected value $value
+    *
+    *@param $name string : HTML select name
+    *@param $value integer : HTML select selected value
+    *
+    *@return Nothing (display)
+    *
+    **/
+   static function dropdownContractRenewal($name,$value=0) {
+      global $LANG;
+
+      echo "<select name='$name'>";
+      echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][105]."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][106]."</option>";
+      echo "</select>";
+   }
+
+   /**
+    * Get the renewal type name
+    *
+    *@param $value integer : HTML select selected value
+    *
+    *@return string
+    *
+    **/
+   static function getContractRenewalName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 1:
+            return $LANG['financial'][105];
+            break;
+
+         case 2:
+            return $LANG['financial'][106];
+            break;
+
+         default :
+         return "";
+      }
+   }
+
+   /**
+    * Get renewal ID by name
+    * @param $value the name of the renewal
+    *
+    * @return the ID of the renewal
+    */
+   function getContractRenewalIDByName($value) {
+      global $LANG;
+
+      if (preg_match("/^$value\$/i",$LANG['financial'][105])) {
+         return 1;
+      } else if (preg_match("/^$value\$/i",$LANG['financial'][106])){
+         return 2;
+      }
+      return 0;
+   }
+
 }
 
 ?>
