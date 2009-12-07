@@ -258,7 +258,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
       echo "<input type='hidden' name='tablename' value='$tablename'>";
       echo "<input type='hidden' name='which' value='$tablename'>";
       echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
-      dropdownNetpoint("id", $ID, $locations_id, 0, $entity_restrict);
+      Netpoint::dropdownNetpoint("id", $ID, $locations_id, 0, $entity_restrict);
 
       // on ajoute un input text pour entrer la valeur modifier
       echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] .
