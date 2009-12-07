@@ -44,7 +44,7 @@ checkRight("consumable","r");
 commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
 if (isset($_GET["synthese"])) {
-   showConsumableSummary();
+   Consumable::showSummary();
 
 } else {
    manageGetValuesInSearch(CONSUMABLEITEM_TYPE);

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("consumable","contract","document","enterprise","infocom","link","printer");
+$NEEDED_ITEMS=array("consumable","contract","document","enterprise","infocom","link","printer",'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -51,9 +51,9 @@ $consumable = new ConsumableItem();
 if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showConsumableAdd($_POST["id"]);
-         showConsumables($_POST["id"]);
-         showConsumables($_POST["id"],1);
+         Consumable::showAddForm($consumable);
+         Consumable::showForItem($consumable);
+         Consumable::showForItem($consumable, 1);
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
          Document::showAssociated($consumable);
          showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
@@ -78,9 +78,9 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
 
       default :
          if (!displayPluginAction(CONSUMABLEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
-            showConsumableAdd($_POST["id"]);
-            showConsumables($_POST["id"]);
-            showConsumables($_POST["id"],1);
+            Consumable::showAddForm($consumable);
+            Consumable::showForItem($consumable);
+            Consumable::showForItem($consumable, 1);
          }
          break;
    }

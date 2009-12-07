@@ -1464,7 +1464,7 @@ function showList ($itemtype,$params) {
             }
             if ($itemtype==CONSUMABLEITEM_TYPE) {
                echo displaySearchItem($output_type,
-                                      countConsumables($data["id"],$data["ALARM"],$output_type),
+                                      Consumable::getCount($data["id"],$data["ALARM"],$output_type),
                                       $item_num,$row_num);
             }
             if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
