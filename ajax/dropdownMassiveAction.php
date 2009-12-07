@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("enterprise","ocsng","profile","search","tracking");
+$NEEDED_ITEMS=array("enterprise","ocsng","profile","search","tracking","document");
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
@@ -171,7 +171,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_document" :
-         dropdownDocument("docID");
+         Document::dropdown("docID");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
