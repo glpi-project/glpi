@@ -449,7 +449,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['plugins']['title']=$LANG['common'][29];
       $plugins=array();
       foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
-         if ($active) {
+         if ($active) { // true or a string
             $function="plugin_version_$plugin";
             if (function_exists($function)) {
                $plugins[$plugin]=$function();
@@ -465,6 +465,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          foreach ($list as $key => $val) {
             $menu['plugins']['content'][$key]['title']=$val;
             $menu['plugins']['content'][$key]['page']='/plugins/'.$key.'/';
+            if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
+               $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
+            }
 
             // Set default link for plugins
             if (!isset($menu['plugins']['default'])) {
