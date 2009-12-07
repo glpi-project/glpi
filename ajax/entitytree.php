@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 $AJAX_INCLUDE=1;
-
+$NEEDED_ITEMS=array('entity');
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -46,7 +46,7 @@ if (!isset($_GET['target'])) {
    $_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
 }
 
-displayActiveEntities($_GET['target'],"activeentity");
+Entity::displayActiveEntities($_GET['target'],"activeentity");
 
 ajaxFooter();
 
