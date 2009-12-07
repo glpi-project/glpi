@@ -46,7 +46,7 @@ if (!isset($_GET['target'])) {
    $_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
 }
 
-Entity::displayActiveEntities($_GET['target'],"activeentity");
+Entity::showSelector($_GET['target'],"activeentity");
 
 ajaxFooter();
 
