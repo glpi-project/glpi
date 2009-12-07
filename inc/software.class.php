@@ -281,7 +281,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][10] . "&nbsp;:</td><td>";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"], "interface", 1,
+      User::dropdownUsersID("users_id_tech", $this->fields["users_id_tech"], "interface", 1,
                       $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
@@ -292,7 +292,7 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >" . $LANG['common'][34] . "&nbsp;:</td>";
       echo "<td >";
-      dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
+      User::dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
       dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);

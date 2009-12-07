@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 $AJAX_INCLUDE=1;
-
+$NEEDED_ITEMS=array('user');
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -72,7 +72,7 @@ echo "<table class='tab_cadre'>";
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
    echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9]."&nbsp;:</td>";
    echo "<td class='center'>";
-   dropdownUsers("plan[users_id]",$_POST["users_id"],"own_ticket",-1,1,$_POST["entity"]);
+   User::dropdown("plan[users_id]",$_POST["users_id"],"own_ticket",-1,1,$_POST["entity"]);
    echo "</td></tr>\n";
 }
 

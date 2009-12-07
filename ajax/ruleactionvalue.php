@@ -35,7 +35,7 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"ruleactionvalue.php")) {
-   $NEEDED_ITEMS = array("ticket");
+   $NEEDED_ITEMS = array("ticket","user");
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
@@ -66,12 +66,12 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_assign" :
-               dropdownUsers("value",0,"own_ticket");
+               User::dropdown("value",0,"own_ticket");
                $display=true;
                break;
 
             case "dropdown_users" :
-               dropdownAllUsers("value");
+               User::dropdownAllUsers("value");
                $display=true;
                break;
 

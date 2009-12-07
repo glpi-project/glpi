@@ -584,7 +584,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;: </td>";
       echo "<td>";
-      dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
+      User::dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
                        $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
@@ -618,7 +618,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][34]."&nbsp;: </td>";
       echo "<td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
+      User::dropdownAllUsers("users_id", $this->fields["users_id"],1, $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
