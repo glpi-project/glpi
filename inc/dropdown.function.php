@@ -441,30 +441,6 @@ function dropdownIcons($myname,$value,$store_path) {
    }
 }
 
-/**
- *
- * Make a select box for device type
- *
- *
- * @param $name name of the select box
- * @param $value default device type
- * @param $types types to display
- * @return nothing (print out an HTML select box)
- */
-function dropdownDeviceTypes($name,$value=0,$types=array()) {
-   global $CFG_GLPI;
-
-   $options=array(0=>'----');
-   if (count($types)) {
-      $ci=new CommonItem();
-      foreach ($types as $type) {
-         $ci->setType($type);
-         $options[$type]=$ci->getType();
-      }
-      asort($options);
-   }
-   dropdownArrayValues($name,$options,$value);
-}
 
 /**
  *

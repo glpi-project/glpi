@@ -96,7 +96,7 @@ function showLinkDevice($instID) {
    if ($canedit) {
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
       echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
-      dropdownDeviceTypes("itemtype",0,$CFG_GLPI["link_types"]);
+      Device::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"]);
       echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".
                          $LANG['buttons'][8]."\" class='submit'>";
       echo "</div></td></tr>";
