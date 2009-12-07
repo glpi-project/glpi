@@ -86,8 +86,8 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            showCartridgeInstalled($_POST["id"]);
-            showCartridgeInstalled($_POST["id"],1);
+            Cartridge::showInstalled($printer);
+            Cartridge::showInstalled($printer, 1);
             Computer_Item::showForItem($printer);
             showPortsAdd($_POST["id"],PRINTER_TYPE);
             showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
@@ -96,7 +96,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Document::showAssociated($printer);
             showJobListForItem(PRINTER_TYPE,$_POST["id"]);
             showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
-            displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
             break;
 
          case 3 :
@@ -135,10 +135,9 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
-               showCartridgeInstalled($_POST["id"]);
-               showCartridgeInstalled($_POST["id"],1);
+            if (!displayPluginAction(PRINTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+               Cartridge::showInstalled($printer);
+               Cartridge::showInstalled($printer, 1);
             }
       }
    }
