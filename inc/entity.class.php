@@ -411,7 +411,7 @@ class Entity extends CommonDBTM {
    * @param $myname select name
     * @param $target target for entity change action
     */
-   static function displayActiveEntities($target,$myname) {
+   static function showSelector($target,$myname) {
       global $CFG_GLPI,$LANG;
 
       $rand=mt_rand();
