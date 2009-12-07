@@ -248,7 +248,9 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
 
          if ($item=='planning') {
             $item='ticketplanning';
+            include_once (GLPI_ROOT . "/inc/planning.class.php");
          }
+
          if ($item=='group') {
             include_once (GLPI_ROOT . "/inc/group_user.class.php");
          }
@@ -304,7 +306,6 @@ if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
          if ($item=='crontask') {
             include_once (GLPI_ROOT . "/inc/crontasklog.class.php");
          }
-
 
          if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
             include_once (GLPI_ROOT . "/inc/$item.class.php");

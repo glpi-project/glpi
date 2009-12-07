@@ -240,7 +240,7 @@ class Reminder extends CommonDBTM {
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<span class='showplan'>";
          }
-         echo TicketPlanning::getState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".
+         echo Planning::getState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".
               convDateTime($this->fields["end"]);
          if ($canedit) {
             echo "</span>";
