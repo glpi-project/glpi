@@ -644,12 +644,12 @@ function displayPlanningItem($val,$who,$type="",$complete=0) {
       }
       echo "</a>";
       if ($complete) {
-         echo "<br><strong>".TicketPlanning::getState($val["state"])."</strong><br>";
+         echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
          echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
       } else {
          echo "<div class='over_link' id='content_tracking_".$val["id"].$rand."'>";
-         echo "<strong>".TicketPlanning::getState($val["state"])."</strong><br>";
+         echo "<strong>".Planning::getState($val["state"])."</strong><br>";
          echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"]."</div>";
       }
@@ -687,11 +687,12 @@ function displayPlanningItem($val,$who,$type="",$complete=0) {
       echo $users_id;
       echo "</a>";
       if ($complete) {
-         echo "<br><strong>".TicketPlanning::getState($val["state"])."</strong><br>";
+         echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
          echo $val["text"];
       } else {
          echo "<div class='over_link' id='content_reminder_".$val["reminders_id"].$rand."'>";
-         echo "<strong>".TicketPlanning::getState($val["state"])."</strong><br>".$val["text"]."</div>";
+         echo "<strong>";
+         echo Planning::getState($val["state"])."</strong><br>".$val["text"]."</div>";
       }
       echo "";
    }

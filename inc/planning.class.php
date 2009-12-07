@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ticketplanning.class.php 9519 2009-12-07 13:12:41Z walid $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -33,48 +33,52 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array ('reminder', 'tracking', 'user', 'planning');
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-if(!isset($_GET["id"])) $_GET["id"] = "";
-
-$remind=new Reminder();
-checkCentralAccess();
-if (isset($_POST["add"]))
-{
-	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...)
-	$remind->getEmpty();
-	$remind->check(-1,'w',$_POST);
-
-	$newID=$remind->add($_POST);
-	Event::log($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
 }
-else if (isset($_POST["delete"]))
-{
-	$remind->check($_POST["id"],'w');
 
-	$remind->delete($_POST);
-	Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
-}
-else if (isset($_POST["update"]))
-{
-	$remind->check($_POST["id"],'w');
+// CLASS Planning
 
-	$remind->update($_POST);
-	Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
-	$remind->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+class Planning extends CommonDBTM  {
 
-	commonFooter();
+/**
+ * Get planning state name
+ *
+ * @param $value status ID
+ */
+   static function getState($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 0 :
+            return $LANG['planning'][16];
+            break;
+
+         case 1 :
+            return $LANG['planning'][17];
+            break;
+
+         case 2 :
+            return $LANG['planning'][18];
+            break;
+      }
+   }
+
+   /**
+    * Dropdown of planning state
+    *
+    * @param $name select name
+    * @param $value default value
+    */
+   static function dropdownState($name,$value='') {
+      global $LANG;
+
+      echo "<select name='$name' id='$name'>";
+      echo "<option value='0'".($value==0?" selected ":"").">".$LANG['planning'][16]."</option>";
+      echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
+      echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
+      echo "</select>";
+   }
 }
 
 ?>
