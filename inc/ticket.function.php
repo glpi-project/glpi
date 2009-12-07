@@ -2431,7 +2431,7 @@ function showFollowupsSummary($tID) {
             echo "}";
             echo "</script>\n";
 
-            echo getPlanningState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".
+            echo TicketPlanning::getState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".
                  convDateTime($data2["end"])."<br>".getUserName($data2["users_id"]);
          }
          echo "</td>";
@@ -2734,7 +2734,7 @@ function showUpdateFollowupForm($ID) {
             echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
             echo "<span class='showplan'>";
          }
-         echo getPlanningState($fup->fields2["state"])."<br>".convDateTime($fup->fields2["begin"]).
+         echo TicketPlanning::getState($fup->fields2["state"])."<br>".convDateTime($fup->fields2["begin"]).
               "<br>->".convDateTime($fup->fields2["end"])."<br>".
               getUserName($fup->fields2["users_id"]);
          if ($canplan) {
