@@ -3261,8 +3261,7 @@ class Search {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
                      $link=$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
                   } else {
-                     $item = new $itemtype;
-                     $link=$item->getFormUrl();
+                     $link=getItemTypeFormURL($itemtype);
                   }
                   $out  = "<a href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');

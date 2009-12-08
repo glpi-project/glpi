@@ -284,7 +284,7 @@ class Budget extends CommonDBTM{
                   echo "<tr class='tab_bg_1'>";
                   echo "<td class='center'>".$item->getTypeName()."<br />$nb</td>";
                   echo "<td class='center' colspan='2'>";
-                  echo "<a href='". $item->getSearchUrl() . "?" .
+                  echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
                         rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                         $LANG['reports'][57]."</a></td>";

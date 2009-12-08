@@ -233,17 +233,22 @@ class CommonGLPI {
     * Get the search page URL for the current classe
     */
    function getTabsURL() {
-
-      if ($plug=isPluginItemType(get_class($this))) {
-         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
-      } else { // Standard case
-         $dir = GLPI_ROOT;
-         $item = strtolower(get_class($this));
-      }
-      return "$dir/ajax/$item.tabs.php";
+      return getItemTypeTabsURL($itemtype);
    }
 
+   /**
+    * Get the search page URL for the current classe
+    */
+   function getSearchURL() {
+      return getItemTypeSearchURL($itemtype);
+   }
+
+   /**
+    * Get the search page URL for the current classe
+    */
+   function getFormURL() {
+      return getItemTypeFormURL(get_class($this));
+   }
 
    function show() {
       $this->showTabs(0, '', getActiveTab($this->type));
@@ -251,6 +256,8 @@ class CommonGLPI {
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
+
+
 }
 
 ?>

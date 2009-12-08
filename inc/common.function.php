@@ -69,6 +69,63 @@ function startGlpiSession() {
 }
 
 /**
+ * Get form URL for itemtype
+ *
+ * @param $itemtype string: item type
+ *
+ * return string itemtype Form URL
+ */
+function getItemTypeFormURL($itemtype) {
+   if ($plug=isPluginItemType($itemtype)) {
+      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $item = strtolower($plug['class']);
+
+   } else { // Standard case
+      $dir = GLPI_ROOT;
+      $item = strtolower($itemtype);
+   }
+   return "$dir/front/$item.form.php";
+}
+
+/**
+ * Get search URL for itemtype
+ *
+ * @param $itemtype string: item type
+ *
+ * return string itemtype search URL
+ */
+function getItemTypeSearchURL($itemtype) {
+   if ($plug=isPluginItemType($itemtype)) {
+      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $item = strtolower($plug['class']);
+
+   } else { // Standard case
+      $dir = GLPI_ROOT;
+      $item = strtolower($itemtype);
+   }
+   return "$dir/front/$item.php";
+}
+
+/**
+ * Get ajax tabs url for itemtype
+ *
+ * @param $itemtype string: item type
+ *
+ * return string itemtype tabs URL
+ */
+function getItemTypeTabsURL($itemtype) {
+   if ($plug=isPluginItemType($itemtype)) {
+      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $item = strtolower($plug['class']);
+
+   } else { // Standard case
+      $dir = GLPI_ROOT;
+      $item = strtolower($itemtype);
+   }
+   return "$dir/ajax/$item.tabs.php";
+}
+
+/**
 * Is GLPI used in mutli-entities mode ?
 *@return boolean
 *
