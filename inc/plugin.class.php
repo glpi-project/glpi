@@ -710,6 +710,123 @@ class Plugin extends CommonDBTM {
       }
       return true;
    }
+   /**
+    * Display plugin actions for a device type
+    * @param $itemtype ID of the item type
+    * @param $ID ID of the item
+    * @param $onglet Heading corresponding of the datas to display
+    * @param $withtemplate is the item display like a template ?
+    * @return true if display have been done
+    */
+   static function displayAction(CommonGLPI $item, $onglet, $withtemplate=0) {
+      global $PLUGIN_HOOKS;
+
+      // Show all Case
+      if ($onglet==-1) {
+         if (isset($PLUGIN_HOOKS["headings_action"]) &&
+             is_array($PLUGIN_HOOKS["headings_action"])
+             && count($PLUGIN_HOOKS["headings_action"])) {
+
+            foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function) {
+               if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+                  include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+               }
+               if (is_callable($function)) {
+                  $actions=call_user_func($function, $item);
+                  if (is_array($actions) && count($actions)) {
+                     foreach ($actions as $key => $action) {
+                        if (is_callable($action)) {
+                           echo "<br>";
+                           call_user_func($action, $item, $withtemplate);
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         return true;
+
+      } else {
+         if (preg_match("/^(.*)_([0-9]*)$/",$onglet,$split)) {
+            $plug = $split[1];
+            $ID_onglet = $split[2];
+            if (isset($PLUGIN_HOOKS["headings_action"][$plug])) {
+               if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+                  include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+               }
+               $function=$PLUGIN_HOOKS["headings_action"][$plug];
+               if (is_callable($function)) {
+                  $actions=call_user_func($function, $item);
+                  if (isset($actions[$ID_onglet])
+                     && is_callable($actions[$ID_onglet])) {
+                     $function=$actions[$ID_onglet];
+                     call_user_func($actions[$ID_onglet], $item, $withtemplate);
+                     return true;
+                  }
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Display plugin headgsin for a device type
+    * @param $target page to link
+    * @param $item object
+    * @param $ID ID of the device
+    * @param $withtemplate is the item display like a template ?
+    * @return Array of tabs (sorted)
+    */
+   static function getTabs($target, CommonGLPI $item, $withtemplate) {
+      global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
+
+      $template="";
+      if (!empty($withtemplate)) {
+         $template="&withtemplate=$withtemplate";
+      }
+      $display_onglets=array();
+
+      $tabpage = $item->getTabsURL();
+
+      $active=false;
+      $tabid=0;
+      $tabs=array();
+      $order=array();
+      if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
+         foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
+            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+            }
+            if (is_callable($function)) {
+               $onglet=call_user_func($function, $item, $withtemplate);
+               if (is_array($onglet) && count($onglet)) {
+                  foreach ($onglet as $key => $val) {
+                     $key=$plug."_".$key;
+                     $params = "target=$target&itemtype=".get_class($item)."&glpi_tab=$key";
+                     if ($item instanceof CommonDBTM) {
+                        $params .= "&id=".$item->getField('id')."$template";
+                     }
+                     $tabs[$key]=array('title'  => $val,
+                                       'url'    => $tabpage,
+                                       'params' => $params);
+                     $order[$key]=$val;
+                  }
+               }
+            }
+         }
+         // Order plugin tab
+         if (count($tabs)) {
+            asort($order);
+            foreach ($order as $key => $val) {
+               $order[$key]=$tabs[$key];
+            }
+         }
+      }
+      return $order;
+   }
+
+
 }
 
 ?>
