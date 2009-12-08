@@ -718,7 +718,7 @@ class Plugin extends CommonDBTM {
     * @param $withtemplate is the item display like a template ?
     * @return true if display have been done
     */
-   static function displayAction(CommonGLPI $item, $onglet, $withtemplate=0) {
+   static function displayAction(CommonGLPI $item, $onglet=1, $withtemplate=0) {
       global $PLUGIN_HOOKS;
 
       // Show all Case
