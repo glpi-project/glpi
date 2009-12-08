@@ -761,18 +761,20 @@ function showJobVeryShort($ID) {
       }
       echo "</td>";
 
-      if (haveTypeRight($job->fields["itemtype"],"r")) {
+      if ($job->hardwaredatas && $job->hardwaredatas->canView()) {
          echo "<td class='center";
          if ($job->hardwaredatas->getField("is_deleted")) {
             echo " tab_bg_1_2";
          }
          echo "'>";
-         echo $job->hardwaredatas->getType()."<br>";
+         echo $job->hardwaredatas->getTypeName()."<br>";
          echo "<strong>".$job->hardwaredatas->getLink()."</strong>";
          echo "</td>";
-      } else {
-         echo "<td class='center' >".$job->hardwaredatas->getType()."<br><strong>".
+      } else if ($job->hardwaredatas) {
+         echo "<td class='center' >".$job->hardwaredatas->getTypeName()."<br><strong>".
                $job->hardwaredatas->getNameID()."</strong></td>";
+      } else {
+         echo "<td class='center' >".$LANG['help'][30]."</td>";
       }
       echo "<td>";
 

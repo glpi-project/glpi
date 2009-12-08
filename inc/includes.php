@@ -189,6 +189,9 @@ if (!isset($_SESSION['glpiautoload']) || $_SESSION['glpiautoload']){
             include_once ("$dir$item.function.php");
          }
 */
+   // TODO Remove this ASAP
+   include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
+   include_once (GLPI_ROOT . "/inc/reminder.function.php");
    }
 } else {
    if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
