@@ -48,7 +48,7 @@ class Ticket extends CommonDBTM {
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
-   var $hardwaredatas = array();
+   var $hardwaredatas = NULL;
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
 
@@ -114,9 +114,14 @@ class Ticket extends CommonDBTM {
    **/
    function getHardwareData() {
 
-      $m= new CommonItem;
-      $this->computerfound = $m->getFromDB($this->fields["itemtype"],$this->fields["items_id"]);
-      $this->hardwaredatas=$m;
+      if (class_exists($this->fields["itemtype"])) {
+         $item = new $this->fields["itemtype"]();
+         if ($item->getFromDB($this->fields["items_id"])) {
+            $this->hardwaredatas=$item;
+         }
+      } else {
+         $this->hardwaredatas=NULL;
+      }
    }
 
 
@@ -202,20 +207,17 @@ class Ticket extends CommonDBTM {
          $input=$ret;
       }
 
-      // NEEDED ????
-      if (isset($input["itemtype"]) && empty($input["itemtype"]) && !isset($input["items_id"])) {
-         $input["items_id"]=0;
-      }
-
       if (isset($input["items_id"])
           && $input["items_id"]>=0
           && isset($input["itemtype"])) {
 
          if (isset($this->fields['groups_id']) && $this->fields['groups_id']) {
-            $ci=new CommonItem;
-            $ci->getFromDB($input["itemtype"],$input["items_id"]);
-            if ($tmp=$ci->getField('groups_id')) {
-               $input["groups_id"] = $tmp;
+            if (class_exists($input["itemtype"])) {
+               $item = new $input["itemtype"]();
+               $item->getFromDB($input["items_id"]);
+               if ($tmp=$item->getField('groups_id')) {
+                  $input["groups_id"] = $tmp;
+               }
             }
          }
       } else if (isset($input["itemtype"]) && empty($input["itemtype"])) {
@@ -378,13 +380,15 @@ class Ticket extends CommonDBTM {
              || in_array("cost_fixed",$updates)
              || in_array("cost_material",$updates)) {
 
-            $ci=new CommonItem;
-            if ($ci->getFromDB($this->fields["itemtype"],$this->fields["items_id"])) {
-               $newinput=array();
-               $newinput['id']=$this->fields["items_id"];
-               $newinput['ticket_tco'] = computeTicketTco($this->fields["itemtype"],
-                                                          $this->fields["items_id"]);
-               $ci->obj->update($newinput);
+            if (class_exists($this->fields["itemtype"])) {
+               $item=new $this->fields["itemtype"]();
+               if ($item->getFromDB($this->fields["items_id"])) {
+                  $newinput=array();
+                  $newinput['id']=$this->fields["items_id"];
+                  $newinput['ticket_tco'] = computeTicketTco($this->fields["itemtype"],
+                                                            $this->fields["items_id"]);
+                  $item->update($newinput);
+               }
             }
          }
 
@@ -503,16 +507,25 @@ class Ticket extends CommonDBTM {
                      } else {
                         $already_done_computer_itemtype_update=true;
                      }
-                     $ci=new CommonItem;
-                     $ci->getFromDB($input["_old_itemtype"],$input["_old_items_id"]);
-                     $old_item_name = $ci->getName();
-                     if ($old_item_name=="N/A" || empty($old_item_name)) {
-                        $old_item_name = $LANG['mailing'][107];
+                     $old_item_name = $LANG['mailing'][107];
+                     if (class_exists($input["_old_itemtype"])) {
+                        $item=new $input["_old_itemtype"]();
+                        if ($item->getFromDB($input["_old_items_id"])) {
+                           $old_item_name = $item->getName();
+                           if ($old_item_name=="N/A" || empty($old_item_name)) {
+                              $old_item_name = $LANG['mailing'][107];
+                           }
+                        }
                      }
-                     $ci->getFromDB($this->fields["itemtype"],$this->fields["items_id"]);
-                     $new_item_name = $ci->getName();
-                     if ($new_item_name=="N/A" || empty($new_item_name)) {
-                        $new_item_name=$LANG['mailing'][107];
+                     $new_item_name=$LANG['mailing'][107];
+                     if (class_exists($this->fields["itemtype"])) {
+                        $item = new $this->fields["itemtype"]();
+                        if ($item->getFromDB($this->fields["items_id"])) {
+                           $new_item_name = $item->getName();
+                           if ($new_item_name=="N/A" || empty($new_item_name)) {
+                              $new_item_name=$LANG['mailing'][107];
+                           }
+                        }
                      }
                      $change_followup_content .= $LANG['mailing'][17]."&nbsp;:
                                                  $old_item_name -> ".$new_item_name."\n";
@@ -737,11 +750,21 @@ class Ticket extends CommonDBTM {
             $input[$field]=0;
          }
       }
-      // Auto group define from item
+
+      $item=NULL;
       if ($input["items_id"]>0 && !empty($input["itemtype"])) {
-         $ci=new CommonItem;
-         $ci->getFromDB($input["itemtype"],$input["items_id"]);
-         if ($tmp=$ci->getField('groups_id')) {
+         if (class_exists($input["itemtype"])) {
+            $item= new $input["itemtype"]();
+            if (!$item->getFromDB($input["items_id"])) {
+               $item=NULL;
+            }
+         }
+      }
+
+
+      // Auto group define from item
+      if ($item != NULL) {
+         if ($tmp=$item->getField('groups_id')) {
             $input["groups_id"] = $tmp;
          }
       }
@@ -749,11 +772,9 @@ class Ticket extends CommonDBTM {
       if ($CFG_GLPI["use_auto_assign_to_tech"]) {
 
          // Auto assign tech from item
-         if ($input["users_id_assign"]==0 && $input["items_id"]>0 && !empty($input["itemtype"])) {
+         if ($input["users_id_assign"]==0 && $item != NULL) {
 
-            $ci = new CommonItem();
-            $ci->getFromDB($input["itemtype"],$input["items_id"]);
-            if ($tmp=$ci->getField('users_id_tech')) {
+            if ($tmp=$item->getField('users_id_tech')) {
                $input["users_id_assign"] = $tmp;
                if ($input["users_id_assign"]>0) {
                   $input["status"] = "assign";
@@ -1074,36 +1095,35 @@ class Ticket extends CommonDBTM {
       $name = $LANG['help'][30];
       $contact = '';
       $tech = '';
-      $name = $this->hardwaredatas->getType()." ".$this->hardwaredatas->getName();
-      if ($this->hardwaredatas->obj!=NULL) {
-         if (isset($this->hardwaredatas->obj->fields["serial"])
-             && !empty($this->hardwaredatas->obj->fields["serial"])) {
 
-            $name .= " - #".$this->hardwaredatas->obj->fields["serial"];
+      if ($this->hardwaredatas!=NULL) {
+         $name = $this->hardwaredatas->getTypeName()." ".$this->hardwaredatas->getName();
+
+         if ($serial=$this->hardwaredatas->getField("serial")) {
+
+            $name .= " - #".$serial;
          }
-         $modeltable = $this->hardwaredatas->obj->table."models";
+         $modeltable = $this->hardwaredatas->table."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
-         if (isset($this->hardwaredatas->obj->fields[$modelfield])
-             && $this->hardwaredatas->obj->fields[$modelfield]>0) {
+         if ($model=$this->hardwaredatas->getField($modelfield)) {
 
-            $name .= " - ".getDropdownName($modeltable,$this->hardwaredatas->obj->fields[$modelfield]);
+            $name .= " - ".getDropdownName($modeltable,$model);
          }
-         if (isset($this->hardwaredatas->obj->fields["users_id_tech"])
-             && $this->hardwaredatas->obj->fields["users_id_tech"]>0) {
+         if ($tmp=$this->hardwaredatas->getField("users_id_tech")) {
 
-            $tech = getUserName($this->hardwaredatas->obj->fields["users_id_tech"]);
+            $tech = getUserName($tmp);
          }
-         if (isset($this->hardwaredatas->obj->fields["contact"])) {
-            $contact = $this->hardwaredatas->obj->fields["contact"];
+         if ($tmp=$this->hardwaredatas->getField("contact")) {
+            $contact = $tmp;
          }
-         if (isset($this->hardwaredatas->obj->fields["users_id"])) {
-            $contact = getUserName($this->hardwaredatas->obj->fields["users_id"]);
+         if ($tmp=$this->hardwaredatas->getField("users_id")) {
+            $contact = getUserName($tmp);
          }
-         if (isset($this->hardwaredatas->obj->fields["groups_id"])) {
+         if ($tmp=$this->hardwaredatas->getField("groups_id")) {
             if (!empty($contact)) {
                $contact.=" / ";
             }
-            $contact .= getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["groups_id"]);
+            $contact .= getDropdownName("glpi_groups",$tmp);
          }
       }
 
