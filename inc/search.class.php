@@ -877,7 +877,7 @@ class Search {
             if ($itemtype==CONSUMABLEITEM_TYPE) {
                echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
             }
-            if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
+            if ($itemtype=='States' || $itemtype==RESERVATION_TYPE) {
                echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
             }
             if ($itemtype==RESERVATION_TYPE && $output_type==HTML_OUTPUT) {
@@ -1021,7 +1021,7 @@ class Search {
                                        Consumable::getCount($data["id"],$data["ALARM"],$output_type),
                                        $item_num,$row_num);
                }
-               if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
+               if ($itemtype=='States' || $itemtype==RESERVATION_TYPE) {
                   $typename=$data["TYPE"];
                   if (class_exists($data["TYPE"])) {
                      $item = new $data["TYPE"]();
