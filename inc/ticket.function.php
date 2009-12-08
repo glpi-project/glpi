@@ -287,8 +287,11 @@ function showJobListForItem($itemtype,$items_id) {
    if (!haveRight("show_all_ticket","1")) {
       return false;
    }
-   $ci = new CommonItem();
-   if (!$ci->getFromDB($itemtype,$items_id)) {
+   if (!class_exists($itemtype)) {
+      return false;
+   }
+   $item=new $itemtype();
+   if (!$item->getFromDB($items_id)) {
       return false;
    }
 
@@ -648,23 +651,32 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       }
       echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
-      $ci = new CommonItem();
-      $ci->getFromDB($data["itemtype"],$data["items_id"]);
       // Sixth Colum
       $sixth_col = "";
-
-      $sixth_col .= $ci->getType();
+      $is_deleted = false;
       if (!empty($data["itemtype"]) && $data["items_id"]>0) {
-         $sixth_col .= "<br><strong>";
-         if (haveTypeRight($data["itemtype"],"r")) {
-            $sixth_col .= $ci->getLink($output_type==HTML_OUTPUT);
-         } else {
-            $sixth_col .= $ci->getNameID();
+         if (class_exists($data["itemtype"])) {
+            $item=new $data["itemtype"]();
+            if ($item->getFromDB($data["items_id"])) {
+               $is_deleted=$item->getField("is_deleted");
+
+               $sixth_col .= $item->getTypeName();
+
+               $sixth_col .= "<br><strong>";
+               if (haveTypeRight($data["itemtype"],"r")) {
+                  $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
+               } else {
+                  $sixth_col .= $item->getNameID();
+               }
+               $sixth_col .= "</strong>";
+            }
          }
-         $sixth_col .= "</strong>";
+      } else if (empty($data["itemtype"])) {
+         $sixth_col=$LANG['help'][30];
       }
-      echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$align." ".
-                             ($ci->getField("is_deleted")?" class='deleted' ":""));
+
+      echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,
+                             ($is_deleted?" class='center deleted' ":$align));
 
       // Seventh column
       echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,
@@ -1317,10 +1329,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
    if ($recipient!=0) {
       $where .= " AND `glpi_tickets`.`users_id_recipient` = '$recipient'";
    }
-   if ($itemtype!=0) {
+   if (!empty($itemtype)) {
       $where .= " AND `glpi_tickets`.`itemtype` = '$itemtype'";
    }
-   if ($items_id!=0 && $itemtype!=0) {
+   if ($items_id!=0 && !empty($itemtype)) {
       $where .= " AND `glpi_tickets`.`items_id` = '$items_id'";
    }
    $search_users_id=false;
@@ -1650,10 +1662,13 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
             if ($priority!=0) {
                $title .= " - ".$LANG['joblist'][2]." = ".Ticket::getPriorityName($priority);
             }
-            if ($itemtype!=0 && $items_id!=0) {
-               $ci = new CommonItem();
-               $ci->getFromDB($itemtype,$items_id);
-               $title .= " - ".$LANG['common'][1]." = ".$ci->getType()." / ".$ci->getNameID();
+            if (!empty($itemtype) && $items_id!=0) {
+               if (class_exists($itemtype)) {
+                  $item = new $itemtype();
+                  if ($item->getFromDB($items_id)) {
+                     $title .= " - ".$LANG['common'][1]." = ".$ci->getType()." / ".$ci->getNameID();
+                  }
+               }
             }
          }
          // Display footer
@@ -1735,14 +1750,14 @@ function getAssignName($ID,$itemtype,$link=0) {
 
       case ENTERPRISE_TYPE :
       case GROUP_TYPE :
-         $ci=new CommonItem();
-         if ($ci->getFromDB($itemtype,$ID)) {
+         $item=new $itemtype();
+         if ($item->getFromDB($ID)) {
             $before = "";
             $after = "";
             if ($link && haveTypeRight($itemtype,'r')) {
-               $ci->getLink(1);
+               $item->getLink(1);
             }
-            return $ci->getNameID();
+            return $item->getNameID();
          }
          return "";
    }
@@ -1788,8 +1803,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
    $canupdate_descr = $canupdate || ($job->numberOfFollowups()==0
                                      && $job->fields['users_id']==$_SESSION['glpiID']);
-   $item=new CommonItem();
-   $item->getFromDB($job->fields['itemtype'],$job->fields['items_id']);
+
 
    echo "<form method='post' name='form_ticket' action='$target' enctype='multipart/form-data'>";
    echo '<div class="center" id="tabsbody">';
@@ -2040,11 +2054,12 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
    echo "<td rowspan='2''>";
    if ($canupdate) {
-      if ($ID) {
-         if (haveTypeRight($job->fields["itemtype"],'r')) {
-            echo $item->getType()." - ".$item->getLink(true);
+      if ($ID && class_exists($job->fields['itemtype'])) {
+         $item = new $job->fields['itemtype']();
+         if ($item->can($job->fields["items_id"],'r')) {
+            echo $item->getTypeName()." - ".$item->getLink(true);
          } else {
-            echo $item->getType()." ".$item->getNameID();
+            echo $item->getTypeName()." ".$item->getNameID();
          }
       } else {
          dropdownMyDevices($array["users_id"],$job->fields["entities_id"],
@@ -2824,20 +2839,23 @@ function showPreviewAssignAction($output) {
 
    //If ticket is assign to an object, display this information first
    if (isset($output["entities_id"]) && isset($output["items_id"]) && isset($output["itemtype"])) {
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['rulesengine'][48]."</td>";
 
-      $commonitem = new CommonItem;
-      $commonitem->getFromDB($output["itemtype"],$output["items_id"]);
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$output["itemtype"]]."?id=".
-            $output["items_id"]."\">".$commonitem->obj->fields["name"]."</a>";
-      echo "</td>";
-      echo "</tr>";
+      if (class_exists($output["itemtype"])) {
+         $item = new $output["itemtype"]();
+         if ($item->getFromDB($output["items_id"])) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>".$LANG['rulesengine'][48]."</td>";
 
-      //Clean output of unnecessary fields (already processed)
-      unset($output["items_id"]);
-      unset($output["itemtype"]);
+            echo "<td>";
+            echo $item->getLink(true);
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+
+         //Clean output of unnecessary fields (already processed)
+         unset($output["items_id"]);
+         unset($output["itemtype"]);
    }
    unset($output["entities_id"]);
    return $output;
@@ -2861,12 +2879,13 @@ function getAllTypesForHelpdesk() {
    }
 
    //Types of the core (after the plugin for robustness)
-   $ci = new CommonItem();
    foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-      if (!isPluginItem($itemtype) // No plugin here
-          && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-         $ci->setType($itemtype);
-         $types[$itemtype] = $ci->getType();
+      if (class_exists($itemtype)) {
+         if (!isPluginItem($itemtype) // No plugin here
+            && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            $item = new $itemtype();
+            $types[$itemtype] = $item->getTypeName();
+         }
       }
    }
    ksort($types); // core type first... asort could be better ?

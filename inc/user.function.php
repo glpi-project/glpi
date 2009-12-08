@@ -122,7 +122,7 @@ function showDeviceUser($ID) {
          }
 
          $item = new $itemtype();
-         $type_name= $item->getTypeName();
+         $type_name= $itemtype->getTypeName();
 
          if ($DB->numrows($result) >0) {
             while ($data = $DB->fetch_array($result)) {
@@ -185,7 +185,7 @@ function showDeviceUser($ID) {
          }
 
          $item = new $itemtype();
-         $type_name= $item->getTypeName();
+         $type_name= $itemtype->getTypeName();
 
 
          if ($DB->numrows($result) >0) {
