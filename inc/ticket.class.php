@@ -512,7 +512,7 @@ class Ticket extends CommonDBTM {
                         $item=new $input["_old_itemtype"]();
                         if ($item->getFromDB($input["_old_items_id"])) {
                            $old_item_name = $item->getName();
-                           if ($old_item_name=="N/A" || empty($old_item_name)) {
+                           if ($old_item_name==NOT_AVAILABLE || empty($old_item_name)) {
                               $old_item_name = $LANG['mailing'][107];
                            }
                         }
@@ -522,7 +522,7 @@ class Ticket extends CommonDBTM {
                         $item = new $this->fields["itemtype"]();
                         if ($item->getFromDB($this->fields["items_id"])) {
                            $new_item_name = $item->getName();
-                           if ($new_item_name=="N/A" || empty($new_item_name)) {
+                           if ($new_item_name==NOT_AVAILABLE || empty($new_item_name)) {
                               $new_item_name=$LANG['mailing'][107];
                            }
                         }

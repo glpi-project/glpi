@@ -112,7 +112,7 @@ if (isset($query)&&count($query)){
 				if($data['itemname']) {
 					echo "<td> ".$data['itemname']." </td>";
 				} else {
-					echo "<td> N/A </td>";
+					echo "<td> ".NOT_AVAILABLE." </td>";
 				}
 
 				echo "<td> ".getYesNo($data['itemdeleted'])." </td>";
@@ -128,7 +128,7 @@ if (isset($query)&&count($query)){
 				if($data['location']) {
 					echo "<td> ".$data['location']." </td>";
 				} else {
-					echo "<td> N/A </td>";
+					echo "<td> ".NOT_AVAILABLE." </td>";
 				}
 
 				if($data['buy_date']) {
@@ -136,15 +136,15 @@ if (isset($query)&&count($query)){
 					if($data["warranty_duration"]) {
 						echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>";
 					} else {
-						echo "<td> N/A </td>";
+						echo "<td> ".NOT_AVAILABLE." </td>";
 					}
 				} else {
-					echo "<td> N/A </td><td> N/A </td>";
+					echo "<td> ".NOT_AVAILABLE." </td><td> ".NOT_AVAILABLE." </td>";
 				}
 				if($data['type']) {
 					echo "<td> ".$data['type']." </td>";
 				} else {
-					echo "<td> N/A </td>";
+					echo "<td> ".NOT_AVAILABLE." </td>";
 				}
 
 				if($data['begin_date']) {
@@ -152,10 +152,10 @@ if (isset($query)&&count($query)){
 					if($data["duration"]) {
 						echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>";
 					} else {
-						echo "<td> N/A </td>";
+						echo "<td> ".NOT_AVAILABLE." </td>";
 					}
 				} else {
-					echo "<td> N/A </td><td> N/A </td>";
+					echo "<td> ".NOT_AVAILABLE." </td><td> ".NOT_AVAILABLE." </td>";
 				}
 
 				echo "</tr>\n";

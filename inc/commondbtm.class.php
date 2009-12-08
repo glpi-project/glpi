@@ -1560,7 +1560,7 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
          return $this->fields["name"].$toadd;
       }
-      return "N/A";
+      return NOT_AVAILABLE;
    }
 
    /**

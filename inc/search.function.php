@@ -1465,7 +1465,7 @@ function showList ($itemtype,$params) {
                                       $item_num,$row_num);
             }
             if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
-               $typename="N/A";
+               $typename=NOT_AVAILABLE;
                if (class_exists($data["TYPE"])) {
                   $item = new $data["TYPE"]();
                   $typename=$item->getTypeName();
@@ -2656,7 +2656,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          if ($doc->getFromDB($data['id'])) {
             return $doc->getDownloadLink();
          }
-         return "N/A";
+         return NOT_AVAILABLE;
 
       case "glpi_deviceharddrives.specif_default" :
       case "glpi_devicememories.specif_default" :

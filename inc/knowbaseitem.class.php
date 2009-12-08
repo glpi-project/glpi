@@ -64,7 +64,7 @@ class KnowbaseItem extends CommonDBTM {
           && !empty($this->fields["question"])) {
          return $this->fields["question"];
       }
-      return "N/A";
+      return NOT_AVAILABLE;
    }
 
    /**

@@ -77,7 +77,7 @@ class ConsumableItem extends CommonDBTM {
          }
          return $name.$toadd;
       }
-      return "N/A";
+      return NOT_AVAILABLE;
    }
 
    function cleanDBonPurge($ID) {

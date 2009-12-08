@@ -481,7 +481,7 @@ class CommonItem {
       if ($this->itemtype && isset($this->obj)) {
          return ($this->obj->getName($with_comment));
       }
-      return "N/A";
+      return NOT_AVAILABLE;
    }
 
    /**
@@ -494,7 +494,7 @@ class CommonItem {
       if ($this->itemtype && isset($this->obj)) {
          return ($this->obj->getNameID($with_comment));
       }
-      return "N/A";
+      return NOT_AVAILABLE;
    }
 
    /**
