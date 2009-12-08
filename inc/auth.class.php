@@ -298,8 +298,10 @@ class Auth {
 
       if ($this->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
+         $save = $_SESSION["glpi_plugins"];
          $this->destroySession();
          startGlpiSession();
+         $_SESSION["glpi_plugins"] = $save;
 
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = NORMAL_MODE;
