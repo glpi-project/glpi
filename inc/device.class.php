@@ -338,7 +338,7 @@ class Device extends CommonDBTM {
     * @param $types types to display
     * @return nothing (print out an HTML select box)
     */
-   static function dropdownTypes($name,$value=0,$types=array()) {
+   static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
       global $CFG_GLPI;
 
       $options=array(0=>'----');
@@ -350,7 +350,7 @@ class Device extends CommonDBTM {
          }
          asort($options);
       }
-      dropdownArrayValues($name,$options,$value);
+      dropdownArrayValues($name,$options,$value,$used);
    }
 
    /**
