@@ -749,7 +749,7 @@ class Ticket extends CommonDBTM {
       if ($CFG_GLPI["use_auto_assign_to_tech"]) {
 
          // Auto assign tech from item
-         if ($input["users_id_assign"]==0 && $input["items_id"]>0 && $input["itemtype"]>0) {
+         if ($input["users_id_assign"]==0 && $input["items_id"]>0 && !empty($input["itemtype"])) {
 
             $ci = new CommonItem();
             $ci->getFromDB($input["itemtype"],$input["items_id"]);
