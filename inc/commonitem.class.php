@@ -267,7 +267,7 @@ class CommonItem {
 
             default :
                // Plugin case
-               //if ($itemtype>1000) {
+               if (isPluginItem($itemtype)) {
                   if (isset($PLUGIN_HOOKS['plugin_classes'][$itemtype])) {
                      $class=$PLUGIN_HOOKS['plugin_classes'][$itemtype];
                      $plug=$PLUGIN_HOOKS['plugin_types'][$itemtype];
@@ -278,7 +278,7 @@ class CommonItem {
                         $this->obj = new $class();
                      }
                   }
-               //}
+               }
                break;
          }
       }
@@ -431,7 +431,7 @@ class CommonItem {
 
          default :
             // Plugin case
-            if ($this->itemtype>1000) {
+            if (isPluginItem($this->itemtype)) {
                // Use plugin name if set
                if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])
                    && !empty($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])) {
