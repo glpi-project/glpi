@@ -564,37 +564,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Get the search page URL for the current classe
-    */
-   function getSearchURL() {
-
-      if ($plug=isPluginItemType(get_class($this))) {
-         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
-      } else { // Standard case
-         $dir = GLPI_ROOT;
-         $item = strtolower(get_class($this));
-      }
-      return "$dir/front/$item.php";
-   }
-
-   /**
-    * Get the search page URL for the current classe
-    */
-   function getFormURL() {
-
-      if ($plug=isPluginItemType(get_class($this))) {
-         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
-
-      } else { // Standard case
-         $dir = GLPI_ROOT;
-         $item = strtolower(get_class($this));
-      }
-      return "$dir/front/$item.form.php";
-   }
-
-   /**
     * Get the link to an item
     *
     * @param $with_comment Display comments

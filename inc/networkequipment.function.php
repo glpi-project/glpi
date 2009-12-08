@@ -511,7 +511,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
                if ($canedit || $device2->can($device2->fields["id"], 'w')) {
                   echo "</td>\n<td class='right'><strong>";
                   if ($withtemplate != 2) {
-                     echo "<a href=\"".$netport->getFormUrl()."?disconnect=".
+                     echo "<a href=\"".$netport->getFormURL()."?disconnect=".
                            "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
                   } else {
                      "&nbsp;";
