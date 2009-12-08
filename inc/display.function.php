@@ -757,6 +757,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             foreach ($tab as $key => $val) {
                if ($key == $option) {
                   $tmp = new $key();
+                  /// TODO problem because SearchUrl return complete link but not correct 
                   $menu['config']['content']['dropdowns']['options'][$option]['title']=$val;
                   $menu['config']['content']['dropdowns']['options'][$option]['page']=
                                                 $tmp->getSearchURL();
