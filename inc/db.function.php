@@ -67,6 +67,29 @@ function getTableNameForForeignKeyField($fkname) {
 }
 
 /**
+ * Return ItemType  for a table
+ *
+ * @param $table string: table name
+ *
+ * return string itemtype corresponding to a table name parameter
+ */
+function getItemTypeForTable($table) {
+  $table=str_replace("glpi_","",$table);
+  return preg_replace("/s$/","",$table);
+}
+
+/**
+ * Return ItemType  for a table
+ *
+ * @param $itemtype string: itemtype
+ *
+ * return string itemtype corresponding to a table name parameter
+ */
+function getTableForItemType($itemtype) {
+   return 'glpi_'.strtolower($itemtype)."s";
+}
+
+/**
  * Is a table used for devices
  *
  *@param $tablename table name
