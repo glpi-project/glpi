@@ -65,18 +65,22 @@ function __autoload($classname) {
 $TIMER_DEBUG=new Timer;
 $TIMER_DEBUG->start();
 
-include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
-include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
-include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
-include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
-
+/// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
+
+
+// Standard includes
+include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
+include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
+include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
+
 
 // Load Language file
 loadLanguage();
@@ -124,6 +128,7 @@ include_once (GLPI_ROOT . "/inc/reminder.function.php");
 include_once (GLPI_ROOT . "/inc/ticket.function.php");
 include_once (GLPI_ROOT . "/inc/user.function.php");
 include_once (GLPI_ROOT . "/inc/search.function.php");
+include_once (GLPI_ROOT . "/inc/rule.function.php");
 
 
 
