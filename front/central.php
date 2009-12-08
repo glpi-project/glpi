@@ -69,7 +69,7 @@ if (isset($_GET["active_entity"])) {
 // Manage autoload change
 if (isset($_GET["toggle_autoload"])) {
    if (!isset($_SESSION["glpiautoload"])) {
-      $_SESSION["glpiautoload"] = true;
+      $_SESSION["glpiautoload"] = false;
    } else {
       if ($_SESSION["glpiautoload"]){
          $_SESSION["glpiautoload"] = false;

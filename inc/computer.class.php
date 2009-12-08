@@ -165,7 +165,7 @@ class Computer extends CommonDBTM {
                          MONITOR_TYPE,
                          PERIPHERAL_TYPE,
                          PHONE_TYPE);
-            $ci=new CommonItem();
+
             $update_done=false;
             $updates3[0]="contact";
             $updates3[1]="contact_num";
@@ -177,17 +177,18 @@ class Computer extends CommonDBTM {
                                AND `itemtype`='".$t."'";
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
+                  $item = new $t();
                   if ($resultnum>0) {
                      for ($j=0; $j < $resultnum; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
-                        $ci->getFromDB($t,$tID);
-                        if (!$ci->getField('is_global')) {
-                           if ($ci->getField('contact')!=$this->fields['contact']
-                               || $ci->getField('contact_num')!=$this->fields['contact_num']){
-                              $tmp["id"]=$ci->getField('id');
+                        $item->getFromDB($tID);
+                        if (!$item->getField('is_global')) {
+                           if ($item->getField('contact')!=$this->fields['contact']
+                               || $item->getField('contact_num')!=$this->fields['contact_num']){
+                              $tmp["id"]=$item->getField('id');
                               $tmp['contact']=$this->fields['contact'];
                               $tmp['contact_num']=$this->fields['contact_num'];
-                              $ci->obj->update($tmp);
+                              $item->update($tmp);
                               $update_done=true;
                            }
                         }
@@ -210,7 +211,7 @@ class Computer extends CommonDBTM {
                          MONITOR_TYPE,
                          PERIPHERAL_TYPE,
                          PHONE_TYPE);
-            $ci=new CommonItem();
+
             $update_done=false;
             $updates4[0]="users_id";
             $updates4[1]="groups_id";
@@ -223,22 +224,22 @@ class Computer extends CommonDBTM {
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
-
+                  $item = new $t();
                   if ($resultnum>0) {
                      for ($j=0; $j < $resultnum; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
-                        $ci->getFromDB($t,$tID);
-                        if (!$ci->getField('is_global')) {
-                           if ($ci->getField('users_id')!=$this->fields["users_id"]
-                               ||$ci->getField('groups_id')!=$this->fields["groups_id"]) {
-                              $tmp["id"]=$ci->getField('id');
+                        $item->getFromDB($tID);
+                        if (!$item->getField('is_global')) {
+                           if ($item->getField('users_id')!=$this->fields["users_id"]
+                               ||$item->getField('groups_id')!=$this->fields["groups_id"]) {
+                              $tmp["id"]=$item->getField('id');
                               if ($CFG_GLPI["is_user_autoupdate"]) {
                                  $tmp["users_id"]=$this->fields["users_id"];
                               }
                               if ($CFG_GLPI["is_group_autoupdate"]) {
                                  $tmp["groups_id"]=$this->fields["groups_id"];
                               }
-                              $ci->obj->update($tmp);
+                              $item->update($tmp);
                               $update_done=true;
                            }
                         }
@@ -257,7 +258,6 @@ class Computer extends CommonDBTM {
                          MONITOR_TYPE,
                          PERIPHERAL_TYPE,
                          PHONE_TYPE);
-            $ci=new CommonItem();
             $update_done=false;
 
             foreach ($items as $t) {
@@ -268,16 +268,17 @@ class Computer extends CommonDBTM {
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
+                  $item = new $t();
 
                   if ($resultnum>0) {
                      for ($j=0; $j < $resultnum; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
-                        $ci->getFromDB($t,$tID);
-                        if (!$ci->getField('is_global')){
-                           if ($ci->getField('states_id')!=$this->fields["states_id"]){
-                              $tmp["id"]=$ci->getField('id');
+                        $item->getFromDB($tID);
+                        if (!$item->getField('is_global')){
+                           if ($item->getField('states_id')!=$this->fields["states_id"]){
+                              $tmp["id"]=$item->getField('id');
                               $tmp["states_id"]=$this->fields["states_id"];
-                              $ci->obj->update($tmp);
+                              $item->update($tmp);
                               $update_done=true;
                            }
                         }
@@ -297,7 +298,6 @@ class Computer extends CommonDBTM {
                          MONITOR_TYPE,
                          PERIPHERAL_TYPE,
                          PHONE_TYPE);
-            $ci=new CommonItem();
             $update_done=false;
             $updates2[0]="locations_id";
 
@@ -309,16 +309,17 @@ class Computer extends CommonDBTM {
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
+                  $item = new $t();
 
                   if ($resultnum>0) {
                      for ($j=0; $j < $resultnum; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
-                        $ci->getFromDB($t,$tID);
-                        if (!$ci->getField('is_global')) {
-                           if ($ci->getField('locations_id')!=$this->fields["locations_id"]) {
-                              $tmp["id"]=$ci->getField('id');
+                        $item->getFromDB($tID);
+                        if (!$item->getField('is_global')) {
+                           if ($item->getField('locations_id')!=$this->fields["locations_id"]) {
+                              $tmp["id"]=$item->getField('id');
                               $tmp["locations_id"]=$this->fields["locations_id"];
-                              $ci->obj->update($tmp);
+                              $item->update($tmp);
                               $update_done=true;
                            }
                         }

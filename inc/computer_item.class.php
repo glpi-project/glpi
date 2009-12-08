@@ -78,9 +78,12 @@ class Computer_Item extends CommonDBRelation{
 
       if ($ID<0) {
          // Ajout
-         $item = new CommonItem();
+         if (!class_exists($input['itemtype'])) {
+            return false;
+         }
+         $item = new $input['itemtype']();
 
-         if (!$item->getFromDB($input['itemtype'],$input['items_id'])) {
+         if (!$item->getFromDB($input['items_id'])) {
             return false;
          }
          if ($item->getField('is_global')==0
@@ -218,74 +221,77 @@ class Computer_Item extends CommonDBRelation{
          $computer->getFromDB($this->fields['computers_id']);
 
          //Get device fields
-         $device=new CommonItem();
-         $device->getFromDB($this->fields['itemtype'], $this->fields['items_id']);
+         if (class_exists($this->fields['itemtype'])) {
+            $device=new $this->fields['itemtype']();
+            if ($device->getFromDB($this->fields['items_id'])) {
 
-         if (!$device->getField('is_global')) {
-            $updates=array();
-            if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')) {
-               $updates[]="locations_id";
-               $device->obj->fields['locations_id']=0;
-            }
-            if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
-               $updates[]="users_id";
-               $device->obj->fields['users_id']=0;
-            }
-            if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')) {
-               $updates[]="groups_id";
-               $device->obj->fields['groups_id']=0;
-            }
-            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')) {
-               $updates[]="contact";
-               $device->obj->fields['contact']="";
-            }
-            if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')) {
-               $updates[]="contact_num";
-               $device->obj->fields['contact_num']="";
-            }
-            if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->getField('states_id')) {
-               $updates[]="states_id";
-               $device->obj->fields['states_id']=0;
-            }
-            if ($CFG_GLPI["state_autoclean_mode"]>0
-                && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
-               $updates[]="states_id";
-               $device->obj->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
-            }
-            if (count($updates)) {
-               $device->obj->updateInDB($updates);
-            }
-         }
-         if (isset($this->input['_ocsservers_id'])) {
-            $ocsservers_id = $this->input['_ocsservers_id'];
-         } else {
-            $ocsservers_id = getOCSServerByMachineID($this->fields['computers_id']);
-         }
-         if ($ocsservers_id>0) {
-            //Get OCS configuration
-            $ocs_config = getOcsConf($ocsservers_id);
-
-            //Get the management mode for this device
-            $mode = getMaterialManagementMode($ocs_config, $this->fields['itemtype']);
-            $decoConf= $ocs_config["deconnection_behavior"];
-
-            //Change status if :
-            // 1 : the management mode IS NOT global
-            // 2 : a deconnection's status have been defined
-            // 3 : unique with serial
-            if($mode >= 2 && strlen($decoConf)>0) {
-               //Delete periph from glpi
-               if($decoConf == "delete") {
-                  $tmp["id"]=$this->fields['items_id'];
-                  $device->obj->delete($tmp);
-               //Put periph in trash
-               } else if ($decoConf == "trash") {
-                  $tmp["id"]=$this->fields['items_id'];
-                  $tmp["is_deleted"]=1;
-                  $device->obj->update($tmp);
+               if (!$device->getField('is_global')) {
+                  $updates=array();
+                  if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')) {
+                     $updates[]="locations_id";
+                     $device->fields['locations_id']=0;
+                  }
+                  if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
+                     $updates[]="users_id";
+                     $device->fields['users_id']=0;
+                  }
+                  if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')) {
+                     $updates[]="groups_id";
+                     $device->fields['groups_id']=0;
+                  }
+                  if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')) {
+                     $updates[]="contact";
+                     $device->fields['contact']="";
+                  }
+                  if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')) {
+                     $updates[]="contact_num";
+                     $device->fields['contact_num']="";
+                  }
+                  if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->getField('states_id')) {
+                     $updates[]="states_id";
+                     $device->fields['states_id']=0;
+                  }
+                  if ($CFG_GLPI["state_autoclean_mode"]>0
+                     && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
+                     $updates[]="states_id";
+                     $device->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
+                  }
+                  if (count($updates)) {
+                     $device->updateInDB($updates);
+                  }
                }
+               if (isset($this->input['_ocsservers_id'])) {
+                  $ocsservers_id = $this->input['_ocsservers_id'];
+               } else {
+                  $ocsservers_id = getOCSServerByMachineID($this->fields['computers_id']);
+               }
+               if ($ocsservers_id>0) {
+                  //Get OCS configuration
+                  $ocs_config = getOcsConf($ocsservers_id);
+
+                  //Get the management mode for this device
+                  $mode = getMaterialManagementMode($ocs_config, $this->fields['itemtype']);
+                  $decoConf= $ocs_config["deconnection_behavior"];
+
+                  //Change status if :
+                  // 1 : the management mode IS NOT global
+                  // 2 : a deconnection's status have been defined
+                  // 3 : unique with serial
+                  if($mode >= 2 && strlen($decoConf)>0) {
+                     //Delete periph from glpi
+                     if($decoConf == "delete") {
+                        $tmp["id"]=$this->fields['items_id'];
+                        $device->delete($tmp);
+                     //Put periph in trash
+                     } else if ($decoConf == "trash") {
+                        $tmp["id"]=$this->fields['items_id'];
+                        $tmp["is_deleted"]=1;
+                        $device->update($tmp);
+                     }
+                  }
+               } // $ocsservers_id>0
             }
-         } // $ocsservers_id>0
+         }
       }
    }
 
@@ -304,7 +310,6 @@ class Computer_Item extends CommonDBRelation{
    static function showForComputer($target, Computer $comp, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
-      $ci=new CommonItem;
       $used = array();
       $items=array(PRINTER_TYPE=>$LANG['computers'][39],
                    MONITOR_TYPE=>$LANG['computers'][40],
@@ -315,7 +320,7 @@ class Computer_Item extends CommonDBRelation{
       $canedit=$comp->can($ID,'w');
 
       foreach ($items as $itemtype => $title) {
-         if (!haveTypeRight($itemtype,"r")) {
+         if (!class_exists($itemtype) || !haveTypeRight($itemtype,"r")) {
             unset($items[$itemtype]);
          }
       }
@@ -359,16 +364,18 @@ class Computer_Item extends CommonDBRelation{
                   for ($i=0; $i < $resultnum; $i++) {
                      $tID = $DB->result($result, $i, "items_id");
                      $connID = $DB->result($result, $i, "id");
-                     $ci->getFromDB($itemtype,$tID);
+
+                     $item = new $itemtype();
+                     $item->getFromDB($tID);
                      $used[] = $tID;
 
-                     echo "<tr ".($ci->getField('is_deleted')?"class='tab_bg_2_2'":"").">";
+                     echo "<tr ".($item->getField('is_deleted')?"class='tab_bg_2_2'":"").">";
                      echo "<td class='center'><strong>";
-                     echo $ci->getLink();
+                     echo $item->getLink();
                      echo "</strong>";
-                     echo " - ".CommonDropdown::getDropdownName("glpi_states",$ci->getField('state'));
-                     echo "</td><td>".$ci->getField('serial');
-                     echo "</td><td>".$ci->getField('otherserial');
+                     echo " - ".CommonDropdown::getDropdownName("glpi_states",$item->getField('state'));
+                     echo "</td><td>".$item->getField('serial');
+                     echo "</td><td>".$item->getField('otherserial');
                      echo "</td><td>";
                      if ($canedit && (empty($withtemplate) || $withtemplate != 2)) {
                         echo "<td class='center'>";

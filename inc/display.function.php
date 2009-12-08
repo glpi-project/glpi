@@ -862,7 +862,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
               $LANG['Menu'][11]."\" >".$LANG['Menu'][11]."</a></li>";
 
    // Temporary autoload test
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php?toggle_autoload=1'>".(isset($_SESSION['glpiautoload'])&&$_SESSION['glpiautoload']?"Disable autoload":"Activate Autoload")."</a></li>";
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php?toggle_autoload=1'>".(!isset($_SESSION['glpiautoload'])||$_SESSION['glpiautoload']?"Disable autoload":"Activate Autoload")."</a></li>";
 
    echo "</ul>";
    echo "<div class='sep'></div>";
@@ -2380,7 +2380,7 @@ function showNotesForm($target,$itemtype,$id) {
    if ($canedit) {
       echo "<form name='form' method='post' action=\"".$target."\">";
    }
-   print_r($item);
+
    echo "<div class='center'>";
    echo "<table class='tab_cadre_fixe' >";
    echo "<tr><th class='center' >";
