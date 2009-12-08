@@ -144,8 +144,6 @@ class Transfer extends CommonDBTM {
 
                                'keep_consumable'      => 0);
 
-      $ci=new CommonItem();
-
       if ($to>=0) {
          // Store to
          $this->to = $to;
@@ -320,7 +318,6 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_dc_printer']) {
          $DC_CONNECT[] = PRINTER_TYPE;
       }
-      $ci = new CommonItem();
       if (count($DC_CONNECT) && count($this->needtobe_transfer[COMPUTER_TYPE])>0) {
          foreach ($DC_CONNECT as $itemtype) {
             // Clean DB / Search unexisting links and force disconnect
@@ -350,10 +347,15 @@ class Transfer extends CommonDBTM {
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
                   while ($data=$DB->fetch_array($result)) {
+
+                     if (!class_exists($itemtype)) {
+                        continue;
+                     }
+                     $item=new $itemtype();
                      if (isset($CFG_GLPI["recursive_type"][$itemtype])
-                         && $ci->getFromDB($itemtype,$data['items_id'])
-                         && $ci->obj->isRecursive()
-                         && in_array($ci->obj->getEntityID(), $to_entity_ancestors)) {
+                         && $item->getFromDB($data['items_id'])
+                         && $item->isRecursive()
+                         && in_array($item->getEntityID(), $to_entity_ancestors)) {
 
                         $this->addNotToBeTransfer($itemtype,$data['items_id']);
                      } else {
@@ -874,11 +876,15 @@ class Transfer extends CommonDBTM {
    function transferItem($itemtype,$ID,$newID) {
       global $CFG_GLPI,$DB;
 
-      $cinew=new CommonItem();
+      if (!class_exists($itemtype)) {
+         return;
+      }
+      $item = new $itemtype();
+
       // Is already transfer ?
       if (!isset($this->already_transfer[$itemtype][$ID])) {
          // Check computer exists ?
-         if ($cinew->getFromDB($itemtype,$newID)) {
+         if ($item->getFromDB($newID)) {
             // Manage Ocs links
             $dataocslink = array();
             $ocs_computer = false;
@@ -974,12 +980,12 @@ class Transfer extends CommonDBTM {
                            'entities_id' => $this->to);
 
             // Manage Location dropdown
-            if (isset($cinew->obj->fields['locations_id'])) {
+            if (isset($item->fields['locations_id'])) {
                $input['locations_id'] =
-                     $this->transferDropdownLocation($cinew->obj->fields['locations_id']);
+                     $this->transferDropdownLocation($item->fields['locations_id']);
             }
 
-            $cinew->obj->update($input);
+            $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
             doHook("item_transfer", array('type'  => $itemtype,
                                           'id'    => $ID,
@@ -1847,7 +1853,12 @@ class Transfer extends CommonDBTM {
             break;
       }
 
-      $ci = new CommonItem();
+      if (!class_exists($link_type)) {
+         continue;
+      }
+
+      $link_item = new $link_type();
+
       // Get connections
       $query = "SELECT *
                 FROM `glpi_computers_items`
@@ -1863,9 +1874,9 @@ class Transfer extends CommonDBTM {
             // Foreach get item
             while ($data = $DB->fetch_array($result)) {
                $item_ID = $data['items_id'];
-               if ($ci->getFromDB($link_type,$item_ID)) {
+               if ($link_item($item_ID)) {
                   // If global :
-                  if ($ci->obj->fields['is_global'] == 1) {
+                  if ($link_item->fields['is_global'] == 1) {
                      $need_clean_process = false;
                      // if keep
                      if ($keep) {
@@ -1900,7 +1911,7 @@ class Transfer extends CommonDBTM {
                                         FROM ".$LINK_ID_TABLE[$link_type]."
                                         WHERE `is_global` = '1'
                                               AND `entities_id` = '".$this->to."'
-                                              AND `name` = '".addslashes($ci->getField('name'))."'";
+                                              AND `name` = '".addslashes($link_item->getField('name'))."'";
 
                               if ($result_search = $DB->query($query)) {
                                  if ($DB->numrows($result_search) >0) {
@@ -1911,11 +1922,11 @@ class Transfer extends CommonDBTM {
                               // Not found -> transfer copy
                               if ($newID <0) {
                                  // 1 - create new item
-                                 unset($ci->obj->fields['id']);
-                                 $input = $ci->obj->fields;
+                                 unset($link_item->fields['id']);
+                                 $input = $link_item->fields;
                                  $input['entities_id'] = $this->to;
-                                 unset($ci->obj->fields);
-                                 $newID = $ci->obj->add($input);
+                                 unset($link_item->fields);
+                                 $newID = $link_item->add($input);
                                  // 2 - transfer as copy
                                  $this->transferItem($link_type,$item_ID,$newID);
                               }
@@ -1957,10 +1968,10 @@ class Transfer extends CommonDBTM {
                         if ($result_dc=$DB->query($query)) {
                            if ($DB->result($result_dc,0,'CPT') == 0) {
                               if ($clean == 1) {
-                                 $ci->obj->delete(array('id' => $item_ID));
+                                 $link_item->delete(array('id' => $item_ID));
                               }
                               if ($clean == 2) { // purge
-                                 $ci->obj->delete(array('id' => $item_ID), 1);
+                                 $link_item->delete(array('id' => $item_ID), 1);
                               }
                            }
                         }
@@ -1976,9 +1987,9 @@ class Transfer extends CommonDBTM {
 
                         //if clean -> delete
                         if ($clean == 1) {
-                           $ci->obj->delete(array('id' => $item_ID));
+                           $link_item->delete(array('id' => $item_ID));
                         } else if ($clean == 2) { // purge
-                           $ci->obj->delete(array('id' => $item_ID), 1);
+                           $link_item->delete(array('id' => $item_ID), 1);
                         }
                         if ($ocs_computer && !empty($ocs_field)) {
                            $query = "UPDATE
@@ -2836,7 +2847,6 @@ class Transfer extends CommonDBTM {
    function showTransferList() {
       global $LANG,$LINK_ID_TABLE,$DB,$CFG_GLPI;
 
-      $ci = new CommonItem();
       if (isset($_SESSION['glpitransfer_list']) && count($_SESSION['glpitransfer_list'])) {
          echo "<div class='center b'>".$LANG['transfer'][5]."<br>".$LANG['transfer'][6]."</div>";
          echo "<table class='tab_cadre_fixe' >";
@@ -2862,10 +2872,14 @@ class Transfer extends CommonDBTM {
                          ORDER BY locname, `".$table."`.`name`";
                $entID = -1;
 
+               if (!class_exists($itemtype)) {
+                  continue;
+               }
+               $item = new $itemtype();
+
                if ($result=$DB->query($query)) {
                   if ($DB->numrows($result)) {
-                     $ci->setType($itemtype);
-                     echo '<h3>'.$ci->getType().'</h3>';
+                     echo '<h3>'.$item->getTypeName().'</h3>';
                      while ($data=$DB->fetch_assoc($result)) {
                         if ($entID != $data['entID']) {
                            if ($entID != -1) {
