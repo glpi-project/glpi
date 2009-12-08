@@ -214,7 +214,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_contacttypes","contacttypes_id",$this->fields["contacttypes_id"]);
+      CommonDropdown::dropdownValue("glpi_contacttypes","contacttypes_id",$this->fields["contacttypes_id"]);
       echo "</td>";
       echo "<td></td><td class='center'>";
       if ($ID>0) {
@@ -378,9 +378,9 @@ class Contact extends CommonDBTM{
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$data["entID"]."'>".
-                   getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
-            echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-            echo "<td class='center'>".getDropdownName("glpi_suppliertypes",$data["type"])."</td>";
+                   CommonDropdown::getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
+            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entity"])."</td>";
+            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_suppliertypes",$data["type"])."</td>";
             echo "<td class='center' width='80'>".$data["phone"]."</td>";
             echo "<td class='center' width='80'>".$data["fax"]."</td>";
             echo "<td class='center'>".$website."</td>";
@@ -407,10 +407,10 @@ class Contact extends CommonDBTM{
             echo "<div class='software-instal'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             if ($this->fields["is_recursive"]) {
-               dropdown("glpi_suppliers","suppliers_id",1,
+               CommonDropdown::dropdown("glpi_suppliers","suppliers_id",1,
                         getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
             } else {
-               dropdown("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
+               CommonDropdown::dropdown("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
             }
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
                                $LANG['buttons'][8]."\" class='submit'>";

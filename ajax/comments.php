@@ -67,7 +67,7 @@ if (isset($_POST["table"]) && isset($_POST["value"])) {
 
       default :
          if ($_POST["value"]>0) {
-            $tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
+            $tmpname=CommonDropdown::getDropdownName($_POST["table"],$_POST["value"],1);
             echo $tmpname["comment"];
          }
          break;

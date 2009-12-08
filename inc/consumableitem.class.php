@@ -174,14 +174,14 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_consumableitemtypes","consumableitemtypes_id",
+      CommonDropdown::dropdownValue("glpi_consumableitemtypes","consumableitemtypes_id",
                     $this->fields["consumableitemtypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -194,7 +194,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
+      CommonDropdown::dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -342,10 +342,10 @@ class ConsumableItem extends CommonDBTM {
 
                if ($mail->send()) {
                   if ($task) {
-                     $task->log(getDropdownName("glpi_entities",$entity)." :  $msg\n");
+                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity)." :  $msg\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity)." :  $msg");
+                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity)." :  $msg");
                   }
 
                   $input["type"] = ALERT_THRESHOLD;
@@ -359,10 +359,10 @@ class ConsumableItem extends CommonDBTM {
                   }
                } else {
                   if ($task) {
-                     $task->log(getDropdownName("glpi_entities",$entity).
+                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).
                             " : Send consumable alert failed\n");
                   } else {
-                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
+                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).
                                              " : Send consumable alert failed",false,ERROR);
                   }
                }

@@ -40,7 +40,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	// Titre
-	$name=getDropdownName("glpi_locations",$_POST["locations_id"]);
+	$name=CommonDropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
 	echo "<div align='center'><h2>".$LANG['reports'][54]." $name </h2></div>";
 
 	$query="SELECT glpi_netpoints.name AS prise, glpi_networkports.name AS port, glpi_networkports.ip,

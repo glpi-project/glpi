@@ -94,7 +94,7 @@ class RuleOcs extends Rule {
       //Get all rules and actions
       $rules = $this->getRulesForEntity( $ID, 0, 1);
       if (!empty ($rules)) {
-         initNavigateListItems(RULE_TYPE, $LANG['entity'][0]."=".getDropdownName("glpi_entities",$ID),
+         initNavigateListItems(RULE_TYPE, $LANG['entity'][0]."=".CommonDropdown::getDropdownName("glpi_entities",$ID),
                                $this->sub_type);
 
          foreach ($rules as $rule) {

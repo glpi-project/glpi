@@ -221,27 +221,27 @@ class Link extends CommonDBTM {
                }
                if (strstr($link,"[LOCATION]")) {
                   if ($tmp=$ci->getField('locations_id')) {
-                     $link=str_replace("[LOCATION]",getDropdownName("glpi_locations",$tmp),$link);
+                     $link=str_replace("[LOCATION]",CommonDropdown::getDropdownName("glpi_locations",$tmp),$link);
                   }
                }
                if (strstr($link,"[NETWORK]")) {
                   if ($tmp=$ci->getField('networks_id')) {
-                     $link=str_replace("[NETWORK]",getDropdownName("glpi_networks",$tmp),$link);
+                     $link=str_replace("[NETWORK]",CommonDropdown::getDropdownName("glpi_networks",$tmp),$link);
                   }
                }
                if (strstr($link,"[DOMAIN]")) {
                   if ($tmp=$ci->getField('domains_id')) {
-                     $link=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$tmp),$link);
+                     $link=str_replace("[DOMAIN]",CommonDropdown::getDropdownName("glpi_domains",$tmp),$link);
                   }
                }
                if (strstr($link,"[USER]")) {
                   if ($tmp=$ci->getField('users_id')) {
-                     $link=str_replace("[USER]",getDropdownName("glpi_users",$tmp),$link);
+                     $link=str_replace("[USER]",CommonDropdown::getDropdownName("glpi_users",$tmp),$link);
                   }
                }
                if (strstr($link,"[GROUP]")) {
                   if ($tmp=$ci->getField('groups_id')) {
-                     $link=str_replace("[GROUP]",getDropdownName("glpi_groups",$tmp),$link);
+                     $link=str_replace("[GROUP]",CommonDropdown::getDropdownName("glpi_groups",$tmp),$link);
                   }
                }
                $ipmac=array();

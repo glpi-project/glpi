@@ -61,7 +61,7 @@ switch ($_POST["action_type"]) {
       if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])) {
          switch($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type']) {
             case "dropdown" :
-               dropdownValue($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'],"value");
+               CommonDropdown::dropdownValue($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'],"value");
                $display=true;
                break;
 

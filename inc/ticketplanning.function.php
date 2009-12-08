@@ -107,7 +107,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID) {
       echo "\n<hr>";
       echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
             ($usertype=="group"?"checked":"").">";
-      $rand_group=dropdownValue("glpi_groups","gID",$gID,1,$_SESSION["glpiactive_entity"]);
+      $rand_group=CommonDropdown::dropdownValue("glpi_groups","gID",$gID,1,$_SESSION["glpiactive_entity"]);
       echo "\n<hr>";
       echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
             ($usertype=="user_group"?"checked":"").">";

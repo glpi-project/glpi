@@ -56,7 +56,7 @@ function showCentralReminder($entity = -1, $parent = false) {
                       getEntitiesRestrictRequest("AND","glpi_reminders","",$entity)."
                 ORDER BY `name`";
       $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
-               "</a> (".getdropdownName("glpi_entities", $entity).")";
+               "</a> (".CommonDropdown::getDropdownName("glpi_entities", $entity).")";
 
       if (haveRight("reminder_public","w")) {
          $is_private = 0;
@@ -68,14 +68,14 @@ function showCentralReminder($entity = -1, $parent = false) {
                       AND `is_recursive` = '1' ".
                       getEntitiesRestrictRequest("AND","glpi_reminders","",$entity)."
                 ORDER BY `name`";
-      $titre = $LANG['reminder'][1]." (".getdropdownName("glpi_entities", $entity).")";
+      $titre = $LANG['reminder'][1]." (".CommonDropdown::getDropdownName("glpi_entities", $entity).")";
    } else { // Filles
       $query = "SELECT *
                 FROM `glpi_reminders`
                 WHERE `is_private` = '0' ".
                       getEntitiesRestrictRequest("AND","glpi_reminders","",$entity)."
                 ORDER BY `name`";
-      $titre = $LANG['reminder'][1]." (".getdropdownName("glpi_entities", $entity).")";
+      $titre = $LANG['reminder'][1]." (".CommonDropdown::getDropdownName("glpi_entities", $entity).")";
    }
 
    $result = $DB->query($query);
@@ -192,8 +192,8 @@ function showListReminder($is_private=1,$is_recursive=0) {
          if (!$is_private) {
             // preg to split line (if needed) before ">" sign in completename
             echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1",
-                                      getdropdownName("glpi_entities", $val["entity"])). "</td>";
-            echo "<td>" .getdropdownName("glpi_users", $val["users_id"]) . "</td>";
+                                      CommonDropdown::getDropdownName("glpi_entities", $val["entity"])). "</td>";
+            echo "<td>" .CommonDropdown::getDropdownName("glpi_users", $val["users_id"]) . "</td>";
          }
          echo "<td width='60%' class='left'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".

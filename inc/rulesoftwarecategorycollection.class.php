@@ -66,7 +66,7 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
          $params["comment"]=$software["comment"];
       }
       if (isset($software["manufacturers_id"])) {
-         $params["manufacturer"]=getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
+         $params["manufacturer"]=CommonDropdown::getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
       }
       return $params;
    }

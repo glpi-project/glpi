@@ -1260,7 +1260,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (isset($this->fields["entities_id"]) && isMultiEntitiesMode()) {
-         echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
+         echo "&nbsp;(".CommonDropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
       }
       echo "</th><th colspan='$colspan'>";
 
@@ -1502,7 +1502,7 @@ class CommonDBTM extends CommonGLPI {
          $comment.="<strong>".$LANG['common'][20]."&nbsp;: "."</strong>".$tmp."<br>";
       }
       if ($tmp=$this->getField('locations_id')) {
-         $tmp=getDropdownName("glpi_locations",$tmp);
+         $tmp=CommonDropdown::getDropdownName("glpi_locations",$tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
          }
@@ -1514,7 +1514,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       if ($tmp=$this->getField('groups_id')) {
-         $tmp=getDropdownName("glpi_groups",$tmp);
+         $tmp=CommonDropdown::getDropdownName("glpi_groups",$tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
          }

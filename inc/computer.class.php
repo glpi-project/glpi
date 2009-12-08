@@ -567,18 +567,18 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      CommonDropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
+      CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                      $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_computertypes", "computertypes_id", $this->fields["computertypes_id"]);
+      CommonDropdown::dropdownValue("glpi_computertypes", "computertypes_id", $this->fields["computertypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -589,7 +589,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id", $this->fields["manufacturers_id"]);
+      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id", $this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -600,7 +600,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_computermodels", "computermodels_id",$this->fields["computermodels_id"]);
+      CommonDropdown::dropdownValue("glpi_computermodels", "computermodels_id",$this->fields["computermodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -631,18 +631,18 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+      CommonDropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                      $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      CommonDropdown::dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      CommonDropdown::dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
       echo "</td>";
       echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='7' class='middle'>";
@@ -652,14 +652,14 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_operatingsystems", "operatingsystems_id",
+      CommonDropdown::dropdownValue("glpi_operatingsystems", "operatingsystems_id",
                      $this->fields["operatingsystems_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemservicepacks", "operatingsystemservicepacks_id",
+      CommonDropdown::dropdownValue("glpi_operatingsystemservicepacks", "operatingsystemservicepacks_id",
                      $this->fields["operatingsystemservicepacks_id"]);
       echo "</td></tr>\n";
 
@@ -667,7 +667,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_operatingsystemversions", "operatingsystemversions_id",
+      CommonDropdown::dropdownValue("glpi_operatingsystemversions", "operatingsystemversions_id",
                      $this->fields["operatingsystemversions_id"]);
       echo "</td></tr>\n";
 
@@ -748,7 +748,7 @@ class Computer extends CommonDBTM {
       }
       echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
       echo "<td >";
-      dropdownValue("glpi_autoupdatesystems", "autoupdatesystems_id",
+      CommonDropdown::dropdownValue("glpi_autoupdatesystems", "autoupdatesystems_id",
                      $this->fields["autoupdatesystems_id"]);
       echo "</td></tr>";
 

@@ -1146,7 +1146,7 @@ class User extends CommonDBTM {
       autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_usercategories", "usercategories_id",
+      CommonDropdown::dropdownValue("glpi_usercategories", "usercategories_id",
                     $this->fields["usercategories_id"], 1, -1);
       echo "</td></tr>";
 
@@ -1170,14 +1170,14 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
-      dropdownValue("glpi_usertitles", "usertitles_id", $this->fields["usertitles_id"], 1, -1);
+      CommonDropdown::dropdownValue("glpi_usertitles", "usertitles_id", $this->fields["usertitles_id"], 1, -1);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
       if (!empty($ID)) {
          $entities = getUserEntities($ID,true);
          if (count($entities)>0) {
-            dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
+            CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
                           $entities);
          } else {
             echo "&nbsp;";
@@ -1185,7 +1185,7 @@ class User extends CommonDBTM {
       } else {
          if (!isMultiEntitiesMode()) {
             // Display all locations : only one entity
-            dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1);
+            CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1);
          } else {
             echo "&nbsp;";
          }
@@ -1317,7 +1317,7 @@ class User extends CommonDBTM {
          echo "</td>";
          if (count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
-            dropdownValue("glpi_entities", "entities_id", $_SESSION["glpidefault_entity"], 1,
+            CommonDropdown::dropdownValue("glpi_entities", "entities_id", $_SESSION["glpidefault_entity"], 1,
                           $_SESSION['glpiactiveentities']);
          } else {
             echo "<td colspan='2'>&nbsp;";

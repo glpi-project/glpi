@@ -396,7 +396,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
             echo "<td>" . $group . "</td>";
             echo "<td>" .$group_dn. "</td>";
             echo "<td>";
-            dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
+            CommonDropdown::dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
             echo "</td>";
             echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".
                      $search_type."\"></tr>";
@@ -808,7 +808,7 @@ function formChangeAuthMethodToLDAP($ID) {
       echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][2]."</th></tr>";
       echo "<tr class='tab_bg_1'><td><input type='hidden' name='id' value='" . $ID . "'>";
       echo $LANG['login'][31]."</td><td>";
-      dropdownValue("glpi_authldaps","auths_id");
+      CommonDropdown::dropdownValue("glpi_authldaps","auths_id");
       echo "</td>";
       echo "<tr class='tab_bg_2'><td colspan='2'class='center'>";
       echo "<input class=submit type='submit' name='switch_auth_ldap' value='" .
@@ -833,7 +833,7 @@ function formChangeAuthMethodToMail($ID) {
       echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][3]."</th></tr>";
       echo "<tr class='tab_bg_1'><td><input type='hidden' name='id' value='" . $ID . "'>";
       echo $LANG['login'][33]."</td><td>";
-      dropdownValue("glpi_authmails","auths_id");
+      CommonDropdown::dropdownValue("glpi_authmails","auths_id");
       echo "</td>";
       echo "<tr class='tab_bg_2'><td colspan='2'class='center'>";
       echo "<input class=submit type='submit' name='switch_auth_mail' value='" .

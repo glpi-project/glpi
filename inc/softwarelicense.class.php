@@ -180,11 +180,11 @@ class SoftwareLicense extends CommonDBTM {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
       echo "<a href='software.form.php?id=".$softwares_id."'>".
-                 getDropdownName("glpi_softwares",$softwares_id)."</a>";
+                 CommonDropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_softwarelicensetypes", "softwarelicensetypes_id", $this->fields["softwarelicensetypes_id"]);
+      CommonDropdown::dropdownValue("glpi_softwarelicensetypes", "softwarelicensetypes_id", $this->fields["softwarelicensetypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -234,7 +234,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][50]."&nbsp;:</td>";
       echo "<td>";
       if ($this->fields["number"]==1) {
-         dropdownValue('glpi_computers','computers_id',$this->fields["computers_id"],1,
+         CommonDropdown::dropdownValue('glpi_computers','computers_id',$this->fields["computers_id"],1,
                        ($this->fields['is_recursive']
                             ? getSonsOf('glpi_entities', $this->fields['entities_id'])
                             : $this->fields['entities_id']));
@@ -393,10 +393,10 @@ class SoftwareLicense extends CommonDBTM {
             $mail=new MailingAlert("alertlicense",$msg,$entity);
             if ($mail->send()) {
                if ($task) {
-                  $task->log(getDropdownName("glpi_entities",$entity).":  $msg\n");
+                  $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
                   $task->addVolume(1);
                } else {
-                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
+                  addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).":  $msg");
                }
 
                // Mark alert as done
@@ -413,9 +413,9 @@ class SoftwareLicense extends CommonDBTM {
                }
             } else {
                if ($task) {
-                  $task->log(getDropdownName("glpi_entities",$entity).": Send licenses alert failed\n");
+                  $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).": Send licenses alert failed\n");
                } else {
-                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
+                  addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).
                                           ": Send licenses alert failed",false,ERROR);
                }
             }

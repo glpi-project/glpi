@@ -288,7 +288,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][3]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_documentcategories","documentcategories_id",
+      CommonDropdown::dropdownValue("glpi_documentcategories","documentcategories_id",
                     $this->fields["documentcategories_id"]);
       echo "</td></tr>";
 
@@ -717,7 +717,7 @@ class Document extends CommonDBTM {
                      echo "<td class='center'>".$item->getTypeName($itemtype)."</td>";
                      echo "<td ".(isset($data['is_deleted']) &&
                                   $data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
-                     echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity']);
+                     echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data['entity']);
                      echo "</td>";
                      echo "<td class='center'>".(isset($data["serial"])? "".
                                                  $data["serial"]."" :"-")."</td>";
@@ -1095,7 +1095,7 @@ class Document extends CommonDBTM {
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>".$document->getLink()."</td>";
-            echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
+            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
             echo "<td class='center'>".$document->getDownloadLink()."</td>";
             echo "<td class='center'>";
             if (!empty($data["link"])) {
@@ -1104,7 +1104,7 @@ class Document extends CommonDBTM {
                echo "&nbsp;";
             }
             echo "</td>";
-            echo "<td class='center'>".getDropdownName("glpi_documentcategories",
+            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_documentcategories",
                                                        $data["documentcategories_id"])."</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
 

@@ -119,7 +119,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             }
             echo "</strong></td>\n";
             echo "<td>" . $netport->fields["name"] . "</td>\n";
-            echo "<td>".getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
+            echo "<td>".CommonDropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
             echo "<td>" . $netport->fields["ip"] . "<br>" .$netport->fields["mac"] . "</td>\n";
             echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;".$netport->fields["subnet"] .
                         "<br>".$netport->fields["gateway"] . "</td>\n";
@@ -127,7 +127,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             echo "<td>";
             showPortVLAN($netport->fields["id"], $withtemplate);
             echo "</td>\n";
-            echo "<td>" . getDropdownName("glpi_networkinterfaces",
+            echo "<td>" . CommonDropdown::getDropdownName("glpi_networkinterfaces",
                                           $netport->fields["networkinterfaces_id"]) . "</td>\n";
 
             echo "<td width='300' class='tab_bg_2'>";
@@ -170,7 +170,7 @@ function showPortVLAN($ID, $withtemplate) {
       echo "\n<table>";
       while ($line = $DB->fetch_array($result)) {
          $used[]=$line["vlans_id"];
-         echo "<tr><td>" . getDropdownName("glpi_vlans", $line["vlans_id"]);
+         echo "<tr><td>" . CommonDropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
          echo "</td>\n<td>";
          if ($canedit) {
             echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
@@ -205,7 +205,7 @@ function showPortVLANForm ($ID) {
 
       echo "<tr class='tab_bg_2'><td>";
       echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
-      dropdown("glpi_vlans", "vlan",1,-1,$used);
+      CommonDropdown::dropdown("glpi_vlans", "vlan",1,-1,$used);
       echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
                    "' class='submit'>";
       echo "</td></tr>\n";
@@ -341,7 +341,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-   dropdownValue("glpi_networkinterfaces", "networkinterfaces_id", $netport->fields["networkinterfaces_id"]);
+   CommonDropdown::dropdownValue("glpi_networkinterfaces", "networkinterfaces_id", $netport->fields["networkinterfaces_id"]);
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
@@ -404,7 +404,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    if ($several != "yes") {
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
       echo "<td>";
-      Netpoint::dropdown("netpoints_id", $netport->fields["netpoints_id"], $netport->locations_id, 1,
+      Netpoint::dropdownNetpoint("netpoints_id", $netport->fields["netpoints_id"], $netport->locations_id, 1,
                        $netport->entities_id, ($ID ? $netport->fields["itemtype"] : $devtype));
       echo "</td></tr>\n";
    }
@@ -505,7 +505,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
          }
          echo "</a></strong>";
          if ($device1->obj->fields["entities_id"] != $device2->obj->fields["entities_id"]) {
-            echo "<br>(" .getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
+            echo "<br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
          }
 
          // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
@@ -527,7 +527,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
          }
          echo "</strong> " . $LANG['networking'][25] . " <strong>";
          echo $device2->obj->fields["name"];
-         echo "</strong><br>(" .getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
+         echo "</strong><br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
       }
       echo "</td></tr></table>\n";
    } else {

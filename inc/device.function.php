@@ -205,7 +205,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
             $entry[$LANG['device_hdd'][0]]=$device->fields["rpm"];
          }
          if ($device->fields["interfacetypes_id"]) {
-            $entry[$LANG['common'][65]]=getDropdownName("glpi_interfacetypes",
+            $entry[$LANG['common'][65]]=CommonDropdown::getDropdownName("glpi_interfacetypes",
                                                         $device->fields["interfacetypes_id"]);
          }
          if (!empty($device->fields["cache"])) {
@@ -217,7 +217,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
       case GFX_DEVICE :
          $type=$LANG['devices'][2];
          $name=$device->fields["designation"];
-         $entry[$LANG['common'][65]]=getDropdownName("glpi_interfacetypes",
+         $entry[$LANG['common'][65]]=CommonDropdown::getDropdownName("glpi_interfacetypes",
                                                      $device->fields["interfacetypes_id"]);
          $specificity_size = 10;
          break;
@@ -253,7 +253,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          $type=$LANG['devices'][6];
          $name=$device->fields["designation"];
          if (!empty($device->fields["type"])) {
-            $entry[$LANG['common'][17]]=getDropdownName("glpi_devicememorytypes",
+            $entry[$LANG['common'][17]]=CommonDropdown::getDropdownName("glpi_devicememorytypes",
                                                         $device->fields["type"]);
          }
          if (!empty($device->fields["frequence"])) {
@@ -284,7 +284,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
             $entry[$LANG['common'][65]]=$device->fields["frequence"];
          }
          if ($device->fields["interfacetypes_id"]) {
-            $entry[$LANG['common'][65]]=getDropdownName("glpi_interfacetypes",
+            $entry[$LANG['common'][65]]=CommonDropdown::getDropdownName("glpi_interfacetypes",
                                                         $device->fields["interfacetypes_id"]);
          }
          break;
@@ -296,7 +296,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
             $entry[$LANG['device_control'][0]]=getYesNo($device->fields["is_raid"]);
          }
          if ($device->fields["interfacetypes_id"]) {
-            $entry[$LANG['common'][65]]=getDropdownName("glpi_interfacetypes",
+            $entry[$LANG['common'][65]]=CommonDropdown::getDropdownName("glpi_interfacetypes",
                                                         $device->fields["interfacetypes_id"]);
          }
          break;
@@ -321,7 +321,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          $type=$LANG['devices'][22];
          $name=$device->fields["designation"];
          if (!empty($device->fields["type"])) {
-            $entry[$LANG['device_case'][0]]=getDropdownName("glpi_devicecasetypes",
+            $entry[$LANG['device_case'][0]]=CommonDropdown::getDropdownName("glpi_devicecasetypes",
                                                             $device->fields["type"]);
          }
          break;

@@ -150,7 +150,7 @@ class Contract extends CommonDBTM {
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
-      dropdownValue("glpi_contracttypes","contracttypes_id",$this->fields["contracttypes_id"]);
+      CommonDropdown::dropdownValue("glpi_contracttypes","contracttypes_id",$this->fields["contracttypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -558,7 +558,7 @@ class Contract extends CommonDBTM {
          $entID=$DB->result($result, $i, "entID");
          $entity=$DB->result($result, $i, "entity");
          $used[$entID]=$entID;
-         $entname=getDropdownName("glpi_suppliers",$entID);
+         $entname=CommonDropdown::getDropdownName("glpi_suppliers",$entID);
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
@@ -566,9 +566,9 @@ class Contract extends CommonDBTM {
             echo " ($entID)";
          }
          echo "</a></td>";
-         echo "<td class='center'>".getDropdownName("glpi_entities",$entity)."</td>";
+         echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$entity)."</td>";
          echo "<td class='center'>";
-         echo getDropdownName("glpi_suppliertypes",$DB->result($result, $i, "type"))."</td>";
+         echo CommonDropdown::getDropdownName("glpi_suppliertypes",$DB->result($result, $i, "type"))."</td>";
          echo "<td class='center'>".$DB->result($result, $i, "phone")."</td>";
          echo "<td class='center'>".$website."</td>";
          echo "<td class='tab_bg_2 center'>";
@@ -594,10 +594,10 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='right' colspan='2'>";
             echo "<div class='software-instal'><input type='hidden' name='contracts_id' value='$instID'>";
             if ($this->fields["is_recursive"]) {
-               dropdown("glpi_suppliers","suppliers_id",1,
+               CommonDropdown::dropdown("glpi_suppliers","suppliers_id",1,
                         getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
             } else {
-               dropdown("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
+               CommonDropdown::dropdown("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
             }
             echo "</div></td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value=\"".
@@ -717,7 +717,7 @@ class Contract extends CommonDBTM {
                      echo "<td class='center top' rowspan='$nb'>".$ci->getType().
                             ($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
-                  echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
+                  echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
                   echo "<td class='center";
                   echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                   echo ">".$name."</td>";
@@ -776,7 +776,7 @@ class Contract extends CommonDBTM {
       $result = $DB->query($query);
       $out="";
       while ($data=$DB->fetch_array($result)) {
-         $out.= getDropdownName("glpi_suppliers",$data['id'])."<br>";
+         $out.= CommonDropdown::getDropdownName("glpi_suppliers",$data['id'])."<br>";
       }
       return $out;
    }
@@ -851,10 +851,10 @@ class Contract extends CommonDBTM {
             echo " (".$con->fields["id"].")";
          }
          echo "</strong></a></td>";
-         echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
+         echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$con->fields["entities_id"])."</td>";
          echo "<td class='center'>".$con->fields["num"]."</td>";
          echo "<td class='center'>".
-                getDropdownName("glpi_contracttypes",$con->fields["contracttypes_id"])."</td>";
+                CommonDropdown::getDropdownName("glpi_contracttypes",$con->fields["contracttypes_id"])."</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
          echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
          echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
@@ -991,10 +991,10 @@ class Contract extends CommonDBTM {
             $mail=new MailingAlert("alertcontract",$msg,$entity);
             if ($mail->send()) {
                if ($task) {
-                  $task->log(getDropdownName("glpi_entities",$entity).":  $msg\n");
+                  $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
                   $task->addVolume(1);
                } else {
-                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
+                  addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).":  $msg");
                }
 
                // Mark alert as done
@@ -1018,9 +1018,9 @@ class Contract extends CommonDBTM {
                }
             } else {
                if ($task) {
-                  $task->log(getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
+                  $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
                } else {
-                  addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).
+                  addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).
                                           ":  Send contract alert failed",false,ERROR);
                }
             }

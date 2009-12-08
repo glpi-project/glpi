@@ -103,7 +103,7 @@ if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && !empty($_POST["itemtype"])) {
                echo "</optgroup>";
             }
             $prev=$data["entities_id"];
-            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+            echo "<optgroup label=\"". CommonDropdown::getDropdownName("glpi_entities", $prev) ."\">";
          }
          $output = $data['name'];
          $ID = $data['id'];
