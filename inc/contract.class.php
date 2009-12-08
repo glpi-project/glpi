@@ -633,12 +633,11 @@ class Contract extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
 
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
-      echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "</th><th colspan='3'>".$LANG['document'][19].":</th></tr>";
       if ($canedit) {
          echo "</table></div>";
 
@@ -657,18 +656,20 @@ class Contract extends CommonDBTM {
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th></tr>";
 
-      $ci=new CommonItem;
       $totalnb=0;
-      while ($i < $number) {
+      for ($i = 0 ; $i < $number; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
-         if (haveTypeRight($itemtype,"r")) {
-            $ci->setType($itemtype,true);
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item = new $itemtype();
+         if ($item->canView()) {
             $query = "SELECT `".$LINK_ID_TABLE[$itemtype]."`.*, `glpi_contracts_items`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_contracts_items`, `" .$LINK_ID_TABLE[$itemtype]."`";
+                           `glpi_entities`.`id` AS entity
+                     FROM `glpi_contracts_items`, `" .$LINK_ID_TABLE[$itemtype]."`";
             if ($itemtype != ENTITY_TYPE) {
                $query .= " LEFT JOIN `glpi_entities`
-                                ON (`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`=`glpi_entities`.`id`) ";
+                              ON (`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`=`glpi_entities`.`id`) ";
             }
             $query .= " WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_contracts_items`.`items_id`
                               AND `glpi_contracts_items`.`itemtype`='$itemtype'
@@ -678,8 +679,8 @@ class Contract extends CommonDBTM {
                $query.=" AND `".$LINK_ID_TABLE[$itemtype]."`.`is_template`='0'";
             }
             $query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype],'','',
-                                                 $ci->obj->maybeRecursive())."
-                      ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`name`";
+                                                $item->maybeRecursive())."
+                     ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`name`";
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
@@ -688,15 +689,15 @@ class Contract extends CommonDBTM {
                if ($canedit) {
                   echo "<td>&nbsp;</td>";
                }
-               echo "<td class='center'>".$ci->getType()."&nbsp;:&nbsp;$nb</td>";
+               echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". $CFG_GLPI["root_doc"]."/". $SEARCH_PAGES[$itemtype] . "?" .
-                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
-                      rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
-                      "&amp;start=0". "'>" . $LANG['reports'][57]."</a></td>";
+                     rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
+                     rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
+                     "&amp;start=0". "'>" . $LANG['reports'][57]."</a></td>";
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
             } else if ($nb>0) {
-                for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+               for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
                   $ID="";
                   if($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $ID= " (".$data["id"].")";
@@ -714,8 +715,8 @@ class Contract extends CommonDBTM {
                      echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel></td>";
                   }
                   if ($prem) {
-                     echo "<td class='center top' rowspan='$nb'>".$ci->getType().
-                            ($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
+                     echo "<td class='center top' rowspan='$nb'>".$item->getTypeName().
+                           ($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
                   echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
                   echo "<td class='center";
@@ -723,13 +724,12 @@ class Contract extends CommonDBTM {
                   echo ">".$name."</td>";
                   echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
                   echo "<td class='center'>".
-                         (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                        (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                   echo "</tr>";
                }
             }
             $totalnb+=$nb;
          }
-         $i++;
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".($totalnb>0? $LANG['common'][33].
