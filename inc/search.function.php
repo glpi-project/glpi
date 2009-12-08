@@ -417,7 +417,7 @@ function searchForm($itemtype,$params) {
          ajaxUpdateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".
                   $i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
 
-         if (is_array($itemtype2) && isset($itemtype2[$i]) && $itemtype2[$i]>0) {
+         if (is_array($itemtype2) && isset($itemtype2[$i]) && !empty($itemtype2[$i])) {
             $params['itemtype']=$itemtype2[$i];
             ajaxUpdateItem("show_".$itemtype."_".$i."_$rand",
                            $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
@@ -882,7 +882,7 @@ function showList ($itemtype,$params) {
 
       // a - SELECT
       for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-         if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
+         if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
 
             $SELECT .= addSelect($itemtype2[$i],$field2[$i],$i,1,$itemtype2[$i]);
@@ -894,7 +894,7 @@ function showList ($itemtype,$params) {
       $already_link_tables2=array();
       // Link reference tables
       for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-         if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
+         if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
             if (!in_array($LINK_ID_TABLE[$itemtype2[$i]],$already_link_tables2)) {
                $FROM .= addMetaLeftJoin($itemtype,$itemtype2[$i],$already_link_tables2,
@@ -904,7 +904,7 @@ function showList ($itemtype,$params) {
       }
       // Link items tables
       for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-         if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
+         if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
             if (!isset($searchopt[$itemtype2[$i]])) {
                $searchopt[$itemtype2[$i]]=&getSearchOptions($itemtype2[$i]);
@@ -950,7 +950,7 @@ function showList ($itemtype,$params) {
    // Specific search for others item linked  (META search)
    if (is_array($itemtype2)) {
       for ($key=0 ; $key<$_SESSION["glpisearchcount2"][$itemtype] ; $key++) {
-         if (isset($itemtype2[$key]) && $itemtype2[$key]>0 && isset($contains2[$key])
+         if (isset($itemtype2[$key]) && !empty($itemtype2[$key]) && isset($contains2[$key])
              && strlen($contains2[$key])>0) {
             $LINK="";
 
@@ -1243,7 +1243,7 @@ function showList ($itemtype,$params) {
                if (isset($itemtype2[$i])
                    && isset($contains2[$i])
                    && strlen($contains2[$i])>0
-                   && $itemtype2[$i]>0
+                   && !empty($itemtype2[$i])
                    && (!isset($link2[$i]) || !strstr($link2[$i],"NOT"))) {
 
                   $nbcols++;
@@ -1304,7 +1304,7 @@ function showList ($itemtype,$params) {
          // Display columns Headers for meta items
          if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($itemtype2)) {
             for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-               if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
+               if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
                    && strlen($contains2[$i])>0 && (!isset($link2[$i])
                    ||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
 
@@ -1408,7 +1408,7 @@ function showList ($itemtype,$params) {
             // Print Meta Item
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($itemtype2)) {
                for ($j=0 ; $j<$_SESSION["glpisearchcount2"][$itemtype] ; $j++) {
-                  if (isset($itemtype2[$j]) && $itemtype2[$j]>0 && isset($contains2[$j])
+                  if (isset($itemtype2[$j]) && !empty($itemtype2[$j]) && isset($contains2[$j])
                       && strlen($contains2[$j])>0 && (!isset($link2[$j])
                       ||(!strstr($link2[$j],"NOT") || $contains2[$j]=="NULL"))) {
 

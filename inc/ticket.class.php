@@ -203,14 +203,13 @@ class Ticket extends CommonDBTM {
       }
 
       // NEEDED ????
-      if (isset($input["itemtype"]) && $input["itemtype"]==0 && !isset($input["items_id"])) {
+      if (isset($input["itemtype"]) && empty($input["itemtype"]) && !isset($input["items_id"])) {
          $input["items_id"]=0;
       }
 
       if (isset($input["items_id"])
           && $input["items_id"]>=0
-          && isset($input["itemtype"])
-          && $input["itemtype"]>=0) {
+          && isset($input["itemtype"])) {
 
          if (isset($this->fields['groups_id']) && $this->fields['groups_id']) {
             $ci=new CommonItem;
@@ -219,7 +218,7 @@ class Ticket extends CommonDBTM {
                $input["groups_id"] = $tmp;
             }
          }
-      } else if (isset($input["itemtype"]) && $input["itemtype"]==0) {
+      } else if (isset($input["itemtype"]) && empty($input["itemtype"])) {
          $input["items_id"]=0;
       } else {
          unset($input["items_id"]);
@@ -739,7 +738,7 @@ class Ticket extends CommonDBTM {
          }
       }
       // Auto group define from item
-      if ($input["items_id"]>0 && $input["itemtype"]>0) {
+      if ($input["items_id"]>0 && !empty($input["itemtype"])) {
          $ci=new CommonItem;
          $ci->getFromDB($input["itemtype"],$input["items_id"]);
          if ($tmp=$ci->getField('groups_id')) {

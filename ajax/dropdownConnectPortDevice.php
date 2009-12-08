@@ -41,7 +41,7 @@ header_nocache();
 
 checkRight("networking","w");
 
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && $_POST["itemtype"]>0) {
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && !empty($_POST["itemtype"])) {
    $table=$LINK_ID_TABLE[$_POST["itemtype"]];
    $rand=mt_rand();
    if (!isset($_POST['searchText'])) {
