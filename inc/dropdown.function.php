@@ -157,12 +157,12 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
    if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
       $my_devices="";
 
-      $ci=new CommonItem();
       $my_item= $itemtype.'_'.$items_id;
 
       // My items
       foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
-         if (isPossibleToAssignType($itemtype)) {
+         if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+            $item = new $itemtype();
             $query="SELECT *
                     FROM ".$LINK_ID_TABLE[$itemtype]."
                     WHERE `users_id`='".$userID."'";
@@ -182,8 +182,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
 
             $result=$DB->query($query);
             if ($DB->numrows($result)>0) {
-               $ci->setType($itemtype);
-               $type_name=$ci->getType();
+               $type_name=$item->getTypeName();
 
                while ($data=$DB->fetch_array($result)) {
                   $output=$data["name"];
@@ -234,7 +233,8 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
 
             $tmp_device="";
             foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
-               if (isPossibleToAssignType($itemtype)) {
+               if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+                  $item = new $itemtype();
                   $query="SELECT *
                           FROM `".$LINK_ID_TABLE[$itemtype]."`
                           WHERE ($group_where) ".
@@ -250,8 +250,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
 
                   $result=$DB->query($query);
                   if ($DB->numrows($result)>0) {
-                     $ci->setType($itemtype);
-                     $type_name=$ci->getType();
+                     $type_name=$item->getTypeName();
                      if (!isset($already_add[$itemtype])) {
                         $already_add[$itemtype]=array();
                      }
@@ -299,7 +298,9 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                       PRINTER_TYPE,
                       PHONE_TYPE);
          foreach ($types as $itemtype) {
-            if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+               && class_exists($itemtype)) {
+               $item = new $itemtype();
                if (!isset($already_add[$itemtype])) {
                   $already_add[$itemtype]=array();
                }
@@ -321,8 +322,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
 
                $result=$DB->query($query);
                if ($DB->numrows($result)>0) {
-                  $ci->setType($itemtype);
-                  $type_name=$ci->getType();
+                  $type_name=$item->getTypeName();
                   while ($data=$DB->fetch_array($result)) {
                      if (!in_array($data["id"],$already_add[$itemtype])) {
                         $output=$data["name"];
@@ -366,8 +366,8 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
             $result=$DB->query($query);
             if ($DB->numrows($result)>0) {
                $tmp_device="";
-               $ci->setType(SOFTWARE_TYPE);
-               $type_name=$ci->getType();
+               $item = new Software();
+               $type_name=$item->getTypeName();
                if (!isset($already_add[SOFTWARE_TYPE])) {
                   $already_add[SOFTWARE_TYPE]=array();
                }
@@ -442,11 +442,11 @@ function dropdownTrackingAllDevices($myname,$itemtype,$items_id=0,$admin=0,$enti
 
          echo "<span id='results_$myname$rand'>\n";
 
-         if ($itemtype && $items_id) {
-            $ci=new CommonItem();
-            if ($ci->getFromDB($itemtype, $items_id)) {
+         if (class_exists($itemtype) && $items_id) {
+            $item = new $itemtype();
+            if ($item->getFromDB($items_id)) {
                echo "<select name='items_id'>\n";
-               echo "<option value='$items_id'>".$ci->getName();
+               echo "<option value='$items_id'>".$item->getName();
                echo "</option></select>";
             }
          }
@@ -517,11 +517,13 @@ function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
    echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
    echo "<option value='0'>-----</option>";
 
-   $ci =new CommonItem();
-
-   foreach ($CFG_GLPI["netport_types"] as $itemtype) {
-      $ci->setType($itemtype);
-      echo "<option value='".$itemtype."'>".$ci->getType()."</option>";
+   foreach ($CFG_GLPI["netport_types"] as $key => $itemtype) {
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
+      } else {
+         unset($CFG_GLPI["netport_types"][$key]);
+      }
    }
    echo "</select>";
 

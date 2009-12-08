@@ -120,11 +120,15 @@ class Document extends CommonDBTM {
       $input["users_id"] = $_SESSION["glpiID"];
 
       if (isset($input["item"]) && isset($input["itemtype"])
-          && !empty($input["itemtype"]) && $input["item"]>0) {
-         $ci=new CommonItem();
-         $ci->getFromDB($input["itemtype"],$input["item"]);
-         $input["name"]=addslashes(resume_text($LANG['document'][18]." ".$ci->getType()." - ".
-                                               $ci->getNameID(),200));
+          && class_exists($input["itemtype"]) && $input["item"]>0) {
+         $item=new $input["itemtype"]();
+         $typename = $item->getTypeName();
+         $name=NOT_AVAILABLE;
+         if ($item->getFromDB($input["item"])) {
+            $name=$item->getNameID();
+         }
+         $input["name"]=addslashes(resume_text($LANG['document'][18]." $typename - ".
+                                               $name,200));
       }
 
       if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
