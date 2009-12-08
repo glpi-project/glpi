@@ -36,7 +36,6 @@
 
 define('GLPI_ROOT', '.');
 
-$NEEDED_ITEMS = array('user');
 include (GLPI_ROOT . "/inc/includes.php");
 
 //@session_start();

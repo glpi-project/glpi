@@ -33,8 +33,6 @@
 // Purpose of file: Display tab on CronTask form
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array('crontask');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");

@@ -33,7 +33,6 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-$NEEDED_ITEMS = array('ocsadmininfoslink', 'ocsng', 'search', 'setup', 'user');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

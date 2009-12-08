@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '.');
-$NEEDED_ITEMS=array("ocsng","user");
+
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Force in normal mode
