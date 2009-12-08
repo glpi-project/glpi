@@ -482,10 +482,6 @@ function &getSearchOptions($itemtype) {
       } else if (class_exists($itemtype)) {
          $item = new $itemtype();
          $search[$itemtype] = $item->getSearchOptions();
-      } else {
-         $ci = new CommonItem();
-         $ci->setType($itemtype,true);
-         $search[$itemtype] = $ci->obj->getSearchOptions();
       }
 
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
