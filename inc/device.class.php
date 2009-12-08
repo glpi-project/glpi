@@ -328,30 +328,6 @@ class Device extends CommonDBTM {
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
-   /**
-    *
-    * Make a select box for device type
-    *
-    *
-    * @param $name name of the select box
-    * @param $value default device type
-    * @param $types types to display
-    * @return nothing (print out an HTML select box)
-    */
-   static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
-      global $CFG_GLPI;
-
-      $options=array(0=>'----');
-      if (count($types)) {
-         $ci=new CommonItem();
-         foreach ($types as $type) {
-            $ci->setType($type);
-            $options[$type]=$ci->getType();
-         }
-         asort($options);
-      }
-      dropdownArrayValues($name,$options,$value,$used);
-   }
 
    /**
     * Make a select box form  for device type
