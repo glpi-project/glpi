@@ -34,8 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('document', 'entity', 'ocsng', 'profile', 'setup');
-
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '..');
 }
