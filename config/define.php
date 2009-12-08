@@ -697,7 +697,7 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems'
       'glpi_ticketcategories','reservation_types','state_types');
 
 $CFG_GLPI["union_search_type"] = array(RESERVATION_TYPE=>"reservation_types",
-                                       STATE_TYPE=>"state_types");
+                                       'States'=>"state_types");
 
 $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipments",
                                     PRINTER_TYPE         => "glpi_printers",

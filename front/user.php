@@ -45,11 +45,7 @@ commonHeader($LANG['Menu'][14],$_SERVER['PHP_SELF'],"admin","user");
 $user=new User();
 $user->title();
 
-manageGetValuesInSearch(USER_TYPE);
-
-searchForm(USER_TYPE,$_GET);
-
-showList(USER_TYPE,$_GET);
+Search::show('User');
 
 commonFooter();
 

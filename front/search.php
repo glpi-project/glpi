@@ -51,7 +51,7 @@ if (isset($_GET["globalsearch"])) {
 
    foreach($types as $itemtype) {
       if (haveTypeRight($itemtype,'r')) {
-         manageGetValuesInSearch($itemtype,false,false);
+         Search::manageGetValues($itemtype,false,false);
          $_GET["contains"][0] = $_GET["globalsearch"];
          showList($itemtype,$_GET);
          echo "<hr>";

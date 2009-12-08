@@ -42,11 +42,7 @@ checkRight("contact_enterprise","r");
 
 commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","supplier");
 
-manageGetValuesInSearch(ENTERPRISE_TYPE);
-
-searchForm(ENTERPRISE_TYPE,$_GET);
-
-showList(ENTERPRISE_TYPE,$_GET);
+Search::show('Supplier');
 
 commonFooter();
 

@@ -47,9 +47,7 @@ if (isset($_GET["synthese"])) {
    Consumable::showSummary();
 
 } else {
-   manageGetValuesInSearch(CONSUMABLEITEM_TYPE);
-   searchForm(CONSUMABLEITEM_TYPE,$_GET);
-   showList(CONSUMABLEITEM_TYPE,$_GET);
+   Search::show('ConsumableItem');
 }
 
 commonFooter();

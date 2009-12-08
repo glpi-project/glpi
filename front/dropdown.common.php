@@ -44,9 +44,7 @@ if (!$dropdown->canView()) {
 commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",
              str_replace('glpi_','',get_class($dropdown)));
 
-manageGetValuesInSearch($dropdown->type);
-searchForm($dropdown->type,$_GET);
-showList($dropdown->type,$_GET);
+Search::show(get_class($dropdown));
 
 commonFooter();
 ?>

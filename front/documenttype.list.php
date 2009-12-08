@@ -38,8 +38,8 @@ checkLoginUser();
 
 popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 
-manageGetValuesInSearch(TYPEDOC_TYPE);
-showList(TYPEDOC_TYPE,$_GET);
+Search::manageGetValues('DocumentType');
+showList('DocumentType',$_GET);
 
 popFooter();
 

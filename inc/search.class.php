@@ -36,6 +36,120 @@ if (!defined('GLPI_ROOT')) {
 class Search {
 
    /**
+   * Display search engine for an type
+   *
+   * @param $itemtype item type to manage
+   * @return nothing
+   */
+   static function show ($itemtype) {
+
+      Search::manageGetValues($itemtype);
+      searchForm($itemtype,$_GET);
+      showList($itemtype,$_GET);
+   }
+
+
+   /**
+   * Completion of the URL $_GET values with the $_SESSION values or define default values
+   *
+   * @param $itemtype item type to manage
+   * @param $usesession Use datas save in session
+   * @param $save Save params to session
+   * @return nothing
+   */
+   static function manageGetValues($itemtype,$usesession=true,$save=true) {
+      global $_GET,$DB;
+
+      $tab=array();
+
+      $default_values["start"]=0;
+      $default_values["order"]="ASC";
+      $default_values["is_deleted"]=0;
+      $default_values["distinct"]="N";
+      $default_values["link"]=array();
+      $default_values["field"]=array(0=>"view");
+      $default_values["contains"]=array(0=>"");
+      $default_values["link2"]=array();
+      $default_values["field2"]=array(0=>"view");
+      $default_values["contains2"]=array(0=>"");
+      $default_values["itemtype2"]="";
+      $default_values["sort"]=1;
+
+      // First view of the page : try to load a bookmark
+      if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])) {
+         $query = "SELECT `bookmarks_id`
+                  FROM `glpi_bookmarks_users`
+                  WHERE `users_id`='".$_SESSION['glpiID']."'
+                        AND `itemtype` = '$itemtype'";
+         if ($result=$DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $IDtoload=$DB->result($result,0,0);
+               // Set session variable
+               $_SESSION['glpisearch'][$itemtype]=array();
+               // Load bookmark on main window
+               $bookmark=new Bookmark();
+               $bookmark->load($IDtoload,false);
+            }
+         }
+      }
+      if ($usesession
+         && (isset($_GET["reset_before"]) || (isset($_GET["reset"]) && $_GET["reset"]="reset_before"))) {
+
+         if (isset($_SESSION['glpisearch'][$itemtype])) {
+            unset($_SESSION['glpisearch'][$itemtype]);
+         }
+         if (isset($_SESSION['glpisearchcount'][$itemtype])) {
+            unset($_SESSION['glpisearchcount'][$itemtype]);
+         }
+         if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
+            unset($_SESSION['glpisearchcount2'][$itemtype]);
+         }
+         // Bookmark use
+         if (isset($_GET["glpisearchcount"])) {
+            $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
+         }
+         // Bookmark use
+         if (isset($_GET["glpisearchcount2"])) {
+            $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
+         }
+      }
+
+      if (is_array($_GET) && $save) {
+         foreach ($_GET as $key => $val) {
+            $_SESSION['glpisearch'][$itemtype][$key]=$val;
+         }
+      }
+
+      foreach ($default_values as $key => $val) {
+         if (!isset($_GET[$key])) {
+            if ($usesession && isset($_SESSION['glpisearch'][$itemtype][$key])) {
+               $_GET[$key]=$_SESSION['glpisearch'][$itemtype][$key];
+            } else {
+               $_GET[$key] = $val;
+               $_SESSION['glpisearch'][$itemtype][$key] = $val;
+            }
+         }
+      }
+
+      if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
+         if (isset($_GET["glpisearchcount"])) {
+            $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
+         } else {
+            $_SESSION["glpisearchcount"][$itemtype]=1;
+         }
+      }
+      if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
+         // Set in URL for bookmark
+         if (isset($_GET["glpisearchcount2"])) {
+            $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
+         } else {
+            $_SESSION["glpisearchcount2"][$itemtype]=0;
+         }
+      }
+   }
+
+
+   /**
    * Clean search options depending of user active profile
    *
    * @param $itemtype item type to manage
@@ -101,138 +215,76 @@ class Search {
          if (class_exists($itemtype)) {
             $item = new $itemtype();
             $search[$itemtype] = $item->getSearchOptions();
-         } else if ($itemtype==RESERVATION_TYPE) {
+         } else if ($itemtype=='States') {
+            $search[$itemtype]['common'] = $LANG['common'][32];
 
-            $search[RESERVATION_TYPE][4]['table']     = 'glpi_reservationitems';
-            $search[RESERVATION_TYPE][4]['field']     = 'comment';
-            $search[RESERVATION_TYPE][4]['linkfield'] = 'comment';
-            $search[RESERVATION_TYPE][4]['name']      = $LANG['common'][25];
-            $search[RESERVATION_TYPE][4]['datatype']  = 'text';
+            $search['States'][1]['table']     = 'state_types';
+            $search['States'][1]['field']     = 'name';
+            $search['States'][1]['linkfield'] = 'name';
+            $search['States'][1]['name']      = $LANG['common'][16];
+            $search['States'][1]['datatype']  = 'itemlink';
 
-            $search[RESERVATION_TYPE]['common'] = $LANG['common'][32];
+            $search['States'][2]['table']     = 'state_types';
+            $search['States'][2]['field']     = 'id';
+            $search['States'][2]['linkfield'] = 'id';
+            $search['States'][2]['name']      = $LANG['common'][2];
 
-            $search[RESERVATION_TYPE][1]['table']     = 'reservation_types';
-            $search[RESERVATION_TYPE][1]['field']     = 'name';
-            $search[RESERVATION_TYPE][1]['linkfield'] = 'name';
-            $search[RESERVATION_TYPE][1]['name']      = $LANG['common'][16];
-            $search[RESERVATION_TYPE][1]['datatype']  = 'itemlink';
+            $search['States'][31]['table']     = 'glpi_states';
+            $search['States'][31]['field']     = 'name';
+            $search['States'][31]['linkfield'] = 'states_id';
+            $search['States'][31]['name']      = $LANG['state'][0];
 
-            $search[RESERVATION_TYPE][2]['table']     = 'reservation_types';
-            $search[RESERVATION_TYPE][2]['field']     = 'id';
-            $search[RESERVATION_TYPE][2]['linkfield'] = 'id';
-            $search[RESERVATION_TYPE][2]['name']      = $LANG['common'][2];
+            $search['States'][3]['table']     = 'glpi_locations';
+            $search['States'][3]['field']     = 'completename';
+            $search['States'][3]['linkfield'] = 'locations_id';
+            $search['States'][3]['name']      = $LANG['common'][15];
 
-            $search[RESERVATION_TYPE][3]['table']     = 'glpi_locations';
-            $search[RESERVATION_TYPE][3]['field']     = 'completename';
-            $search[RESERVATION_TYPE][3]['linkfield'] = 'locations_id';
-            $search[RESERVATION_TYPE][3]['name']      = $LANG['common'][15];
+            $search['States'][5]['table']     = 'state_types';
+            $search['States'][5]['field']     = 'serial';
+            $search['States'][5]['linkfield'] = 'serial';
+            $search['States'][5]['name']      = $LANG['common'][19];
 
-            $search[RESERVATION_TYPE][16]['table']     = 'reservation_types';
-            $search[RESERVATION_TYPE][16]['field']     = 'comment';
-            $search[RESERVATION_TYPE][16]['linkfield'] = 'comment';
-            $search[RESERVATION_TYPE][16]['name']      = $LANG['common'][25];
-            $search[RESERVATION_TYPE][16]['datatype']  = 'text';
+            $search['States'][6]['table']     = 'state_types';
+            $search['States'][6]['field']     = 'otherserial';
+            $search['States'][6]['linkfield'] = 'otherserial';
+            $search['States'][6]['name']      = $LANG['common'][20];
 
-            $search[RESERVATION_TYPE][70]['table']     = 'glpi_users';
-            $search[RESERVATION_TYPE][70]['field']     = 'name';
-            $search[RESERVATION_TYPE][70]['linkfield'] = 'users_id';
-            $search[RESERVATION_TYPE][70]['name']      = $LANG['common'][34];
+            $search['States'][16]['table']     = 'state_types';
+            $search['States'][16]['field']     = 'comment';
+            $search['States'][16]['linkfield'] = 'comment';
+            $search['States'][16]['name']      = $LANG['common'][25];
+            $search['States'][16]['datatype']  = 'text';
 
-            $search[RESERVATION_TYPE][71]['table']     = 'glpi_groups';
-            $search[RESERVATION_TYPE][71]['field']     = 'name';
-            $search[RESERVATION_TYPE][71]['linkfield'] = 'groups_id';
-            $search[RESERVATION_TYPE][71]['name']      = $LANG['common'][35];
+            $search['States'][70]['table']     = 'glpi_users';
+            $search['States'][70]['field']     = 'name';
+            $search['States'][70]['linkfield'] = 'users_id';
+            $search['States'][70]['name']      = $LANG['common'][34];
 
-            $search[RESERVATION_TYPE][19]['table']     = 'reservation_types';
-            $search[RESERVATION_TYPE][19]['field']     = 'date_mod';
-            $search[RESERVATION_TYPE][19]['linkfield'] = '';
-            $search[RESERVATION_TYPE][19]['name']      = $LANG['common'][26];
-            $search[RESERVATION_TYPE][19]['datatype']  = 'datetime';
+            $search['States'][71]['table']     = 'glpi_groups';
+            $search['States'][71]['field']     = 'name';
+            $search['States'][71]['linkfield'] = 'groups_id';
+            $search['States'][71]['name']      = $LANG['common'][35];
 
-            $search[RESERVATION_TYPE][23]['table']     = 'glpi_manufacturers';
-            $search[RESERVATION_TYPE][23]['field']     = 'name';
-            $search[RESERVATION_TYPE][23]['linkfield'] = 'manufacturers_id';
-            $search[RESERVATION_TYPE][23]['name']      = $LANG['common'][5];
+            $search['States'][19]['table']     = 'state_types';
+            $search['States'][19]['field']     = 'date_mod';
+            $search['States'][19]['linkfield'] = '';
+            $search['States'][19]['name']      = $LANG['common'][26];
+            $search['States'][19]['datatype']  = 'datetime';
 
-            $search[RESERVATION_TYPE][24]['table']     = 'glpi_users';
-            $search[RESERVATION_TYPE][24]['field']     = 'name';
-            $search[RESERVATION_TYPE][24]['linkfield'] = 'users_id_tech';
-            $search[RESERVATION_TYPE][24]['name']      = $LANG['common'][10];
+            $search['States'][23]['table']     = 'glpi_manufacturers';
+            $search['States'][23]['field']     = 'name';
+            $search['States'][23]['linkfield'] = 'manufacturers_id';
+            $search['States'][23]['name']      = $LANG['common'][5];
 
-            $search[RESERVATION_TYPE][80]['table']     = 'glpi_entities';
-            $search[RESERVATION_TYPE][80]['field']     = 'completename';
-            $search[RESERVATION_TYPE][80]['linkfield'] = 'entities_id';
-            $search[RESERVATION_TYPE][80]['name']      = $LANG['entity'][0];
-         } else if ($itemtype==STATE_TYPE) {
-            $search[STATE_TYPE]['common'] = $LANG['common'][32];
+            $search['States'][24]['table']     = 'glpi_users';
+            $search['States'][24]['field']     = 'name';
+            $search['States'][24]['linkfield'] = 'users_id_tech';
+            $search['States'][24]['name']      = $LANG['common'][10];
 
-            $search[STATE_TYPE][1]['table']     = 'state_types';
-            $search[STATE_TYPE][1]['field']     = 'name';
-            $search[STATE_TYPE][1]['linkfield'] = 'name';
-            $search[STATE_TYPE][1]['name']      = $LANG['common'][16];
-            $search[STATE_TYPE][1]['datatype']  = 'itemlink';
-
-            $search[STATE_TYPE][2]['table']     = 'state_types';
-            $search[STATE_TYPE][2]['field']     = 'id';
-            $search[STATE_TYPE][2]['linkfield'] = 'id';
-            $search[STATE_TYPE][2]['name']      = $LANG['common'][2];
-
-            $search[STATE_TYPE][31]['table']     = 'glpi_states';
-            $search[STATE_TYPE][31]['field']     = 'name';
-            $search[STATE_TYPE][31]['linkfield'] = 'states_id';
-            $search[STATE_TYPE][31]['name']      = $LANG['state'][0];
-
-            $search[STATE_TYPE][3]['table']     = 'glpi_locations';
-            $search[STATE_TYPE][3]['field']     = 'completename';
-            $search[STATE_TYPE][3]['linkfield'] = 'locations_id';
-            $search[STATE_TYPE][3]['name']      = $LANG['common'][15];
-
-            $search[STATE_TYPE][5]['table']     = 'state_types';
-            $search[STATE_TYPE][5]['field']     = 'serial';
-            $search[STATE_TYPE][5]['linkfield'] = 'serial';
-            $search[STATE_TYPE][5]['name']      = $LANG['common'][19];
-
-            $search[STATE_TYPE][6]['table']     = 'state_types';
-            $search[STATE_TYPE][6]['field']     = 'otherserial';
-            $search[STATE_TYPE][6]['linkfield'] = 'otherserial';
-            $search[STATE_TYPE][6]['name']      = $LANG['common'][20];
-
-            $search[STATE_TYPE][16]['table']     = 'state_types';
-            $search[STATE_TYPE][16]['field']     = 'comment';
-            $search[STATE_TYPE][16]['linkfield'] = 'comment';
-            $search[STATE_TYPE][16]['name']      = $LANG['common'][25];
-            $search[STATE_TYPE][16]['datatype']  = 'text';
-
-            $search[STATE_TYPE][70]['table']     = 'glpi_users';
-            $search[STATE_TYPE][70]['field']     = 'name';
-            $search[STATE_TYPE][70]['linkfield'] = 'users_id';
-            $search[STATE_TYPE][70]['name']      = $LANG['common'][34];
-
-            $search[STATE_TYPE][71]['table']     = 'glpi_groups';
-            $search[STATE_TYPE][71]['field']     = 'name';
-            $search[STATE_TYPE][71]['linkfield'] = 'groups_id';
-            $search[STATE_TYPE][71]['name']      = $LANG['common'][35];
-
-            $search[STATE_TYPE][19]['table']     = 'state_types';
-            $search[STATE_TYPE][19]['field']     = 'date_mod';
-            $search[STATE_TYPE][19]['linkfield'] = '';
-            $search[STATE_TYPE][19]['name']      = $LANG['common'][26];
-            $search[STATE_TYPE][19]['datatype']  = 'datetime';
-
-            $search[STATE_TYPE][23]['table']     = 'glpi_manufacturers';
-            $search[STATE_TYPE][23]['field']     = 'name';
-            $search[STATE_TYPE][23]['linkfield'] = 'manufacturers_id';
-            $search[STATE_TYPE][23]['name']      = $LANG['common'][5];
-
-            $search[STATE_TYPE][24]['table']     = 'glpi_users';
-            $search[STATE_TYPE][24]['field']     = 'name';
-            $search[STATE_TYPE][24]['linkfield'] = 'users_id_tech';
-            $search[STATE_TYPE][24]['name']      = $LANG['common'][10];
-
-            $search[STATE_TYPE][80]['table']     = 'glpi_entities';
-            $search[STATE_TYPE][80]['field']     = 'completename';
-            $search[STATE_TYPE][80]['linkfield'] = 'entities_id';
-            $search[STATE_TYPE][80]['name']      = $LANG['entity'][0];
+            $search['States'][80]['table']     = 'glpi_entities';
+            $search['States'][80]['field']     = 'completename';
+            $search['States'][80]['linkfield'] = 'entities_id';
+            $search['States'][80]['name']      = $LANG['entity'][0];
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {

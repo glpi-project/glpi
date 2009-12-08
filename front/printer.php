@@ -43,11 +43,7 @@ checkRight("printer","r");
 
 commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
 
-manageGetValuesInSearch(PRINTER_TYPE);
-
-searchForm(PRINTER_TYPE,$_GET);
-
-showList(PRINTER_TYPE,$_GET);
+Search::show('Printer');
 
 commonFooter();
 ?>

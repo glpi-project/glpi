@@ -44,11 +44,6 @@ checkRight("networking","r");
 
 commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
-manageGetValuesInSearch(NETWORKING_TYPE);
-
-searchForm(NETWORKING_TYPE,$_GET);
-
-showList(NETWORKING_TYPE,$_GET);
-
+Search::show('NetworkEquipment');
 commonFooter();
 ?>

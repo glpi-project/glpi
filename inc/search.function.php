@@ -35,104 +35,6 @@ if (!defined('GLPI_ROOT')) {
 
 
 
-/**
- * Completion of the URL $_GET values with the $_SESSION values or define default values
- *
- * @param $itemtype item type to manage
- * @param $usesession Use datas save in session
- * @param $save Save params to session
- * @return nothing
- */
-function manageGetValuesInSearch($itemtype,$usesession=true,$save=true) {
-   global $_GET,$DB;
-
-   $tab=array();
-
-   $default_values["start"]=0;
-   $default_values["order"]="ASC";
-   $default_values["is_deleted"]=0;
-   $default_values["distinct"]="N";
-   $default_values["link"]=array();
-   $default_values["field"]=array(0=>"view");
-   $default_values["contains"]=array(0=>"");
-   $default_values["link2"]=array();
-   $default_values["field2"]=array(0=>"view");
-   $default_values["contains2"]=array(0=>"");
-   $default_values["itemtype2"]="";
-   $default_values["sort"]=1;
-
-   // First view of the page : try to load a bookmark
-   if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])) {
-      $query = "SELECT `bookmarks_id`
-                FROM `glpi_bookmarks_users`
-                WHERE `users_id`='".$_SESSION['glpiID']."'
-                      AND `itemtype` = '$itemtype'";
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $IDtoload=$DB->result($result,0,0);
-            // Set session variable
-            $_SESSION['glpisearch'][$itemtype]=array();
-            // Load bookmark on main window
-            $bookmark=new Bookmark();
-            $bookmark->load($IDtoload,false);
-         }
-      }
-   }
-   if ($usesession
-       && (isset($_GET["reset_before"]) || (isset($_GET["reset"]) && $_GET["reset"]="reset_before"))) {
-
-      if (isset($_SESSION['glpisearch'][$itemtype])) {
-         unset($_SESSION['glpisearch'][$itemtype]);
-      }
-      if (isset($_SESSION['glpisearchcount'][$itemtype])) {
-         unset($_SESSION['glpisearchcount'][$itemtype]);
-      }
-      if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
-         unset($_SESSION['glpisearchcount2'][$itemtype]);
-      }
-      // Bookmark use
-      if (isset($_GET["glpisearchcount"])) {
-         $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
-      }
-      // Bookmark use
-      if (isset($_GET["glpisearchcount2"])) {
-         $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
-      }
-   }
-
-   if (is_array($_GET) && $save) {
-      foreach ($_GET as $key => $val) {
-         $_SESSION['glpisearch'][$itemtype][$key]=$val;
-      }
-   }
-
-   foreach ($default_values as $key => $val) {
-      if (!isset($_GET[$key])) {
-         if ($usesession && isset($_SESSION['glpisearch'][$itemtype][$key])) {
-            $_GET[$key]=$_SESSION['glpisearch'][$itemtype][$key];
-         } else {
-            $_GET[$key] = $val;
-            $_SESSION['glpisearch'][$itemtype][$key] = $val;
-         }
-      }
-   }
-
-   if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
-      if (isset($_GET["glpisearchcount"])) {
-         $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
-      } else {
-         $_SESSION["glpisearchcount"][$itemtype]=1;
-      }
-   }
-   if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
-      // Set in URL for bookmark
-      if (isset($_GET["glpisearchcount2"])) {
-         $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
-      } else {
-         $_SESSION["glpisearchcount2"][$itemtype]=0;
-      }
-   }
-}
 
 
 /**
@@ -411,7 +313,8 @@ function searchForm($itemtype,$params) {
 
    // Display deleted selection
    echo "<td>";
-   if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+   if (isset($LINK_ID_TABLE[$itemtype])
+      && in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
       dropdownYesNo("is_deleted",$is_deleted);
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
              "' title='".$LANG['common'][3]."'>";
@@ -499,10 +402,11 @@ function showList ($itemtype,$params) {
    }
 
    $limitsearchopt=Search::getCleanedOptions($itemtype);
-   $itemtable=$LINK_ID_TABLE[$itemtype];
 
    if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
       $itemtable=$CFG_GLPI["union_search_type"][$itemtype];
+   } else {
+      $itemtable=$item->table;
    }
    $LIST_LIMIT=$_SESSION['glpilist_limit'];
 
@@ -986,7 +890,7 @@ function showList ($itemtype,$params) {
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
             if (haveTypeRight($ctype,'r')) {
                // State case
-               if ($itemtype == 'State') {
+               if ($itemtype == 'States') {
                   $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                          $LINK_ID_TABLE[$ctype],$tmpquery);
                   $query_num .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
@@ -1054,7 +958,7 @@ function showList ($itemtype,$params) {
             }
             $tmpquery="";
             // State case
-            if ($itemtype == 'State') {
+            if ($itemtype == 'States') {
                $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                            $FROM.
                            $WHERE;
@@ -2815,11 +2719,12 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
          case "itemlink" :
             if (!empty($data[$NAME.$num."_2"])) {
                if (isset($searchopt[$ID]["itemlink_type"])) {
-                  $link=$INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
+                  $link=$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
                } else {
-                  $link=$INFOFORM_PAGES[$itemtype];
+                  $item = new $itemtype;
+                  $link=$item->getFormUrl();
                }
-               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/".$link;
+               $out  = "<a href=\"".$link;
                $out .= (strstr($link,'?') ?'&amp;' :  '?');
                $out .= 'id='.$data[$NAME.$num."_2"]."\">";
                $out .= $data[$NAME.$num].$unit;

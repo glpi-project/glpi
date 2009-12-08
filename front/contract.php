@@ -43,11 +43,7 @@ checkRight("contract","r");
 
 commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
 
-manageGetValuesInSearch(CONTRACT_TYPE);
-
-searchForm(CONTRACT_TYPE,$_GET);
-
-showList(CONTRACT_TYPE,$_GET);
+Search::show('Contract');
 
 commonFooter();
 

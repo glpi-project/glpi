@@ -77,9 +77,7 @@ checkRight("computer","r");
 
 commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
 
-manageGetValuesInSearch(COMPUTER_TYPE);
-searchForm(COMPUTER_TYPE,$_GET);
-showList(COMPUTER_TYPE,$_GET);
+Search::show('Computer');
 
 commonFooter();
 

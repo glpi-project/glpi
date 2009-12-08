@@ -48,9 +48,9 @@ commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
 if ($_GET["synthese"] == "yes") {
    showStateSummary($_SERVER['PHP_SELF']);
 } else {
-   manageGetValuesInSearch(STATE_TYPE);
-   searchForm(STATE_TYPE,$_GET);
-   showList(STATE_TYPE,$_GET);
+
+   Search::show('ReservationItem');
+   Search::show('States');
 }
 
 commonFooter();
