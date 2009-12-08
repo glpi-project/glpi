@@ -233,20 +233,19 @@ if (isset($_POST["itemtype"])){
 						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
 						&& in_array($LINK_ID_TABLE[$_POST["itemtype"]],$CFG_GLPI["specif_entities_tables"])){
 
-                     /// TODO : clean this / maybe need to review searchopt table field
-							$ci2=new CommonDBTM();
-							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
-
-							if ($ci2->getFromDB($_POST[$_POST["field"]])){
-								if (isset($ci2->fields["entities_id"])&&$ci2->fields["entities_id"]>=0){
-									if (isset($ci2->fields["is_recursive"])&&$ci2->fields["is_recursive"]){
-                              $link_entity_type=getSonsOf("glpi_entities",$ci2->fields["entities_id"]);
-									} else {
-										$link_entity_type[]=$ci2->fields["entities_id"];
-									}
-								}
-
-							}
+							$itemtype=getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
+                     if (class_exists($itemtype)) {
+                        $item2=new $itemtype();
+                        if ($item2->getFromDB($_POST[$_POST["field"]])){
+                           if (isset($item2->fields["entities_id"])&&$item2->fields["entities_id"]>=0){
+                              if (isset($item2->fields["is_recursive"])&&$item2->fields["is_recursive"]){
+                                 $link_entity_type=getSonsOf("glpi_entities",$item2->fields["entities_id"]);
+                              } else {
+                                 $link_entity_type[]=$item2->fields["entities_id"];
+                              }
+                           }
+                        }
+                     }
 
 						}
 						foreach ($_POST["item"] as $key => $val){
