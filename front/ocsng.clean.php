@@ -34,10 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('ocsadmininfoslink', 'computer', 'device', 'enterprise', 'infocom', 'monitor',
-   'networking', 'ocsng', 'peripheral', 'phone', 'printer', 'reservation', 'setup', 'software',
-   'tracking');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

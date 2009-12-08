@@ -34,9 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('entity', 'rulesengine', 'rule.ocs', 'rule.right',
-   'rule.softwarecategories', 'rule.tracking');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

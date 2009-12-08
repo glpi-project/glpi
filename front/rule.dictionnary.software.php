@@ -34,9 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('rulesengine', 'rule.dictionnary.dropdown', 'rule.dictionnary.software',
-   'rule.softwarecategories', 'setup', 'software');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

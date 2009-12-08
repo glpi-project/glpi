@@ -36,8 +36,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('ocsng', 'search', 'setup', 'user');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

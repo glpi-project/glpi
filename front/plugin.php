@@ -35,8 +35,6 @@
 
 
 
-$NEEDED_ITEMS=array('crontask');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
