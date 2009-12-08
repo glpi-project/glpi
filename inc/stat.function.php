@@ -1167,10 +1167,7 @@ function showItemStats($target,$date1,$date2,$start) {
                     STAT_TYPE);
          echo "<div class='center'>";
       }
-      $i=$start;
-      if (isset($_GET['export_all'])) {
-         $i=0;
-      }
+
       $end_display=$start+$_SESSION['glpilist_limit'];
       if (isset($_GET['export_all'])) {
          $end_display=$numrows;
@@ -1187,31 +1184,38 @@ function showItemStats($target,$date1,$date2,$start) {
 
       $DB->data_seek($result,$start);
 
-      $ci=new CommonItem();
-      while ($i < $numrows && $i<($end_display)) {
+      $i=$start;
+      if (isset($_GET['export_all'])) {
+         $start=0;
+      }
+      for ($i = $start ;$i < $numrows && $i<$end_display ;$i++) {
          $item_num=1;
          // Get data and increment loop variables
          $data=$DB->fetch_assoc($result);
-         if ($ci->getFromDB($data["itemtype"],$data["items_id"])) {
+         if (!class_exists($data["itemtype"])) {
+            continue;
+         }
+         $item = new $data["itemtype"]();
+         if ($item->getFromDB($data["items_id"])) {
+
             echo displaySearchNewLine($output_type,$i%2);
-            echo displaySearchItem($output_type,$ci->getType()." - ".$ci->getLink(),$item_num,
+            echo displaySearchItem($output_type,$item->getTypeName()." - ".$item->getLink(),$item_num,
                                    $i-$start+1,"class='center'"." ".
-                                   ($ci->getField("is_deleted")?" class='deleted' ":""));
+                                   ($item->getField("is_deleted")?" class='deleted' ":""));
             if ($view_entities) {
-               $ent=$ci->getField('entities_id');
+               $ent=$item->getField('entities_id');
                if ($ent==0) {
                   $ent=$LANG['entity'][2];
                } else {
                   $ent=$entities[$ent]['completename'];
                }
                echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"class='center'"." ".
-                                      ($ci->getField("is_deleted")?" class='deleted' ":""));
+                                      ($item->getField("is_deleted")?" class='deleted' ":""));
             }
             echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,
                                    "class='center'"." ".
-                                   ($ci->getField("is_deleted")?" class='deleted' ":""));
+                                   ($item->getField("is_deleted")?" class='deleted' ":""));
          }
-         $i++;
       }
 
       echo displaySearchFooter($output_type);

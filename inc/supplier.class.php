@@ -555,7 +555,6 @@ class Supplier extends CommonDBTM {
             }
             $num+=$nb;
          }
-         $i++;
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num</td>" : "&nbsp;</td>");

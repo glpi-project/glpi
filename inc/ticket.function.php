@@ -308,7 +308,7 @@ function showJobListForItem($itemtype,$items_id) {
    // Ticket for the item
    echo "<div class='center'><table class='tab_cadre_fixe'>";
    if ($number > 0) {
-      initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
+      initNavigateListItems(TRACKING_TYPE,$item->getTypeName()." = ".$item->getName());
 
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
@@ -338,7 +338,7 @@ function showJobListForItem($itemtype,$items_id) {
    echo "</table></div><br>";
 
    // Tickets for linked items
-   if ($subquery = $ci->obj->getSelectLinkedItem()) {
+   if ($subquery = $item->getSelectLinkedItem()) {
       $query = "SELECT ".getCommonSelectForTrackingSearch()."
                 FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
                 WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
@@ -1666,7 +1666,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                if (class_exists($itemtype)) {
                   $item = new $itemtype();
                   if ($item->getFromDB($items_id)) {
-                     $title .= " - ".$LANG['common'][1]." = ".$ci->getType()." / ".$ci->getNameID();
+                     $title .= " - ".$LANG['common'][1]." = ".$item->getTypeName()." / ".$item->getNameID();
                   }
                }
             }
