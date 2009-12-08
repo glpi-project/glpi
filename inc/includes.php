@@ -80,9 +80,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/alert.class.php");
 
    // TODO : clean it after autoload
-   include_once (GLPI_ROOT . "/inc/ticket.function.php");
    include_once (GLPI_ROOT . "/inc/search.function.php");
-   include_once (GLPI_ROOT . "/inc/search.class.php");
    include_once (GLPI_ROOT . "/inc/event.class.php");
    include_once (GLPI_ROOT . "/inc/authmail.class.php");
    include_once (GLPI_ROOT . "/inc/authldap.class.php");
@@ -192,6 +190,8 @@ if (!isset($_SESSION['glpiautoload']) || $_SESSION['glpiautoload']){
    // TODO Remove this ASAP
    include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
    include_once (GLPI_ROOT . "/inc/reminder.function.php");
+   include_once (GLPI_ROOT . "/inc/ticket.function.php");
+   include_once (GLPI_ROOT . "/inc/user.function.php");
    }
 } else {
    if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
