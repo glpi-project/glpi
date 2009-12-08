@@ -50,12 +50,6 @@ if ($argv) {
 	}
 }
 
-$NEEDED_ITEMS=array(
-					"rulesengine",
-					"setup",
-					"rule.softwarecategories",
-					"rule.dictionnary.software","rule.dictionnary.dropdown");
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
