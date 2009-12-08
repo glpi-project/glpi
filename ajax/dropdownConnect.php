@@ -141,7 +141,7 @@ if ($DB->numrows($result)) {
             echo "</optgroup>";
          }
          $prev=$data["entities_id"];
-         echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+         echo "<optgroup label=\"". CommonDropdown::getDropdownName("glpi_entities", $prev) ."\">";
       }
       $output = $data['name'];
       $ID = $data['id'];

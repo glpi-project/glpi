@@ -460,9 +460,9 @@ class Ticket extends CommonDBTM {
                   case "groups_id" :
                      $new_group=$this->fields["groups_id"];
                      $old_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
-                                                   getDropdownName("glpi_groups",$input["_old_group"]));
+                                                   CommonDropdown::getDropdownName("glpi_groups",$input["_old_group"]));
                      $new_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
-                                                   getDropdownName("glpi_groups",$new_group));
+                                                   CommonDropdown::getDropdownName("glpi_groups",$new_group));
                      $change_followup_content .= $LANG['mailing'][20].": ".$old_group_name." -> ".
                                                  $new_group_name."\n";
                      $global_mail_change_count++;
@@ -479,10 +479,10 @@ class Ticket extends CommonDBTM {
                   case "ticketcategories_id" :
                      $new_ticketcategories_id = $this->fields["ticketcategories_id"];
                      $old_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      getDropdownName("glpi_ticketcategories",
+                                                      CommonDropdown::getDropdownName("glpi_ticketcategories",
                                                                       $input["_old_ticketcategories_id"]));
                      $new_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      getDropdownName("glpi_ticketcategories",
+                                                      CommonDropdown::getDropdownName("glpi_ticketcategories",
                                                                       $new_ticketcategories_id));
                      $change_followup_content .= $LANG['mailing'][14]."&nbsp;: ".
                                                  $old_category_name." -> ".$new_category_name."\n";
@@ -490,9 +490,9 @@ class Ticket extends CommonDBTM {
                      break;
 
                   case "requesttypes_id" :
-                     $old_requesttype_name = getDropdownName('glpi_requesttypes',
+                     $old_requesttype_name = CommonDropdown::getDropdownName('glpi_requesttypes',
                                                              $input["_old_requesttypes_id"]);
-                     $new_requesttype_name = getDropdownName('glpi_requesttypes',
+                     $new_requesttype_name = CommonDropdown::getDropdownName('glpi_requesttypes',
                                                              $this->fields["requesttypes_id"]);
                      $change_followup_content .= $LANG['mailing'][21]."&nbsp;: ".
                                                  $old_requesttype_name." -> ".
@@ -1106,11 +1106,9 @@ class Ticket extends CommonDBTM {
          $modeltable = $this->hardwaredatas->table."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
          if ($model=$this->hardwaredatas->getField($modelfield)) {
-
-            $name .= " - ".getDropdownName($modeltable,$model);
+            $name .= " - ".CommonDropdown::getDropdownName($modeltable,$this->hardwaredatas->obj->fields[$modelfield]);
          }
          if ($tmp=$this->hardwaredatas->getField("users_id_tech")) {
-
             $tech = getUserName($tmp);
          }
          if ($tmp=$this->hardwaredatas->getField("contact")) {
@@ -1123,7 +1121,7 @@ class Ticket extends CommonDBTM {
             if (!empty($contact)) {
                $contact.=" / ";
             }
-            $contact .= getDropdownName("glpi_groups",$tmp);
+            $contact .= CommonDropdown::getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["groups_id"]);
          }
       }
 
@@ -1146,7 +1144,7 @@ class Ticket extends CommonDBTM {
                       $LANG['search'][8]."&nbsp;:</span> ".convDateTime($this->fields["date"])."\n";
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['job'][44]."&nbsp;:</span> ".
-                      getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"])."\n";
+                      CommonDropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"])."\n";
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['mailing'][7]."&nbsp;:</span> ".$name."\n";
          if (!empty($tech)) {
@@ -1192,7 +1190,7 @@ class Ticket extends CommonDBTM {
          if (isset($this->fields["ticketcategories_id"])
              && $this->fields["ticketcategories_id"]) {
 
-            $message .= getDropdownName("glpi_ticketcategories",
+            $message .= CommonDropdown::getDropdownName("glpi_ticketcategories",
                                         $this->fields["ticketcategories_id"]);
          } else {
             $message .= $LANG['mailing'][100];
@@ -1211,7 +1209,7 @@ class Ticket extends CommonDBTM {
          }
          $message .= mailRow($LANG['job'][4],$users_id);
          $message .= mailRow($LANG['search'][8],convDateTime($this->fields["date"]));
-         $message .= mailRow($LANG['job'][44],getDropdownName('glpi_requesttypes',
+         $message .= mailRow($LANG['job'][44],CommonDropdown::getDropdownName('glpi_requesttypes',
                                                               $this->fields["requesttypes_id"]));
          $message .= mailRow($LANG['mailing'][7],$name);
          if (!empty($tech)) {
@@ -1249,7 +1247,7 @@ class Ticket extends CommonDBTM {
              && $this->fields["ticketcategories_id"]) {
 
             $message .= mailRow($LANG['common'][36],
-                                getDropdownName("glpi_ticketcategories",
+                                CommonDropdown::getDropdownName("glpi_ticketcategories",
                                                 $this->fields["ticketcategories_id"]));
          } else {
             $message .= mailRow($LANG['common'][36],$LANG['mailing'][100]);

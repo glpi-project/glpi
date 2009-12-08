@@ -204,7 +204,7 @@ printf("=> %d computers, %d updates\n", $nb, $nbupd);
 echo "Saving reports in ". GLPI_LOG_DIR ."\n";
 $nbc=0;
 foreach ($tabres as $ent => $comps) {
-	$name = getDropdownName("glpi_entities",$ent);
+	$name = CommonDropdown::getDropdownName("glpi_entities",$ent);
 	printf("+ %4d : %s\n", $ent, $name);
 	file_put_contents(GLPI_LOG_DIR."/rollback-$ent.log", "Rollbak for $name\n\n".implode("\n",$comps)."\n\n");
 	$nbc += count($comps);

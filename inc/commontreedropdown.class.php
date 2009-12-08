@@ -179,7 +179,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td><a href='".$this->getFormURL();
          echo '?id='.$data['id']."'>".$data['name']."</a></td>";
-         echo "<td>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+         echo "<td>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
          foreach ($fields as $field) {
             if ($field['list']) {
                echo "<td>";
@@ -188,7 +188,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                      echo getUserName($data[$field['name']]);
                      break;
                   case 'dropdownValue' :
-                     echo getDropdownName(getTableNameForForeignKeyField($field['name']),
+                     echo CommonDropdown::getDropdownName(getTableNameForForeignKeyField($field['name']),
                                      $data[$field['name']]);
                      break;
                   default:

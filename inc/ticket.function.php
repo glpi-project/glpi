@@ -757,7 +757,7 @@ function showJobVeryShort($ID) {
       }
 
       if ($job->fields["groups_id"]) {
-         echo "<br>".getDropdownName("glpi_groups",$job->fields["groups_id"]);
+         echo "<br>".CommonDropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
       }
       echo "</td>";
 
@@ -884,7 +884,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    if ($extended) {
       echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+      CommonDropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td class='center' colspan='2'>";
@@ -1002,11 +1002,11 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['common'][36]."&nbsp;:<br>";
-   dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+   CommonDropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][44]."&nbsp;:<br>";
-   getDropdownName('glpi_requesttypes',"requesttypes_id",$requesttypes_id);
+   CommonDropdown::getDropdownName('glpi_requesttypes',"requesttypes_id",$requesttypes_id);
    echo "</td>";
    echo "</tr>";
 
@@ -1022,7 +1022,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    User::dropdownUsersTracking("users_id",$users_id,"users_id");
 
    echo "<br>".$LANG['common'][35]."&nbsp;: ";
-   dropdownValue("glpi_groups","group",$group);
+   CommonDropdown::dropdownValue("glpi_groups","group",$group);
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][5]."&nbsp;:<br>";
@@ -1031,11 +1031,11 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
                           $_SESSION["glpifirstname"]);
       // Display the group if unique
       if (count($_SESSION['glpigroups'])==1) {
-         echo "<br>".getDropdownName("glpi_groups",current($_SESSION['glpigroups']));
+         echo "<br>".CommonDropdown::getDropdownName("glpi_groups",current($_SESSION['glpigroups']));
       } else if (count($_SESSION['glpigroups'])>1) { // Display limited dropdown
          echo "<br>";
          $groups[0]='-----';
-         foreach (getDropdownArrayNames('glpi_groups',
+         foreach (CommonDropdown::getDropdownArrayNames('glpi_groups',
                                         $_SESSION['glpigroups']) as $tmpgroupid => $tmpgroupname) {
             $groups[$tmpgroupid] = $tmpgroupname;
          }
@@ -1044,9 +1044,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    } else {
       User::dropdown("users_id_assign",$users_id_assign,"own_ticket",1);
       echo "<br>".$LANG['common'][35]."&nbsp;: ";
-      dropdownValue("glpi_groups","groups_id_assign",$groups_id_assign);
+      CommonDropdown::dropdownValue("glpi_groups","groups_id_assign",$groups_id_assign);
       echo "<br>".$LANG['financial'][26]."&nbsp;:&nbsp;";
-      dropdownValue("glpi_suppliers","suppliers_id_assign",$suppliers_id_assign);
+      CommonDropdown::dropdownValue("glpi_suppliers","suppliers_id_assign",$suppliers_id_assign);
    }
 
    echo "</td></tr>";
@@ -1635,7 +1635,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                $title .= " - ".$LANG['job'][4]." = ".getUserName($users_id);
             }
             if ($group>0) {
-               $title.=" - ".$LANG['common'][35]." = ".getDropdownName("glpi_groups",$group);
+               $title.=" - ".$LANG['common'][35]." = ".CommonDropdown::getDropdownName("glpi_groups",$group);
             }
             if ($users_id_assign!=0 || $suppliers_id_assign!=0 || $groups_id_assign!=0) {
                $title .= " - ".$LANG['job'][5]." =";
@@ -1643,20 +1643,20 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                   $title .= " ".$LANG['job'][6]." = ".getUserName($users_id_assign);
                }
                if ($groups_id_assign!=0) {
-                  $title .= " ".$LANG['common'][35]." = ".getDropdownName("glpi_groups",
+                  $title .= " ".$LANG['common'][35]." = ".CommonDropdown::getDropdownName("glpi_groups",
                                                                           $groups_id_assign);
                }
                if ($suppliers_id_assign!=0) {
-                  $title .= " ".$LANG['financial'][26]." = ".getDropdownName("glpi_suppliers",
+                  $title .= " ".$LANG['financial'][26]." = ".CommonDropdown::getDropdownName("glpi_suppliers",
                                                                              $suppliers_id_assign);
                }
             }
             if ($requesttypes_id!=0) {
-               $title .= " - ".$LANG['job'][44]." = ".getDropdownName('glpi_requesttypes',
+               $title .= " - ".$LANG['job'][44]." = ".CommonDropdown::getDropdownName('glpi_requesttypes',
                                                                       $requesttypes_id);
             }
             if ($ticketcategories_id!=0) {
-               $title .= " - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketcategories",
+               $title .= " - ".$LANG['common'][36]." = ".CommonDropdown::getDropdownName("glpi_ticketcategories",
                                                                          $ticketcategories_id);
             }
             if ($priority!=0) {
@@ -1819,9 +1819,9 @@ function showJobDetails($target, $ID,$array=array()) {
       echo '<tr>';
       echo '<th colspan="4">';
       if ($ID) {
-         echo getDropdownName('glpi_entities',$job->fields['entities_id']);
+         echo CommonDropdown::getDropdownName('glpi_entities',$job->fields['entities_id']);
       } else {
-         echo $LANG['job'][46]."&nbsp;:&nbsp;".getDropdownName("glpi_entities",
+         echo $LANG['job'][46]."&nbsp;:&nbsp;".CommonDropdown::getDropdownName("glpi_entities",
                                                                $job->fields['entities_id']);
       }
       echo '</th>';
@@ -1933,7 +1933,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
       //If user have access to more than one entity, then display a combobox
       if ($count > 1) {
-         $rand = dropdownValue("glpi_entities", "entities_id", $job->fields["entities_id"], 1,
+         $rand = CommonDropdown::dropdownValue("glpi_entities", "entities_id", $job->fields["entities_id"], 1,
                                $values,'',array(),1);
       } else {
          echo "<input type='hidden' name='entities_id' value='".$job->fields["entities_id"]."'>";
@@ -1961,10 +1961,10 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      dropdownValue("glpi_groups","groups_id",$job->fields["groups_id"],1,
+      CommonDropdown::dropdownValue("glpi_groups","groups_id",$job->fields["groups_id"],1,
                     $job->fields["entities_id"]);
    } else {
-      echo getDropdownName("glpi_groups",$job->fields["groups_id"]);
+      echo CommonDropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
    }
    echo "</td></tr>";
 
@@ -1995,10 +1995,10 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][36]."&nbsp;: </td>";
    echo "<td >";
    if ($canupdate) {
-      dropdownValue("glpi_ticketcategories","ticketcategories_id",
+      CommonDropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",
                     $job->fields["ticketcategories_id"],1,$job->fields["entities_id"]);
    } else {
-      echo getDropdownName("glpi_ticketcategories",$job->fields["ticketcategories_id"]);
+      echo CommonDropdown::getDropdownName("glpi_ticketcategories",$job->fields["ticketcategories_id"]);
    }
    echo "</td>";
    if (haveRight("assign_ticket","1")) {
@@ -2031,21 +2031,21 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      dropdownValue('glpi_requesttypes',"requesttypes_id",$job->fields["requesttypes_id"]);
+      CommonDropdown::dropdownValue('glpi_requesttypes',"requesttypes_id",$job->fields["requesttypes_id"]);
    } else {
-      echo getDropdownName('glpi_requesttypes', $job->fields["requesttypes_id"]);
+      echo CommonDropdown::getDropdownName('glpi_requesttypes', $job->fields["requesttypes_id"]);
    }
    echo "</td>";
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_groups","groups_id_assign",$job->fields["groups_id_assign"],1,
+      CommonDropdown::dropdownValue("glpi_groups","groups_id_assign",$job->fields["groups_id_assign"],1,
                     $job->fields["entities_id"]);
       echo "</td>";
    } else {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
-      echo getDropdownName("glpi_groups",$job->fields["groups_id_assign"]);
+      echo CommonDropdown::getDropdownName("glpi_groups",$job->fields["groups_id_assign"]);
       echo "</td>";
    }
    echo "</tr>";
@@ -2075,7 +2075,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       echo "<td>";
-      dropdownValue("glpi_suppliers","suppliers_id_assign",
+      CommonDropdown::dropdownValue("glpi_suppliers","suppliers_id_assign",
                     $job->fields["suppliers_id_assign"],1,$job->fields["entities_id"]);
       echo "</td>";
    } else {

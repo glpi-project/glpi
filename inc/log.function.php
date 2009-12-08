@@ -116,13 +116,13 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
                         } else if ($val2["table"]=="glpi_suppliers_infocoms") {
                            // 2nd case ; link field -> get data from glpi_suppliers
                            $changes=array($id_search_option,
-                                          addslashes(getDropdownName("glpi_suppliers",$oldval)),
-                                          addslashes(getDropdownName("glpi_suppliers",$values[$key])));
+                                          addslashes(CommonDropdown::getDropdownName("glpi_suppliers",$oldval)),
+                                          addslashes(CommonDropdown::getDropdownName("glpi_suppliers",$values[$key])));
                         } else  {
                            // 3rd case ; link field -> get data from dropdown (budget)
                            $changes=array($id_search_option,
-                                          addslashes(getDropdownName( $val2["table"],$oldval)),
-                                          addslashes(getDropdownName( $val2["table"],$values[$key])));
+                                          addslashes(CommonDropdown::getDropdownName( $val2["table"],$oldval)),
+                                          addslashes(CommonDropdown::getDropdownName( $val2["table"],$values[$key])));
                         }
                      break; // foreach exit
                      }
@@ -148,8 +148,8 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
                      } else {
                         // 2nd case ; link field -> get data from dropdown
                         $changes=array($id_search_option,
-                                       addslashes(getDropdownName( $val2["table"],$oldval)),
-                                       addslashes(getDropdownName( $val2["table"],$values[$key])));
+                                       addslashes(CommonDropdown::getDropdownName( $val2["table"],$oldval)),
+                                       addslashes(CommonDropdown::getDropdownName( $val2["table"],$values[$key])));
                      }
                      break;
                   }

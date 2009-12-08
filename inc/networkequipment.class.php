@@ -290,18 +290,18 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      CommonDropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
+      CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmenttypes", "networkequipmenttypes_id",
+      CommonDropdown::dropdownValue("glpi_networkequipmenttypes", "networkequipmenttypes_id",
                     $this->fields["networkequipmenttypes_id"]);
       echo "</td></tr>";
 
@@ -313,7 +313,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -324,7 +324,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentmodels", "networkequipmentmodels_id",
+      CommonDropdown::dropdownValue("glpi_networkequipmentmodels", "networkequipmentmodels_id",
                     $this->fields["networkequipmentmodels_id"]);
       echo "</td></tr>";
 
@@ -356,18 +356,18 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+      CommonDropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      CommonDropdown::dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      CommonDropdown::dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
       echo "</td>";
       echo "<td rowspan='6'>";
       echo $LANG['common'][25]."&nbsp;:</td>";
@@ -392,7 +392,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_networkequipmentfirmwares", "networkequipmentfirmwares_id",
+      CommonDropdown::dropdownValue("glpi_networkequipmentfirmwares", "networkequipmentfirmwares_id",
                     $this->fields["networkequipmentfirmwares_id"]);
       echo "</td></tr>";
 

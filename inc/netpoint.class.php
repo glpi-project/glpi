@@ -111,7 +111,7 @@ class Netpoint extends CommonDropdown {
     * @return nothing (display the select box)
     *
     */
-   static function dropdown($myname,$value=0,$locations_id=-1,$display_comment=1,$entity_restrict=-1,
+   static function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,$entity_restrict=-1,
                              $devtype=-1) {
 
       global $DB,$CFG_GLPI,$LANG;
@@ -124,7 +124,7 @@ class Netpoint extends CommonDropdown {
          $value=0;
       }
       if ($value>0) {
-         $tmpname=getDropdownName("glpi_netpoints",$value,1);
+         $tmpname=CommonDropdown::getDropdownName("glpi_netpoints",$value,1);
          if ($tmpname["name"]!="&nbsp;") {
             $name=$tmpname["name"];
             $comment=$tmpname["comment"];

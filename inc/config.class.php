@@ -258,7 +258,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['rulesengine'][77] . "</strong></td></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['rulesengine'][86] . " </td><td>";
-      dropdownValue("glpi_softwarecategories","softwarecategories_id_ondelete",
+      CommonDropdown::dropdownValue("glpi_softwarecategories","softwarecategories_id_ondelete",
                     $CFG_GLPI["softwarecategories_id_ondelete"]);
       echo "</td><td class='center' colspan='2'></td></tr>";
 
@@ -633,7 +633,7 @@ class Config extends CommonDBTM {
       dropdownYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][409] . "</td><td>";
-      dropdownValue("glpi_documentcategories","documentcategories_id_forticket",
+      CommonDropdown::dropdownValue("glpi_documentcategories","documentcategories_id_forticket",
                     $CFG_GLPI["documentcategories_id_forticket"]);
       echo "</td></tr>";
 
@@ -810,7 +810,7 @@ class Config extends CommonDBTM {
          dropdownYesNo("followup_private", $data["followup_private"]);
          echo "</td>";
          echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
-         dropdownValue('glpi_requesttypes', 'default_requesttypes_id', $data["default_requesttypes_id"]);
+         CommonDropdown::dropdownValue('glpi_requesttypes', 'default_requesttypes_id', $data["default_requesttypes_id"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][114] . "</td>";

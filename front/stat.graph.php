@@ -123,7 +123,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_ticketcategories",$_GET["id"]);
       $prev = getPreviousItem("glpi_ticketcategories",$_GET["id"]);
-      $title = $LANG['common'][36]."&nbsp;: ".getDropdownName("glpi_ticketcategories",$_GET["id"]);
+      $title = $LANG['common'][36]."&nbsp;: ".CommonDropdown::getDropdownName("glpi_ticketcategories",$_GET["id"]);
       break;
 
    case "group" :
@@ -132,7 +132,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_groups",$_GET["id"]);
       $prev = getPreviousItem("glpi_groups",$_GET["id"]);
-      $title = $LANG['common'][35]."&nbsp;: ".getDropdownName("glpi_groups",$_GET["id"]);
+      $title = $LANG['common'][35]."&nbsp;: ".CommonDropdown::getDropdownName("glpi_groups",$_GET["id"]);
       break;
 
    case "groups_id_assign" :
@@ -141,7 +141,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_groups",$_GET["id"]);
       $prev = getPreviousItem("glpi_groups",$_GET["id"]);
-      $title = $LANG['common'][35]."&nbsp;: ".getDropdownName("glpi_groups",$_GET["id"]);
+      $title = $LANG['common'][35]."&nbsp;: ".CommonDropdown::getDropdownName("glpi_groups",$_GET["id"]);
       break;
 
    case "priority" :
@@ -163,7 +163,7 @@ switch($_GET["type"]) {
       $next = $prev = 0;
       $next = getNextItem("glpi_usertitles",$_GET["id"]);
       $prev = getPreviousItem("glpi_usertitles",$_GET["id"]);
-      $title = $LANG['users'][1]."&nbsp;: ".getDropdownName("glpi_usertitles",$_GET["id"]);
+      $title = $LANG['users'][1]."&nbsp;: ".CommonDropdown::getDropdownName("glpi_usertitles",$_GET["id"]);
       break;
 
    case "usercategories_id" :
@@ -172,7 +172,7 @@ switch($_GET["type"]) {
       $next = $prev=0;
       $next = getNextItem("glpi_usercategories",$_GET["id"]);
       $prev = getPreviousItem("glpi_usercategories",$_GET["id"]);
-      $title = $LANG['users'][2]."&nbsp;: ".getDropdownName("glpi_usercategories",$_GET["id"]);
+      $title = $LANG['users'][2]."&nbsp;: ".CommonDropdown::getDropdownName("glpi_usercategories",$_GET["id"]);
       break;
 
    case "requesttypes_id" :
@@ -185,7 +185,7 @@ switch($_GET["type"]) {
       if ($val1 > 0) {
          $prev = $val1-1;
       }
-      $title = $LANG['job'][44]."&nbsp;: ".getDropdownName('glpi_requesttypes', $_GET["id"]);
+      $title = $LANG['job'][44]."&nbsp;: ".CommonDropdown::getDropdownName('glpi_requesttypes', $_GET["id"]);
       break;
 
    case "device" :
@@ -211,7 +211,7 @@ switch($_GET["type"]) {
       $table = getTableNameForForeignKeyField($_GET["champ"]);
       $next = getNextItem($table,$_GET["id"]);
       $prev = getPreviousItem($table,$_GET["id"]);
-      $title = $LANG['stats'][26]."&nbsp;: ".getDropdownName($table,$_GET["id"]);
+      $title = $LANG['stats'][26]."&nbsp;: ".CommonDropdown::getDropdownName($table,$_GET["id"]);
       break;
 }
 

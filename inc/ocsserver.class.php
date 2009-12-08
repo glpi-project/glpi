@@ -234,7 +234,7 @@ class OcsServer extends CommonDBTM {
                  $this->fields["tag_exclude"] . "\"></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td>\n<td>";
-      dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
+      CommonDropdown::dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
@@ -331,7 +331,7 @@ class OcsServer extends CommonDBTM {
       dropdownYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td>\n<td colspan='3'>";
-      dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
+      CommonDropdown::dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
       echo "</td></tr>\n";
 
       echo "</table><br>".$LANG['ocsconfig'][58];

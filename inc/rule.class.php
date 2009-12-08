@@ -984,7 +984,7 @@ class Rule extends CommonDBTM {
           && ($condition==PATTERN_IS || $condition==PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
-               return getDropdownName($crit["table"],$pattern);
+               return CommonDropdown::getDropdownName($crit["table"],$pattern);
 
             case "dropdown_users" :
                return getUserName($pattern);
@@ -1024,7 +1024,7 @@ class Rule extends CommonDBTM {
           && ($test||$condition==PATTERN_IS || $condition==PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
-               dropdownValue($crit['table'],$name,$value);
+               CommonDropdown::dropdownValue($crit['table'],$name,$value);
                $display=true;
                break;
 
@@ -1071,7 +1071,7 @@ class Rule extends CommonDBTM {
       if (isset($action['type'])) {
          switch ($action['type']) {
             case "dropdown" :
-               return getDropdownName($action["table"],$value);
+               return CommonDropdown::getDropdownName($action["table"],$value);
 
             case "dropdown_status" :
                return getStatusName($value);
@@ -1108,7 +1108,7 @@ class Rule extends CommonDBTM {
           && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
-               return getDropdownName($crit["table"],$value);
+               return CommonDropdown::getDropdownName($crit["table"],$value);
 
             case "dropdown_assign" :
             case "dropdown_users" :

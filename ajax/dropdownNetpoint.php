@@ -112,7 +112,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 } else {
    echo "<option value='0'>------</option>";
 }
-$output=getDropdownName('glpi_netpoints',$_POST['value']);
+$output=CommonDropdown::getDropdownName('glpi_netpoints',$_POST['value']);
 if (!empty($output) && $output!="&nbsp;") {
    echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 }

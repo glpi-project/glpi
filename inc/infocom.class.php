@@ -279,10 +279,10 @@ class InfoCom extends CommonDBTM {
                $mail=new MailingAlert("alertinfocom",$msg,$entity);
                if ($mail->send()) {
                   if ($task) {
-                     $task->log(getDropdownName("glpi_entities",$entity).": $msg\n");
+                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).": $msg\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).": $msg");
+                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).": $msg");
                   }
 
                   $input["type"] = ALERT_END;
@@ -296,9 +296,9 @@ class InfoCom extends CommonDBTM {
                   }
                } else {
                   if ($task) {
-                     $task->log(getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
+                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
                   } else {
-                     addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":
+                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).":
                                              Send infocom alert failed",false,ERROR);
                   }
                }
@@ -680,9 +680,9 @@ class InfoCom extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>".$LANG['financial'][26]."&nbsp;:</td>";
          echo "<td>";
          if ($withtemplate==2) {
-            echo getDropdownName("glpi_suppliers",$ic->fields["suppliers_id"]);
+            echo CommonDropdown::getDropdownName("glpi_suppliers",$ic->fields["suppliers_id"]);
          } else {
-            dropdownValue("glpi_suppliers","suppliers_id",$ic->fields["suppliers_id"],1,
+            CommonDropdown::dropdownValue("glpi_suppliers","suppliers_id",$ic->fields["suppliers_id"],1,
                           $item->getField('entities_id'));
          }
          echo "</td>";
@@ -733,7 +733,7 @@ class InfoCom extends CommonDBTM {
 
             if (haveRight("budget","r")) {
                echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
-               dropdownValue("glpi_budgets","budgets_id",$ic->fields["budgets_id"],0,
+               CommonDropdown::dropdownValue("glpi_budgets","budgets_id",$ic->fields["budgets_id"],0,
                              $item->getEntityID());
                echo "</td></tr>";
             } else {

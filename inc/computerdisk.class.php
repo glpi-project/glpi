@@ -107,7 +107,7 @@ class ComputerDisk extends CommonDBTM {
       echo "<td>".$LANG['help'][25]."&nbsp;:</td>";
       echo "<td colspan='3'>";
       echo "<a href='computer.form.php?id=".$computers_id."'>".
-             getDropdownName("glpi_computers",$computers_id)."</a>";
+             CommonDropdown::getDropdownName("glpi_computers",$computers_id)."</a>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -126,7 +126,7 @@ class ComputerDisk extends CommonDBTM {
                               $this->fields["mountpoint"],40);
       echo "</td><td>".$LANG['computers'][4]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_filesystems", "filesystems_id", $this->fields["filesystems_id"]);
+      CommonDropdown::dropdownValue("glpi_filesystems", "filesystems_id", $this->fields["filesystems_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

@@ -212,7 +212,7 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
                   echo "<td class='center'><img src=\"" .GLPI_ROOT. "/pics/greenbutton.png\"></td>\n";
                }
                echo "<td>";
-               dropdownValue("glpi_entities", "toimport_entities[" . $tab["id"] . "]=" .
+               CommonDropdown::dropdownValue("glpi_entities", "toimport_entities[" . $tab["id"] . "]=" .
                              $data['entities_id'], $data['entities_id'], 0);
                echo "</td>\n";
             }
@@ -224,10 +224,10 @@ function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0
                //Look for the computer using automatic link criterias as defined in OCSNG configuration
                $computer_found = getMachinesAlreadyInGLPI($tab["id"],$ocsservers_id,$entity);
                if (!empty($computer_found) && $computer_found != -1) {
-                  dropdownValue("glpi_computers", "tolink[" .
+                  CommonDropdown::dropdownValue("glpi_computers", "tolink[" .
                   $tab["id"] . "]", $computer_found[0],1,$entity);
                } else {
-                  dropdown("glpi_computers", "tolink[" .
+                  CommonDropdown::dropdown("glpi_computers", "tolink[" .
                   $tab["id"] . "]");
                }
             }

@@ -245,18 +245,18 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      CommonDropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
+      CommonDropdown::dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonetypes", "phonetypes_id", $this->fields["phonetypes_id"]);
+      CommonDropdown::dropdownValue("glpi_phonetypes", "phonetypes_id", $this->fields["phonetypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -267,7 +267,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -278,7 +278,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonemodels", "phonemodels_id", $this->fields["phonemodels_id"]);
+      CommonDropdown::dropdownValue("glpi_phonemodels", "phonemodels_id", $this->fields["phonemodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -308,7 +308,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_groups","groups_id",$this->fields["groups_id"],1,$this->fields["entities_id"]);
+      CommonDropdown::dropdownValue("glpi_groups","groups_id",$this->fields["groups_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
@@ -331,7 +331,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
       echo "<td>";
-      dropdownValue("glpi_phonepowersupplies","phonepowersupplies_id",
+      CommonDropdown::dropdownValue("glpi_phonepowersupplies","phonepowersupplies_id",
                     $this->fields["phonepowersupplies_id"]);
       echo "</td></tr>\n";
 

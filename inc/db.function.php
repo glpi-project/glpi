@@ -458,7 +458,7 @@ function getTreeForItem($table,$IDf) {
          }
       }
    }
-   $tree[$IDf]['name']=getDropdownName($table,$IDf);
+   $tree[$IDf]['name']=CommonDropdown::getDropdownName($table,$IDf);
    $tree[$IDf]['tree']=contructTreeFromList($id_found,$IDf);
    return $tree;
 }
@@ -845,15 +845,15 @@ function getUserName($ID,$link=0) {
             }
             if ($data["locations_id"]>0) {
                $user["comment"].=$LANG['common'][15]."&nbsp;: ".
-                                 getDropdownName("glpi_locations",$data["locations_id"])."<br>";
+                                 CommonDropdown::getDropdownName("glpi_locations",$data["locations_id"])."<br>";
             }
             if ($data["usertitles_id"]>0) {
                $user["comment"].=$LANG['users'][1]."&nbsp;: ".
-                                 getDropdownName("glpi_usertitles",$data["usertitles_id"])."<br>";
+                                 CommonDropdown::getDropdownName("glpi_usertitles",$data["usertitles_id"])."<br>";
             }
             if ($data["usercategories_id"]>0) {
                $user["comment"].=$LANG['users'][2]."&nbsp;: ".
-                                 getDropdownName("glpi_usercategories",$data["usercategories_id"]).
+                                 CommonDropdown::getDropdownName("glpi_usercategories",$data["usercategories_id"]).
                                  "<br>";
             }
          } else {
