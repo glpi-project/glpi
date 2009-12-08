@@ -2064,7 +2064,7 @@ function showJobDetails($target, $ID,$array=array()) {
             echo $item->getTypeName()." ".$item->getNameID();
          }
       } else {
-         dropdownMyDevices($array["users_id"],$job->fields["entities_id"],
+         dropdownMyDevices($job->fields["users_id"],$job->fields["entities_id"],
                            $job->fields["itemtype"], $job->fields["items_id"]);
       }
       dropdownTrackingAllDevices("itemtype", $job->fields["itemtype"], $job->fields["items_id"],
