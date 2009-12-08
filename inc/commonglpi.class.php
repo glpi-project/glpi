@@ -234,7 +234,7 @@ class CommonGLPI {
     */
    function getTabsURL() {
 
-      if ($plug=isPluginItem(get_class($this))) {
+      if ($plug=isPluginItemType(get_class($this))) {
          $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
       } else { // Standard case

@@ -756,7 +756,7 @@ class Search {
             // Display pager only for HTML
             if ($output_type==HTML_OUTPUT) {
                // For plugin add new parameter if available
-               if (isPluginItem($itemtype)) {
+               if (isPluginItemType($itemtype)) {
                   if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
                      $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].
                               '_addParamFordynamicReport';
@@ -1479,7 +1479,7 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addHaving';
             if (function_exists($function)) {
@@ -1498,7 +1498,7 @@ class Search {
 
       //// Default cases
       // Link with plugin tables
-      if (!isPluginItem($itemtype)) {
+      if (!isPluginItemType($itemtype)) {
          if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
             if (count($matches)==2) {
                $plug=$matches[1];
@@ -1599,7 +1599,7 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addOrderBy';
             if (function_exists($function)) {
@@ -1645,7 +1645,7 @@ class Search {
       //// Default cases
 
       // Link with plugin tables
-      if (!isPluginItem($itemtype)) {
+      if (!isPluginItemType($itemtype)) {
          if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
             if (count($matches)==2) {
                $plug=$matches[1];
@@ -1767,7 +1767,7 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addSelect';
             if (function_exists($function)) {
@@ -1937,7 +1937,7 @@ class Search {
 
       //// Default cases
       // Link with plugin tables
-      if (!isPluginItem($itemtype)) {
+      if (!isPluginItemType($itemtype)) {
          if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
             if (count($matches)==2) {
                $plug=$matches[1];
@@ -2081,7 +2081,7 @@ class Search {
       $SEARCH=makeTextSearch($val,$nott);
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addWhere';
             if (function_exists($function)) {
@@ -2247,7 +2247,7 @@ class Search {
       //// Default cases
 
       // Link with plugin tables
-      if (!isPluginItem($itemtype)) {
+      if (!isPluginItemType($itemtype)) {
          if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches)) {
             if (count($matches)==2) {
                $plug=$matches[1];
@@ -2443,7 +2443,7 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addLeftJoin';
             if (function_exists($function)) {
@@ -2734,7 +2734,7 @@ class Search {
 
          default :
             // Link with plugin tables : need to know left join structure
-            if (!isPluginItem($itemtype)) {
+            if (!isPluginItemType($itemtype)) {
                if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches)) {
                   if (count($matches)==2) {
                      $plug=$matches[1];
@@ -2951,7 +2951,7 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItem($itemtype)) {
+      if (isPluginItemType($itemtype)) {
          if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
             $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_giveItem';
             if (function_exists($function)) {
@@ -3234,7 +3234,7 @@ class Search {
       //// Default case
 
       // Link with plugin tables : need to know left join structure
-      if (!isPluginItem($itemtype)) {
+      if (!isPluginItemType($itemtype)) {
          if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches)) {
             if (count($matches)==2) {
                $plug=$matches[1];

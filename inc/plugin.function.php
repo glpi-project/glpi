@@ -266,7 +266,7 @@ function registerPluginType($plugin,$name,$itemtype,$attrib) {
    if (is_numeric($itemtype)) {
       die("itemtype MUST be a class name ($plugin/$name/$itemtype)");
    }
-   $tmp = isPluginItem($itemtype);
+   $tmp = isPluginItemType($itemtype);
    if (strcasecmp($tmp['plugin'],$plugin)) {
       die("itemtype not standard : $plugin/$name/$itemtype/".$tmp['plugin']);
    }
@@ -307,7 +307,7 @@ function loadPluginLang($name) {
  *
  * @return false or an object containing plugin name and class name
  */
-function isPluginItem($classname) {
+function isPluginItemType($classname) {
 
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/",$classname,$matches)) {
       $plug=array();

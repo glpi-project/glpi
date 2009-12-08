@@ -658,7 +658,7 @@ class Plugin extends CommonDBTM {
    static function registerClass($itemtype, $attrib) {
       global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 
-      $plug = isPluginItem($itemtype);
+      $plug = isPluginItemType($itemtype);
       if (!$plug) {
          return false;
       }

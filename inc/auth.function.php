@@ -199,7 +199,7 @@ function haveTypeRight($itemtype, $right) {
 
       default :
          // Plugin case
-         if (isPluginItem($itemtype)) {
+         if (isPluginItemType($itemtype)) {
             if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
                $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
                if (function_exists($function)) {

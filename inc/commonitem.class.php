@@ -267,7 +267,7 @@ class CommonItem {
 
             default :
                // Plugin case
-               if (isPluginItem($itemtype)) {
+               if (isPluginItemType($itemtype)) {
                   if (isset($PLUGIN_HOOKS['plugin_classes'][$itemtype])) {
                      $class=$PLUGIN_HOOKS['plugin_classes'][$itemtype];
                      $plug=$PLUGIN_HOOKS['plugin_types'][$itemtype];
@@ -431,7 +431,7 @@ class CommonItem {
 
          default :
             // Plugin case
-            if (isPluginItem($this->itemtype)) {
+            if (isPluginItemType($this->itemtype)) {
                // Use plugin name if set
                if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])
                    && !empty($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])) {

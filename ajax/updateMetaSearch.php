@@ -69,7 +69,7 @@ if (!empty($_POST["itemtype"])) {
       } else {
          // No search on plugins
          echo $key."--";
-         if (!isPluginItem($key) && !isset($val["nometa"])) {
+         if (!isPluginItemType($key) && !isset($val["nometa"])) {
             $newgroup.= "<option value='$key' title=\"".cleanInputText($val["name"])."\"";
             if ($key == $_POST["field"]) {
                $newgroup.= "selected";

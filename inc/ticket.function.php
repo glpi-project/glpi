@@ -2881,7 +2881,7 @@ function getAllTypesForHelpdesk() {
    //Types of the core (after the plugin for robustness)
    foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
       if (class_exists($itemtype)) {
-         if (!isPluginItem($itemtype) // No plugin here
+         if (!isPluginItemType($itemtype) // No plugin here
             && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             $item = new $itemtype();
             $types[$itemtype] = $item->getTypeName();
@@ -2904,7 +2904,7 @@ function isPossibleToAssignType($itemtype) {
 
 
    // Plugin case
-   if (isPluginItem($itemtype)){
+   if (isPluginItemType($itemtype)){
       /// TODO maybe only check plugin of itemtype ?
       //If it's not a core's type, then check plugins
       $types = array();
