@@ -1743,7 +1743,7 @@ function getAssignName($ID,$itemtype,$link=0) {
    switch ($itemtype) {
       case USER_TYPE :
          if ($ID==0) {
-            return "-----";
+            return "";
          }
          return getUserName($ID,$link);
          break;
