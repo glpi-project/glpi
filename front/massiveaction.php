@@ -193,7 +193,7 @@ if (isset($_POST["itemtype"])){
             }
 			break;
 			case "update":
-				$searchopt=cleanSearchOption($_POST["itemtype"],'w');
+				$searchopt=Search::getCleanedOptions($_POST["itemtype"],'w');
 				if (isset($searchopt[$_POST["id_field"]]) && class_exists($_POST["itemtype"])){
 					/// Infocoms case
 					if (!isPluginItem($_POST["itemtype"])

@@ -121,7 +121,7 @@ class DisplayPreference extends CommonDBTM {
          }
       } else {
          // No items in the global config
-         $searchopt=getSearchOptions($input["itemtype"]);
+         $searchopt=Search::getOptions($input["itemtype"]);
          if (count($searchopt)>1) {
             $done=false;
             foreach($searchopt as $key => $val) {
@@ -201,7 +201,7 @@ class DisplayPreference extends CommonDBTM {
    function showFormPerso($target,$itemtype) {
       global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
-      $searchopt=getSearchOptions($itemtype);
+      $searchopt=Search::getCleanedOptions($itemtype);
       if (!is_array($searchopt)) {
          return false;
       }
@@ -237,7 +237,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo "<select name='num'>";
          $first_group=true;
-         $searchopt=cleanSearchOption($itemtype);
+
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                if (!$first_group) {
@@ -328,7 +328,7 @@ class DisplayPreference extends CommonDBTM {
    function showFormGlobal($target,$itemtype) {
       global $CFG_GLPI,$LANG,$DB;
 
-      $searchopt=getSearchOptions($itemtype);
+      $searchopt=Search::getOptions($itemtype);
       if (!is_array($searchopt)) {
          return false;
       }
@@ -356,7 +356,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo "<select name='num'>";
          $first_group=true;
-         $searchopt=cleanSearchOption($itemtype);
+         $searchopt=Search::getCleanedOptions($itemtype);
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                if (!$first_group) {

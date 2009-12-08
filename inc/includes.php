@@ -81,6 +81,7 @@ if (!isset($AJAX_INCLUDE)) {
 
    // TODO : clean it after autoload
    include_once (GLPI_ROOT . "/inc/search.function.php");
+   include_once (GLPI_ROOT . "/inc/search.class.php");
    include_once (GLPI_ROOT . "/inc/event.class.php");
    include_once (GLPI_ROOT . "/inc/authmail.class.php");
    include_once (GLPI_ROOT . "/inc/authldap.class.php");
@@ -338,10 +339,6 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    }
 }
 
-// Get search_option array / need to be included after plugin definition
-//if (isset($NEEDED_ITEMS) && in_array('search', $NEEDED_ITEMS)) {
-//   $SEARCH_OPTION=getSearchOptions();
-//}
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
    $_SESSION["MESSAGE_AFTER_REDIRECT"]="";

@@ -55,7 +55,7 @@ switch ($_POST["itemtype"]) {
 }
 
 if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
-   $search = getSearchOptions($_POST["itemtype"]);
+   $search = Search::getOptions($_POST["itemtype"]);
    $search = $search[$_POST["id_field"]];
 
    // Specific budget case

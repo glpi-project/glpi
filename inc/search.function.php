@@ -32,57 +32,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/**
- * file search.function.php
- * Generic functions for Search Engine
- */
 
-/**
- * Clean search options depending of user active profile
- *
- * @param $itemtype item type to manage
- * @param $action action which is used to manupulate searchoption (r/w)
- * @return clean $SEARCH_OPTION array
- */
-function cleanSearchOption($itemtype,$action='r') {
-   global $CFG_GLPI;
-
-   $options=&getSearchOptions($itemtype);
-   $todel=array();
-   if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-      $todel=array_merge($todel,array('financial',
-                                      25,26,27,28,37,38,50,51,52,53,54,55,56,57,58,59,120,122));
-   }
-
-   if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-      $todel=array_merge($todel,array('financial',
-                                      29,30,130,131,132,133,134,135,136,137,138));
-   }
-
-   if ($itemtype==COMPUTER_TYPE) {
-      if (!haveRight('networking',$action)) {
-         $todel=array_merge($todel,array('network',
-                                         20,21,22,83,84,85));
-      }
-      if (!$CFG_GLPI['use_ocs_mode'] || !haveRight('view_ocsng',$action)) {
-         $todel=array_merge($todel,array('ocsng',
-                                         100,101,102,103));
-      }
-   }
-   if (!haveRight('notes',$action)) {
-      $todel[]=90;
-   }
-
-   if (count($todel)) {
-      foreach ($todel as $ID) {
-         if (isset($options[$ID])) {
-            unset($options[$ID]);
-         }
-      }
-   }
-
-   return $options;
-}
 
 
 /**
@@ -225,7 +175,7 @@ function searchForm($itemtype,$params) {
       }
    }
 
-   $options=cleanSearchOption($itemtype);
+   $options=Search::getCleanedOptions($itemtype);
 
    // Meta search names
    $names=array(COMPUTER_TYPE   => $LANG['Menu'][0],
@@ -548,7 +498,7 @@ function showList ($itemtype,$params) {
       $start=0;
    }
 
-   $limitsearchopt=cleanSearchOption($itemtype);
+   $limitsearchopt=Search::getCleanedOptions($itemtype);
    $itemtable=$LINK_ID_TABLE[$itemtype];
 
    if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
@@ -645,7 +595,7 @@ function showList ($itemtype,$params) {
    $FROM .= $COMMONLEFTJOIN;
 
    $searchopt=array();
-   $searchopt[$itemtype]=&getSearchOptions($itemtype);
+   $searchopt[$itemtype]=&Search::getOptions($itemtype);
    // Add all table for toview items
    foreach ($toview as $key => $val) {
       $FROM .= addLeftJoin($itemtype,$itemtable,$already_link_tables,
@@ -907,7 +857,7 @@ function showList ($itemtype,$params) {
          if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
              && strlen($contains2[$i])>0) {
             if (!isset($searchopt[$itemtype2[$i]])) {
-               $searchopt[$itemtype2[$i]]=&getSearchOptions($itemtype2[$i]);
+               $searchopt[$itemtype2[$i]]=&Search::getOptions($itemtype2[$i]);
             }
             if (!in_array($searchopt[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],
                           $already_link_tables2)) {
@@ -1601,7 +1551,7 @@ function showList ($itemtype,$params) {
  **/
 function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
 
-   $searchopt = &getSearchOptions($itemtype);
+   $searchopt = &Search::getOptions($itemtype);
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
 
@@ -1720,7 +1670,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
    if ($order!="ASC") {
       $order="DESC";
    }
-   $searchopt = &getSearchOptions($itemtype);
+   $searchopt = &Search::getOptions($itemtype);
 
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
@@ -1886,7 +1836,7 @@ function addDefaultSelect ($itemtype) {
 function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
    global $LINK_ID_TABLE,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $searchopt=&getSearchOptions($itemtype);
+   $searchopt=&Search::getOptions($itemtype);
    $table=$searchopt[$ID]["table"];
    $field=$searchopt[$ID]["field"];
    $addtable="";
@@ -2196,7 +2146,7 @@ function addDefaultWhere ($itemtype) {
 function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    global $LINK_ID_TABLE,$LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   $searchopt=&getSearchOptions($itemtype);
+   $searchopt=&Search::getOptions($itemtype);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
@@ -2550,7 +2500,7 @@ function displayConfigItem ($itemtype,$field) {
 function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    global $CFG_GLPI,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-   $searchopt=&getSearchOptions($itemtype);
+   $searchopt=&Search::getOptions($itemtype);
    if (isset($CFG_GLPI["union_search_type"][$itemtype])
        && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
       return giveItem ($data["TYPE"],$ID,$data,$num);

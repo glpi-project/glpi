@@ -100,7 +100,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
                $real_type=$ic->fields['itemtype'];
                $items_id=$ic->fields['items_id'];
 
-               $searchopt=getSearchOptions($real_type);
+               $searchopt=Search::getOptions($real_type);
                if (is_array($searchopt)) {
                   foreach($searchopt as $key2 => $val2) {
                      if (($val2["field"]==$key && strpos($val2['table'],'infocoms'))
@@ -132,7 +132,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
          } else {
             $real_type=$itemtype;
             // Parsing $SEARCHOPTION, check if an entry exists matching $key
-            $searchopt=getSearchOptions($real_type);
+            $searchopt=Search::getOptions($real_type);
             if (is_array($searchopt)) {
                foreach($searchopt as $key2 => $val2) {
                   // Linkfield or standard field not massive action enable
@@ -174,7 +174,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 function showHistory($itemtype,$items_id) {
    global $DB, $LINK_ID_TABLE,$LANG;
 
-   $SEARCHOPTION=getSearchOptions($itemtype);
+   $SEARCHOPTION=Search::getOptions($itemtype);
    if (isset($_REQUEST["start"])) {
       $start = $_REQUEST["start"];
    } else {
