@@ -87,7 +87,7 @@ if (!empty($_POST["withtemplate"])) {
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice,$_POST["withtemplate"]);
          showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
-         showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
+         Link::showForItem(NETWORKING_TYPE,$_POST["id"]);
          Plugin::displayAction($netdevice,$_REQUEST['glpi_tab']);
          break;
 
@@ -105,7 +105,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 7 :
-         showLinkOnDevice(NETWORKING_TYPE,$_POST["id"]);
+         Link::showForItem(NETWORKING_TYPE,$_POST["id"]);
          break;
 
       case 10 :

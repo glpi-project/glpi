@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
             showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-            showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+            Link::showForItem(MONITOR_TYPE,$_POST["id"]);
             Plugin::displayAction($monitor,$_REQUEST['glpi_tab']);
             break;
 
@@ -98,7 +98,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 7 :
-            showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
+            Link::showForItem(MONITOR_TYPE,$_POST["id"]);
             break;
 
          case 10 :

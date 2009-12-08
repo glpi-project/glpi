@@ -94,7 +94,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
             showJobListForItem(PRINTER_TYPE,$_POST["id"]);
-            showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
+            Link::showForItem(PRINTER_TYPE,$_POST["id"]);
             Plugin::displayAction($printer, $_REQUEST['glpi_tab']);
             break;
 
@@ -118,7 +118,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 7 :
-            showLinkOnDevice(PRINTER_TYPE,$_POST["id"]);
+            Link::showForItem(PRINTER_TYPE,$_POST["id"]);
             break;
 
          case 10 :

@@ -1997,7 +1997,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
                      foreach ($import_device as $import_ID => $val) {
                         $tmp=explode(OCS_FIELD_SEPARATOR,$val);
                         if (isset($tmp[1]) && $tmp[0] == RAM_DEVICE) {
-                           unlink_device_computer($import_ID, false);
+                           unLink_ItemType_computer($import_ID, false);
                            deleteInOcsArray($computers_id, $import_ID, "import_device");
                            unset($import_device[$import_ID]);
                         }
@@ -2473,7 +2473,7 @@ function ocsUpdateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $c
    if ($do_clean && count($import_device)) {
       foreach ($import_device as $key => $val) {
          if (!(strpos($val, $devicetype . '$$') === false)) {
-            unlink_device_computer($key, $dohistory);
+            unLink_ItemType_computer($key, $dohistory);
             deleteInOcsArray($computers_id, $key, "import_device");
          }
       }

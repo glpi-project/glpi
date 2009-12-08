@@ -65,7 +65,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          $supplier->showContracts();
          Document::showAssociated($supplier);
          showJobListForSupplier($_POST["id"]);
-         showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
+         Link::showForItem(ENTERPRISE_TYPE,$_POST["id"]);
          Plugin::displayAction($supplier, $_REQUEST['glpi_tab']);
          break;
 
@@ -82,7 +82,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          break;
 
       case 7 :
-         showLinkOnDevice(ENTERPRISE_TYPE,$_POST["id"]);
+         Link::showForItem(ENTERPRISE_TYPE,$_POST["id"]);
          break;
 
       case 10 :

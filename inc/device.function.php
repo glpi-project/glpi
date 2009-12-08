@@ -492,7 +492,7 @@ function update_device_quantity($newNumber,$compDevID) {
          if ($number>$newNumber) {
             for ($i=$newNumber;$i<$number;$i++) {
                $data2 = $DB->fetch_array($result2);
-               unlink_device_computer($data2["id"],1);
+               unLink_ItemType_computer($data2["id"],1);
             }
          // Add devices
          } else if ($number<$newNumber) {
@@ -514,7 +514,7 @@ function update_device_quantity($newNumber,$compDevID) {
  * @param $dohistory log history updates ?
  * @returns boolean
  **/
-function unlink_device_computer($compDevID,$dohistory=1) {
+function unLink_ItemType_computer($compDevID,$dohistory=1) {
    global $DB;
 
    // get old value  and id for history 

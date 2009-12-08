@@ -56,7 +56,7 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          Consumable::showForItem($consumable, 1);
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
          Document::showAssociated($consumable);
-         showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
+         Link::showForItem(CONSUMABLEITEM_TYPE,$_POST["id"]);
          Plugin::displayAction($consumable,$_REQUEST['glpi_tab']);
          break;
 
@@ -69,7 +69,7 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          break;
 
       case 7 :
-         showLinkOnDevice(CONSUMABLEITEM_TYPE,$_POST["id"]);
+         Link::showForItem(CONSUMABLEITEM_TYPE,$_POST["id"]);
          break;
 
       case 10 :

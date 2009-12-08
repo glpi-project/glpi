@@ -39,56 +39,42 @@ $NEEDED_ITEMS = array('link','device');
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(empty($_GET["id"])) $_GET["id"] = "";
+if(empty($_GET["id"])) {
+   $_GET["id"] = "";
+}
 
 $link=new Link();
 
 if (isset($_POST["add"]))
 {
-	$link->check(-1,'w');
+   $link->check(-1,'w');
 
-	$newID=$link->add($_POST);
-	Event::log($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
+   $newID=$link->add($_POST);
+   Event::log($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["delete"]))
 {
-	$link->check($_POST["id"],'w');
+   $link->check($_GET["id"],'w');
 
-	$link->delete($_POST);
-	Event::log($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
+   $link->delete($_POST);
+   Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["update"]))
 {
-	$link->check($_POST["id"],'w');
+   $link->check($_GET["id"],'w');
 
-	$link->update($_POST);
-	Event::log($_POST["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $link->update($_POST);
+   Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["adddevice"])){
-	$link->check($_POST["lID"],'w');
-
-	addLinkDevice($_POST["itemtype"],$_POST["lID"]);
-	Event::log($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["lID"]);
-}
-else if (isset($_GET["deletedevice"])){
-	$link->check($_GET["lID"],'w');
-
-	deleteLinkDevice($_GET["id"]);
-	Event::log($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-
 else
 {
-	commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
+   commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
-	$link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]);
-	commonFooter();
+   $link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]);
+   commonFooter();
 }
 
 
