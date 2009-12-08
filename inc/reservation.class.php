@@ -219,14 +219,16 @@ class Reservation extends CommonDBTM {
       global $LANG;
 
       $ri=new ReservationItem();
-      $ci=new CommonItem();
       $name="";
       $tech="";
       if ($ri->getFromDB($this->fields["reservationitems_id"])) {
-         if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
-            $name=$ci->getType()." ".$ci->getName();
-            if ($ci->getField('users_id_tech')) {
-               $tech=getUserName($ci->getField('users_id_tech'));
+         if (class_exists($ri->fields['itemtype'])) {
+            $item=$ri->fields['itemtype']();
+            if ($item->getFromDB($ri->fields['items_id'])) {
+               $name=$item->getTypeName()." ".$item->getName();
+               if ($tmp=$item->getField('users_id_tech')) {
+                  $tech=getUserName($tmp);
+               }
             }
          }
       }
@@ -291,8 +293,11 @@ class Reservation extends CommonDBTM {
       if (!$item->getFromDB($this->fields["reservationitems_id"])) {
          return false;
       }
-      $ci=new CommonItem();
-      if (!$ci->getFromDB($item->fields["itemtype"], $item->fields["items_id"])) {
+      if (!class_exists($item->fields["itemtype"])) {
+         return false;
+      }
+      $item = new $item->fields["itemtype"]();
+      if (!$item->getFromDB($item->fields["items_id"])) {
          return false;
       }
       return haveAccessToEntity($ci->obj->fields["entities_id"]);

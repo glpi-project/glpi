@@ -57,11 +57,15 @@ function showReservationForm($itemtype,$items_id) {
 
    // Recursive type case => need entity right
    if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-      $ci = new CommonItem();
-      if (!$ci->getFromDB($itemtype,$items_id)) {
-         return false;
-      }
-      if (!haveAccessToEntity($ci->obj->fields["entities_id"])) {
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         if (!$item->getFromDB($items_id)) {
+            return false;
+         }
+         if (!haveAccessToEntity($item->fields["entities_id"])) {
+            return false;
+         }
+      } else {
          return false;
       }
    }
@@ -138,11 +142,16 @@ function printCalendrier($target,$ID="") {
          echo "</strong></div>";
          return false;
       }
-      $ci=new CommonItem();
-      $ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
+      $type=$m->fields["itemtype"];
+      $name="N/A";
+      if (class_exists($m->fields["itemtype"])){
+         $item= new $m->fields["itemtype"]();
+         $type=$item->getTypeName();
+         if ($item->getFromDB($m->fields["items_id"])) {
+            $name=$item->getName();
+         }
+      }
 
-      $type=$ci->getType();
-      $name=$ci->getName();
       $all="<a href='$target?show=resa&amp;id=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
    } else {
       $type="";
@@ -316,28 +325,40 @@ function showAddReservationForm($target,$items,$date,$resaID=-1) {
 
    // Add Hardware name
    $r=new ReservationItem;
-   $ci=new CommonItem();
 
    echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
    echo "<td>";
    foreach ($items as $ID) {
       $r->getFromDB($ID);
-      $ci->getFromDB($r->fields["itemtype"],$r->fields["items_id"]);
-      echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong><br>";
+      $type=$r->fields["itemtype"];
+      $name="N/A";
+      $item=NULL;
+      if (class_exists($r->fields["itemtype"])){
+         $item= new $r->fields["itemtype"]();
+         $type=$item->getTypeName();
+         if ($item->getFromDB($r->fields["items_id"])) {
+            $name=$item->getName();
+         } else {
+            $item = NULL;
+         }
+      }
+
+      echo "<strong>$type - $name</strong><br>";
       echo "<input type='hidden' name='items[$ID]' value='$ID'>";
    }
    echo "</td></tr>\n";
    if (!haveRight("reservation_central","w")
-       || !haveAccessToEntity($ci->obj->fields["entities_id"])) {
+       || is_null($item)
+       || !haveAccessToEntity($item->fields["entities_id"])) {
 
       echo "<input type='hidden' name='users_id' value='".$_SESSION["glpiID"]."'>";
    } else {
       echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31]."&nbsp;:</td>";
       echo "<td>";
       if ($resaID==-1) {
-         User::dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$ci->getField('entities_id'));
+         User::dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$item->getField('entities_id'));
       } else {
-         User::dropdownAllUsers("users_id",$resa->fields["users_id"],1,$ci->getField('entities_id'));
+         User::dropdownAllUsers("users_id",$resa->fields["users_id"],1,$item->getField('entities_id'));
       }
       echo "</td></tr>\n";
    }
@@ -404,19 +425,21 @@ function printReservation($target,$ID,$date) {
          $m=new ReservationItem;
          while ($data=$DB->fetch_array($result)) {
             $m->getFromDB($data['id']);
-            $ci=new CommonItem();
-            $ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
+            if (!class_exists($m->fields["itemtype"])) {
+               continue;
+            }
+            $item = $m->fields["itemtype"]();
 
-            if ($ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"])
-                && haveAccessToEntity($ci->obj->fields["entities_id"])) {
+            if ($item->getFromDB($m->fields["items_id"])
+                && haveAccessToEntity($item->fields["entities_id"])) {
 
-               $typename=$ci->getType();
+               $typename=$item->getTypeName();
                if ($m->fields["itemtype"]==PERIPHERAL_TYPE) {
-                  if (isset($ci->obj->fields["peripheraltypes_id"])
-                      && $ci->obj->fields["peripheraltypes_id"]!=0) {
+                  if (isset($item->fields["peripheraltypes_id"])
+                      && $item->fields["peripheraltypes_id"]!=0) {
 
                      $typename=CommonDropdown::getDropdownName("glpi_peripheraltypes",
-                                               $ci->obj->fields["peripheraltypes_id"]);
+                                               $item->fields["peripheraltypes_id"]);
                   }
                }
 
@@ -424,7 +447,7 @@ function printReservation($target,$ID,$date) {
                echo "<tr class='tab_bg_1'><td>";
                echo "<a href='$target?show=resa&amp;id=".$data['id'].
                      "&amp;mois_courant=$mois&amp;annee_courante=$annee'>$typename - ".
-                     $ci->getName()."</a></td></tr>\n";
+                     $item->getName()."</a></td></tr>\n";
                echo "<tr><td>";
                printReservationItem($target,$data['id'],$date);
                echo "</td></tr>\n";
@@ -512,7 +535,6 @@ function printReservationItems($target) {
    }
 
    $ri=new ReservationItem;
-   $ci=new CommonItem();
    $ok=false;
    $showentity=isMultiEntitiesMode();
 
@@ -521,7 +543,10 @@ function printReservationItems($target) {
    echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>\n";
 
    foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
-      $ci->setType($itemtype);
+      if (!class_exists($itemtype)) {
+         continue;
+      }
+      $item=new $itemtype();
       $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
                        $LINK_ID_TABLE[$itemtype].".`name` AS name, ".
                        $LINK_ID_TABLE[$itemtype].".`entities_id` AS entities_id,
@@ -543,14 +568,14 @@ function printReservationItems($target) {
          while ($row=$DB->fetch_array($result)) {
             echo "<tr class='tab_bg_2'><td>";
             echo "<input type='checkbox' name='add_item[".$row["id"]."]' value='".$row["id"]."'></td>";
-            $typename=$ci->getType();
+            $typename=$item->getTypeName();
             if ($itemtype==PERIPHERAL_TYPE) {
-               $ci->getFromDB($itemtype,$row['items_id']);
-               if (isset($ci->obj->fields["peripheraltypes_id"])
-                   && $ci->obj->fields["peripheraltypes_id"]!=0) {
+               $item->getFromDB($row['items_id']);
+               if (isset($item->fields["peripheraltypes_id"])
+                   && $item->fields["peripheraltypes_id"]!=0) {
 
                   $typename=CommonDropdown::getDropdownName("glpi_peripheraltypes",
-                                            $ci->obj->fields["peripheraltypes_id"]);
+                                            $item->fields["peripheraltypes_id"]);
                }
             }
             echo "<td><a href='".$target."?show=resa&amp;id=".$row['id']."'>$typename - ".
@@ -585,8 +610,15 @@ function showReservationCommentForm($target,$ID) {
    $r=new ReservationItem;
 
    if ($r->getFromDB($ID)) {
-      $ci=new CommonItem();
-      $ci->getFromDB($r->fields["itemtype"],$r->fields["items_id"]);
+      $type = $r->fields["itemtype"];
+      $name = "N/A";
+      if (class_exists($r->fields["itemtype"])) {
+         $item = new $r->fields["itemtype"]();
+         $type = $item->getTypeName();
+         if ($item->getFromDB($r->fields["items_id"])) {
+            $name=$item->getName();
+         }
+      }
 
       echo "<div class='center'><form method='post' name=form action=\"$target\">";
       echo "<input type='hidden' name='id' value='$ID'>";
@@ -594,7 +626,7 @@ function showReservationCommentForm($target,$ID) {
       echo "<tr><th colspan='2'>".$LANG['reservation'][22]."</th></tr>";
       // Ajouter le nom du materiel
       echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
-      echo "<td><strong>".$ci->getType()." - ".$ci->getName()."</strong></td></tr>\n";
+      echo "<td><strong>$type - $name</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td>";
@@ -745,7 +777,6 @@ function showUserReservations($target,$ID) {
    $result=$DB->query($query);
 
    $ri=new ReservationItem();
-   $ci=new CommonItem();
    echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
    if ($DB->numrows($result)==0) {
       echo "<tr class='tab_bg_2'>";
@@ -761,8 +792,14 @@ function showUserReservations($target,$ID) {
          echo "<td class='center'>".convDateTime($data["begin"])."</td>";
          echo "<td class='center'>".convDateTime($data["end"])."</td>";
          if ($ri->getFromDB($data["reservationitems_id"])) {
-            $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
-            echo "<td class='center'>".$ci->getLink()."</td>";
+            $link="&nbsp;";
+            if (class_exists($ri->fields['itemtype'])) {
+               $item = new $ri->fields['itemtype'];
+               if ($item->getFromDB($ri->fields['items_id'])) {
+                  $link=$item->getLink();
+               }
+            }
+            echo "<td class='center'>$link</td>";
          } else {
             echo "<td class='center'>&nbsp;</td>";
          }
@@ -803,8 +840,14 @@ function showUserReservations($target,$ID) {
          echo "<td class='center'>".convDateTime($data["begin"])."</td>";
          echo "<td class='center'>".convDateTime($data["end"])."</td>";
          if ($ri->getFromDB($data["reservationitems_id"])) {
-            $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
-            echo "<td class='center'>".$ci->getLink()."</td>";
+            $link="&nbsp;";
+            if (class_exists($ri->fields['itemtype'])) {
+               $item = new $ri->fields['itemtype'];
+               if ($item->getFromDB($ri->fields['items_id'])) {
+                  $link=$item->getLink();
+               }
+            }
+            echo "<td class='center'>$link</td>";
          } else {
             echo "<td class='center'>&nbsp;</td>";
          }
