@@ -244,7 +244,7 @@ class Budget extends CommonDBTM{
                WHERE `budgets_id` = '$budgets_id'
                AND itemtype NOT IN ('ConsumableItem','CartridgeItem','Software')
                ORDER BY `itemtype`";
-      echo $query;
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
