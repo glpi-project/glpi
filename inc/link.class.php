@@ -163,8 +163,14 @@ class Link extends CommonDBTM {
    static function showForItem($itemtype,$ID) {
       global $DB,$LANG,$CFG_GLPI;
 
-      $commonitem = new CommonItem;
-      $commonitem->getFromDB($itemtype,$ID);
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+      
+      $item = new $itemtype;
+      if (!$item->getFromDB($ID)) {
+         return false;
+      }
 
       if (!haveRight("link","r")) {
          return false;
@@ -176,12 +182,11 @@ class Link extends CommonDBTM {
               INNER JOIN `glpi_links_itemtypes` ON `glpi_links`.`id`=`glpi_links_itemtypes`.`links_id`
               WHERE `glpi_links_itemtypes`.`itemtype`='$itemtype' " .
                     getEntitiesRestrictRequest(" AND","glpi_links","entities_id",
-                                               $commonitem->obj->fields["entities_id"],true)."
+                                               $item->getEntityID(),true)."
               ORDER BY name";
 
       $result=$DB->query($query);
 
-      $ci=new CommonItem;
       if ($DB->numrows($result)>0) {
          echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['title'][33]."</th></tr>";
          while ($data=$DB->fetch_assoc($result)) {
@@ -192,10 +197,7 @@ class Link extends CommonDBTM {
             $link=$data["link"];
             $file=trim($data["data"]);
             if (empty($file)) {
-               $ci->getFromDB($itemtype,$ID);
-               if (strstr($link,"[NAME]")) {
-                  $link=str_replace("[NAME]",$ci->getName(),$link);
-               }
+
                if (strstr($link,"[ID]")) {
                   $link=str_replace("[ID]",$ID,$link);
                }
@@ -204,43 +206,47 @@ class Link extends CommonDBTM {
                      $link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
                   }
                }
+
+               if (strstr($link,"[NAME]")) {
+                  $link=str_replace("[NAME]",$item->getName(),$link);
+               }
                if (strstr($link,"[SERIAL]")) {
-                  if ($tmp=$ci->getField('serial')) {
+                  if ($tmp=$item->getField('serial')) {
                      $link=str_replace("[SERIAL]",$tmp,$link);
                   }
                }
                if (strstr($link,"[OTHERSERIAL]")) {
-                  if ($tmp=$ci->getField('otherserial')) {
+                  if ($tmp=$item->getField('otherserial')) {
                      $link=str_replace("[OTHERSERIAL]",$tmp,$link);
                   }
                }
                if (strstr($link,"[LOCATIONID]")) {
-                  if ($tmp=$ci->getField('locations_id')) {
+                  if ($tmp=$item->getField('locations_id')) {
                      $link=str_replace("[LOCATIONID]",$tmp,$link);
                   }
                }
                if (strstr($link,"[LOCATION]")) {
-                  if ($tmp=$ci->getField('locations_id')) {
+                  if ($tmp=$item->getField('locations_id')) {
                      $link=str_replace("[LOCATION]",CommonDropdown::getDropdownName("glpi_locations",$tmp),$link);
                   }
                }
                if (strstr($link,"[NETWORK]")) {
-                  if ($tmp=$ci->getField('networks_id')) {
+                  if ($tmp=$item->getField('networks_id')) {
                      $link=str_replace("[NETWORK]",CommonDropdown::getDropdownName("glpi_networks",$tmp),$link);
                   }
                }
                if (strstr($link,"[DOMAIN]")) {
-                  if ($tmp=$ci->getField('domains_id')) {
+                  if ($tmp=$item->getField('domains_id')) {
                      $link=str_replace("[DOMAIN]",CommonDropdown::getDropdownName("glpi_domains",$tmp),$link);
                   }
                }
                if (strstr($link,"[USER]")) {
-                  if ($tmp=$ci->getField('users_id')) {
+                  if ($tmp=$item->getField('users_id')) {
                      $link=str_replace("[USER]",CommonDropdown::getDropdownName("glpi_users",$tmp),$link);
                   }
                }
                if (strstr($link,"[GROUP]")) {
-                  if ($tmp=$ci->getField('groups_id')) {
+                  if ($tmp=$item->getField('groups_id')) {
                      $link=str_replace("[GROUP]",CommonDropdown::getDropdownName("glpi_groups",$tmp),$link);
                   }
                }
@@ -248,10 +254,10 @@ class Link extends CommonDBTM {
                $i=0;
                if (strstr($link,"[IP]") || strstr($link,"[MAC]")) {
                   $query2 = "SELECT `ip`, `mac`, `logical_number`
-                             FROM `glpi_networkports`
-                             WHERE `items_id` = '$ID'
-                                   AND `itemtype` = '$itemtype'
-                             ORDER BY `logical_number`";
+                           FROM `glpi_networkports`
+                           WHERE `items_id` = '$ID'
+                                 AND `itemtype` = '$itemtype'
+                           ORDER BY `logical_number`";
                   $result2=$DB->query($query2);
                   if ($DB->numrows($result2)>0) {
                      while ($data2=$DB->fetch_array($result2)) {
@@ -266,8 +272,8 @@ class Link extends CommonDBTM {
                   // Add IP/MAC internal switch
                   if ($itemtype==NETWORKING_TYPE) {
                      $tmplink=$link;
-                     $tmplink=str_replace("[IP]",$ci->getField('ip'),$tmplink);
-                     $tmplink=str_replace("[MAC]",$ci->getField('mac'),$tmplink);
+                     $tmplink=str_replace("[IP]",$item->getField('ip'),$tmplink);
+                     $tmplink=str_replace("[MAC]",$item->getField('mac'),$tmplink);
                      echo "<tr class='tab_bg_2'>";
                      echo "<td><a target='_blank' href='$tmplink'>$name - $tmplink</a></td></tr>";
                   }
@@ -301,11 +307,11 @@ class Link extends CommonDBTM {
                }
             } else {// File Generated Link
                $link=$data['name'];
-               $ci->getFromDB($itemtype,$ID);
+               $item->getFromDB($itemtype,$ID);
 
                // Manage Filename
                if (strstr($link,"[NAME]")) {
-                  $link=str_replace("[NAME]",$ci->getName(),$link);
+                  $link=str_replace("[NAME]",$item->getName(),$link);
                }
                if (strstr($link,"[LOGIN]")) {
                   if (isset($_SESSION["glpiname"])) {

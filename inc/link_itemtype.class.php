@@ -75,7 +75,6 @@ class Link_ItemType extends CommonDBTM{
          return false;
       }
       //$canedit= haveRight("link","w");
-      $ci = new CommonItem();
       $query = "SELECT *
                 FROM `glpi_links_itemtypes`
                 WHERE `links_id`='$links_id'
@@ -94,9 +93,13 @@ class Link_ItemType extends CommonDBTM{
       while ($i < $number) {
          $ID=$DB->result($result, $i, "id");
          $itemtype = $DB->result($result, $i, "itemtype");
-         $ci->setType($itemtype);
+         $typename=NOT_AVAILABLE;
+         if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            $typename = $item->getTypeName();
+         }
          echo "<tr class='tab_bg_1'>";
-         echo "<td class='center'>".$ci->getType()."</td>";
+         echo "<td class='center'>$typename</td>";
          echo "<td class='center'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
                <strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
