@@ -143,7 +143,7 @@ function printCalendrier($target,$ID="") {
          return false;
       }
       $type=$m->fields["itemtype"];
-      $name="N/A";
+      $name=NOT_AVAILABLE;
       if (class_exists($m->fields["itemtype"])){
          $item= new $m->fields["itemtype"]();
          $type=$item->getTypeName();
@@ -331,7 +331,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1) {
    foreach ($items as $ID) {
       $r->getFromDB($ID);
       $type=$r->fields["itemtype"];
-      $name="N/A";
+      $name=NOT_AVAILABLE;
       $item=NULL;
       if (class_exists($r->fields["itemtype"])){
          $item= new $r->fields["itemtype"]();
@@ -611,7 +611,7 @@ function showReservationCommentForm($target,$ID) {
 
    if ($r->getFromDB($ID)) {
       $type = $r->fields["itemtype"];
-      $name = "N/A";
+      $name = NOT_AVAILABLE;
       if (class_exists($r->fields["itemtype"])) {
          $item = new $r->fields["itemtype"]();
          $type = $item->getTypeName();

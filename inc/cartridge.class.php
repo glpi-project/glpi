@@ -453,7 +453,7 @@ class Cartridge extends CommonDBTM {
                   }
                   echo "</strong></a>";
                } else {
-                  echo "N/A";
+                  echo NOT_AVAILABLE;
                }
                $tmp_dbeg=explode("-",$data["date_in"]);
                $tmp_dend=explode("-",$data["date_use"]);

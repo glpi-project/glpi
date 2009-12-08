@@ -102,16 +102,16 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			//inserer ces valeures dans un tableau
 
 			echo "<tr class='tab_bg_1'>";	
-			if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";
-			if($prise) echo "<td>$prise</td>"; else echo "<td> N/A </td>";
-			if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
-			if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
-			if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
-			if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
-			if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
-			if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
-			if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
-			if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+			if($lieu) echo "<td>$lieu</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($prise) echo "<td>$prise</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($switch) echo "<td>$switch</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($ip) echo "<td>$ip</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($port) echo "<td>$port</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($mac) echo "<td>$mac</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($portordi) echo "<td>$portordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($ip2) echo "<td>$ip2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($mac2) echo "<td>$mac2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
+			if($ordi) echo "<td>$ordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			echo "</tr>\n";
 		}	
 		echo "</table></div><br><hr><br>";

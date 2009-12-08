@@ -46,15 +46,16 @@ function showPorts($device, $itemtype, $withtemplate = '') {
    global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
    $rand = mt_rand();
-   $ci = new CommonItem();
-   $ci->setType($itemtype, true);
-   if (!haveRight('networking','r') || !$ci->obj->can($device, 'r')) {
+   if (!class_exists($itemtype)) {
       return false;
    }
-   $canedit = $ci->obj->can($device, 'w');
-   $device_real_table_name = $LINK_ID_TABLE[$itemtype];
+   $item = new $itemtype();
+   if (!haveRight('networking','r') || !$item->can($device, 'r')) {
+      return false;
+   }
+   $canedit = $item->can($device, 'w');
 
-   initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
+   initNavigateListItems(NETWORKING_PORT_TYPE,$item->getTypeName()." = ".$item->getName());
 
    $query = "SELECT `id`
              FROM `glpi_networkports`
@@ -131,7 +132,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
                                           $netport->fields["networkinterfaces_id"]) . "</td>\n";
 
             echo "<td width='300' class='tab_bg_2'>";
-            showConnection($ci, $netport, $withtemplate);
+            showConnection($item, $netport, $withtemplate);
             echo "</td>\n";
             echo "<td class='tab_bg_2'>";
             if ($netport->getContact($netport->fields["id"])) {
@@ -311,11 +312,17 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "<th colspan='2'>" . $LANG['networking'][20] . "&nbsp;:</th>";
    echo "</tr>\n";
 
-   $ci=new CommonItem();
-   if ($ci->getFromDB($netport->itemtype,$netport->device_ID)) {
-      echo "<tr class='tab_bg_1'><td>" . $ci->getType() . "&nbsp;:</td>\n<td>";
-      echo $ci->getLink(). "</td></tr>\n";
+   $type = NOT_AVAILABLE;
+   $link = NOT_AVAILABLE;
+   if (class_exists($netport->itemtype)) {
+      $item = new $netport->itemtype();
+      $type = $item->getTypeName();
+      if ($item->getFromDB($netport->device_ID)) {
+         $link=$item->getLink();
+      }
    }
+   echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
+   echo $link. "</td></tr>\n";
 
    if ($several != "yes") {
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
@@ -435,25 +442,26 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 
-function showPortsAdd($ID, $devtype) {
+function showPortsAdd($ID, $itemtype) {
    global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
-   $ci = new CommonItem();
-   $ci->setType($devtype, true);
-   if (!haveRight('networking','r') || !$ci->obj->can($ID, 'w')) {
+   if (!class_exists($itemtype)) {
       return false;
    }
-   $device_real_table_name = $LINK_ID_TABLE[$devtype];
+   $item = new $itemtype();
+   if (!haveRight('networking','r') || !$item->can($ID, 'w')) {
+      return false;
+   }
 
    echo "\n<div class='center'><table class='tab_cadre_fixe'>";
    echo "<tr><td class='tab_bg_2 center'>";
    echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$devtype\"><strong>";
+          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype\"><strong>";
    echo $LANG['networking'][19];
    echo "</strong></a></td>\n";
    echo "<td class='tab_bg_2 center' width='50%'>";
    echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$devtype&amp;several=yes\"><strong>";
+          "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=yes\"><strong>";
    echo $LANG['networking'][46];
    echo "</strong></a></td></tr>\n";
    echo "</table></div><br>\n";
@@ -470,78 +478,71 @@ function showPortsAdd($ID, $devtype) {
 function showConnection(& $device1, & $netport, $withtemplate = '') {
    global $CFG_GLPI, $LANG, $INFOFORM_PAGES;
 
-   if (!$device1->obj->can($device1->obj->fields["id"], 'r')) {
+   if (!$device1->can($device1->fields["id"], 'r')) {
       return false;
    }
 
    $contact = new NetworkPort;
-   $device2 = new CommonItem();
 
-   $canedit = $device1->obj->can($device1->obj->fields["id"], 'w');
+   $canedit = $device1->can($device1->fields["id"], 'w');
    $ID = $netport->fields["id"];
 
    if ($contact->getContact($ID)) {
       $netport->getFromDB($contact->contact_id);
-      $device2->getFromDB($netport->fields["itemtype"], $netport->fields["items_id"]);
+      if (class_exists($netport->fields["itemtype"])) {
+         $device2 = new $netport->fields["itemtype"]();
+         if ($device2->getFromDB($netport->fields["items_id"])) {
 
-      echo "\n<table width='100%'>\n";
-      echo "<tr " . ($device2->obj->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
-      echo "<td><strong>";
-      if ($device2->obj->can($device2->obj->fields["id"], 'r')) {
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
-                $netport->fields["id"] . "\">";
-         if (rtrim($netport->fields["name"]) != "") {
-            echo $netport->fields["name"];
-         } else {
-            echo $LANG['common'][0];
-         }
-         echo "</a></strong>\n " . $LANG['networking'][25] . " <strong>";
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" .
-                $INFOFORM_PAGES[$netport->fields["itemtype"]] . "?id=" .
-                $device2->obj->fields["id"]."\">";
-         echo $device2->obj->fields["name"];
-         if ($_SESSION["glpiis_ids_visible"]) {
-            echo " (" . $netport->device_ID . ")";
-         }
-         echo "</a></strong>";
-         if ($device1->obj->fields["entities_id"] != $device2->obj->fields["entities_id"]) {
-            echo "<br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
-         }
+            echo "\n<table width='100%'>\n";
+            echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
+            echo "<td><strong>";
 
-         // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
-         if ($canedit || $device2->obj->can($device2->obj->fields["id"], 'w')) {
-            echo "</td>\n<td class='right'><strong>";
-            if ($withtemplate != 2) {
-               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?disconnect=".
-                      "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
+            if ($device2->can($device2->fields["id"], 'r')) {
+
+               echo $netport->getLink();
+               echo "</a></strong>\n " . $LANG['networking'][25] . " <strong>";
+               echo $device2->getLink();
+               echo "</strong>";
+               if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
+                  echo "<br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+               }
+
+               // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+               if ($canedit || $device2->can($device2->fields["id"], 'w')) {
+                  echo "</td>\n<td class='right'><strong>";
+                  if ($withtemplate != 2) {
+                     echo "<a href=\"".$netport->getFormUrl()."?disconnect=".
+                           "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
+                  } else {
+                     "&nbsp;";
+                  }
+                  echo "</strong>";
+               }
             } else {
-               "&nbsp;";
+               if (rtrim($netport->fields["name"]) != "") {
+                  echo $netport->fields["name"];
+               } else {
+                  echo $LANG['common'][0];
+               }
+               echo "</strong> " . $LANG['networking'][25] . " <strong>";
+               echo $device2->getName();
+               echo "</strong><br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
             }
-            echo "</strong>";
+            echo "</td></tr></table>\n";
          }
-      } else {
-         if (rtrim($netport->fields["name"]) != "") {
-            echo $netport->fields["name"];
-         } else {
-            echo $LANG['common'][0];
-         }
-         echo "</strong> " . $LANG['networking'][25] . " <strong>";
-         echo $device2->obj->fields["name"];
-         echo "</strong><br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) .")";
       }
-      echo "</td></tr></table>\n";
    } else {
       echo "\n<table width='100%'><tr>";
       if ($canedit) {
          echo "<td class='left'>";
          if ($withtemplate != 2 && $withtemplate != 1) {
-            if (isset ($device1->obj->fields["is_recursive"])
-                && $device1->obj->fields["is_recursive"]) {
+            if (isset ($device1->fields["is_recursive"])
+                && $device1->fields["is_recursive"]) {
 
                dropdownConnectPort($ID, "dport", getSonsOf("glpi_entities",
-                                   $device1->obj->fields["entities_id"]));
+                                   $device1->fields["entities_id"]));
             } else {
-               dropdownConnectPort($ID, "dport", $device1->obj->fields["entities_id"]);
+               dropdownConnectPort($ID, "dport", $device1->fields["entities_id"]);
             }
          } else {
             echo "&nbsp;";
@@ -638,15 +639,25 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
              `glpi_networkports_networkports`
              VALUES (NULL,'$sport','$dport')";
    if ($result = $DB->query($query)) {
-      $source = new CommonItem;
-      $source->getFromDB($ps->fields['itemtype'], $ps->fields['items_id']);
-      $dest = new CommonItem;
-      $dest->getFromDB($pd->fields['itemtype'], $pd->fields['items_id']);
+      $sourcename=NOT_AVAILABLE;
+      $destname=NOT_AVAILABLE;
+      if (!class_exists($ps->fields['itemtype'])) {
+         $item = new $ps->fields['itemtype']();
+         if ($item->getFromDB($ps->fields['items_id'])) {
+            $sourcename = $item->getName();
+         }
+      }
+      if (!class_exists($pd->fields['itemtype'])) {
+         $item = new $pd->fields['itemtype']();
+         if ($item->getFromDB($pd->fields['items_id'])) {
+            $destname = $item->getName();
+         }
+      }
 
       if ($dohistory) {
          $changes[0] = 0;
          $changes[1] = "";
-         $changes[2] = $dest->getName();
+         $changes[2] = $destname;
          if ($ps->fields["itemtype"] == NETWORKING_TYPE) {
             $changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
          }
@@ -656,7 +667,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
          historyLog($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
                     $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
 
-         $changes[2] = $source->getName();
+         $changes[2] = $sourcename;
          if ($pd->fields["itemtype"] == NETWORKING_TYPE) {
             $changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
          }
@@ -669,9 +680,9 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 
       if ($addmsg) {
          echo "<br><div class='center'><strong>" . $LANG['networking'][44] . " " .
-                    $source->getName() . " - " . $ps->fields['logical_number'] . "  (" .
+                    $sourcename . " - " . $ps->fields['logical_number'] . "  (" .
                     $ps->fields['ip'] . " - " . $ps->fields['mac'] . ") " .
-                    $LANG['networking'][45] . " " . $dest->getName() . " - " .
+                    $LANG['networking'][45] . " " . $destname . " - " .
                     $pd->fields['logical_number'] . " (" . $pd->fields['ip'] . " - " .
                     $pd->fields['mac'] . ") </strong></div>";
       }
@@ -740,10 +751,15 @@ function removeConnector($ID, $dohistory = true) {
                $DB->query($query);
             }
             if ($dohistory) {
-               $device = new CommonItem();
-               $device->getFromDB($np2->fields["itemtype"], $np2->fields["items_id"]);
+               $name=NOT_AVAILABLE;
+               if (class_exists($np2->fields["itemtype"])) {
+                  $item = new $np2->fields["itemtype"];
+                  if ($item->getFromDB($np2->fields["items_id"])) {
+                     $name = $item->getName();
+                  }
+               }
                $changes[0] = 0;
-               $changes[1] = $device->getName();
+               $changes[1] = $name;
                $changes[2] = "";
                if ($np1->fields["itemtype"] == NETWORKING_TYPE) {
                   $changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
@@ -754,8 +770,14 @@ function removeConnector($ID, $dohistory = true) {
                historyLog($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
                           $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
 
-               $device->getFromDB($np1->fields["itemtype"], $np1->fields["items_id"]);
-               $changes[1] = $device->getName();
+               $name=NOT_AVAILABLE;
+               if (class_exists($np1->fields["itemtype"])) {
+                  $item = new $np1->fields["itemtype"];
+                  if ($item->getFromDB($np1->fields["items_id"])) {
+                     $name = $item->getName();
+                  }
+               }
+               $changes[1] = $name;
                if ($np2->fields["itemtype"] == NETWORKING_TYPE) {
                   $changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
                }
@@ -925,21 +947,23 @@ function getUniqueObjectIDByFQDN($fqdn, $entity) {
 function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
    global $DB;
 
-   $commonitem = new CommonItem;
-   $commonitem->setType($itemtype, true);
+   if (class_exists($itemtype)) {
 
-   $query = "SELECT `obj.id`
-             FROM " . $commonitem->obj->table . " AS obj, `glpi_domains` AS gdd
-             WHERE `obj.entities_id` = '$entity'
-                   AND `obj`.`domains_id` = `gdd`.`id`
-                   AND LOWER( '$fqdn' ) = (CONCAT(LOWER(`obj`.`name`) , '.', LOWER(`gdd`.`name`)))";
-   $result = $DB->query($query);
-   if ($DB->numrows($result) == 1) {
-      $datas = $DB->fetch_array($result);
-      return array ("id" => $datas["id"],
-                    "itemtype" => $itemtype);
-   } else {
-      return array ();
+      $item = new $itemtype();
+
+      $query = "SELECT `obj.id`
+               FROM " . $item->table . " AS obj, `glpi_domains` AS gdd
+               WHERE `obj.entities_id` = '$entity'
+                     AND `obj`.`domains_id` = `gdd`.`id`
+                     AND LOWER( '$fqdn' ) = (CONCAT(LOWER(`obj`.`name`) , '.', LOWER(`gdd`.`name`)))";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == 1) {
+         $datas = $DB->fetch_array($result);
+         return array ("id" => $datas["id"],
+                     "itemtype" => $itemtype);
+      }
    }
+   return array ();
+   
 }
 ?>

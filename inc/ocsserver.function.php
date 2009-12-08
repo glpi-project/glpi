@@ -1151,7 +1151,7 @@ function ocsUpdateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $com
       }
       if ($cfg_ocs["import_general_comment"] && !in_array("comment", $computer_updates)) {
          $compupdate["comment"] = "";
-         if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != "N/A") {
+         if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != NOT_AVAILABLE) {
             $compupdate["comment"] .= $line["DESCRIPTION"] . "\r\n";
          }
          $compupdate["comment"] .= "Swap: " . $line["SWAP"];

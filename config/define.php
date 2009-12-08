@@ -42,6 +42,9 @@ $CFG_GLPI["languages"] = array("bg_BG" => array("Български","bg_BG.php"
                                "zh_CN" => array("中文","zh_CN.php","en","zh"));
 
 
+define("NOT_AVAILABLE",'N/A');
+
+
 // TIMES
 define("MINUTE_TIMESTAMP",60);
 define("HOUR_TIMESTAMP",3600);

@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_POST['id'])) {
    exit();
 }
-$port = NetworkPort();
+$port = new NetworkPort();
 if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1: // All

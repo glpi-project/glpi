@@ -407,13 +407,16 @@ class Profile extends CommonDBTM {
 
       echo "<input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
-      $ci = new CommonItem();
-      foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if (!isPluginItem($itemtype)) { // No Plugin for the moment
-            $ci->setType($itemtype);
-            echo "<option value='".$itemtype."' ".
-                  (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
-                  $ci->getType()."</option>\n";
+      foreach($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
+         if (class_exists($itemtype)) {
+            if (!isPluginItem($itemtype)) { // No Plugin for the moment
+               $item = new $itemtype();
+               echo "<option value='".$itemtype."' ".
+                     (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
+                     $item->getTypeName()."</option>\n";
+            }
+         } else {
+            unset($CFG_GLPI["helpdesk_types"][$key]);
          }
       }
       echo "</select></td>";
@@ -675,13 +678,17 @@ class Profile extends CommonDBTM {
       echo "<td>";
       echo "<input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
-      $ci = new CommonItem();
+
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if (!isPluginItem($itemtype)) { // No Plugin for the moment
-            $ci->setType($itemtype);
-            echo "<option value='".$itemtype."' ".
-                  (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
-                  $ci->getType()."</option>\n";
+         if (class_exists($itemtype)) {
+            if (!isPluginItem($itemtype)) { // No Plugin for the moment
+               $item = new $itemtype();
+               echo "<option value='".$itemtype."' ".
+                     (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
+                     $item->getTypeName()."</option>\n";
+            }
+         } else {
+            unset($CFG_GLPI["helpdesk_types"][$key]);
          }
       }
       echo "</select></td>";
