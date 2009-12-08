@@ -72,8 +72,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
                   showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
                }
@@ -91,7 +90,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Document::showAssociated($periph);
             showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
             showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
-            displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
             break;
 
          case 4 :
@@ -124,8 +123,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($periph);
                showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
                showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);

@@ -47,31 +47,33 @@ if (!isset ($_POST["id"])) {
 checkRight("ocsng", "w");
 
 $ocs = new OcsServer();
-switch ($_REQUEST['glpi_tab']) {
-   case -1 :
-      $ocs->showDBConnectionStatus($_POST["id"]);
-      $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
-      $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
-      $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
-      break;
-
-   case 2 :
-      $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
-      break;
-
-   case 3 :
-      $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
-      break;
-
-   case 4 :
-      $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
-      break;
-
-   default :
-      if (!displayPluginAction(OCSNG_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],"")) {
+if ($_POST["id"]>0 && $ocs->can($_POST["id"],'r')) {
+   switch ($_REQUEST['glpi_tab']) {
+      case -1 :
          $ocs->showDBConnectionStatus($_POST["id"]);
-      }
-}
+         $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
+         $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
+         $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
+         Plugin::displayAction($ocs, $_REQUEST['glpi_tab']);
+         break;
 
+      case 2 :
+         $ocs->ocsFormImportOptions($_POST['target'], $_POST["id"]);
+         break;
+
+      case 3 :
+         $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
+         break;
+
+      case 4 :
+         $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
+         break;
+
+      default :
+         if (!Plugin::displayAction($ocs, $_REQUEST['glpi_tab'])) {
+            $ocs->showDBConnectionStatus($_POST["id"]);
+         }
+   }
+}
 ajaxFooter();
 ?>

@@ -58,7 +58,7 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          $contract->showItems();
          Document::showAssociated($contract);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-         displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($contract,$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -78,7 +78,7 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(CONTRACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($contract,$_REQUEST['glpi_tab'])) {
             $contract->showSuppliers();
          }
          break;

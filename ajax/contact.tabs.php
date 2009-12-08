@@ -55,7 +55,7 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          $contact->showSuppliers();
          Document::showAssociated($contact);
          showLinkOnDevice(CONTACT_TYPE,$_POST["id"]);
-         displayPluginAction(CONTACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($contact,$_REQUEST['glpi_tab']);
          break;
 
       case 5 :
@@ -71,7 +71,7 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          break;
 
       default :
-         if (!displayPluginAction(CONTACT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($contact,$_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();
          }
          break;

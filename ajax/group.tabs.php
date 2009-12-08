@@ -54,7 +54,7 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
          Group_User::showForGroup($_POST['target'],$group);
          $group->showItems();
          $group->showLDAPForm($_POST['target'],$_POST["id"]);
-         displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($group,$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -66,7 +66,7 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(GROUP_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($group,$_REQUEST['glpi_tab'])) {
             Group_User::showForGroup($_POST['target'],$group);
          }
    }

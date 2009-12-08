@@ -93,11 +93,11 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($ID>0) {
          switch ($tab) {
             case -1 :
-               displayPluginAction($this->type,$ID,$tab);
+               Plugin::displayAction($this, $tab);
                return false;
 
             default :
-               return displayPluginAction($this->type,$ID,$tab);
+               return Plugin::displayAction($this, $tab);
          }
       }
       return false;

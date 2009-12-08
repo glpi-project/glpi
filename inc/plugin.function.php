@@ -174,64 +174,6 @@ function doOneHook() {
 }
 
 /**
- * Display plugin actions for a device type
- * @param $itemtype ID of the item type
- * @param $ID ID of the item
- * @param $onglet Heading corresponding of the datas to display
- * @param $withtemplate is the item display like a template ?
- * @return true if display have been done
- */
-function displayPluginAction($itemtype,$ID,$onglet,$withtemplate=0) {
-   global $PLUGIN_HOOKS;
-
-   // Show all Case
-   if ($onglet==-1) {
-      if (isset($PLUGIN_HOOKS["headings_action"]) && is_array($PLUGIN_HOOKS["headings_action"])
-          && count($PLUGIN_HOOKS["headings_action"])) {
-
-         foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function) {
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
-            if (function_exists($function)) {
-               $actions=$function($itemtype);
-               if (is_array($actions) && count($actions)) {
-                  foreach ($actions as $key => $action) {
-                     if (function_exists($action)) {
-                        echo "<br>";
-                        $action($itemtype,$ID,$withtemplate);
-                     }
-                  }
-               }
-            }
-         }
-      }
-      return true;
-
-   } else {
-      if (preg_match("/^(.*)_([0-9]*)$/",$onglet,$split)) {
-         $plug = $split[1];
-         $ID_onglet = $split[2];
-         if (isset($PLUGIN_HOOKS["headings_action"][$plug])) {
-            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-            }
-            $function=$PLUGIN_HOOKS["headings_action"][$plug];
-            if (function_exists($function)) {
-               $actions=$function($itemtype);
-               if (isset($actions[$ID_onglet]) && function_exists($actions[$ID_onglet])) {
-                  $function=$actions[$ID_onglet];
-                  $function($itemtype,$ID,$withtemplate);
-                  return true;
-               }
-            }
-         }
-      }
-   }
-   return false;
-}
-
-/**
  * Display plugin headgsin for a item type / WILL BE DELETED : use displayPluginTabs instead
  * @param $target page to link including ID
  * @param $itemtype ID of the item type

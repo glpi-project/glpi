@@ -54,10 +54,10 @@ if ($_POST['id']>0 && $link->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          showLinkDevice($_POST["id"]);
-         displayPluginAction(LINK_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($link,$_REQUEST['glpi_tab']);
          break;
       default :
-         if (!displayPluginAction(LINK_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($link,$_REQUEST['glpi_tab'])) {
             showLinkDevice($_POST["id"]);
          }
          break;
