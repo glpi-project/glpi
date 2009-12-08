@@ -387,7 +387,7 @@ class Mailing {
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
-                            && $this->job->fields["itemtype"]>0) {
+                            && !empty($this->job->fields["itemtype"])) {
 
                            $ci= new CommonItem();
                            $ci->getFromDB($this->job->fields["itemtype"],
@@ -412,7 +412,7 @@ class Mailing {
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
-                            && $this->job->fields["itemtype"]>0) {
+                            && !empty($this->job->fields["itemtype"])) {
 
                            $ci= new CommonItem();
                            $ci->getFromDB($this->job->fields["itemtype"],

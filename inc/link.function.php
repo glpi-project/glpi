@@ -127,7 +127,7 @@ function deleteLinkDevice($ID) {
 function addLinkDevice($itemtype,$lID) {
    global $DB;
 
-   if ($itemtype>0&&$lID>0) {
+   if (!empty($itemtype)&&$lID>0) {
       $query="INSERT INTO
               `glpi_links_itemtypes` (`itemtype,links_id`)
               VALUES ('$itemtype','$lID');";

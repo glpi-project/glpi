@@ -120,7 +120,7 @@ class Document extends CommonDBTM {
       $input["users_id"] = $_SESSION["glpiID"];
 
       if (isset($input["item"]) && isset($input["itemtype"])
-          && $input["itemtype"]>0 && $input["item"]>0) {
+          && !empty($input["itemtype"]) && $input["item"]>0) {
          $ci=new CommonItem();
          $ci->getFromDB($input["itemtype"],$input["item"]);
          $input["name"]=addslashes(resume_text($LANG['document'][18]." ".$ci->getType()." - ".

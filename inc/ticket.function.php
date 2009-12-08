@@ -654,7 +654,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       $sixth_col = "";
 
       $sixth_col .= $ci->getType();
-      if ($data["itemtype"]>0 && $data["items_id"]>0) {
+      if (!empty($data["itemtype"]) && $data["items_id"]>0) {
          $sixth_col .= "<br><strong>";
          if (haveTypeRight($data["itemtype"],"r")) {
             $sixth_col .= $ci->getLink($output_type==HTML_OUTPUT);
