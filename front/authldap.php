@@ -34,8 +34,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ('auth', 'ldap', 'search', 'setup', 'user');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

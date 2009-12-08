@@ -37,7 +37,6 @@
 if(!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '..');
 
-   $NEEDED_ITEMS = array('search', 'setup');
    include (GLPI_ROOT . "/inc/includes.php");
 }
 

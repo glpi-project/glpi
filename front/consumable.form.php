@@ -34,8 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('consumable', 'infocom');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

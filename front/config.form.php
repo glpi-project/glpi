@@ -36,8 +36,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('dbconnection', 'ocsng', 'setup','crontask');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
