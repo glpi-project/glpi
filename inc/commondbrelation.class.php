@@ -63,16 +63,28 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Must can read first Item of the relation
-      $ci1 = new CommonItem();
-      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 : $input[$this->itemtype_1],true);
-      if (!$ci1->obj->can($input[$this->items_id_1],'r')) {
+      $type1=$this->itemtype_1;
+      if ($type1=="itemtype") {
+         $type1 = $input[$this->itemtype_1];
+      }
+      if (!class_exists($type1)) {
          return false;
       }
+      $item1 = new $type1();
+      if (!$item1->can($input[$this->items_id_1],'r')) {
+         return false;
+      }
+
       // Must can read second Item of the relation
-      $ci2 = new CommonItem();
-      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 : $input[$this->itemtype_2],
-                    true);
-      if (!$ci2->obj->can($input[$this->items_id_2],'r')) {
+      $type2=$this->itemtype_2;
+      if ($type2=="itemtype") {
+         $type2 = $input[$this->itemtype_2];
+      }
+      if (!class_exists($type2)) {
+         return false;
+      }
+      $item2 = new $type2();
+      if (!$item2->can($input[$this->items_id_2],'r')) {
          return false;
       }
 
@@ -82,16 +94,16 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Check entity compatibility
-      if ($ci1->obj->isEntityAssign() && $ci2->obj->isEntityAssign()) {
-         if ($ci1->obj->getEntityID() == $ci2->obj->getEntityID()) {
+      if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
+         if ($item1->getEntityID() == $item2->getEntityID()) {
             $checkentity = true;
-         } else if ($ci1->obj->isRecursive()
-                    && in_array($ci1->obj->getEntityID(),
-                                 getAncestorsOf("glpi_entities",$ci2->obj->getEntityID()))) {
+         } else if ($item1->isRecursive()
+                    && in_array($item1->getEntityID(),
+                                 getAncestorsOf("glpi_entities",$item2->getEntityID()))) {
             $checkentity = true;
-         } else if ($ci2->obj->isRecursive()
-                    && in_array($ci2->obj->getEntityID(),
-                                getAncestorsOf("glpi_entities",$ci1->obj->getEntityID()))) {
+         } else if ($item2->isRecursive()
+                    && in_array($item2->getEntityID(),
+                                getAncestorsOf("glpi_entities",$item1->getEntityID()))) {
             $checkentity = true;
          } else {
             // $checkentity is false => return
@@ -101,8 +113,8 @@ abstract class CommonDBRelation extends CommonDBTM {
          $checkentity = true;
       }
       // can write one item is enough
-      if ($ci1->obj->can($input[$this->items_id_1],'w')
-          || $ci2->obj->can($input[$this->items_id_2],'w')) {
+      if ($item1->can($input[$this->items_id_1],'w')
+          || $item2->can($input[$this->items_id_2],'w')) {
          return true;
       }
       return false;
@@ -122,31 +134,44 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (isset($input['_no_history'])) {
          return false;
       }
-      $ci1 = new CommonItem();
-      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 :
-                    $this->fields[$this->itemtype_1], true);
-      if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
+
+      $type1=$this->itemtype_1;
+      if ($type1=="itemtype") {
+         $type1 = $this->fields[$this->itemtype_1];
+      }
+      if (!class_exists($type1)) {
          return false;
       }
-      $ci2 = new CommonItem();
-      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 :
-                    $this->fields[$this->itemtype_2], true);
-      if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
+      $item1 = new $type1();
+      if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
 
-      if ($ci1->obj->dohistory) {
+      $type2=$this->itemtype_2;
+      if ($type2=="itemtype") {
+         $type2 = $this->fields[$this->itemtype_2];
+      }
+      if (!class_exists($type2)) {
+         return false;
+      }
+      $item2 = new $type2();
+
+      if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
+         return false;
+      }
+
+      if ($item1->dohistory) {
          $changes[0]='0';
          $changes[1]="";
-         $changes[2]=addslashes($ci2->getNameID());
-         historyLog ($ci1->obj->fields["id"],$ci1->obj->type,$changes,$ci2->obj->type,
+         $changes[2]=addslashes($item2->getNameID());
+         historyLog ($item1->fields["id"],get_class($item1),$changes,get_class($item2),
                      HISTORY_ADD_RELATION);
       }
-      if ($ci2->obj->dohistory) {
+      if ($item2->obj->dohistory) {
          $changes[0]='0';
          $changes[1]="";
-         $changes[2]=addslashes($ci1->getNameID());
-         historyLog ($ci2->obj->fields["id"],$ci2->obj->type,$changes,$ci1->obj->type,
+         $changes[2]=addslashes($item1->getNameID());
+         historyLog ($item2->fields["id"],get_class($item2),$changes,get_class($item1),
                      HISTORY_ADD_RELATION);
       }
    }
@@ -163,31 +188,43 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (isset($this->input['_no_history'])) {
          return false;
       }
-      $ci1 = new CommonItem();
-      $ci1->setType($this->itemtype_1!="itemtype" ? $this->itemtype_1 :
-                    $this->fields[$this->itemtype_1], true);
-      if (!$ci1->obj->getFromDB($this->fields[$this->items_id_1])) {
+
+      $type1=$this->itemtype_1;
+      if ($type1=="itemtype") {
+         $type1 = $this->fields[$this->itemtype_1];
+      }
+      if (!class_exists($type1)) {
          return false;
       }
-      $ci2 = new CommonItem();
-      $ci2->setType($this->itemtype_2!="itemtype" ? $this->itemtype_2 :
-                    $this->fields[$this->itemtype_2], true);
-      if (!$ci2->obj->getFromDB($this->fields[$this->items_id_2])) {
+      $item1 = new $type1();
+      if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
 
-      if ($ci1->obj->dohistory) {
+      $type2=$this->itemtype_2;
+      if ($type2=="itemtype") {
+         $type2 = $this->fields[$this->itemtype_2];
+      }
+      if (!class_exists($type2)) {
+         return false;
+      }
+      $item2 = new $type2();
+      if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
+         return false;
+      }
+
+      if ($item1->dohistory) {
          $changes[0]='0';
-         $changes[1]=addslashes($ci2->getNameID());
+         $changes[1]=addslashes($item2->getNameID());
          $changes[2]="";
-         historyLog ($ci1->obj->fields["id"],$ci1->obj->type,$changes,$ci2->obj->type,
+         historyLog ($item1->fields["id"],get_class($item1),$changes,get_class($item2),
                      HISTORY_DEL_RELATION);
       }
-      if ($ci2->obj->dohistory) {
+      if ($item2->dohistory) {
          $changes[0]='0';
-         $changes[1]=addslashes($ci1->getNameID());
+         $changes[1]=addslashes($item1->getNameID());
          $changes[2]="";
-         historyLog ($ci2->obj->fields["id"],$ci2->obj->type,$changes,$ci1->obj->type,
+         historyLog ($item2->fields["id"],get_class($item2),$changes,get_class($item1),
                      HISTORY_DEL_RELATION);
       }
    }

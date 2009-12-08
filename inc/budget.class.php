@@ -242,11 +242,11 @@ class Budget extends CommonDBTM{
       $query = "SELECT DISTINCT `itemtype`
                FROM `glpi_infocoms`
                WHERE `budgets_id` = '$budgets_id'
+               AND itemtype NOT IN ('ConsumableItem','CartridgeItem','Software')
                ORDER BY `itemtype`";
-
+      echo $query;
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
 
       echo "<br><br><div class='center'><table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
@@ -258,29 +258,33 @@ class Budget extends CommonDBTM{
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
-      $ci=new CommonItem;
+
       $num=0;
-      while ($i < $number) {
+      for  ($i = 0; $i < $number ; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
-         if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLEITEM_TYPE
-            && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
-            $query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*
+
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item = new $itemtype();
+         if ($item->canView()) {
+            $query = "SELECT ".$item->table.".*
                      FROM `glpi_infocoms`
-                     INNER JOIN ".$LINK_ID_TABLE[$itemtype]."
-                                 ON (".$LINK_ID_TABLE[$itemtype].".`id` = `glpi_infocoms`.`items_id`)
+                     INNER JOIN ".$item->table."
+                                 ON (".$item->table.".`id` = `glpi_infocoms`.`items_id`)
                      WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                            AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                              getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])."
-                     ORDER BY `entities_id`, ".$LINK_ID_TABLE[$itemtype].".`name`";
+                              getEntitiesRestrictRequest(" AND",$item->table)."
+                     ORDER BY `entities_id`, ".$item->table.".`name`";
 
             if ($result_linked=$DB->query($query)) {
                $nb=$DB->numrows($result_linked);
-               $ci->setType($itemtype);
-               if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
+               
+               if ($nb>$_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
+                  echo "<td class='center'>".$item->getTypeName()."<br />$nb</td>";
                   echo "<td class='center' colspan='2'>";
-                  echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" .
+                  echo "<a href='". $item->getSearchUrl() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
                         rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                         $LANG['reports'][57]."</a></td>";
@@ -291,11 +295,13 @@ class Budget extends CommonDBTM{
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID= " (".$data["id"].")";
                      }
-                     $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype].
-                              "?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+                     $name=NOT_AVAILABLE;
+                     if ($item->getFromDB($data["id"])) {
+                        $name= $item->getLink();;
+                     }
                      echo "<tr class='tab_bg_1'>";
                      if ($prem) {
-                        echo "<td class='center top' rowspan='$nb'>".$ci->getType()
+                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
                               .($nb>1?"<br />$nb</td>":"</td>");
                      }
                      echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"]);
@@ -311,7 +317,6 @@ class Budget extends CommonDBTM{
             $num+=$nb;
             }
          }
-         $i++;
       }
       echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
@@ -378,7 +383,6 @@ class Budget extends CommonDBTM{
 
          }
 
-         $ci=new CommonItem;
          $budget = new Budget();
          $budget->getFromDB($budgets_id);
 

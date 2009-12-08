@@ -80,6 +80,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/alert.class.php");
 
    // TODO : clean it after autoload
+   include_once (GLPI_ROOT . "/inc/search.function.php");
    include_once (GLPI_ROOT . "/inc/event.class.php");
    include_once (GLPI_ROOT . "/inc/authmail.class.php");
    include_once (GLPI_ROOT . "/inc/authldap.class.php");
@@ -161,7 +162,7 @@ if (isset($AJAX_INCLUDE)) {
    $HEADER_LOADED=true;
 }
 
-if (isset($_SESSION['glpiautoload']) && $_SESSION['glpiautoload']){
+if (!isset($_SESSION['glpiautoload']) || $_SESSION['glpiautoload']){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
          //$classname="PluginExampleProfile";
