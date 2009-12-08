@@ -44,11 +44,7 @@ checkRight("config","r");
 
 commonHeader($LANG['login'][2],$_SERVER['PHP_SELF'],"config","extauth","ldap");
 
-manageGetValuesInSearch(AUTH_LDAP_TYPE);
-
-searchForm(AUTH_LDAP_TYPE,$_GET);
-
-showList(AUTH_LDAP_TYPE,$_GET);
+Search::show('AuthLDAP');
 
 commonFooter();
 

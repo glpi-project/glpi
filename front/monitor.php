@@ -43,11 +43,7 @@ checkRight("monitor","r");
 
 commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
-manageGetValuesInSearch(MONITOR_TYPE);
-
-searchForm(MONITOR_TYPE,$_GET);
-
-showList(MONITOR_TYPE,$_GET);
+Search::show('Monitor');
 
 commonFooter();
 ?>

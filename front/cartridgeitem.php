@@ -43,11 +43,7 @@ checkRight("cartridge","r");
 
 commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 
-manageGetValuesInSearch(CARTRIDGEITEM_TYPE);
-
-searchForm(CARTRIDGEITEM_TYPE,$_GET);
-
-showList(CARTRIDGEITEM_TYPE,$_GET);
+Search::show('CartridgeItem');
 
 commonFooter();
 

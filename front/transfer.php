@@ -45,11 +45,7 @@ checkRight("transfer","r");
 
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
-manageGetValuesInSearch(TRANSFER_TYPE);
-
-searchForm(TRANSFER_TYPE,$_GET);
-
-showList(TRANSFER_TYPE,$_GET);
+Search::show('Transfer');
 
 commonFooter();
 

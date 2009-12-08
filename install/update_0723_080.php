@@ -1619,7 +1619,7 @@ function update0723to080() {
       CARTRIDGE_TYPE => "Cartridge",
       SOFTWARELICENSE_TYPE => "SoftwareLicense",
       LINK_TYPE => "Link",
-      STATE_TYPE => "State",
+      STATE_TYPE => "States",
       PHONE_TYPE => "Phone",
       DEVICE_TYPE => "Device",
       REMINDER_TYPE => "Reminder",

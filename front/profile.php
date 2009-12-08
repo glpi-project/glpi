@@ -43,11 +43,7 @@ checkRight("profile","r");
 
 commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
-manageGetValuesInSearch(PROFILE_TYPE);
-
-searchForm(PROFILE_TYPE,$_GET);
-
-showList(PROFILE_TYPE,$_GET);
+Search::show('Profile');
 
 commonFooter();
 

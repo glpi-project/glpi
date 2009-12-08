@@ -56,9 +56,7 @@ if (!canUseImapPop()) {
 	commonFooter();
 	exit();
 } else {
-	manageGetValuesInSearch(MAILGATE_TYPE);
-	searchForm(MAILGATE_TYPE,$_GET);
-	showList(MAILGATE_TYPE,$_GET);
+   Search::show('MailCollector');
 
 	commonFooter();
 }

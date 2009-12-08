@@ -132,11 +132,8 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	} else if (isset($_GET["id"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["id"]);
 	}else {
-		manageGetValuesInSearch(RESERVATION_TYPE);
 
-		searchForm(RESERVATION_TYPE,$_GET);
-
-		showList(RESERVATION_TYPE,$_GET);
+      Search::show('ReservationItem');
 
 //		printReservationItems($_SERVER['PHP_SELF']);
 	}
@@ -184,12 +181,7 @@ else {
 		if (isset($_GET["comment"])){
 			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);
 		} else {
-
-			manageGetValuesInSearch(RESERVATION_TYPE);
-
-			searchForm(RESERVATION_TYPE,$_GET);
-
-			showList(RESERVATION_TYPE,$_GET);
+         Search::show('ReservationItem');
 		}
 	}
 }

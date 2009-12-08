@@ -44,11 +44,7 @@ checkRight("budget","r");
 
 commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
-manageGetValuesInSearch(BUDGET_TYPE);
-
-searchForm(BUDGET_TYPE,$_GET);
-
-showList(BUDGET_TYPE,$_GET);
+Search::show('Budget');
 
 commonFooter();
 ?>

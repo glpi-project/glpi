@@ -43,11 +43,7 @@ checkRight("document","r");
 
 commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
 
-manageGetValuesInSearch(DOCUMENT_TYPE);
-
-searchForm(DOCUMENT_TYPE,$_GET);
-
-showList(DOCUMENT_TYPE,$_GET);
+Search::show('Document');
 
 commonFooter();
 

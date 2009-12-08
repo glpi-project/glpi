@@ -42,7 +42,7 @@ checkRight("config", "w");
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
 
-// TODO : use common search engine
+/// TODO : use common search engine
 showImapAuthList($CFG_GLPI["root_doc"] . "/front/authmail.form.php");
 
 commonFooter();

@@ -101,7 +101,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
                }
             }
          }
-         manageGetValuesInSearch($_GET["item_type"]);
+         Search::manageGetValues($_GET["item_type"]);
          showList($_GET["item_type"],$_GET);
    }
 }

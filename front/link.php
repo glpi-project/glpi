@@ -43,11 +43,7 @@ checkRight("link","r");
 
 commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
-manageGetValuesInSearch(LINK_TYPE);
-
-searchForm(LINK_TYPE,$_GET);
-
-showList(LINK_TYPE,$_GET);
+Search::show('Link');
 
 commonFooter();
 ?>

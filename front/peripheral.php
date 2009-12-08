@@ -43,11 +43,7 @@ checkRight("peripheral","r");
 
 commonHeader($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
-manageGetValuesInSearch(PERIPHERAL_TYPE);
-
-searchForm(PERIPHERAL_TYPE,$_GET);
-
-showList(PERIPHERAL_TYPE,$_GET);
+Search::show('Peripheral');
 
 commonFooter();
 ?>
