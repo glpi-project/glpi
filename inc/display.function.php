@@ -2368,16 +2368,19 @@ function showNotesForm($target,$itemtype,$id) {
    if (!haveRight("notes","r")) {
       return false;
    }
-   //new objet
-   $ci =new CommonItem;
+   if (!class_exists($itemtype)) {
+      return false;
+   }
+   $item = new $itemtype();
    //getFromDB
-   $ci->getFromDB ($itemtype,$id);
+   $item->getFromDB ($id);
    $canedit=(haveRight("notes","w")
-             && (!$ci->obj->isEntityAssign() || haveAccessToEntity($ci->obj->getEntityID())));
+             && (!$item->isEntityAssign() || haveAccessToEntity($item->getEntityID())));
 
    if ($canedit) {
       echo "<form name='form' method='post' action=\"".$target."\">";
    }
+   print_r($item);
    echo "<div class='center'>";
    echo "<table class='tab_cadre_fixe' >";
    echo "<tr><th class='center' >";
@@ -2385,7 +2388,7 @@ function showNotesForm($target,$itemtype,$id) {
    echo "</th></tr>";
    echo "<tr><td class='tab_bg_1 center middle'>";
    echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
-            $ci->getField('notepad')."</textarea></td></tr>";
+            $item->getField('notepad')."</textarea></td></tr>";
    echo "<tr><td class='tab_bg_2 center' >";
    echo "<input type='hidden' name='id' value=$id>";
    if ($canedit) {

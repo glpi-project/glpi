@@ -846,7 +846,7 @@ function generate_entity($ID_entity){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="enterprise_".$i."_ID_entity";
 	
-		$query="INSERT INTO glpi_suppliers VALUES (NULL,'$ID_entity','0','$val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
+		$query="INSERT INTO glpi_suppliers VALUES (NULL,'$ID_entity','0','$val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes suppliers $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$entID=$DB->insert_id();
 		addDocuments(ENTERPRISE_TYPE,$entID);
@@ -915,7 +915,7 @@ function generate_entity($ID_entity){
 	// TYPE DE CONSOMMABLES
 	$FIRST["type_of_consumables"]=getMaxItem("glpi_consumableitems")+1;
 	for ($i=0;$i<$MAX['type_of_consumables'];$i++){
-		$query="INSERT INTO glpi_consumableitems VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes consumable type $i')";
+		$query="INSERT INTO glpi_consumableitems VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes consumableitem  $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$consID=$DB->insert_id();
 		addDocuments(CONSUMABLEITEM_TYPE,$consID);
@@ -955,7 +955,7 @@ function generate_entity($ID_entity){
 	// TYPE DE CARTOUCHES
 	$FIRST["type_of_cartridges"]=getMaxItem("glpi_cartridgeitems")+1;
 	for ($i=0;$i<$MAX['type_of_cartridges'];$i++){
-		$query="INSERT INTO glpi_cartridgeitems VALUES (NULL,'$ID_entity','cartridge type $i','ref $i','".mt_rand(1,$MAX['locations'])."','".mt_rand(1,$MAX['cartridge_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes cartridges type $i')";
+		$query="INSERT INTO glpi_cartridgeitems VALUES (NULL,'$ID_entity','cartridge type $i','ref $i','".mt_rand(1,$MAX['locations'])."','".mt_rand(1,$MAX['cartridge_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comment $i','".mt_rand(0,10)."','notes cartridgeitem $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$cartID=$DB->insert_id();
 		addDocuments(CARTRIDGEITEM_TYPE,$cartID);
@@ -1238,7 +1238,7 @@ function generate_entity($ID_entity){
 	
 		// Ajout d'un t��hone avec l'ordi
 	
-		$query="INSERT INTO glpi_phones VALUES (NULL,'$ID_entity','phone $i-$ID_entity',NOW(),'contact $i','num $i','$techID','comment $i','".getRandomString(10)."','".getRandomString(10)."','".getRandomString(10)."','$loc','".mt_rand(1,$MAX['type_phones'])."','".mt_rand(1,$MAX['model_phones'])."','".getRandomString(10)."','".mt_rand(0,$MAX['phone_power'])."','".getRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(1,$MAX['manufacturer'])."','0','0','0','','notes monitor $i','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$query="INSERT INTO glpi_phones VALUES (NULL,'$ID_entity','phone $i-$ID_entity',NOW(),'contact $i','num $i','$techID','comment $i','".getRandomString(10)."','".getRandomString(10)."','".getRandomString(10)."','$loc','".mt_rand(1,$MAX['type_phones'])."','".mt_rand(1,$MAX['model_phones'])."','".getRandomString(10)."','".mt_rand(0,$MAX['phone_power'])."','".getRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(1,$MAX['manufacturer'])."','0','0','0','','notes phone $i','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);	
 		$telID=$DB->insert_id();
 		addDocuments(PHONE_TYPE,$monID);	

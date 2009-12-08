@@ -144,10 +144,12 @@ class InfoCom extends CommonDBTM {
    **/
    function isEntityAssign() {
 
-      $ci=new CommonItem();
-      $ci->setType($this->fields["itemtype"], true);
+      if (class_exists($this->fields["itemtype"])) {
+         $item = new $this->fields["itemtype"]();
+         return $item->isEntityAssign();
+      }
 
-      return $ci->obj->isEntityAssign();
+      return false;
    }
 
    /**
@@ -157,10 +159,12 @@ class InfoCom extends CommonDBTM {
    **/
    function getEntityID () {
 
-      $ci=new CommonItem();
-      $ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+      if (class_exists($this->fields["itemtype"])) {
+         $item = new $this->fields["itemtype"]();
+         return $item->getEntityID();
+      }
 
-      return $ci->obj->getEntityID();
+      return -1;
    }
 
    /**
@@ -170,10 +174,12 @@ class InfoCom extends CommonDBTM {
    **/
    function maybeRecursive() {
 
-      $ci=new CommonItem();
-      $ci->setType($this->fields["itemtype"], true);
+      if (class_exists($this->fields["itemtype"])) {
+         $item = new $this->fields["itemtype"]();
+         return $item->maybeRecursive();
+      }
 
-      return $ci->obj->maybeRecursive();
+      return false;
    }
 
    /**
@@ -185,10 +191,12 @@ class InfoCom extends CommonDBTM {
    **/
    function isRecursive() {
 
-      $ci=new CommonItem();
-      $ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
+      if (class_exists($this->fields["itemtype"])) {
+         $item = new $this->fields["itemtype"]();
+         return $item->isRecursive();
+      }
 
-      return $ci->obj->isRecursive();
+      return false;
    }
 
    /**
