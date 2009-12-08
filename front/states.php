@@ -49,7 +49,6 @@ if ($_GET["synthese"] == "yes") {
    showStateSummary($_SERVER['PHP_SELF']);
 } else {
 
-   Search::show('ReservationItem');
    Search::show('States');
 }
 
