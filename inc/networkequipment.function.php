@@ -797,33 +797,33 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 
    //Try to get all the object (not deleted, and not template)
    //with a network port having the specified IP, in a given entity
-   $query = "SELECT `gnp.items_id`, `gnp.id` AS portID, `gnp.itemtype` AS itemtype
+   $query = "SELECT `gnp`.`items_id`, `gnp`.`id` AS portID, `gnp`.`itemtype` AS itemtype
              FROM `glpi_networkports` AS gnp
-             LEFT JOIN `glpi_computers` AS gc ON (`gnp.items_id` = `gc.id`
-                                                  AND `gc.entities_id` = '$entity'
+             LEFT JOIN `glpi_computers` AS gc ON (`gnp`.`items_id` = `gc`.`id`
+                                                  AND `gc`.`entities_id` = '$entity'
                                                   AND `gc`.`is_deleted` = '0'
                                                   AND `gc`.`is_template` = '0'
-                                                  AND `itemtype` = " . COMPUTER_TYPE . ")
+                                                  AND `itemtype` = 'Computer')
              LEFT JOIN `glpi_printers` AS gp ON (`gnp`.`items_id` = `gp`.`id`
                                                  AND `gp`.`entities_id` = '$entity'
                                                  AND `gp`.`is_deleted` = '0'
                                                  AND `gp`.`is_template` = '0'
-                                                 AND `itemtype` = " . PRINTER_TYPE . ")
+                                                 AND `itemtype` = 'Printer')
              LEFT JOIN `glpi_networkequipments` AS gn ON (`gnp`.`items_id` = `gn`.`id`
                                                           AND `gn`.`entities_id` = '$entity'
                                                           AND `gn`.`is_deleted` = '0'
                                                           AND `gn`.`is_template` = '0'
-                                                          AND `itemtype` = " . NETWORKING_TYPE . ")
+                                                          AND `itemtype` = 'NetworkEquipment')
              LEFT JOIN `glpi_phones` AS gph ON (`gnp`.`items_id` = `gph`.`id`
                                                 AND `gph`.`entities_id` = '$entity'
                                                 AND `gph`.`is_deleted` = '0'
                                                 AND `gph`.`is_template` = '0'
-                                                AND `itemtype` = " . PHONE_TYPE . ")
+                                                AND `itemtype` = 'Phone')
              LEFT JOIN `glpi_peripherals` AS gpe ON (`gnp`.`items_id` = `gpe`.`id`
                                                      AND `gpe`.`entities_id` = '$entity'
                                                      AND `gpe`.`is_deleted` = '0'
                                                      AND `gpe`.`is_template` = '0'
-                                                     AND `itemtype` = " . PERIPHERAL_TYPE . ")
+                                                     AND `itemtype` = 'Peripheral')
              WHERE `gnp`.`$field` = '" . $value . "'";
 
    $result = $DB->query($query);

@@ -124,7 +124,7 @@ class Bookmark extends CommonDBTM {
       echo '<br>';
       echo "<form method='post' name='form_save_query' action=\"$target\">";
       echo "<div class='center'>";
-      if ($itemtype!=0) {
+      if (!empty($itemtype)) {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
       }
       if ($type!=0) {
