@@ -33,8 +33,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('contact', 'contract', 'supplier', 'search');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
