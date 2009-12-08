@@ -36,9 +36,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('cartridge', 'consumable', 'contract', 'cron', 'infocom', 'mailing',
-   'ocsng', 'setup', 'software');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

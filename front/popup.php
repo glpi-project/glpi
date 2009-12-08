@@ -29,9 +29,6 @@
  */
 
 
-$NEEDED_ITEMS = array ('computer', 'entity', 'networking', 'ocsng', 'phone', 'printer',
-   'rulesengine', 'search', 'setup', 'tracking');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

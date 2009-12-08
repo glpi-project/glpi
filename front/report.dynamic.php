@@ -34,10 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array('cartridge', 'computer', 'consumable', 'contract', 'device', 'document',
-   'enterprise', 'group', 'infocom', 'knowbase', 'monitor', 'networking', 'peripheral', 'phone',
-   'printer', 'search', 'software', 'stat', 'tracking', 'user');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

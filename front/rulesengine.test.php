@@ -36,7 +36,6 @@
 if(!defined('GLPI_ROOT')){
    define('GLPI_ROOT', '..');
 
-   $NEEDED_ITEMS = array('rulesengine');
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
