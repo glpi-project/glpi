@@ -34,13 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('ocsadmininfoslink', 'cartridge', 'computer', 'consumable', 'contact',
-   'contract', 'crontask', 'device', 'document', 'enterprise', 'entity', 'group', 'infocom',
-   'ldap', 'link', 'mailgate', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
-   'profile', 'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown',
-   'rule.dictionnary.software', 'rule.right', 'rule.softwarecategories', 'search', 'setup',
-   'software', 'tracking', 'transfer', 'typedoc', 'user');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
