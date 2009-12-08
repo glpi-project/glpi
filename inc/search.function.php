@@ -1032,16 +1032,14 @@ function showList ($itemtype,$params) {
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          $tmpquery=$query_num;
          $numrows=0;
+
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
             if (haveTypeRight($ctype,'r')) {
-               // No ref table case
-               if (empty($LINK_ID_TABLE[$itemtype])) {
+               // State case
+               if ($itemtype == 'State') {
                   $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                          $LINK_ID_TABLE[$ctype],$tmpquery);
-                  // State case :
-                  if ($itemtype==STATE_TYPE) {
-                     $query_num .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
-                  }
+                  $query_num .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
                } else {// Ref table case
                   $replace = "FROM `".$LINK_ID_TABLE[$itemtype]."`
                               INNER JOIN `".$LINK_ID_TABLE[$ctype]."`
@@ -1105,26 +1103,23 @@ function showList ($itemtype,$params) {
                $QUERY.=" UNION ";
             }
             $tmpquery="";
-            // No ref table case
-            if (empty($LINK_ID_TABLE[$itemtype])) {
+            // State case
+            if ($itemtype == 'State') {
                $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                            $FROM.
                            $WHERE;
                $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                        $LINK_ID_TABLE[$ctype],$tmpquery);
-               // State case :
-               if ($itemtype==STATE_TYPE) {
-                  $tmpquery .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
-               }
+               $tmpquery .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
             } else {// Ref table case
                $tmpquery = $SELECT.", '$ctype' AS TYPE, ".$LINK_ID_TABLE[$itemtype].".`id` AS refID, ".
                                    $LINK_ID_TABLE[$ctype].".`entities_id` AS ENTITY ".
                            $FROM.
                            $WHERE;
-               $replace = "FROM `".$LINK_ID_TABLE[$itemtype]."`
-                           INNER JOIN `".$LINK_ID_TABLE[$ctype]."`
-                           ON (`".$LINK_ID_TABLE[$itemtype]."`.`items_id`=".$LINK_ID_TABLE[$ctype].".`id`
-                               AND `".$LINK_ID_TABLE[$itemtype]."`.`itemtype` = '$ctype')";
+               $replace = "FROM `".$LINK_ID_TABLE[$itemtype]."`".
+                  " INNER JOIN `".$LINK_ID_TABLE[$ctype]."`".
+                  " ON (`".$LINK_ID_TABLE[$itemtype]."`.`items_id`=".$LINK_ID_TABLE[$ctype].".`id`".
+                  " AND `".$LINK_ID_TABLE[$itemtype]."`.`itemtype` = '$ctype')";
                $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",$replace,
                                        $tmpquery);
                $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
@@ -1186,14 +1181,17 @@ function showList ($itemtype,$params) {
       }
 
       if ($output_type==GLOBAL_SEARCH) {
-         $ci = new CommonItem();
-         $ci->setType($itemtype);
-         echo "<div class='center'><h2>".$ci->getType($itemtype);
-         // More items
-         if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT) {
-            echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
+         if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            echo "<div class='center'><h2>".$item->getTypeName();
+            // More items
+            if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT) {
+               echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
+            }
+            echo "</h2></div>\n";
+         } else {
+            return false;
          }
-         echo "</h2></div>\n";
       }
 
       // If the begin of the view is before the number of items
@@ -1324,7 +1322,6 @@ function showList ($itemtype,$params) {
          }
          if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
             echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
-            $ci = new CommonItem();
          }
          if ($itemtype==RESERVATION_TYPE && $output_type==HTML_OUTPUT) {
             if (haveRight("reservation_central","w")) {
@@ -1468,8 +1465,12 @@ function showList ($itemtype,$params) {
                                       $item_num,$row_num);
             }
             if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
-               $ci->setType($data["TYPE"]);
-               echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
+               $typename="N/A";
+               if (class_exists($data["TYPE"])) {
+                  $item = new $data["TYPE"]();
+                  $typename=$item->getTypeName();
+               }
+               echo displaySearchItem($output_type,$typename,$item_num,$row_num);
             }
             if ($itemtype==RESERVATION_TYPE && $output_type==HTML_OUTPUT) {
                if (haveRight("reservation_central","w")) {
@@ -3115,6 +3116,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
       $AS = " AS $nt$addmetanum";
       $nt = $nt.$addmetanum;
    }
+
 
    // Auto link
    if ($ref_table==$new_table) {
