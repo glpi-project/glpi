@@ -118,17 +118,18 @@ if (isset($AJAX_INCLUDE)) {
 
 
 // TODO Remove this ASAP
-if (!isset($AJAX_INCLUDE)) {
-   include_once (GLPI_ROOT . "/inc/mailing.function.php");
-   include_once (GLPI_ROOT . "/inc/export.function.php");
-   include_once (GLPI_ROOT . "/inc/log.function.php");
-}
+include_once (GLPI_ROOT . "/inc/mailing.function.php");
+include_once (GLPI_ROOT . "/inc/export.function.php");
+include_once (GLPI_ROOT . "/inc/log.function.php");
 include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
 include_once (GLPI_ROOT . "/inc/reminder.function.php");
 include_once (GLPI_ROOT . "/inc/ticket.function.php");
 include_once (GLPI_ROOT . "/inc/user.function.php");
 include_once (GLPI_ROOT . "/inc/search.function.php");
 include_once (GLPI_ROOT . "/inc/rule.function.php");
+include_once (GLPI_ROOT . "/inc/stat.function.php");
+include_once (GLPI_ROOT . "/inc/reservationitem.function.php");
+include_once (GLPI_ROOT . "/inc/ldap.function.php");
 
 
 

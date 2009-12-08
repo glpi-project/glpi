@@ -33,13 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$NEEDED_ITEMS = array ('computer', 'contract', 'device', 'document', 'enterprise', 'group', 'infocom',
-                       'link', 'monitor', 'networking', 'ocsng', 'peripheral', 'phone', 'printer',
-                       'registry', 'reservation', 'rulesengine', 'rule.dictionnary.dropdown',
-                       'rule.dictionnary.software', 'rule.softwarecategories', 'search', 'setup',
-                       'software', 'tracking', 'user','computer_device');
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");

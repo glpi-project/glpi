@@ -35,8 +35,6 @@
 // ----------------------------------------------------------------------
 define('GLPI_ROOT', '.');
 
-$NEEDED_ITEMS = array('entity','group','profile','rulesengine','rule.right','setup','user');
-
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_SESSION["glpitest"]) || $_SESSION["glpitest"]!='testcookie') {

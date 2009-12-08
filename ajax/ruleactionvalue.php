@@ -35,7 +35,6 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"ruleactionvalue.php")) {
-   $NEEDED_ITEMS = array("ticket","user");
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
