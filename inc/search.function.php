@@ -1465,7 +1465,7 @@ function showList ($itemtype,$params) {
                                       $item_num,$row_num);
             }
             if ($itemtype==STATE_TYPE || $itemtype==RESERVATION_TYPE) {
-               $typename=NOT_AVAILABLE;
+               $typename=$data["TYPE"];
                if (class_exists($data["TYPE"])) {
                   $item = new $data["TYPE"]();
                   $typename=$item->getTypeName();

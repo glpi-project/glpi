@@ -312,7 +312,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "<th colspan='2'>" . $LANG['networking'][20] . "&nbsp;:</th>";
    echo "</tr>\n";
 
-   $type = NOT_AVAILABLE;
+   $type = $netport->itemtype;
    $link = NOT_AVAILABLE;
    if (class_exists($netport->itemtype)) {
       $item = new $netport->itemtype();
