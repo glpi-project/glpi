@@ -73,11 +73,14 @@ function showStateSummary($target) {
       // Type
       echo "<th>".$LANG['state'][0]."</th>";
 
-      $ci=new CommonItem;
-      foreach ($state_type as $itemtype) {
-         $ci->setType($itemtype);
-         echo "<th>".$ci->getType()."</th>";
-         $total[$itemtype]=0;
+      foreach ($state_type as $key => $itemtype) {
+         if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            echo "<th>".$item->getTypeName()."</th>";
+            $total[$itemtype]=0;
+         } else {
+            unset($state_type[$key]);
+         }
       }
       echo "<th>".$LANG['common'][33]."</th>";
       echo "</tr>";
