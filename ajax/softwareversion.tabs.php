@@ -52,33 +52,32 @@ if (!isset($_POST["sort"])) {
 if (!isset($_POST["order"])) {
    $_POST["order"] = "";
 }
-if (!isset($_POST["withtemplate"])) {
-   $_POST["withtemplate"] = "";
-}
 
 checkRight("software","r");
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      showInstallations($_POST["id"], "id");
-      displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
-      break;
+$version = new SoftwareVersion();
 
-   case 2 :
-      showInstallations($_POST["id"], "id");
-      break;
+if ($_POST["id"]>0 && $version->can($_POST["id"],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         showInstallations($_POST["id"], "id");
+         Plugin::displayAction($version, $_REQUEST['glpi_tab']);
+         break;
 
-   case 12 :
-      showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
-      break;
+      case 2 :
+         showInstallations($_POST["id"], "id");
+         break;
 
-   default :
-      if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-          $_POST["withtemplate"])) {
-         showInstallationsByEntity($_POST["id"]);
-      }
+      case 12 :
+         showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
+         break;
+
+      default :
+         if (!Plugin::displayAction($version, $_REQUEST['glpi_tab'])) {
+            showInstallationsByEntity($_POST["id"]);
+         }
+   }
 }
-
 ajaxFooter();
 
 ?>

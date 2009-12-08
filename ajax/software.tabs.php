@@ -75,7 +75,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          default :
-            displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            Plugin::displayAction($soft, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
@@ -88,7 +88,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Document::showAssociated($soft);
             showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
             showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
-            displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
 
          case 2 :
@@ -129,7 +129,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(SOFTWARE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
+            if (!Plugin::displayAction($soft, $_REQUEST['glpi_tab'])) {
                showVersions($_POST["id"]);
                showLicenses($_POST["id"]);
             }
