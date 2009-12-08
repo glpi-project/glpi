@@ -95,7 +95,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
             showJobListForItem(PHONE_TYPE,$_POST["id"]);
-            showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+            Link::showForItem(PHONE_TYPE,$_POST["id"]);
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
@@ -113,7 +113,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 7 :
-            showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
+            Link::showForItem(PHONE_TYPE,$_POST["id"]);
             break;
 
          case 10 :

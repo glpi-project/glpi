@@ -87,7 +87,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
             showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
-            showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
+            Link::showForItem(SOFTWARE_TYPE,$_POST["id"]);
             Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
 
@@ -109,7 +109,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 7 :
-            showLinkOnDevice(SOFTWARE_TYPE,$_POST["id"]);
+            Link::showForItem(SOFTWARE_TYPE,$_POST["id"]);
             break;
 
          case 10 :

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: contact.tabs.php 8003 2009-02-26 11:03:19Z moyo $
+ * @version $Id: link.form.php 9525 2009-12-07 17:26:50Z walid $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -34,35 +34,31 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS = array ('link','device','link_itemtype');
+$NEEDED_ITEMS = array('link','device','link_itemtype');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if(!isset($_POST["id"])) {
-   exit();
+if(empty($_GET["id"])) {
+   $_GET["id"] = "";
 }
 
-if(empty($_POST["id"])) {
-   $_POST["id"] = -1;
-}
+$link = new Link;
+$link_itemtype = new Link_ItemType;
 
-$link = new Link();
-if ($_POST['id']>0 && $link->can($_POST['id'],'r')) {
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         Link_ItemType::showForItem($_POST["id"]);
-         Plugin::displayAction($link,$_REQUEST['glpi_tab']);
-         break;
-      default :
-         if (!Plugin::displayAction($link,$_REQUEST['glpi_tab'])) {
-            Link_ItemType::showForItem($_POST["id"]);
-         }
-         break;
+if (isset($_POST["adddevice"])){
+   $link->check($_GET["id"],'w');
+
+   if ($link_itemtype->add($_POST)) {
+    Event::log($_POST["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-
+   glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
-ajaxFooter();
+else if (isset($_GET["deletedevice"])){
+   $link->check($_GET["links_id"],'w');
+
+   $link_itemtype->delete($_GET);
+   Event::log($_GET["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
 ?>

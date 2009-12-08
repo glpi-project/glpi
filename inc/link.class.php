@@ -153,6 +153,179 @@ class Link extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * Show Links for an item
+    *
+    * @param $itemtype integer : item type
+    * @param $ID integer : item ID
+    */
+   static function showForItem($itemtype,$ID) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      $commonitem = new CommonItem;
+      $commonitem->getFromDB($itemtype,$ID);
+
+      if (!haveRight("link","r")) {
+         return false;
+      }
+
+      $query="SELECT `glpi_links`.`id`, `glpi_links`.`link` AS link, `glpi_links`.`name` AS name ,
+                     `glpi_links`.`data` AS data
+              FROM `glpi_links`
+              INNER JOIN `glpi_links_itemtypes` ON `glpi_links`.`id`=`glpi_links_itemtypes`.`links_id`
+              WHERE `glpi_links_itemtypes`.`itemtype`='$itemtype' " .
+                    getEntitiesRestrictRequest(" AND","glpi_links","entities_id",
+                                               $commonitem->obj->fields["entities_id"],true)."
+              ORDER BY name";
+
+      $result=$DB->query($query);
+
+      $ci=new CommonItem;
+      if ($DB->numrows($result)>0) {
+         echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['title'][33]."</th></tr>";
+         while ($data=$DB->fetch_assoc($result)) {
+            $name=$data["name"];
+            if (empty($name)) {
+               $name=$data["link"];
+            }
+            $link=$data["link"];
+            $file=trim($data["data"]);
+            if (empty($file)) {
+               $ci->getFromDB($itemtype,$ID);
+               if (strstr($link,"[NAME]")) {
+                  $link=str_replace("[NAME]",$ci->getName(),$link);
+               }
+               if (strstr($link,"[ID]")) {
+                  $link=str_replace("[ID]",$ID,$link);
+               }
+               if (strstr($link,"[LOGIN]")) {
+                  if (isset($_SESSION["glpiname"])) {
+                     $link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
+                  }
+               }
+               if (strstr($link,"[SERIAL]")) {
+                  if ($tmp=$ci->getField('serial')) {
+                     $link=str_replace("[SERIAL]",$tmp,$link);
+                  }
+               }
+               if (strstr($link,"[OTHERSERIAL]")) {
+                  if ($tmp=$ci->getField('otherserial')) {
+                     $link=str_replace("[OTHERSERIAL]",$tmp,$link);
+                  }
+               }
+               if (strstr($link,"[LOCATIONID]")) {
+                  if ($tmp=$ci->getField('locations_id')) {
+                     $link=str_replace("[LOCATIONID]",$tmp,$link);
+                  }
+               }
+               if (strstr($link,"[LOCATION]")) {
+                  if ($tmp=$ci->getField('locations_id')) {
+                     $link=str_replace("[LOCATION]",getDropdownName("glpi_locations",$tmp),$link);
+                  }
+               }
+               if (strstr($link,"[NETWORK]")) {
+                  if ($tmp=$ci->getField('networks_id')) {
+                     $link=str_replace("[NETWORK]",getDropdownName("glpi_networks",$tmp),$link);
+                  }
+               }
+               if (strstr($link,"[DOMAIN]")) {
+                  if ($tmp=$ci->getField('domains_id')) {
+                     $link=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$tmp),$link);
+                  }
+               }
+               if (strstr($link,"[USER]")) {
+                  if ($tmp=$ci->getField('users_id')) {
+                     $link=str_replace("[USER]",getDropdownName("glpi_users",$tmp),$link);
+                  }
+               }
+               if (strstr($link,"[GROUP]")) {
+                  if ($tmp=$ci->getField('groups_id')) {
+                     $link=str_replace("[GROUP]",getDropdownName("glpi_groups",$tmp),$link);
+                  }
+               }
+               $ipmac=array();
+               $i=0;
+               if (strstr($link,"[IP]") || strstr($link,"[MAC]")) {
+                  $query2 = "SELECT `ip`, `mac`, `logical_number`
+                             FROM `glpi_networkports`
+                             WHERE `items_id` = '$ID'
+                                   AND `itemtype` = '$itemtype'
+                             ORDER BY `logical_number`";
+                  $result2=$DB->query($query2);
+                  if ($DB->numrows($result2)>0) {
+                     while ($data2=$DB->fetch_array($result2)) {
+                        $ipmac[$i]['ip']=$data2["ip"];
+                        $ipmac[$i]['mac']=$data2["mac"];
+                        $ipmac[$i]['number']=$data2["logical_number"];
+                        $i++;
+                     }
+                  }
+               }
+               if (strstr($link,"[IP]") || strstr($link,"[MAC]")) {
+                  // Add IP/MAC internal switch
+                  if ($itemtype==NETWORKING_TYPE) {
+                     $tmplink=$link;
+                     $tmplink=str_replace("[IP]",$ci->getField('ip'),$tmplink);
+                     $tmplink=str_replace("[MAC]",$ci->getField('mac'),$tmplink);
+                     echo "<tr class='tab_bg_2'>";
+                     echo "<td><a target='_blank' href='$tmplink'>$name - $tmplink</a></td></tr>";
+                  }
+                  if (count($ipmac)>0) {
+                     foreach ($ipmac as $key => $val) {
+                        $tmplink=$link;
+                        $disp=1;
+                        if (strstr($link,"[IP]")) {
+                           if (empty($val['ip'])) {
+                              $disp=0;
+                           } else {
+                              $tmplink=str_replace("[IP]",$val['ip'],$tmplink);
+                           }
+                        }
+                        if (strstr($link,"[MAC]")) {
+                           if (empty($val['mac'])) {
+                              $disp=0;
+                           } else {
+                              $tmplink=str_replace("[MAC]",$val['mac'],$tmplink);
+                           }
+                        }
+                        if ($disp) {
+                           echo "<tr class='tab_bg_2'>";
+                           echo "<td><a target='_blank' href='$tmplink'>$name #" .
+                                       $val['number'] . " - $tmplink</a></td></tr>";
+                        }
+                     }
+                  }
+               } else {
+                  echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$name</a></td></tr>";
+               }
+            } else {// File Generated Link
+               $link=$data['name'];
+               $ci->getFromDB($itemtype,$ID);
+
+               // Manage Filename
+               if (strstr($link,"[NAME]")) {
+                  $link=str_replace("[NAME]",$ci->getName(),$link);
+               }
+               if (strstr($link,"[LOGIN]")) {
+                  if (isset($_SESSION["glpiname"])) {
+                     $link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
+                  }
+               }
+               if (strstr($link,"[ID]")) {
+                  $link=str_replace("[ID]",$_GET["id"],$link);
+               }
+               echo "<tr class='tab_bg_2'>";
+               echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".
+                           $data['id']."&amp;itemtype=$itemtype&amp;id=$ID' target='_blank'>".
+                           $name."</a></td></tr>";
+            }
+         }
+         echo "</table></div>";
+      } else {
+         echo "<div class='center'><strong>".$LANG['links'][7]."</strong></div>";
+      }
+   }
 }
 
 ?>

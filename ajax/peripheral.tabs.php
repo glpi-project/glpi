@@ -89,7 +89,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
             showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
-            showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
+            Link::showForItem(PERIPHERAL_TYPE,$_POST["id"]);
             Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
             break;
 
@@ -107,7 +107,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 7 :
-            showLinkOnDevice(PERIPHERAL_TYPE,$_POST["id"]);
+            Link::showForItem(PERIPHERAL_TYPE,$_POST["id"]);
             break;
 
          case 10 :
