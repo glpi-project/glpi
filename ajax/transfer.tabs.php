@@ -49,9 +49,11 @@ if (empty($_POST['id'])) {
    $_POST['id'] = -1;
 }
 
+$transfer = new Transfer();
+if ($_POST['id']>0 && $transfer->can($_POST['id'],'r'))
 switch ($_REQUEST['glpi_tab']) {
    default :
-      if (!displayPluginAction(TRANSFER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+      if (!Plugin::displayAction($transfer, $_REQUEST['glpi_tab'])) {
       }
 }
 

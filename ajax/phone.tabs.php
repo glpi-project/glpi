@@ -78,8 +78,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
                   showPortsAdd($_POST["id"],PHONE_TYPE);
                }
@@ -97,7 +96,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Document::showAssociated($phone);
             showJobListForItem(PHONE_TYPE,$_POST["id"]);
             showLinkOnDevice(PHONE_TYPE,$_POST["id"]);
-            displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
          case 4 :
@@ -130,8 +129,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(PHONE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($phone);
                showPortsAdd($_POST["id"],PHONE_TYPE);
                showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);

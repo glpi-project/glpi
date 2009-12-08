@@ -53,11 +53,11 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             $prof->showFormHelpdesk($_POST['target']);
-            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+            Plugin::displayAction($prof, $_REQUEST['glpi_tab']);
             break;
 
          default :
-            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+            if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
             }
       }
@@ -68,7 +68,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             $prof->showFormTracking($_POST['target']);
             $prof->showFormAdmin($_POST['target']);
             $prof->showEntityUser($_POST['target'], $prof);
-            displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+            Plugin::displayAction($prof, $_REQUEST['glpi_tab']);
             break;
 
          case 2 :
@@ -84,13 +84,11 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             break;
 
          default :
-            if (!displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+            if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormInventory($_POST['target']);
             }
       }
    }
-} else {
-   displayPluginAction(PROFILE_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
 }
 
 ajaxFooter();

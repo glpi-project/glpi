@@ -43,12 +43,9 @@ header_nocache();
 checkLoginUser();
 
 $user = new User();
+$pref = new Preference();
 
 switch ($_REQUEST['glpi_tab']) {
-   case 1 :
-      $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", $_SESSION["glpiID"]);
-      break;
-
    case 2 :
       $config = new Config();
       $user->getFromDB($_SESSION["glpiID"]);
@@ -57,7 +54,7 @@ switch ($_REQUEST['glpi_tab']) {
       break;
 
    default :
-      if (!displayPluginAction("prefs","",$_REQUEST['glpi_tab'],"")) {
+      if (!Plugin::displayAction($pref, $_REQUEST['glpi_tab'])) {
          $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", $_SESSION["glpiID"]);
       }
 }

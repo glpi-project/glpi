@@ -64,7 +64,7 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
       case -1 :
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$license);
          Document::showAssociated($license);
-         displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+         Plugin::displayAction($license, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          break;
 
       default :
-         displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+         Plugin::displayAction($license, $_REQUEST['glpi_tab']);
    }
 }
 ajaxFooter();

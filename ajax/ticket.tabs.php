@@ -46,7 +46,8 @@ if (!isset($_POST["id"])) {
    exit();
 }
 
-if ($_POST["id"]>0) {
+$ticket = new Ticket();
+if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
    switch($_REQUEST['glpi_tab']) {
       case 1 :
          showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
@@ -62,7 +63,7 @@ if ($_POST["id"]>0) {
          break;
 
       default :
-         if (!displayPluginAction(TRACKING_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
             showJobDetails($_POST['target'],$_POST["id"]);
          }
    }

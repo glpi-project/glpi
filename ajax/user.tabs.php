@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          if (haveRight("show_all_ticket", "1")) {
             showJobListForUser($_POST["id"]);
          }
-         displayPluginAction(USER_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($user, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -108,7 +108,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(USER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($user, $_REQUEST['glpi_tab'])) {
             showUserRights($_POST['target'],$_POST["id"]);
          }
    }
