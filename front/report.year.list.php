@@ -56,46 +56,46 @@ if((isset($_POST["item_type"][0])&&$_POST["item_type"][0] == '0')||!isset($_POST
 
 if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	$query=array();
-	foreach ($_POST["item_type"] as $key => $val)
-	if (in_array($val,$items)){
-		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".is_deleted AS itemdeleted, ";
-		$query[$val].= " glpi_locations.completename AS location, glpi_contracttypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.id as entID ";
-		$query[$val].= " FROM ".$LINK_ID_TABLE[$val]." ";
-		$query[$val].= " LEFT JOIN glpi_contracts_items ON glpi_contracts_items.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_contracts_items.items_id ";
-		$query[$val].= " LEFT JOIN glpi_contracts ON glpi_contracts_items.contracts_id=glpi_contracts.id AND glpi_contracts_items.contracts_id IS NOT NULL ";
-		$query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_infocoms.items_id ";
-		$query[$val].= " LEFT JOIN glpi_contracttypes ON (glpi_contracts.contracttypes_id = glpi_contracttypes.id) ";
-		$query[$val].= " LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$val].".locations_id = glpi_locations.id) ";
-		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".entities_id = glpi_entities.id) ";
+	foreach ($_POST["item_type"] as $key => $val) {
+      if (in_array($val,$items)) {
+         $query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".is_deleted AS itemdeleted, ";
+         $query[$val].= " glpi_locations.completename AS location, glpi_contracttypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.id as entID ";
+         $query[$val].= " FROM ".$LINK_ID_TABLE[$val]." ";
+         $query[$val].= " LEFT JOIN glpi_contracts_items ON glpi_contracts_items.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_contracts_items.items_id ";
+         $query[$val].= " LEFT JOIN glpi_contracts ON glpi_contracts_items.contracts_id=glpi_contracts.id AND glpi_contracts_items.contracts_id IS NOT NULL ";
+         $query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.itemtype='$val' AND ".$LINK_ID_TABLE[$val].".id =  glpi_infocoms.items_id ";
+         $query[$val].= " LEFT JOIN glpi_contracttypes ON (glpi_contracts.contracttypes_id = glpi_contracttypes.id) ";
+         $query[$val].= " LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$val].".locations_id = glpi_locations.id) ";
+         $query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".entities_id = glpi_entities.id) ";
 
-		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
-		$query[$val].= getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$val]);
+         $query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
+         $query[$val].= getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$val]);
 
-		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
-		{
-			$query[$val].=" AND ( ";
-			$first=true;
-			foreach ($_POST["annee"] as $key2 => $val2){
-				if (!$first) $query[$val].=" OR ";
-				else $first=false;
+         if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
+         {
+            $query[$val].=" AND ( ";
+            $first=true;
+            foreach ($_POST["annee"] as $key2 => $val2){
+               if (!$first) $query[$val].=" OR ";
+               else $first=false;
 
-				$query[$val].= " YEAR(glpi_infocoms.buy_date) = '".$val2."'";
-				$query[$val].= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
-			}
-			$query[$val].=")";
-		}
-		$query[$val].=" ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
-	}
+               $query[$val].= " YEAR(glpi_infocoms.buy_date) = '".$val2."'";
+               $query[$val].= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
+            }
+            $query[$val].=")";
+         }
+         $query[$val].=" ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
+      }
+   }
 }
 $display_entity=isMultiEntitiesMode();
 
-$ci=new CommonItem();
 if (isset($query)&&count($query)){
 	foreach ($query as $key => $val){
 		$result = $DB->query($val);
 		if ($result&&$DB->numrows($result)){
-			$ci->setType($key);
-			echo " <div align='center'><strong>".$ci->getType()."</strong>";
+         $item = new $key();
+			echo " <div align='center'><strong>".$item->getTypeName()."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
 			echo "<th>".$LANG['common'][16]."</th>";

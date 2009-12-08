@@ -163,41 +163,43 @@ if (isset($_POST["itemtype"])){
 				}
 			break;
 			case "delete":
-				$ci=new CommonItem();
-				$ci->setType($_POST["itemtype"],1);
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) {
-						$ci->obj->delete(array("id"=>$key));
-					}
-				}
+            if (class_exists($_POST["itemtype"])) {
+               $item=new $_POST["itemtype"]();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $item->delete(array("id"=>$key));
+                  }
+               }
+            }
 			break;
 			case "purge":
-				$ci=new CommonItem();
-				$ci->setType($_POST["itemtype"],1);
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) {
-						$ci->obj->delete(array("id"=>$key),1);
-					}
-				}
+            if (class_exists($_POST["itemtype"])) {
+               $item=new $_POST["itemtype"]();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $item->delete(array("id"=>$key),1);
+                  }
+               }
+            }
 			break;
 			case "restore":
-				$ci=new CommonItem();
-				$ci->setType($_POST["itemtype"],1);
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) {
-						$ci->obj->restore(array("id"=>$key));
-					}
-				}
+            if (class_exists($_POST["itemtype"])) {
+               $item=new $_POST["itemtype"]();
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $item->restore(array("id"=>$key));
+                  }
+               }
+            }
 			break;
 			case "update":
 				$searchopt=cleanSearchOption($_POST["itemtype"],'w');
-				if (isset($searchopt[$_POST["id_field"]])){
+				if (isset($searchopt[$_POST["id_field"]]) && class_exists($_POST["itemtype"])){
 					/// Infocoms case
 					if (!isPluginItem($_POST["itemtype"])
                      && isInfocomSearch($_POST["itemtype"],$_POST["id_field"])){
 						$ic=new Infocom();
-						$ci=new CommonItem();
-						$ci->setType($_POST["itemtype"],1);
+						$item =new $_POST["itemtype"]();
 
 						$link_entity_type=-1;
 						/// Specific entity item
@@ -211,11 +213,11 @@ if (isset($_POST["itemtype"])){
 
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1){
-								if ($ci->getFromDB($_POST["itemtype"],$key)){
+								if ($item->getFromDB($key)){
 									if ($link_entity_type<0
-										||$link_entity_type==$ci->obj->fields["entities_id"]
+										||$link_entity_type==$item->getEntityID()
 										||($ent->fields["is_recursive"]
-                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",$ci->obj->fields["entities_id"])))){
+                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",$item->getEntityID())))){
 										unset($ic->fields);
 										$ic->update(array("itemtype"=>$_POST["itemtype"],"items_id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
@@ -223,8 +225,7 @@ if (isset($_POST["itemtype"])){
 							}
 						}
 					} else { /// Not infocoms
-						$ci=new CommonItem();
-						$ci->setType($_POST["itemtype"],1);
+						$item=new $_POST["itemtype"]();
 						$link_entity_type=array();
 						/// Specific entity item
 
@@ -232,6 +233,7 @@ if (isset($_POST["itemtype"])){
 						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
 						&& in_array($LINK_ID_TABLE[$_POST["itemtype"]],$CFG_GLPI["specif_entities_tables"])){
 
+                     /// TODO : clean this / maybe need to review searchopt table field
 							$ci2=new CommonDBTM();
 							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
 
@@ -249,10 +251,10 @@ if (isset($_POST["itemtype"])){
 						}
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1) {
-								if ($ci->getFromDB($_POST["itemtype"],$key)){
+								if ($item->getFromDB($key)){
 									if (count($link_entity_type)==0
-										|| in_array($ci->obj->fields["entities_id"], $link_entity_type)){
-										$ci->obj->update(array("id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+										|| in_array($item->fields["entities_id"], $link_entity_type)){
+										$item->update(array("id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
 								}
 							}
@@ -522,13 +524,13 @@ if (isset($_POST["itemtype"])){
             break;
 
          case 'move_under':
-            if (isset($_POST['parent'])) {
-               $ci = new CommonItem();
-               $ci->setType($_POST["itemtype"], true);
-               $fk = getForeignKeyFieldForTable($ci->obj->table);
+            if (isset($_POST['parent']) && class_exists($_POST["itemtype"])) {
+               $item = new $_POST["itemtype"]();
+
+               $fk = getForeignKeyFieldForTable($item->table);
                foreach ($_POST["item"] as $key => $val){
-                  if ($val==1 && $ci->obj->can($key,'w')) {
-                      $ci->obj->update(array('id' => $key,
+                  if ($val==1 && $item->can($key,'w')) {
+                      $item->update(array('id' => $key,
                                               $fk  => $_POST['parent']));
                   }
                }

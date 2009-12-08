@@ -367,14 +367,16 @@ class Bookmark extends CommonDBTM {
          echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
          if( $DB->numrows($result)) {
-            $ci=new CommonItem();
             $current_type=-1;
-            $current_type_name="&nbsp;";
+            $current_type_name=NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {
                if ($current_type!=$this->fields['itemtype']) {
                   $current_type=$this->fields['itemtype'];
-                  $ci->setType($current_type);
-                  $current_type_name=$ci->getType();
+                  $current_type_name=NOT_AVAILABLE;
+                  if (class_exists($current_type)) {
+                     $item = new $current_type();
+                     $current_type_name=$item->getTypeName();
+                  }
                }
                $canedit=$this->can($this->fields["id"],"w");
 
