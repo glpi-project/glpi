@@ -387,20 +387,20 @@ class Mailing {
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
-                            && !empty($this->job->fields["itemtype"])) {
+                            && class_exists($this->job->fields["itemtype"])) {
 
-                           $ci= new CommonItem();
-                           $ci->getFromDB($this->job->fields["itemtype"],
-                                          $this->job->fields["items_id"]);
-                           if ($tmp=$ci->getField('users_id_tech')) {
-                              $query2 = "$selectdistinctuser
-                                         FROM `glpi_users`
-                                         $join
-                                         WHERE `glpi_users`.`id` = '".$tmp."'";
-                              if ($result2 = $DB->query($query2)) {
-                                 if ($DB->numrows($result2)==1) {
-                                    $row = $DB->fetch_array($result2);
-                                    $this->addToEmailList($emails,$row['email'],$row['email']);
+                           $item= new $this->job->fields["itemtype"]();
+                           if ($item->getFromDB($this->job->fields["items_id"])) {
+                              if ($tmp=$item->getField('users_id_tech')) {
+                                 $query2 = "$selectdistinctuser
+                                          FROM `glpi_users`
+                                          $join
+                                          WHERE `glpi_users`.`id` = '".$tmp."'";
+                                 if ($result2 = $DB->query($query2)) {
+                                    if ($DB->numrows($result2)==1) {
+                                       $row = $DB->fetch_array($result2);
+                                       $this->addToEmailList($emails,$row['email'],$row['email']);
+                                    }
                                  }
                               }
                            }
@@ -412,20 +412,20 @@ class Mailing {
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
-                            && !empty($this->job->fields["itemtype"])) {
+                            && class_exists($this->job->fields["itemtype"])) {
 
-                           $ci= new CommonItem();
-                           $ci->getFromDB($this->job->fields["itemtype"],
-                                          $this->job->fields["items_id"]);
-                           if ($tmp=$ci->getField('users_id')) {
-                              $query2 = "$selectdistinctuser
-                                         FROM `glpi_users`
-                                         $join
-                                         WHERE `glpi_users`.`id` = '".$tmp."'";
-                              if ($result2 = $DB->query($query2)) {
-                                 if ($DB->numrows($result2)==1) {
-                                    $row = $DB->fetch_array($result2);
-                                    $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           $item= new $this->job->fields["itemtype"]();
+                           if ($item->getFromDB($this->job->fields["items_id"])) {
+                              if ($tmp=$item->getField('users_id')) {
+                                 $query2 = "$selectdistinctuser
+                                          FROM `glpi_users`
+                                          $join
+                                          WHERE `glpi_users`.`id` = '".$tmp."'";
+                                 if ($result2 = $DB->query($query2)) {
+                                    if ($DB->numrows($result2)==1) {
+                                       $row = $DB->fetch_array($result2);
+                                       $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                    }
                                  }
                               }
                            }
@@ -794,11 +794,13 @@ class MailingResa {
                      // ADMIN ENTITY SEND
                      case ADMIN_ENTITY_MAILING :
                         $ri=new ReservationItem();
-                        $ci=new CommonItem();
                         $entity=-1;
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
-                           if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
-                              $entity=$ci->getField('entities_id');
+                           if (class_exists($ri->fields['itemtype'])) {
+                              $item = new $ri->fields['itemtype'];
+                              if ($item->getFromDB($ri->fields['items_id'])) {
+                                 $entity=$item->getField('entities_id');
+                              }
                            }
                         }
                         if ($entity>=0) {
@@ -827,16 +829,19 @@ class MailingResa {
                      case TECH_MAILING :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
-                           $ci=new CommonItem();
-                           $ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
-                           if ($tmp=$ci->getField('users_id_tech')) {
-                              $query2 = "$selectuser
-                                         FROM `glpi_users`
-                                         WHERE `glpi_users`.`id` = '".$tmp."'";
-                              if ($result2 = $DB->query($query2)) {
-                                 if ($DB->numrows($result2)==1) {
-                                    $row = $DB->fetch_row($result2);
-                                    $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           if (class_exists($ri->fields["itemtype"])) {
+                              $item = new $ri->fields["itemtype"]();
+                              if ($item->getFromDB($ri->fields["items_id"])) {
+                                 if ($tmp=$item->getField('users_id_tech')) {
+                                    $query2 = "$selectuser
+                                             FROM `glpi_users`
+                                             WHERE `glpi_users`.`id` = '".$tmp."'";
+                                    if ($result2 = $DB->query($query2)) {
+                                       if ($DB->numrows($result2)==1) {
+                                          $row = $DB->fetch_row($result2);
+                                          $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                       }
+                                    }
                                  }
                               }
                            }
@@ -847,16 +852,19 @@ class MailingResa {
                      case USER_MAILING :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
-                           $ci=new CommonItem();
-                           $ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
-                           if ($tmp=$ci->getField('users_id')) {
-                              $query2 = "$selectuser
-                                        FROM `glpi_users`
-                                        WHERE `glpi_users`.`id` = '".$tmp."'";
-                              if ($result2 = $DB->query($query2)) {
-                                 if ($DB->numrows($result2)==1) {
-                                    $row = $DB->fetch_row($result2);
-                                    $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           if (class_exists($ri->fields["itemtype"])) {
+                              $item = new $ri->fields["itemtype"]();
+                              if ($item->getFromDB($ri->fields["items_id"])) {
+                                 if ($tmp=$item->getField('users_id')) {
+                                    $query2 = "$selectuser
+                                             FROM `glpi_users`
+                                             WHERE `glpi_users`.`id` = '".$tmp."'";
+                                    if ($result2 = $DB->query($query2)) {
+                                       if ($DB->numrows($result2)==1) {
+                                          $row = $DB->fetch_row($result2);
+                                          $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                       }
+                                    }
                                  }
                               }
                            }
@@ -869,20 +877,23 @@ class MailingResa {
                   // Get entity
                   $ri=new ReservationItem();
                   $ri->getFromDB($this->resa->fields['reservationitems_id']);
-                  $ci = new CommonItem();
-                  $ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
-                  $entities_id=$ci->getField('entities_id');
-                  $query="$selectuser
-                          FROM `glpi_profiles_users`
-                          INNER JOIN `glpi_users`
-                                 ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-                          WHERE `glpi_profiles_users`.`profiles_id`='".$data["items_id"]."'".
-                                getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                           $entities_id,true);
-                  if ($result2= $DB->query($query)) {
-                     if ($DB->numrows($result2)) {
-                        while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToEmailList($emails,$row['email'],$row['lang']);
+                  if (class_exists($ri->fields['itemtype'])) {
+                     $item = new $ri->fields['itemtype']();
+                     if ($item->getFromDB($ri->fields['items_id'])) {
+                        $entities_id=$item->getField('entities_id');
+                        $query="$selectuser
+                              FROM `glpi_profiles_users`
+                              INNER JOIN `glpi_users`
+                                       ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
+                              WHERE `glpi_profiles_users`.`profiles_id`='".$data["items_id"]."'".
+                                    getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
+                                                               $entities_id,true);
+                        if ($result2= $DB->query($query)) {
+                           if ($DB->numrows($result2)) {
+                              while ($row=$DB->fetch_assoc($result2)) {
+                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                              }
+                           }
                         }
                      }
                   }
@@ -916,11 +927,13 @@ class MailingResa {
       global $CFG_GLPI,$DB;
 
       $ri=new ReservationItem();
-      $ci=new CommonItem();
       $entity=-1;
       if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
-         if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])) {
-            $entity=$ci->getField('entities_id');
+         if (class_exists($ri->fields['itemtype'])) {
+            $item = new $ri->fields['itemtype']();
+            if ($item->getFromDB($ri->fields['items_id'])) {
+               $entity=$item->getField('entities_id');
+            }
          }
       }
       if ($entity>=0) {
