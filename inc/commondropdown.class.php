@@ -326,7 +326,7 @@ abstract class CommonDropdown extends CommonDBTM {
          CommonDropdown::dropdownValue($this->table, '_replace_by', $this->fields[$fk], 1,
                        $this->getEntityID(), '', getSonsOf($this->table, $ID));
       } else {
-         CommonDropdown::getDropdownArrayNames($this->table, "_replace_by", $ID, $this->getEntityID());
+         CommonDropdown::dropdownValue($this->table, '_replace_by', 0, 1, $this->getEntityID(),'',array($ID));
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
@@ -764,7 +764,7 @@ abstract class CommonDropdown extends CommonDBTM {
       global $DB,$CFG_GLPI;
 
       $tabs=array();
-
+      
       if (count($ids)) {
          $field='name';
          if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
