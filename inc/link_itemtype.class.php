@@ -83,6 +83,7 @@ class Link_ItemType extends CommonDBTM{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $i = 0;
+      $used = array();
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -92,18 +93,20 @@ class Link_ItemType extends CommonDBTM{
 
       while ($i < $number) {
          $ID=$DB->result($result, $i, "id");
-         $ci->setType($DB->result($result, $i, "itemtype"));
+         $itemtype = $DB->result($result, $i, "itemtype");
+         $ci->setType($itemtype);
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>".$ci->getType()."</td>";
          echo "<td class='center'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php?deletedevice=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
                <strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+         $used[$itemtype] = $itemtype;
          $i++;
       }
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='links_id' value='$links_id'>";
-         Device::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"]);
+         Device::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"],$used);
          echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".
                             $LANG['buttons'][8]."\" class='submit'>";
          echo "</div></td></tr>";
