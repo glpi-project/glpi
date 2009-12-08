@@ -126,10 +126,15 @@ class RuleCriteria extends CommonDBTM {
                return getUserName($initValue);
 
             case "dropdown_tracking_itemtype" :
-               $ci =new CommonItem();
-               $ci->setType($initValue);
-               return $ci->getType($initValue);
-
+               if (class_exists($initValue)) {
+                  $item= new $initValue();
+                  return $item->getTypeName();
+               } else {
+                  if (empty($initValue)) {
+                     return $LANG['help'][30];
+                  }
+               }
+               break;
             case "dropdown_urgency" :
                return Ticket::getUrgencyName($initValue);
 

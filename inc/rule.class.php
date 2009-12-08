@@ -990,10 +990,15 @@ class Rule extends CommonDBTM {
                return getUserName($pattern);
 
             case "dropdown_tracking_itemtype" :
-               $ci =new CommonItem();
-               $ci->setType($pattern);
-               return $ci->getType($pattern);
-
+               if (class_exists($pattern)) {
+                  $item= new $pattern();
+                  return $item->getTypeName();
+               } else {
+                  if (empty($pattern)) {
+                     return $LANG['help'][30];
+                  }
+               }
+               break;
             case "dropdown_priority" :
                return Ticket::getPriorityName($pattern);
 
