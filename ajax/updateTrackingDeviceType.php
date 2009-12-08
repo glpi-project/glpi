@@ -34,13 +34,14 @@
 // ----------------------------------------------------------------------
 
 
-	define('GLPI_ROOT','..');
+$AJAX_INCLUDE=1;
+define('GLPI_ROOT','..');
 
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 	
-	checkRight("update_ticket","1");
-	dropdownMyDevices($_POST["userID"],$_POST["entity_restrict"]);
-	ajaxFooter();
+checkRight("update_ticket","1");
+dropdownMyDevices($_POST["userID"],$_POST["entity_restrict"]);
+ajaxFooter();
 ?>
