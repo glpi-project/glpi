@@ -96,7 +96,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          default :
             // Specific plugin Type case
             $plugdisplay=false;
-            if ($_POST["itemtype"]>1000) {
+            if (isPluginItem($_POST["itemtype"])) {
                if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
                   $plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
                                          'MassiveActionsFieldsDisplay',$_POST["itemtype"],
@@ -209,7 +209,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          default : // dropdown case
             // Specific plugin Type case
             $plugdisplay=false;
-            if ($_POST["itemtype"]>1000) {
+            if (isPluginItem($_POST["itemtype"])) {
                if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
                   $plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
                                          'MassiveActionsFieldsDisplay',$_POST["itemtype"],
