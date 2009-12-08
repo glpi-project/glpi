@@ -45,6 +45,8 @@ if (!TableExists($_POST['table'])) {
    exit();
 }
 
+$itemtypeisplugin=isPluginItem($_POST['itemtype']);
+
 if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
    if (isset ($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
       $entity = $_POST["entity_restrict"];
@@ -71,7 +73,7 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
    $where.=" AND (`name` ".$search."
                   OR `id` = '".$_POST['searchText']."'";
 
-   if ($_POST['table']!="glpi_softwares" && $_POST['itemtype']<1000) {
+   if ($_POST['table']!="glpi_softwares" && !$itemtypeisplugin) {
       $where.=" OR `contact` ".$search."
                 OR `serial` ".$search."
                 OR `otherserial` ".$search;
@@ -105,7 +107,7 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_array($result)) {
       $output = $data['name'];
-      if ($_POST['table']!="glpi_softwares" && $_POST['itemtype']<1000) {
+      if ($_POST['table']!="glpi_softwares" && !$itemtypeisplugin) {
          if (!empty($data['contact'])) {
             $output.=" - ".$data['contact'];
          }

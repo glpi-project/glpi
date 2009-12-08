@@ -1201,7 +1201,7 @@ function showList ($itemtype,$params) {
          // Display pager only for HTML
          if ($output_type==HTML_OUTPUT) {
             // For plugin add new parameter if available
-            if ($itemtype>1000) {
+            if (isPluginItem($itemtype)) {
                if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
                   $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].
                             '_addParamFordynamicReport';
@@ -1610,7 +1610,7 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
    }
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addHaving';
          if (function_exists($function)) {
@@ -1629,7 +1629,7 @@ function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
 
    //// Default cases
    // Link with plugin tables
-   if ($itemtype<=1000) {
+   if (!isPluginItem($itemtype)) {
       if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
          if (count($matches)==2) {
             $plug=$matches[1];
@@ -1730,7 +1730,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
    }
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addOrderBy';
          if (function_exists($function)) {
@@ -1776,7 +1776,7 @@ function addOrderBy($itemtype,$ID,$order,$key=0) {
    //// Default cases
 
    // Link with plugin tables
-   if ($itemtype<=1000) {
+   if (!isPluginItem($itemtype)) {
       if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
          if (count($matches)==2) {
             $plug=$matches[1];
@@ -1898,7 +1898,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
    }
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addSelect';
          if (function_exists($function)) {
@@ -2068,7 +2068,7 @@ function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
 
    //// Default cases
    // Link with plugin tables
-   if ($itemtype<=1000) {
+   if (!isPluginItem($itemtype)) {
       if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
          if (count($matches)==2) {
             $plug=$matches[1];
@@ -2212,7 +2212,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    $SEARCH=makeTextSearch($val,$nott);
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addWhere';
          if (function_exists($function)) {
@@ -2378,7 +2378,7 @@ function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
    //// Default cases
 
    // Link with plugin tables
-   if ($itemtype<=1000) {
+   if (!isPluginItem($itemtype)) {
       if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches)) {
          if (count($matches)==2) {
             $plug=$matches[1];
@@ -2556,7 +2556,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    }
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_giveItem';
          if (function_exists($function)) {
@@ -2839,7 +2839,7 @@ function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
    //// Default case
 
    // Link with plugin tables : need to know left join structure
-   if ($itemtype<=1000) {
+   if (!isPluginItem($itemtype)) {
       if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches)) {
          if (count($matches)==2) {
             $plug=$matches[1];
@@ -3130,7 +3130,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
    }
 
    // Plugin can override core definition for its type
-   if ($itemtype>1000) {
+   if (isPluginItem($itemtype)) {
       if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
          $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addLeftJoin';
          if (function_exists($function)) {
@@ -3421,7 +3421,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 
       default :
          // Link with plugin tables : need to know left join structure
-         if ($itemtype<=1000) {
+         if (!isPluginItem($itemtype)) {
             if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches)) {
                if (count($matches)==2) {
                   $plug=$matches[1];
