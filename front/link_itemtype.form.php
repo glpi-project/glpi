@@ -46,7 +46,7 @@ if(empty($_GET["id"])) {
 $link = new Link;
 $link_itemtype = new Link_ItemType;
 
-if (isset($_POST["adddevice"])){
+if (isset($_POST["add"])){
    $link->check($_GET["id"],'w');
 
    if ($link_itemtype->add($_POST)) {
@@ -54,7 +54,7 @@ if (isset($_POST["adddevice"])){
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
-else if (isset($_GET["deletedevice"])){
+else if (isset($_GET["delete"])){
    $link->check($_GET["links_id"],'w');
 
    $link_itemtype->delete($_GET);

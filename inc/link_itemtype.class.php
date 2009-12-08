@@ -98,7 +98,7 @@ class Link_ItemType extends CommonDBTM{
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>".$ci->getType()."</td>";
          echo "<td class='center'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php?deletedevice=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
                <strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
          $used[$itemtype] = $itemtype;
          $i++;
@@ -107,7 +107,7 @@ class Link_ItemType extends CommonDBTM{
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='links_id' value='$links_id'>";
          Device::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"],$used);
-         echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".
+         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"".
                             $LANG['buttons'][8]."\" class='submit'>";
          echo "</div></td></tr>";
       }
