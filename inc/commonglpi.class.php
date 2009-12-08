@@ -233,14 +233,14 @@ class CommonGLPI {
     * Get the search page URL for the current classe
     */
    function getTabsURL() {
-      return getItemTypeTabsURL($itemtype);
+      return getItemTypeTabsURL(get_class($this));
    }
 
    /**
     * Get the search page URL for the current classe
     */
    function getSearchURL() {
-      return getItemTypeSearchURL($itemtype);
+      return getItemTypeSearchURL(get_class($this));
    }
 
    /**
