@@ -41,12 +41,12 @@ if (!defined('GLPI_ROOT')){
 /**
  *  Timer class for debug
  */
-class Script_Timer {
+class Timer {
    //! Timer value
    var $timer=0;
 
    //! Start the Timer
-   function Start_Timer () {
+   function start () {
       $this->timer=microtime(true);
 
       return true;
@@ -55,10 +55,10 @@ class Script_Timer {
     * Get the current time of the timer
     *
     * @param $decimals number of decimal of the result
-    * @return time past from Start_Timer
+    * @return time past from start
     *
     */
-   function Get_Time ($decimals = 3) {
+   function getTime ($decimals = 3) {
       // $decimals will set the number of decimals you want for your milliseconds.
 
       return number_format(microtime(true) - $this->timer,$decimals,'.',' ');

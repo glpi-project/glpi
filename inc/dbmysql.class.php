@@ -142,8 +142,8 @@ class DBmysql {
       if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
          $SQL_TOTAL_REQUEST++;
          $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST]=$query;
-         $TIMER=new Script_Timer;
-         $TIMER->Start_Timer();
+         $TIMER=new Timer;
+         $TIMER->start();
       }
 
       $res=@mysql_query($query,$this->dbh);
@@ -176,7 +176,7 @@ class DBmysql {
       }
 
       if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
-         $TIME=$TIMER->Get_Time();
+         $TIME=$TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST]=$TIME;
       }
       return $res;

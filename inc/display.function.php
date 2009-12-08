@@ -862,9 +862,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/preference.php\" title=\"".
               $LANG['Menu'][11]."\" >".$LANG['Menu'][11]."</a></li>";
 
-   // Temporary autoload test
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php?toggle_autoload=1'>".(!isset($_SESSION['glpiautoload'])||$_SESSION['glpiautoload']?"Disable autoload":"Activate Autoload")."</a></li>";
-
    echo "</ul>";
    echo "<div class='sep'></div>";
    echo "</div>\n";
@@ -1577,7 +1574,7 @@ function commonFooter($keepDB=false) {
 
    echo "<div id='footer' >";
    echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
-   echo $TIMER_DEBUG->Get_Time()."s - ";
+   echo $TIMER_DEBUG->getTime()."s - ";
    if (function_exists("memory_get_usage")) {
       echo memory_get_usage();
    }

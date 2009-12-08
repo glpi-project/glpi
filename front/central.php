@@ -66,20 +66,6 @@ if (isset($_GET["active_entity"])) {
    }
 }
 
-// Manage autoload change
-if (isset($_GET["toggle_autoload"])) {
-   if (!isset($_SESSION["glpiautoload"])) {
-      $_SESSION["glpiautoload"] = false;
-   } else {
-      if ($_SESSION["glpiautoload"]){
-         $_SESSION["glpiautoload"] = false;
-      } else {
-         $_SESSION["glpiautoload"] = true;
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
-
 commonHeader($LANG['title'][0],$_SERVER['PHP_SELF']);
 
 // Redirect management
