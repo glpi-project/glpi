@@ -462,7 +462,6 @@ class Supplier extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
 
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
@@ -474,10 +473,16 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
       echo "</tr>";
-      $ci=new CommonItem;
+
       $num=0;
-      while ($i < $number) {
+      for ($i=0 ; $i < $number ; $i++) {
+
          $itemtype=$DB->result($result, $i, "itemtype");
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item = new $itemtype();
+
          if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLEITEM_TYPE
              && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
             $linktype = $itemtype;
@@ -507,7 +512,6 @@ class Supplier extends CommonDBTM {
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
-            $ci->setType($itemtype);
 
             // Set $linktype for link to search engine pnly
             if ($itemtype==SOFTWARELICENSE_TYPE && $nb>$_SESSION['glpilist_limit']) {
@@ -516,7 +520,7 @@ class Supplier extends CommonDBTM {
             }
             if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$linktype])) {
                echo "<tr class='tab_bg_1'>";
-               echo "<td class='center'>".$ci->getType()."&nbsp;:&nbsp;$nb</td>";
+               echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$linktype] . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
@@ -535,7 +539,7 @@ class Supplier extends CommonDBTM {
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {
-                     echo "<td class='center top' rowspan='$nb'>".$ci->getType()
+                     echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
                             .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
                   echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
