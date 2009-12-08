@@ -39,7 +39,7 @@ checkLoginUser();
 popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 
 Search::manageGetValues('DocumentType');
-showList('DocumentType',$_GET);
+Search::showList('DocumentType',$_GET);
 
 popFooter();
 

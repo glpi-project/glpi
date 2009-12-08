@@ -234,8 +234,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                         $items_in_group++;
                      } else {
                         // Do not show infocom items
-                        if (($show_infocoms && isInfocomSearch($_POST["itemtype"],$key))
-                            || (!$show_infocoms && !isInfocomSearch($_POST["itemtype"],$key))) {
+                        if (($show_infocoms && Search::isInfocomOption($_POST["itemtype"],$key))
+                            || (!$show_infocoms && !Search::isInfocomOption($_POST["itemtype"],$key))) {
                            $newgroup.= "<option value='$key'>".$val["name"]."</option>";
                            $items_in_group++;
                         }

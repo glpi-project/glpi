@@ -197,7 +197,7 @@ if (isset($_POST["itemtype"])){
 				if (isset($searchopt[$_POST["id_field"]]) && class_exists($_POST["itemtype"])){
 					/// Infocoms case
 					if (!isPluginItem($_POST["itemtype"])
-                     && isInfocomSearch($_POST["itemtype"],$_POST["id_field"])){
+                     && Search::isInfocomOption($_POST["itemtype"],$_POST["id_field"])){
 						$ic=new Infocom();
 						$item =new $_POST["itemtype"]();
 
