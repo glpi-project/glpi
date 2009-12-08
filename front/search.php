@@ -53,7 +53,7 @@ if (isset($_GET["globalsearch"])) {
       if (haveTypeRight($itemtype,'r')) {
          Search::manageGetValues($itemtype,false,false);
          $_GET["contains"][0] = $_GET["globalsearch"];
-         showList($itemtype,$_GET);
+         Search::showList($itemtype,$_GET);
          echo "<hr>";
       }
    }

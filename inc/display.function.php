@@ -1969,8 +1969,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,
    echo "<td width='50%' class='tab_bg_2'>";
    printPagerForm("$target?$parameters&amp;start=$start");
    echo "</td>";
-
-   if ($item_type_output>0 && isset($_SESSION["glpiactiveprofile"])
+   if (!empty($item_type_output) && isset($_SESSION["glpiactiveprofile"])
        && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
 
       echo "<td class='tab_bg_2' width='30%'>";
