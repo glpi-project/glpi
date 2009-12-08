@@ -1315,7 +1315,11 @@ function helpHeader($title,$url='') {
       echo "<ul class='ssmenu'>";
       // list menu item
       foreach ($list as $key => $val) {
-         echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".
+         $link="";
+         if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
+            $link=$PLUGIN_HOOKS["helpdesk_menu_entry"][$key];
+         }
+         echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key.$link."\">".
                      $plugins[$key]["name"]."</a></li>\n";
       }
       echo "</ul></li>";
