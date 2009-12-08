@@ -196,7 +196,7 @@ if (isset($_POST["itemtype"])){
 				$searchopt=Search::getCleanedOptions($_POST["itemtype"],'w');
 				if (isset($searchopt[$_POST["id_field"]]) && class_exists($_POST["itemtype"])){
 					/// Infocoms case
-					if (!isPluginItem($_POST["itemtype"])
+					if (!isPluginItemType($_POST["itemtype"])
                      && Search::isInfocomOption($_POST["itemtype"],$_POST["id_field"])){
 						$ic=new Infocom();
 						$item =new $_POST["itemtype"]();
@@ -547,7 +547,7 @@ if (isset($_POST["itemtype"])){
 					doOneHook($split[1],
 						'MassiveActionsProcess',
 						$_POST);
-				} else if (isPluginItem($_POST["itemtype"])
+				} else if (isPluginItemType($_POST["itemtype"])
 					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
 					// non-normalized name
 					// hook from the plugin defining the type

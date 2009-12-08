@@ -168,7 +168,7 @@ if (!isset($_SESSION['glpiautoload']) || $_SESSION['glpiautoload']){
    function __autoload($classname) {
          $dir=GLPI_ROOT . "/inc/";
          //$classname="PluginExampleProfile";
-         if ($plug=isPluginItem($classname)) {
+         if ($plug=isPluginItemType($classname)) {
             $plugname=strtolower($plug['plugin']);
             // Is the plugin activate ?
             /// TODO manage CLI : no glpi_plugins SESSION variable / need to do a real check plugin activation

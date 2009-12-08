@@ -94,7 +94,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 			break;
       default :
          // Plugin case
-         if (isPluginItem($_GET["item_type"])){
+         if (isPluginItemType($_GET["item_type"])){
             if (isset($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]])){
                if (doOneHook($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]], 'dynamicReport', $_GET)) {
                   exit();

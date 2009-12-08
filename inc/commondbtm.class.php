@@ -568,7 +568,7 @@ class CommonDBTM extends CommonGLPI {
     */
    function getSearchURL() {
 
-      if ($plug=isPluginItem(get_class($this))) {
+      if ($plug=isPluginItemType(get_class($this))) {
          $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
       } else { // Standard case
@@ -583,7 +583,7 @@ class CommonDBTM extends CommonGLPI {
     */
    function getFormURL() {
 
-      if ($plug=isPluginItem(get_class($this))) {
+      if ($plug=isPluginItemType(get_class($this))) {
          $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
 
