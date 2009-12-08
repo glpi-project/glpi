@@ -37,28 +37,46 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-include_once (GLPI_ROOT . "/inc/timer.class.php");
+include_once (GLPI_ROOT . "/inc/plugin.function.php");
+
+function __autoload($classname) {
+   $dir=GLPI_ROOT . "/inc/";
+   //$classname="PluginExampleProfile";
+   if ($plug=isPluginItemType($classname)) {
+      $plugname=strtolower($plug['plugin']);
+      // Is the plugin activate ?
+      /// TODO manage CLI : no glpi_plugins SESSION variable / need to do a real check plugin activation
+      if (in_array($plugname,$_SESSION['glpi_plugins'])) {
+         $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
+         $item=strtolower($plug['class']);
+      } else {
+         return false;
+      }
+   } else {
+      $item=strtolower($classname);
+   }
+
+   if (file_exists("$dir$item.class.php")) {
+      include_once ("$dir$item.class.php");
+   }
+}
 
 // Init Timer to compute time of display
-$TIMER_DEBUG=new Script_Timer;
-$TIMER_DEBUG->Start_Timer();
+$TIMER_DEBUG=new Timer;
+$TIMER_DEBUG->start();
 
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
 include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
 include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
-include_once (GLPI_ROOT . "/inc/commonitem.class.php");
+
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
-include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
-include_once (GLPI_ROOT . "/inc/plugin.function.php");
-include_once (GLPI_ROOT . "/inc/plugin.class.php");
-include_once (GLPI_ROOT . "/inc/displaypreference.class.php");
 
 // Load Language file
 loadLanguage();
@@ -68,74 +86,6 @@ if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
    $DEBUG_SQL["queries"]=array();
    $DEBUG_SQL["errors"]=array();
    $DEBUG_SQL["times"]=array();
-}
-
-if (!isset($AJAX_INCLUDE)) {
-   include_once (GLPI_ROOT . "/inc/auth.class.php");
-   include_once (GLPI_ROOT . "/inc/mailing.class.php");
-   include_once (GLPI_ROOT . "/inc/mailing.function.php");
-   include_once (GLPI_ROOT . "/inc/export.function.php");
-   include_once (GLPI_ROOT . "/inc/log.function.php");
-   include_once (GLPI_ROOT . "/inc/bookmark.class.php");
-   include_once (GLPI_ROOT . "/inc/alert.class.php");
-
-   // TODO : clean it after autoload
-   include_once (GLPI_ROOT . "/inc/search.function.php");
-   include_once (GLPI_ROOT . "/inc/event.class.php");
-   include_once (GLPI_ROOT . "/inc/authmail.class.php");
-   include_once (GLPI_ROOT . "/inc/authldap.class.php");
-   include_once (GLPI_ROOT . "/inc/authldapreplicate.class.php");
-   include_once (GLPI_ROOT . "/inc/bookmark_user.class.php");
-   include_once (GLPI_ROOT . "/inc/commondropdown.class.php");
-   include_once (GLPI_ROOT . "/inc/commontreedropdown.class.php");
-   include_once (GLPI_ROOT . "/inc/ticketcategory.class.php");
-   include_once (GLPI_ROOT . "/inc/taskcategory.class.php");
-   include_once (GLPI_ROOT . "/inc/location.class.php");
-   include_once (GLPI_ROOT . "/inc/netpoint.class.php");
-   include_once (GLPI_ROOT . "/inc/state.class.php");
-   include_once (GLPI_ROOT . "/inc/requesttype.class.php");
-   include_once (GLPI_ROOT . "/inc/manufacturer.class.php");
-   include_once (GLPI_ROOT . "/inc/computertype.class.php");
-   include_once (GLPI_ROOT . "/inc/computermodel.class.php");
-   include_once (GLPI_ROOT . "/inc/networkequipmenttype.class.php");
-   include_once (GLPI_ROOT . "/inc/networkequipmentmodel.class.php");
-   include_once (GLPI_ROOT . "/inc/printertype.class.php");
-   include_once (GLPI_ROOT . "/inc/printermodel.class.php");
-   include_once (GLPI_ROOT . "/inc/monitortype.class.php");
-   include_once (GLPI_ROOT . "/inc/monitormodel.class.php");
-   include_once (GLPI_ROOT . "/inc/peripheraltype.class.php");
-   include_once (GLPI_ROOT . "/inc/peripheralmodel.class.php");
-   include_once (GLPI_ROOT . "/inc/phonetype.class.php");
-   include_once (GLPI_ROOT . "/inc/phonemodel.class.php");
-   include_once (GLPI_ROOT . "/inc/softwarelicensetype.class.php");
-   include_once (GLPI_ROOT . "/inc/cartridgeitemtype.class.php");
-   include_once (GLPI_ROOT . "/inc/consumableitemtype.class.php");
-   include_once (GLPI_ROOT . "/inc/contracttype.class.php");
-   include_once (GLPI_ROOT . "/inc/contacttype.class.php");
-   include_once (GLPI_ROOT . "/inc/devicememorytype.class.php");
-   include_once (GLPI_ROOT . "/inc/suppliertype.class.php");
-   include_once (GLPI_ROOT . "/inc/interfacetype.class.php");
-   include_once (GLPI_ROOT . "/inc/devicecasetype.class.php");
-   include_once (GLPI_ROOT . "/inc/phonepowersupply.class.php");
-   include_once (GLPI_ROOT . "/inc/filesystem.class.php");
-   include_once (GLPI_ROOT . "/inc/documenttype.class.php");
-   include_once (GLPI_ROOT . "/inc/documentcategory.class.php");
-   include_once (GLPI_ROOT . "/inc/knowbaseitemcategory.class.php");
-   include_once (GLPI_ROOT . "/inc/operatingsystem.class.php");
-   include_once (GLPI_ROOT . "/inc/operatingsystemversion.class.php");
-   include_once (GLPI_ROOT . "/inc/operatingsystemservicepack.class.php");
-   include_once (GLPI_ROOT . "/inc/autoupdatesystem.class.php");
-   include_once (GLPI_ROOT . "/inc/networkinterface.class.php");
-   include_once (GLPI_ROOT . "/inc/networkequipmentfirmware.class.php");
-   include_once (GLPI_ROOT . "/inc/network.class.php");
-   include_once (GLPI_ROOT . "/inc/vlan.class.php");
-   include_once (GLPI_ROOT . "/inc/softwarecategory.class.php");
-   include_once (GLPI_ROOT . "/inc/usertitle.class.php");
-   include_once (GLPI_ROOT . "/inc/usercategory.class.php");
-   include_once (GLPI_ROOT . "/inc/domain.class.php");
-   include_once (GLPI_ROOT . "/inc/preference.class.php");
-   include_once (GLPI_ROOT . "/inc/notification.class.php");
-   include_once (GLPI_ROOT . "/inc/computer_item.class.php");
 }
 
 // Security system
@@ -162,166 +112,19 @@ if (isset($AJAX_INCLUDE)) {
    $HEADER_LOADED=true;
 }
 
-if (!isset($_SESSION['glpiautoload']) || $_SESSION['glpiautoload']){
-   function __autoload($classname) {
-         $dir=GLPI_ROOT . "/inc/";
-         //$classname="PluginExampleProfile";
-         if ($plug=isPluginItemType($classname)) {
-            $plugname=strtolower($plug['plugin']);
-            // Is the plugin activate ?
-            /// TODO manage CLI : no glpi_plugins SESSION variable / need to do a real check plugin activation
-            if (in_array($plugname,$_SESSION['glpi_plugins'])) {
-               $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
-               $item=strtolower($plug['class']);
-            } else {
-               return false;
-            }
-         } else {
-            $item=strtolower($classname);
-         }
 
-         if (file_exists("$dir$item.class.php")) {
-            include_once ("$dir$item.class.php");
-         }
-/*         if (file_exists("$dir$item.function.php")) {
-            include_once ("$dir$item.function.php");
-         }
-*/
-   // TODO Remove this ASAP
-   include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
-   include_once (GLPI_ROOT . "/inc/reminder.function.php");
-   include_once (GLPI_ROOT . "/inc/ticket.function.php");
-   include_once (GLPI_ROOT . "/inc/user.function.php");
-   }
-} else {
-   if (isset($NEEDED_ITEMS) && is_array($NEEDED_ITEMS)) {
-      foreach ($NEEDED_ITEMS as $item) {
-         // TODO : hack waiting for autoload
-         if ($item=='enterprise') {
-            $item='supplier';
-         }
-         if ($item=='ocsng') {
-            $item='ocsserver';
-         }
-         if ($item=='registry') {
-            $item='registrykey';
-         }
-         if ($item=='mailgate') {
-            $item='mailcollector';
-         }
-         if ($item=='networking') {
-            $item='networkequipment';
-            include_once (GLPI_ROOT . "/inc/networkport.class.php");
-            include_once (GLPI_ROOT . "/inc/networkport_networkport.class.php");
-         }
-         if ($item=='reservation') {
-            $item='reservationitem';
-            include_once (GLPI_ROOT . "/inc/reservation.class.php");
-         }
-
-         if ($item=='rule.dictionnary.software') {
-            $item='ruledictionnarysoftware';
-            include_once (GLPI_ROOT . "/inc/ruledictionnarysoftwarecollection.class.php");
-         }
-
-         if ($item=='rule.dictionnary.dropdown') {
-            $item='ruledictionnarydropdown';
-            include_once (GLPI_ROOT . "/inc/ruledictionnarydropdowncollection.class.php");
-         }
-
-         if ($item=='rule.ocs') {
-            $item='ruleocs';
-            include_once (GLPI_ROOT . "/inc/ruleocscollection.class.php");
-         }
-
-         if ($item=='rule.right') {
-            $item='ruleright';
-            include_once (GLPI_ROOT . "/inc/rulerightcollection.class.php");
-         }
-         if ($item=='rule.tracking') {
-            $item='ruleticket';
-            include_once (GLPI_ROOT . "/inc/ruleticketcollection.class.php");
-         }
-
-         if ($item=='rule.softwarecategories') {
-            $item='rulesoftwarecategory';
-            include_once (GLPI_ROOT . "/inc/rulesoftwarecategorycollection.class.php");
-         }
-
-         if ($item=='ldap.parameters') {
-            $item='ruleldapparameter';
-         }
-
-         if ($item=='planning') {
-            $item='ticketplanning';
-            include_once (GLPI_ROOT . "/inc/planning.class.php");
-         }
-
-         if ($item=='group') {
-            include_once (GLPI_ROOT . "/inc/group_user.class.php");
-         }
-
-         if ($item=='tracking') {
-            $item='ticket';
-            include_once (GLPI_ROOT . "/inc/ticketfollowup.class.php");
-         }
-
-         if ($item=='rulesengine') {
-            include_once (GLPI_ROOT . "/inc/rule.class.php");
-            include_once (GLPI_ROOT . "/inc/rule.function.php");
-            include_once (GLPI_ROOT . "/inc/rulecollection.class.php");
-            include_once (GLPI_ROOT . "/inc/rulecriteria.class.php");
-            include_once (GLPI_ROOT . "/inc/ruleaction.class.php");
-            include_once (GLPI_ROOT . "/inc/rulecached.class.php");
-            include_once (GLPI_ROOT . "/inc/rulecachedcollection.class.php");
-         }
-         if ($item=='cartridge') {
-            $item='cartridgeitem';
-            include_once (GLPI_ROOT . "/inc/cartridge.class.php");
-         }
-
-         if ($item=='consumable') {
-            $item='consumableitem';
-            include_once (GLPI_ROOT . "/inc/consumable.class.php");
-         }
-
-         if ($item=='knowbase') {
-            $item='knowbaseitem';
-         }
-
-         if ($item=='computer') {
-            include_once (GLPI_ROOT . "/inc/computerdisk.class.php");
-         }
-         if ($item=='document') {
-            include_once (GLPI_ROOT . "/inc/document_item.class.php");
-         }
-         if ($item=='software') {
-            include_once (GLPI_ROOT . "/inc/softwareversion.class.php");
-            include_once (GLPI_ROOT . "/inc/softwarelicense.class.php");
-         }
-         if ($item=='contract') {
-            include_once (GLPI_ROOT . "/inc/contract_item.class.php");
-            include_once (GLPI_ROOT . "/inc/contract_supplier.class.php");
-         }
-         if ($item=='contact') {
-            include_once (GLPI_ROOT . "/inc/contact_supplier.class.php");
-         }
-         if ($item=='entity') {
-            include_once (GLPI_ROOT . "/inc/entitydata.class.php");
-         }
-         if ($item=='crontask') {
-            include_once (GLPI_ROOT . "/inc/crontasklog.class.php");
-         }
-
-         if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
-            include_once (GLPI_ROOT . "/inc/$item.class.php");
-         }
-         if (file_exists(GLPI_ROOT . "/inc/$item.function.php")) {
-            include_once (GLPI_ROOT . "/inc/$item.function.php");
-         }
-      }
-   }
+// TODO Remove this ASAP
+if (!isset($AJAX_INCLUDE)) {
+   include_once (GLPI_ROOT . "/inc/mailing.function.php");
+   include_once (GLPI_ROOT . "/inc/export.function.php");
+   include_once (GLPI_ROOT . "/inc/log.function.php");
 }
+include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
+include_once (GLPI_ROOT . "/inc/reminder.function.php");
+include_once (GLPI_ROOT . "/inc/ticket.function.php");
+include_once (GLPI_ROOT . "/inc/user.function.php");
+include_once (GLPI_ROOT . "/inc/search.function.php");
+
 
 
 
