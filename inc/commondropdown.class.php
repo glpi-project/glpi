@@ -359,11 +359,11 @@ abstract class CommonDropdown extends CommonDBTM {
                                      AND `$field` = '$oldID'";
                      $result=$DB->query($query);
                      if ($DB->numrows($result)) {
-                        if (!function_exists('mergeOcsArray')) {
+                        if (!function_exists('OcsServer::mergeOcsArray')) {
                            include_once (GLPI_ROOT . "/inc/ocsng.function.php");
                         }
                         while ($data=$DB->fetch_array($result)) {
-                           mergeOcsArray($data['id'],array($field),"computer_update");
+                           OcsServer::mergeOcsArray($data['id'],array($field),"computer_update");
                         }
                      }
                   }

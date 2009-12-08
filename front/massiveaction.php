@@ -352,14 +352,14 @@ if (isset($_POST["itemtype"])){
 
 			break;
 			case "unlock_ocsng_field":
-				$fields=getOcsLockableFields();
+				$fields=OcsServer::getLockableFields();
 				if ($_POST['field']=='all'||isset($fields[$_POST['field']])){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1) {
 							if ($_POST['field']=='all'){
-								replaceOcsArray($key,array(),"computer_update");
+								OcsServer::replaceOcsArray($key,array(),"computer_update");
 							} else {
-								deleteInOcsArray($key,$_POST['field'],"computer_update",true);
+								OcsServer::deleteInOcsArray($key,$_POST['field'],"computer_update",true);
 							}
 						}
 					}
@@ -375,22 +375,22 @@ if (isset($_POST["itemtype"])){
 					if ($val==1) {
 						switch ($_POST["action"]){
 							case "unlock_ocsng_monitor":
-								ocsUnlockItems($key,"import_monitor");
+								OcsServer::unlockItems($key,"import_monitor");
 								break;
 							case "unlock_ocsng_printer":
-								ocsUnlockItems($key,"import_printer");
+								OcsServer::unlockItems($key,"import_printer");
 								break;
 							case "unlock_ocsng_peripheral":
-								ocsUnlockItems($key,"import_peripheral");
+								OcsServer::unlockItems($key,"import_peripheral");
 								break;
 							case "unlock_ocsng_software":
-								ocsUnlockItems($key,"import_software");
+								OcsServer::unlockItems($key,"import_software");
 								break;
 							case "unlock_ocsng_ip":
-								ocsUnlockItems($key,"import_ip");
+								OcsServer::unlockItems($key,"import_ip");
 								break;
 							case "unlock_ocsng_disk":
-								ocsUnlockItems($key,"import_disk");
+								OcsServer::unlockItems($key,"import_disk");
 								break;
 						}
 					}
@@ -422,7 +422,7 @@ if (isset($_POST["itemtype"])){
 							$data = $DB->fetch_assoc($result);
 							if ($data['ocsservers_id'] != -1){
 							//Force update of the machine
-							ocsUpdateComputer($data['id'],$data['ocsservers_id'],1,1);
+							OcsServer::updateComputer($data['id'],$data['ocsservers_id'],1,1);
 							}
 						}
 						glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');

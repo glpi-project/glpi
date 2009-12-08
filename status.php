@@ -92,7 +92,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 			echo "Check OCS servers:";
 			while ($data = $DB->fetch_assoc($result)){
 				echo " ".$data['name'];
-				if (checkOCSconnection($data['id'])){
+				if (OcsServer::checkOCSconnection($data['id'])){
 					echo "_OK";
 				} else {
 					echo "_PROBLEM";
