@@ -262,17 +262,21 @@ function showHistory($itemtype,$items_id) {
                break;
 
             case HISTORY_DISCONNECT_DEVICE :
-               $ci=new CommonItem();
-               $ci->setType($data["devicetype"]);
-               $field=$ci->getType();
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["devicetype"])) {
+                  $item = new $data["devicetype"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["old_value"]."\"";
                break;
 
             case HISTORY_CONNECT_DEVICE :
-               $ci=new CommonItem();
-               $ci->setType($data["devicetype"]);
-               $field=$ci->getType();
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["devicetype"])) {
+                  $item = new $data["devicetype"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["new_value"]."\"";
                break;
@@ -299,9 +303,12 @@ function showHistory($itemtype,$items_id) {
 
             case HISTORY_OCS_LINK :
                if (haveRight("view_ocsng","r")) {
-                  $ci=new CommonItem();
-                  $ci->setType($data["devicetype"]);
-                  $field=$ci->getType();
+                  $field=NOT_AVAILABLE;
+                  if (class_exists($data["devicetype"])) {
+                     $item = new $data["devicetype"]();
+                     $field = $item->getTypeName();
+                  }
+
                   $change = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
                   $change.= "&nbsp;"."\"".$data["new_value"]."\"";
                } else {
@@ -326,17 +333,21 @@ function showHistory($itemtype,$items_id) {
                break;
 
             case HISTORY_ADD_RELATION :
-               $ci=new CommonItem();
-               $ci->setType($data["devicetype"]);
-               $field=$ci->getType();
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["devicetype"])) {
+                  $item = new $data["devicetype"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['log'][32]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["new_value"]."\"";
                break;
 
             case HISTORY_DEL_RELATION :
-               $ci=new CommonItem();
-               $ci->setType($data["devicetype"]);
-               $field=$ci->getType();
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["devicetype"])) {
+                  $item = new $data["devicetype"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['log'][33]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["old_value"]."\"";
                break;
