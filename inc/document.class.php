@@ -170,7 +170,7 @@ class Document extends CommonDBTM {
       global $LANG;
 
       if (isset($input["items_id"]) && isset($input["itemtype"]) && $input["items_id"] > 0
-          && $input["itemtype"] > 0){
+          && !empty($input["itemtype"])){
 
          $docitem=new Document_Item();
          $docitem->add(array('documents_id' => $newID,
