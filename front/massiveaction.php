@@ -193,7 +193,7 @@ if (isset($_POST["itemtype"])){
 				$searchopt=cleanSearchOption($_POST["itemtype"],'w');
 				if (isset($searchopt[$_POST["id_field"]])){
 					/// Infocoms case
-					if ($_POST["itemtype"]<1000
+					if (!isPluginItem($_POST["itemtype"])
                      && isInfocomSearch($_POST["itemtype"],$_POST["id_field"])){
 						$ic=new Infocom();
 						$ci=new CommonItem();
@@ -539,15 +539,14 @@ if (isset($_POST["itemtype"])){
 
 				// Plugin specific actions
 				$split=explode('_',$_POST["action"]);
-				if ($split[0]=='plugin' && isset($split[1])){
+				if ($split[0]=='plugin' && isset($split[1])) {
 					// Normalized name plugin_name_action
 					// Allow hook from any plugin on any (core or plugin) type
 					doOneHook($split[1],
 						'MassiveActionsProcess',
 						$_POST);
-				}
-				else if ($_POST["itemtype"]>1000
-					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])){
+				} else if (isPluginItem($_POST["itemtype"])
+					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
 					// non-normalized name
 					// hook from the plugin defining the type
 					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],

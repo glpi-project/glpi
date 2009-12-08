@@ -2863,7 +2863,7 @@ function getAllTypesForHelpdesk() {
    //Types of the core (after the plugin for robustness)
    $ci = new CommonItem();
    foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-      if ($itemtype<1000 // No plugin here
+      if (!isPluginItem($itemtype) // No plugin here
           && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          $ci->setType($itemtype);
          $types[$itemtype] = $ci->getType();

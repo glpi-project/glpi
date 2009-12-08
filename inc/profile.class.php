@@ -409,7 +409,7 @@ class Profile extends CommonDBTM {
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if ($itemtype<1000) { // No Plugin for the moment
+         if (!isPluginItem($itemtype)) { // No Plugin for the moment
             $ci->setType($itemtype);
             echo "<option value='".$itemtype."' ".
                   (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
@@ -677,7 +677,7 @@ class Profile extends CommonDBTM {
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
       $ci = new CommonItem();
       foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
-         if ($itemtype<1000) { // No Plugin for the moment
+         if (!isPluginItem($itemtype)) { // No Plugin for the moment
             $ci->setType($itemtype);
             echo "<option value='".$itemtype."' ".
                   (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
