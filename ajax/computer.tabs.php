@@ -93,8 +93,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             }
             break;
@@ -114,7 +113,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
             showLinkOnDevice(COMPUTER_TYPE,$_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
-            displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
             break;
 
          case 2 :
@@ -169,8 +168,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(COMPUTER_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             }
             break;

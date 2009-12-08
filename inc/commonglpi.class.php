@@ -215,7 +215,7 @@ class CommonGLPI {
                               'params'=>"target=$target&itemtype=".$this->type.
                                         "&glpi_tab=$key&id=$ID$template$extraparam$autoload");
          }
-         $plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
+         $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
          $tabs+=$plug_tabs;
          // Not all tab for templates and if only 1 tab
          if($display_all && empty($withtemplate)
@@ -228,6 +228,22 @@ class CommonGLPI {
          createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
       }
    }
+
+   /**
+    * Get the search page URL for the current classe
+    */
+   function getTabsURL() {
+
+      if ($plug=isPluginItem(get_class($this))) {
+         $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
+      } else { // Standard case
+         $dir = GLPI_ROOT;
+         $item = strtolower(get_class($this));
+      }
+      return "$dir/ajax/$item.tabs.php";
+   }
+
 
    function show() {
       $this->showTabs(0, '', getActiveTab($this->type));
