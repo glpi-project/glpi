@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 include_once (GLPI_ROOT . "/inc/plugin.function.php");
+include_once (GLPI_ROOT . "/inc/timer.class.php");
 
 function __autoload($classname) {
    $dir=GLPI_ROOT . "/inc/";

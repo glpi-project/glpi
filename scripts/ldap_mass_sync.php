@@ -49,16 +49,6 @@ if ($argv) {
 		$_GET[$it[0]] = $it[1];
 	}
 }
-$NEEDED_ITEMS = array (
-	"ldap",
-	"user",
-	"profile",
-	"group",
-	"entity",
-	"rulesengine",
-	"rule.right",
-	"setup"
-);
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
