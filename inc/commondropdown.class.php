@@ -783,6 +783,32 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       return $tabs;
    }
+
+   /**
+    *
+    * Make a select box for device type
+    *
+    *
+    * @param $name name of the select box
+    * @param $value default device type
+    * @param $types types to display
+    * @return nothing (print out an HTML select box)
+    */
+   static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
+      global $CFG_GLPI;
+
+      $options=array(0=>'----');
+      if (count($types)) {
+         foreach ($types as $type) {
+            if (class_exists($type)) {
+               $item = new $type();
+               $options[$type]=$item->getTypeName();
+            }
+         }
+         asort($options);
+      }
+      dropdownArrayValues($name,$options,$value,$used);
+   }
 }
 
 ?>
