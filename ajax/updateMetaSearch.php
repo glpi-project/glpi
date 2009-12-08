@@ -50,7 +50,7 @@ if (!empty($_POST["itemtype"])) {
    $first_group=true;
    $newgroup="";
    $items_in_group=0;
-   $searchopt=cleanSearchOption($_POST["itemtype"]);
+   $searchopt=Search::getCleanedOptions($_POST["itemtype"]);
 
    echo "<select name='field2[".$_POST["num"]."]' size='1'>";
    foreach ($searchopt as $key => $val) {
