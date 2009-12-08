@@ -172,7 +172,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockmonitor"]) && count($_POST["lockmonitor"])) {
       foreach ($_POST["lockmonitor"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_monitor");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_monitor");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -182,7 +182,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockprinter"]) && count($_POST["lockprinter"])) {
       foreach ($_POST["lockprinter"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_printer");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_printer");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -192,7 +192,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["locksoft"]) && count($_POST["locksoft"])) {
       foreach ($_POST["locksoft"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_software");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_software");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -202,7 +202,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockdisk"]) && count($_POST["lockdisk"])) {
       foreach ($_POST["lockdisk"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_disk");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_disk");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -212,7 +212,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockperiph"]) && count($_POST["lockperiph"])) {
       foreach ($_POST["lockperiph"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_peripheral");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_peripheral");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -222,7 +222,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockip"]) && count($_POST["lockip"])) {
       foreach ($_POST["lockip"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"import_ip");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"import_ip");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -232,7 +232,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["lockfield"]) && count($_POST["lockfield"])) {
       foreach ($_POST["lockfield"] as $key => $val) {
-         deleteInOcsArray($_POST["id"],$key,"computer_update");
+         OcsServer::deleteInOcsArray($_POST["id"],$key,"computer_update");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -241,10 +241,10 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'],'w');
 
    //Get the ocs server id associated with the machine
-   $ocsservers_id = getOCSServerByMachineID($_POST["id"]);
+   $ocsservers_id = OcsServer::getByMachineID($_POST["id"]);
 
    //Update the computer
-   ocsUpdateComputer($_POST["resynch_id"],$ocsservers_id,1,1);
+   OcsServer::updateComputer($_POST["resynch_id"],$ocsservers_id,1,1);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {//print computer informations

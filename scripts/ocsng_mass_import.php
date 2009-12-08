@@ -68,12 +68,12 @@ $limit=0;
 if (isset($_GET["limit"])) $limit=$_GET["limit"];
 
 $DBocs = new DBocs($ocsservers_id);
-$cfg_ocs=getOcsConf($ocsservers_id);
+$cfg_ocs=OcsServer::getConfig($ocsservers_id);
 
-// PREREQUISITE : activate trace_deleted (check done in ocsManageDeleted)
+// PREREQUISITE : activate trace_deleted (check done in OcsServer::manageDeleted)
 // Clean links
-ocsManageDeleted($ocsservers_id);
-ocsCleanLinks($ocsservers_id);
+OcsServer::manageDeleted($ocsservers_id);
+OcsServer::cleanLinks($ocsservers_id);
 
 
 $WHERE="";
@@ -134,7 +134,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			foreach ($hardware as $ID => $tab){
 				echo ".";
 				if ($limit&&$i>=$limit) exit();
-				ocsProcessComputer($ID,$ocsservers_id,0,-1,1);
+				OcsServer::processComputer($ID,$ocsservers_id,0,-1,1);
 				$i++;
 			}
 		}

@@ -64,7 +64,7 @@ if (isset($_SESSION["ocs_link"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_link"]);
-		ocsLinkComputer($key["ocsid"],$_SESSION["ocsservers_id"],$key["computers_id"]);
+		OcsServer::linkComputer($key["ocsid"],$_SESSION["ocsservers_id"],$key["computers_id"]);
 		glpi_header($_SERVER['PHP_SELF']);
 	} else {
 		displayProgressBar(400,100);
@@ -82,8 +82,8 @@ if (!isset($_POST["import_ok"])){
 	if (!isset($_GET['check'])) $_GET['check']='all';
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
-	ocsManageDeleted($_SESSION["ocsservers_id"]);
-	ocsShowNewComputer($_SESSION["ocsservers_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start'],$_SESSION['glpiactiveentities'],1);
+	OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
+	OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start'],$_SESSION['glpiactiveentities'],1);
 
 } else {
 	if (count($_POST['tolink'])>0){

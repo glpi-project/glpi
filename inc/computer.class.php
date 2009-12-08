@@ -146,7 +146,7 @@ class Computer extends CommonDBTM {
       // Manage changes for OCS if more than 1 element (date_mod)
       // Need dohistory==1 if dohistory==2 no locking fields
       if ($this->fields["is_ocs_import"] && $history==1 && count($updates)>1) {
-         mergeOcsArray($this->fields["id"],$updates,"computer_update");
+         OcsServer::mergeOcsArray($this->fields["id"],$updates,"computer_update");
       }
 
       if (isset($input["_auto_update_ocs"])){
@@ -713,18 +713,18 @@ class Computer extends CommonDBTM {
          echo "<br>";
          if (haveRight("ocsng","r")) {
             echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?id="
-                 .getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+                 .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$ID'";
             $result_agent_version = $DB->query($query);
             $data_version = $DB->fetch_array($result_agent_version);
 
-            $ocs_config = getOcsConf(getOCSServerByMachineID($ID));
+            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
 
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),
+               echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
                $data_version["ocsid"],$LANG['ocsng'][57]);
             }
 
@@ -732,7 +732,7 @@ class Computer extends CommonDBTM {
                echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
             }
          } else {
-            echo $LANG['common'][52]." ".getOCSServerNameByID($ID);
+            echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
          }
       }
       echo "</td></tr>\n";

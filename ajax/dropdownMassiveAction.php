@@ -109,7 +109,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "unlock_ocsng_field" :
          $fields['all']=$LANG['common'][66];
-         $fields+=getOcsLockableFields();
+         $fields+=OcsServer::getLockableFields();
          dropdownArrayValues("field",$fields);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";

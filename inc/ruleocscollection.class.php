@@ -102,7 +102,7 @@ class RuleOcsCollection extends RuleCollection {
                  $from_sql
                  WHERE `hardware`.`ID` = '$computers_id'";
 
-         checkOCSconnection($this->ocsservers_id);
+         OcsServer::checkOCSconnection($this->ocsservers_id);
          $result = $DBocs->query($sql);
          $ocs_datas = array ();
          $fields = $this->getFieldsForQuery(1);
@@ -121,7 +121,7 @@ class RuleOcsCollection extends RuleCollection {
          //Sometimes OCS can't find network ports but fill the right ip in hardware table...
          //So let's use the ip to proceed rules (if IP is a criteria of course)
          if (in_array("IPADDRESS",$fields) && !isset($ocs_datas['IPADDRESS'])) {
-            $ocs_datas['IPADDRESS']=getOcsGeneralIpAddress($this->ocsservers_id,$computers_id);
+            $ocs_datas['IPADDRESS']=OcsServer::getGeneralIpAddress($this->ocsservers_id,$computers_id);
          }
          return array_merge($rule_parameters, $ocs_datas);
       } else {

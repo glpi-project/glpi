@@ -78,9 +78,9 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
 
 	echo "</table></div>";
 
-	ocsManageDeleted($_SESSION["ocsservers_id"]);
+	OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
 } else {
-	ocsChooseServer($_SERVER['PHP_SELF']);
+	OcsServer::showFormServerChoice($_SERVER['PHP_SELF']);
 }
 commonFooter();
 ?>

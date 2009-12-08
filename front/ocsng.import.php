@@ -67,7 +67,7 @@ if (isset($_SESSION["ocs_import"]["id"])){
 		else
 			$entity=-1;
 
-		ocsProcessComputer($key,$_SESSION["ocsservers_id"],0,$entity,0);
+		OcsServer::processComputer($key,$_SESSION["ocsservers_id"],0,$entity,0);
 
 		glpi_header($_SERVER['PHP_SELF']);
 
@@ -87,8 +87,8 @@ if (!isset($_POST["import_ok"])){
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
 	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-	ocsManageDeleted($_SESSION["ocsservers_id"]);
-	ocsShowNewComputer($_SESSION["ocsservers_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start']);
+	OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
+	OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start']);
 
 } else {
 	if (count($_POST['toimport'])>0){

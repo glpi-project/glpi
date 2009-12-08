@@ -149,7 +149,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 13 :
-            ocsEditLock($_POST['target'],$_POST["id"]);
+            OcsServer::editLock($_POST['target'],$_POST["id"]);
             break;
 
          case 14:

@@ -147,7 +147,7 @@ class Computer_Item extends CommonDBRelation{
             $temp = clone $this;
             $temp->delete($data);
             if ($ocstab) {
-               deleteInOcsArray($data["computers_id"],$data["id"],$ocstab);
+               OcsServer::deleteInOcsArray($data["computers_id"],$data["id"],$ocstab);
             }
          }
 
@@ -263,14 +263,14 @@ class Computer_Item extends CommonDBRelation{
                if (isset($this->input['_ocsservers_id'])) {
                   $ocsservers_id = $this->input['_ocsservers_id'];
                } else {
-                  $ocsservers_id = getOCSServerByMachineID($this->fields['computers_id']);
+                  $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
                }
                if ($ocsservers_id>0) {
                   //Get OCS configuration
-                  $ocs_config = getOcsConf($ocsservers_id);
+                  $ocs_config = OcsServer::getConfig($ocsservers_id);
 
                   //Get the management mode for this device
-                  $mode = getMaterialManagementMode($ocs_config, $this->fields['itemtype']);
+                  $mode = OcsServer::getDevicesManagementMode($ocs_config, $this->fields['itemtype']);
                   $decoConf= $ocs_config["deconnection_behavior"];
 
                   //Change status if :
