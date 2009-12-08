@@ -251,48 +251,18 @@ function getRuleClass($type) {
 
    switch ($type) {
       case RULE_OCS_AFFECT_COMPUTER :
-         if (!class_exists('RuleOcs')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/ruleocs.class.php");
-         }
          return new RuleOcs();
 
       case RULE_AFFECT_RIGHTS :
-         if (!class_exists('RuleRight')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/ruleright.class.php");
-         }
          return new RuleRight();
 
       case RULE_TRACKING_AUTO_ACTION :
-         if (!class_exists('RuleTicket')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/ruleticket.class.php");
-         }
          return new RuleTicket();
 
       case RULE_SOFTWARE_CATEGORY :
-         if (!class_exists('RuleSoftwareCategory')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rulesoftwarecategory.class.php");
-         }
          return new RuleSoftwareCategory();
 
       case RULE_DICTIONNARY_SOFTWARE :
-         if (!class_exists('RuleDictionnarySoftware')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarysoftware.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarysoftwarecollection.class.php");
-         }
          return new RuleDictionnarySoftware;
 
       case RULE_DICTIONNARY_MANUFACTURER :
@@ -311,14 +281,6 @@ function getRuleClass($type) {
       case RULE_DICTIONNARY_OS :
       case RULE_DICTIONNARY_OS_SP :
       case RULE_DICTIONNARY_OS_VERSION :
-         if (!class_exists('RuleDictionnaryDropdownCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarydropdown.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarydropdowncollection.class.php");
-         }
          return new RuleDictionnaryDropdown($type);
    }
 }
@@ -327,58 +289,18 @@ function getRuleCollectionClass($type) {
 
    switch ($type) {
       case RULE_OCS_AFFECT_COMPUTER :
-         if (!class_exists('RuleOcsCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruleocs.class.php");
-            include_once(GLPI_ROOT."/inc/ruleocscollection.class.php");
-         }
          return new RuleOcsCollection();
 
       case RULE_AFFECT_RIGHTS :
-         if (!class_exists('RuleRightCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruleright.class.php");
-            include_once(GLPI_ROOT."/inc/rulerightcollection.class.php");
-         }
          return new RuleRightCollection();
 
       case RULE_TRACKING_AUTO_ACTION :
-         if (!class_exists('RuleTicketCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruleticket.class.php");
-            include_once(GLPI_ROOT."/inc/ruleticketcollection.class.php");
-         }
          return new RuleTicketCollection();
 
       case RULE_SOFTWARE_CATEGORY :
-         if (!class_exists('RuleSoftwareCategoryCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/rulesoftwarecategory.class.php");
-            include_once(GLPI_ROOT."/inc/rulesoftwarecategorycollection.class.php");
-         }
          return new RuleSoftwareCategoryCollection();
 
       case RULE_DICTIONNARY_SOFTWARE :
-         if (!class_exists('RuleDictionnarySoftwareCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarysoftware.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarysoftwarecollection.class.php");
-         }
          return new RuleDictionnarySoftwareCollection;
 
       case RULE_DICTIONNARY_MANUFACTURER :
@@ -397,14 +319,6 @@ function getRuleCollectionClass($type) {
       case RULE_DICTIONNARY_OS :
       case RULE_DICTIONNARY_OS_SP :
       case RULE_DICTIONNARY_OS_VERSION :
-         if (!class_exists('RuleDictionnaryDropdownCollection')) {
-            include_once(GLPI_ROOT."/inc/rulecollection.class.php");
-            include_once(GLPI_ROOT."/inc/rule.class.php");
-            include_once(GLPI_ROOT."/inc/rulecached.class.php");
-            include_once(GLPI_ROOT."/inc/rulecachedcollection.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarydropdown.class.php");
-            include_once(GLPI_ROOT."/inc/ruledictionnarydropdowncollection.class.php");
-         }
          return new RuleDictionnaryDropdownCollection($type);
    }
 }
