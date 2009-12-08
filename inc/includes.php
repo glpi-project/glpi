@@ -80,6 +80,7 @@ if (!isset($AJAX_INCLUDE)) {
    include_once (GLPI_ROOT . "/inc/alert.class.php");
 
    // TODO : clean it after autoload
+   include_once (GLPI_ROOT . "/inc/ticket.function.php");
    include_once (GLPI_ROOT . "/inc/search.function.php");
    include_once (GLPI_ROOT . "/inc/search.class.php");
    include_once (GLPI_ROOT . "/inc/event.class.php");
