@@ -97,7 +97,6 @@ function showDeviceUser($ID) {
       }
    }
 
-   $ci = new CommonItem();
    echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG['common'][17]."</th>".
          "<th>".$LANG['entity'][0]."</th>".
          "<th>".$LANG['common'][16]."</th>".
@@ -118,11 +117,16 @@ function showDeviceUser($ID) {
          }
          $result = $DB->query($query);
 
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+
+         $item = new $itemtype();
+         $type_name= $item->getTypeName();
+
          if ($DB->numrows($result) >0) {
-            $ci->setType($itemtype,true);
-            $type_name = $ci->getType();
             while ($data = $DB->fetch_array($result)) {
-               $cansee = $ci->obj->can($data["id"],"r");
+               $cansee = $item->can($data["id"],"r");
                $link = $data["name"];
                if ($cansee) {
                   $link = "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
@@ -176,11 +180,17 @@ function showDeviceUser($ID) {
          }
          $result = $DB->query($query);
 
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+
+         $item = new $itemtype();
+         $type_name= $item->getTypeName();
+
+
          if ($DB->numrows($result) >0) {
-            $ci->setType($itemtype,true);
-            $type_name = $ci->getType();
             while ($data = $DB->fetch_array($result)) {
-               $cansee = $ci->obj->can($data["id"],"r");
+               $cansee = $item->can($data["id"],"r");
                $link = $data["name"];
                if ($cansee) {
                   $link = "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
