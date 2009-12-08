@@ -47,96 +47,30 @@ if (isset($_GET["lID"])){
 	if ($DB->numrows($result)==1){
 		$file=$DB->result($result,0,"data");
 		$link=$DB->result($result,0,"link");
+      
+      if (class_exists($_GET["itemtype"])) {
+         $item = new $_GET["itemtype"]();
+         if ($item->getFromDB($_GET["id"])) {
 
-		$ci=new CommonItem;
+            $content_filename=Link::generateLinkContents($link,$item);
+            $content_data=Link::generateLinkContents($file,$item);
 
-		$ci->getFromDB($_GET["itemtype"],$_GET["id"]);
+            header("Content-disposition: filename=\"".$content_filename[0]."\"");
+            $mime="application/scriptfile";
 
-		// Manage Filename
-		if (strstr($link,"[NAME]")){
-			$link=str_replace("[NAME]",$ci->getName(),$link);
-		}
+            header("Content-type: ".$mime);
+            header('Pragma: no-cache');
+            header('Expires: 0');
 
-		if (strstr($link,"[ID]")){
-			$link=str_replace("[ID]",$_GET["id"],$link);
-		}
+            // Pour que les \x00 ne devienne pas \0
+            $mc=get_magic_quotes_runtime();
+            if ($mc) @set_magic_quotes_runtime(0);
 
+            echo $content_data[0];
 
-		// Manage File Content
-
-		if (strstr($file,"[NAME]")){
-			$file=str_replace("[NAME]",$ci->getName(),$file);
-		}
-
-		if (strstr($file,"[ID]")){
-			$file=str_replace("[ID]",$_GET["id"],$file);
-		}
-
-		if (strstr($file,"[SERIAL]")){
-			if (isset($ci->obj->fields["serial"]))
-				$file=str_replace("[SERIAL]",$ci->obj->fields["serial"],$file);
-		}
-		if (strstr($file,"[OTHERSERIAL]")){
-			if (isset($ci->obj->fields["otherserial"]))
-				$file=str_replace("[OTHERSERIAL]",$ci->obj->fields["otherserial"],$file);
-		}
-
-
-		if (strstr($file,"[LOCATIONID]")){
-			if (isset($ci->obj->fields["locations_id"]))
-				$file=str_replace("[LOCATIONID]",$ci->obj->fields["locations_id"],$file);
-		}
-		if (strstr($file,"[LOCATION]")){
-			if (isset($ci->obj->fields["locations_id"]))
-				$file=str_replace("[LOCATION]",CommonDropdown::getDropdownName("glpi_locations",$ci->obj->fields["locations_id"]),$file);
-		}
-		if (strstr($file,"[NETWORK]")){
-			if (isset($ci->obj->fields["networks_id"]))
-				$file=str_replace("[NETWORK]",CommonDropdown::getDropdownName("glpi_networks",$ci->obj->fields["networks_id"]),$file);
-		}
-		if (strstr($file,"[DOMAIN]")){
-			if (isset($ci->obj->fields["domains_id"]))
-				$file=str_replace("[DOMAIN]",CommonDropdown::getDropdownName("glpi_domains",$ci->obj->fields["domains_id"]),$file);
-		}
-		$ipmac=array();
-		$i=0;
-		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
-			$query2 = "SELECT ip, mac
-				FROM glpi_networkports
-				WHERE (items_id = '".$_GET["id"]."' AND itemtype = '".$_GET["itemtype"]."')
-				ORDER BY logical_number";
-			$result2=$DB->query($query2);
-			if ($DB->numrows($result2)>0){
-				$data2=$DB->fetch_array($result2);
-				$ipmac[$i]['ip']=$data2["ip"];
-				$ipmac[$i]['mac']=$data2["mac"];
-			}
-		}
-
-		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
-
-			if (count($ipmac)>0){
-				foreach ($ipmac as $key => $val){
-					$file=str_replace("[IP]",$val['ip'],$file);
-					$file=str_replace("[MAC]",$val['mac'],$file);
-				}
-			}
-		}
-		header("Content-disposition: filename=\"$link\"");
-		$mime="application/scriptfile";
-
-		header("Content-type: ".$mime);
-		header('Pragma: no-cache');
-		header('Expires: 0');
-
-		// Pour que les \x00 ne devienne pas \0
-		$mc=get_magic_quotes_runtime();
-		if ($mc) @set_magic_quotes_runtime(0);
-
-		echo $file;
-
-		if ($mc) @set_magic_quotes_runtime($mc);
-
+            if ($mc) @set_magic_quotes_runtime($mc);
+         }
+      }
 	}
 }
 ?>

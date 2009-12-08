@@ -86,13 +86,12 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 
 $display_entity=isMultiEntitiesMode();
 
-$ci=new CommonItem();
 if (isset($query)&&count($query)){
 	foreach ($query as $key => $val){
 		$result = $DB->query($val);
 		if ($result&&$DB->numrows($result)){
-			$ci->setType($key);
-			echo " <div align='center'><strong>".$ci->getType()."</strong>";
+			$item = new $key();
+			echo " <div align='center'><strong>".$item->getTypeName()."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
 			echo "<th>".$LANG['common'][16]."</th>";

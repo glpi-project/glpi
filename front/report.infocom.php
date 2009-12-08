@@ -98,10 +98,9 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
-		$comp=new CommonItem();
-		$comp->getFromDB($itemtype,0);
+		$item=new $itemtype();
 
-		echo "<h2>".$comp->getType()."</h2>";
+		echo "<h2>".$item->getTypeName()."</h2>";
 
 		echo "<table class='tab_cadre'><tr><th>".$LANG['common'][16]."</th>";
 		if ($display_entity){
