@@ -41,16 +41,16 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_POST['id'])) {
    exit();
 }
-
-if ($_POST["id"]>0) {
+$port = NetworkPort();
+if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1: // All
          showPortVLANForm($_POST["id"]);
-         displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'], false);
+         Plugin::displayAction($port, $_REQUEST['glpi_tab']);
          break;
 
       default :
-         if (!displayPluginAction(NETWORKING_PORT_TYPE,$_POST["id"],$_REQUEST['glpi_tab'], false)) {
+         if (!Plugin::displayAction($port, $_REQUEST['glpi_tab'])) {
             showPortVLANForm($_POST["id"]);
          }
    }

@@ -45,17 +45,18 @@ header_nocache();
 checkRight("config", "r");
 
 $config = new Config();
+$notif = new Notification();
 
 switch($_REQUEST['glpi_tab']) {
    case -1 :
       $config->showFormMailing($_POST['target'],1);
       $config->showFormMailing($_POST['target'],2);
       $config->showFormMailing($_POST['target'],3);
-      displayPluginAction("mailing","",$_REQUEST['glpi_tab'],"");
+      Plugin::displayAction($notif, $_REQUEST['glpi_tab']);
       break;
 
    default :
-      if (!displayPluginAction("mailing","",$_REQUEST['glpi_tab'],"")) {
+      if (!Plugin::displayAction($notif, $_REQUEST['glpi_tab'])) {
          $config->showFormMailing($_POST['target'],$_REQUEST['glpi_tab']);
       }
 }

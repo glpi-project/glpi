@@ -63,7 +63,7 @@ if ($_POST["id"]>=0 && $entity->can($_POST["id"],'r')) {
             $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
          }
          showEntityAdvancedOptions($_POST['target'],$_POST["id"]);
-         displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($entity,$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -86,7 +86,7 @@ if ($_POST["id"]>=0 && $entity->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(ENTITY_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($entity,$_REQUEST['glpi_tab'])) {
          }
    }
 }

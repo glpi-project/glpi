@@ -59,7 +59,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
          Document::showAssociated($cartridge);
          showLinkOnDevice(CARTRIDGEITEM_TYPE,$_POST["id"]);
-         displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
@@ -79,7 +79,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(CARTRIDGEITEM_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($cartridge, $_REQUEST['glpi_tab'])) {
             $cartridge->showCompatiblePrinters();
             Cartridge::showAddForm($cartridge);
             Cartridge::showForCartridgeItem($cartridge);

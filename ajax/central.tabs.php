@@ -63,11 +63,11 @@ switch ($_REQUEST['glpi_tab']) {
       echo "<br>";
       $central->showGlobalView();
       echo "<br>";
-      displayPluginAction("central","",$_REQUEST['glpi_tab'],"");
+      Plugin::displayAction($central,$_REQUEST['glpi_tab']);
       break;
 
    default :
-      if (!Plugin::displayAction($central,$_REQUEST['glpi_tab'],"")) {
+      if (!Plugin::displayAction($central,$_REQUEST['glpi_tab'])) {
          $central->showMyView();
       }
       break;

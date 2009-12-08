@@ -70,7 +70,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          default :
-            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($monitor,$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
       }
    } else  {
       switch($_REQUEST['glpi_tab']) {
@@ -81,7 +81,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Document::showAssociated($monitor,$_POST["withtemplate"]);
             showJobListForItem(MONITOR_TYPE,$_POST["id"]);
             showLinkOnDevice(MONITOR_TYPE,$_POST["id"]);
-            displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($monitor,$_REQUEST['glpi_tab']);
             break;
 
          case 4 :
@@ -114,8 +114,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!displayPluginAction(MONITOR_TYPE,$_POST["id"],$_REQUEST['glpi_tab'],
-                                     $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($monitor,$_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($monitor);
             }
       }

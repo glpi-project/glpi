@@ -56,7 +56,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          $budget->showDevices();
          Document::showAssociated($budget);
          showLinkOnDevice(BUDGET_TYPE,$_POST["id"]);
-         displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab']);
+         Plugin::displayAction($budget,$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -80,7 +80,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!displayPluginAction(BUDGET_TYPE,$_POST["id"],$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($budget, $_REQUEST['glpi_tab'])) {
             $budget->showValuesByEntity();
          }
          break;
