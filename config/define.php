@@ -41,6 +41,8 @@ $CFG_GLPI["languages"] = array("bg_BG" => array("Български","bg_BG.php"
                                "ja_JP" => array("日本語","ja_JP.php","ja","ja"),
                                "zh_CN" => array("中文","zh_CN.php","en","zh"));
 
+// Init to store glpi itemtype / tables link
+$CFG_GLPI['glpitables']=array();
 
 define("NOT_AVAILABLE",'N/A');
 
