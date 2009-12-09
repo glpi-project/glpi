@@ -74,8 +74,14 @@ function getTableNameForForeignKeyField($fkname) {
  * return string itemtype corresponding to a table name parameter
  */
 function getItemTypeForTable($table) {
-  $table=str_replace("glpi_","",$table);
-  return preg_replace("/s$/","",$table);
+   $table=str_replace("glpi_","",$table);
+
+   if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
+      $table=preg_replace('/^plugin_[a-z0-9]+_/','',$table);
+      return "Plugin".ucfirst($matches[1]).ucfirst($table);
+   } else {
+      return getSingular($table);
+   }
 }
 
 /**
@@ -86,7 +92,39 @@ function getItemTypeForTable($table) {
  * return string itemtype corresponding to a table name parameter
  */
 function getTableForItemType($itemtype) {
-   return 'glpi_'.strtolower($itemtype)."s";
+   $table="glpi_";
+   if ($plug=isPluginItemType($itemtype)) {
+      $table.="_plugin_".strtolower($plug['plugin'])."_".getPlural(strtolower($plug['class']));
+   } else {
+      $table.=getPlural(strtolower($itemtype));
+   }
+
+   return $table;
+}
+
+function getPlural($string) {
+   $rules = array(
+      //'singular' => 'plural'
+      'y$' => 'ies', // special case : category 
+      '([^s])$' => '\1s' // Add at the end if not exists
+   );
+
+   foreach ($rules as $singular => $plural) {
+      $string=preg_replace("/$singular/","$plural",$string);
+   }
+   return $string;
+}
+function getSingular($string) {
+   $rules = array(
+      //'plural' => 'singular'
+      'ies$' => 'y', // special case : category
+      's$' => '' // Add at the end if not exists
+   );
+
+   foreach ($rules as  $plural => $singular) {
+      $string=preg_replace("/$plural/","$singular",$string);
+   }
+   return $string;
 }
 
 /**
