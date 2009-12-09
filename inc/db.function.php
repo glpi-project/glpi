@@ -121,6 +121,13 @@ function getTableForItemType($itemtype) {
 
    return $prefix.$table;
 }
+/**
+ * Return the plural of a string
+ *
+ * @param $string string: input string
+ *
+ * return string plural of the parameter string
+ */
 function getPlural($string) {
    $rules = array(
       //'singular' => 'plural'
@@ -133,6 +140,13 @@ function getPlural($string) {
    }
    return $string;
 }
+/**
+ * Return the singular of a string
+ *
+ * @param $string string: input string
+ *
+ * return string singular of the parameter string
+ */
 function getSingular($string) {
    $rules = array(
       //'plural' => 'singular'
@@ -144,6 +158,30 @@ function getSingular($string) {
       $string=preg_replace("/$plural/","$singular",$string);
    }
    return $string;
+}
+
+/**
+ * Get table used by an item type
+ *
+ * @param $itemtype string: itemtype
+ *
+ * return string table link to the itemtype : UNKNOWN if not found
+ */
+function getItemTypeTable($itemtype) {
+   global $CFG_GLPI;
+
+   if (isset($CFG_GLPI['glpitables'][$itemtype])) {
+      return $CFG_GLPI['glpitables'][$itemtype];
+   } else {
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         if (isset($item->table)) {
+            $CFG_GLPI['glpitables'][$itemtype]=$item->table;
+            return $CFG_GLPI['glpitables'][$itemtype];
+         }
+      } 
+   }
+   return "UNKNOWN";
 }
 
 /**
