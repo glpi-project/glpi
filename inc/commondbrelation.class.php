@@ -167,7 +167,7 @@ abstract class CommonDBRelation extends CommonDBTM {
          historyLog ($item1->fields["id"],get_class($item1),$changes,get_class($item2),
                      HISTORY_ADD_RELATION);
       }
-      if ($item2->obj->dohistory) {
+      if ($item2->dohistory) {
          $changes[0]='0';
          $changes[1]="";
          $changes[2]=addslashes($item1->getNameID());
