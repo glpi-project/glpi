@@ -75,13 +75,22 @@ function getTableNameForForeignKeyField($fkname) {
  */
 function getItemTypeForTable($table) {
    $table=str_replace("glpi_","",$table);
-
+   $prefix="";
    if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
       $table=preg_replace('/^plugin_[a-z0-9]+_/','',$table);
-      return "Plugin".ucfirst($matches[1]).ucfirst($table);
+      $prefix= "Plugin".ucfirst($matches[1]);
+   } 
+   if (strstr($table,'_')) {
+      $split=explode('_',$table);
+      foreach ($split as $key => $part) {
+         $split[$key]=ucfirst(getSingular($part));
+      }
+      $table=implode('_',$split);
    } else {
-      return getSingular($table);
+      $table=ucfirst(getSingular($table));
    }
+
+   return $prefix.$table;
 }
 
 /**
@@ -92,16 +101,26 @@ function getItemTypeForTable($table) {
  * return string itemtype corresponding to a table name parameter
  */
 function getTableForItemType($itemtype) {
-   $table="glpi_";
+   $prefix="glpi_";
    if ($plug=isPluginItemType($itemtype)) {
-      $table.="_plugin_".strtolower($plug['plugin'])."_".getPlural(strtolower($plug['class']));
+      $prefix.="_plugin_".strtolower($plug['plugin'])."_";
+      $table=strtolower($plug['class']);
    } else {
-      $table.=getPlural(strtolower($itemtype));
+      $table=strtolower($itemtype);
    }
 
-   return $table;
-}
+   if (strstr($table,'_')) {
+      $split=explode('_',$table);
+      foreach ($split as $key => $part) {
+         $split[$key]=getPlural($part);
+      }
+      $table=implode('_',$split);
+   } else {
+      $table=getPlural($table);
+   }
 
+   return $prefix.$table;
+}
 function getPlural($string) {
    $rules = array(
       //'singular' => 'plural'
