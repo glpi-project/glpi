@@ -74,7 +74,7 @@ function showAddExtAuthUserForm($target) {
 * @param $ID user ID
 */
 function showDeviceUser($ID) {
-   global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
+   global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
    $group_where = "";
    $groups = array();
@@ -105,14 +105,15 @@ function showDeviceUser($ID) {
 
    foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
       if (haveTypeRight($itemtype,'r')) {
+         $itemtable=getTableForItemType($itemtype);
          $query = "SELECT *
-                   FROM ".$LINK_ID_TABLE[$itemtype]."
+                   FROM `$itemtable`
                    WHERE `users_id` = '$ID'";
 
-         if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+         if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
             $query .= " AND `is_template` = '0' ";
          }
-         if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+         if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
             $query .= " AND `is_deleted` = '0' ";
          }
          $result = $DB->query($query);
@@ -168,14 +169,15 @@ function showDeviceUser($ID) {
             "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 
       foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+         $itemtable=getTableForItemType($itemtype);
          $query = "SELECT *
-                   FROM ".$LINK_ID_TABLE[$itemtype]."
+                   FROM `$itemtable`
                    WHERE $group_where";
 
-         if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+         if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
             $query .= " AND `is_template` = '0' ";
          }
-         if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+         if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
             $query .= " AND `is_deleted` = '0' ";
          }
          $result = $DB->query($query);

@@ -227,7 +227,6 @@ class Transfer extends CommonDBTM {
    *
    **/
    function addToBeTransfer ($itemtype, $ID) {
-      global $LINK_ID_TABLE;
 
       if (!isset($this->needtobe_transfer[$itemtype])) {
          $this->needtobe_transfer[$itemtype] = array();
@@ -248,7 +247,6 @@ class Transfer extends CommonDBTM {
    *
    **/
    function addNotToBeTransfer ($itemtype, $ID) {
-      global $LINK_ID_TABLE;
 
       if (!isset($this->noneedtobe_transfer[$itemtype])) {
          $this->noneedtobe_transfer[$itemtype] = array();
@@ -267,7 +265,7 @@ class Transfer extends CommonDBTM {
    *
    **/
    function simulateTransfer($items) {
-      global $DB,$LINK_ID_TABLE,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
 
       // Init types :
       $types = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE,
@@ -320,13 +318,14 @@ class Transfer extends CommonDBTM {
       }
       if (count($DC_CONNECT) && count($this->needtobe_transfer[COMPUTER_TYPE])>0) {
          foreach ($DC_CONNECT as $itemtype) {
+            $itemtable=getTableForItemType($itemtype);
             // Clean DB / Search unexisting links and force disconnect
             $query = "SELECT `glpi_computers_items`.`id`
                       FROM `glpi_computers_items`
-                      LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
-                        ON (`glpi_computers_items`.`items_id` = ".$LINK_ID_TABLE[$itemtype].".id )
+                      LEFT JOIN `$itemtable`
+                        ON (`glpi_computers_items`.`items_id` = `$itemtable`.`id` )
                       WHERE `glpi_computers_items`.`itemtype` = '$itemtype'
-                            AND ".$LINK_ID_TABLE[$itemtype].".`id` IS NULL";
+                            AND `$itemtable`.`id` IS NULL";
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
@@ -531,13 +530,14 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_contract']) {
          foreach ($this->CONTRACTS_TYPES as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
+               $itemtable=getTableForItemType($itemtype);
                // Clean DB
                $query = "SELECT `glpi_contracts_items`.`id`
                          FROM `glpi_contracts_items`
-                         LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
-                           ON (`glpi_contracts_items`.`items_id` = ".$LINK_ID_TABLE[$itemtype].".`id`)
+                         LEFT JOIN `$itemtable`
+                           ON (`glpi_contracts_items`.`items_id` = `$itemtable`.`id`)
                          WHERE `glpi_contracts_items`.`itemtype` = '$itemtype'
-                               AND ".$LINK_ID_TABLE[$itemtype].".`id` IS NULL";
+                               AND `$itemtable`.`id` IS NULL";
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
@@ -658,13 +658,14 @@ class Transfer extends CommonDBTM {
          if ($this->options['keep_infocom']) {
             foreach ($this->INFOCOMS_TYPES as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
+                  $itemtable=getTableForItemType($itemtype);
                   // Clean DB
                   $query = "SELECT `glpi_infocoms`.`id`
                             FROM `glpi_infocoms`
-                            LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
-                               ON (`glpi_infocoms`.`items_id` = ".$LINK_ID_TABLE[$itemtype].".`id`)
+                            LEFT JOIN `$itemtable`
+                               ON (`glpi_infocoms`.`items_id` = `$itemtable`.`id`)
                             WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
-                                  AND ".$LINK_ID_TABLE[$itemtype].".`id` IS NULL";
+                                  AND `$itemtable`.`id` IS NULL";
 
                   if ($result = $DB->query($query)) {
                      if ($DB->numrows($result)>0) {
@@ -772,13 +773,14 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_document']) {
          foreach ($this->DOCUMENTS_TYPES as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
+               $itemtable=getTableForItemType($itemtype);
                // Clean DB
                $query = "SELECT `glpi_documents_items`.`id`
                          FROM `glpi_documents_items`
-                         LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
-                           ON (`glpi_documents_items`.`items_id` = ".$LINK_ID_TABLE[$itemtype].".`id`)
+                         LEFT JOIN `$itemtable`
+                           ON (`glpi_documents_items`.`items_id` = `$itemtable`.`id`)
                          WHERE `glpi_documents_items`.`itemtype` = '$itemtype'
-                               AND ".$LINK_ID_TABLE[$itemtype].".`id` IS NULL";
+                               AND `$itemtable`.`id` IS NULL";
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
@@ -1820,7 +1822,7 @@ class Transfer extends CommonDBTM {
    *@param $ocs_computer if computer type OCS ID of the item if available
    **/
    function transferDirectConnection($itemtype,$ID,$link_type,$ocs_computer=false) {
-      global $DB,$LINK_ID_TABLE;
+      global $DB;
 
       // Only same Item case : no duplication of computers
       // Default : delete
@@ -1908,7 +1910,7 @@ class Transfer extends CommonDBTM {
                               $need_clean_process = true;
                               // Is existing global item in the destination entity ?
                               $query = "SELECT *
-                                        FROM ".$LINK_ID_TABLE[$link_type]."
+                                        FROM `".getTableForItemType($link_type)."`
                                         WHERE `is_global` = '1'
                                               AND `entities_id` = '".$this->to."'
                                               AND `name` = '".addslashes($link_item->getField('name'))."'";
@@ -2845,7 +2847,7 @@ class Transfer extends CommonDBTM {
 
 /// Display items to transfers
    function showTransferList() {
-      global $LANG,$LINK_ID_TABLE,$DB,$CFG_GLPI;
+      global $LANG,$DB,$CFG_GLPI;
 
       if (isset($_SESSION['glpitransfer_list']) && count($_SESSION['glpitransfer_list'])) {
          echo "<div class='center b'>".$LANG['transfer'][5]."<br>".$LANG['transfer'][6]."</div>";
@@ -2860,16 +2862,16 @@ class Transfer extends CommonDBTM {
 
          foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
              if (count($tab)) {
-                $table = $LINK_ID_TABLE[$itemtype];
-                $query = "SELECT `".$table."`.`id`,
-                                 `".$table."`.`name`,
+                $table = getTableForItemType($itemtype);
+                $query = "SELECT `$table`.`id`,
+                                 `$table`.`name`,
                                  `glpi_entities`.`completename` AS locname,
                                  `glpi_entities`.`id` AS entID
-                          FROM `".$table."`
+                          FROM `$table`
                           LEFT JOIN `glpi_entities`
-                               ON (`".$table."`.`entities_id` = `glpi_entities`.`id`)
-                          WHERE `".$table."`.`id` IN ".$this->createSearchConditionUsingArray($tab)."
-                         ORDER BY locname, `".$table."`.`name`";
+                               ON (`$table`.`entities_id` = `glpi_entities`.`id`)
+                          WHERE `$table`.`id` IN ".$this->createSearchConditionUsingArray($tab)."
+                         ORDER BY locname, `$table`.`name`";
                $entID = -1;
 
                if (!class_exists($itemtype)) {
