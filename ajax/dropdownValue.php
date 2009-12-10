@@ -158,7 +158,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
       }
 
       if ($display_selected) {
-         $outputval=CommonDropdown::getDropdownName($_POST['table'],$_POST['value']);
+         $outputval=Dropdown::getDropdownName($_POST['table'],$_POST['value']);
          if (!empty($outputval) && $outputval!="&nbsp;") {
             if (utf8_strlen($outputval)>$_POST["limit"]) {
                // Completename for tree dropdown : keep right
@@ -287,7 +287,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
       }
       echo "<option value='0'>------</option>";
 
-      $output=CommonDropdown::getDropdownName($_POST['table'],$_POST['value']);
+      $output=Dropdown::getDropdownName($_POST['table'],$_POST['value']);
       if (!empty($output) && $output!="&nbsp;") {
          if ($_SESSION["glpiis_ids_visible"]) {
             $output.=" (".$_POST['value'].")";
@@ -319,7 +319,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
                   echo "</optgroup>";
                }
                $prev=$data["entities_id"];
-               echo "<optgroup label=\"". CommonDropdown::getDropdownName("glpi_entities", $prev) ."\">";
+               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
             echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
                   utf8_substr($output,0,$_POST["limit"])."</option>";

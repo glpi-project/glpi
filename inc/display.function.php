@@ -1794,7 +1794,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
    echo "<tr><th colspan='2'>".$LANG['job'][11]."&nbsp;: ";
    if (isMultiEntitiesMode()) {
-      echo "&nbsp;(".CommonDropdown::getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
+      echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
    }
    echo "</th></tr>";
    if ($CFG_GLPI['urgency_mask']!=(1<<3)) {
@@ -1827,7 +1827,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-   CommonDropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+   Dropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
    echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";

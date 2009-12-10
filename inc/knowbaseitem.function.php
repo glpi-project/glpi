@@ -72,7 +72,7 @@ function searchFormKnowbase($target,$contains,$knowbaseitemcategories_id=0,$faq=
       echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
       echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp:</th></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      CommonDropdown::dropdownValue("glpi_knowbaseitemcategories","knowbaseitemcategories_id",
+      Dropdown::dropdownValue("glpi_knowbaseitemcategories","knowbaseitemcategories_id",
                      $knowbaseitemcategories_id);
 
       // ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
@@ -334,7 +334,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemcategories_id,$faq
 
          // Display footer
          if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
-            echo displaySearchFooter($output_type,CommonDropdown::getDropdownName("glpi_knowbaseitemcategories",
+            echo displaySearchFooter($output_type,Dropdown::getDropdownName("glpi_knowbaseitemcategories",
                                                                   $knowbaseitemcategories_id));
          } else {
             echo displaySearchFooter($output_type);

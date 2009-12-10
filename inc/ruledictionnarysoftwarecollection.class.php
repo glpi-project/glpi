@@ -92,7 +92,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       echo "<tr><th colspan='2' class='b'>" . $LANG['rulesengine'][95] . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" . $LANG['rulesengine'][96] . "</td>";
       echo "<td class='tab_bg_2 center'>";
-      CommonDropdown::dropdownValue("glpi_manufacturers", "manufacturer");
+      Dropdown::dropdownValue("glpi_manufacturers", "manufacturer");
       echo "</td></tr>\n";
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
@@ -259,7 +259,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       //Software's name has changed
       if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
          if (isset ($res_rule["manufacturer"])) {
-            $manufacturer = CommonDropdown::getDropdownName("glpi_manufacturers", $res_rule["manufacturer"]);
+            $manufacturer = Dropdown::getDropdownName("glpi_manufacturers", $res_rule["manufacturer"]);
          }
          //New software not already present in this entity
          if (!isset ($new_softs[$entity][$res_rule["name"]])) {

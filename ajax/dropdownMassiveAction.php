@@ -64,7 +64,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case 'move_under' :
          echo '&nbsp;'.$LANG['setup'][75];
-         CommonDropdown::dropdownValue(getTableForItemType($_POST["itemtype"]), 'parent', '', 0);
+         Dropdown::dropdownValue(getTableForItemType($_POST["itemtype"]), 'parent', '', 0);
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;
@@ -153,13 +153,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_group" :
-         CommonDropdown::dropdownValue("glpi_groups","groups_id",0);
+         Dropdown::dropdownValue("glpi_groups","groups_id",0);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_userprofile" :
-         CommonDropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+         Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
          echo ".&nbsp;".$LANG['profiles'][22]."&nbsp;:";
          dropdownUnderProfiles("profiles_id");
          echo ".&nbsp;".$LANG['profiles'][28]."&nbsp;:";
@@ -175,19 +175,19 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_contract" :
-         CommonDropdown::dropdown("glpi_contracts","conID",1);
+         Dropdown::Select("glpi_contracts","conID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_contact" :
-         CommonDropdown::dropdown("glpi_contacts","conID",1);
+         Dropdown::Select("glpi_contacts","conID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_enterprise" :
-         CommonDropdown::dropdown("glpi_suppliers","entID",1);
+         Dropdown::Select("glpi_suppliers","entID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;

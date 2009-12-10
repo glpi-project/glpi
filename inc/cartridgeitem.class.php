@@ -246,14 +246,14 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]." : </td>";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_cartridgeitemtypes","cartridgeitemtypes_id",
+      Dropdown::dropdownValue("glpi_cartridgeitemtypes","cartridgeitemtypes_id",
          $this->fields["cartridgeitemtypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]." : </td>";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",
+      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",
          $this->fields["manufacturers_id"]);
       echo "</td></tr>";
 
@@ -267,7 +267,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]." : </td>";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_locations","locations_id",
+      Dropdown::dropdownValue("glpi_locations","locations_id",
          $this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -420,10 +420,10 @@ class CartridgeItem extends CommonDBTM {
 
                if ($mail->send()) {
                   if ($task) {
-                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity)."&nbsp;:  $msg");
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity)."&nbsp;:  $msg");
                   }
 
                   $input["type"] = ALERT_THRESHOLD;
@@ -437,10 +437,10 @@ class CartridgeItem extends CommonDBTM {
                   }
                } else {
                   if ($task) {
-                     $task->log(CommonDropdown::getDropdownName("glpi_entities",$entity).
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
                             "&nbsp;: Send cartdridge alert failed");
                   } else {
-                     addMessageAfterRedirect(CommonDropdown::getDropdownName("glpi_entities",$entity).
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
                                              "&nbsp;: Send cartridge alert failed",false,ERROR);
                   }
                }
@@ -540,7 +540,7 @@ class CartridgeItem extends CommonDBTM {
       if (haveRight("cartridge","w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-         CommonDropdown::dropdown("glpi_printermodels","printermodels_id",1,-1,$used);
+         Dropdown::Select("glpi_printermodels","printermodels_id",1,-1,$used);
          echo "</div></td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\"
                 class='submit'>";

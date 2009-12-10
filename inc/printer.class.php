@@ -330,18 +330,18 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      Dropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;: </td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
+      Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_printertypes", "printertypes_id", $this->fields["printertypes_id"]);
+      Dropdown::dropdownValue("glpi_printertypes", "printertypes_id", $this->fields["printertypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -352,7 +352,7 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -363,7 +363,7 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_printermodels", "printermodels_id", $this->fields["printermodels_id"]);
+      Dropdown::dropdownValue("glpi_printermodels", "printermodels_id", $this->fields["printermodels_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -394,7 +394,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+      Dropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
@@ -412,11 +412,11 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
+      Dropdown::dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
+      Dropdown::dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

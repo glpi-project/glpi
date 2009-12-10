@@ -304,7 +304,7 @@ class Budget extends CommonDBTM{
                         echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
                               .($nb>1?"<br />$nb</td>":"</td>");
                      }
-                     echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+                     echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
                      echo "</td><td class='center";
                      echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                      echo ">".$name."</td>";
@@ -394,7 +394,7 @@ class Budget extends CommonDBTM{
          echo "</tr>";
 
          foreach ($entities_values as $entity => $value) {
-            echo "<tr class='tab_bg_1'><td>".CommonDropdown::getDropdownName('glpi_entities',$entity)."</th>";
+            echo "<tr class='tab_bg_1'><td>".Dropdown::getDropdownName('glpi_entities',$entity)."</th>";
             echo "<td class='right'>".formatNumber($value)."</td>";
             echo "</tr>";
             $total += $value;

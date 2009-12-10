@@ -103,7 +103,7 @@ if (class_exists($_POST["itemtype"])) {
                echo "</optgroup>";
             }
             $prev=$data["entities_id"];
-            echo "<optgroup label=\"". CommonDropdown::getDropdownName("glpi_entities", $prev) ."\">";
+            echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
          }
          $output = $data['name'];
          $ID = $data['id'];

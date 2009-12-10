@@ -47,11 +47,11 @@ if ($_POST["authtype"] > 0) {
          break;
       case AUTH_LDAP :
       case AUTH_EXTERNAL :
-         CommonDropdown::dropdownValue("glpi_authldaps","auth_server",1);
+         Dropdown::dropdownValue("glpi_authldaps","auth_server",1);
          break;
 
       case AUTH_MAIL :
-         CommonDropdown::dropdownValue("glpi_authmails","auth_server",1);
+         Dropdown::dropdownValue("glpi_authmails","auth_server",1);
          break;
    }
    echo "<input type='submit' name='massiveaction' class='submit' value=\"".$LANG['buttons'][2]."\" >";

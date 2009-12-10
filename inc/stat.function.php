@@ -486,7 +486,7 @@ function getNbIntervTitleOrType($date1,$date2,$title=true) {
    if ($DB->numrows($result) >=1) {
       while ($line = $DB->fetch_assoc($result)) {
          $tmp['id']= $line[$field];
-         $tmp['link']=CommonDropdown::getDropdownName($table,$line[$field]);
+         $tmp['link']=Dropdown::getDropdownName($table,$line[$field]);
          $tab[]=$tmp;
       }
    }
@@ -583,7 +583,7 @@ function getNbIntervRequestType($date1,$date2) {
    if ($DB->numrows($result) >=1) {
       while ($line = $DB->fetch_assoc($result)) {
          $tmp['id']= $line["requesttypes_id"];
-         $tmp['link']=CommonDropdown::getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
+         $tmp['link']=Dropdown::getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
          $tab[]=$tmp;
       }
    }

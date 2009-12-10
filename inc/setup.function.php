@@ -145,7 +145,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
       echo "<input type='hidden' name='which' value='$tablename'>";
       echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
       $value = getTreeLeafValueName($tablename, $ID, 1);
-      CommonDropdown::dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
+      Dropdown::dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
 
       // on ajoute un input text pour entrer la valeur modifier
       echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] .
@@ -174,9 +174,9 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
       echo "<input type='hidden' name='which' value='$tablename'>";
       echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr><td class='tab_bg_1 center'>";
-      CommonDropdown::dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restrict);
+      Dropdown::dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restrict);
       echo "&nbsp;&nbsp;&nbsp;" . $LANG['setup'][75] . "&nbsp;:&nbsp;&nbsp;&nbsp;";
-      CommonDropdown::dropdownValue($tablename, "value_where", $where, 0, $entity_restrict);
+      Dropdown::dropdownValue($tablename, "value_where", $where, 0, $entity_restrict);
       echo "</td><td class='tab_bg_2 center' width='202'>";
       echo "<input type='hidden' name='tablename' value='$tablename' >";
       echo "<input type='submit' name='move' value='" . $LANG['buttons'][20] . "' class='submit'>";
@@ -201,7 +201,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
       echo "<option value='same' " .
                ($type == 'same' ? " selected " : "") . ">" . $LANG['setup'][76] . "</option>";
       echo "</select>&nbsp;&nbsp;&nbsp;";
-      CommonDropdown::dropdownValue($tablename, "value2", (strlen($value2) > 0 ? $value2 : 0), 0, $entity_restrict);
+      Dropdown::dropdownValue($tablename, "value2", (strlen($value2) > 0 ? $value2 : 0), 0, $entity_restrict);
    } else {
       echo "<input type='hidden' name='type' value='first'>";
    }
@@ -279,7 +279,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0)
          }
          echo "<br>";
          echo $LANG['common'][15] . "&nbsp;: ";
-         CommonDropdown::dropdownValue("glpi_locations", "value2", $locations_id, 0, $entity_restrict);
+         Dropdown::dropdownValue("glpi_locations", "value2", $locations_id, 0, $entity_restrict);
 
          echo $LANG['networking'][52] . "&nbsp;: ";
          autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,
@@ -376,12 +376,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
       echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
 
       if (!empty ($ID)) {
-         $value = CommonDropdown::getDropdownName($tablename, $ID, 1);
+         $value = Dropdown::getDropdownName($tablename, $ID, 1);
       } else {
          $value = array("name" => "",
                         "comment" => "");
       }
-      CommonDropdown::dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
+      Dropdown::dropdownValue($tablename, "id", $ID, 0, $entity_restrict);
 
       // on ajoute un input text pour entrer la valeur modifier
       echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"" .
@@ -823,7 +823,7 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
    echo "<form action=\"$target\" method='post'>";
    echo "<input type='hidden' name='which' value='$table'/>";
    echo "<table class='tab_cadre'><tr><td>";
-   CommonDropdown::getDropdownArrayNames($table, "newID", $ID,$entities_id);
+   Dropdown::getDropdownArrayNames($table, "newID", $ID,$entities_id);
    echo "<input type='hidden' name='tablename' value='$table'/>";
    echo "<input type='hidden' name='oldID' value='$ID'/>";
    echo "<input type='hidden' name='entities_id' value='$entities_id'/>";
@@ -1075,7 +1075,7 @@ function showOtherAuthList($target) {
 
    echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>\n";
    echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
-   CommonDropdown::dropdownValue("glpi_authldaps","authldaps_id_extra",$CFG_GLPI["authldaps_id_extra"]);
+   Dropdown::dropdownValue("glpi_authldaps","authldaps_id_extra",$CFG_GLPI["authldaps_id_extra"]);
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";

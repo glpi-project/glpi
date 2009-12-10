@@ -95,7 +95,7 @@ class RuleRight extends Rule {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>".$LANG['profiles'][22] . "&nbsp;:&nbsp;";
-         CommonDropdown::dropdownValue("glpi_profiles","profiles_id");
+         Dropdown::dropdownValue("glpi_profiles","profiles_id");
          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$LANG['profiles'][28] . "&nbsp;:&nbsp;";
          dropdownYesNo("is_recursive",0);
          echo "</td></tr>\n";
@@ -108,7 +108,7 @@ class RuleRight extends Rule {
       $rules = $this->getRulesForEntity( $ID, 0, 1);
 
       if (!empty ($rules)) {
-         initNavigateListItems(RULE_TYPE,$LANG['entity'][0]."=".CommonDropdown::getDropdownName("glpi_entities",$ID),
+         initNavigateListItems(RULE_TYPE,$LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
                                $this->sub_type);
 
          foreach ($rules as $rule) {

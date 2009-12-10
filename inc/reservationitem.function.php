@@ -438,7 +438,7 @@ function printReservation($target,$ID,$date) {
                   if (isset($item->fields["peripheraltypes_id"])
                       && $item->fields["peripheraltypes_id"]!=0) {
 
-                     $typename=CommonDropdown::getDropdownName("glpi_peripheraltypes",
+                     $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
                                                $item->fields["peripheraltypes_id"]);
                   }
                }
@@ -574,7 +574,7 @@ function printReservationItems($target) {
                if (isset($item->fields["peripheraltypes_id"])
                    && $item->fields["peripheraltypes_id"]!=0) {
 
-                  $typename=CommonDropdown::getDropdownName("glpi_peripheraltypes",
+                  $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
                                             $item->fields["peripheraltypes_id"]);
                }
             }
@@ -583,7 +583,7 @@ function printReservationItems($target) {
             echo "<td>".$row["location"]."</td>";
             echo "<td>".nl2br($row["comment"])."</td>";
             if ($showentity) {
-               echo "<td>".CommonDropdown::getDropdownName("glpi_entities",$row["entities_id"])."</td>";
+               echo "<td>".Dropdown::getDropdownName("glpi_entities",$row["entities_id"])."</td>";
             }
             echo "</tr>\n";
             $ok=true;

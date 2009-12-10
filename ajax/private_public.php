@@ -58,7 +58,7 @@ if (isset($_POST['is_private'])) {
       case false :
          echo "<input type='hidden' name='is_private' value='0'>\n";
          echo $LANG['common'][76]."&nbsp;:&nbsp;";
-         CommonDropdown::dropdownValue('glpi_entities',"entities_id",$_POST["entities_id"]);
+         Dropdown::dropdownValue('glpi_entities',"entities_id",$_POST["entities_id"]);
          echo "&nbsp;+&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
          dropdownYesNo('is_recursive',$_POST["is_recursive"]);
          echo " - ";

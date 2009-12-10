@@ -234,7 +234,7 @@ class OcsServer extends CommonDBTM {
                  $this->fields["tag_exclude"] . "\"></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td>\n<td>";
-      CommonDropdown::dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
+      Dropdown::dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
@@ -331,7 +331,7 @@ class OcsServer extends CommonDBTM {
       dropdownYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td>\n<td colspan='3'>";
-      CommonDropdown::dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
+      Dropdown::dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
       echo "</td></tr>\n";
 
       echo "</table><br>".$LANG['ocsconfig'][58];
@@ -2093,7 +2093,7 @@ class OcsServer extends CommonDBTM {
                      echo "<td class='center'><img src=\"" .GLPI_ROOT. "/pics/greenbutton.png\"></td>\n";
                   }
                   echo "<td>";
-                  CommonDropdown::dropdownValue("glpi_entities", "toimport_entities[" . $tab["id"] . "]=" .
+                  Dropdown::dropdownValue("glpi_entities", "toimport_entities[" . $tab["id"] . "]=" .
                                 $data['entities_id'], $data['entities_id'], 0);
                   echo "</td>\n";
                }
@@ -2105,10 +2105,10 @@ class OcsServer extends CommonDBTM {
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $computer_found = OcsServer::getComputersAlreadyImported($tab["id"],$ocsservers_id,$entity);
                   if (!empty($computer_found) && $computer_found != -1) {
-                     CommonDropdown::dropdownValue("glpi_computers", "tolink[" .
+                     Dropdown::dropdownValue("glpi_computers", "tolink[" .
                      $tab["id"] . "]", $computer_found[0],1,$entity);
                   } else {
-                     CommonDropdown::dropdown("glpi_computers", "tolink[" .
+                     Dropdown::Select("glpi_computers", "tolink[" .
                      $tab["id"] . "]");
                   }
                }

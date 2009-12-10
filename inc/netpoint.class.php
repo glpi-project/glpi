@@ -124,7 +124,7 @@ class Netpoint extends CommonDropdown {
          $value=0;
       }
       if ($value>0) {
-         $tmpname=CommonDropdown::getDropdownName("glpi_netpoints",$value,1);
+         $tmpname=Dropdown::getDropdownName("glpi_netpoints",$value,1);
          if ($tmpname["name"]!="&nbsp;") {
             $name=$tmpname["name"];
             $comment=$tmpname["comment"];

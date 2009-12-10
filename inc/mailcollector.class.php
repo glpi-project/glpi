@@ -144,7 +144,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,
+      Dropdown::dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,
                     $_SESSION['glpiactiveentities']);
       echo "</td></tr>";
 
@@ -848,7 +848,7 @@ class MailCollector  extends CommonDBTM {
                $mc->maxfetch_emails = $max;
 
                $task->log("Collect mails from ".$data["host"]." for  ".
-                           CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"])."\n");
+                           Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."\n");
                $message=$mc->collect($data["id"]);
 
                $task->log("$message\n");

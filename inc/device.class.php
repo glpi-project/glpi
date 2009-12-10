@@ -157,7 +157,7 @@ class Device extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td colspan='2'>";
-      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>";
 
       if (getDeviceSpecifityLabel($this->devtype)!="") {
@@ -196,7 +196,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_devicememorytypes","devicememorytypes_id",
+            Dropdown::dropdownValue("glpi_devicememorytypes","devicememorytypes_id",
                           $this->fields["devicememorytypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
@@ -219,7 +219,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
+            Dropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             break;
 
@@ -242,7 +242,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
+            Dropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_drive'][1]."&nbsp;:</td><td>";
@@ -260,7 +260,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
+            Dropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
@@ -273,7 +273,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
+            Dropdown::dropdownValue("glpi_interfacetypes","interfacetypes_id",$this->fields["interfacetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
@@ -299,7 +299,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_case'][0]."&nbsp;:</td>";
             echo "<td>";
-            CommonDropdown::dropdownValue("glpi_devicecasetypes","devicecasetypes_id",
+            Dropdown::dropdownValue("glpi_devicecasetypes","devicecasetypes_id",
                           $this->fields["devicecasetypes_id"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";

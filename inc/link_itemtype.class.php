@@ -109,7 +109,7 @@ class Link_ItemType extends CommonDBTM{
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<div class='software-instal'><input type='hidden' name='links_id' value='$links_id'>";
-         CommonDropdown::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"],$used);
+         Dropdown::dropdownTypes("itemtype",0,$CFG_GLPI["link_types"],$used);
          echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"".
                             $LANG['buttons'][8]."\" class='submit'>";
          echo "</div></td></tr>";

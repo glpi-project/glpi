@@ -138,12 +138,12 @@ class RuleRightCollection extends RuleCollection {
       switch ($name) {
          case "entity" :
             echo "<td class='center'>".$LANG['entity'][0]." </td>\n";
-            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$value)."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$value)."</td>";
             break;
 
          case "profile" :
             echo "<td class='center'>".$LANG['Menu'][35]." </td>\n";
-            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_profiles",$value)."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_profiles",$value)."</td>";
             break;
 
          case "is_recursive" :

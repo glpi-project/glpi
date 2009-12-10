@@ -373,7 +373,7 @@ class Computer_Item extends CommonDBRelation{
                      echo "<td class='center'><strong>";
                      echo $item->getLink();
                      echo "</strong>";
-                     echo " - ".CommonDropdown::getDropdownName("glpi_states",$item->getField('state'));
+                     echo " - ".Dropdown::getDropdownName("glpi_states",$item->getField('state'));
                      echo "</td><td>".$item->getField('serial');
                      echo "</td><td>".$item->getField('otherserial');
                      echo "</td><td>";
