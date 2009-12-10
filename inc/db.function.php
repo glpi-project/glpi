@@ -1087,7 +1087,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1) {
          if ($global == 1) {
             $query = "";
             $first = 1;
-            $types=array('Computer','Monitor','NetworkEquipment','Peripheral','Phone','Printer')
+            $types=array('Computer','Monitor','NetworkEquipment','Peripheral','Phone','Printer');
             foreach($types as $t) {
                $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
                            FROM `$table`
