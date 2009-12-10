@@ -101,7 +101,7 @@ class Printer  extends CommonDBTM {
     * @return booleen
     **/
    function canUnrecurs () {
-      global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
 
@@ -136,12 +136,12 @@ class Printer  extends CommonDBTM {
 
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
+               $itemtable=getTableForItemType($data["itemtype"]);
                // For each itemtype which are entity dependant
-               if (isset($LINK_ID_TABLE[$data["itemtype"]])
-                   && in_array($table=$LINK_ID_TABLE[$data["itemtype"]],
+               if (in_array($itemtable,
                                       $CFG_GLPI["specif_entities_tables"])) {
 
-                  if (countElementsInTable("$table", "`id` IN (".$data["ids"].")
+                  if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
                                            AND `entities_id` NOT IN $entities")>0) {
                      return false;
                   }

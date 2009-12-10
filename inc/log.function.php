@@ -87,7 +87,7 @@ function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action
  * @param $values all values of the item
  **/
 function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
-   global $LINK_ID_TABLE, $LANG ;
+   global $LANG ;
 
    if (count($oldvalues)) {
       // needed to have  $SEARCHOPTION
@@ -140,7 +140,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
                       || (empty($val2["linkfield"]) && $key == $val2["field"])){
 
                      $id_search_option=$key2; // Give ID of the $SEARCHOPTION
-                     if ($val2["table"]==$LINK_ID_TABLE[$itemtype]) {
+                     if ($val2["table"]==getTableForItemType($itemtype)) {
                         // 1st case : text field -> keep datas
                         $changes=array($id_search_option,
                                        addslashes($oldval),
@@ -172,7 +172,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
  * @param $itemtype
  **/
 function showHistory($itemtype,$items_id) {
-   global $DB, $LINK_ID_TABLE,$LANG;
+   global $DB,$LANG;
 
    $SEARCHOPTION=Search::getOptions($itemtype);
    if (isset($_REQUEST["start"])) {

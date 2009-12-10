@@ -118,9 +118,9 @@ class NetworkPort extends CommonDBTM {
     *@return boolean item found
     **/
    function getDeviceData($ID, $itemtype) {
-      global $DB,$LINK_ID_TABLE;
+      global $DB;
 
-      $table = $LINK_ID_TABLE[$itemtype];
+      $table = getTableForItemType($itemtype);
 
       $query = "SELECT *
                 FROM `$table`

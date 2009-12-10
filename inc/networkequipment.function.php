@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 ///// Manage Ports on Devices /////
 
 function showPorts($device, $itemtype, $withtemplate = '') {
-   global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+   global $DB, $CFG_GLPI, $LANG;
 
    $rand = mt_rand();
    if (!class_exists($itemtype)) {
@@ -443,7 +443,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 }
 
 function showPortsAdd($ID, $itemtype) {
-   global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+   global $DB, $CFG_GLPI, $LANG;
 
    if (!class_exists($itemtype)) {
       return false;

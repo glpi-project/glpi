@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 // FUNCTIONS State
 
 function showStateSummary($target) {
-   global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
+   global $DB,$LANG,$CFG_GLPI;
 
    $state_type=$CFG_GLPI["state_types"];
 
@@ -49,9 +49,10 @@ function showStateSummary($target) {
       if (!haveTypeRight($itemtype,"r")) {
          unset($state_type[$key]);
       } else {
+         $table=getTableForItemType($itemtype);
          $query = "SELECT `states_id`, COUNT(*) AS cpt
-                   FROM `".$LINK_ID_TABLE[$itemtype]."` ".
-                   getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])."
+                   FROM `$table` ".
+                   getEntitiesRestrictRequest("WHERE",$table)."
                         AND `is_deleted` = '0'
                         AND `is_template` = '0'
                    GROUP BY `states_id`";

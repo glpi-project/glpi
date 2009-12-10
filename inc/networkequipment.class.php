@@ -187,7 +187,7 @@ class NetworkEquipment extends CommonDBTM {
     * @return booleen
     **/
    function canUnrecurs () {
-      global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
       if ($ID<0 || !$this->fields['is_recursive']) {
@@ -221,12 +221,10 @@ class NetworkEquipment extends CommonDBTM {
          $res = $DB->query($sql);
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
+               $itemtable=getTableForItemType($data["itemtype"]);
                // For each itemtype which are entity dependant
-               if (isset($LINK_ID_TABLE[$data["itemtype"]])
-                   && in_array($table=$LINK_ID_TABLE[$data["itemtype"]],
-                               $CFG_GLPI["specif_entities_tables"])) {
-
-                  if (countElementsInTable("$table", "id IN (".$data["ids"].")
+               if (in_array($itemtable, $CFG_GLPI["specif_entities_tables"])) {
+                  if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
                                            AND entities_id NOT IN $entities")>0) {
                      return false;
                   }

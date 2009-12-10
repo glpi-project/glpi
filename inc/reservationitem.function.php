@@ -528,7 +528,7 @@ function printReservationItem($target,$ID,$date) {
 }
 
 function printReservationItems($target) {
-   global $DB,$LANG,$LINK_ID_TABLE,$CFG_GLPI;
+   global $DB,$LANG,$CFG_GLPI;
 
    if (!haveRight("reservation_helpdesk","1")) {
       return false;
@@ -547,22 +547,22 @@ function printReservationItems($target) {
          continue;
       }
       $item=new $itemtype();
+      $itemtable=getTableForItemType($itemtype);
       $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
-                       $LINK_ID_TABLE[$itemtype].".`name` AS name, ".
-                       $LINK_ID_TABLE[$itemtype].".`entities_id` AS entities_id,
+                       "`$itemtable`.`name` AS name, ".
+                       "`$itemtable`.`entities_id` AS entities_id,
                        `glpi_locations`.`completename` AS location,
                        `glpi_reservationitems`.`items_id` AS items_id
                 FROM `glpi_reservationitems`
-                INNER JOIN ".$LINK_ID_TABLE[$itemtype]."
+                INNER JOIN `$itemtable`
                      ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
-                         AND `glpi_reservationitems`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
+                         AND `glpi_reservationitems`.`items_id` = `$itemtable`.`id`)
                 LEFT JOIN `glpi_locations`
-                     ON (".$LINK_ID_TABLE[$itemtype].".`locations_id` = `glpi_locations`.`id`)
+                     ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                 WHERE `glpi_reservationitems`.`is_active` = '1'
-                     AND ".$LINK_ID_TABLE[$itemtype].".`is_deleted` = '0'".
-                     getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype])."
-                ORDER BY ".$LINK_ID_TABLE[$itemtype].".`entities_id`, ".
-                           $LINK_ID_TABLE[$itemtype].".`name`";
+                     AND `$itemtable`.`is_deleted` = '0'".
+                     getEntitiesRestrictRequest("AND",$itemtable)."
+                ORDER BY `$itemtable`.`entities_id`,` $itemtable`.`name`";
 
       if ($result = $DB->query($query)) {
          while ($row=$DB->fetch_array($result)) {

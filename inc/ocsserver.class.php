@@ -4083,7 +4083,7 @@ class OcsServer extends CommonDBTM {
     **/
    static function updatePeripherals($itemtype, $entity, $computers_id, $ocsid, $ocsservers_id, $cfg_ocs,
                                  $import_periph, $dohistory) {
-      global $DB, $DBocs, $LINK_ID_TABLE;
+      global $DB, $DBocs;
 
       OcsServer::checkOCSconnection($ocsservers_id);
       $do_clean = false;
