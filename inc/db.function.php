@@ -79,7 +79,7 @@ function getItemTypeForTable($table) {
    if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
       $table=preg_replace('/^plugin_[a-z0-9]+_/','',$table);
       $prefix= "Plugin".ucfirst($matches[1]);
-   } 
+   }
    if (strstr($table,'_')) {
       $split=explode('_',$table);
       foreach ($split as $key => $part) {
@@ -103,7 +103,7 @@ function getItemTypeForTable($table) {
 function getTableForItemType($itemtype) {
    $prefix="glpi_";
    if ($plug=isPluginItemType($itemtype)) {
-      $prefix.="_plugin_".strtolower($plug['plugin'])."_";
+      $prefix.="plugin_".strtolower($plug['plugin'])."_";
       $table=strtolower($plug['class']);
    } else {
       $table=strtolower($itemtype);
@@ -131,7 +131,7 @@ function getTableForItemType($itemtype) {
 function getPlural($string) {
    $rules = array(
       //'singular' => 'plural'
-      'y$' => 'ies', // special case : category 
+      'y$' => 'ies', // special case : category
       '([^s])$' => '\1s' // Add at the end if not exists
    );
 
@@ -179,7 +179,7 @@ function getItemTypeTable($itemtype) {
             $CFG_GLPI['glpitables'][$itemtype]=$item->table;
             return $CFG_GLPI['glpitables'][$itemtype];
          }
-      } 
+      }
    }
    return "UNKNOWN";
 }
