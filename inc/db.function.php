@@ -108,25 +108,32 @@ function getItemTypeForTable($table) {
  * return string itemtype corresponding to a table name parameter
  */
 function getTableForItemType($itemtype) {
-   $prefix="glpi_";
-   if ($plug=isPluginItemType($itemtype)) {
-      $prefix.="plugin_".strtolower($plug['plugin'])."_";
-      $table=strtolower($plug['class']);
-   } else {
-      $table=strtolower($itemtype);
-   }
+   global $CFG_GLPI;
 
-   if (strstr($table,'_')) {
-      $split=explode('_',$table);
-      foreach ($split as $key => $part) {
-         $split[$key]=getPlural($part);
+   if (isset($CFG_GLPI['glpitables'][$itemtype])) {
+      return $CFG_GLPI['glpitables'][$itemtype];
+   } else {
+
+      $prefix="glpi_";
+      if ($plug=isPluginItemType($itemtype)) {
+         $prefix.="plugin_".strtolower($plug['plugin'])."_";
+         $table=strtolower($plug['class']);
+      } else {
+         $table=strtolower($itemtype);
       }
-      $table=implode('_',$split);
-   } else {
-      $table=getPlural($table);
-   }
 
-   return $prefix.$table;
+      if (strstr($table,'_')) {
+         $split=explode('_',$table);
+         foreach ($split as $key => $part) {
+            $split[$key]=getPlural($part);
+         }
+         $table=implode('_',$split);
+      } else {
+         $table=getPlural($table);
+      }
+      $CFG_GLPI['glpitables']=$prefix.$table;
+      return $prefix.$table;
+   }
 }
 /**
  * Return the plural of a string
