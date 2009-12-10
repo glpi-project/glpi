@@ -96,7 +96,7 @@ class Profile extends CommonDBTM {
    }
 
    function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI,$LINK_ID_TABLE;
+      global $DB,$CFG_GLPI;
 
       $query = "DELETE
                 FROM `glpi_profiles_users`

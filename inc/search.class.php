@@ -60,7 +60,7 @@ class Search {
    *
    **/
    static function showList ($itemtype,$params) {
-      global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$LINK_ID_TABLE,$SEARCH_PAGES,
+      global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$SEARCH_PAGES,
             $PLUGIN_HOOKS;
 
       // Instanciate an object to access method
@@ -109,7 +109,7 @@ class Search {
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          $itemtable=$CFG_GLPI["union_search_type"][$itemtype];
       } else {
-         $itemtable=$item->table;
+         $itemtable=getTableForItemType($itemtype);
       }
       $LIST_LIMIT=$_SESSION['glpilist_limit'];
 
@@ -453,7 +453,7 @@ class Search {
          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
             if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
                && strlen($contains2[$i])>0) {
-               if (!in_array($LINK_ID_TABLE[$itemtype2[$i]],$already_link_tables2)) {
+               if (!in_array(getTableForItemType($itemtype2[$i]),$already_link_tables2)) {
                   $FROM .= Search::addMetaLeftJoin($itemtype,$itemtype2[$i],$already_link_tables2,
                                           (($contains2[$i]=="NULL")||(strstr($link2[$i],"NOT"))));
                }
@@ -469,7 +469,7 @@ class Search {
                if (!in_array($searchopt[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],
                            $already_link_tables2)) {
 
-                  $FROM .= Search::addLeftJoin($itemtype2[$i],$LINK_ID_TABLE[$itemtype2[$i]],$already_link_tables2,
+                  $FROM .= Search::addLeftJoin($itemtype2[$i],getTableForItemType($itemtype2[$i]),$already_link_tables2,
                                        $searchopt[$itemtype2[$i]][$field2[$i]]["table"],
                                        $searchopt[$itemtype2[$i]][$field2[$i]]["linkfield"],
                                        0,1,$itemtype2[$i]);
@@ -592,30 +592,31 @@ class Search {
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
                if (haveTypeRight($ctype,'r')) {
+                  $ctable=getTableForItemType($ctype);
                   // State case
                   if ($itemtype == 'States') {
                      $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
-                                          $LINK_ID_TABLE[$ctype],$tmpquery);
-                     $query_num .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
+                                          $ctable,$tmpquery);
+                     $query_num .= " AND $ctable.`states_id` > '0' ";
                   } else {// Ref table case
-                     $replace = "FROM `".$LINK_ID_TABLE[$itemtype]."`
-                                 INNER JOIN `".$LINK_ID_TABLE[$ctype]."`
-                                 ON (`".$LINK_ID_TABLE[$itemtype]."`.`items_id`=".$LINK_ID_TABLE[$ctype].".`id`
-                                    AND `".$LINK_ID_TABLE[$itemtype]."`.`itemtype` = '$ctype')";
+                     $replace = "FROM `$itemtable`
+                                 INNER JOIN `$ctable`
+                                 ON (`$itemtable`.`items_id`=`$ctable`.`id`
+                                    AND `$itemtable`.`itemtype` = '$ctype')";
 
                      $query_num=str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
                                           $replace,$tmpquery);
                      $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
-                                          $LINK_ID_TABLE[$ctype],$query_num);
+                                          $ctable,$query_num);
                   }
                   // Union/Recursivity Hack
                   if (isset($CFG_GLPI["recursive_type"][$ctype])) {
                      $query_num=str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),
+                                       getEntitiesRestrictRequest('',$ctable,'','',true),
                                        $query_num);
                   } else {
                      $query_num=str_replace("ENTITYRESTRICT",
-                                          getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),
+                                          getEntitiesRestrictRequest('',$ctable),
                                           $query_num);
                   }
                   $result_num = $DB->query($query_num);
@@ -654,6 +655,7 @@ class Search {
          $QUERY="";
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
             if (haveTypeRight($ctype,'r')) {
+               $ctable=getTableForItemType($ctype);
                if ($first) {
                   $first=false;
                } else {
@@ -666,30 +668,30 @@ class Search {
                               $FROM.
                               $WHERE;
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
-                                          $LINK_ID_TABLE[$ctype],$tmpquery);
-                  $tmpquery .= " AND ".$LINK_ID_TABLE[$ctype].".`states_id` > '0' ";
+                                          $ctable,$tmpquery);
+                  $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
                } else {// Ref table case
-                  $tmpquery = $SELECT.", '$ctype' AS TYPE, ".$LINK_ID_TABLE[$itemtype].".`id` AS refID, ".
-                                    $LINK_ID_TABLE[$ctype].".`entities_id` AS ENTITY ".
+                  $tmpquery = $SELECT.", '$ctype' AS TYPE, `$itemtable`.`id` AS refID, ".
+                                    "`$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
-                  $replace = "FROM `".$LINK_ID_TABLE[$itemtype]."`".
-                     " INNER JOIN `".$LINK_ID_TABLE[$ctype]."`".
-                     " ON (`".$LINK_ID_TABLE[$itemtype]."`.`items_id`=".$LINK_ID_TABLE[$ctype].".`id`".
-                     " AND `".$LINK_ID_TABLE[$itemtype]."`.`itemtype` = '$ctype')";
+                  $replace = "FROM `$itemtable`".
+                     " INNER JOIN `$ctable`".
+                     " ON (`$itemtable`.`items_id`=`$ctable`.`id`".
+                     " AND `$itemtable`.`itemtype` = '$ctype')";
                   $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",$replace,
                                           $tmpquery);
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
-                                          $LINK_ID_TABLE[$ctype],$tmpquery);
+                                          $ctable,$tmpquery);
                }
                // Union/Recursivity Hack
                if (isset($CFG_GLPI["recursive_type"][$ctype])) {
                   $tmpquery = str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),
+                                       getEntitiesRestrictRequest('',$ctable,'','',true),
                                        $tmpquery);
                } else {
                   $tmpquery = str_replace("ENTITYRESTRICT",
-                                          getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$tmpquery);
+                                          getEntitiesRestrictRequest('',$ctable),$tmpquery);
                }
                // SOFTWARE HACK
                if ($ctype==SOFTWARE_TYPE) {
@@ -1155,7 +1157,7 @@ class Search {
    *
    **/
    static function showSearchForm($itemtype,$params) {
-      global $LANG,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES;
+      global $LANG,$CFG_GLPI,$INFOFORM_PAGES,$SEARCH_PAGES;
 
       // Default values of parameters
       $default_values["link"]="";
@@ -1421,8 +1423,8 @@ class Search {
 
       // Display deleted selection
       echo "<td>";
-      if (isset($LINK_ID_TABLE[$itemtype])
-         && in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+      $itemtable=getTableForItemType($itemtype);
+      if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
          dropdownYesNo("is_deleted",$is_deleted);
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
                "' title='".$LANG['common'][3]."'>";
@@ -1714,7 +1716,9 @@ class Search {
    *
    **/
    static function addDefaultSelect ($itemtype) {
-      global $CFG_GLPI, $LINK_ID_TABLE;
+      global $CFG_GLPI;
+
+      $itemtable=getTableForItemType($itemtype);
 
       switch ($itemtype) {
          case RESERVATION_TYPE :
@@ -1733,7 +1737,7 @@ class Search {
             $ret = "";
       }
       if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-         $ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".is_recursive, ";
+         $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
       }
       return $ret;
    }
@@ -1752,7 +1756,7 @@ class Search {
    *
    **/
    static function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0) {
-      global $LINK_ID_TABLE,$PLUGIN_HOOKS,$CFG_GLPI;
+      global $PLUGIN_HOOKS,$CFG_GLPI;
 
       $searchopt=&Search::getOptions($itemtype);
       $table=$searchopt[$ID]["table"];
@@ -1761,7 +1765,7 @@ class Search {
       $NAME="ITEM";
       if ($meta) {
          $NAME="META";
-         if ($LINK_ID_TABLE[$meta_type]!=$table) {
+         if (getTableForItemType($meta_type)!=$table) {
             $addtable="_".$meta_type;
          }
       }
@@ -2062,14 +2066,14 @@ class Search {
    *
    **/
    static function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
-      global $LINK_ID_TABLE,$LANG,$PLUGIN_HOOKS,$CFG_GLPI;
+      global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
       $searchopt=&Search::getOptions($itemtype);
       $table = $searchopt[$ID]["table"];
       $field = $searchopt[$ID]["field"];
 
       $inittable = $table;
-      if ($meta && $LINK_ID_TABLE[$itemtype]!=$table) {
+      if ($meta && getTableForItemType($itemtype)!=$table) {
          $table .= "_".$itemtype;
       }
 
@@ -2099,7 +2103,7 @@ class Search {
             if (!empty($searchopt[$ID]["linkfield"])) {
                $linkfield = "_".$searchopt[$ID]["linkfield"];
 
-               if ($meta && $LINK_ID_TABLE[$itemtype]!=$inittable) {
+               if ($meta && getTableForItemType($itemtype)!=$inittable) {
                   $table = $inittable;
                   $linkfield .= "_".$itemtype;
                }
@@ -2767,7 +2771,6 @@ class Search {
    *
    **/
    static function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott) {
-      global $LINK_ID_TABLE;
 
       $LINK=" INNER JOIN ";
       if ($nullornott) {
@@ -2778,40 +2781,40 @@ class Search {
          case COMPUTER_TYPE :
             switch ($to_type) {
                case PRINTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[PRINTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_print_$to_type
                               ON (`conn_print_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_print_$to_type`.`itemtype` = '".PRINTER_TYPE."')
+                                 AND `conn_print_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_printers`
                               ON (`conn_print_$to_type`.`items_id` = `glpi_printers`.`id`) ";
 
                case MONITOR_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[MONITOR_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '".MONITOR_TYPE."')
+                                 AND `conn_mon_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_monitors`
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
 
                case PERIPHERAL_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[PERIPHERAL_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_periph_$to_type
                               ON (`conn_periph_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_periph_$to_type`.`itemtype` = '".PERIPHERAL_TYPE."')
+                                 AND `conn_periph_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_peripherals`
                               ON (`conn_periph_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
 
                case PHONE_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[PHONE_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_phones_$to_type
                               ON (`conn_phones_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_phones_$to_type`.`itemtype` = '".PHONE_TYPE."')
+                                 AND `conn_phones_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_phones`
                               ON (`conn_phones_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
                case SOFTWARE_TYPE :
                   /// TODO: link licenses via installed software OR by affected/computers_id ???
-                  array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_softwareversions` AS inst_$to_type
                               ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id`)
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
@@ -2830,10 +2833,10 @@ class Search {
          case MONITOR_TYPE :
             switch ($to_type) {
                case COMPUTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '".MONITOR_TYPE."')
+                                 AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
             }
@@ -2842,10 +2845,10 @@ class Search {
          case PRINTER_TYPE :
             switch ($to_type) {
                case COMPUTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_printers`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '".PRINTER_TYPE."')
+                                 AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
@@ -2855,10 +2858,10 @@ class Search {
          case PERIPHERAL_TYPE :
             switch ($to_type) {
                case COMPUTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_peripherals`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '".PERIPHERAL_TYPE."')
+                                 AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
             }
@@ -2867,10 +2870,10 @@ class Search {
          case PHONE_TYPE :
             switch ($to_type) {
                case COMPUTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_phones`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '".PHONE_TYPE."')
+                                 AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers.id`) ";
             }
@@ -2879,7 +2882,7 @@ class Search {
          case SOFTWARE_TYPE :
             switch ($to_type) {
                case COMPUTER_TYPE :
-                  array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+                  array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_softwareversions_$to_type`.`softwares_id` = `glpi_softwares`.`id`)
                            $LINK `glpi_computers_softwareversions` AS inst_$to_type

@@ -145,7 +145,7 @@ function getYesNo($value) {
  * @return nothing (print out an HTML select box)
  */
 function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0) {
-   global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
+   global $DB,$LANG,$CFG_GLPI;
 
    if ($userID==0) {
       $userID=$_SESSION["glpiID"];
@@ -162,21 +162,22 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
       // My items
       foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
          if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+            $itemtable=getTableForItemType($itemtype);
             $item = new $itemtype();
             $query="SELECT *
-                    FROM ".$LINK_ID_TABLE[$itemtype]."
+                    FROM `$itemtable`
                     WHERE `users_id`='".$userID."'";
-            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+            if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
                $query.=" AND `is_deleted`='0' ";
             }
-            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+            if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
                $query.=" AND `is_template`='0' ";
             }
             if (in_array($itemtype,$CFG_GLPI["helpdesk_visible_types"])){
                $query.=" AND `is_helpdesk_visible`='1' ";
             }
 
-            $query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict,
+            $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
                                                in_array($itemtype,$CFG_GLPI["recursive_type"]));
             $query.=" ORDER BY `name` ";
 
@@ -234,17 +235,18 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
             $tmp_device="";
             foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
                if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+                  $itemtable=getTableForItemType($itemtype);
                   $item = new $itemtype();
                   $query="SELECT *
-                          FROM `".$LINK_ID_TABLE[$itemtype]."`
+                          FROM `$itemtable`
                           WHERE ($group_where) ".
-                                getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",
+                                getEntitiesRestrictRequest("AND",$itemtable,"",
                                    $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 
-                  if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+                  if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
                      $query.=" AND `is_deleted`='0' ";
                   }
-                  if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+                  if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
                      $query.=" AND `is_template`='0' ";
                   }
 
@@ -300,25 +302,26 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
          foreach ($types as $itemtype) {
             if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
                && class_exists($itemtype)) {
+               $itemtable=getTableForItemType($itemtype);
                $item = new $itemtype();
                if (!isset($already_add[$itemtype])) {
                   $already_add[$itemtype]=array();
                }
-               $query="SELECT DISTINCT ".$LINK_ID_TABLE[$itemtype].".*
+               $query="SELECT DISTINCT `$itemtable`.*
                        FROM `glpi_computers_items`
-                       LEFT JOIN ".$LINK_ID_TABLE[$itemtype]."
-                            ON (`glpi_computers_items`.`items_id`=".$LINK_ID_TABLE[$itemtype].".`id`)
+                       LEFT JOIN `$itemtable`
+                            ON (`glpi_computers_items`.`items_id`=`$itemtable`.`id`)
                        WHERE `glpi_computers_items`.`itemtype`='$itemtype'
                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
                                                 $search_computer);
-               if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])) {
+               if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
                   $query.=" AND `is_deleted`='0' ";
                }
-               if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
+               if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
                   $query.=" AND `is_template`='0' ";
                }
-               $query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype],"",$entity_restrict)
-                       ." ORDER BY ".$LINK_ID_TABLE[$itemtype].".name";
+               $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict)
+                       ." ORDER BY `$itemtable`.`name`";
 
                $result=$DB->query($query);
                if ($DB->numrows($result)>0) {
@@ -406,7 +409,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
  * @return nothing (print out an HTML select box)
  */
 function dropdownTrackingAllDevices($myname,$itemtype,$items_id=0,$admin=0,$entity_restrict=-1) {
-   global $LANG,$CFG_GLPI,$DB,$LINK_ID_TABLE;
+   global $LANG,$CFG_GLPI,$DB;
 
    $rand=mt_rand();
 
@@ -471,7 +474,7 @@ function dropdownTrackingAllDevices($myname,$itemtype,$items_id=0,$admin=0,$enti
  */
 function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,
                          $used=array()) {
-   global $CFG_GLPI,$LINK_ID_TABLE;
+   global $CFG_GLPI;
 
    $rand=mt_rand();
 
@@ -479,9 +482,9 @@ function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlygl
    if ($CFG_GLPI["use_ajax"]) {
       $nb=0;
       if ($entity_restrict>=0) {
-         $nb=countElementsInTableForEntity($LINK_ID_TABLE[$itemtype],$entity_restrict);
+         $nb=countElementsInTableForEntity(getTableForItemType($itemtype),$entity_restrict);
       } else {
-         $nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$itemtype]);
+         $nb=countElementsInTableForMyEntities(getTableForItemType($itemtype));
       }
       if ($nb>$CFG_GLPI["ajax_limit_count"]) {
          $use_ajax=true;

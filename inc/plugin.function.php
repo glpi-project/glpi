@@ -261,7 +261,7 @@ function getPluginSearchOptions($itemtype) {
  */
  // TODO Remove this on 2009-12-14
 function registerPluginType($plugin,$name,$itemtype,$attrib) {
-   global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
+   global $PLUGIN_HOOKS,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 
    if (is_numeric($itemtype)) {
       die("itemtype MUST be a class name ($plugin/$name/$itemtype)");

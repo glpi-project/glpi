@@ -55,7 +55,7 @@ class Group extends CommonDBTM {
    }
 
    function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI,$LINK_ID_TABLE;
+      global $DB,$CFG_GLPI;
 
       $query = "DELETE
                 FROM `glpi_groups_users`
@@ -291,7 +291,7 @@ class Group extends CommonDBTM {
     *
     */
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $ID = $this->fields['id'];
 
@@ -305,7 +305,7 @@ class Group extends CommonDBTM {
          $query="SELECT *
                  FROM ".$item->table."
                  WHERE `groups_id`='$ID' " .
-                       getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '',
+                       getEntitiesRestrictRequest(" AND ", getTableForItemType($itemtype), '', '',
                                                   isset($CFG_GLPI["recursive_type"][$itemtype]));
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {

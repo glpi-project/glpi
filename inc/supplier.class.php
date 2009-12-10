@@ -448,7 +448,7 @@ class Supplier extends CommonDBTM {
     *
     **/
    function showInfocoms() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,'r')) {
@@ -487,10 +487,11 @@ class Supplier extends CommonDBTM {
              && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
             $linktype = $itemtype;
             $linkfield = 'id';
-            $query = "SELECT `entities_id`,`name`,`".$LINK_ID_TABLE[$itemtype]."`.*
+            $itemtable=getTableForItemType($itemtype);
+            $query = "SELECT `entities_id`,`name`,`$itemtable`.*
                       FROM `glpi_infocoms`
-                      INNER JOIN `".$LINK_ID_TABLE[$itemtype]."`
-                            ON (`".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_infocoms`.`items_id`) ";
+                      INNER JOIN `$itemtable`
+                            ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
 
             // Set $linktype for entity restriction AND link to search engine
             if ($itemtype==CARTRIDGE_TYPE) {
@@ -505,10 +506,11 @@ class Supplier extends CommonDBTM {
                $linktype = CONSUMABLEITEM_TYPE;
                $linkfield = 'consumableitems_id';
             }
+            $linktable=getTableForItemType($linktype);
             $query .= "WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
-                             getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$linktype]) ."
-                       ORDER BY `entities_id`, `".$LINK_ID_TABLE[$linktype]."`.`name`";
+                             getEntitiesRestrictRequest(" AND",$linktable) ."
+                       ORDER BY `entities_id`, `$linktable`.`name`";
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
