@@ -1675,33 +1675,61 @@ class User extends CommonDBTM {
       return $DB->query($query);
    }
 
+
    /**
     * Make a select box with all glpi users where select key = name
     *
+    *    - right : string / limit user who have specific right :
+    *        id -> only current user (default case); 
+    *        interface -> central ;
+    *        all -> all users ;
+    *        specific right like show_all_ticket, create_ticket....
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - all : Nobody or All display for none selected
+    *          all=0 (default) -> Nobody
+    *          all=1 -> All
+    *         all=-1-> nothing
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - helpdesk_ajax : boolean (default 0) / use ajax for helpdesk auto update (mail itemtype)
     *
-    *
-    * @param $myname select name
-    * @param $value default value
-    * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
-    * @param $all Nobody or All display for none selected $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-    * @param $display_comment display comment near the dropdown
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
-    * @param $used Already used items ID: not to display in dropdown
-    *
+    * @param $myname the name of the HTML select
+    * @param $value preselected value
+    * @param $options possible options
     * @return nothing (print out an HTML select box)
     *
     */
-   static function dropdown($myname,$value,$right,$all=0,$display_comment=1,$entity_restrict=-1,
-                          $helpdesk_ajax=0,$used=array()) {
-
+   static function dropdown($myname,$options=array()) {
       global $DB,$CFG_GLPI,$LANG;
+
+      //$right,$all=0,$display_comment=1,$entity_restrict=-1, $helpdesk_ajax=0,$used=array()
+
+
+      $default_values['value']='';
+      $default_values['right']='id';
+      $default_values['all']=0;
+      $default_values['helpdesk_ajax']=0;
+      $default_values['comments']=1;
+      $default_values['entity']=-1;
+      $default_values['used']=array();
+
+
+      foreach ($default_values as $key => $val) {
+         if (isset($options[$key])) {
+            $$key=$options[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
+
+
 
       // Make a select box with all glpi users
       $rand=mt_rand();
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
-         $res=User::dropdownUsersSelect (true, $right, $entity_restrict, $value, $used);
+         $res=User::dropdownUsersSelect (true, $right, $entity, $value, $used);
          $nb=($res ? $DB->result($res,0,"cpt") : 0);
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax=true;
@@ -1722,10 +1750,10 @@ class User extends CommonDBTM {
                     'myname'=>$myname,
                     'all'=>$all,
                     'right'=>$right,
-                    'comment'=>$display_comment,
+                    'comment'=>$comments,
                     'rand'=>$rand,
                     'helpdesk_ajax'=>$helpdesk_ajax,
-                    'entity_restrict'=>$entity_restrict,
+                    'entity_restrict'=>$entity,
                     'used'=>$used);
       if ($view_users) {
          $params['update_link']=$view_users;
@@ -1747,7 +1775,7 @@ class User extends CommonDBTM {
       ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
 
       // Display comment
-      if ($display_comment) {
+      if ($comments) {
          if (!$view_users) {
             $user["link"] = '';
          } else if (empty($user["link"])) {
@@ -1778,7 +1806,13 @@ class User extends CommonDBTM {
    static function dropdownAllUsers($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
                              $used=array()) {
 
-      return User::dropdown($myname,$value,"all",0,$display_comment,$entity_restrict,$helpdesk_ajax,$used);
+      return User::dropdown($myname,
+               array('value'=>$value,
+                     'right'=>"all",
+                     'comments'=>$display_comment,
+                     'entity'=>$entity_restrict,
+                     'helpdesk_ajax'=>$helpdesk_ajax,
+                     'used'=>$used));
    }
 
    /**
@@ -1796,7 +1830,11 @@ class User extends CommonDBTM {
    static function dropdownUsersID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
       // Make a select box with all glpi users
 
-      return User::dropdown($myname,$value,$right,0,$display_comment,$entity_restrict);
+      return User::dropdown($myname,
+                           array('value'=>$value,
+                                 'right'=>$right,
+                                 'comments'=>$display_comment,
+                                 'entity'=>$entity_restrict));
    }
 
    /**

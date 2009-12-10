@@ -103,7 +103,11 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID) {
    if (haveRight("show_all_planning","1")) {
       echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
             ($usertype=="user"?"checked":"").">";
-      $rand_user=User::dropdown("uID",$uID,"interface",1,1,$_SESSION["glpiactive_entity"]);
+      $rand_user=User::dropdown("uID",
+               array('value'=>$uID,
+                     'right'=>'interface',
+                     'all'=>1,
+                     'entity'=>$_SESSION["glpiactive_entity"]));
       echo "\n<hr>";
       echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
             ($usertype=="group"?"checked":"").">";

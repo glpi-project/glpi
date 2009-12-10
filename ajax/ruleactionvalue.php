@@ -65,7 +65,7 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_assign" :
-               User::dropdown("value",0,"own_ticket");
+               User::dropdown("value",array('right'=>'own_ticket'));
                $display=true;
                break;
 

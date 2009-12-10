@@ -1572,6 +1572,54 @@ class CommonDBTM extends CommonGLPI {
 
       return $tab;
    }
+
+   /**
+    * Print out an HTML "<select>" for a dropdown
+    *
+    * This should be overloaded in Class
+    * Parameters which could be used in options array :
+    *    - value : integer / preselected value (default 0)
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - toupdate : array / Update a specific item on select change on dropdown
+    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   and may have moreparams)
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - auto_submit : boolean / preselected value (default 0)
+    *
+    * @param $name the name of the HTML select
+    * @param $options possible options
+    * @return nothing display the dropdown
+    */
+   static function dropdown($name,$options=array()) {
+      $default_values['value']='';
+      $default_values['comments']=1;
+      $default_values['entity']=-1;
+      $default_values['toupdate']='';
+      $default_values['used']=array();
+      $default_values['auto_submit']=0;
+
+      foreach ($default_values as $key => $val) {
+         if (isset($options[$key])) {
+            $$key=$options[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
+
+      Dropdown::dropdownValue(
+            getTableForItemType(get_class($this)),
+            $name,
+            $value,
+            $comments,
+            $entity,
+            $toupdate,
+            $used,
+            $auto_submit
+         );
+   }
+
 }
 
 ?>
