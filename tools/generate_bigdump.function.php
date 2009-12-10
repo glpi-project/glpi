@@ -155,7 +155,7 @@ function addContracts($type,$ID){
 * @param $ID_entity entity ID
 */
 function addTracking($type,$ID,$ID_entity){
-	global $percent,$DB,$MAX,$current_year,$FIRST,$LAST,$LINK_ID_TABLE;
+	global $percent,$DB,$MAX,$current_year,$FIRST,$LAST;
 
 	$tco=0;
 	while (mt_rand(0,100)<$percent['tracking_on_item']){
@@ -210,7 +210,7 @@ function addTracking($type,$ID,$ID_entity){
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
-	$query="UPDATE ".$LINK_ID_TABLE[$type]." SET ticket_tco='$tco'	WHERE id='".$ID."';";
+	$query="UPDATE ".getTableForItemType($type)." SET ticket_tco='$tco'	WHERE id='".$ID."';";
 	$DB->query($query) or die("PB REQUETE ".$query);
 
 }

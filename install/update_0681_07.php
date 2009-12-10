@@ -37,7 +37,7 @@
 
 /// Update from 0.68.1 to 0.7
 function update0681to07() {
-	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+	global $DB, $CFG_GLPI, $LANG;
 
 	@mysql_query("SET NAMES 'latin1'",$DB->dbh);
 
@@ -1438,6 +1438,45 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_not_categorized` int(1) NOT NULL DEFAULT '1';";
 		$DB->query($query) or die("0.7 add expand_soft_not_categorized in glpi_config" . $LANG['update'][90] . $DB->error());
 	}
+
+	$LINK_ID_TABLE=array(
+			1=> "glpi_computers",
+			2 => "glpi_networking",
+			3 => "glpi_printers",
+			4 => "glpi_monitors",
+			5 => "glpi_peripherals",
+			6 => "glpi_software",
+			7 => "glpi_contacts",
+			8 => "glpi_enterprises",
+			9 => "glpi_infocoms",
+			10 => "glpi_contracts",
+			11 => "glpi_cartridges_type",
+			12 => "glpi_type_docs",
+			13 => "glpi_docs",
+			14 => "glpi_kbitems",
+			15 => "glpi_users",
+			16 => "glpi_tracking",
+			17 => "glpi_consumables_type",
+			18 => "glpi_consumables",
+			19 => "glpi_cartridges",
+			20 => "glpi_softwarelicenses",
+			21 => "glpi_links",
+			23 => "glpi_phones",
+			25 => "glpi_reminder",
+			27 => "glpi_groups",
+			28 => "glpi_entities",
+			29 => "glpi_reservation_item",
+			32 => "glpi_ocs_config",
+			33 => "glpi_registry",
+			34 => "glpi_profiles",
+			35 => "glpi_mailgate",
+			36 => "glpi_rules_descriptions",
+			37 => "glpi_transfers",
+			39 => "glpi_softwareversions",
+			41 => "glpi_computerdisks",
+			42 => "glpi_networking_ports",
+			43 => "glpi_followups",
+			);
 
 	// Clean history
 	$query = "SELECT DISTINCT device_type FROM glpi_history";

@@ -37,7 +37,7 @@
 
 /// Update from 0.7 to 0.71
 function update07to071() {
-	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+	global $DB, $CFG_GLPI, $LANG;
 
 	if (!FieldExists("glpi_profiles", "rule_dictionnary_software")) {
 		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_software` VARCHAR( 1 ) NULL DEFAULT NULL;";
