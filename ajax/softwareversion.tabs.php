@@ -56,12 +56,12 @@ $version = new SoftwareVersion();
 if ($_POST["id"]>0 && $version->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showInstallations($_POST["id"], "id");
+         Computer_SoftwareVersion::showForVersion($version);
          Plugin::displayAction($version, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
-         showInstallations($_POST["id"], "id");
+         Computer_SoftwareVersion::showForVersion($version);
          break;
 
       case 12 :
@@ -70,7 +70,7 @@ if ($_POST["id"]>0 && $version->can($_POST["id"],'r')) {
 
       default :
          if (!Plugin::displayAction($version, $_REQUEST['glpi_tab'])) {
-            showInstallationsByEntity($_POST["id"]);
+            Computer_SoftwareVersion::showForVersionByEntity($version);
          }
    }
 }

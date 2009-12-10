@@ -74,9 +74,9 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            showVersions($_POST["id"]);
-            showLicenses($_POST["id"]);
-            showInstallations($_POST["id"]);
+            SoftwareVersion::showForSoftware($soft);
+            SoftwareLicense::showForSoftware($soft);
+            Computer_SoftwareVersion::showForSoftware($soft);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$soft);
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
@@ -86,7 +86,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 2 :
-            showInstallations($_POST["id"]);
+            Computer_SoftwareVersion::showForSoftware($soft);
             break;
 
          case 4 :
@@ -124,8 +124,8 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
 
          default :
             if (!Plugin::displayAction($soft, $_REQUEST['glpi_tab'])) {
-               showVersions($_POST["id"]);
-               showLicenses($_POST["id"]);
+               SoftwareVersion::showForSoftware($soft);
+               SoftwareLicense::showForSoftware($soft);
             }
       }
    }

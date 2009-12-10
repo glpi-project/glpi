@@ -228,6 +228,78 @@ class SoftwareVersion extends CommonDBTM {
       return $rand;
    }
 
+   /**
+    * Show Versions of a software
+    *
+    * @param $softwares_id ID of the software
+    * @return nothing
+    */
+   static function showForSoftware($soft) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $softwares_id = $soft->getField('id');
+
+      if (!$soft->can($softwares_id,'r')) {
+         return false;
+      }
+      $canedit = $soft->can($softwares_id,"w");
+
+      echo "<div class='center'>";
+
+      $query = "SELECT `glpi_softwareversions`.*,
+                       `glpi_states`.`name` AS sname
+                FROM `glpi_softwareversions`
+                LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
+                WHERE `softwares_id` = '$softwares_id'
+                ORDER BY `name`";
+
+      initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG['help'][31] ." = ". $soft->fields["name"]);
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            echo "<table class='tab_cadre'><tr>";
+            echo "<th>&nbsp;".$LANG['software'][5]."&nbsp;</th>";
+            echo "<th>&nbsp;".$LANG['state'][0]."&nbsp;</th>";
+            echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
+            echo "<th>&nbsp;".$LANG['common'][25]."&nbsp;</th>";
+            echo "</tr>\n";
+
+            for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
+               addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['id']);
+               $nb = Computer_SoftwareVersion::countForVersion($data['id']);
+
+               // Show version if canedit (to update/delete) or if nb (to see installations)
+               if ($canedit || $nb) {
+                  echo "<tr class='tab_bg_2'>";
+                  echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
+                  echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+                  echo "<td class='right'>".$data['sname']."</td>";
+                  echo "<td class='right'>$nb</td>";
+                  echo "<td>".$data['comment']."</td></tr>\n";
+               }
+            }
+            echo "<tr class='tab_bg_1'><td class='right b' colspan='2'>".$LANG['common'][33]."</td>";
+            echo "<td class='right b'>$tot</td><td>";
+            if ($canedit) {
+               echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
+                      $LANG['software'][7]."</a>";
+            }
+            echo "</td></tr>";
+            echo "</table>\n";
+         } else {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>".$LANG['search'][15]."</th></tr>";
+            if ($canedit) {
+               echo "<tr class='tab_bg_2'><td class='center'>";
+               echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
+                      $LANG['software'][7]."</a></td></tr>";
+            }
+            echo "</table>\n";
+         }
+
+      }
+      echo "</div>";
+   }
 }
 
 
