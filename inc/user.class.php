@@ -1679,6 +1679,7 @@ class User extends CommonDBTM {
    /**
     * Make a select box with all glpi users where select key = name
     *
+    * Parameters which could be used in options array :
     *    - right : string / limit user who have specific right :
     *        id -> only current user (default case); 
     *        interface -> central ;
@@ -1702,9 +1703,6 @@ class User extends CommonDBTM {
     */
    static function dropdown($myname,$options=array()) {
       global $DB,$CFG_GLPI,$LANG;
-
-      //$right,$all=0,$display_comment=1,$entity_restrict=-1, $helpdesk_ajax=0,$used=array()
-
 
       $default_values['value']='';
       $default_values['right']='id';

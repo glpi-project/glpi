@@ -631,10 +631,11 @@ class Auth {
    /**
     * Print all the authentication methods
     * @param name the dropdown name
+    * @param $options possible options / not used here
     *
     *@return Nothing (display)
     */
-   static function dropdown($name) {
+   static function dropdown($name,$options=array()) {
       global $LANG,$DB;
 
       $methods[0]='-----';

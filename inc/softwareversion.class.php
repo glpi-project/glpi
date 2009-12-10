@@ -192,14 +192,29 @@ class SoftwareVersion extends CommonDBTM {
    /**
     * Make a select box for  software to install
     *
+    * Parameters which could be used in options array :
+    *    - softwares_id : integer / ID of the software
+    *    - value : integer / value of the selected version
     *
     * @param $myname select name
-    * @param $softwares_id ID of the software
-    * @param $value value of the selected version
+
     * @return nothing (print out an HTML select box)
     */
-   static function dropdown($myname,$softwares_id,$value=0) {
+   static function dropdown($myname,$options=array()) {
       global $CFG_GLPI;
+
+      //$softwares_id,$value=0
+
+      $default_values['softwares_id']=0;
+      $default_values['value']=0;
+
+      foreach ($default_values as $key => $val) {
+         if (isset($options[$key])) {
+            $$key=$options[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
 
       $rand=mt_rand();
       $params=array('softwares_id'=>$softwares_id,
