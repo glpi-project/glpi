@@ -426,6 +426,31 @@ class SoftwareLicense extends CommonDBTM {
       }
       return 0;
    }
+
+   /**
+    * Get number of bought licenses of a version
+    *
+    * @param $softwareversions_id version ID
+    * @param $entity to search for licenses in (default = all active entities)
+    *
+    * @return number of installations
+    */
+   static function countForVersion($softwareversions_id, $entity='') {
+      global $DB;
+
+      $query = "SELECT COUNT(*)
+                FROM `glpi_softwarelicenses`
+                WHERE `softwareversions_id_buy` = '$softwareversions_id' " .
+                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses','',$entity);
+
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result) != 0) {
+         return $DB->result($result, 0, 0);
+      }
+      return 0;
+   }
+
 }
 
 ?>

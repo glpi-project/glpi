@@ -76,7 +76,7 @@ function showVersions($softwares_id) {
 
          for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
             addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['id']);
-            $nb=countInstallationsForVersion($data['id']);
+            $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
             // Show version if canedit (to update/delete) or if nb (to see installations)
             if ($canedit || $nb) {
@@ -134,7 +134,7 @@ function showInstallationsByEntity($softwareversions_id) {
 
    $tot=0;
    if (in_array(0,$_SESSION["glpiactiveentities"])) {
-      $nb = countInstallationsForVersion($softwareversions_id,0);
+      $nb = Computer_SoftwareVersion::countForVersion($softwareversions_id,0);
       if ($nb>0) {
          echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][1] . "</td>";
          echo "<td class='right'>" . $nb . "</td></tr>\n";
@@ -147,7 +147,7 @@ function showInstallationsByEntity($softwareversions_id) {
            ORDER BY `completename`";
 
    foreach ($DB->request($sql) as $ID => $data) {
-      $nb = countInstallationsForVersion($softwareversions_id,$ID);
+      $nb = Computer_SoftwareVersion::countForVersion($softwareversions_id,$ID);
       if ($nb>0) {
          echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
          echo "<td class='right'>".$nb."</td></tr>\n";
@@ -1304,60 +1304,6 @@ function countInstallationsForSoftware($softwares_id) {
 }
 
 
-/**
- * Get number of installed licenses of a version
- *
- * @param $softwareversions_id version ID
- * @param $entity to search for computer in (default = all active entities)
- *
- * @return number of installations
- */
-function countInstallationsForVersion($softwareversions_id, $entity='') {
-   global $DB;
-
-   $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
-             FROM `glpi_computers_softwareversions`
-             INNER JOIN `glpi_computers`
-                   ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-             WHERE `glpi_computers_softwareversions`.`softwareversions_id`='$softwareversions_id'
-                   AND `glpi_computers`.`is_deleted` = '0'
-                   AND `glpi_computers`.`is_template` = '0' " .
-                   getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
-
-   $result = $DB->query($query);
-
-   if ($DB->numrows($result) != 0) {
-      return $DB->result($result, 0, 0);
-   } else {
-      return 0;
-   }
-}
-
-
-/**
- * Get number of bought licenses of a version
- *
- * @param $softwareversions_id version ID
- * @param $entity to search for licenses in (default = all active entities)
- *
- * @return number of installations
- */
-function countLicensesForVersion($softwareversions_id, $entity='') {
-   global $DB;
-
-   $query = "SELECT COUNT(*)
-             FROM `glpi_softwarelicenses`
-             WHERE `softwareversions_id_buy` = '$softwareversions_id' " .
-                   getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses','',$entity);
-
-   $result = $DB->query($query);
-
-   if ($DB->numrows($result) != 0) {
-      return $DB->result($result, 0, 0);
-   } else {
-      return 0;
-   }
-}
 
 
 /**

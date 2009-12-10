@@ -44,7 +44,7 @@ class SoftwareVersion extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_softwareversions';
-   public $type = SOFTWAREVERSION_TYPE;
+   public $type = 'SoftwareVersion';
    public $dohistory = true;
    public $entity_assign=true;
    public $may_be_recursive=true;
@@ -153,8 +153,9 @@ class SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
 
       $candel = true;
-      if (countLicensesForVersion($ID)>0    // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
-          || countInstallationsForVersion($ID)>0) {
+      // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
+      if (SoftwareLicense::countForVersion($ID)>0
+          || Computer_SoftwareVersion::countForVersion($ID)>0) {
              $candel = false;
       }
       $this->showFormButtons($ID,'',2,$candel);
