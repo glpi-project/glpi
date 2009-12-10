@@ -62,7 +62,7 @@ if (isset($_POST["action"])) {
          break;
 
       case "move" :
-         CommonDropdown::dropdownValue($LINK_ID_TABLE[$_POST['itemtype']],"device",0);
+         CommonDropdown::dropdownValue(getTableForItemType($_POST['itemtype']),"device",0);
          echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".$LANG['buttons'][2]."\">";
          break;
    }

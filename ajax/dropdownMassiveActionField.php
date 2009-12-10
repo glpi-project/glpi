@@ -62,7 +62,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    }
    $FIELDNAME_PRINTED=false;
 
-   if ($search["table"]==$LINK_ID_TABLE[$_POST["itemtype"]]) { // field type
+   if ($search["table"]==getTableForItemType($_POST["itemtype"])) { // field type
       switch ($search["table"].".".$search["linkfield"]) {
          case "glpi_cartridgeitems.alarm_threshold" :
          case "glpi_consumableitems.alarm_threshold" :

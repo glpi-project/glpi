@@ -74,13 +74,14 @@ $valeurgraphtot=array();
  * @param $end end date
  */
 function display_infocoms_report($itemtype,$begin,$end) {
-   global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,
-          $LINK_ID_TABLE;
+   global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
 
+
+   $itemtable=getTableForItemType($itemtype);
    $query="SELECT `glpi_infocoms`.*
            FROM `glpi_infocoms`
-           INNER JOIN `".$LINK_ID_TABLE[$itemtype]."`
-              ON (`".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_infocoms`.`items_id`
+           INNER JOIN `$itemtable`
+              ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`
                   AND `glpi_infocoms`.`itemtype`='$itemtype') ";
 
    switch ($itemtype) {

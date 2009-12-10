@@ -221,10 +221,11 @@ if (isset($_POST["itemtype"])){
 						$item=new $_POST["itemtype"]();
 						$link_entity_type=array();
 						/// Specific entity item
+                  $itemtable=getTableForItemType($_POST["itemtype"]);
 
-						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["itemtype"]]
+						if ($searchopt[$_POST["id_field"]]["table"]!=$itemtable
 						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
-						&& in_array($LINK_ID_TABLE[$_POST["itemtype"]],$CFG_GLPI["specif_entities_tables"])){
+						&& in_array($itemtable,$CFG_GLPI["specif_entities_tables"])){
 
 							$itemtype=getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
                      if (class_exists($itemtype)) {

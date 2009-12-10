@@ -106,7 +106,7 @@ if (isset($_POST["send"])) {
                   PERIPHERAL_TYPE => $LANG['help'][29]);
    foreach ($types as $type => $label) {
       $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
-                FROM `".$LINK_ID_TABLE[$type]."`
+                FROM `".getTableForItemType($type)."`
                 WHERE `is_template` = '0'
                       AND `is_deleted` = '0'
                       AND (`contact` LIKE '%".$_POST["NomContact"]."%'

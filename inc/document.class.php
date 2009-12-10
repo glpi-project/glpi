@@ -606,7 +606,7 @@ class Document extends CommonDBTM {
     * @return nothing (HTML display)
     **/
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,"r")) {
@@ -655,8 +655,8 @@ class Document extends CommonDBTM {
             if ($itemtype==KNOWBASE_TYPE) {
                $column="question";
             }
-
-            $query = "SELECT `".$LINK_ID_TABLE[$itemtype]."`.*, `glpi_documents_items`.`id` AS IDD, ";
+            $itemtable=getTableForItemType($itemtype);
+            $query = "SELECT `$itemtable`.*, `glpi_documents_items`.`id` AS IDD, ";
             if ($itemtype == ENTITY_TYPE) {
                // Left join because root entity not storeed
                $query .= "`glpi_documents_items`.`items_id` AS entity
@@ -665,17 +665,17 @@ class Document extends CommonDBTM {
                           WHERE ";
             } else {
                $query .= "`glpi_entities`.`id` AS entity
-                          FROM `glpi_documents_items`, `".$LINK_ID_TABLE[$itemtype]."`
-                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`)
-                          WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_documents_items`.`items_id`
+                          FROM `glpi_documents_items`, `$itemtable`
+                          LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`$itemtable`.`entities_id`)
+                          WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
                           AND ";
             }
             $query .= "`glpi_documents_items`.`itemtype`='$itemtype' AND `glpi_documents_items`.`documents_id` = '$instID' "
-               . getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
-            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
-               $query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
+               . getEntitiesRestrictRequest(" AND ",$itemtable,'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
+            if (in_array($itemtable,$CFG_GLPI["template_tables"])){
+               $query.=" AND `$itemtable`.`is_template`='0'";
             }
-            $query.=" ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`$column`";
+            $query.=" ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
 
             if ($itemtype==SOFTWARELICENSE_TYPE) {
                $soft=new Software();
@@ -1007,7 +1007,7 @@ class Document extends CommonDBTM {
     * @param $withtemplate
     **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+      global $DB, $CFG_GLPI, $LANG;
 
       $ID = $item->getField('id');
       if (!(($item instanceof kbItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {

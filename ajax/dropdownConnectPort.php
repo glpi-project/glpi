@@ -43,8 +43,8 @@ header_nocache();
 checkRight("networking","w");
 logInFile('php-errors','Dropdown='.print_r($_POST,true),true);
 // Make a select box
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && isset($_POST["item"])) {
-   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
+if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
+   $table=getTableForItemType($_POST["itemtype"]);
 
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
                     `glpi_networkports`.`id` AS did, `$table`.`name` AS cname,

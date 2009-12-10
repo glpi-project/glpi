@@ -1055,7 +1055,7 @@ function isIndex($table, $field) {
  *
  **/
 function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1) {
-   global $LINK_ID_TABLE,$DB,$CFG_GLPI;
+   global $DB,$CFG_GLPI;
 
    $len = utf8_strlen($objectName);
    if ($isTemplate && $len > 8 && utf8_substr($objectName,0,4) === '&lt;'
@@ -1087,25 +1087,22 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1) {
          if ($global == 1) {
             $query = "";
             $first = 1;
-            foreach($LINK_ID_TABLE as $t=>$table) {
-               if ($t == COMPUTER_TYPE || $t == MONITOR_TYPE  || $t == NETWORKING_TYPE
-                   || $t == PERIPHERAL_TYPE || $t == PRINTER_TYPE || $t == PHONE_TYPE) {
-
-                  $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
-                            FROM `$table`
-                            WHERE `$field` LIKE '$like'
-                                  AND `is_deleted` = '0'
-                                  AND `is_template` = '0'";
-                  if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
-                     $query.=" AND `entities_id` = '$entities_id' ";
-                  }
-                  $first = 0;
+            $types=array('Computer','Monitor','NetworkEquipment','Peripheral','Phone','Printer')
+            foreach($types as $t) {
+               $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
+                           FROM `$table`
+                           WHERE `$field` LIKE '$like'
+                                 AND `is_deleted` = '0'
+                                 AND `is_template` = '0'";
+               if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
+                  $query.=" AND `entities_id` = '$entities_id' ";
                }
+               $first = 0;
             }
             $query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no
                       FROM ($query) AS codes";
          } else {
-            $table = $LINK_ID_TABLE[$itemtype];
+            $table = getTableForItemType($itemtype);
             $query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no
                       FROM `$table`
                       WHERE `$field` LIKE '$like' ";
