@@ -1181,20 +1181,37 @@ class Document extends CommonDBTM {
    }
 
    /**
-    * Make a select box for link document
-    *
-    * @param $myname name of the select box
-    * @param $entity_restrict restrict multi entity
-    * @param $used Already used items ID: not to display in dropdown
-    * @return nothing (print out an HTML select box)
-    */
-   static function dropdown($myname,$entity_restrict='',$used=array()) {
+   * Make a select box for link document
+   *
+   * Parameters which could be used in options array :
+   *    - entity : integer or array / restrict to a defined entity or array of entities
+   *                   (default -1 : no restriction)
+   *    - used : array / Already used items ID: not to display in dropdown (default empty)
+   *
+   * @param $myname name of the select box
+   * @param $options possible options
+   *
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdown($myname,$options) {
       global $DB,$LANG,$CFG_GLPI;
+
+
+      $default_values['entity']=-1;
+      $default_values['used']=array();
+
+      foreach ($default_values as $key => $val) {
+         if (isset($options[$key])) {
+            $$key=$options[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
 
       $rand=mt_rand();
 
       $where=" WHERE `glpi_documents`.`is_deleted`='0' ".
-                     getEntitiesRestrictRequest("AND","glpi_documents",'',$entity_restrict,true);
+                     getEntitiesRestrictRequest("AND","glpi_documents",'',$entity,true);
       if (count($used)) {
          $where .= " AND `id` NOT IN ('0','".implode("','",$used)."')";
       }
@@ -1215,7 +1232,7 @@ class Document extends CommonDBTM {
       echo "</select>";
 
       $params=array('rubdoc'=>'__VALUE__',
-                    'entity_restrict'=>$entity_restrict,
+                    'entity_restrict'=>$entity,
                     'rand'=>$rand,
                     'myname'=>$myname,
                     'used'=>$used);
@@ -1224,7 +1241,7 @@ class Document extends CommonDBTM {
                                   "/ajax/dropdownRubDocument.php",$params);
 
       echo "<span id='show_$myname$rand'>";
-      $_POST["entity_restrict"]=$entity_restrict;
+      $_POST["entity_restrict"]=$entity;
       $_POST["rubdoc"]=0;
       $_POST["myname"]=$myname;
       $_POST["rand"]=$rand;

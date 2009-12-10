@@ -731,7 +731,7 @@ function showInstallations($searchID, $crit="softwares_id") {
 
          if ($canedit) {
             openArrowMassive("softinstall".$rand."",true);
-            SoftwareVersion::dropdown("versionID",$softwares_id);
+            SoftwareVersion::dropdown("versionID",array('softwares_id'=>$softwares_id));
             echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".
                   $LANG['buttons'][20]."\" class='submit'>&nbsp;";
             closeArrowMassive('deleteinstalls', $LANG['buttons'][6]);

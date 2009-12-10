@@ -2292,7 +2292,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<input type='file' name='filename' size='20'>";
       if ($canupdate && haveRight("document","r")) {
          echo "<br>";
-         Document::dropdown("document",$job->fields["entities_id"]);
+         Document::dropdown("document",array('entity'=>$job->fields["entities_id"]));
       }
       echo "</td></tr>";
    }
