@@ -40,7 +40,7 @@ include_once (GLPI_ROOT . "/inc/setup.function.php");
 include_once (GLPI_ROOT . "/inc/rule.function.php");
 
 function update0713to072() {
-	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+	global $DB, $CFG_GLPI, $LANG;
 
 	// TO TRY for software update
 	
