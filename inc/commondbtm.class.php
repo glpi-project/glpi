@@ -1063,7 +1063,7 @@ class CommonDBTM extends CommonGLPI {
                      if ($res) {
                         while ($data = $DB->fetch_assoc($res)) {
                            $itemtype=$data["itemtype"];
-                           $itemtable=getTableForItemType($itemtype)
+                           $itemtable=getTableForItemType($itemtype);
                            if (in_array($itemtable, $CFG_GLPI["specif_entities_tables"])) {
 
                               if (countElementsInTable("$tablename, $itemtable",
