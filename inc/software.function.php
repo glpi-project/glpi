@@ -207,8 +207,8 @@ function showSoftwareMergeCandidates($ID) {
          echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?id=".
                    $data["id"]."'>".$data["name"]."</a></td>";
          echo "<td>".$data["entity"]."</td>";
-         echo "<td class='right'>".countInstallationsForSoftware($data["id"])."</td>";
-         echo "<td class='right'>".getNumberOfLicences($data["id"])."</td></tr>\n";
+         echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";
+         echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
       }
       echo "</table>\n";
 
@@ -1228,115 +1228,10 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
 }
 
 
-/**
- * Count Installations of a software and create string to display
- *
- * @param $softwares_id ID of the software
- * @param $nohtml do not use HTML to highlight ?
- * @return string contains counts
- */
-function countInstallations($softwares_id, $nohtml = 0) {
-   global $DB, $CFG_GLPI, $LANG;
-
-   $installed = countInstallationsForSoftware($softwares_id);
-   $out="";
-   if (!$nohtml) {
-      $out .= $LANG['software'][19] . ": <strong>$installed</strong>";
-   } else {
-      $out .= $LANG['software'][19] . ": $installed";
-   }
-
-   $total=getNumberOfLicences($softwares_id);
-
-   if ($total < 0 ) {
-      if (!$nohtml) {
-         $out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": <strong>".$LANG['software'][4]."</strong>";
-      } else {
-         $out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": ".$LANG['software'][4];
-      }
-   } else {
-      if ($total >=$installed) {
-         $color = "green";
-      } else {
-         $color = "blue";
-      }
-
-      if (!$nohtml) {
-         $total = "<span class='$color'>$total</span>";
-         $out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": <strong>$total</strong>";
-      } else {
-         $out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": ".$total;
-      }
-   }
-
-   return $out;
-}
-
-
-/**
- * Get number of installed licenses of a software
- *
- * @param $softwares_id software ID
- * @return number of installations
- */
-function countInstallationsForSoftware($softwares_id) {
-   global $DB;
-
-   $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
-             FROM `glpi_softwareversions`
-             INNER JOIN `glpi_computers_softwareversions`
-                   ON (`glpi_softwareversions`.`id`
-                       = `glpi_computers_softwareversions`.`softwareversions_id`)
-             INNER JOIN `glpi_computers`
-                   ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-             WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
-                   AND `glpi_computers`.`is_deleted` = '0'
-                   AND `glpi_computers`.`is_template` = '0' " .
-                   getEntitiesRestrictRequest('AND', 'glpi_computers');
-
-   $result = $DB->query($query);
-
-   if ($DB->numrows($result) != 0) {
-      return $DB->result($result, 0, 0);
-   } else {
-      return 0;
-   }
-}
 
 
 
 
-/**
- * Get number of licensesof a software
- *
- * @param $softwares_id software ID
- * @return number of licenses
- */
-function getNumberOfLicences($softwares_id) {
-   global $DB;
-
-   $query = "SELECT `id`
-             FROM `glpi_softwarelicenses`
-             WHERE `softwares_id` = '$softwares_id'
-                   AND `number` = '-1' " .
-                   getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
-
-   $result = $DB->query($query);
-
-   if ($DB->numrows($result)) {
-      return -1;
-   } else {
-      $query = "SELECT SUM(`number`)
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id'
-                      AND `number` > '0' " .
-                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
-
-      $result = $DB->query($query);
-      $nb = $DB->result($result,0,0);
-      return ($nb ? $nb : 0);
-   }
-}
 
 
 /**

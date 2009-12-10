@@ -79,6 +79,35 @@ class Computer_SoftwareVersion extends CommonDBTM {
       return 0;
    }
 
+   /**
+    * Get number of installed versions of a software
+    *
+    * @param $softwares_id software ID
+    * @return number of installations
+    */
+   static function countForSoftware($softwares_id) {
+      global $DB;
+
+      $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
+                FROM `glpi_softwareversions`
+                INNER JOIN `glpi_computers_softwareversions`
+                      ON (`glpi_softwareversions`.`id`
+                          = `glpi_computers_softwareversions`.`softwareversions_id`)
+                INNER JOIN `glpi_computers`
+                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
+                WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
+                      AND `glpi_computers`.`is_deleted` = '0'
+                      AND `glpi_computers`.`is_template` = '0' " .
+                      getEntitiesRestrictRequest('AND', 'glpi_computers');
+
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result) != 0) {
+         return $DB->result($result, 0, 0);
+      }
+      return 0;
+   }
+
 }
 
 ?>

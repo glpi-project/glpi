@@ -451,6 +451,37 @@ class SoftwareLicense extends CommonDBTM {
       return 0;
    }
 
+   /**
+    * Get number of licensesof a software
+    *
+    * @param $softwares_id software ID
+    * @return number of licenses
+    */
+   static function countForSoftware($softwares_id) {
+      global $DB;
+
+      $query = "SELECT `id`
+                FROM `glpi_softwarelicenses`
+                WHERE `softwares_id` = '$softwares_id'
+                      AND `number` = '-1' " .
+                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
+
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         // At least 1 unlimited license, means unlimited
+         return -1;
+      }
+      $query = "SELECT SUM(`number`)
+                FROM `glpi_softwarelicenses`
+                WHERE `softwares_id` = '$softwares_id'
+                      AND `number` > '0' " .
+                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
+
+      $result = $DB->query($query);
+      $nb = $DB->result($result,0,0);
+      return ($nb ? $nb : 0);
+   }
+
 }
 
 ?>
