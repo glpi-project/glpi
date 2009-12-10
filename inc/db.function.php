@@ -131,7 +131,7 @@ function getTableForItemType($itemtype) {
       } else {
          $table=getPlural($table);
       }
-      $CFG_GLPI['glpitables']=$prefix.$table;
+      $CFG_GLPI['glpitables'][$itemtype]=$prefix.$table;
       return $prefix.$table;
    }
 }
