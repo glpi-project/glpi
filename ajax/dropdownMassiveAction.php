@@ -40,8 +40,8 @@ header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
    switch ($_POST["itemtype"]){
-      case TRACKING_TYPE :
-         checkTypeRight("update_ticket","1");
+      case 'Ticket' :
+         checkRight("update_ticket","1");
          break;
 
       default :
