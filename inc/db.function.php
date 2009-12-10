@@ -90,7 +90,14 @@ function getItemTypeForTable($table) {
       $table=ucfirst(getSingular($table));
    }
 
-   return $prefix.$table;
+   $itemtype=$prefix.$table;
+
+   // Get real existence of itemtype
+   if (class_exists($itemtype)){
+	$item = new $itemtype();
+	return get_class($item);
+   }
+   return "UNKNOWN";
 }
 
 /**
@@ -158,30 +165,6 @@ function getSingular($string) {
       $string=preg_replace("/$plural/","$singular",$string);
    }
    return $string;
-}
-
-/**
- * Get table used by an item type
- *
- * @param $itemtype string: itemtype
- *
- * return string table link to the itemtype : UNKNOWN if not found
- */
-function getItemTypeTable($itemtype) {
-   global $CFG_GLPI;
-
-   if (isset($CFG_GLPI['glpitables'][$itemtype])) {
-      return $CFG_GLPI['glpitables'][$itemtype];
-   } else {
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-         if (isset($item->table)) {
-            $CFG_GLPI['glpitables'][$itemtype]=$item->table;
-            return $CFG_GLPI['glpitables'][$itemtype];
-         }
-      }
-   }
-   return "UNKNOWN";
 }
 
 /**
