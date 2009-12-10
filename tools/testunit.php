@@ -50,6 +50,9 @@ for ($i=0 ; $line = $DB->fetch_array($result) ; $i++) {
       //echo "+  $table > $type : Ok\n";
 
       $item = new $type();
+      if (get_class($item) != $type) {
+         echo "** $table > $type > ".get_class($item)." incoherent get_class($type) ** \n";
+      }
       if (!isset($item->table)) {
          echo "** $table > $type > no $type->table ** \n";
 
