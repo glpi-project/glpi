@@ -1076,7 +1076,7 @@ function displayCategoryHeader($computers_ID,$data,$rand,$canedit) {
 		$cat = $data["softwarecategories_id"];
 		if ($cat) {
 			// Categorized
-			$catname = CommonDropdown::getDropdownName('glpi_softwarecategories', $cat);
+			$catname = Dropdown::getDropdownName('glpi_softwarecategories', $cat);
 			$display = $_SESSION["glpiis_categorized_soft_expanded"];
 		} else {
 			// Not categorized
@@ -1219,7 +1219,7 @@ function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
    }
    echo "</td></td><strong>" . $data["name"] . "</strong>&nbsp; ";
    if ($data["softwarelicensetypes_id"]) {
-      echo " (". CommonDropdown::getDropdownName("glpi_softwarelicensetypes",$data["softwarelicensetypes_id"]).")&nbsp; ";
+      echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",$data["softwarelicensetypes_id"]).")&nbsp; ";
    }
    displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
                    $LANG['common'][19]."&nbsp;: ".$data['serial']."<br>".$data['comment'],

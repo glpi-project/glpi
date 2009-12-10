@@ -132,7 +132,7 @@ class Supplier extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_suppliertypes", "suppliertypes_id", $this->fields["suppliertypes_id"]);
+      Dropdown::dropdownValue("glpi_suppliertypes", "suppliertypes_id", $this->fields["suppliertypes_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -386,7 +386,7 @@ class Supplier extends CommonDBTM {
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
                    $data["name"]." ".$data["firstname"]."</a></td>";
-            echo "<td class='center' width='100'>".CommonDropdown::getDropdownName("glpi_entities",$data["entity"]);
+            echo "<td class='center' width='100'>".Dropdown::getDropdownName("glpi_entities",$data["entity"]);
             echo "</td>";
             echo "<td class='center' width='100'>".$data["phone"]."</td>";
             echo "<td class='center' width='100'>".$data["phone2"]."</td>";
@@ -395,7 +395,7 @@ class Supplier extends CommonDBTM {
             echo "<td class='center'>";
             echo "<a href='mailto:".$data["email"]."'>".
                    $DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-            echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_contacttypes",$data["contacttypes_id"]);
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_contacttypes",$data["contacttypes_id"]);
             echo "</td>";
             echo "<td class='center' class='tab_bg_2'>";
             if ($canedit) {
@@ -426,10 +426,10 @@ class Supplier extends CommonDBTM {
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
             if ($this->fields["is_recursive"]) {
-               CommonDropdown::dropdown("glpi_contacts","contacts_id",1,
+               Dropdown::Select("glpi_contacts","contacts_id",1,
                         getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
             } else {
-               CommonDropdown::dropdown("glpi_contacts","contacts_id",1,$this->fields["entities_id"],$used);
+               Dropdown::Select("glpi_contacts","contacts_id",1,$this->fields["entities_id"],$used);
             }
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='submit' name='addcontactsupplier' value=\"".
@@ -544,7 +544,7 @@ class Supplier extends CommonDBTM {
                      echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
                             .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
-                  echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
                   echo "<td class='center";
                   echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                   echo ">".$name."</td>";
@@ -616,9 +616,9 @@ class Supplier extends CommonDBTM {
             echo " (".$data["id"].")";
          }
          echo "</strong></a></td>";
-         echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entity"])."</td>";
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entity"])."</td>";
          echo "<td class='center'>".$data["num"]."</td>";
-         echo "<td class='center'>".CommonDropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"]);
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"]);
          echo "</td>";
          echo "<td class='center'>".convDate($data["begin_date"])."</td>";
          echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];

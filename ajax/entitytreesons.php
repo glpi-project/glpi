@@ -56,7 +56,7 @@ if (isset($_REQUEST['node'])) {
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
          $ID=$entity['id'];
          $is_recursive=$entity['is_recursive'];
-         $path['text'] = CommonDropdown::getDropdownName("glpi_entities",$ID);
+         $path['text'] = Dropdown::getDropdownName("glpi_entities",$ID);
          $path['id'] = $ID;
          $path['position'] = $pos;
          $pos++;

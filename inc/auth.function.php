@@ -633,7 +633,7 @@ function changeActiveEntities($ID="all",$is_recursive=false) {
       }
       // Active entity loading
       $_SESSION["glpiactive_entity"] = $active;
-      $_SESSION["glpiactive_entity_name"] = CommonDropdown::getDropdownName("glpi_entities",$active);
+      $_SESSION["glpiactive_entity_name"] = Dropdown::getDropdownName("glpi_entities",$active);
       $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
       if ($is_recursive) {
          $_SESSION["glpiactive_entity_name"] .= " (".$LANG['entity'][7].")";

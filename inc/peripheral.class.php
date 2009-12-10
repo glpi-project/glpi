@@ -241,18 +241,18 @@ class Peripheral  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      Dropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
+      Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_peripheraltypes", "peripheraltypes_id",
+      Dropdown::dropdownValue("glpi_peripheraltypes", "peripheraltypes_id",
                     $this->fields["peripheraltypes_id"]);
       echo "</td></tr>\n";
 
@@ -264,7 +264,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -275,7 +275,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_peripheralmodels", "peripheralmodels_id",
+      Dropdown::dropdownValue("glpi_peripheralmodels", "peripheralmodels_id",
                     $this->fields["peripheralmodels_id"]);
       echo "</td></tr>\n";
 
@@ -307,7 +307,7 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
-      CommonDropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
+      Dropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
                     $this->fields["entities_id"]);
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";

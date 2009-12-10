@@ -542,7 +542,7 @@ class Mailing {
       $subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["id"],"] ");
 
 //      if (isMultiEntitiesMode()) {
-//         $subject.=CommonDropdown::getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
+//         $subject.=Dropdown::getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
 //      }
 
       switch ($this->type) {
@@ -1223,23 +1223,23 @@ class MailingAlert {
 
       switch ($this->type) {
          case "alertcartridge" :
-            $subject.=" ".$LANG['mailing'][33]. " - ".CommonDropdown::getDropdownName("glpi_entities",$this->entity);
+            $subject.=" ".$LANG['mailing'][33]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
             break;
 
          case "alertconsumable" :
-            $subject.=" ".$LANG['mailing'][36]. " - ".CommonDropdown::getDropdownName("glpi_entities",$this->entity);
+            $subject.=" ".$LANG['mailing'][36]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
             break;
 
          case "alertcontract" :
-            $subject.=" ".$LANG['mailing'][39]. " - ".CommonDropdown::getDropdownName("glpi_entities",$this->entity);
+            $subject.=" ".$LANG['mailing'][39]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
             break;
 
          case "alertinfocom" :
-            $subject.=" ".$LANG['mailing'][41]. " - ".CommonDropdown::getDropdownName("glpi_entities",$this->entity);
+            $subject.=" ".$LANG['mailing'][41]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
             break;
 
          case "alertlicense" :
-            $subject.=" ".$LANG['mailing'][52]. " - ".CommonDropdown::getDropdownName("glpi_entities",$this->entity);
+            $subject.=" ".$LANG['mailing'][52]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
          break;
       }
       return $subject;

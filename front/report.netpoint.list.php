@@ -42,7 +42,7 @@ checkRight("reports","r");
 	if (isset($_POST["prise"])&&$_POST["prise"]){
 		commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-		$name=CommonDropdown::getDropdownName("glpi_netpoints",$_POST["prise"]);
+		$name=Dropdown::getDropdownName("glpi_netpoints",$_POST["prise"]);
 
 		// Titre
 		echo "<div align='center'><h2>".$LANG['reports'][51]." $name</h2></div><br><br>";
@@ -78,7 +78,7 @@ checkRight("reports","r");
 			{
 				$prise=$ligne['prise'];
 				$ID=$ligne['id'];
-				$lieu=CommonDropdown::getDropdownName("glpi_locations",$ID);
+				$lieu=Dropdown::getDropdownName("glpi_locations",$ID);
 				//$etage=$ligne['etage'];
 				$nw=new NetworkPort_NetworkPort();
 				$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);

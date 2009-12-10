@@ -319,7 +319,7 @@ class Group extends CommonDBTM {
                }
                $linktype="";
                echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
-               echo "<td>".CommonDropdown::getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
+               echo "<td>".Dropdown::getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
             }
          }
       }

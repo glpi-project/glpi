@@ -120,7 +120,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             }
             echo "</strong></td>\n";
             echo "<td>" . $netport->fields["name"] . "</td>\n";
-            echo "<td>".CommonDropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
+            echo "<td>".Dropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
             echo "<td>" . $netport->fields["ip"] . "<br>" .$netport->fields["mac"] . "</td>\n";
             echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;".$netport->fields["subnet"] .
                         "<br>".$netport->fields["gateway"] . "</td>\n";
@@ -128,7 +128,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
             echo "<td>";
             showPortVLAN($netport->fields["id"], $withtemplate);
             echo "</td>\n";
-            echo "<td>" . CommonDropdown::getDropdownName("glpi_networkinterfaces",
+            echo "<td>" . Dropdown::getDropdownName("glpi_networkinterfaces",
                                           $netport->fields["networkinterfaces_id"]) . "</td>\n";
 
             echo "<td width='300' class='tab_bg_2'>";
@@ -171,7 +171,7 @@ function showPortVLAN($ID, $withtemplate) {
       echo "\n<table>";
       while ($line = $DB->fetch_array($result)) {
          $used[]=$line["vlans_id"];
-         echo "<tr><td>" . CommonDropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
+         echo "<tr><td>" . Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
          echo "</td>\n<td>";
          if ($canedit) {
             echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
@@ -206,7 +206,7 @@ function showPortVLANForm ($ID) {
 
       echo "<tr class='tab_bg_2'><td>";
       echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
-      CommonDropdown::dropdown("glpi_vlans", "vlan",1,-1,$used);
+      Dropdown::Select("glpi_vlans", "vlan",1,-1,$used);
       echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
                    "' class='submit'>";
       echo "</td></tr>\n";
@@ -348,7 +348,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-   CommonDropdown::dropdownValue("glpi_networkinterfaces", "networkinterfaces_id", $netport->fields["networkinterfaces_id"]);
+   Dropdown::dropdownValue("glpi_networkinterfaces", "networkinterfaces_id", $netport->fields["networkinterfaces_id"]);
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
@@ -504,7 +504,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
                echo $device2->getLink();
                echo "</strong>";
                if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
-                  echo "<br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+                  echo "<br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
                }
 
                // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
@@ -526,7 +526,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
                }
                echo "</strong> " . $LANG['networking'][25] . " <strong>";
                echo $device2->getName();
-               echo "</strong><br>(" .CommonDropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+               echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
             }
             echo "</td></tr></table>\n";
          }

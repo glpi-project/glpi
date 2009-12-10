@@ -50,19 +50,19 @@ if (isset($_POST["action"])) {
          break;
 
       case "assign_vlan" :
-         CommonDropdown::dropdownValue("glpi_vlans","vlan",0);
+         Dropdown::dropdownValue("glpi_vlans","vlan",0);
          echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value=\"".
                       $LANG['buttons'][2]."\" >";
          break;
 
       case "unassign_vlan" :
-         CommonDropdown::dropdownValue("glpi_vlans","vlan",0);
+         Dropdown::dropdownValue("glpi_vlans","vlan",0);
          echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value=\"".
                       $LANG['buttons'][2]."\" >";
          break;
 
       case "move" :
-         CommonDropdown::dropdownValue(getTableForItemType($_POST['itemtype']),"device",0);
+         Dropdown::dropdownValue(getTableForItemType($_POST['itemtype']),"device",0);
          echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".$LANG['buttons'][2]."\">";
          break;
    }

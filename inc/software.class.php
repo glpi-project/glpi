@@ -266,16 +266,16 @@ class Software extends CommonDBTM {
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_manufacturers", "manufacturers_id", $this->fields["manufacturers_id"]);
+      Dropdown::dropdownValue("glpi_manufacturers", "manufacturers_id", $this->fields["manufacturers_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
+      Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
                     $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_softwarecategories", "softwarecategories_id",
+      Dropdown::dropdownValue("glpi_softwarecategories", "softwarecategories_id",
                     $this->fields["softwarecategories_id"]);
       echo "</td></tr>\n";
 
@@ -285,7 +285,7 @@ class Software extends CommonDBTM {
                       $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_operatingsystems", "operatingsystems_id",
+      Dropdown::dropdownValue("glpi_operatingsystems", "operatingsystems_id",
                     $this->fields["operatingsystems_id"]);
       echo "</td></tr>\n";
 
@@ -300,7 +300,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"], 1,
+      Dropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"], 1,
                     $this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
@@ -320,7 +320,7 @@ class Software extends CommonDBTM {
       echo "<td>" . $LANG['software'][29] . "&nbsp;:</td><td colspan='3'>";
       dropdownYesNo("is_update",$this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
-      CommonDropdown::dropdownValue("glpi_softwares", "softwares_id", $this->fields["softwares_id"]);
+      Dropdown::dropdownValue("glpi_softwares", "softwares_id", $this->fields["softwares_id"]);
       echo "</td></tr>\n";
 
       $this->showFormButtons($ID,$withtemplate,2);

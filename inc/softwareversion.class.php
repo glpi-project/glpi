@@ -136,7 +136,7 @@ class SoftwareVersion extends CommonDBTM {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
       echo "<a href='software.form.php?id=".$softwares_id."'>".
-             CommonDropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
+             Dropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='3'>";
@@ -149,7 +149,7 @@ class SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
-      CommonDropdown::dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
+      Dropdown::dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
       echo "</td></tr>\n";
 
       $candel = true;

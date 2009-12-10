@@ -120,7 +120,7 @@ class RuleCriteria extends CommonDBTM {
           && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
          switch ($this->type) {
             case "dropdown" :
-               return CommonDropdown::getDropdownName($this->table,$initValue);
+               return Dropdown::getDropdownName($this->table,$initValue);
 
             case "dropdown_users" :
                return getUserName($initValue);

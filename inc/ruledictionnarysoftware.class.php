@@ -87,7 +87,7 @@ class RuleDictionnarySoftware extends RuleCached {
             ($fields["version"] != '' ? $fields["version"] : $LANG['rulesengine'][106]) . "</td>";
       echo "<td class='tab_bg_2'>" .
             ((isset ($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '') ?
-             CommonDropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"]) :
+             Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"]) :
              $LANG['rulesengine'][106]) . "</td>";
       echo "<td class='tab_bg_2'>";
       if ($fields["ignore_ocs_import"] == '') {

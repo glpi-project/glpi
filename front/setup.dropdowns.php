@@ -113,7 +113,7 @@ if (isset($_POST['mass_delete'])){
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
 }else if (isset($_POST["move"])) {
-	Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]." ".CommonDropdown::getDropdownName($_POST['tablename'],$_POST['value_to_move']));
+	Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]." ".Dropdown::getDropdownName($_POST['tablename'],$_POST['value_to_move']));
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&entities_id=$entities_id");
 
@@ -132,7 +132,7 @@ if (isset($_POST['mass_delete'])){
 			commonFooter();
 		}
 	} else {
-		Event::log(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".CommonDropdown::getDropdownName($_POST['which'],$_POST['id']));
+		Event::log(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".Dropdown::getDropdownName($_POST['which'],$_POST['id']));
 		deleteDropdown($_POST);
 		glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&entities_id=$entities_id");
 	}
@@ -182,7 +182,7 @@ if (isset($_POST['mass_delete'])){
 			if (strpos($_SERVER['PHP_SELF'],"popup")){
 
 				if ($value2>0) {
-					$title .= " (" . $LANG['common'][15] . ":&nbsp;" . CommonDropdown::getDropdownName("glpi_locations", $value2) . ")";
+					$title .= " (" . $LANG['common'][15] . ":&nbsp;" . Dropdown::getDropdownName("glpi_locations", $value2) . ")";
 				}
 
 			} else {
@@ -190,7 +190,7 @@ if (isset($_POST['mass_delete'])){
 				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 				echo $LANG['setup'][77].": </th></tr><tr class='tab_bg_1'><td>";
 				echo "<input type='hidden' name='which' value='glpi_netpoints' />";
-				CommonDropdown::dropdownValue("glpi_locations", "value2", $value2, $entities_id);
+				Dropdown::dropdownValue("glpi_locations", "value2", $value2, $entities_id);
 				echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 				echo "</table></form></div>";
 			}

@@ -140,7 +140,7 @@ function showDeviceUser($ID) {
                   $linktype = $LANG['common'][34];
                }
                echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>".
-                     "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"]).
+                     "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"]).
                      "</td><td class='center'>$link</td>".
                      "<td class='center'>";
                if (isset($data["serial"]) && !empty($data["serial"])) {
@@ -205,7 +205,7 @@ function showDeviceUser($ID) {
                   $linktype = $LANG['common'][35]." ".$groups[$data["groups_id"]];
                }
                echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>".
-                     "<td class='center'>".CommonDropdown::getDropdownName("glpi_entities",$data["entities_id"]).
+                     "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"]).
                      "</td><td class='center'>$link</td>".
                      "<td class='center'>";
                if (isset($data["serial"]) && !empty($data["serial"])) {
@@ -258,7 +258,7 @@ function showUserRights($target,$ID) {
 
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input type='hidden' name='users_id' value='$ID'>";
-      CommonDropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+      Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
       echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
       dropdownUnderProfiles("profiles_id");
       echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";

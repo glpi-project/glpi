@@ -42,7 +42,7 @@ checkRight("reports","r");
 if (isset($_POST["switch"])&&$_POST["switch"]){
 	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-	$name=CommonDropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
+	$name=Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
 
 	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.id AS IDport, glpi_networkequipments.name as switch
