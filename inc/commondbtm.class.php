@@ -1009,7 +1009,7 @@ class CommonDBTM extends CommonGLPI {
    * @return booleen
    **/
    function canUnrecurs() {
-      global $DB, $LINK_ID_TABLE, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $ID  = $this->fields['id'];
       if ($ID<0 || !$this->fields['is_recursive']) {
@@ -1063,15 +1063,14 @@ class CommonDBTM extends CommonGLPI {
                      if ($res) {
                         while ($data = $DB->fetch_assoc($res)) {
                            $itemtype=$data["itemtype"];
-                           if (isset($LINK_ID_TABLE[$itemtype]) &&
-                               in_array($device=$LINK_ID_TABLE[$itemtype],
-                               $CFG_GLPI["specif_entities_tables"])) {
+                           $itemtable=getTableForItemType($itemtype)
+                           if (in_array($itemtable, $CFG_GLPI["specif_entities_tables"])) {
 
-                              if (countElementsInTable("$tablename, $device",
+                              if (countElementsInTable("$tablename, $itemtable",
                                   "`$tablename`.`$field`='$ID'
                                   AND `$tablename`.`$typefield`='$itemtype'
-                                  AND `$tablename`.`$devfield`=`$device`.id
-                                  AND `$device`.`entities_id` NOT IN $entities")>'0') {
+                                  AND `$tablename`.`$devfield`=`$itemtable`.id
+                                  AND `$itemtable`.`entities_id` NOT IN $entities")>'0') {
                                  return false;
                               }
                            }

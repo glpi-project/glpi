@@ -462,7 +462,7 @@ abstract class CommonDropdown extends CommonDBTM {
    static function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
                           $update_item="",$used=array(),$auto_submit=0) {
 
-      global $DB,$CFG_GLPI,$LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
+      global $DB,$CFG_GLPI,$LANG,$INFOFORM_PAGES;
 
       $rand=mt_rand();
       $name="------";
@@ -554,7 +554,7 @@ abstract class CommonDropdown extends CommonDBTM {
          echo ">";
          echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 
-         $type = array_search($table, $LINK_ID_TABLE);
+         $type = getItemTypeForTable($table);
          if (class_exists($type)) {
             $item = new $type();
             if ($type

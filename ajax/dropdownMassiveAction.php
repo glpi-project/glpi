@@ -64,7 +64,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case 'move_under' :
          echo '&nbsp;'.$LANG['setup'][75];
-         CommonDropdown::dropdownValue($LINK_ID_TABLE[$_POST["itemtype"]], 'parent', '', 0);
+         CommonDropdown::dropdownValue(getTableForItemType($_POST["itemtype"]), 'parent', '', 0);
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;

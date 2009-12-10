@@ -77,7 +77,7 @@ function haveRight($module, $right) {
  * @return Boolean : session variable have more than the right specified for the module type
 **/
 function haveTypeRight($itemtype, $right) {
-   global $LANG,$PLUGIN_HOOKS,$CFG_GLPI,$LINK_ID_TABLE;
+   global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
    switch ($itemtype) {
       case GENERAL_TYPE :

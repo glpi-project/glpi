@@ -187,7 +187,7 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
  **/
 function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $SEARCH_PAGES;
-   global $INFOFORM_PAGES, $DB, $LINK_ID_TABLE;
+   global $INFOFORM_PAGES, $DB;
 
    // Print a nice HTML-head for every page
    if ($HEADER_LOADED) {

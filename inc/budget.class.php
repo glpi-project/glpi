@@ -231,7 +231,7 @@ class Budget extends CommonDBTM{
    *
    **/
    function showDevices() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
 
       $budgets_id = $this->fields['id'];
 
@@ -329,7 +329,7 @@ class Budget extends CommonDBTM{
    *
    **/
    function showValuesByEntity() {
-      global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
+      global $DB,$LANG,$CFG_GLPI;
 
       $budgets_id = $this->fields['id'];
 
@@ -355,7 +355,7 @@ class Budget extends CommonDBTM{
          if (in_array($types['itemtype'], $ignore)) {
             continue;
          }
-         $table = $LINK_ID_TABLE[$types['itemtype']];
+         $table = getTableForItemType($types['itemtype']);
          $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                  `$table`.`entities_id`
                            FROM `$table`

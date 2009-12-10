@@ -277,7 +277,7 @@ define("FIRSTNAME_BEFORE",1);
 define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 
 // Database Table for each type (order by type number)
-$LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
+/*$LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        NETWORKING_TYPE                   => 'glpi_networkequipments',
                        PRINTER_TYPE                      => 'glpi_printers',
                        MONITOR_TYPE                      => 'glpi_monitors',
@@ -372,7 +372,7 @@ $LINK_ID_TABLE = array(COMPUTER_TYPE                     => 'glpi_computers',
                        'SoftwareCategory'             => 'glpi_softwarecategories',
                        'UserTitle'                    => 'glpi_usertitles',
                        'UserCategory'                 => 'glpi_usercategories');
-
+*/
 // Form for each type (order by type number)
 $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         NETWORKING_TYPE      => "front/networkequipment.form.php",

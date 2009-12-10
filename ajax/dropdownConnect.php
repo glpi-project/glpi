@@ -59,7 +59,7 @@ if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
 }
 
 // Make a select box
-$table=$LINK_ID_TABLE[$_POST["idtable"]];
+$table=getTableForItemType($_POST["idtable"]);
 $where="";
 
 if (in_array($table,$CFG_GLPI["deleted_tables"])) {

@@ -41,10 +41,11 @@ header_nocache();
 checkLoginUser();
 // Make a select box
 
-if (isset($LINK_ID_TABLE[$_POST["itemtype"]]) && !empty($_POST["itemtype"])
-    && (isPossibleToAssignType($_POST["itemtype"]))) {
 
-   $table=$LINK_ID_TABLE[$_POST["itemtype"]];
+if (isPossibleToAssignType($_POST["itemtype"])) {
+
+   $table=getTableForItemType($_POST["itemtype"]);
+
    $rand=mt_rand();
    echo "&nbsp;";
    ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);

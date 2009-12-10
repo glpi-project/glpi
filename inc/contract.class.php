@@ -616,7 +616,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
 
       $instID = $this->fields['id'];
 
@@ -664,23 +664,24 @@ class Contract extends CommonDBTM {
          }
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT `".$LINK_ID_TABLE[$itemtype]."`.*, `glpi_contracts_items`.`id` AS IDD,
+            $itemtable=getTableForItemType($itemtype);
+            $query = "SELECT `$itemtable`.*, `glpi_contracts_items`.`id` AS IDD,
                            `glpi_entities`.`id` AS entity
-                     FROM `glpi_contracts_items`, `" .$LINK_ID_TABLE[$itemtype]."`";
+                     FROM `glpi_contracts_items`, `$itemtable`";
             if ($itemtype != ENTITY_TYPE) {
                $query .= " LEFT JOIN `glpi_entities`
-                              ON (`".$LINK_ID_TABLE[$itemtype]."`.`entities_id`=`glpi_entities`.`id`) ";
+                              ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
             }
-            $query .= " WHERE `".$LINK_ID_TABLE[$itemtype]."`.`id` = `glpi_contracts_items`.`items_id`
+            $query .= " WHERE `$itemtable`.`id` = `glpi_contracts_items`.`items_id`
                               AND `glpi_contracts_items`.`itemtype`='$itemtype'
                               AND `glpi_contracts_items`.`contracts_id` = '$instID'";
 
-            if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])) {
-               $query.=" AND `".$LINK_ID_TABLE[$itemtype]."`.`is_template`='0'";
+            if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+               $query.=" AND `$itemtable`.`is_template`='0'";
             }
-            $query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype],'','',
+            $query .= getEntitiesRestrictRequest(" AND",$itemtable,'','',
                                                 $item->maybeRecursive())."
-                     ORDER BY `glpi_entities`.`completename`, `".$LINK_ID_TABLE[$itemtype]."`.`name`";
+                     ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);

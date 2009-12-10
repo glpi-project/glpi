@@ -38,7 +38,7 @@
  * @param $rand Random parameter used
  **/
 function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$rand=0) {
-   global $CFG_GLPI,$DB,$LANG,$LINK_ID_TABLE;
+   global $CFG_GLPI,$DB,$LANG;
 
    $initparams=$params;
    if ($rand==0) {

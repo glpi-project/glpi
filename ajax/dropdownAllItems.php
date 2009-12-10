@@ -41,8 +41,8 @@ header_nocache();
 checkCentralAccess();
 
 // Make a select box
-if (isset($LINK_ID_TABLE[$_POST["idtable"]])) {
-   $table=$LINK_ID_TABLE[$_POST["idtable"]];
+if (class_exists($_POST["idtable"])) {
+   $table=getTableForItemType($_POST["idtable"]);
 
    // Link to user for search only > normal users
    $link="dropdownValue.php";

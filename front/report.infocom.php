@@ -78,13 +78,16 @@ $valeurgraphtot=array();
 * @param $end end date
 */
 function display_infocoms_report($itemtype,$begin,$end){
-	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
+	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
 
-	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms
-		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".id = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
-	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id = glpi_entities.id) ";
+   $itemtable=getTableForItemType($itemtype);
+	$query="SELECT glpi_infocoms.*, $itemtable.name AS name, $itemtable.ticket_tco,
+      glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms
+		INNER JOIN $itemtable ON ($itemtable.id = glpi_infocoms.items_id
+                        AND glpi_infocoms.itemtype='".$itemtype."')";
+	$query.= " LEFT JOIN glpi_entities ON ($itemtable.entities_id = glpi_entities.id) ";
 
-	$query.= " WHERE ".$LINK_ID_TABLE[$itemtype].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype]);
+	$query.= " WHERE $itemtable.is_template='0' ".getEntitiesRestrictRequest("AND",$itemtable);
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
