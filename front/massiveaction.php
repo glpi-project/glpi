@@ -51,16 +51,16 @@ if (isset($_POST["itemtype"])){
 
 	/// Right check
 	switch ($_POST["itemtype"]){
-		case TRACKING_TYPE :
+		case 'Ticket' :
 			switch ($_POST["action"]){
 				case "delete":
-					checkTypeRight("delete","1");
+					checkRight("delete_ticket","1");
 					break;
 				case "add_followup":
-					checkTypeRight("comment_all_ticket","1");
+					checkRight("comment_all_ticket","1");
 					break;
 				default:
-					checkTypeRight("update_ticket","1");
+					checkRight("update_ticket","1");
 					break;
 			}
 			break;

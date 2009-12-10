@@ -39,8 +39,8 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 switch ($_POST["itemtype"]) {
-   case TRACKING_TYPE :
-      checkTypeRight("update_ticket","1");
+   case 'Ticket' :
+      checkRight("update_ticket","1");
       break;
 
    default :
