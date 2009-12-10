@@ -1165,7 +1165,7 @@ class Document extends CommonDBTM {
             if ($nb>count($used)) {
                echo "<td class='left' colspan='2'>";
                echo "<div class='software-instal'>";
-               Document::dropdown("documents_id",$entities,$used);
+               Document::dropdown("documents_id",array('entity'=>$entities,'used'=>$used));
                echo "</div></td><td class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";
@@ -1193,7 +1193,7 @@ class Document extends CommonDBTM {
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdown($myname,$options) {
+   static function dropdown($myname,$options=array()) {
       global $DB,$LANG,$CFG_GLPI;
 
 
@@ -1212,6 +1212,7 @@ class Document extends CommonDBTM {
 
       $where=" WHERE `glpi_documents`.`is_deleted`='0' ".
                      getEntitiesRestrictRequest("AND","glpi_documents",'',$entity,true);
+
       if (count($used)) {
          $where .= " AND `id` NOT IN ('0','".implode("','",$used)."')";
       }
