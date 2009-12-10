@@ -60,7 +60,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 2 :
-            showSoftwareInstalled($_POST["id"],$_POST["withtemplate"]);
+            Computer_SoftwareVersion::showForComputer($computer,$_POST["withtemplate"]);
             break;
 
          case 3 :
@@ -96,7 +96,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
          case -1 :
             Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
-            showSoftwareInstalled($_POST["id"]);
+            Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
             showPortsAdd($_POST["id"],COMPUTER_TYPE);
             showPorts($_POST["id"], COMPUTER_TYPE);
@@ -110,7 +110,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 2 :
-            showSoftwareInstalled($_POST["id"]);
+            Computer_SoftwareVersion::showForComputer($computer);
             break;
 
          case 3 :

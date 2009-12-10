@@ -482,6 +482,214 @@ class SoftwareLicense extends CommonDBTM {
       return ($nb ? $nb : 0);
    }
 
+   /**
+    * Show Licenses of a software
+    *
+    * @param $softwares_id ID of the software
+    * @return nothing
+    */
+   static function showForSoftware($software) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $softwares_id = $software->getField('id');
+      $license = new SoftwareLicense;
+      $computer = new Computer();
+
+      if (!$software->can($softwares_id,"r")) {
+         return false;
+      }
+
+      if (isset($_REQUEST["start"])) {
+         $start = $_REQUEST["start"];
+      } else {
+         $start = 0;
+      }
+
+      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+         $sort = "`".$_REQUEST["sort"]."`";
+      } else {
+         $sort = "`entity`, `name`";
+      }
+
+      if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
+         $order = "DESC";
+      } else {
+         $order = "ASC";
+      }
+
+      // Righ type is enough. Can add a License on a software we have Read access
+      $canedit = haveRight("software", "w");
+
+      // Total Number of events
+      $number = countElementsInTable("glpi_softwarelicenses",
+                                     "glpi_softwarelicenses.softwares_id = $softwares_id " .
+                                             getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses',
+                                                                        '', '', true));
+      echo "<br><div class='center'>";
+      if ($number < 1) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['search'][15]."</th></tr>\n";
+         if ($canedit){
+            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".$LANG['software'][8];
+            echo "</a></td></tr>\n";
+         }
+         echo "</table></div>\n";
+         return;
+      }
+
+      // Display the pager
+      printAjaxPager($LANG['software'][11],$start,$number);
+
+      $rand=mt_rand();
+      $query = "SELECT `glpi_softwarelicenses`.*,
+                       `buyvers`.`name` AS buyname,
+                       `usevers`.`name` AS usename,
+                       `glpi_entities`.`completename` AS entity,
+                       `glpi_softwarelicensetypes`.`name` AS typename
+                FROM `glpi_softwarelicenses`
+                LEFT JOIN `glpi_softwareversions` AS buyvers
+                     ON (`buyvers`.`id` = `glpi_softwarelicenses`.`softwareversions_id_buy`)
+                LEFT JOIN `glpi_softwareversions` AS usevers
+                     ON (`usevers`.`id` = `glpi_softwarelicenses`.`softwareversions_id_use`)
+                LEFT JOIN `glpi_entities`
+                     ON (`glpi_entities`.`id` = `glpi_softwarelicenses`.`entities_id`)
+                LEFT JOIN `glpi_softwarelicensetypes`
+                     ON (`glpi_softwarelicensetypes`.`id`
+                          = `glpi_softwarelicenses`.`softwarelicensetypes_id`)
+                WHERE (`glpi_softwarelicenses`.`softwares_id` = '$softwares_id') " .
+                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) ."
+                ORDER BY $sort $order
+                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+
+      initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG['help'][31] ." = ". $software->fields["name"]);
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            if ($canedit) {
+               echo "<form method='post' name='massiveactionlicense_form$rand' id='".
+                      "massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"].
+                      "/front/massiveaction.php\">";
+            }
+            $sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
+                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
+            echo "<table class='tab_cadre_fixehov'><tr>";
+            echo "<th>&nbsp;</th>";
+            echo "<th>".($sort=="`name`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=name&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+
+            if ($software->isRecursive()) {
+               // Ereg to search entity in string for match default order
+               echo "<th>".(strstr($sort,"entity")?$sort_img:"").
+                         "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
+                           ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
+            }
+            echo "<th>".($sort=="`serial`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+            echo "<th>".$LANG['tracking'][29]."</th>";
+            echo "<th>".($sort=="`typename`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
+            echo "<th>".($sort=="`buyname`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1]."</a></th>";
+            echo "<th>".($sort=="`usename`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][2]."</a></th>";
+            echo "<th>".($sort=="`expire`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
+            echo "<th>".$LANG['help'][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG['software'][50] is too long) ??
+            echo "</tr>\n";
+
+            for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
+               addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['id']);
+               echo "<tr class='tab_bg_2'>";
+               if ($license->can($data['id'],"w")) {
+                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
+               echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".
+                          $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+
+               if ($software->isRecursive()) {
+                  echo "<td>".$data['entity']."</td>";
+               }
+               echo "<td>".$data['serial']."</td>";
+               echo "<td class='right'>".($data['number']>0?$data['number']:$LANG['software'][4])."</td>";
+               echo "<td>".$data['typename']."</td>";
+               echo "<td>".$data['buyname']."</td>";
+               echo "<td>".$data['usename']."</td>";
+               echo "<td>".convDate($data['expire'])."</td>";
+               if ($data['computers_id']>0 && $computer->getFromDB($data['computers_id'])) {
+                  $link = $computer->fields['name'];
+                  if (empty($link) || $_SESSION['glpiis_ids_visible']) {
+                     $link .= " (".$computer->fields['id'].")";
+                  }
+                  if ($computer->fields['is_deleted']) {
+                     $link .= " (".$LANG['common'][28].")";
+                  }
+                  echo "<td><a href='computer.form.php?id=".$data['computers_id']."'>".$link."</a>";
+
+                  // search installed version name
+                  // should be same as name of used_version, except for multiple installation
+                  $sql = "SELECT `glpi_softwareversions`.`name`
+                          FROM `glpi_softwareversions`,
+                               `glpi_computers_softwareversions`
+                          WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
+                                 AND `glpi_computers_softwareversions`.`softwareversions_id`
+                                      =`glpi_softwareversions`.`id`
+                                 AND `glpi_computers_softwareversions`.`computers_id`
+                                      ='".$data['computers_id']."'
+                          ORDER BY `name`";
+
+                  $installed='';
+                  foreach ($DB->request($sql) as $inst) {
+                     $installed .= (empty($installed)?'':', ').$inst['name'];
+                  }
+                  echo " (".(empty($installed) ? $LANG['plugins'][1] : $installed).")"; // TODO : move lang to common ?
+                  echo "</td>";
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
+               echo "</tr>";
+
+               if ($data['number']<0) {
+                  // One illimited license, total is illimited
+                  $tot = -1;
+               } else if ($tot>=0) {
+                  // Not illimited, add the current number
+                  $tot += $data['number'];
+               }
+            }
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='".($software->isRecursive()?4:3)."' class='right b'>".$LANG['common'][33];
+            echo "</td><td class='right b'>".($tot>0?$tot:$LANG['software'][4])."</td>";
+            echo "<td colspan='5' class='center'>";
+            if ($canedit) {
+               echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+                      $LANG['software'][8]."</a>";
+            }
+            echo "</td></tr>";
+            echo "</table>\n";
+
+            if ($canedit) {
+               openArrowMassive("massiveactionlicense_form$rand",true);
+               dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('softwares_id'=>$softwares_id));
+               closeArrowMassive();
+
+               echo "</form>";
+            }
+         } else {
+            echo $LANG['search'][15];
+         }
+      }
+      echo "</div>";
+   }
+
 }
 
 ?>
