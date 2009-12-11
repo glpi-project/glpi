@@ -1187,24 +1187,22 @@ class Document extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
 
-      $default_values['entity']=-1;
-      $default_values['used']=array();
+      $p['entity']=-1;
+      $p['used']=array();
 
-      foreach ($default_values as $key => $val) {
-         if (isset($options[$key])) {
-            $$key=$options[$key];
-         } else {
-            $$key=$default_values[$key];
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
          }
       }
 
       $rand=mt_rand();
 
       $where=" WHERE `glpi_documents`.`is_deleted`='0' ".
-                     getEntitiesRestrictRequest("AND","glpi_documents",'',$entity,true);
+                     getEntitiesRestrictRequest("AND","glpi_documents",'',$p['entity'],true);
 
-      if (count($used)) {
-         $where .= " AND `id` NOT IN ('0','".implode("','",$used)."')";
+      if (count($p['used'])) {
+         $where .= " AND `id` NOT IN ('0','".implode("','",$p['used'])."')";
       }
 
       $query="SELECT *
@@ -1223,20 +1221,20 @@ class Document extends CommonDBTM {
       echo "</select>";
 
       $params=array('rubdoc'=>'__VALUE__',
-                    'entity_restrict'=>$entity,
+                    'entity_restrict'=>$p['entity'],
                     'rand'=>$rand,
                     'myname'=>$myname,
-                    'used'=>$used);
+                    'used'=>$p['used']);
 
       ajaxUpdateItemOnSelectEvent("rubdoc$rand","show_$myname$rand",$CFG_GLPI["root_doc"].
                                   "/ajax/dropdownRubDocument.php",$params);
 
       echo "<span id='show_$myname$rand'>";
-      $_POST["entity_restrict"]=$entity;
+      $_POST["entity_restrict"]=$p['entity'];
       $_POST["rubdoc"]=0;
       $_POST["myname"]=$myname;
       $_POST["rand"]=$rand;
-      $_POST["used"]=$used;
+      $_POST["used"]=$p['used'];
       include (GLPI_ROOT."/ajax/dropdownRubDocument.php");
       echo "</span>\n";
 
