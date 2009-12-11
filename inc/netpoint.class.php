@@ -171,15 +171,16 @@ class Netpoint extends CommonDropdown {
       if ($display_comment) {
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
                 onmouseout=\"cleanhide('comment_$myname$rand')\"
-                onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
-         if (haveRight("entity_dropdown","w")) {
-            echo " style='cursor:pointer;' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                   "/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$locations_id".
-                   "&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, ".
-                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+                onmouseover=\"cleandisplay('comment_$myname$rand')\" >";
+
+         $item = new Netpoint();
+         if ($item->canCreate()) {
+            echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+                  "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
+                  $item->getFormURL().
+                  "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
+                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
-         echo ">";
-         echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
       }
       return $rand;
    }

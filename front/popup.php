@@ -38,25 +38,6 @@ if (isset($_GET["popup"])) $_SESSION["glpipopup"]["name"]=$_GET["popup"];
 
 if (isset($_SESSION["glpipopup"]["name"])){
 	switch ($_SESSION["glpipopup"]["name"]){
-		case "dropdown":
-			if (isset($_GET["rand"])) $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
-
-			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
-			// Manage reload
-			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["several_add"])||isset($_POST["move"])||isset($_POST["update"])){
-				echo "<script type='text/javascript' >\n";
-				echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
-//				echo "if (window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value=='".$CFG_GLPI["ajax_wildcard"]."'){\n";
-//				echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value='';";
-//				echo "} else {\n";
-//				echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value='".$CFG_GLPI["ajax_wildcard"]."';\n";
-//				echo "}\n";
-				echo "</script>";
-			}
-			include "setup.dropdowns.php";
-			popFooter();
-
-		break;
 		case "search_config":
 			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["delete_x"])||isset($_POST["up"])||isset($_POST["up_x"])||isset($_POST["down"])||isset($_POST["down_x"])){
