@@ -161,13 +161,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
 
          case "glpi_suppliers_infocoms" : // Infocoms suppliers
-            Dropdown::Select("glpi_suppliers","suppliers_id",1,$_SESSION["glpiactive_entity"]);
+            Dropdown::dropdownSimple("glpi_suppliers","suppliers_id",1,$_SESSION["glpiactive_entity"]);
             echo "<input type='hidden' name='field' value='suppliers_id'>";
             $FIELDNAME_PRINTED=true;
             break;
 
          case "glpi_budgets" : // Infocoms budget
-            Dropdown::Select("glpi_budgets","budgets_id");
+            Dropdown::dropdownSimple("glpi_budgets","budgets_id");
             break;
 
          case "glpi_ocslinks" : // auto_update ocs_link
@@ -217,7 +217,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                }
             }
             if (!$plugdisplay) {
-               Dropdown::Select($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);
+               Dropdown::dropdownSimple($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);
             }
             break;
       }

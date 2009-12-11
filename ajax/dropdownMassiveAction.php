@@ -175,19 +175,19 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_contract" :
-         Dropdown::Select("glpi_contracts","conID",1);
+         Dropdown::dropdownSimple("glpi_contracts","conID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_contact" :
-         Dropdown::Select("glpi_contacts","conID",1);
+         Dropdown::dropdownSimple("glpi_contacts","conID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_enterprise" :
-         Dropdown::Select("glpi_suppliers","entID",1);
+         Dropdown::dropdownSimple("glpi_suppliers","entID",1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
