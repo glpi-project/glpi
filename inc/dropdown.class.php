@@ -138,25 +138,7 @@ class Dropdown {
       if ($display_comment) {
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
                 onmouseout=\"cleanhide('comment_$myname$rand')\"
-                onmouseover=\"cleandisplay('comment_$myname$rand')\" ";
-
-         $which="";
-         // Check if table is an dropdown, and user right
-         if (key_exists_deep($table, getAllDropdowns())) {
-            $which=$table;
-         }
-         if (!empty($which)) {
-            if (is_array($entity_restrict) && count($entity_restrict)==1) {
-               $entity_restrict=array_pop($entity_restrict);
-            }
-            if (!is_array($entity_restrict)) {
-               echo " style='cursor:pointer;'  onClick=\"var w = window.open('".
-                    $CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which".
-                    "&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, ".
-                    "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
-            }
-         }
-         echo ">";
+                onmouseover=\"cleandisplay('comment_$myname$rand')\" >";
          echo "<span class='over_link' id='comment_$myname$rand'>".nl2br($comment)."</span>";
 
          $type = getItemTypeForTable($table);
@@ -369,7 +351,7 @@ class Dropdown {
       global $DB,$CFG_GLPI;
 
       $tabs=array();
-      
+
       if (count($ids)) {
          $field='name';
          if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
