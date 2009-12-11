@@ -66,9 +66,9 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer, $_POST["withtemplate"]);
             if ($_POST["withtemplate"]!=2) {
-               showPortsAdd($_POST["id"],COMPUTER_TYPE);
+               showPortsAdd($_POST["id"],'Computer');
             }
-            showPorts($_POST["id"], COMPUTER_TYPE,$_POST["withtemplate"]);
+            showPorts($_POST["id"], 'Computer',$_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -98,13 +98,13 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
-            showPortsAdd($_POST["id"],COMPUTER_TYPE);
-            showPorts($_POST["id"], COMPUTER_TYPE);
+            showPortsAdd($_POST["id"],'Computer');
+            showPorts($_POST["id"], 'Computer');
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$computer);
             Contract::showAssociated($computer,$_POST["withtemplate"]);
             Document::showAssociated($computer);
-            showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
-            Link::showForItem(COMPUTER_TYPE,$_POST["id"]);
+            showJobListForItem('Computer',$_POST["id"]);
+            Link::showForItem('Computer',$_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
             Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
             break;
@@ -115,8 +115,8 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer);
-            showPortsAdd($_POST["id"],COMPUTER_TYPE);
-            showPorts($_POST["id"], COMPUTER_TYPE);
+            showPortsAdd($_POST["id"],'Computer');
+            showPorts($_POST["id"], 'Computer');
             break;
 
          case 4 :
@@ -129,23 +129,23 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(COMPUTER_TYPE,$_POST["id"]);
+            showJobListForItem('Computer',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(COMPUTER_TYPE,$_POST["id"]);
+            Link::showForItem('Computer',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Computer',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],COMPUTER_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Computer',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(COMPUTER_TYPE,$_POST["id"]);
+            showHistory('Computer',$_POST["id"]);
             break;
 
          case 13 :

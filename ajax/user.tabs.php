@@ -100,7 +100,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 13 :
-         showHistory(USER_TYPE,$_POST["id"]);
+         showHistory('User',$_POST["id"]);
          break;
 
       default :

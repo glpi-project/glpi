@@ -68,9 +68,9 @@ if (!empty($_POST["withtemplate"])) {
 
          default :
             if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
-               showPorts($_POST["id"], NETWORKING_TYPE,$_POST["withtemplate"]);
+               showPorts($_POST["id"], 'NetworkEquipment',$_POST["withtemplate"]);
                if ($_POST["withtemplate"]!=2) {
-                  showPortsAdd($_POST["id"],NETWORKING_TYPE);
+                  showPortsAdd($_POST["id"],'NetworkEquipment');
                }
             }
       }
@@ -78,13 +78,13 @@ if (!empty($_POST["withtemplate"])) {
 } else {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showPortsAdd($_POST["id"],NETWORKING_TYPE);
-         showPorts($_POST["id"],NETWORKING_TYPE);
+         showPortsAdd($_POST["id"],'NetworkEquipment');
+         showPorts($_POST["id"],'NetworkEquipment');
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$netdevice);
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice,$_POST["withtemplate"]);
-         showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
-         Link::showForItem(NETWORKING_TYPE,$_POST["id"]);
+         showJobListForItem('NetworkEquipment',$_POST["id"]);
+         Link::showForItem('NetworkEquipment',$_POST["id"]);
          Plugin::displayAction($netdevice,$_REQUEST['glpi_tab']);
          break;
 
@@ -98,29 +98,29 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 6 :
-         showJobListForItem(NETWORKING_TYPE,$_POST["id"]);
+         showJobListForItem('NetworkEquipment',$_POST["id"]);
          break;
 
       case 7 :
-         Link::showForItem(NETWORKING_TYPE,$_POST["id"]);
+         Link::showForItem('NetworkEquipment',$_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
+         showNotesForm($_POST['target'],'NetworkEquipment',$_POST["id"]);
          break;
 
       case 11 :
-         showDeviceReservations($_POST['target'],NETWORKING_TYPE,$_POST["id"]);
+         showDeviceReservations($_POST['target'],'NetworkEquipment',$_POST["id"]);
          break;
 
       case 12 :
-         showHistory(NETWORKING_TYPE,$_POST["id"]);
+         showHistory('NetworkEquipment',$_POST["id"]);
          break;
 
       default :
          if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'])) {
-            showPortsAdd($_POST["id"],NETWORKING_TYPE);
-            showPorts($_POST["id"],NETWORKING_TYPE);
+            showPortsAdd($_POST["id"],'NetworkEquipment');
+            showPorts($_POST["id"],'NetworkEquipment');
          }
    }
 }

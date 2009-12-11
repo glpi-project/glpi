@@ -70,22 +70,22 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          default :
             if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
-                  showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
+                  showPortsAdd($_POST["id"],'Peripheral');
                }
-               showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+               showPorts($_POST["id"], 'Peripheral',$_POST["withtemplate"]);
             }
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Item::showForItem($periph);
-            showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
-            showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+            showPortsAdd($_POST["id"],'Peripheral');
+            showPorts($_POST["id"], 'Peripheral',$_POST["withtemplate"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$periph);
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
-            showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
-            Link::showForItem(PERIPHERAL_TYPE,$_POST["id"]);
+            showJobListForItem('Peripheral',$_POST["id"]);
+            Link::showForItem('Peripheral',$_POST["id"]);
             Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
             break;
 
@@ -99,30 +99,30 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(PERIPHERAL_TYPE,$_POST["id"]);
+            showJobListForItem('Peripheral',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(PERIPHERAL_TYPE,$_POST["id"]);
+            Link::showForItem('Peripheral',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],PERIPHERAL_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Peripheral',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],PERIPHERAL_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Peripheral',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(PERIPHERAL_TYPE,$_POST["id"]);
+            showHistory('Peripheral',$_POST["id"]);
             break;
 
          default :
             if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($periph);
-               showPortsAdd($_POST["id"],PERIPHERAL_TYPE);
-               showPorts($_POST["id"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
+               showPortsAdd($_POST["id"],'Peripheral');
+               showPorts($_POST["id"], 'Peripheral',$_POST["withtemplate"]);
             }
       }
    }

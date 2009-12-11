@@ -99,10 +99,10 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT="";
 }
 
-if ($_POST["onlyglobal"] && $_POST["idtable"]!=COMPUTER_TYPE) {
+if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
    $CONNECT_SEARCH=" WHERE `$table`.`is_global` = '1' ";
 } else {
-   if ($_POST["idtable"]==COMPUTER_TYPE) {
+   if ($_POST["idtable"] == 'Computer') {
       $CONNECT_SEARCH=" WHERE 1 ";
    } else {
       $CONNECT_SEARCH=" WHERE (`glpi_computers_items`.`id` IS NULL
@@ -111,7 +111,7 @@ if ($_POST["onlyglobal"] && $_POST["idtable"]!=COMPUTER_TYPE) {
 }
 
 $LEFTJOINCONNECT="";
-if ($_POST["idtable"]!=COMPUTER_TYPE && !$_POST["onlyglobal"]) {
+if ($_POST["idtable"] != 'Computer' && !$_POST["onlyglobal"]) {
    $LEFTJOINCONNECT=" LEFT JOIN `glpi_computers_items`
                          ON (`$table`.`id` = `glpi_computers_items`.`items_id`
                              AND `glpi_computers_items`.`itemtype` = '".$_POST['idtable']."')";
