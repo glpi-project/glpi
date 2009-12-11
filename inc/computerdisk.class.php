@@ -42,7 +42,7 @@ class ComputerDisk extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_computerdisks';
-   public $type = COMPUTERDISK_TYPE;
+   public $type = 'ComputerDisk';
    public $entity_assign = true;
 
    static function canCreate() {
@@ -206,7 +206,7 @@ class ComputerDisk extends CommonDBTM {
             echo "<th>".$LANG['computers'][2]."</th>";
             echo "</tr>";
 
-            initNavigateListItems(COMPUTERDISK_TYPE, $LANG['help'][25]." = ".
+            initNavigateListItems('ComputerDisk', $LANG['help'][25]." = ".
                                   (empty($comp->fields['name']) ? "($ID)" : $comp->fields['name']));
 
             while ($data=$DB->fetch_assoc($result)) {
@@ -225,7 +225,7 @@ class ComputerDisk extends CommonDBTM {
                echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
                       $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 
-               addToNavigateListItems(COMPUTERDISK_TYPE,$data['id']);
+               addToNavigateListItems('ComputerDisk',$data['id']);
             }
          } else {
             echo "<tr><th colspan='6'>".$LANG['search'][15]."</th></tr>";

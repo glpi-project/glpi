@@ -246,7 +246,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
             if ($crit=="id") {
                $title .= " - " . $data["vername"];
             }
-            initNavigateListItems(COMPUTER_TYPE,$title);
+            initNavigateListItems('Computer',$title);
             $sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
             if ($canedit) {
@@ -299,7 +299,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
             echo "</tr>\n";
 
             do {
-               addToNavigateListItems(COMPUTER_TYPE,$data["cID"]);
+               addToNavigateListItems('Computer',$data["cID"]);
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
@@ -462,9 +462,9 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       $cat = -1;
 
-      initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".
+      initNavigateListItems('Software',$LANG['help'][25]." = ".
                   (empty($comp->fields["name"]) ? "(".$comp->fields["id"].")":$comp->fields["name"]));
-      initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG['help'][25]." = ".
+      initNavigateListItems('SoftwareLicense',$LANG['help'][25]." = ".
                   (empty($comp->fields["name"]) ? "(".$comp->fields["id"].")":$comp->fields["name"]));
 
       $installed=array();
@@ -476,9 +476,9 @@ class Computer_SoftwareVersion extends CommonDBTM {
             }
 
             $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit);
-            addToNavigateListItems(SOFTWARE_TYPE,$data["softwares_id"]);
+            addToNavigateListItems('Software',$data["softwares_id"]);
             foreach ($licids as $licid) {
-               addToNavigateListItems(SOFTWARELICENSE_TYPE,$licid);
+               addToNavigateListItems('SoftwareLicense',$licid);
                $installed[]=$licid;
             }
          }
@@ -510,7 +510,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
                $cat = false;
             }
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
-            addToNavigateListItems(SOFTWARELICENSE_TYPE,$data["id"]);
+            addToNavigateListItems('SoftwareLicense',$data["id"]);
          }
          self::displayCategoryFooter(NULL,$rand,$canedit);
       }
@@ -673,7 +673,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
          if ($licdata['type']) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
-         $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$licdata['id'];
+         $link = GLPI_ROOT.'/'.$INFOFORM_PAGES['SoftwareLicense']."?id=".$licdata['id'];
          displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
                          $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
                          $link);
@@ -703,7 +703,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       $ID = $data["softwareversions_id_buy"];
       $multiple = false;
-      $link = GLPI_ROOT.'/'.$INFOFORM_PAGES[SOFTWARELICENSE_TYPE]."?id=".$data['id'];
+      $link = GLPI_ROOT.'/'.$INFOFORM_PAGES['SoftwareLicense']."?id=".$data['id'];
 
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {

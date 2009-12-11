@@ -90,177 +90,177 @@ class CommonItem {
          $this->obj=new $itemtype();
       } else if ($init_object) {
          switch ($itemtype) {
-            case COMPUTER_TYPE :
+            case 'Computer' :
                require_once(GLPI_ROOT.'/inc/computer.class.php');
                $this->obj=new Computer;
                break;
 
-            case NETWORKING_TYPE :
+            case 'NetworkEquipment' :
                require_once(GLPI_ROOT.'/inc/networkequipment.class.php');
                $this->obj=new NetworkEquipment;
                break;
 
-            case PRINTER_TYPE :
+            case 'Printer' :
                require_once(GLPI_ROOT.'/inc/printer.class.php');
                $this->obj=new Printer;
                break;
 
-            case MONITOR_TYPE :
+            case 'Monitor' :
                require_once(GLPI_ROOT.'/inc/monitor.class.php');
                $this->obj= new Monitor;
                break;
 
-            case PERIPHERAL_TYPE :
+            case 'Peripheral' :
                require_once(GLPI_ROOT.'/inc/peripheral.class.php');
                $this->obj= new Peripheral;
                break;
 
-            case SOFTWARE_TYPE :
+            case 'Software' :
                require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new Software;
                break;
 
-            case CONTACT_TYPE :
+            case 'Contact' :
                require_once(GLPI_ROOT.'/inc/contact.class.php');
                $this->obj= new Contact;
                break;
 
-            case ENTERPRISE_TYPE :
+            case 'Supplier' :
                require_once(GLPI_ROOT.'/inc/supplier.class.php');
                $this->obj= new Supplier;
                break;
 
-            case CONTRACT_TYPE :
+            case 'Contract' :
                require_once(GLPI_ROOT.'/inc/contract.class.php');
                $this->obj= new Contract;
                break;
 
-            case CARTRIDGEITEM_TYPE :
+            case 'CartridgeItem' :
                require_once(GLPI_ROOT.'/inc/cartridgeitem.class.php');
                $this->obj= new CartridgeItem;
                break;
 
-            case TYPEDOC_TYPE :
+            case 'DocumentType' :
                require_once(GLPI_ROOT.'/inc/documenttype.class.php');
                $this->obj= new DocumentType;
                break;
 
-            case DOCUMENT_TYPE :
+            case 'Document' :
                require_once(GLPI_ROOT.'/inc/document.class.php');
                $this->obj= new Document;
                break;
 
-            case KNOWBASE_TYPE :
+            case 'KnowbaseItem' :
                require_once(GLPI_ROOT.'/inc/knowbaseitem.class.php');
                $this->obj= new KnowbaseItem;
                break;
 
-            case USER_TYPE :
+            case 'User' :
                require_once(GLPI_ROOT.'/inc/user.class.php');
                $this->obj= new User;
                break;
 
-            case TRACKING_TYPE :
+            case 'Ticket' :
                require_once(GLPI_ROOT.'/inc/ticket.class.php');
                $this->obj= new Ticket;
                break;
 
-            case CONSUMABLEITEM_TYPE :
+            case 'ConsumableItem' :
                require_once(GLPI_ROOT.'/inc/consumableitem.class.php');
                $this->obj= new ConsumableItem;
                break;
 
-            case CARTRIDGE_TYPE :
+            case 'Cartridge' :
                require_once(GLPI_ROOT.'/inc/cartridge.class.php');
                $this->obj= new Cartridge;
                break;
 
-            case CONSUMABLE_TYPE :
+            case 'Consumable' :
                require_once(GLPI_ROOT.'/inc/consumable.class.php');
                $this->obj= new Consumable;
                break;
 
-            case SOFTWARELICENSE_TYPE :
+            case 'SoftwareLicense' :
                require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new SoftwareLicense;
                break;
 
-            case SOFTWAREVERSION_TYPE :
+            case 'SoftwareVersion' :
                require_once(GLPI_ROOT.'/inc/software.class.php');
                $this->obj= new SoftwareVersion;
                break;
 
-            case LINK_TYPE :
+            case 'Link' :
                require_once(GLPI_ROOT.'/inc/link.class.php');
                $this->obj= new Link;
                break;
 
-            case PHONE_TYPE :
+            case 'Phone' :
                require_once(GLPI_ROOT.'/inc/phone.class.php');
                $this->obj= new Phone;
                break;
 
-            case REMINDER_TYPE :
+            case 'Reminder' :
                require_once(GLPI_ROOT.'/inc/reminder.class.php');
                $this->obj= new Reminder;
                break;
 
-            case GROUP_TYPE :
+            case 'Group' :
                require_once(GLPI_ROOT.'/inc/group.class.php');
                $this->obj= new Group;
                break;
 
-            case ENTITY_TYPE :
+            case 'Entity' :
                require_once(GLPI_ROOT.'/inc/entity.class.php');
                $this->obj= new Entity;
                break;
 
-            case AUTH_MAIL_TYPE:
+            case 'AuthMail':
                require_once(GLPI_ROOT.'/inc/auth.class.php');
                $this->obj = new AuthMail;
                break;
 
-            case AUTH_LDAP_TYPE:
+            case 'AuthLDAP':
                require_once(GLPI_ROOT.'/inc/auth.class.php');
                $this->obj = new AuthLDAP;
                break;
 
-            case OCSNG_TYPE:
+            case 'OcsServer':
                require_once(GLPI_ROOT.'/inc/ocsserver.class.php');
                $this->obj = new OcsServer;
                break;
 
-            case REGISTRY_TYPE:
+            case 'RegistryKey':
                require_once(GLPI_ROOT.'/inc/registrykey.class.php');
                $this->obj = new RegistryKey;
                break;
 
-            case PROFILE_TYPE:
+            case 'Profile':
                require_once(GLPI_ROOT.'/inc/profile.class.php');
                $this->obj = new Profile;
                break;
 
-            case MAILGATE_TYPE:
+            case 'MailCollector':
                require_once(GLPI_ROOT.'/inc/mailcollector.class.php');
                $this->obj = new MailCollector;
                break;
 
-            case INFOCOM_TYPE:
+            case 'InfoCom':
                require_once(GLPI_ROOT.'/inc/infocom.class.php');
                $this->obj = new InfoCom;
                break;
 
-            case TRANSFER_TYPE:
+            case 'Transfer':
                require_once(GLPI_ROOT.'/inc/transfer.class.php');
                $this->obj = new Transfer;
                break;
 
-            case BOOKMARK_TYPE:
+            case 'Bookmark':
                require_once(GLPI_ROOT.'/inc/bookmark.class.php');
                $this->obj = new Bookmark;
                break;
 
-            case BUDGET_TYPE:
+            case 'Budget':
                require_once(GLPI_ROOT.'/inc/budget.class.php');
                $this->obj = new Budget;
                break;
@@ -293,139 +293,139 @@ class CommonItem {
       global $LANG,$PLUGIN_HOOKS;
 
       switch ($this->itemtype) {
-         case GENERAL_TYPE :
+         case '' :
             return $LANG['help'][30];
             break;
 
-         case COMPUTER_TYPE :
+         case 'Computer' :
             return $LANG['help'][25];
             break;
 
-         case NETWORKING_TYPE :
+         case 'NetworkEquipment' :
             return $LANG['help'][26];
             break;
 
-         case PRINTER_TYPE :
+         case 'Printer' :
             return $LANG['help'][27];
             break;
 
-         case MONITOR_TYPE :
+         case 'Monitor' :
             return $LANG['help'][28];
             break;
 
-         case PERIPHERAL_TYPE :
+         case 'Pheripheral' :
             return $LANG['help'][29];
             break;
 
-         case SOFTWARE_TYPE :
+         case 'Software' :
             return $LANG['help'][31];
             break;
 
-         case CONTACT_TYPE :
+         case 'Contact' :
             return $LANG['common'][18];
             break;
 
-         case ENTERPRISE_TYPE :
+         case 'Supplier' :
             return $LANG['financial'][26];
             break;
 
-         case CONTRACT_TYPE :
+         case 'Contract' :
             return $LANG['financial'][1];
             break;
 
-         case CARTRIDGEITEM_TYPE :
+         case 'CartridgeItem' :
             return $LANG['cartridges'][12];
             break;
 
-         case TYPEDOC_TYPE :
+         case 'DocumentType' :
             return $LANG['document'][7];
             break;
 
-         case DOCUMENT_TYPE :
+         case 'Document' :
             return $LANG['Menu'][27];
             break;
 
-         case KNOWBASE_TYPE :
+         case 'KnowbaseItem' :
             return $LANG['title'][5];
             break;
 
-         case USER_TYPE :
+         case 'User' :
             return $LANG['common'][34];
             break;
 
-         case TRACKING_TYPE :
+         case 'Ticket' :
             return $LANG['job'][38];
             break;
 
-         case CONSUMABLEITEM_TYPE :
+         case 'ConsumableItem' :
             return $LANG['consumables'][12];
             break;
 
-         case CARTRIDGE_TYPE :
+         case 'Cartridge' :
             return $LANG['cartridges'][0];
             break;
 
-         case CONSUMABLE_TYPE :
+         case 'Consumable' :
             return $LANG['consumables'][0];
             break;
 
-         case SOFTWARELICENSE_TYPE :
+         case 'SoftwareLicense' :
             return $LANG['software'][11];
             break;
 
-         case SOFTWAREVERSION_TYPE :
+         case 'SoftwareVersion' :
             return $LANG['software'][5];
             break;
 
-         case LINK_TYPE :
+         case 'Link' :
             return $LANG['setup'][87];
             break;
 
-         case PHONE_TYPE :
+         case 'Phone' :
             return $LANG['help'][35];
             break;
 
-         case REMINDER_TYPE :
+         case 'Reminder' :
             return $LANG['title'][37];
             break;
 
-         case GROUP_TYPE :
+         case 'Group' :
             return $LANG['common'][35];
             break;
 
-         case ENTITY_TYPE :
+         case 'Entity' :
             return $LANG['Menu'][37];
             break;
 
-         case AUTH_MAIL_TYPE:
+         case 'AuthMail':
             return $LANG['login'][3];
             break;
 
-         case AUTH_LDAP_TYPE:
+         case 'AuthLDAP':
             return $LANG['login'][2];
             break;
 
-         case OCSNG_TYPE:
+         case 'OcsServer':
             return $LANG['ocsng'][29];
             break;
 
-         case REGISTRY_TYPE:
+         case 'RegistryKey':
             return $LANG['title'][43];
             break;
 
-         case PROFILE_TYPE:
+         case 'Profile':
             return $LANG['Menu'][35];
             break;
 
-         case MAILGATE_TYPE:
+         case 'MailCollector':
             return $LANG['Menu'][39];
             break;
 
-         case INFOCOM_TYPE:
+         case 'Infocom':
             return $LANG['financial'][3];
             break;
 
-         case BUDGET_TYPE :
+         case 'Budget' :
             return $LANG['financial'][87];
             break;
 

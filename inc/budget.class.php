@@ -192,7 +192,7 @@ class Budget extends CommonDBTM{
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = BUDGET_TYPE;
+      $tab[1]['itemlink_type'] = 'Budget';
 
       $tab[2]['table']     = 'glpi_budgets';
       $tab[2]['field']     = 'begin_date';
@@ -356,7 +356,7 @@ class Budget extends CommonDBTM{
       $entities_values = array();
 
       // Type for which infocom are only template
-      $ignore = array(CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE, SOFTWARE_TYPE);
+      $ignore = array('CartridgeItem', 'ConsumableItem', 'Software');
 
       if ( $DB->numrows($result) ) {
          while ($types = $DB->fetch_array($result)) {
