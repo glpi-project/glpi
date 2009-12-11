@@ -77,6 +77,8 @@ include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/software.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
 include_once (GLPI_ROOT . "/inc/device.function.php");
+include_once (GLPI_ROOT . "/inc/networkequipment.function.php");
+
 
 // Standard includes
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
