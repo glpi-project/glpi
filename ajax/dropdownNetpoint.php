@@ -87,9 +87,9 @@ if (isset($_POST["devtype"]) && $_POST["devtype"]>0) {
                      AND `glpi_networkports`.`itemtype`";
 
    if ($_POST["devtype"] == 'NetworkEquipment') {
-      $query .= " = " . 'NetworkEquipment' .")";
+      $query .= " = 'NetworkEquipment' )";
    } else {
-      $query .= " != " . 'NetworkEquipment' .")";
+      $query .= " != 'NetworkEquipment' )";
       if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
          $where.=" AND `glpi_netpoints`.`locations_id`='".$_POST["locations_id"]."' ";
       }
