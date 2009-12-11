@@ -54,7 +54,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Cartridge::showForCartridgeItem($cartridge, 1);
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
          Document::showAssociated($cartridge);
-         Link::showForItem(CARTRIDGEITEM_TYPE,$_POST["id"]);
+         Link::showForItem('CartridgeItem',$_POST["id"]);
          Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
@@ -67,11 +67,11 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          break;
 
       case 7 :
-         Link::showForItem(CARTRIDGEITEM_TYPE,$_POST["id"]);
+         Link::showForItem('CartridgeItem',$_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],CARTRIDGEITEM_TYPE,$_POST["id"]);
+         showNotesForm($_POST['target'],'CartridgeItem',$_POST["id"]);
          break;
 
       default :

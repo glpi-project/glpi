@@ -57,7 +57,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       case 10 :
-         showNotesForm( $_POST['target'],DOCUMENT_TYPE,$_POST["id"]);
+         showNotesForm( $_POST['target'],'Document',$_POST["id"]);
          break;
 
       default :

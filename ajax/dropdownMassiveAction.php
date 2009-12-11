@@ -132,16 +132,16 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "connect" :
-         dropdownConnect(COMPUTER_TYPE,$_POST["itemtype"],"connect_item");
+         dropdownConnect('Computer',$_POST["itemtype"],"connect_item");
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "connect_to_computer" :
-         dropdownAllItems("connect_item",0,0,$_SESSION["glpiactive_entity"],array(PHONE_TYPE,
-                                                                                  MONITOR_TYPE,
-                                                                                  PRINTER_TYPE,
-                                                                                  PERIPHERAL_TYPE),
+         dropdownAllItems("connect_item",0,0,$_SESSION["glpiactive_entity"],array('Phone',
+                                                                                  'Monitor',
+                                                                                  'Printer',
+                                                                                  'Peripheral'),
                           true);
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
@@ -199,9 +199,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $show_all=true;
          $show_infocoms=true;
          if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])
-             && (!haveTypeRight($_POST["itemtype"],"w") || !haveTypeRight(INFOCOM_TYPE,"w"))) {
+             && (!haveTypeRight($_POST["itemtype"],"w") || !haveTypeRight('Infocom',"w"))) {
             $show_all=false;
-            $show_infocoms=haveTypeRight(INFOCOM_TYPE,"w");
+            $show_infocoms=haveTypeRight('Infocom',"w");
          }
          echo "<select name='id_field' id='massiveaction_field'>";
          echo "<option value='0' selected>------</option>";

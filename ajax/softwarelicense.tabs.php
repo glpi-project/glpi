@@ -72,7 +72,7 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory(SOFTWARELICENSE_TYPE,$_POST["id"]);
+         showHistory('SoftwareLicense',$_POST["id"]);
          break;
 
       default :

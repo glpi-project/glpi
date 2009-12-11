@@ -60,9 +60,9 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case 3 :
             if ($_POST["withtemplate"]!=2) {
-               showPortsAdd($_POST["id"],PRINTER_TYPE);
+               showPortsAdd($_POST["id"],'Printer');
             }
-            showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
+            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -84,20 +84,20 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Cartridge::showInstalled($printer);
             Cartridge::showInstalled($printer, 1);
             Computer_Item::showForItem($printer);
-            showPortsAdd($_POST["id"],PRINTER_TYPE);
-            showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
+            showPortsAdd($_POST["id"],'Printer');
+            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$printer);
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
-            showJobListForItem(PRINTER_TYPE,$_POST["id"]);
-            Link::showForItem(PRINTER_TYPE,$_POST["id"]);
+            showJobListForItem('Printer',$_POST["id"]);
+            Link::showForItem('Printer',$_POST["id"]);
             Plugin::displayAction($printer, $_REQUEST['glpi_tab']);
             break;
 
          case 3 :
             Computer_Item::showForItem($printer);
-            showPortsAdd($_POST["id"],PRINTER_TYPE);
-            showPorts($_POST["id"], PRINTER_TYPE,$_POST["withtemplate"]);
+            showPortsAdd($_POST["id"],'Printer');
+            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -110,23 +110,23 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(PRINTER_TYPE,$_POST["id"]);
+            showJobListForItem('Printer',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(PRINTER_TYPE,$_POST["id"]);
+            Link::showForItem('Printer',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],PRINTER_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Printer',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],PRINTER_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Printer',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(PRINTER_TYPE,$_POST["id"]);
+            showHistory('Printer',$_POST["id"]);
             break;
 
          default :

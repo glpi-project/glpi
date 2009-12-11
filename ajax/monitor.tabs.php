@@ -76,8 +76,8 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$monitor);
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
-            showJobListForItem(MONITOR_TYPE,$_POST["id"]);
-            Link::showForItem(MONITOR_TYPE,$_POST["id"]);
+            showJobListForItem('Monitor',$_POST["id"]);
+            Link::showForItem('Monitor',$_POST["id"]);
             Plugin::displayAction($monitor,$_REQUEST['glpi_tab']);
             break;
 
@@ -91,23 +91,23 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(MONITOR_TYPE,$_POST["id"]);
+            showJobListForItem('Monitor',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(MONITOR_TYPE,$_POST["id"]);
+            Link::showForItem('Monitor',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Monitor',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],MONITOR_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Monitor',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(MONITOR_TYPE,$_POST["id"]);
+            showHistory('Monitor',$_POST["id"]);
             break;
 
          default :

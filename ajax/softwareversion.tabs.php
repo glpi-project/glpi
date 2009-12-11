@@ -65,7 +65,7 @@ if ($_POST["id"]>0 && $version->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory(SOFTWAREVERSION_TYPE,$_POST["id"]);
+         showHistory('SoftwareVersion',$_POST["id"]);
          break;
 
       default :

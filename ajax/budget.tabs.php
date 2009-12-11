@@ -52,7 +52,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
       case -1 :
          $budget->showDevices();
          Document::showAssociated($budget);
-         Link::showForItem(BUDGET_TYPE,$_POST["id"]);
+         Link::showForItem('Budget',$_POST["id"]);
          Plugin::displayAction($budget,$_REQUEST['glpi_tab']);
          break;
 
@@ -65,15 +65,15 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          break;
 
       case 7 :
-         Link::showForItem(BUDGET_TYPE,$_POST["id"]);
+         Link::showForItem('Budget',$_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],BUDGET_TYPE,$_POST["id"]);
+         showNotesForm($_POST['target'],'Budget',$_POST["id"]);
          break;
 
       case 12 :
-         showHistory(BUDGET_TYPE,$_POST["id"]);
+         showHistory('Budget',$_POST["id"]);
          break;
 
       default :

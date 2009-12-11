@@ -80,8 +80,8 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$soft);
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
-            showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
-            Link::showForItem(SOFTWARE_TYPE,$_POST["id"]);
+            showJobListForItem('Software',$_POST["id"]);
+            Link::showForItem('Software',$_POST["id"]);
             Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
 
@@ -99,23 +99,23 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(SOFTWARE_TYPE,$_POST["id"]);
+            showJobListForItem('Software',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(SOFTWARE_TYPE,$_POST["id"]);
+            Link::showForItem('Software',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Software',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],SOFTWARE_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Software',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(SOFTWARE_TYPE,$_POST["id"]);
+            showHistory('Software',$_POST["id"]);
             break;
 
          case 21 :

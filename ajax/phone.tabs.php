@@ -75,22 +75,22 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
          default :
             if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
                if ($_POST["withtemplate"]!=2) {
-                  showPortsAdd($_POST["id"],PHONE_TYPE);
+                  showPortsAdd($_POST["id"],'Phone');
                }
-               showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+               showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
             }
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Item::showForItem($phone);
-            showPortsAdd($_POST["id"],PHONE_TYPE);
-            showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+            showPortsAdd($_POST["id"],'Phone');
+            showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
-            showJobListForItem(PHONE_TYPE,$_POST["id"]);
-            Link::showForItem(PHONE_TYPE,$_POST["id"]);
+            showJobListForItem('Phone',$_POST["id"]);
+            Link::showForItem('Phone',$_POST["id"]);
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
@@ -104,30 +104,30 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem(PHONE_TYPE,$_POST["id"]);
+            showJobListForItem('Phone',$_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem(PHONE_TYPE,$_POST["id"]);
+            Link::showForItem('Phone',$_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],PHONE_TYPE,$_POST["id"]);
+            showNotesForm($_POST['target'],'Phone',$_POST["id"]);
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],PHONE_TYPE,$_POST["id"]);
+            showDeviceReservations($_POST['target'],'Phone',$_POST["id"]);
             break;
 
          case 12 :
-            showHistory(PHONE_TYPE,$_POST["id"]);
+            showHistory('Phone',$_POST["id"]);
             break;
 
          default :
             if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($phone);
-               showPortsAdd($_POST["id"],PHONE_TYPE);
-               showPorts($_POST["id"], PHONE_TYPE,$_POST["withtemplate"]);
+               showPortsAdd($_POST["id"],'Phone');
+               showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
             }
       }
    }

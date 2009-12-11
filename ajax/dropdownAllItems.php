@@ -47,7 +47,7 @@ if (class_exists($_POST["idtable"])) {
    // Link to user for search only > normal users
    $link="dropdownValue.php";
 
-   if ($_POST["idtable"]==USER_TYPE) {
+   if ($_POST["idtable"] == 'User') {
       $link="dropdownUsers.php";
    }
 
