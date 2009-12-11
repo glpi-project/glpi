@@ -59,6 +59,14 @@ class Ticket extends CommonDBTM {
       return $LANG['job'][38];
    }
 
+   static function canCreate() {
+      return haveRight('update_ticket', 1);
+   }
+
+   static function canView() {
+      return haveRight('show_all_ticket', 1);
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
@@ -1293,7 +1301,7 @@ class Ticket extends CommonDBTM {
     *
     * @return boolean
     */
-   function canView() {
+   function canUserView() {
 
       return (haveRight("show_all_ticket","1")
               || (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"])

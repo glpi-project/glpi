@@ -694,7 +694,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
       // Add link
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         if ($job->canView()) {
+         if ($job->canUserView()) {
             $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                               $data["id"]."\">$eigth_column</a>";
 

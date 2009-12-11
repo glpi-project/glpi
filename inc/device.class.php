@@ -80,11 +80,11 @@ class Device extends CommonDBTM {
       $DB->query($query2);
    }
 
-   function canView() {
+   static function canView() {
       return haveRight("device","r");
    }
 
-   function canCreate() {
+   static function canCreate() {
       return haveRight("device","w");
    }
 

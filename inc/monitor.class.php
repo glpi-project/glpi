@@ -53,6 +53,14 @@ class Monitor extends CommonDBTM {
       return $LANG['help'][28];
    }
 
+   static function canCreate() {
+      return haveRight('monitor', 'w');
+   }
+
+   static function canView() {
+      return haveRight('monitor', 'r');
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

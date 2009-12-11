@@ -44,6 +44,14 @@ class RuleTicket extends Rule {
    public $right='rule_ticket';
    public $can_sort=true;
 
+   static function canCreate() {
+      return haveRight('rule_ticket', 'w');
+   }
+
+   static function canView() {
+      return haveRight('rule_ticket', 'r');
+   }
+
    function maxActionsCount() {
       global $RULES_ACTIONS;
 

@@ -44,7 +44,7 @@ class Computer extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_computers';
-   public $type = COMPUTER_TYPE;
+   public $type = 'Computer';
    public $dohistory=true;
    public $entity_assign=true;
 
@@ -56,6 +56,14 @@ class Computer extends CommonDBTM {
       global $LANG;
 
       return $LANG['help'][25];
+   }
+
+   static function canCreate() {
+      return haveRight('computer', 'w');
+   }
+
+   static function canView() {
+      return haveRight('computer', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {

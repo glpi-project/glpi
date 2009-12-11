@@ -78,6 +78,14 @@ class Transfer extends CommonDBTM {
 
 
 
+   static function canCreate() {
+      return haveRight('transfer', 'w');
+   }
+
+   static function canView() {
+      return haveRight('transfer', 'r');
+   }
+
 
 
    function defineTabs($ID,$withtemplate) {

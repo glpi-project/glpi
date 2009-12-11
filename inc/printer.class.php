@@ -54,6 +54,14 @@ class Printer  extends CommonDBTM {
       return $LANG['help'][27];
    }
 
+   static function canCreate() {
+      return haveRight('printer', 'w');
+   }
+
+   static function canView() {
+      return haveRight('printer', 'r');
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 

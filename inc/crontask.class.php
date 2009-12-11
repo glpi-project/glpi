@@ -58,11 +58,11 @@ class CronTask extends CommonDBTM{
       return $ong;
    }
 
-   function canCreate() {
+   static function canCreate() {
       return haveRight('config','w');
    }
 
-   function canView() {
+   static function canView() {
       return haveRight('config','r');
    }
 

@@ -46,6 +46,14 @@ class TicketCategory extends CommonTreeDropdown {
    public $entity_assign = true;
    public $may_be_recursive = true;
 
+   static function canCreate() {
+      return haveRight('entity_dropdown','w');
+   }
+
+   static function canView() {
+      return haveRight('entity_dropdown','r');
+   }
+
    function getAdditionalFields() {
       global $LANG;
 

@@ -44,7 +44,7 @@ class Contact extends CommonDBTM{
 
    // From CommonDBTM
    public $table = 'glpi_contacts';
-   public $type = CONTACT_TYPE;
+   public $type = 'Contact';
    public $may_be_recursive = true;
    public $entity_assign = true;
 
@@ -52,6 +52,14 @@ class Contact extends CommonDBTM{
       global $LANG;
 
       return $LANG['common'][18];
+   }
+
+   static function canCreate() {
+      return haveRight('contact_enterprise', 'w');
+   }
+
+   static function canView() {
+      return haveRight('contact_enterprise', 'r');
    }
 
    function cleanDBonPurge($ID) {

@@ -40,11 +40,18 @@ class Bookmark extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_bookmarks';
-   // To allow "can" method (canView & canCreate)
-   public $type = BOOKMARK_TYPE;
+   public $type = 'Bookmark';
    public $entity_assign = true;
    public $may_be_recursive=true;
    public $may_be_private=true;
+
+   static function canCreate() {
+      return haveRight('bookmark_public', 'w');
+   }
+
+   static function canView() {
+      return haveRight('bookmark_public', 'r');
+   }
 
    function prepareInputForAdd($input) {
       if (!isset($input['url'])||!isset($input['type'])) {

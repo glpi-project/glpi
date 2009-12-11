@@ -48,13 +48,21 @@ class CartridgeItem extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_cartridgeitems';
-   public $type = CARTRIDGEITEM_TYPE;
+   public $type = 'CartridgeItem';
    public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['cartridges'][12];
+   }
+
+   static function canCreate() {
+      return haveRight('cartridge', 'w');
+   }
+
+   static function canView() {
+      return haveRight('cartridge', 'r');
    }
 
    /**

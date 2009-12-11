@@ -40,12 +40,20 @@ class AuthMail extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_authmails';
-   public $type = AUTH_MAIL_TYPE;
+   public $type = 'AuthMail';
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['login'][3];
+   }
+
+   static function canCreate() {
+      return haveRight('config', 'w');
+   }
+
+   static function canView() {
+      return haveRight('config', 'r');
    }
 
    function prepareInputForUpdate($input) {

@@ -68,6 +68,8 @@ function haveRight($module, $right) {
    return false;
 }
 
+
+// TODO keep for transition => to be removed ??
 /**
  * Have I the right $right to module type $itemtype (conpare to session variable)
  *
@@ -79,135 +81,13 @@ function haveRight($module, $right) {
 function haveTypeRight($itemtype, $right) {
    global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   switch ($itemtype) {
-      case GENERAL_TYPE :
-         return true;
-
-      case COMPUTERDISK_TYPE:
-      case COMPUTER_TYPE :
-         return haveRight("computer", $right);
-
-      case NETWORKING_TYPE :
-      case NETWORKING_PORT_TYPE :
-         return haveRight("networking", $right);
-
-      case PRINTER_TYPE :
-         return haveRight("printer", $right);
-
-      case MONITOR_TYPE :
-         return haveRight("monitor", $right);
-
-      case PERIPHERAL_TYPE :
-         return haveRight("peripheral", $right);
-
-      case SOFTWARE_TYPE :
-      case SOFTWAREVERSION_TYPE :
-      case SOFTWARELICENSE_TYPE :
-         return haveRight("software", $right);
-
-      case CONTACT_TYPE :
-         return haveRight("contact_enterprise", $right);
-
-      case ENTERPRISE_TYPE :
-         return haveRight("contact_enterprise", $right);
-
-      case INFOCOM_TYPE :
-         return haveRight("infocom", $right);
-
-      case CONTRACT_TYPE :
-         return haveRight("contract", $right);
-
-      case CARTRIDGEITEM_TYPE :
-         return haveRight("cartridge", $right);
-
-      case TYPEDOC_TYPE :
-         return haveRight("typedoc", $right);
-
-      case DOCUMENT_TYPE :
-         return haveRight("document", $right);
-
-      case KNOWBASE_TYPE :
-         return (haveRight("knowbase", $right)||haveRight("faq", $right));
-
-      case USER_TYPE :
-         return haveRight("user", $right);
-
-      case TRACKING_TYPE :
-         if ($right=='r') {
-            return haveRight("show_all_ticket", 1);
-         } else if ($right=='w') {
-            return haveRight("update_ticket", 1);
-         }
-         return haveRight("show_all_ticket", $right);
-
-      case CONSUMABLEITEM_TYPE :
-         return haveRight("consumable", $right);
-
-      case CARTRIDGE_TYPE :
-         return haveRight("cartridge", $right);
-
-      case CONSUMABLE_TYPE :
-         return haveRight("consumable", $right);
-
-      case LINK_TYPE :
-         return haveRight("link", $right);
-
-      case PHONE_TYPE :
-         return haveRight("phone", $right);
-
-      case REMINDER_TYPE :
-         return haveRight("reminder_public", $right);
-
-      case GROUP_TYPE :
-         return haveRight("group", $right);
-
-      case ENTITY_TYPE :
-         return haveRight("entity", $right);
-
-      case AUTH_MAIL_TYPE :
-         return haveRight("config",$right);
-
-      case AUTH_LDAP_TYPE :
-         return haveRight("config",$right);
-
-      case OCSNG_TYPE :
-         return haveRight("ocsng",$right);
-
-      case REGISTRY_TYPE :
-         return haveRight("ocsng",$right);
-
-      case PROFILE_TYPE :
-         return haveRight("profile",$right);
-
-      case MAILGATE_TYPE :
-         return haveRight("config",$right);
-
-      case RULE_TYPE :
-         return haveRight("rule_ticket",$right)
-                || haveRight("rule_ocs",$right)
-                || haveRight("rule_ldap",$right)
-                || haveRight("rule_softwarecategories",$right);
-
-      case TRANSFER_TYPE :
-         return haveRight("transfer",$right);
-
-      case BOOKMARK_TYPE :
-         return haveRight("bookmark_public",$right);
-
-      case BUDGET_TYPE :
-         return haveRight("budget",$right);
-
-      default :
-         // Plugin case
-         if (isPluginItemType($itemtype)) {
-            if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-               $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
-               if (function_exists($function)) {
-                  return $function($itemtype,$right);
-               }
-            }
-         }
-         break;
+   if ($right='w') {
+      $method = array($itemtype,'canCreate');
+   } else {
+      $method = array($itemtype,'canView');
+   }
+   if (is_callable($method)) {
+      return (call_user_func($method));
    }
    return false;
 }
