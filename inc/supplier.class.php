@@ -434,10 +434,10 @@ class Supplier extends CommonDBTM {
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
             if ($this->fields["is_recursive"]) {
-               Dropdown::Select("glpi_contacts","contacts_id",1,
+               Dropdown::dropdownSimple("glpi_contacts","contacts_id",1,
                         getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
             } else {
-               Dropdown::Select("glpi_contacts","contacts_id",1,$this->fields["entities_id"],$used);
+               Dropdown::dropdownSimple("glpi_contacts","contacts_id",1,$this->fields["entities_id"],$used);
             }
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='submit' name='addcontactsupplier' value=\"".

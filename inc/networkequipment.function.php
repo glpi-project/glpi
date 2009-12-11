@@ -206,7 +206,7 @@ function showPortVLANForm ($ID) {
 
       echo "<tr class='tab_bg_2'><td>";
       echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
-      Dropdown::Select("glpi_vlans", "vlan",1,-1,$used);
+      Dropdown::dropdownSimple("glpi_vlans", "vlan",1,-1,$used);
       echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
                    "' class='submit'>";
       echo "</td></tr>\n";
@@ -964,6 +964,6 @@ function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
       }
    }
    return array ();
-   
+
 }
 ?>
