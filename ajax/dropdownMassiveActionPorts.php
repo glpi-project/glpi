@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;	
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -45,7 +44,7 @@ if (isset($_POST["action"])) {
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    switch($_POST["action"]) {
       case "delete" :
-         echo "<input type='submit' name='delete_several' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='delete_several' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
