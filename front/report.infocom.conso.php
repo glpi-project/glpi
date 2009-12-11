@@ -85,19 +85,19 @@ function display_infocoms_report($itemtype,$begin,$end) {
                   AND `glpi_infocoms`.`itemtype`='$itemtype') ";
 
    switch ($itemtype) {
-      case CONSUMABLE_TYPE :
+      case 'Consumable' :
          $query.=" INNER JOIN `glpi_consumableitems`
                       ON (`glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`) ".
                    getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
          break;
 
-      case CARTRIDGE_TYPE :
+      case 'Cartridge' :
          $query.=" INNER JOIN `glpi_cartridgeitems`
                       ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`) ".
                    getEntitiesRestrictRequest("WHERE","glpi_cartridgeitems");
          break;
 
-      case SOFTWARELICENSE_TYPE :
+      case 'SoftwareLicense' :
          $query.=" INNER JOIN `glpi_softwares`
                       ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`) ".
                    getEntitiesRestrictRequest("WHERE","glpi_softwarelicenses");
@@ -126,7 +126,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
          $valeurgraph=array();
 
          while ($line=$DB->fetch_array($result)) {
-            if ($itemtype==SOFTWARELICENSE_TYPE) {
+            if ($itemtype == 'SoftwareLicense') {
                $comp->getFromDB($itemtype,$line["items_id"]);
                if ($comp->obj->fields["serial"]=="global") {
                   $line["value"]*=getInstallionsForLicense($line["items_id"]);
@@ -205,12 +205,12 @@ function display_infocoms_report($itemtype,$begin,$end) {
 
 echo "<table width='90%'>";
 echo "<tr><td class='center top'>";
-display_infocoms_report(CONSUMABLE_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Consumable',$_POST["date1"],$_POST["date2"]);
 echo "</td><td class='center top'>";
-display_infocoms_report(CARTRIDGE_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Cartridge',$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>\n";
 echo "<tr><td>";
-display_infocoms_report(SOFTWARELICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('SoftwareLicense',$_POST["date1"],$_POST["date2"]);
 echo "</td><td>&nbsp;</td></tr>";
 echo "</table>\n";
 

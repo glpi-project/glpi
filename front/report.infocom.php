@@ -210,19 +210,19 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 echo "<table>";
 echo "<tr><td>";
-display_infocoms_report(COMPUTER_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Computer',$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
-display_infocoms_report(MONITOR_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Monitor',$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "<tr><td>";
-display_infocoms_report(NETWORKING_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('NetworkEquipment',$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
-display_infocoms_report(PRINTER_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Printer',$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "<tr><td>";
-display_infocoms_report(PERIPHERAL_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Peripheral',$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
-display_infocoms_report(PHONE_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report('Phone',$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "</table>";
 

@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport r�eau par switch 
+  \brief affiche le rapport r�eau par switch
 
  */
 
@@ -51,11 +51,11 @@ checkRight("reports","r");
 			FROM glpi_netpoints
 			LEFT JOIN glpi_locations a ON a.id=glpi_netpoints.locations_id
 			LEFT JOIN glpi_networkports c ON c.netpoints_id=glpi_netpoints.id
-			WHERE glpi_netpoints.id='".$_POST["prise"]."' AND c.itemtype=".NETWORKING_TYPE.";";
+			WHERE glpi_netpoints.id='".$_POST["prise"]."' AND c.itemtype='NetworkEquipment'";
 
 		/*!
 		  on envoie la requ�e de selection qui varie selon le choix fait dans la dropdown �la fonction report perso qui
-		  affiche un rapport en fonction de la prise choisie  
+		  affiche un rapport en fonction de la prise choisie
 		 */
 
 		$result = $DB->query($query);
@@ -122,13 +122,13 @@ checkRight("reports","r");
 				if($mac2) echo "<td>$mac2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 				if($ordi) echo "<td>$ordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 				echo "</tr>\n";
-			}	
+			}
 			echo "</table></div><br><hr><br>";
 		}
 
 		commonFooter();
 
 	} else  {
-		glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php"); 
+		glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
 	}
 ?>

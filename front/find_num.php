@@ -99,11 +99,11 @@ if (isset($_POST["send"])) {
                                              $LANG['common'][20]."</td>";
    echo " </tr>";
 
-   $types = array(COMPUTER_TYPE   => $LANG['help'][25],
-                  NETWORKING_TYPE => $LANG['help'][26],
-                  PRINTER_TYPE    => $LANG['help'][27],
-                  MONITOR_TYPE    => $LANG['help'][28],
-                  PERIPHERAL_TYPE => $LANG['help'][29]);
+   $types = array('Computer'         => $LANG['help'][25],
+                  'NetworkEquipment' => $LANG['help'][26],
+                  'Printer'          => $LANG['help'][27],
+                  'Monitor'          => $LANG['help'][28],
+                  'Peripheral'       => $LANG['help'][29]);
    foreach ($types as $type => $label) {
       $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
                 FROM `".getTableForItemType($type)."`
@@ -152,7 +152,7 @@ if (isset($_POST["send"])) {
    while ($ligne = $DB->fetch_array($result)) {
       $Comp_num = $ligne['id'];
       $Computer = $ligne['name'];
-      echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
+      echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";
       echo "<td class='center'>&nbsp;</td>";
       echo "<td class='center'>&nbsp;".$LANG['help'][31]."&nbsp;</td>";
       echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
