@@ -1712,20 +1712,18 @@ class User extends CommonDBTM {
    static function dropdown($myname,$options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $default_values['value']='';
-      $default_values['right']='id';
-      $default_values['all']=0;
-      $default_values['helpdesk_ajax']=0;
-      $default_values['comments']=1;
-      $default_values['entity']=-1;
-      $default_values['used']=array();
+      // Defautl values
+      $p['value']='';
+      $p['right']='id';
+      $p['all']=0;
+      $p['helpdesk_ajax']=0;
+      $p['comments']=1;
+      $p['entity']=-1;
+      $p['used']=array();
 
-
-      foreach ($default_values as $key => $val) {
-         if (isset($options[$key])) {
-            $$key=$options[$key];
-         } else {
-            $$key=$default_values[$key];
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
          }
       }
 
@@ -1735,41 +1733,42 @@ class User extends CommonDBTM {
       $rand=mt_rand();
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
-         $res=User::dropdownUsersSelect (true, $right, $entity, $value, $used);
+         $res=User::dropdownUsersSelect (true, $p['right'], $p['entity'],
+                                       $p['value'], $p['used']);
          $nb=($res ? $DB->result($res,0,"cpt") : 0);
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax=true;
          }
       }
-      $user=getUserName($value,2);
+      $user=getUserName($p['value'],2);
       $default_display="";
 
       $default_display = "<select id='dropdown_".$myname.$rand."' name='$myname'>";
-      $default_display.= "<option value='$value'>";
+      $default_display.= "<option value='".$p['value']."'>";
       $default_display.= utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"]);
       $default_display.= "</option></select>";
 
       $view_users=(haveRight("user","r"));
 
       $params=array('searchText'=>'__VALUE__',
-                    'value'=>$value,
+                    'value'=>$p['value'],
                     'myname'=>$myname,
-                    'all'=>$all,
-                    'right'=>$right,
-                    'comment'=>$comments,
+                    'all'=>$p['all'],
+                    'right'=>$p['right'],
+                    'comment'=>$p['comments'],
                     'rand'=>$rand,
-                    'helpdesk_ajax'=>$helpdesk_ajax,
-                    'entity_restrict'=>$entity,
-                    'used'=>$used);
+                    'helpdesk_ajax'=>$p['helpdesk_ajax'],
+                    'entity_restrict'=>$p['entity'],
+                    'used'=>$p['used']);
       if ($view_users) {
          $params['update_link']=$view_users;
       }
 
       $default="";
-      if (!empty($value)&&$value>0) {
+      if (!empty($p['value'])&&$p['value']>0) {
          $default=$default_display;
       } else {
-         if ($all) {
+         if ($p['all']) {
             $default = "<select name='$myname' id='dropdown_".$myname.$rand."'>";
             $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
          } else {
@@ -1781,7 +1780,7 @@ class User extends CommonDBTM {
       ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
 
       // Display comment
-      if ($comments) {
+      if ($p['comments']) {
          if (!$view_users) {
             $user["link"] = '';
          } else if (empty($user["link"])) {

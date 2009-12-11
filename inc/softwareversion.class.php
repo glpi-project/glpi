@@ -213,22 +213,19 @@ class SoftwareVersion extends CommonDBTM {
       global $CFG_GLPI;
 
       //$softwares_id,$value=0
+      $p['softwares_id']=0;
+      $p['value']=0;
 
-      $default_values['softwares_id']=0;
-      $default_values['value']=0;
-
-      foreach ($default_values as $key => $val) {
-         if (isset($options[$key])) {
-            $$key=$options[$key];
-         } else {
-            $$key=$default_values[$key];
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
          }
       }
 
       $rand=mt_rand();
-      $params=array('softwares_id'=>$softwares_id,
+      $params=array('softwares_id'=>$p['softwares_id'],
                     'myname'=>$myname,
-                    'value'=>$value);
+                    'value'=>$p['value']);
 
       $default="<select name='$myname'><option value='0'>------</option></select>";
       ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
