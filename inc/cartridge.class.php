@@ -76,7 +76,7 @@ class Cartridge extends CommonDBTM {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
-      if ($ic->getFromDBforDevice(CARTRIDGEITEM_TYPE,$this->fields["cartridgeitems_id"])) {
+      if ($ic->getFromDBforDevice('CartridgeItem',$this->fields["cartridgeitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
          $ic->fields["itemtype"]=$this->type;
@@ -495,7 +495,7 @@ class Cartridge extends CommonDBTM {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink(CARTRIDGE_TYPE,$data["id"],1);
+            Infocom::showDisplayLink('Cartridge',$data["id"],1);
             echo "</td>";
             echo "<td class='center'>";
             if (!is_null($date_use) && $canedit) {

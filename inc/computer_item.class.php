@@ -45,7 +45,7 @@ class Computer_Item extends CommonDBRelation{
    public $type = 'Computer_Item';
 
    // From CommonDBRelation
-   public $itemtype_1 = COMPUTER_TYPE;
+   public $itemtype_1 = 'Computer';
    public $items_id_1 = 'computers_id';
 
    public $itemtype_2 = 'itemtype';
@@ -109,23 +109,23 @@ class Computer_Item extends CommonDBRelation{
       global $DB, $CFG_GLPI, $LANG;
 
       switch ($input['itemtype']) {
-         case MONITOR_TYPE :
+         case 'Monitor' :
             $item = new Monitor();
             $ocstab = 'import_monitor';
             break;
 
-         case PHONE_TYPE :
+         case 'Phone' :
             // shoul really never occurs as OCS doesn't sync phone
             $item = new Phone();
             $ocstab = '';
             break;
 
-         case PRINTER_TYPE :
+         case 'Printer' :
             $item = new Printer();
             $ocstab = 'import_printer';
             break;
 
-         case PERIPHERAL_TYPE :
+         case 'Peripheral' :
             $item = new Peripheral();
             $ocstab = 'import_peripheral';
             break;
@@ -311,10 +311,10 @@ class Computer_Item extends CommonDBRelation{
       global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $used = array();
-      $items=array(PRINTER_TYPE=>$LANG['computers'][39],
-                   MONITOR_TYPE=>$LANG['computers'][40],
-                   PERIPHERAL_TYPE=>$LANG['computers'][46],
-                   PHONE_TYPE=>$LANG['computers'][55]);
+      $items = array('Printer'    => $LANG['computers'][39],
+                     'Monitor'    => $LANG['computers'][40],
+                     'Peripheral' => $LANG['computers'][46],
+                     'Phone'      => $LANG['computers'][55]);
 
       $ID = $comp->fields['id'];
       $canedit=$comp->can($ID,'w');
@@ -390,19 +390,19 @@ class Computer_Item extends CommonDBRelation{
                   echo "</table>";
                } else {
                   switch ($itemtype) {
-                     case PRINTER_TYPE :
+                     case 'Printer' :
                         echo $LANG['computers'][38];
                         break;
 
-                     case MONITOR_TYPE:
+                     case 'Monitor':
                         echo $LANG['computers'][37];
                         break;
 
-                     case PERIPHERAL_TYPE:
+                     case 'Peripheral':
                         echo $LANG['computers'][47];
                         break;
 
-                     case PHONE_TYPE:
+                     case 'Phone':
                         echo $LANG['computers'][54];
                         break;
                   }
@@ -416,7 +416,7 @@ class Computer_Item extends CommonDBRelation{
                      if (!empty($withtemplate)) {
                         echo "<input type='hidden' name='_no_history' value='1'>";
                      }
-                     dropdownConnect($itemtype,COMPUTER_TYPE,"items_id",$comp->fields["entities_id"],
+                     dropdownConnect($itemtype,'Computer',"items_id",$comp->fields["entities_id"],
                                      $withtemplate,$used);
                      echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9].
                           "\" class='submit'>";
@@ -495,10 +495,10 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
             if ($item->getField('is_recursive')) {
-               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+               dropdownConnect('Computer', $item->type, "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+               dropdownConnect('Computer', $item->type, "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
@@ -517,10 +517,10 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
             if ($item->getField('is_recursive')) {
-               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+               dropdownConnect('Computer', $item->type, "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               dropdownConnect(COMPUTER_TYPE, $item->type, "computers_id",
+               dropdownConnect('Computer', $item->type, "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";

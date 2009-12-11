@@ -169,10 +169,7 @@ class Computer extends CommonDBTM {
          // Update contact of attached items
          if (($updates[$i]=="contact"  || $updates[$i]=="contact_num")
               && $CFG_GLPI["is_contact_autoupdate"]) {
-            $items=array(PRINTER_TYPE,
-                         MONITOR_TYPE,
-                         PERIPHERAL_TYPE,
-                         PHONE_TYPE);
+            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
 
             $update_done=false;
             $updates3[0]="contact";
@@ -215,10 +212,8 @@ class Computer extends CommonDBTM {
                                         && $CFG_GLPI["is_user_autoupdate"])
               ||($updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
                                            && $CFG_GLPI["is_group_autoupdate"])) {
-            $items=array(PRINTER_TYPE,
-                         MONITOR_TYPE,
-                         PERIPHERAL_TYPE,
-                         PHONE_TYPE);
+
+            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
 
             $update_done=false;
             $updates4[0]="users_id";
@@ -262,10 +257,7 @@ class Computer extends CommonDBTM {
 
          // Update state of attached items
          if ($updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
-            $items=array(PRINTER_TYPE,
-                         MONITOR_TYPE,
-                         PERIPHERAL_TYPE,
-                         PHONE_TYPE);
+            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
             $update_done=false;
 
             foreach ($items as $t) {
@@ -302,10 +294,8 @@ class Computer extends CommonDBTM {
          // Update loction of attached items
          if ($updates[$i]=="locations_id" && $this->fields["locations_id"]!=0
                                           && $CFG_GLPI["is_location_autoupdate"]) {
-            $items=array(PRINTER_TYPE,
-                         MONITOR_TYPE,
-                         PERIPHERAL_TYPE,
-                         PHONE_TYPE);
+
+            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
             $update_done=false;
             $updates2[0]="locations_id";
 
@@ -373,7 +363,7 @@ class Computer extends CommonDBTM {
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"],
-                                            "immo_number", 1, INFOCOM_TYPE, $input['entities_id']);
+                                            "immo_number", 1, 'Infocom', $input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -792,7 +782,7 @@ class Computer extends CommonDBTM {
       $tab[1]['linkfield']     ='name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = COMPUTER_TYPE;
+      $tab[1]['itemlink_type'] = 'Computer';
 
       $tab[2]['table']     = 'glpi_computers';
       $tab[2]['field']     = 'id';

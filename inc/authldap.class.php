@@ -444,7 +444,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = AUTH_LDAP_TYPE;
+      $tab[1]['itemlink_type'] = 'AuthLDAP';
 
       $tab[2]['table']         = 'glpi_authldaps';
       $tab[2]['field']         = 'host';

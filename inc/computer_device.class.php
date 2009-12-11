@@ -45,7 +45,7 @@ class Computer_Device extends CommonDBRelation{
    public $type = 'Computer_Device';
 
    // From CommonDBRelation
-   public $itemtype_1 = COMPUTER_TYPE;
+   public $itemtype_1 = 'Computer';
    public $items_id_1 = 'computers_id';
 
    public $itemtype_2 = 'itemtype';
