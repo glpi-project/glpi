@@ -146,7 +146,8 @@ function getPlural($string) {
    $rules = array(
       //'singular' => 'plural'
       'y$' => 'ies', // special case : category
-      '([^s])$' => '\1s' // Add at the end if not exists
+      '([^s])$' => '\1s', // Add at the end if not exists
+      'eds$' => 'ed' // case table without plurial
    );
 
    foreach ($rules as $singular => $plural) {
