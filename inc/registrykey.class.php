@@ -41,12 +41,20 @@ class RegistryKey extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_registrykeys';
-   public $type = REGISTRY_TYPE;
+   public $type = 'RegistryKey';
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['title'][43];
+   }
+
+   static function canCreate() {
+      return haveRight('ocsng', 'w'); // TODO why this right ?
+   }
+
+   static function canView() {
+      return haveRight('ocsng', 'r');
    }
 
    function cleanDBonPurge($ID) {

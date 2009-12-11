@@ -42,7 +42,7 @@ class Link extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_links';
-   public $type = LINK_TYPE;
+   public $type = 'Link';
    public $may_be_recursive=true;
    public $entity_assign=true;
 
@@ -50,6 +50,14 @@ class Link extends CommonDBTM {
       global $LANG;
 
       return $LANG['setup'][87];
+   }
+
+   static function canCreate() {
+      return haveRight('link', 'w');
+   }
+
+   static function canView() {
+      return haveRight('link', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {
@@ -292,7 +300,7 @@ class Link extends CommonDBTM {
       if (!class_exists($itemtype)) {
          return false;
       }
-      
+
       $item = new $itemtype;
       if (!$item->getFromDB($ID)) {
          return false;

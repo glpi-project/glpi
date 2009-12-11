@@ -47,7 +47,7 @@ class Consumable extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_consumables';
-   public $type = CONSUMABLE_TYPE;
+   public $type = 'Consumable';
    // by the Consumable type
    public $entity_assign = true;
 
@@ -55,6 +55,14 @@ class Consumable extends CommonDBTM {
       global $LANG;
 
       return $LANG['consumables'][0];
+   }
+
+   static function canCreate() {
+      return haveRight('consumable', 'w');
+   }
+
+   static function canView() {
+      return haveRight('consumable', 'r');
    }
 
    function cleanDBonPurge($ID) {

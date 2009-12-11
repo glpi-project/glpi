@@ -71,6 +71,14 @@ class Rule extends CommonDBTM {
       }
    }
 
+   static function canCreate() {
+      return haveRight('config', 'w');
+   }
+
+   static function canView() {
+      return haveRight('config', 'r');
+   }
+
    function post_getEmpty () {
       $this->fields['is_active']=0;
    }

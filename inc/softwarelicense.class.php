@@ -44,7 +44,7 @@ class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_softwarelicenses';
-   public $type = SOFTWARELICENSE_TYPE;
+   public $type = 'SoftwareLicense';
    public $dohistory = true;
    public $entity_assign=true;
    public $may_be_recursive=true;
@@ -54,6 +54,14 @@ class SoftwareLicense extends CommonDBTM {
       global $LANG;
 
       return $LANG['software'][11];
+   }
+
+   static function canCreate() {
+      return haveRight('software', 'w');
+   }
+
+   static function canView() {
+      return haveRight('software', 'r');
    }
 
    function pre_updateInDB($input,$updates,$oldvalues=array()) {

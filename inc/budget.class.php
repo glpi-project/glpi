@@ -40,7 +40,7 @@ class Budget extends CommonDBTM{
 
    // From CommonDBTM
    public $table = 'glpi_budgets';
-   public $type = BUDGET_TYPE;
+   public $type = 'Budget';
    public $dohistory = true;
    public $entity_assign = true;
    public $may_be_recursive = true;
@@ -49,6 +49,14 @@ class Budget extends CommonDBTM{
       global $LANG;
 
       return $LANG['financial'][87];
+   }
+
+   static function canCreate() {
+      return haveRight('budget', 'w');
+   }
+
+   static function canView() {
+      return haveRight('budget', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {
@@ -279,7 +287,7 @@ class Budget extends CommonDBTM{
 
             if ($result_linked=$DB->query($query)) {
                $nb=$DB->numrows($result_linked);
-               
+
                if ($nb>$_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
                   echo "<td class='center'>".$item->getTypeName()."<br />$nb</td>";

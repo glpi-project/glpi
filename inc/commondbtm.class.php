@@ -985,8 +985,11 @@ class CommonDBTM extends CommonGLPI {
    *
    * @return booleen
    **/
-   function canCreate() {
-      return haveTypeRight($this->type,"w");
+   static function canCreate() {
+      //return haveTypeRight($this->type,"w");
+
+      // TODO : should we denied access
+      return true;
    }
 
    /**
@@ -996,8 +999,11 @@ class CommonDBTM extends CommonGLPI {
    *
    * @return booleen
    **/
-   function canView() {
-      return haveTypeRight($this->type,"r");
+   static function canView() {
+      // return haveTypeRight($this->type,"r");
+
+      // TODO : should we denied access
+      return true;
    }
 
    /**

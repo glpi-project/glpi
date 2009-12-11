@@ -43,7 +43,7 @@ class Supplier extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_suppliers';
-   public $type = ENTERPRISE_TYPE;
+   public $type = 'Supplier';
    public $may_be_recursive=true;
    public $entity_assign=true;
 
@@ -51,6 +51,14 @@ class Supplier extends CommonDBTM {
       global $LANG;
 
       return $LANG['financial'][26];
+   }
+
+   static function canCreate() {
+      return haveRight('contact_enterprise', 'w');
+   }
+
+   static function canView() {
+      return haveRight('contact_enterprise', 'r');
    }
 
    function cleanDBonPurge($ID) {

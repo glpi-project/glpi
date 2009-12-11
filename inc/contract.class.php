@@ -44,7 +44,7 @@ class Contract extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_contracts';
-   public $type = CONTRACT_TYPE;
+   public $type = 'Contract';
    public $may_be_recursive = true;
    public $entity_assign = true;
 
@@ -52,6 +52,14 @@ class Contract extends CommonDBTM {
       global $LANG;
 
       return $LANG['financial'][1];
+   }
+
+   static function canCreate() {
+      return haveRight('contract', 'w');
+   }
+
+   static function canView() {
+      return haveRight('contract', 'r');
    }
 
    function post_getEmpty () {

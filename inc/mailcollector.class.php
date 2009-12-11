@@ -48,7 +48,7 @@ class MailCollector  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_mailcollectors';
-   public $type = MAILGATE_TYPE;
+   public $type = 'MailCollector';
 
    // Specific one
    /// working charset of the mail
@@ -75,6 +75,14 @@ class MailCollector  extends CommonDBTM {
       global $LANG;
 
       return $LANG['Menu'][39];
+   }
+
+   static function canCreate() {
+      return haveRight('config', 'w');
+   }
+
+   static function canView() {
+      return haveRight('config', 'r');
    }
 
    function post_getEmpty () {

@@ -43,7 +43,7 @@ class Reminder extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_reminders';
-   public $type = REMINDER_TYPE;
+   public $type = 'Reminder';
    public $entity_assign=true;
    public $may_be_recursive=true;
    public $may_be_private=true;
@@ -52,6 +52,14 @@ class Reminder extends CommonDBTM {
       global $LANG;
 
       return $LANG['title'][37];
+   }
+
+   static function canCreate() {
+      return haveRight('reminder_public', 'w');
+   }
+
+   static function canView() {
+      return haveRight('reminder_public', 'r');
    }
 
    function prepareInputForAdd($input) {

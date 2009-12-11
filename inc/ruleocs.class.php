@@ -44,6 +44,14 @@ class RuleOcs extends Rule {
    public $right='rule_ocs';
    public $can_sort=true;
 
+   static function canCreate() {
+      return haveRight('rule_ocs', 'w');
+   }
+
+   static function canView() {
+      return haveRight('rule_ocs', 'r');
+   }
+
    function getTitle() {
       global $LANG;
 

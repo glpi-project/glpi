@@ -43,7 +43,7 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_phones';
-   public $type = PHONE_TYPE;
+   public $type = 'Phone';
    public $dohistory=true;
    public $entity_assign=true;
 
@@ -51,6 +51,14 @@ class Phone extends CommonDBTM {
       global $LANG;
 
       return $LANG['help'][35];
+   }
+
+   static function canCreate() {
+      return haveRight('phone', 'w');
+   }
+
+   static function canView() {
+      return haveRight('phone', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {

@@ -42,7 +42,7 @@ class Profile extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_profiles';
-   public $type = PROFILE_TYPE;
+   public $type = 'Profile';
 
    // Specific ones
 
@@ -61,6 +61,14 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       return $LANG['Menu'][35];
+   }
+
+   static function canCreate() {
+      return haveRight('profile', 'w');
+   }
+
+   static function canView() {
+      return haveRight('profile', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {

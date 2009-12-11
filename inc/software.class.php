@@ -45,7 +45,7 @@ class Software extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_softwares';
-   public $type = SOFTWARE_TYPE;
+   public $type = 'Software';
    public $dohistory = true;
    public $entity_assign=true;
    public $may_be_recursive=true;
@@ -54,6 +54,14 @@ class Software extends CommonDBTM {
       global $LANG;
 
       return $LANG['help'][31];
+   }
+
+   static function canCreate() {
+      return haveRight('software', 'w');
+   }
+
+   static function canView() {
+      return haveRight('software', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {

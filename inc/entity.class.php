@@ -44,7 +44,7 @@ class Entity extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_entities';
-   public $type = ENTITY_TYPE;
+   public $type = 'Entity';
    public $may_be_recursive=true;
    public $entity_assign=true;
 
@@ -52,6 +52,14 @@ class Entity extends CommonDBTM {
       global $LANG;
 
       return $LANG['Menu'][37];
+   }
+
+   static function canCreate() {
+      return haveRight('entity', 'w');
+   }
+
+   static function canView() {
+      return haveRight('entity', 'r');
    }
 
    function defineTabs($ID,$withtemplate) {

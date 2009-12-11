@@ -45,6 +45,14 @@ class ComputerDisk extends CommonDBTM {
    public $type = COMPUTERDISK_TYPE;
    public $entity_assign = true;
 
+   static function canCreate() {
+      return haveRight('computer', 'w');
+   }
+
+   static function canView() {
+      return haveRight('computer', 'r');
+   }
+
    function prepareInputForAdd($input) {
       // Not attached to software -> not added
       if (!isset($input['computers_id']) || $input['computers_id'] <= 0) {

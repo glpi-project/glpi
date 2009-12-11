@@ -53,6 +53,14 @@ class Peripheral  extends CommonDBTM {
       return $LANG['help'][29];
    }
 
+   static function canCreate() {
+      return haveRight('peripheral', 'w');
+   }
+
+   static function canView() {
+      return haveRight('peripheral', 'r');
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 

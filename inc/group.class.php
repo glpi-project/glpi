@@ -44,7 +44,7 @@ class Group extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_groups';
-   public $type = GROUP_TYPE;
+   public $type = 'Group';
    public $may_be_recursive=true;
    public $entity_assign=true;
 
@@ -52,6 +52,14 @@ class Group extends CommonDBTM {
       global $LANG;
 
       return $LANG['common'][35];
+   }
+
+   static function canCreate() {
+      return haveRight('group', 'w');
+   }
+
+   static function canView() {
+      return haveRight('group', 'r');
    }
 
    function cleanDBonPurge($ID) {

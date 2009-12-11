@@ -56,6 +56,14 @@ class SoftwareVersion extends CommonDBTM {
       return $LANG['software'][5];
    }
 
+   static function canCreate() {
+      return haveRight('software', 'w');
+   }
+
+   static function canView() {
+      return haveRight('software', 'r');
+   }
+
    function cleanDBonPurge($ID) {
       global $DB;
 

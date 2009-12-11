@@ -65,6 +65,14 @@ class NetworkPort extends CommonDBTM {
    /// hardare data : is_deleted
    var $is_deleted = 0;
 
+   static function canCreate() {
+      return haveRight('networking', 'w');
+   }
+
+   static function canView() {
+      return haveRight('networking', 'r');
+   }
+
    function post_updateItem($input,$updates,$history=1) {
 
       // Only netpoint updates : ip and mac may be different.

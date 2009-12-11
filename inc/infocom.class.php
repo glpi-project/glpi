@@ -44,7 +44,7 @@ class InfoCom extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_infocoms';
-   public $type = INFOCOM_TYPE;
+   public $type = 'InfoCom';
    public $dohistory=true;
    public $auto_message_on_action=true;
 
@@ -52,6 +52,14 @@ class InfoCom extends CommonDBTM {
       global $LANG;
 
       return $LANG['financial'][3];
+   }
+
+   static function canCreate() {
+      return haveRight('infocom', 'w');
+   }
+
+   static function canView() {
+      return haveRight('infocom', 'r');
    }
 
    function post_getEmpty() {

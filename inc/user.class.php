@@ -54,6 +54,14 @@ class User extends CommonDBTM {
       return $LANG['common'][34];
    }
 
+   static function canCreate() {
+      return haveRight('user', 'w');
+   }
+
+   static function canView() {
+      return haveRight('user', 'r');
+   }
+
 
    /**
     * Constructor
@@ -1681,7 +1689,7 @@ class User extends CommonDBTM {
     *
     * Parameters which could be used in options array :
     *    - right : string / limit user who have specific right :
-    *        id -> only current user (default case); 
+    *        id -> only current user (default case);
     *        interface -> central ;
     *        all -> all users ;
     *        specific right like show_all_ticket, create_ticket....

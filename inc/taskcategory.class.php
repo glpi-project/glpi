@@ -51,6 +51,15 @@ class TaskCategory extends CommonTreeDropdown {
 
       return $LANG['setup'][98];
    }
+
+   static function canCreate() {
+      return haveRight('entity_dropdown','w');
+   }
+
+   static function canView() {
+      return haveRight('entity_dropdown','r');
+   }
+
 }
 
 ?>

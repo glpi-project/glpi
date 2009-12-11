@@ -44,33 +44,23 @@ class Document extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_documents';
-   public $type = DOCUMENT_TYPE;
+   public $type = 'Document';
    public $may_be_recursive = true;
    public $entity_assign = true;
 
-   /*
-    * Retrieve an item from the database using the filename
-    *
-    *@param $filename filename of the document
-    *@return true if succeed else false
-   function getFromDBbyFilename($filename) {
-      global $DB;
-
-      $query="SELECT `id`
-              FROM `".$this->table."`
-              WHERE `filename`='$filename'";
-      $result=$DB->query($query);
-      if ($DB->numrows($result)==1) {
-         return $this->getFromDB($DB->result($result,0,0));
-      }
-      return false;
-   }
-   **/
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['Menu'][27];
+   }
+
+   static function canCreate() {
+      return haveRight('document', 'w');
+   }
+
+   static function canView() {
+      return haveRight('document', 'r');
    }
 
    function cleanDBonPurge($ID) {

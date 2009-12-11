@@ -53,6 +53,14 @@ class KnowbaseItem extends CommonDBTM {
       return $LANG['title'][5];
    }
 
+   static function canCreate() {
+      return (haveRight('knowbase', 'w') || haveRight('faq', 'w'));
+   }
+
+   static function canView() {
+      return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
+   }
+
    /**
     * Get The Name of the Object
     *
@@ -78,17 +86,6 @@ class KnowbaseItem extends CommonDBTM {
       if (haveRight("faq","w") && !haveRight("knowbase","w")) {
          $this->fields["is_faq"]=1;
       }
-   }
-
-   /**
-    * Have I the right to "create" the Object
-    *
-    * overloaded function of CommonDBTM
-    *
-    * @return booleen
-    **/
-   function canCreate () {
-      return (haveRight("faq", "w") || haveRight("knowbase", "w"));
    }
 
    function prepareInputForAdd($input) {
