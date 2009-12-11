@@ -46,7 +46,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 		FROM glpi_locations
 		INNER JOIN glpi_netpoints ON glpi_netpoints.locations_id = glpi_locations.id
 		INNER JOIN glpi_networkports ON glpi_networkports.netpoints_id=glpi_netpoints.id
-		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])." AND glpi_networkports.itemtype=".NETWORKING_TYPE."
+		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])." AND glpi_networkports.itemtype='NetworkEquipment'
 		ORDER BY glpi_locations.completename, glpi_networkports.name;";
 
 	$result = $DB->query($query);
@@ -99,7 +99,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 
 			//inserer ces valeures dans un tableau
 
-			echo "<tr class='tab_bg_1'>";	
+			echo "<tr class='tab_bg_1'>";
 			if($lieu) echo "<td>$lieu</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($prise) echo "<td>$prise</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($switch) echo "<td>$switch</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
@@ -111,7 +111,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 			if($mac2) echo "<td>$mac2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($ordi) echo "<td>$ordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			echo "</tr>\n";
-		}	
+		}
 		echo "</table></div><br><hr><br>";
 
 	}
@@ -120,7 +120,7 @@ if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 	commonFooter();
 
 } else  {
-	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php"); 
+	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>

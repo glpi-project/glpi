@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport r�eau par switch 
+  \brief affiche le rapport r�eau par switch
 
  */
 
@@ -47,7 +47,7 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 
 	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.id AS IDport, glpi_networkequipments.name as switch
 		FROM glpi_networkequipments
-		INNER JOIN glpi_networkports c ON c.itemtype=".NETWORKING_TYPE." AND c.items_id=glpi_networkequipments.id
+		INNER JOIN glpi_networkports c ON c.itemtype='NetworkEquipment' AND c.items_id=glpi_networkequipments.id
 		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
 
 
@@ -83,11 +83,11 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 				$ip2=$np->fields['ip'];
 				$mac2=$np->fields['mac'];
 				$portordi=$np->fields['name'];
-			} 
+			}
 			$ip=$ligne['ip'];
 			$mac=$ligne['mac'];
 			//inserer ces valeures dans un tableau
-			echo "<tr class='tab_bg_1'>";	
+			echo "<tr class='tab_bg_1'>";
 			if($switch) echo "<td>$switch</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($port) echo "<td>$port</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($ip) echo "<td>$ip</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
@@ -97,14 +97,14 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 			if($mac2) echo "<td>$mac2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			if($ordi) echo "<td>$ordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
 			echo "</tr>\n";
-		}	
+		}
 		echo "</table></div><br><hr><br>";
 	}
 
 	commonFooter();
 
 } else  {
-	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php"); 
+	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>

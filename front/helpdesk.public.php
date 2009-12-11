@@ -136,7 +136,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
       }
       $track = new Ticket();
       $track->check($_GET["id"],'r');
-      $track->showTabs($_GET["id"],'',getActiveTab(TRACKING_TYPE));
+      $track->showTabs($_GET["id"],'',getActiveTab('Ticket'));
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

@@ -61,7 +61,7 @@ $number_of_software = $DB->result($result,0,0);
 
 $query = "SELECT count(*)
 	FROM glpi_printers
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PRINTER_TYPE."' AND glpi_computers_items.items_id=glpi_printers.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Printer' AND glpi_computers_items.items_id=glpi_printers.id)
 	WHERE glpi_printers.is_deleted ='0'  AND glpi_printers.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_printers");
 $result = $DB->query($query);
 $number_of_printers = $DB->result($result,0,0);
@@ -76,7 +76,7 @@ $number_of_networking = $DB->result($result,0,0);
 
 $query = "SELECT count(*)
 	FROM glpi_monitors
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".MONITOR_TYPE."' AND glpi_computers_items.items_id=glpi_monitors.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Monitor' AND glpi_computers_items.items_id=glpi_monitors.id)
 	WHERE glpi_monitors.is_deleted ='0'  AND glpi_monitors.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_monitors");
 $result = $DB->query($query);
 $number_of_monitors = $DB->result($result,0,0);
@@ -84,7 +84,7 @@ $number_of_monitors = $DB->result($result,0,0);
 
 $query = "SELECT count(*)
 	FROM glpi_peripherals
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PERIPHERAL_TYPE."' AND glpi_computers_items.items_id=glpi_peripherals.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Peripheral' AND glpi_computers_items.items_id=glpi_peripherals.id)
 	WHERE glpi_peripherals.is_deleted ='0'  AND glpi_peripherals.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_peripherals");
 $result = $DB->query($query);
 $number_of_peripherals = $DB->result($result,0,0);
@@ -92,7 +92,7 @@ $number_of_peripherals = $DB->result($result,0,0);
 
 $query = "SELECT count(*)
 	FROM glpi_phones
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PHONE_TYPE."' AND glpi_computers_items.items_id=glpi_phones.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Phone' AND glpi_computers_items.items_id=glpi_phones.id)
 	WHERE glpi_phones.is_deleted ='0'  AND glpi_phones.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_phones");
 $result = $DB->query($query);
 $number_of_phones = $DB->result($result,0,0);
@@ -155,7 +155,7 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['Menu'][3].":</b></td></t
 $query = "SELECT count(*) AS COUNT, glpi_monitortypes.name as NAME
 	FROM glpi_monitors
 	LEFT JOIN glpi_monitortypes ON (glpi_monitors.monitortypes_id = glpi_monitortypes.id)
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".MONITOR_TYPE."' AND glpi_computers_items.items_id=glpi_monitors.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Monitor' AND glpi_computers_items.items_id=glpi_monitors.id)
 	WHERE glpi_monitors.is_deleted ='0'  AND glpi_monitors.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_monitors")."
 	GROUP BY glpi_monitortypes.name";
 $result = $DB->query($query);
@@ -174,7 +174,7 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['Menu'][2].":</b></td></t
 $query = "SELECT count(*) AS COUNT, glpi_printertypes.name as NAME
 	FROM glpi_printers
 	LEFT JOIN glpi_printertypes ON (glpi_printers.printertypes_id = glpi_printertypes.id)
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PRINTER_TYPE."' AND glpi_computers_items.items_id=glpi_printers.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Printer' AND glpi_computers_items.items_id=glpi_printers.id)
 	WHERE glpi_printers.is_deleted ='0'  AND glpi_printers.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_printers")."
 	GROUP BY glpi_printertypes.name";
 $result = $DB->query($query);
@@ -193,7 +193,7 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['Menu'][16].":</b></td></
 $query = "SELECT count(*) AS COUNT, glpi_peripheraltypes.name as NAME
 	FROM glpi_peripherals
 	LEFT JOIN glpi_peripheraltypes ON (glpi_peripherals.peripheraltypes_id = glpi_peripheraltypes.id)
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PERIPHERAL_TYPE."' AND glpi_computers_items.items_id=glpi_peripherals.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Peripheral' AND glpi_computers_items.items_id=glpi_peripherals.id)
 	WHERE glpi_peripherals.is_deleted ='0'  AND glpi_peripherals.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_peripherals")."
 	GROUP BY glpi_peripheraltypes.name";
 $result = $DB->query($query);
@@ -213,7 +213,7 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['Menu'][34].":</b></td></
 $query = "SELECT count(*) AS COUNT, glpi_phonetypes.name as NAME
 	FROM glpi_phones
 	LEFT JOIN glpi_phonetypes ON (glpi_phones.phonetypes_id = glpi_phonetypes.id)
-	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='".PHONE_TYPE."' AND glpi_computers_items.items_id=glpi_phones.id)
+	LEFT JOIN glpi_computers_items ON (glpi_computers_items.itemtype='Phone' AND glpi_computers_items.items_id=glpi_phones.id)
 	WHERE glpi_phones.is_deleted ='0'  AND glpi_phones.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_phones")."
 	GROUP BY glpi_phonetypes.name";
 $result = $DB->query($query);

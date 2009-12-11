@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("entity","w");
 
-$which = ENTITY_TYPE;
+$which = 'Entity';
 
 // Security
 if (isset($_POST["tablename"]) && ! TableExists($_POST["tablename"])) {
