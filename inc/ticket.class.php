@@ -1114,7 +1114,7 @@ class Ticket extends CommonDBTM {
          $modeltable = $this->hardwaredatas->table."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
          if ($model=$this->hardwaredatas->getField($modelfield)) {
-            $name .= " - ".Dropdown::getDropdownName($modeltable,$this->hardwaredatas->obj->fields[$modelfield]);
+            $name .= " - ".Dropdown::getDropdownName($modeltable,$this->hardwaredatas->fields[$modelfield]);
          }
          if ($tmp=$this->hardwaredatas->getField("users_id_tech")) {
             $tech = getUserName($tmp);
@@ -1129,7 +1129,7 @@ class Ticket extends CommonDBTM {
             if (!empty($contact)) {
                $contact.=" / ";
             }
-            $contact .= Dropdown::getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["groups_id"]);
+            $contact .= Dropdown::getDropdownName("glpi_groups",$this->hardwaredatas->fields["groups_id"]);
          }
       }
 
