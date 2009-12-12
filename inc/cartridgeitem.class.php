@@ -367,7 +367,7 @@ class CartridgeItem extends CommonDBTM {
     * @return 0 : nothing to do 1 : done with success
     *
     **/
-   static function cron_cartridge($task=NULL) {
+   static function cronCartridge($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["cartridges_alert_repeat"]) {

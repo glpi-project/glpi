@@ -4574,7 +4574,7 @@ class OcsServer extends CommonDBTM {
       }
    }
 
-   function cron_ocsng($task) {
+   function cronOcsng($task) {
 
       global $DB, $CFG_GLPI;
 

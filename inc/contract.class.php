@@ -920,7 +920,7 @@ class Contract extends CommonDBTM {
     * @param $task for log, if NULL display
     *
     **/
-   static function cron_contract($task=NULL) {
+   static function cronContract($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI["use_mailing"]) {

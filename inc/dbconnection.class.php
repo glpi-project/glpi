@@ -228,7 +228,7 @@ class DBConnection {
     * @param $task to log and get param
     *
     */
-   static function cron_check_dbreplicate($task) {
+   static function cronCheckDBreplicate($task) {
       global $DB, $CFG_GLPI, $LANG;
 
       //Lauch cron only is :

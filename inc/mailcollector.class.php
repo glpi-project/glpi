@@ -841,7 +841,7 @@ class MailCollector  extends CommonDBTM {
     * Cron action on mailgate : retrieve mail and create tickets
     * @return -1 : done but not finish 1 : done with success
     **/
-   static function cron_mailgate($task) {
+   static function cronMailgate($task) {
       global $DB;
 
       $query = "SELECT *

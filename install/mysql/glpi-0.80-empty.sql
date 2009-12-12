@@ -717,7 +717,7 @@ CREATE TABLE `glpi_crontasks` (
   UNIQUE KEY `unicity` (`plugin`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
-INSERT INTO `glpi_crontasks` VALUES ('1',NULL,NULL,'ocsng','300',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('1',NULL,'OcsServer','ocsng','300',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('2',NULL,'CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3',NULL,'ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4',NULL,'SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
@@ -726,8 +726,8 @@ INSERT INTO `glpi_crontasks` VALUES ('6',NULL,'InfoCom','infocom','86400',NULL,'
 INSERT INTO `glpi_crontasks` VALUES ('7',NULL,'CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8',NULL,'CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('9',NULL,'MailCollector','mailgate','600','10','1','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('10',NULL,'DBconnection','check_dbreplicate','60',NULL,'1','0','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('11',NULL,'CronTask','check_update','604800',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('10',NULL,'DBconnection','checkdbreplicate','60',NULL,'1','0','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('11',NULL,'CronTask','checkupdate','604800',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('12',NULL,'CronTask','session','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 
 ### Dump table glpi_devicecases

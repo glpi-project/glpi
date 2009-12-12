@@ -63,7 +63,7 @@ if ($crontask->getNeedToRun(CRONTASK_MODE_INTERNAL)) {
    displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
 }
 
-Search::show('Crontask');
+Search::show('CronTask');
 
 commonFooter();
 
