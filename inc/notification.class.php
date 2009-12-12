@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')){
 // Class Notification for setup interface
 class Notification extends CommonDBTM {
 
-   public $type = 'mailing';
+   public $type = 'Notification';
 
    static function getTypeName() {
       global $LANG;
