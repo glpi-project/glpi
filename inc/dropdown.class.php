@@ -578,8 +578,9 @@ class Dropdown {
     * Display a menu to select a itemtype which open the search form
     *
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
+    * @param $value string URL of selected current value
     */
-   static function showItemTypeMenu($optgroup) {
+   static function showItemTypeMenu($optgroup, $value='') {
       global $LANG;
 
       echo "<table class='tab_cadre'>";
@@ -589,7 +590,12 @@ class Dropdown {
          echo "<optgroup label='$label'>";
          foreach ($dp as $key => $val) {
             $search=getItemTypeSearchURL($key);
-            echo "<option value='$search'>$val</option>";
+            if (basename($search) == basename($value)) {
+               $sel = 'selected';
+            } else {
+               $sel = '';
+            }
+            echo "<option value='$search' $sel>$val</option>";
          }
          echo "</optgroup>";
       }

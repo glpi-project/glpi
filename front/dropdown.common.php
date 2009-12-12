@@ -44,7 +44,7 @@ if (!$dropdown->canView()) {
 commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",
              str_replace('glpi_','',get_class($dropdown)));
 
-Dropdown::showItemTypeMenu(Dropdown::getStandardDropdownItemTypes());
+Dropdown::showItemTypeMenu(Dropdown::getStandardDropdownItemTypes(), $_SERVER['PHP_SELF']);
 
 Search::show(get_class($dropdown));
 
