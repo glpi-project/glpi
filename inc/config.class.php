@@ -199,7 +199,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'> " . $LANG['setup'][186] . " </td><td>";
-      dropdownGMT("time_offset", $CFG_GLPI["time_offset"]);
+      Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
       echo "</td>";
       echo "<td class='center'> " . $LANG['setup'][185] . " </td><td>";
       dropdownYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
