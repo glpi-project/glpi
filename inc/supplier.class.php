@@ -456,7 +456,7 @@ class Supplier extends CommonDBTM {
     *
     **/
    function showInfocoms() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,'r')) {
@@ -528,11 +528,11 @@ class Supplier extends CommonDBTM {
                $linktype = SOFTWARE_TYPE;
                $linkfield = 'softwares_id';
             }
-            if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$linktype])) {
+            if ($nb>$_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
                echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
-               echo "<a href='". $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$linktype] . "?" .
+               echo "<a href='". getItemTypeSearchURL($linktype) . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
                       rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                       $LANG['reports'][57]."</a></td>";

@@ -186,7 +186,7 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
  *
  **/
 function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
-   global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $SEARCH_PAGES;
+   global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED;
    global $INFOFORM_PAGES, $DB;
 
    // Print a nice HTML-head for every page
@@ -757,7 +757,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             foreach ($tab as $key => $val) {
                if ($key == $option) {
                   $tmp = new $key();
-                  /// TODO problem because SearchUrl return complete link but not correct 
+                  /// TODO problem because SearchUrl return complete link but not correct
                   $menu['config']['content']['dropdowns']['options'][$option]['title']=$val;
                   $menu['config']['content']['dropdowns']['options'][$option]['page']=
                                                 $tmp->getSearchURL();

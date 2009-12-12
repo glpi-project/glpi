@@ -239,7 +239,7 @@ class Budget extends CommonDBTM{
    *
    **/
    function showDevices() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $budgets_id = $this->fields['id'];
 

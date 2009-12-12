@@ -624,7 +624,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$SEARCH_PAGES;
+      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
       $instID = $this->fields['id'];
 
@@ -693,14 +693,14 @@ class Contract extends CommonDBTM {
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
-            if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
+            if ($nb>$_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>&nbsp;</td>";
                }
                echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
-               echo "<a href='". $CFG_GLPI["root_doc"]."/". $SEARCH_PAGES[$itemtype] . "?" .
+               echo "<a href='". getItemTypeSearchURL($itemtype) . "?" .
                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
                      rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
                      "&amp;start=0". "'>" . $LANG['reports'][57]."</a></td>";

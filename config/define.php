@@ -466,7 +466,7 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                       'UserCategory'          => "front/usercategory.form.php");
 // CRONTASKLOG_TYPE => "???",
 
-// Form for each type (order by type number)
+/* Form for each type (order by type number)
 $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",
                       NETWORKING_TYPE                 => "front/networkequipment.php",
                       PRINTER_TYPE                    => "front/printer.php",
@@ -530,7 +530,7 @@ $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",
                       'SoftwareCategory'           => "front/softwarecategory.php",
                       'UserTitle'                  => "front/usertitle.php",
                       'UserCategory'               => "front/usercategory.php");
-
+*/
 
 define("AUTH_DB_GLPI",1);
 define("AUTH_MAIL",2);

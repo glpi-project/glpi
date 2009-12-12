@@ -656,7 +656,7 @@ class Plugin extends CommonDBTM {
     * @return bool
     */
    static function registerClass($itemtype, $attrib=array()) {
-      global $PLUGIN_HOOKS,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
+      global $PLUGIN_HOOKS,$INFOFORM_PAGES,$CFG_GLPI;
 
       $plug = isPluginItemType($itemtype);
       if (!$plug) {
@@ -678,10 +678,6 @@ class Plugin extends CommonDBTM {
       // TODO remove
       if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
          $INFOFORM_PAGES[$itemtype]="plugins/$plugin/".$attrib['formpage'];
-      }
-      // TODO remove
-      if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
-         $SEARCH_PAGES[$itemtype]="plugins/$plugin/".$attrib['searchpage'];
       }
       if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
          $CFG_GLPI["recursive_type"][$itemtype] = $attrib['tablename'];

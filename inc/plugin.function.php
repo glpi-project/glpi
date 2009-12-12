@@ -246,37 +246,6 @@ function getPluginSearchOptions($itemtype) {
    return $sopt;
 }
 
-/**
- * Deprecated function
- *
- *
- * @param $plugin plugin of the device type
- * @param $name name of the itemtype to define the constant
- * @param $itemtype number used as constant
- * @param $attrib Array of attributes, a hashtable with index in
- * 	(classname, tablename, typename, formpage, searchpage, reservation_types,
- *   deleted_tables, specif_entities_tables, recursive_type, template_tables)
- *
- * @return nothing
- */
- // TODO Remove this on 2009-12-14
-function registerPluginType($plugin,$name,$itemtype,$attrib) {
-   global $PLUGIN_HOOKS,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
-
-   if (is_numeric($itemtype)) {
-      die("itemtype MUST be a class name ($plugin/$name/$itemtype)");
-   }
-   $tmp = isPluginItemType($itemtype);
-   if (strcasecmp($tmp['plugin'],$plugin)) {
-      die("itemtype not standard : $plugin/$name/$itemtype/".$tmp['plugin']);
-   }
-   if (!defined($name)) {
-      define($name,$itemtype);
-
-      Plugin::registerClass($itemtype, $attrib);
-   } // not already defined
-}
-
 function loadPluginLang($name) {
    global $CFG_GLPI,$LANG;
 
