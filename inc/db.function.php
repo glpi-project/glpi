@@ -145,7 +145,7 @@ function getTableForItemType($itemtype) {
 function getPlural($string) {
    $rules = array(
       //'singular' => 'plural'
-      'y$' => 'ies', // special case : category
+      '([^e])y$' => '\1ies', // special case : category (but not key)
       '([^s])$' => '\1s', // Add at the end if not exists
       'eds$' => 'ed' // case table without plurial
    );
