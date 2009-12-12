@@ -1187,8 +1187,8 @@ class Document extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
 
-      $p['entity']=-1;
-      $p['used']=array();
+      $p['entity'] = '';
+      $p['used'] = array();
 
       if (count($options)) {
          foreach ($options as $key => $val) {
