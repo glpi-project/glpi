@@ -242,21 +242,21 @@ abstract class CommonDBRelation extends CommonDBTM {
       $query = "SELECT `id`
                 FROM `".$this->table."`";
 
-      /// TODO review is_numeric condition ??
-
-      if ($itemtype==$this->itemtype_1) {
+      if ($itemtype == $this->itemtype_1) {
          $where = " WHERE `".$this->items_id_1."`='$item_id'";
-      } else if (!is_numeric($this->itemtype_1)) {
+
+      } else if (preg_match('/_id$/',$this->itemtype_1)) {
          $where = " WHERE (`".$this->itemtype_1."`='$itemtype'
                            AND `".$this->items_id_1."`='$item_id')";
       } else {
          $where = '';
       }
 
-      if ($itemtype==$this->itemtype_2) {
+      if ($itemtype == $this->itemtype_2) {
          $where .= (empty($where) ? " WHERE " : " OR ");
          $where .= " `".$this->items_id_2."`='$item_id'";
-      } else if (!is_numeric($this->itemtype_2)) {
+
+      } else if (preg_match('/_id$/',$this->itemtype_2)) {
          $where .= (empty($where) ? " WHERE " : " OR ");
          $where .= " (`".$this->itemtype_2."`='$itemtype'
                       AND `".$this->items_id_2."`='$item_id')";
