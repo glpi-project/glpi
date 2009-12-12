@@ -577,7 +577,7 @@ class CommonDBTM extends CommonGLPI {
          return '';
       }
       $link_item = getItemTypeFormURL($this->type);
-      if (!isset($link_item) || !$this->can($this->fields['id'],'r')) {
+      if (!$this->can($this->fields['id'],'r')) {
          return $this->getNameID($with_comment);
       }
 
