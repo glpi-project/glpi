@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: compute_dictionnary.php 9588 2009-12-08 20:57:14Z moyo $
  -------------------------------------------------------------------------
@@ -32,36 +33,40 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-ini_set("memory_limit","-1");
+ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
-
-echo "Checking all table\n";
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if (!isCommandLine()) {
+   echo "<pre>";
+}
+echo "Checking all table\n";
+
 $result = $DB->list_tables();
 
-for ($i=0 ; $line = $DB->fetch_array($result) ; $i++) {
+for ($i = 0; $line = $DB->fetch_array($result); $i++) {
    $table = $line[0];
    $type = getItemTypeForTable($table);
 
    if (class_exists($type)) {
       //echo "+  $table > $type : Ok\n";
 
-      $item = new $type();
-      if (get_class($item)!=$type) {
-         echo "** $table > $type > ".get_class($item)." incoherent get_class($type) ** \n";
+      $item = new $type ();
+      if (get_class($item) != $type) {
+         echo "** $table > $type > " . get_class($item) . " incoherent get_class($type) ** \n";
       }
-      if (!isset($item->table)) {
+      if (!isset ($item->table)) {
          echo "** $table > $type > no $type->table ** \n";
 
-      } else  if ($table != $item->table) {
-         echo "** $table > $type > ".$item->table." incoherent $type->table ** \n";
-      }
+      } else
+         if ($table != $item->table) {
+            echo "** $table > $type > " . $item->table . " incoherent $type->table ** \n";
+         }
       $table2 = getTableForItemType($type);
       if ($table != $table2) {
-         echo "** $table > $type > ".$table2." incoherent getTableForItemType() ** \n";
+         echo "** $table > $type > " . $table2 . " incoherent getTableForItemType() ** \n";
       }
 
    } else {
@@ -69,5 +74,4 @@ for ($i=0 ; $line = $DB->fetch_array($result) ; $i++) {
    }
 }
 echo "End of $i tables analysed\n";
-
 ?>
