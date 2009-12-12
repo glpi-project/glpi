@@ -687,7 +687,7 @@ class Profile extends CommonDBTM {
       echo "<input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
-      foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+      foreach($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
          if (class_exists($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
                $item = new $itemtype();
