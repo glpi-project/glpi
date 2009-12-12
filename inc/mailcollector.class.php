@@ -837,6 +837,13 @@ class MailCollector  extends CommonDBTM {
       imap_close($this->marubox,CL_EXPUNGE);
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][9],
+                   'parameter'   => $LANG['crontask'][39]);
+   }
+
    /**
     * Cron action on mailgate : retrieve mail and create tickets
     * @return -1 : done but not finish 1 : done with success

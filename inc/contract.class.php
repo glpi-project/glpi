@@ -914,6 +914,12 @@ class Contract extends CommonDBTM {
       }
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][5]);
+   }
+
    /**
     * Cron action on contracts : alert depending of the config : on notice and expire
     *

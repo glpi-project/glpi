@@ -207,6 +207,12 @@ class InfoCom extends CommonDBTM {
       return false;
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][6]);
+   }
+
    /**
     * Cron action on infocom : alert on expired warranty
     *

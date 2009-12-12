@@ -287,6 +287,12 @@ class ConsumableItem extends CommonDBTM {
       return $tab;
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][3]);
+   }
+
    /**
     * Cron action on consumables : alert if a stock is behind the threshold
     *
