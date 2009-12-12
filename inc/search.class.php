@@ -2945,7 +2945,7 @@ class Search {
    *
    **/
    static function giveItem ($itemtype,$ID,$data,$num,$meta=0) {
-      global $CFG_GLPI,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
+      global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
       $searchopt=&Search::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
@@ -3262,7 +3262,7 @@ class Search {
             case "itemlink" :
                if (!empty($data[$NAME.$num."_2"])) {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
-                     $link=$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
+                     $link=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                   } else {
                      $link=getItemTypeFormURL($itemtype);
                   }
@@ -3287,9 +3287,9 @@ class Search {
                               $out .= "<br>";
                            }
                            $count_display++;
-                           $page = $INFOFORM_PAGES[$searchopt[$ID]["itemlink_type"]];
+                           $page=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $out .= "<a href=\"".$CFG_GLPI["root_doc"]."/$page=".$split2[1]."\">";
+                           $out .= "<a href='$page=".$split2[1]."'>";
                            $out .= $split2[0].$unit;
                            if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                               $out .= " (".$split2[1].")";
