@@ -1413,7 +1413,7 @@ class Search {
       echo "<td>";
       $itemtable=getTableForItemType($itemtype);
       if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
-         dropdownYesNo("is_deleted",$is_deleted);
+         Dropdown::showYesNo("is_deleted",$is_deleted);
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
                "' title='".$LANG['common'][3]."'>";
       }

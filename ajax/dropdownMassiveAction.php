@@ -57,7 +57,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
    switch($_POST["action"]) {
       case "activate_rule" :
-         echo dropdownYesNo("activate_rule");
+         Dropdown::showYesNo("activate_rule");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;
@@ -163,7 +163,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          echo ".&nbsp;".$LANG['profiles'][22]."&nbsp;:";
          dropdownUnderProfiles("profiles_id");
          echo ".&nbsp;".$LANG['profiles'][28]."&nbsp;:";
-         dropdownYesNo("is_recursive",0);
+         Dropdown::showYesNo("is_recursive",0);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;

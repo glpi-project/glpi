@@ -321,26 +321,26 @@ class Monitor extends CommonDBTM {
       echo "<td><table>";
       // micro?
       echo "<tr><td>".$LANG['monitors'][14]."</td><td>";
-      dropdownYesNo("have_micro",$this->fields["have_micro"]);
+      Dropdown::showYesNo("have_micro",$this->fields["have_micro"]);
       // speakers?
       echo "</td><td>".$LANG['monitors'][15]."</td><td>";
-      dropdownYesNo("have_speaker",$this->fields["have_speaker"]);
+      Dropdown::showYesNo("have_speaker",$this->fields["have_speaker"]);
       echo "</td></tr>";
 
      // sub-d?
       echo "<tr><td>".$LANG['monitors'][19]."</td><td>";
-      dropdownYesNo("have_subd",$this->fields["have_subd"]);
+      Dropdown::showYesNo("have_subd",$this->fields["have_subd"]);
       // bnc?
       echo "</td><td>".$LANG['monitors'][20]."</td><td>";
-      dropdownYesNo("have_bnc",$this->fields["have_bnc"]);
+      Dropdown::showYesNo("have_bnc",$this->fields["have_bnc"]);
       echo "</td></tr>";
 
       // dvi?
       echo "<tr><td>".$LANG['monitors'][32]."</td><td>";
-      dropdownYesNo("have_dvi",$this->fields["have_dvi"]);
+      Dropdown::showYesNo("have_dvi",$this->fields["have_dvi"]);
       // pivot ?
       echo "</td><td>".$LANG['monitors'][33]."</td><td>";
-      dropdownYesNo("have_pivot",$this->fields["have_pivot"]);
+      Dropdown::showYesNo("have_pivot",$this->fields["have_pivot"]);
       echo "</td></tr>";
       echo "</table></td></tr>";
 

@@ -1247,7 +1247,7 @@ class CommonDBTM extends CommonGLPI {
             $comment=$LANG['common'][84];
             $image="/pics/lock.png";
          } else {
-            dropdownYesNo("is_recursive",$this->fields["is_recursive"]);
+            Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
             $comment=$LANG['common'][85];
             $image="/pics/aide.png";
          }

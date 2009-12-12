@@ -237,7 +237,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_drive'][0]."&nbsp;:</td>";
             echo "<td>";
-            dropdownYesNo("is_writer",$this->fields["is_writer"]);
+            Dropdown::showYesNo("is_writer",$this->fields["is_writer"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
@@ -255,7 +255,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_control'][0]."&nbsp;:</td>";
             echo "<td>";
-            dropdownYesNo("is_raid",$this->fields["is_raid"]);
+            Dropdown::showYesNo("is_raid",$this->fields["is_raid"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][65]."&nbsp;:</td>";
@@ -315,7 +315,7 @@ class Device extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['device_power'][1]."&nbsp;:</td>";
             echo "<td>";
-            dropdownYesNo("is_atx",$this->fields["is_atx"]);
+            Dropdown::showYesNo("is_atx",$this->fields["is_atx"]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
