@@ -655,7 +655,7 @@ class Plugin extends CommonDBTM {
     *
     * @return bool
     */
-   static function registerClass($itemtype, $attrib) {
+   static function registerClass($itemtype, $attrib=array()) {
       global $PLUGIN_HOOKS,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 
       $plug = isPluginItemType($itemtype);
@@ -665,6 +665,7 @@ class Plugin extends CommonDBTM {
       $plugin = strtolower($plug['plugin']);
 
       $PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
+      $attrib['tablename']=getTableForItemType($itemtype);
 
       // TODO remove => no CommonItem
       if (isset($attrib['classname']) && !empty($attrib['classname'])) {

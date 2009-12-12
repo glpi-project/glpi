@@ -197,11 +197,9 @@ class CommonGLPI {
          unset($onglets['no_all_tab']);
       }
       if (count($onglets)) {
-         $patterns[0] = '/front/';
-         $patterns[1] = '/form/';
-         $replacements[0] = 'ajax';
-         $replacements[1] = 'tabs';
-         $tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
+      
+         $tabpage=getItemTypeTabsURL($this->type);
+
          $tabs=array();
 
          /// TODO :  To delete when autload is OK
@@ -211,7 +209,7 @@ class CommonGLPI {
          }
          foreach ($onglets as $key => $val ) {
             $tabs[$key]=array('title'=>$val,
-                              'url'=>$CFG_GLPI['root_doc']."/$tabpage",
+                              'url'=>$tabpage,
                               'params'=>"target=$target&itemtype=".$this->type.
                                         "&glpi_tab=$key&id=$ID$template$extraparam$autoload");
          }
@@ -221,7 +219,7 @@ class CommonGLPI {
          if($display_all && empty($withtemplate)
             && count($tabs)>1) {
             $tabs[-1]=array('title'=>$LANG['common'][66],
-                            'url'=>$CFG_GLPI['root_doc']."/$tabpage",
+                            'url'=>$tabpage,
                             'params'=>"target=$target&itemtype=".$this->type.
                                       "&glpi_tab=-1&id=$ID$template$extraparam");
          }

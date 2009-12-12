@@ -571,16 +571,17 @@ class CommonDBTM extends CommonGLPI {
     * @return string : HTML link
     */
    function getLink($with_comment=0) {
-      global $INFOFORM_PAGES, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!isset($this->fields['id'])) {
          return '';
       }
-      if (!isset($INFOFORM_PAGES[$this->type]) || !$this->can($this->fields['id'],'r')) {
+      $link_item = getItemTypeFormURL($this->type);
+      if (!isset($link_item) || !$this->can($this->fields['id'],'r')) {
          return $this->getNameID($with_comment);
       }
 
-      $link  = $CFG_GLPI["root_doc"].'/'.$INFOFORM_PAGES[$this->type];
+      $link  = $link_item;
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
       $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
 
