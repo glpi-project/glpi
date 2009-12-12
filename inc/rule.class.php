@@ -986,6 +986,7 @@ class Rule extends CommonDBTM {
    * @param $pattern the pattern
    */
    function getCriteriaDisplayPattern($ID,$condition,$pattern) {
+      global $LANG;
 
       $crit=$this->getCriteria($ID);
       if (isset($crit['type'])

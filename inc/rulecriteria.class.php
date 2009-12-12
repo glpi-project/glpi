@@ -115,6 +115,7 @@ class RuleCriteria extends CommonDBTM {
     * @param $initValue the pattern
    **/
    function getValueToMatch($condition,&$initValue) {
+      global $LANG;
 
       if (!empty($this->type)
           && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
