@@ -85,7 +85,8 @@ foreach($optgroup as $label => $dp) {
    echo "<div id='dropdowncat$i' style='display:none;'><ul>";
 
    foreach ($dp as $key => $val) {
-      echo "<li><a href='".GLPI_ROOT.'/'.$SEARCH_PAGES[$key]."'>$val</a></li>\n";
+      $search=getItemTypeSearchURL($key);
+      echo "<li><a href='".$search."'>$val</a></li>\n";
    }
 
    echo "</ul></div></td></tr>";
