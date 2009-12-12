@@ -1164,47 +1164,6 @@ function dropdownStateBehaviour ($name, $lib="", $value=0) {
 }
 
 /**
- * Dropdown for global management config
- *
- * @param $name select name
- * @param $value default value
- * @param $software is it for software ?
- */
-function adminManagementDropdown($name,$value,$software=0) {
-   global $LANG;
-
-   echo "<select name=\"".$name."\">";
-
-   if (!$software) {
-      $yesUnit = $LANG['peripherals'][32];
-      $yesGlobal = $LANG['peripherals'][31];
-   } else {
-      $yesUnit = $LANG['ocsconfig'][46];
-      $yesGlobal = $LANG['ocsconfig'][45];
-   }
-
-   echo "<option value='2'";
-   if ($value == 2) {
-      echo " selected";
-   }
-   echo ">".$LANG['choice'][0]."</option>";
-
-   echo "<option value='0'";
-   if ($value == 0) {
-   echo " selected";
-   }
-   echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $yesUnit . "</option>";
-
-   echo "<option value='1'";
-   if ($value == 1) {
-   echo " selected";
-   }
-   echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $yesGlobal . " </option>";
-
-   echo "</select>";
-}
-
-/**
  * Dropdown for GMT selection
  *
  * @param $name select name
