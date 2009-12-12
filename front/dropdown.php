@@ -58,7 +58,7 @@ foreach($optgroup as $label => $dp) {
    echo "<tr><th>$label</th></tr>\n";
 
    foreach ($dp as $key => $val) {
-      echo "<tr class='tab_bg_1'><td><a href='".GLPI_ROOT.'/'.$SEARCH_PAGES[$key]."'>";
+      echo "<tr class='tab_bg_1'><td><a href='".getItemTypeSearchURL($key)."'>";
       echo "$val</td></tr>\n";
       $i++;
    }

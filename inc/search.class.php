@@ -60,7 +60,7 @@ class Search {
    *
    **/
    static function showList ($itemtype,$params) {
-      global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,$SEARCH_PAGES,
+      global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,
             $PLUGIN_HOOKS;
 
       // Instanciate an object to access method
@@ -83,14 +83,9 @@ class Search {
       $default_values["field2"]="";
       $default_values["itemtype2"]="";
 
-      if (isset($SEARCH_PAGES[$itemtype])) {
-         $default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$itemtype];
-      } else if (isset($INFOFORM_PAGES[$itemtype])) {
-         $default_values["target"] = $CFG_GLPI['root_doc'].'/'.
-                                    str_replace('.form','',$INFOFORM_PAGES[$itemtype]);
-      } else {
-         $default_values["target"] = $_SERVER['PHP_SELF'];
-      }
+      $default_values["target"] = getItemTypeSearchURL($itemtype);
+      // TODO keep this ? is paage not found ?
+      // $default_values["target"] = $_SERVER['PHP_SELF'];
 
       foreach ($default_values as $key => $val) {
          if (isset($params[$key])) {
@@ -1157,7 +1152,7 @@ class Search {
    *
    **/
    static function showSearchForm($itemtype,$params) {
-      global $LANG,$CFG_GLPI,$INFOFORM_PAGES,$SEARCH_PAGES;
+      global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
 
       // Default values of parameters
       $default_values["link"]="";
@@ -1170,14 +1165,7 @@ class Search {
       $default_values["field2"]="";
       $default_values["itemtype2"]="";
 
-      if (isset($SEARCH_PAGES[$itemtype])) {
-         $default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$itemtype];
-      } else if (isset($INFOFORM_PAGES[$itemtype])) {
-         $default_values["target"] = $CFG_GLPI['root_doc'].'/'.
-                                    str_replace('.form','',$INFOFORM_PAGES[$itemtype]);
-      } else {
-         $default_values["target"] = $_SERVER['PHP_SELF'];
-      }
+      $default_values["target"] = getItemTypeSearchURL($itemtype);
 
       foreach ($default_values as $key => $val) {
          if (isset($params[$key])) {

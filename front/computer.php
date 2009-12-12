@@ -61,8 +61,8 @@ if (isset($_GET["reset_search"])) {
    unset($_SESSION["glpisearchcount2"][$_GET["itemtype"]]);
    unset($_SESSION["glpisearchcount"][$_GET["itemtype"]]);
    unset($_SESSION["glpisearch"][$_GET["itemtype"]]);
-   if (isset($SEARCH_PAGES[$_GET["itemtype"]])) {
-      $REDIRECT = GLPI_ROOT.'/'.$SEARCH_PAGES[$_GET["itemtype"]];
+   if ($_GET["itemtype"]) {
+      $REDIRECT = getItemTypeSearchURL($_GET["itemtype"]);
    } else if ($cut=strpos($_SERVER['HTTP_REFERER'],"?")) {
       $REDIRECT = utf8_substr($_SERVER['HTTP_REFERER'],0,$cut);
    } else {
