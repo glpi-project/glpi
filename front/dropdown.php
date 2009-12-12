@@ -41,59 +41,15 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 
-$optgroup = getAllDropdowns();
 
-echo "<div class='center'>";
-/*
-$nb=0;
-foreach($optgroup as $label => $dp) {
-   $nb += count($dp);
-}
-$step = ($nb>15 ? ($nb/3) : $nb);
+echo "<div align='center'>";
 
-echo "<table><tr class='top'><td><table class='tab_cadre'>";
-$i=1;
-foreach($optgroup as $label => $dp) {
+$optgroup = Dropdown::getStandardDropdownItemTypes();
+Dropdown::showItemTypeMenu($optgroup);
+Dropdown::showItemTypeList($optgroup);
 
-   echo "<tr><th>$label</th></tr>\n";
 
-   foreach ($dp as $key => $val) {
-      echo "<tr class='tab_bg_1'><td><a href='".getItemTypeSearchURL($key)."'>";
-      echo "$val</td></tr>\n";
-      $i++;
-   }
-   if ($i>=$step) {
-      echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
-      $step += $step;
-   }
-}
-echo "</table></td></tr></table>";
-
-echo "</table>";
-*/
-echo "<table class='tab_cadre_fixe'>";
-
-$i=1;
-foreach($optgroup as $label => $dp) {
-
-   echo "<tr><th>";
-   echo "<a href=\"javascript:showHideDiv('dropdowncat$i','imgcat$i','" .
-         GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
-   echo "<img alt='' name='imgcat$i' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;$label";
-   echo "</a></th></tr>\n";
-   echo "<tr class='tab_bg_2'><td class='center'>";
-   echo "<div id='dropdowncat$i' style='display:none;'><ul>";
-
-   foreach ($dp as $key => $val) {
-      $search=getItemTypeSearchURL($key);
-      echo "<li><a href='".$search."'>$val</a></li>\n";
-   }
-
-   echo "</ul></div></td></tr>";
-   $i++;
-}
-echo "</table>";
-
+echo "</div>";
 commonFooter();
 
 ?>

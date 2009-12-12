@@ -482,6 +482,161 @@ class Dropdown {
       echo "</select>";
    }
 
+   /**
+    * Get the dropdown list name the user is allowed to edit
+    *
+    * @return array (group of dropdown) of array (itemtype => localized name)
+    */
+   static function getStandardDropdownItemTypes () {
+      global $LANG, $CFG_GLPI;
+      static $optgroup=NULL;
+
+      if (is_null($optgroup)) {
+         $optgroup =
+            array($LANG['setup'][139] => array('Location'        => $LANG['common'][15],
+                                               'State'           => $LANG['setup'][83],
+                                               'Manufacturer'    => $LANG['common'][5]),
+
+                  $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
+                                               'NetworkEquipmentType' => $LANG['setup'][42],
+                                               'PrinterType'          => $LANG['setup'][43],
+                                               'MonitorType'          => $LANG['setup'][44],
+                                               'PeripheralType'       => $LANG['setup'][69],
+                                               'PhoneType'            => $LANG['setup'][504],
+                                               'SoftwareLicenseType'  => $LANG['software'][30],
+                                               'CartridgeItemType'    => $LANG['setup'][84],
+                                               'ConsumableItemType'   => $LANG['setup'][92],
+                                               'ContractType'         => $LANG['setup'][85],
+                                               'ContactType'          => $LANG['setup'][82],
+                                               'DeviceMemoryType'     => $LANG['setup'][86],
+                                               'SupplierType'         => $LANG['setup'][80],
+                                               'InterfaceType'        => $LANG['setup'][93],
+                                               'DeviceCaseType'       => $LANG['setup'][45],
+                                               'PhonePowerSupply'     => $LANG['setup'][505],
+                                               'Filesystem'           => $LANG['computers'][4]),
+
+                  $LANG['common'][22] => array('ComputerModel'         => $LANG['setup'][91],
+                                               'NetworkEquipmentModel' => $LANG['setup'][95],
+                                               'PrinterModel'          => $LANG['setup'][96],
+                                               'MonitorModel'          => $LANG['setup'][94],
+                                               'PeripheralModel'       => $LANG['setup'][97],
+                                               'PhoneModel'            => $LANG['setup'][503]),
+
+                  $LANG['Menu'][26] => array('DocumentCategory' => $LANG['setup'][81],
+                                             'DocumentType'     => $LANG['document'][7]),
+
+                  $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['title'][5]),
+
+                  $LANG['title'][24] => array ('TicketCategory'   => $LANG['setup'][79],
+                                               'TaskCategory'     => $LANG['setup'][98],
+                                               'RequestType'      => $LANG['job'][44]),
+
+                  $LANG['setup'][145] => array('OperatingSystem'            => $LANG['setup'][5],
+                                               'OperatingSystemVersion'     => $LANG['computers'][52],
+                                               'OperatingSystemServicePack' => $LANG['computers'][53],
+                                               'AutoUpdateSystem'           => $LANG['computers'][51]),
+
+                  $LANG['setup'][88] => array('NetworkInterface'         => $LANG['setup'][9],
+                                              'NetworkEquipmentFirmware' => $LANG['setup'][71],
+                                              'Netpoint'                 => $LANG['setup'][73],
+                                              'Domain'                   => $LANG['setup'][89],
+                                              'Network'                  => $LANG['setup'][88],
+                                              'Vlan'                     => $LANG['setup'][90]),
+
+                  $LANG['Menu'][4] => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
+
+                  $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
+                                               'UserCategory'  => $LANG['users'][2])
+
+                 ); //end $opt
+
+         $plugdrop=getPluginsDropdowns();
+         if (count($plugdrop)) {
+            $optgroup=array_merge($optgroup,$plugdrop);
+         }
+
+         foreach ($optgroup as $label=>$dp) {
+            foreach ($dp as $key => $val) {
+               if (class_exists($key)) {
+                  $tmp = new $key();
+                  if (!$tmp->canView()) {
+                     unset($optgroup[$label][$key]);
+                  }
+               } else {
+                  unset($optgroup[$label][$key]);
+               }
+            }
+            if (count($optgroup[$label])==0) {
+               unset($optgroup[$label]);
+            }
+         }
+      }
+      return $optgroup;
+   }
+
+   /**
+    * Display a menu to select a itemtype which open the search form
+    *
+    * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
+    */
+   static function showItemTypeMenu($optgroup) {
+      global $LANG;
+
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$LANG['setup'][0]."&nbsp;: ";
+      echo "<select id='menu_nav'>";
+      foreach($optgroup as $label => $dp) {
+         echo "<optgroup label='$label'>";
+         foreach ($dp as $key => $val) {
+            $search=getItemTypeSearchURL($key);
+            echo "<option value='$search'>$val</option>";
+         }
+         echo "</optgroup>";
+      }
+      echo "</select>&nbsp;";
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][0]."\" class='submit' ";
+      echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
+      echo ">&nbsp;</td></tr>";
+      echo "</table><br>";
+   }
+
+   /**
+    * Display a list to select a itemtype with link to search form
+    *
+    * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
+    */
+   static function showItemTypeList($optgroup) {
+      global $LANG;
+
+      echo "<p><a href=\"javascript:showHideDiv('list_nav','img_nav','";
+      echo GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
+      echo "<img alt='' name='img_nav' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;";
+      echo $LANG['buttons'][40]."</a></p>";
+
+      echo "<div id='list_nav' style='display:none;'>";
+
+      $nb=0;
+      foreach($optgroup as $label => $dp) {
+         $nb += count($dp);
+      }
+      $step = ($nb>15 ? ($nb/3) : $nb);
+
+      echo "<table><tr class='top'><td><table class='tab_cadre'>";
+      $i=1;
+      foreach($optgroup as $label => $dp) {
+         echo "<tr><th>$label</th></tr>\n";
+         foreach ($dp as $key => $val) {
+            echo "<tr class='tab_bg_1'><td><a href='".getItemTypeSearchURL($key)."'>";
+            echo "$val</a></td></tr>\n";
+            $i++;
+         }
+         if ($i>=$step) {
+            echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
+            $step += $step;
+         }
+      }
+      echo "</table></td></tr></table></div>";
+   }
 }
 
 ?>
