@@ -294,7 +294,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
     **/
-   static function cron_consumable($task=NULL) {
+   static function cronConsumable($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["consumables_alert_repeat"]) {

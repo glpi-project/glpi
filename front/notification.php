@@ -44,27 +44,27 @@ $config = new Config();
 
 if (!empty($_POST["test_cron_consumables"])) {
    addMessageAfterRedirect($LANG['install'][6]);
-   ConsumableItem::cron_consumable();
+   ConsumableItem::cronConsumable();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (!empty($_POST["test_cron_cartridges"])) {
    addMessageAfterRedirect($LANG['install'][6]);
-   CartridgeItem::cron_cartridge();
+   CartridgeItem::cronCartridge();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (!empty($_POST["test_cron_contracts"])) {
    addMessageAfterRedirect($LANG['install'][6]);
-   Contract::cron_contract();
+   Contract::cronContract();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (!empty($_POST["test_cron_infocoms"])) {
    addMessageAfterRedirect($LANG['install'][6]);
-   InfoCom::cron_infocom();
+   InfoCom::cronInfocom();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (!empty($_POST["test_cron_softwares"])) {
    addMessageAfterRedirect($LANG['install'][6]);
-   SoftwareLicense::cron_software();
+   SoftwareLicense::cronSoftware();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (!empty($_POST["test_smtp_send"])) {

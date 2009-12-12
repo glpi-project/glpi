@@ -512,9 +512,10 @@ class CronTask extends CommonDBTM{
 
       // Plugin case
       loadPluginLang($this->fields['plugin']);
-      $hook = 'cron_info';
       if ($this->fields['itemtype']) {
-         $hook = array($this->fields['itemtype'], $hook);
+         $hook = array($this->fields['itemtype'], 'cronInfo');
+      } else {
+         $hook = 'cron_info';
       }
       $info = doOneHook($this->fields['plugin'], $hook, $this->fields['name']);
       if (isset($info['description'])) {
@@ -667,25 +668,12 @@ class CronTask extends CommonDBTM{
                $_SESSION["glpiID"]="cron_".$task->fields['name'];
 
                if (empty($task->fields['plugin'])) {
-                  $fonction = 'cron_' . $task->fields['name'];
-                  if (!function_exists($fonction)) {
-                     // pas trouvé de fonction -> inclusion de la fonction
-                     if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php')) {
-                        include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.function.php');
-                     }
-                     if (file_exists(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php')) {
-                        include_once(GLPI_ROOT.'/inc/'.$task->fields['name'].'.class.php');
-                     }
-                  }
-                  if ($task->fields['itemtype']) {
-                     $fonction = array($task->fields['itemtype'], $fonction);
-                  }
+                  $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
+
                } else {
-                  // Plugin case / Load hook
-                  // TODO move this in test whenautoload ready
                   usePlugin($task->fields['plugin'],true);
                   if ($task->fields['itemtype']) {
-                     $fonction = array($task->fields['itemtype'], 'cron_' . $task->fields['name'].'_run');
+                     $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
                   } else {
                      $fonction = 'plugin_'.$task->fields['plugin'].'_cron_' . $task->fields['name'].'_run';
                   }
@@ -1063,7 +1051,7 @@ class CronTask extends CommonDBTM{
     * @param $task for log
     *
     **/
-   static function cron_session($task) {
+   static function cronSession($task) {
       global $CFG_GLPI;
 
       // max time to keep the file session
@@ -1091,7 +1079,7 @@ class CronTask extends CommonDBTM{
     * @param $task instance of CronTask
     *
     **/
-   static function cron_logs($task) {
+   static function cronLogs($task) {
       global $CFG_GLPI,$DB;
 
       $vol = 0;
@@ -1115,7 +1103,7 @@ class CronTask extends CommonDBTM{
     *
     * @param $task for log
     **/
-   static function cron_check_update($task) {
+   static function cronCheckUpdate($task) {
       global $CFG_GLPI;
 
       $result=checkNewVersionAvailable(1);
@@ -1130,7 +1118,7 @@ class CronTask extends CommonDBTM{
     * @param $task for log
     *
     **/
-   static function cron_optimize($task) {
+   static function cronOptimize($task) {
       global $CFG_GLPI,$DB;
 
       $nb = optimize_tables();

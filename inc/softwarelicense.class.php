@@ -350,7 +350,7 @@ class SoftwareLicense extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
     **/
-   static function cron_software($task=NULL) {
+   static function cronSoftware($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI['use_mailing'] || !$CFG_GLPI['use_licenses_alert']) {

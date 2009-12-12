@@ -214,7 +214,7 @@ class InfoCom extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
     **/
-   static function cron_infocom($task=NULL) {
+   static function cronInfocom($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI["use_mailing"]) {
