@@ -751,7 +751,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
 
       if ($item=="dropdowns") {
-         $dps=getAllDropdowns();
+         $dps = Dropdown::getStandardDropdownItemTypes();
 
          foreach ($dps as $tab) {
             foreach ($tab as $key => $val) {
