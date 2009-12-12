@@ -403,19 +403,20 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'> " . $LANG['setup'][271] . " </td>";
       echo "<td>";
-      adminManagementDropdown("monitors_management_restrict",
-                              $CFG_GLPI["monitors_management_restrict"]);
+      $this->dropdownGlobalManagement ("monitors_management_restrict",
+                                       $CFG_GLPI["monitors_management_restrict"]);
       echo "</td><td class='center'> " . $LANG['setup'][272] . " </td><td>";
-      adminManagementDropdown("peripherals_management_restrict",
-                              $CFG_GLPI["peripherals_management_restrict"]);
+      $this->dropdownGlobalManagement ("peripherals_management_restrict",
+                                       $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'> " . $LANG['setup'][273] . " </td><td>";
-      adminManagementDropdown("phones_management_restrict",$CFG_GLPI["phones_management_restrict"]);
+      $this->dropdownGlobalManagement ("phones_management_restrict",
+                                       $CFG_GLPI["phones_management_restrict"]);
       echo "</td><td class='center'> " . $LANG['setup'][275] . " </td><td>";
-      adminManagementDropdown("printers_management_restrict",
-                              $CFG_GLPI["printers_management_restrict"]);
+      $this->dropdownGlobalManagement("printers_management_restrict",
+                                      $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
 
       echo "<tr><th colspan='2'>" . $LANG['setup'][134]. "</th><th colspan='2'></th></tr>";
@@ -1174,9 +1175,46 @@ class Config extends CommonDBTM {
       echo "</tr>\n";
       echo "</table></div>\n";
    }
+
+   /**
+    * Dropdown for global management config
+    *
+    * @param $name select name
+    * @param $value default value
+    */
+   static function dropdownGlobalManagement($name,$value) {
+      global $LANG;
+
+      echo "<select name=\"".$name."\">";
+
+      $yesUnit = $LANG['peripherals'][32];
+      $yesGlobal = $LANG['peripherals'][31];
+
+      echo "<option value='2'";
+      if ($value == 2) {
+         echo " selected";
+      }
+      echo ">".$LANG['choice'][0]."</option>";
+
+      echo "<option value='0'";
+      if ($value == 0) {
+      echo " selected";
+      }
+      echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $yesUnit . "</option>";
+
+      echo "<option value='1'";
+      if ($value == 1) {
+      echo " selected";
+      }
+      echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $yesGlobal . " </option>";
+
+      echo "</select>";
+   }
 }
 
+// TODO : seems not used : to be clean
 /// OCS Config class
+/*
 class ConfigOCS extends CommonDBTM {
 
    // From CommonDBTM
@@ -1189,7 +1227,6 @@ class ConfigOCS extends CommonDBTM {
     *
     *@return the modified $input array
     *
-**/
    function prepareInputForUpdate($input) {
 
       if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])) {
@@ -1263,7 +1300,6 @@ class ConfigOCS extends CommonDBTM {
     *@param $updates array of the updated fields
     *@param $history store changes history ?
     *
-   **/
    function post_updateItem($input,$updates,$history=1) {
       global $CACHE_CFG;
 
@@ -1272,4 +1308,5 @@ class ConfigOCS extends CommonDBTM {
       }
    }
 }
+*/
 ?>

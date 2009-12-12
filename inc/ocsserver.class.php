@@ -685,7 +685,7 @@ class OcsServer extends CommonDBTM {
     *
     **/
    static function getConfig($id) {
-      global $DB, $CACHE_CFG;
+      global $DB;
 
       $query = "SELECT *
                 FROM `glpi_ocsservers`
