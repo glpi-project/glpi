@@ -62,9 +62,9 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            $prof->showFormInventory($_POST['target']);
-            $prof->showFormTracking($_POST['target']);
-            $prof->showFormAdmin($_POST['target']);
+            $prof->showFormInventory($_POST['target'],true,false);
+            $prof->showFormTracking($_POST['target'],false,false);
+            $prof->showFormAdmin($_POST['target'],false,true);
             $prof->showEntityUser($_POST['target'], $prof);
             Plugin::displayAction($prof, $_REQUEST['glpi_tab']);
             break;

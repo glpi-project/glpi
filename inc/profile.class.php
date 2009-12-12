@@ -462,7 +462,7 @@ class Profile extends CommonDBTM {
     *
     * @param $target of the form
     **/
-   function showFormInventory($target) {
+   function showFormInventory($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
@@ -470,7 +470,7 @@ class Profile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      if (($canedit=haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -581,7 +581,7 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("view_ocsng",$this->fields["view_ocsng"],1,1,0);
       echo "</td></tr>\n";
 
-      if ($canedit) {
+      if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
@@ -598,7 +598,7 @@ class Profile extends CommonDBTM {
     *
     * @param $target of the form
     **/
-   function showFormTracking($target) {
+   function showFormTracking($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
@@ -606,7 +606,7 @@ class Profile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      if (($canedit=haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -763,7 +763,7 @@ class Profile extends CommonDBTM {
          echo "</tr>\n";
       }
 
-      if ($canedit) {
+      if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
@@ -781,7 +781,7 @@ class Profile extends CommonDBTM {
     * @param $target of the form
     *
     **/
-   function showFormAdmin($target) {
+   function showFormAdmin($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
@@ -789,7 +789,7 @@ class Profile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      if (($canedit=haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -896,7 +896,7 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("check_update",$this->fields["check_update"],1,1,0);
       echo "</td></tr>\n";
 
-      if ($canedit) {
+      if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
