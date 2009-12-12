@@ -503,25 +503,18 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id']) || $this->fields['id']!=$id) {
          $this->getFromDB($id);
       }
-      if (empty($this->fields['plugin'])) {
-         if ($id>=1 && $id<=12) {
-            return $LANG['crontask'][$id];
-         }
-         return $LANG['crontask'][30].' '.$id;
-      }
-
-      // Plugin case
-      loadPluginLang($this->fields['plugin']);
       if ($this->fields['itemtype']) {
          $hook = array($this->fields['itemtype'], 'cronInfo');
+         $info = call_user_func($hook, $this->fields['name']);
+      } else if (!empty($this->fields['plugin'])) {
+         $info = doOneHook($this->fields['plugin'], 'cron_info', $this->fields['name']);
       } else {
-         $hook = 'cron_info';
+         $info = false;
       }
-      $info = doOneHook($this->fields['plugin'], $hook, $this->fields['name']);
       if (isset($info['description'])) {
          return $info['description'];
       }
-      return "$plugin / $name";
+      return $this->fields['name'];
    }
 
    /**
@@ -535,34 +528,14 @@ class CronTask extends CommonDBTM{
    public function getParameterDescription() {
       global $LANG;
 
-      if (empty($this->fields['plugin'])) {
-         switch ($this->fields['id']) {
-            /* TODO set this global ? (no other way to active/inactive server)
-            case 1: // ocsng
-               return $LANG['ocsconfig'][40];
-               break;
-            */
-            case 7: // events
-               return $LANG['setup'][109];
-               break;
-            case 9: // mailgate
-               return $LANG['crontask'][39];
-               break;
-            case 10: // DBConnection
-               return $LANG['setup'][806];
-               break;
-         }
-         // No parameter
-         return '';
-      }
-
-      // Plugin case
-      loadPluginLang($this->fields['plugin']);
-      $hook = 'cron_info';
       if ($this->fields['itemtype']) {
-         $hook = array($this->fields['itemtype'], $hook);
+         $hook = array($this->fields['itemtype'], 'cronInfo');
+         $info = call_user_func($hook, $this->fields['name']);
+      } else if (!empty($this->fields['plugin'])) {
+         $info = doOneHook($this->fields['plugin'], 'cron_info', $this->fields['name']);
+      } else {
+         $info = false;
       }
-      $info = doOneHook($this->fields['plugin'], $hook, $this->fields['name']);
       if (isset($info['parameter'])) {
          return $info['parameter'];
       }
@@ -1125,6 +1098,32 @@ class CronTask extends CommonDBTM{
       $task->setVolume($nb);
 
       return 1;
+   }
+
+   /**
+    * get Cron description parameter for this class
+    *
+    * @param $name string name of the task
+    *
+    * @return array of string
+    */
+   static function cronInfo($name) {
+      global $LANG;
+
+      switch ($name) {
+         case 'checkupdate':
+            return array('description' => $LANG['crontask'][11]);
+
+         case 'logs':
+            return array('description' => $LANG['crontask'][7],
+                         'parameter'   => $LANG['setup'][109]);
+
+         case 'optimize':
+            return array('description' => $LANG['crontask'][8]);
+
+         case 'session':
+            return array('description' => $LANG['crontask'][12]);
+      }
    }
 }
 ?>

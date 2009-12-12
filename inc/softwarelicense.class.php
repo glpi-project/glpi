@@ -343,6 +343,12 @@ class SoftwareLicense extends CommonDBTM {
       return $tab;
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][4]);
+   }
+
    /**
     * Cron action on softwares : alert on expired licences
     *

@@ -4574,7 +4574,13 @@ class OcsServer extends CommonDBTM {
       }
    }
 
-   function cronOcsng($task) {
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][1]);
+   }
+
+   static function cronOcsng($task) {
 
       global $DB, $CFG_GLPI;
 

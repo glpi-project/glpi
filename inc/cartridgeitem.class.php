@@ -361,6 +361,12 @@ class CartridgeItem extends CommonDBTM {
       return $tab;
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][2]);
+   }
+
    /**
     * Cron action on cartridges : alert if a stock is behind the threshold
     * @param $task for log, display informations if NULL?

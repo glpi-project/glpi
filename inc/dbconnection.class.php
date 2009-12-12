@@ -222,6 +222,13 @@ class DBConnection {
       die();
    }
 
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['crontask'][10],
+                   'parameter'   => $LANG['setup'][806]);
+   }
+
    /**
     *  Cron process to check DB replicate state
     *
