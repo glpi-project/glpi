@@ -339,7 +339,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<td>" . $LANG['setup'][262] . "&nbsp;:</td>";
       echo "<td>";
-      dropdownYesNo("use_dn",$this->fields["use_dn"]);
+      Dropdown::showYesNo("use_dn",$this->fields["use_dn"]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value='".

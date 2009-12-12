@@ -115,7 +115,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      break;
 
                   case "bool" :
-                     dropdownYesNo($search["linkfield"]);
+                     Dropdown::showYesNo($search["linkfield"]);
                      $already_display=true;
                      break;
                }
@@ -171,7 +171,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
 
          case "glpi_ocslinks" : // auto_update ocs_link
-            dropdownYesNo("_auto_update_ocs");
+            Dropdown::showYesNo("_auto_update_ocs");
             echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
             $FIELDNAME_PRINTED=true;
             break;

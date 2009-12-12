@@ -303,7 +303,7 @@ class Software extends CommonDBTM {
       User::dropdownAllUsers("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
-      dropdownYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -326,7 +326,7 @@ class Software extends CommonDBTM {
       // UPDATE
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['software'][29] . "&nbsp;:</td><td colspan='3'>";
-      dropdownYesNo("is_update",$this->fields['is_update']);
+      Dropdown::showYesNo("is_update",$this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
       Dropdown::dropdownValue("glpi_softwares", "softwares_id", $this->fields["softwares_id"]);
       echo "</td></tr>\n";

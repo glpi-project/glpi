@@ -450,15 +450,15 @@ class Printer  extends CommonDBTM {
       echo "<td>\n<table>";
       // serial interface
       echo "<tr><td>".$LANG['printers'][14]."</td><td>";
-      dropdownYesNo("have_serial",$this->fields["have_serial"]);
+      Dropdown::showYesNo("have_serial",$this->fields["have_serial"]);
       echo "</td></tr>";
       // parallel interface?
       echo "<tr><td>".$LANG['printers'][15]."</td><td>";
-      dropdownYesNo("have_parallel",$this->fields["have_parallel"]);
+      Dropdown::showYesNo("have_parallel",$this->fields["have_parallel"]);
       echo "</td></tr>";
       // USB ?
       echo "<tr><td>".$LANG['printers'][27]."</td><td>";
-      dropdownYesNo("have_usb",$this->fields["have_usb"]);
+      Dropdown::showYesNo("have_usb",$this->fields["have_usb"]);
       echo "</td></tr></table>\n";
 
       echo "<tr class='tab_bg_1'>";

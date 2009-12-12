@@ -105,7 +105,7 @@ class RuleRight extends Rule {
          echo "<td class='center'>".$LANG['profiles'][22] . "&nbsp;:&nbsp;";
          Dropdown::dropdownValue("glpi_profiles","profiles_id");
          echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$LANG['profiles'][28] . "&nbsp;:&nbsp;";
-         dropdownYesNo("is_recursive",0);
+         Dropdown::showYesNo("is_recursive",0);
          echo "</td></tr>\n";
 
          echo "</table></div><br>";

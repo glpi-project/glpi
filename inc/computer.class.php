@@ -740,7 +740,7 @@ class Computer extends CommonDBTM {
           && haveRight("sync_ocsng","w") && count($dataocs)) {
          echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33]."&nbsp;:</td>";
          echo "<td >";
-         dropdownYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
+         Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
          echo "</td>";
       } else {
          echo "<td colspan=2></td>";

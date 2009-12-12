@@ -85,7 +85,7 @@ switch ($_POST["action_type"]) {
                break;
 
             case "yesno" :
-               dropdownYesNo("value");
+               Dropdown::showYesNo("value");
                $display=true;
                break;
          }

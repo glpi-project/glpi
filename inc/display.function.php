@@ -1808,7 +1808,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][8]."&nbsp;:</td>";
       echo "<td>";
-      dropdownYesNo('use_email_notification',$use_email_notification);
+      Dropdown::showYesNo('use_email_notification',$use_email_notification);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][11]."&nbsp;:</td>";

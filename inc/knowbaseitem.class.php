@@ -220,14 +220,14 @@ class KnowbaseItem extends CommonDBTM {
             Dropdown::dropdownValue("glpi_entities", "entities_id", $this->fields["entities_id"],0);
             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
             if ($canrecu) {
-               dropdownYesNo("is_recursive",$this->fields["is_recursive"]);
+               Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
             } else {
                echo getYesNo($this->fields["is_recursive"]);
             }
          }
          echo "<br><br>" . $LANG['knowbase'][5]."&nbsp;: ";
          if (haveRight("faq","w") && haveRight("knowbase","w")) {
-            dropdownYesNo('is_faq',$this->fields["is_faq"]);
+            Dropdown::showYesNo('is_faq',$this->fields["is_faq"]);
          } else {
             echo getYesNo($this->fields["is_faq"]);
          }

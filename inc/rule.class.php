@@ -144,7 +144,7 @@ class Rule extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][60]."&nbsp;:</td>";
       echo "<td>";
-      dropdownYesNo("is_active",$this->fields["is_active"]);
+      Dropdown::showYesNo("is_active",$this->fields["is_active"]);
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

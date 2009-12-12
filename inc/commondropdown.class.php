@@ -169,7 +169,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'bool' :
-               dropdownYesNo($field['name'], $this->fields[$field['name']]);
+               Dropdown::showYesNo($field['name'], $this->fields[$field['name']]);
                break;
          }
          echo "</td></tr>\n";

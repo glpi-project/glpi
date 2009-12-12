@@ -101,22 +101,6 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 }
 
 /**
- * Make a select box for a boolean choice (Yes/No)
- *
- * @param $name select name
- * @param $value preselected value.
- * @return nothing (print out an HTML select box)
- */
-function dropdownYesNo($name,$value=0) {
-   global $LANG;
-
-   echo "<select name='$name' id='dropdownyesno_$name'>";
-   echo "<option value='0' ".(!$value?" selected ":"").">".$LANG['choice'][0]."</option>";
-   echo "<option value='1' ".($value?" selected ":"").">".$LANG['choice'][1]."</option>";
-   echo "</select>";
-}
-
-/**
  * Get Yes No string
  *
  * @param $value Yes No value

@@ -362,12 +362,12 @@ class Phone extends CommonDBTM {
       // micro?
       echo "\n<table><tr><td>".$LANG['phones'][38]."</td>";
       echo "<td>&nbsp;";
-      dropdownYesNo("have_headset",$this->fields["have_headset"]);
+      Dropdown::showYesNo("have_headset",$this->fields["have_headset"]);
       echo "</td></tr>";
       // hp?
       echo "<tr><td>".$LANG['phones'][39]."</td>";
       echo "<td>&nbsp;";
-      dropdownYesNo("have_hp",$this->fields["have_hp"]);
+      Dropdown::showYesNo("have_hp",$this->fields["have_hp"]);
       echo "</td></tr></table>\n";
       echo "</td></tr>\n";
 

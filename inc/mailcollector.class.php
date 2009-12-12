@@ -157,7 +157,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";
-      dropdownYesNo("is_active", $this->fields["is_active"]);
+      Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
       showMailServerConfig($this->fields["host"]);

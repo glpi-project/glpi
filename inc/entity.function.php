@@ -146,7 +146,7 @@ function showEntityUser($target,$ID) {
          dropdownUnderProfiles("profiles_id");
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][28]."&nbsp;:&nbsp;";
-         dropdownYesNo("is_recursive",0);
+         Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";

@@ -1069,8 +1069,8 @@ function showOtherAuthList($target) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][199] . "</td><td>";
-   dropdownYesNo('existing_auth_server_field_clean_domain',
-                 $CFG_GLPI['existing_auth_server_field_clean_domain']);
+   Dropdown::showYesNo('existing_auth_server_field_clean_domain',
+                       $CFG_GLPI['existing_auth_server_field_clean_domain']);
    echo "</td></tr>\n";
 
    echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>\n";

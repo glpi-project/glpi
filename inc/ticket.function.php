@@ -881,7 +881,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
    }
 
    echo "<td class='center' colspan='2'>".$LANG['reports'][59]."&nbsp;:&nbsp;";
-   dropdownYesNo('showfollowups',$showfollowups);
+   Dropdown::showYesNo('showfollowups',$showfollowups);
    echo "</td>";
 
    if ($extended) {
@@ -1136,7 +1136,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td class='center' colspan='2'>".$LANG['reports'][59]."&nbsp;:&nbsp;";
-   dropdownYesNo('showfollowups',$showfollowups);
+   Dropdown::showYesNo('showfollowups',$showfollowups);
    echo "</td>";
 
    echo "<td class='center' colspan='1'>";
@@ -2200,10 +2200,10 @@ function showJobDetails($target, $ID,$array=array()) {
          if ($result && $DB->numrows($result)) {
             $email=$DB->result($result,0,"email");
          }
-         dropdownYesNo('use_email_notification',!empty($email));
+         Dropdown::showYesNo('use_email_notification',!empty($email));
       } else {
          if ($canupdate){
-            dropdownYesNo('use_email_notification',$job->fields["use_email_notification"]);
+            Dropdown::showYesNo('use_email_notification',$job->fields["use_email_notification"]);
          } else {
             if ($job->fields["use_email_notification"]) {
                echo $LANG['choice'][1];

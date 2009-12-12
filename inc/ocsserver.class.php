@@ -100,37 +100,37 @@ class OcsServer extends CommonDBTM {
       echo "<td class='tab_bg_2 top'>\n";
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . " </td>\n<td>";
-      dropdownYesNo("import_general_name", $this->fields["import_general_name"]);
+      Dropdown::showYesNo("import_general_name", $this->fields["import_general_name"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][9] . " </td>\n<td>";
-      dropdownYesNo("import_general_os", $this->fields["import_general_os"]);
+      Dropdown::showYesNo("import_general_os", $this->fields["import_general_os"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][10] . " </td>\n<td>";
-      dropdownYesNo("import_os_serial", $this->fields["import_os_serial"]);
+      Dropdown::showYesNo("import_os_serial", $this->fields["import_os_serial"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][19] . " </td>\n<td>";
-      dropdownYesNo("import_general_serial", $this->fields["import_general_serial"]);
+      Dropdown::showYesNo("import_general_serial", $this->fields["import_general_serial"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][22] . " </td>\n<td>";
-      dropdownYesNo("import_general_model", $this->fields["import_general_model"]);
+      Dropdown::showYesNo("import_general_model", $this->fields["import_general_model"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][5] . " </td>\n<td>";
-      dropdownYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
+      Dropdown::showYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][17] . " </td>\n<td>";
-      dropdownYesNo("import_general_type", $this->fields["import_general_type"]);
+      Dropdown::showYesNo("import_general_type", $this->fields["import_general_type"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][89] . " </td>\n<td>";
-      dropdownYesNo("import_general_domain", $this->fields["import_general_domain"]);
+      Dropdown::showYesNo("import_general_domain", $this->fields["import_general_domain"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][18] . " </td>\n<td>";
-      dropdownYesNo("import_general_contact", $this->fields["import_general_contact"]);
+      Dropdown::showYesNo("import_general_contact", $this->fields["import_general_contact"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . " </td>\n<td>";
-      dropdownYesNo("import_general_comment", $this->fields["import_general_comment"]);
+      Dropdown::showYesNo("import_general_comment", $this->fields["import_general_comment"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['networking'][14] . " </td>\n<td>";
-      dropdownYesNo("import_ip", $this->fields["import_ip"]);
+      Dropdown::showYesNo("import_ip", $this->fields["import_ip"]);
       echo "</td></tr>\n";
       echo "<tr><td>&nbsp;</td></tr>";
       echo "</table></td>\n";
@@ -138,31 +138,31 @@ class OcsServer extends CommonDBTM {
       echo "<td class='tab_bg_2 top'>\n";
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][4] . " </td>\n<td>";
-      dropdownYesNo("import_device_processor", $this->fields["import_device_processor"]);
+      Dropdown::showYesNo("import_device_processor", $this->fields["import_device_processor"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][6] . " </td>\n<td>";
-      dropdownYesNo("import_device_memory", $this->fields["import_device_memory"]);
+      Dropdown::showYesNo("import_device_memory", $this->fields["import_device_memory"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][1] . " </td>\n<td>";
-      dropdownYesNo("import_device_hdd", $this->fields["import_device_hdd"]);
+      Dropdown::showYesNo("import_device_hdd", $this->fields["import_device_hdd"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][3] . " </td>\n<td>";
-      dropdownYesNo("import_device_iface", $this->fields["import_device_iface"]);
+      Dropdown::showYesNo("import_device_iface", $this->fields["import_device_iface"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][2] . " </td>\n<td>";
-      dropdownYesNo("import_device_gfxcard", $this->fields["import_device_gfxcard"]);
+      Dropdown::showYesNo("import_device_gfxcard", $this->fields["import_device_gfxcard"]);
       echo "&nbsp;&nbsp;</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][7] . " </td>\n<td>";
-      dropdownYesNo("import_device_sound", $this->fields["import_device_sound"]);
+      Dropdown::showYesNo("import_device_sound", $this->fields["import_device_sound"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['devices'][19] . " </td>\n<td>";
-      dropdownYesNo("import_device_drive", $this->fields["import_device_drive"]);
+      Dropdown::showYesNo("import_device_drive", $this->fields["import_device_drive"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][36] . " </td>\n<td>";
-      dropdownYesNo("import_device_modem", $this->fields["import_device_modem"]);
+      Dropdown::showYesNo("import_device_modem", $this->fields["import_device_modem"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][37] . " </td>\n<td>";
-      dropdownYesNo("import_device_port", $this->fields["import_device_port"]);
+      Dropdown::showYesNo("import_device_port", $this->fields["import_device_port"]);
       echo "</td></tr>\n";
       echo "</table></td>\n";
 
@@ -208,7 +208,7 @@ class OcsServer extends CommonDBTM {
 
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . " </td>\n<td>";
-      dropdownYesNo("import_monitor_comment", $this->fields["import_monitor_comment"]);
+      Dropdown::showYesNo("import_monitor_comment", $this->fields["import_monitor_comment"]);
       echo "</td></tr>\n";
       echo "</table></td>\n";
 
@@ -282,15 +282,15 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][8] . " </td>\n<td>";
-      dropdownYesNo("import_disk", $this->fields["import_disk"]);
+      Dropdown::showYesNo("import_disk", $this->fields["import_disk"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][38] . " </td>\n<td>";
-      dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
+      Dropdown::showYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][41] . " </td>\n<td>";
-      dropdownYesNo("import_registry", $this->fields["import_registry"]);
+      Dropdown::showYesNo("import_registry", $this->fields["import_registry"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
@@ -319,15 +319,15 @@ class OcsServer extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][52];
       echo "<input type='hidden' name='id' value='" . $ID . "'></th></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][53] . " </td>\n<td colspan='3'>";
-      dropdownYesNo("is_glpi_link_enabled", $this->fields["is_glpi_link_enabled"]);
+      Dropdown::showYesNo("is_glpi_link_enabled", $this->fields["is_glpi_link_enabled"]);
       echo "</td></tr>\n";
 
       echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][54] . "</th></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['networking'][14] . " </td>\n<td>";
-      dropdownYesNo("use_ip_to_link", $this->fields["use_ip_to_link"]);
+      Dropdown::showYesNo("use_ip_to_link", $this->fields["use_ip_to_link"]);
       echo "</td>\n";
       echo "<td>" . $LANG['device_iface'][2] . " </td>\n<td>";
-      dropdownYesNo("use_mac_to_link", $this->fields["use_mac_to_link"]);
+      Dropdown::showYesNo("use_mac_to_link", $this->fields["use_mac_to_link"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][25] . " </td>\n<td>";
       $link_array=array("0"=>$LANG['choice'][0],
@@ -336,7 +336,7 @@ class OcsServer extends CommonDBTM {
       dropdownArrayValues("use_name_to_link", $link_array,$this->fields["use_name_to_link"]);
       echo "</td>\n";
       echo "<td>" . $LANG['common'][19] . " </td>\n<td>";
-      dropdownYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
+      Dropdown::showYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td>\n<td colspan='3'>";
       Dropdown::dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);

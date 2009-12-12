@@ -262,7 +262,7 @@ function showUserRights($target,$ID) {
       echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
       dropdownUnderProfiles("profiles_id");
       echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
-      dropdownYesNo("is_recursive",0);
+      Dropdown::showYesNo("is_recursive",0);
       echo "</td><td class='center'>";
       echo "<input type='submit' name='addright' value='".$LANG['buttons'][8]."' class='submit'>";
       echo "</td></tr>";
