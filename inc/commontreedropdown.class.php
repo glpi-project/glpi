@@ -180,7 +180,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $fk = getForeignKeyFieldForTable($this->table);
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
-      if ($fk != 'entities_id' && $this->entity_assign) {
+      if ($fk = 'entities_id') {
+         $crit['id']  = $_SESSION['glpiactiveentities'];
+         $crit['id'] += $_SESSION['glpiparententities'];
+      } else if ($this->entity_assign) {
          $crit['entities_id'] = $_SESSION['glpiactiveentities'];
       }
       foreach ($DB->request($this->table, $crit) as $data) {
