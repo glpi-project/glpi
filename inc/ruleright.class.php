@@ -255,9 +255,9 @@ class RuleRight extends Rule {
                            $res = getRegexResultById($action->fields["value"],array($regex_result));
                            if ($res != null) {
                               if ($action->fields["field"] == "_affect_entity_by_dn") {
-                                 $entity_found = getEntityIDByDN($res);
+                                 $entity_found = EntityData::getEntityIDByDN($res);
                               } else {
-                                $entity_found = getEntityIDByTag($res);
+                                $entity_found = EntityData::getEntityIDByTag($res);
                               }
                               //If an entity was found
                               if ($entity > -1) {

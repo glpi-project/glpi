@@ -187,7 +187,7 @@ class RuleOcs extends Rule {
                      $res = getRegexResultById($action->fields["value"],$regex_results);
                      if ($res != null) {
                         //Get the entity associated with the TAG
-                        $target_entity = getEntityIDByTag($res);
+                        $target_entity = EntityData::getEntityIDByTag($res);
                         if ($target_entity != '') {
                            $output["entities_id"]=$target_entity;
                         }

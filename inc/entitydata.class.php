@@ -216,6 +216,30 @@ class EntityData extends CommonDBTM {
          echo "</table>";
       }
    }
+
+   private static function getEntityIDByField($field,$value) {
+      global $DB;
+
+      $sql = "SELECT `entities_id`
+              FROM `glpi_entitydatas`
+              WHERE ".$field."='".$value."'";
+
+      $result = $DB->query($sql);
+      if ($DB->numrows($result)==1) {
+         return $DB->result($result,0,"entities_id");
+      } else {
+         return -1;
+      }
+   }
+
+   static function getEntityIDByDN($value) {
+      return self::getEntityIDByField("ldap_dn",$value);
+   }
+
+   static function getEntityIDByTag($value) {
+      return self::getEntityIDByField("tag",$value);
+   }
+
 }
 
 ?>

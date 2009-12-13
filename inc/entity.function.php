@@ -236,27 +236,4 @@ function moveUserProfileEntity($ID,$entities_id) {
    return $DB->query($query);
 }
 
-function getEntityIDByField($field,$value) {
-   global $DB;
-
-   $sql = "SELECT `entities_id`
-           FROM `glpi_entitydatas`
-           WHERE ".$field."='".$value."'";
-
-   $result = $DB->query($sql);
-   if ($DB->numrows($result)==1) {
-      return $DB->result($result,0,"entities_id");
-   } else {
-      return -1;
-   }
-}
-
-function getEntityIDByDN($value) {
-   return getEntityIDByField("ldap_dn",$value);
-}
-
-function getEntityIDByTag($value) {
-   return getEntityIDByField("tag",$value);
-}
-
 ?>
