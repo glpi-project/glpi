@@ -761,7 +761,7 @@ function replaceDropDropDown($input) {
       $DB->query($query);
 
       $di = new Document_Item();
-      $di->cleanDBonItemDelete(ENTITY_TYPE,$input["oldID"]);
+      $di->cleanDBonItemDelete('Entity',$input["oldID"]);
 
       // Clean sons / ancestors if needed
       CleanFields('glpi_entities', 'sons_cache', 'ancestors_cache');
@@ -885,7 +885,7 @@ function listTemplates($itemtype, $target, $add = 0) {
    $whereentity = " AND `entities_id` = '" . $_SESSION["glpiactive_entity"] . "'";
    $order = " ORDER by `template_name`";
    switch ($itemtype) {
-      case COMPUTER_TYPE :
+      case 'Computer' :
          $title = $LANG['Menu'][0];
          $query .= "FROM `glpi_computers`
                     $where
@@ -893,7 +893,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case NETWORKING_TYPE :
+      case 'NetworkEquipment' :
          $title = $LANG['Menu'][1];
          $query .= "FROM `glpi_networkequipments`
                     $where
@@ -901,7 +901,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case MONITOR_TYPE :
+      case 'Monitor' :
          $title = $LANG['Menu'][3];
          $query .= "FROM `glpi_monitors`
                     $where
@@ -909,7 +909,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case PRINTER_TYPE :
+      case 'Printer' :
          $title = $LANG['Menu'][2];
          $query .= "FROM `glpi_printers`
                     $where
@@ -917,7 +917,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case PERIPHERAL_TYPE :
+      case 'Peripheral' :
          $title = $LANG['Menu'][16];
          $query .= "FROM `glpi_peripherals`
                     $where
@@ -925,7 +925,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case SOFTWARE_TYPE :
+      case 'Software' :
          $title = $LANG['Menu'][4];
          $query .= "FROM `glpi_softwares`
                     $where
@@ -933,7 +933,7 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case PHONE_TYPE :
+      case 'Phone' :
          $title = $LANG['Menu'][34];
          $query .= "FROM `glpi_phones`
                     $where
@@ -941,14 +941,14 @@ function listTemplates($itemtype, $target, $add = 0) {
                     $order";
          break;
 
-      case OCSNG_TYPE :
+      case 'OcsServer' :
          $title = $LANG['Menu'][33];
          $query .= "FROM `glpi_ocsservers`
                     $where
                     $order";
          break;
 
-      case BUDGET_TYPE :
+      case 'Budget' :
          $title = $LANG['financial'][87];
          $query .= "FROM `glpi_budgets`
                     $where

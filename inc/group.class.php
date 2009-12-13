@@ -195,7 +195,7 @@ class Group extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = GROUP_TYPE;
+      $tab[1]['itemlink_type'] = 'Group';
 
       $tab[2]['table']     = 'glpi_groups';
       $tab[2]['field']     = 'id';

@@ -890,7 +890,7 @@ class OcsServer extends CommonDBTM {
             $changes[0]='0';
             $changes[1]="";
             $changes[2]=$ocsid;
-            historyLog ($computers_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_LINK);
+            historyLog ($computers_id,'Computer',$changes,0,HISTORY_OCS_LINK);
 
             OcsServer::updateComputer($idlink, $ocsservers_id, 0);
             return true;
@@ -2263,7 +2263,7 @@ class OcsServer extends CommonDBTM {
                         $querySearchLocked = "SELECT *
                                               FROM `glpi_networkports`
                                               WHERE `items_id` = '$computers_id'
-                                                    AND `itemtype` = '".COMPUTER_TYPE."'
+                                                    AND `itemtype` = 'Computer'
                                                     AND `ip` = '$val'";
                         break;
 
@@ -2461,7 +2461,7 @@ class OcsServer extends CommonDBTM {
                $querySearchLockedIP = "SELECT *
                                        FROM `glpi_networkports`
                                        WHERE `items_id` = '$ID'
-                                             AND `itemtype` = '".COMPUTER_TYPE."'
+                                             AND `itemtype` = 'Computer'
                                              AND `ip` = '".$tmp[0]."'
                                              AND `mac` = '".$tmp[1]."'";
                $resultSearchIP = $DB->query($querySearchLockedIP);
@@ -2907,7 +2907,7 @@ class OcsServer extends CommonDBTM {
                            //get old IP in DB
                            $querySelectIDandIP = "SELECT `id`, `ip`
                                                   FROM `glpi_networkports`
-                                                  WHERE `itemtype` = '" . COMPUTER_TYPE . "'
+                                                  WHERE `itemtype` = 'Computer'
                                                         AND `items_id` = '$computers_id'
                                                         AND `mac` = '" . $line2["MACADDR"] . "'
                                                         AND `name` = '" . $line2["DESCRIPTION"] . "'";
@@ -2929,7 +2929,7 @@ class OcsServer extends CommonDBTM {
                               = externalImportDropdown("glpi_networkinterfaces", $line2["TYPE"]);
                         $netport["name"] = $line2["DESCRIPTION"];
                         $netport["items_id"] = $computers_id;
-                        $netport["itemtype"] = COMPUTER_TYPE;
+                        $netport["itemtype"] = 'Computer';
                         $netport["netmask"] = $line2["IPMASK"];
                         $netport["gateway"] = $line2["IPGATEWAY"];
                         $netport["subnet"] = $line2["IPSUBNET"];
@@ -3209,15 +3209,15 @@ class OcsServer extends CommonDBTM {
       global $LANG;
 
       switch ($itemtype) {
-         case MONITOR_TYPE :
+         case 'Monitor' :
             return $ocs_config["import_monitor"];
             break;
 
-         case PRINTER_TYPE :
+         case 'Printer' :
             return $ocs_config["import_printer"];
             break;
 
-         case PERIPHERAL_TYPE :
+         case 'Peripheral' :
             return $ocs_config["import_periph"];
             break;
       }
@@ -3453,7 +3453,7 @@ class OcsServer extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_computers_items`
                 WHERE `computers_id` = '$glpi_computers_id'
-                      AND `itemtype` = '" . PRINTER_TYPE . "'";
+                      AND `itemtype` = 'Printer'";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          $conn = new Computer_Item();
@@ -3463,7 +3463,7 @@ class OcsServer extends CommonDBTM {
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
                        WHERE `items_id` = '" . $data['items_id'] . "'
-                             AND `itemtype` = '" . PRINTER_TYPE . "'";
+                             AND `itemtype` = 'Printer'";
             $result2 = $DB->query($query2);
             $printer = new Printer();
             if ($DB->result($result2, 0, 0) == 1) {
@@ -3489,7 +3489,7 @@ class OcsServer extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_computers_items`
                 WHERE `computers_id` = '$glpi_computers_id'
-                      AND `itemtype` = '" . MONITOR_TYPE . "'";
+                      AND `itemtype` = 'Monitor'";
       $result = $DB->query($query);
 
       $mon = new Monitor();
@@ -3501,7 +3501,7 @@ class OcsServer extends CommonDBTM {
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
                        WHERE `items_id` = '" . $data['items_id'] . "'
-                             AND `itemtype` = '" . MONITOR_TYPE . "'";
+                             AND `itemtype` = 'Monitor'";
             $result2 = $DB->query($query2);
             if ($DB->result($result2, 0, 0) == 1) {
                $mon->delete(array('id' => $data['items_id']), 1);
@@ -3526,7 +3526,7 @@ class OcsServer extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_computers_items`
                 WHERE `computers_id` = '$glpi_computers_id'
-                      AND `itemtype` = '" . PERIPHERAL_TYPE . "'";
+                      AND `itemtype` = 'Peripheral'";
       $result = $DB->query($query);
       $per = new Peripheral();
       if ($DB->numrows($result) > 0) {
@@ -3537,7 +3537,7 @@ class OcsServer extends CommonDBTM {
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
                        WHERE `items_id` = '" . $data['items_id'] . "'
-                             AND `itemtype` = '" . PERIPHERAL_TYPE . "'";
+                             AND `itemtype` = 'Peripheral'";
             $result2 = $DB->query($query2);
             if ($DB->result($result2, 0, 0) == 1) {
                $per->delete(array('id' => $data['items_id']), 1);
@@ -4115,7 +4115,7 @@ class OcsServer extends CommonDBTM {
       //Tag for data since 0.70 for the import_monitor array.
       $count_monitor = count($import_periph);
       switch ($itemtype) {
-         case MONITOR_TYPE :
+         case 'Monitor' :
             if ($cfg_ocs["import_monitor"]) {
                //Update data in import_monitor array for 0.70
                if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
@@ -4252,7 +4252,7 @@ class OcsServer extends CommonDBTM {
                                  $query = "SELECT `glpi_monitors`.`id`
                                            FROM `glpi_monitors`
                                            LEFT JOIN `glpi_computers_items`
-                                             ON (`glpi_computers_items`.`itemtype`='".MONITOR_TYPE."'
+                                             ON (`glpi_computers_items`.`itemtype`='Monitor'
                                                  AND `glpi_computers_items`.`items_id`=`glpi_monitors`.`id`)
                                            WHERE `serial` = ''
                                                  AND `name` = '" . $mon["name"] . "'
@@ -4279,7 +4279,7 @@ class OcsServer extends CommonDBTM {
                            //Import unique : Disconnect monitor on other computer done in Connect function
                            $conn = new Computer_Item();
                            $connID = $conn->add(array('computers_id' => $computers_id,
-                                                      'itemtype'     => MONITOR_TYPE,
+                                                      'itemtype'     => 'Monitor',
                                                       'items_id'     => $id_monitor));
 
                            if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
@@ -4325,7 +4325,7 @@ class OcsServer extends CommonDBTM {
             }
             break;
 
-         case PRINTER_TYPE :
+         case 'Printer' :
             if ($cfg_ocs["import_printer"]) {
                $do_clean = true;
                $query = "SELECT *
@@ -4384,7 +4384,7 @@ class OcsServer extends CommonDBTM {
                            if ($id_printer) {
                               $conn = new Computer_Item();
                               $connID = $conn->add(array('computers_id' => $computers_id,
-                                                         'itemtype'     => PRINTER_TYPE,
+                                                         'itemtype'     => 'Printer',
                                                          'items_id'     => $id_printer));
                               OcsServer::addToOcsArray($computers_id, array ($connID => $print["name"]),
                                             "import_printer");
@@ -4407,7 +4407,7 @@ class OcsServer extends CommonDBTM {
             }
             break;
 
-         case PERIPHERAL_TYPE :
+         case 'Peripheral' :
             if ($cfg_ocs["import_periph"]) {
                $do_clean = true;
                $p = new Peripheral;
@@ -4470,7 +4470,7 @@ class OcsServer extends CommonDBTM {
                         if ($id_periph) {
                            $conn = new Computer_Item();
                            $connID = $conn->add(array('computers_id' => $computers_id,
-                                                      'itemtype'     => PERIPHERAL_TYPE,
+                                                      'itemtype'     => 'Peripheral',
                                                       'items_id'     => $id_periph));
                            OcsServer::addToOcsArray($computers_id, array($connID => $periph["name"]),
                                          "import_peripheral");
@@ -4499,7 +4499,7 @@ class OcsServer extends CommonDBTM {
 
          foreach ($import_periph as $key => $val) {
             switch ($itemtype) {
-               case MONITOR_TYPE :
+               case 'Monitor' :
                   // Only if sync done
                   if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
                      $conn->delete(array('id'=>$key,
@@ -4508,13 +4508,13 @@ class OcsServer extends CommonDBTM {
                   }
                   break;
 
-               case PRINTER_TYPE :
+               case 'Printer' :
                   $conn->delete(array('id'=>$key,
                                       '_ocsservers_id'=>$ocsservers_id));
                   OcsServer::deleteInOcsArray($computers_id, $key, "import_printer");
                   break;
 
-               case PERIPHERAL_TYPE :
+               case 'Peripheral' :
                   $conn->delete(array('id'=>$key,
                                       '_ocsservers_id'=>$ocsservers_id));
                   OcsServer::deleteInOcsArray($computers_id, $key, "import_peripheral");

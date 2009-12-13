@@ -43,7 +43,7 @@ class NetworkPort extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_networkports';
-   public $type = NETWORKING_PORT_TYPE;
+   public $type = 'NetworkPort';
 
    /// TODO manage access right on this object
 

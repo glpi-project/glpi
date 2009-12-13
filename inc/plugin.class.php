@@ -42,7 +42,7 @@ class Plugin extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_plugins';
-   public $type = PLUGIN_TYPE;
+   public $type = 'Plugin';
 
    /**
     * Retrieve an item from the database using its directory
@@ -225,7 +225,7 @@ class Plugin extends CommonDBTM {
             case PLUGIN_NOTINSTALLED :
                echo $LANG['plugins'][1];
                break;
-             
+
             case PLUGIN_NOTUPDATED :
                echo $LANG['plugins'][6];
                break;
@@ -284,7 +284,7 @@ class Plugin extends CommonDBTM {
                      $do_install=$function();
                   }
                   if ($plug['state']==PLUGIN_NOTUPDATED) {
-                     $msg = $LANG['install'][4]; 
+                     $msg = $LANG['install'][4];
                   } else {
                      $msg = $LANG['buttons'][4];
                   }

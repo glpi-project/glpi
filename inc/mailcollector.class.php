@@ -214,7 +214,7 @@ class MailCollector  extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = MAILGATE_TYPE;
+      $tab[1]['itemlink_type'] = 'MailCollector';
 
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';

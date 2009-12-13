@@ -292,7 +292,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemcategories_id,$faq
          $parameters="start=$start&amp;knowbaseitemcategories_id=".
                      "$knowbaseitemcategories_id&amp;contains=$contains&amp;is_faq=$faq";
          if ($output_type==HTML_OUTPUT) {
-            printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
+            printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
          }
          $nbcols=1;
          // Display List Header
@@ -341,7 +341,7 @@ function showKbItemList($target,$contains,$start,$knowbaseitemcategories_id,$faq
          }
          echo "<br>";
          if ($output_type==HTML_OUTPUT) {
-            printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
+            printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
          }
       } else {
          if ($knowbaseitemcategories_id!=0) {

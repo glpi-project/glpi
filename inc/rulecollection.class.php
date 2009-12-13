@@ -255,10 +255,10 @@ class RuleCollection {
       echo "<td class='tab_bg_2 center'>".$LANG['common'][60]."</td>";
       echo "<td class='tab_bg_2' colspan='2'></td></tr>\n";
 
-      initNavigateListItems(RULE_TYPE,"",$this->sub_type);
+      initNavigateListItems('Rule',"",$this->sub_type);
       for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
-         addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['id'],$this->sub_type);
+         addToNavigateListItems('Rule',$this->RuleList->list[$j]->fields['id'],$this->sub_type);
       }
       echo "</table>\n";
       if ($canedit && $nb>0) {
@@ -273,9 +273,9 @@ class RuleCollection {
          echo "<option value='activate_rule'>".$LANG['buttons'][41]."</option>";
          echo "</select>\n";
 
-         $params=array('action'=>'__VALUE__',
-                       'itemtype'=>RULE_TYPE,
-                       'sub_type'=>$this->sub_type);
+         $params = array('action'   => '__VALUE__',
+                         'itemtype' => 'Rule',
+                         'sub_type' => $this->sub_type);
 
          ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);

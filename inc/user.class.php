@@ -44,7 +44,7 @@ class User extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_users';
-   public $type = USER_TYPE;
+   public $type = 'User';
    public $dohistory = true;
    public $history_blacklist = array('last_login');
 
@@ -1469,7 +1469,7 @@ class User extends CommonDBTM {
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['setup'][18];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = USER_TYPE;
+      $tab[1]['itemlink_type'] = 'User';
       $tab[1]['forcegroupby']  = true;
 
       $tab[2]['table']     = 'glpi_users';

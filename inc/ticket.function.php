@@ -308,7 +308,7 @@ function showJobListForItem($itemtype,$items_id) {
    // Ticket for the item
    echo "<div class='center'><table class='tab_cadre_fixe'>";
    if ($number > 0) {
-      initNavigateListItems(TRACKING_TYPE,$item->getTypeName()." = ".$item->getName());
+      initNavigateListItems('Ticket',$item->getTypeName()." = ".$item->getName());
 
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
@@ -331,7 +331,7 @@ function showJobListForItem($itemtype,$items_id) {
       commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"id=$items_id","","",true);
 
       while ($data=$DB->fetch_assoc($result)) {
-         addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+         addToNavigateListItems('Ticket',$data["id"]);
          showJobShort($data, 0);
       }
    }
@@ -385,7 +385,7 @@ function showJobListForSupplier($entID) {
    if ($number > 0) {
       $ent=new Supplier();
       $ent->getFromDB($entID);
-      initNavigateListItems(TRACKING_TYPE,$LANG['financial'][26]." = ".$ent->fields['name']);
+      initNavigateListItems('Ticket',$LANG['financial'][26]." = ".$ent->fields['name']);
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
@@ -396,7 +396,7 @@ function showJobListForSupplier($entID) {
       commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
 
       while ($data=$DB->fetch_assoc($result)) {
-         addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+         addToNavigateListItems('Ticket',$data["id"]);
          showJobShort($data, 0);
       }
       echo "</table></div>";
@@ -429,7 +429,7 @@ function showJobListForUser($userID) {
    if ($number > 0) {
       $user=new User();
       $user->getFromDB($userID);
-      initNavigateListItems(TRACKING_TYPE,$LANG['common'][34]." = ".$user->getName());
+      initNavigateListItems('Ticket',$LANG['common'][34]." = ".$user->getName());
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
@@ -440,7 +440,7 @@ function showJobListForUser($userID) {
       commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
 
       while ($data=$DB->fetch_assoc($result)) {
-         addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+         addToNavigateListItems('Ticket',$data["id"]);
          showJobShort($data, 0);
       }
       echo "</table></div>";
@@ -471,7 +471,7 @@ function showNewJobList() {
    $number = $DB->numrows($result);
 
    if ($number > 0) {
-      initNavigateListItems(TRACKING_TYPE);
+      initNavigateListItems('Ticket');
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
@@ -482,7 +482,7 @@ function showNewJobList() {
       commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
 
       while ($data=$DB->fetch_assoc($result)) {
-         addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+         addToNavigateListItems('Ticket',$data["id"]);
          showJobShort($data, 0);
       }
       echo "</table></div>";
@@ -640,14 +640,14 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
          if (!empty($fifth_col)) {
             $fifth_col .= "<br>";
          }
-         $fifth_col .= getAssignName($data["groups_id_assign"],GROUP_TYPE,1);
+         $fifth_col .= getAssignName($data["groups_id_assign"],'Group',1);
       }
 
       if ($data["suppliers_id_assign"]>0) {
          if (!empty($fifth_col)) {
             $fifth_col .= "<br>";
          }
-         $fifth_col .= getAssignName($data["suppliers_id_assign"],ENTERPRISE_TYPE,1);
+         $fifth_col .= getAssignName($data["suppliers_id_assign"],'Supplier',1);
       }
       echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
@@ -1144,7 +1144,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    echo "<td class='center' colspan='1'>";
    echo "<input type='submit' name='reset' value='".$LANG['buttons'][16]."' class='submit'>&nbsp;";
-   Bookmark::showSaveButton(BOOKMARK_SEARCH,TRACKING_TYPE);
+   Bookmark::showSaveButton(BOOKMARK_SEARCH,'Ticket');
    // Needed for bookmark
    echo "<input type='hidden' name='extended' value='$extended'>";
    echo "</td>";
@@ -1553,7 +1553,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
          }
          if ($output_type==HTML_OUTPUT) {
             if (!strpos($target,"helpdesk.public.php")) {
-               printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);
+               printPager($start,$numrows,$target,$parameters,'Ticket');
             } else {
                printPager($start,$numrows,$target,$parameters);
             }
@@ -1583,11 +1583,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
          commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
          if ($output_type==HTML_OUTPUT) {
-            initNavigateListItems(TRACKING_TYPE,$LANG['common'][53]);
+            initNavigateListItems('Ticket',$LANG['common'][53]);
          }
 
          while ($i < $numrows && $i<$end_display && $data=$DB->fetch_array($result)) {
-            addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+            addToNavigateListItems('Ticket',$data["id"]);
             showJobShort($data, $showfollowups,$output_type,$i-$start+1);
             $i++;
          }
@@ -1682,7 +1682,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
          // Delete selected item
          if (($candelete||$canupdate) && $output_type==HTML_OUTPUT) {
             openArrowMassive("massiveaction_form");
-            dropdownMassiveAction(TRACKING_TYPE);
+            dropdownMassiveAction('Ticket');
             closeArrowMassive();
 
              // End form for delete item
@@ -1746,15 +1746,15 @@ function getAssignName($ID,$itemtype,$link=0) {
    global $CFG_GLPI;
 
    switch ($itemtype) {
-      case USER_TYPE :
+      case 'User' :
          if ($ID==0) {
             return "";
          }
          return getUserName($ID,$link);
          break;
 
-      case ENTERPRISE_TYPE :
-      case GROUP_TYPE :
+      case 'Supplier' :
+      case 'Group' :
          $item=new $itemtype();
          if ($item->getFromDB($ID)) {
             $before = "";
@@ -2255,7 +2255,7 @@ function showJobDetails($target, $ID,$array=array()) {
    $query2 = "SELECT *
               FROM `glpi_documents_items`
               WHERE `glpi_documents_items`.`items_id` = '".$job->fields["id"]."'
-                    AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."' ";
+                    AND `glpi_documents_items`.`itemtype` = 'Ticket' ";
    $result2 = $DB->query($query2);
    $numfiles=$DB->numrows($result2);
 

@@ -285,7 +285,7 @@ class Contract extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = CONTRACT_TYPE;
+      $tab[1]['itemlink_type'] = 'Contract';
 
       $tab[2]['table']     = 'glpi_contracts';
       $tab[2]['field']     = 'id';
@@ -676,7 +676,7 @@ class Contract extends CommonDBTM {
             $query = "SELECT `$itemtable`.*, `glpi_contracts_items`.`id` AS IDD,
                            `glpi_entities`.`id` AS entity
                      FROM `glpi_contracts_items`, `$itemtable`";
-            if ($itemtype != ENTITY_TYPE) {
+            if ($itemtype != 'Entity') {
                $query .= " LEFT JOIN `glpi_entities`
                               ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
             }
@@ -843,12 +843,12 @@ class Contract extends CommonDBTM {
       echo "</tr>";
 
       if ($number>0) {
-         initNavigateListItems(CONTRACT_TYPE, $item->getTypeName()." = ".$item->getName());
+         initNavigateListItems('Contract', $item->getTypeName()." = ".$item->getName());
       }
       $contracts=array();
       while ($i < $number) {
          $cID=$DB->result($result, $i, "contracts_id");
-         addToNavigateListItems(CONTRACT_TYPE,$cID);
+         addToNavigateListItems('Contract',$cID);
          $contracts[]=$cID;
          $assocID=$DB->result($result, $i, "id");
          $con=new Contract;
@@ -943,7 +943,7 @@ class Contract extends CommonDBTM {
       $query="SELECT `glpi_contracts`.*
               FROM `glpi_contracts`
               LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype`='".CONTRACT_TYPE."'
+                                          AND `glpi_alerts`.`itemtype` = 'Contract'
                                           AND `glpi_alerts`.`type`='".ALERT_NOTICE."')
               WHERE (`glpi_contracts`.`alert` & ".pow(2,ALERT_NOTICE).") >'0'
                     AND `glpi_contracts`.`is_deleted` = '0'
@@ -975,7 +975,7 @@ class Contract extends CommonDBTM {
       $query="SELECT `glpi_contracts`.*
               FROM `glpi_contracts`
               LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype`='".CONTRACT_TYPE."'
+                                          AND `glpi_alerts`.`itemtype` = 'Contract'
                                           AND `glpi_alerts`.`type`='".ALERT_END."')
               WHERE (`glpi_contracts`.`alert` & ".pow(2,ALERT_END).") > '0'
                     AND `glpi_contracts`.`is_deleted` = '0'
@@ -1014,7 +1014,7 @@ class Contract extends CommonDBTM {
 
                // Mark alert as done
                $alert=new Alert();
-               $input["itemtype"]=CONTRACT_TYPE;
+               $input["itemtype"] = 'Contract';
                $input["type"]=ALERT_NOTICE;
                if (isset($items_notice[$entity])) {
                   foreach ($items_notice[$entity] as $ID) {

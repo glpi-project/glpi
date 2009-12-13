@@ -434,7 +434,7 @@ function printReservation($target,$ID,$date) {
                 && haveAccessToEntity($item->fields["entities_id"])) {
 
                $typename=$item->getTypeName();
-               if ($m->fields["itemtype"]==PERIPHERAL_TYPE) {
+               if ($m->fields["itemtype"] == 'Peripheral') {
                   if (isset($item->fields["peripheraltypes_id"])
                       && $item->fields["peripheraltypes_id"]!=0) {
 
@@ -569,7 +569,7 @@ function printReservationItems($target) {
             echo "<tr class='tab_bg_2'><td>";
             echo "<input type='checkbox' name='add_item[".$row["id"]."]' value='".$row["id"]."'></td>";
             $typename=$item->getTypeName();
-            if ($itemtype==PERIPHERAL_TYPE) {
+            if ($itemtype == 'Peripheral') {
                $item->getFromDB($row['items_id']);
                if (isset($item->fields["peripheraltypes_id"])
                    && $item->fields["peripheraltypes_id"]!=0) {

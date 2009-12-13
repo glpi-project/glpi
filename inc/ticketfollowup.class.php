@@ -43,7 +43,7 @@ class TicketFollowup  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_ticketfollowups';
-   public $type = FOLLOWUP_TYPE;
+   public $type = 'TicketFollowup';
 
    function cleanDBonPurge($ID) {
       global $DB;

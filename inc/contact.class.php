@@ -250,7 +250,7 @@ class Contact extends CommonDBTM{
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][48];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = CONTACT_TYPE;
+      $tab[1]['itemlink_type'] = 'Contact';
 
       $tab[11]['table']     = 'glpi_contacts';
       $tab[11]['field']     = 'firstname';
@@ -299,7 +299,7 @@ class Contact extends CommonDBTM{
       $tab[8]['name']          = $LANG['financial'][65];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['datatype']      = 'itemlink';
-      $tab[8]['itemlink_type'] = ENTERPRISE_TYPE;
+      $tab[8]['itemlink_type'] = 'Supplier';
 
       $tab[16]['table']     = 'glpi_contacts';
       $tab[16]['field']     = 'comment';
@@ -370,10 +370,10 @@ class Contact extends CommonDBTM{
 
       $used=array();
       if ($number>0) {
-         initNavigateListItems(ENTERPRISE_TYPE,$LANG['common'][18]." = ".$this->fields['name']);
+         initNavigateListItems('Supplier',$LANG['common'][18]." = ".$this->fields['name']);
          while ($data= $DB->fetch_array($result)) {
             $ID=$data["id"];
-            addToNavigateListItems(ENTERPRISE_TYPE,$data["entID"]);
+            addToNavigateListItems('Supplier',$data["entID"]);
             $used[$data["entID"]]=$data["entID"];
             $website=$data["website"];
             if (!empty($website)) {

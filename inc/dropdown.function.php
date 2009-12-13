@@ -171,7 +171,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
 
                while ($data=$DB->fetch_array($result)) {
                   $output=$data["name"];
-                  if ($itemtype!=SOFTWARE_TYPE) {
+                  if ($itemtype != 'Software') {
                      if (!empty($data['serial'])) {
                         $output.=" - ".$data['serial'];
                      }
@@ -274,15 +274,12 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
          }
       }
       // Get linked items to computers
-      if (isset($already_add[COMPUTER_TYPE]) && count($already_add[COMPUTER_TYPE])) {
-         $search_computer=" XXXX IN (".implode(',',$already_add[COMPUTER_TYPE]).') ';
+      if (isset($already_add['Computer']) && count($already_add['Computer'])) {
+         $search_computer=" XXXX IN (".implode(',',$already_add['Computer']).') ';
          $tmp_device="";
 
          // Direct Connection
-         $types=array(PERIPHERAL_TYPE,
-                      MONITOR_TYPE,
-                      PRINTER_TYPE,
-                      PHONE_TYPE);
+         $types=array('Peripheral', 'Monitor', 'Printer', 'Phone');
          foreach ($types as $itemtype) {
             if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
                && class_exists($itemtype)) {
@@ -313,7 +310,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                   while ($data=$DB->fetch_array($result)) {
                      if (!in_array($data["id"],$already_add[$itemtype])) {
                         $output=$data["name"];
-                        if ($itemtype!=SOFTWARE_TYPE) {
+                        if ($itemtype != 'Software') {
                            $output.=" - ".$data['serial']." - ".$data['otherserial'];
                         }
                         if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -336,7 +333,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
          }
 
          // Software
-         if (in_array(SOFTWARE_TYPE,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+         if (in_array('Software',$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             $query = "SELECT DISTINCT `glpi_softwareversions`.`name` AS version,
                                       `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
                       FROM `glpi_computers_softwareversions`, `glpi_softwares`,
@@ -355,18 +352,18 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                $tmp_device="";
                $item = new Software();
                $type_name=$item->getTypeName();
-               if (!isset($already_add[SOFTWARE_TYPE])) {
-                  $already_add[SOFTWARE_TYPE]=array();
+               if (!isset($already_add['Software'])) {
+                  $already_add['Software'] = array();
                }
                while ($data=$DB->fetch_array($result)) {
-                  if (!in_array($data["id"],$already_add[SOFTWARE_TYPE])) {
-                     $tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["id"]."' ";
-                     $tmp_device.=($my_item==SOFTWARE_TYPE."_".$data["id"]?"selected":"").">";
+                  if (!in_array($data["id"],$already_add['Software'])) {
+                     $tmp_device.="<option value='Software_".$data["id"]."' ";
+                     $tmp_device.=($my_item == 'Software'."_".$data["id"]?"selected":"").">";
                      $tmp_device.="$type_name - ".$data["name"]." (v. ".$data["version"].")";
                      $tmp_device.=($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
                      $tmp_device.="</option>";
 
-                     $already_add[SOFTWARE_TYPE][]=$data["id"];
+                     $already_add['Software'][]=$data["id"];
                   }
                }
                if (!empty($tmp_device)) {
@@ -619,8 +616,8 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
    echo '<select name="massiveaction" id="massiveaction">';
    echo '<option value="-1" selected>-----</option>';
    if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
-       && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"]) && haveTypeRight(INFOCOM_TYPE,"w"))
-                    || ($itemtype==TRACKING_TYPE && haveRight('update_ticket',1)))) {
+       && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"]) && haveTypeRight('Infocom',"w"))
+                    || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
 
       echo "<option value='update'>".$LANG['buttons'][14]."</option>";
    }
@@ -633,38 +630,34 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
    } else {
       // No delete for entities and tracking of not have right
       if (!in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])
-          && (($isadmin && $itemtype != TRACKING_TYPE)
-              || ($itemtype==TRACKING_TYPE && haveRight('delete_ticket',1)))) {
+          && (($isadmin && $itemtype != 'Ticket')
+              || ($itemtype == 'Ticket' && haveRight('delete_ticket',1)))) {
 
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
       }
-      if ($isadmin && in_array($itemtype,array(PHONE_TYPE,
-                                               PRINTER_TYPE,
-                                               PERIPHERAL_TYPE,
-                                               MONITOR_TYPE))) {
+      if ($isadmin && in_array($itemtype,array('Phone', 'Printer', 'Peripheral', 'Monitor'))) {
 
          echo "<option value='connect'>".$LANG['buttons'][9]."</option>";
          echo "<option value='disconnect'>".$LANG['buttons'][10]."</option>";
       }
-      if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($itemtype,$CFG_GLPI["doc_types"])) {
+      if (haveTypeRight('Document',"w") && in_array($itemtype,$CFG_GLPI["doc_types"])) {
          echo "<option value='add_document'>".$LANG['document'][16]."</option>";
       }
 
-      if (haveTypeRight(CONTRACT_TYPE,"w") && in_array($itemtype,$CFG_GLPI["contract_types"])) {
+      if (haveTypeRight('Contract',"w") && in_array($itemtype,$CFG_GLPI["contract_types"])) {
          echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
       }
       if (haveRight('transfer','r') && isMultiEntitiesMode()
-          && in_array($itemtype, array(CARTRIDGEITEM_TYPE,COMPUTER_TYPE,CONSUMABLEITEM_TYPE,CONTACT_TYPE,
-                                       CONTRACT_TYPE,ENTERPRISE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,
-                                       PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,
-                                       SOFTWARELICENSE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,
-                                       GROUP_TYPE,LINK_TYPE))
+          && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
+                                       'Contract', 'Supplier', 'Monitor', 'NetworkEquipment',
+                                       'Peripheral', 'Phone', 'Printer', 'Software',
+                                       'SoftwareLicense', 'Ticket', 'Document', 'Group', 'Link'))
           && $isadmin) {
 
-         echo "<option value=\"add_transfer_list\">".$LANG['buttons'][48]."</option>";
+         echo "<option value='add_transfer_list'>".$LANG['buttons'][48]."</option>";
       }
       switch ($itemtype) {
-         case SOFTWARE_TYPE :
+         case 'Software' :
             if ($isadmin
                 && countElementsInTable("glpi_rules","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0) {
                echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".
@@ -676,7 +669,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             }
             break;
 
-         case COMPUTER_TYPE :
+         case 'Computer' :
             if ($isadmin) {
                echo "<option value='connect_to_computer'>".$LANG['buttons'][9]."</option>";
                echo "<option value='install'>".$LANG['buttons'][4]."</option>";
@@ -702,19 +695,19 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             }
             break;
 
-         case ENTERPRISE_TYPE :
+         case 'Supplier' :
             if ($isadmin) {
                echo "<option value='add_contact'>".$LANG['financial'][24]."</option>";
             }
             break;
 
-         case CONTACT_TYPE :
+         case 'Contact' :
             if ($isadmin) {
                echo "<option value='add_enterprise'>".$LANG['financial'][25]."</option>";
             }
             break;
 
-         case USER_TYPE :
+         case 'User' :
             if ($isadmin) {
                echo "<option value='add_group'>".$LANG['setup'][604]."</option>";
                echo "<option value='add_userprofile'>".$LANG['setup'][607]."</option>";
@@ -725,7 +718,7 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             }
             break;
 
-         case TRACKING_TYPE :
+         case 'Ticket' :
             if (haveRight("comment_all_ticket","1")) {
                echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
             }

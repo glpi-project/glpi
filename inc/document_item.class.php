@@ -45,7 +45,7 @@ class Document_Item extends CommonDBRelation{
    public $type = 'Document_Item';
 
    // From CommonDBRelation
-   public $itemtype_1 = DOCUMENT_TYPE;
+   public $itemtype_1 = 'Document';
    public $items_id_1 = 'documents_id';
 
    public $itemtype_2 = 'itemtype';
@@ -54,7 +54,7 @@ class Document_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Do not insert circular link for document
-      if ($input['itemtype']==DOCUMENT_TYPE && $input['items_id']==$input['documents_id']) {
+      if ($input['itemtype'] == 'Document' && $input['items_id']==$input['documents_id']) {
          return false;
       }
       // Avoid duplicate entry

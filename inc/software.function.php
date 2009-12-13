@@ -70,7 +70,7 @@ function showSoftwareMergeCandidates($ID) {
 
    if ($req->numrows()) {
       echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand' action='".
-             $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."'>";
+             $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES['Software']."'>";
       echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -80,7 +80,7 @@ function showSoftwareMergeCandidates($ID) {
       foreach($req as $data) {
          echo "<tr class='tab_bg_2'>";
          echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-         echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?id=".
+         echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES['Software']."?id=".
                    $data["id"]."'>".$data["name"]."</a></td>";
          echo "<td>".$data["entity"]."</td>";
          echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";
@@ -230,7 +230,7 @@ function installSoftwareVersion($computers_id, $softwareversions_id, $dohistory=
                      $changes[1] = "";
                      $changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
                      // Log on Computer history
-                     historyLog($computers_id, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+                     historyLog($computers_id, 'Computer', $changes, 0, HISTORY_INSTALL_SOFTWARE);
                   }
                   $comp = new Computer();
                   if ($comp->getFromDB($computers_id)) {
@@ -238,7 +238,7 @@ function installSoftwareVersion($computers_id, $softwareversions_id, $dohistory=
                      $changes[1] = "";
                      $changes[2] = addslashes($comp->fields["name"]);
                      // Log on SoftwareVersion history
-                     historyLog($softwareversions_id, SOFTWAREVERSION_TYPE, $changes, 0,
+                     historyLog($softwareversions_id, 'SoftwareVersion', $changes, 0,
                                 HISTORY_INSTALL_SOFTWARE);
                   }
                }
@@ -320,8 +320,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
                $changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
                $changes[2] = "";
                // Log on Computer history
-               historyLog($data["computers_id"], COMPUTER_TYPE, $changes, 0,
-                          HISTORY_UNINSTALL_SOFTWARE);
+               historyLog($data["computers_id"], 'Computer', $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
             }
             $comp = new Computer();
             if ($comp->getFromDB($data["computers_id"])) {
@@ -329,7 +328,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
                $changes[1] = addslashes($comp->fields["name"]);
                $changes[2] = "";
                // Log on SoftwareVersion history
-               historyLog($data["softwareversions_id"], SOFTWAREVERSION_TYPE, $changes, 0,
+               historyLog($data["softwareversions_id"], 'SoftwareVersion', $changes, 0,
                           HISTORY_UNINSTALL_SOFTWARE);
             }
          }

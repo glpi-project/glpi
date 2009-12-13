@@ -752,7 +752,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          //select computers IDs that are using this device;
          $LEFTJOIN = "INNER JOIN `glpi_computers`
                             ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
-                                AND `glpi_tickets`.`itemtype` = '".COMPUTER_TYPE."')
+                                AND `glpi_tickets`.`itemtype` = 'Computer')
                       INNER JOIN `glpi_computers_devices`
                             ON (`glpi_computers`.`id` = `glpi_computers_devices`.`computers_id`
                                 AND `glpi_computers_devices`.`devicetype` = '$value2'
@@ -763,7 +763,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
       case "comp_champ" :
          $LEFTJOIN = "INNER JOIN `glpi_computers`
                             ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
-                                AND `glpi_tickets`.`itemtype` = '".COMPUTER_TYPE."')";
+                                AND `glpi_tickets`.`itemtype` = 'Computer')";
          $WHERE .= " AND `glpi_computers`.`$value2` = '$value'
                      AND `glpi_computers`.`is_template` <> '1'";
          break;
@@ -1164,7 +1164,7 @@ function showItemStats($target,$date1,$date2,$start) {
       if ($output_type==HTML_OUTPUT) {
          printPager($start,$numrows,$target,
                     "date1=".$date1."&amp;date2=".$date2."&amp;type=hardwares&amp;start=$start",
-                    STAT_TYPE);
+                    'Stat');
          echo "<div class='center'>";
       }
 

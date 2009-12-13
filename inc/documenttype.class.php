@@ -42,7 +42,7 @@ class DocumentType  extends CommonDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_documenttypes';
-   public $type  = TYPEDOC_TYPE;
+   public $type  = 'DocumentType';
 
    function getAdditionalFields() {
       global $LANG;

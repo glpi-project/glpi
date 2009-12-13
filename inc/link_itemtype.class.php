@@ -40,7 +40,7 @@ class Link_ItemType extends CommonDBTM{
    public $type = 'Link_ItemType';
 
    // From CommonDBRelation
-   public $itemtype_1 = LINK_TYPE;
+   public $itemtype_1 = 'Link';
    public $items_id_1 = 'links_id';
 
    public $itemtype_2 = 'itemtype';

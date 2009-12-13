@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 class Device extends CommonDBTM {
 
    // From CommonDBTM
-   public $type = DEVICE_TYPE;
+   public $type = 'Device';
    public $auto_message_on_action = false;
 
    // Specific ones
