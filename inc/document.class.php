@@ -419,7 +419,7 @@ class Document extends CommonDBTM {
                FROM `glpi_documents_items`
                LEFT JOIN `glpi_knowbaseitems`
                       ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'".
                   getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
 
@@ -434,7 +434,7 @@ class Document extends CommonDBTM {
                FROM `glpi_documents_items`
                LEFT JOIN `glpi_knowbaseitems`
                       ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
                   AND `glpi_knowbaseitems`.`is_faq`='1'".
                   getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
@@ -453,7 +453,7 @@ class Document extends CommonDBTM {
                $query = "SELECT *
                   FROM `glpi_documents_items`
                   WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
-                     AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                     AND `glpi_documents_items`.`itemtype` = 'Ticket'
                      AND `documents_id`='".$this->fields["id"]."'";
                $result=$DB->query($query);
                if ($DB->numrows($result)>0) {
@@ -473,7 +473,7 @@ class Document extends CommonDBTM {
                FROM `glpi_documents_items`
                   LEFT JOIN `glpi_knowbaseitems`
                          ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-               WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+               WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                   AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
                   AND `glpi_knowbaseitems`.`is_faq`='1'".
                   getEntitiesRestrictRequest('AND', 'glpi_knowbaseitems', '', '', true);
@@ -492,7 +492,7 @@ class Document extends CommonDBTM {
                $query = "SELECT *
                   FROM `glpi_documents_items`
                   WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
-                     AND `glpi_documents_items`.`itemtype` = '".TRACKING_TYPE."'
+                     AND `glpi_documents_items`.`itemtype` = 'Ticket'
                      AND `documents_id`='".$this->fields["id"]."'";
                $result=$DB->query($query);
                if ($DB->numrows($result)>0) {
@@ -507,7 +507,7 @@ class Document extends CommonDBTM {
             FROM `glpi_documents_items`
                LEFT JOIN `glpi_knowbaseitems`
                       ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-            WHERE `glpi_documents_items`.`itemtype` = '".KNOWBASE_TYPE."'
+            WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                AND `glpi_documents_items`.`documents_id`='".$this->fields["id"]."'
                AND `glpi_knowbaseitems`.`is_faq`='1'
                AND `glpi_knowbaseitems`.`entities_id`='0'
@@ -532,7 +532,7 @@ class Document extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = DOCUMENT_TYPE;
+      $tab[1]['itemlink_type'] = 'Document';
 
       $tab[2]['table']     = 'glpi_documents';
       $tab[2]['field']     = 'id';
@@ -610,7 +610,7 @@ class Document extends CommonDBTM {
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_documents_items`
                 WHERE `glpi_documents_items`.`documents_id` = '$instID'
-                      AND `glpi_documents_items`.`itemtype` != '".DOCUMENT_TYPE."'
+                      AND `glpi_documents_items`.`itemtype` != 'Document'
                 ORDER BY `itemtype`";
 
       $result = $DB->query($query);
@@ -639,15 +639,15 @@ class Document extends CommonDBTM {
 
          if (haveTypeRight($itemtype,"r")) {
             $column="name";
-            if ($itemtype==TRACKING_TYPE) {
+            if ($itemtype == 'Ticket') {
                $column="id";
             }
-            if ($itemtype==KNOWBASE_TYPE) {
+            if ($itemtype == 'KnowbaseItem') {
                $column="question";
             }
             $itemtable=getTableForItemType($itemtype);
             $query = "SELECT `$itemtable`.*, `glpi_documents_items`.`id` AS IDD, ";
-            if ($itemtype == ENTITY_TYPE) {
+            if ($itemtype == 'Entity') {
                // Left join because root entity not storeed
                $query .= "`glpi_documents_items`.`items_id` AS entity
                           FROM `glpi_documents_items`
@@ -667,7 +667,7 @@ class Document extends CommonDBTM {
             }
             $query.=" ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
 
-            if ($itemtype==SOFTWARELICENSE_TYPE) {
+            if ($itemtype == 'SoftwareLicense') {
                $soft=new Software();
             }
 
@@ -677,17 +677,17 @@ class Document extends CommonDBTM {
 
                   while ($data=$DB->fetch_assoc($result_linked)) {
                      $ID="";
-                     if ($itemtype==ENTITY_TYPE && !$data['entity']) {
+                     if ($itemtype == 'Entity' && !$data['entity']) {
                         $data['id']=0;
                         $data['name']=$LANG['entity']['2'];
                      }
-                     if ($itemtype==TRACKING_TYPE) {
+                     if ($itemtype == 'Ticket') {
                         $data["name"]=$LANG['job'][38]." ".$data["id"];
                      }
-                     if ($itemtype==KNOWBASE_TYPE) {
+                     if ($itemtype == 'KnowbaseItem') {
                         $data["name"]=$data["question"];
                      }
-                     if ($itemtype==SOFTWARELICENSE_TYPE) {
+                     if ($itemtype == 'SoftwareLicense') {
                         $soft->getFromDB($data['softwares_id']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
@@ -1027,7 +1027,7 @@ class Document extends CommonDBTM {
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
       }
       // Document : search links in both order using union
-      if ($item->type==DOCUMENT_TYPE) {
+      if ($item->type == 'Document') {
          $query .= "UNION
                     SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity,
                            `glpi_documents`.`name` AS assocName, `glpi_documents`.*
@@ -1071,8 +1071,8 @@ class Document extends CommonDBTM {
       if ($number) {
          // Don't use this for document associated to document
          // To not loose navigation list for current document
-         if ($item->type!=DOCUMENT_TYPE) {
-            initNavigateListItems(DOCUMENT_TYPE, $item->getTypeName()." = ".$item->getName());
+         if ($item->type != 'Document') {
+            initNavigateListItems('Document', $item->getTypeName()." = ".$item->getName());
          }
 
          $document = new Document();
@@ -1081,8 +1081,8 @@ class Document extends CommonDBTM {
             if (!$document->getFromDB($docID)) {
                continue;
             }
-            if ($item->type!=DOCUMENT_TYPE) {
-               addToNavigateListItems(DOCUMENT_TYPE,$docID);
+            if ($item->type != 'Document') {
+               addToNavigateListItems('Document',$docID);
             }
             $used[$docID]=$docID;
             $assocID=$data["assocID"];
@@ -1148,7 +1148,7 @@ class Document extends CommonDBTM {
             echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></td>";
 
-            if ($item->type==DOCUMENT_TYPE) {
+            if ($item->type == 'Document') {
                $used[$ID]=$ID;
             }
 

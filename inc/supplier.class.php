@@ -223,7 +223,7 @@ class Supplier extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = ENTERPRISE_TYPE;
+      $tab[1]['itemlink_type'] = 'Supplier';
 
       $tab[2]['table']     = 'glpi_suppliers';
       $tab[2]['field']     = 'id';
@@ -288,7 +288,7 @@ class Supplier extends CommonDBTM {
       $tab[8]['name']          = $LANG['financial'][46];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['datatype']      = 'itemlink';
-      $tab[8]['itemlink_type'] = CONTACT_TYPE;
+      $tab[8]['itemlink_type'] = 'Contact';
 
       $tab[16]['table']     = 'glpi_suppliers';
       $tab[16]['field']     = 'comment';
@@ -384,12 +384,12 @@ class Supplier extends CommonDBTM {
 
       $used=array();
       if ($number) {
-         initNavigateListItems(CONTACT_TYPE,$LANG['financial'][26]." = ".$this->fields['name']);
+         initNavigateListItems('Contact',$LANG['financial'][26]." = ".$this->fields['name']);
 
          while ($data=$DB->fetch_array($result)) {
             $ID=$data["ID_ent"];
             $used[$data["id"]]=$data["id"];
-            addToNavigateListItems(CONTACT_TYPE,$data["id"]);
+            addToNavigateListItems('Contact',$data["id"]);
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
@@ -491,8 +491,11 @@ class Supplier extends CommonDBTM {
          }
          $item = new $itemtype();
 
-         if (haveTypeRight($itemtype,"r") && $itemtype!=CONSUMABLEITEM_TYPE
-             && $itemtype!=CARTRIDGEITEM_TYPE && $itemtype!=SOFTWARE_TYPE) {
+         if (haveTypeRight($itemtype,"r")
+             && $itemtype != 'ConsumableItem'
+             && $itemtype != 'CartridgeItem'
+             && $itemtype != 'Software') {
+
             $linktype = $itemtype;
             $linkfield = 'id';
             $itemtable=getTableForItemType($itemtype);
@@ -502,16 +505,16 @@ class Supplier extends CommonDBTM {
                             ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
 
             // Set $linktype for entity restriction AND link to search engine
-            if ($itemtype==CARTRIDGE_TYPE) {
+            if ($itemtype == 'Cartridge') {
                $query .= "INNER JOIN `glpi_cartridgeitems`
                                ON (`glpi_cartridgeitems`.`id`=`glpi_cartridges`.`cartridgeitems_id`) ";
-               $linktype = CARTRIDGEITEM_TYPE;
+               $linktype = 'CartridgeItem';
                $linkfield = 'cartridgeitems_id';
             }
-            if ($itemtype==CONSUMABLE_TYPE ) {
+            if ($itemtype == 'Consumable' ) {
                $query .= "INNER JOIN `glpi_consumableitems`
                                ON (`glpi_consumableitems`.`id`=`glpi_consumables`.`consumableitems_id`) ";
-               $linktype = CONSUMABLEITEM_TYPE;
+               $linktype = 'ConsumableItem';
                $linkfield = 'consumableitems_id';
             }
             $linktable=getTableForItemType($linktype);
@@ -524,8 +527,8 @@ class Supplier extends CommonDBTM {
             $nb=$DB->numrows($result_linked);
 
             // Set $linktype for link to search engine pnly
-            if ($itemtype==SOFTWARELICENSE_TYPE && $nb>$_SESSION['glpilist_limit']) {
-               $linktype = SOFTWARE_TYPE;
+            if ($itemtype == 'SoftwareLicense' && $nb>$_SESSION['glpilist_limit']) {
+               $linktype = 'Software';
                $linkfield = 'softwares_id';
             }
             if ($nb>$_SESSION['glpilist_limit']) {

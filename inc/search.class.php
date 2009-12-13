@@ -118,14 +118,15 @@ class Search {
          }
       }
 
-      $entity_restrict=($itemtype==ENTITY_TYPE || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
+      $entity_restrict = ($itemtype == 'Entity'
+                          || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
 
-      $names=array(COMPUTER_TYPE   => $LANG['Menu'][0],
-                  PRINTER_TYPE    => $LANG['Menu'][2],
-                  MONITOR_TYPE    => $LANG['Menu'][3],
-                  PERIPHERAL_TYPE => $LANG['Menu'][16],
-                  SOFTWARE_TYPE   => $LANG['Menu'][4],
-                  PHONE_TYPE      => $LANG['Menu'][34]);
+      $names = array('Computer'   => $LANG['Menu'][0],
+                     'Printer'    => $LANG['Menu'][2],
+                     'Monitor'    => $LANG['Menu'][3],
+                     'Peripheral' => $LANG['Menu'][16],
+                     'Software'   => $LANG['Menu'][4],
+                     'Phone'      => $LANG['Menu'][34]);
 
       // Get the items to display
       $toview=Search::addDefaultToView($itemtype);
@@ -253,7 +254,7 @@ class Search {
             $first=false;
          }
 
-         if ($itemtype==ENTITY_TYPE) {
+         if ($itemtype == 'Entity') {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'id','',true);
          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
             // Will be replace below in Union/Recursivity Hack
@@ -689,7 +690,7 @@ class Search {
                                           getEntitiesRestrictRequest('',$ctable),$tmpquery);
                }
                // SOFTWARE HACK
-               if ($ctype==SOFTWARE_TYPE) {
+               if ($ctype == 'Software') {
                   $tmpquery = str_replace("glpi_softwares.serial","''",$tmpquery);
                   $tmpquery = str_replace("glpi_softwares.otherserial","''",$tmpquery);
                }
@@ -779,7 +780,7 @@ class Search {
             $isadmin=(($item && $item->canCreate())
                      || haveTypeRight($itemtype,"w")
                      || (in_array($itemtype,$CFG_GLPI["infocom_types"])
-                        && haveTypeRight(INFOCOM_TYPE,"w")));
+                        && haveTypeRight('Infocom',"w")));
 
             if ($isadmin && $output_type==HTML_OUTPUT) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
@@ -868,16 +869,16 @@ class Search {
             }
 
             // Add specific column Header
-            if ($itemtype==CARTRIDGEITEM_TYPE) {
+            if ($itemtype == 'CartridgeItem') {
                echo displaySearchHeaderItem($output_type,$LANG['cartridges'][0],$header_num);
             }
-            if ($itemtype==CONSUMABLEITEM_TYPE) {
+            if ($itemtype == 'ConsumableItem') {
                echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
             }
-            if ($itemtype=='States' || $itemtype==RESERVATION_TYPE) {
+            if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
             }
-            if ($itemtype==RESERVATION_TYPE && $output_type==HTML_OUTPUT) {
+            if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                if (haveRight("reservation_central","w")) {
                   echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
                   echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
@@ -920,7 +921,7 @@ class Search {
                if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
                   $tmpcheck="";
                   if ($isadmin) {
-                     if ($itemtype==ENTITY_TYPE
+                     if ($itemtype == 'Entity'
                         && !in_array($data["id"],$_SESSION["glpiactiveentities"])) {
 
                         $tmpcheck="&nbsp;";
@@ -1008,17 +1009,17 @@ class Search {
                   }
                }
                // Specific column display
-               if ($itemtype==CARTRIDGEITEM_TYPE) {
+               if ($itemtype == 'CartridgeItem') {
                   echo displaySearchItem($output_type,
                                        Cartridge::getCount($data["id"],$data["ALARM"],$output_type),
                                        $item_num,$row_num);
                }
-               if ($itemtype==CONSUMABLEITEM_TYPE) {
+               if ($itemtype == 'ConsumableItem') {
                   echo displaySearchItem($output_type,
                                        Consumable::getCount($data["id"],$data["ALARM"],$output_type),
                                        $item_num,$row_num);
                }
-               if ($itemtype=='States' || $itemtype==RESERVATION_TYPE) {
+               if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                   $typename=$data["TYPE"];
                   if (class_exists($data["TYPE"])) {
                      $item = new $data["TYPE"]();
@@ -1026,7 +1027,7 @@ class Search {
                   }
                   echo displaySearchItem($output_type,$typename,$item_num,$row_num);
                }
-               if ($itemtype==RESERVATION_TYPE && $output_type==HTML_OUTPUT) {
+               if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                   if (haveRight("reservation_central","w")) {
                      if (!haveAccessToEntity($data["ENTITY"])) {
                         echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
@@ -1178,12 +1179,12 @@ class Search {
       $options=Search::getCleanedOptions($itemtype);
 
       // Meta search names
-      $names=array(COMPUTER_TYPE   => $LANG['Menu'][0],
-                  PRINTER_TYPE    => $LANG['Menu'][2],
-                  MONITOR_TYPE    => $LANG['Menu'][3],
-                  PERIPHERAL_TYPE => $LANG['Menu'][16],
-                  SOFTWARE_TYPE   => $LANG['Menu'][4],
-                  PHONE_TYPE      => $LANG['Menu'][34]);
+      $names = array('Computer'   => $LANG['Menu'][0],
+                     'Printer'    => $LANG['Menu'][2],
+                     'Monitor'    => $LANG['Menu'][3],
+                     'Peripheral' => $LANG['Menu'][16],
+                     'Software'   => $LANG['Menu'][4],
+                     'Phone'      => $LANG['Menu'][34]);
 
       echo "<form method='get' action=\"$target\">";
       echo "<table class='tab_cadre_fixe'>";
@@ -1298,20 +1299,16 @@ class Search {
       if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
          // Define meta search items to linked
          switch ($itemtype) {
-            case COMPUTER_TYPE :
-               $linked=array(PRINTER_TYPE,
-                           MONITOR_TYPE,
-                           PERIPHERAL_TYPE,
-                           SOFTWARE_TYPE,
-                           PHONE_TYPE);
+            case 'Computer' :
+               $linked = array('Printer', 'Monitor', 'Peripheral', 'Software', 'Phone');
                break;
 
-            case PRINTER_TYPE :
-            case MONITOR_TYPE :
-            case PERIPHERAL_TYPE :
-            case SOFTWARE_TYPE :
-            case PHONE_TYPE :
-               $linked=array(COMPUTER_TYPE);
+            case 'Printer' :
+            case 'Monitor' :
+            case 'Peripheral' :
+            case 'Software' :
+            case 'Phone' :
+               $linked = array('Computer');
                break;
          }
       }
@@ -1709,15 +1706,15 @@ class Search {
       $itemtable=getTableForItemType($itemtype);
 
       switch ($itemtype) {
-         case RESERVATION_TYPE :
+         case 'ReservationItem' :
             $ret = "`glpi_reservationitems`.`is_active` AS ACTIVE, ";
             break;
 
-         case CARTRIDGEITEM_TYPE :
+         case 'CartridgeItem' :
             $ret = "`glpi_cartridgeitems`.`alarm_threshold` AS ALARM, ";
             break;
 
-         case CONSUMABLEITEM_TYPE :
+         case 'ConsumableItem' :
             $ret = "`glpi_consumableitems`.`alarm_threshold` AS ALARM, ";
             break;
 
@@ -1788,7 +1785,7 @@ class Search {
             break;
 
          case "glpi_users.name" :
-            if ($itemtype!=USER_TYPE) {
+            if ($itemtype != 'User') {
                $linkfield="";
                if (!empty($searchopt[$ID]["linkfield"])) {
                   $linkfield="_".$searchopt[$ID]["linkfield"];
@@ -1847,7 +1844,7 @@ class Search {
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
                         AS ".$NAME."_$num, ";
-            if ($itemtype==COMPUTER_TYPE) {
+            if ($itemtype == 'Computer') {
                $port .= "GROUP_CONCAT(DISTINCT `DEVICE_".NETWORK_DEVICE."`.`specificity`
                                     SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
             }
@@ -1855,7 +1852,7 @@ class Search {
             break;
 
          case "glpi_profiles.name" :
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_entities`.`completename` SEPARATOR '$$$$')
                            AS ".$NAME."_".$num."_2,
@@ -1865,7 +1862,7 @@ class Search {
             break;
 
          case "glpi_entities.completename" :
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
                         GROUP_CONCAT(`glpi_profiles`.`name` SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
@@ -1910,12 +1907,12 @@ class Search {
             break;
 
          case "glpi_states.name" :
-            if ($meta && $meta_type==SOFTWARE_TYPE) {
+            if ($meta && $meta_type == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                    `glpi_softwareversions$addtable`.`name`, ' - ',
                                                    `$table$addtable`.`$field`)
                                     SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-            } else if ($itemtype==SOFTWARE_TYPE) {
+            } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
                                                    `$table$addtable`.`$field`)
                                     SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
@@ -2025,7 +2022,7 @@ class Search {
 
       switch ($itemtype) {
          // No link
-         case USER_TYPE :
+         case 'User' :
             // View all entities
             if (isViewAllEntities()) {
                return "";
@@ -2096,7 +2093,7 @@ class Search {
                   $linkfield .= "_".$itemtype;
                }
             }
-            if ($itemtype==USER_TYPE) { // glpi_users case / not link table
+            if ($itemtype == 'User') { // glpi_users case / not link table
                return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
             } else {
                if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
@@ -2115,7 +2112,7 @@ class Search {
             break;
 
          case "glpi_networkports.mac" :
-            if ($itemtype==COMPUTER_TYPE) {
+            if ($itemtype == 'Computer') {
                return "$link (".makeTextCriteria("`DEVICE_".NETWORK_DEVICE."`.`specificity`",$val,$nott,'').
                               makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').")";
             }
@@ -2374,7 +2371,7 @@ class Search {
 
       switch ($itemtype) {
          // No link
-         case USER_TYPE :
+         case 'User' :
             return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_profiles_users","");
 
          default :
@@ -2482,7 +2479,7 @@ class Search {
          case "glpi_networkports" :
             $out="";
             // Add networking device for computers
-            if ($itemtype==COMPUTER_TYPE) {
+            if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_computers_devices",
                                  $linkfield,NETWORK_DEVICE,$meta,$meta_type);
             }
@@ -2509,7 +2506,7 @@ class Search {
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_suppliers" :
-            if ($itemtype==CONTACT_TYPE) {
+            if ($itemtype == 'Contact') {
                $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_contacts_suppliers",
                                  "contacts_id");
                return $out."
@@ -2553,35 +2550,35 @@ class Search {
                            ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
 
          case "glpi_infocoms" :
-            if ($itemtype == SOFTWARE_TYPE) {
+            if ($itemtype == 'Software') {
                // Return the infocom linked to the license, not the template linked to the software
                return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwarelicenses",
                                  $linkfield) ."
                      LEFT JOIN `$new_table` $AS
                            ON (`glpi_softwarelicenses`.`id` = `$nt`.`items_id`
-                              AND `$nt`.`itemtype` = '".SOFTWARELICENSE_TYPE."') ";
+                              AND `$nt`.`itemtype` = 'SoftwareLicense') ";
             }
-            if ($itemtype == CARTRIDGEITEM_TYPE) {
+            if ($itemtype == 'CartridgeItem') {
                // Return the infocom linked to the Cartridge, not the template linked to the Type
                return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_cartridges",
                                  $linkfield) ."
                      LEFT JOIN `$new_table` $AS
                            ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-                              AND `$nt`.`itemtype` = '".CARTRIDGE_TYPE."') ";
+                              AND `$nt`.`itemtype` = 'Cartridge') ";
             }
-            if ($itemtype == CONSUMABLEITEM_TYPE) {
+            if ($itemtype == 'ConsumableItem') {
                // Return the infocom linked to the Comsumable, not the template linked to the Type
                return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_consumables",
                                  $linkfield) ."
                      LEFT JOIN `$new_table` $AS
                            ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-                              AND `$nt`.`itemtype` = '".CONSUMABLE_TYPE."') ";
+                              AND `$nt`.`itemtype` = 'Consumable') ";
             }
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                    AND `$nt`.`itemtype` = '$itemtype') ";
 
          case "glpi_states" :
-            if ($itemtype == SOFTWARE_TYPE) {
+            if ($itemtype == 'Software') {
                // Return the state of the version of the software
                $tt = translate_table("glpi_softwareversions",$meta,$meta_type);
                return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwareversions",
@@ -2597,7 +2594,7 @@ class Search {
          case "glpi_profiles" :
             // Link to glpi_profiles_users before
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_profiles_users",$linkfield);
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                $out .= Search::addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,
                                  "glpi_complete_entities","entities_id");
             }
@@ -2605,7 +2602,7 @@ class Search {
                   LEFT JOIN `$new_table` $AS ON (`glpi_profiles_users`.`profiles_id` = `$nt`.`id`) ";
 
          case "glpi_entities" :
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                $out = Search::addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,
                                  "glpi_profiles","");
                $out.= Search::addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,
@@ -2766,9 +2763,9 @@ class Search {
       }
 
       switch ($from_type) {
-         case COMPUTER_TYPE :
+         case 'Computer' :
             switch ($to_type) {
-               case PRINTER_TYPE :
+               case 'Printer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_print_$to_type
                               ON (`conn_print_$to_type`.`computers_id` = `glpi_computers`.`id`
@@ -2776,7 +2773,7 @@ class Search {
                            $LINK `glpi_printers`
                               ON (`conn_print_$to_type`.`items_id` = `glpi_printers`.`id`) ";
 
-               case MONITOR_TYPE :
+               case 'Monitor' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`
@@ -2784,7 +2781,7 @@ class Search {
                            $LINK `glpi_monitors`
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
 
-               case PERIPHERAL_TYPE :
+               case 'Peripheral' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_periph_$to_type
                               ON (`conn_periph_$to_type`.`computers_id` = `glpi_computers`.`id`
@@ -2792,7 +2789,7 @@ class Search {
                            $LINK `glpi_peripherals`
                               ON (`conn_periph_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
 
-               case PHONE_TYPE :
+               case 'Phone' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_phones_$to_type
                               ON (`conn_phones_$to_type`.`computers_id` = `glpi_computers`.`id`
@@ -2800,7 +2797,7 @@ class Search {
                            $LINK `glpi_phones`
                               ON (`conn_phones_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
-               case SOFTWARE_TYPE :
+               case 'Software' :
                   /// TODO: link licenses via installed software OR by affected/computers_id ???
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_softwareversions` AS inst_$to_type
@@ -2818,9 +2815,9 @@ class Search {
             }
             break;
 
-         case MONITOR_TYPE :
+         case 'Monitor' :
             switch ($to_type) {
-               case COMPUTER_TYPE :
+               case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`
@@ -2830,9 +2827,9 @@ class Search {
             }
             break;
 
-         case PRINTER_TYPE :
+         case 'Printer' :
             switch ($to_type) {
-               case COMPUTER_TYPE :
+               case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_printers`.`id`
@@ -2843,9 +2840,9 @@ class Search {
             }
             break;
 
-         case PERIPHERAL_TYPE :
+         case 'Peripheral' :
             switch ($to_type) {
-               case COMPUTER_TYPE :
+               case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_peripherals`.`id`
@@ -2855,9 +2852,9 @@ class Search {
             }
             break;
 
-         case PHONE_TYPE :
+         case 'Phone' :
             switch ($to_type) {
-               case COMPUTER_TYPE :
+               case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_phones`.`id`
@@ -2867,9 +2864,9 @@ class Search {
             }
             break;
 
-         case SOFTWARE_TYPE :
+         case 'Software' :
             switch ($to_type) {
-               case COMPUTER_TYPE :
+               case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_softwareversions_$to_type`.`softwares_id` = `glpi_softwares`.`id`)
@@ -2972,7 +2969,7 @@ class Search {
             break;
 
          case "glpi_profiles.name" :
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $split2=explode("$$$$",$data[$NAME.$num."_2"]);
@@ -3000,7 +2997,7 @@ class Search {
             break;
 
          case "glpi_entities.completename" :
-            if ($itemtype==USER_TYPE) {
+            if ($itemtype == 'User') {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $split2=explode("$$$$",$data[$NAME.$num."_2"]);
@@ -3050,7 +3047,7 @@ class Search {
 
          case "glpi_networkports.mac" :
             $out = "";
-            if ($itemtype==COMPUTER_TYPE) {
+            if ($itemtype == 'Computer') {
                $displayed=array();
                if (!empty($data[$NAME.$num."_2"])) {
                   $split=explode("$$$$",$data[$NAME.$num."_2"]);
@@ -3534,7 +3531,7 @@ class Search {
                                        29,30,130,131,132,133,134,135,136,137,138));
       }
 
-      if ($itemtype==COMPUTER_TYPE) {
+      if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
             $todel=array_merge($todel,array('network',
                                           20,21,22,83,84,85));
@@ -3659,7 +3656,7 @@ class Search {
             $search[$itemtype][29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
             $search[$itemtype][29]['forcegroupby']  = true;
             $search[$itemtype][29]['datatype']      = 'itemlink';
-            $search[$itemtype][29]['itemlink_type'] = CONTRACT_TYPE;
+            $search[$itemtype][29]['itemlink_type'] = 'Contract';
 
             $search[$itemtype][30]['table']        = 'glpi_contracts';
             $search[$itemtype][30]['field']        = 'num';
@@ -3727,7 +3724,6 @@ class Search {
             $search[$itemtype][138]['forcegroupby'] = true;
          }
 
-         // && $itemtype !=  CARTRIDGEITEM_TYPE && $itemtype !=  CONSUMABLEITEM_TYPE
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
             $search[$itemtype]['financial'] = $LANG['financial'][3];
 

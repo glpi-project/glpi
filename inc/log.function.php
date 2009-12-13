@@ -94,7 +94,7 @@ function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
       foreach ($oldvalues as $key => $oldval) {
          $changes=array();
          // Parsing $SEARCHOPTION to find infocom
-         if ($itemtype==INFOCOM_TYPE) {
+         if ($itemtype == 'Infocom') {
             $ic=new Infocom();
             if ($ic->getFromDB($values['id'])) {
                $real_type=$ic->fields['itemtype'];

@@ -43,7 +43,7 @@ class Ticket extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_tickets';
-   public $type = TRACKING_TYPE;
+   public $type = 'Ticket';
    public $entity_assign = true;
 
    // Specific ones
@@ -263,12 +263,12 @@ class Ticket extends CommonDBTM {
       // Old values for add followup in change
       if ($CFG_GLPI["add_followup_on_update_ticket"]) {
          $this->getFromDB($input["id"]);
-         $input["_old_assign_name"] = getAssignName($this->fields["users_id_assign"],USER_TYPE);
+         $input["_old_assign_name"] = getAssignName($this->fields["users_id_assign"],'User');
          $input["_old_assign"]      = $this->fields["users_id_assign"];
          $input["_old_assign_supplier_name"]  = getAssignName($this->fields["suppliers_id_assign"],
-                                                             ENTERPRISE_TYPE);
+                                                             'Supplier');
          $input["_old_groups_id_assign_name"] = getAssignName($this->fields["groups_id_assign"],
-                                                              GROUP_TYPE);
+                                                              'Group');
          $input["_old_ticketcategories_id"]  = $this->fields["ticketcategories_id"];
          $input["_old_items_id"]       = $this->fields["items_id"];
          $input["_old_itemtype"]       = $this->fields["itemtype"];
@@ -546,7 +546,7 @@ class Ticket extends CommonDBTM {
                      break;
 
                   case "users_id_assign" :
-                     $new_assign_name = getAssignName($this->fields["users_id_assign"],USER_TYPE);
+                     $new_assign_name = getAssignName($this->fields["users_id_assign"],'User');
                      if ($input["_old_assign"]==0) {
                         $input["_old_assign_name"]=$LANG['mailing'][105];
                      }
@@ -558,7 +558,7 @@ class Ticket extends CommonDBTM {
 
                   case "suppliers_id_assign" :
                      $new_assign_supplier_name = getAssignName($this->fields["suppliers_id_assign"],
-                                                               ENTERPRISE_TYPE);
+                                                               'Supplier');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
                                                  $input["_old_assign_supplier_name"]." -> ".
                                                  $new_assign_supplier_name."\n";
@@ -567,7 +567,7 @@ class Ticket extends CommonDBTM {
 
                   case "groups_id_assign" :
                      $new_groups_id_assign_name = getAssignName($this->fields["groups_id_assign"],
-                                                                GROUP_TYPE);
+                                                                'Group');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
                                                  $input["_old_groups_id_assign_name"]." -> ".
                                                  $new_groups_id_assign_name."\n";
@@ -1161,10 +1161,10 @@ class Ticket extends CommonDBTM {
          }
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['joblist'][0]."&nbsp;:</span> ".getStatusName($this->fields["status"])."\n";
-         $assign = getAssignName($this->fields["users_id_assign"],USER_TYPE);
+         $assign = getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
-            $group_assign = getAssignName($this->fields["groups_id_assign"],GROUP_TYPE);
+            $group_assign = getAssignName($this->fields["groups_id_assign"],'Group');
          }
          if ($assign=="[Nobody]") {
             if (!empty($group_assign)) {
@@ -1179,7 +1179,7 @@ class Ticket extends CommonDBTM {
                       $LANG['mailing'][8]."&nbsp;:</span> ".$assign."\n";
          $message .="<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['joblist'][2].":</span> ".Ticket::getPriorityName($this->fields["priority"])."\n";
-         if ($this->fields["itemtype"]!=SOFTWARE_TYPE && !empty($contact)) {
+         if ($this->fields["itemtype"] != 'Software' && !empty($contact)) {
             $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                          $LANG['common'][18]."&nbsp;:</span> ".$contact."\n";
          }
@@ -1224,10 +1224,10 @@ class Ticket extends CommonDBTM {
             $message .= mailRow($LANG['common'][10],$tech);
          }
          $message .= mailRow($LANG['joblist'][0],getStatusName($this->fields["status"]));
-         $assign = getAssignName($this->fields["users_id_assign"],USER_TYPE);
+         $assign = getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
-            $group_assign = getAssignName($this->fields["groups_id_assign"],GROUP_TYPE);
+            $group_assign = getAssignName($this->fields["groups_id_assign"],'Group');
          }
          if ($assign=="[Nobody]") {
             if (!empty($groups_id_assign)) {
@@ -1241,7 +1241,7 @@ class Ticket extends CommonDBTM {
 
          $message .= mailRow($LANG['mailing'][8],$assign);
          $message .= mailRow($LANG['joblist'][2],Ticket::getPriorityName($this->fields["priority"]));
-         if ($this->fields["itemtype"]!=SOFTWARE_TYPE && !empty($contact)) {
+         if ($this->fields["itemtype"] != 'Software' && !empty($contact)) {
             $message .= mailRow($LANG['common'][18],$contact);
          }
          if (isset($this->fields["use_email_notification"])

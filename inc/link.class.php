@@ -142,7 +142,7 @@ class Link extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = LINK_TYPE;
+      $tab[1]['itemlink_type'] = 'Link';
 
       $tab[2]['table']     = 'glpi_links';
       $tab[2]['field']     = 'id';
@@ -248,7 +248,7 @@ class Link extends CommonDBTM {
          }
 
          // Add IP/MAC internal switch
-         if (get_class($item)==NETWORKING_TYPE) {
+         if (get_class($item) == 'NetworkEquipment') {
             $tmplink=$link;
             $tmplink=str_replace("[IP]",$item->getField('ip'),$tmplink);
             $tmplink=str_replace("[MAC]",$item->getField('mac'),$tmplink);

@@ -43,7 +43,7 @@ class Printer  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_printers';
-   public $type = PRINTER_TYPE;
+   public $type = 'Printer';
    public $dohistory=true;
    public $entity_assign=true;
    public $may_be_recursive=true;
@@ -198,7 +198,7 @@ class Printer  extends CommonDBTM {
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                     INFOCOM_TYPE,$input['entities_id']);
+                                                     'Infocom', $input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -483,7 +483,7 @@ class Printer  extends CommonDBTM {
     */
    function getSelectLinkedItem () {
 
-      return "SELECT '".COMPUTER_TYPE."', `computers_id`
+      return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
               WHERE `itemtype` = '".$this->type."'
                     AND `items_id` = '" . $this->fields['id']."'";
@@ -500,7 +500,7 @@ class Printer  extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = PRINTER_TYPE;
+      $tab[1]['itemlink_type'] = 'Printer';
 
       $tab[2]['table']     = 'glpi_printers';
       $tab[2]['field']     = 'id';

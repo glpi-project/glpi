@@ -55,7 +55,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
    }
    $canedit = $item->can($device, 'w');
 
-   initNavigateListItems(NETWORKING_PORT_TYPE,$item->getTypeName()." = ".$item->getName());
+   initNavigateListItems('NetworkPort',$item->getTypeName()." = ".$item->getName());
 
    $query = "SELECT `id`
              FROM `glpi_networkports`
@@ -101,7 +101,7 @@ function showPorts($device, $itemtype, $withtemplate = '') {
          while ($devid = $DB->fetch_row($result)) {
             $netport = new NetworkPort;
             $netport->getFromDB(current($devid));
-            addToNavigateListItems(NETWORKING_PORT_TYPE,$netport->fields["id"]);
+            addToNavigateListItems('NetworkPort',$netport->fields["id"]);
 
             echo "<tr class='tab_bg_1'>\n";
             if ($withtemplate != 2 && $canedit) {
@@ -356,8 +356,8 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    // Show device MAC adresses
-   if ((!empty ($netport->itemtype) && $netport->itemtype == COMPUTER_TYPE)
-       || ($several != "yes" && $devtype == COMPUTER_TYPE)) {
+   if ((!empty ($netport->itemtype) && $netport->itemtype == 'Computer')
+       || ($several != "yes" && $devtype == 'Computer')) {
 
       $comp = new Computer();
       if (!empty ($netport->itemtype)) {
@@ -603,11 +603,13 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
    // Manage VLAN : use networkings one as defaults
    $npnet = -1;
    $npdev = -1;
-   if ($ps->fields["itemtype"] != NETWORKING_TYPE && $pd->fields["itemtype"] == NETWORKING_TYPE) {
+   if ($ps->fields["itemtype"] != 'NetworkEquipment'
+       && $pd->fields["itemtype"] == 'NetworkEquipment') {
       $npnet = $dport;
       $npdev = $sport;
    }
-   if ($pd->fields["itemtype"] != NETWORKING_TYPE && $ps->fields["itemtype"] == NETWORKING_TYPE) {
+   if ($pd->fields["itemtype"] != 'NetworkEquipment'
+       && $ps->fields["itemtype"] == 'NetworkEquipment') {
       $npnet = $sport;
       $npdev = $dport;
    }
@@ -658,20 +660,20 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
          $changes[0] = 0;
          $changes[1] = "";
          $changes[2] = $destname;
-         if ($ps->fields["itemtype"] == NETWORKING_TYPE) {
+         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
          }
-         if ($pd->fields["itemtype"] == NETWORKING_TYPE) {
+         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = $changes[2] . " > #" . $pd->fields["name"];
          }
          historyLog($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
                     $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
 
          $changes[2] = $sourcename;
-         if ($pd->fields["itemtype"] == NETWORKING_TYPE) {
+         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
          }
-         if ($ps->fields["itemtype"] == NETWORKING_TYPE) {
+         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = $changes[2] . " > #" . $ps->fields["name"];
          }
          historyLog($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
@@ -717,14 +719,14 @@ function removeConnector($ID, $dohistory = true) {
          if ($np1->getFromDB($ID) && $np2->getFromDB($ID2)) {
             $npnet = -1;
             $npdev = -1;
-            if ($np1->fields["itemtype"] != NETWORKING_TYPE
-                && $np2->fields["itemtype"] == NETWORKING_TYPE) {
+            if ($np1->fields["itemtype"] != 'NetworkEquipment'
+                && $np2->fields["itemtype"] == 'NetworkEquipment') {
 
                $npnet = $ID2;
                $npdev = $ID;
             }
-            if ($np2->fields["itemtype"] != NETWORKING_TYPE
-                && $np1->fields["itemtype"] == NETWORKING_TYPE) {
+            if ($np2->fields["itemtype"] != 'NetworkEquipment'
+                && $np1->fields["itemtype"] == 'NetworkEquipment') {
 
                $npnet = $ID;
                $npdev = $ID2;
@@ -761,10 +763,10 @@ function removeConnector($ID, $dohistory = true) {
                $changes[0] = 0;
                $changes[1] = $name;
                $changes[2] = "";
-               if ($np1->fields["itemtype"] == NETWORKING_TYPE) {
+               if ($np1->fields["itemtype"] == 'NetworkEquipment') {
                   $changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
                }
-               if ($np2->fields["itemtype"] == NETWORKING_TYPE) {
+               if ($np2->fields["itemtype"] == 'NetworkEquipment') {
                   $changes[1] = $changes[1] . " > #" . $np2->fields["name"];
                }
                historyLog($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
@@ -778,10 +780,10 @@ function removeConnector($ID, $dohistory = true) {
                   }
                }
                $changes[1] = $name;
-               if ($np2->fields["itemtype"] == NETWORKING_TYPE) {
+               if ($np2->fields["itemtype"] == 'NetworkEquipment') {
                   $changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
                }
-               if ($np1->fields["itemtype"] == NETWORKING_TYPE) {
+               if ($np1->fields["itemtype"] == 'NetworkEquipment') {
                   $changes[1] = $changes[1] . " > #" . $np1->fields["name"];
                }
                historyLog($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
@@ -867,7 +869,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
          $result = $DB->query($query);
          if ($DB->numrows($result) == 1) {
             return array ("id" => $DB->result($result, 0, "id"),
-                          "itemtype" => NETWORKING_TYPE);
+                          "itemtype" => 'NetworkEquipment');
          } else {
             return array ();
          }
@@ -889,9 +891,9 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
          $port2 = $DB->fetch_array($result);
          //Get the 2 ports informations and try to see if one port is connected on a network device
          $network_port = -1;
-         if ($port1["itemtype"] == NETWORKING_TYPE) {
+         if ($port1["itemtype"] == 'NetworkEquipment') {
             $network_port = 1;
-         } else if ($port2["itemtype"] == NETWORKING_TYPE) {
+         } else if ($port2["itemtype"] == 'NetworkEquipment') {
             $network_port = 2;
          }
          //If one port is connected on a network device
@@ -924,9 +926,8 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
  */
 function getUniqueObjectIDByFQDN($fqdn, $entity) {
 
-   $types = array (COMPUTER_TYPE,
-                   NETWORKING_TYPE,
-                   PRINTER_TYPE);
+   $types = array('Computer', 'NetworkEquipment', 'Printer');
+
    foreach ($types as $itemtype) {
       $result = getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
       if (!empty ($result)) {

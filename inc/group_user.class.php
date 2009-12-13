@@ -45,10 +45,10 @@ class Group_User extends CommonDBRelation{
    public $type = 'Group_User';
 
    // From CommonDBRelation
-   public $itemtype_1 = USER_TYPE;
+   public $itemtype_1 = 'User';
    public $items_id_1 = 'users_id';
 
-   public $itemtype_2 = GROUP_TYPE;
+   public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
    /**  Show groups of a user

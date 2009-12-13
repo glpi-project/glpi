@@ -921,7 +921,7 @@ class Profile extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = PROFILE_TYPE;
+      $tab[1]['itemlink_type'] = 'Profile';
 
       $tab[2]['table']     = 'glpi_profiles';
       $tab[2]['field']     = 'interface';

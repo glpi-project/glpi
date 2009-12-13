@@ -258,7 +258,7 @@ class SoftwareVersion extends CommonDBTM {
                 WHERE `softwares_id` = '$softwares_id'
                 ORDER BY `name`";
 
-      initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG['help'][31] ." = ". $soft->fields["name"]);
+      initNavigateListItems('SoftwareVersion',$LANG['help'][31] ." = ". $soft->fields["name"]);
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -270,7 +270,7 @@ class SoftwareVersion extends CommonDBTM {
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
-               addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['id']);
+               addToNavigateListItems('SoftwareVersion',$data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
                // Show version if canedit (to update/delete) or if nb (to see installations)

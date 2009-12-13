@@ -45,10 +45,10 @@ class Contract_Supplier extends CommonDBRelation {
    public $type = 'Contract_Supplier';
 
    // From CommonDBRelation
-   public $itemtype_1 = CONTRACT_TYPE;
+   public $itemtype_1 = 'Contract';
    public $items_id_1 = 'contracts_id';
 
-   public $itemtype_2 = ENTERPRISE_TYPE;
+   public $itemtype_2 = 'Supplier';
    public $items_id_2 = 'suppliers_id';
 }
 ?>

@@ -141,7 +141,7 @@ class Netpoint extends CommonDropdown {
       }
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
-         if ($locations_id < 0 || $devtype==NETWORKING_TYPE) {
+         if ($locations_id < 0 || $devtype == 'NetworkEquipment') {
             $nb=countElementsInTableForEntity("glpi_netpoints",$entity_restrict);
          } else if ($locations_id > 0) {
             $nb=countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");

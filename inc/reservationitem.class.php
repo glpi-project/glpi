@@ -42,8 +42,8 @@ class ReservationItem extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_reservationitems';
-   public $type = RESERVATION_TYPE;
-   
+   public $type = 'ReservationItem';
+
    /**
     * Retrieve an item from the database for a specific item
     *

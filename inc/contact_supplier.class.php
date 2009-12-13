@@ -44,10 +44,10 @@ class Contact_Supplier extends CommonDBRelation{
    public $type = 'Contact_Supplier';
 
    // From CommonDBRelation
-   public $itemtype_1 = CONTACT_TYPE;
+   public $itemtype_1 = 'Contact';
    public $items_id_1 = 'documents_id';
 
-   public $itemtype_2 = ENTERPRISE_TYPE;
+   public $itemtype_2 = 'Supplier';
    public $items_id_2 = 'contacts_id';
 
 }

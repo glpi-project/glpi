@@ -1065,7 +1065,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1) {
       $autoNum = utf8_substr($objectName, 4, $len - 8);
       $mask = '';
       if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
-         $global = strpos($autoNum, '\\g') !== false && $itemtype != INFOCOM_TYPE ? 1 : 0;
+         $global = strpos($autoNum, '\\g') !== false && $itemtype != 'Infocom' ? 1 : 0;
          $autoNum = str_replace(array('\\y',
                                       '\\Y',
                                       '\\m',

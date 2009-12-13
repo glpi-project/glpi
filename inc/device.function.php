@@ -149,7 +149,7 @@ function getDeviceSpecifityLabel($dev_type) {
 
 /**
  * Get device type name based on device type
- * 
+ *
  * @param $device_num device type
  * @return if $device_num == -1 return array of names else return device name
  **/
@@ -271,7 +271,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          $specificity_size = 10;
          break;
 
-      case DRIVE_DEVICE : 
+      case DRIVE_DEVICE :
          $type=$LANG['devices'][19];
          $name=$device->fields["designation"];
          if ($device->fields["is_writer"]) {
@@ -370,7 +370,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td>";
       } else {
          echo "<td class='right' colspan='$colspan'>".$specificity_label."&nbsp;:&nbsp;";
-         echo "<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" 
+         echo "<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\"
                 size='$specificity_size' ></td>";
       }
    }
@@ -386,9 +386,9 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence=false) {
    global $DB;
 
-   // Check old value for history 
-   $query ="SELECT * 
-            FROM `glpi_computers_devices` 
+   // Check old value for history
+   $query ="SELECT *
+            FROM `glpi_computers_devices`
             WHERE `id` = '".$compDevID."'";
 
    if ($result = $DB->query($query)) {
@@ -403,8 +403,8 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
                   }
                   //Calculate pourcent change of frequency
                   $pourcent =  ( $newValue / ($data["specificity"] / 100) ) - 100;
-                  //If new processor speed value is superior to the old one, 
-                  //and if the change is at least 5% change 
+                  //If new processor speed value is superior to the old one,
+                  //and if the change is at least 5% change
                   if ($data["specificity"] < $newValue && $pourcent > 4) {
                      $condition = true;
                   } else {
@@ -436,26 +436,26 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
                $condition = false;
             }
          }
-         // Is it a real change ? 
+         // Is it a real change ?
          if( $condition) {
-            // Update specificity 
+            // Update specificity
             $WHERE=" WHERE `devices_id` = '".$data["devices_id"]."'
-                           AND `computers_id` = '".$data["computers_id"]."' 
+                           AND `computers_id` = '".$data["computers_id"]."'
                            AND `devicetype` = '".$data["devicetype"]."'
                            AND `specificity` = '".$data["specificity"]."'";
             if ($strict) {
                 $WHERE=" WHERE `id` = '$compDevID'";
             }
 
-            $query2 = "UPDATE 
-                       `glpi_computers_devices` 
+            $query2 = "UPDATE
+                       `glpi_computers_devices`
                        SET `specificity` = '".$newValue."' $WHERE";
             if ($DB->query($query2)) {
                $changes[0]='0';
                $changes[1]=addslashes($data["specificity"]);
                $changes[2]=$newValue;
                // history log
-               historyLog ($data["computers_id"],COMPUTER_TYPE,$changes,$data["devicetype"],
+               historyLog ($data["computers_id"],'Computer',$changes,$data["devicetype"],
                            HISTORY_UPDATE_DEVICE);
                return true;
             } else {
@@ -473,18 +473,18 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 function update_device_quantity($newNumber,$compDevID) {
    global $DB;
 
-   // Check old value for history 
-   $query ="SELECT * 
-            FROM `glpi_computers_devices` 
+   // Check old value for history
+   $query ="SELECT *
+            FROM `glpi_computers_devices`
             WHERE `id` = '".$compDevID."'";
    if ($result = $DB->query($query)) {
       $data = addslashes_deep($DB->fetch_array($result));
 
-      $query2 = "SELECT `id` 
-                 FROM `glpi_computers_devices` 
-                 WHERE `devices_id` = '".$data["devices_id"]."' 
+      $query2 = "SELECT `id`
+                 FROM `glpi_computers_devices`
+                 WHERE `devices_id` = '".$data["devices_id"]."'
                        AND `computers_id` = '".$data["computers_id"]."'
-                       AND `devicetype` = '".$data["devicetype"]."' 
+                       AND `devicetype` = '".$data["devicetype"]."'
                        AND `specificity` = '".$data["specificity"]."'";
       if ($result2 = $DB->query($query2)) {
          // Delete devices
@@ -507,7 +507,7 @@ function update_device_quantity($newNumber,$compDevID) {
 
 /**
  * Unlink a device, linked to a computer.
- * 
+ *
  * Unlink a device and a computer witch link ID is $compDevID (on table glpi_computers_devices)
  *
  * @param $compDevID ID of the computer-device link (table glpi_computers_devices)
@@ -517,16 +517,16 @@ function update_device_quantity($newNumber,$compDevID) {
 function unLink_ItemType_computer($compDevID,$dohistory=1) {
    global $DB;
 
-   // get old value  and id for history 
-   $query ="SELECT * 
-            FROM `glpi_computers_devices` 
+   // get old value  and id for history
+   $query ="SELECT *
+            FROM `glpi_computers_devices`
             WHERE `id` = '".$compDevID."'";
    if ($result = $DB->query($query)) {
       $data = $DB->fetch_array($result);
-   } 
+   }
 
-   $query2 = "DELETE 
-              FROM `glpi_computers_devices` 
+   $query2 = "DELETE
+              FROM `glpi_computers_devices`
               WHERE `id` = '".$compDevID."'";
    if ($DB->query($query2)) {
       if ($dohistory) {
@@ -536,19 +536,19 @@ function unLink_ItemType_computer($compDevID,$dohistory=1) {
             $changes[1]=addslashes($device->fields["designation"]);
             $changes[2]="";
             // history log
-            historyLog ($data["computers_id"],COMPUTER_TYPE,$changes,$data["devicetype"],
+            historyLog ($data["computers_id"],'Computer',$changes,$data["devicetype"],
                         HISTORY_DELETE_DEVICE);
          }
       }
       return true;
-   } else { 
+   } else {
       return false;
    }
 }
 
 /**
  * Link the device to the computer
- * 
+ *
  * @param $computers_id Computer ID
  * @param $devicetype device type
  * @param $dID device ID
@@ -570,14 +570,14 @@ function compdevice_add($computers_id,$devicetype,$dID,$specificity='',$dohistor
       $changes[1]="";
       $changes[2]=addslashes($device->fields["designation"]);
       // history log
-      historyLog ($computers_id,COMPUTER_TYPE,$changes,$devicetype,HISTORY_ADD_DEVICE);
+      historyLog ($computers_id,'Computer',$changes,$devicetype,HISTORY_ADD_DEVICE);
    }
    return $newID;
 }
 
 /**
  * Show Device list of a defined type
- * 
+ *
  * @param $devicetype device type
  * @param $target wher to go on action
  **/
@@ -596,44 +596,44 @@ function showDevicesList($devicetype,$target) {
       $where = "`designation`" . makeTextSearch($_REQUEST['name']);
    }
    $number = countElementsInTable(getDeviceTable($devicetype), $where);
-   
+
    printPager($start,$number,$_SERVER['PHP_SELF'],$params);
 
    // Lists Device from a devicetype
-   $query = "SELECT `device`.`id`, `device`.`designation`, `glpi_manufacturers`.`name` as manufacturer 
-             FROM `".getDeviceTable($devicetype)."` as device 
+   $query = "SELECT `device`.`id`, `device`.`designation`, `glpi_manufacturers`.`name` as manufacturer
+             FROM `".getDeviceTable($devicetype)."` as device
              LEFT JOIN `glpi_manufacturers` ON (`glpi_manufacturers`.`id` = `device`.`manufacturers_id`) ";
    if ($where) {
       $query .= " WHERE $where ";
    }
-   $query .= "ORDER by `device`.`designation` ASC 
+   $query .= "ORDER by `device`.`designation` ASC
              LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-   // Get it from database	
+   // Get it from database
    if ($result = $DB->query($query)) {
       $numrows = $DB->numrows($result);
       $numrows_limit = $numrows;
       $result_limit = $result;
       if ($numrows_limit>0) {
-         initNavigateListItems(DEVICE_TYPE);
+         initNavigateListItems('Device');
          // Produce headline
          echo "<div class='center'><table class='tab_cadre_fixe'><tr>";
          // designation
          echo "<th>";
          echo $LANG['common'][16]."</th>";
-         // Manufacturer		
+         // Manufacturer
          echo "<th>";
          echo $LANG['common'][5]."</th>";
 
          echo "</tr>";
 
          while ($data=$DB->fetch_array($result)) {
-            addToNavigateListItems(DEVICE_TYPE,$data["id"]);
+            addToNavigateListItems('Device',$data["id"]);
             echo "<tr class='tab_bg_2'>";
             echo "<td><strong>";
             echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?id=".
                    $data["id"]."&amp;devicetype=$devicetype\">";
-            if (utf8_strlen($data["designation"])>100 
+            if (utf8_strlen($data["designation"])>100
                && (!strpos(' ',$data["designation"]) || strpos(' ',$data["designation"])>100)) {
                // sometime OCS send very long strange string
                echo utf8_substr($data["designation"],0,100)."&hellip;";
@@ -657,7 +657,7 @@ function showDevicesList($devicetype,$target) {
 
 /**
  * title for Devices
- * 
+ *
  * @param $devicetype device type
  **/
 function titleDevices($devicetype) {

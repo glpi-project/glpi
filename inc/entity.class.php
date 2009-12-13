@@ -265,7 +265,7 @@ class Entity extends CommonTreeDropdown {
       $tab[1]['linkfield']     = 'completename';
       $tab[1]['name']          = $LANG['common'][51];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = ENTITY_TYPE;
+      $tab[1]['itemlink_type'] = 'Entity';
 
       $tab[2]['table']     = 'glpi_entities';
       $tab[2]['field']     = 'id';
@@ -277,7 +277,7 @@ class Entity extends CommonTreeDropdown {
       $tab[14]['linkfield']     = 'name';
       $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
-      $tab[14]['itemlink_type'] = ENTITY_TYPE;
+      $tab[14]['itemlink_type'] = 'Entity';
 
       $tab[16]['table']     = 'glpi_entities';
       $tab[16]['field']     = 'comment';

@@ -43,7 +43,7 @@ class Peripheral  extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_peripherals';
-   public $type = PERIPHERAL_TYPE;
+   public $type = 'Peripheral';
    public $dohistory = true;
    public $entity_assign = true;
 
@@ -118,7 +118,7 @@ class Peripheral  extends CommonDBTM {
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                            INFOCOM_TYPE,$input['entities_id']);
+                                            'Infocom',$input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -358,7 +358,7 @@ class Peripheral  extends CommonDBTM {
     */
    function getSelectLinkedItem () {
 
-      return "SELECT '".COMPUTER_TYPE."', `computers_id`
+      return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
               WHERE `itemtype` = '".$this->type."'
                     AND `items_id` = '" . $this->fields['id']."'";
@@ -375,7 +375,7 @@ class Peripheral  extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = PERIPHERAL_TYPE;
+      $tab[1]['itemlink_type'] = 'Peripheral';
 
       $tab[2]['table']     = 'glpi_peripherals';
       $tab[2]['field']     = 'id';

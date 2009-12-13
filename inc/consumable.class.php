@@ -85,7 +85,7 @@ class Consumable extends CommonDBTM {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
-      if ($ic->getFromDBforDevice(CONSUMABLEITEM_TYPE,$this->fields["consumableitems_id"])) {
+      if ($ic->getFromDBforDevice('ConsumableItem',$this->fields["consumableitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
          $ic->fields["itemtype"]=$this->type;
@@ -467,7 +467,7 @@ class Consumable extends CommonDBTM {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink(CONSUMABLE_TYPE,$data["id"],1);
+            Infocom::showDisplayLink('Consumable',$data["id"],1);
             echo "</td>";
 
             if (!$show_old && $canedit) {

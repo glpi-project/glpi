@@ -107,10 +107,10 @@ class SoftwareLicense extends CommonDBTM {
 
    function post_addItem($newID, $input) {
 
-      $itemtype = SOFTWARE_TYPE;
+      $itemtype = 'Software';
       $dupid = $this->fields["softwares_id"];
       if (isset ($input["_duplicate_license"])) {
-         $itemtype = LICENSE_TYPE;
+         $itemtype = 'SoftwareLicense';
          $dupid = $input["_duplicate_license"];
       }
       // Add infocoms if exists for the licence
@@ -120,7 +120,7 @@ class SoftwareLicense extends CommonDBTM {
          $ic->fields["items_id"] = $newID;
          if (isset($ic->fields["immo_number"])) {
             $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                  INFOCOM_TYPE,$input['entities_id']);
+                                                  'Infocom', $input['entities_id']);
          }
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
@@ -576,7 +576,7 @@ class SoftwareLicense extends CommonDBTM {
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-      initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG['help'][31] ." = ". $software->fields["name"]);
+      initNavigateListItems('SoftwareLicense',$LANG['help'][31] ." = ". $software->fields["name"]);
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -619,7 +619,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "</tr>\n";
 
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
-               addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['id']);
+               addToNavigateListItems('SoftwareLicense',$data['id']);
                echo "<tr class='tab_bg_2'>";
                if ($license->can($data['id'],"w")) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
@@ -692,7 +692,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($canedit) {
                openArrowMassive("massiveactionlicense_form$rand",true);
-               dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('softwares_id'=>$softwares_id));
+               dropdownMassiveAction('SoftwareLicense',0,array('softwares_id'=>$softwares_id));
                closeArrowMassive();
 
                echo "</form>";

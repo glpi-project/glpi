@@ -43,7 +43,7 @@ class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_networkequipments';
-   public $type = NETWORKING_TYPE;
+   public $type = 'NetworkEquipment';
    public $dohistory=true;
    public $entity_assign=true;
    public $may_be_recursive=true;
@@ -118,7 +118,7 @@ class NetworkEquipment extends CommonDBTM {
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                     INFOCOM_TYPE ,$input['entities_id']);
+                                                     'Infocom' ,$input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -435,7 +435,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = NETWORKING_TYPE;
+      $tab[1]['itemlink_type'] = 'NetworkEquipment';
 
       $tab[2]['table']     = 'glpi_networkequipments';
       $tab[2]['field']     = 'id';
