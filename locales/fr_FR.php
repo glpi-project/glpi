@@ -1219,7 +1219,7 @@ $LANG['plugins'][2]="Installé / non configuré";
 $LANG['plugins'][3]="Installé / non activé";
 $LANG['plugins'][4]="Erreur / à nettoyer";
 $LANG['plugins'][5]="Fonction(s) inexistante(s)";
-
+$LANG['plugins'][6]="A mettre à jour";
 
 $LANG['printers'][14]="Série";
 $LANG['printers'][15]="Parallèle";

@@ -120,7 +120,7 @@ class Plugin extends CommonDBTM {
             if ($file_plugins[$plug]['version']!=$pluglist[$ID]['version']) {
                $input=$file_plugins[$plug];
                $input['id']=$ID;
-               $input['state']=PLUGIN_NOTINSTALLED;
+               $input['state']=PLUGIN_NOTUPDATED;
                $this->update($input);
                $install_ok=false;
             }
@@ -225,6 +225,10 @@ class Plugin extends CommonDBTM {
             case PLUGIN_NOTINSTALLED :
                echo $LANG['plugins'][1];
                break;
+             
+            case PLUGIN_NOTUPDATED :
+               echo $LANG['plugins'][6];
+               break;
 
             case PLUGIN_TOBECONFIGURED :
                echo $LANG['plugins'][2];
@@ -269,6 +273,7 @@ class Plugin extends CommonDBTM {
 
             case PLUGIN_NEW :
             case PLUGIN_NOTINSTALLED :
+            case PLUGIN_NOTUPDATED :
                echo "<td>";
                if (function_exists("plugin_".$plug['directory']."_install")
                    && function_exists("plugin_".$plug['directory']."_check_config")) {
@@ -278,9 +283,14 @@ class Plugin extends CommonDBTM {
                   if (function_exists($function)) {
                      $do_install=$function();
                   }
+                  if ($plug['state']==PLUGIN_NOTUPDATED) {
+                     $msg = $LANG['install'][4]; 
+                  } else {
+                     $msg = $LANG['buttons'][4];
+                  }
                   if ($do_install) {
                      echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=install'>".
-                            $LANG['buttons'][4]."</a>";
+                            $msg."</a>";
                   }
                } else {
                   echo $LANG['plugins'][5]."&nbsp;:";
