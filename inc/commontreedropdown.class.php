@@ -173,8 +173,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "<th>".$LANG['common'][25]."</th>";
       echo "</tr>\n";
 
-      $crit = array(getForeignKeyFieldForTable($this->table)  => $ID,
-                    'entities_id' => $_SESSION['glpiactiveentities']);
+      $fk = getForeignKeyFieldForTable($this->table);
+      $crit = array($fk => $ID);
+      if ($fk != 'entities_id' && $this->entity_assign) {
+         $crit['entities_id'] = $_SESSION['glpiactiveentities'];
+      }
       foreach ($DB->request($this->table, $crit) as $data) {
          echo "<tr class='tab_bg_1'>";
          echo "<td><a href='".$this->getFormURL();
