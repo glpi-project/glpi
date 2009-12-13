@@ -550,7 +550,7 @@ class Cartridge extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr>";
-         echo "<td class='center' class='tab_bg_2'>";
+         echo "<td class='center tab_bg_2'>";
          echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "<input type='hidden' name='tID' value=\"$ID\">\n";
          echo "&nbsp;&nbsp;";
