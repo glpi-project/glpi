@@ -33,41 +33,42 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
 
-$mailgate=new MailCollector();
+$mailgate = new MailCollector();
 
 if (isset($_POST["add"])) {
-	$mailgate->check(-1,'w');
-	$newID=$mailgate->add($_POST);
-	Event::log($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $mailgate->check(-1,'w',$_POST);
+   $newID = $mailgate->add($_POST);
+   Event::log($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["delete"])) {
-	$mailgate->check($_POST['id'],'w');
-	$mailgate->delete($_POST);
-	Event::log($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
+   $mailgate->check($_POST['id'],'w');
+   $mailgate->delete($_POST);
+   Event::log($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/mailcollector.php");
+
 } else if (isset($_POST["update"])) {
-	$mailgate->check($_POST['id'],'w');
-	$mailgate->update($_POST);
-	Event::log($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $mailgate->check($_POST['id'],'w');
+   $mailgate->update($_POST);
+   Event::log($_POST["id"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["get_mails"])) {
-	$mailgate->check($_POST['id'],'w');
+   $mailgate->check($_POST['id'],'w');
+   $mailgate->collect($_POST["id"],1);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$mailgate->collect($_POST["id"],1);
-
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['Menu'][39],$_SERVER['PHP_SELF'],"config","mailgate");
-	$mailgate->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-	commonFooter();
+} else {
+   commonHeader($LANG['Menu'][39],$_SERVER['PHP_SELF'],"config","mailgate");
+   $mailgate->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   commonFooter();
 }
 
 ?>
