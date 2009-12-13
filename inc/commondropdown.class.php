@@ -156,9 +156,13 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'parent' :
+               if ($field['name']=='entities_id') {
+                  $restrict = -1;
+               } else {
+                  $restrict = $this->fields["entities_id"];
+               }
                Dropdown::dropdownValue($this->table, $field['name'],
-                             $this->fields[$field['name']], 1,
-                             $this->fields["entities_id"], '',
+                             $this->fields[$field['name']], 1, $restrict, '',
                              ($ID>0 ? getSonsOf($this->table, $ID) : array()));
                break;
 
