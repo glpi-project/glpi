@@ -78,11 +78,10 @@ class RuleRight extends Rule {
       global $LANG, $CFG_GLPI;
 
       $canedit = haveRight($this->right, "w");
-      echo "<form name='ldapaffectation_form' id='ldapaffectation_form' method='post' ".
-             "action=\"$target\">";
 
       if ($canedit) {
-         echo "<div class='center'>";
+         echo "<form name='ldapaffectation_form' id='ldapaffectation_form' method='post' ".
+                "action=\"$target\">";
          echo "<table  class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" .$LANG['rulesengine'][19] . "</th></tr>\n";
 
@@ -108,14 +107,18 @@ class RuleRight extends Rule {
          Dropdown::showYesNo("is_recursive",0);
          echo "</td></tr>\n";
 
-         echo "</table></div><br>";
+         echo "</table><br>";
       }
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='3'>" . $LANG['entity'][6] . "</th></tr>";
       //Get all rules and actions
       $rules = $this->getRulesForEntity( $ID, 0, 1);
 
-      if (!empty ($rules)) {
+      if (empty ($rules)) {
+         echo "<table class='tab_cadre_fixehov'>";
+         echo "<tr><th>" . $LANG['entity'][6] . " - " . $LANG['search'][15] . "</th></tr>\n";
+         echo "</table><br>\n";
+      } else {
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='3'>" . $LANG['entity'][6] . "</th></tr>";
          initNavigateListItems(RULE_TYPE,$LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
                                $this->sub_type);
 
@@ -141,14 +144,14 @@ class RuleRight extends Rule {
             echo "<td>" . $rule->fields["description"] . "</td>";
             echo "</tr>";
          }
-      }
-      echo "</table></div>";
+         echo "</table><br>";
 
-      if ($canedit) {
-         openArrowMassive("ldapaffectation_form", true);
-         closeArrowMassive('delete_user_rule', $LANG['buttons'][6]);
+         if ($canedit) {
+            openArrowMassive("ldapaffectation_form", true);
+            closeArrowMassive('delete_user_rule', $LANG['buttons'][6]);
+            echo "</form>";
+         }
       }
-      echo "</form>";
    }
 
    /**
