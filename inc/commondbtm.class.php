@@ -1139,7 +1139,9 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "<tr>";
 
-      if ($withtemplate || $ID<=0) {
+      if (get_class($this)=='Entity' && !$ID) {
+         // Very special case ;)
+      } else if ($withtemplate || $ID<=0) {
          echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>";
          if ($ID<=0||$withtemplate==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -1216,7 +1218,9 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<tr><th colspan='$colspan'>";
 
-      if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
+      if (get_class($this)=='Entity' && !$ID) {
+         // Very special case ;)
+      } else if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
          echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . "&nbsp;: " . $this->fields["template_name"];
       } else if (!empty($withtemplate) && $withtemplate == 1) {
