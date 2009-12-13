@@ -65,18 +65,16 @@ class RuleOcs extends Rule {
 
    /**
     * Display form to add rules
-    * @param $target
+    *
     * @param $ID
     */
-   function showAndAddRuleForm($target, $ID) {
+   function showAndAddRuleForm($ID) {
       global $LANG, $CFG_GLPI;
 
       $canedit = haveRight($this->right, "w");
 
-      echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' ".
-            "action=\"$target\">";
-
       if ($canedit) {
+         echo "<form action='".getItemTypeFormURL('Entity')."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['rulesengine'][18] . "</th></tr>\n";
          echo "<tr class='tab_bg_1'>";
@@ -90,10 +88,11 @@ class RuleOcs extends Rule {
          echo "<input type=hidden name='sub_type' value='" . $this->sub_type . "'>";
          echo "<input type=hidden name='entities_id' value='-1'>";
          echo "<input type=hidden name='affectentity' value='$ID'>";
-         echo "<input type='submit' name='add_rule' value=\"" . $LANG['buttons'][8] .
+         echo "<input type=hidden name='_method' value='addOcsRule'>";
+         echo "<input type='submit' name='execute' value=\"" . $LANG['buttons'][8] .
                 "\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table><br>";
+         echo "</table></form><br>";
       }
 
       //Get all rules and actions
@@ -103,6 +102,10 @@ class RuleOcs extends Rule {
          echo "<tr><th>" . $LANG['entity'][5] . " - " . $LANG['search'][15] . "</th></tr>\n";
          echo "</table><br>\n";
       } else {
+         if ($canedit) {
+            echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' ".
+                  "action='".GLPI_ROOT."/front/ruleocs.php'>";
+         }
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>" . $LANG['entity'][5] . "</th></tr>\n";
          initNavigateListItems('Rule', $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
@@ -113,11 +116,7 @@ class RuleOcs extends Rule {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               $sel = "";
-               if (isset ($_GET["select"]) && $_GET["select"] == "all") {
-                  $sel = "checked";
-               }
-               echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1' $sel>";
+               echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1'>";
                echo "</td>";
             }
             if ($canedit) {
@@ -132,11 +131,12 @@ class RuleOcs extends Rule {
          echo "</table><br>\n";
          if ($canedit) {
             openArrowMassive("entityaffectation_form", true);
-            closeArrowMassive('delete_computer_rule', $LANG['buttons'][6]);
+            echo "<input type='hidden' name='action' value='delete'>";
+            closeArrowMassive('massiveaction', $LANG['buttons'][6]);
+            echo "</form>";
          }
       }
 
-      echo "</form>";
    }
 
    /**
