@@ -535,7 +535,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['admin']['content']['entity']['shortcut']='z';
       $menu['admin']['content']['entity']['page']='/front/entity.php';
       $menu['admin']['content']['entity']['links']['search']='/front/entity.php';
-      $menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
+      $menu['admin']['content']['entity']['links']['add']="/front/entity.form.php";
    }
 
    if (haveRight("rule_ldap","r") || haveRight("rule_ocs","r") || haveRight("rule_ticket","r")
