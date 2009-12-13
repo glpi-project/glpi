@@ -192,6 +192,14 @@ class Entity extends CommonTreeDropdown {
       return true;
    }
 
+   function post_addItem($newID,$input) {
+      CleanFields($this->table, 'sons_cache');
+
+      // Add right to current user - Hack to avoid login/logout
+      $_SESSION['glpiactiveentities'][$newID] = $newID;
+      $_SESSION['glpiactiveentities_string'] .= ",'$newID'";
+   }
+
    /**
    * Check right on an entity
    *

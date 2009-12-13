@@ -128,6 +128,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
    }
 
+   function post_addItem($newID,$input) {
+      CleanFields($this->table, 'sons_cache');
+   }
+
    /**
     * Get the this for all the current item and all its parent
     *
