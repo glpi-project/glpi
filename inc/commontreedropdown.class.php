@@ -157,7 +157,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     **/
     function showChildren($ID) {
-      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+      global $DB, $CFG_GLPI, $LANG;
 
       $this->check($ID, 'r');
       $fields = $this->getAdditionalFields();
@@ -212,7 +212,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       // Minimal form for quick input.
       if ($this->canCreate()) {
-         echo "<form action='".GLPI_ROOT.'/'.$INFOFORM_PAGES[$this->type]."' method='post'>";
+         $link=getItemTypeFormURL($this->type);
+         echo "<form action='".$link."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";

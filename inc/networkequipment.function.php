@@ -476,7 +476,7 @@ function showPortsAdd($ID, $itemtype) {
  *
  */
 function showConnection(& $device1, & $netport, $withtemplate = '') {
-   global $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+   global $CFG_GLPI, $LANG;
 
    if (!$device1->can($device1->fields["id"], 'r')) {
       return false;

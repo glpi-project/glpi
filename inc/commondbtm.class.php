@@ -595,9 +595,11 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnAddAction($input) {
-      global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
-
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      global 
+      $CFG_GLPI, $LANG;
+      
+      $link=getItemTypeFormURL($this->type);
+      if (!isset($link)) {
          return;
       }
 
@@ -722,9 +724,10 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnUpdateAction($input) {
-      global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      $link=getItemTypeFormURL($this->type);
+      if (!isset($link)) {
          return;
       }
 
@@ -851,9 +854,10 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnDeleteAction($input) {
-      global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      $link=getItemTypeFormURL($this->type);
+      if (!isset($link)) {
          return;
       }
       if (!in_array($this->table,$CFG_GLPI["deleted_tables"])) {
@@ -879,9 +883,10 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnPurgeAction($input) {
-      global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      $link=getItemTypeFormURL($this->type);
+      if (!isset($link)) {
          return;
       }
 
@@ -953,9 +958,10 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnRestoreAction($input) {
-      global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
-      if (!isset($INFOFORM_PAGES[$this->type])) {
+      $link=getItemTypeFormURL($this->type);
+      if (!isset($link)) {
          return;
       }
 

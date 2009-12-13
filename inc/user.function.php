@@ -74,7 +74,7 @@ function showAddExtAuthUserForm($target) {
 * @param $ID user ID
 */
 function showDeviceUser($ID) {
-   global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+   global $DB,$CFG_GLPI, $LANG;
 
    $group_where = "";
    $groups = array();
@@ -130,7 +130,8 @@ function showDeviceUser($ID) {
                $cansee = $item->can($data["id"],"r");
                $link = $data["name"];
                if ($cansee) {
-                  $link = "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
+                  $link_item=getItemTypeFormURL($itemtype);
+                  $link = "<a href='".$link_item."?id=".
                            $data["id"]."'>".$link.
                            (($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["id"].")":"")
                            ."</a>";
@@ -195,7 +196,8 @@ function showDeviceUser($ID) {
                $cansee = $item->can($data["id"],"r");
                $link = $data["name"];
                if ($cansee) {
-                  $link = "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
+                  $link_item=getItemTypeFormURL($itemtype);
+                  $link = "<a href='".$link_item."?id=".
                            $data["id"]."'>".$link.
                            (($_SESSION["glpiis_ids_visible"] || empty($link))?" (".$data["id"].")":"").
                            "</a>";

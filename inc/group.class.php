@@ -302,7 +302,7 @@ class Group extends CommonDBTM {
     *
     */
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $ID = $this->fields['id'];
 

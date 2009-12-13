@@ -456,7 +456,7 @@ class Supplier extends CommonDBTM {
     *
     **/
    function showInfocoms() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,'r')) {
@@ -547,7 +547,8 @@ class Supplier extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $ID= " (".$data["id"].")";
                   }
-                  $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$linktype]."?id=".
+                  $link=getItemTypeFormURL($linktype);
+                  $name= "<a href=\"".$link."?id=".
                            $data[$linkfield]."\">".$data["name"]."$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";

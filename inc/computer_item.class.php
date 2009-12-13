@@ -308,7 +308,7 @@ class Computer_Item extends CommonDBRelation{
     *
     **/
    static function showForComputer($target, Computer $comp, $withtemplate='') {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $used = array();
       $items = array('Printer'    => $LANG['computers'][39],

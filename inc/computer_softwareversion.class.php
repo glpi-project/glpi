@@ -633,7 +633,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
     * @return array of found license id
     */
    private static function displaySoftsByCategory($data, $computers_id, $withtemplate,$canedit) {
-      global $DB,$LANG, $CFG_GLPI, $INFOFORM_PAGES;
+      global $DB,$LANG, $CFG_GLPI;
 
       $ID = $data["id"];
       $verid = $data["verid"];
@@ -673,7 +673,8 @@ class Computer_SoftwareVersion extends CommonDBTM {
          if ($licdata['type']) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
-         $link = GLPI_ROOT.'/'.$INFOFORM_PAGES['SoftwareLicense']."?id=".$licdata['id'];
+         $link_item=getItemTypeFormURL('SoftwareLicense');
+         $link = $link_item."?id=".$licdata['id'];
          displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
                          $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
                          $link);
@@ -699,11 +700,12 @@ class Computer_SoftwareVersion extends CommonDBTM {
     * @return nothing
     */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
-      global $LANG, $CFG_GLPI, $INFOFORM_PAGES;
+      global $LANG, $CFG_GLPI;
 
       $ID = $data["softwareversions_id_buy"];
       $multiple = false;
-      $link = GLPI_ROOT.'/'.$INFOFORM_PAGES['SoftwareLicense']."?id=".$data['id'];
+      $link_item=getItemTypeFormURL('SoftwareLicense');
+      $link = $link_item."?id=".$data['id'];
 
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
