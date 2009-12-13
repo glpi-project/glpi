@@ -89,7 +89,7 @@ echo "</td></tr>\n";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['state'][0]."&nbsp;:</td>";
 echo "<td class='center'>";
-dropdownPlanningState("plan[state]",$state);
+Planning::dropdownState("plan[state]",$state);
 echo "</td></tr>";
 
 echo "</table>\n";
