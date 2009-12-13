@@ -87,7 +87,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          default :
             if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
-               showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+               Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
             }
             break;
       }
