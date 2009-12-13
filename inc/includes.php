@@ -70,7 +70,6 @@ $TIMER_DEBUG->start();
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
-include_once (GLPI_ROOT . "/inc/entity.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
