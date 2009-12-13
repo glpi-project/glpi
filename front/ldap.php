@@ -57,10 +57,10 @@ if (isset($_SESSION["ldap_sortorder"])) {
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th>&nbsp;".$LANG['ldap'][0]."&nbsp;</th></tr>";
 
-echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.sync.php?next=listservers\">".
+echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.sync.php?next=listservers'>".
       $LANG['ldap'][1]."</a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.import.php?next=listservers\">".
+echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?next=listservers'>".
       $LANG['ldap'][2]."</a></td> </tr>";
 
 echo "</table></div>";
