@@ -67,7 +67,7 @@ class Dropdown {
    static function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
                           $update_item="",$used=array(),$auto_submit=0) {
 
-      global $DB,$CFG_GLPI,$LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI,$LANG;
 
       $rand=mt_rand();
       $name="------";

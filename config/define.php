@@ -374,7 +374,7 @@ define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
                        'UserCategory'                 => 'glpi_usercategories');
 */
 // Form for each type (order by type number)
-$INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
+/*$INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                         NETWORKING_TYPE      => "front/networkequipment.form.php",
                         PRINTER_TYPE         => "front/printer.form.php",
                         MONITOR_TYPE         => "front/monitor.form.php",
@@ -463,7 +463,7 @@ $INFOFORM_PAGES = array(COMPUTER_TYPE        => "front/computer.form.php",
                       'Vlan'                  => "front/vlan.form.php",
                       'SoftwareCategory'      => "front/softwarecategory.form.php",
                       'UserTitle'             => "front/usertitle.form.php",
-                      'UserCategory'          => "front/usercategory.form.php");
+                      'UserCategory'          => "front/usercategory.form.php");*/
 // CRONTASKLOG_TYPE => "???",
 
 /* Form for each type (order by type number)

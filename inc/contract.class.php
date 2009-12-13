@@ -624,7 +624,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
 
@@ -711,7 +711,8 @@ class Contract extends CommonDBTM {
                   if($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $ID= " (".$data["id"].")";
                   }
-                  $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
+                  $link=getItemTypeFormURL($itemtype);
+                  $name= "<a href=\"".$link."?id=".
                            $data["id"]."\">".$data["name"]."$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";

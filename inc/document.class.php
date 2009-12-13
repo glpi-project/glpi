@@ -102,7 +102,7 @@ class Document extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      global $LANG, $INFOFORM_PAGES, $CFG_GLPI, $DB;
+      global $LANG, $CFG_GLPI, $DB;
 
       // security (don't accept filename from $_POST)
       unset($input['filename']);
@@ -150,8 +150,9 @@ class Document extends CommonDBTM {
          $crit = array('sha1sum'=>$input['sha1sum'],
                        'entities_id'=>$input['entities_id']);
          foreach ($DB->request($this->table, $crit) as $data) {
+            $link=getItemTypeFormURL($this->type);
             addMessageAfterRedirect($LANG['document'][48].
-               "&nbsp;: <a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type]."?id=".
+               "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",
                false, ERROR, true);
             return false;
@@ -596,7 +597,7 @@ class Document extends CommonDBTM {
     * @return nothing (HTML display)
     **/
    function showItems() {
-      global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
+      global $DB,$CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,"r")) {
@@ -694,7 +695,8 @@ class Document extends CommonDBTM {
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID= " (".$data["id"].")";
                      }
-                     $name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?id=".
+                     $link=getItemTypeFormURL($itemtype);
+                     $name= "<a href=\"".$link."?id=".
                               $data["id"]."\">".$data["name"]."$ID</a>";
 
                      echo "<tr class='tab_bg_1'>";

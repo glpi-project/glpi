@@ -2844,7 +2844,7 @@ function computeTicketTco($itemtype,$items_id) {
 
 
 function showPreviewAssignAction($output) {
-   global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
+   global $LANG,$CFG_GLPI;
 
    //If ticket is assign to an object, display this information first
    if (isset($output["entities_id"]) && isset($output["items_id"]) && isset($output["itemtype"])) {

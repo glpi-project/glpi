@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
  * @return nothing
  */
 function showSoftwareMergeCandidates($ID) {
-   global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+   global $DB, $CFG_GLPI, $LANG;
 
    $soft = new Software();
    $soft->check($ID,"w");
@@ -69,8 +69,9 @@ function showSoftwareMergeCandidates($ID) {
    $req = $DB->request($sql);
 
    if ($req->numrows()) {
+      $link=getItemTypeFormURL('Software');
       echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand' action='".
-             $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES['Software']."'>";
+             $link."'>";
       echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -80,7 +81,7 @@ function showSoftwareMergeCandidates($ID) {
       foreach($req as $data) {
          echo "<tr class='tab_bg_2'>";
          echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-         echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES['Software']."?id=".
+         echo "<td<a href='".$link."?id=".
                    $data["id"]."'>".$data["name"]."</a></td>";
          echo "<td>".$data["entity"]."</td>";
          echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";

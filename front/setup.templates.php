@@ -39,12 +39,13 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$item = str_replace(".form.php","",$INFOFORM_PAGES[$_GET["itemtype"]]);
+$link=getItemTypeFormURL($_GET["itemtype"]);
+
+$item = str_replace(".form.php","",$link);
 $item = str_replace("front/","",$item);
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"inventory",$item);
 
-listTemplates($_GET["itemtype"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["itemtype"]],
-              $_GET["add"]);
+listTemplates($_GET["itemtype"],$link,$_GET["add"]);
 
 commonFooter();
 

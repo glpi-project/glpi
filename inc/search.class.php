@@ -60,7 +60,7 @@ class Search {
    *
    **/
    static function showList ($itemtype,$params) {
-      global $DB,$CFG_GLPI,$INFOFORM_PAGES,$LANG,
+      global $DB,$CFG_GLPI,$LANG,
             $PLUGIN_HOOKS;
 
       // Instanciate an object to access method
@@ -991,8 +991,8 @@ class Search {
                                  // Manage Link to item
                                  $split2=explode("$$",$split[$k]);
                                  if (isset($split2[1])) {
-                                    $out .= "<a href=\"".$CFG_GLPI["root_doc"]."/".
-                                             $INFOFORM_PAGES[$itemtype2[$j]]."?id=".$split2[1]."\">";
+                                    $link=getItemTypeFormURL($itemtype2[$j]);
+                                    $out .= "<a href=\"".$link."?id=".$split2[1]."\">";
                                     $out .= $split2[0].$unit;
                                     if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                                        $out .= " (".$split2[1].")";
@@ -1153,7 +1153,7 @@ class Search {
    *
    **/
    static function showSearchForm($itemtype,$params) {
-      global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
+      global $LANG,$CFG_GLPI;
 
       // Default values of parameters
       $default_values["link"]="";

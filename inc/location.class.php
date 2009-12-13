@@ -145,7 +145,7 @@ class Location extends CommonTreeDropdown {
     *
     **/
     function showNetpoints($ID) {
-      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+      global $DB, $CFG_GLPI, $LANG;
 
       $netpoint = new Netpoint();
       $this->check($ID, 'r');

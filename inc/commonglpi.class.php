@@ -77,7 +77,7 @@ class CommonGLPI {
    *
    **/
    function showTabs($ID,$withtemplate,$actif,$addparams=array()) {
-      global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
+      global $LANG,$CFG_GLPI;
 
       $target=$_SERVER['PHP_SELF'];
       $template="";
