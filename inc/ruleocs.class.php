@@ -74,7 +74,7 @@ class RuleOcs extends Rule {
       $canedit = haveRight($this->right, "w");
 
       if ($canedit) {
-         echo "<form action='".getItemTypeFormURL('Entity')."'>";
+         echo "<form method='post' action='".getItemTypeFormURL('Entity')."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['rulesengine'][18] . "</th></tr>\n";
          echo "<tr class='tab_bg_1'>";
