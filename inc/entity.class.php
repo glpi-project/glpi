@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')){
 /**
  * Entity class
  */
-class Entity extends CommonDBTM {
+class Entity extends CommonTreeDropdown {
 
    // From CommonDBTM
    public $table = 'glpi_entities';
@@ -65,15 +65,79 @@ class Entity extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
-      $ong[1]=$LANG['title'][26];
-      $ong[2]=$LANG['Menu'][14];
-      $ong[3]=$LANG['rulesengine'][17];
-      $ong[4]=$LANG['entity'][14];
-      if (haveRight("document","r")) {
-         $ong[5]=$LANG['Menu'][27];
+      $ong[1] = $LANG['title'][26];          // Main
+      if ($ID>=0) {
+         $ong[2] = $LANG['financial'][44];   // Address
+         $ong[3] = $LANG['Menu'][14];        // Users
+         $ong[4] = $LANG['rulesengine'][17]; // Rules
+         $ong[5] = $LANG['entity'][14];      // Advanced
+         if (haveRight("document","r")) {
+            $ong[6]=$LANG['Menu'][27];       // Docs
+         }
       }
-
       return $ong;
+   }
+
+   /**
+    * Display content of Tab
+    *
+    * @param $ID of the item
+    * @param $tab number of the tab
+    *
+    * @return true if handled (for class stack)
+    */
+   function showTabContent ($ID, $tab) {
+      global $CFG_GLPI;
+
+      if ($ID>=0) {
+         switch ($tab) {
+            case -1 :   // All
+               $this->showChildren($ID);
+               EntityData::showStandardOptions($this);
+               showEntityUser($_POST['target'],$_POST["id"]);
+               $ocsrule = new RuleOcs;
+               $ldaprule = new RuleRight;
+               $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+               if ($CFG_GLPI["use_ocs_mode"]) {
+                  $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+               }
+               Document::showAssociated($this);
+               Plugin::displayAction($this, $tab);
+               break;
+
+            case 2 :
+               EntityData::showStandardOptions($this);
+               break;
+
+            case 3 :
+               showEntityUser($_POST['target'],$_POST["id"]);
+               break;
+
+            case 4 :
+               $ocsrule = new RuleOcs;
+               $ldaprule = new RuleRight;
+               $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+               if ($CFG_GLPI["use_ocs_mode"]) {
+                  $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+               }
+               break;
+
+            case 5 :
+               EntityData::showAdvancedOptions($this);
+               break;
+
+            case 6 :
+               Document::showAssociated($this);
+               break;
+
+            default :
+               if (!Plugin::displayAction($this, $tab)) {
+                  $this->showChildren($ID);
+               }
+               return false;
+         }
+      }
+      return false;
    }
 
    /**
@@ -95,151 +159,13 @@ class Entity extends CommonDBTM {
       displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
    }
 
-   /**
-    * Print the entity form
-    *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
-    *
-    *@return Nothing (display)
-    *
-    **/
-   function showForm ($target,$ID,$withtemplate='') {
-      global $CFG_GLPI, $LANG;
+   function displayHeader () {
+      global $LANG;
 
-      if (!haveRight("entity","r")) {
-         return false;
-      }
-
-      $con_spotted=false;
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-         $this->getEmpty();
-
-         // Special root entity case
-         if ($ID==0) {
-            $this->fields["name"]=$LANG['entity'][2];
-            $this->fields["completename"]="";
-         }
-      }
-
-      // Get data
-      $entdata=new EntityData();
-      if (!$entdata->getFromDB($ID)) {
-         $entdata->add(array("entities_id"=>$ID));
-         if (!$entdata->getFromDB($ID)) {
-            $con_spotted=false;
-         }
-      }
-
-      $canedit=$this->can($ID,'w');
-
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
-
-      if ($canedit) {
-         echo "<form method='post' name=form action=\"$target\">";
-      }
-      echo "<div class='center' id='tabsbody' >";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>";
-      echo $LANG['entity'][0]." ID $ID";
-      echo "</th></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".$LANG['common'][16]."&nbsp;:</td>";
-      echo "<td class='middle'>";
-      echo $this->fields["name"];
-      if ($ID!=0) {
-         echo " (".$this->fields["completename"].")";
-      }
-      echo "</td>";
-      echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("admin_email","glpi_entitydatas","admin_email",
-                              $entdata->fields["admin_email"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("phonenumber","glpi_entitydatas","phonenumber",
-                              $entdata->fields["phonenumber"],40);
-      echo "</td>";
-      echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("admin_reply","glpi_entitydatas","admin_reply",
-                              $entdata->fields["admin_reply"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("email","glpi_entitydatas","email",$entdata->fields["email"],40);
-      echo "</td>";
-      echo "<td rowspan='8'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='8'>";
-      if ($ID > 0) {
-         echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".$LANG['financial'][30]."&nbsp;:</td>";
-      echo "<td class='middle'>";
-      autocompletionTextField("fax","glpi_entitydatas","fax",$entdata->fields["fax"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".$LANG['financial'][45]."&nbsp;:</td>";
-      echo "<td class='middle'>";
-      autocompletionTextField("website","glpi_entitydatas","website",$entdata->fields["website"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td class='middle'><textarea cols='45' rows='3' name='address'>".
-             $entdata->fields["address"]."</textarea></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("postcode","glpi_entitydatas","postcode",
-                              $entdata->fields["postcode"],7);
-      echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField("town","glpi_entitydatas","town",$entdata->fields["town"],25);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField("state","glpi_entitydatas","state",$entdata->fields["state"],40);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."&nbsp;:</td><td>";
-      autocompletionTextField("country","glpi_entitydatas","country",$entdata->fields["country"],40);
-      echo "</td></tr>";
-
-      if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value=\"$ID\">";
-         echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
-         echo "</td></tr>";
-      }
-      echo "</table></div></form>";
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-      return true;
+      commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"admin","entity");
    }
+
+
 
    /**
     * Get the ID of entity assigned to the object
@@ -335,9 +261,9 @@ class Entity extends CommonDBTM {
       $tab['common'] = $LANG['common'][32];
 
       $tab[1]['table']         = 'glpi_entities';
-      $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['field']         = 'completename';
+      $tab[1]['linkfield']     = 'completename';
+      $tab[1]['name']          = $LANG['common'][51];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = ENTITY_TYPE;
 
@@ -347,9 +273,9 @@ class Entity extends CommonDBTM {
       $tab[2]['name']      = $LANG['common'][2];
 
       $tab[14]['table']         = 'glpi_entities';
-      $tab[14]['field']         = 'completename';
-      $tab[14]['linkfield']     = 'completename';
-      $tab[14]['name']          = $LANG['common'][51];
+      $tab[14]['field']         = 'name';
+      $tab[14]['linkfield']     = 'name';
+      $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['itemlink_type'] = ENTITY_TYPE;
 

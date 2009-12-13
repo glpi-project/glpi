@@ -35,6 +35,10 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+$dropdown = new Entity();
+include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
+/*
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -89,5 +93,5 @@ if ($_POST["id"]>=0 && $entity->can($_POST["id"],'r')) {
 }
 
 ajaxFooter();
-
+*/
 ?>

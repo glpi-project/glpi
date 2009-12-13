@@ -37,6 +37,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+$dropdown = new Entity();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
+/*
 checkRight("entity","r");
 
 $entity = new Entity();
@@ -135,5 +138,5 @@ commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 $entity->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
 
 commonFooter();
-
+*/
 ?>

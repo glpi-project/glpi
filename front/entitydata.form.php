@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: phone.tabs.php 8933 2009-09-10 18:41:20Z remi $
+ * @version $Id: contact.form.php 8027 2009-02-28 17:08:00Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,25 +28,30 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 
-if (!($dropdown instanceof CommonDropdown)) {
-   exit();
+$data = new EntityData;
+
+if (isset($_POST["add"])) {
+   $data->check(-1,'w',$_POST);
+
+   if ($data->add($_POST)) {
+      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["update"])) {
+   $data->check($_POST["id"],'w');
+
+   if ($data->update($_POST)) {
+      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 }
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset($_POST["id"])) {
-   exit();
-}
-if ($dropdown->can($_POST["id"],'r')) {
-   $dropdown->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
-}
-
-ajaxFooter();
+displayErrorAndDie("lost");
 
 ?>
