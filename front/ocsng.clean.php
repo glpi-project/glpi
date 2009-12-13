@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -41,12 +40,11 @@ checkRight("ocsng","w");
 
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
-
 OcsServer::cleanLinks($_SESSION["ocsservers_id"]);
 
-echo "<div align='center'><strong>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";
+echo "<div class='center b'>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";
 displayBackLink();
-echo "</strong></div>";
+echo "</div>";
 
 commonFooter();
 
