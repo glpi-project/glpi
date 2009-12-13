@@ -33,77 +33,78 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["sort"])) $_GET["sort"] = "";
-if(!isset($_GET["order"])) $_GET["order"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
-
-$netdevice=new NetworkEquipment();
-if (isset($_POST["add"]))
-{
-	$netdevice->check(-1,'w',$_POST);
-
-	$newID=$netdevice->add($_POST);
-	Event::log($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
-else if (isset($_POST["delete"]))
-{
-	$netdevice->check($_POST["id"],'w');
-
-	if (!empty($_POST["withtemplate"]))
-		$netdevice->delete($_POST,1);
-	else $netdevice->delete($_POST);
-
-	Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-	if(!empty($_POST["withtemplate"]))
-		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-	else
-		glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
+if (!isset($_GET["sort"])) {
+   $_GET["sort"] = "";
 }
-else if (isset($_POST["restore"]))
-{
-	$netdevice->check($_POST["id"],'w');
-
-	$netdevice->restore($_POST);
-	Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
+if (!isset($_GET["order"])) {
+   $_GET["order"] = "";
 }
-else if (isset($_POST["purge"]) || isset($_GET["purge"]))
-{
-
-	if (isset($_POST["purge"]))
-		$input["id"]=$_POST["id"];
-	else
-		$input["id"] = $_GET["id"];
-
-	$netdevice->check($input["id"],'w');
-
-	$netdevice->delete($input,1);
-	Event::log($input["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
-}
-else if (isset($_POST["update"]))
-{
-	$netdevice->check($_POST["id"],'w');
-
-	$netdevice->update($_POST);
-	Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
-
-	$netdevice->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
-
-	commonFooter();
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
 }
 
+$netdevice = new NetworkEquipment();
+if (isset($_POST["add"])) {
+   $netdevice->check(-1,'w',$_POST);
 
+   $newID = $netdevice->add($_POST);
+   Event::log($newID, "networking", 4, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["delete"])) {
+   $netdevice->check($_POST["id"],'w');
+
+   if (!empty($_POST["withtemplate"])) {
+      $netdevice->delete($_POST,1);
+   } else {
+      $netdevice->delete($_POST);
+   }
+   Event::log($_POST["id"], "networking", 4, "inventory",
+              $_SESSION["glpiname"] ." ".$LANG['log'][22]);
+
+   if (!empty($_POST["withtemplate"])) {
+      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
+   } else {
+      glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
+   }
+
+} else if (isset($_POST["restore"])) {
+   $netdevice->check($_POST["id"],'w');
+
+   $netdevice->restore($_POST);
+   Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
+
+} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
+   if (isset($_POST["purge"])) {
+      $input["id"] = $_POST["id"];
+   } else {
+      $input["id"] = $_GET["id"];
+   }
+   $netdevice->check($input["id"],'w');
+
+   $netdevice->delete($input,1);
+   Event::log($input["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
+
+} else if (isset($_POST["update"])) {
+   $netdevice->check($_POST["id"],'w');
+
+   $netdevice->update($_POST);
+   Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
+   $netdevice->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   commonFooter();
+}
 
 ?>

@@ -33,30 +33,30 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(empty($_GET["id"])) {
+if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["sort"])) {
+if (!isset($_GET["sort"])) {
    $_GET["sort"] = "";
 }
-if(!isset($_GET["order"])) {
+if (!isset($_GET["order"])) {
    $_GET["order"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$monitor=new Monitor();
+$monitor = new Monitor();
 
-if (isset($_POST["add"])){
+if (isset($_POST["add"])) {
    $monitor->check(-1,'w',$_POST);
 
-   $newID=$monitor->add($_POST);
-   Event::log($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   $newID = $monitor->add($_POST);
+   Event::log($newID, "monitors", 4, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -73,6 +73,7 @@ if (isset($_POST["add"])){
    } else {
       glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
    }
+
 } else if (isset($_POST["restore"])) {
    $monitor->check($_POST["id"],'w');
 
@@ -81,9 +82,8 @@ if (isset($_POST["add"])){
    glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-
    if (isset($_POST["purge"])) {
-      $input["id"]=$_POST["id"];
+      $input["id"] = $_POST["id"];
    } else {
       $input["id"] = $_GET["id"];
    }
