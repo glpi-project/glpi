@@ -45,7 +45,7 @@ if (!$dropdown->canView()) {
 if (isset($_POST["id"])) {
    $_GET["id"] = $_POST["id"];
 } else if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+   $_GET["id"] = -1;
 }
 
 

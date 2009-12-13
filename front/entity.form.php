@@ -41,14 +41,6 @@ $dropdown = new Entity();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 /*
 
-} else if (isset($_POST["adduser"])) {
-   $entity->check($_POST["entities_id"],'w');
-
-   addUserProfileEntity($_POST);
-
-   Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
 } else if (isset($_POST["add_rule"])) {
    $entity->check($_POST["affectentity"],'w');
 
@@ -83,18 +75,6 @@ include (GLPI_ROOT . "/front/dropdown.common.form.php");
    }
 
    Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["deleteuser"])) {
-   $entity->check($_POST["entities_id"],'w');
-
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         deleteUserProfileEntity($key);
-      }
-   }
-
-   Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"])) {

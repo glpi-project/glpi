@@ -69,7 +69,7 @@ $user = new User();
 if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showUserRights($_POST['target'],$_POST["id"]);
+         Profile_User::showForUser($user);
          Group_User::showForUser($_POST['target'], $user);
          showDeviceUser($_POST["id"]);
          showUserReservations($_POST['target'],$_POST["id"]);
@@ -105,7 +105,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
 
       default :
          if (!Plugin::displayAction($user, $_REQUEST['glpi_tab'])) {
-            showUserRights($_POST['target'],$_POST["id"]);
+            Profile_User::showForUser($user);
          }
    }
 }

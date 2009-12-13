@@ -58,26 +58,6 @@ if (isset($_POST["add"])){
    $prof->delete($_POST);
    glpi_header($CFG_GLPI["root_doc"]."/front/profile.php");
 
-} else if (isset($_POST["moveentity"])) {
-   checkRight("user","w");
-   if (isset($_POST['entities_id']) && $_POST['entities_id']>=0) {
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            moveUserProfileEntity($key,$_POST['entities_id']);
-         }
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["deleteuser"])) {
-   checkRight("user","w");
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val==1) {
-         deleteUserProfileEntity($key);
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
 } else if (isset($_POST["update"]) || isset($_POST["interface"])) {
    checkRight("profile","w");
 

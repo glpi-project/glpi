@@ -94,7 +94,7 @@ class Entity extends CommonTreeDropdown {
             case -1 :   // All
                $this->showChildren($ID);
                EntityData::showStandardOptions($this);
-               showEntityUser($_POST['target'],$_POST["id"]);
+               Profile_User::showForEntity($this);
                $ocsrule = new RuleOcs;
                $ldaprule = new RuleRight;
                $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
@@ -110,7 +110,7 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 3 :
-               showEntityUser($_POST['target'],$_POST["id"]);
+               Profile_User::showForEntity($this);
                break;
 
             case 4 :

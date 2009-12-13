@@ -131,27 +131,6 @@ if (isset($_REQUEST['getvcard'])) {
    Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["addright"])) {
-   checkRight("user","w");
-
-   $prof = new Profile();
-   if ($prof->currentUserHaveMoreRightThan(array($_POST['profiles_id'] => $_POST['profiles_id']))) {
-      addUserProfileEntity($_POST);
-      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["deleteright"])) {
-   checkRight("user","w");
-
-   if (isset($_POST["item"]) && count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         deleteUserProfileEntity($key);
-      }
-      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
 } else if (isset($_POST["switch_auth_internal"])) {
    checkSeveralRightsAnd(array('user'          => 'w',
                                'user_authtype' => 'w'));
