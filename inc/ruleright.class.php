@@ -74,14 +74,13 @@ class RuleRight extends Rule {
     * @param $target where to post form
     * @param $ID entity ID
     */
-   function showAndAddRuleForm($target, $ID) {
+   function showAndAddRuleForm($ID) {
       global $LANG, $CFG_GLPI;
 
       $canedit = haveRight($this->right, "w");
 
       if ($canedit) {
-         echo "<form name='ldapaffectation_form' id='ldapaffectation_form' method='post' ".
-                "action=\"$target\">";
+         echo "<form method='post' action='".getItemTypeFormURL('Entity')."'>";
          echo "<table  class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" .$LANG['rulesengine'][19] . "</th></tr>\n";
 
@@ -96,7 +95,8 @@ class RuleRight extends Rule {
          echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
          echo "<input type=hidden name='entities_id' value='-1'>";
          echo "<input type=hidden name='affectentity' value='$ID'>";
-         echo "<input type='submit' name='add_user_rule' value=\"" . $LANG['buttons'][8] .
+         echo "<input type=hidden name='_method' value='addLdapRule'>";
+         echo "<input type='submit' name='execute' value=\"" . $LANG['buttons'][8] .
                 "\" class='submit'>";
          echo "</td></tr>\n";
 
@@ -107,7 +107,7 @@ class RuleRight extends Rule {
          Dropdown::showYesNo("is_recursive",0);
          echo "</td></tr>\n";
 
-         echo "</table><br>";
+         echo "</table></form><br>";
       }
       //Get all rules and actions
       $rules = $this->getRulesForEntity( $ID, 0, 1);
@@ -117,6 +117,10 @@ class RuleRight extends Rule {
          echo "<tr><th>" . $LANG['entity'][6] . " - " . $LANG['search'][15] . "</th></tr>\n";
          echo "</table><br>\n";
       } else {
+         if ($canedit) {
+            echo "<form name='ldapaffectation_form' id='ldapaffectation_form' method='post' ".
+                   "action='".GLPI_ROOT."/front/ruleright.php'>";
+         }
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . $LANG['entity'][6] . "</th></tr>";
          initNavigateListItems('Rule',$LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
@@ -127,11 +131,7 @@ class RuleRight extends Rule {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
-               $sel = "";
-               if (isset ($_GET["select"]) && $_GET["select"] == "all") {
-                  $sel = "checked";
-               }
-               echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1' $sel>";
+               echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1'>";
                echo "</td>";
             }
             if ($canedit) {
@@ -148,7 +148,8 @@ class RuleRight extends Rule {
 
          if ($canedit) {
             openArrowMassive("ldapaffectation_form", true);
-            closeArrowMassive('delete_user_rule', $LANG['buttons'][6]);
+            echo "<input type='hidden' name='action' value='delete'>";
+            closeArrowMassive('massiveaction', $LANG['buttons'][6]);
             echo "</form>";
          }
       }
