@@ -163,7 +163,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
 
-      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][75]."&nbsp;: ";
       echo $this->getTreeLink();
       echo "</th></tr>";
@@ -222,7 +222,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<td><input type='submit' name='add' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
-         echo "</table></form></div>\n";
+         echo "</table></form>\n";
       }
    }
 

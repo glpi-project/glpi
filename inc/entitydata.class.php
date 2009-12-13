@@ -81,7 +81,6 @@ class EntityData extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
-      echo "<div class='center' id='tabsbody' >";
       echo "<table class='tab_cadre_fixe'>";
 
 
@@ -185,7 +184,6 @@ class EntityData extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
-      echo "<div class='center' id='tabsbody' >";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][14]."</th></tr>";

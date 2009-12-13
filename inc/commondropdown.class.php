@@ -198,7 +198,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       $this->showFormButtons($ID,'',2,$candel);
 
-      echo "<div id='tabcontent'></div>";
+      echo "<br><div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
       return true;

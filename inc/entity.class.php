@@ -150,10 +150,6 @@ class Entity extends CommonTreeDropdown {
 
       $buttons=array();
       $title=$LANG['Menu'][37];
-      if (haveRight("entity","w")) {
-         $buttons["entity.tree.php"]=$LANG['entity'][1];
-         $title="";
-      }
       $buttons["entity.form.php?id=0"]=$LANG['entity'][2];
 
       displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
@@ -229,8 +225,10 @@ class Entity extends CommonTreeDropdown {
             // Item not found : no right
             if (!$ID) {
                // Hack for 'root' entity which is not stored
-               $this->fields=array('id'=>$ID,
-                                   'name'=>$LANG['entity'][2]);
+               $this->fields=array('id'          => $ID,
+                                   'name'        => $LANG['entity'][2],
+                                   'entities_id' => 0,
+                                   'comment'     => '');
             } else if (!$this->getFromDB($ID)) {
                return false;
             }
