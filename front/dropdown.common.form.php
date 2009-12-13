@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
    popFooter();
 
 } else {
-   commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",get_class($dropdown));
+   $dropdown->displayHeader();
    $dropdown->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
    commonFooter();
 }

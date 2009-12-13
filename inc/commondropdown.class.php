@@ -103,6 +103,10 @@ abstract class CommonDropdown extends CommonDBTM {
       return false;
    }
 
+   function displayHeader () {
+      commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",get_class($this));
+   }
+
    function showForm ($target,$ID) {
       global $CFG_GLPI, $LANG;
 
