@@ -99,7 +99,7 @@ class Entity extends CommonTreeDropdown {
                $ldaprule = new RuleRight;
                $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+                  $ocsrule->showAndAddRuleForm($_POST["id"]);
                }
                Document::showAssociated($this);
                Plugin::displayAction($this, $tab);
@@ -118,7 +118,7 @@ class Entity extends CommonTreeDropdown {
                $ldaprule = new RuleRight;
                $ldaprule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["id"]);
+                  $ocsrule->showAndAddRuleForm($_POST["id"]);
                }
                break;
 
@@ -402,6 +402,26 @@ class Entity extends CommonTreeDropdown {
       echo "</div>";
    }
 
+   function addOcsRule ($input) {
+      global $LANG;
+
+      $this->check($_POST["affectentity"],'w');
+
+      $rule = new RuleOcs;
+      $ruleid = $rule->add($_POST);
+
+      if ($ruleid) {
+         //Add an action associated to the rule
+         $ruleAction = new RuleAction;
+
+         //Action is : affect computer to this entity
+         $ruleAction->addActionByAttributes("assign", $ruleid,
+                                            "entities_id", $_POST["affectentity"]);
+      }
+
+      Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+      glpi_header($_SERVER['HTTP_REFERER']);
+   }
 }
 
 ?>

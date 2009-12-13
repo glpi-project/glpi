@@ -41,22 +41,6 @@ $dropdown = new Entity();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 /*
 
-} else if (isset($_POST["add_rule"])) {
-   $entity->check($_POST["affectentity"],'w');
-
-   $rule = new RuleOcs;
-   $ruleid = $rule->add($_POST);
-
-   if ($ruleid) {
-      //Add an action associated to the rule
-      $ruleAction = new RuleAction;
-      //Action is : affect computer to this entity
-      $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
-   }
-
-   Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
 } else if (isset($_POST["add_user_rule"])) {
    $entity->check($_POST["affectentity"],'w');
 
