@@ -169,9 +169,10 @@ class Infocom extends CommonDBTM {
 
       if (class_exists($this->fields["itemtype"])) {
          $item = new $this->fields["itemtype"]();
-         return $item->getEntityID();
+         if ($item->getFromDB($this->fields["items_id"])) {
+            return $item->getEntityID();
+         }
       }
-
       return -1;
    }
 
@@ -679,7 +680,6 @@ class Infocom extends CommonDBTM {
           && in_array($item->type,array('Software','CartridgeItem','ConsumableItem'))) {
          echo "<div class='center'>".$LANG['financial'][84]."</div>";
       }
-
       if (!$ic->getFromDBforDevice($item->type,$dev_ID)) {
          //$input=array('entities_id'=>$entity);
          $input=array('itemtype' => $item->type,
