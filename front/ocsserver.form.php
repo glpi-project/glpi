@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -35,41 +34,42 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng", "w");
 $ocs = new OcsServer();
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
 //Delete template or server
 if (isset ($_POST["delete"])) {
-	$ocs->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/ocsserver.php");
-}
-//Update server
-elseif (isset ($_POST["update"])) {
-	$ocs->update($_POST);
-	glpi_header($_SERVER["HTTP_REFERER"]);
-}
-//Update server
-elseif (isset ($_POST["update_server"])) {
-	$ocs->update($_POST);
-	//$ocs->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-	glpi_header($_SERVER["HTTP_REFERER"]);
-}
-//Add new server
-elseif (isset ($_POST["add"])) {
-	$newid = $ocs->add($_POST);
-	glpi_header($_SERVER["HTTP_REFERER"]);
-}
-//Other
-else
-	$ocs->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+   $ocs->delete($_POST);
+   glpi_header($CFG_GLPI["root_doc"] . "/front/ocsserver.php");
 
+//Update server
+} else if (isset ($_POST["update"])) {
+   $ocs->update($_POST);
+   glpi_header($_SERVER["HTTP_REFERER"]);
+
+//Update server
+} else if (isset ($_POST["update_server"])) {
+   $ocs->update($_POST);
+   glpi_header($_SERVER["HTTP_REFERER"]);
+
+//Add new server
+} else if (isset ($_POST["add"])) {
+   $newid = $ocs->add($_POST);
+   glpi_header($_SERVER["HTTP_REFERER"]);
+
+//Other
+} else {
+   $ocs->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+}
 commonFooter();
+
 ?>
