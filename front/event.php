@@ -45,9 +45,9 @@ checkRight("logs","r");
 commonHeader($LANG['Menu'][30],$_SERVER['PHP_SELF'],"admin","log");
 
 // Show last events
-if(isset($_GET["order"])) {
+if (isset($_GET["order"])) {
    if (!isset($_GET["start"])) {
-      $_GET["start"]=0;
+      $_GET["start"] = 0;
    }
    Event::showList($_SERVER['PHP_SELF'], $_GET["order"], $_GET["sort"], $_GET["start"]);
 } else {

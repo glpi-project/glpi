@@ -36,7 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsAnd(array("group"=>"w", "user_authtype"=>"w"));
+checkSeveralRightsAnd(array('group'         => 'w',
+                            'user_authtype' => 'w'));
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 
