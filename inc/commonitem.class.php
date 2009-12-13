@@ -245,9 +245,9 @@ class CommonItem {
                $this->obj = new MailCollector;
                break;
 
-            case 'InfoCom':
+            case 'Infocom':
                require_once(GLPI_ROOT.'/inc/infocom.class.php');
-               $this->obj = new InfoCom;
+               $this->obj = new Infocom;
                break;
 
             case 'Transfer':

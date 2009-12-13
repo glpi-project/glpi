@@ -451,7 +451,7 @@ class CommonDBTM extends CommonGLPI {
 
       // If this type have INFOCOM, clean one associated to purged item
       if (in_array($this->type,$CFG_GLPI['infocom_types'])) {
-         $infocom = new InfoCom();
+         $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($this->type, $ID)) {
              $infocom->delete(array('id'=>$infocom->fields['id']));
          }
@@ -1149,7 +1149,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          // Can delete an object with Infocom only if can write Infocom
          if (in_array($this->type,$CFG_GLPI["infocom_types"]) & !haveRight('infocom','w')) {
-            $infocom = new InfoCom();
+            $infocom = new Infocom();
             $candel = !$infocom->getFromDBforDevice($this->type,$ID);
          }
 

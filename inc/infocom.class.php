@@ -38,13 +38,13 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * InfoCom class
+ * Infocom class
  */
-class InfoCom extends CommonDBTM {
+class Infocom extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_infocoms';
-   public $type = 'InfoCom';
+   public $type = 'Infocom';
    public $dohistory=true;
    public $auto_message_on_action=true;
 
@@ -236,7 +236,7 @@ class InfoCom extends CommonDBTM {
       $query="SELECT `glpi_infocoms`.*
               FROM `glpi_infocoms`
               LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype`='InfoCom'
+                                          AND `glpi_alerts`.`itemtype` = 'Infocom'
                                           AND `glpi_alerts`.`type`='".ALERT_END."')
               WHERE (`glpi_infocoms`.`alert` & ".pow(2,ALERT_END).") >'0'
                     AND `glpi_infocoms`.`warranty_duration`>'0'
@@ -308,7 +308,7 @@ class InfoCom extends CommonDBTM {
                   }
 
                   $input["type"] = ALERT_END;
-                  $input["itemtype"] = 'InfoCom';
+                  $input["itemtype"] = 'Infocom';
 
                   //// add alerts
                   foreach ($items[$entity] as $ID) {
