@@ -279,17 +279,22 @@ if (isset($_POST["itemtype"])){
             }
             break;
 
-			case "add_userprofile":
-				$input['entities_id']=$_POST['entities_id'];
-				$input['profiles_id']=$_POST['profiles_id'];
-				$input['is_recursive']=$_POST['is_recursive'];
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1) {
-						$input['users_id']=$key;
-						addUserProfileEntity($input);
-					}
-				}
-			break;
+         case "add_userprofile":
+            $right = new Profile_User();
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']>0
+                && isset($_POST['entities_id']) && $_POST['entities_id']>=0) {
+               $input['entities_id']=$_POST['entities_id'];
+               $input['profiles_id']=$_POST['profiles_id'];
+               $input['is_recursive']=$_POST['is_recursive'];
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val==1) {
+                     $input['users_id']=$key;
+                     $right->add($input);
+                  }
+               }
+            }
+            break;
+
 			case "add_document":
             $documentitem=new Document_Item();
             foreach ($_POST["item"] as $key => $val){

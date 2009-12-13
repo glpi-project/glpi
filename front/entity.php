@@ -37,15 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("entity","r");
-
-commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
-
-$entity = new Entity();
-$entity->title();
-
-Search::show('Entity');
-
-commonFooter();
+$dropdown = new Entity();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 
 ?>

@@ -103,6 +103,15 @@ abstract class CommonDropdown extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Display title above search engine
+    *
+    * @return nothing (HTML display if needed)
+    */
+   function title() {
+      Dropdown::showItemTypeMenu(Dropdown::getStandardDropdownItemTypes(), $_SERVER['PHP_SELF']);
+   }
+
    function displayHeader () {
       commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",get_class($this));
    }

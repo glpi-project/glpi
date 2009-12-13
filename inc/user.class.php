@@ -315,7 +315,8 @@ class User extends CommonDBTM {
             $affectation["users_id"] = $input["id"];
             $affectation["is_recursive"] = 0;
             $affectation["is_dynamic"] = 0;
-            addUserProfileEntity($affectation);
+            $right = new Profile_User();
+            $right->add($affectation);
          }
       }
    }
@@ -454,7 +455,8 @@ class User extends CommonDBTM {
                      $affectation["is_recursive"] = $entity[2];
                      $affectation["users_id"] = $input["id"];
                      $affectation["is_dynamic"] = 1;
-                     addUserProfileEntity($affectation);
+                     $right = new Profile_User();
+                     $right->add($affectation);
                   }
                } else {
                   $affectation["entities_id"] = $entity[0];
@@ -462,7 +464,8 @@ class User extends CommonDBTM {
                   $affectation["is_recursive"] = $entity[2];
                   $affectation["users_id"] = $input["id"];
                   $affectation["is_dynamic"] = 1;
-                  addUserProfileEntity($affectation);
+                  $right = new Profile_User();
+                  $right->add($affectation);
                }
             }
 
@@ -493,7 +496,8 @@ class User extends CommonDBTM {
                         $affectation["users_id"] = $input["id"];
                         $affectation["is_recursive"] = $entity[1];
                         $affectation["is_dynamic"] = 1;
-                        addUserProfileEntity($affectation);
+                        $right = new Profile_User();
+                        $right->add($affectation);
                      }
                   }
                }
