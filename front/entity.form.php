@@ -40,23 +40,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 $dropdown = new Entity();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 /*
-checkRight("entity","r");
-
-$entity = new Entity();
-$entitydata = new EntityData();
-
-if (isset($_POST["update"])) {
-   $entity->check($_POST["entities_id"],'w');
-
-   if (isset($_POST["comment"])) {
-      $entity->update(array('id'      => $_POST["entities_id"],
-                            'comment' => $_POST["comment"]));
-      unset($_POST["comment"]);
-   }
-
-   $entitydata->update($_POST);
-   Event::log($_POST["id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["adduser"])) {
    $entity->check($_POST["entities_id"],'w');
