@@ -130,7 +130,6 @@ class MailCollector  extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
       echo "<div class='center'><form method='post' name=form action=\"$target\">";
       echo "<table class='tab_cadre'>";

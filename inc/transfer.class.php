@@ -2667,7 +2667,6 @@ class Transfer extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $fctdropdown = (haveRight("transfer","w") ? "dropdownArrayValues" : "dropdownArrayValuesReadOnly");

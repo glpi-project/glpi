@@ -312,7 +312,6 @@ class Profile extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
          $onfocus = "onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
          $new = true;
       }

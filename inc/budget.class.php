@@ -107,8 +107,6 @@ class Budget extends CommonDBTM{
       } else {
          // Create item
          $this->check(-1,'w');
-         $use_cache=false;
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, $withtemplate,getActiveTab($this->type));

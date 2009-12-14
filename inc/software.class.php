@@ -246,7 +246,6 @@ class Software extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
       $canedit=$this->can($ID,'w');
 

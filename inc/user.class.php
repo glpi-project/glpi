@@ -1087,8 +1087,6 @@ class User extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $use_cache=false;
-         $this->getEmpty();
       }
       $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
 

@@ -123,8 +123,6 @@ class Bookmark extends CommonDBTM {
       if ($ID > 0) {
          $this->check($ID,'w');
       } else {
-         // Create item : do getempty before check right to set default values
-         $this->getEmpty();
          $this->check(-1,'w');
       }
 
