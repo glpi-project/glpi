@@ -282,9 +282,12 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                                        addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']]=$ID;
-               $send["oldID"] = $data['id'];
-               $send["newID"] = $ID;
-               replaceDropDropDown($send);
+               $type = GetItemTypeForTable($this->item_table);
+               if (class_exist($type)) {
+                  $dropdown = new $type();
+                  $dropdown->delete(array('id'          => $data['id'],
+                                          '_replace_by' => $ID));
+               }
             }
             $i++;
             if ($maxtime) {
