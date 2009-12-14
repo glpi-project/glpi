@@ -790,7 +790,7 @@ class Config extends CommonDBTM {
       echo "<td class='center'>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . " </td><td>";
 
       if (haveRight("config","w") || ! GLPI_DEMO_MODE) {
-         dropdownLanguages("language", $data["language"]);
+         Dropdown::showLanguages("language", $data["language"]);
       } else {
          echo "&nbsp;";
       }

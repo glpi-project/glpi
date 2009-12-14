@@ -85,7 +85,7 @@ function choose_language()
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p class='center'>";
 
-	dropdownLanguages("language", "en_GB");
+	Dropdown::showLanguages("language", "en_GB");
 	echo "</p>";
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\"></p>";
