@@ -51,6 +51,12 @@ class ComputerDisk extends CommonDBChild {
    public $dohistory = true;
 
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['computers'][0];
+   }
+
    static function canCreate() {
       return haveRight('computer', 'w');
    }
