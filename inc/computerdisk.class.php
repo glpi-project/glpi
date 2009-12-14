@@ -38,12 +38,18 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Disk class
-class ComputerDisk extends CommonDBTM {
+class ComputerDisk extends CommonDBChild {
 
    // From CommonDBTM
    public $table = 'glpi_computerdisks';
    public $type = 'ComputerDisk';
    public $entity_assign = true;
+
+   // From CommonDBChild
+   public $itemtype = 'Computer';
+   public $items_id = 'computers_id';
+   public $dohistory = true;
+
 
    static function canCreate() {
       return haveRight('computer', 'w');
@@ -66,6 +72,7 @@ class ComputerDisk extends CommonDBTM {
       $this->fields["freesize"]='0';
    }
 
+/*
    function getEntityID () {
       if (isset($this->fields['computers_id']) && $this->fields['computers_id'] >0) {
          $computer=new Computer();
@@ -75,7 +82,7 @@ class ComputerDisk extends CommonDBTM {
       }
       return -1;
    }
-
+*/
    /**
    * Print the version form
    *
@@ -91,14 +98,12 @@ class ComputerDisk extends CommonDBTM {
       if (!haveRight("computer","w")) {
         return false;
       }
-
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
          $input=array('computers_id'=>$computers_id);
          $this->check(-1,'w',$input);
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, false, getActiveTab($this->type),array(),"computers_id="
