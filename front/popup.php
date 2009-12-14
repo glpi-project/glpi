@@ -28,55 +28,66 @@
  --------------------------------------------------------------------------
  */
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
 
-if (isset($_GET["popup"])) $_SESSION["glpipopup"]["name"]=$_GET["popup"];
+if (isset($_GET["popup"])) {
+   $_SESSION["glpipopup"]["name"] = $_GET["popup"];
+}
 
-if (isset($_SESSION["glpipopup"]["name"])){
-	switch ($_SESSION["glpipopup"]["name"]){
-		case "search_config":
-			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
-			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["delete_x"])||isset($_POST["up"])||isset($_POST["up_x"])||isset($_POST["down"])||isset($_POST["down_x"])){
-				echo "<script type='text/javascript' >\n";
-				echo "window.opener.location.reload();";
-				echo "</script>";
-			}
-			include "displaypreference.form.php";
-			popFooter();
-		break;
-		case "test_rule":
-			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
-			include "rule.test.php";
-			popFooter();
-		break;
-		case "test_all_rules":
-			popHeader($LANG['rulesengine'][84],$_SERVER['PHP_SELF']);
-			include "rulesengine.test.php";
-			popFooter();
-		break;
-		case "show_cache":
-			popHeader($LANG['rulesengine'][100],$_SERVER['PHP_SELF']);
-			include "rule.cache.php";
-			popFooter();
-		break;
-		case "load_bookmark":
-			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
-			$_GET["action"]="load";
-			include "bookmark.php";
-			popFooter();
-		break;
-		case "edit_bookmark":
-			popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
-			$_GET["action"]="edit";
-			include "bookmark.php";
-			popFooter();
-		break;
+if (isset($_SESSION["glpipopup"]["name"])) {
+   switch ($_SESSION["glpipopup"]["name"]) {
+      case "search_config" :
+         popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
+         if (isset($_POST["add"])
+             || isset($_POST["delete"])
+             || isset($_POST["delete_x"])
+             || isset($_POST["up"])
+             || isset($_POST["up_x"])
+             || isset($_POST["down"])
+             || isset($_POST["down_x"])) {
+            echo "<script type='text/javascript' >\n";
+            echo "window.opener.location.reload();";
+            echo "</script>";
+         }
+         include "displaypreference.form.php";
+         popFooter();
+         break;
 
-	}
+      case "test_rule" :
+         popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
+         include "rule.test.php";
+         popFooter();
+         break;
+
+      case "test_all_rules" :
+         popHeader($LANG['rulesengine'][84],$_SERVER['PHP_SELF']);
+         include "rulesengine.test.php";
+         popFooter();
+         break;
+
+      case "show_cache" :
+         popHeader($LANG['rulesengine'][100],$_SERVER['PHP_SELF']);
+         include "rule.cache.php";
+         popFooter();
+         break;
+
+      case "load_bookmark" :
+         popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         $_GET["action"] = "load";
+         include "bookmark.php";
+         popFooter();
+         break;
+
+      case "edit_bookmark" :
+         popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         $_GET["action"] = "edit";
+         include "bookmark.php";
+         popFooter();
+         break;
+   }
 }
 
 ?>

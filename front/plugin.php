@@ -33,31 +33,26 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
-$plugin=new Plugin();
+$plugin = new Plugin();
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
 
-if (isset($_GET['action'])&& isset($_GET['id'])){
-	if (method_exists($plugin,$_GET['action'])){
-		$plugin->$_GET['action']($_GET['id']);
-	} else {
-		echo "Action ".$_GET['action']." undefined";
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+if (isset($_GET['action']) && isset($_GET['id'])) {
+   if (method_exists($plugin,$_GET['action'])) {
+      $plugin->$_GET['action']($_GET['id']);
+   } else {
+      echo "Action ".$_GET['action']." undefined";
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 $plugin->listPlugins();
 
 commonFooter();
-
-
-
 
 ?>

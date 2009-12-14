@@ -33,31 +33,30 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(empty($_GET["id"])) {
+if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["sort"])) {
+if (!isset($_GET["sort"])) {
    $_GET["sort"] = "";
 }
-if(!isset($_GET["order"])) {
+if (!isset($_GET["order"])) {
    $_GET["order"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$phone=new Phone();
+$phone = new Phone();
 
 if (isset($_POST["add"])) {
    $phone->check(-1,'w',$_POST);
 
    $newID=$phone->add($_POST);
-   Event::log($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+   Event::log($newID, "phones", 4, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -69,11 +68,12 @@ if (isset($_POST["add"])) {
       $phone->delete($_POST);
    }
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if(!empty($_POST["withtemplate"])) {
+   if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
       glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
    }
+
 } else if (isset($_POST["restore"])) {
    $phone->check($_POST["id"],'w');
 
@@ -110,9 +110,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
-
    $phone->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
-
    commonFooter();
 }
 
