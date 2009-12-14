@@ -167,6 +167,21 @@ function logInFile($name,$text,$force=false) {
 }
 
 /**
+ * Log in 'php-errors' all args
+ */
+function logDebug() {
+   $msg = "";
+   foreach (func_get_args() as $arg) {
+      if (is_array($arg) || is_object($arg)) {
+         $msg .= ' ' . print_r($arg, true);
+      } else {
+         $msg .= ' ' . $arg;
+      }
+   }
+   logInFile('php-errors', $msg."\n");
+}
+
+/**
 * Specific error handler in Normal mode
 * @param $errno integer: level of the error raised.
 * @param $errmsg string: error message.
