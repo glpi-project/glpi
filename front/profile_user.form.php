@@ -28,19 +28,18 @@
  --------------------------------------------------------------------------
  */
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-
 
 $profile = new Profile();
 $right = new Profile_User();
 $user = new User();
 
 if (isset($_POST["add"])) {
-   if (!isset($_POST['profiles_id']) || $_POST['profiles_id']<=0
-       || !isset($_POST['entities_id']) || $_POST['entities_id']<0
-       || !isset($_POST['users_id']) || $_POST['users_id']<0) {
+   if (!isset($_POST['profiles_id']) || $_POST['profiles_id'] <= 0
+       || !isset($_POST['entities_id']) || $_POST['entities_id'] < 0
+       || !isset($_POST['users_id']) || $_POST['users_id'] < 0) {
+
       addMessageAfterRedirect($LANG['common'][24],false,ERROR);
       glpi_header($_SERVER['HTTP_REFERER']);
    }
@@ -48,8 +47,10 @@ if (isset($_POST["add"])) {
    if ($user->can($_POST['users_id'],'r')
        && $profile->currentUserHaveMoreRightThan(array($_POST['profiles_id'] => $_POST['profiles_id']))
        && haveAccessToEntity($_POST['entities_id'])) {
+
       if ($right->add($_POST)) {
-         Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+         Event::log($_POST["users_id"], "users", 4, "setup",
+                    $_SESSION["glpiname"]." ".$LANG['log'][61]);
       }
       glpi_header($_SERVER['HTTP_REFERER']);
    } else {
@@ -62,8 +63,8 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $right->delete(array('id'=>$key));
+         if ($val == 1) {
+            $right->delete(array('id' => $key));
          }
       }
       if (isset($_POST["entities_id"])) {
@@ -79,10 +80,10 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["moveentity"])) {
    checkRight("user","w");
-   if (isset($_POST['entities_id']) && $_POST['entities_id']>=0) {
+   if (isset($_POST['entities_id']) && $_POST['entities_id'] >= 0) {
       foreach ($_POST["item"] as $key => $val) {
-         if ($val==1) {
-            $right->update(array('id' => $key,
+         if ($val == 1) {
+            $right->update(array('id'          => $key,
                                  'entities_id' => $_POST['entities_id']));
          }
       }

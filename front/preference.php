@@ -34,7 +34,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -44,11 +43,10 @@ $user = new User();
 if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
    $user->update($_POST);
    Event::log(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
-            $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
+              $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
       commonHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
    } else {
@@ -64,4 +62,5 @@ if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
       helpFooter();
    }
 }
+
 ?>
