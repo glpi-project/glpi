@@ -2669,4 +2669,77 @@ function closeArrowMassive($name='',$label='') {
    echo "</table>";
 }
 
+/**
+ * Show div with auto completion
+ *
+ * @param $myname text field name
+ * @param $table table to search for autocompletion
+ * @param $field field to serahc for autocompletion
+ * @param $value value to fill text field
+ * @param $size size of the text field
+ * @param $option option of the textfield
+ * @param $entity_restrict Restrict to a defined entity
+ * @param $user_restrict Restrict to a specific user
+ * @return nothing (print out an HTML div)
+ */
+function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,
+                                 $user_restrict=-1,$option='') {
+   global $CFG_GLPI;
+
+   if ($CFG_GLPI["use_ajax"] && $CFG_GLPI["use_ajax_autocompletion"]) {
+      $rand=mt_rand();
+      echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".
+             cleanInputText($value)."\" size='$size'>\n";
+      $output = "<script type='text/javascript' >\n";
+
+      $output .= "var textfield_$myname$rand = new Ext.data.Store({
+         proxy: new Ext.data.HttpProxy(
+         new Ext.data.Connection ({
+            url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
+            extraParams : {
+               table: '$table',
+               field: '$field'";
+
+            if (!empty($entity_restrict) && $entity_restrict>=0){
+               $output .= ",entity_restrict: $entity_restrict";
+            }
+            if (!empty($user_restrict) && $user_restrict>=0){
+               $output .= ",user_restrict: $user_restrict";
+            }
+            $output .= "
+            },
+            method: 'POST'
+            })
+         ),
+         reader: new Ext.data.JsonReader({
+            totalProperty: 'totalCount',
+            root: 'items',
+            id: 'value'
+         }, [
+         {name: 'value', mapping: 'value'}
+         ])
+      });
+      ";
+
+      $output .= "var searchfield_$myname$rand = new Ext.ux.form.SpanComboBox({
+         store: textfield_$myname$rand,
+         displayField:'value',
+         pageSize:20,
+         hideTrigger:true,
+         minChars:3,
+         resizable:true,
+         minListWidth:".($size*5).", // IE problem : wrong computation of the width of the ComboBox field
+         applyTo: 'textfield_$myname$rand'
+      });";
+
+      $output .= "</script>";
+
+      echo $output;
+
+   } else {
+      echo "<input $option type='text' name='$myname' value=\"".
+             cleanInputText($value)."\" size='$size'>\n";
+   }
+}
+
 ?>
