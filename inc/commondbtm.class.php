@@ -595,9 +595,9 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function addMessageOnAddAction($input) {
-      global 
+      global
       $CFG_GLPI, $LANG;
-      
+
       $link=getItemTypeFormURL($this->type);
       if (!isset($link)) {
          return;
@@ -1291,8 +1291,8 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $entity_to_check = $_SESSION["glpiactive_entity"];
          }*/
-         $this->getEmpty();
          if (is_array($input)) {
+            $this->getEmpty();
             // Copy input field to allow getEntityID() to work
             // from entites_id field or from parent item ref
             foreach ($input as $key => $val) {
@@ -1301,7 +1301,6 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
-
       } else {
          // Get item if not already loaded
          if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
@@ -1431,12 +1430,12 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-   * Is the object recursive
-   *
-   * Can be overloaded (ex : infocom)
-   *
+    * Is the object recursive
+    *
+    * Can be overloaded (ex : infocom)
+    *
     * @return integer (0/1)
-   **/
+    **/
    function isRecursive() {
       if ($this->may_be_recursive && isset($this->fields["is_recursive"])) {
          return $this->fields["is_recursive"];
