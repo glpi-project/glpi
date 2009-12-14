@@ -1055,19 +1055,17 @@ class Transfer extends CommonDBTM {
                      }
                   }
                   // Not found :
-                  $input = array();
-                  $input['tablename']   = 'glpi_locations';
-                  $input['entities_id'] = $this->to;
-                  $input['value']       = $data['name'];
-                  $input['comment']     = $data['comment'];
-                  $input['type']        = "under";
-                  $input['value2']      = 0; // locations_id
                   // if locations_id>0 : transfer parent ID
+                  $parentid = 0;
                   if ($data['locations_id']>0) {
-                     $input['value2'] = $this->transferDropdownLocation($data['locations_id']);
+                     $parentid = $this->transferDropdownLocation($data['locations_id']);
                   }
                   // add item
-                  $newID = addDropdown($input);
+                  $location = new Location();
+                  $newID = $location->add(array('name' => $data['name'],
+                                                'comment' => $data['comment'],
+                                                'entities_id' => $this->to,
+                                                'locations_id' => $parentid));
                   $this->addToAlreadyTransfer('locations_id',$locID,$newID);
                   return $newID;
                }
@@ -1117,15 +1115,13 @@ class Transfer extends CommonDBTM {
                      }
                   }
                   // Not found :
-                  $input = array();
-                  $input['tablename']   = 'glpi_netpoints';
-                  $input['entities_id'] = $this->to;
-                  $input['value']       = $data['name'];
-                  $input['comment']     = $data['comment'];
-                  $input['type']        = "under";
-                  $input['value2']      = $locID;
                   // add item
-                  $newID = addDropdown($input);
+                  $netpoint = new Netpoint();
+                  $newID = $netpoint->add(array('name'         => $data['name'],
+                                                'comment'      => $data['comment'],
+                                                'entities_id'  => $this->to,
+                                                'locations_id' => $locID));
+
                   $this->addToAlreadyTransfer('netpoints_id',$netpoints_id,$newID);
                   return $newID;
                }
