@@ -267,7 +267,8 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
       $result = $DB->query($query.$where);
       while ($data = $DB->fetch_assoc($result)) {
-         $this->delete(array('id'=>$data['id']));
+         $data['_no_history'] = true; // Parent is deleted
+         $this->delete($data);
       }
    }
 }
