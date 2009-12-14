@@ -33,46 +33,41 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-
-$remind=new Reminder();
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
+$remind = new Reminder();
 checkCentralAccess();
-if (isset($_POST["add"]))
-{
-	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...)
-	$remind->getEmpty();
-	$remind->check(-1,'w',$_POST);
+if (isset($_POST["add"])) {
+   /// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...)
+   $remind->getEmpty();
+   $remind->check(-1,'w',$_POST);
 
-	$newID=$remind->add($_POST);
-	Event::log($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	$remind->check($_POST["id"],'w');
+   $newID = $remind->add($_POST);
+   Event::log($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$remind->delete($_POST);
-	Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
-}
-else if (isset($_POST["update"]))
-{
-	$remind->check($_POST["id"],'w');
+} else if (isset($_POST["delete"])) {
+   $remind->check($_POST["id"],'w');
 
-	$remind->update($_POST);
-	Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
-	$remind->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $remind->delete($_POST);
+   Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
 
-	commonFooter();
+} else if (isset($_POST["update"])) {
+   $remind->check($_POST["id"],'w');
+
+   $remind->update($_POST);
+   Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+   commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
+   $remind->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   commonFooter();
 }
 
 ?>
