@@ -506,10 +506,8 @@ class Computer extends CommonDBTM {
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
 
-      $query = "DELETE
-                FROM `glpi_computerdisks`
-                WHERE `computers_id` = '$ID'";
-      $result = $DB->query($query);
+      $disk = new ComputerDisk();
+      $disk->cleanDBonItemDelete($this->type, $ID);
    }
 
    /**
