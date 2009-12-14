@@ -1662,6 +1662,16 @@ function update0723to080() {
          $DB->query($query) or die("0.80 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
       }
    }
+   // Alter itemtype field
+   $query = " ALTER TABLE `glpi_logs` CHANGE `devicetype` `itemtype_link` VARCHAR(100) NOT NULL";
+   $DB->query($query) or die("0.80 alter itemtype_link of table glpi_logs " . $LANG['update'][90] . $DB->error());
+
+   foreach ($typetoname as $key => $val) {
+      $query = "UPDATE `$table` SET `itemtype_link` = '$val'
+                WHERE `itemtype_link` = '$key'
+                    AND `linked_action` IN (".HISTORY_ADD_RELATION.",".HISTORY_DEL_RELATION.")";
+      $DB->query($query) or die("0.80 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
+   }
 
    // Update glpi_profiles item_type
 

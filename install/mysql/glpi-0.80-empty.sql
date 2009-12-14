@@ -1517,7 +1517,7 @@ CREATE TABLE `glpi_logs` (
   `id` int(11) NOT NULL auto_increment,
   `items_id` int(11) NOT NULL default '0',
   `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
-  `devicetype` int(11) NOT NULL default '0',
+  `itemtype_link` VARCHAR( 100 ) NOT NULL
   `linked_action` int(11) NOT NULL default '0' COMMENT 'see define.php HISTORY_* constant',
   `user_name` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
@@ -1527,7 +1527,7 @@ CREATE TABLE `glpi_logs` (
   PRIMARY KEY  (`id`),
   KEY `device_type` (`itemtype`),
   KEY `date_mod` (`date_mod`),
-  KEY `devicetype` (`devicetype`),
+  KEY `devicetype` (`itemtype_link`),
   KEY `linked_action` (`linked_action`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
