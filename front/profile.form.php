@@ -33,38 +33,36 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("profile","r");
 
 if (!isset($_GET['id'])) {
-   $_GET['id']="";
+   $_GET['id'] = "";
 }
 
-$prof=new Profile();
+$prof = new Profile();
 
-if (isset($_POST["add"])){
-   checkRight("profile","w");
-   $ID=$prof->add($_POST);
+if (isset($_POST["add"])) {
+   $prof->check(-1,'w',$_POST);
+   $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
    glpi_header($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 } else if (isset($_POST["delete"])) {
-   checkRight("profile","w");
+   $prof->check($_POST['id'],'w');
 
    $prof->delete($_POST);
    glpi_header($CFG_GLPI["root_doc"]."/front/profile.php");
 
 } else if (isset($_POST["update"]) || isset($_POST["interface"])) {
-   checkRight("profile","w");
+   $prof->check($_POST['id'],'w');
 
    $prof->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
-
 
 commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 

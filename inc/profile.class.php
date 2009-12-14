@@ -305,20 +305,19 @@ class Profile extends CommonDBTM {
    function showForm($target, $ID, $withtemplate='') {
       global $LANG,$CFG_GLPI;
 
-      if (!haveRight("profile","r")) {
-         return false;
-      }
-      $onfocus="";
-      $new=false;
-      if (!empty($ID)&&$ID) {
-         $this->getFromDB($ID);
+      $onfocus = "";
+      $new = false;
+      if ($ID > 0) {
+         $this->check($ID,'r');
       } else {
+         // Create item
+         $this->check(-1,'w');
          $this->getEmpty();
-         $onfocus="onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
-         $new=true;
+         $onfocus = "onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
+         $new = true;
       }
 
-      $rand=mt_rand();
+      $rand = mt_rand();
 
       $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
       $this->showFormHeader($target,$ID,$withtemplate,2);

@@ -33,30 +33,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["sort"])) {
+if (!isset($_GET["sort"])) {
    $_GET["sort"] = "";
 }
-if(!isset($_GET["order"])) {
+if (!isset($_GET["order"])) {
    $_GET["order"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$print=new Printer();
+$print = new Printer();
 if (isset($_POST["add"])) {
    $print->check(-1,'w',$_POST);
 
    if ($newID=$print->add($_POST)) {
-      Event::log($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][20]."  ".$_POST["name"].".");
+      Event::log($newID, "printers", 4, "inventory",
+                 $_SESSION["glpiname"]."  ".$LANG['log'][20]."  ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -69,20 +68,22 @@ if (isset($_POST["add"])) {
       $print->delete($_POST);
    }
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if(!empty($_POST["withtemplate"])) {
+   if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
       glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
    }
+
 } else if (isset($_POST["restore"])) {
-   checkRight("printer","w");
+   $print->check($_POST["id"],'w');
+
    $print->restore($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
    if (isset($_POST["purge"])) {
-      $input["id"]=$_POST["id"];
+      $input["id"] = $_POST["id"];
    } else {
       $input["id"] = $_GET["id"];
    }
@@ -108,9 +109,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
-
    $print->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
-
    commonFooter();
 }
 
