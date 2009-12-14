@@ -144,7 +144,6 @@ class Contract extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $can_edit=$this->can($ID,'w');

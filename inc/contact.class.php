@@ -161,7 +161,6 @@ class Contact extends CommonDBTM{
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, $withtemplate,getActiveTab($this->type));

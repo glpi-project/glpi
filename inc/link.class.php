@@ -99,7 +99,6 @@ class Link extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, '',getActiveTab($this->type));

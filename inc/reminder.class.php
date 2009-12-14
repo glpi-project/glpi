@@ -166,7 +166,6 @@ class Reminder extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item : do getempty before check right to set default values
-         $this->getEmpty();
          $this->check(-1,'w');
          $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
       }

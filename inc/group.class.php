@@ -116,7 +116,6 @@ class Group extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
@@ -256,7 +255,6 @@ class Group extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";

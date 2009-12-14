@@ -133,7 +133,6 @@ class Device extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";

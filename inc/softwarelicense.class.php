@@ -170,7 +170,6 @@ class SoftwareLicense extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
          $this->fields['softwares_id']=$softwares_id;
          $this->fields['number']=1;
       }

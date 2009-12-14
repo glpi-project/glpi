@@ -137,7 +137,6 @@ class KnowbaseItem extends CommonDBTM {
          $this->check($ID,'r');
       } else {
         $this->check(-1,'w');
-        $this->getEmpty();
       }
 
       $canedit=$this->can($ID,'w');

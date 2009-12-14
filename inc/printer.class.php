@@ -309,7 +309,6 @@ class Printer  extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       if (!empty($withtemplate) && $withtemplate == 2) {

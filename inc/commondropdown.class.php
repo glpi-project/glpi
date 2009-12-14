@@ -124,7 +124,6 @@ abstract class CommonDropdown extends CommonDBTM {
       } else {
          // Create item
          $this->check(-1,'w');
-         $this->getEmpty();
       }
 
       $this->showTabs($ID, '',getActiveTab($this->type),array('itemtype'=>$this->type));
