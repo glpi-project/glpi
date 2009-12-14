@@ -764,66 +764,6 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 
 
 
-/**
- * Print a select with hours
- *
- * Print a select named $name with hours options and selected value $value
- *
- *@param $name string : HTML select name
- *@param $value integer : HTML select selected value
- *@param $limit_planning limit planning to the configuration range
- *
- *@return Nothing (display)
- *
- **/
-function dropdownHours($name,$value,$limit_planning=0) {
-   global $CFG_GLPI;
-
-   $begin=0;
-   $end=24;
-   $step=$CFG_GLPI["time_step"];
-   // Check if the $step is Ok for the $value field
-   $split=explode(":",$value);
-   // Valid value XX:YY ou XX:YY:ZZ
-   if (count($split)==2 || count($split)==3) {
-      $min=$split[1];
-      // Problem
-      if (($min%$step)!=0) {
-         // set minimum step
-         $step=5;
-      }
-   }
-
-   if ($limit_planning) {
-      $plan_begin=explode(":",$CFG_GLPI["planning_begin"]);
-      $plan_end=explode(":",$CFG_GLPI["planning_end"]);
-      $begin=(int) $plan_begin[0];
-      $end=(int) $plan_end[0];
-   }
-   echo "<select name=\"$name\">";
-   for ($i=$begin;$i<$end;$i++) {
-      if ($i<10) {
-         $tmp="0".$i;
-      } else {
-         $tmp=$i;
-      }
-
-      for ($j=0;$j<60;$j+=$step) {
-         if ($j<10) {
-            $val=$tmp.":0$j";
-         } else {
-            $val=$tmp.":$j";
-         }
-
-         echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
-      }
-   }
-   // Last item
-   $val=$end.":00";
-   echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
-   echo "</select>";
-}
-
 
 /**
  * Dropdown integers
@@ -849,29 +789,6 @@ function dropdownInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()) 
    echo "</select>";
 
 }
-/**
- * Dropdown available languages
- *
-* @param $myname select name
- * @param $value default value
- */
-function dropdownLanguages($myname,$value) {
-   global $CFG_GLPI;
-
-   echo "<select name='$myname'>";
-
-   foreach ($CFG_GLPI["languages"] as $key => $val) {
-      if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
-         echo "<option value=\"".$key."\"";
-         if ($value==$key) {
-            echo " selected";
-         }
-         echo ">".$val[0]." ($key)";
-      }
-   }
-   echo "</select>";
-}
-
 
 
 
