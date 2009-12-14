@@ -432,8 +432,8 @@ class Ticket extends CommonDBTM {
                   case "status" :
                      $new_status=$this->fields["status"];
                      $change_followup_content .= $LANG['mailing'][27]."&nbsp;: ".
-                                                 getStatusName($input["_old_status"])." -> ".
-                                                 getStatusName($new_status)."\n";
+                                                 $this->getStatus($input["_old_status"])." -> ".
+                                                 $this->getStatus($new_status)."\n";
                      if (strstr($new_status,"old_")) {
                         $newinput["add_close"]="add_close";
                      }
@@ -1160,7 +1160,7 @@ class Ticket extends CommonDBTM {
                          $LANG['common'][10]."&nbsp;:</span> ".$tech."\n";
          }
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
-                      $LANG['joblist'][0]."&nbsp;:</span> ".getStatusName($this->fields["status"])."\n";
+                      $LANG['joblist'][0]."&nbsp;:</span> ".$this->getStatus($this->fields["status"])."\n";
          $assign = getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
@@ -1223,7 +1223,7 @@ class Ticket extends CommonDBTM {
          if (!empty($tech)) {
             $message .= mailRow($LANG['common'][10],$tech);
          }
-         $message .= mailRow($LANG['joblist'][0],getStatusName($this->fields["status"]));
+         $message .= mailRow($LANG['joblist'][0],$this->getStatus($this->fields["status"]));
          $assign = getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
@@ -1635,6 +1635,93 @@ class Ticket extends CommonDBTM {
          case 1 :
             return $LANG['help'][51];
       }
+   }
+
+   /**
+    * get the Ticket status list
+    *
+    * @param $withmetaforsearch boolean
+    * @return an array
+    */
+   static function getAllStatusArray($withmetaforsearch=false) {
+      global $LANG;
+
+      $tab = array(
+         'new'          => $LANG['joblist'][9],
+         'assign'       => $LANG['joblist'][18],
+         'plan'         => $LANG['joblist'][19],
+         'waiting'      => $LANG['joblist'][26],
+         'old_done'     => $LANG['joblist'][10],
+         'old_notdone'  => $LANG['joblist'][17]);
+
+      if ($withmetaforsearch) {
+         $tab['notold']  = $LANG['joblist'][24];
+         $tab['process'] = $LANG['joblist'][21];
+         $tab['old']     = $LANG['joblist'][25];
+         $tab['all']     = $LANG['common'][66];
+      }
+      return $tab;
+   }
+
+   /**
+    * get the Ticket status allowed for a current status
+    *
+    * @param $current status
+    * @return an array
+    */
+   static function getAllowedStatusArray($current) {
+      global $LANG;
+
+      $tab = self::getAllStatusArray();
+      if (!isset($current)) {
+         $current = 'new';
+      }
+      foreach ($tab as $status => $label) {
+         if ($status != $current
+             && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status])
+             && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status]) {
+            unset($tab[$status]);
+         }
+      }
+      return $tab;
+   }
+
+
+   /**
+    * Dropdown of ticket status
+    *
+    * @param $name select name
+    * @param $value default value
+    * @param $option list proposed 0:normal, 1:search, 2:allowed
+    *
+    * @return nothing (display)
+    */
+   static function dropdownStatus($name, $value='new', $option=0) {
+
+      if ($option == 2) {
+         $tab = self::getAllowedStatusArray($value);
+      } else if ($option == 1) {
+         $tab = self::getAllStatusArray(true);
+      } else {
+         $tab = self::getAllStatusArray(false);
+      }
+      echo "<select name='$name'>";
+      foreach ($tab as $key => $val) {
+         echo "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
+      }
+      echo "</select>";
+   }
+
+   /**
+    * Get ticket status Name
+    *
+    * @param $value status ID
+    */
+   static function getStatus($value) {
+      global $LANG;
+
+      $tab = self::getAllStatusArray();
+      return (isset($tab[$value]) ? $tab[$value] : '');
    }
 }
 

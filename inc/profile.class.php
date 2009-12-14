@@ -130,7 +130,7 @@ class Profile extends CommonDBTM {
       }
 
       if (isset($input["_cycles"])) {
-         $tab = getAllStatus();
+         $tab = Ticket::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
@@ -738,7 +738,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "</table><table class='tab_cadre_fixe'>";
-      $tabstatus=getAllStatus();
+      $tabstatus = Ticket::getAllStatusArray();
 
       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
       echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];

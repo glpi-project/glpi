@@ -80,7 +80,7 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_status" :
-               dropdownStatus("value");
+               Ticket::dropdownStatus("value");
                $display=true;
                break;
 

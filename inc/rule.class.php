@@ -1088,7 +1088,7 @@ class Rule extends CommonDBTM {
                return Dropdown::getDropdownName($action["table"],$value);
 
             case "dropdown_status" :
-               return getStatusName($value);
+               return Ticket::getStatus($value);
 
             case "dropdown_assign" :
             case "dropdown_users" :
