@@ -583,7 +583,7 @@ class CommonDBTM extends CommonGLPI {
 
       $link  = $link_item;
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
-      $link .= (isset($input['is_template']) ? "&amp;withtemplate=1" : "");
+      $link .= ($this->getField('is_template') ? "&amp;withtemplate=1" : "");
 
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
@@ -1285,14 +1285,11 @@ class CommonDBTM extends CommonGLPI {
 
       $entity_to_check=-1;
       if (empty($ID)||$ID<=0) {
-         /* No entity define : adding process : use active entity
-         if (isset($input['entities_id'])) {
-            $entity_to_check = $input['entities_id'];
-         } else {
-            $entity_to_check = $_SESSION["glpiactive_entity"];
-         }*/
-         if (is_array($input)) {
+         if (!count($this->fields)) {
+            // Only once
             $this->getEmpty();
+         }
+         if (is_array($input)) {
             // Copy input field to allow getEntityID() to work
             // from entites_id field or from parent item ref
             foreach ($input as $key => $val) {
