@@ -210,6 +210,7 @@ class Entity extends CommonTreeDropdown {
 
       // Get item ID
       if ($ID<0) {
+         $this->getEmpty();
          // No entity define : adding process : use active entity
          if (isset($input['entities_id'])) {
             // this is the parent entity
