@@ -109,13 +109,15 @@ class Auth {
          return false;
       }
 
-      error_reporting(16);
+      $oldlevel = error_reporting(16);
       if ($mbox = imap_open($host, $login, $pass)) {
          imap_close($mbox);
+         error_reporting($oldlevel);
          return true;
       }
       $this->addToError(imap_last_error());
 
+      error_reporting($oldlevel);
       return false;
    }
 
@@ -542,9 +544,10 @@ class Auth {
                   case AUTH_EXTERNAL :
                   case AUTH_LDAP :
                      if (canUseLdap()) {
-                        error_reporting(0);
+                        $oldlevel = error_reporting(0);
                         try_ldap_auth($this, $login_name, $login_password,
                                       $this->user->fields["auths_id"]);
+                        error_reporting($oldlevel);
                      }
                      break;
 
@@ -563,8 +566,9 @@ class Auth {
             //If the last good auth method is not valid anymore, we test all methods !
             //test all ldap servers
             if (!$this->auth_succeded && canUseLdap()) {
-               error_reporting(0);
+               $oldlevel = error_reporting(0);
                try_ldap_auth($this,$login_name,$login_password);
+               error_reporting($oldlevel);
             }
 
             //test all imap/pop servers
