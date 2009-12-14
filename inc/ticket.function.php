@@ -526,10 +526,10 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       $first_col = "ID : ".$data["id"];
       if ($output_type==HTML_OUTPUT) {
          $first_col .= "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png\"
-                        alt='".getStatusName($data["status"])."' title='".
-                        getStatusName($data["status"])."'>";
+                        alt='".Ticket::getStatus($data["status"])."' title='".
+                        Ticket::getStatus($data["status"])."'>";
       } else {
-         $first_col .= " - ".getStatusName($data["status"]);
+         $first_col .= " - ".Ticket::getStatus($data["status"]);
       }
       if (($candelete || $canupdate)
           && $output_type==HTML_OUTPUT) {
@@ -866,7 +866,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    echo "<tr class='tab_bg_1 center'>";
    echo "<td colspan='1' >".$LANG['joblist'][0]."&nbsp;:&nbsp;";
-   dropdownStatus('status',$status,1);
+   Ticket::dropdownStatus('status',$status,1);
    echo "</td>";
 
    if (haveRight("show_group_ticket",1)) {
@@ -996,7 +996,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    echo "<tr class='tab_bg_1'>";
    echo "<td colspan='1' class='center'>".$LANG['joblist'][0]."&nbsp;:<br>";
-   dropdownStatus('status',$status,1);
+   Ticket::dropdownStatus('status',$status,1);
    echo "</td>";
 
    echo "<td colspan='1' class='center'>".$LANG['joblist'][2]."&nbsp;:<br>";
@@ -1882,9 +1882,9 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left' width='60'>".$LANG['joblist'][0]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      dropdownStatus("status",$job->fields["status"],2); // Allowed status
+      Ticket::dropdownStatus("status",$job->fields["status"],2); // Allowed status
    } else {
-      echo getStatusName($job->fields["status"]);
+      echo Ticket::getStatus($job->fields["status"]);
    }
    echo "</td>";
    echo "<th class='center b' colspan='2'>".$LANG['job'][4]."&nbsp;: </th>";

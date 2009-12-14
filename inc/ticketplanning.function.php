@@ -612,7 +612,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0) {
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".
             $LANG['planning'][8]."'>&nbsp;&nbsp;";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".
-            getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
+            Ticket::getStatus($val["status"])."' title='".Ticket::getStatus($val["status"])."'>&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"].
             "' style='$styleText'";
       if (!$complete) {
