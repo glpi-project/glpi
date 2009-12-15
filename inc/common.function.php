@@ -72,16 +72,20 @@ function startGlpiSession() {
  * Get form URL for itemtype
  *
  * @param $itemtype string: item type
+ * @param $full path or relative one
  *
  * return string itemtype Form URL
  */
-function getItemTypeFormURL($itemtype) {
+function getItemTypeFormURL($itemtype, $full=true) {
+   global $CFG_GLPI;
+
+   $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
    if ($plug=isPluginItemType($itemtype)) {
-      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $dir .= "/plugins/".strtolower($plug['plugin']);
       $item = strtolower($plug['class']);
 
    } else { // Standard case
-      $dir = GLPI_ROOT;
       $item = strtolower($itemtype);
    }
    return "$dir/front/$item.form.php";
@@ -91,16 +95,20 @@ function getItemTypeFormURL($itemtype) {
  * Get search URL for itemtype
  *
  * @param $itemtype string: item type
+ * @param $full path or relative one
  *
  * return string itemtype search URL
  */
-function getItemTypeSearchURL($itemtype) {
+function getItemTypeSearchURL($itemtype, $full=true) {
+   global $CFG_GLPI;
+
+   $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
    if ($plug=isPluginItemType($itemtype)) {
-      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $dir .=  "/plugins/".strtolower($plug['plugin']);
       $item = strtolower($plug['class']);
 
    } else { // Standard case
-      $dir = GLPI_ROOT;
       $item = strtolower($itemtype);
    }
    return "$dir/front/$item.php";
@@ -110,16 +118,20 @@ function getItemTypeSearchURL($itemtype) {
  * Get ajax tabs url for itemtype
  *
  * @param $itemtype string: item type
+ * @param $full path or relative one
  *
  * return string itemtype tabs URL
  */
-function getItemTypeTabsURL($itemtype) {
+function getItemTypeTabsURL($itemtype, $full=true) {
+   global $CFG_GLPI;
+
+   $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
    if ($plug=isPluginItemType($itemtype)) {
-      $dir = GLPI_ROOT . "/plugins/".strtolower($plug['plugin']);
+      $dir .= "/plugins/".strtolower($plug['plugin']);
       $item = strtolower($plug['class']);
 
    } else { // Standard case
-      $dir = GLPI_ROOT;
       $item = strtolower($itemtype);
    }
    return "$dir/ajax/$item.tabs.php";
