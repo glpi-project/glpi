@@ -527,9 +527,10 @@ class Dropdown {
 
                   $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['title'][5]),
 
-                  $LANG['title'][24] => array ('TicketCategory'   => $LANG['setup'][79],
-                                               'TaskCategory'     => $LANG['setup'][98],
-                                               'RequestType'      => $LANG['job'][44]),
+                  $LANG['title'][24] => array ('TicketCategory'     => $LANG['setup'][79],
+                                               'TaskCategory'       => $LANG['setup'][98],
+                                               'TicketSolutionType' => $LANG['job'][48],
+                                               'RequestType'        => $LANG['job'][44]),
 
                   $LANG['setup'][145] => array('OperatingSystem'            => $LANG['setup'][5],
                                                'OperatingSystemVersion'     => $LANG['computers'][52],
@@ -679,7 +680,7 @@ class Dropdown {
     *@return Nothing (display)
     *
     **/
-   function showHours($name, $value, $limit_planning=0) {
+   static function showHours($name, $value, $limit_planning=0) {
       global $CFG_GLPI;
 
       $begin=0;
