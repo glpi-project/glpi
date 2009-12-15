@@ -67,6 +67,118 @@ class Ticket extends CommonDBTM {
       return haveRight('show_all_ticket', 1);
    }
 
+   /**
+   * Check right on an item
+   *
+   * @param $ID ID of the item (-1 if new item)
+   * @param $right Right to check : r / w / recursive
+   * @param $input array of input data (used for adding item)
+   *
+   * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+
+      if (empty($ID)||$ID<=0) {
+         if (!count($this->fields)) {
+            // Only once
+            $this->getEmpty();
+         }
+         if (is_array($input)) {
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+               if (isset($this->fields[$key])) {
+                  $this->fields[$key] = $val;
+               }
+            }
+         }
+         return $this->canCreateItem();
+      }
+
+      // Get item if not already loaded
+      if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+         // Item not found : no right
+         if (!$this->getFromDB($ID)) {
+            return false;
+         }
+      }
+
+      switch ($right) {
+         case 'r':
+            return $this->canViewItem();
+
+         case 'd':
+            return $this->canDeleteItem();
+
+         case 'w':
+            return $this->canUpdateItem();
+      }
+      return false;
+   }
+
+   /**
+    * Is the current user have right to show the current ticket ?
+    *
+    * @return boolean
+    */
+   function canViewItem() {
+
+      if (!haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      return (haveRight("show_all_ticket","1")
+              || (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"])
+              || (haveRight("show_group_ticket",'1')
+                  && isset($_SESSION["glpigroups"])
+                  && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
+              || (haveRight("show_assign_ticket",'1')
+                  && ((isset($_SESSION["glpiID"])
+                       && $this->fields["users_id_assign"]==$_SESSION["glpiID"]
+                      )
+                      || (isset($_SESSION["glpigroups"])
+                          && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
+                     )
+                 )
+             );
+   }
+
+   /**
+    * Is the current user have right to create the current ticket ?
+    *
+    * @return boolean
+    */
+   function canCreateItem() {
+      if (!haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      return haveRight('create_ticket', '1');
+   }
+
+   /**
+    * Is the current user have right to update the current ticket ?
+    *
+    * @return boolean
+    */
+   function canUpdateItem() {
+      if (!haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      return $this->canCreate();
+   }
+
+   /**
+    * Is the current user have right to delete the current ticket ?
+    *
+    * @return boolean
+    */
+   function canDeleteItem() {
+      if (!haveAccessToEntity($this->getEntityID())) {
+         return false;
+      }
+      return haveRight('delete_ticket', '1');
+   }
+
+
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
@@ -1300,7 +1412,6 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to show the current ticket ?
     *
     * @return boolean
-    */
    function canUserView() {
 
       return (haveRight("show_all_ticket","1")
@@ -1318,6 +1429,7 @@ class Ticket extends CommonDBTM {
                  )
              );
    }
+    */
 
 
    /**

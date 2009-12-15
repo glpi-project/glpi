@@ -694,7 +694,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
       // Add link
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         if ($job->canUserView()) {
+         if ($job->canViewItem()) {
             $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                               $data["id"]."\">$eigth_column</a>";
 
@@ -2077,7 +2077,12 @@ function showJobDetails($target, $ID,$array=array()) {
       dropdownTrackingAllDevices("itemtype", $job->fields["itemtype"], $job->fields["items_id"],
                                  1, $job->fields["entities_id"]);
    } else {
-      echo $item->getType()." ".$item->getNameID();
+      if ($ID && class_exists($job->fields['itemtype'])) {
+         $item = new $job->fields['itemtype']();
+         echo $item->getTypeName()." ".$item->getNameID();
+      } else {
+         echo $LANG['help'][30];
+      }
    }
    echo "</td>";
 
