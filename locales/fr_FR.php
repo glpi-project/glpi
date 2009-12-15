@@ -740,6 +740,7 @@ $LANG['job'][43]="Coût total";
 $LANG['job'][44]="Source de la demande";
 $LANG['job'][46]="Ticket créé dans l'entité";
 $LANG['job'][47]="Coûts";
+$LANG['job'][48]="Type de solution";
 
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";

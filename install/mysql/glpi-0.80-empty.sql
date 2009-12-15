@@ -3080,6 +3080,16 @@ CREATE TABLE `glpi_tickets` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_ticketsolutiontypes
+
+DROP TABLE IF EXISTS `glpi_ticketsolutiontypes`;
+CREATE TABLE `glpi_ticketsolutiontypes` (
+           `id` int(11) NOT NULL auto_increment,
+           `name` varchar(255) default NULL,
+           `comment` text,
+           PRIMARY KEY  (`id`),
+           KEY `name` (`name`)
+         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_transfers
 

@@ -2305,6 +2305,25 @@ function update0723to080() {
       $DB->query($query) or die("0.80 create glpi_taskcategories" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!TableExists('glpi_ticketsolutiontypes')) {
+      $query = "CREATE TABLE `glpi_ticketsolutiontypes` (
+           `id` int(11) NOT NULL auto_increment,
+           `name` varchar(255) default NULL,
+           `comment` text,
+           PRIMARY KEY  (`id`),
+           KEY `name` (`name`)
+         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_ticketsolutiontypes" . $LANG['update'][90] . $DB->error());
+
+      // Populate only required for migration of ticket status
+      $query = "INSERT INTO `glpisvn`.`glpi_ticketsolutiontypes`
+                (`id` ,`name` ,`comment`)
+                VALUES
+                ('1', '".$LANG['joblist'][17]."', NULL),
+                ('2', '".$LANG['joblist'][10]."', NULL)";
+      $DB->query($query) or die("0.80 populate glpi_ticketsolutiontypes" . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_documenttypes','comment')) {
       $query = "ALTER TABLE `glpi_documenttypes` ADD `comment` TEXT NULL ";
       $DB->query($query) or die("0.80 add comment in glpi_documenttypes" .
