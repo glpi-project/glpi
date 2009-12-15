@@ -54,6 +54,135 @@ class TicketFollowup  extends CommonDBTM {
       $DB->query($querydel);
    }
 
+   static function canCreate() {
+      return (haveRight('comment_all_ticket', 1)
+              || haveRight('comment_ticket', 1)
+              || haveRight('own_ticket', 1));
+   }
+
+   static function canView() {
+      return (haveRight('observe_ticket', 1)
+              || haveRight('show_full_ticket', 1)
+              || haveRight('own_ticket', 1));
+   }
+
+   /**
+   * Check right on an item
+   *
+   * @param $ID ID of the item (-1 if new item)
+   * @param $right Right to check : r / w / recursive
+   * @param $input array of input data (used for adding item)
+   *
+   * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+
+      if (empty($ID)||$ID<=0) {
+         if (!count($this->fields)) {
+            // Only once
+            $this->getEmpty();
+         }
+         if (is_array($input)) {
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+               if (isset($this->fields[$key])) {
+                  $this->fields[$key] = $val;
+               }
+            }
+         }
+         return $this->canCreateItem();
+      }
+
+      // Get item if not already loaded
+      if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+         // Item not found : no right
+         if (!$this->getFromDB($ID)) {
+            return false;
+         }
+      }
+
+      switch ($right) {
+         case 'r':
+            return $this->canViewItem();
+
+         case 'd':
+            return $this->canDeleteItem();
+
+         case 'w':
+            return $this->canUpdateItem();
+      }
+      return false;
+   }
+
+   /**
+    * Is the current user have right to show the current followup ?
+    *
+    * @return boolean
+    */
+   function canViewItem() {
+
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      if (haveRight('show_full_ticket', 1)) {
+         return true;
+      }
+      if (!$this->is_private && haveRight('observe_ticket',1)) {
+         return true;
+      }
+      if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Is the current user have right to create the current followup ?
+    *
+    * @return boolean
+    */
+   function canCreateItem() {
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      // From canAddFollowup
+      return ((haveRight("comment_ticket","1") && $this->fields["users_id"]==$_SESSION["glpiID"])
+              || haveRight("comment_all_ticket","1")
+              || (isset($_SESSION["glpiID"])
+                  && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || (isset($_SESSION["glpigroups"])
+                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
+   }
+
+   /**
+    * Is the current user have right to update the current followup ?
+    *
+    * @return boolean
+    */
+   function canUpdateItem() {
+      if (!haveRight('update_followup',1)) {
+         return false;
+      }
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      return true;
+   }
+
+   /**
+    * Is the current user have right to delete the current followup ?
+    *
+    * @return boolean
+    */
+   function canDeleteItem() {
+      return $this->canUpdateItem();
+   }
+
+
 
    function post_deleteFromDB($ID) {
 
