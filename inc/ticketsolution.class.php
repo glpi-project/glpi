@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ticketfollowup.class.php 9663 2009-12-13 11:38:45Z yllen $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,41 +29,40 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset($_POST["id"])) {
-   exit();
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-$ticket = new Ticket();
-if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
-   switch($_REQUEST['glpi_tab']) {
-      case 1 :
-         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
-         $ticket->showSummary();
-         break;
+/// TicketSolution class
+class TicketSolution  extends CommonDBTM {
 
-      case 2 :
-         showAddFollowupForm($_POST["id"]);
-         break;
+   // From CommonDBTM
+   public $table = 'glpi_ticketsolutions';
+   public $type = 'TicketSolution';
 
-      case 3 :
-         showJobCost($_POST['target'],$_POST["id"]);
-         break;
+   static function getTypeName() {
+      global $LANG;
 
-      default :
-         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
-            showJobDetails($_POST['target'],$_POST["id"]);
-         }
+      return $LANG['jobresolution'][1];
+   }
+
+   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
+      global $CFG_GLPI, $LANG;
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$this->getTypeName()."</td>";
+      echo "<td>".convDateTime($this->fields["date"]) . "</td>";
+      echo "<td class='left'><b>";
+      echo Dropdown::getDropdownName("glpi_ticketsolutiontypes",$this->fields["ticketsolutiontypes_id"]);
+      echo "</b><br>".nl2br($this->fields["content"]) . "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
+      echo "</tr>\n";
    }
 }
 
-ajaxFooter();
 ?>
