@@ -71,20 +71,6 @@ if (isset($_POST['update'])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                $_POST["tickets_id"]."&glpi_tab=1&itemtype=Ticket");
 
-} else if (isset($_POST["update_followup"])) {
-   checkRight("comment_all_ticket","1");
-   $fup->update($_POST);
-
-   Event::log($_POST["tickets_id"], "tracking", 4, "tracking",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
-
-} else if (isset($_POST["delete_followup"])) {
-   checkRight("comment_all_ticket","1");
-   $fup->delete($_POST);
-   Event::log($_POST["tickets_id"], "tracking", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
 }
 
 $track->check($_GET["id"],'r');
