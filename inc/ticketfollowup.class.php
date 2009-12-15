@@ -354,10 +354,11 @@ class TicketFollowup  extends CommonDBTM {
             }
          }
 
+         // TODO add + close from solution tab, not from followup
          if ($input["_close"] && $input["_type"]!="update" && $input["_type"]!="finish") {
             $updates[] = "status";
             $updates[] = "closedate";
-            $input["_job"]->fields["status"] = "old_done";
+            $input["_job"]->fields["status"] = "solved";
             $input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
             $input["_job"]->updateInDB($updates);
          }

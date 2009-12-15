@@ -2324,6 +2324,45 @@ function update0723to080() {
       $DB->query($query) or die("0.80 populate glpi_ticketsolutiontypes" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!TableExists('glpi_ticketsolutions')) {
+      $query = "CREATE TABLE `glpi_ticketsolutions` (
+                 `id` int(11) NOT NULL auto_increment,
+                 `tickets_id` int(11) NOT NULL default '0',
+                 `date` datetime default NULL,
+                 `users_id` int(11) NOT NULL default '0',
+                 `ticketsolutiontypes_id` int(11) NOT NULL default '0',
+                 `content` longtext collate utf8_unicode_ci,
+                 PRIMARY KEY  (`id`),
+                 KEY `date` (`date`),
+                 KEY `users_id` (`users_id`),
+                 KEY `tickets_id` (`tickets_id`),
+                 KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
+
+      // Move old status "old_done"", "old_notdone" as solution
+      // before changing to new "solved", "closed" status
+      $query = "INSERT INTO `glpi_ticketsolutions`
+                       (`tickets_id`, `date`,`content`,`ticketsolutiontypes_id`)
+                       SELECT `id`, `closedate`, 'migration', 1
+                       FROM `glpi_tickets`
+                       WHERE `status` LIKE 'old_notdone'";
+      $DB->query($query) or die("0.80 populate glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
+
+      $query = "INSERT INTO `glpi_ticketsolutions`
+                       (`tickets_id`, `date`,`content`,`ticketsolutiontypes_id`)
+                       SELECT `id`, `closedate`, 'migration', 2
+                       FROM `glpi_tickets`
+                       WHERE `status` LIKE 'old_done'";
+      $DB->query($query) or die("0.80 populate glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_tickets`
+                SET `status`='closed'
+                WHERE `status`='old_done' OR `status`='old_notdone'";
+
+      $DB->query($query) or die("0.80 migration of glpi_tickets status" . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_documenttypes','comment')) {
       $query = "ALTER TABLE `glpi_documenttypes` ADD `comment` TEXT NULL ";
       $DB->query($query) or die("0.80 add comment in glpi_documenttypes" .

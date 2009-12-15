@@ -768,6 +768,8 @@ $LANG['joblist'][28]="Tickets sur les éléments liés";
 $LANG['joblist'][29]="Urgence";
 $LANG['joblist'][30]="Impact";
 $LANG['joblist'][31]="Date d'échéance";
+$LANG['joblist'][32]="Résolu";
+$LANG['joblist'][33]="Clos";
 
 $LANG['jobresolution'][1]="Résolution";
 
