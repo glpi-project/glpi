@@ -1283,8 +1283,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
          break;
 
       case "old" :
-         $where .= "(`glpi_tickets`.`status` = 'old_done'
-                     OR `glpi_tickets`.`status` = 'old_notdone')";
+         $where .= "(`glpi_tickets`.`status` = 'solved'
+                     OR `glpi_tickets`.`status` = 'closed')";
          break;
 
       case "process" :
@@ -1296,12 +1296,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
          $where .= "(`glpi_tickets`.`status` = 'waiting')";
          break;
 
-      case "old_done" :
-         $where .= "(`glpi_tickets`.`status` = 'old_done')";
+      case "solved" :
+         $where .= "(`glpi_tickets`.`status` = 'solved')";
          break;
 
-      case "old_notdone" :
-         $where .= "(`glpi_tickets`.`status` = 'old_notdone')";
+      case "closed" :
+         $where .= "(`glpi_tickets`.`status` = 'closed')";
          break;
 
        case "assign" :
@@ -1612,12 +1612,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                   $title .= $LANG['joblist'][26];
                   break;
 
-               case "old_done" :
-                  $title .= $LANG['joblist'][10];
+               case "solved" :
+                  $title .= $LANG['joblist'][32];
                   break;
 
-               case "old_notdone" :
-                  $title .= $LANG['joblist'][17];
+               case "closed" :
+                  $title .= $LANG['joblist'][33];
                   break;
 
                case "notold" :

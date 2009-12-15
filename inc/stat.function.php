@@ -783,8 +783,8 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "inter_solved" :
-         $WHERE .= " AND (`glpi_tickets`.`status` = 'old_done'
-                          OR `glpi_tickets`.`status` = 'old_notdone')
+         $WHERE .= " AND (`glpi_tickets`.`status` = 'closed'
+                          OR `glpi_tickets`.`status` = 'solved')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
          $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
@@ -799,8 +799,8 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "inter_avgsolvedtime" :
-         $WHERE .= " AND (`glpi_tickets`. `status` = 'old_done'
-                          OR `glpi_tickets`.`status` = 'old_notdone')
+         $WHERE .= " AND (`glpi_tickets`. `status` = 'solved'
+                          OR `glpi_tickets`.`status` = 'closed')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
          $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
@@ -835,8 +835,8 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "inter_avgtakeaccount" :
-         $WHERE .= " AND (`glpi_tickets`.`status` = 'old_done'
-                          OR `glpi_tickets`.`status` = 'old_notdone')
+         $WHERE .= " AND (`glpi_tickets`.`status` = 'solved'
+                          OR `glpi_tickets`.`status` = 'closed')
                      AND `glpi_tickets`.`closedate` IS NOT NULL ";
          $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 

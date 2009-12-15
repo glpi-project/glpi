@@ -1763,8 +1763,8 @@ class Ticket extends CommonDBTM {
          'assign'       => $LANG['joblist'][18],
          'plan'         => $LANG['joblist'][19],
          'waiting'      => $LANG['joblist'][26],
-         'old_done'     => $LANG['joblist'][10],
-         'old_notdone'  => $LANG['joblist'][17]);
+         'solved'       => $LANG['joblist'][32],
+         'closed'       => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
          $tab['notold']  = $LANG['joblist'][24];

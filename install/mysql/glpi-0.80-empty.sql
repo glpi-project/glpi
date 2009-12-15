@@ -3080,6 +3080,25 @@ CREATE TABLE `glpi_tickets` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+### Dump table glpi_ticketsolutions
+
+DROP TABLE IF EXISTS `glpi_ticketsolutions`;
+CREATE TABLE `glpi_ticketsolutions` (
+  `id` int(11) NOT NULL auto_increment,
+  `tickets_id` int(11) NOT NULL default '0',
+  `date` datetime default NULL,
+  `users_id` int(11) NOT NULL default '0',
+  `ticketsolutiontypes_id` int(11) NOT NULL default '0',
+  `content` longtext collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`),
+  KEY `date` (`date`),
+  KEY `users_id` (`users_id`),
+  KEY `tickets_id` (`tickets_id`),
+  KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_ticketsolutiontypes
 
 DROP TABLE IF EXISTS `glpi_ticketsolutiontypes`;
