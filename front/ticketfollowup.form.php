@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ticket.form.php 9633 2009-12-11 19:12:34Z yllen $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,25 +29,42 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-checkLoginUser();
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+
+checkCentralAccess();
 
 $fup = new TicketFollowup();
-if (isset($_POST["id"]) && $fup->can($_POST["id"],'w')) {
-   $fup->showUpdateForm();
-} else {
-   echo $LANG['login'][5];
+$track = new Ticket();
+
+if (!isset($_POST['id'])) {
+   exit();
 }
 
-ajaxFooter();
+$fup = new TicketFollowup();
+
+if (isset($_POST["update"])) {
+   $fup->check($_POST['id'], 'w');
+   $fup->update($_POST);
+
+   Event::log($fup->getField('tickets_id'), "tracking", 4, "tracking",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
+   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+
+} else if (isset($_POST["delete"])) {
+   $fup->check($_POST['id'], 'w');
+   $fup->delete($_POST);
+
+   Event::log($fup->getField('tickets_id'), "tracking", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
+   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+}
+
+displayErrorAndDie('Lost');
 
 ?>
