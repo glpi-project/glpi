@@ -1667,10 +1667,10 @@ function update0723to080() {
    $DB->query($query) or die("0.80 alter itemtype_link of table glpi_logs " . $LANG['update'][90] . $DB->error());
 
    foreach ($typetoname as $key => $val) {
-      $query = "UPDATE `$table` SET `itemtype_link` = '$val'
+      $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
                 WHERE `itemtype_link` = '$key'
                     AND `linked_action` IN (".HISTORY_ADD_RELATION.",".HISTORY_DEL_RELATION.")";
-      $DB->query($query) or die("0.80 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
    }
 
    // Update glpi_profiles item_type
@@ -2316,7 +2316,7 @@ function update0723to080() {
       $DB->query($query) or die("0.80 create glpi_ticketsolutiontypes" . $LANG['update'][90] . $DB->error());
 
       // Populate only required for migration of ticket status
-      $query = "INSERT INTO `glpisvn`.`glpi_ticketsolutiontypes`
+      $query = "INSERT INTO `glpi_ticketsolutiontypes`
                 (`id` ,`name` ,`comment`)
                 VALUES
                 ('1', '".$LANG['joblist'][17]."', NULL),
