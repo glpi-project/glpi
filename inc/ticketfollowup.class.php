@@ -433,7 +433,6 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<td>";
       if ($canedit) {
-         echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand() --";
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
          $params = array (
