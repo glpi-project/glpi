@@ -45,6 +45,13 @@ class TicketFollowup  extends CommonDBTM {
    public $table = 'glpi_ticketfollowups';
    public $type = 'TicketFollowup';
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][5];
+   }
+
+
    function cleanDBonPurge($ID) {
       global $DB;
 
@@ -408,6 +415,82 @@ class TicketFollowup  extends CommonDBTM {
       return getUserName($this->fields["users_id"],$link);
    }
 
+   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $canedit = ($caneditall || $this->fields['users_id'] == $_SESSION['glpiID']);
+      echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
+       ($canedit
+         ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].$this->fields['id']."$rand();\""
+         : "style='cursor:none'") .
+         " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
+
+      echo "<td>".$this->getTypeName();
+      if ($showprivate) {
+         echo "<br>".($this->fields["is_private"]?$LANG['common'][77]:$LANG['common'][76]);
+      }
+      echo "</td>";
+
+      echo "<td>";
+      if ($canedit) {
+         echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand() --";
+         echo "\n<script type='text/javascript' >\n";
+         echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
+         $params = array (
+            'id' => $this->fields["id"]
+         );
+         ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+         echo "};";
+         echo "</script>\n";
+      }
+      else echo "--no--";
+      echo convDateTime($this->fields["date"]) . "</td>";
+      echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
+
+      $hour = floor($this->fields["realtime"]);
+      $minute = round(($this->fields["realtime"] - $hour) * 60, 0);
+      echo "<td>";
+      if ($hour) {
+         echo "$hour " . $LANG['job'][21] . "<br>";
+      }
+      if ($minute || !$hour) {
+         echo "$minute " . $LANG['job'][22] . "</td>";
+      }
+      echo "<td>";
+      $query2 = "SELECT *
+                             FROM `glpi_ticketplannings`
+                             WHERE `ticketfollowups_id` = '" . $this->fields['id'] . "'";
+      $result2 = $DB->query($query2);
+
+      if ($DB->numrows($result2) == 0) {
+         echo $LANG['job'][32];
+      } else {
+         $data2 = $DB->fetch_array($result2);
+         echo "<script type='text/javascript' >\n";
+         echo "function showPlan" . $this->fields['id'] . "(){\n";
+         echo "Ext.get('plan').setDisplayed('none');";
+         $params = array (
+            'form' => 'followups',
+            'users_id' => $data2["users_id"],
+            'id' => $data2["id"],
+            'state' => $data2["state"],
+            'begin' => $data2["begin"],
+            'end' => $data2["end"],
+            'entity' => $ticket->fields["entities_id"]
+         );
+         ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params, false);
+         echo "}";
+         echo "</script>\n";
+
+         echo Planning :: getState($data2["state"]) . "<br>" . convDateTime($data2["begin"]) . "<br>->" .
+         convDateTime($data2["end"]) . "<br>" . getUserName($data2["users_id"]);
+      }
+      echo "</td>";
+
+      echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
+      echo "</tr>\n";
+   }
 }
 
 ?>

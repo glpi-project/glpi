@@ -1835,6 +1835,68 @@ class Ticket extends CommonDBTM {
       $tab = self::getAllStatusArray();
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
-}
 
+   /**
+    * Show the current ticket sumnary
+    */
+   function showSummary() {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if (!haveRight("observe_ticket", "1") && !haveRight("show_full_ticket", "1")) {
+         return false;
+      }
+
+      $tID = $this->getField('id');
+
+      // Display existing Followups
+      $showprivate = haveRight("show_full_ticket", "1");
+      $caneditall = haveRight("update_followups", "1");
+
+      $RESTRICT = "";
+      if (!$showprivate) {
+         $RESTRICT = " AND (`is_private` = '0'
+                                     OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
+      }
+
+      $query = "(SELECT 'TicketFollowup' as itemtype, `id`, `date`
+                 FROM `glpi_ticketfollowups`
+                 WHERE `tickets_id` = '$tID'
+                        $RESTRICT)
+                UNION
+                (SELECT 'TicketSolution' as itemtype, `id`, `date`
+                 FROM `glpi_ticketsolutions`
+                 WHERE `tickets_id` = '$tID')
+                ORDER BY `date` DESC";
+      $result = $DB->query($query);
+
+      $rand = mt_rand();
+
+      echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+
+      echo "<div class='center'>";
+      echo "<h3>" . $LANG['job'][37] . "</h3>";
+
+      if ($DB->numrows($result) == 0) {
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][12];
+         echo "</th></tr></table>";
+      } else {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . $LANG['job'][35] . "</th><th>" . $LANG['common'][37] . "</th>";
+         echo "</tr>\n";
+
+         while ($data = $DB->fetch_array($result)) {
+            if (class_exists($data['itemtype'])) {
+               $item = new $data['itemtype'];
+               if ($item->getFromDB($data['id'])) {
+                  $item->showInTicketSumnary($this, $rand, $showprivate, $caneditall);
+               }
+            }
+         }
+         echo "</table>";
+      }
+      echo "</div>";
+   }
+}
 ?>
