@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ticket.form.php 9633 2009-12-11 19:12:34Z yllen $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -29,46 +29,29 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if (!isset($_POST["id"])) {
-   exit();
+checkCentralAccess();
+
+
+$sol = new TicketSolution();
+
+if (isset($_POST["add"])) {
+   $sol->check(-1, 'w', $_POST);
+   $id = $sol->add($_POST);
+
+   Event::log($sol->getField('tickets_id'), "tracking", 4, "tracking",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]." $id.");
+   glpi_header(getItemTypeFormURL('Ticket')."?id=".$sol->getField('tickets_id'));
+
 }
 
-$ticket = new Ticket();
-if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
-   switch($_REQUEST['glpi_tab']) {
-      case 1 :
-         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
-         $ticket->showSummary();
-         break;
+displayErrorAndDie('Lost');
 
-      case 2 :
-         showAddFollowupForm($_POST["id"]);
-         break;
-
-      case 3 :
-         showJobCost($_POST['target'],$_POST["id"]);
-         break;
-
-      case 4 :
-         TicketSolution::showAddForm($_POST["id"]);
-         TicketSolution::showForTicket($ticket);
-         break;
-
-      default :
-         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
-            showJobDetails($_POST['target'],$_POST["id"]);
-         }
-   }
-}
-
-ajaxFooter();
 ?>
