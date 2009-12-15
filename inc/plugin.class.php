@@ -120,7 +120,8 @@ class Plugin extends CommonDBTM {
             if ($file_plugins[$plug]['version']!=$pluglist[$ID]['version']) {
                $input=$file_plugins[$plug];
                $input['id']=$ID;
-               $input['state']=PLUGIN_NOTUPDATED;
+               if ($pluglist[$ID]['version'])
+                  $input['state']=PLUGIN_NOTUPDATED;
                $this->update($input);
                $install_ok=false;
             }
