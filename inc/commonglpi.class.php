@@ -197,7 +197,7 @@ class CommonGLPI {
          unset($onglets['no_all_tab']);
       }
       if (count($onglets)) {
-      
+
          $tabpage=getItemTypeTabsURL($this->type);
 
          $tabs=array();
@@ -229,23 +229,29 @@ class CommonGLPI {
 
    /**
     * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one
     */
-   function getTabsURL() {
-      return getItemTypeTabsURL(get_class($this));
+   function getTabsURL($full=true) {
+      return getItemTypeTabsURL(get_class($this), $full);
    }
 
    /**
     * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one
     */
-   function getSearchURL() {
-      return getItemTypeSearchURL(get_class($this));
+   function getSearchURL($full=true) {
+      return getItemTypeSearchURL(get_class($this), $full);
    }
 
    /**
     * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one
     */
-   function getFormURL() {
-      return getItemTypeFormURL(get_class($this));
+   function getFormURL($full=true) {
+      return getItemTypeFormURL(get_class($this), $full);
    }
 
    function show() {
