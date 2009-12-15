@@ -772,6 +772,7 @@ $LANG['joblist'][32]="Résolu";
 $LANG['joblist'][33]="Clos";
 
 $LANG['jobresolution'][1]="Résolution";
+$LANG['jobresolution'][2]="Nouvelle solution";
 
 $LANG['knowbase'][1]="Foire aux questions";
 $LANG['knowbase'][3]="Question";

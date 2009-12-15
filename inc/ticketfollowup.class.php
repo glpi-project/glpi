@@ -171,12 +171,10 @@ class TicketFollowup  extends CommonDBTM {
     */
    function canUpdateItem() {
       if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_followup',1)) {
-         logDebug("no FUP right");
          return false;
       }
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
-         logDebug("no TICKET right");
          return false;
       }
       return true;

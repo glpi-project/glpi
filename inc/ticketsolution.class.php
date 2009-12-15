@@ -50,7 +50,121 @@ class TicketSolution  extends CommonDBTM {
       return $LANG['jobresolution'][1];
    }
 
-   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
+   static function canCreate() {
+      return (haveRight('comment_all_ticket', 1)
+              || haveRight('comment_ticket', 1)
+              || haveRight('own_ticket', 1));
+   }
+
+   static function canView() {
+      return (haveRight('observe_ticket', 1)
+              || haveRight('show_full_ticket', 1)
+              || haveRight('own_ticket', 1));
+   }
+
+   /**
+   * Check right on an item
+   *
+   * @param $ID ID of the item (-1 if new item)
+   * @param $right Right to check : r / w / recursive
+   * @param $input array of input data (used for adding item)
+   *
+   * @return boolean
+   **/
+   function can($ID,$right,&$input=NULL) {
+
+      if (empty($ID)||$ID<=0) {
+         if (!count($this->fields)) {
+            // Only once
+            $this->getEmpty();
+         }
+         if (is_array($input)) {
+            // Copy input field to allow getEntityID() to work
+            // from entites_id field or from parent item ref
+            foreach ($input as $key => $val) {
+               if (isset($this->fields[$key])) {
+                  $this->fields[$key] = $val;
+               }
+            }
+         }
+         return $this->canCreateItem();
+      }
+
+      // Get item if not already loaded
+      if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+         // Item not found : no right
+         if (!$this->getFromDB($ID)) {
+            return false;
+         }
+      }
+
+      switch ($right) {
+         case 'r':
+            return $this->canViewItem();
+
+         case 'd':
+            return $this->canDeleteItem();
+
+         case 'w':
+            return $this->canUpdateItem();
+      }
+      return false;
+   }
+
+   /**
+    * Is the current user have right to show the current followup ?
+    *
+    * @return boolean
+    */
+   function canViewItem() {
+
+      $ticket = new Ticket();
+      return $ticket->can($this->getField('tickets_id'),'r');
+   }
+
+   /**
+    * Is the current user have right to create the current followup ?
+    *
+    * @return boolean
+    */
+   function canCreateItem() {
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      return (haveRight("comment_all_ticket","1")
+              || (isset($_SESSION["glpiID"])
+                  && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || (isset($_SESSION["glpigroups"])
+                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
+   }
+
+   /**
+    * Is the current user have right to update the current followup ?
+    *
+    * @return boolean
+    */
+   function canUpdateItem() {
+      if (!haveRight('update_followup',1)) {
+         return false;
+      }
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      return true;
+   }
+
+   /**
+    * Is the current user have right to delete the current followup ?
+    *
+    * @return boolean
+    */
+   function canDeleteItem() {
+      return $this->canUpdateItem();
+   }
+
+   function showInTicketSumnary (Ticket $ticket, $rand=0, $showprivate=0, $caneditall=0) {
       global $CFG_GLPI, $LANG;
 
       echo "<tr class='tab_bg_2'>";
@@ -59,9 +173,97 @@ class TicketSolution  extends CommonDBTM {
       echo "<td class='left'><b>";
       echo Dropdown::getDropdownName("glpi_ticketsolutiontypes",$this->fields["ticketsolutiontypes_id"]);
       echo "</b><br>".nl2br($this->fields["content"]) . "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      if ($rand) {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       echo "</tr>\n";
+   }
+
+   static function showForTicket (Ticket $ticket) {
+      global $DB, $LANG;
+
+      $item  =new self();
+      $query = "SELECT `id`
+                FROM `glpi_ticketsolutions`
+                WHERE `tickets_id`='".$ticket->getField('id')."'
+                ORDER BY `date` DESC";
+
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == 0) {
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][12];
+         echo "</th></tr></table>";
+      } else {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['common'][37] . "</th>";
+         echo "</tr>\n";
+
+         while ($data = $DB->fetch_array($result)) {
+            if ($item->getFromDB($data['id'])) {
+               $item->showInTicketSumnary($ticket);
+            }
+         }
+         echo "</table>";
+      }
+   }
+
+   function prepareInputForAdd($input) {
+      global $LANG;
+
+      if (!isset($input["users_id"])) {
+         $input["users_id"] = $_SESSION["glpiID"];
+      }
+      $input["date"] = $_SESSION["glpi_currenttime"];
+
+      return $input;
+   }
+
+   /**
+    * Form to add a solution to a ticket
+    *
+    * @param $tID integer : ticket ID
+    * @param $massiveaction boolean : add followup using massive action
+    */
+   static function showAddForm($tID, $massiveaction=false) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      $sol = new self();
+      if ($tID>0) {
+         $input = array('tickets_id'=>$tID);
+         $sol->check(-1, 'w', $input);
+      } else {
+         checkRight("comment_all_ticket","1");
+      }
+
+      if ($tID>0) {
+         echo "<form name='followups' method='post' action='".$sol->getFormURL()."'>\n";
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".$LANG['jobresolution'][2]."</th></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['job'][48]."</td><td>";
+      Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id','',1);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['joblist'][6]."</td>";
+      echo "<td><textarea name='content' rows='12' cols='100'>";
+      echo "</textarea></td>";
+      echo "</tr>";
+
+      if ($tID>0 || $massiveaction) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' colspan=2'>";
+         echo "<input type='hidden' name='tickets_id' value='$tID'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "</td></tr>\n";
+      }
+
+      if ($tID>0) {
+         echo "</form>";
+      }
    }
 }
 
