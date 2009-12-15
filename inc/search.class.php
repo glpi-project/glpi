@@ -106,6 +106,7 @@ class Search {
       } else {
          $itemtable=getTableForItemType($itemtype);
       }
+
       $LIST_LIMIT=$_SESSION['glpilist_limit'];
 
       // Set display type for export if define
@@ -595,10 +596,11 @@ class Search {
                                           $ctable,$tmpquery);
                      $query_num .= " AND $ctable.`states_id` > '0' ";
                   } else {// Ref table case
-                     $replace = "FROM `$itemtable`
+                     $reftable=getTableForItemType($itemtype);
+                     $replace = "FROM `$reftable`
                                  INNER JOIN `$ctable`
-                                 ON (`$itemtable`.`items_id`=`$ctable`.`id`
-                                    AND `$itemtable`.`itemtype` = '$ctype')";
+                                 ON (`$reftable`.`items_id`=`$ctable`.`id`
+                                    AND `$reftable`.`itemtype` = '$ctype')";
 
                      $query_num=str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
                                           $replace,$tmpquery);
@@ -667,14 +669,16 @@ class Search {
                                           $ctable,$tmpquery);
                   $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
                } else {// Ref table case
-                  $tmpquery = $SELECT.", '$ctype' AS TYPE, `$itemtable`.`id` AS refID, ".
+                  $reftable=getTableForItemType($itemtype);
+
+                  $tmpquery = $SELECT.", '$ctype' AS TYPE, `$reftable`.`id` AS refID, ".
                                     "`$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
-                  $replace = "FROM `$itemtable`".
+                  $replace = "FROM `$reftable`".
                      " INNER JOIN `$ctable`".
-                     " ON (`$itemtable`.`items_id`=`$ctable`.`id`".
-                     " AND `$itemtable`.`itemtype` = '$ctype')";
+                     " ON (`$reftable`.`items_id`=`$ctable`.`id`".
+                     " AND `$reftable`.`itemtype` = '$ctype')";
                   $tmpquery = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",$replace,
                                           $tmpquery);
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],

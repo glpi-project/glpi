@@ -638,7 +638,7 @@ $CFG_GLPI["deleted_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_c
 $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monitors',
                                      'glpi_networkequipments','glpi_peripherals','glpi_phones',
                                      'glpi_printers','glpi_softwares',
-                                     'reservation_types','state_types');
+                                     'ReservationItem','state_types');
 
 $CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemcategories',
                                          'glpi_locations', 'glpi_taskcategories',
@@ -694,7 +694,7 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems'
       'glpi_softwarelicenses','glpi_suppliers','glpi_tickets','glpi_taskcategories',
       'glpi_ticketcategories','reservation_types','state_types');
 
-$CFG_GLPI["union_search_type"] = array(RESERVATION_TYPE=>"reservation_types",
+$CFG_GLPI["union_search_type"] = array('ReservationItem'=>"reservation_types",
                                        'States'=>"state_types");
 
 $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipments",
