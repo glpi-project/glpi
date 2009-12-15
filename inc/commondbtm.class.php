@@ -529,7 +529,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $input['_item_type_']=$this->type;
       $input=doHookFunction("pre_item_add",$input);
 
       if (isset($input['add'])) {
@@ -656,7 +655,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $input['_item_type_']=$this->type;
       $input=doHookFunction("pre_item_update",$input);
       $input=$this->prepareInputForUpdate($input);
 
@@ -800,51 +798,54 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $input['_item_type_']=$this->type;
+      if (!$this->getFromDB($input[$this->getIndexName()])) {
+         return false;
+      }
+
+      if ($this->getField('is_template')
+            || !isset($this->fields['is_deleted'])) {
+         $force = 1;
+      }
+      // Store input in the object to be available in all sub-method / hook
+      $this->input = $input;
+      
       if ($force) {
-         $input=doHookFunction("pre_item_purge",$input);
+         $input=doHookFunction("pre_item_purge",$this);
          if (isset($input['purge'])) {
             $input['_purge']=$input['purge'];
             unset($input['purge']);
          }
       } else {
-         $input=doHookFunction("pre_item_delete",$input);
+         $input=doHookFunction("pre_item_delete",$this);
          if (isset($input['delete'])) {
             $input['_delete']=$input['delete'];
             unset($input['delete']);
          }
       }
 
-      if (is_array($input)) {
-         // Store input in the object to be available in all sub-method / hook
-         $this->input = $input;
-      } else {
+      if (!is_array($input)) {
          // $input clear by a hook to cancel delete
          return false;
       }
-      if ($this->getFromDB($input[$this->getIndexName()])) {
-         if ($this->pre_deleteItem($this->fields["id"])) {
-            if ($this->deleteFromDB($this->fields["id"], $force)) {
-               if ($force) {
-                  $this->addMessageOnPurgeAction($input);
-                  doHook("item_purge",array("type"=>$this->type, "id" => $this->fields["id"],
-                         "input" => $input));
-               } else {
-                  $this->addMessageOnDeleteAction($input);
-                  if ($this->dohistory&&$history) {
-                     $changes[0] = 0;
-                     $changes[1] = $changes[2] = "";
+      if ($this->pre_deleteItem($this->fields["id"])) {
+         if ($this->deleteFromDB($this->fields["id"], $force)) {
+            if ($force) {
+               $this->addMessageOnPurgeAction($input);
+               doHook("item_purge",$this);
+            } else {
+               $this->addMessageOnDeleteAction($input);
+               if ($this->dohistory&&$history) {
+                  $changes[0] = 0;
+                  $changes[1] = $changes[2] = "";
 
-                     historyLog ($this->fields["id"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
-                  }
-                  doHook("item_delete",array("type"=>$this->type, "id" => $this->fields["id"],
-                         "input" => $input));
+                  historyLog ($this->fields["id"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
                }
-               return true;
+               doHook("item_delete",$this);
             }
+            return true;
          }
       }
-   return false;
+      return false;
    }
 
    /**
@@ -931,7 +932,6 @@ class CommonDBTM extends CommonGLPI {
          $input['_restore']=$input['restore'];
          unset($input['restore']);
       }
-      $input['_item_type_']=$this->type;
       $input=doHookFunction("pre_item_restore",$input);
 
       if ($this->getFromDB($input[$this->getIndexName()])) {
