@@ -1041,7 +1041,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
                                         $_SESSION['glpigroups']) as $tmpgroupid => $tmpgroupname) {
             $groups[$tmpgroupid] = $tmpgroupname;
          }
-         dropdownArrayValues('groups_id_assign',$groups,$groups_id_assign);
+         Dropdown::showFromArray('groups_id_assign',$groups,array('value'=>$groups_id_assign));
       }
    } else {
       User::dropdown("users_id_assign",

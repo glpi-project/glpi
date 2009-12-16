@@ -81,12 +81,13 @@ function haveRight($module, $right) {
 function haveTypeRight($itemtype, $right) {
    global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
-   if ($right='w') {
+   if ($right=='w') {
       $method = array($itemtype,'canCreate');
    } else {
       $method = array($itemtype,'canView');
    }
    $item=new $itemtype();
+   
    if (method_exists($item,$method[1])) {
       return $item->$method[1]();
       return (call_user_func($method));
@@ -226,7 +227,6 @@ function checkSeveralRightsAnd($modules) {
 **/
 function checkTypeRight($itemtype, $right) {
    global $CFG_GLPI;
-
    if (!haveTypeRight($itemtype, $right)) {
       // Gestion timeout session
       if (!isset ($_SESSION["glpiID"])) {

@@ -383,10 +383,10 @@ class CronTask extends CommonDBTM{
       if ($this->fields["state"]==CRONTASK_STATE_RUNNING) {
          echo "<strong>" . $this->getStateName(CRONTASK_STATE_RUNNING)."</strong>";
       } else {
-         dropdownArrayValues('state',
+         Dropdown::showFromArray('state',
             array(CRONTASK_STATE_DISABLE=>$this->getStateName(CRONTASK_STATE_DISABLE),
                   CRONTASK_STATE_WAITING=>$this->getStateName(CRONTASK_STATE_WAITING)),
-            $this->fields["state"]);
+            array('value'=>$this->fields["state"]));
       }
       echo "</td></tr>";
 
@@ -398,7 +398,7 @@ class CronTask extends CommonDBTM{
       if ($this->fields['allowmode']&CRONTASK_MODE_EXTERNAL) {
          $modes[CRONTASK_MODE_EXTERNAL]=$this->getModeName(CRONTASK_MODE_EXTERNAL);
       }
-      dropdownArrayValues('mode', $modes, $this->fields['mode']);
+      Dropdown::showFromArray('mode', $modes, array('value'=>$this->fields['mode']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][38]." : </td><td>";
@@ -1158,7 +1158,7 @@ class CronTask extends CommonDBTM{
       $tab[WEEK_TIMESTAMP] = $LANG['setup'][308];
       $tab[MONTH_TIMESTAMP] = $LANG['setup'][309];
 
-      dropdownArrayValues($name, $tab, $value);
+      Dropdown::showFromArray($name, $tab, array('value'=>$value));
    }
 }
 ?>

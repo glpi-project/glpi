@@ -333,7 +333,7 @@ class Dropdown {
          }
          asort($options);
       }
-      dropdownArrayValues($name,$options,$value,$used);
+      Dropdown::showFromArray($name,$options,array('value'=>$value,'used'=>$used));
    }
 
 
@@ -816,6 +816,53 @@ class Dropdown {
       return $rand;
    }
 
+   /**
+   * Dropdown of values in an array
+   *
+   * Parameters which could be used in options array :
+   *    - value : integer / preselected value (default 0)
+   *    - used : array / Already used items ID: not to display in dropdown (default empty)
+   *    - readonly : boolean / used as a readonly item (default false)
+   *
+   * @param $name select name
+   * @param $elements array of elements to display
+   * @param $opyions options
+   *
+   */
+   static function showFromArray($name,$elements,$options = array()) {
+
+      //$value='',$used=array()
+
+      $param['value']='';
+      $param['used']=array();
+      $param['readonly']=false;
+
+      foreach ($options as $key => $val) {
+         $param[$key]=$val;
+      }
+
+      // readonly mode
+      if ($param['readonly']) {
+         echo "<input type='hidden' name='$name' value='".$param['value']."'>";
+
+         if (isset($elements[$param['value']])) {
+            echo $elements[$param['value']];
+         }
+      } else {
+
+         $rand=mt_rand();
+         echo "<select name='$name' id='dropdown_".$name.$rand."'>";
+
+         foreach ($elements as $key => $val) {
+            if (!isset($param['used'][$key])) {
+               echo "<option value='".$key."'".($param['value']==$key?" selected ":"").">".$val."</option>";
+            }
+         }
+
+         echo "</select>";
+         return $rand;
+      }
+   }
 
 }
 

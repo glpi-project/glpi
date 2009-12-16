@@ -246,10 +246,10 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
-      dropdownArrayValues("deconnection_behavior",array(''=>$LANG['buttons'][49],
-                                                        "trash"=>$LANG['ocsconfig'][49],
-                                                        "delete"=>$LANG['ocsconfig'][50]),
-                                                        $this->fields["deconnection_behavior"]);
+      Dropdown::showFromArray("deconnection_behavior",
+                                 array(''=>$LANG['buttons'][49],"trash"=>$LANG['ocsconfig'][49],
+                                       "delete"=>$LANG['ocsconfig'][50]),
+                                 array('value'=>$this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
       $import_array = array("0"=>$LANG['ocsconfig'][11],
@@ -264,21 +264,21 @@ class OcsServer extends CommonDBTM {
       $printer = $this->fields["import_printer"];
       $software = $this->fields["import_software"];
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][16] . " </td>\n<td>";
-      dropdownArrayValues("import_periph",$import_array,$periph);
+      Dropdown::showFromArray("import_periph",$import_array,array('value'=>$periph));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][3] . " </td>\n<td>";
-      dropdownArrayValues("import_monitor",$import_array2,$monitor);
+      Dropdown::showFromArray("import_monitor",$import_array2,array('value'=>$monitor));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][2] . " </td>\n<td>";
-      dropdownArrayValues("import_printer",$import_array,$printer);
+      Dropdown::showFromArray("import_printer",$import_array,array('value'=>$printer));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td>\n<td>";
       $import_array = array("0"=>$LANG['ocsconfig'][11],
                             "1"=>$LANG['ocsconfig'][12]);
-      dropdownArrayValues("import_software",$import_array,$software);
+      Dropdown::showFromArray("import_software",$import_array,array('value'=>$software));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][8] . " </td>\n<td>";
@@ -333,7 +333,8 @@ class OcsServer extends CommonDBTM {
       $link_array=array("0"=>$LANG['choice'][0],
                         "1"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][57],
                         "2"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
-      dropdownArrayValues("use_name_to_link", $link_array,$this->fields["use_name_to_link"]);
+      Dropdown::showFromArray("use_name_to_link", $link_array,
+                           array('value'=>$this->fields["use_name_to_link"]));
       echo "</td>\n";
       echo "<td>" . $LANG['common'][19] . " </td>\n<td>";
       Dropdown::showYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);

@@ -195,7 +195,7 @@ class Rule extends CommonDBTM {
 
       $elements[AND_MATCHING] = $LANG['rulesengine'][42];
       $elements[OR_MATCHING] = $LANG['rulesengine'][43];
-      return dropdownArrayValues($name,$elements,$value);
+      return Dropdown::showFromArray($name,$elements,array('value'=>$value));
    }
 
    /**
@@ -426,7 +426,7 @@ class Rule extends CommonDBTM {
       foreach ($this->getCriterias() as $ID => $crit) {
          $items[$ID]=$crit['name'];
       }
-      $rand=dropdownArrayValues("criteria", $items);
+      $rand=Dropdown::showFromArray("criteria", $items);
       $params = array('criteria'=>'__VALUE__',
                       'sub_type'=>$this->sub_type);
       ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",
@@ -454,7 +454,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $rand=dropdownArrayValues("field", $items, $value, $used);
+      $rand=Dropdown::showFromArray("field", $items, array('value'=>$value, 'used'=>$used));
       $params = array('field'=>'__VALUE__',
                       'sub_type'=>$this->sub_type);
       ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",

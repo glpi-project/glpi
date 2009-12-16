@@ -110,7 +110,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "unlock_ocsng_field" :
          $fields['all']=$LANG['common'][66];
          $fields+=OcsServer::getLockableFields();
-         dropdownArrayValues("field",$fields);
+         Dropdown::showFromArray("field",$fields);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
@@ -138,7 +138,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "connect_to_computer" :
-         Dropdown::showAllItems(("connect_item",0,0,$_SESSION["glpiactive_entity"],array('Phone',
+         Dropdown::showAllItems("connect_item",0,0,$_SESSION["glpiactive_entity"],array('Phone',
                                                                                   'Monitor',
                                                                                   'Printer',
                                                                                   'Peripheral'),

@@ -381,51 +381,6 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 
 
 /**
- * Dropdown of values in an array
- *
- * @param $name select name
- * @param $elements array of elements to display
- * @param $value default value
- * @param $used Already used items ID: not to display in dropdown
- *
- */
-function dropdownArrayValues($name,$elements,$value='',$used=array()) {
-
-   $rand=mt_rand();
-   echo "<select name='$name' id='dropdown_".$name.$rand."'>";
-
-   foreach ($elements as $key => $val) {
-      if (!isset($used[$key])) {
-         echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";
-      }
-   }
-
-   echo "</select>";
-   return $rand;
-}
-
-/**
- * Remplace an dropdown by an hidden input field
- * and display the value.
- *
- * @param $name select name
- * @param $elements array of elements to display
- * @param $value default value
- * @param $used already used elements key (not used in this RO mode)
- *
- */
-function dropdownArrayValuesReadonly($name,$elements,$value='',$used=array()) {
-
-   echo "<input type='hidden' name='$name' value='$value'>";
-
-   if (isset($elements[$value])) {
-      echo $elements[$value];
-   }
-}
-
-
-
-/**
  * Dropdown rules for a defined sub_type of rule
  *
  * @param $myname select name
@@ -484,7 +439,7 @@ function dropdownUnderProfiles($name,$value='') {
       }
    }
 
-   dropdownArrayValues($name,$profiles,$value);
+   Dropdown::showFromArray($name,$profiles,array('value'=>$value));
 }
 
 

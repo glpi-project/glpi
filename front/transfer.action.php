@@ -40,7 +40,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 $transfer = new Transfer();
-$transfer->check(-1,"r");
+
+checkTypeRight('Transfer',"r");
 
 if (isset($_POST['transfer'])) {
    if (isset($_SESSION['glpitransfer_list'])) {
