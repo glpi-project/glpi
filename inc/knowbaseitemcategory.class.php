@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class KnowbaseItemCategory
-class KnowbaseItemCategory extends CommonDropdown {
+class KnowbaseItemCategory extends CommonTreeDropdown {
 
       // From CommonDBTM
    public $table = 'glpi_knowbaseitemcategories';
