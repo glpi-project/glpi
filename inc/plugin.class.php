@@ -661,8 +661,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $itemtype class name
     * @param $attrib Array of attributes, a hashtable with index in
-    *    (classname, tablename, typename, formpage, searchpage, reservation_types,
-    *   deleted_tables, specif_entities_tables, recursive_type, template_tables)
+    *    (classname, tablename, typename, reservation_types)
     *
     * @return bool
     */
@@ -685,18 +684,6 @@ class Plugin extends CommonDBTM {
       // TODO remove => getTypeName
       if (isset($attrib['typename']) && !empty($attrib['typename'])) {
          $PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
-      }
-      if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
-         $CFG_GLPI["recursive_type"][$itemtype] = $attrib['tablename'];
-      }
-      if (isset($attrib['deleted_tables']) && $attrib['deleted_tables']) {
-         array_push($CFG_GLPI["deleted_tables"], $attrib['tablename']);
-      }
-      if (isset($attrib['specif_entities_tables']) && $attrib['specif_entities_tables']) {
-         array_push($CFG_GLPI["specif_entities_tables"], $attrib['tablename']);
-      }
-      if (isset($attrib['template_tables']) && $attrib['template_tables']) {
-         array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
       }
 
       foreach (array('contract_types','doc_types','helpdesk_types','helpdesk_visible_types',

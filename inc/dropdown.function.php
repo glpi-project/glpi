@@ -151,10 +151,10 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
             $query="SELECT *
                     FROM `$itemtable`
                     WHERE `users_id`='".$userID."'";
-            if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+            if ($item->maybeDeleted()) {
                $query.=" AND `is_deleted`='0' ";
             }
-            if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+            if ($item->maybeTemplate()) {
                $query.=" AND `is_template`='0' ";
             }
             if (in_array($itemtype,$CFG_GLPI["helpdesk_visible_types"])){
@@ -227,10 +227,10 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                                 getEntitiesRestrictRequest("AND",$itemtable,"",
                                    $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
 
-                  if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+                  if ($item->maybeDeleted()) {
                      $query.=" AND `is_deleted`='0' ";
                   }
-                  if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+                  if ($item->maybeTemplate()) {
                      $query.=" AND `is_template`='0' ";
                   }
 
@@ -295,10 +295,10 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                        WHERE `glpi_computers_items`.`itemtype`='$itemtype'
                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
                                                 $search_computer);
-               if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+               if ($item->maybeDeleted()) {
                   $query.=" AND `is_deleted`='0' ";
                }
-               if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+               if ($item->maybeTemplate()) {
                   $query.=" AND `is_template`='0' ";
                }
                $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict)

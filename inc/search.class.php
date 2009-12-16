@@ -228,7 +228,7 @@ class Search {
       $first=empty($COMMONWHERE);
 
       // Add deleted if item have it
-      if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+      if ($item->maybeDeleted()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -238,7 +238,7 @@ class Search {
       }
 
       // Remove template items
-      if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+      if ($item->maybeTemplate()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -741,7 +741,6 @@ class Search {
 
          if ($output_type==GLOBAL_SEARCH) {
             if (class_exists($itemtype)) {
-               $item = new $itemtype();
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT) {
@@ -781,7 +780,7 @@ class Search {
             }
 
             // Form to massive actions
-            $isadmin=(($item && $item->canCreate())
+            $isadmin=(($item && $item->canUpdate())
                      || haveTypeRight($itemtype,"w")
                      || (in_array($itemtype,$CFG_GLPI["infocom_types"])
                         && haveTypeRight('Infocom',"w")));
@@ -1026,8 +1025,8 @@ class Search {
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                   $typename=$data["TYPE"];
                   if (class_exists($data["TYPE"])) {
-                     $item = new $data["TYPE"]();
-                     $typename=$item->getTypeName();
+                     $itemtmp = new $data["TYPE"]();
+                     $typename=$itemtmp->getTypeName();
                   }
                   echo displaySearchItem($output_type,$typename,$item_num,$row_num);
                }
@@ -1181,6 +1180,13 @@ class Search {
       }
 
       $options=Search::getCleanedOptions($itemtype);
+
+      // Instanciate an object to access method
+      $item = NULL;
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
+
 
       // Meta search names
       $names = array('Computer'   => $LANG['Menu'][0],
@@ -1413,7 +1419,7 @@ class Search {
       // Display deleted selection
       echo "<td>";
       $itemtable=getTableForItemType($itemtype);
-      if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+      if ($item->maybeDeleted()) {
          Dropdown::showYesNo("is_deleted",$is_deleted);
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
                "' title='".$LANG['common'][3]."'>";

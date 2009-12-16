@@ -60,12 +60,13 @@ if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
 
 // Make a select box
 $table=getTableForItemType($_POST["idtable"]);
+$item= new $_POST["idtable"];
 $where="";
 
-if (in_array($table,$CFG_GLPI["deleted_tables"])) {
+if ($item->maybeDeleted()) {
    $where.=" AND `$table`.`is_deleted` = '0' ";
 }
-if (in_array($table,$CFG_GLPI["template_tables"])) {
+if ($item->maybeTemplate()) {
    $where.=" AND `$table`.`is_template` = '0' ";
 }
 

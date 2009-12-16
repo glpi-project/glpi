@@ -272,7 +272,7 @@ class CommonDBTM extends CommonGLPI {
    function restoreInDB($ID) {
       global $DB,$CFG_GLPI;
 
-      if (in_array($this->table,$CFG_GLPI["deleted_tables"])) {
+      if ($this->maybeDeleted()) {
          $query = "UPDATE `".
                    $this->table."`
                    SET `is_deleted`='0'
@@ -299,7 +299,7 @@ class CommonDBTM extends CommonGLPI {
    function deleteFromDB($ID,$force=0) {
       global $DB,$CFG_GLPI;
 
-      if ($force==1 || !in_array($this->table,$CFG_GLPI["deleted_tables"])) {
+      if ($force==1 || !$this->maybeDeleted()) {
          $this->cleanDBonPurge($ID);
          $this->cleanHistory($ID);
          $this->cleanRelationData($ID);
@@ -654,69 +654,62 @@ class CommonDBTM extends CommonGLPI {
       if ($DB->isSlave()) {
          return false;
       }
-      if (!$this->getFromDB($input[$this->getIndexName()])) {
-         return false;
-      }
-      // Store input in the object to be available in all sub-method / hook
-      $this->input = $input;
 
-      // Plugin hook - $this->input can be altered
-      doHook("pre_item_update", $this);
+      $input=doHookFunction("pre_item_update",$input);
+      $input=$this->prepareInputForUpdate($input);
 
-      if ($this->input && is_array($this->input)) {
-         $this->input = $this->prepareInputForUpdate($this->input);
-
-         if (isset($this->input['update'])) {
-            $this->input['_update']=$this->input['update'];
-            unset($this->input['update']);
-         }
+      if (isset($input['update'])) {
+         $input['_update']=$input['update'];
+         unset($input['update']);
       }
       // Valid input
-      if ($this->input && is_array($this->input)) {
+      if ($input && is_array($input)
+          && $this->getFromDB($input[$this->getIndexName()])) {
          // Fill the update-array with changes
          $x=0;
-         $this->updates=array();
-         $this->oldvalues=array();
-         foreach ($this->input as $key => $val) {
+         $updates=array();
+         $oldvalues=array();
+         foreach ($input as $key => $val) {
             if (array_key_exists($key,$this->fields)) {
                // Prevent history for date statement (for date for example)
-               if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
+               if ( is_null($this->fields[$key]) && $input[$key]=='NULL') {
                   $this->fields[$key]='NULL';
                }
                if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
                   if ($key!="id") {
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {
-                        $this->oldvalues[$key]=$this->fields[$key];
+                        $oldvalues[$key]=$this->fields[$key];
                      }
-                     $this->fields[$key] = $this->input[$key];
-                     $this->updates[$x] = $key;
+                     $this->fields[$key] = $input[$key];
+                     $updates[$x] = $key;
                      $x++;
                   }
                }
             }
          }
-         if(count($this->updates)) {
+         if(count($updates)) {
             if (array_key_exists('date_mod',$this->fields)) {
                // is a non blacklist field exists
-               if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
+               if (count(array_diff($updates,$this->history_blacklist)) > 0) {
                   $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
-                  $this->updates[$x++] = 'date_mod';
+                  $updates[$x++] = 'date_mod';
                }
             }
-            list($this->input,$this->updates)=$this->pre_updateInDB($this->input,$this->updates,$this->oldvalues);
+            list($input,$updates)=$this->pre_updateInDB($input,$updates,$oldvalues);
 
             // CLean old_values history not needed  => Keep old value for plugin hook
             //if (!$this->dohistory || !$history) {
-            //   $this->oldvalues=array();
+            //   $oldvalues=array();
             //}
 
-            if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
-               $this->addMessageOnUpdateAction($this->input);
-               doHook("item_update", $this);
+            if ($this->updateInDB($updates, ($this->dohistory && $history ? $oldvalues : array()))) {
+               $this->addMessageOnUpdateAction($input);
+               doHook("item_update",array("type"=>$this->type, "id" => $input["id"],
+                      "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
             }
          }
-         $this->post_updateItem($this->input, $this->updates, $history);
+         $this->post_updateItem($input,$updates,$history);
          return true;
       }
       return false;
@@ -868,7 +861,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($link)) {
          return;
       }
-      if (!in_array($this->table,$CFG_GLPI["deleted_tables"])) {
+      if (!$this->maybeDeleted()) {
          return;
       }
 
@@ -1275,8 +1268,8 @@ class CommonDBTM extends CommonGLPI {
                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".
                                                     $LANG['buttons'][22]."\" class='submit'>";
             }else {
-               // TODO : change message for "destroy" / "send in trash" ?
-               if (!in_array($this->table,$CFG_GLPI["deleted_tables"])) {
+               /// TODO : change message for "destroy" / "send in trash" ?
+               if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
                          "\" class='submit' OnClick='return window.confirm(\"" .
                          $LANG['common'][50]. "\");'>";
@@ -1549,6 +1542,54 @@ class CommonDBTM extends CommonGLPI {
    function isRecursive() {
       if ($this->maybeRecursive()) {
          return $this->fields["is_recursive"];
+      }
+      return false;
+   }
+
+   /**
+   * Is the object may be deleted
+   *
+   * @return boolean
+   **/
+   function maybeDeleted() {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return isset($this->fields['is_deleted']);
+   }
+
+   /**
+    * Is the object deleted
+    *
+    * @return boolean
+    **/
+   function isDeleted() {
+      if ($this->maybeDeleted()) {
+         return $this->fields["is_deleted"];
+      }
+      return false;
+   }
+
+   /**
+   * Is the object may be a template
+   *
+   * @return boolean
+   **/
+   function maybeTemplate() {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return isset($this->fields['is_template']);
+   }
+
+   /**
+    * Is the object a template
+    *
+    * @return boolean
+    **/
+   function isTemplate() {
+      if ($this->maybeTemplate()) {
+         return $this->fields["is_template"];
       }
       return false;
    }

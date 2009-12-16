@@ -681,7 +681,7 @@ class Contract extends CommonDBTM {
                               AND `glpi_contracts_items`.`itemtype`='$itemtype'
                               AND `glpi_contracts_items`.`contracts_id` = '$instID'";
 
-            if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+            if ($item->maybeTemplate()) {
                $query.=" AND `$itemtable`.`is_template`='0'";
             }
             $query .= getEntitiesRestrictRequest(" AND",$itemtable,'','',

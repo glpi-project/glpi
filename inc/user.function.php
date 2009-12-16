@@ -104,25 +104,24 @@ function showDeviceUser($ID) {
          "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 
    foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
-      if (haveTypeRight($itemtype,'r')) {
+      if (!class_exists($itemtype)) {
+         continue;
+      }
+      $item = new $itemtype();
+      if ($item->canView()) {
          $itemtable=getTableForItemType($itemtype);
          $query = "SELECT *
                    FROM `$itemtable`
                    WHERE `users_id` = '$ID'";
 
-         if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
+         if ($item->maybeTemplate()) {
             $query .= " AND `is_template` = '0' ";
          }
-         if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
+         if ($item->maybeDeleted()) {
             $query .= " AND `is_deleted` = '0' ";
          }
          $result = $DB->query($query);
 
-         if (!class_exists($itemtype)) {
-            continue;
-         }
-
-         $item = new $itemtype();
          $type_name= $item->getTypeName();
 
          if ($DB->numrows($result) >0) {
@@ -170,58 +169,60 @@ function showDeviceUser($ID) {
             "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 
       foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
-         $itemtable=getTableForItemType($itemtype);
-         $query = "SELECT *
-                   FROM `$itemtable`
-                   WHERE $group_where";
-
-         if (in_array($itemtable,$CFG_GLPI["template_tables"])) {
-            $query .= " AND `is_template` = '0' ";
-         }
-         if (in_array($itemtable,$CFG_GLPI["deleted_tables"])) {
-            $query .= " AND `is_deleted` = '0' ";
-         }
-         $result = $DB->query($query);
-
          if (!class_exists($itemtype)) {
             continue;
          }
-
          $item = new $itemtype();
-         $type_name= $item->getTypeName();
+         if ($item->canView()) {
+
+            $itemtable=getTableForItemType($itemtype);
+            $query = "SELECT *
+                     FROM `$itemtable`
+                     WHERE $group_where";
+
+            if ($item->maybeTemplate()) {
+               $query .= " AND `is_template` = '0' ";
+            }
+            if ($item->maybeDeleted()) {
+               $query .= " AND `is_deleted` = '0' ";
+            }
+            $result = $DB->query($query);
+
+            $type_name= $item->getTypeName();
 
 
-         if ($DB->numrows($result) >0) {
-            while ($data = $DB->fetch_array($result)) {
-               $cansee = $item->can($data["id"],"r");
-               $link = $data["name"];
-               if ($cansee) {
-                  $link_item=getItemTypeFormURL($itemtype);
-                  $link = "<a href='".$link_item."?id=".
-                           $data["id"]."'>".$link.
-                           (($_SESSION["glpiis_ids_visible"] || empty($link))?" (".$data["id"].")":"").
-                           "</a>";
+            if ($DB->numrows($result) >0) {
+               while ($data = $DB->fetch_array($result)) {
+                  $cansee = $item->can($data["id"],"r");
+                  $link = $data["name"];
+                  if ($cansee) {
+                     $link_item=getItemTypeFormURL($itemtype);
+                     $link = "<a href='".$link_item."?id=".
+                              $data["id"]."'>".$link.
+                              (($_SESSION["glpiis_ids_visible"] || empty($link))?" (".$data["id"].")":"").
+                              "</a>";
+                  }
+                  $linktype = "";
+                  if (isset($groups[$data["groups_id"]])) {
+                     $linktype = $LANG['common'][35]." ".$groups[$data["groups_id"]];
+                  }
+                  echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>".
+                        "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"]).
+                        "</td><td class='center'>$link</td>".
+                        "<td class='center'>";
+                  if (isset($data["serial"]) && !empty($data["serial"])) {
+                     echo $data["serial"];
+                  } else {
+                     echo '&nbsp;';
+                  }
+                  echo "</td><td class='center'>";
+                  if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
+                     echo $data["otherserial"];
+                  } else {
+                     echo '&nbsp;';
+                  }
+                  echo "</td><td class='center'>$linktype</td></tr>";
                }
-               $linktype = "";
-               if (isset($groups[$data["groups_id"]])) {
-                  $linktype = $LANG['common'][35]." ".$groups[$data["groups_id"]];
-               }
-               echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>".
-                     "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"]).
-                     "</td><td class='center'>$link</td>".
-                     "<td class='center'>";
-               if (isset($data["serial"]) && !empty($data["serial"])) {
-                  echo $data["serial"];
-               } else {
-                  echo '&nbsp;';
-               }
-               echo "</td><td class='center'>";
-               if (isset($data["otherserial"]) && !empty($data["otherserial"])) {
-                  echo $data["otherserial"];
-               } else {
-                  echo '&nbsp;';
-               }
-               echo "</td><td class='center'>$linktype</td></tr>";
             }
          }
       }

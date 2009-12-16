@@ -46,7 +46,7 @@ if (!TableExists($_POST['table'])) {
 }
 
 $itemtypeisplugin=isPluginItemType($_POST['itemtype']);
-
+$item = new $_POST['itemtype'];
 if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
    if (isset ($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
       $entity = $_POST["entity_restrict"];
@@ -60,10 +60,10 @@ if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
    $where = "WHERE 1";
 }
 
-if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])) {
+if ($item->maybeDeleted()) {
    $where.=" AND `is_deleted` ='0' ";
 }
-if (in_array($_POST['table'],$CFG_GLPI["template_tables"])) {
+if ($item->maybeTemplate()) {
    $where.=" AND `is_template` = '0' ";
 }
 

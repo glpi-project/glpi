@@ -633,6 +633,7 @@ class Document extends CommonDBTM {
          if (!class_exists($itemtype)) {
             continue;
          }
+         $item = new $itemtype();
 
          if (haveTypeRight($itemtype,"r")) {
             $column="name";
@@ -659,7 +660,7 @@ class Document extends CommonDBTM {
             }
             $query .= "`glpi_documents_items`.`itemtype`='$itemtype' AND `glpi_documents_items`.`documents_id` = '$instID' "
                . getEntitiesRestrictRequest(" AND ",$itemtable,'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
-            if (in_array($itemtable,$CFG_GLPI["template_tables"])){
+            if ($item->maybeTemplate()){
                $query.=" AND `$itemtable`.`is_template`='0'";
             }
             $query.=" ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
@@ -670,8 +671,6 @@ class Document extends CommonDBTM {
 
             if ($result_linked=$DB->query($query)) {
                if ($DB->numrows($result_linked)) {
-                  $item = new $itemtype();
-
                   while ($data=$DB->fetch_assoc($result_linked)) {
                      $ID="";
                      if ($itemtype == 'Entity' && !$data['entity']) {
