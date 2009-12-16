@@ -49,6 +49,32 @@ class State extends CommonDropdown {
 
       return $LANG['setup'][83];
    }
+   /**
+   * Dropdown of states for behaviour config
+   *
+   * @param $name select name
+   * @param $lib string to add for -1 value
+   * @param $value default value
+   */
+   static function dropdownBehaviour ($name, $lib="", $value=0) {
+      global $DB, $LANG;
+
+      $elements=array("0"=>$LANG['setup'][195]);
+      if ($lib) {
+         $elements["-1"]=$lib;
+      }
+
+      $queryStateList = "SELECT `id`,`name`
+                        FROM `glpi_states`
+                        ORDER BY `name`";
+      $result = $DB->query($queryStateList);
+      if ($DB->numrows($result) > 0) {
+         while (($data = $DB->fetch_assoc($result))) {
+            $elements[$data["id"]] = $LANG['setup'][198] . ": " . $data["name"];
+         }
+      }
+      dropdownArrayValues($name, $elements, $value);
+   }
 }
 
 ?>
