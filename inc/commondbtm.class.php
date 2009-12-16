@@ -42,7 +42,7 @@ class CommonDBTM extends CommonGLPI {
    /// Table name
    var $table="";
    /// GLPI Item type
-   var $type=-1;
+   var $type="";
    /// Make an history of the changes
    var $dohistory=false;
    /// Black list fields for history log or date mod update
@@ -54,6 +54,20 @@ class CommonDBTM extends CommonGLPI {
    * Constructor
    **/
    function __construct () {
+   }
+
+   function getType() {
+      if (empty($this->type)) {
+         $this->type=get_class($this);
+      }
+      return $this->type;
+   }
+
+   function getTable() {
+      if (empty($this->table)) {
+         $this->table=getTableForItemType($this->getType());
+      }
+      return $this->table;
    }
 
    /**
