@@ -1818,8 +1818,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][24]."&nbsp;: </td>";
       echo "<td>";
-      dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
-      dropdownTrackingAllDevices("itemtype",$itemtype,0,0,$_SESSION["glpiactive_entity"]);
+      Ticket::dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
+      Ticket::dropdownAllDevices("itemtype",$itemtype,0,0,$_SESSION["glpiactive_entity"]);
       echo "</td></tr>";
    }
 
