@@ -988,15 +988,36 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-   * Have I the right to "create" the Object
+   * Have I the global right to "create" the Object
    *
    * May be overloaded if needed (ex KnowbaseItem)
    *
    * @return booleen
    **/
    static function canCreate() {
-
       return false;
+   }
+
+   /**
+   * Have I the right to "create" the Object
+   *
+   * Default is true and check entity if the objet is entity assign
+   *
+   * May be overloaded if needed
+   *
+   * @return booleen
+   **/
+   function canCreateItem() {
+      if ($this->isEntityAssign()) {
+         // Can be recursive check
+         if ($this->maybeRecursive()) {
+            return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
+         } else { // Non recursive item
+            return haveAccessToEntity($this->getEntityID());
+         }
+      } else {
+         return true;
+      }
    }
 
    /**
@@ -1275,6 +1296,18 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+   * is the parameter ID must be considered as new one ?
+   * Default is empty of <0 may be overriden (for entity for example)
+   *
+   * @param $ID ID of the item (-1 if new item)
+   *
+   * @return boolean
+   **/
+   function isNewID($ID) {
+      return (empty($ID)||$ID<=0);
+   }
+
+   /**
    * Check right on an item
    *
    * @param $ID ID of the item (-1 if new item)
@@ -1285,8 +1318,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    function can($ID,$right,&$input=NULL) {
 
-      $entity_to_check=-1;
-      if (empty($ID)||$ID<=0) {
+      // Create process 
+      if ($this->isNewID($ID)) {
          if (!count($this->fields)) {
             // Only once
             $this->getEmpty();
@@ -1300,6 +1333,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
+         return ($this->canCreate() && $this->canCreateItem());
       } else {
          // Get item if not already loaded
          if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
