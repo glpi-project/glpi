@@ -1393,7 +1393,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Create process 
       if ($this->isNewID($ID)) {
-         if (!count($this->fields)) {
+         if (!isset($this->fields['id'])) {
             // Only once
             $this->getEmpty();
          }
