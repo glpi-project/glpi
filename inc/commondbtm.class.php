@@ -566,8 +566,8 @@ class CommonDBTM {
 					if ( is_null($this->fields[$key]) && $input[$key]=='NULL'){
 						$this->fields[$key]='NULL';
 					}
-					
-					if ( $this->fields[$key] != stripslashes($input[$key])) {
+
+					if (mysql_real_escape_string($this->fields[$key]) != $input[$key]) {
 						if ($key!="ID"){
 							// Store old values
 							if (!in_array($key,$this->history_blacklist)){
