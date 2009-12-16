@@ -666,6 +666,69 @@ class Dropdown {
       echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
       echo "</select>";
    }
+
+   /**
+   *
+   *Make a select box for all items
+   *
+   *
+   * @param $myname select name
+   * @param $value default value
+   * @param $value_type default value for the device type
+   * @param $entity_restrict Restrict to a defined entity
+   * @param $types Types used
+   * @param $onlyglobal Restrict to global items
+   * @return nothing (print out an HTML select box)
+   */
+   static function showAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$types='',
+                           $onlyglobal=false) {
+      global $LANG,$CFG_GLPI;
+
+      if (!is_array($types)) {
+         $types=$CFG_GLPI["state_types"];
+      }
+      $rand=mt_rand();
+      $options=array();
+
+      foreach ($types as $type) {
+         if (class_exists($type)) {
+            $item = new $type();
+            $options[$type]=$item->getTypeName($type);
+         }
+      }
+      asort($options);
+      if (count($options)) {
+         echo "<select name='itemtype' id='itemtype$rand'>";
+         echo "<option value='0'>-----</option>\n";
+         foreach ($options as $key => $val) {
+            echo "<option value='".$key."'>".$val."</option>";
+         }
+         echo "</select>";
+
+         $params=array('idtable'=>'__VALUE__',
+                     'value'=>$value,
+                     'myname'=>$myname,
+                     'entity_restrict'=>$entity_restrict);
+         if ($onlyglobal) {
+            $params['onlyglobal']=1;
+         }
+         ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
+
+         echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
+
+         if ($value>0) {
+            echo "<script type='text/javascript' >\n";
+            echo "window.document.getElementById('itemtype$rand').value='".$value_type."';";
+            echo "</script>\n";
+
+            $params["idtable"]=$value_type;
+            ajaxUpdateItem("show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
+         }
+      }
+      return $rand;
+   }
+
 }
 
 ?>
