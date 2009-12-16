@@ -59,6 +59,8 @@ function __autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once ("$dir$item.class.php");
+   } else {
+      logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
    }
 }
 
