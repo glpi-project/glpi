@@ -188,7 +188,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($fk == 'entities_id') {
             $crit['id']  = $_SESSION['glpiactiveentities'];
             $crit['id'] += $_SESSION['glpiparententities'];
-         } else if ($this->isEntityAssign()) {
+         } else {
             $crit['entities_id'] = $_SESSION['glpiactiveentities'];
          }
       }
@@ -229,7 +229,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
          autocompletionTextField("name",$this->table,"name");
-         echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         if ($entity_assign){
+            echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         }
          echo "<input type='hidden' name='".getForeignKeyFieldForTable($this->table)."' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
