@@ -1136,7 +1136,7 @@ class CommonDBTM extends CommonGLPI {
 
       $RELATION=getDbRelations();
 
-      if (in_array($this->table, $CFG_GLPI["dropdowntree_tables"])) {
+      if ($this instanceof CommonTreeDropdown) {
          $f = getForeignKeyFieldForTable($this->table);
          if (countElementsInTable($this->table, "`$f`='$ID'
                                                  AND entities_id NOT IN $entities")>0) {

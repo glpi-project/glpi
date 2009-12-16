@@ -639,11 +639,10 @@ $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monit
                                      'glpi_networkequipments','glpi_peripherals','glpi_phones',
                                      'glpi_printers','glpi_softwares',
                                      'ReservationItem','state_types');
-*/
 $CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemcategories',
                                          'glpi_locations', 'glpi_taskcategories',
                                          'glpi_ticketcategories');
-
+*/
 $CFG_GLPI["state_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                  PERIPHERAL_TYPE, PHONE_TYPE);
 

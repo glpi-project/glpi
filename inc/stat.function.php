@@ -392,7 +392,7 @@ function getNbIntervDropdown($dropdown) {
 
    $itemtype=getItemTypeForTable($dropdown);
    $item = new $itemtype();
-   if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) {
+   if ($item instanceof CommonTreeDropdown) {
       $field="completename";
    }
    $where = '';

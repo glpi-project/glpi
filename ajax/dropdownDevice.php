@@ -53,6 +53,7 @@ if (isset($_POST["idtable"])) {
    }
    $paramsdev=array('searchText'=>'__VALUE__',
                     'table'=>$table,
+                    'itemtype'=>$_POST["idtable"],
                     'value'=>0,
                     'myname'=>$_POST["myname"],
                     'rand'=>$rand);

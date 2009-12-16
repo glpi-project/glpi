@@ -59,6 +59,7 @@ if (class_exists($_POST["idtable"])) {
 
    $paramsallitems=array('searchText'=>'__VALUE__',
                          'table'=>$table,
+                         'itemtype'=>$_POST["idtable"],
                          'rand'=>$rand,
                          'myname'=>$_POST["myname"],
                          'withserial'=>1,
