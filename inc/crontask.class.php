@@ -402,13 +402,13 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][38]." : </td><td>";
-      dropdownInteger('hourmin', $this->fields['hourmin'],0,24);
+      Dropdown::showInteger('hourmin', $this->fields['hourmin'],0,24);
       echo "&nbsp;->&nbsp;";
-      dropdownInteger('hourmax', $this->fields['hourmax'],0,24);
+      Dropdown::showInteger('hourmax', $this->fields['hourmax'],0,24);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][130]." : </td><td>";
-      dropdownInteger('logs_lifetime', $this->fields['logs_lifetime'],0,360,10);
+      Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'],0,360,10);
       echo "&nbsp;".$LANG['stats'][31]."</td><td>".$LANG['crontask'][40]."&nbsp;:</td><td>";
       if (empty($this->fields['lastrun'])) {
          echo $LANG['setup'][307];
@@ -425,7 +425,7 @@ class CronTask extends CommonDBTM{
          echo "&nbsp;</td><td>&nbsp;";
       } else {
          echo $label."&nbsp;:</td><td>";
-         dropdownInteger('param', $this->fields['param'],0,400,1);
+         Dropdown::showInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
       if ($tmpstate == CRONTASK_STATE_RUNNING) {

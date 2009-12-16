@@ -556,7 +556,7 @@ class Cartridge extends CommonDBTM {
          echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "<input type='hidden' name='tID' value=\"$ID\">\n";
          echo "&nbsp;&nbsp;";
-         dropdownInteger('to_add',1,1,100);
+         Dropdown::showInteger('to_add',1,1,100);
          echo "&nbsp;&nbsp;".$LANG['cartridges'][16];
          echo "</td></tr>";
          echo "</table></div>";

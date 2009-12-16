@@ -232,7 +232,7 @@ class SoftwareLicense extends CommonDBTM {
       if ($this->fields["computers_id"]>0) {
          echo "1  (".$LANG['software'][50].")";
       } else {
-         dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));
+         Dropdown::showInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));
       }
       echo "</td></tr>\n";
 

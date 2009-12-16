@@ -194,7 +194,7 @@ class Config extends CommonDBTM {
       echo ">" . $LANG['setup'][107] . "</option>";
       echo "</select></td>";
       echo "<td class='center'>".$LANG['setup'][101]."</td><td>";
-      dropdownInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
+      Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -209,7 +209,7 @@ class Config extends CommonDBTM {
       echo "<strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";
-      dropdownInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
+      Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][221] . "</td><td>";
       showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
@@ -292,7 +292,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['setup'][119] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][149] . " </td><td>";
-      dropdownInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
+      Dropdown::showInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
       echo "</td>";
       echo "<td class='center'>" . $LANG['setup'][148] . "</td><td>";
       echo "<select name='time_step'>";
@@ -310,19 +310,19 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][112] . "</td><td>";
-      dropdownInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
+      Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
       echo "</td>";
       $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
       $plan_end = explode(":", $CFG_GLPI["planning_end"]);
       echo "<td class='center'>" . $LANG['setup'][223] . "</td><td>";
-      dropdownInteger('planning_begin', $plan_begin[0], 0, 24);
+      Dropdown::showInteger('planning_begin', $plan_begin[0], 0, 24);
       echo "&nbsp;->&nbsp;";
-      dropdownInteger('planning_end', $plan_end[0], 0, 24);
+      Dropdown::showInteger('planning_end', $plan_end[0], 0, 24);
       echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . $LANG['setup'][111]." <br> ".$LANG['common'][58]."</td><td>";
-      dropdownInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
+      Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
       echo "</td><td class='center'>".$LANG['setup'][10]."</td><td>&nbsp;";
       $values = array (REALNAME_BEFORE=>$LANG['common'][48]." ".$LANG['common'][43],
                        FIRSTNAME_BEFORE=>$LANG['common'][43]." ".$LANG['common'][48]);
@@ -364,11 +364,11 @@ class Config extends CommonDBTM {
       echo "<td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" .
                  $CFG_GLPI["ajax_wildcard"] . "\"></td>";
       echo "<td class='center'>" . $LANG['setup'][122] . "</td><td>";
-      dropdownInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
+      Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][123] . "</td><td>";
-      dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
+      Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
@@ -770,7 +770,7 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
          echo "</td>";
          echo "<td class='center'>" . $LANG['setup'][131] . "</td><td>";
-         dropdownInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
+         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][132] . "</td><td>";
@@ -782,7 +782,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
       // TODO Temporary workaround to bug #1918
-      dropdownInteger('list_limit',
+      Dropdown::showInteger('list_limit',
                       ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
                                                                        : $CFG_GLPI['list_limit_max']),
                       5,$CFG_GLPI['list_limit_max'],5);

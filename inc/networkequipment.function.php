@@ -336,9 +336,9 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
       echo "<input type='hidden' name='logical_number' value=''>\n";
       echo "<td>";
       echo $LANG['networking'][47] . "&nbsp;:&nbsp;";
-      dropdownInteger('from_logical_number', 0, 0, 100);
+      Dropdown::showInteger('from_logical_number', 0, 0, 100);
       echo $LANG['networking'][48] . "&nbsp;:&nbsp;";
-      dropdownInteger('to_logical_number', 0, 0, 100);
+      Dropdown::showInteger('to_logical_number', 0, 0, 100);
       echo "</td></tr>\n";
    }
 
