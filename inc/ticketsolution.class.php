@@ -63,55 +63,6 @@ class TicketSolution  extends CommonDBTM {
    }
 
    /**
-   * Check right on an item
-   *
-   * @param $ID ID of the item (-1 if new item)
-   * @param $right Right to check : r / w / recursive
-   * @param $input array of input data (used for adding item)
-   *
-   * @return boolean
-   **/
-   function can($ID,$right,&$input=NULL) {
-
-      if (empty($ID)||$ID<=0) {
-         if (!count($this->fields)) {
-            // Only once
-            $this->getEmpty();
-         }
-         if (is_array($input)) {
-            // Copy input field to allow getEntityID() to work
-            // from entites_id field or from parent item ref
-            foreach ($input as $key => $val) {
-               if (isset($this->fields[$key])) {
-                  $this->fields[$key] = $val;
-               }
-            }
-         }
-         return $this->canCreateItem();
-      }
-
-      // Get item if not already loaded
-      if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
-         // Item not found : no right
-         if (!$this->getFromDB($ID)) {
-            return false;
-         }
-      }
-
-      switch ($right) {
-         case 'r':
-            return $this->canViewItem();
-
-         case 'd':
-            return $this->canDeleteItem();
-
-         case 'w':
-            return $this->canUpdateItem();
-      }
-      return false;
-   }
-
-   /**
     * Is the current user have right to show the current followup ?
     *
     * @return boolean
