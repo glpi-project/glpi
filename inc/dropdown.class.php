@@ -427,7 +427,7 @@ class Dropdown {
    * @param $value Yes No value
    * @return string
    */
-   function getYesNo($value) {
+   static function getYesNo($value) {
       global $LANG;
 
       if ($value) {
