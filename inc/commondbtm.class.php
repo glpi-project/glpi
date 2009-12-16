@@ -685,7 +685,7 @@ class CommonDBTM extends CommonGLPI {
                if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
                   $this->fields[$key]='NULL';
                }
-               if ( $this->fields[$key] != stripslashes($this->input[$key])) {
+               if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
                   if ($key!="id") {
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {
