@@ -628,7 +628,7 @@ define("CRONTASKLOG_STATE_STOP",2);
 // tables in alphabetic order
 // type in numeric order
 // *** Please respect ***
-$CFG_GLPI["deleted_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
+/*$CFG_GLPI["deleted_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
                                     'glpi_consumableitems','glpi_contacts','glpi_contracts',
                                     'glpi_documents','glpi_monitors','glpi_networkequipments',
                                     'glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
@@ -639,7 +639,7 @@ $CFG_GLPI["template_tables"] = array('glpi_budgets','glpi_computers','glpi_monit
                                      'glpi_networkequipments','glpi_peripherals','glpi_phones',
                                      'glpi_printers','glpi_softwares',
                                      'ReservationItem','state_types');
-
+*/
 $CFG_GLPI["dropdowntree_tables"] = array('glpi_entities', 'glpi_knowbaseitemcategories',
                                          'glpi_locations', 'glpi_taskcategories',
                                          'glpi_ticketcategories');

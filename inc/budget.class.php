@@ -356,11 +356,12 @@ class Budget extends CommonDBTM{
 
       if ( $DB->numrows($result) ) {
          while ($types = $DB->fetch_array($result)) {
-         if (in_array($types['itemtype'], $ignore)) {
-            continue;
-         }
-         $table = getTableForItemType($types['itemtype']);
-         $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
+            if (in_array($types['itemtype'], $ignore) || !class_exists($types['itemtype'])) {
+               continue;
+            }
+            $item=new $types['itemtype']();
+            $table = getTableForItemType($types['itemtype']);
+            $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                  `$table`.`entities_id`
                            FROM `$table`
                            INNER JOIN `glpi_infocoms`
@@ -369,7 +370,8 @@ class Budget extends CommonDBTM{
                            LEFT JOIN `glpi_entities` ON (`$table`.`entities_id` = `glpi_entities`.`id`)
                            WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                  getEntitiesRestrictRequest(" AND",$table,"entities_id");
-            if (in_array($table,$CFG_GLPI["template_tables"])) {
+
+            if ($item->maybeTemplate()) {
                $query_infos .= " AND `$table`.`is_template`='0' ";
             }
             $query_infos .= "GROUP BY `$table`.`entities_id`

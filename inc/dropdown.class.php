@@ -74,6 +74,9 @@ class Dropdown {
       $comment="";
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
 
+      // Temporary computation before rewritten function using itemtype param
+      $itemtype=getItemTypeForTable($table);
+
       if (strlen($value)==0) {
          $value=-1;
       }
@@ -121,6 +124,7 @@ class Dropdown {
       $params=array('searchText'=>'__VALUE__',
                     'value'=>$value,
                     'table'=>$table,
+                    'itemtype'=>$itemtype,
                     'myname'=>$myname,
                     'limit'=>$limit_length,
                     'comment'=>$display_comment,
@@ -167,78 +171,6 @@ class Dropdown {
       return $rand;
    }
 
-
-   /**
-    * Make a select box without parameters value
-    *
-    *
-   * @param $table the dropdown table from witch we want values on the select
-    * @param $myname the name of the HTML select
-    * @param $value the preselected value we want
-    * @param $entity_restrict Restrict to a defined entity
-    * @return nothing (print out an HTML select box)
-    *
-    */
-   static function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
-      global $DB,$CFG_GLPI,$LANG;
-
-      // Make a select box without parameters value
-
-      $where="";
-      if (in_array($table,$CFG_GLPI["specif_entities_tables"])) {
-         $where.= "WHERE `".$table."`.`entities_id`='".$entity_restrict."'";
-      }
-
-      if (in_array($table,$CFG_GLPI["deleted_tables"])) {
-         if (empty($where)) {
-            $where=" WHERE ";
-         } else {
-            $where.=" AND ";
-         }
-         $where=" WHERE `is_deleted`='0'";
-      }
-      if (in_array($table,$CFG_GLPI["template_tables"])) {
-         if (empty($where)) {
-            $where=" WHERE ";
-         } else {
-            $where.=" AND ";
-         }
-         $where.=" `is_template`='0'";
-      }
-
-      if (empty($where)) {
-         $where=" WHERE ";
-      } else {
-         $where.=" AND ";
-      }
-      $where.=" `id`<>'$value' ";
-
-      if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
-         $query = "SELECT `id`, `completename` AS name
-                   FROM `$table`
-                   $where
-                   ORDER BY `name`";
-      } else {
-         $query = "SELECT `id`, `name`
-                   FROM `$table`
-                   $where
-                          AND `id`<>'$value'
-                   ORDER BY `name`";
-      }
-      $result = $DB->query($query);
-
-      echo "<select name=\"$myname\" size='1'>";
-      if ($table=="glpi_entities") {
-         echo "<option value='0'>".$LANG['entity'][2]."</option>";
-      }
-
-      if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_array($result)) {
-            echo "<option value='".$data['id']."'>".$data['name']."</option>";
-         }
-      }
-      echo "</select>";
-   }
 
    /**
     * Get the value of a dropdown

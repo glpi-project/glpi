@@ -48,10 +48,10 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 // Security
-if (! TableExists($_POST['table']) ) {
+if (!class_exists($_POST['itemtype']) ) {
    exit();
 }
-
+$item = new $_POST['itemtype']();
 
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -66,10 +66,10 @@ if (!isset($_POST["limit"])) {
 
 $where="WHERE 1 ";
 
-if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])) {
+if ($item->maybeDeleted()) {
    $where.=" AND `is_deleted`='0' ";
 }
-if (in_array($_POST['table'],$CFG_GLPI["template_tables"])) {
+if ($item->maybeTemplate()) {
    $where.=" AND `is_template`='0' ";
 }
 if (isset($_POST['onlyglobal']) && $_POST['onlyglobal']) {

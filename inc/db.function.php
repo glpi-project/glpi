@@ -720,6 +720,10 @@ function getNextItem($table,$ID,$condition="",$nextprev_item="name") {
    if (empty($nextprev_item)) {
       return false;
    }
+
+   $itemtype=getItemTypeForTable($table);
+   $item = new $itemtype();
+
    $search=$ID;
 
    if ($nextprev_item!="id") {
@@ -755,10 +759,10 @@ function getNextItem($table,$ID,$condition="",$nextprev_item="name") {
    if (!empty($condition)) {
       $query.=" AND $condition ";
    }
-   if (in_array($table,$CFG_GLPI["deleted_tables"])) {
+   if ($item->maybeDeleted()) {
       $query.=" AND `$table`.`is_deleted`='0' ";
    }
-   if (in_array($table,$CFG_GLPI["template_tables"])) {
+   if ($item->maybeTemplate()) {
       $query.=" AND `$table`.`is_template`='0' ";
    }
 
@@ -797,6 +801,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item="name") {
       return false;
    }
 
+   $itemtype=getItemTypeForTable($table);
+   $item = new $itemtype();
+
    $search=$ID;
    if ($nextprev_item!="id") {
       $query="SELECT `$nextprev_item`
@@ -831,10 +838,12 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item="name") {
       $query.=" AND $condition ";
    }
 
-   if (in_array($table,$CFG_GLPI["deleted_tables"]))
+   if ($item->maybeDeleted()) {
       $query.="AND `$table`.`is_deleted`='0'";
-   if (in_array($table,$CFG_GLPI["template_tables"]))
+   }
+   if ($item->maybeTemplate()) {
       $query.="AND `$table`.`is_template`='0'";
+   }
 
    // Restrict to active entities
    if ($table=="glpi_entities") {
