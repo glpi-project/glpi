@@ -163,7 +163,8 @@ function checkSeveralRightsOr($modules) {
    $valid = false;
    if (count($modules)) {
       foreach ($modules as $mod => $right) {
-         if (is_numeric($mod)){
+         // Itemtype
+         if (preg_match('/[A-Z]/',$mod[0])){
             if (haveTypeRight($mod, $right)) {
                $valid = true;
             }
