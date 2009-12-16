@@ -156,7 +156,7 @@ class Bookmark extends CommonDBTM {
       echo "<td>";
 
       if (haveRight("bookmark_public","w")) {
-         privatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
+         Dropdown::showPrivatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
                              $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
