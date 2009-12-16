@@ -50,7 +50,6 @@ $bookmark = new Bookmark;
 /// TODO : check rights for actions
 
 if (isset($_POST["add"])) {
-   $bookmark->getEmpty();
    $bookmark->check(-1,'w',$_POST);
 
    $bookmark->add($_POST);
