@@ -162,13 +162,16 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $this->check($ID, 'r');
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
+      $entity_assign=$this->isEntityAssign();
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][75]."&nbsp;: ";
       echo $this->getTreeLink();
       echo "</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
-      echo "<th>".$LANG['entity'][0]."</th>"; // Entity
+      if ($entity_assign) {
+         echo "<th>".$LANG['entity'][0]."</th>"; // Entity
+      }
       foreach ($fields as $field) {
          if ($field['list']) {
             echo "<th>".$field['label']."</th>";
@@ -180,17 +183,22 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $fk = getForeignKeyFieldForTable($this->table);
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
-      if ($fk = 'entities_id') {
-         $crit['id']  = $_SESSION['glpiactiveentities'];
-         $crit['id'] += $_SESSION['glpiparententities'];
-      } else if ($this->isEntityAssign()) {
-         $crit['entities_id'] = $_SESSION['glpiactiveentities'];
+      
+      if ($entity_assign){
+         if ($fk == 'entities_id') {
+            $crit['id']  = $_SESSION['glpiactiveentities'];
+            $crit['id'] += $_SESSION['glpiparententities'];
+         } else if ($this->isEntityAssign()) {
+            $crit['entities_id'] = $_SESSION['glpiactiveentities'];
+         }
       }
       foreach ($DB->request($this->table, $crit) as $data) {
          echo "<tr class='tab_bg_1'>";
          echo "<td><a href='".$this->getFormURL();
          echo '?id='.$data['id']."'>".$data['name']."</a></td>";
-         echo "<td>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+         if ($entity_assign) {
+            echo "<td>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+         }
          foreach ($fields as $field) {
             if ($field['list']) {
                echo "<td>";

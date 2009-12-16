@@ -167,7 +167,7 @@ abstract class CommonDropdown extends CommonDBTM {
                if ($field['name']=='entities_id') {
                   $restrict = -1;
                } else {
-                  $restrict = $this->fields["entities_id"];
+                  $restrict = $this->fields[getForeignKeyFieldForTable($this->table)];
                }
                Dropdown::dropdownValue($this->table, $field['name'],
                              $this->fields[$field['name']], 1, $restrict, '',
