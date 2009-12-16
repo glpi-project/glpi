@@ -42,6 +42,7 @@ header_nocache();
 checkRight("networking","w");
 
 if (class_exists($_POST["itemtype"])) {
+   $item=new $_POST["itemtype"]();
    $table=getTableForItemType($_POST["itemtype"]);
    $rand=mt_rand();
    if (!isset($_POST['searchText'])) {
@@ -56,7 +57,7 @@ if (class_exists($_POST["itemtype"])) {
 
       $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
    }
-   $multi=in_array($table,$CFG_GLPI["recursive_type"]);
+   $multi=$item->maybeRecursive();;
 
    if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
       $where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);

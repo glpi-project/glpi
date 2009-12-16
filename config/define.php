@@ -697,7 +697,7 @@ $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems'
 $CFG_GLPI["union_search_type"] = array('ReservationItem'=>"reservation_types",
                                        'States'=>"state_types");
 
-$CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipments",
+/*$CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipments",
                                     PRINTER_TYPE         => "glpi_printers",
                                     SOFTWARE_TYPE        => "glpi_softwares",
                                     CONTACT_TYPE         => "glpi_contacts",
@@ -712,7 +712,7 @@ $CFG_GLPI["recursive_type"] = array(NETWORKING_TYPE      => "glpi_networkequipme
                                     'TicketCategory'  => "glpi_ticketcategories",
                                     'TaskCategory'    => "glpi_taskcategories",
                                     'Location'        => "glpi_locations");
-
+*/
 $CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP',
                                               'MailCollector','OcsServer');
 

@@ -218,10 +218,12 @@ function countElementsInTable($table,$condition="") {
  * return int nb of elements in table
  */
 function countElementsInTableForMyEntities($table) {
-   global $CFG_GLPI;
+   /// TODO clean it / maybe include when review of SQL requests
+   $itemtype=getItemTypeForTable();
+   $item=new $itemtype();
 
    return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',
-                                          in_array($table,$CFG_GLPI["recursive_type"])));
+                                          $item->maybeRecursive()));
 }
 
 /**
@@ -233,10 +235,12 @@ function countElementsInTableForMyEntities($table) {
  * return int nb of elements in table
  */
 function countElementsInTableForEntity($table,$entity) {
-   global $CFG_GLPI;
+   /// TODO clean it / maybe include when review of SQL requests
+   $itemtype=getItemTypeForTable();
+   $item=new $itemtype();
 
    return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,
-                                          in_array($table,$CFG_GLPI["recursive_type"])));
+                                          $item->maybeRecursive()));
 }
 
 /**
@@ -771,7 +775,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item="name") {
       $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
    } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
       $query.=getEntitiesRestrictRequest("AND",$table,'','',
-                                         in_array($table,$CFG_GLPI["recursive_type"]));
+                                         $item->maybeRecursive());
    } else if ($table=="glpi_users") {
       $query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
    }
@@ -850,7 +854,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item="name") {
       $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
    } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
       $query.=getEntitiesRestrictRequest("AND",$table,'','',
-                                         in_array($table,$CFG_GLPI["recursive_type"]));
+                                         $item->maybeRecursive());
    } else if ($table=="glpi_users") {
       $query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
    }

@@ -162,7 +162,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
             }
 
             $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
-                                               in_array($itemtype,$CFG_GLPI["recursive_type"]));
+                                               $item->maybeRecursive());
             $query.=" ORDER BY `name` ";
 
             $result=$DB->query($query);
@@ -225,7 +225,7 @@ function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_i
                           FROM `$itemtable`
                           WHERE ($group_where) ".
                                 getEntitiesRestrictRequest("AND",$itemtable,"",
-                                   $entity_restrict,in_array($itemtype,$CFG_GLPI["recursive_type"]));
+                                   $entity_restrict,$item->maybeRecursive());
 
                   if ($item->maybeDeleted()) {
                      $query.=" AND `is_deleted`='0' ";

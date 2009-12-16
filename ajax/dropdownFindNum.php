@@ -54,7 +54,7 @@ if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
       $entity = '';
    }
    // allow opening ticket on recursive object (printer, software, ...)
-   $recursive = in_array($_POST['table'], $CFG_GLPI["recursive_type"]);
+   $recursive = $item->maybeRecursive();
    $where = getEntitiesRestrictRequest("WHERE", $_POST['table'], '', $entity, $recursive);
 } else {
    $where = "WHERE 1";

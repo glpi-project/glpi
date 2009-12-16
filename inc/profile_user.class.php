@@ -42,6 +42,11 @@ class Profile_User extends CommonDBTM {
 
    //TODO : right management
 
+   function maybeRecursive() {
+      // Store is_recursive fields but not really recursive object
+      return false;
+   }
+
    /**
     * Show rights of a user
     *

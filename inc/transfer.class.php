@@ -283,14 +283,10 @@ class Transfer extends CommonDBTM {
          if (!isset($this->needtobe_transfer[$t])) {
             $this->needtobe_transfer[$t] = array();
          }
-      }
-      foreach ($CFG_GLPI["recursive_type"] as $t => $table) {
          if (!isset($this->noneedtobe_transfer[$t])) {
             $this->noneedtobe_transfer[$t] = array();
          }
       }
-      // not recursive but need this
-      $this->noneedtobe_transfer['SoftwareVersion'] = array();
 
       $to_entity_ancestors = getAncestorsOf("glpi_entities",$this->to);
 
@@ -325,6 +321,7 @@ class Transfer extends CommonDBTM {
       if (count($DC_CONNECT) && count($this->needtobe_transfer['Computer'])>0) {
          foreach ($DC_CONNECT as $itemtype) {
             $itemtable=getTableForItemType($itemtype);
+            $item=new $itemtype();
             // Clean DB / Search unexisting links and force disconnect
             $query = "SELECT `glpi_computers_items`.`id`
                       FROM `glpi_computers_items`
@@ -356,9 +353,7 @@ class Transfer extends CommonDBTM {
                      if (!class_exists($itemtype)) {
                         continue;
                      }
-                     $item=new $itemtype();
-                     if (isset($CFG_GLPI["recursive_type"][$itemtype])
-                         && $item->getFromDB($data['items_id'])
+                     if ($item->getFromDB($data['items_id'])
                          && $item->isRecursive()
                          && in_array($item->getEntityID(), $to_entity_ancestors)) {
 
@@ -369,12 +364,12 @@ class Transfer extends CommonDBTM {
                   }
                }
             }
-         }
-         $this->item_search[$itemtype] =
-                  $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
-         if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-            $this->item_recurs[$itemtype] =
-                     $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
+            $this->item_search[$itemtype] =
+                     $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+            if ($item->maybeRecursive()) {
+               $this->item_recurs[$itemtype] =
+                        $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
+            }
          }
       } // End of direct connections
 
@@ -1869,7 +1864,7 @@ class Transfer extends CommonDBTM {
                 WHERE `computers_id` = '$ID'
                       AND `itemtype` = '".$link_type."'";
 
-      if (isset($CFG_GLPI["recursive_type"][$link_type])) {
+      if ($link_item->maybeRecursive()) {
          $query .= " AND `items_id` NOT IN ".$this->item_recurs[$link_type];
       }
 

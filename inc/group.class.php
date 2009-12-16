@@ -313,7 +313,7 @@ class Group extends CommonDBTM {
                  FROM ".$item->table."
                  WHERE `groups_id`='$ID' " .
                        getEntitiesRestrictRequest(" AND ", getTableForItemType($itemtype), '', '',
-                                                  isset($CFG_GLPI["recursive_type"][$itemtype]));
+                                                  $item->maybeRecursive());
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $type_name = $item->getTypeName();

@@ -260,10 +260,8 @@ class Search {
          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
-         } else if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {
-            $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',true);
          } else {
-            $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable);
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',$item->maybeRecursive());
          }
       }
       $WHERE="";
@@ -590,6 +588,7 @@ class Search {
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
                if (haveTypeRight($ctype,'r')) {
                   $ctable=getTableForItemType($ctype);
+                  $citem=new $ctype();
                   // State case
                   if ($itemtype == 'States') {
                      $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
@@ -607,16 +606,9 @@ class Search {
                      $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable,$query_num);
                   }
-                  // Union/Recursivity Hack
-                  if (isset($CFG_GLPI["recursive_type"][$ctype])) {
-                     $query_num=str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('',$ctable,'','',true),
+                  $query_num=str_replace("ENTITYRESTRICT",
+                                       getEntitiesRestrictRequest('',$ctable,'','',$citem->maybeRecursive()),
                                        $query_num);
-                  } else {
-                     $query_num=str_replace("ENTITYRESTRICT",
-                                          getEntitiesRestrictRequest('',$ctable),
-                                          $query_num);
-                  }
                   $result_num = $DB->query($query_num);
                   $numrows+= $DB->result($result_num,0,0);
                }
@@ -653,7 +645,8 @@ class Search {
          $QUERY="";
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
             if (haveTypeRight($ctype,'r')) {
-               $ctable=getTableForItemType($ctype);
+               $ctable = getTableForItemType($ctype);
+               $citem = new $ctype();
                if ($first) {
                   $first=false;
                } else {
@@ -684,15 +677,10 @@ class Search {
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable,$tmpquery);
                }
-               // Union/Recursivity Hack
-               if (isset($CFG_GLPI["recursive_type"][$ctype])) {
-                  $tmpquery = str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('',$ctable,'','',true),
-                                       $tmpquery);
-               } else {
-                  $tmpquery = str_replace("ENTITYRESTRICT",
-                                          getEntitiesRestrictRequest('',$ctable),$tmpquery);
-               }
+               $tmpquery = str_replace("ENTITYRESTRICT",
+                                    getEntitiesRestrictRequest('',$ctable,'','',$citem->maybeRecursive()),
+                                    $tmpquery);
+
                // SOFTWARE HACK
                if ($ctype == 'Software') {
                   $tmpquery = str_replace("glpi_softwares.serial","''",$tmpquery);
@@ -928,7 +916,7 @@ class Search {
                         && !in_array($data["id"],$_SESSION["glpiactiveentities"])) {
 
                         $tmpcheck="&nbsp;";
-                     } else if (isset($CFG_GLPI["recursive_type"][$itemtype])
+                     } else if ($item->maybeRecursive()
                               && !in_array($data["entities_id"],$_SESSION["glpiactiveentities"])) {
                         $tmpcheck="&nbsp;";
                      } else {
@@ -1686,14 +1674,14 @@ class Search {
       global $CFG_GLPI;
 
       $toview=array();
-
+      $item = new $itemtype();
       // Add first element (name)
       array_push($toview,1);
 
       // Add entity view :
       if (isMultiEntitiesMode()
          && (isset($CFG_GLPI["union_search_type"][$itemtype])
-            || isset($CFG_GLPI["recursive_type"][$itemtype])
+            || $item->maybeRecursive()
             || count($_SESSION["glpiactiveentities"])>1)) {
 
          array_push($toview,80);
@@ -1714,6 +1702,7 @@ class Search {
       global $CFG_GLPI;
 
       $itemtable=getTableForItemType($itemtype);
+      $item = new $itemtype();
 
       switch ($itemtype) {
          case 'ReservationItem' :
@@ -1731,7 +1720,7 @@ class Search {
          default :
             $ret = "";
       }
-      if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
+      if ($item->maybeRecursive()) {
          $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
       }
       return $ret;
