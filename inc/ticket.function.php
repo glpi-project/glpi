@@ -663,7 +663,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
                $sixth_col .= $item->getTypeName();
 
                $sixth_col .= "<br><strong>";
-               if (haveTypeRight($data["itemtype"],"r")) {
+               if ($item->canView()) {
                   $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
                } else {
                   $sixth_col .= $item->getNameID();
@@ -1759,7 +1759,7 @@ function getAssignName($ID,$itemtype,$link=0) {
          if ($item->getFromDB($ID)) {
             $before = "";
             $after = "";
-            if ($link && haveTypeRight($itemtype,'r')) {
+            if ($link && $item->canView()) {
                $item->getLink(1);
             }
             return $item->getNameID();

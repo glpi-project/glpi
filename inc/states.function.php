@@ -46,21 +46,24 @@ function showStateSummary($target) {
 
    $states=array();
    foreach ($state_type as $key=>$itemtype) {
-      if (!haveTypeRight($itemtype,"r")) {
-         unset($state_type[$key]);
-      } else {
-         $table=getTableForItemType($itemtype);
-         $query = "SELECT `states_id`, COUNT(*) AS cpt
-                   FROM `$table` ".
-                   getEntitiesRestrictRequest("WHERE",$table)."
-                        AND `is_deleted` = '0'
-                        AND `is_template` = '0'
-                   GROUP BY `states_id`";
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         if (!$item->canView()) {
+            unset($state_type[$key]);
+         } else {
+            $table=getTableForItemType($itemtype);
+            $query = "SELECT `states_id`, COUNT(*) AS cpt
+                     FROM `$table` ".
+                     getEntitiesRestrictRequest("WHERE",$table)."
+                           AND `is_deleted` = '0'
+                           AND `is_template` = '0'
+                     GROUP BY `states_id`";
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
-                  $states[$data["states_id"]][$itemtype]=$data["cpt"];
+            if ($result = $DB->query($query)) {
+               if ($DB->numrows($result)>0) {
+                  while ($data=$DB->fetch_array($result)) {
+                     $states[$data["states_id"]][$itemtype]=$data["cpt"];
+                  }
                }
             }
          }

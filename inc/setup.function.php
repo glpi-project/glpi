@@ -240,8 +240,13 @@ function addDropdown($input) {
 function listTemplates($itemtype, $target, $add = 0) {
    global $DB, $CFG_GLPI, $LANG;
 
+   if (!class_exists($itemtype)) {
+      return false;
+   }
+   $item = new $itemtype();
+
    //Check is user have minimum right r
-   if (!haveTypeRight($itemtype, "r") && !haveTypeRight($itemtype, "w")) {
+   if (!$item->canView() && !$item->canCreate()) {
       return false;
    }
 
@@ -339,7 +344,7 @@ function listTemplates($itemtype, $target, $add = 0) {
             $templname.= "(".$data["id"].")";
          }
          echo "<tr><td class='tab_bg_1 center'>";
-         if (haveTypeRight($itemtype, "w") && !$add) {
+         if ($item->canCreate() && !$add) {
             echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
             echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
             echo "<td class='tab_bg_2 center b'>";
@@ -352,7 +357,7 @@ function listTemplates($itemtype, $target, $add = 0) {
          echo "</tr>";
       }
 
-      if (haveTypeRight($itemtype, "w") && !$add) {
+      if ($item->canCreate() && !$add) {
          echo "<tr><td colspan='2' class='tab_bg_2 center b'>";
          echo "<a href=\"$target?withtemplate=1\">" . $LANG['common'][9] . "</a>";
          echo "</td></tr>";

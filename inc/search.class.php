@@ -585,9 +585,9 @@ class Search {
             $numrows=0;
 
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
-               if (haveTypeRight($ctype,'r')) {
-                  $ctable=getTableForItemType($ctype);
-                  $citem=new $ctype();
+               $ctable=getTableForItemType($ctype);
+               $citem=new $ctype();
+               if ($citem->canView()) {
                   // State case
                   if ($itemtype == 'States') {
                      $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
@@ -643,9 +643,9 @@ class Search {
          $first=true;
          $QUERY="";
          foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
-            if (haveTypeRight($ctype,'r')) {
-               $ctable = getTableForItemType($ctype);
-               $citem = new $ctype();
+            $ctable = getTableForItemType($ctype);
+            $citem = new $ctype();
+            if ($citem->canView()) {
                if ($first) {
                   $first=false;
                } else {
@@ -767,10 +767,11 @@ class Search {
             }
 
             // Form to massive actions
-            $isadmin=(($item && $item->canUpdate())
-                     || haveTypeRight($itemtype,"w")
-                     || (in_array($itemtype,$CFG_GLPI["infocom_types"])
-                        && haveTypeRight('Infocom',"w")));
+            $isadmin=($item && $item->canUpdate());
+            if (!$isadmin && in_array($itemtype,$CFG_GLPI["infocom_types"])){
+               $infoc=new Infocom();
+               $isadmin=($infoc->canUpdate() || $infoc->canCreate());
+            }
 
             if ($isadmin && $output_type==HTML_OUTPUT) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".

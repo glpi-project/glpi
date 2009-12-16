@@ -463,6 +463,7 @@ class Supplier extends CommonDBTM {
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_infocoms`
                 WHERE `suppliers_id` = '$instID'
+                  AND `itemtype` NOT IN ('ConsumableItem','CartridgeItem','Software')
                 ORDER BY `itemtype`";
 
       $result = $DB->query($query);
@@ -488,10 +489,7 @@ class Supplier extends CommonDBTM {
          }
          $item = new $itemtype();
 
-         if (haveTypeRight($itemtype,"r")
-             && $itemtype != 'ConsumableItem'
-             && $itemtype != 'CartridgeItem'
-             && $itemtype != 'Software') {
+         if ($item->canView()) {
 
             $linktype = $itemtype;
             $linkfield = 'id';

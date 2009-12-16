@@ -435,9 +435,10 @@ class Infocom extends CommonDBTM {
    static function showDisplayLink($itemtype,$device_id,$update=0) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if (!haveRight("infocom","r")) {
+      if (!haveRight("infocom","r") || !class_exists($itemtype)) {
          return false;
       }
+      $item = new $itemtype();
 
       $query="SELECT COUNT(*)
               FROM `glpi_infocoms`
@@ -454,7 +455,7 @@ class Infocom extends CommonDBTM {
          return false;
       }
 
-      if (haveTypeRight($itemtype,"r")) {
+      if ($item->canView()) {
          echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/infocom.form.php?itemtype=$itemtype&amp;device_id=$device_id&amp;update=$update',
                'infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\" style='cursor:pointer'>
