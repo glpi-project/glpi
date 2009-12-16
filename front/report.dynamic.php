@@ -90,11 +90,9 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 			break;
       default :
          // Plugin case
-         if (isPluginItemType($_GET["item_type"])){
-            if (isset($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]])){
-               if (doOneHook($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]], 'dynamicReport', $_GET)) {
-                  exit();
-               }
+         if ($plug=isPluginItemType($_GET["item_type"])){
+            if (doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
+               exit();
             }
          }
          Search::manageGetValues($_GET["item_type"]);

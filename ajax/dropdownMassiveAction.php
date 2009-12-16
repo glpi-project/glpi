@@ -271,11 +271,10 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
             // Normalized name plugin_name_action
             // Allow hook from any plugin on any (core or plugin) type
             doOneHook($split[1],'MassiveActionsDisplay',$_POST["itemtype"],$_POST["action"]);
-         } else if (isPluginItemType($_POST["itemtype"])
-                    && isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
+         } else if ($plug=isPluginItemType($_POST["itemtype"])) {
             // non-normalized name
             // hook from the plugin defining the type
-            doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],'MassiveActionsDisplay',
+            doOneHook($plug['plugin'],'MassiveActionsDisplay',
                       $_POST["itemtype"],$_POST["action"]);
          }
          break;

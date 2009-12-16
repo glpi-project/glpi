@@ -267,10 +267,9 @@ class CommonItem {
 
             default :
                // Plugin case
-               if (isPluginItemType($itemtype)) {
-                  if (isset($PLUGIN_HOOKS['plugin_classes'][$itemtype])) {
-                     $class=$PLUGIN_HOOKS['plugin_classes'][$itemtype];
-                     $plug=$PLUGIN_HOOKS['plugin_types'][$itemtype];
+               if ($plug=isPluginItemType($itemtype)) {
+                     $class=$itemtype;
+                     $plug=$plug['plugin'];
                      if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
                         include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
                      }
@@ -431,20 +430,18 @@ class CommonItem {
 
          default :
             // Plugin case
-            if (isPluginItemType($this->itemtype)) {
+            if ($plug=isPluginItemType($this->itemtype)) {
                // Use plugin name if set
                if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])
                    && !empty($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])) {
 
                   return $PLUGIN_HOOKS['plugin_typenames'][$this->itemtype];
                } else { // Else use pluginname
-                  if (isset($PLUGIN_HOOKS['plugin_types'][$this->itemtype])) {
-                     $function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->itemtype];
-                     if (function_exists($function)) {
-                        $data=$function();
-                        if (isset($data['name'])) {
-                           return $data['name'];
-                        }
+                  $function="plugin_version_".$plug['plugin'];
+                  if (function_exists($function)) {
+                     $data=$function();
+                     if (isset($data['name'])) {
+                        return $data['name'];
                      }
                   }
                }
