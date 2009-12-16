@@ -502,10 +502,10 @@ class Config extends CommonDBTM {
       echo " </td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['state'][0] . " </td><td>";
-      dropdownStateBehaviour("state_autoupdate_mode", $LANG['setup'][197],
+      State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
                              $CFG_GLPI["state_autoupdate_mode"]);
       echo "</td><td>";
-      dropdownStateBehaviour("state_autoclean_mode", $LANG['setup'][196],
+      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
                              $CFG_GLPI["state_autoclean_mode"]);
       echo " </td><td>&nbsp;</td></tr>";
 
