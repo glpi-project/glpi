@@ -538,12 +538,18 @@ function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
 function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
    global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
-   $isadmin=haveTypeRight($itemtype,"w");
+   if (!class_exists($itemtype)) {
+      return false;
+   }
+   $item = new $itemtype();
+   $infocom= new Infocom();
+
+   $isadmin=$item->canUpdate();
 
    echo '<select name="massiveaction" id="massiveaction">';
    echo '<option value="-1" selected>-----</option>';
    if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
-       && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"]) && haveTypeRight('Infocom',"w"))
+       && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"])&& $infocom->canUpdate())
                     || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
 
       echo "<option value='update'>".$LANG['buttons'][14]."</option>";
@@ -567,12 +573,18 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
          echo "<option value='connect'>".$LANG['buttons'][9]."</option>";
          echo "<option value='disconnect'>".$LANG['buttons'][10]."</option>";
       }
-      if (haveTypeRight('Document',"w") && in_array($itemtype,$CFG_GLPI["doc_types"])) {
-         echo "<option value='add_document'>".$LANG['document'][16]."</option>";
+      if (in_array($itemtype,$CFG_GLPI["doc_types"])) {
+         $doc = new Document();
+         if ($doc->canUpdate()) {
+            echo "<option value='add_document'>".$LANG['document'][16]."</option>";
+         }
       }
 
-      if (haveTypeRight('Contract',"w") && in_array($itemtype,$CFG_GLPI["contract_types"])) {
-         echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
+      if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
+         $contract = new Contract();
+         if ($contract->canUpdate()) {
+            echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
+         }
       }
       if (haveRight('transfer','r') && isMultiEntitiesMode()
           && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',

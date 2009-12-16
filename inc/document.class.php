@@ -635,7 +635,7 @@ class Document extends CommonDBTM {
          }
          $item = new $itemtype();
 
-         if (haveTypeRight($itemtype,"r")) {
+         if ($item->canView()) {
             $column="name";
             if ($itemtype == 'Ticket') {
                $column="id";

@@ -320,7 +320,11 @@ class Computer_Item extends CommonDBRelation{
       $canedit=$comp->can($ID,'w');
 
       foreach ($items as $itemtype => $title) {
-         if (!class_exists($itemtype) || !haveTypeRight($itemtype,"r")) {
+         if (!class_exists($itemtype)) {
+            unset($items[$itemtype]);
+         }
+         $item = new $itemtype();
+         if (!$item->canView()) {
             unset($items[$itemtype]);
          }
       }
@@ -359,13 +363,13 @@ class Computer_Item extends CommonDBRelation{
                             AND `itemtype` = '".$itemtype."'";
             if ($result=$DB->query($query)) {
                $resultnum = $DB->numrows($result);
+               $item = new $itemtype();
                if ($resultnum>0) {
                   echo "<table width='100%'>";
                   for ($i=0; $i < $resultnum; $i++) {
                      $tID = $DB->result($result, $i, "items_id");
                      $connID = $DB->result($result, $i, "id");
 
-                     $item = new $itemtype();
                      $item->getFromDB($tID);
                      $used[] = $tID;
 
