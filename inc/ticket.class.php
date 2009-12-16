@@ -1910,7 +1910,8 @@ class Ticket extends CommonDBTM {
               && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
               && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])) {
          // Settings a solution will set status to solved
-         Dropdown::getDropdownName('glpi_ticketsolutiontypes', $this->getField('ticketsolutiontypes_id'));
+         echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                        $this->getField('ticketsolutiontypes_id'));
       } else {
          Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id',
                                  $this->getField('ticketsolutiontypes_id'),1);
