@@ -723,8 +723,9 @@ class Document extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
          echo "<input type='hidden' name='documents_id' value='$instID'>";
-         dropdownAllItems("items_id",0,0,($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                          $CFG_GLPI["doc_types"]);
+         Dropdown::showAllItems("items_id",0,0,
+                                ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
+                                 $CFG_GLPI["doc_types"]);
          echo "</td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='adddocumentitem' value=\"".
