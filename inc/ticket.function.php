@@ -1015,7 +1015,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "<tr class='tab_bg_1'>";
    echo "<td class='center' colspan='2'>";
    echo "<table border='0'><tr><td>".$LANG['common'][1]."&nbsp;:</td><td>";
-   dropdownAllItems("items_id",$itemtype,$items_id,-1,array_keys(getAllTypesForHelpdesk()));
+   Dropdown::showAllItems("items_id",$itemtype,$items_id,-1,array_keys(getAllTypesForHelpdesk()));
    echo "</td></tr></table>";
 
    echo "</td>";
