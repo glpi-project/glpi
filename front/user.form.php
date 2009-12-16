@@ -189,7 +189,7 @@ if (isset($_REQUEST['getvcard'])) {
       }
 
       commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
-      showAddExtAuthUserForm($_SERVER['PHP_SELF']);
+      User::showAddExtAuthForm($_SERVER['PHP_SELF']);
       commonFooter();
    }
 }
