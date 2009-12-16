@@ -1812,14 +1812,11 @@ class Ticket extends CommonDBTM {
                                      OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
       }
 
-      $query = "(SELECT 'TicketFollowup' as itemtype, `id`, `date`
+      // TODO keep this for a union with followup + task + histo + ...
+      $query = "SELECT 'TicketFollowup' as itemtype, `id`, `date`
                  FROM `glpi_ticketfollowups`
                  WHERE `tickets_id` = '$tID'
-                        $RESTRICT)
-                UNION
-                (SELECT 'TicketSolution' as itemtype, `id`, `date`
-                 FROM `glpi_ticketsolutions`
-                 WHERE `tickets_id` = '$tID')
+                        $RESTRICT
                 ORDER BY `date` DESC";
       $result = $DB->query($query);
 
@@ -1851,6 +1848,34 @@ class Ticket extends CommonDBTM {
          echo "</table>";
       }
       echo "</div>";
+   }
+   
+   /**
+    * Form to add a solution to a ticket
+    *
+    * @param $tID integer : ticket ID
+    * @param $massiveaction boolean : add followup using massive action
+    */
+   function showSolutionForm() {
+      global $DB,$LANG,$CFG_GLPI;
+
+      $this->check($this->getField('id'), 'r');
+      
+      $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 2);
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['job'][48]."</td><td colspan='3'>";
+      Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id',
+                              $this->getField('ticketsolutiontypes_id'),1);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['joblist'][6]."</td>";
+      echo "<td colspan='3'><textarea name='solution' rows='12' cols='100'>";
+      echo $this->getField('solution') . "</textarea></td>";
+      echo "</tr>";
+   
+      $this->showFormButtons($this->getField('id'), '', 2, false);
    }
 }
 ?>
