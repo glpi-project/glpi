@@ -1476,7 +1476,7 @@ class CommonDBTM extends CommonGLPI {
       global $CFG_GLPI;
 
       // Check item exists
-      if ($ID>0 && !$this->getFromDB($ID)) {
+      if (!$this->isNewID($ID) && !$this->getFromDB($ID)) {
          // Gestion timeout session
          if (!isset ($_SESSION["glpiID"])) {
             glpi_header($CFG_GLPI["root_doc"] . "/index.php");
