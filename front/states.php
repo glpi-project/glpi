@@ -44,7 +44,7 @@ checkCentralAccess();
 commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
 
 if ($_GET["synthese"] == "yes") {
-   showStateSummary($_SERVER['PHP_SELF']);
+   State::showSummary($_SERVER['PHP_SELF']);
 } else {
 
    Search::show('States');

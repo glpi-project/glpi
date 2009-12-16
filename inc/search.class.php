@@ -65,6 +65,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
+
       if (class_exists($itemtype)) {
          $item = new $itemtype();
       }
@@ -118,8 +119,12 @@ class Search {
             $LIST_LIMIT=GLOBAL_SEARCH_DISPLAY_COUNT;
          }
       }
-
-      $entity_restrict = $item->isEntityAssign();
+      // hack for States
+      if ($itemtype=='States') {
+         $entity_restrict = true;
+      } else {
+         $entity_restrict = $item->isEntityAssign();
+      }
 
       $names = array('Computer'   => $LANG['Menu'][0],
                      'Printer'    => $LANG['Menu'][2],
@@ -227,7 +232,7 @@ class Search {
       $first=empty($COMMONWHERE);
 
       // Add deleted if item have it
-      if ($item->maybeDeleted()) {
+      if ($item && $item->maybeDeleted()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -237,7 +242,7 @@ class Search {
       }
 
       // Remove template items
-      if ($item->maybeTemplate()) {
+      if ($item && $item->maybeTemplate()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -1407,7 +1412,7 @@ class Search {
       // Display deleted selection
       echo "<td>";
       $itemtable=getTableForItemType($itemtype);
-      if ($item->maybeDeleted()) {
+      if ($item && $item->maybeDeleted()) {
          Dropdown::showYesNo("is_deleted",$is_deleted);
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
                "' title='".$LANG['common'][3]."'>";
@@ -1674,7 +1679,10 @@ class Search {
       global $CFG_GLPI;
 
       $toview=array();
-      $item = new $itemtype();
+      $item = NULL;
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
       // Add first element (name)
       array_push($toview,1);
 
@@ -1702,7 +1710,12 @@ class Search {
       global $CFG_GLPI;
 
       $itemtable=getTableForItemType($itemtype);
-      $item = new $itemtype();
+      $item = NULL;
+      $mayberecursive=false;
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         $mayberecursive = $item->maybeRecursive();
+      }
 
       switch ($itemtype) {
          case 'ReservationItem' :
@@ -1720,7 +1733,7 @@ class Search {
          default :
             $ret = "";
       }
-      if ($item->maybeRecursive()) {
+      if ($mayberecursive) {
          $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
       }
       return $ret;
