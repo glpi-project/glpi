@@ -1564,7 +1564,7 @@ class User extends CommonDBTM {
     * @return mysql result set.
     *
     */
-   static function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0,
+   static function getSqlSearchResult ($count=true, $right="all", $entity_restrict=-1, $value=0,
                                  $used=array(), $search='') {
       global $DB, $CFG_GLPI;
 
@@ -1709,7 +1709,7 @@ class User extends CommonDBTM {
       $rand=mt_rand();
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
-         $res=User::dropdownUsersSelect (true, $p['right'], $p['entity'],
+         $res=User::getSqlSearchResult (true, $p['right'], $p['entity'],
                                        $p['value'], $p['used']);
          $nb=($res ? $DB->result($res,0,"cpt") : 0);
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {

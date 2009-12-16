@@ -80,7 +80,7 @@ if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
    $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
 
-$result=User::dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'],
+$result=User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'],
                             $used, $_POST['searchText']);
 
 $users=array();

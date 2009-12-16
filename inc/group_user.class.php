@@ -241,10 +241,10 @@ class Group_User extends CommonDBRelation{
          closeArrowMassive('deleteuser', $LANG['buttons'][6]);
 
          if ($group->fields["is_recursive"]) {
-            $res=User::dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",
+            $res=User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
                                       $group->fields["entities_id"]), 0, $used);
          } else {
-            $res=User::dropdownUsersSelect (true, "all", $group->fields["entities_id"], 0, $used);
+            $res=User::getSqlSearchResult (true, "all", $group->fields["entities_id"], 0, $used);
          }
          $nb=($res ? $DB->result($res,0,"CPT") : 0);
 
