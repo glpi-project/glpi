@@ -45,7 +45,6 @@ class Entity extends CommonTreeDropdown {
    // From CommonDBTM
    public $table = 'glpi_entities';
    public $type = 'Entity';
-   public $may_be_recursive=true;
    public $entity_assign=true;
 
 

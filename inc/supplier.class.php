@@ -44,7 +44,6 @@ class Supplier extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_suppliers';
    public $type = 'Supplier';
-   public $may_be_recursive=true;
    public $entity_assign=true;
 
    static function getTypeName() {

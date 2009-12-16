@@ -267,7 +267,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[80]['linkfield'] = 'entities_id';
          $tab[80]['name']      = $LANG['entity'][0];
       }
-      if ($this->may_be_recursive) {
+      if ($this->maybeRecursive()) {
          $tab[86]['table']     = $this->table;
          $tab[86]['field']     = 'is_recursive';
          $tab[86]['linkfield'] = 'is_recursive';

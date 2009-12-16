@@ -45,7 +45,6 @@ class Contract extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_contracts';
    public $type = 'Contract';
-   public $may_be_recursive = true;
    public $entity_assign = true;
 
    static function getTypeName() {

@@ -44,7 +44,6 @@ class TaskCategory extends CommonTreeDropdown {
    public $table = 'glpi_taskcategories';
    public $type = 'TaskCategory';
    public $entity_assign = true;
-   public $may_be_recursive = true;
 
    static function getTypeName() {
       global $LANG;

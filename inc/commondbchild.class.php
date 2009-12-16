@@ -84,10 +84,10 @@ abstract class CommonDBChild extends CommonDBTM {
       return false;
    }
 
-   /***
+   /**
     * Is the object recursive
     *
-    * @return integer (0/1)
+    * @return boolean
     **/
    function isRecursive () {
 
@@ -98,11 +98,11 @@ abstract class CommonDBChild extends CommonDBTM {
       }
       if (class_exists($type)) {
          $item = new $type();
-         if ($item->may_be_recursive && $item->getFromDB($this->fields[$this->items_id])) {
+         if ($item->getFromDB($this->fields[$this->items_id])) {
             return $item->isRecursive();
          }
       }
-      return 0;
+      return false;
    }
 
    /**

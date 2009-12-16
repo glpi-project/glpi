@@ -42,7 +42,6 @@ class Bookmark extends CommonDBTM {
    public $table = 'glpi_bookmarks';
    public $type = 'Bookmark';
    public $entity_assign = true;
-   public $may_be_recursive=true;
    public $may_be_private=true;
 
    function canCreate() {
