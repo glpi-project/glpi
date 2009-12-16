@@ -771,7 +771,7 @@ $LANG['joblist'][31]="Date d'échéance";
 $LANG['joblist'][32]="Résolu";
 $LANG['joblist'][33]="Clos";
 
-$LANG['jobresolution'][1]="Résolution";
+$LANG['jobresolution'][1]="Solution";
 $LANG['jobresolution'][2]="Nouvelle solution";
 
 $LANG['knowbase'][1]="Foire aux questions";
@@ -964,7 +964,7 @@ $LANG['mailing'][7]="Matériel concerné";
 $LANG['mailing'][8]="Attribué à";
 $LANG['mailing'][9]="Nouveau ticket";
 $LANG['mailing'][10]="Nouveau suivi pour ce ticket";
-$LANG['mailing'][11]="Ticket fermé le";
+$LANG['mailing'][11]="Ticket résolu le";
 $LANG['mailing'][12]="Attribution du ticket";
 $LANG['mailing'][13]="Erreur dans la génération de l'email automatique";
 $LANG['mailing'][14]="Changement de catégorie du ticket";
@@ -1631,7 +1631,7 @@ $LANG['setup'][206]="Échec de l'envoi du mail de test à l'administrateur";
 $LANG['setup'][207]="Courriel de réponse (si nécessaire)";
 $LANG['setup'][211]="A chaque nouveau ticket";
 $LANG['setup'][212]="Pour chaque nouveau suivi";
-$LANG['setup'][213]="A la fermeture du ticket";
+$LANG['setup'][213]="A la résolution du ticket";
 $LANG['setup'][217]="La fonction mail PHP  n'existe pas ou est désactivée sur votre système";
 $LANG['setup'][218]="L'utilisation d'un serveur SMTP est indispensable";
 $LANG['setup'][219]="Autoriser les ouvertures de tickets anonymes (helpdesk.html)";

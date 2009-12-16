@@ -357,6 +357,7 @@ class Ticket extends CommonDBTM {
          $input["_old_cost_material"]  = $this->fields["cost_material"];
          $input["_old_date"]           = $this->fields["date"];
          $input["_old_closedate"]      = $this->fields["closedate"];
+         $input["_old_soltype"]        = $this->fields["ticketsolutiontypes_id"];
       }
       return $input;
    }
@@ -701,7 +702,7 @@ class Ticket extends CommonDBTM {
 
             if (isset($input["status"])
                 && in_array("status",$updates)
-                && strstr($input["status"],"old_")) {
+                && $input["status"]=="solved") {
 
                $newinput["type"]="finish";
             }
@@ -724,7 +725,7 @@ class Ticket extends CommonDBTM {
             if (isset($input["status"])
                 && $input["status"]
                 && in_array("status",$updates)
-                && strstr($input["status"],"old_")) {
+                && $input["status"]=="solved") {
 
                $mailtype="finish";
             }
@@ -957,7 +958,7 @@ class Ticket extends CommonDBTM {
 
          $fup=new TicketFollowup();
          $type="new";
-         if (isset($this->fields["status"]) && strstr($this->fields["status"],"old_")) {
+         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type="finish";
          }
          $toadd = array("type"      => $type,
@@ -989,7 +990,7 @@ class Ticket extends CommonDBTM {
          $this->getFromDB($newID);
 
          $type = "new";
-         if (isset($this->fields["status"]) && strstr($this->fields["status"],"old_")) {
+         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "finish";
          }
          $mail = new Mailing($type,$this,$user);
@@ -1127,7 +1128,7 @@ class Ticket extends CommonDBTM {
                }
             }
          } else { // text format
-            $message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]."&nbsp;: $nbfollow\n".
+            $message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]." : $nbfollow\n".
                        $LANG['mailing'][1]."\n";
 
             if ($nbfollow>0) {
@@ -1136,10 +1137,10 @@ class Ticket extends CommonDBTM {
                   $fup->getFromDB($data['id']);
                   $message .= "[ ".convDateTime($fup->fields["date"])." ]".
                                ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
-                  $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
-                  $message .= $LANG['mailing'][3]."&nbsp;:\n".$fup->fields["content"]."\n";
+                  $message .= $LANG['job'][4]." : ".$fup->getAuthorName()."\n";
+                  $message .= $LANG['mailing'][3]." :\n".$fup->fields["content"]."\n";
                   if ($fup->fields["realtime"]>0) {
-                     $message .= $LANG['mailing'][104]."&nbsp;: ".
+                     $message .= $LANG['mailing'][104]." : ".
                                  getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= $LANG['mailing'][25]." ";
@@ -1235,6 +1236,7 @@ class Ticket extends CommonDBTM {
          }
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['joblist'][0]."&nbsp;:</span> ".$this->getStatus($this->fields["status"])."\n";
+
          $assign = getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
@@ -1281,6 +1283,17 @@ class Ticket extends CommonDBTM {
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline; '>".
                       $LANG['mailing'][3]."&nbsp;:</span><br>".
                       str_replace("\n","<br>",$this->fields["content"])."<br>\n";
+
+         if (!empty($this->fields["solution"])) {
+            $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline; '>";
+            if ($this->fields['ticketsolutiontypes_id']>0) {
+               $message .= Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                     $this->fields['ticketsolutiontypes_id']);
+            } else {
+               $message .= $LANG['jobresolution'][1];
+            }
+            $message .= "&nbsp;:</span><br>".str_replace("\n","<br>",$this->fields["solution"])."<br>\n";
+         }
 
       } else { //text format
          $message  = $LANG['mailing'][1]."\n*".$LANG['mailing'][5]."*\n".$LANG['mailing'][1]."\n";
@@ -1335,7 +1348,16 @@ class Ticket extends CommonDBTM {
             $message .= mailRow($LANG['common'][36],$LANG['mailing'][100]);
          }
          $message .= "--\n";
-         $message .= $LANG['mailing'][3]."&nbsp;: \n".$this->fields["content"]."\n";
+         $message .= $LANG['mailing'][3]." : \n".$this->fields["content"]."\n";
+         if (!empty($this->fields["solution"])) {
+            $message .= "\n*";
+            if ($this->fields['ticketsolutiontypes_id']>0) {
+               $message .= Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->fields['ticketsolutiontypes_id']);
+            } else {
+               $message .= $LANG['jobresolution'][1];
+            }
+            $message .= "* : \n".$this->fields["solution"]."\n";
+         }
          $message .= "\n\n";
 
       }
