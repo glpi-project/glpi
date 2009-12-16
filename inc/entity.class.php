@@ -48,6 +48,24 @@ class Entity extends CommonTreeDropdown {
    public $may_be_recursive=true;
    public $entity_assign=true;
 
+
+   function getFromDB($ID) {
+
+      if ($ID==0) {
+         $this->fields=array('id'=>0,
+                        'name'=>$LANG['entity'][2],
+                        'entities_id'=>-1,
+                        'completename'=>$LANG['entity'][2],
+                        'comment'=>'',
+                        'level'=>0,
+                        'sons_cache'=>'',
+                        'ancestors_cache'=>'',
+                        );
+         return true;
+      } else {
+         parent::getFromDB($ID);
+      }
+   }
    static function getTypeName() {
       global $LANG;
 
@@ -194,71 +212,6 @@ class Entity extends CommonTreeDropdown {
       // Add right to current user - Hack to avoid login/logout
       $_SESSION['glpiactiveentities'][$newID] = $newID;
       $_SESSION['glpiactiveentities_string'] .= ",'$newID'";
-   }
-
-   /**
-   * Check right on an entity
-   *
-   * @param $ID ID of the entity (-1 if new item)
-   * @param $right Right to check : r / w / recursive
-   * @param $input array of input data (used for adding item)
-   *
-   * @return boolean
-   **/
-   function can($ID,$right,&$input=NULL) {
-      global $LANG;
-
-      // Get item ID
-      if ($ID<0) {
-         $this->getEmpty();
-         // No entity define : adding process : use active entity
-         if (isset($input['entities_id'])) {
-            // this is the parent entity
-            $entity_to_check = $input['entities_id'];
-         } else {
-            $entity_to_check = $_SESSION["glpiactive_entity"];
-         }
-         // To add, need a recursive right on parent
-         // to get a right on new entity
-         $right = 'recursive';
-      } else {
-         if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
-            // Item not found : no right
-            if (!$ID) {
-               // Hack for 'root' entity which is not stored
-               $this->fields=array('id'          => $ID,
-                                   'name'        => $LANG['entity'][2],
-                                   'entities_id' => 0,
-                                   'comment'     => '');
-            } else if (!$this->getFromDB($ID)) {
-               return false;
-            }
-         }
-         $entity_to_check=$ID;
-      }
-
-      switch ($right) {
-         case 'r':
-            if ($this->canView()) {
-               return haveAccessToEntity($entity_to_check, true);
-            }
-            break;
-
-         case 'w':
-            if ($this->canCreate()) {
-               return haveAccessToEntity($entity_to_check);
-            }
-            break;
-
-         case 'recursive':
-            // Always check
-            if ($this->canCreate() && haveAccessToEntity($entity_to_check)) {
-               // Can make recursive if recursive access to entity
-               return haveRecursiveAccessToEntity($entity_to_check);
-            }
-            break;
-      }
-      return false;
    }
 
    function getSearchOptions() {
