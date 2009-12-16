@@ -268,14 +268,13 @@ class CommonItem {
             default :
                // Plugin case
                if ($plug=isPluginItemType($itemtype)) {
-                     $class=$itemtype;
-                     $plug=$plug['plugin'];
-                     if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-                        include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
-                     }
-                     if (class_exists($class)) {
-                        $this->obj = new $class();
-                     }
+                  $class=$itemtype;
+                  $plug=$plug['plugin'];
+                  if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+                     include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+                  }
+                  if (class_exists($class)) {
+                     $this->obj = new $class();
                   }
                }
                break;
