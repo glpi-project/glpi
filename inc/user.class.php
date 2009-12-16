@@ -1022,47 +1022,20 @@ class User extends CommonDBTM {
       }
       return $prof;
    }
-
-   function can($ID,$right,&$input=NULL) {
-      // Get item if not already loaded
-      if ($ID>0) {
-         if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
-            // Item not found : no right
-            if (!$this->getFromDB($ID)) {
-               logInFile('php-errors', "User->can($ID,$right)= not found !\n");
-               return false;
-            }
-         }
-      }
-
-      switch ($right) {
-         case 'r':
-            if (!$this->canView()) {
-               return false;
-            }
-            if ($ID>0) {
-               $entities = getUserEntities($ID,true);
-               if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
-                  return true;
-               }
-            }
-
-            return false;
-
-         case 'w':
-            if (!$this->canCreate()) {
-               return false;
-            }
-            // Personnal item
-            if ($ID>0) {
-               $strict_entities = getUserEntities($ID,false);
-               if (!isViewAllEntities() && !haveAccessToOneOfEntities($strict_entities)) {
-                  return false;
-               }
-            }
+   function canViewItem() {
+         $entities = getUserEntities($this->fields['id'],true);
+         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
             return true;
-      }
-      return false;
+         }
+         return false;
+   }
+
+   function canCreateItem() {
+         $entities = getUserEntities($this->fields['id'],true);
+         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+            return true;
+         }
+         return false;
    }
 
    /**
@@ -1088,6 +1061,7 @@ class User extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
       }
+
       $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
 
       $extauth = ! ($this->fields["authtype"] == AUTH_DB_GLPI
