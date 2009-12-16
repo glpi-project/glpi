@@ -46,16 +46,14 @@ class Reservation extends CommonDBTM {
    function pre_deleteItem($ID) {
       global $CFG_GLPI;
 
-      if ($this->getFromDB($ID)) {
-         if (isset($this->fields["users_id"])
-             && ($this->fields["users_id"]==$_SESSION["glpiID"]
-                 || haveRight("reservation_central","w"))) {
+      if (isset($this->fields["users_id"])
+          && ($this->fields["users_id"]==$_SESSION["glpiID"]
+              || haveRight("reservation_central","w"))) {
 
-            // Processing Email
-            if ($CFG_GLPI["use_mailing"]) {
-               $mail = new MailingResa($this,"delete");
-               $mail->send();
-            }
+         // Processing Email
+         if ($CFG_GLPI["use_mailing"]) {
+            $mail = new MailingResa($this,"delete");
+            $mail->send();
          }
       }
       return true;
