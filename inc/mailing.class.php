@@ -322,17 +322,17 @@ class Mailing {
                            }
 
                            //don't send email if last followup from user, STOP spamming user!
-                           $query3 = "SELECT * FROM glpi_ticketfollowups 
-                                          WHERE tickets_id = '".$this->job->fields["id"]."'  
-                                          ORDER by date DESC LIMIT 1"; 
-                           $result3=$DB->query($query3); 
-                           if($data=$DB->fetch_array($result3)){ 
-                              $fup=new TicketFollowup(); 
-                              $fup->getFromDB($data['ID']); 
+                           $query3 = "SELECT * FROM glpi_ticketfollowups
+                                          WHERE tickets_id = '".$this->job->fields["id"]."'
+                                          ORDER by date DESC LIMIT 1";
+                           $result3=$DB->query($query3);
+                           if($data=$DB->fetch_array($result3)){
+                              $fup=new TicketFollowup();
+                              $fup->getFromDB($data['ID']);
                               if($this->job->fields["users_id"] == $fup->fields["users_id"]) {
-                                    $users_idsend=false; 
+                                    $users_idsend=false;
                               }
-                           } 
+                           }
                            $DB->free_result($result3);
 
                            if ($users_idsend) {
@@ -563,7 +563,7 @@ class Mailing {
             break;
 
          case "finish" :
-            $subject.=$LANG['mailing'][11]." ".convDateTime($this->job->fields["closedate"]);
+            $subject.=$LANG['mailing'][11]." ".convDateTime($this->job->fields["date_mod"]);
             break;
 
          default :

@@ -1002,6 +1002,7 @@ $LANG['mailing'][49]="Changement de la date de clôture";
 $LANG['mailing'][50]="Changement du receveur du ticket";
 $LANG['mailing'][51]="Licence expirée :";
 $LANG['mailing'][52]="Alerte Licences";
+$LANG['mailing'][53]="Changement de solution";
 $LANG['mailing'][100]="Pas de catégorie attribuée";
 $LANG['mailing'][101]="Le suivi par email a été activé";
 $LANG['mailing'][102]="Le suivi par email a été désactivé";
