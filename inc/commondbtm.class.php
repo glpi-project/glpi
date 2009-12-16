@@ -999,6 +999,32 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+   * Have I the global right to "delete" the Object
+   *
+   * Default is calling canCreate
+   * May be overloaded if needed 
+   *
+   * @return booleen
+   * @see canCreate
+   **/
+   function canDelete() {
+      return $this->canCreate();
+   }
+
+   /**
+   * Have I the global right to "update" the Object
+   *
+   * Default is calling canCreate
+   * May be overloaded if needed 
+   *
+   * @return booleen
+   * @see canCreate
+   **/
+   function canUpdate() {
+      return $this->canCreate();
+   }
+
+   /**
    * Have I the right to "create" the Object
    *
    * Default is true and check entity if the objet is entity assign
@@ -1008,16 +1034,54 @@ class CommonDBTM extends CommonGLPI {
    * @return booleen
    **/
    function canCreateItem() {
+      // Is an item assign to an entity
       if ($this->isEntityAssign()) {
-         // Can be recursive check
-         if ($this->maybeRecursive()) {
-            return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
-         } else { // Non recursive item
-            return haveAccessToEntity($this->getEntityID());
-         }
-      } else {
+         // Have access to entity
+         return haveAccessToEntity($this->getEntityID());
+      } else { // Global item
          return true;
       }
+   }
+
+   /**
+   * Have I the right to "update" the Object
+   *
+   * Default is calling canCreateItem
+   * May be overloaded if needed 
+   *
+   * @return booleen
+   * @see canCreate
+   **/
+   function canUpdateItem() {
+      return $this->canCreateItem();
+   }
+
+
+   /**
+   * Have I the right to "delete" the Object
+   *
+   * Default is calling canCreateItem
+   * May be overloaded if needed 
+   *
+   * @return booleen
+   * @see canCreate
+   **/
+   function canDeleteItem() {
+      return $this->canCreateItem();
+   }
+
+   /**
+   * Have I the global right to "view" the Object
+   *
+   * Default is true and check entity if the objet is entity assign
+   *
+   * May be overloaded if needed
+   *
+   * @return booleen
+   **/
+   static function canView() {
+
+      return false;
    }
 
    /**
@@ -1027,9 +1091,18 @@ class CommonDBTM extends CommonGLPI {
    *
    * @return booleen
    **/
-   static function canView() {
-
-      return false;
+   function canViewItem() {
+      // Is an item assign to an entity
+      if ($this->isEntityAssign()) {
+         // Can be recursive check
+         if ($this->maybeRecursive()) {
+            return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
+         } else { // Non recursive item
+            return haveAccessToEntity($this->getEntityID());
+         }
+      } else { // Global item
+         return true;
+      }
    }
 
    /**
@@ -1351,20 +1424,7 @@ class CommonDBTM extends CommonGLPI {
                 && $this->fields['users_id']==$_SESSION["glpiID"]) {
                return true;
             } else {
-               // Check Global Right
-               if ($this->canView()) {
-                  // Is an item assign to an entity
-                  if ($this->isEntityAssign()) {
-                     // Can be recursive check
-                     if ($this->maybeRecursive()) {
-                        return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
-                     } else { // Non recursive item
-                        return haveAccessToEntity($this->getEntityID());
-                     }
-                  } else { // Global item
-                     return true;
-                  }
-               }
+               return ($this->canView() && $this->canViewItem());
             }
             break;
 
@@ -1374,19 +1434,18 @@ class CommonDBTM extends CommonGLPI {
                 && $this->fields['users_id']==$_SESSION["glpiID"]){
                return true;
             } else {
-               // Check Global Right
-               if ($this->canCreate()) {
-                  // Is an item assign to an entity
-                  if ($this->isEntityAssign()) {
-                     // Have access to entity
-                     return haveAccessToEntity($this->getEntityID());
-                  } else { // Global item
-                     return true;
-                  }
-               }
+               return ($this->canUpdate() && $this->canUpdateItem());
             }
             break;
-
+         case 'd':
+            // Personnal item
+            if ($this->may_be_private && $this->fields['is_private']
+                && $this->fields['users_id']==$_SESSION["glpiID"]){
+               return true;
+            } else {
+               return ($this->canDelete() && $this->canDeleteItem());
+            }
+            break;
          case 'recursive':
             if ($this->isEntityAssign() && $this->maybeRecursive()) {
                if ($this->canCreate() && haveAccessToEntity($this->getEntityID())) {
