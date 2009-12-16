@@ -2102,9 +2102,9 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("comment_all_ticket","1") && !$ID) {
       echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
       echo "<td class='center' colspan='3'>";
-      dropdownInteger('hour',$array['hour'],0,100);
+      Dropdown::showInteger('hour',$array['hour'],0,100);
       echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-      dropdownInteger('minute',$array['minute'],0,59);
+      Dropdown::showInteger('minute',$array['minute'],0,59);
       echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
    } else {
       echo "<td colspan='2'>&nbsp;";
@@ -2449,9 +2449,9 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
 
       if ($tID>0) {
          echo "<tr><td>".$LANG['job'][31]."&nbsp;:</td><td>";
-         dropdownInteger('hour',0,0,100);
+         Dropdown::showInteger('hour',0,0,100);
          echo $LANG['job'][21]."&nbsp;&nbsp;";
-         dropdownInteger('minute',0,0,59);
+         Dropdown::showInteger('minute',0,0,59);
          echo $LANG['job'][22];
          echo "</tr>";
       }

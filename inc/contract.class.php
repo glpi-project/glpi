@@ -175,7 +175,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][8]."&nbsp;:</td><td>";
-      dropdownInteger("duration",$this->fields["duration"],0,120);
+      Dropdown::showInteger("duration",$this->fields["duration"],0,120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
@@ -188,7 +188,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][69]."&nbsp;:</td><td>";
-      dropdownInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0=>"-----",
+      Dropdown::showInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0=>"-----",
                                                                                 1=>"1",
                                                                                 2=>"2",
                                                                                 3=>"3",
@@ -196,7 +196,7 @@ class Contract extends CommonDBTM {
       echo " ".$LANG['financial'][57];
       echo "</td>";
       echo "<td>".$LANG['financial'][10]."&nbsp;:</td><td>";
-      dropdownInteger("notice",$this->fields["notice"],0,120);
+      Dropdown::showInteger("notice",$this->fields["notice"],0,120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
          echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"],
@@ -209,7 +209,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
       echo "<td>";
-      dropdownInteger("billing",$this->fields["billing"],12,60,12,array(0=>"-----",
+      Dropdown::showInteger("billing",$this->fields["billing"],12,60,12,array(0=>"-----",
                                                                         1=>"1",
                                                                         2=>"2",
                                                                         3=>"3",
@@ -218,7 +218,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83]."&nbsp;:</td><td>";
-      dropdownInteger("max_links_allowed",$this->fields["max_links_allowed"],0,200);
+      Dropdown::showInteger("max_links_allowed",$this->fields["max_links_allowed"],0,200);
       echo "</td>";
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";

@@ -376,7 +376,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1) {
       echo "<option value='day'>".$LANG['reservation'][29]."</option>\n";
       echo "<option value='week'>".$LANG['reservation'][28]."</option>\n";
       echo "</select>";
-      dropdownInteger('periodicity_times',1,1,60);
+      Dropdown::showInteger('periodicity_times',1,1,60);
       echo $LANG['reservation'][30];
       echo "</td></tr>\n";
    }

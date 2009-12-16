@@ -66,17 +66,17 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
       switch ($search["table"].".".$search["linkfield"]) {
          case "glpi_cartridgeitems.alarm_threshold" :
          case "glpi_consumableitems.alarm_threshold" :
-            dropdownInteger($search["linkfield"],0,-1,100);
+            Dropdown::showInteger($search["linkfield"],0,-1,100);
             break;
 
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
-            dropdownInteger($search["field"],0,0,120);
+            Dropdown::showInteger($search["field"],0,0,120);
             echo " ".$LANG['financial'][57];
             break;
 
          case "glpi_softwarelicenses.number" :
-            dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
+            Dropdown::showInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
             break;
 
          case "glpi_contracts.alert" :
@@ -145,11 +145,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "sink_time" :
-                  dropdownInteger("sink_time",0,0,15);
+                  Dropdown::showInteger("sink_time",0,0,15);
                   break;
 
                case "warranty_duration" :
-                  dropdownInteger("warranty_duration",0,0,120);
+                  Dropdown::showInteger("warranty_duration",0,0,120);
                   echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
                   break;
 

@@ -745,6 +745,31 @@ class Dropdown {
       return $rand;
    }
 
+   /**
+   * Dropdown integers
+   *
+   * @param $myname select name
+   * @param $value default value
+   * @param $min min value
+   * @param $max max value
+   * @param $step step used
+   * @param $toadd values to add at the beginning
+   */
+   static function showInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()) {
+
+      echo "<select name='$myname'>\n";
+      if (count($toadd)) {
+         foreach ($toadd as $key => $val) {
+            echo "<option value='$key' ".($key==$value?" selected ":"").">$val</option>";
+         }
+      }
+      for ($i=$min ; $i<=$max ; $i+=$step) {
+         echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
+      }
+      echo "</select>";
+
+   }
+
 }
 
 ?>

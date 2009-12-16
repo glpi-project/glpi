@@ -744,7 +744,7 @@ class Infocom extends CommonDBTM {
                   echo $ic->fields["warranty_duration"];
                }
             } else {
-               dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,
+               Dropdown::showInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,
                                array(-1=>$LANG['financial'][2]));
             }
             if ($ic->fields["warranty_duration"]>=0) {
@@ -806,7 +806,7 @@ class Infocom extends CommonDBTM {
             if ($withtemplate==2) {
                echo $ic->fields["sink_time"];
             } else {
-               dropdownInteger("sink_time",$ic->fields["sink_time"],0,15);
+               Dropdown::showInteger("sink_time",$ic->fields["sink_time"],0,15);
             }
             echo " ".$LANG['financial'][9];
             echo "</td>";
