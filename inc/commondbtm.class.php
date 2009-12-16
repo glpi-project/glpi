@@ -656,62 +656,69 @@ class CommonDBTM extends CommonGLPI {
       if ($DB->isSlave()) {
          return false;
       }
+      if (!$this->getFromDB($input[$this->getIndexName()])) {
+         return false;
+      }
+      // Store input in the object to be available in all sub-method / hook
+      $this->input = $input;
 
-      $input=doHookFunction("pre_item_update",$input);
-      $input=$this->prepareInputForUpdate($input);
+      // Plugin hook - $this->input can be altered
+      doHook("pre_item_update", $this);
 
-      if (isset($input['update'])) {
-         $input['_update']=$input['update'];
-         unset($input['update']);
+      if ($this->input && is_array($this->input)) {
+         $this->input = $this->prepareInputForUpdate($this->input);
+
+         if (isset($this->input['update'])) {
+            $this->input['_update']=$this->input['update'];
+            unset($this->input['update']);
+         }
       }
       // Valid input
-      if ($input && is_array($input)
-          && $this->getFromDB($input[$this->getIndexName()])) {
+      if ($this->input && is_array($this->input)) {
          // Fill the update-array with changes
          $x=0;
-         $updates=array();
-         $oldvalues=array();
-         foreach ($input as $key => $val) {
+         $this->updates=array();
+         $this->oldvalues=array();
+         foreach ($this->input as $key => $val) {
             if (array_key_exists($key,$this->fields)) {
                // Prevent history for date statement (for date for example)
-               if ( is_null($this->fields[$key]) && $input[$key]=='NULL') {
+               if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
                   $this->fields[$key]='NULL';
                }
-               if ( $this->fields[$key] != stripslashes($input[$key])) {
+               if ( $this->fields[$key] != stripslashes($this->input[$key])) {
                   if ($key!="id") {
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {
-                        $oldvalues[$key]=$this->fields[$key];
+                        $this->oldvalues[$key]=$this->fields[$key];
                      }
-                     $this->fields[$key] = $input[$key];
-                     $updates[$x] = $key;
+                     $this->fields[$key] = $this->input[$key];
+                     $this->updates[$x] = $key;
                      $x++;
                   }
                }
             }
          }
-         if(count($updates)) {
+         if(count($this->updates)) {
             if (array_key_exists('date_mod',$this->fields)) {
                // is a non blacklist field exists
-               if (count(array_diff($updates,$this->history_blacklist)) > 0) {
+               if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
                   $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
-                  $updates[$x++] = 'date_mod';
+                  $this->updates[$x++] = 'date_mod';
                }
             }
-            list($input,$updates)=$this->pre_updateInDB($input,$updates,$oldvalues);
+            list($this->input,$this->updates)=$this->pre_updateInDB($this->input,$this->updates,$this->oldvalues);
 
             // CLean old_values history not needed  => Keep old value for plugin hook
             //if (!$this->dohistory || !$history) {
-            //   $oldvalues=array();
+            //   $this->oldvalues=array();
             //}
 
-            if ($this->updateInDB($updates, ($this->dohistory && $history ? $oldvalues : array()))) {
-               $this->addMessageOnUpdateAction($input);
-               doHook("item_update",array("type"=>$this->type, "id" => $input["id"],
-                      "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
+            if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
+               $this->addMessageOnUpdateAction($this->input);
+               doHook("item_update", $this);
             }
          }
-         $this->post_updateItem($input,$updates,$history);
+         $this->post_updateItem($this->input, $this->updates, $history);
          return true;
       }
       return false;
