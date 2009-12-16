@@ -39,22 +39,6 @@ if (!defined('GLPI_ROOT')){
 
 // Functions Dropdown
 
-/**
- * Get Yes No string
- *
- * @param $value Yes No value
- * @return string
- */
-function getYesNo($value) {
-   global $LANG;
-
-   if ($value) {
-      return $LANG['choice'][1];
-   } else {
-      return $LANG['choice'][0];
-   }
-}
-
 
 /**
  * Make a select box for Tracking my devices

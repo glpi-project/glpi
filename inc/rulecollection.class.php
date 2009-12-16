@@ -687,7 +687,7 @@ class RuleCollection {
       echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<strong> ".
-             getYesNo($global_result)."</strong></td>";
+             Dropdown::getYesNo($global_result)."</strong></td>";
 
       $output = $this->preProcessPreviewResults($output);
 

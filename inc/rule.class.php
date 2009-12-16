@@ -793,7 +793,7 @@ class Rule extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>".$this->fields["description"]."</td>";
-      echo "<td>".getYesNo($this->fields["is_active"])."</td>";
+      echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
 
       if ($this->can_sort && !$first && $canedit) {
          echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;id=".
@@ -898,7 +898,7 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          $criteria->getFromDB($criteria_result["id"]);
          $this->showMinimalCriteria($criteria->fields);
-         echo "<td class='b'>".getYesNo($criteria_result["result"])."</td></tr>\n";
+         echo "<td class='b'>".Dropdown::getYesNo($criteria_result["result"])."</td></tr>\n";
       }
       echo "</table>";
 
@@ -908,7 +908,7 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center' colspan='2'>".$LANG['rulesengine'][41]." : ";
-      echo "<strong> ".getYesNo($global_result)."</strong></td>";
+      echo "<strong> ".Dropdown::getYesNo($global_result)."</strong></td>";
 
       $output = $this->preProcessPreviewResults($output);
 

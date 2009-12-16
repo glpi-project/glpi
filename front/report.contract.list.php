@@ -131,7 +131,7 @@ if (isset($query) && count($query)) {
             } else {
                echo "<td> ".NOT_AVAILABLE." </td>";
             }
-            echo "<td> ".getYesNo($data['itemdeleted'])." </td>";
+            echo "<td> ".Dropdown::getYesNo($data['itemdeleted'])." </td>";
 
             if ($display_entity) {
                if ($data['entID'] == 0) {

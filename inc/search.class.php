@@ -3382,7 +3382,7 @@ class Search {
                return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num])).$unit;
 
             case "bool" :
-               return getYesNo($data[$NAME.$num]).$unit;
+               return Dropdown::getYesNo($data[$NAME.$num]).$unit;
          }
       }
 
