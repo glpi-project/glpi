@@ -203,7 +203,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             if ($field['list']) {
                echo "<td>";
                switch ($field['type']) {
-                  case 'dropdownUsersID' :
+                  case 'UserdropdownID' :
                      echo getUserName($data[$field['name']]);
                      break;
                   case 'dropdownValue' :

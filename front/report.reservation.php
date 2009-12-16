@@ -46,7 +46,7 @@ if (!isset($_GET["id"])) $_GET["id"]=0;
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"report.reservation.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' align='center'>";
-User::dropdownAllUsers("id",$_GET["id"],"reservation_helpdesk");
+User::dropdownAll("id",$_GET["id"],"reservation_helpdesk");
 echo "</td>";
 echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
 echo "</table></form></div>";

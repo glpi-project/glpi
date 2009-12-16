@@ -1043,7 +1043,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_users" :
-               User::dropdownAllUsers($name,$value);
+               User::dropdownAll($name,$value);
                $display=true;
                break;
 

@@ -268,7 +268,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;:</td>";
       echo "<td>";
-      User::dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
+      User::dropdownID("users_id_tech",$this->fields["users_id_tech"],"interface",1,
                       $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
@@ -301,7 +301,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][34]."&nbsp;:</td>";
       echo "<td>";
-      User::dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
+      User::dropdownAll("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";

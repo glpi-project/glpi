@@ -1849,7 +1849,7 @@ function showJobDetails($target, $ID,$array=array()) {
    if ($ID) {
       echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp;: </span>";
       if ($canupdate) {
-         User::dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,
+         User::dropdownAll("users_id_recipient",$job->fields["users_id_recipient"],1,
                           $job->fields["entities_id"]);
       } else {
          echo getUserName($job->fields["users_id_recipient"],$showuserlink);
@@ -1915,7 +1915,7 @@ function showJobDetails($target, $ID,$array=array()) {
       }
 
       //List all users in the active entity (and all it's sub-entities if needed)
-      $users_id_rand = User::dropdownAllUsers("users_id",$array["users_id"],1,$entities,1);
+      $users_id_rand = User::dropdownAll("users_id",$array["users_id"],1,$entities,1);
 
       //Get all the user's entities
       $all_entities = getUserEntities($array["users_id"], true);
@@ -1946,7 +1946,7 @@ function showJobDetails($target, $ID,$array=array()) {
    } else if ($canupdate){
       echo $LANG['common'][34]."&nbsp;: </td>";
       echo "<td>";
-      User::dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
+      User::dropdownAll("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
    } else {
       echo $LANG['common'][34]."&nbsp;: </td>";
       echo "<td>";
