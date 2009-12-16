@@ -106,6 +106,12 @@ class NetworkPort extends CommonDBTM {
       return $input;
    }
 
+   function pre_deleteItem($ID) {
+      removeConnector($ID);
+      return true;
+   }
+
+
    function cleanDBonPurge($ID) {
       global $DB;
 

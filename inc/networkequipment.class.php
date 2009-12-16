@@ -181,11 +181,6 @@ class NetworkEquipment extends CommonDBTM {
       }
    }
 
-   function pre_deleteItem($ID) {
-      removeConnector($ID);
-      return true;
-   }
-
    /**
     * Can I change recusvive flag to false
     * check if there is "linked" object in another entity
