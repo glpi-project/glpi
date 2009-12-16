@@ -1784,7 +1784,7 @@ class User extends CommonDBTM {
     * @return nothing (print out an HTML select box)
     *
     */
-   static function dropdownAllUsers($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
+   static function dropdownAll($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
                              $used=array()) {
 
       return User::dropdown($myname,
@@ -1808,7 +1808,7 @@ class User extends CommonDBTM {
     * @param $display_comment display comment near the dropdown
     * @return nothing (print out an HTML select box)
     */
-   static function dropdownUsersID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
+   static function dropdownID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
       // Make a select box with all glpi users
 
       return User::dropdown($myname,

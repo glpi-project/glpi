@@ -61,7 +61,7 @@ class TicketCategory extends CommonTreeDropdown {
                           'list'  => false),
                    array('name'  => 'users_id',
                           'label' => $LANG['common'][10],
-                          'type'  => 'dropdownUsersID',
+                          'type'  => 'UserdropdownID',
                           'list'  => true),
                     array('name'  => 'groups_id',
                           'label' => $LANG['common'][35],

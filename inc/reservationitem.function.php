@@ -355,9 +355,9 @@ function showAddReservationForm($target,$items,$date,$resaID=-1) {
       echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31]."&nbsp;:</td>";
       echo "<td>";
       if ($resaID==-1) {
-         User::dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$item->getField('entities_id'));
+         User::dropdownAll("users_id",$_SESSION["glpiID"],1,$item->getField('entities_id'));
       } else {
-         User::dropdownAllUsers("users_id",$resa->fields["users_id"],1,$item->getField('entities_id'));
+         User::dropdownAll("users_id",$resa->fields["users_id"],1,$item->getField('entities_id'));
       }
       echo "</td></tr>\n";
    }

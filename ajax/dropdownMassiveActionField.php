@@ -185,11 +185,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "users_id_tech" :
-                  User::dropdownUsersID($search["linkfield"],0,"interface",1,$_SESSION["glpiactive_entity"]);
+                  User::dropdownID($search["linkfield"],0,"interface",1,$_SESSION["glpiactive_entity"]);
                   break;
 
                default :
-                  User::dropdownAllUsers($search["linkfield"],0,1,$_SESSION["glpiactive_entity"]);
+                  User::dropdownAll($search["linkfield"],0,1,$_SESSION["glpiactive_entity"]);
                   break;
             }
             break;

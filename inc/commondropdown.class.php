@@ -147,8 +147,8 @@ abstract class CommonDropdown extends CommonDBTM {
       foreach ($fields as $field) {
          echo "<tr class='tab_bg_1'><td>".$field['label']."&nbsp;:</td><td>";
          switch ($field['type']) {
-            case 'dropdownUsersID' :
-               User::dropdownUsersID($field['name'], $this->fields[$field['name']], "interface", 1,
+            case 'UserdropdownID' :
+               User::dropdownID($field['name'], $this->fields[$field['name']], "interface", 1,
                                 $this->fields["entities_id"]);
                break;
 

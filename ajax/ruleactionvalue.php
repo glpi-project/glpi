@@ -70,7 +70,7 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_users" :
-               User::dropdownAllUsers("value");
+               User::dropdownAll("value");
                $display=true;
                break;
 
