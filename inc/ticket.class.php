@@ -146,7 +146,7 @@ class Ticket extends CommonDBTM {
          }
       } else if (haveRight("comment_ticket","1")) {
          $ong[1] = $LANG['job'][38]." ".$ID;
-         if (!strstr($job->fields["status"],"old_")
+         if (!strstr($job->fields["status"],"closed") // TODO review this => to add "approbation"
              && $job->fields["users_id"]==$_SESSION["glpiID"]) {
             $ong[2] = $LANG['job'][29];
          }
@@ -388,7 +388,7 @@ class Ticket extends CommonDBTM {
             $this->fields["status"]="new";
          }
 
-         if (in_array("status",$updates) && strstr($input["status"],"old_")) {
+         if (in_array("status",$updates) && $input["status"]=="closed") {
             $updates[]="closedate";
             $oldvalues['closedate']=$this->fields["closedate"];
             $this->fields["closedate"]=$_SESSION["glpi_currenttime"];
@@ -400,7 +400,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Status close : check dates
-      if (strstr($this->fields["status"],"old_")
+      if ($this->fields["status"]=="closed"
           && (in_array("date",$updates) || in_array("closedate",$updates))) {
 
          // Invalid dates : no change
@@ -488,6 +488,13 @@ class Ticket extends CommonDBTM {
                      $global_mail_change_count++;
                      break;
 
+                  case "ticketsolutiontypes_id" :
+                  case "solution" :
+                     $change_followup_content .= $LANG['mailing'][53]." : " .
+                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$input["_old_soltype"])." -> ".
+                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->fields["ticketsolutiontypes_id"])."\n";
+                     break;
+
                   case "date" :
                      $change_followup_content .= $LANG['mailing'][48]."&nbsp;: ".
                                                  $input["_old_date"]." -> ".$this->fields["date"]."\n";
@@ -496,7 +503,7 @@ class Ticket extends CommonDBTM {
 
                   case "closedate" :
                      // if update status from an not closed status : no mail for change closedate
-                     if (!in_array("status",$updates) || !strstr($input["status"],"old_")) {
+                     if (!in_array("status",$updates) || !$input["status"]!="closed") {
                         $change_followup_content .= $LANG['mailing'][49]."&nbsp;: ".
                                                     $input["_old_closedate"]." -> ".
                                                     $this->fields["closedate"]."\n";
@@ -509,7 +516,7 @@ class Ticket extends CommonDBTM {
                      $change_followup_content .= $LANG['mailing'][27]."&nbsp;: ".
                                                  $this->getStatus($input["_old_status"])." -> ".
                                                  $this->getStatus($new_status)."\n";
-                     if (strstr($new_status,"old_")) {
+                     if ($new_status=="closed") {
                         $newinput["add_close"]="add_close";
                      }
                      if (in_array("closedate",$updates)) {
@@ -917,7 +924,7 @@ class Ticket extends CommonDBTM {
          unset($input["minute"]);
       }
 
-      if (isset($input["status"]) && strstr($input["status"],"old_")) {
+      if (isset($input["status"]) && $input["status"]=="closed") {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];
          } else {
