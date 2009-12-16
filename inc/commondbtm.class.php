@@ -808,32 +808,32 @@ class CommonDBTM extends CommonGLPI {
       }
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
-      
+
       if ($force) {
-         $input=doHookFunction("pre_item_purge",$this);
-         if (isset($input['purge'])) {
-            $input['_purge']=$input['purge'];
-            unset($input['purge']);
+         doHook("pre_item_purge",$this);
+         if (isset($this->input['purge'])) {
+            $this->input['_purge']=$this->input['purge'];
+            unset($this->input['purge']);
          }
       } else {
-         $input=doHookFunction("pre_item_delete",$this);
-         if (isset($input['delete'])) {
-            $input['_delete']=$input['delete'];
+         doHook("pre_item_delete",$this);
+         if (isset($this->input['delete'])) {
+            $this->input['_delete']=$this->input['delete'];
             unset($input['delete']);
          }
       }
 
-      if (!is_array($input)) {
+      if (!is_array($this->input)) {
          // $input clear by a hook to cancel delete
          return false;
       }
       if ($this->pre_deleteItem($this->fields["id"])) {
          if ($this->deleteFromDB($this->fields["id"], $force)) {
             if ($force) {
-               $this->addMessageOnPurgeAction($input);
+               $this->addMessageOnPurgeAction($this->input);
                doHook("item_purge",$this);
             } else {
-               $this->addMessageOnDeleteAction($input);
+               $this->addMessageOnDeleteAction($this->input);
                if ($this->dohistory&&$history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
