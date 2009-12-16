@@ -80,6 +80,10 @@ class Entity extends CommonTreeDropdown {
       return haveRight('entity', 'r');
    }
 
+   function isNewID($ID) {
+      return (empty($ID)||$ID<0);
+   }
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
