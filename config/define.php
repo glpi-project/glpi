@@ -669,7 +669,6 @@ $CFG_GLPI["linkuser_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE
 $CFG_GLPI["linkgroup_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                      PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
 
-// TODO Cannot add a type >= 32 in this array (because of pow(2,type) used for helpdesk rights)
 $CFG_GLPI["helpdesk_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                     PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
 
