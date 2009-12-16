@@ -529,22 +529,28 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $input=doHookFunction("pre_item_add",$input);
+      // Store input in the object to be available in all sub-method / hook
+      $this->input = $input;
 
-      if (isset($input['add'])) {
-         $input['_add']=$input['add'];
-         unset($input['add']);
+      // Call the plugin hook - $this->input can be altered
+      doHook("pre_item_add", $this);
+
+      if ($this->input && is_array($this->input)) {
+         if (isset($this->input['add'])) {
+            $this->input['_add']=$this->input['add'];
+            unset($this->input['add']);
+         }
+         $this->input=$this->prepareInputForAdd($this->input);
       }
-      $input=$this->prepareInputForAdd($input);
 
-      if ($input && is_array($input)) {
+      if ($this->input && is_array($this->input)) {
          $this->fields=array();
          $table_fields=$DB->list_fields($this->table);
 
          // fill array for add
-         foreach ($input as $key => $val) {
+         foreach ($this->input as $key => $val) {
             if ($key[0]!='_' && isset($table_fields[$key])) {
-               $this->fields[$key] = $input[$key];
+               $this->fields[$key] = $this->input[$key];
             }
          }
          // Auto set date_mod if exsist
@@ -553,9 +559,9 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($newID= $this->addToDB()) {
-            $this->addMessageOnAddAction($input);
-            $this->post_addItem($newID,$input);
-            doHook("item_add",array("type"=>$this->type, "id" => $newID, "input" => $input));
+            $this->addMessageOnAddAction($this->input);
+            $this->post_addItem($newID, $this->input);
+            doHook("item_add", $this);
             return $newID;
          }
       }
@@ -1002,7 +1008,7 @@ class CommonDBTM extends CommonGLPI {
    * Have I the global right to "delete" the Object
    *
    * Default is calling canCreate
-   * May be overloaded if needed 
+   * May be overloaded if needed
    *
    * @return booleen
    * @see canCreate
@@ -1015,7 +1021,7 @@ class CommonDBTM extends CommonGLPI {
    * Have I the global right to "update" the Object
    *
    * Default is calling canCreate
-   * May be overloaded if needed 
+   * May be overloaded if needed
    *
    * @return booleen
    * @see canCreate
@@ -1047,7 +1053,7 @@ class CommonDBTM extends CommonGLPI {
    * Have I the right to "update" the Object
    *
    * Default is calling canCreateItem
-   * May be overloaded if needed 
+   * May be overloaded if needed
    *
    * @return booleen
    * @see canCreate
@@ -1061,7 +1067,7 @@ class CommonDBTM extends CommonGLPI {
    * Have I the right to "delete" the Object
    *
    * Default is calling canCreateItem
-   * May be overloaded if needed 
+   * May be overloaded if needed
    *
    * @return booleen
    * @see canCreate
@@ -1391,7 +1397,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function can($ID,$right,&$input=NULL) {
 
-      // Create process 
+      // Create process
       if ($this->isNewID($ID)) {
          if (!isset($this->fields['id'])) {
             // Only once
