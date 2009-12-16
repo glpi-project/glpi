@@ -749,20 +749,17 @@ class Search {
             // Display pager only for HTML
             if ($output_type==HTML_OUTPUT) {
                // For plugin add new parameter if available
-               if (isPluginItemType($itemtype)) {
-                  if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-                     $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].
-                              '_addParamFordynamicReport';
+               if ($plug=isPluginItemType($itemtype)) {
+                  $function='plugin_'.$plug['plugin'].'_addParamFordynamicReport';
 
-                     if (function_exists($function)) {
-                        $out=$function($itemtype);
-                        if (is_array($out) && count($out)) {
-                           foreach ($out as $key => $val) {
-                              if (is_array($val)) {
-                                 $parameters .= Search::getArrayUrlLink($key,$val);
-                              } else {
-                                 $parameters .= "&amp;$key=$val";
-                              }
+                  if (function_exists($function)) {
+                     $out=$function($itemtype);
+                     if (is_array($out) && count($out)) {
+                        foreach ($out as $key => $val) {
+                           if (is_array($val)) {
+                              $parameters .= Search::getArrayUrlLink($key,$val);
+                           } else {
+                              $parameters .= "&amp;$key=$val";
                            }
                         }
                      }
@@ -1469,14 +1466,12 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addHaving';
-            if (function_exists($function)) {
-               $out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_addHaving';
+         if (function_exists($function)) {
+            $out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -1589,14 +1584,12 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addOrderBy';
-            if (function_exists($function)) {
-               $out=$function($itemtype,$ID,$order,$key);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_addOrderBy';
+         if (function_exists($function)) {
+            $out=$function($itemtype,$ID,$order,$key);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -1768,14 +1761,12 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addSelect';
-            if (function_exists($function)) {
-               $out=$function($itemtype,$ID,$num);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_addSelect';
+         if (function_exists($function)) {
+            $out=$function($itemtype,$ID,$num);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -2082,14 +2073,12 @@ class Search {
       $SEARCH=makeTextSearch($val,$nott);
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addWhere';
-            if (function_exists($function)) {
-               $out = $function($link,$nott,$itemtype,$ID,$val);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_addWhere';
+         if (function_exists($function)) {
+            $out = $function($link,$nott,$itemtype,$ID,$val);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -2444,14 +2433,12 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addLeftJoin';
-            if (function_exists($function)) {
-               $out = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_addLeftJoin';
+         if (function_exists($function)) {
+            $out = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
@@ -2951,14 +2938,12 @@ class Search {
       }
 
       // Plugin can override core definition for its type
-      if (isPluginItemType($itemtype)) {
-         if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])) {
-            $function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_giveItem';
-            if (function_exists($function)) {
-               $out=$function($itemtype,$ID,$data,$num);
-               if (!empty($out)) {
-                  return $out;
-               }
+      if ($plug=isPluginItemType($itemtype)) {
+         $function='plugin_'.$plug['plugin'].'_giveItem';
+         if (function_exists($function)) {
+            $out=$function($itemtype,$ID,$data,$num);
+            if (!empty($out)) {
+               return $out;
             }
          }
       }
