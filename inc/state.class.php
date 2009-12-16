@@ -73,7 +73,7 @@ class State extends CommonDropdown {
             $elements[$data["id"]] = $LANG['setup'][198] . ": " . $data["name"];
          }
       }
-      dropdownArrayValues($name, $elements, $value);
+      Dropdown::showFromArray($name, $elements, array('value'=>$value));
    }
 }
 

@@ -662,7 +662,7 @@ class Auth {
          $methods[AUTH_MAIL]=$LANG['login'][33];
       }
 
-      return dropdownArrayValues($name,$methods);
+      return Dropdown::showFromArray($name,$methods);
    }
 }
 

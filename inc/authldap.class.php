@@ -239,7 +239,8 @@ class AuthLDAP extends CommonDBTM {
       $alias_options[LDAP_DEREF_ALWAYS] = $LANG['ldap'][32];
       $alias_options[LDAP_DEREF_SEARCHING] = $LANG['ldap'][33];
       $alias_options[LDAP_DEREF_FINDING] = $LANG['ldap'][34];
-      dropdownArrayValues("deref_option",$alias_options,$this->fields["deref_option"]);
+      Dropdown::showFromArray("deref_option",$alias_options,
+                     array('value'=>$this->fields["deref_option"]));
       echo"</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value='".
