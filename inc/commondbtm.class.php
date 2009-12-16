@@ -1137,7 +1137,9 @@ class CommonDBTM extends CommonGLPI {
       }
       if (isset($RELATION[$this->table])) {
          foreach ($RELATION[$this->table] as $tablename => $field) {
-            if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
+            $itemtype=getItemTypeForTable($tablename);
+            $item = new $itemtype();
+            if ($item->isEntityAssign()) {
                // 1->N Relation
                if (is_array($field)) {
                   foreach ($field as $f) {
@@ -1169,7 +1171,8 @@ class CommonDBTM extends CommonGLPI {
                         while ($data = $DB->fetch_assoc($res)) {
                            $itemtype=$data["itemtype"];
                            $itemtable=getTableForItemType($itemtype);
-                           if (in_array($itemtable, $CFG_GLPI["specif_entities_tables"])) {
+                           $item = new $itemtype();
+                           if ($item->isEntityAssign()) {
 
                               if (countElementsInTable("$tablename, $itemtable",
                                   "`$tablename`.`$field`='$ID'
@@ -1182,25 +1185,28 @@ class CommonDBTM extends CommonGLPI {
                         }
                      }
                   // Search for another N->N Relation
-                  } else if ($othertable != $this->table && isset($rel[$tablename])
-                             && in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
+                  } else if ($othertable != $this->table && isset($rel[$tablename])) {
+                     $itemtype=getItemTypeForTable($othertable);
+                     $item = new $itemtype();
 
-                     if (is_array($rel[$tablename])) {
-                        foreach ($rel[$tablename] as $otherfield) {
+                     if ($item->isEntityAssign()) {
+                        if (is_array($rel[$tablename])) {
+                           foreach ($rel[$tablename] as $otherfield) {
+                              if (countElementsInTable("$tablename, $othertable",
+                                 "`$tablename`.`$field`='$ID'
+                                 AND `$tablename`.`$otherfield`=`$othertable`.id
+                                 AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
+                                 return false;
+                              }
+                           }
+                        } else {
+                           $otherfield = $rel[$tablename];
                            if (countElementsInTable("$tablename, $othertable",
-                               "`$tablename`.`$field`='$ID'
-                               AND `$tablename`.`$otherfield`=`$othertable`.id
-                               AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
+                              "`$tablename`.`$field`=$ID
+                              AND `$tablename`.`$otherfield`=`$othertable`.id
+                              AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
                               return false;
                            }
-                        }
-                     } else {
-                        $otherfield = $rel[$tablename];
-                        if (countElementsInTable("$tablename, $othertable",
-                            "`$tablename`.`$field`=$ID
-                            AND `$tablename`.`$otherfield`=`$othertable`.id
-                            AND `$othertable`.`entities_id` NOT IN $entities")>'0') {
-                           return false;
                         }
                      }
                   }

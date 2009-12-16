@@ -50,10 +50,11 @@ if (! TableExists($_POST['table']) || ! FieldExists($_POST['table'],$_POST['fiel
 }
 
 $entity="";
-if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']>=0
-    && in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
-
-   $entity=" AND `entities_id` = '".$_POST['entity_restrict']."' ";
+if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']>=0) {
+   $item = new $_POST['itemtype']();
+   if ($item->isEntityAssign()) {
+      $entity=" AND `entities_id` = '".$_POST['entity_restrict']."' ";
+   }
 }
 
 if (isset($_POST['user_restrict']) && $_POST['user_restrict']>0) {

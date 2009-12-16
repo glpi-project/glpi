@@ -236,21 +236,19 @@ if (isset($_POST["itemtype"])) {
                   /// Specific entity item
                   $itemtable = getTableForItemType($_POST["itemtype"]);
 
-                  if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
-                      && in_array($searchopt[$_POST["id_field"]]["table"],
-                                  $CFG_GLPI["specif_entities_tables"])
-                      && in_array($itemtable,
-                                  $CFG_GLPI["specif_entities_tables"])) {
+                  $itemtype = getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
+                  if (class_exists($itemtype)) {
+                     $item2 = new $itemtype();
 
-                     $itemtype = getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
-                     if (class_exists($itemtype)) {
-                        $item2 = new $itemtype();
+                     if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
+                        && $item2->isEntityAssign()
+                        && $item->isEntityAssign()) {
                         if ($item2->getFromDB($_POST[$_POST["field"]])) {
                            if (isset($item2->fields["entities_id"])
-                               && $item2->fields["entities_id"] >=0) {
+                                 && $item2->fields["entities_id"] >=0) {
 
                               if (isset($item2->fields["is_recursive"])
-                                  && $item2->fields["is_recursive"]) {
+                                    && $item2->fields["is_recursive"]) {
 
                                  $link_entity_type = getSonsOf("glpi_entities",
                                                                $item2->fields["entities_id"]);

@@ -102,8 +102,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
 
    // Manage multiple Entities dropdowns
    $add_order="";
-   if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])
-       || $_POST['table']=='glpi_entities') {
+   if ($item->isEntityAssign()) {
 
       $recur=$item->maybeRecursive();
 
@@ -214,7 +213,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    }
 } else { // Not dropdowntree_tables
    $multi=false;
-   if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
+   if ($item->isEntityAssign()) {
       $multi=$item->maybeRecursive();
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
          $where.=getEntitiesRestrictRequest("AND",$_POST['table'],"entities_id",

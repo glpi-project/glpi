@@ -119,8 +119,7 @@ class Search {
          }
       }
 
-      $entity_restrict = ($itemtype == 'Entity'
-                          || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
+      $entity_restrict = $item->isEntityAssign();
 
       $names = array('Computer'   => $LANG['Menu'][0],
                      'Printer'    => $LANG['Menu'][2],

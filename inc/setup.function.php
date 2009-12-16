@@ -44,11 +44,15 @@ if (!defined('GLPI_ROOT')) {
 function getDropdownID($input) {
    global $DB, $CFG_GLPI;
 
+
+
    // Clean datas
    $input["value"]=trim($input["value"]);
    if (!empty ($input["value"])) {
+      $itemtype=getItemTypeForTable($input["tablename"]);
+      $item = new $itemtype();
       $add_entity_field_twin = "";
-      if (in_array($input["tablename"], $CFG_GLPI["specif_entities_tables"])) {
+      if ($item->isEntityAssign()) {
          $add_entity_field_twin = " `entities_id` = '" . $input["entities_id"] . "'
                                    AND ";
       }
@@ -175,9 +179,12 @@ function addDropdown($input) {
    }
 
    if (!empty ($input["value"])) {
+      $itemtype=getItemTypeForTable($input["tablename"]);
+      $item = new $itemtype();
+
       $add_entity_field = "";
       $add_entity_value = "";
-      if (in_array($input["tablename"], $CFG_GLPI["specif_entities_tables"])) {
+      if ($item->isEntityAssign()) {
          $add_entity_field = "`entities_id`,";
          $add_entity_value = "'" . $input["entities_id"] . "',";
       }

@@ -47,7 +47,7 @@ if (!TableExists($_POST['table'])) {
 
 $itemtypeisplugin=isPluginItemType($_POST['itemtype']);
 $item = new $_POST['itemtype'];
-if (in_array($_POST['table'], $CFG_GLPI["specif_entities_tables"])) {
+if ($item->isEntityAssign()) {
    if (isset ($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
       $entity = $_POST["entity_restrict"];
    } else {

@@ -685,14 +685,14 @@ $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
 $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
-
+/*
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
       'glpi_consumableitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',
       'glpi_links','glpi_locations','glpi_mailcollectors','glpi_monitors','glpi_netpoints',
       'glpi_networkequipments','glpi_peripherals','glpi_phones','glpi_printers','glpi_softwares',
       'glpi_softwarelicenses','glpi_suppliers','glpi_tickets','glpi_taskcategories',
       'glpi_ticketcategories','reservation_types','state_types');
-
+*/
 $CFG_GLPI["union_search_type"] = array('ReservationItem'=>"reservation_types",
                                        'States'=>"state_types");
 

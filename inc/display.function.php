@@ -2685,6 +2685,8 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
                                  $user_restrict=-1,$option='') {
    global $CFG_GLPI;
 
+   ///TODO : clean params / pass itemtype instead of table
+
    if ($CFG_GLPI["use_ajax"] && $CFG_GLPI["use_ajax_autocompletion"]) {
       $rand=mt_rand();
       echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".
@@ -2697,6 +2699,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
             url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
             extraParams : {
                table: '$table',
+               itemtype: '".getItemTypeForTable($table)."',
                field: '$field'";
 
             if (!empty($entity_restrict) && $entity_restrict>=0){
