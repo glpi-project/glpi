@@ -63,11 +63,11 @@ class Profile extends CommonDBTM {
       return $LANG['Menu'][35];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('profile', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('profile', 'r');
    }
 

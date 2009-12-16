@@ -49,11 +49,11 @@ class EntityData extends CommonDBTM {
       return 'entities_id';
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('entity', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('entity', 'r');
    }
 

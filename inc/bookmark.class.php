@@ -45,11 +45,11 @@ class Bookmark extends CommonDBTM {
    public $may_be_recursive=true;
    public $may_be_private=true;
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('bookmark_public', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('bookmark_public', 'r');
    }
 

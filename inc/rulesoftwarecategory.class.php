@@ -57,11 +57,11 @@ class RuleSoftwareCategory extends Rule {
       return $LANG['rulesengine'][37];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('rule_softwarecategories', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('rule_softwarecategories', 'r');
    }
 

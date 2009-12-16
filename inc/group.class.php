@@ -54,11 +54,11 @@ class Group extends CommonDBTM {
       return $LANG['common'][35];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('group', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('group', 'r');
    }
 

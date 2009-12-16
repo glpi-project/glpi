@@ -59,11 +59,11 @@ class Cartridge extends CommonDBTM {
       return $LANG['cartridges'][0];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('cartridge', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('cartridge', 'r');
    }
 

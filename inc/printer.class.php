@@ -54,11 +54,11 @@ class Printer  extends CommonDBTM {
       return $LANG['help'][27];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('printer', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('printer', 'r');
    }
 

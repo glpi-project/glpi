@@ -54,11 +54,11 @@ class User extends CommonDBTM {
       return $LANG['common'][34];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('user', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('user', 'r');
    }
 

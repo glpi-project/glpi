@@ -44,11 +44,11 @@ class RuleOcs extends Rule {
    public $right='rule_ocs';
    public $can_sort=true;
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('rule_ocs', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('rule_ocs', 'r');
    }
 

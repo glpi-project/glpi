@@ -48,11 +48,11 @@ class AuthLDAP extends CommonDBTM {
       return $LANG['login'][2];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('config', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('config', 'r');
    }
 

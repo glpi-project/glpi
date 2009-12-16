@@ -51,11 +51,11 @@ class Budget extends CommonDBTM{
       return $LANG['financial'][87];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('budget', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('budget', 'r');
    }
 

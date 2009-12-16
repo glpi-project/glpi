@@ -59,12 +59,16 @@ class Ticket extends CommonDBTM {
       return $LANG['job'][38];
    }
 
-   static function canCreate() {
+   function canCreate() {
+      return haveRight('create_ticket', 1);
+   }
+
+   function canUpdate() {
       return haveRight('update_ticket', 1);
    }
 
-   static function canView() {
-      return haveRight('show_all_ticket', 1);
+   function canView() {
+      return true;
    }
 
    /**
@@ -76,7 +80,7 @@ class Ticket extends CommonDBTM {
    *
    * @return boolean
    **/
-   function can($ID,$right,&$input=NULL) {
+/*   function can($ID,$right,&$input=NULL) {
 
       if (empty($ID)||$ID<=0) {
          if (!count($this->fields)) {
@@ -115,7 +119,7 @@ class Ticket extends CommonDBTM {
       }
       return false;
    }
-
+*/
    /**
     * Is the current user have right to show the current ticket ?
     *

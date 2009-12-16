@@ -86,7 +86,9 @@ function haveTypeRight($itemtype, $right) {
    } else {
       $method = array($itemtype,'canView');
    }
-   if (is_callable($method)) {
+   $item=new $itemtype();
+   if (method_exists($item,$method[1])) {
+      return $item->$method[1]();
       return (call_user_func($method));
    }
    return false;

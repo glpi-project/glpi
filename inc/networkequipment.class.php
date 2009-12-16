@@ -54,11 +54,11 @@ class NetworkEquipment extends CommonDBTM {
       return $LANG['help'][26];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('networking', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('networking', 'r');
    }
 

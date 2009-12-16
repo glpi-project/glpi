@@ -55,11 +55,11 @@ class Document extends CommonDBTM {
       return $LANG['Menu'][27];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('document', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('document', 'r');
    }
 

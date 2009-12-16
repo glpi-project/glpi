@@ -54,11 +54,11 @@ class Infocom extends CommonDBTM {
       return $LANG['financial'][3];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('infocom', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('infocom', 'r');
    }
 

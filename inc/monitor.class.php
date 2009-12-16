@@ -53,11 +53,11 @@ class Monitor extends CommonDBTM {
       return $LANG['help'][28];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('monitor', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('monitor', 'r');
    }
 

@@ -49,11 +49,11 @@ class RegistryKey extends CommonDBTM {
       return $LANG['title'][43];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('ocsng', 'w'); // TODO why this right ?
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('ocsng', 'r');
    }
 

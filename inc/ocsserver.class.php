@@ -49,11 +49,11 @@ class OcsServer extends CommonDBTM {
       return $LANG['ocsng'][29];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('ocsng', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('ocsng', 'r');
    }
 

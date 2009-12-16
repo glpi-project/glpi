@@ -54,11 +54,11 @@ class Reminder extends CommonDBTM {
       return $LANG['title'][37];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('reminder_public', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('reminder_public', 'r');
    }
 

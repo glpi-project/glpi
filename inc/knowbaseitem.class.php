@@ -53,11 +53,11 @@ class KnowbaseItem extends CommonDBTM {
       return $LANG['title'][5];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return (haveRight('knowbase', 'w') || haveRight('faq', 'w'));
    }
 
-   static function canView() {
+   function canView() {
       return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
    }
 

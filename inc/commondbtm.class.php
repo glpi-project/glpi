@@ -994,7 +994,7 @@ class CommonDBTM extends CommonGLPI {
    *
    * @return booleen
    **/
-   static function canCreate() {
+   function canCreate() {
       return false;
    }
 
@@ -1079,7 +1079,7 @@ class CommonDBTM extends CommonGLPI {
    *
    * @return booleen
    **/
-   static function canView() {
+   function canView() {
 
       return false;
    }
