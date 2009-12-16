@@ -236,7 +236,7 @@ function countElementsInTableForMyEntities($table) {
  */
 function countElementsInTableForEntity($table,$entity) {
    /// TODO clean it / maybe include when review of SQL requests
-   $itemtype=getItemTypeForTable();
+   $itemtype=getItemTypeForTable($table);
    $item=new $itemtype();
 
    return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,
@@ -773,7 +773,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item="name") {
    // Restrict to active entities
    if ($table=="glpi_entities") {
       $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
-   } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+   } else if ($item->isEntityAssign()){
       $query.=getEntitiesRestrictRequest("AND",$table,'','',
                                          $item->maybeRecursive());
    } else if ($table=="glpi_users") {
@@ -852,7 +852,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item="name") {
    // Restrict to active entities
    if ($table=="glpi_entities") {
       $query.=getEntitiesRestrictRequest("AND",$table,'','',true);
-   } else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+   } else if ($item->isEntityAssign()){
       $query.=getEntitiesRestrictRequest("AND",$table,'','',
                                          $item->maybeRecursive());
    } else if ($table=="glpi_users") {

@@ -390,12 +390,14 @@ function getNbIntervDropdown($dropdown) {
 
    $field = "name";
 
+   $itemtype=getItemTypeForTable($dropdown);
+   $item = new $itemtype();
    if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) {
       $field="completename";
    }
    $where = '';
    $order = " ORDER BY `$field`";
-   if (in_array($dropdown,$CFG_GLPI["specif_entities_tables"])) {
+   if ($item->isEntityAssign()) {
       $where = getEntitiesRestrictRequest(" WHERE",$dropdown);
       $order = " ORDER BY `entities_id`, `$field`";
    }

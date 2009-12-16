@@ -76,6 +76,7 @@ class Dropdown {
 
       // Temporary computation before rewritten function using itemtype param
       $itemtype=getItemTypeForTable($table);
+      $item = new $itemtype();
 
       if (strlen($value)==0) {
          $value=-1;
@@ -106,7 +107,7 @@ class Dropdown {
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
          $nb=0;
-         if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])) {
+         if ($item->isEntityAssign()) {
             if (!($entity_restrict<0)) {
                $nb=countElementsInTableForEntity($table,$entity_restrict);
             } else {
