@@ -47,8 +47,6 @@ class CommonDBTM extends CommonGLPI {
    var $dohistory=false;
    /// Is an item specific to entity
    var $entity_assign=false;
-   /// Is an item that can be private or assign to an entity
-   var $may_be_private=false;
    /// Black list fields for history log or date mod update
    var $history_blacklist	= array();
    /// Set false to desactivate automatic message on action
@@ -1410,7 +1408,11 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
-         return ($this->canCreate() && $this->canCreateItem());
+         if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]) {
+            return true;
+         } else {
+            return ($this->canCreate() && $this->canCreateItem());
+         }
       } else {
          // Get item if not already loaded
          if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
@@ -1424,8 +1426,7 @@ class CommonDBTM extends CommonGLPI {
       switch ($right) {
          case 'r':
             // Personnal item
-            if ($this->may_be_private && $this->fields['is_private']
-                && $this->fields['users_id']==$_SESSION["glpiID"]) {
+            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]) {
                return true;
             } else {
                return ($this->canView() && $this->canViewItem());
@@ -1434,8 +1435,7 @@ class CommonDBTM extends CommonGLPI {
 
          case 'w':
             // Personnal item
-            if ($this->may_be_private && $this->fields['is_private']
-                && $this->fields['users_id']==$_SESSION["glpiID"]){
+            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]){
                return true;
             } else {
                return ($this->canUpdate() && $this->canUpdateItem());
@@ -1443,8 +1443,7 @@ class CommonDBTM extends CommonGLPI {
             break;
          case 'd':
             // Personnal item
-            if ($this->may_be_private && $this->fields['is_private']
-                && $this->fields['users_id']==$_SESSION["glpiID"]){
+            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]){
                return true;
             } else {
                return ($this->canDelete() && $this->canDeleteItem());
@@ -1540,6 +1539,34 @@ class CommonDBTM extends CommonGLPI {
    function isRecursive() {
       if ($this->maybeRecursive()) {
          return $this->fields["is_recursive"];
+      }
+      return false;
+   }
+
+   /**
+   * Is the object may be recursive
+   *
+   * Can be overloaded (ex : infocom)
+   *
+   * @return boolean
+   **/
+   function maybePrivate() {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return (isset($this->fields['is_private']) && isset($this->fields['users_id']));
+   }
+
+   /**
+    * Is the object private
+    *
+    * Can be overloaded (ex : infocom)
+    *
+    * @return boolean
+    **/
+   function isPrivate() {
+      if ($this->maybePrivate()) {
+         return $this->fields["is_private"];
       }
       return false;
    }
