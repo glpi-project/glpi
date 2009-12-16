@@ -63,7 +63,7 @@ class Entity extends CommonTreeDropdown {
                         );
          return true;
       } else {
-         parent::getFromDB($ID);
+         return parent::getFromDB($ID);
       }
    }
    static function getTypeName() {
