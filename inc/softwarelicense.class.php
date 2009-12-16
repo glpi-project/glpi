@@ -47,7 +47,6 @@ class SoftwareLicense extends CommonDBTM {
    public $type = 'SoftwareLicense';
    public $dohistory = true;
    public $entity_assign=true;
-   public $may_be_recursive=true;
 
 
    static function getTypeName() {

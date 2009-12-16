@@ -45,7 +45,6 @@ class Reminder extends CommonDBTM {
    public $table = 'glpi_reminders';
    public $type = 'Reminder';
    public $entity_assign=true;
-   public $may_be_recursive=true;
    public $may_be_private=true;
 
    static function getTypeName() {

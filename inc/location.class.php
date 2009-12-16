@@ -44,7 +44,6 @@ class Location extends CommonTreeDropdown {
    public $table = 'glpi_locations';
    public $type = 'Location';
    public $entity_assign = true;
-   public $may_be_recursive = true;
 
    function canCreate() {
       return haveRight('entity_dropdown','w');

@@ -43,7 +43,6 @@ class Link extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_links';
    public $type = 'Link';
-   public $may_be_recursive=true;
    public $entity_assign=true;
 
    static function getTypeName() {

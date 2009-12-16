@@ -45,7 +45,6 @@ class Group extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_groups';
    public $type = 'Group';
-   public $may_be_recursive=true;
    public $entity_assign=true;
 
    static function getTypeName() {

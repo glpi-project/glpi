@@ -47,8 +47,6 @@ class SoftwareVersion extends CommonDBTM {
    public $type = 'SoftwareVersion';
    public $dohistory = true;
    public $entity_assign=true;
-   public $may_be_recursive=true;
-
 
    static function getTypeName() {
       global $LANG;

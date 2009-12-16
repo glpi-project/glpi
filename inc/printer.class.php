@@ -46,7 +46,6 @@ class Printer  extends CommonDBTM {
    public $type = 'Printer';
    public $dohistory=true;
    public $entity_assign=true;
-   public $may_be_recursive=true;
 
    static function getTypeName() {
       global $LANG;

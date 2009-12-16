@@ -45,7 +45,6 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $table = 'glpi_contacts';
    public $type = 'Contact';
-   public $may_be_recursive = true;
    public $entity_assign = true;
 
    static function getTypeName() {

@@ -47,8 +47,6 @@ class CommonDBTM extends CommonGLPI {
    var $dohistory=false;
    /// Is an item specific to entity
    var $entity_assign=false;
-   /// Is an item that can be recursivly assign to an entity
-   var $may_be_recursive=false;
    /// Is an item that can be private or assign to an entity
    var $may_be_private=false;
    /// Black list fields for history log or date mod update
@@ -1521,10 +1519,15 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Is the object may be recursive
    *
+   * Can be overloaded (ex : infocom)
+   *
    * @return boolean
    **/
    function maybeRecursive() {
-      return $this->may_be_recursive;
+      if (!isset($this->fields['id']) {
+         $this->getEmpty();
+      }
+      return isset($this->fields['is_recursive']);
    }
 
    /**
@@ -1532,13 +1535,13 @@ class CommonDBTM extends CommonGLPI {
     *
     * Can be overloaded (ex : infocom)
     *
-    * @return integer (0/1)
+    * @return boolean
     **/
    function isRecursive() {
-      if ($this->may_be_recursive && isset($this->fields["is_recursive"])) {
+      if ($this->maybeRecursive()) {
          return $this->fields["is_recursive"];
       }
-      return 0;
+      return false;
    }
 
    /**

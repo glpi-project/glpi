@@ -44,7 +44,6 @@ class TicketCategory extends CommonTreeDropdown {
    public $table = 'glpi_ticketcategories';
    public $type = 'TicketCategory';
    public $entity_assign = true;
-   public $may_be_recursive = true;
 
    function canCreate() {
       return haveRight('entity_dropdown','w');
