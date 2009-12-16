@@ -172,17 +172,15 @@ class TicketPlanning extends CommonDBTM {
 
    function pre_deleteItem($ID) {
 
-      if ($this->getFromDB($ID)) {
-         if (isset($this->fields["users_id"]) &&
-             ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("comment_all_ticket","1"))) {
+      if (isset($this->fields["users_id"]) &&
+          ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("comment_all_ticket","1"))) {
 
-            // Auto update realtime
-            $fup=new TicketFollowup();
-            $fup->getFromDB($this->fields["ticketfollowups_id"]);
-            $updates2[]="realtime";
-            $fup->fields["realtime"]=0;
-            $fup->updateInDB($updates2);
-         }
+         // Auto update realtime
+         $fup=new TicketFollowup();
+         $fup->getFromDB($this->fields["ticketfollowups_id"]);
+         $updates2[]="realtime";
+         $fup->fields["realtime"]=0;
+         $fup->updateInDB($updates2);
       }
       return true;
    }
