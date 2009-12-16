@@ -2071,10 +2071,10 @@ function showJobDetails($target, $ID,$array=array()) {
             echo $item->getTypeName()." ".$item->getNameID();
          }
       } else {
-         dropdownMyDevices($job->fields["users_id"],$job->fields["entities_id"],
+         Ticket::dropdownMyDevices($job->fields["users_id"],$job->fields["entities_id"],
                            $job->fields["itemtype"], $job->fields["items_id"]);
       }
-      dropdownTrackingAllDevices("itemtype", $job->fields["itemtype"], $job->fields["items_id"],
+      Ticket::dropdownAllDevices("itemtype", $job->fields["itemtype"], $job->fields["items_id"],
                                  1, $job->fields["entities_id"]);
    } else {
       if ($ID && class_exists($job->fields['itemtype'])) {

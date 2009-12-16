@@ -1877,5 +1877,330 @@ class Ticket extends CommonDBTM {
    
       $this->showFormButtons($this->getField('id'), '', 2, false);
    }
+
+
+   /**
+   * Make a select box for Ticket my devices
+   *
+   *
+   * @param $userID User ID for my device section
+   * @param $entity_restrict restrict to a specific entity
+   * @param $itemtype of selected item
+   * @param $items_id of selected item
+   *
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      if ($userID==0) {
+         $userID=$_SESSION["glpiID"];
+      }
+
+      $rand=mt_rand();
+      $already_add=array();
+
+      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+         $my_devices="";
+
+         $my_item= $itemtype.'_'.$items_id;
+
+         // My items
+         foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+            if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+               $itemtable=getTableForItemType($itemtype);
+               $item = new $itemtype();
+               $query="SELECT *
+                     FROM `$itemtable`
+                     WHERE `users_id`='".$userID."'";
+               if ($item->maybeDeleted()) {
+                  $query.=" AND `is_deleted`='0' ";
+               }
+               if ($item->maybeTemplate()) {
+                  $query.=" AND `is_template`='0' ";
+               }
+               if (in_array($itemtype,$CFG_GLPI["helpdesk_visible_types"])){
+                  $query.=" AND `is_helpdesk_visible`='1' ";
+               }
+
+               $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
+                                                $item->maybeRecursive());
+               $query.=" ORDER BY `name` ";
+
+               $result=$DB->query($query);
+               if ($DB->numrows($result)>0) {
+                  $type_name=$item->getTypeName();
+
+                  while ($data=$DB->fetch_array($result)) {
+                     $output=$data["name"];
+                     if ($itemtype != 'Software') {
+                        if (!empty($data['serial'])) {
+                           $output.=" - ".$data['serial'];
+                        }
+                        if (!empty($data['otherserial'])) {
+                           $output.=" - ".$data['otherserial'];
+                        }
+                     }
+                     if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
+                        $output.=" (".$data['id'].")";
+                     }
+                     $my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["id"]."' ";
+                     $my_devices.=($my_item==$itemtype."_".$data["id"]?"selected":"").">$type_name - ";
+                     $my_devices.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+
+                     $already_add[$itemtype][]=$data["id"];
+                  }
+               }
+            }
+         }
+         if (!empty($my_devices)) {
+            $my_devices="<optgroup label=\"".$LANG['tracking'][1]."\">".$my_devices."</optgroup>";
+         }
+
+         // My group items
+         if (haveRight("show_group_hardware","1")) {
+            $group_where="";
+            $groups=array();
+            $query="SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name`
+                  FROM `glpi_groups_users`
+                  LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
+                  WHERE `glpi_groups_users`.`users_id`='".$userID."' ".
+                        getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
+            $result=$DB->query($query);
+            $first=true;
+            if ($DB->numrows($result)>0) {
+               while ($data=$DB->fetch_array($result)) {
+                  if ($first) {
+                     $first=false;
+                  } else {
+                     $group_where.=" OR ";
+                  }
+                  $group_where.=" `groups_id` = '".$data["groups_id"]."' ";
+               }
+
+               $tmp_device="";
+               foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+                  if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+                     $itemtable=getTableForItemType($itemtype);
+                     $item = new $itemtype();
+                     $query="SELECT *
+                           FROM `$itemtable`
+                           WHERE ($group_where) ".
+                                 getEntitiesRestrictRequest("AND",$itemtable,"",
+                                    $entity_restrict,$item->maybeRecursive());
+
+                     if ($item->maybeDeleted()) {
+                        $query.=" AND `is_deleted`='0' ";
+                     }
+                     if ($item->maybeTemplate()) {
+                        $query.=" AND `is_template`='0' ";
+                     }
+
+                     $result=$DB->query($query);
+                     if ($DB->numrows($result)>0) {
+                        $type_name=$item->getTypeName();
+                        if (!isset($already_add[$itemtype])) {
+                           $already_add[$itemtype]=array();
+                        }
+                        while ($data=$DB->fetch_array($result)) {
+                           if (!in_array($data["id"],$already_add[$itemtype])) {
+                              $output='';
+                              if (isset($data["name"])) {
+                                 $output = $data["name"];
+                              }
+                              if (isset($data['serial'])) {
+                                 $output .= " - ".$data['serial'];
+                              }
+                              if (isset($data['otherserial'])) {
+                                 $output .= " - ".$data['otherserial'];
+                              }
+                              if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                 $output .= " (".$data['id'].")";
+                              }
+                              $tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["id"];
+                              $tmp_device.="' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
+                              $tmp_device.="$type_name - ";
+                              $tmp_device.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
+                              $tmp_device.="</option>";
+
+                              $already_add[$itemtype][]=$data["id"];
+                           }
+                        }
+                     }
+                  }
+               }
+               if (!empty($tmp_device)) {
+                  $my_devices.="<optgroup label=\"".$LANG['tracking'][1]." - ".$LANG['common'][35]."\">";
+                  $my_devices.=$tmp_device."</optgroup>";
+               }
+            }
+         }
+         // Get linked items to computers
+         if (isset($already_add['Computer']) && count($already_add['Computer'])) {
+            $search_computer=" XXXX IN (".implode(',',$already_add['Computer']).') ';
+            $tmp_device="";
+
+            // Direct Connection
+            $types=array('Peripheral', 'Monitor', 'Printer', 'Phone');
+            foreach ($types as $itemtype) {
+               if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                  && class_exists($itemtype)) {
+                  $itemtable=getTableForItemType($itemtype);
+                  $item = new $itemtype();
+                  if (!isset($already_add[$itemtype])) {
+                     $already_add[$itemtype]=array();
+                  }
+                  $query="SELECT DISTINCT `$itemtable`.*
+                        FROM `glpi_computers_items`
+                        LEFT JOIN `$itemtable`
+                              ON (`glpi_computers_items`.`items_id`=`$itemtable`.`id`)
+                        WHERE `glpi_computers_items`.`itemtype`='$itemtype'
+                              AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
+                                                   $search_computer);
+                  if ($item->maybeDeleted()) {
+                     $query.=" AND `is_deleted`='0' ";
+                  }
+                  if ($item->maybeTemplate()) {
+                     $query.=" AND `is_template`='0' ";
+                  }
+                  $query.=getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict)
+                        ." ORDER BY `$itemtable`.`name`";
+
+                  $result=$DB->query($query);
+                  if ($DB->numrows($result)>0) {
+                     $type_name=$item->getTypeName();
+                     while ($data=$DB->fetch_array($result)) {
+                        if (!in_array($data["id"],$already_add[$itemtype])) {
+                           $output=$data["name"];
+                           if ($itemtype != 'Software') {
+                              $output.=" - ".$data['serial']." - ".$data['otherserial'];
+                           }
+                           if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                              $output.=" (".$data['id'].")";
+                           }
+                           $tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["id"];
+                           $tmp_device.="' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
+                           $tmp_device.="$type_name - ";
+                           $tmp_device.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
+                           $tmp_device.="</option>";
+
+                           $already_add[$itemtype][]=$data["id"];
+                        }
+                     }
+                  }
+               }
+            }
+            if (!empty($tmp_device)) {
+               $my_devices.="<optgroup label=\"".$LANG['reports'][36]."\">".$tmp_device."</optgroup>";
+            }
+
+            // Software
+            if (in_array('Software',$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+               $query = "SELECT DISTINCT `glpi_softwareversions`.`name` AS version,
+                                       `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
+                        FROM `glpi_computers_softwareversions`, `glpi_softwares`,
+                              `glpi_softwareversions`
+                        WHERE `glpi_computers_softwareversions`.`softwareversions_id`=
+                                 `glpi_softwareversions`.`id`
+                              AND `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
+                              AND ".str_replace("XXXX","`glpi_computers_softwareversions`.`computers_id`",
+                                                $search_computer)."
+                              AND `glpi_softwares`.`is_helpdesk_visible`='1' ".
+                              getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict)."
+                        ORDER BY `glpi_softwares`.`name`";
+
+               $result=$DB->query($query);
+               if ($DB->numrows($result)>0) {
+                  $tmp_device="";
+                  $item = new Software();
+                  $type_name=$item->getTypeName();
+                  if (!isset($already_add['Software'])) {
+                     $already_add['Software'] = array();
+                  }
+                  while ($data=$DB->fetch_array($result)) {
+                     if (!in_array($data["id"],$already_add['Software'])) {
+                        $tmp_device.="<option value='Software_".$data["id"]."' ";
+                        $tmp_device.=($my_item == 'Software'."_".$data["id"]?"selected":"").">";
+                        $tmp_device.="$type_name - ".$data["name"]." (v. ".$data["version"].")";
+                        $tmp_device.=($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
+                        $tmp_device.="</option>";
+
+                        $already_add['Software'][]=$data["id"];
+                     }
+                  }
+                  if (!empty($tmp_device)) {
+                     $my_devices.="<optgroup label=\"".ucfirst($LANG['software'][17])."\">";
+                     $my_devices.=$tmp_device."</optgroup>";
+                  }
+               }
+            }
+         }
+         echo "<div id='tracking_my_devices'>";
+         echo $LANG['tracking'][1].":&nbsp;<select id='my_items' name='_my_items'><option value=''>--- ";
+         echo $LANG['help'][30]." ---</option>$my_devices</select></div>";
+      }
+   }
+   /**
+   * Make a select box for Tracking All Devices
+   *
+   * @param $myname select name
+   * @param $itemtype preselected value.for item type
+   * @param $items_id preselected value for item ID
+   * @param $admin is an admin access ?
+   * @param $entity_restrict Restrict to a defined entity
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownAllDevices($myname,$itemtype,$items_id=0,$admin=0,$entity_restrict=-1) {
+      global $LANG,$CFG_GLPI,$DB;
+
+      $rand=mt_rand();
+
+      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]==0) {
+         echo "<input type='hidden' name='$myname' value='0'>";
+         echo "<input type='hidden' name='items_id' value='0'>";
+      } else {
+         echo "<div id='tracking_all_devices'>";
+         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)) {
+            // Display a message if view my hardware
+            if (!$admin
+               && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+               echo $LANG['tracking'][2]."&nbsp;: ";
+            }
+
+            $types = getAllTypesForHelpdesk();
+            echo "<select id='search_$myname$rand' name='$myname'>\n";
+            echo "<option value='-1' >-----</option>\n";
+            echo "<option value='' ".(empty($itemtype)?" selected":"").">".$LANG['help'][30]."</option>";
+            foreach ($types as $type => $label) {
+               echo "<option value='".$type."' ".(($type==$itemtype)?" selected":"").">".$label;
+               echo "</option>\n";
+            }
+            echo "</select>";
+
+            $params=array('itemtype'=>'__VALUE__',
+                        'entity_restrict'=>$entity_restrict,
+                        'admin'=>$admin,
+                        'myname'=>"items_id",);
+
+            ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"].
+                                       "/ajax/dropdownTrackingDeviceType.php",$params);
+
+            echo "<span id='results_$myname$rand'>\n";
+
+            if (class_exists($itemtype) && $items_id) {
+               $item = new $itemtype();
+               if ($item->getFromDB($items_id)) {
+                  echo "<select name='items_id'>\n";
+                  echo "<option value='$items_id'>".$item->getName();
+                  echo "</option></select>";
+               }
+            }
+            echo "</span>\n";
+         }
+         echo "</div>";
+      }
+      return $rand;
+   }
+
 }
 ?>
