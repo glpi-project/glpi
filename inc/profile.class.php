@@ -750,7 +750,7 @@ class Profile extends CommonDBTM {
          foreach ($tabstatus as $dest => $label) {
             echo "<td class='center'>";
             if ($dest==$from) {
-               echo getYesNo(1);
+               echo Dropdown::getYesNo(1);
             } else {
                Dropdown::showYesNo("_cycle[$from][$dest]",
                                    (!isset($this->fields['helpdesk_status'][$from][$dest])

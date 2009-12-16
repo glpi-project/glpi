@@ -1359,11 +1359,11 @@ class CommonDBTM extends CommonGLPI {
          echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
          if (!$this->can($ID,'recursive')) {
-            echo getYesNo($this->fields["is_recursive"]);
+            echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][86];
             $image="/pics/lock.png";
          } else if (!$this->canUnrecurs()) {
-            echo getYesNo($this->fields["is_recursive"]);
+            echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][84];
             $image="/pics/lock.png";
          } else {

@@ -93,12 +93,12 @@ class RuleDictionnarySoftware extends RuleCached {
       if ($fields["ignore_ocs_import"] == '') {
          echo "&nbsp;";
       } else {
-         echo getYesNo($fields["ignore_ocs_import"]);
+         echo Dropdown::getYesNo($fields["ignore_ocs_import"]);
       }
       echo "</td>";
       echo "<td class='tab_bg_2'>" .
             ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '').".
-             " ? getYesNo($fields["is_helpdesk_visible"]) : getYesNo(0)) . "</td>";
+             " ? Dropdown::getYesNo($fields["is_helpdesk_visible"]) : Dropdown::getYesNo(0)) . "</td>";
    }
 }
 

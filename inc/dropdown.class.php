@@ -422,6 +422,22 @@ class Dropdown {
    }
 
    /**
+   * Get Yes No string
+   *
+   * @param $value Yes No value
+   * @return string
+   */
+   function getYesNo($value) {
+      global $LANG;
+
+      if ($value) {
+         return $LANG['choice'][1];
+      } else {
+         return $LANG['choice'][0];
+      }
+   }
+
+   /**
     * Get the dropdown list name the user is allowed to edit
     *
     * @return array (group of dropdown) of array (itemtype => localized name)

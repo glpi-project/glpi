@@ -275,7 +275,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          $type=$LANG['devices'][19];
          $name=$device->fields["designation"];
          if ($device->fields["is_writer"]) {
-            $entry[$LANG['device_drive'][0]]=getYesNo($device->fields["is_writer"]);
+            $entry[$LANG['device_drive'][0]]=Dropdown::getYesNo($device->fields["is_writer"]);
          }
          if (!empty($device->fields["speed"])) {
             $entry[$LANG['device_drive'][1]]=$device->fields["speed"];
@@ -293,7 +293,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
          $type=$LANG['devices'][20];
          $name=$device->fields["designation"];
          if ($device->fields["is_raid"]) {
-            $entry[$LANG['device_control'][0]]=getYesNo($device->fields["is_raid"]);
+            $entry[$LANG['device_control'][0]]=Dropdown::getYesNo($device->fields["is_raid"]);
          }
          if ($device->fields["interfacetypes_id"]) {
             $entry[$LANG['common'][65]]=Dropdown::getDropdownName("glpi_interfacetypes",
@@ -313,7 +313,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
             $entry[$LANG['device_power'][0]]=$device->fields["power"];
          }
          if ($device->fields["is_atx"]) {
-            $entry[$LANG['device_power'][1]]=getYesNo($device->fields["is_atx"]);
+            $entry[$LANG['device_power'][1]]=Dropdown::getYesNo($device->fields["is_atx"]);
          }
          break;
 
