@@ -48,8 +48,6 @@ class Consumable extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_consumables';
    public $type = 'Consumable';
-   // by the Consumable type
-   public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;
@@ -139,6 +137,11 @@ class Consumable extends CommonDBTM {
       } else {
          return false;
       }
+   }
+
+
+   function isEntityAssign() {
+      return true;
    }
 
    /**

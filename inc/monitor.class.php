@@ -45,7 +45,6 @@ class Monitor extends CommonDBTM {
    public $table = 'glpi_monitors';
    public $type = 'Monitor';
    public $dohistory=true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

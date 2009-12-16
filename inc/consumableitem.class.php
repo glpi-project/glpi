@@ -48,8 +48,6 @@ class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_consumableitems';
    public $type = 'ConsumableItem';
-   public $entity_assign = true;
-
 
    static function getTypeName() {
       global $LANG;

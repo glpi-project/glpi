@@ -183,7 +183,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if ($fk = 'entities_id') {
          $crit['id']  = $_SESSION['glpiactiveentities'];
          $crit['id'] += $_SESSION['glpiparententities'];
-      } else if ($this->entity_assign) {
+      } else if ($this->isEntityAssign()) {
          $crit['entities_id'] = $_SESSION['glpiactiveentities'];
       }
       foreach ($DB->request($this->table, $crit) as $data) {
@@ -261,7 +261,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      if ($this->entity_assign) {
+      if ($this->isEntityAssign()) {
          $tab[80]['table']     = 'glpi_entities';
          $tab[80]['field']     = 'completename';
          $tab[80]['linkfield'] = 'entities_id';

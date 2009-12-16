@@ -42,7 +42,6 @@ class Budget extends CommonDBTM{
    public $table = 'glpi_budgets';
    public $type = 'Budget';
    public $dohistory = true;
-   public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;

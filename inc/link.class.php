@@ -43,7 +43,6 @@ class Link extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_links';
    public $type = 'Link';
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

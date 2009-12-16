@@ -49,9 +49,6 @@ class Cartridge extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_cartridges';
    public $type = 'Cartridge';
-   // by the Cartridge Type
-   public $entity_assign = true;
-
 
    static function getTypeName() {
       global $LANG;
@@ -182,6 +179,11 @@ class Cartridge extends CommonDBTM {
          return true;
       }
       return false;
+   }
+
+
+   function isEntityAssign() {
+      return true;
    }
 
    /**

@@ -46,8 +46,6 @@ class SoftwareLicense extends CommonDBTM {
    public $table = 'glpi_softwarelicenses';
    public $type = 'SoftwareLicense';
    public $dohistory = true;
-   public $entity_assign=true;
-
 
    static function getTypeName() {
       global $LANG;

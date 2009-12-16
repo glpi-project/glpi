@@ -45,7 +45,6 @@ class NetworkEquipment extends CommonDBTM {
    public $table = 'glpi_networkequipments';
    public $type = 'NetworkEquipment';
    public $dohistory=true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

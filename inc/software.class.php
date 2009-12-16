@@ -47,7 +47,6 @@ class Software extends CommonDBTM {
    public $table = 'glpi_softwares';
    public $type = 'Software';
    public $dohistory = true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

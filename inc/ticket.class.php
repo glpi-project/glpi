@@ -44,7 +44,6 @@ class Ticket extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_tickets';
    public $type = 'Ticket';
-   public $entity_assign = true;
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData

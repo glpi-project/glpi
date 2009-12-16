@@ -44,7 +44,6 @@ class Reminder extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_reminders';
    public $type = 'Reminder';
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

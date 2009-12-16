@@ -46,7 +46,6 @@ class SoftwareVersion extends CommonDBTM {
    public $table = 'glpi_softwareversions';
    public $type = 'SoftwareVersion';
    public $dohistory = true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;
@@ -79,6 +78,10 @@ class SoftwareVersion extends CommonDBTM {
          return false;
       }
       return $input;
+   }
+
+   function isEntityAssign() {
+      return true;
    }
 
    function getEntityID () {

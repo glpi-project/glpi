@@ -45,7 +45,6 @@ class Peripheral  extends CommonDBTM {
    public $table = 'glpi_peripherals';
    public $type = 'Peripheral';
    public $dohistory = true;
-   public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;
