@@ -45,7 +45,6 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $table = 'glpi_contacts';
    public $type = 'Contact';
-   public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;

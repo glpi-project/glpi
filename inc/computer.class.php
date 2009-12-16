@@ -46,7 +46,6 @@ class Computer extends CommonDBTM {
    public $table = 'glpi_computers';
    public $type = 'Computer';
    public $dohistory=true;
-   public $entity_assign=true;
 
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")

@@ -45,7 +45,6 @@ class Printer  extends CommonDBTM {
    public $table = 'glpi_printers';
    public $type = 'Printer';
    public $dohistory=true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

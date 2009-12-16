@@ -44,7 +44,6 @@ class KnowbaseItem extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_knowbaseitems';
    public $type = 'KnowbaseItem';
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

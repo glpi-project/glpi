@@ -43,7 +43,6 @@ class Netpoint extends CommonDropdown {
    // From CommonDBTM
    public $table = 'glpi_netpoints';
    public $type = 'Netpoint';
-   public $entity_assign = true;
 
    function getAdditionalFields() {
       global $LANG;

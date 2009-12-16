@@ -58,9 +58,22 @@ abstract class CommonDBChild extends CommonDBTM {
       }
       if (class_exists($type)) {
          $item = new $type();
-         if ($item->entity_assign && $item->getFromDB($this->fields[$this->items_id])) {
+         if ($item->getFromDB($this->fields[$this->items_id]) && $item->isEntityAssign()) {
             return $item->getEntityID();
          }
+      }
+      return -1;
+   }
+
+   function isEntityAssign() {
+      if ($this->itemtype == "itemtype") {
+         $type = $this->fields["itemtype"];
+      } else {
+         $type = $this->itemtype;
+      }
+      if (class_exists($type)) {
+         $item = new $type();
+         return $item->isEntityAssign();
       }
       return -1;
    }

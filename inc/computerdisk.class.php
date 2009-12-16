@@ -43,7 +43,6 @@ class ComputerDisk extends CommonDBChild {
    // From CommonDBTM
    public $table = 'glpi_computerdisks';
    public $type = 'ComputerDisk';
-   public $entity_assign = true;
 
    // From CommonDBChild
    public $itemtype = 'Computer';
@@ -78,17 +77,6 @@ class ComputerDisk extends CommonDBChild {
       $this->fields["freesize"]='0';
    }
 
-/*
-   function getEntityID () {
-      if (isset($this->fields['computers_id']) && $this->fields['computers_id'] >0) {
-         $computer=new Computer();
-
-         $computer->getFromDB($this->fields['computers_id']);
-         return $computer->fields['entities_id'];
-      }
-      return -1;
-   }
-*/
    /**
    * Print the version form
    *

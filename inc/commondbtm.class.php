@@ -45,8 +45,6 @@ class CommonDBTM extends CommonGLPI {
    var $type=-1;
    /// Make an history of the changes
    var $dohistory=false;
-   /// Is an item specific to entity
-   var $entity_assign=false;
    /// Black list fields for history log or date mod update
    var $history_blacklist	= array();
    /// Set false to desactivate automatic message on action
@@ -1500,15 +1498,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-   * Is the object assigned to an entity
-   *
-   * @return boolean
-   **/
-   function isEntityAssign() {
-      return $this->entity_assign;
-   }
-
-   /**
    * Get the ID of entity assigned to the object
    *
    * Can be overloaded (ex : infocom)
@@ -1516,10 +1505,24 @@ class CommonDBTM extends CommonGLPI {
    * @return ID of the entity
    **/
    function getEntityID() {
-      if ($this->entity_assign && isset($this->fields["entities_id"])) {
+      if ($this->isEntityAssign()) {
          return $this->fields["entities_id"];
       }
       return  -1;
+   }
+
+   /**
+    * Is the object assigned to an entity
+    *
+    * Can be overloaded (ex : infocom)
+    *
+    * @return boolean
+    **/
+   function isEntityAssign() {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return isset($this->fields['entities_id']);
    }
 
    /**
@@ -1553,8 +1556,6 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Is the object may be recursive
    *
-   * Can be overloaded (ex : infocom)
-   *
    * @return boolean
    **/
    function maybePrivate() {
@@ -1567,8 +1568,6 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Is the object private
     *
-    * Can be overloaded (ex : infocom)
-    *
     * @return boolean
     **/
    function isPrivate() {
@@ -1577,6 +1576,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return false;
    }
+
 
    /**
    * Return the SQL command to retrieve linked object

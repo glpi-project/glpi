@@ -45,8 +45,6 @@ class Document extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_documents';
    public $type = 'Document';
-   public $entity_assign = true;
-
 
    static function getTypeName() {
       global $LANG;

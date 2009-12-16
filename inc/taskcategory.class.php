@@ -43,7 +43,6 @@ class TaskCategory extends CommonTreeDropdown {
    // From CommonDBTM
    public $table = 'glpi_taskcategories';
    public $type = 'TaskCategory';
-   public $entity_assign = true;
 
    static function getTypeName() {
       global $LANG;

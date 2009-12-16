@@ -45,7 +45,6 @@ class Group extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_groups';
    public $type = 'Group';
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;

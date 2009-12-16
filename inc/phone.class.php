@@ -45,7 +45,6 @@ class Phone extends CommonDBTM {
    public $table = 'glpi_phones';
    public $type = 'Phone';
    public $dohistory=true;
-   public $entity_assign=true;
 
    static function getTypeName() {
       global $LANG;
