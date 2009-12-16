@@ -65,7 +65,7 @@ function getDropdownID($input) {
       if ($input["tablename"] == "glpi_netpoints") {
          $query_twin .= " AND `locations_id` = '".$input["value2"]."'";
 
-      } else if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
+      } else if ($item instanceof CommonTreeDropdown) {
          $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 
          if ($input['type'] != "first" && $input["value2"] != 0) {
@@ -197,7 +197,7 @@ function addDropdown($input) {
          $query = "$field, `locations_id`)
                    $valuefield, '" . $input["value2"] . "')";
 
-      } else if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
+      } else if ($item instanceof CommonTreeDropdown) {
          $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 
          if ($input['type'] != "first" && $input["value2"] != 0) {
@@ -226,7 +226,7 @@ function addDropdown($input) {
 
       if ($result = $DB->query($query)) {
          $ID = $DB->insert_id();
-         if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
+         if ($item instanceof CommonTreeDropdown) {
             regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
          }
          // Clean sons / ancestors if needed

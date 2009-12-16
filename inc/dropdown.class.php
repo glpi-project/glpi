@@ -89,7 +89,7 @@ class Dropdown {
             $comment=$tmpname["comment"];
 
             if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
-               if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
+               if ($item instanceof CommonTreeDropdown) {
                   $pos = strrpos($name,">");
                   $limit_length=max(utf8_strlen($name)-$pos,$_SESSION["glpidropdown_chars_limit"]);
                   if (utf8_strlen($name)>$limit_length) {
@@ -187,7 +187,10 @@ class Dropdown {
    static function getDropdownName($table,$id,$withcomment=0) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
+      $itemtype=getItemTypeForTable($table);
+      $item = new $itemtype();
+
+      if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table,$id,$withcomment);
       } else {
          $name = "";
@@ -286,8 +289,11 @@ class Dropdown {
       $tabs=array();
 
       if (count($ids)) {
+         $itemtype=getItemTypeForTable($table);
+         $item = new $itemtype();
+
          $field='name';
-         if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
+         if ($item instanceof CommonTreeDropdown) {
             $field='completename';
          }
 

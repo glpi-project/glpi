@@ -95,7 +95,7 @@ if (isset($_POST['used'])) {
 }
 $where .= ") ";
 
-if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
+if ($item instanceof CommonTreeDropdown) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
    }
@@ -211,7 +211,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
       }
       echo "</select>";
    }
-} else { // Not dropdowntree_tables
+} else { // Not a dropdowntree
    $multi=false;
    if ($item->isEntityAssign()) {
       $multi=$item->maybeRecursive();
