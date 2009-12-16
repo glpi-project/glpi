@@ -57,11 +57,11 @@ class Consumable extends CommonDBTM {
       return $LANG['consumables'][0];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('consumable', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('consumable', 'r');
    }
 

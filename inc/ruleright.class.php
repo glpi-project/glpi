@@ -52,11 +52,11 @@ class RuleRight extends Rule {
       $this->addLdapCriteriasToArray();
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('rule_ldap', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('rule_ldap', 'r');
    }
 

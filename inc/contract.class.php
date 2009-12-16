@@ -54,11 +54,11 @@ class Contract extends CommonDBTM {
       return $LANG['financial'][1];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('contract', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('contract', 'r');
    }
 

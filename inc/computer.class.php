@@ -58,11 +58,11 @@ class Computer extends CommonDBTM {
       return $LANG['help'][25];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('computer', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('computer', 'r');
    }
 

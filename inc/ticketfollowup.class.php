@@ -61,13 +61,13 @@ class TicketFollowup  extends CommonDBTM {
       $DB->query($querydel);
    }
 
-   static function canCreate() {
+   function canCreate() {
       return (haveRight('comment_all_ticket', 1)
               || haveRight('comment_ticket', 1)
               || haveRight('own_ticket', 1));
    }
 
-   static function canView() {
+   function canView() {
       return (haveRight('observe_ticket', 1)
               || haveRight('show_full_ticket', 1)
               || haveRight('own_ticket', 1));

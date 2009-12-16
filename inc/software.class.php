@@ -56,11 +56,11 @@ class Software extends CommonDBTM {
       return $LANG['help'][31];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('software', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('software', 'r');
    }
 

@@ -60,11 +60,11 @@ class Netpoint extends CommonDropdown {
       return $LANG['setup'][73];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('entity_dropdown','w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('entity_dropdown','r');
    }
 

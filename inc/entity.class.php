@@ -54,11 +54,11 @@ class Entity extends CommonTreeDropdown {
       return $LANG['Menu'][37];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('entity', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('entity', 'r');
    }
 

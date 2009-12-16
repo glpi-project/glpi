@@ -53,11 +53,11 @@ class Phone extends CommonDBTM {
       return $LANG['help'][35];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('phone', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('phone', 'r');
    }
 

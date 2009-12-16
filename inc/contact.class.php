@@ -54,11 +54,11 @@ class Contact extends CommonDBTM{
       return $LANG['common'][18];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('contact_enterprise', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('contact_enterprise', 'r');
    }
 

@@ -52,11 +52,11 @@ class Link extends CommonDBTM {
       return $LANG['setup'][87];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('link', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('link', 'r');
    }
 

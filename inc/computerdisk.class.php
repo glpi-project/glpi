@@ -57,11 +57,11 @@ class ComputerDisk extends CommonDBChild {
       return $LANG['computers'][0];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('computer', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('computer', 'r');
    }
 

@@ -77,11 +77,11 @@ class Transfer extends CommonDBTM {
 
 
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('transfer', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('transfer', 'r');
    }
 

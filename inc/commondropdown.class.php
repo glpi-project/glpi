@@ -65,7 +65,7 @@ abstract class CommonDropdown extends CommonDBTM {
    *
    * @return booleen
    **/
-   static function canCreate() {
+   function canCreate() {
       return haveRight('dropdown','w');
    }
 
@@ -76,7 +76,7 @@ abstract class CommonDropdown extends CommonDBTM {
    *
    * @return booleen
    **/
-   static function canView() {
+   function canView() {
       return haveRight('dropdown','r');
    }
 

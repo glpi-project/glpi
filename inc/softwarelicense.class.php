@@ -56,11 +56,11 @@ class SoftwareLicense extends CommonDBTM {
       return $LANG['software'][11];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('software', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('software', 'r');
    }
 

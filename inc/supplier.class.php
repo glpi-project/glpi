@@ -53,11 +53,11 @@ class Supplier extends CommonDBTM {
       return $LANG['financial'][26];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('contact_enterprise', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('contact_enterprise', 'r');
    }
 

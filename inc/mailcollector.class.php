@@ -77,11 +77,11 @@ class MailCollector  extends CommonDBTM {
       return $LANG['Menu'][39];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('config', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('config', 'r');
    }
 

@@ -44,11 +44,11 @@ class RuleTicket extends Rule {
    public $right='rule_ticket';
    public $can_sort=true;
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('rule_ticket', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('rule_ticket', 'r');
    }
 

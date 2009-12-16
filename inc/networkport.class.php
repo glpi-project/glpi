@@ -65,11 +65,11 @@ class NetworkPort extends CommonDBTM {
    /// hardare data : is_deleted
    var $is_deleted = 0;
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('networking', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('networking', 'r');
    }
 

@@ -57,11 +57,11 @@ class CartridgeItem extends CommonDBTM {
       return $LANG['cartridges'][12];
    }
 
-   static function canCreate() {
+   function canCreate() {
       return haveRight('cartridge', 'w');
    }
 
-   static function canView() {
+   function canView() {
       return haveRight('cartridge', 'r');
    }
 
