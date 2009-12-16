@@ -928,25 +928,27 @@ class CommonDBTM extends CommonGLPI {
    // specific ones : cartridges / consumables
    function restore($input,$history=1) {
 
+      if (!$this->getFromDB($input[$this->getIndexName()])) {
+         return false;
+      }
       if (isset($input['restore'])) {
          $input['_restore']=$input['restore'];
          unset($input['restore']);
       }
-      $input=doHookFunction("pre_item_restore",$input);
+      // Store input in the object to be available in all sub-method / hook
+      $this->input = $input;
+      doHook("pre_item_restore",$this);
 
-      if ($this->getFromDB($input[$this->getIndexName()])) {
-         if ($this->restoreInDB($input["id"])) {
-            $this->addMessageOnRestoreAction($input);
-            if ($this->dohistory && $history) {
-               $changes[0] = 0;
-               $changes[1] = $changes[2] = "";
-               historyLog ($input["id"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
-            }
-            doHook("item_restore",array("type"=>$this->type, "id" => $input["id"],
-                   "input" => $input));
-
-            return true;
+      if ($this->restoreInDB($this->input["id"])) {
+         $this->addMessageOnRestoreAction($this->input);
+         if ($this->dohistory && $history) {
+            $changes[0] = 0;
+            $changes[1] = $changes[2] = "";
+            historyLog ($this->input["id"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
          }
+         doHook("item_restore", $this);
+
+         return true;
       }
       return false;
    }
