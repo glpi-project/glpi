@@ -54,20 +54,19 @@ function showReservationForm($itemtype,$items_id) {
    if (!haveRight("reservation_central","w")) {
       return false;
    }
-
-   // Recursive type case => need entity right
-   if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-         if (!$item->getFromDB($items_id)) {
-            return false;
-         }
+   if (class_exists($itemtype)) {
+      $item = new $itemtype();
+      if (!$item->getFromDB($items_id)) {
+         return false;
+      }
+      // Recursive type case => need entity right
+      if ($item->isRecursive()) {
          if (!haveAccessToEntity($item->fields["entities_id"])) {
             return false;
          }
-      } else {
-         return false;
       }
+   } else {
+      return false;
    }
 
    if ($resaID=isReservable($itemtype,$items_id)) {

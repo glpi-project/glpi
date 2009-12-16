@@ -80,7 +80,7 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
                  " OR `$table`.`serial` ".makeTextSearch($_POST['searchText'])." )";
 }
 
-$multi = in_array($table,$CFG_GLPI["recursive_type"]);
+$multi = $item->maybeRecursive();
 if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
    $where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
    if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {

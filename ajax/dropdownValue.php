@@ -105,7 +105,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
    if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])
        || $_POST['table']=='glpi_entities') {
 
-      $recur=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+      $recur=$item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
          $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'',
@@ -215,7 +215,7 @@ if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])) {
 } else { // Not dropdowntree_tables
    $multi=false;
    if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])) {
-      $multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+      $multi=$item->maybeRecursive();
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
          $where.=getEntitiesRestrictRequest("AND",$_POST['table'],"entities_id",
                                             $_POST["entity_restrict"],$multi);

@@ -659,7 +659,7 @@ class Document extends CommonDBTM {
                           AND ";
             }
             $query .= "`glpi_documents_items`.`itemtype`='$itemtype' AND `glpi_documents_items`.`documents_id` = '$instID' "
-               . getEntitiesRestrictRequest(" AND ",$itemtable,'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
+               . getEntitiesRestrictRequest(" AND ",$itemtable,'','',$item->maybeRecursive());
             if ($item->maybeTemplate()){
                $query.=" AND `$itemtable`.`is_template`='0'";
             }
