@@ -278,7 +278,15 @@ class Ticket extends CommonDBTM {
          if (isset($input["name"])) {
             $ret["name"]=$input["name"];
          }
+
          $input=$ret;
+      }
+
+      // Setting a solution type means the ticket is solved
+      if (isset($input["ticketsolutiontypes_id"])
+          && $input["ticketsolutiontypes_id"]>0
+          && $this->fields['status']!='closed') {
+         $input["status"] = 'solved';
       }
 
       if (isset($input["items_id"])
@@ -1849,7 +1857,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</div>";
    }
-   
+
    /**
     * Form to add a solution to a ticket
     *
@@ -1860,21 +1868,36 @@ class Ticket extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
-      
+      $canedit = $this->can($this->getField('id'), 'w');
+
       $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 2);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['job'][48]."</td><td colspan='3'>";
-      Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id',
-                              $this->getField('ticketsolutiontypes_id'),1);
+
+      $current = $this->fields['status'];
+      if (!$canedit
+          || ($current!='solved'
+              && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
+              && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])) {
+         // Settings a solution will set status to solved
+         Dropdown::getDropdownName('glpi_ticketsolutiontypes', $this->getField('ticketsolutiontypes_id'));
+      } else {
+         Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id',
+                                 $this->getField('ticketsolutiontypes_id'),1);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]."</td>";
-      echo "<td colspan='3'><textarea name='solution' rows='12' cols='100'>";
-      echo $this->getField('solution') . "</textarea></td>";
-      echo "</tr>";
-   
+      echo "<td>".$LANG['joblist'][6]."</td><td colspan='3'>";
+      if ($canedit) {
+         echo "<textarea name='solution' rows='12' cols='100'>";
+         echo $this->getField('solution') . "</textarea>";
+      } else {
+         echo nl2br($this->getField('solution'));
+      }
+      echo "</td></tr>";
+
       $this->showFormButtons($this->getField('id'), '', 2, false);
    }
 
