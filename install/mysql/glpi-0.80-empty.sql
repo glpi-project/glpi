@@ -3062,6 +3062,8 @@ CREATE TABLE `glpi_tickets` (
   `cost_time` decimal(20,4) NOT NULL default '0.0000',
   `cost_fixed` decimal(20,4) NOT NULL default '0.0000',
   `cost_material` decimal(20,4) NOT NULL default '0.0000',
+  `ticketsolutiontypes_id` int(11) NOT NULL default '0',
+  `solution` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
@@ -3077,7 +3079,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `entities_id` (`entities_id`),
   KEY `groups_id` (`groups_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
-  KEY `item` (`itemtype`,`items_id`)
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

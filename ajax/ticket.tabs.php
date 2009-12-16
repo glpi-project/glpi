@@ -59,8 +59,7 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       case 4 :
-         TicketSolution::showAddForm($_POST["id"]);
-         TicketSolution::showForTicket($ticket);
+         $ticket->showSolutionForm();
          break;
 
       default :
