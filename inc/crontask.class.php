@@ -363,7 +363,7 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][37]." : </td><td>";
-      dropdownFrequency('frequency',$this->fields["frequency"]);
+      $this->dropdownFrequency('frequency',$this->fields["frequency"]);
       echo "</td></tr>";
 
       $tmpstate = $this->fields["state"];
@@ -1124,6 +1124,41 @@ class CronTask extends CommonDBTM{
          case 'session':
             return array('description' => $LANG['crontask'][12]);
       }
+   }
+
+   /**
+   * Dropdown for frequency (interval between 2 actions)
+   *
+   * @param $name select name
+   * @param $value default value
+   */
+   function dropdownFrequency($name,$value=0) {
+      global $LANG;
+
+      $tab = array();
+
+      $tab[MINUTE_TIMESTAMP] = '1 ' .$LANG['job'][22];
+
+      // Minutes
+      for ($i=5 ; $i<60 ; $i+=5) {
+         $tab[$i*MINUTE_TIMESTAMP] = $i . ' ' .$LANG['job'][22];
+      }
+
+      // Heures
+      for ($i=1 ; $i<24 ; $i++) {
+         $tab[$i*HOUR_TIMESTAMP] = $i . ' ' .$LANG['job'][21];
+      }
+
+      // Jours
+      $tab[DAY_TIMESTAMP] = $LANG['setup'][305];
+      for ($i=2 ; $i<7 ; $i++) {
+         $tab[$i*DAY_TIMESTAMP] = $i . ' ' .$LANG['stats'][31];
+      }
+
+      $tab[WEEK_TIMESTAMP] = $LANG['setup'][308];
+      $tab[MONTH_TIMESTAMP] = $LANG['setup'][309];
+
+      dropdownArrayValues($name, $tab, $value);
    }
 }
 ?>
