@@ -661,7 +661,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $itemtype class name
     * @param $attrib Array of attributes, a hashtable with index in
-    *    (classname, tablename, typename, reservation_types)
+    *    (classname, typename, reservation_types)
     *
     * @return bool
     */
@@ -675,15 +675,16 @@ class Plugin extends CommonDBTM {
       $plugin = strtolower($plug['plugin']);
 
       $PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
-      $attrib['tablename']=getTableForItemType($itemtype);
 
       // TODO remove => no CommonItem
       if (isset($attrib['classname']) && !empty($attrib['classname'])) {
          $PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];
+         unset($attrib['classname']);
       }
       // TODO remove => getTypeName
       if (isset($attrib['typename']) && !empty($attrib['typename'])) {
          $PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
+         unset($attrib['typename']);
       }
 
       foreach (array('contract_types','doc_types','helpdesk_types','helpdesk_visible_types',
@@ -692,6 +693,14 @@ class Plugin extends CommonDBTM {
                      'netport_types','reservation_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
+            unset($attrib[$att]);
+         }
+      }
+
+      /// TODO : clean warning when plug
+      if (count($attrib)) {
+         foreach ($attrib as $key => $val) {
+            logInFile('debug',"Atribut $key used by $itemtype no more used for plugins\n");
          }
       }
       return true;
