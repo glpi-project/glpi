@@ -42,8 +42,6 @@ if (!isset($_GET["id"])) {
 $remind = new Reminder();
 checkCentralAccess();
 if (isset($_POST["add"])) {
-   /// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...)
-   $remind->getEmpty();
    $remind->check(-1,'w',$_POST);
 
    $newID = $remind->add($_POST);
