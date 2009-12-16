@@ -487,50 +487,5 @@ function dropdownUnderProfiles($name,$value='') {
    dropdownArrayValues($name,$profiles,$value);
 }
 
-/**
- * Private / Public switch for items which may be assign to a user and/or an entity
- *
- * @param $is_private default is private ?
- * @param $entity working entity ID
- * @param $is_recursive is the item recursive ?
- */
-function privatePublicSwitch($is_private,$entity,$is_recursive) {
-   global $LANG,$CFG_GLPI;
-
-   $rand=mt_rand();
-   echo "<script type='text/javascript' >\n";
-   echo "function setPrivate$rand(){\n";
-
-      $params=array(
-         'is_private'=>1,
-         'is_recursive'=>$is_recursive,
-         'entities_id'=>$entity,
-         'rand'=>$rand,
-      );
-      ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
-
-      echo "};";
-   echo "function setPublic$rand(){\n";
-
-      $params=array(
-         'is_private'=>0,
-         'is_recursive'=>$is_recursive,
-         'entities_id'=>$entity,
-         'rand'=>$rand,
-      );
-      ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
-
-      echo "};";
-   echo "</script>";
-
-   echo "<span id='private_switch$rand'>";
-      $_POST['rand']=$rand;
-      $_POST['is_private']=$is_private;
-      $_POST['is_recursive']=$is_recursive;
-      $_POST['entities_id']=$entity;
-      include (GLPI_ROOT."/ajax/private_public.php");
-   echo "</span>\n";
-   return $rand;
-}
 
 ?>

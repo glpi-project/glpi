@@ -206,7 +206,7 @@ class Reminder extends CommonDBTM {
                $this->fields["is_recursive"]=$_GET["is_recursive"];
             }
          }
-         privatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
+         Dropdown::showPrivatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
                              $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
