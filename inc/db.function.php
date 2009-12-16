@@ -219,7 +219,7 @@ function countElementsInTable($table,$condition="") {
  */
 function countElementsInTableForMyEntities($table) {
    /// TODO clean it / maybe include when review of SQL requests
-   $itemtype=getItemTypeForTable();
+   $itemtype=getItemTypeForTable($table);
    $item=new $itemtype();
 
    return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',
