@@ -573,11 +573,10 @@ if (isset($_POST["itemtype"])) {
                          'MassiveActionsProcess',
                          $_POST);
 
-            } else if (isPluginItemType($_POST["itemtype"])
-                       && isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])) {
+            } else if ($plug=isPluginItemType($_POST["itemtype"])) {
                // non-normalized name
                // hook from the plugin defining the type
-               doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
+               doOneHook($plug['plugin'],
                          'MassiveActionsProcess',
                          $_POST);
             }
