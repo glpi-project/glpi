@@ -38,36 +38,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/**  Simple add user form for external auth
-* @param $target where to go on action
-*/
-function showAddExtAuthUserForm($target) {
-   global $LANG;
-
-   if (!haveRight("user","w")) {
-      return false;
-   }
-
-   echo "<div class='center'>\n";
-   echo "<form method='get' action='$target'>\n";
-
-   echo "<table class='tab_cadre'>\n";
-   echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
-
-   echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
-   echo "<td><input type='text' name='login'></td>";
-   echo "<td class='tab_bg_2 center'>\n";
-   echo "<input type='hidden' name='ext_auth' value='1'>\n";
-   echo "<input type='submit' name='add_ext_auth_ldap' value=\"".$LANG['buttons'][8]." ".
-         $LANG['login'][2]."\" class='submit'>\n";
-   echo "</td>";
-   echo "<td class='tab_bg_2 center'>\n";
-   echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['buttons'][8]." ".
-         $LANG['common'][62]."\" class='submit'>\n";
-   echo "</td></tr>\n";
-
-   echo "</table></form></div>\n";
-}
 
 
 /**  Show items of a user

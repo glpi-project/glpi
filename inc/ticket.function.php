@@ -1021,7 +1021,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td  colspan='2' class='center'>".$LANG['job'][4]."&nbsp;:<br>";
-   User::dropdownUsersTracking("users_id",$users_id,"users_id");
+   User::dropdownForTicket("users_id",$users_id,"users_id");
 
    echo "<br>".$LANG['common'][35]."&nbsp;: ";
    Dropdown::dropdownValue("glpi_groups","group",$group);
@@ -1058,7 +1058,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
    if ($extended) {
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>".$LANG['job'][3]."&nbsp;:";
-      User::dropdownUsersTracking("users_id_recipient",$recipient,"users_id_recipient");
+      User::dropdownForTicket("users_id_recipient",$recipient,"users_id_recipient");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

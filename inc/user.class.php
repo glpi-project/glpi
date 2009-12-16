@@ -1829,7 +1829,7 @@ class User extends CommonDBTM {
     * @param $display_comment display the comment near the dropdown
     * @return nothing (print out an HTML select box)
     */
-   static function dropdownUsersTracking($myname,$value,$field,$display_comment=1) {
+   static function dropdownForTicket($myname,$value,$field,$display_comment=1) {
       global $CFG_GLPI,$LANG,$DB;
 
       $rand=mt_rand();
@@ -1879,7 +1879,39 @@ class User extends CommonDBTM {
                               'table'=>'glpi_users'));
       }
       return $rand;
-}
+   }
+
+   /**  Simple add user form for external auth
+   * @param $target where to go on action
+   */
+   static function showAddExtAuthForm() {
+      global $LANG;
+
+      if (!haveRight("user","w")) {
+         return false;
+      }
+
+      echo "<div class='center'>\n";
+      echo "<form method='get' action='".getItemTypeFormURL('User')."'>\n";
+
+      echo "<table class='tab_cadre'>\n";
+      echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
+      echo "<td><input type='text' name='login'></td>";
+      echo "<td class='tab_bg_2 center'>\n";
+      echo "<input type='hidden' name='ext_auth' value='1'>\n";
+      echo "<input type='submit' name='add_ext_auth_ldap' value=\"".$LANG['buttons'][8]." ".
+            $LANG['login'][2]."\" class='submit'>\n";
+      echo "</td>";
+      echo "<td class='tab_bg_2 center'>\n";
+      echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['buttons'][8]." ".
+            $LANG['common'][62]."\" class='submit'>\n";
+      echo "</td></tr>\n";
+
+      echo "</table></form></div>\n";
+   }
+
 
 }
 
