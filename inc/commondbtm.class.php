@@ -1524,7 +1524,7 @@ class CommonDBTM extends CommonGLPI {
    * @return boolean
    **/
    function maybeRecursive() {
-      if (!isset($this->fields['id']) {
+      if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
       return isset($this->fields['is_recursive']);
