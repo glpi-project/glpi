@@ -40,20 +40,18 @@ checkRight("reports","r");
 
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-
-
 # Titre
 
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
-echo "<div align='center'>";
 echo "<table class='tab_cadre' >";
-echo "<tr><th align='center' colspan='2' ><big><b>".$LANG['reports'][11]." </b></big></th></tr>";
+echo "<tr><th colspan='2'><big><b>".$LANG['reports'][11]." </b></big></th></tr>";
+
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
-echo "<td  align='center' width='200' >";
+echo "<td class='center' width='200' >";
 
-echo "<p><b>".$LANG['reports'][12]."</b></p> ";
+echo "<p class='b'>".$LANG['reports'][12]."</p> ";
 echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".$LANG['common'][66]."</option>";
 echo "<option value='Computer'>".$LANG['Menu'][0]."</option>";
@@ -65,25 +63,22 @@ echo "<option value='Software'>".$LANG['Menu'][4]."</option>";
 echo "<option value='Phone'>".$LANG['Menu'][34]."</option>";
 echo "</select></p> </td> ";
 
-echo "<td  align='center'  width='200'>";
-echo "<p><b>".$LANG['reports'][13]."</b></p> ";
-echo " <p><select name='annee[]' size='8' multiple>";
-echo " <option value='toutes' selected>".$LANG['common'][66]."</option>";
+echo "<td class='center' width='200'>";
+echo "<p class='b'>".$LANG['reports'][13]."</p> ";
+echo "<p><select name='annee[]' size='8' multiple>";
+echo "<option value='toutes' selected>".$LANG['common'][66]."</option>";
+
 $y = date("Y");
-for ($i=$y-10;$i<=$y;$i++)
-{
-	echo " <option value='$i'>$i</option>";
+for ($i=$y-10;$i<=$y;$i++) {
+   echo " <option value='$i'>$i</option>";
 }
 echo "</select></p></td></tr>";
 
-echo "<tr><td class='tab_bg_1' colspan='2' align='center'><p><input type='submit' value='".$LANG['reports'][15]."' class='submit'></p></td></tr>";
-
-
+echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+echo "<p><input type='submit' value='".$LANG['reports'][15]."' class='submit'></p></td></tr>";
 
 echo "</table>";
-echo "</div>";
 echo "</form>";
-
 
 commonFooter();
 
