@@ -427,9 +427,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("reservation_helpdesk","1") || haveRight("reservation_central","r")) {
       $menu['utils']['content']['reservation']['title']=$LANG['Menu'][17];
-      $menu['utils']['content']['reservation']['page']='/front/reservation.php';
-      $menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
-      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?' .
+      $menu['utils']['content']['reservation']['page']='/front/reservationitem.php';
+      $menu['utils']['content']['reservation']['links']['search']='/front/reservationitem.php';
+      $menu['utils']['content']['reservation']['links']['showall']='/front/reservationitem.php?' .
             'show=resa&amp;id';
    }
 
