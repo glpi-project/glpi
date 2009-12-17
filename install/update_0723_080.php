@@ -2464,7 +2464,9 @@ function update0723to080() {
    if (!FieldExists('glpi_tickets','urgency')) {
       $query = "ALTER TABLE `glpi_tickets`
                       ADD `urgency` INT NOT NULL DEFAULT '1' AFTER `content`,
-                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgency` ";
+                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgency`, 
+                      ADD INDEX `urgency` (`urgency`),
+                      ADD INDEX `impact` (`impact`)";
       $DB->query($query) or die("0.80 add urgency, impact to glpi_tickets" .
                                  $LANG['update'][90] . $DB->error());
 
@@ -2484,6 +2486,61 @@ function update0723to080() {
       $DB->query($query) or die("0.80 fix priority/urgency in business rules " .
                                  $LANG['update'][90] . $DB->error());
    }
+
+   if (!TableExists('glpi_tickettasks')) {
+      $query = "CREATE TABLE `glpi_tickettasks` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `tickets_id` int(11) NOT NULL default '0',
+                  `taskcategories_id` int(11) NOT NULL default '0',
+                  `date` datetime default NULL,
+                  `users_id` int(11) NOT NULL default '0',
+                  `content` longtext collate utf8_unicode_ci,
+                  `is_private` tinyint(1) NOT NULL default '0',
+                  `realtime` float NOT NULL default '0',
+                  PRIMARY KEY  (`id`),
+                  KEY `date` (`date`),
+                  KEY `users_id` (`users_id`),
+                  KEY `tickets_id` (`tickets_id`),
+                  KEY `is_private` (`is_private`),
+                  KEY `taskcategories_id` (`taskcategories_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query) or die("0.80 create glpi_tickettasks" . $LANG['update'][90] . $DB->error());
+
+      // Required for migration from ticketfollowups to tickettasks
+      $query = "INSERT INTO `glpi_tickettasks`
+                    (`id`, `tickets_id`, `date`, `users_id`, `content`, `is_private`, `realtime`)
+                   SELECT `glpi_ticketfollowups`.`id`,
+                          `glpi_ticketfollowups`.`tickets_id`,
+                          `glpi_ticketfollowups`.`date`,
+                          `glpi_ticketfollowups`.`users_id`,
+                          `glpi_ticketfollowups`.`content`,
+                          `glpi_ticketfollowups`.`is_private`,
+                          `glpi_ticketfollowups`.`realtime`
+                   FROM `glpi_ticketfollowups`
+                   INNER JOIN `glpi_ticketplannings`
+                     ON (`glpi_ticketplannings`.`ticketfollowups_id` = `glpi_ticketfollowups`.`id`)";
+      $DB->query($query) or die("0.80 populate glpi_tickettasks" . $LANG['update'][90] . $DB->error());
+
+      // delete from ticketfollowups
+      $query = "DELETE FROM `glpi_ticketfollowups`
+                WHERE `glpi_ticketfollowups`.`id` IN 
+                  (SELECT `glpi_ticketplannings`.`ticketfollowups_id`
+                   FROM `glpi_ticketplannings`)";
+      $DB->query($query) or die("0.80 delete from glpi_ticketfollowups" . $LANG['update'][90] . $DB->error());
+
+      // ticketplannings is for tickettasks
+      $query = "ALTER TABLE `glpi_ticketplannings`
+                  CHANGE `ticketfollowups_id` `tickettasks_id` int(11) NOT NULL default '0'";
+      $DB->query($query) or die("0.80 alter glpi_ticketplannings" . $LANG['update'][90] . $DB->error());
+
+      // add requesttype for glpi_ticketfollowups
+      $query = "ALTER TABLE `glpi_ticketfollowups`
+                  ADD `requesttypes_id` int(11) NOT NULL default '0',
+                  ADD INDEX `requesttypes_id` (`requesttypes_id`)";
+      $DB->query($query) or die("0.80 alter glpi_ticketplannings" . $LANG['update'][90] . $DB->error());
+
+   }
+
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

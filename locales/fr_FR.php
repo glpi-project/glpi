@@ -716,6 +716,7 @@ $LANG['job'][3]="Receveur";
 $LANG['job'][4]="Demandeur";
 $LANG['job'][5]="Attribué à";
 $LANG['job'][6]="Technicien";
+$LANG['job'][7]="Tâche";
 $LANG['job'][8]="dernier(s) ticket(s)";
 $LANG['job'][11]="Description de la demande ou de l'incident";
 $LANG['job'][12]="Pas de suivi pour ce ticket.";

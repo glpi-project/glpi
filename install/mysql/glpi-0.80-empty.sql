@@ -3004,11 +3004,13 @@ CREATE TABLE `glpi_ticketfollowups` (
   `content` longtext collate utf8_unicode_ci,
   `is_private` tinyint(1) NOT NULL default '0',
   `realtime` float NOT NULL default '0',
+  `requesttypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `date` (`date`),
   KEY `users_id` (`users_id`),
   KEY `tickets_id` (`tickets_id`),
-  KEY `is_private` (`is_private`)
+  KEY `is_private` (`is_private`),
+  KEY `requesttypes_id` (`requesttypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3028,6 +3030,27 @@ CREATE TABLE `glpi_ticketplannings` (
   KEY `users_id` (`users_id`),
   KEY `ticketfollowups_id` (`ticketfollowups_id`),
   KEY `state` (`state`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_tickettasks
+
+DROP TABLE IF EXISTS `glpi_tickettasks`;
+CREATE TABLE `glpi_tickettasks` (
+  `id` int(11) NOT NULL auto_increment,
+  `tickets_id` int(11) NOT NULL default '0',
+  `taskcategories_id` int(11) NOT NULL default '0',
+  `date` datetime default NULL,
+  `users_id` int(11) NOT NULL default '0',
+  `content` longtext collate utf8_unicode_ci,
+  `is_private` tinyint(1) NOT NULL default '0',
+  `realtime` float NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `date` (`date`),
+  KEY `users_id` (`users_id`),
+  KEY `tickets_id` (`tickets_id`),
+  KEY `is_private` (`is_private`),
+  KEY `taskcategories_id` (`taskcategories_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3080,7 +3103,9 @@ CREATE TABLE `glpi_tickets` (
   KEY `groups_id` (`groups_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
   KEY `item` (`itemtype`,`items_id`),
-  KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`)
+  KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`),
+  KEY `urgency` (`urgency`),
+  KEY `impact` (`impact`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

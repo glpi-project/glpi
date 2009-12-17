@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ticketfollowup.class.php 9756 2009-12-16 13:54:06Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -37,20 +37,28 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TicketFollowup class
-class TicketFollowup  extends CommonDBTM {
+class TicketTask  extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_ticketfollowups';
-   public $type = 'TicketFollowup';
+   public $table = 'glpi_tickettasks';
+   public $type = 'TicketTask';
 
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['Menu'][5];
+      return $LANG['job'][7];
    }
 
+
+   function cleanDBonPurge($ID) {
+      global $DB;
+
+      $querydel = "DELETE
+                   FROM `glpi_ticketplannings`
+                   WHERE `tickettasks_id` = '$ID'";
+      $DB->query($querydel);
+   }
 
    function canCreate() {
       return (haveRight('comment_all_ticket', 1)
@@ -65,7 +73,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
    /**
-    * Is the current user have right to show the current followup ?
+    * Is the current user have right to show the current task ?
     *
     * @return boolean
     */
@@ -88,7 +96,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
    /**
-    * Is the current user have right to create the current followup ?
+    * Is the current user have right to create the current task ?
     *
     * @return boolean
     */
@@ -107,7 +115,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
    /**
-    * Is the current user have right to update the current followup ?
+    * Is the current user have right to update the current task ?
     *
     * @return boolean
     */
@@ -123,7 +131,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
    /**
-    * Is the current user have right to delete the current followup ?
+    * Is the current user have right to delete the current task ?
     *
     * @return boolean
     */
@@ -146,6 +154,10 @@ class TicketFollowup  extends CommonDBTM {
       $input["realtime"] = $input["hour"]+$input["minute"]/60;
       if (isset($_SESSION["glpiID"])) {
          $input["users_id"] = $_SESSION["glpiID"];
+      }
+      if (isset($input["plan"])) {
+         $input["_plan"] = $input["plan"];
+         unset($input["plan"]);
       }
       return $input;
    }
@@ -177,6 +189,32 @@ class TicketFollowup  extends CommonDBTM {
             }
          }
       }
+
+      if (isset($input["_plan"])) {
+         $pt = new TicketPlanning();
+         // Update case
+         if (isset($input["_plan"]["id"])) {
+            $input["_plan"]['ticketfollowups_id'] = $input["id"];
+            $input["_plan"]['tickets_id'] = $input['tickets_id'];
+            $input["_plan"]['_nomail'] = $mailsend;
+
+            if (!$pt->update($input["_plan"])) {
+               return false;
+            }
+            unset($input["_plan"]);
+         // Add case
+         } else {
+            $input["_plan"]['ticketfollowups_id'] = $input["id"];
+            $input["_plan"]['tickets_id'] = $input['tickets_id'];
+            $input["_plan"]['_nomail'] = 1;
+
+            if (!$pt->add($input["_plan"])) {
+               return false;
+            }
+            unset($input["_plan"]);
+            $input['_need_send_mail'] = true;
+         }
+      }
    }
 
 
@@ -197,14 +235,6 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
-      // Manage File attached (from mailgate)
-      $docadded=$input["_job"]->addFiles($input["tickets_id"]);
-      if (count($docadded)>0) {
-         foreach ($docadded as $name) {
-            $input['content'] .= "\n".$LANG['mailing'][26]." $name";
-         }
-      }
-
       // Pass old assign From Ticket in case of assign change
       if (isset($input["_old_assign"])) {
          $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
@@ -222,6 +252,10 @@ class TicketFollowup  extends CommonDBTM {
          $input["users_id"] = $_SESSION["glpiID"];
       }
       if ($input["_isadmin"] && $input["_type"]!="update") {
+         if (isset($input['plan'])) {
+            $input['_plan'] = $input['plan'];
+            unset($input['plan']);
+         }
          if (isset($input["add_close"])) {
             $input['_close'] = 1;
          }
@@ -258,6 +292,16 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if ($input["_isadmin"] && $input["_type"]!="update") {
+         if (isset($input["_plan"])) {
+            $input["_plan"]['ticketfollowups_id'] = $newID;
+            $input["_plan"]['tickets_id'] = $input['tickets_id'];
+            $input["_plan"]['_nomail'] = 1;
+            $pt = new TicketPlanning();
+
+            if (!$pt->add($input["_plan"])) {
+               return false;
+            }
+         }
 
          // TODO add + close from solution tab, not from followup
          if ($input["_close"] && $input["_type"]!="update" && $input["_type"]!="finish") {
@@ -323,10 +367,9 @@ class TicketFollowup  extends CommonDBTM {
          : "style='cursor:none'") .
          " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
 
-      echo "<td>".$this->getTypeName();
-      if ($this->fields['requesttypes_id']) {
-         echo " - " . Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
-      }
+      echo "<td>".($this->fields['taskcategories_id']
+                   ? Dropdown::getDropdownName('glpi_taskcategories', $this->fields['taskcategories_id']) 
+                   : $this->getTypeName());
       echo "</td>";
 
       echo "<td>";
@@ -354,7 +397,36 @@ class TicketFollowup  extends CommonDBTM {
       if ($minute || !$hour) {
          echo "$minute " . $LANG['job'][22] . "</td>";
       }
-      echo "<td>&nbsp;</td>";
+      echo "<td>";
+      $query2 = "SELECT *
+                 FROM `glpi_ticketplannings`
+                 WHERE `tickettasks_id` = '" . $this->fields['id'] . "'";
+      $result2 = $DB->query($query2);
+
+      if ($DB->numrows($result2) == 0) {
+         echo $LANG['job'][32];
+      } else {
+         $data2 = $DB->fetch_array($result2);
+         echo "<script type='text/javascript' >\n";
+         echo "function showPlan" . $this->fields['id'] . "(){\n";
+         echo "Ext.get('plan').setDisplayed('none');";
+         $params = array (
+            'form' => 'followups',
+            'users_id' => $data2["users_id"],
+            'id' => $data2["id"],
+            'state' => $data2["state"],
+            'begin' => $data2["begin"],
+            'end' => $data2["end"],
+            'entity' => $ticket->fields["entities_id"]
+         );
+         ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params, false);
+         echo "}";
+         echo "</script>\n";
+
+         echo Planning :: getState($data2["state"]) . "<br>" . convDateTime($data2["begin"]) . "<br>->" .
+         convDateTime($data2["end"]) . "<br>" . getUserName($data2["users_id"]);
+      }
+      echo "</td>";
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
