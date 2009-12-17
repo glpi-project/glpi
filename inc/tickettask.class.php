@@ -120,7 +120,8 @@ class TicketTask  extends CommonDBTM {
     * @return boolean
     */
    function canUpdateItem() {
-      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_followup',1)) {
+
+      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_followups',1)) {
          return false;
       }
       $ticket = new Ticket();
@@ -368,7 +369,7 @@ class TicketTask  extends CommonDBTM {
          " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
 
       echo "<td>".($this->fields['taskcategories_id']
-                   ? Dropdown::getDropdownName('glpi_taskcategories', $this->fields['taskcategories_id']) 
+                   ? Dropdown::getDropdownName('glpi_taskcategories', $this->fields['taskcategories_id'])
                    : $this->getTypeName());
       echo "</td>";
 
@@ -377,6 +378,7 @@ class TicketTask  extends CommonDBTM {
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
          $params = array (
+            'type' => __CLASS__,
             'id' => $this->fields["id"]
          );
          ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
@@ -510,7 +512,7 @@ class TicketTask  extends CommonDBTM {
       echo "<td>";
       $query2 = "SELECT *
                  FROM `glpi_ticketplannings`
-                 WHERE `ticketfollowups_id` = '".$this->fields['id']."'";
+                 WHERE `tickettasks_id` = '".$this->fields['id']."'";
       $result2=$DB->query($query2);
 
       if ($DB->numrows($result2)==0) {
