@@ -88,8 +88,20 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervPriority($date1,$date2);
          break;
 
+      case "urgency" :
+         $val = getNbIntervUrgency($date1,$date2);
+         break;
+
+      case "impact" :
+         $val = getNbIntervImpact($date1,$date2);
+         break;
+
       case "requesttypes_id" :
          $val = getNbIntervRequestType($date1,$date2);
+         break;
+
+      case "ticketsolutiontypes_id" :
+         $val = getNbIntervSolutionType($date1,$date2);
          break;
 
       case "usertitles_id" :
@@ -530,11 +542,13 @@ function getNbIntervRecipient($date1,$date2) {
 }
 
 
-/** Get priorities of tickets between 2 dates
-* @param $date1 date : begin date
-* @param $date2 date : end date
-* @return array contains the distinct priorities of tickets
-*/
+/** 
+ * Get priorities of tickets between 2 dates
+ * 
+ * @param $date1 date : begin date
+ * @param $date2 date : end date
+ * @return array contains the distinct priorities of tickets
+ */
 function getNbIntervPriority($date1,$date2) {
    global $DB;
 
@@ -561,12 +575,80 @@ function getNbIntervPriority($date1,$date2) {
    return $tab;
 }
 
+/** 
+ * Get urgencies of tickets between 2 dates
+ * 
+ * @param $date1 date : begin date
+ * @param $date2 date : end date
+ * @return array contains the distinct priorities of tickets
+ */
+function getNbIntervUrgency($date1,$date2) {
+   global $DB;
 
-/** Get request types of tickets between 2 dates
-* @param $date1 date : begin date
-* @param $date2 date : end date
-* @return array contains the distinct request types of tickets
-*/
+   $query = "SELECT DISTINCT `urgency`
+             FROM `glpi_tickets` ".
+             getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
+   $query .= " ORDER BY `urgency`";
+
+   $result = $DB->query($query);
+   $tab=array();
+   if ($DB->numrows($result) >=1) {
+      $i = 0;
+      while ($line = $DB->fetch_assoc($result)) {
+         $tmp['id']= $line["urgency"];
+         $tmp['link']=Ticket::getUrgencyName($line["urgency"]);
+         $tab[]=$tmp;
+      }
+   }
+   return $tab;
+}
+
+/** 
+ * Get impacts of tickets between 2 dates
+ * 
+ * @param $date1 date : begin date
+ * @param $date2 date : end date
+ * @return array contains the distinct priorities of tickets
+ */
+function getNbIntervImpact($date1,$date2) {
+   global $DB;
+
+   $query = "SELECT DISTINCT `impact`
+             FROM `glpi_tickets` ".
+             getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
+   $query .= " ORDER BY `impact`";
+
+   $result = $DB->query($query);
+   $tab=array();
+   if ($DB->numrows($result) >=1) {
+      $i = 0;
+      while ($line = $DB->fetch_assoc($result)) {
+         $tmp['id']= $line["impact"];
+         $tmp['link']=Ticket::getImpactName($line["impact"]);
+         $tab[]=$tmp;
+      }
+   }
+   return $tab;
+}
+
+
+/** 
+ * Get request types of tickets between 2 dates
+ * 
+ * @param $date1 date : begin date
+ * @param $date2 date : end date
+ * @return array contains the distinct request types of tickets
+ */
 function getNbIntervRequestType($date1,$date2) {
    global $DB;
 
@@ -586,6 +668,38 @@ function getNbIntervRequestType($date1,$date2) {
       while ($line = $DB->fetch_assoc($result)) {
          $tmp['id']= $line["requesttypes_id"];
          $tmp['link']=Dropdown::getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
+         $tab[]=$tmp;
+      }
+   }
+   return $tab;
+}
+
+/** 
+ * Get solution types of tickets between 2 dates
+ * 
+ * @param $date1 date : begin date
+ * @param $date2 date : end date
+ * @return array contains the distinct request types of tickets
+ */
+function getNbIntervSolutionType($date1,$date2) {
+   global $DB;
+
+   $query = "SELECT DISTINCT `ticketsolutiontypes_id`
+             FROM `glpi_tickets` ".
+             getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+   if (!empty($date1)||!empty($date2)) {
+      $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+      $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+   }
+   $query .= " ORDER BY `ticketsolutiontypes_id`";
+
+   $result = $DB->query($query);
+   $tab=array();
+   if ($DB->numrows($result) >=1) {
+      while ($line = $DB->fetch_assoc($result)) {
+         $tmp['id']= $line["ticketsolutiontypes_id"];
+         $tmp['link']=Dropdown::getDropdownName('glpi_ticketsolutiontypes',$line["ticketsolutiontypes_id"]);
          $tab[]=$tmp;
       }
    }
@@ -729,15 +843,12 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "groups_id_assign" :
-         $WHERE .= " AND `glpi_tickets`.`groups_id_assign` = '$value'";
-         break;
-
-      case "priority" :
-         $WHERE .= " AND `glpi_tickets`.`priority` = '$value'";
-         break;
-
       case "requesttypes_id" :
-         $WHERE .= " AND `glpi_tickets`.`requesttypes_id` = '$value'";
+      case "requesttypes_id" :
+      case "ticketsolutiontypes_id" :
+      case "impact" :
+      case "priority" :
+         $WHERE .= " AND `glpi_tickets`.`$param` = '$value'";
          break;
 
       case "usertitles_id" :

@@ -87,13 +87,20 @@ $items =
                                           => array('title' => $LANG['users'][2],
                                                    'field' => 'glpi_users.usercategories_id')),
          $LANG['common'][32] => array('ticketcategories_id'
-                                          => array('title' => $LANG['common'][36],
-                                                   'field' => 'glpi_tickets.ticketcategories_id'),
+                                                 => array('title' => $LANG['common'][36],
+                                                          'field' => 'glpi_tickets.ticketcategories_id'),
+                                      'urgency'  => array('title' => $LANG['joblist'][29],
+                                                          'field' => 'glpi_tickets.urgency'),
+                                      'impact'   => array('title' => $LANG['joblist'][30],
+                                                          'field' => 'glpi_tickets.impact'),
                                       'priority' => array('title' => $LANG['joblist'][2],
                                                           'field' => 'glpi_tickets.priority'),
                                       'requesttypes_id'
-                                          => array('title' => $LANG['job'][44],
-                                                   'field' => 'glpi_tickets.requesttypes_id')),
+                                                 => array('title' => $LANG['job'][44],
+                                                          'field' => 'glpi_tickets.requesttypes_id'),
+                                      'ticketsolutiontypes_id'
+                                                 => array('title' => $LANG['job'][48],
+                                                          'field' => 'glpi_tickets.ticketsolutiontypes_id')),
          $LANG['job'][5] => array('technicien'
                                        => array('title' => $LANG['job'][6]." ".$LANG['stats'][48],
                                                 'field' => 'glpi_tickets.users_id_assign'),
