@@ -123,7 +123,8 @@ if ($item instanceof CommonTreeDropdown) {
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
             $_POST['myname']."\" size='1'";
-      if ($_POST['table'] == "glpi_entities" && $_POST["auto_submit"]==1) {
+      /// TODO : why auto_sumbit only for entities ?
+      if ($_POST['table'] == "glpi_entities" && isset($_POST["auto_submit"] && $_POST["auto_submit"]==1) {
          echo " onChange='submit()'";
       }
       echo ">";
