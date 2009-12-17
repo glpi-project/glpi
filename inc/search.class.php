@@ -120,7 +120,7 @@ class Search {
          }
       }
       // hack for States
-      if ($itemtype=='States') {
+      if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          $entity_restrict = true;
       } else {
          $entity_restrict = $item->isEntityAssign();
@@ -262,6 +262,7 @@ class Search {
          if ($itemtype == 'Entity') {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'id','',true);
          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
          } else {
