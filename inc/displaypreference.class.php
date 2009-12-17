@@ -42,6 +42,7 @@ class DisplayPreference extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_displaypreferences';
+   var $auto_message_on_action=true;
 
    function prepareInputForAdd($input) {
       global $DB;

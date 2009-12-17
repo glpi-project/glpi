@@ -37,6 +37,7 @@ class Bookmark_User extends CommonDBTM{
 
    // From CommonDBTM
    public $table = 'glpi_bookmarks_users';
+   var $auto_message_on_action=false;
 
 }
 
