@@ -226,7 +226,7 @@ $LANG['common'][36]="Catégorie";
 $LANG['common'][37]="Auteur";
 $LANG['common'][38]="Déglobaliser";
 $LANG['common'][39]="Duplique l'élément autant de fois qu'il y a de connexions";
-$LANG['common'][40]="Êtes vous sûr de vouloir déglobaliser cet élément ?";
+$LANG['common'][40]="Êtes-vous sûr de vouloir déglobaliser cet élément ?";
 $LANG['common'][41]="Alertes par email";
 $LANG['common'][42]="Portable";
 $LANG['common'][43]="Prénom";
@@ -1353,7 +1353,7 @@ $LANG['reservation'][34]="Matériel non réservable";
 $LANG['reservation'][35]="Réservations en cours et à venir";
 $LANG['reservation'][36]="Réservations passées";
 $LANG['reservation'][37]="Pas de réservations";
-$LANG['reservation'][38]="Êtes vous sur de vouloir rendre cet élément non réservable ?";
+$LANG['reservation'][38]="Êtes-vous sur de vouloir rendre cet élément non réservable ?";
 $LANG['reservation'][39]="Cela supprimera toutes les réservations en cours.";
 $LANG['reservation'][40]="Réservation effectuée. Un mail a été envoyé à ";
 
