@@ -674,11 +674,6 @@ class Plugin extends CommonDBTM {
       }
       $plugin = strtolower($plug['plugin']);
 
-      // needed for getPluginSearchOptions /
-      /// TODO specify in itemtype definition for which itemtype it add SearhOptions
-      /// Add a new specific attribute to registerClass
-      $PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
-
       // TODO remove => no CommonItem
       if (isset($attrib['classname']) && !empty($attrib['classname'])) {
          $PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];

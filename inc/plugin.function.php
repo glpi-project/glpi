@@ -228,9 +228,8 @@ function getPluginSearchOptions($itemtype) {
    global $PLUGIN_HOOKS;
 
    $sopt=array();
-   if (isset($PLUGIN_HOOKS['plugin_types']) && count($PLUGIN_HOOKS['plugin_types'])) {
-      $tab=array_unique($PLUGIN_HOOKS['plugin_types']);
-      foreach ($tab as $plug) {
+   if (isset($_SESSION['glpi_plugins']) && count($_SESSION['glpi_plugins'])) {
+      foreach ($_SESSION['glpi_plugins'] as $plug) {
          if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
             include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
          }
