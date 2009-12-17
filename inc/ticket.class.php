@@ -1850,10 +1850,15 @@ class Ticket extends CommonDBTM {
       }
 
       // TODO keep this for a union with followup + task + histo + ...
-      $query = "SELECT 'TicketFollowup' as itemtype, `id`, `date`
+      $query = "(SELECT 'TicketFollowup' as itemtype, `id`, `date`
                  FROM `glpi_ticketfollowups`
                  WHERE `tickets_id` = '$tID'
-                        $RESTRICT
+                        $RESTRICT)
+                UNION
+                (SELECT 'TicketTask' as itemtype, `id`, `date`
+                 FROM `glpi_tickettasks`
+                 WHERE `tickets_id` = '$tID'
+                        $RESTRICT)
                 ORDER BY `date` DESC";
       $result = $DB->query($query);
 
@@ -1872,8 +1877,11 @@ class Ticket extends CommonDBTM {
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['job'][35] . "</th><th>" . $LANG['common'][37] . "</th>";
+         if ($showprivate) {
+            echo "<th>" . $LANG['common'][77] . "</th>";
+         }
          echo "</tr>\n";
-
+         
          while ($data = $DB->fetch_array($result)) {
             if (class_exists($data['itemtype'])) {
                $item = new $data['itemtype'];
