@@ -1028,14 +1028,14 @@ class Search {
                      } else {
                         if ($data["ACTIVE"]) {
                            echo displaySearchItem($output_type,"<a href=\"".
-                                          $CFG_GLPI["root_doc"]."/front/reservation.php?id=".
+                                          $CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".
                                           $data["refID"]."&amp;is_active=0\" title='".
                                           $LANG['buttons'][42]."'><img src=\"".
                                           $CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",
                                           $item_num,$row_num,"class='center'");
                         } else {
                            echo displaySearchItem($output_type,"<a href=\"".
-                                          $CFG_GLPI["root_doc"]."/front/reservation.php?id=".
+                                          $CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".
                                           $data["refID"]."&amp;is_active=1\" title='".
                                           $LANG['buttons'][41]."'><img src=\"".
                                           $CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",
@@ -1044,7 +1044,7 @@ class Search {
                         echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".
                                        addslashes($LANG['reservation'][38])."\\n".
                                        addslashes($LANG['reservation'][39])."','".
-                                       $CFG_GLPI["root_doc"]."/front/reservation.php?id=".
+                                       $CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".
                                        $data["refID"]."&amp;delete=delete')\" title='".
                                        $LANG['reservation'][6]."'><img src=\"".
                                        $CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",
@@ -3196,11 +3196,11 @@ class Search {
 
          case "glpi_reservationitems.comment" :
             if (empty($data[$NAME.$num])) {
-               return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".
+               return "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?comment=".
                         $data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49].
                      "</a>";
             }
-            return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".
+            return "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?comment=".
                      $data['refID']."' title='".$LANG['reservation'][22]."'>".
                      resume_text($data[$NAME.$num])."</a>";
 

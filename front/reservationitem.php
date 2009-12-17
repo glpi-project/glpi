@@ -40,6 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
+/// TODO create reservationitem.form.php to edit comments
 
 $ri=new ReservationItem();
 $rr=new Reservation();
@@ -56,7 +57,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
 			if ($rr->update($_POST)){
-				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&id=".$_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+				glpi_header($CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&id=".$_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
 			}
 		}
 	} else if (isset($_POST["clear_resa"])){
@@ -119,9 +120,9 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			if ($all_ok){
 				// Several reservations
 				if (count($_POST['items'])>1){
-					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&id=");
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php?show=resa&id=");
 				} else { // Only one reservation
-					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&id=$reservationitems_id");
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php?show=resa&id=$reservationitems_id");
 				}
 			}
 		}
@@ -155,13 +156,13 @@ else {
 			checkRight("reservation_central","w");
 			$ri->delete($_GET);
 			Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
+			glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php");
 		} else if (isset($_GET["is_active"]))
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_GET);
 			Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
+			glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php");
 		}
 
 		if (isset($_POST["updatecomment"]))

@@ -187,7 +187,7 @@ class Event extends CommonDBTM {
                break;
 
             case "reservation" :
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;id=".
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".
                      $items_id."\">$items_id</a>";
                break;
 
