@@ -844,8 +844,8 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
       case "groups_id_assign" :
       case "requesttypes_id" :
-      case "requesttypes_id" :
       case "ticketsolutiontypes_id" :
+      case "urgency" :
       case "impact" :
       case "priority" :
          $WHERE .= " AND `glpi_tickets`.`$param` = '$value'";
