@@ -334,6 +334,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
          $params = array (
+            'type' => __CLASS__,
             'id' => $this->fields["id"]
          );
          ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
@@ -377,12 +378,6 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
-      $commentall = haveRight("update_followups","1");
-      $canplan = haveRight("show_planning","1");
-
-      $job=new Ticket();
-      $job->getFromDB($this->fields["tickets_id"]);
-
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['job'][39]."</th></tr>";
@@ -397,107 +392,49 @@ class TicketFollowup  extends CommonDBTM {
       echo "<td class='center' width='10%'>".$LANG['joblist'][6]."<br><br>".$LANG['common'][27].
             "&nbsp;:<br>".convDateTime($this->fields["date"])."</td>";
       echo "<td width='90%'>";
-      if ($commentall) {
-         echo "<textarea name='content' cols='50' rows='6'>".$this->fields["content"]."</textarea>";
-      } else {
-         echo nl2br($this->fields["content"]);
-      }
+      echo "<textarea name='content' cols='50' rows='6'>".$this->fields["content"]."</textarea>";
       echo "</td></tr></table>";
 
       echo "</td>";
       echo "<td width='50%' class='top'>";
 
       echo "<table width='100%'>";
-      if ($commentall) {
-         echo "<tr><td>".$LANG['common'][77]."&nbsp;:</td>";
-         echo "<td><select name='is_private'>";
-         echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".
-               $LANG['choice'][0]."</option>";
-         echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".
-               $LANG['choice'][1]."</option>";
-         echo "</select></td>";
-         echo "</tr>";
-      }
+
+      echo "<tr><td>".$LANG['job'][44]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::dropdownValue('glpi_requesttypes','requesttypes_id', $this->fields["requesttypes_id"]);
+      echo "</td></tr>";
+
+      echo "<tr><td>".$LANG['common'][77]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_private', $this->fields["is_private"]);
+      echo "</td></tr>";
 
       echo "<tr><td>".$LANG['job'][31]."&nbsp;:</td><td>";
       $hour = floor($this->fields["realtime"]);
       $minute = round(($this->fields["realtime"]-$hour)*60,0);
-
-      if ($commentall) {
-         Dropdown::showInteger('hour',$hour,0,100);
-         echo $LANG['job'][21]."&nbsp;&nbsp;";
-         Dropdown::showInteger('minute',$minute,0,59);
-         echo $LANG['job'][22];
-      } else {
-         echo $hour." ".$LANG['job'][21]." ".$minute." ".$LANG['job'][22];
-      }
-
+      Dropdown::showInteger('hour',$hour,0,100);
+      echo $LANG['job'][21]."&nbsp;&nbsp;";
+      Dropdown::showInteger('minute',$minute,0,59);
+      echo $LANG['job'][22];
       echo "</tr>";
 
-      echo "<tr><td>".$LANG['job'][35]."</td>";
-      echo "<td>";
-      $query2 = "SELECT *
-                 FROM `glpi_ticketplannings`
-                 WHERE `ticketfollowups_id` = '".$this->fields['id']."'";
-      $result2=$DB->query($query2);
-
-      if ($DB->numrows($result2)==0) {
-         if ($canplan) {
-            echo "<script type='text/javascript' >\n";
-            echo "function showPlanUpdate(){\n";
-            echo "Ext.get('plan').setDisplayed('none');";
-            $params = array('form'     => 'followups',
-                            'state'    => 1,
-                            'users_id' => $_SESSION['glpiID'],
-                            'entity'   => $_SESSION["glpiactive_entity"]);
-            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,
-                                 false);
-            echo "};";
-            echo "</script>";
-
-            echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
-            echo "<span class='showplan'>".$LANG['job'][34]."</span>";
-            echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
-         } else {
-            echo $LANG['job'][32];
-         }
-      } else {
-         $this->fields2 = $DB->fetch_array($result2);
-         if ($canplan) {
-            echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
-            echo "<span class='showplan'>";
-         }
-         echo Planning::getState($this->fields2["state"])."<br>".convDateTime($this->fields2["begin"]).
-              "<br>->".convDateTime($this->fields2["end"])."<br>".
-              getUserName($this->fields2["users_id"]);
-         if ($canplan) {
-            echo "</span>";
-            echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
-         }
-      }
-
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='2'>";
+      echo "<table width='100%'><tr><td class='center'>";
+      echo "<input type='submit' name='update' value='".$LANG['buttons'][14]."' class='submit'>";
+      echo "</td><td class='center'>";
+      echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
+      echo "</td></tr></table>";
       echo "</td></tr>";
 
-      if ($commentall) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='2'>";
-         echo "<table width='100%'><tr><td class='center'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][14]."' class='submit'>";
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
-         echo "</td></tr></table>";
-         echo "</td></tr>";
-      }
       echo "</table>";
       echo "</td></tr></table>";
 
-      if ($commentall) {
-         echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
-         echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
-         echo "</form>";
-      }
+      echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
+      echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
+      echo "</form>";
+
       echo "</td></tr>";
       echo "</table>";
       echo "</div>";

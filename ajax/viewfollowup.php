@@ -41,11 +41,15 @@ header_nocache();
 
 checkLoginUser();
 
-$fup = new TicketFollowup();
-if (isset($_POST["id"]) && $fup->can($_POST["id"],'w')) {
-   $fup->showUpdateForm();
+if ($_POST['type']=='TicketTask') {
+   $item = new TicketTask();
 } else {
-   echo $LANG['login'][5];
+   $item = new TicketFollowup();
+}
+if (isset($_POST["id"]) && $item->can($_POST["id"],'w')) {
+   $item->showUpdateForm();
+} else {
+   echo $LANG['login'][5].$_POST['type'].$_POST["id"];
 }
 
 ajaxFooter();
