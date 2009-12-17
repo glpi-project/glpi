@@ -914,7 +914,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
    }
 
    echo "<td class='center' colspan='1'>";
-   echo" <input type='submit' value'".$LANG['buttons'][0]."' class='submit'></td>";
+   echo" <input type='submit' value='".$LANG['buttons'][0]."' class='submit'></td>";
    echo "</tr></table>";
    echo "<input type='hidden' name='start' value='0'>";
    echo "<input type='hidden' name='extended' value='$extended'>";
