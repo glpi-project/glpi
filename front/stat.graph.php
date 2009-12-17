@@ -146,13 +146,39 @@ switch($_GET["type"]) {
       $val1 = $_GET["id"];
       $val2 = "";
       $next = $prev = 0;
-      if ($val1 < 5) {
+      if ($val1 < 6) {
          $next = $val1+1;
       }
       if ($val1 > 1) {
          $prev = $val1-1;
       }
       $title = $LANG['joblist'][2]."&nbsp;: ".Ticket::getPriorityName($_GET["id"]);
+      break;
+
+   case "urgency" :
+      $val1 = $_GET["id"];
+      $val2 = "";
+      $next = $prev = 0;
+      if ($val1 < 5) {
+         $next = $val1+1;
+      }
+      if ($val1 > 1) {
+         $prev = $val1-1;
+      }
+      $title = $LANG['joblist'][29]."&nbsp;: ".Ticket::getUrgencyName($_GET["id"]);
+      break;
+
+   case "impact" :
+      $val1 = $_GET["id"];
+      $val2 = "";
+      $next = $prev = 0;
+      if ($val1 < 5) {
+         $next = $val1+1;
+      }
+      if ($val1 > 1) {
+         $prev = $val1-1;
+      }
+      $title = $LANG['joblist'][30]."&nbsp;: ".Ticket::getImpactName($_GET["id"]);
       break;
 
    case "usertitles_id" :
@@ -162,6 +188,15 @@ switch($_GET["type"]) {
       $next = getNextItem("glpi_usertitles",$_GET["id"]);
       $prev = getPreviousItem("glpi_usertitles",$_GET["id"]);
       $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_usertitles",$_GET["id"]);
+      break;
+
+   case "ticketsolutiontypes_id" :
+      $val1 = $_GET["id"];
+      $val2 = "";
+      $next = $prev = 0;
+      $next = getNextItem("glpi_ticketsolutiontypes",$_GET["id"]);
+      $prev = getPreviousItem("glpi_ticketsolutiontypes",$_GET["id"]);
+      $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_ticketsolutiontypes",$_GET["id"]);
       break;
 
    case "usercategories_id" :
