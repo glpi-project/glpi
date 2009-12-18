@@ -409,7 +409,7 @@ function getAncestorsOf($table,$items_id) {
          $parent=$DB->result($result,0,1);
          // Return datas from cache in DB
          if (!empty($ancestors)) {
-            return json_decode($ancestors,true);
+            return importArrayFromDB($ancestors,true);
          }
          // Recursive solution for table with-cache
          if ($parent>0) {
@@ -419,7 +419,7 @@ function getAncestorsOf($table,$items_id) {
 
          // Store cache datas in DB
          $query="UPDATE `$table`
-                 SET `ancestors_cache`='".json_encode($id_found)."'
+                 SET `ancestors_cache`='".exportArrayToDB($id_found)."'
                  WHERE `id`='$items_id'";
          $DB->query($query);
       }
@@ -468,7 +468,7 @@ function getSonsOf($table,$IDf) {
       if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
          $sons=trim($DB->result($result,0,0));
          if (!empty($sons)) {
-            return json_decode($sons,true);
+            return importArrayFromDB($sons,true);
          }
       }
    }
@@ -512,7 +512,7 @@ function getSonsOf($table,$IDf) {
    // Store cache datas in DB
    if ($use_cache) {
       $query="UPDATE `$table`
-              SET `sons_cache`='".json_encode($id_found)."'
+              SET `sons_cache`='".exportArrayToDB($id_found)."'
               WHERE `id`='$IDf';";
       $DB->query($query);
    }
@@ -1230,6 +1230,42 @@ function getDateRequest($field,$begin, $end) {
       $sql .= " $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";
    }
    return " (".$sql.") ";
+}
+
+/**
+   * Export an array to be stored in a simple field in the database
+   *
+   * @param $TAB Array to export / encode (one level depth)
+   *
+   * @return string containing encoded array
+   *
+   **/
+function exportArrayToDB($TAB) {
+   return json_encode($TAB);
+}
+
+/**
+   * Import an array encoded in a simple field in the database
+   *
+   * @param $DATA data readed in DB to import
+   *
+   * @return array containing datas
+   *
+   **/
+function importArrayFromDB($DATA) {
+
+   $TAB=json_decode($DATA,true);
+   // Use olf scheme to decode
+   if (!is_array($TAB)) {
+      $TAB = array();
+      foreach(explode(" ", $DATA) as $ITEM) {
+         $A = explode("=>", $ITEM);
+         if (strlen($A[0])>0 && isset($A[1])) {
+            $TAB[urldecode($A[0])] = urldecode($A[1]);
+         }
+      }
+   }
+   return $TAB;
 }
 
 ?>

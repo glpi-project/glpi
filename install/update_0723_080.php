@@ -2249,7 +2249,7 @@ function update0723to080() {
                   }
                }
                $query="UPDATE `glpi_profiles`
-                     SET `helpdesk_item_type`='".json_encode($tostore)."'
+                     SET `helpdesk_item_type`='".exportArrayToDB($tostore)."'
                      WHERE `id`='".$data['id']."'";
 
                $DB->query($query) or die("0.80 populate helpdesk_item_type" .
@@ -2433,7 +2433,7 @@ function update0723to080() {
                       3=>array(1=>2,2=>2,3=>3,4=>4,4=>4,5=>4),
                       4=>array(1=>2,2=>3,3=>4,4=>4,4=>4,5=>5),
                       5=>array(1=>2,2=>3,3=>4,4=>5,4=>5,5=>5));
-      $matrix = json_encode($matrix);
+      $matrix = exportArrayToDB($matrix);
       $query = "UPDATE `glpi_configs` SET `priority_matrix`='$matrix' WHERE `id`='1'";
       $DB->query($query) or die("0.80 set default priority_matrix  in glpi_configs " .
                                 $LANG['update'][90] . $DB->error());

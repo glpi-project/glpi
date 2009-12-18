@@ -116,7 +116,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    if ($config_ok) {
       $CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
-      $CFG_GLPI['priority_matrix'] = json_decode($config_object->fields['priority_matrix'],true);
+      $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],true);
 
       if ( !isset($_SERVER['REQUEST_URI']) ) {
          $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
