@@ -1857,7 +1857,7 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add is_active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
 	}
 
-   // Change mailgate search pref : add ative
+   // Change mailgate search pref : add active
 	$query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype=".MAILGATE_TYPE.";";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)>0) {
@@ -2538,7 +2538,18 @@ function update0723to080() {
                   ADD `requesttypes_id` int(11) NOT NULL default '0',
                   ADD INDEX `requesttypes_id` (`requesttypes_id`)";
       $DB->query($query) or die("0.80 alter glpi_ticketplannings" . $LANG['update'][90] . $DB->error());
+   }
 
+   if (countElementsInTable('glpi_displaypreferences',"itemtype='AuthMail'") == 0) {
+      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
+         VALUES ('AuthMail', 3, 1, 0);";
+      $DB->query($query) or die("0.80 add default value for search engine for AuthMail" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (countElementsInTable('glpi_displaypreferences',"itemtype='AuthLDAP'") == 0) {
+      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
+         VALUES ('AuthLDAP', 3, 1, 0);";
+      $DB->query($query) or die("0.80 add default value for search engine for AuthLDAP" . $LANG['update'][90] . $DB->error());
    }
 
 

@@ -455,43 +455,6 @@ function showOtherAuthList($target) {
    echo "</table></div></form>\n";
 }
 
-// TODO : use common search engine
-function showImapAuthList($target) {
-   global $DB, $LANG, $CFG_GLPI;
-
-   if (!haveRight("config", "w")) {
-      return false;
-   }
-
-   echo "<div class='center'>";
-
-   if (canUseImapPop()) {
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'class='b'>" . $LANG['login'][3] . "</th></tr>\n";
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td>";
-      echo "<td class='center'>" . $LANG['common'][52] . "</td></tr>\n";
-      $sql = "SELECT *
-              FROM `glpi_authmails`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result)) {
-         while ($mail_method = $DB->fetch_array($result)) {
-            echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<a href='$target?id=" . $mail_method["id"] . "' >";
-            echo $mail_method["name"] . "</a></td>";
-            echo "<td class='center'>" . $mail_method["host"] . "</td></tr>\n";
-         }
-      }
-      echo "</table>\n";
-   } else {
-      echo '<input type="hidden" name="IMAP_Test" value="1" >';
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][165] . "</p>";
-      echo "<p>" . $LANG['setup'][166] . "</p></td></tr></table>\n";
-   }
-   echo "</div>";
-}
-
 function showMailServerConfig($value) {
    global $LANG;
 
