@@ -248,29 +248,6 @@ class Infocom extends CommonDBTM {
 
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {
-
-         // TODO : remove this when autoload ready
-         $needed=array("computer",
-                       "device",
-                       "printer",
-                       "networking",
-                       "peripheral",
-                       "monitor",
-                       "software",
-                       "infocom",
-                       "phone",
-                       "state",
-                       "tracking",
-                       "enterprise");
-         foreach ($needed as $item) {
-            if (file_exists(GLPI_ROOT . "/inc/$item.class.php")) {
-               include_once (GLPI_ROOT . "/inc/$item.class.php");
-            }
-            if (file_exists(GLPI_ROOT . "/inc/$item.function.php")) {
-               include_once (GLPI_ROOT . "/inc/$item.function.php");
-            }
-         }
-
          while ($data=$DB->fetch_array($result)) {
             if (!class_exists($data["itemtype"])) {
                continue;
