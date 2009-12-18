@@ -63,13 +63,8 @@ if (isset($_POST["add"])) {
 
 // delete a computer
 } else if (isset($_POST["delete"])) {
-   $computer->check($_POST['id'],'w');
-
-   if (!empty($_POST["withtemplate"])) {
-      $ok = $computer->delete($_POST,1);
-   } else {
-      $ok = $computer->delete($_POST);
-   }
+   $computer->check($_POST['id'],'d');
+   $ok = $computer->delete($_POST);
    if ($ok) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$computer->getField('name'));
@@ -80,7 +75,7 @@ if (isset($_POST["add"])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 
 } else if (isset($_POST["restore"])) {
-   $computer->check($_POST['id'],'w');
+   $computer->check($_POST['id'],'d');
 
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
@@ -94,7 +89,7 @@ if (isset($_POST["add"])) {
       $input["id"] = $_POST["id"];
    }
 
-   $computer->check($input['id'],'w');
+   $computer->check($input['id'],'d');
 
    if ($computer->delete($input,1)) {
       Event::log($input["id"], "computers", 4, "inventory",

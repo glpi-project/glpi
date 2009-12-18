@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $license->check($_POST['id'],'w');
+   $license->check($_POST['id'],'d');
 
    $license->delete($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",

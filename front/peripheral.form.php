@@ -60,13 +60,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $peripheral->check($_POST["id"],'w');
-
-   if (!empty($_POST["withtemplate"])) {
-      $peripheral->delete($_POST,1);
-   } else {
-      $peripheral->delete($_POST);
-   }
+   $peripheral->check($_POST["id"],'d');
+   $peripheral->delete($_POST);
+   
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if (!empty($_POST["withtemplate"])) {
@@ -76,7 +72,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["restore"])) {
-   $peripheral->check($_POST["id"],'w');
+   $peripheral->check($_POST["id"],'d');
 
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -90,7 +86,7 @@ if (isset($_POST["add"])) {
       $input["id"] = $_GET["id"];
    }
 
-   $peripheral->check($input["id"],'w');
+   $peripheral->check($input["id"],'d');
 
    $peripheral->delete($input,1);
    Event::log($input["id"], "peripherals", 4, "inventory",

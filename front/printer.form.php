@@ -60,13 +60,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $print->check($_POST["id"],'w');
+   $print->check($_POST["id"],'d');
+   $print->delete($_POST);
 
-   if (!empty($_POST["withtemplate"])) {
-      $print->delete($_POST,1);
-   } else {
-      $print->delete($_POST);
-   }
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
@@ -75,7 +71,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["restore"])) {
-   $print->check($_POST["id"],'w');
+   $print->check($_POST["id"],'d');
 
    $print->restore($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
@@ -87,7 +83,7 @@ if (isset($_POST["add"])) {
    } else {
       $input["id"] = $_GET["id"];
    }
-   $print->check($input["id"],'w');
+   $print->check($input["id"],'d');
 
    $print->delete($input,1);
    Event::log($input["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);

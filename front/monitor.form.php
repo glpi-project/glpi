@@ -60,13 +60,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"],'d');
+   $monitor->delete($_POST);
 
-   if (!empty($_POST["withtemplate"])) {
-      $monitor->delete($_POST,1);
-   } else {
-      $monitor->delete($_POST);
-   }
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if(!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
@@ -75,7 +71,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["restore"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"],'d');
 
    $monitor->restore($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
@@ -87,7 +83,7 @@ if (isset($_POST["add"])) {
    } else {
       $input["id"] = $_GET["id"];
    }
-   $monitor->check($input["id"],'w');
+   $monitor->check($input["id"],'d');
 
    $monitor->delete($input,1);
    Event::log($input["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
