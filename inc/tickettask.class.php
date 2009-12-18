@@ -43,6 +43,7 @@ class TicketTask  extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_tickettasks';
    public $type = 'TicketTask';
+   public $auto_message_on_action = false;
 
    static function getTypeName() {
       global $LANG;
@@ -195,7 +196,7 @@ class TicketTask  extends CommonDBTM {
          $pt = new TicketPlanning();
          // Update case
          if (isset($input["_plan"]["id"])) {
-            $input["_plan"]['ticketfollowups_id'] = $input["id"];
+            $input["_plan"]['tickettasks_id'] = $input["id"];
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = $mailsend;
 
@@ -205,7 +206,7 @@ class TicketTask  extends CommonDBTM {
             unset($input["_plan"]);
          // Add case
          } else {
-            $input["_plan"]['ticketfollowups_id'] = $input["id"];
+            $input["_plan"]['tickettasks_id'] = $input["id"];
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = 1;
 
@@ -294,7 +295,7 @@ class TicketTask  extends CommonDBTM {
 
       if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input["_plan"])) {
-            $input["_plan"]['ticketfollowups_id'] = $newID;
+            $input["_plan"]['tickettasks_id'] = $newID;
             $input["_plan"]['tickets_id'] = $input['tickets_id'];
             $input["_plan"]['_nomail'] = 1;
             $pt = new TicketPlanning();
@@ -437,12 +438,125 @@ class TicketTask  extends CommonDBTM {
       echo "</tr>\n";
    }
 
+
+   /** form for Task
+    *
+    *@param $ID Integer : Id of the task
+    *@param $tid Integer : Id of the ticket
+    *
+    */
+   function showForm($ID, $tid=0) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input=array('tickets_id'=>$tid);
+         $this->check(-1,'w',$input);
+      }
+
+      $canplan = haveRight("show_planning","1");
+
+      $this->showFormHeader($this->getFormURL(),$ID,'',2);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='6' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='6'><textarea name='content' cols='50' rows='6'>".
+            $this->fields["content"]."</textarea></td>";
+      if ($this->fields["date"]) {
+         echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
+         echo "<td>".convDateTime($this->fields["date"]);
+      } else {
+         echo "<td colspan='2'>&nbsp;";
+      }
+      echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
+      Dropdown::dropdownValue("glpi_taskcategories", "taskcategories_id",
+                              $this->fields["taskcategories_id"],1);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
+      echo "<td><select name='is_private'>";
+      echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".$LANG['choice'][0].
+            "</option>";
+      echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".$LANG['choice'][1].
+            "</option>";
+      echo "</select></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
+      $hour = floor($this->fields["realtime"]);
+      $minute = round(($this->fields["realtime"]-$hour)*60,0);
+      Dropdown::showInteger('hour',$hour,0,100);
+      echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+      Dropdown::showInteger('minute',$minute,0,59);
+      echo "&nbsp;".$LANG['job'][22];
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][35]."</td>";
+      echo "<td>";
+      $query2 = "SELECT *
+                 FROM `glpi_ticketplannings`
+                 WHERE `tickettasks_id` = '".$this->fields['id']."'";
+      $result2 = $DB->query($query2);
+
+      if ($DB->numrows($result2) == 0) {
+         if ($canplan) {
+            echo "<script type='text/javascript' >\n";
+            echo "function showPlanUpdate(){\n";
+            echo "Ext.get('plan').setDisplayed('none');";
+            $params = array('form'     => 'followups',
+                            'state'    => 1,
+                            'users_id' => $_SESSION['glpiID'],
+                            'entity'   => $_SESSION["glpiactive_entity"]);
+            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,
+                                 false);
+            echo "};";
+            echo "</script>";
+
+            echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
+            echo "<span class='showplan'>".$LANG['job'][34]."</span>";
+            echo "</div>\n";
+            echo "<div id='viewplan'></div>\n";
+         } else {
+            echo $LANG['job'][32];
+         }
+      } else {
+         $this->fields2 = $DB->fetch_array($result2);
+         if ($canplan) {
+            echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
+            echo "<span class='showplan'>";
+         }
+         echo Planning::getState($this->fields2["state"])."<br>".convDateTime($this->fields2["begin"]).
+              "<br>->".convDateTime($this->fields2["end"])."<br>".
+              getUserName($this->fields2["users_id"]);
+         if ($canplan) {
+            echo "</span>";
+            echo "</div>\n";
+            echo "<div id='viewplan'></div>\n";
+         }
+      }
+      echo "</td></tr>";
+
+      $this->showFormButtons($ID,'',2);
+
+      return true;
+   }
+
+
    /**
     * Form to update a followup to a ticket
     *
     * @param $ID integer : followup ID
     */
-   function showUpdateForm() {
+/*   function showUpdateForm() {
       global $DB,$LANG,$CFG_GLPI;
 
       $ID = $this->getField('id');
@@ -576,6 +690,7 @@ class TicketTask  extends CommonDBTM {
       echo "</table>";
       echo "</div>";
    }
+*/
 }
 
 ?>

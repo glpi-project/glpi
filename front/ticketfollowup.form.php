@@ -40,28 +40,29 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 $fup = new TicketFollowup();
-$track = new Ticket();
 
-if (!isset($_POST['id'])) {
-   exit();
-}
+if (isset($_POST["add"])) {
+   $fup->check(-1,'w',$_POST);
+   $fup->add($_POST);
 
-$fup = new TicketFollowup();
+   Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
-if (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    $fup->check($_POST['id'], 'w');
    $fup->update($_POST);
 
-   Event::log($fup->getField('tickets_id'), "tracking", 4, "tracking",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["id"].".");
+   Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
    glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
 } else if (isset($_POST["delete"])) {
    $fup->check($_POST['id'], 'w');
    $fup->delete($_POST);
 
-   Event::log($fup->getField('tickets_id'), "tracking", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
+   Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 

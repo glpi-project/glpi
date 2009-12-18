@@ -136,23 +136,22 @@ class Ticket extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
-      $job=new Ticket();
-      $job->getFromDB($ID);
-
       $ong[1] = $LANG['job'][38]." ".$ID;
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         if ($job->canAddFollowups()) {
-            $ong[2]=$LANG['job'][29];
+         if ($this->canAddFollowups()) {
+            $ong[2] = $LANG['job'][29];
+            $ong[3] = $LANG['job'][30];
          }
       } else if (haveRight("comment_ticket","1")) {
          $ong[1] = $LANG['job'][38]." ".$ID;
-         if (!strstr($job->fields["status"],"closed") // TODO review this => to add "approbation"
-             && $job->fields["users_id"]==$_SESSION["glpiID"]) {
+         if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
+             && $this->fields["users_id"]==$_SESSION["glpiID"]) {
             $ong[2] = $LANG['job'][29];
+            $ong[3] = $LANG['job'][30];
          }
       }
-      $ong[3] = $LANG['job'][47];
-      $ong[4] = $LANG['jobresolution'][1];
+      $ong[4] = $LANG['job'][47];
+      $ong[5] = $LANG['jobresolution'][1];
       $ong['no_all_tab']=true;
 
       return $ong;
@@ -1881,7 +1880,7 @@ class Ticket extends CommonDBTM {
             echo "<th>" . $LANG['common'][77] . "</th>";
          }
          echo "</tr>\n";
-         
+
          while ($data = $DB->fetch_array($result)) {
             if (class_exists($data['itemtype'])) {
                $item = new $data['itemtype'];
@@ -2263,5 +2262,62 @@ class Ticket extends CommonDBTM {
       return $rand;
    }
 
+   function showCost($target) {
+      global $DB,$LANG;
+
+      $this->showFormHeader($target,'',$ID = $this->getField('id'));
+      echo "<form method='post' name='form_ticket_cost' action='$target' >\n";
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='2'>".$LANG['job'][47]."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='left' width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
+
+      echo "<td class='b'>".getRealtime($this->fields["realtime"])."</td>";
+      echo "</tr>";
+
+      if (haveRight("contract","r")) {  // admin = oui on affiche les couts liés à l'interventions
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='left'>".$LANG['job'][40]."&nbsp;: </td>";
+
+         echo "<td><input type='text' maxlength='100' size='15' name='cost_time' value='".
+                    formatNumber($this->fields["cost_time"],true)."'></td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='left'>".$LANG['job'][41]."&nbsp;: </td>";
+
+         echo "<td><input type='text' maxlength='100' size='15' name='cost_fixed' value='".
+                    formatNumber($this->fields["cost_fixed"],true)."'></td>";
+         echo "</tr>\n";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='left'>".$LANG['job'][42]."&nbsp;: </td>";
+
+         echo "<td><input type='text' maxlength='100' size='15' name='cost_material' value='".
+                    formatNumber($this->fields["cost_material"],true)."'></td>";
+         echo "</tr>\n";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='left'>".$LANG['job'][43]."&nbsp;: </td>";
+
+         echo "<td class='b'>";
+         echo trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
+                                $this->fields["cost_fixed"],$this->fields["cost_material"]);
+         echo "</td>";
+         echo "</tr>\n";
+      }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='center' colspan='2'>";
+      echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'></td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "<input type='hidden' name='id' value='$ID'>";
+      echo "</div>";
+      echo "</form>";
+   }
 }
 ?>

@@ -44,6 +44,7 @@ class TicketFollowup  extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_ticketfollowups';
    public $type = 'TicketFollowup';
+   public $auto_message_on_action = false;
 
    static function getTypeName() {
       global $LANG;
@@ -364,12 +365,78 @@ class TicketFollowup  extends CommonDBTM {
       echo "</tr>\n";
    }
 
+   /** form for Followup
+    *
+    *@param $ID Integer : Id of the followup
+    *@param $tid Integer : Id of the ticket
+    *
+    */
+   function showForm($ID, $tid=0) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input=array('tickets_id'=>$tid);
+         $this->check(-1,'w',$input);
+      }
+
+      $canplan = haveRight("show_planning","1");
+
+      $this->showFormHeader($this->getFormURL(),$ID,'',2);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='6' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='6'><textarea name='content' cols='50' rows='6'>".
+            $this->fields["content"]."</textarea></td>";
+      if ($this->fields["date"]) {
+         echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
+         echo "<td>".convDateTime($this->fields["date"]);
+      } else {
+         echo "<td colspan='2'>&nbsp;";
+      }
+      echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][44]."&nbsp;:</td><td>";
+      Dropdown::dropdownValue("glpi_requesttypes", "requesttypes_id",
+                              $this->fields["requesttypes_id"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
+      echo "<td><select name='is_private'>";
+      echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".$LANG['choice'][0].
+            "</option>";
+      echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".$LANG['choice'][1].
+            "</option>";
+      echo "</select></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
+      $hour = floor($this->fields["realtime"]);
+      $minute = round(($this->fields["realtime"]-$hour)*60,0);
+      Dropdown::showInteger('hour',$hour,0,100);
+      echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+      Dropdown::showInteger('minute',$minute,0,59);
+      echo "&nbsp;".$LANG['job'][22];
+      echo "</td></tr>\n";
+
+      $this->showFormButtons($ID,'',2);
+
+      return true;
+   }
+
+
    /**
     * Form to update a followup to a ticket
     *
     * @param $ID integer : followup ID
     */
-   function showUpdateForm() {
+/*   function showUpdateForm() {
       global $DB,$LANG,$CFG_GLPI;
 
       $ID = $this->getField('id');
@@ -439,6 +506,7 @@ class TicketFollowup  extends CommonDBTM {
       echo "</table>";
       echo "</div>";
    }
+*/
 }
 
 ?>
