@@ -145,13 +145,13 @@ class AuthMail extends CommonDBTM {
 
          if (empty ($ID)) {
             echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
-            echo "<input type='submit' name='add_mail' class='submit'
+            echo "<input type='submit' name='add' class='submit'
                    value=\"" . $LANG['buttons'][2] . "\" ></td></tr></table>";
          } else {
             echo "<tr class='tab_bg_2'><td class='center' colspan=2>";
-            echo "<input type='submit' name='update_mail' class='submit'
+            echo "<input type='submit' name='update' class='submit'
                    value=\"" . $LANG['buttons'][7] . "\" >";
-            echo "&nbsp<input type='submit' name='delete_mail' class='submit'
+            echo "&nbsp<input type='submit' name='delete' class='submit'
                         value=\"" . $LANG['buttons'][6] . "\" ></td></tr></table>";
 
             echo "<br><table class='tab_cadre'>";
@@ -161,7 +161,7 @@ class AuthMail extends CommonDBTM {
             echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td>";
             echo "<td><input size='30' type='password' name='imap_password' value=''></td>";
             echo "</tr><tr class='tab_bg_2'><td class='center' colspan=2>";
-            echo "<input type='submit' name='test_mail' class='submit'
+            echo "<input type='submit' name='test' class='submit'
                    value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
             echo "</table>&nbsp;";
          }

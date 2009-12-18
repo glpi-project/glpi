@@ -40,33 +40,33 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
+if (!isset($_GET["id"])) {
+   $_GET["id"]="";
+}
+
 $config_mail = new AuthMail();
 
 //IMAP/POP Server add/update/delete
-if (isset ($_POST["update_mail"])) {
+if (isset ($_POST["update"])) {
    $config_mail->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["add_mail"])) {
+} else if (isset ($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
-   if ($_POST["name"] != "" && $newID=$config_mail->add($_POST)) {
-      glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.form.php?id=".$newID);
+   if ($_POST["name"] != "") {
+      $newID=$config_mail->add($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete_mail"])) {
+} else if (isset ($_POST["delete"])) {
    $config_mail->delete($_POST);
    $_SESSION['glpi_authconfig']=2;
    glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.php");
-} else if (isset ($_POST["test_mail"])) {
+} else if (isset ($_POST["test"])) {
    if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])) {
       addMessageAfterRedirect($LANG['login'][22]);
    } else {
       addMessageAfterRedirect($LANG['login'][23],false,ERROR);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-if (!isset($_GET["id"])) {
-   $_GET["id"]="";
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
