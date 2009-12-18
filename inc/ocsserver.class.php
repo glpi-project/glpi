@@ -1896,7 +1896,7 @@ class OcsServer extends CommonDBTM {
             $newtab = array_unique($newtab);
             $query = "UPDATE
                       `glpi_ocslinks`
-                      SET `$field` = '" . exportArrayToDB($newtab) . "'
+                      SET `$field` = '" . addslashes(exportArrayToDB($newtab)) . "'
                       WHERE `computers_id` = '$computers_id'";
             $DB->query($query);
          }
@@ -1920,7 +1920,7 @@ class OcsServer extends CommonDBTM {
                unset ($tab[$todel]);
                $query = "UPDATE
                          `glpi_ocslinks`
-                         SET `$field` = '" . exportArrayToDB($tab) . "'
+                         SET `$field` = '" . addslashes(exportArrayToDB($tab)) . "'
                          WHERE `computers_id` = '$computers_id'";
                $DB->query($query);
             }
@@ -1931,7 +1931,7 @@ class OcsServer extends CommonDBTM {
    static function replaceOcsArray($computers_id, $newArray, $field) {
       global $DB;
 
-      $newArray = exportArrayToDB($newArray);
+      $newArray = addslashes(exportArrayToDB($newArray));
       $query = "SELECT `$field`
                 FROM `glpi_ocslinks`
                 WHERE `computers_id` = '$computers_id'";
@@ -1957,12 +1957,13 @@ class OcsServer extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             $tab = importArrayFromDB($DB->result($result, 0, 0));
+            // Stripslashes because importArray get clean array
             foreach ($toadd as $key => $val) {
-               $tab[$key] = $val;
+               $tab[$key] = stripslashes($val);
             }
             $query = "UPDATE
                       `glpi_ocslinks`
-                      SET `$field` = '" . exportArrayToDB($tab) . "'
+                      SET `$field` = '" . addslashes(exportArrayToDB($tab)) . "'
                       WHERE `computers_id` = '$computers_id'";
             $DB->query($query);
          }
