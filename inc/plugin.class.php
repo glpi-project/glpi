@@ -224,7 +224,7 @@ class Plugin extends CommonDBTM {
                break;
 
             case PLUGIN_NOTINSTALLED :
-               echo $LANG['plugins'][1];
+               echo $LANG['common'][89];
                break;
 
             case PLUGIN_NOTUPDATED :
@@ -635,7 +635,7 @@ class Plugin extends CommonDBTM {
                break;
 
             case PLUGIN_NOTINSTALLED :
-               $msg .=  $LANG['plugins'][1];
+               $msg .=  $LANG['common'][89];
                break;
 
             case PLUGIN_TOBECONFIGURED :
