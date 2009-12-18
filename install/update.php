@@ -421,7 +421,8 @@ function updateDbUpTo031()
 	$ret = array();
 
 
-	if(!TableExists("glpi_config"))
+   // Before 0.31
+	if(!TableExists("glpi_config") && !TableExists("glpi_configs"))
 	{
 		$query = "CREATE TABLE `glpi_config` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -474,13 +475,22 @@ function updateDbUpTo031()
 		echo "<p class='center'>Version > 0.31  </p>";
 	}
 
-	// Get current version
-	$query="SELECT version FROM glpi_config";
-	$result=$DB->query($query) or die("get current version".$DB->error());
-	$current_version=trim($DB->result($result,0,0));
+   // >= 0.80
+   if (TableExists("glpi_configs")) {
+      // Get current version
+      $query="SELECT version FROM glpi_configs";
+      $result=$DB->query($query) or die("get current version".$DB->error());
+      $current_version=trim($DB->result($result,0,0));
+   } else { // < 0.80
+      // Get current version
+      $query="SELECT version FROM glpi_config";
+      $result=$DB->query($query) or die("get current version".$DB->error());
+      $current_version=trim($DB->result($result,0,0));
+   }
 
 	// Save if problem with session during update
 	$glpilanguage=$_SESSION["glpilanguage"];
+
 
 	switch ($current_version){
 		case "0.31": 
