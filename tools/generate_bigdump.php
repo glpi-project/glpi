@@ -72,6 +72,7 @@ $MAX['os_sp']=10;
 $MAX['ram_type']=10;
 $MAX['rubdocs']=10;
 $MAX['softwarecategory']=10;
+$MAX['softwarecategory']=2;
 $MAX['licensetype']=10;
 $MAX['state']=10;
 $MAX['vlan']=10;
