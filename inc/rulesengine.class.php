@@ -1632,7 +1632,8 @@ class Rule extends CommonDBTM{
 		$output = $this->preProcessPreviewResults($output);
 		
 		foreach ($output as $criteria => $value){
-         echo "<tr  class='tab_bg_2'>";
+                  if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) {
+                        echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
 			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
 			echo "</td>";
@@ -1640,6 +1641,7 @@ class Rule extends CommonDBTM{
 			echo $this->getActionValue($criteria,$value);
 			echo "</td>";
 			echo "</tr>";
+                  }
 		}
 
 		//If a regular expression was used, and matched, display the results
