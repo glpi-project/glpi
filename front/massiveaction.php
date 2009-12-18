@@ -167,7 +167,7 @@ if (isset($_POST["itemtype"])) {
             if (class_exists($_POST["itemtype"])) {
                $item = new $_POST["itemtype"]();
                foreach ($_POST["item"] as $key => $val) {
-                  if ($val == 1) {
+                  if ($val == 1 && $item->can($key,'d')) {
                      $item->delete(array("id"=>$key));
                   }
                }

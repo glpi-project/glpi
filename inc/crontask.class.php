@@ -66,6 +66,10 @@ class CronTask extends CommonDBTM{
       return haveRight('config','r');
    }
 
+   function canDelete() {
+      return false;
+   }
+
    function cleanDBonPurge($id) {
       global $DB;
 
@@ -466,7 +470,7 @@ class CronTask extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2,false);
+      $this->showFormButtons($ID,$withtemplate,2);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

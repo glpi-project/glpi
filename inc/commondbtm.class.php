@@ -1089,7 +1089,20 @@ class CommonDBTM extends CommonGLPI {
    * @see canCreate
    **/
    function canDeleteItem() {
-      return $this->canCreateItem();
+      global $CFG_GLPI;
+      
+      if (!$this->canCreateItem()) {
+         return false;
+      }
+      // Can delete an object with Infocom only if can delete Infocom
+      if (in_array($this->type, $CFG_GLPI['infocom_types'])) {
+         
+         $infocom = new Infocom();
+         if ($infocom->getFromDBforDevice($this->type, $this->fields['id'])) {
+            return $infocom->canDelete();
+         }
+      }
+   return true;
    }
 
    /**
@@ -1279,12 +1292,9 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
       } else {
-         // Can delete an object with Infocom only if can write Infocom
-         if (in_array($this->type,$CFG_GLPI["infocom_types"]) & !haveRight('infocom','w')) {
-            $infocom = new Infocom();
-            $candel = !$infocom->getFromDBforDevice($this->type,$ID);
+         if ($candel && !$this->can($ID,'d')) {
+            $candel = false;
          }
-
          if ($candel) {
             echo "<td class='tab_bg_2 center' colspan='".$colspan."'>\n";
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
