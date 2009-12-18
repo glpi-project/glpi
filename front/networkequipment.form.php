@@ -59,13 +59,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $netdevice->check($_POST["id"],'w');
-
-   if (!empty($_POST["withtemplate"])) {
-      $netdevice->delete($_POST,1);
-   } else {
-      $netdevice->delete($_POST);
-   }
+   $netdevice->check($_POST["id"],'d');
+   $netdevice->delete($_POST);
+   
    Event::log($_POST["id"], "networking", 4, "inventory",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 
@@ -76,7 +72,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["restore"])) {
-   $netdevice->check($_POST["id"],'w');
+   $netdevice->check($_POST["id"],'d');
 
    $netdevice->restore($_POST);
    Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
@@ -88,7 +84,7 @@ if (isset($_POST["add"])) {
    } else {
       $input["id"] = $_GET["id"];
    }
-   $netdevice->check($input["id"],'w');
+   $netdevice->check($input["id"],'d');
 
    $netdevice->delete($input,1);
    Event::log($input["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);

@@ -60,13 +60,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $phone->check($_POST["id"],'w');
+   $phone->check($_POST["id"],'d');
+   $phone->delete($_POST);
 
-   if (!empty($_POST["withtemplate"])) {
-      $phone->delete($_POST,1);
-   } else {
-      $phone->delete($_POST);
-   }
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
@@ -75,14 +71,14 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["restore"])) {
-   $phone->check($_POST["id"],'w');
+   $phone->check($_POST["id"],'d');
 
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   $phone->check($_POST["id"],'w');
+   $phone->check($_POST["id"],'d');
 
    if (isset($_POST["purge"])) {
       $input["id"]=$_POST["id"];

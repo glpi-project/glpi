@@ -59,13 +59,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $soft->check($_POST["id"],'w');
+   $soft->check($_POST["id"],'d');
+   $soft->delete($_POST);
 
-   if (!empty($_POST["withtemplate"])) {
-      $soft->delete($_POST,1);
-   } else {
-      $soft->delete($_POST);
-   }
    Event::log($_POST["id"], "software", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
@@ -75,7 +71,7 @@ if (isset($_POST["add"])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 
 } else if (isset($_POST["restore"])) {
-   $soft->check($_POST["id"],'w');
+   $soft->check($_POST["id"],'d');
 
    $soft->restore($_POST);
    Event::log($_POST["id"], "software", 4, "inventory",
@@ -88,7 +84,7 @@ if (isset($_POST["add"])) {
    }
    $input["id"] = $_GET["id"];
 
-   $soft->check($input["id"],'w');
+   $soft->check($input["id"],'d');
 
    $soft->delete($input,1);
    Event::log($input["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
