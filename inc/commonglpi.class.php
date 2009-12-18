@@ -202,16 +202,11 @@ class CommonGLPI {
 
          $tabs=array();
 
-         /// TODO :  To delete when autload is OK
-         $autoload="";
-         if (isset($_REQUEST['autoload'])){
-            $autoload="&autoload=1";
-         }
          foreach ($onglets as $key => $val ) {
             $tabs[$key]=array('title'=>$val,
                               'url'=>$tabpage,
                               'params'=>"target=$target&itemtype=".$this->type.
-                                        "&glpi_tab=$key&id=$ID$template$extraparam$autoload");
+                                        "&glpi_tab=$key&id=$ID$template$extraparam");
          }
          $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
          $tabs+=$plug_tabs;

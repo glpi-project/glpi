@@ -310,8 +310,6 @@ class Consumable extends CommonDBTM {
    static function getStatus($cID) {
       global $LANG;
 
-      // TODO : rewrited using $this ?
-
       if (self::isNew($cID)) {
          return $LANG['consumables'][20];
 
@@ -362,7 +360,7 @@ class Consumable extends CommonDBTM {
     *
     *@return Nothing (displays)
     **/
-   static function showForConsumableItem (ConsumableItem $consitem, $show_old=0) {
+   static function showForItem (ConsumableItem $consitem, $show_old=0) {
       global $DB,$CFG_GLPI,$LANG;
 
       $tID = $consitem->getField('id');
