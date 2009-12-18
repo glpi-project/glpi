@@ -126,7 +126,7 @@ class Config extends CommonDBTM {
                $tab[$urgency][$impact]=$priority;
             }
          }
-         $input['priority_matrix'] = json_encode($tab);
+         $input['priority_matrix'] = exportArrayToDB($tab);
 
          $input['urgency_mask'] = 0;
          $input['impact_mask'] = 0;

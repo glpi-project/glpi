@@ -123,9 +123,9 @@ class Profile extends CommonDBTM {
 
       if (isset($input["_helpdesk_item_types"])) {
          if (isset($input["helpdesk_item_type"])) {
-            $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
+            $input["helpdesk_item_type"]=exportArrayToDB($input["helpdesk_item_type"]);
          } else {
-            $input["helpdesk_item_type"]=json_encode(array());
+            $input["helpdesk_item_type"]=exportArrayToDB(array());
          }
       }
 
@@ -139,7 +139,7 @@ class Profile extends CommonDBTM {
                }
             }
          }
-         $input["helpdesk_status"]=json_encode($cycle);
+         $input["helpdesk_status"]=exportArrayToDB($cycle);
       }
       return $input;
    }
@@ -147,7 +147,7 @@ class Profile extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (isset($input["helpdesk_item_type"])) {
-         $input["helpdesk_item_type"]=json_encode($input["helpdesk_item_type"]);
+         $input["helpdesk_item_type"]=exportArrayToDB($input["helpdesk_item_type"]);
       }
       return $input;
    }
@@ -167,7 +167,7 @@ class Profile extends CommonDBTM {
       // decode array
       if (isset($this->fields["helpdesk_item_type"])
             && !is_array($this->fields["helpdesk_item_type"])) {
-         $this->fields["helpdesk_item_type"]=json_decode($this->fields["helpdesk_item_type"],true);
+         $this->fields["helpdesk_item_type"]=importArrayFromDB($this->fields["helpdesk_item_type"],true);
       }
       // Empty/NULL case
       if (!isset($this->fields["helpdesk_item_type"])
@@ -177,7 +177,7 @@ class Profile extends CommonDBTM {
       // Decode status array
       if (isset($this->fields["helpdesk_status"])
             && !is_array($this->fields["helpdesk_status"])) {
-         $this->fields["helpdesk_status"]=json_decode($this->fields["helpdesk_status"],true);
+         $this->fields["helpdesk_status"]=importArrayFromDB($this->fields["helpdesk_status"],true);
       }
    }
 

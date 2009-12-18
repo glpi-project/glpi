@@ -64,10 +64,10 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
       $datas = $DB->fetch_array($result);
       $name = " : " . $datas["name"];
    }
-   echo "<div class='center'><table><tr><td>";
+   echo "<div class='center'>";
    echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png' alt='" .
          $LANG['ocsng'][0] . "' title='" . $LANG['ocsng'][0] . "' ></td>";
-   echo "</tr></table></div>";
+   echo "</div>";
 
    echo "<div class='center'><table class='tab_cadre'>";
    echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
