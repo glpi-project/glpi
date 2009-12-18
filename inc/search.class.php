@@ -852,8 +852,7 @@ class Search {
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($itemtype2)) {
                for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
                   if (isset($itemtype2[$i]) && !empty($itemtype2[$i]) && isset($contains2[$i])
-                     && strlen($contains2[$i])>0 && (!isset($link2[$i])
-                     ||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
+                     && strlen($contains2[$i])>0) {
 
                      echo displaySearchHeaderItem($output_type,$names[$itemtype2[$i]]." - ".
                                                 $searchopt[$itemtype2[$i]][$field2[$i]]["name"],
@@ -955,8 +954,7 @@ class Search {
                if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($itemtype2)) {
                   for ($j=0 ; $j<$_SESSION["glpisearchcount2"][$itemtype] ; $j++) {
                      if (isset($itemtype2[$j]) && !empty($itemtype2[$j]) && isset($contains2[$j])
-                        && strlen($contains2[$j])>0 && (!isset($link2[$j])
-                        ||(!strstr($link2[$j],"NOT") || $contains2[$j]=="NULL"))) {
+                        && strlen($contains2[$j])>0) {
 
                         // General case
                         if (strpos($data["META_$j"],"$$$$")===false) {
