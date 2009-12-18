@@ -660,7 +660,7 @@ class SoftwareLicense extends CommonDBTM {
                   foreach ($DB->request($sql) as $inst) {
                      $installed .= (empty($installed)?'':', ').$inst['name'];
                   }
-                  echo " (".(empty($installed) ? $LANG['plugins'][1] : $installed).")"; // TODO : move lang to common ?
+                  echo " (".(empty($installed) ? $LANG['common'][89] : $installed).")";
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";

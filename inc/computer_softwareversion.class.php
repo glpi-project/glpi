@@ -594,7 +594,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
       } else {
          // Not installed
          $cat = '';
-         $catname = $LANG['software'][50] . " - " . $LANG['plugins'][1];
+         $catname = $LANG['software'][50] . " - " . $LANG['common'][89];
          $display = true;
       }
 

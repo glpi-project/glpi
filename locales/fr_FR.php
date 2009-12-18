@@ -274,6 +274,7 @@ $LANG['common'][85]="Modifier la visibilité dans les sous-entités";
 $LANG['common'][86]="Vous n'avez pas les droits suffisants pour modifier la visibilité dans les sous-entités.";
 $LANG['common'][87]="Nouvelle fiche";
 $LANG['common'][88]="Identifiant interne du serveur (ID)";
+$LANG['common'][89]="Non installé";
 
 $LANG['computers'][0]="Volume";
 $LANG['computers'][1]="Pourcentage libre";
@@ -1220,7 +1221,6 @@ $LANG['planning'][17]="A faire";
 $LANG['planning'][18]="Fait";
 
 $LANG['plugins'][0]="Liste des plugins";
-$LANG['plugins'][1]="Non installé";
 $LANG['plugins'][2]="Installé / non configuré";
 $LANG['plugins'][3]="Installé / non activé";
 $LANG['plugins'][4]="Erreur / à nettoyer";
