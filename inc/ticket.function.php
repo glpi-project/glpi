@@ -2367,7 +2367,7 @@ function showJobDetails($target, $ID,$array=array()) {
 * @param $massiveaction boolean : add followup using massive action
 * @param $datas array : datas to preset form
 */
-function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
+/*function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
    global $DB,$LANG,$CFG_GLPI;
 
    $job=new Ticket();
@@ -2536,7 +2536,7 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
    }
    echo "</div>";
 }
-
+*/
 
 
 /** Computer total cost of a ticket
@@ -2677,64 +2677,5 @@ function isPossibleToAssignType($itemtype) {
 }
 
 
-function showJobCost($target,$ID) {
-   global $DB,$LANG;
-
-   $job=new Ticket();
-   $job->getFromDB($ID)&&haveAccessToEntity($job->fields["entities_id"]);
-
-   echo "<form method='post' name='form_ticket_cost' action='$target' >\n";
-   echo "<div class='center' id='tabsbody'>";
-   echo "<table class='tab_cadre_fixe'>";
-
-   echo "<tr><th colspan='2'>".$LANG['job'][47]."</th></tr>";
-
-   echo "<tr class='tab_bg_1'>";
-   echo "<td class='left' width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
-
-   echo "<td class='b'>".getRealtime($job->fields["realtime"])."</td>";
-   echo "</tr>";
-
-   if (haveRight("contract","r")) {  // admin = oui on affiche les couts liés à l'interventions
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][40]."&nbsp;: </td>";
-
-      echo "<td><input type='text' maxlength='100' size='15' name='cost_time' value='".
-                 formatNumber($job->fields["cost_time"],true)."'></td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][41]."&nbsp;: </td>";
-
-      echo "<td><input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                 formatNumber($job->fields["cost_fixed"],true)."'></td>";
-      echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][42]."&nbsp;: </td>";
-
-      echo "<td><input type='text' maxlength='100' size='15' name='cost_material' value='".
-                 formatNumber($job->fields["cost_material"],true)."'></td>";
-      echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][43]."&nbsp;: </td>";
-
-      echo "<td class='b'>";
-      echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],
-                             $job->fields["cost_fixed"],$job->fields["cost_material"]);
-      echo "</td>";
-      echo "</tr>\n";
-   }
-
-   echo "<tr class='tab_bg_1'>";
-   echo "<td class='center' colspan='2'>";
-   echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'></td>";
-   echo "</tr>";
-   echo "</table>";
-   echo "<input type='hidden' name='id' value='$ID'>";
-   echo "</div>";
-   echo "</form>";
-}
 
 ?>

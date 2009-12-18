@@ -51,14 +51,20 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       case 2 :
-         showAddFollowupForm($_POST["id"]);
+         $fup = new TicketFollowup();
+         $fup->showForm(-1, $_POST["id"]);
          break;
 
       case 3 :
-         showJobCost($_POST['target'],$_POST["id"]);
+         $task = new TicketTask();
+         $task->showForm(-1, $_POST["id"]);
          break;
 
       case 4 :
+         $ticket->showCost($_POST['target']);
+         break;
+
+      case 5 :
          $ticket->showSolutionForm();
          break;
 

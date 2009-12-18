@@ -46,8 +46,8 @@ if ($_POST['type']=='TicketTask') {
 } else {
    $item = new TicketFollowup();
 }
-if (isset($_POST["id"]) && $item->can($_POST["id"],'w')) {
-   $item->showUpdateForm();
+if (isset($_POST["id"])) {
+   $item->showForm($_POST["id"]);
 } else {
    echo $LANG['login'][5].$_POST['type'].$_POST["id"];
 }

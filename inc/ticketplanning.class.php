@@ -81,8 +81,8 @@ class TicketPlanning extends CommonDBTM {
       }
 
       // Auto update realtime
-      $fup=new TicketFollowup();
-      $fup->getFromDB($input["ticketfollowups_id"]);
+      $fup=new TicketTask();
+      $fup->getFromDB($input["tickettasks_id"]);
       $tmp_beg=explode(" ",$input["begin"]);
       $tmp_end=explode(" ",$input["end"]);
       $tmp_dbeg=explode("-",$tmp_beg[0]);
@@ -140,8 +140,8 @@ class TicketPlanning extends CommonDBTM {
       }
 
       // Auto update realtime
-      $fup=new TicketFollowup();
-      $fup->getFromDB($input["ticketfollowups_id"]);
+      $fup=new TicketTask();
+      $fup->getFromDB($input["tickettasks_id"]);
       if ($fup->fields["realtime"]==0) {
          $tmp_beg=explode(" ",$this->fields["begin"]);
          $tmp_end=explode(" ",$this->fields["end"]);
@@ -176,8 +176,8 @@ class TicketPlanning extends CommonDBTM {
           ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("comment_all_ticket","1"))) {
 
          // Auto update realtime
-         $fup=new TicketFollowup();
-         $fup->getFromDB($this->fields["ticketfollowups_id"]);
+         $fup=new TicketTask();
+         $fup->getFromDB($this->fields["tickettasks_id"]);
          $updates2[]="realtime";
          $fup->fields["realtime"]=0;
          $fup->updateInDB($updates2);
