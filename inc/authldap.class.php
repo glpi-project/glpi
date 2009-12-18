@@ -447,25 +447,30 @@ class AuthLDAP extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'AuthLDAP';
 
-      $tab[2]['table']         = 'glpi_authldaps';
-      $tab[2]['field']         = 'host';
-      $tab[2]['linkfield']     = 'host';
-      $tab[2]['name']          = $LANG['common'][52];
+      $tab[2]['table']        = 'glpi_authldaps';
+      $tab[2]['field']        = 'id';
+      $tab[2]['linkfield']    = '';
+      $tab[2]['name']         = $LANG['common'][2];
 
       $tab[3]['table']         = 'glpi_authldaps';
-      $tab[3]['field']         = 'port';
-      $tab[3]['linkfield']     = 'port';
-      $tab[3]['name']          = $LANG['setup'][175];
+      $tab[3]['field']         = 'host';
+      $tab[3]['linkfield']     = 'host';
+      $tab[3]['name']          = $LANG['common'][52];
 
       $tab[4]['table']         = 'glpi_authldaps';
-      $tab[4]['field']         = 'basedn';
-      $tab[4]['linkfield']     = 'basedn';
-      $tab[4]['name']          = $LANG['setup'][154];
+      $tab[4]['field']         = 'port';
+      $tab[4]['linkfield']     = 'port';
+      $tab[4]['name']          = $LANG['setup'][175];
 
       $tab[5]['table']         = 'glpi_authldaps';
-      $tab[5]['field']         = 'condition';
-      $tab[5]['linkfield']     = 'condition';
-      $tab[5]['name']          = $LANG['setup'][159];
+      $tab[5]['field']         = 'basedn';
+      $tab[5]['linkfield']     = 'basedn';
+      $tab[5]['name']          = $LANG['setup'][154];
+
+      $tab[6]['table']         = 'glpi_authldaps';
+      $tab[6]['field']         = 'condition';
+      $tab[6]['linkfield']     = 'condition';
+      $tab[6]['name']          = $LANG['setup'][159];
 
       return $tab;
    }

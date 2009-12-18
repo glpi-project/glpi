@@ -1598,7 +1598,7 @@ $LANG['setup'][166]="Impossible d'utiliser IMAP/POP comme source de connexion ex
 $LANG['setup'][167]="Liaisons GLPI/LDAP";
 $LANG['setup'][168]="Options de connexion";
 $LANG['setup'][169]="Dossier des messages (optionnel, souvent INBOX)";
-$LANG['setup'][170]="Chaîne de connexion obtenue";
+$LANG['setup'][170]="Chaîne de connexion";
 $LANG['setup'][171]="Port (optionnel)";
 $LANG['setup'][172]="LDAP Port (default=389)";
 $LANG['setup'][174]="Hôte CAS";

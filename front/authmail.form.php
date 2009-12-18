@@ -49,7 +49,7 @@ if (isset ($_POST["update_mail"])) {
 } else if (isset ($_POST["add_mail"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "" && $newID=$config_mail->add($_POST)) {
-      glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.form.php".$newID);
+      glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.form.php?id=".$newID);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete_mail"])) {
