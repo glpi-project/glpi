@@ -223,7 +223,7 @@ class CommonGLPI {
                             'params'=>"target=$target&itemtype=".$this->type.
                                       "&glpi_tab=-1&id=$ID$template$extraparam");
          }
-         createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
+         createAjaxTabs('tabspanel','tabcontent',$tabs,$actif,$this->type);
       }
    }
 

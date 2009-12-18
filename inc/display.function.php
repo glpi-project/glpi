@@ -2278,7 +2278,7 @@ function getActiveTab($itemtype) {
  * @return nothing
  */
 function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$tabs=array(),
-                        $active_tabs='', $size=950){
+                        $active_tabs, $type, $size=950){
    global $CFG_GLPI;
 
    if (count($tabs)>0) {
@@ -2317,7 +2317,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
                echo "  listeners:{ // Force glpi_tab storage
                        beforeshow : function(panel){
                         Ext.Ajax.request({
-                           url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?glpi_tab=$key',
+                           url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=$key',
                            success: function(objServerResponse){
                            //alert(objServerResponse.responseText);
                         }
