@@ -47,7 +47,8 @@ class Entity extends CommonTreeDropdown {
    public $type = 'Entity';
 
    function getFromDB($ID) {
-
+      global $LANG;
+      
       if ($ID==0) {
          $this->fields=array('id'=>0,
                         'name'=>$LANG['entity'][2],
