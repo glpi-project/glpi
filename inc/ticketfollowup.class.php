@@ -368,17 +368,19 @@ class TicketFollowup  extends CommonDBTM {
    /** form for Followup
     *
     *@param $ID Integer : Id of the followup
-    *@param $tid Integer : Id of the ticket
+    *@param $ticket Object : the ticket
     *
     */
-   function showForm($ID, $tid=0) {
+   function showForm($ID, Ticket $ticket=NULL) {
       global $DB, $LANG, $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
+         $ticket = new Ticket();
+         $ticket->getFromDB($this->fields['tickets_id']);
       } else {
          // Create item
-         $input=array('tickets_id'=>$tid);
+         $input=array('tickets_id'=>$ticket->getField('id'));
          $this->check(-1,'w',$input);
       }
 

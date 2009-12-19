@@ -410,22 +410,6 @@ class TicketTask  extends CommonDBTM {
          echo $LANG['job'][32];
       } else {
          $data2 = $DB->fetch_array($result2);
-         echo "<script type='text/javascript' >\n";
-         echo "function showPlan" . $this->fields['id'] . "(){\n";
-         echo "Ext.get('plan').setDisplayed('none');";
-         $params = array (
-            'form' => 'followups',
-            'users_id' => $data2["users_id"],
-            'id' => $data2["id"],
-            'state' => $data2["state"],
-            'begin' => $data2["begin"],
-            'end' => $data2["end"],
-            'entity' => $ticket->fields["entities_id"]
-         );
-         ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params, false);
-         echo "}";
-         echo "</script>\n";
-
          echo Planning :: getState($data2["state"]) . "<br>" . convDateTime($data2["begin"]) . "<br>->" .
          convDateTime($data2["end"]) . "<br>" . getUserName($data2["users_id"]);
       }
@@ -442,17 +426,19 @@ class TicketTask  extends CommonDBTM {
    /** form for Task
     *
     *@param $ID Integer : Id of the task
-    *@param $tid Integer : Id of the ticket
+    *@param $ticket Object : the ticket
     *
     */
-   function showForm($ID, $tid=0) {
+   function showForm($ID, Ticket $ticket=NULL) {
       global $DB, $LANG, $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
+         $ticket = new Ticket();
+         $ticket->getFromDB($this->fields['tickets_id']);
       } else {
          // Create item
-         $input=array('tickets_id'=>$tid);
+         $input=array('tickets_id'=>$ticket->getField('id'));
          $this->check(-1,'w',$input);
       }
 
@@ -516,8 +502,7 @@ class TicketTask  extends CommonDBTM {
                             'state'    => 1,
                             'users_id' => $_SESSION['glpiID'],
                             'entity'   => $_SESSION["glpiactive_entity"]);
-            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,
-                                 false);
+            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params);
             echo "};";
             echo "</script>";
 
@@ -531,6 +516,21 @@ class TicketTask  extends CommonDBTM {
       } else {
          $this->fields2 = $DB->fetch_array($result2);
          if ($canplan) {
+            echo "<script type='text/javascript' >\n";
+            echo "function showPlan".$ID."(){\n";
+            echo "Ext.get('plan').setDisplayed('none');";
+            $params = array (
+               'form' => 'followups',
+               'users_id' => $this->fields2["users_id"],
+               'id' => $this->fields2["id"],
+               'state' => $this->fields2["state"],
+               'begin' => $this->fields2["begin"],
+               'end' => $this->fields2["end"],
+               'entity' => $ticket->fields["entities_id"]
+            );
+            ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
+            echo "}";
+            echo "</script>\n";
             echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
             echo "<span class='showplan'>";
          }

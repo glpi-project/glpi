@@ -52,12 +52,12 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
 
       case 2 :
          $fup = new TicketFollowup();
-         $fup->showForm(-1, $_POST["id"]);
+         $fup->showForm(-1, $ticket);
          break;
 
       case 3 :
          $task = new TicketTask();
-         $task->showForm(-1, $_POST["id"]);
+         $task->showForm(-1, $ticket);
          break;
 
       case 4 :
