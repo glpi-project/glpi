@@ -837,8 +837,10 @@ class Dropdown {
       $param['used']=array();
       $param['readonly']=false;
 
-      foreach ($options as $key => $val) {
-         $param[$key]=$val;
+      if (is_array($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key]=$val;
+         }
       }
 
       // readonly mode
