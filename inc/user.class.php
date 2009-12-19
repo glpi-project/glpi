@@ -1283,7 +1283,7 @@ class User extends CommonDBTM {
             foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
                $options[$ID] = $prof['name'];
             }
-            Dropdown::showFromArray("profiles_id", $options, $this->fields["profiles_id"]);
+            Dropdown::showFromArray("profiles_id", $options, array('value'=>$this->fields["profiles_id"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
