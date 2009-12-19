@@ -59,6 +59,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])) {
    $task->check($_POST["id"],'w');
+   $task->update($_POST);
 
    Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);

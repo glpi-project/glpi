@@ -92,7 +92,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID) {
          break;
    }
 
-   echo "<div class='center'><form method='get' name='form' action='ticketplanning.php'>\n";
+   echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
    echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
    echo "<td>";
    echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\">";
@@ -301,16 +301,16 @@ function showPlanning($who,$who_group,$when,$type) {
 
    $result=$DB->query($query);
 
-   $fup=new TicketFollowup();
+   $fup=new TicketTask();
    $job=new Ticket();
    $interv=array();
    $i=0;
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         $fup->getFromDB($data["ticketfollowups_id"]);
+         $fup->getFromDB($data["tickettasks_id"]);
          $job->getFromDBwithData($fup->fields["tickets_id"],0);
          if (haveAccessToEntity($job->fields["entities_id"])) {
-            $interv[$data["begin"]."$$$".$i]["ticketfollowups_id"]=$data["ticketfollowups_id"];
+            $interv[$data["begin"]."$$$".$i]["tickettasks_id"]=$data["tickettasks_id"];
             $interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
             $interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
             $interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
@@ -755,17 +755,17 @@ function showPlanningCentral($who) {
              ORDER BY `begin`";
    $result=$DB->query($query);
 
-   $fup=new TicketFollowup();
+   $fup=new TicketTask();
    $job=new Ticket();
    $interv=array();
    $i=0;
 
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         if ($fup->getFromDB($data["ticketfollowups_id"])) {
+         if ($fup->getFromDB($data["tickettasks_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                if (haveAccessToEntity($job->fields["entities_id"])) {
-                  $interv[$data["begin"]."$$".$i]["ticketfollowups_id"]=$data["ticketfollowups_id"];
+                  $interv[$data["begin"]."$$".$i]["tickettasks_id"]=$data["tickettasks_id"];
                   $interv[$data["begin"]."$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
                   $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
                   $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
@@ -837,7 +837,7 @@ function showPlanningCentral($who) {
    ksort($interv);
 
    echo "<table class='tab_cadrehov'><tr><th>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticketplanning.php'>".$LANG['planning'][15]."</a>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG['planning'][15]."</a>";
    echo "</th></tr>";
    $type='';
    if (count($interv)>0) {
@@ -900,18 +900,18 @@ function generateIcal($who) {
    $result=$DB->query($query);
 
    $job=new Ticket();
-   $fup=new TicketFollowup();
+   $fup=new TicketTask();
    $i=0;
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
-         if ($fup->getFromDB($data["ticketfollowups_id"])) {
+         if ($fup->getFromDB($data["tickettasks_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                $interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,
                                                                       $CFG_GLPI["cut"]);
                $interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
             }
          }
-         $interv[$data["begin"]."$$".$i]["tickets_id"]=$data['ticketfollowups_id'];
+         $interv[$data["begin"]."$$".$i]["tickets_id"]=$data['tickettasks_id'];
          $interv[$data["begin"]."$$".$i]["users_id"]=$data['users_id'];
          $interv[$data["begin"]."$$".$i]["id"]=$data['id'];
          $interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
@@ -919,7 +919,7 @@ function generateIcal($who) {
          $interv[$data["begin"]."$$".$i]["content"]="";
          $interv[$data["begin"]."$$".$i]["device"]="";
 
-         if ($fup->getFromDB($data["ticketfollowups_id"])) {
+         if ($fup->getFromDB($data["tickettasks_id"])) {
             if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
                $interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['content'],0,
                                                                       $CFG_GLPI["cut"]);
