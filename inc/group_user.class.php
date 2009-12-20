@@ -143,7 +143,7 @@ class Group_User extends CommonDBRelation{
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
          // All entities "edited user" have access
-         $strict_entities = getUserEntities($ID,true);
+         $strict_entities = Profile_User::getUserEntities($ID,true);
 
          // Keep only entities "connected user" have access
          foreach ($strict_entities as $key => $val) {

@@ -1918,7 +1918,7 @@ function showJobDetails($target, $ID,$array=array()) {
       $users_id_rand = User::dropdownAll("users_id",$array["users_id"],1,$entities,1);
 
       //Get all the user's entities
-      $all_entities = getUserEntities($array["users_id"], true);
+      $all_entities = Profile_User::getUserEntities($array["users_id"], true);
       $values = array();
 
       //For each user's entity, check if the technician which creates the ticket have access to it
