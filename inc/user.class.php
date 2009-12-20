@@ -523,7 +523,7 @@ class User extends CommonDBTM {
       if (isset($input["authtype"])
           && ($input["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($input['authtype']))) {
          if (isset ($input["id"]) && $input["id"]>0) {
-            $authtype = getAuthMethodsByID($input["authtype"], $input["auths_id"]);
+            $authtype = Auth::getMethodsByID($input["authtype"], $input["auths_id"]);
 
             if (count($authtype)) {
                if (!isset($input["_groups"])) {
@@ -1355,7 +1355,7 @@ class User extends CommonDBTM {
 
    ///Get all the authentication method parameters for the current user
    function getAuthMethodsByID() {
-      return getAuthMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
+      return Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
    }
 
 
@@ -1391,7 +1391,7 @@ class User extends CommonDBTM {
                if ($_SESSION["glpiextauth"]
                    && ($this->fields["authtype"] == AUTH_LDAP
                        || isAlternateAuthWithLdap($this->fields["authtype"]))) {
-                  $authtype = getAuthMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
+                  $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
                   if (count($authtype)) {
                      $fields = AuthLDAP::getSyncFields($authtype);
                      foreach ($fields as $key => $val) {

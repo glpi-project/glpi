@@ -271,48 +271,6 @@ function getUserEntities($ID,$is_recursive=true) {
 }
 
 
-/** Get all the authentication methods parameters for a specific authtype
- *  and auths_id and return it as an array
-* @param $authtype Authentication method
-* @param $auths_id Authentication method ID
-*/
-function getAuthMethodsByID($authtype, $auths_id) {
-   global $DB;
-
-   $authtypes = array ();
-   $sql = "";
-
-   switch ($authtype) {
-      case AUTH_X509 :
-      case AUTH_EXTERNAL :
-      case AUTH_CAS :
-      case AUTH_LDAP :
-         if ($auths_id >0) {
-            //Get all the ldap directories
-            $sql = "SELECT *
-                    FROM `glpi_authldaps`
-                    WHERE `id` = '$auths_id'";
-         }
-         break;
-
-      case AUTH_MAIL :
-         //Get all the pop/imap servers
-         $sql = "SELECT *
-                 FROM `glpi_authmails`
-                 WHERE `id` = '$auths_id'";
-         break;
-   }
-
-   if ($sql != "") {
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         $authtypes = $DB->fetch_array($result);
-      }
-   }
-   //Return all the authentication methods in an array
-   return $authtypes;
-}
-
 
 
 
