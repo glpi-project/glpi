@@ -427,7 +427,7 @@ function printReservation($target,$ID,$date) {
             if (!class_exists($m->fields["itemtype"])) {
                continue;
             }
-            $item = $m->fields["itemtype"]();
+            $item = new $m->fields["itemtype"]();
 
             if ($item->getFromDB($m->fields["items_id"])
                 && haveAccessToEntity($item->fields["entities_id"])) {

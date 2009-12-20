@@ -84,6 +84,10 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          showNotesForm($_POST['target'],'Supplier',$_POST["id"]);
          break;
 
+      case 12 :
+         showHistory('Contact',$_POST["id"]);
+         break;
+
       case 15 :
          $supplier->showInfocoms();
          break;

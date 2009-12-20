@@ -60,6 +60,10 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          showNotesForm( $_POST['target'],'Document',$_POST["id"]);
          break;
 
+      case 12 :
+         showHistory('Contact',$_POST["id"]);
+         break;
+
       default :
          if (!Plugin::displayAction($doc,$_REQUEST['glpi_tab'])) {
             $doc->showItems();

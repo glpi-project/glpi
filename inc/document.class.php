@@ -45,6 +45,7 @@ class Document extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_documents';
    public $type = 'Document';
+   public $dohistory = true;
 
    static function getTypeName() {
       global $LANG;
@@ -92,6 +93,7 @@ class Document extends CommonDBTM {
          if (haveRight("notes","r")) {
             $ong[10]=$LANG['title'][37];
          }
+         $ong[12]=$LANG['title'][38];
       } else { // New item
          $ong[1]=$LANG['title'][26];
       }
