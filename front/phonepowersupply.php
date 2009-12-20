@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: document.php 8830 2009-09-01 06:28:12Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

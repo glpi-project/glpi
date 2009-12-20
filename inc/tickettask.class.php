@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ticketfollowup.class.php 9756 2009-12-16 13:54:06Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

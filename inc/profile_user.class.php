@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: profile.class.php 9663 2009-12-13 11:38:45Z yllen $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

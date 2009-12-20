@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: phone.tabs.php 8933 2009-09-10 18:41:20Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

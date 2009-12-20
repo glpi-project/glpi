@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: link.form.php 9525 2009-12-07 17:26:50Z walid $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: auth.ldap.php 9072 2009-10-04 18:34:19Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

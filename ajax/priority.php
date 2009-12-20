@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: comments.php 8876 2009-09-03 05:43:32Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
