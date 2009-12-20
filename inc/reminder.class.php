@@ -289,6 +289,132 @@ class Reminder extends CommonDBTM {
       return true;
    }
 
+   /*
+    * Populate the planning with planned reminder
+    *
+    * @param $who ID of the user (0 = undefined)
+    * @param $who_group ID of the group of users (0 = undefined)
+    * @param $begin Date
+    * @param $end Date
+    *
+    * @return array of planning item
+    */
+   static function populatePlanning($who, $who_group, $begin, $end) {
+      global $DB, $CFG_GLPI;
+
+      $readpub=$readpriv="";
+      $interv = array();
+
+      // See public reminder ?
+      if (haveRight("reminder_public","r")) {
+         $readpub="(is_private=0 AND".getEntitiesRestrictRequest("","glpi_reminders",'','',true).")";
+      }
+
+      // See my private reminder ?
+      if ($who_group=="mine" || $who==$_SESSION["glpiID"]) {
+         $readpriv="(is_private=1 AND users_id='".$_SESSION["glpiID"]."')";
+      }
+
+      if ($readpub && $readpriv) {
+         $ASSIGN  = "($readpub OR $readpriv)";
+      } else if ($readpub) {
+         $ASSIGN  = $readpub;
+      } else {
+         $ASSIGN  = $readpriv;
+      }
+      if ($ASSIGN) {
+         $query2 = "SELECT *
+                    FROM `glpi_reminders`
+                    WHERE `is_planned`='1'
+                          AND $ASSIGN
+                          AND `begin` < '$end'
+                          AND `end` > '$begin'
+                    ORDER BY `begin`";
+         $result2=$DB->query($query2);
+
+         if ($DB->numrows($result2)>0) {
+            for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
+               $interv[$data["begin"]."$$".$i]["reminders_id"]=$data["id"];
+               if (strcmp($begin,$data["begin"])>0) {
+                  $interv[$data["begin"]."$$".$i]["begin"]=$begin;
+               } else {
+                  $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+               }
+               if (strcmp($end,$data["end"])<0) {
+                  $interv[$data["begin"]."$$".$i]["end"]=$end;
+               } else {
+                  $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+               }
+               $interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["users_id"]=$data["users_id"];
+               $interv[$data["begin"]."$$".$i]["is_private"]=$data["is_private"];
+               $interv[$data["begin"]."$$".$i]["state"]=$data["state"];
+            } //
+         }
+      }
+      return $interv;
+   }
+
+   /**
+    * Display a Planning Item
+    *
+    * @param $val Array of the item to display
+    * @param $who ID of the user (0 if all)
+    * @param $type position of the item in the time block (in, through, begin or end)
+    * @param $complete complete display (more details)
+    *
+    * @return Nothing (display function)
+    **/
+   static function displayPlanningItem($val,$who,$type="",$complete=0) {
+      global $CFG_GLPI, $LANG;
+
+      $rand=mt_rand();
+      $users_id="";  // show users_id reminder
+      $img="rdv_private.png"; // default icon for reminder
+
+      if (!$val["is_private"]) {
+         $users_id="<br>".$LANG['planning'][9]."&nbsp;: ".getUserName($val["users_id"]);
+         $img="rdv_public.png";
+      }
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37].
+            "'>&nbsp;";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'";
+      if (!$complete) {
+         echo "onmouseout=\"cleanhide('content_reminder_".$val["reminders_id"].$rand."')\"
+               onmouseover=\"cleandisplay('content_reminder_".$val["reminders_id"].$rand."')\"";
+      }
+      echo ">";
+
+      switch ($type) {
+         case "in" :
+            echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
+            break;
+
+         case "through" :
+            break;
+
+         case "begin" :
+            echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
+            break;
+
+         case "end" :
+            echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
+            break;
+      }
+      echo $val["name"];
+      echo $users_id;
+      echo "</a>";
+      if ($complete) {
+         echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
+         echo $val["text"];
+      } else {
+         echo "<div class='over_link' id='content_reminder_".$val["reminders_id"].$rand."'>";
+         echo "<strong>";
+         echo Planning::getState($val["state"])."</strong><br>".$val["text"]."</div>";
+      }
+      echo "";
+   }
 }
 
 ?>

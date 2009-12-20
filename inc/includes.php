@@ -128,7 +128,6 @@ if (isset($AJAX_INCLUDE)) {
 include_once (GLPI_ROOT . "/inc/mailing.function.php");
 include_once (GLPI_ROOT . "/inc/export.function.php");
 include_once (GLPI_ROOT . "/inc/log.function.php");
-include_once (GLPI_ROOT . "/inc/ticketplanning.function.php");
 include_once (GLPI_ROOT . "/inc/reminder.function.php");
 include_once (GLPI_ROOT . "/inc/ticket.function.php");
 include_once (GLPI_ROOT . "/inc/user.function.php");

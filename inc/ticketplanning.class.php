@@ -44,6 +44,97 @@ class TicketPlanning extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_ticketplannings';
 
+   function canCreate() {
+      return (haveRight('show_planning', 1));
+   }
+
+   function canView() {
+      return (haveRight('observe_ticket', 1)
+              || haveRight('show_full_ticket', 1)
+              || haveRight('own_ticket', 1));
+   }
+
+   /**
+    * Read the planning information associated with a task
+    *
+    * @param $tickettasks_id integer ID of the task
+    *
+    * @return bool, true if exists
+    */
+   function getFromDBbyTask($tickettasks_id) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE `tickettasks_id` = '$tickettasks_id'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   function showFormForTask(Ticket $ticket, TicketTask $task) {
+      global $CFG_GLPI, $LANG;
+
+      $taskid = $task->getField('id');
+      if ($taskid>0 && $this->getFromDBbyTask($taskid)) {
+         if ($this->canCreate()) {
+            echo "<script type='text/javascript' >\n";
+            echo "function showPlan".$taskid."(){\n";
+            echo "Ext.get('plan').setDisplayed('none');";
+            $params = array (
+               'form' => 'followups',
+               'users_id' => $this->fields["users_id"],
+               'id' => $this->fields["id"],
+               'state' => $this->fields["state"],
+               'begin' => $this->fields["begin"],
+               'end' => $this->fields["end"],
+               'entity' => $ticket->fields["entities_id"]
+            );
+            ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
+            echo "}";
+            echo "</script>\n";
+            echo "<div id='plan' onClick='showPlan".$taskid."()'>\n";
+            echo "<span class='showplan'>";
+         }
+         echo Planning::getState($this->fields["state"])."<br>".convDateTime($this->fields["begin"]).
+              "<br>->".convDateTime($this->fields["end"])."<br>".
+              getUserName($this->fields["users_id"]);
+         if ($this->canCreate()) {
+            echo "</span>";
+            echo "</div>\n";
+            echo "<div id='viewplan'></div>\n";
+         }
+      } else {
+         if ($this->canCreate()) {
+            echo "<script type='text/javascript' >\n";
+            echo "function showPlanUpdate(){\n";
+            echo "Ext.get('plan').setDisplayed('none');";
+            $params = array('form'     => 'followups',
+                            'state'    => 1,
+                            'users_id' => $_SESSION['glpiID'],
+                            'entity'   => $_SESSION["glpiactive_entity"]);
+            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params);
+            echo "};";
+            echo "</script>";
+
+            echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
+            echo "<span class='showplan'>".$LANG['job'][34]."</span>";
+            echo "</div>\n";
+            echo "<div id='viewplan'></div>\n";
+         } else {
+            echo $LANG['job'][32];
+         }
+      }
+   }
+
    function prepareInputForUpdate($input) {
 
       $this->getFromDB($input["id"]);
@@ -251,5 +342,172 @@ class TicketPlanning extends CommonDBTM {
       }
    }
 
+   /*
+    * Populate the planning with planned ticket tasks
+    *
+    * @param $who ID of the user (0 = undefined)
+    * @param $who_group ID of the group of users (0 = undefined)
+    * @param $begin Date
+    * @param $end Date
+    *
+    * @return array of planning item
+    */
+   static function populatePlanning($who, $who_group, $begin, $end) {
+      global $DB, $CFG_GLPI;
+
+      $interv = array();
+      // Get items to print
+      $ASSIGN="";
+
+      if ($who_group=="mine") {
+         if (count($_SESSION["glpigroups"])) {
+            $groups=implode("','",$_SESSION['glpigroups']);
+            $ASSIGN=" `users_id` IN (SELECT DISTINCT `users_id`
+                                    FROM `glpi_groups_users`
+                                    WHERE `groups_id` IN ('$groups'))
+                                          AND ";
+         } else { // Only personal ones
+            $ASSIGN="`users_id` = '$who'
+                     AND ";
+         }
+      } else {
+         if ($who>0) {
+            $ASSIGN="`users_id` = '$who'
+                     AND ";
+         }
+         if ($who_group>0) {
+            $ASSIGN="`users_id` IN (SELECT `users_id`
+                                    FROM `glpi_groups_users`
+                                    WHERE `groups_id` = '$who_group')
+                                          AND ";
+         }
+      }
+      if (empty($ASSIGN)) {
+         $ASSIGN="`users_id` IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
+                                 FROM `glpi_profiles`
+                                 LEFT JOIN `glpi_profiles_users`
+                                    ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                                 WHERE `glpi_profiles`.`interface`='central' ";
+
+         $ASSIGN.=getEntitiesRestrictRequest("AND","glpi_profiles_users", '',
+                                             $_SESSION["glpiactive_entity"],1);
+         $ASSIGN.=") AND ";
+      }
+
+      $query = "SELECT *
+                FROM `glpi_ticketplannings`
+                WHERE $ASSIGN
+                      '$begin' < `end` AND '$end' > `begin`
+                ORDER BY `begin`";
+
+      $result=$DB->query($query);
+
+      $fup=new TicketTask();
+      $job=new Ticket();
+      $interv=array();
+      if ($DB->numrows($result)>0) {
+         for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
+            $fup->getFromDB($data["tickettasks_id"]);
+            $job->getFromDBwithData($fup->fields["tickets_id"],0);
+            if (haveAccessToEntity($job->fields["entities_id"])) {
+               $interv[$data["begin"]."$$$".$i]["tickettasks_id"]=$data["tickettasks_id"];
+               $interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
+               $interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
+               $interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
+               $interv[$data["begin"]."$$$".$i]["id"]=$data["id"];
+               if (strcmp($begin,$data["begin"])>0) {
+                  $interv[$data["begin"]."$$$".$i]["begin"]=$begin;
+               } else {
+                  $interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+               }
+               if (strcmp($end,$data["end"])<0) {
+                  $interv[$data["begin"]."$$$".$i]["end"]=$end;
+               } else {
+                  $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+               }
+               $interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
+               $interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["content"],
+                                                                       $CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$$".$i]["device"]=($job->hardwaredatas ?$job->hardwaredatas->getName():'');
+               $interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
+               $interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
+            }
+         }
+      }
+      return $interv;
+   }
+
+   /**
+    * Display a Planning Item
+    *
+    * @param $val Array of the item to display
+    * @param $who ID of the user (0 if all)
+    * @param $type position of the item in the time block (in, through, begin or end)
+    * @param $complete complete display (more details)
+    *
+    * @return Nothing (display function)
+    **/
+   static function displayPlanningItem($val,$who,$type="",$complete=0) {
+      global $CFG_GLPI, $LANG;
+
+      $rand=mt_rand();
+      $styleText="";
+      if (isset($val["state"])) {
+         switch ($val["state"]) {
+            case 2 : // Done
+               $styleText="color:#747474;";
+               break;
+         }
+      }
+
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".
+            $LANG['planning'][8]."'>&nbsp;&nbsp;";
+      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".
+            Ticket::getStatus($val["status"])."' title='".Ticket::getStatus($val["status"])."'>&nbsp;";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"].
+            "' style='$styleText'";
+      if (!$complete) {
+         echo "onmouseout=\"cleanhide('content_tracking_".$val["id"].$rand."')\"
+               onmouseover=\"cleandisplay('content_tracking_".$val["id"].$rand."')\"";
+      }
+      echo ">";
+      switch ($type) {
+         case "in" :
+            echo date("H:i",strtotime($val["begin"]))."/".date("H:i",strtotime($val["end"])).": ";
+            break;
+
+         case "through" :
+            break;
+
+         case "begin" :
+            echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
+            break;
+
+         case "end" :
+            echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
+            break;
+      }
+      echo "<br>- #".$val["tickets_id"]." ";
+      echo  resume_text($val["name"],80). " ";
+      if (!empty($val["device"])) {
+         echo "<br>- ".$val["device"];
+      }
+
+      if ($who<=0) { // show tech for "show all and show group"
+         echo "<br>- ";
+         echo $LANG['planning'][9]." ".getUserName($val["users_id"]);
+      }
+      echo "</a>";
+      if ($complete) {
+         echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
+         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
+         echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
+      } else {
+         echo "<div class='over_link' id='content_tracking_".$val["id"].$rand."'>";
+         echo "<strong>".Planning::getState($val["state"])."</strong><br>";
+         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
+         echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"]."</div>";
+      }
+   }
 }
 ?>
