@@ -68,6 +68,10 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          showNotesForm($_POST['target'],'Contact',$_POST["id"]);
          break;
 
+      case 12 :
+         showHistory('Contact',$_POST["id"]);
+         break;
+
       default :
          if (!Plugin::displayAction($contact,$_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();

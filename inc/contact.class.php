@@ -45,6 +45,7 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $table = 'glpi_contacts';
    public $type = 'Contact';
+   public $dohistory = true;
 
    static function getTypeName() {
       global $LANG;
@@ -82,6 +83,7 @@ class Contact extends CommonDBTM{
          if (haveRight("notes","r")) {
             $ong[10]=$LANG['title'][37];
          }
+         $ong[12]=$LANG['title'][38];
       } else { // New item
          $ong[1]=$LANG['title'][26];
       }
@@ -392,8 +394,8 @@ class Contact extends CommonDBTM{
             echo "<td class='tab_bg_2 center'>";
             if ($canedit) {
                echo "<a href='".
-                      $CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1&amp;id=
-                      $ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+                      $CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1".
+                     "&amp;id=$ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
             } else {
                echo "&nbsp;";
             }

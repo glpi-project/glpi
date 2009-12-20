@@ -74,6 +74,10 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          showNotesForm($_POST['target'],'Contract',$_POST["id"]);
          break;
 
+      case 12 :
+         showHistory('Contact',$_POST["id"]);
+         break;
+
       default :
          if (!Plugin::displayAction($contract,$_REQUEST['glpi_tab'])) {
             $contract->showSuppliers();
