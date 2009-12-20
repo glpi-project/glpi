@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ticketplanning.class.php 9519 2009-12-07 13:12:41Z walid $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

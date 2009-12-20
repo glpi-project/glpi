@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: cartridge.tabs.php 9269 2009-11-08 20:48:53Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

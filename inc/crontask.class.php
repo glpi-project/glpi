@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: bookmark.class.php 8095 2009-03-19 18:27:00Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

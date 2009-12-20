@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: compute_dictionnary.php 9588 2009-12-08 20:57:14Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
