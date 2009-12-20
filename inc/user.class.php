@@ -754,7 +754,7 @@ class User extends CommonDBTM {
          //Set all the search fields
          $this->fields['password'] = "";
 
-         $fields = getLDAPSyncFields($ldap_method);
+         $fields = AuthLDAP::getSyncFields($ldap_method);
 
          $fields = array_filter($fields);
          $f = array_values($fields);
@@ -1393,7 +1393,7 @@ class User extends CommonDBTM {
                        || isAlternateAuthWithLdap($this->fields["authtype"]))) {
                   $authtype = getAuthMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
                   if (count($authtype)) {
-                     $fields = getLDAPSyncFields($authtype);
+                     $fields = AuthLDAP::getSyncFields($authtype);
                      foreach ($fields as $key => $val) {
                         if (!empty ($val)) {
                            unset ($ret[$key]);

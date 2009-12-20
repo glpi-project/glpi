@@ -503,6 +503,37 @@ class AuthLDAP extends CommonDBTM {
 
       echo "\n</pre></td></tr>";
    }
+
+   /**
+    * Get LDAP fields to sync to GLPI data from a glpi_authldaps array
+    *
+    * @param $authtype_array Authentication method config array (from table)
+    *
+    * @return array of "user table field name" => "config value"
+    */
+   static function getSyncFields($authtype_array) {
+
+      $ret = array();
+
+      $fields = array('login_field'     => 'name',
+                      'email_field'     => 'email',
+                      'realname_field'  => 'realname',
+                      'firstname_field' => 'firstname',
+                      'phone_field'     => 'phone',
+                      'phone2_field'    => 'phone2',
+                      'mobile_field'    => 'mobile',
+                      'comment_field'   => 'comment',
+                      'title_field'     => 'usertitles_id',
+                      'category_field'  => 'usercategories_id',
+                      'language_field'  => 'language');
+
+      foreach ($fields as $key => $val) {
+         if (isset($authtype_array[$key])) {
+            $ret[$val] = $authtype_array[$key];
+         }
+      }
+      return $ret;
+   }
 }
 
 
