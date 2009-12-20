@@ -124,7 +124,7 @@ class User extends CommonDBTM {
    function pre_deleteItem($ID) {
       global $LANG,$DB;
 
-      $entities = getUserEntities($ID);
+      $entities = Profile_User::getUserEntities($ID);
       $view_all = isViewAllEntities();
       // Have right on all entities ?
       $all = true;
@@ -1023,7 +1023,7 @@ class User extends CommonDBTM {
       return $prof;
    }
    function canViewItem() {
-         $entities = getUserEntities($this->fields['id'],true);
+         $entities = Profile_User::getUserEntities($this->fields['id'],true);
          if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
             return true;
          }
@@ -1031,7 +1031,7 @@ class User extends CommonDBTM {
    }
 
    function canCreateItem() {
-         $entities = getUserEntities($this->fields['id'],true);
+         $entities = Profile_User::getUserEntities($this->fields['id'],true);
          if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
             return true;
          }
@@ -1159,7 +1159,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
       if (!empty($ID)) {
-         $entities = getUserEntities($ID,true);
+         $entities = Profile_User::getUserEntities($ID,true);
          if (count($entities)>0) {
             Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
                           $entities);
