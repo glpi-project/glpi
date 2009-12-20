@@ -710,6 +710,39 @@ class Auth {
       }
    return '';
    }
+
+   /**
+    * Get all the authentication methods parameters for a specific authtype
+    *  and auths_id and return it as an array
+    * @param $authtype Authentication method
+    * @param $auths_id Authentication method ID
+    */
+   static function getMethodsByID($authtype, $auths_id) {
+      global $DB;
+
+      switch ($authtype) {
+         case AUTH_X509 :
+         case AUTH_EXTERNAL :
+         case AUTH_CAS :
+            // TODO shouldn't we do : $auths_id=$CFG_GLPI["authldaps_id_extra"]'  ???
+         case AUTH_LDAP :
+            $auth = new AuthLdap();
+            if ($auths_id>0 && $auth->getFromDB($auths_id)) {
+               return ($auth->fields);
+            }
+            break;
+
+         case AUTH_MAIL :
+            $auth = new AuthMail();
+            if ($auths_id>0 && $auth->getFromDB($auths_id)) {
+               return ($auth->fields);
+            }
+            break;
+      }
+
+      return array();
+   }
+
 }
 
 
