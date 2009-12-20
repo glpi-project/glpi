@@ -61,7 +61,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory('Contact',$_POST["id"]);
+         showHistory('Document',$_POST["id"]);
          break;
 
       default :
