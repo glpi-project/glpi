@@ -70,13 +70,13 @@ class CommonGLPI {
    *
    *@param $ID ID of the item to display
    *@param $withtemplate is a template view ?
-   *@param $actif active onglet
+   *@param $actif active onglet // TODO Not used
    *@param $addparams array of parameters to add to URLs and ajax
    *
    *@return Nothing ()
    *
    **/
-   function showTabs($ID,$withtemplate,$actif,$addparams=array()) {
+   function showTabs($ID,$withtemplate='',$actif=0,$addparams=array()) {
       global $LANG,$CFG_GLPI;
 
       $target=$_SERVER['PHP_SELF'];
@@ -218,7 +218,7 @@ class CommonGLPI {
                             'params'=>"target=$target&itemtype=".$this->type.
                                       "&glpi_tab=-1&id=$ID$template$extraparam");
          }
-         createAjaxTabs('tabspanel','tabcontent',$tabs,$actif,$this->type);
+         createAjaxTabs('tabspanel','tabcontent',$tabs,$this->type);
       }
    }
 
