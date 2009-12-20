@@ -138,8 +138,8 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
-      if ($this instanceof Device) {
-         // Awfull hack for Device where name is designation
+      if ($this instanceof CommonDevice) {
+         // Awfull hack for CommonDevice where name is designation
          autocompletionTextField("designation",$this->table,"designation",$this->fields["designation"],40);
       } else {
          autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);

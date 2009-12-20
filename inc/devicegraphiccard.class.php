@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceGraphicCard
-class DeviceGraphicCard extends Device {
+class DeviceGraphicCard extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicegraphiccards';

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceDrive
-class DeviceDrive extends Device {
+class DeviceDrive extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicedrives';

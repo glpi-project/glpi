@@ -39,41 +39,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("device","w");
 
 commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
+echo "<div align='center'>";
 
-if (!isset($_GET['devicetype'])) {
-   $_GET['devicetype'] = "0";
-}
-if (!isset($_GET['name'])) {
-   $_GET['name'] = '';
-}
-if (!empty($_GET["devicetype"])) {
-   titleDevices($_GET["devicetype"]);
-}
+$optgroup = Dropdown::getDeviceItemTypes();
+Dropdown::showItemTypeMenu($LANG['title'][30], $optgroup);
+Dropdown::showItemTypeList($optgroup);
 
-echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
-echo "<table class='tab_cadre_fixe'>";
-echo "<tr class='tab_bg_1'><td class='b'>".$LANG['devices'][17]."&nbsp;: <select name='devicetype'>";
-
-$dp = getDictDeviceLabel();
-
-foreach ($dp as $key=>$val) {
-   $sel = "";
-   if ($_GET["devicetype"] == $key) {
-      $sel = "selected";
-   }
-   echo "<option value='$key' $sel>".$val."</option>";
-}
-echo "</select></td>";
-echo "<td>".$LANG['common'][16]."&nbsp;: ";
-echo "<input  type='text' size='20' name='name' value='".$_GET['name']."'></td>";
-echo "<td class='tab_bg_2'><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
-echo "</td></tr>";
-echo "</table></form>";
-
-if (!empty($_GET["devicetype"])) {
-   showDevicesList($_GET["devicetype"],$_SERVER['PHP_SELF']);
-}
-
+echo "</div>";
 commonFooter();
 
 ?>

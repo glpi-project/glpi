@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceMotherboard
-class DeviceMotherboard extends Device {
+class DeviceMotherboard extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicemotherboards';
