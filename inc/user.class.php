@@ -1926,8 +1926,43 @@ class User extends CommonDBTM {
                    WHERE `id` IN ('$where')";
          $DB->query($query);
       }
-}
+   }
 
+   /**
+    * Generate vcard for the current user
+    */
+   function generateVcard() {
+
+      include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
+
+      // build the Vcard
+      $vcard = new vCard();
+
+      if (!empty($this->fields["realname"]) || !empty($this->fields["firstname"])) {
+         $vcard->setName($this->fields["realname"], $this->fields["firstname"], "", "");
+      } else {
+         $vcard->setName($this->fields["name"], "", "", "");
+      }
+
+      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
+      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
+      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
+
+      $vcard->setEmail($this->fields["email"]);
+
+      $vcard->setNote($this->fields["comment"]);
+
+      // send the  VCard
+      $output = $vcard->getVCard();
+      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
+
+      @Header("Content-Disposition: attachment; filename=\"$filename\"");
+      @Header("Content-Length: ".utf8_strlen($output));
+      @Header("Connection: close");
+      @Header("content-type: text/x-vcard; charset=UTF-8");
+
+      echo $output;
+   }
 }
 
 ?>

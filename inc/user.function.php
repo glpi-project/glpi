@@ -203,72 +203,8 @@ function showDeviceUser($ID) {
 
 
 
-/**  Generate vcard for an user
-* @param $ID user ID
-*/
-function generateUserVcard($ID) {
-
-   include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
-
-   $user = new User;
-   $user->getFromDB($ID);
-
-   // build the Vcard
-   $vcard = new vCard();
-
-   if (!empty($user->fields["realname"]) || !empty($user->fields["firstname"])) {
-      $vcard->setName($user->fields["realname"], $user->fields["firstname"], "", "");
-   } else {
-      $vcard->setName($user->fields["name"], "", "", "");
-   }
-
-   $vcard->setPhoneNumber($user->fields["phone"], "PREF;WORK;VOICE");
-   $vcard->setPhoneNumber($user->fields["phone2"], "HOME;VOICE");
-   $vcard->setPhoneNumber($user->fields["mobile"], "WORK;CELL");
-
-   $vcard->setEmail($user->fields["email"]);
-
-   $vcard->setNote($user->fields["comment"]);
-
-   // send the  VCard
-   $output = $vcard->getVCard();
-   $filename = $vcard->getFileName();      // "xxx xxx.vcf"
-
-   @Header("Content-Disposition: attachment; filename=\"$filename\"");
-   @Header("Content-Length: ".utf8_strlen($output));
-   @Header("Connection: close");
-   @Header("content-type: text/x-vcard; charset=UTF-8");
-
-   echo $output;
-}
 
 
-/**  Get entities for which a user have a right
-* @param $ID user ID
-* @param $is_recursive check also using recurisve rights
-*/
-function getUserEntities($ID,$is_recursive=true) {
-   global $DB;
-
-   $query = "SELECT DISTINCT `entities_id`, `is_recursive`
-             FROM `glpi_profiles_users`
-             WHERE `users_id` = '$ID'";
-   $result=$DB->query($query);
-
-   if ($DB->numrows($result) >0) {
-      $entities = array();
-      while ($data = $DB->fetch_assoc($result)) {
-         if ($data['is_recursive'] && $is_recursive) {
-            $tab = getSonsOf('glpi_entities',$data['entities_id']);
-            $entities = array_merge($tab,$entities);
-         } else {
-            $entities[] = $data['entities_id'];
-         }
-      }
-      return array_unique($entities);
-   }
-   return array();
-}
 
 
 
