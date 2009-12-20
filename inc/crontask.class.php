@@ -48,6 +48,11 @@ class CronTask extends CommonDBTM{
    private $startlog=0;
    private $volume=0;
 
+   // Class constant
+   const STATE_DISABLE = 0;
+   const STATE_WAITING = 1;
+   const STATE_RUNNING = 2;
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
@@ -120,7 +125,7 @@ class CronTask extends CommonDBTM{
     *
     */
    function isDisabled () {
-      if ($this->fields['state']==CRONTASK_STATE_DISABLE) {
+      if ($this->fields['state']==self::STATE_DISABLE) {
          return 1;
       }
       if (is_file(GLPI_CRON_DIR. '/all.lock')
@@ -151,10 +156,10 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->table."`
-                SET `state` = '".CRONTASK_STATE_RUNNING."',
+                SET `state` = '".self::STATE_RUNNING."',
                     `lastrun` = NOW()
                 WHERE `id` = '".$this->fields['id']."'
-                      AND `state` != '".CRONTASK_STATE_RUNNING."'";
+                      AND `state` != '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
 
       if ($DB->affected_rows($result)>0) {
@@ -209,7 +214,7 @@ class CronTask extends CommonDBTM{
                 SET `state` = '".$this->fields['state']."',
                     `lastrun` = NOW()
                 WHERE `id` = '".$this->fields['id']."'
-                      AND `state` = '".CRONTASK_STATE_RUNNING."'";
+                      AND `state` = '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
 
       if ($DB->affected_rows($result)>0) {
@@ -285,10 +290,10 @@ class CronTask extends CommonDBTM{
 
       // In force mode
       if ($mode<0) {
-         $query .= " AND `state`!='".CRONTASK_STATE_RUNNING."'
+         $query .= " AND `state`!='".self::STATE_RUNNING."'
                      AND (`allowmode` & ".(-intval($mode)).") ";
       } else {
-         $query .= " AND `state`='".CRONTASK_STATE_WAITING."'";
+         $query .= " AND `state`='".self::STATE_WAITING."'";
          if ($mode>0) {
             $query .= " AND `mode`='$mode' ";
          }
@@ -375,21 +380,21 @@ class CronTask extends CommonDBTM{
       if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
           || is_file(GLPI_CRON_DIR. '/all.lock')) {
          echo "<strong>" . $LANG['crontask'][60]."</strong><br>";
-         $tmpstate = CRONTASK_STATE_DISABLE;
+         $tmpstate = self::STATE_DISABLE;
       }
       if (!empty($this->fields["plugin"])) {
          $plug = new Plugin();
          if (!$plug->isActivated($this->fields["plugin"])) {
             echo "<strong>" . $LANG['crontask'][61]."</strong><br>";
-            $tmpstate = CRONTASK_STATE_DISABLE;
+            $tmpstate = self::STATE_DISABLE;
          }
       }
-      if ($this->fields["state"]==CRONTASK_STATE_RUNNING) {
-         echo "<strong>" . $this->getStateName(CRONTASK_STATE_RUNNING)."</strong>";
+      if ($this->fields["state"]==self::STATE_RUNNING) {
+         echo "<strong>" . $this->getStateName(self::STATE_RUNNING)."</strong>";
       } else {
          Dropdown::showFromArray('state',
-            array(CRONTASK_STATE_DISABLE=>$this->getStateName(CRONTASK_STATE_DISABLE),
-                  CRONTASK_STATE_WAITING=>$this->getStateName(CRONTASK_STATE_WAITING)),
+            array(self::STATE_DISABLE => $this->getStateName(self::STATE_DISABLE),
+                  self::STATE_WAITING => $this->getStateName(self::STATE_WAITING)),
             array('value'=>$this->fields["state"]));
       }
       echo "</td></tr>";
@@ -432,12 +437,12 @@ class CronTask extends CommonDBTM{
          Dropdown::showInteger('param', $this->fields['param'],0,400,1);
       }
       echo "</td><td>".$LANG['crontask'][41]."&nbsp;:</td><td>";
-      if ($tmpstate == CRONTASK_STATE_RUNNING) {
+      if ($tmpstate == self::STATE_RUNNING) {
          $launch=false;
       } else {
          $launch = $this->fields['allowmode']&CRONTASK_MODE_INTERNAL;
       }
-      if ($tmpstate!=CRONTASK_STATE_WAITING) {
+      if ($tmpstate!=self::STATE_WAITING) {
          echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
          echo $LANG['crontask'][42];
@@ -556,13 +561,13 @@ class CronTask extends CommonDBTM{
       global $LANG;
 
       switch ($state) {
-         case CRONTASK_STATE_RUNNING:
+         case self::STATE_RUNNING:
             return $LANG['crontask'][33];
             break;
-         case CRONTASK_STATE_WAITING:
+         case self::STATE_WAITING:
             return $LANG['crontask'][32];
             break;
-         case CRONTASK_STATE_DISABLE:
+         case self::STATE_DISABLE:
             return $LANG['crontask'][31];
             break;
       }
