@@ -37,17 +37,13 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-/// TODO need to add right check !!
-
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
-
 
 echo "<div align='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
-Dropdown::showItemTypeMenu($optgroup);
+Dropdown::showItemTypeMenu($LANG['setup'][0], $optgroup);
 Dropdown::showItemTypeList($optgroup);
-
 
 echo "</div>";
 commonFooter();
