@@ -1912,6 +1912,21 @@ class User extends CommonDBTM {
       echo "</table></form></div>\n";
    }
 
+   static function changeAuthMethod($IDs=array(), $authtype=1 ,$server=-1) {
+      global $DB;
+
+      if (!empty($IDs) && in_array($authtype, array(AUTH_DB_GLPI,
+                                                    AUTH_LDAP,
+                                                    AUTH_MAIL,
+                                                    AUTH_EXTERNAL))) {
+         $where = implode("','",$IDs);
+         $query = "UPDATE
+                   `glpi_users`
+                   SET `authtype` = '$authtype', `auths_id` = '$server'
+                   WHERE `id` IN ('$where')";
+         $DB->query($query);
+      }
+}
 
 }
 
