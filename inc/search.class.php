@@ -1823,20 +1823,26 @@ class Search {
             break;
 
          case "glpi_deviceharddrives.specif_default" :
-            return " SUM(`DEVICE_".HDD_DEVICE."`.`specificity`)
-                     / COUNT(`DEVICE_".HDD_DEVICE."`.`id`)
-                     * COUNT(DISTINCT `DEVICE_".HDD_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            if ($itemtype != 'DeviceHardDrive') {
+               return " SUM(`DEVICE_".HDD_DEVICE."`.`specificity`)
+                        / COUNT(`DEVICE_".HDD_DEVICE."`.`id`)
+                        * COUNT(DISTINCT `DEVICE_".HDD_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            }
             break;
 
          case "glpi_devicememories.specif_default" :
-            return " SUM(`DEVICE_".RAM_DEVICE."`.`specificity`)
-                     / COUNT(`DEVICE_".RAM_DEVICE."`.`id`)
-                     * COUNT(DISTINCT `DEVICE_".RAM_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            if ($itemtype != 'DeviceMemory') {
+               return " SUM(`DEVICE_".RAM_DEVICE."`.`specificity`)
+                        / COUNT(`DEVICE_".RAM_DEVICE."`.`id`)
+                        * COUNT(DISTINCT `DEVICE_".RAM_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            }
             break;
 
          case "glpi_deviceprocessors.specif_default" :
-            return " SUM(`DEVICE_".PROCESSOR_DEVICE."`.`specificity`)
-                     / COUNT(`DEVICE_".PROCESSOR_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            if ($itemtype != 'DeviceProcessor') {
+               return " SUM(`DEVICE_".PROCESSOR_DEVICE."`.`specificity`)
+                        / COUNT(`DEVICE_".PROCESSOR_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+            }
             break;
 
          case "glpi_tickets.count" :
