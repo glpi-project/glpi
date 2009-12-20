@@ -1644,6 +1644,18 @@ function update0723to080() {
       BUDGET_TYPE => "Budget",
       // End is not used in 0.72.x
    );
+   $devtypetoname = array(MOBOARD_DEVICE     => 'DeviceMotherboard',
+                          PROCESSOR_DEVICE   => 'DeviceProcessor',
+                          RAM_DEVICE         => 'DeviceMemory',
+                          HDD_DEVICE         => 'DeviceHardDrive',
+                          NETWORK_DEVICE     => 'DeviceNetworkCard',
+                          DRIVE_DEVICE       => 'DeviceDrive',
+                          CONTROL_DEVICE     => 'DeviceControl',
+                          GFX_DEVICE         => 'DeviceGraphicCard',
+                          SND_DEVICE         => 'DeviceSoundCard',
+                          PCI_DEVICE         => 'DevicePci',
+                          CASE_DEVICE        => 'DeviceCase',
+                          POWER_DEVICE       => 'DevicePowerSupply');
 
    $itemtype_tables=array("glpi_alerts", "glpi_bookmarks", "glpi_bookmarks_users",
       "glpi_computers_items", "glpi_contracts_items", "glpi_displaypreferences",
@@ -2325,9 +2337,9 @@ function update0723to080() {
    }
 
    if (!FieldExists('glpi_tickets', 'solution')) {
-      $query = "ALTER TABLE `glpi_tickets` 
+      $query = "ALTER TABLE `glpi_tickets`
                   ADD `ticketsolutiontypes_id` INT( 11 ) NOT NULL DEFAULT '0',
-                  ADD `solution` TEXT NULL, 
+                  ADD `solution` TEXT NULL,
                   ADD INDEX ( `ticketsolutiontypes_id` ) ";
       $DB->query($query) or die("0.80 create glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
 
@@ -2464,7 +2476,7 @@ function update0723to080() {
    if (!FieldExists('glpi_tickets','urgency')) {
       $query = "ALTER TABLE `glpi_tickets`
                       ADD `urgency` INT NOT NULL DEFAULT '1' AFTER `content`,
-                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgency`, 
+                      ADD `impact` INT NOT NULL DEFAULT '1' AFTER `urgency`,
                       ADD INDEX `urgency` (`urgency`),
                       ADD INDEX `impact` (`impact`)";
       $DB->query($query) or die("0.80 add urgency, impact to glpi_tickets" .
@@ -2523,7 +2535,7 @@ function update0723to080() {
 
       // delete from ticketfollowups
       $query = "DELETE FROM `glpi_ticketfollowups`
-                WHERE `glpi_ticketfollowups`.`id` IN 
+                WHERE `glpi_ticketfollowups`.`id` IN
                   (SELECT `glpi_ticketplannings`.`ticketfollowups_id`
                    FROM `glpi_ticketplannings`)";
       $DB->query($query) or die("0.80 delete from glpi_ticketfollowups" . $LANG['update'][90] . $DB->error());
