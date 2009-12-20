@@ -690,7 +690,7 @@ function testLDAPConnection($auths_id,$replicate_id=-1) {
  * @return nothing
  */
 function showSynchronizationForm($target, $ID) {
-   global $LANG, $DB;
+   global $LANG, $DB, $CFG_GLPI;
 
    if (haveRight("user", "w")) {
       //Look it the user's auth method is LDAP
@@ -736,14 +736,12 @@ function showSynchronizationForm($target, $ID) {
                break;
 
             case AUTH_CAS :
-
             case AUTH_EXTERNAL :
-               if ($data["auths_id"]) {
-                  //Look it the auth server still exists !
-                  //<- Bad idea : id not exists unable to change anything
+            case AUTH_X509 :
+               if ($CFG_GLPI['authldaps_id_extra']) {
                   $sql = "SELECT `name`
                           FROM `glpi_authldaps`
-                          WHERE `id`='" . $data["auths_id"]."'";
+                          WHERE `id`='" .$CFG_GLPI['authldaps_id_extra']."'";
                   $result = $DB->query($sql);
 
                   if ($DB->numrows($result) > 0) {
@@ -753,16 +751,8 @@ function showSynchronizationForm($target, $ID) {
                             $LANG['ocsng'][24] . "'>";
                      echo "</td></tr></table>";
                   }
+                  echo "<br>";
                }
-               echo "<br>";
-               formChangeAuthMethodToDB($ID);
-               echo "<br>";
-               formChangeAuthMethodToLDAP($ID);
-               echo "<br>";
-               formChangeAuthMethodToMail($ID);
-               break;
-
-            case AUTH_X509 :
                formChangeAuthMethodToDB($ID);
                echo "<br>";
                formChangeAuthMethodToLDAP($ID);
