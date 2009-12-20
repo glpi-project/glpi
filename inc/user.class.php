@@ -1110,7 +1110,7 @@ class User extends CommonDBTM {
       if (!empty($ID)) {
          if (haveRight("user_authtype", "r")){
             echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
-            echo getAuthMethodName($this->fields["authtype"], $this->fields["auths_id"], 1);
+            echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"], 1);
             echo "</td>";
          }
       } else {

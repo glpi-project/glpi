@@ -664,6 +664,52 @@ class Auth {
 
       return Dropdown::showFromArray($name,$methods);
    }
+
+   /**
+    * Get name of an authentication method
+    *
+    * @param $authtype Authentication method
+    * @param $auths_id Authentication method ID
+    * @param $link show links to config page ?
+    * @param $name override the name if not empty
+    *
+    * @return string
+    */
+   static function getMethodName($authtype, $auths_id, $link=0, $name='') {
+      global $LANG,$CFG_GLPI;
+
+      switch ($authtype) {
+         case AUTH_LDAP :
+            $auth = new AuthLdap();
+            if ($auth->getFromDB($auths_id)) {
+               return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
+            }
+            return $LANG['login'][2]."&nbsp;$name";
+
+         case AUTH_MAIL :
+            $auth = new AuthMail();
+            if ($auth->getFromDB($auths_id)) {
+               return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
+            }
+            return $LANG['login'][3]."&nbsp;$name";
+
+         case AUTH_CAS :
+            return  $LANG['login'][4];
+
+         case AUTH_X509 :
+            return  $LANG['setup'][190];
+
+         case AUTH_EXTERNAL :
+            return  $LANG['common'][62];
+
+         case AUTH_DB_GLPI :
+            return $LANG['login'][18];
+
+         case NOT_YET_AUTHENTIFIED :
+            return $LANG['login'][9];
+      }
+   return '';
+   }
 }
 
 
