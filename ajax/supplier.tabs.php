@@ -85,7 +85,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory('Contact',$_POST["id"]);
+         showHistory('Supplier',$_POST["id"]);
          break;
 
       case 15 :
