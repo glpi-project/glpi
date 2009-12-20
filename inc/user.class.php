@@ -54,6 +54,7 @@ class User extends CommonDBTM {
       return $LANG['common'][34];
    }
 
+   /// TODO : works on right check : entity checks...
    function canCreate() {
       return haveRight('user', 'w');
    }
@@ -62,6 +63,11 @@ class User extends CommonDBTM {
       return haveRight('user', 'r');
    }
 
+
+   function isEntityAssign() {
+      // glpi_users.entities_id is only a pref.
+      return false;
+   }
 
    /**
     * Constructor

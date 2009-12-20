@@ -265,7 +265,7 @@ class Search {
 
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
-         } else if ($itemtype != 'User') { // glpi_users.entities_id is only a pref.
+         } else { 
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',$item->maybeRecursive());
          }
       }
