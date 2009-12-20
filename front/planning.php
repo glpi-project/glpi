@@ -44,7 +44,7 @@ if (isset($_REQUEST['genical'])) {
    @header ("content-type:text/calendar; charset=UTF-8");
    @header("Content-disposition: filename=\"glpi.ics\"");
 
-   echo generateIcal($_GET["uID"]);
+   echo Planning::generateIcal($_GET["uID"]);
 
 } else {
    commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
@@ -82,9 +82,9 @@ if (isset($_REQUEST['genical'])) {
          break;
    }
 
-   showFormPlanning($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],$_GET["gID"]);
+   Planning::showForm($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],$_GET["gID"]);
 
-   showPlanning($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
+   Planning::show($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
 
    commonFooter();
 }

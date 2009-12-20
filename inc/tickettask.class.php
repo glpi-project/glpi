@@ -488,61 +488,8 @@ class TicketTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][35]."</td>";
       echo "<td>";
-      $query2 = "SELECT *
-                 FROM `glpi_ticketplannings`
-                 WHERE `tickettasks_id` = '".$this->fields['id']."'";
-      $result2 = $DB->query($query2);
-
-      if ($DB->numrows($result2) == 0) {
-         if ($canplan) {
-            echo "<script type='text/javascript' >\n";
-            echo "function showPlanUpdate(){\n";
-            echo "Ext.get('plan').setDisplayed('none');";
-            $params = array('form'     => 'followups',
-                            'state'    => 1,
-                            'users_id' => $_SESSION['glpiID'],
-                            'entity'   => $_SESSION["glpiactive_entity"]);
-            ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params);
-            echo "};";
-            echo "</script>";
-
-            echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
-            echo "<span class='showplan'>".$LANG['job'][34]."</span>";
-            echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
-         } else {
-            echo $LANG['job'][32];
-         }
-      } else {
-         $this->fields2 = $DB->fetch_array($result2);
-         if ($canplan) {
-            echo "<script type='text/javascript' >\n";
-            echo "function showPlan".$ID."(){\n";
-            echo "Ext.get('plan').setDisplayed('none');";
-            $params = array (
-               'form' => 'followups',
-               'users_id' => $this->fields2["users_id"],
-               'id' => $this->fields2["id"],
-               'state' => $this->fields2["state"],
-               'begin' => $this->fields2["begin"],
-               'end' => $this->fields2["end"],
-               'entity' => $ticket->fields["entities_id"]
-            );
-            ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
-            echo "}";
-            echo "</script>\n";
-            echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
-            echo "<span class='showplan'>";
-         }
-         echo Planning::getState($this->fields2["state"])."<br>".convDateTime($this->fields2["begin"]).
-              "<br>->".convDateTime($this->fields2["end"])."<br>".
-              getUserName($this->fields2["users_id"]);
-         if ($canplan) {
-            echo "</span>";
-            echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
-         }
-      }
+      $plan = new TicketPlanning();
+      $plan->showFormForTask($ticket, $this);
       echo "</td></tr>";
 
       $this->showFormButtons($ID,'',2);
