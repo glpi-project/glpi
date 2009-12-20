@@ -200,38 +200,4 @@ function showDeviceUser($ID) {
    }
 }
 
-
-
-
-
-
-
-
-
-
-
-/**
- * Get language in GLPI associated with the value coming from LDAP
- * Value can be, for example : English, en_EN or en
- * @param $lang : the value coming from LDAP
- * @return the locale's php page in GLPI or '' is no language associated with the value
- */
-function getUserLanguage($lang) {
-   global $CFG_GLPI;
-
-   /// TODO Add fields in config array to be more efficient / use stricmp instead of == for strings
-
-   foreach ($CFG_GLPI["languages"] as $ID => $language) {
-      if ($lang == $ID
-          || $lang == $language[0]
-          || $lang == $language[2]
-          || $lang == $language[3]) {
-         return $ID;
-      }
-   }
-   return "";
-}
-
-
-
 ?>
