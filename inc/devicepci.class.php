@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DevicePci
-class DevicePci extends Device {
+class DevicePci extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicepcis';

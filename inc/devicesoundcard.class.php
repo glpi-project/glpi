@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceSoundCard
-class DeviceSoundCard extends Device {
+class DeviceSoundCard extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicesoundcards';

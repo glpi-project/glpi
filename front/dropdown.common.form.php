@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
 
    if ($newID=$dropdown->add($_POST)) {
       refreshMainWindow();
-      if ($dropdown instanceof Device) {
+      if ($dropdown instanceof CommonDevice) {
          Event::log($newID, "devices", 4, "inventory",
                     $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
       } else {

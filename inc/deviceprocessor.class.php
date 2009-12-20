@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceProcessor
-class DeviceProcessor extends Device {
+class DeviceProcessor extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_deviceprocessors';

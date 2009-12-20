@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceControl
-class DeviceControl extends Device {
+class DeviceControl extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicecontrols';

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DeviceMemory
-class DeviceMemory extends Device {
+class DeviceMemory extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicememories';

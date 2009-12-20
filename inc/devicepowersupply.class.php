@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class DevicePowerSupply
-class DevicePowerSupply extends Device {
+class DevicePowerSupply extends CommonDevice {
 
    // From CommonDBTM
    public $table = 'glpi_devicepowersupplies';
