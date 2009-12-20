@@ -304,8 +304,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
          }
       }
    }
-   $netport->showTabs($ID, false, getActiveTab($netport->type),array(),"itemtype=$devtype
-                      AND items_id=$ondevice");
+   $netport->showTabs($ID);
 
    echo "\n<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";
    echo "<table class='tab_cadre_fixe'>\n<tr>";

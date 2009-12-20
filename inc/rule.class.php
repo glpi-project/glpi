@@ -120,8 +120,7 @@ class Rule extends CommonDBTM {
          $new=true;
       }
       $this->getTitleRule($target);
-      $this->showTabs($ID, $new,getActiveTab($this->type),array(),"sub_type='".$this->sub_type."'",
-                      $this->orderby);
+      $this->showTabs($ID, $new);
       echo "<form name='rule_form'  method='post' action=\"$target\">\n";
       echo "<div class='center' id='tabsbody' >";
       echo "<table class='tab_cadre_fixe'>";

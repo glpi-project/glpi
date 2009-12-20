@@ -116,7 +116,7 @@ class Group extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
+      $this->showTabs($ID, $withtemplate);
       $this->showFormHeader($target,$ID,$withtemplate,2);
 
       echo "<tr class='tab_bg_1'>";

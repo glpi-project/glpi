@@ -371,7 +371,7 @@ class OcsServer extends CommonDBTM {
          $this->getFromDB($ID);
       }
 
-      $this->showTabs($ID, '',getActiveTab($this->type));
+      $this->showTabs($ID);
 
       $out  = "\n<div class='center' id='tabsbody'>";
       $out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";

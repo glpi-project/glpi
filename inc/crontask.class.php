@@ -347,7 +347,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
 
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
+      $this->showTabs($ID, $withtemplate);
       $this->showFormHeader($target,$ID,$withtemplate,2);
 
       echo "<tr class='tab_bg_1'>";

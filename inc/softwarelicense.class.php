@@ -171,8 +171,7 @@ class SoftwareLicense extends CommonDBTM {
          $this->fields['number']=1;
       }
 
-      $this->showTabs($ID, false, getActiveTab($this->type),array(),
-                      "softwares_id=".$this->fields['softwares_id']);
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       echo "<tr class='tab_bg_1'>";
