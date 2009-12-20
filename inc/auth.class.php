@@ -678,6 +678,8 @@ class Auth {
    static function getMethodName($authtype, $auths_id, $link=0, $name='') {
       global $LANG,$CFG_GLPI;
 
+      /// TODO add informations about get LDAP extra infos for CAS EXTERNAL...
+      
       switch ($authtype) {
          case AUTH_LDAP :
             $auth = new AuthLdap();
@@ -724,7 +726,8 @@ class Auth {
          case AUTH_X509 :
          case AUTH_EXTERNAL :
          case AUTH_CAS :
-            // TODO shouldn't we do : $auths_id=$CFG_GLPI["authldaps_id_extra"]'  ???
+            // Use default LDAP config
+            $auths_id=$CFG_GLPI["authldaps_id_extra"];
          case AUTH_LDAP :
             $auth = new AuthLdap();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
