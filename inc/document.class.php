@@ -222,7 +222,7 @@ class Document extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
+      $this->showTabs($ID, $withtemplate);
       $this->showFormHeader($target,$ID,$withtemplate,2, " enctype='multipart/form-data'");
 
       if ($ID>0) {

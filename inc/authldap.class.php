@@ -147,7 +147,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (canUseLdap()) {
-         $this->showTabs($ID, '',getActiveTab($this->type));
+         $this->showTabs($ID);
          $this->showFormHeader($target,$ID,'',2);
          if (empty($ID)) {
             echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][16]."&nbsp;:</td> ";

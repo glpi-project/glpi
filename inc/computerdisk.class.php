@@ -100,8 +100,7 @@ class ComputerDisk extends CommonDBChild {
          $this->check(-1,'w',$input);
       }
 
-      $this->showTabs($ID, false, getActiveTab($this->type),array(),"computers_id="
-                      .$this->fields['computers_id']);
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       if ($ID>0) {

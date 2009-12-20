@@ -76,7 +76,7 @@ if (isset($_POST['update'])) {
 }
 $track->check($_GET["id"],'r');
 
-$track->showTabs($_GET["id"],'',getActiveTab('Ticket'));
+$track->showTabs($_GET["id"]);
 echo "<div id='tabcontent'></div>";
 
 echo "<script type='text/javascript'>loadDefaultTab();</script>";

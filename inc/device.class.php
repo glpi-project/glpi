@@ -136,8 +136,7 @@ class Device extends CommonDBTM {
       }
 
       echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";
-      $this->showTabs($ID, "",getActiveTab($this->type),array("devicetype"=>$this->devtype,
-                                                          "referer"=>$REFERER));
+      $this->showTabs($ID, "",array("devicetype"=>$this->devtype,"referer"=>$REFERER));
       $this->showFormHeader($target,$ID,'',2);
 
       echo "<tr class='tab_bg_1'>";

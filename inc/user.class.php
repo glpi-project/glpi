@@ -1097,7 +1097,7 @@ class User extends CommonDBTM {
                     || ($this->fields["authtype"] == NOT_YET_AUTHENTIFIED
                         && !empty ($this->fields["password"]) ) );
 
-      $this->showTabs($ID, $withtemplate,getActiveTab($this->type));
+      $this->showTabs($ID, $withtemplate);
       $this->showFormHeader($target,$ID,$withtemplate,2);
 
       echo "<tr class='tab_bg_1'>";

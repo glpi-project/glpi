@@ -99,7 +99,7 @@ class Link extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, '',getActiveTab($this->type));
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       echo "<tr class='tab_bg_1'><td height='23'>".$LANG['links'][6]."&nbsp;:</td>";

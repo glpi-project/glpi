@@ -133,8 +133,7 @@ class SoftwareVersion extends CommonDBTM {
          $this->check(-1, 'w', $input);
       }
 
-      $this->showTabs($ID, false, getActiveTab($this->type),array(),
-                      "softwares_id=".$this->fields['softwares_id']);
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";

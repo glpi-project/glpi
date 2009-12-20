@@ -129,7 +129,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, '',getActiveTab($this->type),array('itemtype'=>$this->type));
+      $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',2);
 
       $fields = $this->getAdditionalFields();
