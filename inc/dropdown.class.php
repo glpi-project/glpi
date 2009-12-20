@@ -438,6 +438,36 @@ class Dropdown {
    }
 
    /**
+    * Get the Device list name the user is allowed to edit
+    *
+    * @return array (group of dropdown) of array (itemtype => localized name)
+    */
+   static function getDeviceItemTypes () {
+      global $LANG, $CFG_GLPI;
+      static $optgroup=NULL;
+
+      if (!haveRight('device','r')) {
+         return array();
+      }
+      if (is_null($optgroup)) {
+         $optgroup =
+            array($LANG['title'][30] => array('DeviceMotherboard' => $LANG['devices'][5],
+                                              'DeviceProcessor'   => $LANG['devices'][4],
+                                              'DeviceNetworkCard' => $LANG['devices'][3],
+                                              'DeviceMemory'      => $LANG['devices'][6],
+                                              'DeviceHardDrive'   => $LANG['devices'][1],
+                                              'DeviceDrive'       => $LANG['devices'][19],
+                                              'DeviceControl'     => $LANG['devices'][20],
+                                              'DeviceGraphicCard' => $LANG['devices'][2],
+                                              'DeviceSoundCard'   => $LANG['devices'][7],
+                                              'DeviceCase'        => $LANG['devices'][22],
+                                              'DevicePowerSupply' => $LANG['devices'][23],
+                                              'DevicePci'         => $LANG['devices'][21]));
+      }
+      return $optgroup;
+   }
+
+   /**
     * Get the dropdown list name the user is allowed to edit
     *
     * @return array (group of dropdown) of array (itemtype => localized name)
@@ -536,11 +566,11 @@ class Dropdown {
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
     * @param $value string URL of selected current value
     */
-   static function showItemTypeMenu($optgroup, $value='') {
+   static function showItemTypeMenu($title, $optgroup, $value='') {
       global $LANG;
 
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$LANG['setup'][0]."&nbsp;: ";
+      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp;: ";
       echo "<select id='menu_nav'>";
       foreach($optgroup as $label => $dp) {
          echo "<optgroup label='$label'>";

@@ -109,7 +109,10 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return nothing (HTML display if needed)
     */
    function title() {
-      Dropdown::showItemTypeMenu(Dropdown::getStandardDropdownItemTypes(), $_SERVER['PHP_SELF']);
+      global $LANG;
+
+      Dropdown::showItemTypeMenu($LANG['setup'][0],
+                                 Dropdown::getStandardDropdownItemTypes(), $_SERVER['PHP_SELF']);
    }
 
    function displayHeader () {
@@ -135,7 +138,12 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      if ($this instanceof Device) {
+         // Awfull hack for Device where name is designation
+         autocompletionTextField("designation",$this->table,"designation",$this->fields["designation"],40);
+      } else {
+         autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      }
       echo "</td>";
 
       echo "<td rowspan='".($nb+1)."'>";
@@ -155,7 +163,7 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'dropdownValue' :
                Dropdown::dropdownValue(getTableNameForForeignKeyField($field['name']),
                               $field['name'], $this->fields[$field['name']],1,
-                              $this->fields["entities_id"]);
+                              $this->getEntityID());
                break;
 
             case 'text' :

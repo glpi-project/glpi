@@ -54,7 +54,12 @@ if (isset($_POST["add"])) {
 
    if ($newID=$dropdown->add($_POST)) {
       refreshMainWindow();
-      Event::log($newID, "dropdown", 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
+      if ($dropdown instanceof Device) {
+         Event::log($newID, "devices", 4, "inventory",
+                    $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
+      } else {
+         Event::log($newID, "dropdown", 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
+      }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -75,7 +80,6 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["replace"])) {
    $dropdown->check($_POST["id"],'w');
-   //$dropdown->replace($_POST["newid"]);
    $dropdown->delete($_POST, 1);
    refreshMainWindow();
 
