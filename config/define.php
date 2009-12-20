@@ -611,14 +611,6 @@ define("PLUGIN_NOTACTIVATED",4);
 define("PLUGIN_TOBECLEANED",5);
 define("PLUGIN_NOTUPDATED",6);
 
-// Cron Task
-define("CRONTASK_MODE_INTERNAL",1);
-define("CRONTASK_MODE_EXTERNAL",2);
-
-define("CRONTASKLOG_STATE_START",0);
-define("CRONTASKLOG_STATE_RUN",1);
-define("CRONTASKLOG_STATE_STOP",2);
-
 
 //DEVICE ARRAY.
 // tables in alphabetic order

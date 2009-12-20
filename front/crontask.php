@@ -42,10 +42,10 @@ checkRight("config", "w");
 if (isset($_GET['execute'])) {
    if (is_numeric($_GET['execute'])) {
       // Execute button from list.
-      $name = CronTask::launch(CRONTASK_MODE_INTERNAL,intval($_GET['execute']));
+      $name = CronTask::launch(CronTask::MODE_INTERNAL,intval($_GET['execute']));
    } else {
       // Execute button from Task form (force)
-      $name = CronTask::launch(-CRONTASK_MODE_INTERNAL,1,$_GET['execute']);
+      $name = CronTask::launch(-CronTask::MODE_INTERNAL,1,$_GET['execute']);
    }
    if ($name) {
       addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
@@ -55,7 +55,7 @@ if (isset($_GET['execute'])) {
 commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
 $crontask = new CronTask();
-if ($crontask->getNeedToRun(CRONTASK_MODE_INTERNAL)) {
+if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
    displayTitle(GLPI_ROOT.'/pics/warning.png', $LANG['crontask'][41],
                 $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
                 array($_SERVER['PHP_SELF']."?execute=1" => $LANG['buttons'][57]));

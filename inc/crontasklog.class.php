@@ -42,6 +42,11 @@ class CronTaskLog extends CommonDBTM{
    public $table = 'glpi_crontasklogs';
    public $type = 'CronTaskLog';
 
+   // Class constant
+   const STATE_START = 0;
+   const STATE_RUN   = 1;
+   const STATE_STOP  = 2;
+
    /**
     * Clean old event for a task
     *

@@ -53,6 +53,9 @@ class CronTask extends CommonDBTM{
    const STATE_WAITING = 1;
    const STATE_RUNNING = 2;
 
+   const MODE_INTERNAL = 1;
+   const MODE_EXTERNAL = 2;
+
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
@@ -166,12 +169,12 @@ class CronTask extends CommonDBTM{
          $this->timer = microtime(true);
          $log = new CronTaskLog();
          $txt = $LANG['crontask'][36] . " : " .
-                $this->getModeName(isCommandLine() ? CRONTASK_MODE_EXTERNAL : CRONTASK_MODE_INTERNAL);
+                $this->getModeName(isCommandLine() ? self::MODE_EXTERNAL : self::MODE_INTERNAL);
          $this->startlog = $log->add(array('crontasks_id' => $this->fields['id'],
                                            'date' => $_SESSION['glpi_currenttime'],
                                            'content' => addslashes($txt),
                                            'crontasklogs_id' => 0,
-                                           'state' => CRONTASKLOG_STATE_START,
+                                           'state' => CronTaskLog::STATE_START,
                                            'volume' => 0,
                                            'elapsed' => 0));
          return true;
@@ -230,7 +233,7 @@ class CronTask extends CommonDBTM{
                          'date'             => $_SESSION['glpi_currenttime'],
                          'content'          => $content,
                          'crontasklogs_id' => $this->startlog,
-                         'state'            => CRONTASKLOG_STATE_STOP,
+                         'state'            => CronTaskLog::STATE_STOP,
                          'volume'           => $this->volume,
                          'elapsed'          => (microtime(true)-$this->timer)));
          return true;
@@ -256,7 +259,7 @@ class CronTask extends CommonDBTM{
                              'date'             => $_SESSION['glpi_currenttime'],
                              'content'          => addslashes($content),
                              'crontasklogs_id' => $this->startlog,
-                             'state'            => CRONTASKLOG_STATE_RUN,
+                             'state'            => CronTaskLog::STATE_RUN,
                              'volume'           => $this->volume,
                              'elapsed'          => (microtime(true)-$this->timer)));
    }
@@ -401,11 +404,11 @@ class CronTask extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][36]." : </td><td>";
       $modes=array();
-      if ($this->fields['allowmode']&CRONTASK_MODE_INTERNAL) {
-         $modes[CRONTASK_MODE_INTERNAL]=$this->getModeName(CRONTASK_MODE_INTERNAL);
+      if ($this->fields['allowmode']&self::MODE_INTERNAL) {
+         $modes[self::MODE_INTERNAL]=$this->getModeName(self::MODE_INTERNAL);
       }
-      if ($this->fields['allowmode']&CRONTASK_MODE_EXTERNAL) {
-         $modes[CRONTASK_MODE_EXTERNAL]=$this->getModeName(CRONTASK_MODE_EXTERNAL);
+      if ($this->fields['allowmode']&self::MODE_EXTERNAL) {
+         $modes[self::MODE_EXTERNAL]=$this->getModeName(self::MODE_EXTERNAL);
       }
       Dropdown::showFromArray('mode', $modes, array('value'=>$this->fields['mode']));
       echo "</td></tr>";
@@ -440,7 +443,7 @@ class CronTask extends CommonDBTM{
       if ($tmpstate == self::STATE_RUNNING) {
          $launch=false;
       } else {
-         $launch = $this->fields['allowmode']&CRONTASK_MODE_INTERNAL;
+         $launch = $this->fields['allowmode']&self::MODE_INTERNAL;
       }
       if ($tmpstate!=self::STATE_WAITING) {
          echo $this->getStateName($tmpstate);
@@ -584,10 +587,10 @@ class CronTask extends CommonDBTM{
       global $LANG;
 
       switch ($mode) {
-         case CRONTASK_MODE_INTERNAL:
+         case self::MODE_INTERNAL:
             return $LANG['crontask'][34];
             break;
-         case CRONTASK_MODE_EXTERNAL:
+         case self::MODE_EXTERNAL:
             return $LANG['crontask'][35];
             break;
       }
@@ -645,7 +648,7 @@ class CronTask extends CommonDBTM{
          }
          $task = new CronTask();
          for ($i=1 ; $i<=$max ; $i++) {
-            $prefix = ($mode==CRONTASK_MODE_EXTERNAL ? 'External' : 'Internal')." #$i: ";
+            $prefix = ($mode==self::MODE_EXTERNAL ? 'External' : 'Internal')." #$i: ";
             if ($task->getNeedToRun($mode, $name)) {
                $_SESSION["glpiID"]="cron_".$task->fields['name'];
 
@@ -769,9 +772,9 @@ class CronTask extends CommonDBTM{
       echo "</tr>\n";
 
       $nbstart = countElementsInTable('glpi_crontasklogs',
-            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_START."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CronTaskLog::STATE_START."'");
       $nbstop = countElementsInTable('glpi_crontasklogs',
-            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CronTaskLog::STATE_STOP."'");
 
       echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][50]."&nbsp;:</td><td class='right'>";
       if ($nbstart==$nbstop) {
@@ -794,7 +797,7 @@ class CronTask extends CommonDBTM{
                           SUM(`volume`) AS voltot
                    FROM `glpi_crontasklogs`
                    WHERE `crontasks_id`='".$this->fields['id']."'
-                         AND `state`='".CRONTASKLOG_STATE_STOP."'";
+                         AND `state`='".CronTaskLog::STATE_STOP."'";
          $result = $DB->query($query);
 
          if ($data = $DB->fetch_assoc($result)) {
@@ -860,7 +863,7 @@ class CronTask extends CommonDBTM{
 
       // Total Number of events
       $number = countElementsInTable('glpi_crontasklogs',
-            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CRONTASKLOG_STATE_STOP."'");
+            "`crontasks_id`='".$this->fields['id']."' AND `state`='".CronTaskLog::STATE_STOP."'");
 
       echo "<br><div class='center'>";
       if ($number < 1) {
@@ -877,7 +880,7 @@ class CronTask extends CommonDBTM{
       $query = "SELECT *
                 FROM `glpi_crontasklogs`
                 WHERE `crontasks_id`='".$this->fields['id']."'
-                      AND `state`='".CRONTASKLOG_STATE_STOP."'
+                      AND `state`='".CronTaskLog::STATE_STOP."'
                 ORDER BY `id` DESC
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -942,10 +945,10 @@ class CronTask extends CommonDBTM{
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".($first ? convDateTime($data['date']) : "&nbsp;")."</a></td>";
                switch ($data['state']) {
-                  case CRONTASKLOG_STATE_START:
+                  case CronTaskLog::STATE_START:
                      echo "<td>".$LANG['crontask'][48]."</td>";
                      break;
-                  case CRONTASKLOG_STATE_STOP:
+                  case CronTaskLog::STATE_STOP:
                      echo "<td>".$LANG['crontask'][49]."</td>";
                      break;
                   default:
