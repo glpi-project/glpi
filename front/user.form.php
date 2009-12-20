@@ -68,8 +68,8 @@ if (isset($_REQUEST['getvcard'])) {
    if (empty($_GET["id"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
    }
-   checkRight("user","r");
-   generateUserVcard($_GET["id"]);
+   $user->check($_GET['id'],'r');
+   $user->generateVcard($_GET["id"]);
 
 } else if (isset($_POST["add"])) {
    $user->check(-1,'w',$_POST);
