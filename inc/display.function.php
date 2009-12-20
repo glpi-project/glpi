@@ -748,7 +748,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']='/front/dropdown.php';
 
-
       if ($item=="dropdowns") {
          $dps = Dropdown::getStandardDropdownItemTypes();
 
@@ -774,6 +773,27 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("device","w")) {
       $menu['config']['content']['device']['title']=$LANG['title'][30];
       $menu['config']['content']['device']['page']='/front/device.php';
+
+      if ($item=="device") {
+         $dps = Dropdown::getDeviceItemTypes();
+
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               if ($key == $option) {
+                  $tmp = new $key();
+                  $menu['config']['content']['device']['options'][$option]['title']=$val;
+                  $menu['config']['content']['device']['options'][$option]['page']=
+                                                $tmp->getSearchURL(false);
+                  $menu['config']['content']['device']['options'][$option]['links']['search']=
+                                                $tmp->getSearchURL(false);
+                  if ($tmp->canCreate()) {
+                     $menu['config']['content']['device']['options'][$option]['links']['add']=
+                                                $tmp->getFormURL(false);
+                  }
+               }
+            }
+         }
+      }
    }
 
    if (haveRight("config","w")) {
@@ -2273,13 +2293,15 @@ function getActiveTab($itemtype) {
  * @param $tabdiv_id ID of the div containing the tabs
  * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
  * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
- * @param $active_tabs active tab key
+ * @param $type for active tab
  * @param $width of tabs panel
  * @return nothing
  */
-function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$tabs=array(),
-                        $active_tabs, $type, $size=950){
+function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
+                        $type, $size=950){
    global $CFG_GLPI;
+
+   $active_tabs = getActiveTab($type);
 
    if (count($tabs)>0) {
       echo "<script type='text/javascript'>";
