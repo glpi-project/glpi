@@ -265,7 +265,7 @@ class Search {
 
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
-         } else {
+         } else if ($itemtype != 'User') { // glpi_users.entities_id is only a pref.
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',$item->maybeRecursive());
          }
       }
@@ -3190,7 +3190,7 @@ class Search {
             return $data[$NAME.$num];
 
          case "glpi_auth_tables.name" :
-            return getAuthMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
+            return Auth::getMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
                                     $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 
          case "glpi_reservationitems.comment" :
