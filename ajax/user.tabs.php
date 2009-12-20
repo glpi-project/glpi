@@ -71,7 +71,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
       case -1 :
          Profile_User::showForUser($user);
          Group_User::showForUser($_POST['target'], $user);
-         showDeviceUser($_POST["id"]);
+         $user->showItems();
          showUserReservations($_POST['target'],$_POST["id"]);
          if (haveRight("show_all_ticket", "1")) {
             showJobListForUser($_POST["id"]);
@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 2 :
-         showDeviceUser($_POST["id"]);
+         $user->showItems();
          break;
 
       case 3 :
