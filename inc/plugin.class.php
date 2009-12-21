@@ -380,12 +380,13 @@ class Plugin extends CommonDBTM {
          if (function_exists($function)) {
             $function();
          }
+         CronTask::Unregister($this->fields['directory']);
          $this->update(array('id'=>$ID,
                              'state'=>PLUGIN_NOTINSTALLED,
                              'version'=>''));
          $this->removeFromSession($this->fields['directory']);
 
-         CronTask::Unregister($this->fields['directory']);
+         
       }
    }
 
