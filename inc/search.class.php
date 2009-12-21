@@ -2141,7 +2141,7 @@ class Search {
             }
             if ($itemtype == 'User') { // glpi_users case / not link table
                if ($searchtype=='equals') {
-                  return "`$table$linkfield`.`id`".$SEARCH;
+                  return " $link `$table$linkfield`.`id`".$SEARCH;
                } else {
                   return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
                }
@@ -2154,7 +2154,7 @@ class Search {
                   $name2='firstname';
                }
                if ($searchtype=='equals') {
-                  return "`$table$linkfield`.`id`".$SEARCH;
+                  return " $link `$table$linkfield`.`id`".$SEARCH;
                } else {
                   return $link." (`$table$linkfield`.`$name1` $SEARCH
                                  OR `$table$linkfield`.`$name2` $SEARCH
@@ -2242,7 +2242,7 @@ class Search {
 
          case "glpi_contacts.completename" :
             if ($searchtype=='equals') {
-               return "`$table`.`id`".$SEARCH;
+               return " $link `$table`.`id`".$SEARCH;
             } else {
                if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
                   $name1='firstname';
@@ -2412,7 +2412,7 @@ class Search {
 
       // Default case
       if ($searchtype=='equals') {
-         return "`$table`.`id`".$SEARCH;
+         return " $link `$table`.`id`".$SEARCH;
       } else {
          return makeTextCriteria($tocompute,$val,$nott,$link);
       }
@@ -3958,9 +3958,10 @@ class Search {
       global $LANG;
       $searchopt=&Search::getOptions($itemtype);
       $actions = array('contains'=>$LANG['search'][2],
-                  'searchopt'=>$searchopt[$field_num]);
+                       'searchopt' => array());
       
       if (isset($searchopt[$field_num])) {
+         $action['searchopt']=$searchopt[$field_num];
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'=>$LANG['rulesengine'][0],
