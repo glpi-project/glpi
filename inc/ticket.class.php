@@ -293,7 +293,7 @@ class Ticket extends CommonDBTM {
           && isset($input["itemtype"])) {
 
          if (isset($this->fields['groups_id']) && $this->fields['groups_id']) {
-            if (class_exists($input["itemtype"])) {
+            if ($input["itemtype"] && class_exists($input["itemtype"])) {
                $item = new $input["itemtype"]();
                $item->getFromDB($input["items_id"]);
                if ($tmp=$item->getField('groups_id')) {
@@ -462,7 +462,7 @@ class Ticket extends CommonDBTM {
              || in_array("cost_fixed",$updates)
              || in_array("cost_material",$updates)) {
 
-            if (class_exists($this->fields["itemtype"])) {
+            if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
                $item=new $this->fields["itemtype"]();
                if ($item->getFromDB($this->fields["items_id"])) {
                   $newinput=array();
@@ -597,7 +597,7 @@ class Ticket extends CommonDBTM {
                         $already_done_computer_itemtype_update=true;
                      }
                      $old_item_name = $LANG['mailing'][107];
-                     if (class_exists($input["_old_itemtype"])) {
+                     if ($input["_old_itemtype"] && class_exists($input["_old_itemtype"])) {
                         $item=new $input["_old_itemtype"]();
                         if ($item->getFromDB($input["_old_items_id"])) {
                            $old_item_name = $item->getName();
@@ -607,7 +607,7 @@ class Ticket extends CommonDBTM {
                         }
                      }
                      $new_item_name=$LANG['mailing'][107];
-                     if (class_exists($this->fields["itemtype"])) {
+                     if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
                         $item = new $this->fields["itemtype"]();
                         if ($item->getFromDB($this->fields["items_id"])) {
                            $new_item_name = $item->getName();
