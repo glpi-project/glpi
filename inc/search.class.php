@@ -54,7 +54,7 @@ class Search {
    * Build the query, make the search and list items after a search.
    *
    *@param $itemtype item type
-   *@param $params parameters array may include field, contains, sort, order, start, deleted, link, link2, contains2, field2, itemtype2
+   *@param $params parameters array may include field, contains, searchtype, sort, order, start, deleted, link, link2, contains2, field2, itemtype2
    *
    *@return Nothing (display)
    *
@@ -74,6 +74,7 @@ class Search {
       $default_values["link"]=array();
       $default_values["field"]=array();
       $default_values["contains"]=array();
+      $default_values["searchtype"]=array();
       $default_values["sort"]="1";
       $default_values["order"]="ASC";
       $default_values["start"]=0;
@@ -302,13 +303,13 @@ class Search {
                      }
                      // Find key
                      $item_num=array_search($field[$key],$toview);
-                     $HAVING .= Search::addHaving($LINK,$NOT,$itemtype,$field[$key],$contains[$key],0,$item_num);
+                     $HAVING .= Search::addHaving($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key],0,$item_num);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
                         $LINK=$tmplink;
                      }
-                     $WHERE .= Search::addWhere($LINK,$NOT,$itemtype,$field[$key],$contains[$key]);
+                     $WHERE .= Search::addWhere($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key]);
                   }
                // view search
                } else if ($field[$key]=="view") {
@@ -358,7 +359,7 @@ class Search {
                            $tmplink=" ";
                            $first2=false;
                         }
-                        $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$val2,$contains[$key]);
+                        $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$val2,'contains',$contains[$key]);
                      }
                   }
                   $WHERE.=" ) ";
@@ -413,7 +414,7 @@ class Search {
                               $tmplink=" ";
                               $first2=false;
                            }
-                           $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$contains[$key]);
+                           $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$searchtype[$key],$contains[$key]);
                         }
                      }
                   }
@@ -541,7 +542,7 @@ class Search {
                   if (!empty($WHERE)) {
                      $LINK=$tmplink;
                   }
-                  $WHERE .= Search::addWhere($LINK,$NOT,$itemtype2[$key],$field2[$key],$contains2[$key],1);
+                  $WHERE .= Search::addWhere($LINK,$NOT,$itemtype2[$key],$field2[$key],'contains',$contains2[$key],1);
                }
             }
          }
@@ -1151,6 +1152,7 @@ class Search {
       $default_values["link"]="";
       $default_values["field"]="";
       $default_values["contains"]="";
+      $default_values["searchtype"]="";
       $default_values["sort"]="";
       $default_values["is_deleted"]=0;
       $default_values["link2"]="";
@@ -1248,13 +1250,9 @@ class Search {
             echo "</select>&nbsp;";
          }
 
-         // display search field
-         echo "<input type='text' size='15' name=\"contains[$i]\" value=\"".
-               (is_array($contains) && isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
-         echo "&nbsp;".$LANG['search'][10]."&nbsp;";
 
          // display select box to define serach item
-         echo "<select name=\"field[$i]\" size='1'>";
+         echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
          echo "<option value='view' ";
          if (is_array($field) && isset($field[$i]) && $field[$i] == "view") {
             echo "selected";
@@ -1263,6 +1261,7 @@ class Search {
 
          reset($options);
          $first_group=true;
+         $selected='view';
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
@@ -1276,8 +1275,9 @@ class Search {
                echo "<option value='$key'";
                if (is_array($field) && isset($field[$i]) && $key == $field[$i]) {
                   echo "selected";
+                  $selected=$key;
                }
-               echo ">". utf8_substr($val["name"],0,32) ."</option>\n";
+               echo ">". utf8_substr($val["name"],0,28) ."</option>\n";
             }
          }
          if (!$first_group) {
@@ -1289,6 +1289,32 @@ class Search {
          }
          echo ">".$LANG['common'][66]."</option>";
          echo "</select>&nbsp;\n";
+
+         echo "<span id='SearchSpan$itemtype$i'>\n";
+         
+         $_POST["itemtype"]=$itemtype;
+         $_POST["num"]=$i;
+         $_POST["field"]=$selected;
+         $_POST["searchtype"]=(is_array($searchtype) && isset($searchtype[$i])?$searchtype[$i]:"" );
+         $_POST["value"]=(is_array($contains) && isset($contains[$i])?stripslashes($contains[$i]):"" );
+         include (GLPI_ROOT."/ajax/searchoption.php");
+         echo "</span>\n";
+
+      $params = array('field'       => '__VALUE__',
+                      'itemtype'    => $itemtype,
+                      'num'         => $i,
+                      'value'       => $_POST["value"],
+                      'searchtype'  => $_POST["searchtype"]);
+      ajaxUpdateItemOnSelectEvent("Search$itemtype$i","SearchSpan$itemtype$i",
+                                  $CFG_GLPI["root_doc"]."/ajax/searchoption.php",$params,false);
+
+
+
+//         echo "&nbsp;".$LANG['search'][10]."&nbsp;";
+
+         // display search field
+//         echo "<input type='text' size='15' name=\"contains[$i]\" value=\"".
+//               (is_array($contains) && isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 
          echo "</td></tr>\n";
       }
@@ -1346,7 +1372,7 @@ class Search {
 
             // Display select of the linked item type available
             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-            echo "<option value='-1'>------</option>";
+            echo "<option value=''>------</option>";
             foreach ($linked as $key) {
                echo "<option value='$key'>".utf8_substr($names[$key],0,20)."</option>\n";
             }
@@ -1378,8 +1404,11 @@ class Search {
       echo "</table>\n";
       echo "</td>\n";
 
+      echo "<td width='150px'>";
+      echo "<table width='100%'><tr>";
       // Display sort selection
-      echo "<td>".$LANG['search'][4];
+      /// TODO delete it from Search form : display it and sort using display
+/*      echo "<td colspan='2'>".$LANG['search'][4];
       echo "&nbsp;<select name='sort' size='1'>";
       reset($options);
       $first_group=true;
@@ -1404,29 +1433,30 @@ class Search {
       }
       echo "</select> ";
       echo "</td>\n";
-
+*/  
       // Display deleted selection
       echo "<td>";
       $itemtable=getTableForItemType($itemtype);
       if ($item && $item->maybeDeleted()) {
-         Dropdown::showYesNo("is_deleted",$is_deleted);
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
                "' title='".$LANG['common'][3]."'>";
+         Dropdown::showYesNo("is_deleted",$is_deleted);
+         echo '&nbsp;&nbsp;';
       }
-      echo "</td>\n";
-
-      // Display Reset search
-      echo "<td class='center'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=".
             "reset_search&amp;itemtype=$itemtype' >";
-      echo "<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
+      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
       Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
       echo "</td>\n";
+      echo "</tr><tr>";
 
       // Display submit button
-      echo "<td width='80' class='tab_bg_2'>";
+      echo "<td width='80' class='center'>";
       echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
+      echo "</td></tr>";
+      echo "</table>\n";
+
       echo "</td></tr>";
       echo "</table>\n";
 
@@ -1446,6 +1476,7 @@ class Search {
    *@param $NOT is is a negative search ?
    *@param $itemtype item type
    *@param $ID ID of the item to search
+   *@param $searchtype search type ('contains' or 'equals')
    *@param $val value search
    *@param $meta is it a meta item ?
    *@param $num item number
@@ -1453,7 +1484,7 @@ class Search {
    *@return select string
    *
    **/
-   static function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num) {
+   static function addHaving($LINK,$NOT,$itemtype,$ID,$searchtype,$val,$meta,$num) {
 
       $searchopt = &Search::getOptions($itemtype);
       $table=$searchopt[$ID]["table"];
@@ -2048,17 +2079,18 @@ class Search {
    /**
    * Generic Function to add where to a request
    *
-   *@param $val item num in the request
-   *@param $nott is it a negative serach ?
    *@param $link link string
+   *@param $nott is it a negative serach ?
    *@param $itemtype item type
    *@param $ID ID of the item to search
+   *@param $searchtype searchtype used (equals or contains)
+   *@param $val item num in the request
    *@param $meta is a meta search (meta=2 in search.class.php)
    *
    *@return select string
    *
    **/
-   static function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0) {
+   static function addWhere($link,$nott,$itemtype,$ID,$searchtype,$val,$meta=0) {
       global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 
       $searchopt=&Search::getOptions($itemtype);
@@ -2075,7 +2107,15 @@ class Search {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1].") ";
       }
 
-      $SEARCH=makeTextSearch($val,$nott);
+      if ($searchtype=='contains') {
+         $SEARCH=makeTextSearch($val,$nott);
+      } else { // Equals
+         if ($nott) {
+            $SEARCH=" <> '$val'";
+         } else {
+            $SEARCH=" = '$val'";
+         }
+      }
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
@@ -2100,7 +2140,11 @@ class Search {
                }
             }
             if ($itemtype == 'User') { // glpi_users case / not link table
-               return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
+               if ($searchtype=='equals') {
+                  return "`$table$linkfield`.`id`".$SEARCH;
+               } else {
+                  return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
+               }
             } else {
                if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
                   $name1='firstname';
@@ -2109,11 +2153,15 @@ class Search {
                   $name1='realname';
                   $name2='firstname';
                }
-               return $link." (`$table$linkfield`.`$name1` $SEARCH
-                              OR `$table$linkfield`.`$name2` $SEARCH
-                              OR CONCAT(`$table$linkfield`.`$name1`,' ',
-                                       `$table$linkfield`.`$name2`) $SEARCH".
-                              makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
+               if ($searchtype=='equals') {
+                  return "`$table$linkfield`.`id`".$SEARCH;
+               } else {
+                  return $link." (`$table$linkfield`.`$name1` $SEARCH
+                                 OR `$table$linkfield`.`$name2` $SEARCH
+                                 OR CONCAT(`$table$linkfield`.`$name1`,' ',
+                                          `$table$linkfield`.`$name2`) $SEARCH".
+                                 makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
+               }
             }
             break;
 
@@ -2193,16 +2241,21 @@ class Search {
             break;
 
          case "glpi_contacts.completename" :
-            if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
-               $name1='firstname';
-               $name2='name';
+            if ($searchtype=='equals') {
+               return "`$table`.`id`".$SEARCH;
             } else {
-               $name1='name';
-               $name2='firstname';
+               if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+                  $name1='firstname';
+                  $name2='name';
+               } else {
+                  $name1='name';
+                  $name2='firstname';
+               }
+   
+               return $link." (`$table`.`$name1` $SEARCH
+                              OR `$table`.`$name2` $SEARCH
+                              OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
             }
-            return $link." (`$table`.`$name1` $SEARCH
-                           OR `$table`.`$name2` $SEARCH
-                           OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
             break;
 
          case "glpi_auth_tables.name" :
@@ -2358,7 +2411,11 @@ class Search {
       }
 
       // Default case
-      return makeTextCriteria($tocompute,$val,$nott,$link);
+      if ($searchtype=='equals') {
+         return "`$table`.`id`".$SEARCH;
+      } else {
+         return makeTextCriteria($tocompute,$val,$nott,$link);
+      }
 
    }
 
@@ -3431,6 +3488,7 @@ class Search {
       $default_values["link"]=array();
       $default_values["field"]=array(0=>"view");
       $default_values["contains"]=array(0=>"");
+      $default_values["searchtype"]=array(0=>"");
       $default_values["link2"]=array();
       $default_values["field2"]=array(0=>"view");
       $default_values["contains2"]=array(0=>"");
@@ -3894,6 +3952,29 @@ class Search {
       return (($searchID>=25 && $searchID<=28) || ($searchID>=37 && $searchID<=38)
             ||($searchID>=50 && $searchID<=59) || ($searchID>=120 && $searchID<=122))
             && in_array($itemtype,$CFG_GLPI["infocom_types"]);
+   }
+
+   static function getActionsFor($itemtype,$field_num) {
+      global $LANG;
+      $searchopt=&Search::getOptions($itemtype);
+      $actions = array('contains'=>$LANG['search'][2],
+                  'searchopt'=>$searchopt[$field_num]);
+      
+      if (isset($searchopt[$field_num])) {
+         switch ($searchopt[$field_num]['field']) {
+            case 'id' :
+               return array('equals'=>$LANG['rulesengine'][0],
+                        'searchopt'=>$searchopt[$field_num]);
+            case 'name' :
+            case 'completename' :
+               return array('contains'=>$LANG['search'][2],
+                           'equals'=>$LANG['rulesengine'][0],
+                           'searchopt'=>$searchopt[$field_num]);
+         }
+     }
+
+      return $actions;
+      
    }
 
 }
