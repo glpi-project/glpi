@@ -187,7 +187,7 @@ class Ticket extends CommonDBTM {
    **/
    function getHardwareData() {
 
-      if (class_exists($this->fields["itemtype"])) {
+      if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
          $item = new $this->fields["itemtype"]();
          if ($item->getFromDB($this->fields["items_id"])) {
             $this->hardwaredatas=$item;
