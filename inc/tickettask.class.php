@@ -402,6 +402,12 @@ class TicketTask  extends CommonDBTM {
       if ($minute || !$hour) {
          echo "$minute " . $LANG['job'][22] . "</td>";
       }
+
+      echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
+      if ($showprivate) {
+         echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
+      }
+
       echo "<td>";
       $query2 = "SELECT *
                  FROM `glpi_ticketplannings`
@@ -417,10 +423,6 @@ class TicketTask  extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
-      if ($showprivate) {
-         echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
-      }
       echo "</tr>\n";
    }
 
@@ -546,11 +548,11 @@ class TicketTask  extends CommonDBTM {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
-         echo "<th>" . $LANG['job'][35] . "</th><th>" . $LANG['common'][37] . "</th>";
+         echo "<th>" . $LANG['common'][37] . "</th>";
          if ($showprivate) {
             echo "<th>" . $LANG['common'][77] . "</th>";
          }
-         echo "</tr>\n";
+         echo "<th>" . $LANG['job'][35] . "</th></tr>\n";
 
          while ($data = $DB->fetch_array($result)) {
             if (class_exists($data['itemtype'])) {
