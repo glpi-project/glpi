@@ -357,7 +357,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "$minute " . $LANG['job'][22] . "</td>";
       }
 
-      echo "<td></td>";
+  //    echo "<td></td>";
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
@@ -390,8 +390,8 @@ class TicketFollowup  extends CommonDBTM {
       $this->showFormHeader($this->getFormURL(),$ID,'',2);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='6' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='6'><textarea name='content' cols='50' rows='6'>".
+      echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='4'><textarea name='content' cols='50' rows='6'>".
             $this->fields["content"]."</textarea></td>";
       if ($this->fields["date"]) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
