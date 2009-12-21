@@ -2247,7 +2247,7 @@ class Ticket extends CommonDBTM {
 
             echo "<span id='results_$myname$rand'>\n";
 
-            if (class_exists($itemtype) && $items_id) {
+            if ($itemtype && class_exists($itemtype) && $items_id) {
                $item = new $itemtype();
                if ($item->getFromDB($items_id)) {
                   echo "<select name='items_id'>\n";

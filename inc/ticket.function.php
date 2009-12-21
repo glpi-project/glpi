@@ -2063,7 +2063,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
    echo "<td rowspan='2''>";
    if ($canupdate) {
-      if ($ID && class_exists($job->fields['itemtype'])) {
+      if ($ID && $job->fields['itemtype'] && class_exists($job->fields['itemtype'])) {
          $item = new $job->fields['itemtype']();
          if ($item->can($job->fields["items_id"],'r')) {
             echo $item->getTypeName()." - ".$item->getLink(true);
