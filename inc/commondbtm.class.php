@@ -1825,7 +1825,7 @@ class CommonDBTM extends CommonGLPI {
       $default_values['toupdate']='';
       $default_values['used']=array();
       $default_values['auto_submit']=0;
-
+      
       foreach ($default_values as $key => $val) {
          if (isset($options[$key])) {
             $$key=$options[$key];
@@ -1833,9 +1833,8 @@ class CommonDBTM extends CommonGLPI {
             $$key=$default_values[$key];
          }
       }
-
       Dropdown::dropdownValue(
-            getTableForItemType(get_class($this)),
+            getTableForItemType(get_called_class()),
             $name,
             $value,
             $comments,
@@ -1845,7 +1844,7 @@ class CommonDBTM extends CommonGLPI {
             $auto_submit
          );
    }
-
+   
 }
 
 ?>
