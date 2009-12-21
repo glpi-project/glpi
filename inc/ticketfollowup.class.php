@@ -357,12 +357,11 @@ class TicketFollowup  extends CommonDBTM {
          echo "$minute " . $LANG['job'][22] . "</td>";
       }
 
-  //    echo "<td></td>";
-
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
          echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
       }
+      echo "<td>&nbsp;</td>";
       echo "</tr>\n";
    }
 
@@ -560,7 +559,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['common'][37] . "</th>";
          if ($showprivate) {
-            echo "<th>" . $LANG['common'][77] . "</th>";
+            echo "<th colspan='2'>" . $LANG['common'][77] . "</th>";
          }
          echo "</tr>\n";
 

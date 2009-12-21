@@ -1886,11 +1886,11 @@ class Ticket extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
-         echo "<th>" . $LANG['job'][35] . "</th><th>" . $LANG['common'][37] . "</th>";
+         echo "<th>" . $LANG['common'][37] . "</th>";
          if ($showprivate) {
             echo "<th>" . $LANG['common'][77] . "</th>";
          }
-         echo "</tr>\n";
+         echo "<th>" . $LANG['job'][35] . "</th></tr>\n";
 
          while ($data = $DB->fetch_array($result)) {
             if (class_exists($data['itemtype'])) {
