@@ -104,18 +104,34 @@ if ($item instanceof CommonTreeDropdown) {
    // Manage multiple Entities dropdowns
    $add_order="";
    if ($item->isEntityAssign()) {
-      if ($_POST['table']!="glpi_entities") {
-         $multi=true;
-         $add_order='entities_id, ';
-      }
       $recur=$item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
          $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'',
                                             $_POST["entity_restrict"],$recur);
+         if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+            $multi=true;
+         }
       } else {
          $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'', '', $recur);
+         if (count($_SESSION['glpiactiveentities'])>1) {
+            $multi=true;
+         }
       }
+
+      // Force recursive items to multi entity view
+      if ($recur) {
+         $multi=true;
+      }
+      // no multi view for entitites
+      if ($_POST['table']=="glpi_entities") {
+         $multi=false;
+      }
+
+      if ($multi) {
+         $add_order='entities_id, ';
+      }
+
    }
 
    $query = "SELECT *
@@ -123,7 +139,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-
+//   echo $query;
    if ($result = $DB->query($query)) {
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
