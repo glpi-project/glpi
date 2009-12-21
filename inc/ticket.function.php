@@ -2248,7 +2248,7 @@ function showJobDetails($target, $ID,$array=array()) {
        echo "<td colspan='2'>&nbsp;";
    }
    echo "</td></tr>";
-
+/*
    echo "<tr class='tab_bg_1'>";
    echo "<th colspan='2'>".$LANG['document'][21]."</th>";
    echo "</tr>";
@@ -2290,6 +2290,7 @@ function showJobDetails($target, $ID,$array=array()) {
          echo "</td></tr>";
       }
    }
+
    if ($canupdate || haveRight("comment_all_ticket","1")
        || (haveRight("comment_ticket","1") && !strstr($job->fields["status"],'old_'))) {
       echo "<tr>";
@@ -2302,7 +2303,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "</td></tr>";
    }
    echo "</table>";
-   echo "</td></tr>";
+*/   echo "</td></tr>";
 
    if ($canupdate
        || $canupdate_descr

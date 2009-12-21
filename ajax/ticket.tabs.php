@@ -45,27 +45,42 @@ if (!isset($_POST["id"])) {
 $ticket = new Ticket();
 if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
    switch($_REQUEST['glpi_tab']) {
+ //     case 1 :
+ //        showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+ //        $ticket->showSummary();
+ //        break;
+
       case 1 :
          showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
-         $ticket->showSummary();
+         $fup = new TicketFollowup();
+         $fup->showForm(-1, $ticket);
+         $fup->showSummary($ticket);
          break;
 
       case 2 :
-         $fup = new TicketFollowup();
-         $fup->showForm(-1, $ticket);
+         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+         $task = new TicketTask();
+         $task->showForm(-1, $ticket);
+         $task->showSummary($ticket);
          break;
 
       case 3 :
-         $task = new TicketTask();
-         $task->showForm(-1, $ticket);
-         break;
-
-      case 4 :
          $ticket->showCost($_POST['target']);
          break;
 
-      case 5 :
+      case 4 :
          $ticket->showSolutionForm();
+         break;
+
+      case 5 :
+         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+         Document::showAssociated($ticket);
+         break;
+
+      case 6 :
+         showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
+//         printPagerForm();
+         $ticket->showSummary();
          break;
 
       default :

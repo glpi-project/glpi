@@ -44,6 +44,7 @@ class Ticket extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_tickets';
    public $type = 'Ticket';
+   public $dohistory = true;
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
@@ -136,22 +137,26 @@ class Ticket extends CommonDBTM {
    function defineTabs($ID,$withtemplate) {
       global $LANG,$CFG_GLPI;
 
-      $ong[1] = $LANG['job'][38]." ".$ID;
+ //     $ong[1] = $LANG['job'][38]." ".$ID;
       if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
          if ($this->canAddFollowups()) {
-            $ong[2] = $LANG['job'][29];
-            $ong[3] = $LANG['job'][30];
+            $ong[1] = $LANG['Menu'][5];
+            $ong[2] = $LANG['job'][7];
          }
       } else if (haveRight("comment_ticket","1")) {
-         $ong[1] = $LANG['job'][38]." ".$ID;
+ //        $ong[1] = $LANG['job'][38]." ".$ID;
          if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
              && $this->fields["users_id"]==$_SESSION["glpiID"]) {
-            $ong[2] = $LANG['job'][29];
-            $ong[3] = $LANG['job'][30];
+            $ong[1] = $LANG['Menu'][5];
+            $ong[2] = $LANG['job'][7];
          }
       }
-      $ong[4] = $LANG['job'][47];
-      $ong[5] = $LANG['jobresolution'][1];
+      $ong[3] = $LANG['job'][47];
+      $ong[4] = $LANG['jobresolution'][1];
+      if (haveRight("document","r")) {
+         $ong[5]=$LANG['Menu'][27];
+      }
+      $ong[6] = $LANG['title'][38];
       $ong['no_all_tab']=true;
 
       return $ong;
@@ -1866,13 +1871,19 @@ class Ticket extends CommonDBTM {
       echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
 
       echo "<div class='center'>";
-      echo "<h3>" . $LANG['job'][37] . "</h3>";
 
       if ($DB->numrows($result) == 0) {
-         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][12];
-         echo "</th></tr></table>";
-      } else {
-         echo "<table class='tab_cadrehov'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['event'][20]."</th></tr>";
+         echo "</table>";
+         echo "<br>";
+       } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan ='7'>".$LANG['title'][38]."</th></tr>";
+         echo "<tr class='tab_bg_2 center'><td colspan ='7'>";
+         printPagerForm();
+         echo "</td></tr></table>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['job'][35] . "</th><th>" . $LANG['common'][37] . "</th>";
