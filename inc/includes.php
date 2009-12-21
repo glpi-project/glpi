@@ -41,6 +41,8 @@ include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/timer.class.php");
 
 function __autoload($classname) {
+   static $notfound = array();
+
    $dir=GLPI_ROOT . "/inc/";
    //$classname="PluginExampleProfile";
    if ($plug=isPluginItemType($classname)) {
@@ -59,8 +61,12 @@ function __autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once ("$dir$item.class.php");
-   } else {
-      logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
+
+   } else if (!isset($notfound["x$classname"])) {
+      // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
+      //logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
+      trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
+      $notfound["x$classname"] = true;
    }
 }
 
