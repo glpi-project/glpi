@@ -99,11 +99,15 @@ if ($item instanceof CommonTreeDropdown) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
    }
+   $multi=false;
 
    // Manage multiple Entities dropdowns
    $add_order="";
    if ($item->isEntityAssign()) {
-
+      if ($_POST['table']!="glpi_entities") {
+         $multi=true;
+         $add_order='entities_id, ';
+      }
       $recur=$item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
@@ -117,8 +121,9 @@ if ($item instanceof CommonTreeDropdown) {
    $query = "SELECT *
              FROM `".$_POST['table']."`
              $where
-             ORDER BY `completename`
+             ORDER BY $add_order `completename`
              $LIMIT";
+
    if ($result = $DB->query($query)) {
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
@@ -177,6 +182,16 @@ if ($item instanceof CommonTreeDropdown) {
             $ID = $data['id'];
             $level = $data['level'];
             $output=$data['name'];
+
+            if ($multi && $data["entities_id"]!=$prev) {
+                     if ($prev>=0) {
+                           echo "</optgroup>";
+                     }
+                     $prev=$data["entities_id"];
+                     echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
+            }
+
+
             $class=" class='tree' ";
             $raquo="&raquo;";
             if ($level==1) {
