@@ -449,8 +449,8 @@ class TicketTask  extends CommonDBTM {
       $this->showFormHeader($this->getFormURL(),$ID,'',2);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='6' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='6'><textarea name='content' cols='50' rows='6'>".
+      echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='5'><textarea name='content' cols='50' rows='6'>".
             $this->fields["content"]."</textarea></td>";
       if ($this->fields["date"]) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
