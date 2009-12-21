@@ -53,14 +53,12 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
       case 1 :
          showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
          $fup = new TicketFollowup();
-         $fup->showForm(-1, $ticket);
          $fup->showSummary($ticket);
          break;
 
       case 2 :
          showJobDetails($_POST['target']."?show=user&id=".$_POST["id"],$_POST["id"]);
          $task = new TicketTask();
-         $task->showForm(-1, $ticket);
          $task->showSummary($ticket);
          break;
 

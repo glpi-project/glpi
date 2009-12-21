@@ -532,7 +532,9 @@ class TicketTask  extends CommonDBTM {
 
       $rand = mt_rand();
 
-      echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+      echo "<div id='viewfollowup" . $tID . "$rand'>";
+      $this->showForm(-1, $ticket);
+      echo "</div>\n";
 
       echo "<div class='center'>";
       echo "<h3>" . $LANG['job'][37] . "</h3>";
