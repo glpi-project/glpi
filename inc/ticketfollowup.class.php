@@ -356,7 +356,8 @@ class TicketFollowup  extends CommonDBTM {
       if ($minute || !$hour) {
          echo "$minute " . $LANG['job'][22] . "</td>";
       }
-      echo "<td>&nbsp;</td>";
+
+      echo "<td></td>";
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
@@ -509,6 +510,73 @@ class TicketFollowup  extends CommonDBTM {
       echo "</div>";
    }
 */
+
+
+   /**
+    * Show the current ticketfollowup sumnary
+    */
+   function showSummary($ticket) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if (!haveRight("observe_ticket", "1") && !haveRight("show_full_ticket", "1")) {
+         return false;
+      }
+
+      $tID = $ticket->fields['id'];
+
+      // Display existing Followups
+      $showprivate = haveRight("show_full_ticket", "1");
+      $caneditall = haveRight("update_followups", "1");
+
+      $RESTRICT = "";
+      if (!$showprivate) {
+         $RESTRICT = " AND (`is_private` = '0'
+                            OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
+      }
+
+      // TODO keep this for a union with followup + task + histo + ...
+      $query = "SELECT 'TicketFollowup' as itemtype, `id`, `date`
+                 FROM `glpi_ticketfollowups`
+                 WHERE `tickets_id` = '$tID'
+                       $RESTRICT
+                ORDER BY `date` DESC";
+      $result = $DB->query($query);
+
+      $rand = mt_rand();
+
+      echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+
+      echo "<div class='center'>";
+      echo "<h3>" . $LANG['job'][37] . "</h3>";
+
+      if ($DB->numrows($result) == 0) {
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
+         echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
+      } else {
+         echo "<table class='tab_cadre_fixehov'>";
+         echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . $LANG['common'][37] . "</th>";
+         if ($showprivate) {
+            echo "<th>" . $LANG['common'][77] . "</th>";
+         }
+         echo "</tr>\n";
+
+         while ($data = $DB->fetch_array($result)) {
+            if (class_exists($data['itemtype'])) {
+               if ($this->getFromDB($data['id'])) {
+                  $this->showInTicketSumnary($ticket, $rand, $showprivate, $caneditall);
+               }
+            }
+         }
+         echo "</table>";
+      }
+      echo "</div>";
+   }
+
+
 }
+
+
 
 ?>
