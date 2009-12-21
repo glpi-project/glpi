@@ -84,7 +84,7 @@ if (isset($_REQUEST['searchtype'])) {
    }
 }
 
-ajaxFooter();
+//ajaxFooter();
 
 
 ?>
