@@ -542,12 +542,11 @@ class TicketTask  extends CommonDBTM {
                               $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
          echo "};";
          echo "</script>\n";
-         echo "<a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-         echo $LANG['job'][30]."</a>\n";
+         echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+         echo $LANG['job'][30]."</a></p><br>\n";
       }
 
-      echo "<div class='center'>";
-      echo "<h3>" . $LANG['job'][37] . "</h3>";
+      //echo "<h3>" . $LANG['job'][37] . "</h3>";
 
       if ($DB->numrows($result) == 0) {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][12];
@@ -571,7 +570,6 @@ class TicketTask  extends CommonDBTM {
          }
          echo "</table>";
       }
-      echo "</div>";
    }
 
    /**
