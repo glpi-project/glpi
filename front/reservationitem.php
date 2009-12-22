@@ -40,6 +40,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
+/// TODO management of reservation to reservation.form.php : Same to helpdesk : clean helpdesk.resa.php too
+
 $rr=new Reservation();
 
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
