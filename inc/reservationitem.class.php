@@ -185,10 +185,10 @@ class ReservationItem extends CommonDBTM {
          echo "<br><div>";
          if ($ri->fields["is_active"]) {
             echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
-                  "&amp;is_active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
+                  "&amp;is_active=0&amp;update=update\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
          } else {
             echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
-                  "&amp;is_active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
+                  "&amp;is_active=1&amp;update=update\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
          }
          echo "&nbsp;&nbsp;&nbsp;";
          echo "<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".
@@ -197,7 +197,7 @@ class ReservationItem extends CommonDBTM {
                $LANG['reservation'][6]."</a></div>\n";
       } else {
          echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?";
-         echo "items_id=$items_id&amp;itemtype=$itemtype&amp;comment=&amp;add=add\" class='icon_consol' >".
+         echo "items_id=$items_id&amp;itemtype=$itemtype&amp;add=add\" class='icon_consol' >".
                $LANG['reservation'][7]."</a></div>\n";
       }
    }

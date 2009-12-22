@@ -41,31 +41,27 @@ checkCentralAccess();
 
 $ri=new ReservationItem();
 
-if (isset($_GET["add"])) {
+if (isset($_REQUEST["add"])) {
    checkRight("reservation_central","w");
-   if ($newID=$ri->add($_GET)){
-      Event::log($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["itemtype"]."-".$_GET["items_id"].".");
+   if ($newID=$ri->add($_REQUEST)){
+      Event::log($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST["itemtype"]."-".$_REQUEST["items_id"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_GET["delete"])) {
+} else if (isset($_REQUEST["delete"])) {
    checkRight("reservation_central","w");
-   $ri->delete($_GET);
-   Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   $ri->delete($_REQUEST);
+   Event::log($_REQUEST['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_GET["is_active"])) {
-   /// TODO  create activate / unactivate action
+} else if (isset($_REQUEST["update"])) {
    checkRight("reservation_central","w");
-   $ri->update($_GET);
-   Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   $ri->update($_REQUEST);
+   Event::log($_REQUEST['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["updatecomment"])) {
-   /// TODO  action = update
-   checkRight("reservation_central","w");
-   $ri->update($_POST);
-   Event::log($_POST['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 } else {
    checkRight("reservation_central","w");
+   commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
    showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["id"]);
 }
+   commonFooter();
 
 ?>

@@ -592,7 +592,7 @@ function showReservationCommentForm($target,$ID) {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='2' class='top center'>";
-      echo "<input type='submit' name='updatecomment' value=\"".$LANG['buttons'][14]."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
       echo "</td></tr>\n";
 
       echo "</table></form></div>";
