@@ -187,7 +187,8 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_softwarelicensetypes", "softwarelicensetypes_id", $this->fields["softwarelicensetypes_id"]);
+      Dropdown::show('SoftwareLicenseType',
+                     array('value'=>$this->fields["softwarelicensetypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -239,10 +240,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][50]."&nbsp;:</td>";
       echo "<td>";
       if ($this->fields["number"]==1) {
-         Dropdown::dropdownValue('glpi_computers','computers_id',$this->fields["computers_id"],1,
-                       ($this->fields['is_recursive']
+         Dropdown::show('Computer',
+                        array('value'=>$this->fields["computers_id"],
+                              'entity'=>($this->fields['is_recursive']
                             ? getSonsOf('glpi_entities', $this->fields['entities_id'])
-                            : $this->fields['entities_id']));
+                            : $this->fields['entities_id'])));
       } else {
          echo $LANG['software'][51];
       }

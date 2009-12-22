@@ -157,7 +157,7 @@ class SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
+      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
       echo "</td></tr>\n";
 
       $candel = true;
