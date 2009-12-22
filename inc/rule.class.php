@@ -1037,7 +1037,8 @@ class Rule extends CommonDBTM {
           && ($test||$condition==PATTERN_IS || $condition==PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
-               Dropdown::dropdownValue($crit['table'],$name,$value);
+               Dropdown::show(getItemTypeForTable($crit['table']),
+                        array('name'=>$name,'value'=>$value));
                $display=true;
                break;
 
