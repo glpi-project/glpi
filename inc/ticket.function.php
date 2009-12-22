@@ -2331,6 +2331,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "</div>";
 
    if (!$ID) {
+/* TODO to be fixed => task + solution
       $commentall = haveRight("update_followups","1");
       $prefix = "";
       $postfix = "";
@@ -2352,7 +2353,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<div id='follow$randfollow' style='display:none'>";
       showAddFollowupForm(-1,false);
       echo "</div>";
-
+*/
    }
    echo "<input type='hidden' name='id' value='$ID'>";
    echo "</div>";
