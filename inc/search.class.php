@@ -1513,16 +1513,14 @@ class Search {
 
       //// Default cases
       // Link with plugin tables
-      if (!isPluginItemType($itemtype)) {
-         if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
-            if (count($matches)==2) {
-               $plug=$matches[1];
-               $function='plugin_'.$plug.'_addHaving';
-               if (function_exists($function)) {
-                  $out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
+         if (count($matches)==2) {
+            $plug=$matches[1];
+            $function='plugin_'.$plug.'_addHaving';
+            if (function_exists($function)) {
+               $out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
@@ -1658,16 +1656,14 @@ class Search {
       //// Default cases
 
       // Link with plugin tables
-      if (!isPluginItemType($itemtype)) {
-         if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
-            if (count($matches)==2) {
-               $plug=$matches[1];
-               $function='plugin_'.$plug.'_addOrderBy';
-               if (function_exists($function)) {
-                  $out=$function($itemtype,$ID,$order,$key);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
+         if (count($matches)==2) {
+            $plug=$matches[1];
+            $function='plugin_'.$plug.'_addOrderBy';
+            if (function_exists($function)) {
+               $out=$function($itemtype,$ID,$order,$key);
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
@@ -1965,16 +1961,14 @@ class Search {
 
       //// Default cases
       // Link with plugin tables
-      if (!isPluginItemType($itemtype)) {
-         if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)) {
-            if (count($matches)==2) {
-               $plug=$matches[1];
-               $function='plugin_'.$plug.'_addSelect';
-               if (function_exists($function)) {
-                  $out=$function($itemtype,$ID,$num);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
+         if (count($matches)==2) {
+            $plug=$matches[1];
+            $function='plugin_'.$plug.'_addSelect';
+            if (function_exists($function)) {
+               $out=$function($itemtype,$ID,$num);
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
@@ -2295,20 +2289,19 @@ class Search {
       //// Default cases
 
       // Link with plugin tables
-      if (!isPluginItemType($itemtype)) {
-         if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches)) {
-            if (count($matches)==2) {
-               $plug=$matches[1];
-               $function='plugin_'.$plug.'_addWhere';
-               if (function_exists($function)) {
-                  $out=$function($link,$nott,$itemtype,$ID,$val);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $inittable, $matches)) {
+         if (count($matches)==2) {
+            $plug=$matches[1];
+            $function='plugin_'.$plug.'_addWhere';
+            if (function_exists($function)) {
+               $out=$function($link,$nott,$itemtype,$ID,$val);
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
       }
+
       $tocompute="`$table`.`$field`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute=$searchopt[$ID]["computation"];
@@ -2784,16 +2777,13 @@ class Search {
 
          default :
             // Link with plugin tables : need to know left join structure
-            if (!isPluginItemType($itemtype)) {
-               if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches)) {
-                  if (count($matches)==2) {
-                     $plug=$matches[1];
-                     $function = 'plugin_'.$plug.'_addLeftJoin';
-                     if (function_exists($function)) {
-                        $out=$function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
-                        if (!empty($out)) {
-                           return $out;
-                        }
+            if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
+               if (count($matches)==2) {
+                  $function = 'plugin_'.$matches[1].'_addLeftJoin';
+                  if (function_exists($function)) {
+                     $out=$function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
+                     if (!empty($out)) {
+                        return $out;
                      }
                   }
                }
@@ -3281,16 +3271,14 @@ class Search {
       //// Default case
 
       // Link with plugin tables : need to know left join structure
-      if (!isPluginItemType($itemtype)) {
-         if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches)) {
-            if (count($matches)==2) {
-               $plug=$matches[1];
-               $function='plugin_'.$plug.'_giveItem';
-               if (function_exists($function)) {
-                  $out=$function($itemtype,$ID,$data,$num);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+      if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table.'.'.$field, $matches)) {
+         if (count($matches)==2) {
+            $plug=$matches[1];
+            $function='plugin_'.$plug.'_giveItem';
+            if (function_exists($function)) {
+               $out=$function($itemtype,$ID,$data,$num);
+               if (!empty($out)) {
+                  return $out;
                }
             }
          }
