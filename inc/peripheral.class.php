@@ -265,8 +265,10 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][10]."&nbsp;:</td>\n";
       echo "<td>";
-      User::dropdownID("users_id_tech", $this->fields["users_id_tech"],"interface",1,
-                      $this->fields["entities_id"]);
+      User::dropdown(array('name'   => 'users_id_tech',
+                           'value'  => $this->fields["users_id_tech"],
+                           'right'  => 'interface',
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>\n";
       echo "<td>";
