@@ -1802,29 +1802,6 @@ class User extends CommonDBTM {
       return $rand;
    }
 
-
-   /**
-    * Make a select box with all glpi users where select key = ID
-    *
-    *
-    *
-   * @param $myname select name
-    * @param $value default value
-    * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $display_comment display comment near the dropdown
-    * @return nothing (print out an HTML select box)
-    */
-   static function dropdownID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
-      // Make a select box with all glpi users
-
-      return User::dropdown(array(  'name'      => $myname,
-                                    'value'     => $value,
-                                    'right'     => $right,
-                                    'comments'  => $display_comment,
-                                    'entity'    => $entity_restrict));
-   }
-
    /**
     * Make a select box with all glpi users in tracking table
     *

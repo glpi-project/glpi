@@ -286,8 +286,10 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][10] . "&nbsp;:</td><td>";
-      User::dropdownID("users_id_tech", $this->fields["users_id_tech"], "interface", 1,
-                      $this->fields["entities_id"]);
+      User::dropdown(array('name'   => 'users_id_tech',
+                           'value'  => $this->fields["users_id_tech"],
+                           'right'  => 'interface',
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
       Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
