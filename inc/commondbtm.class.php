@@ -1808,6 +1808,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * This should be overloaded in Class
     * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is depending itemtype)
     *    - value : integer / preselected value (default 0)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
@@ -1818,11 +1819,10 @@ class CommonDBTM extends CommonGLPI {
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - auto_submit : boolean / preselected value (default 0)
     *
-    * @param $name the name of the HTML select
     * @param $options possible options
     * @return nothing display the dropdown
     */
-   static function dropdown($name,$options=array()) {
+   static function dropdown($options=array()) {
       echo "This function cannot be used for the moment. Use Dropdown::show instead.";
       /*
       Dropdown::show(get_called_class(),$options);

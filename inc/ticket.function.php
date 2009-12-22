@@ -1045,8 +1045,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
          Dropdown::showFromArray('groups_id_assign', $groups, array('value' => $groups_id_assign));
       }
    } else {
-      User::dropdown("users_id_assign",
-                     array('value'  => $users_id_assign,
+      User::dropdown(array('name'   => 'users_id_assign',
+                           'value'  => $users_id_assign,
                            'right'  => 'own_ticket',
                            'all'    => 1));
       echo "<br>".$LANG['common'][35]."&nbsp;: ";
@@ -2019,23 +2019,23 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      User::dropdown("users_id_assign",
-                     array('value'  => $job->fields["users_id_assign"],
+      User::dropdown(array('name'   => 'users_id_assign',
+                           'value'  => $job->fields["users_id_assign"],
                            'right'  => 'own_ticket',
                            'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else if (haveRight("steal_ticket","1")) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      User::dropdown("users_id_assign",
-                     array('value'  => $job->fields["users_id_assign"],
+      User::dropdown(array('name'   => 'users_id_assign',
+                           'value'  => $job->fields["users_id_assign"],
                            'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
-      User::dropdown("users_id_assign",
-                     array('value'  => $job->fields["users_id_assign"],
+      User::dropdown(array('name'   => 'users_id_assign',
+                           'value'  => $job->fields["users_id_assign"],
                            'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else {

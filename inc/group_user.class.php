@@ -254,10 +254,10 @@ class Group_User extends CommonDBRelation{
             echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
             if ($group->fields["is_recursive"]) {
-               User::dropdown("users_id",array('right'=>"all",'all'=>-1,'entity'=>getSonsOf("glpi_entities",
+               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>getSonsOf("glpi_entities",
                                                         $group->fields["entities_id"]),'used'=>$used));
             } else {
-               User::dropdown("users_id",array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used));
+               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used));
             }
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";

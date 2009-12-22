@@ -71,11 +71,11 @@ echo "<table class='tab_cadre'>";
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
    echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9]."&nbsp;:</td>";
    echo "<td class='center'>";
-   User::dropdown("plan[users_id]",
-      array('value'  => $_POST["users_id"],
-            'right'  => "own_ticket",
-            'all'    => -1,
-            'entity' => $_POST["entity"]));
+   User::dropdown(array('name'   => "plan[users_id]",
+                        'value'  => $_POST["users_id"],
+                        'right'  => "own_ticket",
+                        'all'    => -1,
+                        'entity' => $_POST["entity"]));
    echo "</td></tr>\n";
 }
 

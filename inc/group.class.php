@@ -135,8 +135,7 @@ class Group extends CommonDBTM {
       echo "<td>";
       // Manager must be in the same entity
       // TODO for a recursive group the manager need to have a recursive right ?
-      User::dropdown('users_id',
-                     array('value'  => $this->fields["users_id"],
+      User::dropdown(array('value'  => $this->fields["users_id"],
                            'right'  => 'all',
                            'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
