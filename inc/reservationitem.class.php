@@ -202,6 +202,50 @@ class ReservationItem extends CommonDBTM {
       }
    }
 
+   function showForm($target,$ID) {
+      global $LANG;
+
+      if (!haveRight("reservation_central","w")) {
+         return false;
+      }
+
+      $r=new ReservationItem;
+
+      if ($r->getFromDB($ID)) {
+         $type = $r->fields["itemtype"];
+         $name = NOT_AVAILABLE;
+         if (class_exists($r->fields["itemtype"])) {
+            $item = new $r->fields["itemtype"]();
+            $type = $item->getTypeName();
+            if ($item->getFromDB($r->fields["items_id"])) {
+               $name=$item->getName();
+            }
+         }
+
+         echo "<div class='center'><form method='post' name=form action=\"$target\">";
+         echo "<input type='hidden' name='id' value='$ID'>";
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th colspan='2'>".$LANG['reservation'][22]."</th></tr>";
+         // Ajouter le nom du materiel
+         echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
+         echo "<td><strong>$type - $name</strong></td></tr>\n";
+
+         echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";
+         echo "<td>";
+         echo "<textarea name='comment' cols='30' rows='10' >".$r->fields["comment"]."</textarea>";
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='2' class='top center'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
+         echo "</td></tr>\n";
+
+         echo "</table></form></div>";
+         return true;
+      } else {
+         return false;
+      }
+   }
 }
 
 
