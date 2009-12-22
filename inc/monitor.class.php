@@ -229,18 +229,20 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
+      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,
-                    $this->fields["entities_id"]);
+      Dropdown::show('Location',
+                     array('value'=>$this->fields["locations_id"],
+                           'entity'=>$this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_monitortypes", "monitortypes_id", $this->fields["monitortypes_id"],1);
+      Dropdown::show('MonitorType',
+                        array('value'=>$this->fields["monitortypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -251,7 +253,7 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      Dropdown::show('Manufacturer', array('value'=>$this->fields["manufacturers_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -262,7 +264,8 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_monitormodels", "monitormodels_id", $this->fields["monitormodels_id"]);
+      Dropdown::show('MonitorModel', array('value'=>$this->fields["monitormodels_id"]));
+
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -293,8 +296,8 @@ class Monitor extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,
-                    $this->fields["entities_id"]);
+      Dropdown::show('Group',
+               array('value'=>$this->fields["groups_id"],'entity'=>$this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";

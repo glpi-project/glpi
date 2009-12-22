@@ -66,7 +66,7 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if (class_exists($itemtype)) {
+      if ($itemtype!='States' && class_exists($itemtype)) {
          $item = new $itemtype();
       }
 
@@ -1174,7 +1174,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if (class_exists($itemtype)) {
+      if ($itemtype!='States' && class_exists($itemtype)) {
          $item = new $itemtype();
       }
 
@@ -1703,7 +1703,7 @@ class Search {
 
       $toview=array();
       $item = NULL;
-      if (class_exists($itemtype)) {
+      if ($itemtype!='States' && class_exists($itemtype)) {
          $item = new $itemtype();
       }
       // Add first element (name)
@@ -1712,7 +1712,7 @@ class Search {
       // Add entity view :
       if (isMultiEntitiesMode()
          && (isset($CFG_GLPI["union_search_type"][$itemtype])
-            || $item->maybeRecursive()
+            || ($item && $item->maybeRecursive())
             || count($_SESSION["glpiactiveentities"])>1)) {
 
          array_push($toview,80);
@@ -1735,7 +1735,7 @@ class Search {
       $itemtable=getTableForItemType($itemtype);
       $item = NULL;
       $mayberecursive=false;
-      if (class_exists($itemtype)) {
+      if ($itemtype!='States' && class_exists($itemtype)) {
          $item = new $itemtype();
          $mayberecursive = $item->maybeRecursive();
       }
@@ -3632,10 +3632,7 @@ class Search {
       if (!isset($search[$itemtype])) {
 
          // standard type first
-         if (class_exists($itemtype)) {
-            $item = new $itemtype();
-            $search[$itemtype] = $item->getSearchOptions();
-         } else if ($itemtype=='States') {
+         if ($itemtype=='States') {
             $search[$itemtype]['common'] = $LANG['common'][32];
 
             $search['States'][1]['table']     = 'state_types';
@@ -3705,6 +3702,9 @@ class Search {
             $search['States'][80]['field']     = 'completename';
             $search['States'][80]['linkfield'] = 'entities_id';
             $search['States'][80]['name']      = $LANG['entity'][0];
+         } else if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            $search[$itemtype] = $item->getSearchOptions();
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
