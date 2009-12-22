@@ -40,8 +40,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-/// TODO create reservationitem.form.php to edit comments
-
 $rr=new Reservation();
 
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
