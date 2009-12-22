@@ -662,10 +662,13 @@ class Supplier extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
             echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";
             if ($this->fields["is_recursive"]) {
-               Contract::dropdownContracts("contracts_id",getSonsOf("glpi_entities",$this->fields["entities_id"]),
-                                                          $used,true);
+               Contract::dropdown(array('used'=>$used,
+                                       'entity'=>getSonsOf("glpi_entities",$this->fields["entities_id"]),
+                                       'nochecklimit' => true));
             } else {
-               Contract::dropdownContracts("contracts_id",$this->fields['entities_id'],$used,true);
+               Contract::dropdown(array('used'=>$used,
+                                       'entity'=>$this->fields['entities_id'],
+                                       'nochecklimit' => true));
             }
             echo "</div></td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value=\"".
