@@ -326,8 +326,8 @@ class NetworkPort extends CommonDBTM {
             echo "<th>" . $LANG['networking'][14] . "<br>" . $LANG['networking'][15] . "</th></tr>\n";
 
             $i = 0;
+            $netport = new NetworkPort();
             while ($devid = $DB->fetch_row($result)) {
-               $netport = new NetworkPort;
                $netport->getFromDB(current($devid));
                addToNavigateListItems('NetworkPort',$netport->fields["id"]);
 
@@ -360,7 +360,7 @@ class NetworkPort extends CommonDBTM {
                                              $netport->fields["networkinterfaces_id"]) . "</td>\n";
 
                echo "<td width='300' class='tab_bg_2'>";
-               showConnection($item, $netport, $withtemplate);
+               self::showConnection($item, $netport, $withtemplate);
                echo "</td>\n";
                echo "<td class='tab_bg_2'>";
                if ($netport->getContact($netport->fields["id"])) {
@@ -384,6 +384,90 @@ class NetworkPort extends CommonDBTM {
          }
       }
    }
+
+   /**
+   * Display a connection of a networking port
+   *
+   * @param $device1 the device of the port
+   * @param $netport to be displayed
+   * @param $withtemplate
+   *
+   */
+   static function showConnection(& $device1, & $netport, $withtemplate = '') {
+      global $CFG_GLPI, $LANG;
+
+      if (!$device1->can($device1->fields["id"], 'r')) {
+         return false;
+      }
+
+      $contact = new NetworkPort;
+
+      $canedit = $device1->can($device1->fields["id"], 'w');
+      $ID = $netport->fields["id"];
+
+      if ($contact->getContact($ID)) {
+         $netport->getFromDB($contact->contact_id);
+         if (class_exists($netport->fields["itemtype"])) {
+            $device2 = new $netport->fields["itemtype"]();
+            if ($device2->getFromDB($netport->fields["items_id"])) {
+
+               echo "\n<table width='100%'>\n";
+               echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
+               echo "<td><strong>";
+
+               if ($device2->can($device2->fields["id"], 'r')) {
+
+                  echo $netport->getLink();
+                  echo "</a></strong>\n " . $LANG['networking'][25] . " <strong>";
+                  echo $device2->getLink();
+                  echo "</strong>";
+                  if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
+                     echo "<br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+                  }
+
+                  // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+                  if ($canedit || $device2->can($device2->fields["id"], 'w')) {
+                     echo "</td>\n<td class='right'><strong>";
+                     if ($withtemplate != 2) {
+                        echo "<a href=\"".$netport->getFormURL()."?disconnect=".
+                              "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
+                     } else {
+                        "&nbsp;";
+                     }
+                     echo "</strong>";
+                  }
+               } else {
+                  if (rtrim($netport->fields["name"]) != "") {
+                     echo $netport->fields["name"];
+                  } else {
+                     echo $LANG['common'][0];
+                  }
+                  echo "</strong> " . $LANG['networking'][25] . " <strong>";
+                  echo $device2->getName();
+                  echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+               }
+               echo "</td></tr></table>\n";
+            }
+         }
+      } else {
+         echo "\n<table width='100%'><tr>";
+         if ($canedit) {
+            echo "<td class='left'>";
+            if ($withtemplate != 2 && $withtemplate != 1) {
+                  NetworkPort::dropdownConnect($ID,
+                                          array('name'         => 'dport',
+                                                'entity'       => $device1->fields["entities_id"],
+                                                'entity_sons'  => $device1->getField("is_recursive")));
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td>\n";
+         }
+         echo "<td><div id='not_connected_display$ID'>" . $LANG['connect'][1] . "</div></td>";
+         echo "</tr></table>\n";
+      }
+   }
+
 }
 
 ?>
