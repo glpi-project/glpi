@@ -40,11 +40,11 @@ checkCentralAccess();
 
 commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
-showListReminder();
+Reminder::showList();
 
 if (haveRight("reminder_public","r")) {
-   showListReminder(false,false);
-   showListReminder(false,true);
+   Reminder::showList(false,false);
+   Reminder::showList(false,true);
 }
 
 commonFooter();
