@@ -401,7 +401,8 @@ class Consumable extends CommonDBTM {
 
             if (!$show_old && $canedit) {
                echo "<th>";
-               User::dropdownAll("users_id",0,1,$consitem->fields["entities_id"]);
+               User::dropdown(array('value'  => $consitem->fields["entities_id"],
+                                    'right'  => 'all'));
                echo "&nbsp;<input type='submit' class='submit' name='give' value='".
                             $LANG['consumables'][32]."'>";
                echo "</th>";

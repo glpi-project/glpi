@@ -296,7 +296,9 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >" . $LANG['common'][34] . "&nbsp;:</td>";
       echo "<td >";
-      User::dropdownAll("users_id", $this->fields["users_id"], 1, $this->fields["entities_id"]);
+      User::dropdown(array('value'  => $this->fields["users_id"],
+                           'entity' => $this->fields["entities_id"],
+                           'right'  => 'all'));
       echo "</td>";
       echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
       Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);

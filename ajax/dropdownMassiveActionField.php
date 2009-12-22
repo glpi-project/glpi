@@ -187,7 +187,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                default :
-                  User::dropdownAll($search["linkfield"],0,1,$_SESSION["glpiactive_entity"]);
+                  User::dropdown(array('name'   => $search["linkfield"],
+                                       'entity' => $_SESSION["glpiactive_entity"],
+                                       'right'  => 'all'));
                   break;
             }
             break;

@@ -215,7 +215,7 @@ class KnowbaseItem extends CommonDBTM {
          if (isMultiEntitiesMode()) {
             echo $LANG['entity'][0]."&nbsp;: ";
             Dropdown::show('Entity',
-                        array('value'     => $this->fields["entities_id"],
+                        array('value'     => $this->fields["entities_id"]
                               'comments'  => 0 ));
             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
             if ($canrecu) {

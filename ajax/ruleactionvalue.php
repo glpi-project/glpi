@@ -71,7 +71,8 @@ switch ($_POST["action_type"]) {
                break;
 
             case "dropdown_users" :
-               User::dropdownAll("value");
+               User::dropdown(array('name'   => 'value',
+                                    'right'  => 'all'));
                $display=true;
                break;
 

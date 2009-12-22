@@ -190,7 +190,7 @@ class Profile_User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
-         User::dropdownAll("users_id",0,1);
+         User::dropdown(array('right'  => 'all'));
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][22]."&nbsp;:&nbsp;";
          dropdownUnderProfiles("profiles_id");
