@@ -37,17 +37,18 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+//checkCentralAccess();
 
 $fup = new TicketFollowup();
 
 if (isset($_POST["add"])) {
+   logDebug("Form", $_POST);
    $fup->check(-1,'w',$_POST);
    $fup->add($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
    $fup->check($_POST['id'], 'w');
