@@ -129,8 +129,8 @@ echo "</select>";
 
 if (!$is_helpdesk_multientity) {
    if (isset($_POST["comment"]) && $_POST["comment"]) {
-      $paramscomment=array('value'=>'__VALUE__',
-                           'table'=>"glpi_users");
+      $paramscomment=array('value' => '__VALUE__',
+                           'table' => "glpi_users");
       if (isset($_POST['update_link'])) {
          $paramscomment['withlink']="comment_link_".$_POST["myname"].$_POST["rand"];
       }
@@ -143,15 +143,15 @@ if (!$is_helpdesk_multientity) {
 // Manage updates others dropdown for helpdesk
 if ($is_helpdesk_multientity) {
    if (!isMultiEntitiesMode()) {
-      $paramscomment=array('userID'=>'__VALUE__',
-                           'entity_restrict'=>$_POST["entity_restrict"],
-                           'itemtype'=>0,
-                           'users_id_field'=>"dropdown_users_id".$_POST["rand"]);
+      $paramscomment=array('userID'          => '__VALUE__',
+                           'entity_restrict' => $_POST["entity_restrict"],
+                           'itemtype'        => 0,
+                           'users_id_field'  => "dropdown_users_id".$_POST["rand"]);
 
       ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"tracking_my_devices",
                                   $CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",
                                   $paramscomment,false);
-      $paramscomment=array('value'=>'__VALUE__');
+      $paramscomment=array('value' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"user_email_result",
                                   $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomment,false);
    }

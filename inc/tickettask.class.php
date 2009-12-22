@@ -442,7 +442,7 @@ class TicketTask  extends CommonDBTM {
          $ticket->getFromDB($this->fields['tickets_id']);
       } else {
          // Create item
-         $input=array('tickets_id'=>$ticket->getField('id'));
+         $input=array('tickets_id' => $ticket->getField('id'));
          $this->check(-1,'w',$input);
       }
 
@@ -465,7 +465,7 @@ class TicketTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-      Dropdown::show('TaskCategory', array('value'=>$this->fields["taskcategories_id"]));
+      Dropdown::show('TaskCategory', array('value' => $this->fields["taskcategories_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

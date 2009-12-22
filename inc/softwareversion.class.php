@@ -129,7 +129,7 @@ class SoftwareVersion extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array('softwares_id'=>$softwares_id);
+         $input = array('softwares_id' => $softwares_id);
          $this->check(-1, 'w', $input);
       }
 
@@ -157,7 +157,7 @@ class SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
-      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
+      Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       $candel = true;
@@ -223,9 +223,9 @@ class SoftwareVersion extends CommonDBTM {
       }
 
       $rand=mt_rand();
-      $params=array('softwares_id'=>$p['softwares_id'],
-                    'myname'=>$myname,
-                    'value'=>$p['value']);
+      $params=array('softwares_id'  => $p['softwares_id'],
+                    'myname'        => $myname,
+                    'value'         => $p['value']);
 
       $default="<select name='$myname'><option value='0'>------</option></select>";
       ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);

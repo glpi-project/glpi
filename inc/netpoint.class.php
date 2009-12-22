@@ -153,15 +153,15 @@ class Netpoint extends CommonDropdown {
          }
       }
 
-      $params=array('searchText'=>'__VALUE__',
-                    'value'=>$value,
-                    'locations_id'=>$locations_id,
-                    'myname'=>$myname,
-                    'limit'=>$limit_length,
-                    'comment'=>$display_comment,
-                    'rand'=>$rand,
-                    'entity_restrict'=>$entity_restrict,
-                    'devtype'=>$devtype,);
+      $params=array('searchText'       => '__VALUE__',
+                    'value'            => $value,
+                    'locations_id'     => $locations_id,
+                    'myname'           => $myname,
+                    'limit'            => $limit_length,
+                    'comment'          => $display_comment,
+                    'rand'             => $rand,
+                    'entity_restrict'  => $entity_restrict,
+                    'devtype'          => $devtype,);
 
       $default="<select name='$myname'><option value='$value'>$name</option></select>";
       ajaxDropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);

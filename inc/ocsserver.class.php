@@ -242,14 +242,16 @@ class OcsServer extends CommonDBTM {
                  $this->fields["tag_exclude"] . "\"></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td>\n<td>";
-      Dropdown::dropdownValue("glpi_states", "states_id_default", $this->fields["states_id_default"]);
+      Dropdown::show('State',
+                     array('name'   => 'states_id_default',
+                           'value'  => $this->fields["states_id_default"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior",
-                                 array(''=>$LANG['buttons'][49],"trash"=>$LANG['ocsconfig'][49],
+                                 array('' => $LANG['buttons'][49],"trash"=>$LANG['ocsconfig'][49],
                                        "delete"=>$LANG['ocsconfig'][50]),
-                                 array('value'=>$this->fields["deconnection_behavior"]));
+                                 array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
       $import_array = array("0"=>$LANG['ocsconfig'][11],
@@ -264,21 +266,21 @@ class OcsServer extends CommonDBTM {
       $printer = $this->fields["import_printer"];
       $software = $this->fields["import_software"];
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][16] . " </td>\n<td>";
-      Dropdown::showFromArray("import_periph",$import_array,array('value'=>$periph));
+      Dropdown::showFromArray("import_periph",$import_array,array('value' => $periph));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][3] . " </td>\n<td>";
-      Dropdown::showFromArray("import_monitor",$import_array2,array('value'=>$monitor));
+      Dropdown::showFromArray("import_monitor",$import_array2,array('value' => $monitor));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][2] . " </td>\n<td>";
-      Dropdown::showFromArray("import_printer",$import_array,array('value'=>$printer));
+      Dropdown::showFromArray("import_printer",$import_array,array('value' => $printer));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td>\n<td>";
       $import_array = array("0"=>$LANG['ocsconfig'][11],
                             "1"=>$LANG['ocsconfig'][12]);
-      Dropdown::showFromArray("import_software",$import_array,array('value'=>$software));
+      Dropdown::showFromArray("import_software",$import_array,array('value' => $software));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][8] . " </td>\n<td>";
@@ -334,7 +336,7 @@ class OcsServer extends CommonDBTM {
                         "1"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][57],
                         "2"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
       Dropdown::showFromArray("use_name_to_link", $link_array,
-                           array('value'=>$this->fields["use_name_to_link"]));
+                           array('value' => $this->fields["use_name_to_link"]));
       echo "</td>\n";
       echo "<td>" . $LANG['common'][19] . " </td>\n<td>";
       Dropdown::showYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
@@ -833,7 +835,7 @@ class OcsServer extends CommonDBTM {
             $comp->update($input);
             // Auto restore if deleted
             if ($comp->fields['is_deleted']) {
-               $comp->restore(array('id'=>$computers_id));
+               $comp->restore(array('id' => $computers_id));
             }
             // Reset using GLPI Config
             $cfg_ocs = OcsServer::getConfig($ocsservers_id);
@@ -3424,7 +3426,7 @@ class OcsServer extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          $conn = new Computer_Item();
          while ($data = $DB->fetch_assoc($result)) {
-            $conn->delete(array('id'=>$data['id']));
+            $conn->delete(array('id' => $data['id']));
 
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
@@ -3462,7 +3464,7 @@ class OcsServer extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          $conn = new Computer_Item();
          while ($data = $DB->fetch_assoc($result)) {
-            $conn->delete(array('id'=>$data['id']));
+            $conn->delete(array('id' => $data['id']));
 
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
@@ -3498,7 +3500,7 @@ class OcsServer extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          $conn = new Computer_Item();
          while ($data = $DB->fetch_assoc($result)) {
-            $conn->delete(array('id'=>$data['id']));
+            $conn->delete(array('id' => $data['id']));
 
             $query2 = "SELECT COUNT(*)
                        FROM `glpi_computers_items`
@@ -4468,27 +4470,27 @@ class OcsServer extends CommonDBTM {
                case 'Monitor' :
                   // Only if sync done
                   if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
-                     $conn->delete(array('id'=>$key,
-                                         '_ocsservers_id'=>$ocsservers_id));
+                     $conn->delete(array('id'               => $key,
+                                         '_ocsservers_id'   => $ocsservers_id));
                      OcsServer::deleteInOcsArray($computers_id, $key, "import_monitor");
                   }
                   break;
 
                case 'Printer' :
-                  $conn->delete(array('id'=>$key,
-                                      '_ocsservers_id'=>$ocsservers_id));
+                  $conn->delete(array('id'               => $key,
+                                      '_ocsservers_id'   => $ocsservers_id));
                   OcsServer::deleteInOcsArray($computers_id, $key, "import_printer");
                   break;
 
                case 'Peripheral' :
-                  $conn->delete(array('id'=>$key,
-                                      '_ocsservers_id'=>$ocsservers_id));
+                  $conn->delete(array('id'               => $key,
+                                      '_ocsservers_id'   => $ocsservers_id));
                   OcsServer::deleteInOcsArray($computers_id, $key, "import_peripheral");
                   break;
 
                default :
-                  $conn->delete(array('id'=>$key,
-                                      '_ocsservers_id'=>$ocsservers_id));
+                  $conn->delete(array('id'               => $key,
+                                      '_ocsservers_id'   => $ocsservers_id));
             }
          }
       }

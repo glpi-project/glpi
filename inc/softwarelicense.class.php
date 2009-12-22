@@ -188,7 +188,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('SoftwareLicenseType',
-                     array('value'=>$this->fields["softwarelicensetypes_id"]));
+                     array('value' => $this->fields["softwarelicensetypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -205,8 +205,8 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][1]."&nbsp;:</td>";
       echo "<td>";
       SoftwareVersion::dropdown("softwareversions_id_buy",
-                        array('softwares_id'=>$this->fields["softwares_id"],
-                               'value'=>$this->fields["softwareversions_id_buy"]));
+                        array('softwares_id' => $this->fields["softwares_id"],
+                               'value'       => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
       echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
       echo "<td>";
@@ -218,8 +218,8 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][2]."&nbsp;:</td>";
       echo "<td>";
       SoftwareVersion::dropdown("softwareversions_id_use",
-                        array('softwares_id'=>$this->fields["softwares_id"],
-                               'value'=>$this->fields["softwareversions_id_use"]));
+                        array('softwares_id' => $this->fields["softwares_id"],
+                               'value'       => $this->fields["softwareversions_id_use"]));
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -241,10 +241,10 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       if ($this->fields["number"]==1) {
          Dropdown::show('Computer',
-                        array('value'=>$this->fields["computers_id"],
-                              'entity'=>($this->fields['is_recursive']
-                            ? getSonsOf('glpi_entities', $this->fields['entities_id'])
-                            : $this->fields['entities_id'])));
+                        array('value'  => $this->fields["computers_id"],
+                              'entity' => ($this->fields['is_recursive']
+                              ? getSonsOf('glpi_entities', $this->fields['entities_id'])
+                              : $this->fields['entities_id'])));
       } else {
          echo $LANG['software'][51];
       }
@@ -689,7 +689,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($canedit) {
                openArrowMassive("massiveactionlicense_form$rand",true);
-               dropdownMassiveAction('SoftwareLicense',0,array('softwares_id'=>$softwares_id));
+               dropdownMassiveAction('SoftwareLicense',0,array('softwares_id' => $softwares_id));
                closeArrowMassive();
 
                echo "</form>";

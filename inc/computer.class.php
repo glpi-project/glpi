@@ -562,19 +562,19 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
+      Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"],
-                           'entity'=>$this->fields["entities_id"]));
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::show('ComputerType', array('value'=>$this->fields["computertypes_id"]));
+      Dropdown::show('ComputerType', array('value' => $this->fields["computertypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -585,7 +585,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value'=>$this->fields["manufacturers_id"]));
+      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -596,7 +596,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::show('ComputerModel', array('value'=>$this->fields["computermodels_id"]));
+      Dropdown::show('ComputerModel', array('value' => $this->fields["computermodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -628,18 +628,19 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Group',
-               array('value'=>$this->fields["groups_id"],'entity'=>$this->fields["entities_id"]));
+               array('value'  => $this->fields["groups_id"],
+                     'entity' => $this->fields["entities_id"]));
 
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Network', array('value'=>$this->fields["networks_id"]));
+      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td >";
-      Dropdown::show('Domain', array('value'=>$this->fields["domains_id"]));
+      Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
       echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='7' class='middle'>";
@@ -649,14 +650,14 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('OperatingSystem', array('value'=>$this->fields["operatingsystems_id"]));
+      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
       echo "<td >";
       Dropdown::show('OperatingSystemServicePack',
-                     array('value'=>$this->fields["operatingsystemservicepacks_id"]));
+                     array('value' => $this->fields["operatingsystemservicepacks_id"]));
       echo "</td></tr>\n";
 
 
@@ -664,7 +665,7 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
       echo "<td >";
       Dropdown::show('OperatingSystemVersion',
-                     array('value'=>$this->fields["operatingsystemversions_id"]));
+                     array('value' => $this->fields["operatingsystemversions_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -745,7 +746,7 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
       echo "<td >";
       Dropdown::show('AutoUpdateSystem',
-                     array('value'=>$this->fields["autoupdatesystems_id"]));
+                     array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td></tr>";
 
 

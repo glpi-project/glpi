@@ -576,7 +576,7 @@ class User extends CommonDBTM {
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_array($result)) {
                      if (!in_array($data["groups_id"], $input["_groups"])) {
-                        $groupuser->delete(array('id'=>$data["id"]));
+                        $groupuser->delete(array('id' => $data["id"]));
                      } else {
                         // Delete found item in order not to add it again
                         unset($input["_groups"][array_search($data["groups_id"], $input["_groups"])]);
@@ -587,8 +587,8 @@ class User extends CommonDBTM {
                //If the user needs to be added to one group or more
                if (count($input["_groups"])>0) {
                   foreach ($input["_groups"] as $group) {
-                     $groupuser->add(array('users_id'=> $input["id"],
-                                           'groups_id' => $group));
+                     $groupuser->add(array('users_id'    => $input["id"],
+                                           'groups_id'   => $group));
                   }
                   unset ($input["_groups"]);
                }
@@ -1159,7 +1159,7 @@ class User extends CommonDBTM {
       autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
-      Dropdown::show('UserCategory',array('value'=>$this->fields["usercategories_id"]));
+      Dropdown::show('UserCategory',array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1182,7 +1182,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
-      Dropdown::show('UserTitle',array('value'=>$this->fields["usertitles_id"]));
+      Dropdown::show('UserTitle',array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
@@ -1190,7 +1190,8 @@ class User extends CommonDBTM {
          $entities = Profile_User::getUserEntities($ID,true);
          if (count($entities)>0) {
             Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"],'entity'=>$entities));
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $entities));
          } else {
             echo "&nbsp;";
          }
@@ -1198,7 +1199,7 @@ class User extends CommonDBTM {
          if (!isMultiEntitiesMode()) {
             // Display all locations : only one entity
             Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"]));
+                     array('value' => $this->fields["locations_id"]));
          } else {
             echo "&nbsp;";
          }
@@ -1312,7 +1313,8 @@ class User extends CommonDBTM {
             foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
                $options[$ID] = $prof['name'];
             }
-            Dropdown::showFromArray("profiles_id", $options, array('value'=>$this->fields["profiles_id"]));
+            Dropdown::showFromArray("profiles_id", $options,
+                                    array('value' => $this->fields["profiles_id"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
@@ -1331,8 +1333,8 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
             Dropdown::show('Entity',
-                     array('value'=>$_SESSION["glpidefault_entity"],
-                           'entity'=>$_SESSION['glpiactiveentities']));
+                     array('value'  => $_SESSION["glpidefault_entity"],
+                           'entity' => $_SESSION['glpiactiveentities']));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
@@ -1756,16 +1758,16 @@ class User extends CommonDBTM {
 
       $view_users=(haveRight("user","r"));
 
-      $params=array('searchText'=>'__VALUE__',
-                    'value'=>$p['value'],
-                    'myname'=>$myname,
-                    'all'=>$p['all'],
-                    'right'=>$p['right'],
-                    'comment'=>$p['comments'],
-                    'rand'=>$rand,
-                    'helpdesk_ajax'=>$p['helpdesk_ajax'],
-                    'entity_restrict'=>$p['entity'],
-                    'used'=>$p['used']);
+      $params=array('searchText'       => '__VALUE__',
+                    'value'            => $p['value'],
+                    'myname'           => $myname,
+                    'all'              => $p['all'],
+                    'right'            => $p['right'],
+                    'comment'          => $p['comments'],
+                    'rand'             => $rand,
+                    'helpdesk_ajax'    => $p['helpdesk_ajax'],
+                    'entity_restrict'  => $p['entity'],
+                    'used'             => $p['used']);
       if ($view_users) {
          $params['update_link']=$view_users;
       }
@@ -1793,9 +1795,9 @@ class User extends CommonDBTM {
             $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
          }
          displayToolTip($user["comment"], $user["link"],
-                        array('widget'=>'dropdown_'.$myname.$rand,
-                              'value'=>'__VALUE__',
-                              'table'=>'glpi_users'));
+                        array('widget' => 'dropdown_'.$myname.$rand,
+                              'value'  => '__VALUE__',
+                              'table'  => 'glpi_users'));
       }
       return $rand;
    }
@@ -1818,12 +1820,12 @@ class User extends CommonDBTM {
                              $used=array()) {
 
       return User::dropdown($myname,
-               array('value'=>$value,
-                     'right'=>"all",
-                     'comments'=>$display_comment,
-                     'entity'=>$entity_restrict,
-                     'helpdesk_ajax'=>$helpdesk_ajax,
-                     'used'=>$used));
+               array('value'           => $value,
+                     'right'           => "all",
+                     'comments'        => $display_comment,
+                     'entity'          => $entity_restrict,
+                     'helpdesk_ajax'   => $helpdesk_ajax,
+                     'used'            => $used));
    }
 
    /**
@@ -1842,10 +1844,10 @@ class User extends CommonDBTM {
       // Make a select box with all glpi users
 
       return User::dropdown($myname,
-                           array('value'=>$value,
-                                 'right'=>$right,
-                                 'comments'=>$display_comment,
-                                 'entity'=>$entity_restrict));
+                           array('value'     => $value,
+                                 'right'     => $right,
+                                 'comments'  => $display_comment,
+                                 'entity'    => $entity_restrict));
    }
 
    /**
@@ -1887,12 +1889,12 @@ class User extends CommonDBTM {
          $default= "<select name='$myname'><option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
       }
 
-      $params=array('searchText'=>'__VALUE__',
-                    'value'=>$value,
-                    'field'=>$field,
-                    'myname'=>$myname,
-                    'comment'=>$display_comment,
-                    'rand'=>$rand);
+      $params=array('searchText' => '__VALUE__',
+                    'value'      => $value,
+                    'field'      => $field,
+                    'myname'     => $myname,
+                    'comment'    => $display_comment,
+                    'rand'       => $rand);
 
       ajaxDropdown($use_ajax,"/ajax/dropdownUsersTracking.php",$params,$default,$rand);
 
@@ -1904,9 +1906,9 @@ class User extends CommonDBTM {
       // Display comment
       if ($display_comment) {
          displayToolTip($user["comment"], $user["link"],
-                        array('widget'=>'dropdown_'.$myname.$rand,
-                              'value'=>'__VALUE__',
-                              'table'=>'glpi_users'));
+                        array('widget' => 'dropdown_'.$myname.$rand,
+                              'value'  => '__VALUE__',
+                              'table'  => 'glpi_users'));
       }
       return $rand;
    }

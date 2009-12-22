@@ -124,18 +124,18 @@ class Dropdown {
          }
       }
 
-      $params=array('searchText'=>'__VALUE__',
-                    'value'=>$value,
-                    'table'=>$table,
-                    'itemtype'=>$itemtype,
-                    'myname'=>$myname,
-                    'limit'=>$limit_length,
-                    'comment'=>$display_comment,
-                    'rand'=>$rand,
-                    'entity_restrict'=>$entity_restrict,
-                    'update_item'=>$update_item,
-                    'used'=>$used,
-                    'auto_submit'=>$auto_submit);
+      $params=array('searchText'       => '__VALUE__',
+                    'value'            => $value,
+                    'table'            => $table,
+                    'itemtype'         => $itemtype,
+                    'myname'           => $myname,
+                    'limit'            => $limit_length,
+                    'comment'          => $display_comment,
+                    'rand'             => $rand,
+                    'entity_restrict'  => $entity_restrict,
+                    'update_item'      => $update_item,
+                    'used'             => $used,
+                    'auto_submit'      => $auto_submit);
 
       $default="<select name='$myname' id='dropdown_".$myname.$rand."'>";
       $default.="<option value='$value'>$name</option></select>";
@@ -274,18 +274,18 @@ class Dropdown {
          }
       }
 
-      $param=array('searchText'=>'__VALUE__',
-                    'value'=>$params['value'],
-                    'table'=>$params['table'],
-                    'itemtype'=>$itemtype,
-                    'myname'=>$params['name'],
-                    'limit'=>$limit_length,
-                    'comment'=>$params['comments'],
-                    'rand'=>$rand,
-                    'entity_restrict'=>$params['entity'],
-                    'update_item'=>$params['toupdate'],
-                    'used'=>$params['used'],
-                    'auto_submit'=>$params['auto_submit']);
+      $param=array('searchText'        => '__VALUE__',
+                    'value'            => $params['value'],
+                    'table'            => $params['table'],
+                    'itemtype'         => $itemtype,
+                    'myname'           => $params['name'],
+                    'limit'            => $limit_length,
+                    'comment'          => $params['comments'],
+                    'rand'             => $rand,
+                    'entity_restrict'  => $params['entity'],
+                    'update_item'      => $params['toupdate'],
+                    'used'             => $params['used'],
+                    'auto_submit'      => $params['auto_submit']);
 
       $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$rand."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";
@@ -418,8 +418,8 @@ class Dropdown {
          $name="&nbsp;";
       }
       if ($withcomment) {
-         return array('name'=>$name,
-                      'comment'=>$comment);
+         return array('name'     => $name,
+                      'comment'  => $comment);
       }
       return $name;
    }
@@ -481,7 +481,7 @@ class Dropdown {
          }
          asort($options);
       }
-      Dropdown::showFromArray($name,$options,array('value'=>$value,'used'=>$used));
+      Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
 
 
@@ -899,10 +899,10 @@ class Dropdown {
          }
          echo "</select>";
 
-         $params=array('idtable'=>'__VALUE__',
-                     'value'=>$value,
-                     'myname'=>$myname,
-                     'entity_restrict'=>$entity_restrict);
+         $params=array('idtable'          => '__VALUE__',
+                        'value'           => $value,
+                        'myname'          => $myname,
+                        'entity_restrict' => $entity_restrict);
          if ($onlyglobal) {
             $params['onlyglobal']=1;
          }
@@ -963,10 +963,10 @@ class Dropdown {
       echo "function setPrivate$rand(){\n";
 
          $params=array(
-            'is_private'=>1,
-            'is_recursive'=>$is_recursive,
-            'entities_id'=>$entity,
-            'rand'=>$rand,
+            'is_private'   => 1,
+            'is_recursive' => $is_recursive,
+            'entities_id'  => $entity,
+            'rand'         => $rand,
          );
          ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
 
@@ -974,10 +974,10 @@ class Dropdown {
       echo "function setPublic$rand(){\n";
 
          $params=array(
-            'is_private'=>0,
-            'is_recursive'=>$is_recursive,
-            'entities_id'=>$entity,
-            'rand'=>$rand,
+            'is_private'   => 0,
+            'is_recursive' => $is_recursive,
+            'entities_id'  => $entity,
+            'rand'         => $rand,
          );
          ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
 

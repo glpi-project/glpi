@@ -139,7 +139,7 @@ class Supplier extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('SupplierType', array('value'=>$this->fields["suppliertypes_id"]));
+      Dropdown::show('SupplierType', array('value' => $this->fields["suppliertypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

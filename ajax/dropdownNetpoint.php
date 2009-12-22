@@ -133,8 +133,8 @@ if ($DB->numrows($result)) {
 echo "</select>\n";
 
 if (isset($_POST["comment"]) && $_POST["comment"]) {
-   $paramscomment=array('value'=>'__VALUE__',
-                        'table'=>"glpi_netpoints");
+   $paramscomment=array('value' => '__VALUE__',
+                        'table' => "glpi_netpoints");
    ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
                                "comment_".$_POST["myname"].$_POST["rand"],
                                $CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);

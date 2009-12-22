@@ -1932,7 +1932,7 @@ class Ticket extends CommonDBTM {
                                         $this->getField('ticketsolutiontypes_id'));
       } else {
          Dropdown::show('TicketSolutionType',
-                        array('value'=>$this->getField('ticketsolutiontypes_id')));
+                        array('value' => $this->getField('ticketsolutiontypes_id')));
       }
       echo "</td></tr>";
 

@@ -61,7 +61,10 @@ if (isset($_REQUEST['searchtype'])) {
                case "completename":
                   if ($searchopt['table']=='glpi_users') {
                      User::dropdown($inputname,
-                           array('value'=>$_REQUEST['value'],'comments'=>false,'all'=>-1,'right'=>'all'));
+                           array('value'     => $_REQUEST['value'],
+                                 'comments'  => false,
+                                 'all'       => -1,
+                                 'right'     => 'all'));
                   } else {
                      Dropdown::dropdownValue($searchopt['table'],$inputname,
                                  $_REQUEST['value'], 0);

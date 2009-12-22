@@ -51,12 +51,12 @@ if (isset($_POST["idtable"])) {
          $use_ajax=true;
       }
    }
-   $paramsdev=array('searchText'=>'__VALUE__',
-                    'table'=>$table,
-                    'itemtype'=>$_POST["idtable"],
-                    'value'=>0,
-                    'myname'=>$_POST["myname"],
-                    'rand'=>$rand);
+   $paramsdev=array('searchText' => '__VALUE__',
+                    'table'      => $table,
+                    'itemtype'   => $_POST["idtable"],
+                    'value'      => 0,
+                    'myname'     => $_POST["myname"],
+                    'rand'       => $rand);
 
    $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
    ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsdev,$default,$rand);

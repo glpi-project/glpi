@@ -380,7 +380,7 @@ class TicketFollowup  extends CommonDBTM {
          $ticket->getFromDB($this->fields['tickets_id']);
       } else {
          // Create item
-         $input=array('tickets_id'=>$ticket->getField('id'));
+         $input=array('tickets_id' => $ticket->getField('id'));
          $this->check(-1,'w',$input);
       }
 
@@ -403,7 +403,7 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][44]."&nbsp;:</td><td>";
-      Dropdown::show('RequestType', array('value'=>$this->fields["requesttypes_id"]));
+      Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -470,7 +470,7 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<tr><td>".$LANG['job'][44]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('RequestType', array('value'=>$this->fields["requesttypes_id"]));
+      Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][77]."&nbsp;:</td>";

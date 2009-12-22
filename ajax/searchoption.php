@@ -64,11 +64,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
          unset($actions['searchopt']);
       }
       $randsearch=Dropdown::showFromArray('searchtype['.$_POST["num"].']',
-                           $actions,array('value'=>$_POST["searchtype"]));
+                           $actions,array('value' => $_POST["searchtype"]));
    }
    echo "&nbsp;<span id='span$dropdownname'>\n";
    echo "</span>\n";
-   $paramsaction=array( 'searchtype'  => '__VALUE__',
+   $paramsaction=array( 'searchtype'   => '__VALUE__',
                         'field'        => $_POST["field"],
                         'itemtype'     => $_POST["itemtype"],
                         'num'          => $_POST["num"],

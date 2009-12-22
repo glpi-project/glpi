@@ -398,7 +398,7 @@ class CronTask extends CommonDBTM{
          Dropdown::showFromArray('state',
             array(self::STATE_DISABLE => $this->getStateName(self::STATE_DISABLE),
                   self::STATE_WAITING => $this->getStateName(self::STATE_WAITING)),
-            array('value'=>$this->fields["state"]));
+            array('value' => $this->fields["state"]));
       }
       echo "</td></tr>";
 
@@ -410,7 +410,7 @@ class CronTask extends CommonDBTM{
       if ($this->fields['allowmode']&self::MODE_EXTERNAL) {
          $modes[self::MODE_EXTERNAL]=$this->getModeName(self::MODE_EXTERNAL);
       }
-      Dropdown::showFromArray('mode', $modes, array('value'=>$this->fields['mode']));
+      Dropdown::showFromArray('mode', $modes, array('value' => $this->fields['mode']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][38]." : </td><td>";
@@ -497,8 +497,8 @@ class CronTask extends CommonDBTM{
          return false;
       }
       return $this->update(array(
-            'id'=> $this->fields['id'],
-            'lastrun'=>'NULL'));
+            'id'        => $this->fields['id'],
+            'lastrun'   => 'NULL'));
    }
 
    /**
@@ -751,7 +751,7 @@ class CronTask extends CommonDBTM{
       }
       $temp = new CronTask();
       $ret = true;
-      foreach ($DB->request('glpi_crontasks', array('plugin'=>$plugin)) as $data) {
+      foreach ($DB->request('glpi_crontasks', array('plugin' => $plugin)) as $data) {
          if (!$temp->delete($data)) {
             $ret = false;
          }
@@ -1170,7 +1170,7 @@ class CronTask extends CommonDBTM{
       $tab[WEEK_TIMESTAMP] = $LANG['setup'][308];
       $tab[MONTH_TIMESTAMP] = $LANG['setup'][309];
 
-      Dropdown::showFromArray($name, $tab, array('value'=>$value));
+      Dropdown::showFromArray($name, $tab, array('value' => $value));
    }
 }
 ?>
