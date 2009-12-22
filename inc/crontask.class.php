@@ -656,7 +656,7 @@ class CronTask extends CommonDBTM{
                   $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
 
                } else {
-                  usePlugin($task->fields['plugin'],true);
+                  Plugin::load($task->fields['plugin'],true);
                   if ($task->fields['itemtype']) {
                      $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
                   } else {
