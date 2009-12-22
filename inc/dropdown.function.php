@@ -380,38 +380,4 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 
 
 
-/**
- * Dropdown rules for a defined sub_type of rule
- *
- * @param $myname select name
- * @param $sub_type rule type
- */
-function dropdownRules ($sub_type, $myname) {
-   global $DB, $CFG_GLPI, $LANG;
-
-   $rand=mt_rand();
-   $limit_length=$_SESSION["glpidropdown_chars_limit"];
-
-   $use_ajax=false;
-   if ($CFG_GLPI["use_ajax"]) {
-      $nb=countElementsInTable("glpi_rules", "sub_type=".$sub_type);
-
-      if ($nb>$CFG_GLPI["ajax_limit_count"]) {
-         $use_ajax=true;
-      }
-   }
-   $params=array('searchText' => '__VALUE__',
-                 'myname'     => $myname,
-                 'limit'      => $limit_length,
-                 'rand'       => $rand,
-                 'type'       => $sub_type);
-   $default ="<select name='$myname' id='dropdown_".$myname.$rand."'>";
-   $default.="<option value='0'>------</option></select>";
-   ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);
-
-   return $rand;
-}
-
-
-
 ?>
