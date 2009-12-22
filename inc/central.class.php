@@ -126,19 +126,19 @@ class Central extends CommonGLPI {
          echo "</td></tr>";
 
          echo "<tr><td class='top' width='450px'>";
-         showCentralReminder();
+         Reminder::showListForCentral();
          echo "</td></tr>";
 
          if (haveRight("reminder_public","r")) {
             echo "<tr><td class='top' width='450px'>";
-            showCentralReminder($_SESSION["glpiactive_entity"]);
+            Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
             $entities=array_reverse(getAncestorsOf("glpi_entities",$_SESSION["glpiactive_entity"]));
             foreach ($entities as $entity) {
-               showCentralReminder($entity, true);
+               Reminder::showListForCentral($entity, true);
             }
             foreach ($_SESSION["glpiactiveentities"] as $entity) {
                if ($entity != $_SESSION["glpiactive_entity"]) {
-                  showCentralReminder($entity, false);
+                  Reminder::showListForCentral($entity, false);
                }
             }
             echo "</td></tr>";
