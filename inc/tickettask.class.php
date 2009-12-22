@@ -465,8 +465,7 @@ class TicketTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_taskcategories", "taskcategories_id",
-                              $this->fields["taskcategories_id"],1);
+      Dropdown::show('TaskCategory', array('value'=>$this->fields["taskcategories_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

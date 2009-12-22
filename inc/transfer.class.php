@@ -2878,10 +2878,11 @@ class Transfer extends CommonDBTM {
          echo "<div class='center b'>".$LANG['transfer'][5]."<br>".$LANG['transfer'][6]."</div>";
          echo "<table class='tab_cadre_fixe' >";
          echo '<tr><th>'.$LANG['transfer'][7].'</th><th>'.$LANG['transfer'][8]."&nbsp;:&nbsp;";
-         $rand = Dropdown::dropdownValue($this->table, 'id', 0, 0, -1,
-                               array('value_fieldname' => 'id',
+         $rand = Dropdown::show('Transfer',
+                        array('name' => 'id','comments'=>false,
+                              'toupdate' => array('value_fieldname' => 'id',
                                      'to_update'   => "transfer_form",
-                                     'url'         => $CFG_GLPI["root_doc"]."/ajax/transfers.php"));
+                                     'url'         => $CFG_GLPI["root_doc"]."/ajax/transfers.php")));
          echo '</th></tr>';
          echo "<tr><td class='tab_bg_1 top'>";
 
