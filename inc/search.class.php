@@ -1026,26 +1026,18 @@ class Search {
                         echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
                         echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
                      } else {
-                        if ($data["ACTIVE"]) {
-                           echo displaySearchItem($output_type,"<a href=\"".
-                                          $CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                                          $data["refID"]."&amp;is_active=0\" title='".
-                                          $LANG['buttons'][42]."'><img src=\"".
-                                          $CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",
-                                          $item_num,$row_num,"class='center'");
-                        } else {
-                           echo displaySearchItem($output_type,"<a href=\"".
-                                          $CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                                          $data["refID"]."&amp;is_active=1\" title='".
-                                          $LANG['buttons'][41]."'><img src=\"".
-                                          $CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",
-                                          $item_num,$row_num,"class='center'");
-                        }
+                        echo displaySearchItem($output_type,
+                              "<a href=\"".getItemTypeFormURL($itemtype)."?id=".$data["refID"].
+                              "&amp;is_active=".($data["ACTIVE"]?0:1)."&amp;update=update\" ".
+                              "title='".$LANG['buttons'][42]."'><img src=\"".
+                              $CFG_GLPI["root_doc"]."/pics/".($data["ACTIVE"]?"moins":"plus").
+                              ".png\" alt='' title=''></a>",
+                              $item_num,$row_num,"class='center'");
                         echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".
                                        addslashes($LANG['reservation'][38])."\\n".
                                        addslashes($LANG['reservation'][39])."','".
-                                       $CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                                       $data["refID"]."&amp;delete=delete')\" title='".
+                                       getItemTypeFormURL($itemtype)."?id=".$data["refID"].
+                                       "&amp;delete=delete')\" title='".
                                        $LANG['reservation'][6]."'><img src=\"".
                                        $CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",
                                        $item_num,$row_num,"class='center'");
