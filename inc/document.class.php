@@ -1154,7 +1154,7 @@ class Document extends CommonDBTM {
             if ($nb>count($used)) {
                echo "<td class='left' colspan='2'>";
                echo "<div class='software-instal'>";
-               Document::dropdown("documents_id",array('entity'=>$entities,'used'=>$used));
+               Document::dropdown(array('entity'=>$entities,'used'=>$used));
                echo "</div></td><td class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";
@@ -1173,21 +1173,22 @@ class Document extends CommonDBTM {
    * Make a select box for link document
    *
    * Parameters which could be used in options array :
+   *    - name : string / name of the select (default is documents_id)
    *    - entity : integer or array / restrict to a defined entity or array of entities
    *                   (default -1 : no restriction)
    *    - used : array / Already used items ID: not to display in dropdown (default empty)
    *
-   * @param $myname name of the select box
    * @param $options possible options
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdown($myname,$options=array()) {
+   static function dropdown($options=array()) {
       global $DB,$LANG,$CFG_GLPI;
 
 
+      $p['name']   = 'documents_id';
       $p['entity'] = '';
-      $p['used'] = array();
+      $p['used']   = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1222,16 +1223,16 @@ class Document extends CommonDBTM {
       $params=array('rubdoc'=>'__VALUE__',
                     'entity_restrict'=>$p['entity'],
                     'rand'=>$rand,
-                    'myname'=>$myname,
+                    'myname'=>$p['name'],
                     'used'=>$p['used']);
 
-      ajaxUpdateItemOnSelectEvent("rubdoc$rand","show_$myname$rand",$CFG_GLPI["root_doc"].
+      ajaxUpdateItemOnSelectEvent("rubdoc$rand","show_".$p['name']."$rand",$CFG_GLPI["root_doc"].
                                   "/ajax/dropdownRubDocument.php",$params);
 
-      echo "<span id='show_$myname$rand'>";
+      echo "<span id='show_".$p['name']."$rand'>";
       $_POST["entity_restrict"]=$p['entity'];
       $_POST["rubdoc"]=0;
-      $_POST["myname"]=$myname;
+      $_POST["myname"]=$p['name'];
       $_POST["rand"]=$rand;
       $_POST["used"]=$p['used'];
       include (GLPI_ROOT."/ajax/dropdownRubDocument.php");
