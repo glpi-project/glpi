@@ -42,7 +42,6 @@ checkCentralAccess();
 
 /// TODO create reservationitem.form.php to edit comments
 
-$ri=new ReservationItem();
 $rr=new Reservation();
 
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
@@ -143,44 +142,12 @@ else {
 		printReservationItems($_SERVER['PHP_SELF']);
 	}
 	else {
-		if (isset($_GET["add"]))
-		{
-			checkRight("reservation_central","w");
-			if ($newID=$ri->add($_GET)){
-				Event::log($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["itemtype"]."-".$_GET["items_id"].".");
-			}
-			glpi_header($_SERVER['HTTP_REFERER']);
-		}
-		else if (isset($_GET["delete"]))
-		{
-			checkRight("reservation_central","w");
-			$ri->delete($_GET);
-			Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-			glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php");
-		} else if (isset($_GET["is_active"]))
-		{
-			checkRight("reservation_central","w");
-			$ri->update($_GET);
-			Event::log($_GET['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-			glpi_header($CFG_GLPI["root_doc"] . "/front/reservationitem.php");
-		}
-
-		if (isset($_POST["updatecomment"]))
-		{
-			checkRight("reservation_central","w");
-			$ri->update($_POST);
-			Event::log($_POST['id'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-		}
 
 		checkRight("reservation_central","r");
 
 		commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 
-		if (isset($_GET["comment"])){
-			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);
-		} else {
-         Search::show('ReservationItem');
-		}
+      Search::show('ReservationItem');
 	}
 }
 commonFooter();
