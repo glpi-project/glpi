@@ -68,18 +68,14 @@ if (!empty($_POST["withtemplate"])) {
 
          default :
             if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
-               showPorts($_POST["id"], 'NetworkEquipment',$_POST["withtemplate"]);
-               if ($_POST["withtemplate"]!=2) {
-                  showPortsAdd($_POST["id"],'NetworkEquipment');
-               }
+               NetworkPort::showForItem('NetworkEquipment', $_POST["id"], $_POST["withtemplate"]);
             }
       }
    }
 } else {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         showPortsAdd($_POST["id"],'NetworkEquipment');
-         showPorts($_POST["id"],'NetworkEquipment');
+         NetworkPort::showForItem('NetworkEquipment', $_POST["id"]);
          Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$netdevice);
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice,$_POST["withtemplate"]);
@@ -119,8 +115,7 @@ if (!empty($_POST["withtemplate"])) {
 
       default :
          if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'])) {
-            showPortsAdd($_POST["id"],'NetworkEquipment');
-            showPorts($_POST["id"],'NetworkEquipment');
+            NetworkPort::showForItem('NetworkEquipment',$_POST["id"]);
          }
    }
 }

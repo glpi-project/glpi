@@ -74,18 +74,14 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
 
          default :
             if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
-               if ($_POST["withtemplate"]!=2) {
-                  showPortsAdd($_POST["id"],'Phone');
-               }
-               showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
+               NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
             }
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Item::showForItem($phone);
-            showPortsAdd($_POST["id"],'Phone');
-            showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
+            NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
@@ -126,8 +122,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
          default :
             if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($phone);
-               showPortsAdd($_POST["id"],'Phone');
-               showPorts($_POST["id"], 'Phone',$_POST["withtemplate"]);
+               NetworkPort::showForItem('Phone', $_POST["id"], 'Phone',$_POST["withtemplate"]);
             }
       }
    }

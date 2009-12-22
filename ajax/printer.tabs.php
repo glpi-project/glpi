@@ -59,10 +59,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 3 :
-            if ($_POST["withtemplate"]!=2) {
-               showPortsAdd($_POST["id"],'Printer');
-            }
-            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
+            NetworkPort::showForItem('Printer', $_POST["id"], $_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -84,8 +81,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Cartridge::showInstalled($printer);
             Cartridge::showInstalled($printer, 1);
             Computer_Item::showForItem($printer);
-            showPortsAdd($_POST["id"],'Printer');
-            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
+            NetworkPort::showForItem('Printer', $_POST["id"], $_POST["withtemplate"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$printer);
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
@@ -96,8 +92,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForItem($printer);
-            showPortsAdd($_POST["id"],'Printer');
-            showPorts($_POST["id"], 'Printer',$_POST["withtemplate"]);
+            NetworkPort::showForItem('Printer', $_POST["id"], $_POST["withtemplate"]);
             break;
 
          case 4 :

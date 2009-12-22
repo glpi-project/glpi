@@ -65,10 +65,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer, $_POST["withtemplate"]);
-            if ($_POST["withtemplate"]!=2) {
-               showPortsAdd($_POST["id"],'Computer');
-            }
-            showPorts($_POST["id"], 'Computer',$_POST["withtemplate"]);
+            NetworkPort::showForItem('Computer', $_POST["id"], $_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -98,8 +95,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
-            showPortsAdd($_POST["id"],'Computer');
-            showPorts($_POST["id"], 'Computer');
+            NetworkPort::showForItem('Computer', $_POST["id"]);
             Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$computer);
             Contract::showAssociated($computer,$_POST["withtemplate"]);
             Document::showAssociated($computer);
@@ -115,8 +111,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer);
-            showPortsAdd($_POST["id"],'Computer');
-            showPorts($_POST["id"], 'Computer');
+            NetworkPort::showForItem('Computer', $_POST["id"]);
             break;
 
          case 4 :

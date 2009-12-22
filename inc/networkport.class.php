@@ -246,6 +246,144 @@ class NetworkPort extends CommonDBTM {
       return $rand;
    }
 
+   /**
+    * Show ports for an item
+    *
+    * @param $itemtype integer : item type
+    * @param $ID integer : item ID
+    * @param $withtemplate integer : withtemplate param
+    */
+   static function showForItem($itemtype, $ID, $withtemplate = '') {
+      global $DB, $CFG_GLPI, $LANG;
+
+
+      $rand = mt_rand();
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+      $item = new $itemtype();
+      if (!haveRight('networking','r') || !$item->can($ID, 'r')) {
+         return false;
+      }
+      $canedit = $item->can($ID, 'w');
+
+      // Show Add Form
+      if ($canedit && empty($withtemplate) || $withtemplate !=2) {
+         echo "\n<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<a href=\"" . $CFG_GLPI["root_doc"] .
+               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype\"><strong>";
+         echo $LANG['networking'][19];
+         echo "</strong></a></td>\n";
+         echo "<td class='tab_bg_2 center' width='50%'>";
+         echo "<a href=\"" . $CFG_GLPI["root_doc"] .
+               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=yes\"><strong>";
+         echo $LANG['networking'][46];
+         echo "</strong></a></td></tr>\n";
+         echo "</table></div><br>\n";
+      }
+
+      initNavigateListItems('NetworkPort',$item->getTypeName()." = ".$item->getName());
+
+      $query = "SELECT `id`
+               FROM `glpi_networkports`
+               WHERE `items_id` = '$ID'
+                     AND `itemtype` = '$itemtype'
+               ORDER BY `name`, `logical_number`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 0) {
+            $colspan = 9;
+            if ($withtemplate != 2) {
+               if ($canedit) {
+                  $colspan++;
+                  echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
+                        action=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php\">\n";
+               }
+            }
+            echo "<div class='center'><table class='tab_cadre_fixe'>\n";
+            echo "<tr><th colspan='$colspan'>\n";
+            echo $DB->numrows($result) . " ";
+            if ($DB->numrows($result) < 2) {
+               echo $LANG['networking'][37];
+            } else {
+               echo $LANG['networking'][13];
+            }
+            echo "&nbsp;:</th></tr>\n";
+
+            echo "<tr>";
+            if ($withtemplate != 2 && $canedit) {
+               echo "<th>&nbsp;</th>\n";
+            }
+            echo "<th>#</th>\n";
+            echo "<th>" . $LANG['common'][16] . "</th>\n";
+            echo "<th>" . $LANG['networking'][51] . "</th>\n";
+            echo "<th>" . $LANG['networking'][14] . "<br>" . $LANG['networking'][15] . "</th>\n";
+            echo "<th>" . $LANG['networking'][60] . "&nbsp;/&nbsp;" . $LANG['networking'][61]."<br>"
+                        . $LANG['networking'][59] . "</th>\n";
+            echo "<th>" . $LANG['networking'][56] . "</th>\n";
+            echo "<th>" . $LANG['common'][65] . "</th>\n";
+            echo "<th>" . $LANG['networking'][17] . "&nbsp;:</th>\n";
+            echo "<th>" . $LANG['networking'][14] . "<br>" . $LANG['networking'][15] . "</th></tr>\n";
+
+            $i = 0;
+            while ($devid = $DB->fetch_row($result)) {
+               $netport = new NetworkPort;
+               $netport->getFromDB(current($devid));
+               addToNavigateListItems('NetworkPort',$netport->fields["id"]);
+
+               echo "<tr class='tab_bg_1'>\n";
+               if ($withtemplate != 2 && $canedit) {
+                  echo "<td class='center' width='20'>";
+                  echo "<input type='checkbox' name='del_port[" . $netport->fields["id"] . "]' value='1'>";
+                  echo "</td>\n";
+               }
+               echo "<td class='center'><strong>";
+               if ($canedit && $withtemplate != 2) {
+                  echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
+                        $netport->fields["id"] . "\">";
+               }
+               echo $netport->fields["logical_number"];
+               if ($canedit && $withtemplate != 2) {
+                  echo "</a>";
+               }
+               echo "</strong></td>\n";
+               echo "<td>" . $netport->fields["name"] . "</td>\n";
+               echo "<td>".Dropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
+               echo "<td>" . $netport->fields["ip"] . "<br>" .$netport->fields["mac"] . "</td>\n";
+               echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;".$netport->fields["subnet"] .
+                           "<br>".$netport->fields["gateway"] . "</td>\n";
+               // VLANs
+               echo "<td>";
+               showPortVLAN($netport->fields["id"], $withtemplate);
+               echo "</td>\n";
+               echo "<td>" . Dropdown::getDropdownName("glpi_networkinterfaces",
+                                             $netport->fields["networkinterfaces_id"]) . "</td>\n";
+
+               echo "<td width='300' class='tab_bg_2'>";
+               showConnection($item, $netport, $withtemplate);
+               echo "</td>\n";
+               echo "<td class='tab_bg_2'>";
+               if ($netport->getContact($netport->fields["id"])) {
+                  echo $netport->fields["ip"] . "<br>";
+                  echo $netport->fields["mac"];
+               }
+               echo "</td></tr>\n";
+            }
+            echo "</table></div>\n";
+
+            if ($canedit && $withtemplate != 2) {
+               openArrowMassive("networking_ports$rand", true);
+               dropdownMassiveActionPorts($itemtype);
+               closeArrowMassive();
+            } else {
+               echo "<br>";
+            }
+            if ($canedit && $withtemplate != 2) {
+               echo "</form>";
+            }
+         }
+      }
+   }
 }
 
 ?>
