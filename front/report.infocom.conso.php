@@ -123,7 +123,9 @@ function display_infocoms_report($device_type,$begin,$end){
 				if ($device_type==SOFTWARELICENSE_TYPE){
 					$comp->getFromDB($device_type,$line["FK_device"]);
 					if ($comp->obj->fields["serial"]=="global"){
-						$line["value"]*=getInstallionsForLicense($line["FK_device"]);
+                  if ($comp->obj->fields["number"] >0) {
+						   $line["value"]*=$comp->obj->fields["number"];
+                  }
 					}
 				}
 				if ($line["value"]>0) $valeursoustot+=$line["value"];
