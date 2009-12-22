@@ -183,7 +183,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "users_id_tech" :
-                  User::dropdownID($search["linkfield"],0,"interface",1,$_SESSION["glpiactive_entity"]);
+                  User::dropdown(array('name'   => $search["linkfield"],
+                                       'value'  => 0,
+                                       'right'  => 'interface',
+                                       'entity' => $_SESSION["glpiactive_entity"]));
                   break;
 
                default :
