@@ -161,7 +161,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "add_userprofile" :
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
          echo ".&nbsp;".$LANG['profiles'][22]."&nbsp;:";
-         dropdownUnderProfiles("profiles_id");
+         Profile::dropdownUnder();
          echo ".&nbsp;".$LANG['profiles'][28]."&nbsp;:";
          Dropdown::showYesNo("is_recursive",0);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".

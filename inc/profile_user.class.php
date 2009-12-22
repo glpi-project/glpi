@@ -82,7 +82,7 @@ class Profile_User extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$ID'>";
          Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
          echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
-         dropdownUnderProfiles("profiles_id");
+         Profile::dropdownUnder();
          echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
          Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='center'>";
@@ -193,7 +193,7 @@ class Profile_User extends CommonDBTM {
          User::dropdown(array('right'  => 'all'));
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][22]."&nbsp;:&nbsp;";
-         dropdownUnderProfiles("profiles_id");
+         Profile::dropdownUnder();
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][28]."&nbsp;:&nbsp;";
          Dropdown::showYesNo("is_recursive",0);
