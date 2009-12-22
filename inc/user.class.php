@@ -1159,8 +1159,7 @@ class User extends CommonDBTM {
       autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_usercategories", "usercategories_id",
-                    $this->fields["usercategories_id"], 1, -1);
+      Dropdown::show('UserCategory',array('value'=>$this->fields["usercategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
