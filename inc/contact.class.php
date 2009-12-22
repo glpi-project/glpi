@@ -414,10 +414,13 @@ class Contact extends CommonDBTM{
             echo "<div class='software-instal'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             if ($this->fields["is_recursive"]) {
-               Dropdown::dropdownSimple("glpi_suppliers","suppliers_id",1,
-                        getSonsOf("glpi_entities",$this->fields["entities_id"]),$used);
+               Dropdown::show('Supplier',
+                        array('used'   => $used,
+                              'entity' => getSonsOf("glpi_entities",$this->fields["entities_id"])));
             } else {
-               Dropdown::dropdownSimple("glpi_suppliers","suppliers_id",1,$this->fields["entities_id"],$used);
+               Dropdown::show('Supplier',
+                        array('used'   => $used,
+                              'entity' => $this->fields["entities_id"]));
             }
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
                                $LANG['buttons'][8]."\" class='submit'>";
