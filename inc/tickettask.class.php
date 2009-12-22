@@ -63,7 +63,6 @@ class TicketTask  extends CommonDBTM {
 
    function canCreate() {
       return (haveRight('comment_all_ticket', 1)
-              || haveRight('comment_ticket', 1)
               || haveRight('own_ticket', 1));
    }
 
@@ -87,7 +86,7 @@ class TicketTask  extends CommonDBTM {
       if (haveRight('show_full_ticket', 1)) {
          return true;
       }
-      if (!$this->is_private && haveRight('observe_ticket',1)) {
+      if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
          return true;
       }
       if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
@@ -106,9 +105,7 @@ class TicketTask  extends CommonDBTM {
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
-      // From canAddFollowup
-      return ((haveRight("comment_ticket","1") && $this->fields["users_id"]==$_SESSION["glpiID"])
-              || haveRight("comment_all_ticket","1")
+      return (haveRight("comment_all_ticket","1")
               || (isset($_SESSION["glpiID"])
                   && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
               || (isset($_SESSION["glpigroups"])
@@ -362,11 +359,11 @@ class TicketTask  extends CommonDBTM {
    function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $canedit = ($caneditall || $this->fields['users_id'] == $_SESSION['glpiID']);
+      $canedit = $caneditall;
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
        ($canedit
          ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].$this->fields['id']."$rand();\""
-         : "style='cursor:none'") .
+         : '') .
          " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
 
       echo "<td>".$this->getTypeName();
@@ -513,6 +510,8 @@ class TicketTask  extends CommonDBTM {
       // Display existing Followups
       $showprivate = haveRight("show_full_ticket", "1");
       $caneditall = haveRight("update_followups", "1");
+      $tmp = array('tickets_id'=>$tID);
+      $canadd = $this->can(-1,'w',$tmp);
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -520,8 +519,7 @@ class TicketTask  extends CommonDBTM {
                             OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
       }
 
-      // TODO keep this for a union with followup + task + histo + ...
-      $query = "SELECT 'TicketTask' as itemtype, `id`, `date`
+      $query = "SELECT `id`, `date`
                 FROM `glpi_tickettasks`
                  WHERE `tickets_id` = '$tID'
                         $RESTRICT
@@ -530,9 +528,10 @@ class TicketTask  extends CommonDBTM {
 
       $rand = mt_rand();
 
-      if ($caneditall) {
+      if ($caneditall || $canadd) {
          echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
-
+      }
+      if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand(){\n";
          $params = array ('type'       => __CLASS__,
@@ -562,10 +561,8 @@ class TicketTask  extends CommonDBTM {
          echo "<th>" . $LANG['job'][35] . "</th></tr>\n";
 
          while ($data = $DB->fetch_array($result)) {
-            if (class_exists($data['itemtype'])) {
-               if ($this->getFromDB($data['id'])) {
-                  $this->showInTicketSumnary($ticket, $rand, $showprivate, $caneditall);
-               }
+            if ($this->getFromDB($data['id'])) {
+               $this->showInTicketSumnary($ticket, $rand, $showprivate, $caneditall);
             }
          }
          echo "</table>";
