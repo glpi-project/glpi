@@ -64,7 +64,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case 'move_under' :
          echo '&nbsp;'.$LANG['setup'][75];
-         Dropdown::dropdownValue(getTableForItemType($_POST["itemtype"]), 'parent', '', 0);
+         Dropdown::show($_POST['itemtype'], array('name' => 'parent', 'comments' => 0));
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;
@@ -153,13 +153,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_group" :
-         Dropdown::dropdownValue("glpi_groups","groups_id",0);
+         Dropdown::show('Group');
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
       case "add_userprofile" :
-         Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
          echo ".&nbsp;".$LANG['profiles'][22]."&nbsp;:";
          dropdownUnderProfiles("profiles_id");
          echo ".&nbsp;".$LANG['profiles'][28]."&nbsp;:";

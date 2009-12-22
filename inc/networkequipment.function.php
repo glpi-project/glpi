@@ -206,7 +206,7 @@ function showPortVLANForm ($ID) {
 
       echo "<tr class='tab_bg_2'><td>";
       echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
-      Dropdown::dropdownSimple("glpi_vlans", "vlan",1,-1,$used);
+      Dropdown::show('Vlan', array('used' => $used));
       echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
                    "' class='submit'>";
       echo "</td></tr>\n";
@@ -347,7 +347,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-   Dropdown::show('NetworkInterface', array('value'  => $this->fields["networkinterfaces_id"]));
+   Dropdown::show('NetworkInterface', array('value'  => $netport->fields["networkinterfaces_id"]));
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";

@@ -1825,30 +1825,7 @@ class CommonDBTM extends CommonGLPI {
    static function dropdown($name,$options=array()) {
       echo "This function cannot be used for the moment. Use Dropdown::show instead.";
       /*
-      $default_values['value']='';
-      $default_values['comments']=1;
-      $default_values['entity']=-1;
-      $default_values['toupdate']='';
-      $default_values['used']=array();
-      $default_values['auto_submit']=0;
-      
-      foreach ($default_values as $key => $val) {
-         if (isset($options[$key])) {
-            $$key=$options[$key];
-         } else {
-            $$key=$default_values[$key];
-         }
-      }
-      Dropdown::dropdownValue(
-            getTableForItemType(get_called_class()),
-            $name,
-            $value,
-            $comments,
-            $entity,
-            $toupdate,
-            $used,
-            $auto_submit
-         );
+      Dropdown::show(get_called_class(),$options);
       */
    }
    

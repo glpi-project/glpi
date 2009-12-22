@@ -1435,7 +1435,7 @@ class Search {
       echo "</td>\n";
 */  
       // Display deleted selection
-      echo "<td>";
+      echo "<td class='center'>";
       $itemtable=getTableForItemType($itemtype);
       if ($item && $item->maybeDeleted()) {
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].

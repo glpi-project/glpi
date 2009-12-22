@@ -161,9 +161,10 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'dropdownValue' :
-               Dropdown::dropdownValue(getTableNameForForeignKeyField($field['name']),
-                              $field['name'], $this->fields[$field['name']],1,
-                              $this->getEntityID());
+               Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField($field['name'])),
+                              array('value'  => $this->fields[$field['name']],
+                                    'name'   => $field['name'],
+                                    'entity' => $this->getEntityID()));
                break;
 
             case 'text' :
@@ -177,9 +178,11 @@ abstract class CommonDropdown extends CommonDBTM {
                } else {
                   $restrict = $this->fields[getForeignKeyFieldForTable($this->table)];
                }
-               Dropdown::dropdownValue($this->table, $field['name'],
-                             $this->fields[$field['name']], 1, $restrict, '',
-                             ($ID>0 ? getSonsOf($this->table, $ID) : array()));
+               Dropdown::show(getItemTypeForTable($this->table),
+                              array('value'  => $this->fields[$field['name']],
+                                    'name'   => $field['name'],
+                                    'entity' => $restrict,
+                                    'used'   => ($ID>0 ? getSonsOf($this->table, $ID) : array())));
                break;
 
             case 'icon' :
@@ -347,10 +350,17 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
          $fk=getForeignKeyFieldForTable($this->table);
-         Dropdown::dropdownValue($this->table, '_replace_by', $this->fields[$fk], 1,
-                       $this->getEntityID(), '', getSonsOf($this->table, $ID));
+         Dropdown::show(getItemTypeForTable($this->table),
+                        array('name'   => '_replace_by',
+                              'value'  => $this->fields[$fk],
+                              'entity' => $this->getEntityID(),
+                              'used'   => getSonsOf($this->table, $ID)));
+
       } else {
-         Dropdown::dropdownValue($this->table, '_replace_by', 0, 1, $this->getEntityID(),'',array($ID));
+         Dropdown::show(getItemTypeForTable($this->table),
+                        array('name'   => '_replace_by',
+                              'entity' => $this->getEntityID(),
+                              'used'   => array($ID)));
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";

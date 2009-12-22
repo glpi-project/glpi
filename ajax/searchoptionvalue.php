@@ -66,8 +66,10 @@ if (isset($_REQUEST['searchtype'])) {
                                  'all'       => -1,
                                  'right'     => 'all'));
                   } else {
-                     Dropdown::dropdownValue($searchopt['table'],$inputname,
-                                 $_REQUEST['value'], 0);
+                     Dropdown::show(getItemTypeForTable($searchopt['table']),
+                                    array('value'     => $_REQUEST['value'],
+                                          'name'      => $inputname,
+                                          'comments'  => 0));
                   }
                   $display=true;
                   break;
