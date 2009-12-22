@@ -1190,7 +1190,7 @@ class Document extends CommonDBTM {
       $p['entity'] = '';
       $p['used'] = array();
 
-      if (count($options)) {
+      if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key]=$val;
          }

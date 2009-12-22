@@ -1819,6 +1819,8 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing display the dropdown
     */
    static function dropdown($name,$options=array()) {
+      echo "This function cannot be used for the moment. Use Dropdown::show instead.";
+      /*
       $default_values['value']='';
       $default_values['comments']=1;
       $default_values['entity']=-1;
@@ -1843,6 +1845,7 @@ class CommonDBTM extends CommonGLPI {
             $used,
             $auto_submit
          );
+      */
    }
    
 }
