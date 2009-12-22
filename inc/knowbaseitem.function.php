@@ -72,8 +72,7 @@ function searchFormKnowbase($target,$contains,$knowbaseitemcategories_id=0,$faq=
       echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
       echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp:</th></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      Dropdown::dropdownValue("glpi_knowbaseitemcategories","knowbaseitemcategories_id",
-                     $knowbaseitemcategories_id);
+      Dropdown::show('KnowbaseItemCategory', array('value' => $knowbaseitemcategories_id));
 
       // ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
 

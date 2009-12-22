@@ -179,14 +179,14 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_consumableitemtypes","consumableitemtypes_id",
-                    $this->fields["consumableitemtypes_id"]);
+      Dropdown::show('ConsumableItemType',
+               array('value' => $this->fields["consumableitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_manufacturers","manufacturers_id",$this->fields["manufacturers_id"]);
+      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -199,8 +199,9 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,
-                    $this->fields["entities_id"]);
+      Dropdown::show('Location',
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

@@ -151,8 +151,9 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,
-                    $_SESSION['glpiactiveentities']);
+      Dropdown::show('Entity',
+                     array('value'  => $this->fields["entities_id"],
+                           'entity' => $_SESSION['glpiactiveentities']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";

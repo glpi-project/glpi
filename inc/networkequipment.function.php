@@ -347,7 +347,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-   Dropdown::dropdownValue("glpi_networkinterfaces", "networkinterfaces_id", $netport->fields["networkinterfaces_id"]);
+   Dropdown::show('NetworkInterface', array('value'  => $this->fields["networkinterfaces_id"]));
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
