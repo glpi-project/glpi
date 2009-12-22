@@ -1230,6 +1230,55 @@ class Rule extends CommonDBTM {
       return $output;
    }
 
+
+   /**
+   * Dropdown rules for a defined sub_type of rule
+   *
+   * Parameters which could be used in options array :
+   *    - name : string / name of the select (default is depending itemtype)
+   *    - sub_type : integer / sub_type of rule
+   *
+   * @param $options possible options
+   */
+   static function dropdown($options=array()) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $p['sub_type'] = -1;
+      $p['name']   = 'rules_id';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
+      if ($p['sub_type']<=0) {
+         return false;
+      }
+
+      $rand=mt_rand();
+      $limit_length=$_SESSION["glpidropdown_chars_limit"];
+
+      $use_ajax=false;
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb=countElementsInTable("glpi_rules", "sub_type=".$p['sub_type']);
+
+         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax=true;
+         }
+      }
+      $params=array('searchText' => '__VALUE__',
+                  'myname'     => $p['name'],
+                  'limit'      => $limit_length,
+                  'rand'       => $rand,
+                  'type'       => $p['sub_type']);
+      $default ="<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
+      $default.="<option value='0'>------</option></select>";
+      ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);
+
+      return $rand;
+   }
+
 }
 
 

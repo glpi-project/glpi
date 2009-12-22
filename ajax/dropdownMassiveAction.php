@@ -74,7 +74,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
          echo "<option value='before'>".$LANG['buttons'][46]."</option>";
          echo "</select>&nbsp;";
-         dropdownRules($_POST['sub_type'],"ranking");
+         Rule::dropdown(array('sub_type'=>$_POST['sub_type'],'name' => "ranking"));
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;

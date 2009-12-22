@@ -175,28 +175,28 @@ class Dropdown {
    }
 
    /**
-    * Print out an HTML "<select>" for a dropdown with preselected value
-    *
-    * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is depending itemtype)
-    *    - value : integer / preselected value (default 0)
-    *    - comments : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
-    *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
-    *                   and may have moreparams)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - auto_submit : boolean / preselected value (default 0)
-    *
-    *
-    * @param $itemtype itemtype used for create dropdown
-    * @param $options possible options
-    * @return boolean : lse if error and random id if OK
-    *
-    */
+   * Print out an HTML "<select>" for a dropdown with preselected value
+   *
+   * Parameters which could be used in options array :
+   *    - name : string / name of the select (default is depending itemtype)
+   *    - value : integer / preselected value (default 0)
+   *    - comments : boolean / is the comments displayed near the dropdown (default true)
+   *    - entity : integer or array / restrict to a defined entity or array of entities
+   *                   (default -1 : no restriction)
+   *    - entity_sons : boolean / if entity restrict specified auto select its sons
+   *                   only available if entity is a single value not an array (default false)
+   *    - toupdate : array / Update a specific item on select change on dropdown
+   *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+   *                   and may have moreparams)
+   *    - used : array / Already used items ID: not to display in dropdown (default empty)
+   *    - auto_submit : boolean / preselected value (default 0)
+   *
+   *
+   * @param $itemtype itemtype used for create dropdown
+   * @param $options possible options
+   * @return boolean : lse if error and random id if OK
+   *
+   */
    static function show($itemtype,$options=array()) {
 
       global $DB,$CFG_GLPI,$LANG;
@@ -1013,7 +1013,7 @@ class Dropdown {
    *
    * @param $name select name
    * @param $elements array of elements to display
-   * @param $opyions options
+   * @param $options options
    *
    */
    static function showFromArray($name,$elements,$options = array()) {
