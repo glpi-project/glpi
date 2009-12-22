@@ -1094,13 +1094,13 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canDeleteItem() {
       global $CFG_GLPI;
-      
+
       if (!$this->canCreateItem()) {
          return false;
       }
       // Can delete an object with Infocom only if can delete Infocom
       if (in_array($this->type, $CFG_GLPI['infocom_types'])) {
-         
+
          $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($this->type, $this->fields['id'])) {
             return $infocom->canDelete();
@@ -1373,9 +1373,9 @@ class CommonDBTM extends CommonGLPI {
          autocompletionTextField("template_name",$this->table,"template_name",
                                  $this->fields["template_name"],25,$this->fields["entities_id"]);
       } else if (empty($ID)||$ID<0) {
-         echo $LANG['common'][87];
+         echo $this->getTypeName()." - ".$LANG['common'][87];
       } else {
-         echo $LANG['common'][2]." $ID";
+         echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
       }
 
       if (isset($this->fields["entities_id"]) && isMultiEntitiesMode()) {
@@ -1828,7 +1828,7 @@ class CommonDBTM extends CommonGLPI {
       Dropdown::show(get_called_class(),$options);
       */
    }
-   
+
 }
 
 ?>
