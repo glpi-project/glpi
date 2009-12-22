@@ -1931,8 +1931,8 @@ class Ticket extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                         $this->getField('ticketsolutiontypes_id'));
       } else {
-         Dropdown::dropdownValue('glpi_ticketsolutiontypes', 'ticketsolutiontypes_id',
-                                 $this->getField('ticketsolutiontypes_id'),1);
+         Dropdown::show('TicketSolutionType',
+                        array('value'=>$this->getField('ticketsolutiontypes_id')));
       }
       echo "</td></tr>";
 
