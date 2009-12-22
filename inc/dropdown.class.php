@@ -274,7 +274,7 @@ class Dropdown {
          }
       }
 
-      $params=array('searchText'=>'__VALUE__',
+      $param=array('searchText'=>'__VALUE__',
                     'value'=>$params['value'],
                     'table'=>$params['table'],
                     'itemtype'=>$itemtype,
@@ -289,7 +289,7 @@ class Dropdown {
 
       $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$rand."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";
-      ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
+      ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$param,$default,$rand);
 
       // Display comment
       if ($params['comments']) {
