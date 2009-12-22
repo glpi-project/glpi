@@ -341,7 +341,8 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
             if ($canedit) {
                openArrowMassive("softinstall".$rand."",true);
-               SoftwareVersion::dropdown("versionID",array('softwares_id'=>$softwares_id));
+               SoftwareVersion::dropdown(array( 'name'         => 'versionID',
+                                                'softwares_id' => $softwares_id));
                echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";
                closeArrowMassive('deleteinstalls', $LANG['buttons'][6]);

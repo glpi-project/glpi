@@ -633,14 +633,25 @@ class Auth {
    }
 
    /**
-    * Print all the authentication methods
-    * @param name the dropdown name
-    * @param $options possible options / not used here
-    *
-    *@return Nothing (display)
-    */
-   static function dropdown($name,$options=array()) {
+   * Print all the authentication methods
+   *
+   * Parameters which could be used in options array :
+   *    - name : string / name of the select (default is auths_id)
+   *
+   * @param $options possible options / not used here
+   *
+   *@return Nothing (display)
+   */
+   static function dropdown($options=array()) {
       global $LANG,$DB;
+
+      $p['name'] = 'auths_id';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
 
       $methods[0]='-----';
       $methods[AUTH_DB_GLPI]=$LANG['login'][32];
@@ -662,7 +673,7 @@ class Auth {
          $methods[AUTH_MAIL]=$LANG['login'][33];
       }
 
-      return Dropdown::showFromArray($name,$methods);
+      return Dropdown::showFromArray($p['name'],$methods);
    }
 
    /**

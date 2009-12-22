@@ -202,19 +202,21 @@ class SoftwareVersion extends CommonDBTM {
     * Make a select box for  software to install
     *
     * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is softwareversions_id)
     *    - softwares_id : integer / ID of the software
     *    - value : integer / value of the selected version
     *
-    * @param $myname select name
+    * @param options options used
 
     * @return nothing (print out an HTML select box)
     */
-   static function dropdown($myname,$options=array()) {
+   static function dropdown($options=array()) {
       global $CFG_GLPI;
 
       //$softwares_id,$value=0
       $p['softwares_id']=0;
       $p['value']=0;
+      $p['name']='softwareversions_id';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -224,10 +226,10 @@ class SoftwareVersion extends CommonDBTM {
 
       $rand=mt_rand();
       $params=array('softwares_id'  => $p['softwares_id'],
-                    'myname'        => $myname,
+                    'myname'        => $p['name'],
                     'value'         => $p['value']);
 
-      $default="<select name='$myname'><option value='0'>------</option></select>";
+      $default="<select name='".$p['name']."'><option value='0'>------</option></select>";
       ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
 
       return $rand;

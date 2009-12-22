@@ -204,9 +204,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['software'][1]."&nbsp;:</td>";
       echo "<td>";
-      SoftwareVersion::dropdown("softwareversions_id_buy",
-                        array('softwares_id' => $this->fields["softwares_id"],
-                               'value'       => $this->fields["softwareversions_id_buy"]));
+      SoftwareVersion::dropdown(array( 'name'         => "softwareversions_id_buy",
+                                       'softwares_id' => $this->fields["softwares_id"],
+                                       'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
       echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
       echo "<td>";
@@ -217,9 +217,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['software'][2]."&nbsp;:</td>";
       echo "<td>";
-      SoftwareVersion::dropdown("softwareversions_id_use",
-                        array('softwares_id' => $this->fields["softwares_id"],
-                               'value'       => $this->fields["softwareversions_id_use"]));
+      SoftwareVersion::dropdown(array( 'name'         => "softwareversions_id_use",
+                                       'softwares_id' => $this->fields["softwares_id"],
+                                       'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='4'>";

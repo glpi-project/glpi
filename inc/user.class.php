@@ -1696,6 +1696,7 @@ class User extends CommonDBTM {
     * Make a select box with all glpi users where select key = name
     *
     * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is users_id)
     *    - right : string / limit user who have specific right :
     *        id -> only current user (default case);
     *        interface -> central ;
@@ -1711,8 +1712,6 @@ class User extends CommonDBTM {
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - helpdesk_ajax : boolean (default 0) / use ajax for helpdesk auto update (mail itemtype)
     *
-    * @param $myname the name of the HTML select
-    * @param $value preselected value
     * @param $options possible options
     * @return nothing (print out an HTML select box)
     *
@@ -1721,14 +1720,14 @@ class User extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
 
       // Defautl values
-      $p['name']='users_id';
-      $p['value']='';
-      $p['right']='id';
-      $p['all']=0;
-      $p['helpdesk_ajax']=0;
-      $p['comments']=1;
-      $p['entity']=-1;
-      $p['used']=array();
+      $p['name']           = 'users_id';
+      $p['value']          = '';
+      $p['right']          = 'id';
+      $p['all']            = 0;
+      $p['helpdesk_ajax']  = 0;
+      $p['comments']       = 1;
+      $p['entity']         = -1;
+      $p['used']           = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
