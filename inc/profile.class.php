@@ -159,7 +159,7 @@ class Profile extends CommonDBTM {
 
       if ($this->fields["interface"]=="helpdesk") {
          foreach($this->fields as $key=>$val) {
-            if (!in_array($key,self::common_fields) && !in_array($key,self::helpdesk_rights)) {
+            if (!in_array($key,self::$common_fields) && !in_array($key,self::$helpdesk_rights)) {
                unset($this->fields[$key]);
             }
          }
