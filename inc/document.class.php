@@ -1000,7 +1000,13 @@ class Document extends CommonDBTM {
 
       $ID = $item->getField('id');
       if (!(($item instanceof kbItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
-         if (!$ID || !haveRight('document','r') || !$item->can($item->fields['id'],'r')) {
+         if ($item->isNewID($ID)) {
+            return false;
+         }
+         if (get_class($item)!='Ticket' && !haveRight('document','r')) {
+            return false;
+         }
+         if (!$item->can($item->fields['id'],'r')) {
             return false;
          }
       }
@@ -1118,7 +1124,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if ($canedit) {
+      if ($canedit) { // hack for ticket  || get_class($item)=='Ticket') {
          // Restrict entity for knowbase
          $entities="";
          $entity=$_SESSION["glpiactive_entity"];
@@ -1130,15 +1136,15 @@ class Document extends CommonDBTM {
                $entities = $entity;
             }
          }
-         $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
-         $q="SELECT count(*)
-             FROM `glpi_documents`
-             WHERE `is_deleted`='0' $limit";
-
-         $result = $DB->query($q);
-         $nb = $DB->result($result,0,0);
-
          if ($withtemplate<2) {
+            $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
+            $q="SELECT count(*)
+                FROM `glpi_documents`
+                WHERE `is_deleted`='0' $limit";
+
+            $result = $DB->query($q);
+            $nb = $DB->result($result,0,0);
+
             echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
@@ -1151,7 +1157,7 @@ class Document extends CommonDBTM {
                $used[$ID]=$ID;
             }
 
-            if ($nb>count($used)) {
+            if (haveRight('document','r') && $nb>count($used)) {
                echo "<td class='left' colspan='2'>";
                echo "<div class='software-instal'>";
                Document::dropdown(array('entity' => $entities , 'used' => $used));
