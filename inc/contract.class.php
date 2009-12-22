@@ -903,7 +903,7 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
             echo "<div class='software-instal'><input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            Contract::dropdownContracts("contracts_id",$item->getEntityID(),$contracts);
+            Contract::dropdown(array('entity' => $item->getEntityID(), 'used' => $contracts));
             echo "</div></td><td class='center'>";
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td>";
@@ -1053,37 +1053,54 @@ class Contract extends CommonDBTM {
     *
     * Print a select named $name with contracts options and selected value $value
     *
-    * @param $name string : HTML select name
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $alreadyused : already used contract, do not add to dropdown
-    * @param $nochecklimit : true to disable limit for nomber of device (for supplier)
+    *    - name : string / name of the select (default is contracts_id)
+    *    - value : integer / preselected value (default 0)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - nochecklimit : boolean / disable limit for nomber of device (for supplier, default false)
+    *
+    * @param $options possible options
     *
     *@return Nothing (display)
     *
     **/
-   static function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false) {
+   static function dropdown($options = array()) {
       global $DB;
+      //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
+      $p['name']     = 'contracts_id';
+      $p['value']    = '';
+      $p['entity']    = '';
+      $p['used']    = array();
+      $p['nochecklimit']    = false;
 
       $entrest="";
       $idrest="";
-      if ($entity_restrict>=0) {
-         $entrest=getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$entity_restrict,true);
+      if ($p['entity']>=0) {
+         $entrest=getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$p['entity'],true);
       }
-      if (count($alreadyused)) {
-         foreach ($alreadyused AS $ID) {
-            $idrest .= (empty($idrest) ? "AND `glpi_contracts`.`id` NOT IN(" : ",") . "'".$ID."'";
-         }
-         $idrest .= ")";
+      if (count($p['used'])) {
+         $idrest=" AND `glpi_contracts`.`id` NOT IN(".implode("','",$p['used']).") ";
       }
       $query = "SELECT `glpi_contracts`.*, `glpi_entities`.`completename`
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
                 WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest
-                ORDER BY `glpi_entities`.`completename`, `glpi_contracts`.`name` ASC,
-                         `glpi_contracts`.`begin_date` DESC";
+                ORDER BY `glpi_entities`.`completename`,
+                           `glpi_contracts`.`name` ASC,
+                           `glpi_contracts`.`begin_date` DESC";
       $result=$DB->query($query);
-      echo "<select name='$name'>";
-      echo "<option value='-1'>-----</option>";
+      echo "<select name='".$p['name']."'>";
+
+      if ($p['value'] > 0) {
+         $output=Dropdown::getDropdownName('glpi_contracts',$p['value']);
+         if ($_SESSION["glpiis_ids_visible"]) {
+            $output.=" (".$p['value'].")";
+         }
+         echo "<option selected value='".$p['value']."'>".$output."</option>";
+      } else {
+         echo "<option value='-1'>-----</option>";
+      }
       $prev=-1;
       while ($data=$DB->fetch_array($result)) {
          if ($nochecklimit || $data["max_links_allowed"]==0
@@ -1096,7 +1113,12 @@ class Contract extends CommonDBTM {
                $prev=$data["entities_id"];
                echo "<optgroup label=\"". $data["completename"] ."\">";
             }
-            echo "<option value='".$data["id"]."'>";
+
+            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+               $data["name"].=" (".$data["id"].")";
+            }
+
+            echo "<option  value='".$data["id"]."'>";
             echo utf8_substr($data["name"]." - #".$data["num"]." - ".
                              convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_chars_limit"]);
             echo "</option>";

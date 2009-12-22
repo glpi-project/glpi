@@ -175,7 +175,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_contract" :
-         Dropdown::show('Contract', array('name'   => "conID"));
+         Contract::dropdown(array('name'   => "conID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
