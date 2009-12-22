@@ -322,7 +322,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
       echo "<td>";
-      globalManagementDropdown($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
+      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
                                $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>\n";
 
