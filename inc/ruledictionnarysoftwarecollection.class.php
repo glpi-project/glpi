@@ -92,7 +92,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       echo "<tr><th colspan='2' class='b'>" . $LANG['rulesengine'][95] . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" . $LANG['rulesengine'][96] . "</td>";
       echo "<td class='tab_bg_2 center'>";
-      Dropdown::dropdownValue("glpi_manufacturers", "manufacturer");
+      Dropdown::show('Manufacturer', array('name'=>'manufacturer'));
       echo "</td></tr>\n";
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";

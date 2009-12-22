@@ -80,7 +80,7 @@ class Profile_User extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
-         Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+         Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
          echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
          dropdownUnderProfiles("profiles_id");
          echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
@@ -336,7 +336,7 @@ class Profile_User extends CommonDBTM {
                      echo "</table>";
                      if ($canedit) {
                         openArrowMassive("profileuser_form".$rand."_$temp", true);
-                        Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+                        Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value=\"".
                               $LANG['buttons'][20]."\" class='submit'>&nbsp;";
                         closeArrowMassive('delete', $LANG['buttons'][6]);
@@ -411,7 +411,7 @@ class Profile_User extends CommonDBTM {
                echo "</table>\n";
                if ($canedit) {
                   openArrowMassive("profileuser_form".$rand."_$temp", true);
-                  Dropdown::dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
+                  Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
                   echo "&nbsp;<input type='submit' name='moveentity' value=\"".
                                $LANG['buttons'][20]."\" class='submit'>&nbsp;";
                   closeArrowMassive('delete', $LANG['buttons'][6]);
