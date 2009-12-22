@@ -281,8 +281,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][3]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_documentcategories","documentcategories_id",
-                    $this->fields["documentcategories_id"]);
+      Dropdown::show('DocumentCategory', array('value' => $this->fields["documentcategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

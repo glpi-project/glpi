@@ -682,8 +682,9 @@ class Infocom extends CommonDBTM {
          if ($withtemplate==2) {
             echo Dropdown::getDropdownName("glpi_suppliers",$ic->fields["suppliers_id"]);
          } else {
-            Dropdown::dropdownValue("glpi_suppliers","suppliers_id",$ic->fields["suppliers_id"],1,
-                          $item->getField('entities_id'));
+            Dropdown::show('Supplier',
+                           array('value'  => $ic->fields["suppliers_id"],
+                                 'entity' => $item->getEntityID()));
          }
          echo "</td>";
          echo "<td>".$LANG['financial'][82]."&nbsp;:</td>";
@@ -733,8 +734,10 @@ class Infocom extends CommonDBTM {
 
             if (haveRight("budget","r")) {
                echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
-               Dropdown::dropdownValue("glpi_budgets","budgets_id",$ic->fields["budgets_id"],0,
-                             $item->getEntityID());
+               Dropdown::show('Budget',
+                              array('value'     => $ic->fields["budgets_id"],
+                                    'entity'    => $item->getEntityID(),
+                                    'comments'  => 0));
                echo "</td></tr>";
             } else {
                echo "<td colspan='2'></td></tr>";

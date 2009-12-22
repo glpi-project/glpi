@@ -221,7 +221,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_contacttypes","contacttypes_id",$this->fields["contacttypes_id"]);
+      Dropdown::show('ContactType', array('value' => $this->fields["contacttypes_id"]));
       echo "</td>";
       echo "<td></td><td class='center'>";
       if ($ID>0) {

@@ -834,7 +834,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['ocsng']['title']=$LANG['setup'][134];
       $menu['config']['content']['ocsng']['page']='/front/ocsserver.php';
       $menu['config']['content']['ocsng']['links']['search']='/front/ocsserver.php';
-      $menu['config']['content']['ocsng']['links']['add']='/front/ocsng.form.php';
+      $menu['config']['content']['ocsng']['links']['add']='/front/ocsserver.form.php';
    }
 
    if (haveRight("link","r")) {
@@ -1845,7 +1845,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-   Dropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+   Dropdown::show('TicketCategory', array('value' => $ticketcategories_id));
    echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";

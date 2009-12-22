@@ -342,7 +342,9 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td>\n<td colspan='3'>";
-      Dropdown::dropdownValue("glpi_states", "states_id_linkif", $this->fields["states_id_linkif"]);
+      Dropdown::show('State',
+                     array('value'  => $this->fields["states_id_linkif"],
+                           'name'   => "states_id_linkif"));
       echo "</td></tr>\n";
 
       echo "</table><br>".$LANG['ocsconfig'][58];
@@ -2121,8 +2123,10 @@ class OcsServer extends CommonDBTM {
                      echo "<td class='center'><img src=\"" .GLPI_ROOT. "/pics/greenbutton.png\"></td>\n";
                   }
                   echo "<td>";
-                  Dropdown::dropdownValue("glpi_entities", "toimport_entities[" . $tab["id"] . "]=" .
-                                $data['entities_id'], $data['entities_id'], 0);
+                  Dropdown::show('Entity',
+                     array('name'  => "toimport_entities[".$tab["id"]."]=".$data['entities_id'],
+                                       'value'  => $data['entities_id'],
+                                       'comments' => 0));
                   echo "</td>\n";
                }
                echo "<td>";
@@ -2133,12 +2137,13 @@ class OcsServer extends CommonDBTM {
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $computer_found = OcsServer::getComputersAlreadyImported($tab["id"],$ocsservers_id,
                                                                            $entity);
+                  $options=array('name'  => "tolink[".$tab["id"]."]");
+
                   if (!empty($computer_found) && $computer_found != -1) {
-                     Dropdown::dropdownValue("glpi_computers", "tolink[" . $tab["id"] . "]",
-                                             $computer_found[0],1,$entity);
-                  } else {
-                     Dropdown::dropdownSimple("glpi_computers", "tolink[" . $tab["id"] . "]");
+                     $options['value']=$computer_found[0];
+                     $options['entity']=$entity;
                   }
+                  Dropdown::show('Computer', $options);
                }
                echo "</td></tr>\n";
             }

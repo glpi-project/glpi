@@ -170,8 +170,8 @@ class KnowbaseItem extends CommonDBTM {
          echo "<fieldset>";
          echo "<legend>".$LANG['knowbase'][13]."</legend>";
          echo "<div class='center'>".$LANG['knowbase'][6];
-         Dropdown::dropdownValue("glpi_knowbaseitemcategories","knowbaseitemcategories_id",
-                       $this->fields["knowbaseitemcategories_id"]);
+         Dropdown::show('KnowbaseItemCategory',
+                     array('value' => $this->fields["knowbaseitemcategories_id"]));
          echo "</div></fieldset>";
 
          echo "<fieldset>";
@@ -214,7 +214,9 @@ class KnowbaseItem extends CommonDBTM {
 
          if (isMultiEntitiesMode()) {
             echo $LANG['entity'][0]."&nbsp;: ";
-            Dropdown::dropdownValue("glpi_entities", "entities_id", $this->fields["entities_id"],0);
+            Dropdown::show('Entity',
+                        array('value'     => $this->fields["entities_id"]
+                              'comments'  => 0 ));
             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
             if ($canrecu) {
                Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);

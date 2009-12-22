@@ -157,7 +157,7 @@ class Contract extends CommonDBTM {
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
-      Dropdown::dropdownValue("glpi_contracttypes","contracttypes_id",$this->fields["contracttypes_id"]);
+      Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
