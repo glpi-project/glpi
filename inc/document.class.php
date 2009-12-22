@@ -1154,7 +1154,7 @@ class Document extends CommonDBTM {
             if ($nb>count($used)) {
                echo "<td class='left' colspan='2'>";
                echo "<div class='software-instal'>";
-               Document::dropdown(array('entity'=>$entities,'used'=>$used));
+               Document::dropdown(array('entity' => $entities , 'used' => $used));
                echo "</div></td><td class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";

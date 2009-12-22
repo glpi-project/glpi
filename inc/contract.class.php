@@ -600,15 +600,10 @@ class Contract extends CommonDBTM {
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='2'>";
             echo "<div class='software-instal'><input type='hidden' name='contracts_id' value='$instID'>";
-            if ($this->fields["is_recursive"]) {
-               Dropdown::show('Supplier',
-                        array('used'   => $used,
-                              'entity' => getSonsOf("glpi_entities",$this->fields["entities_id"])));
-            } else {
-               Dropdown::show('Supplier',
-                        array('used'   => $used,
-                              'entity' => $this->fields["entities_id"]));
-            }
+            Dropdown::show('Supplier',
+                     array('used'         => $used,
+                           'entity'       => $this->fields["entities_id"],
+                           'entity_sons'  => $this->fields["is_recursive"]));
             echo "</div></td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value=\"".
                    $LANG['buttons'][8]."\" class='submit'>";
@@ -1057,6 +1052,8 @@ class Contract extends CommonDBTM {
     *    - value : integer / preselected value (default 0)
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - nochecklimit : boolean / disable limit for nomber of device (for supplier, default false)
     *
@@ -1068,11 +1065,20 @@ class Contract extends CommonDBTM {
    static function dropdown($options = array()) {
       global $DB;
       //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
-      $p['name']     = 'contracts_id';
-      $p['value']    = '';
-      $p['entity']    = '';
-      $p['used']    = array();
-      $p['nochecklimit']    = false;
+      $p['name']           = 'contracts_id';
+      $p['value']          = '';
+      $p['entity']         = '';
+      $p['entity_sons']    = false;
+      $p['used']           = array();
+      $p['nochecklimit']   = false;
+
+      if (!($p['entity']<0) && $p['entity_sons']) {
+         if (is_array($p['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
+         }
+      }
 
       $entrest="";
       $idrest="";
@@ -1082,7 +1088,7 @@ class Contract extends CommonDBTM {
       if (count($p['used'])) {
          $idrest=" AND `glpi_contracts`.`id` NOT IN(".implode("','",$p['used']).") ";
       }
-      $query = "SELECT `glpi_contracts`.*, `glpi_entities`.`completename`
+      $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
                 WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest
@@ -1111,7 +1117,7 @@ class Contract extends CommonDBTM {
                   echo "</optgroup>";
                }
                $prev=$data["entities_id"];
-               echo "<optgroup label=\"". $data["completename"] ."\">";
+               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
             if ($_SESSION["glpiis_ids_visible"] || empty($output)) {

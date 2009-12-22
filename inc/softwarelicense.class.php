@@ -241,10 +241,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       if ($this->fields["number"]==1) {
          Dropdown::show('Computer',
-                        array('value'  => $this->fields["computers_id"],
-                              'entity' => ($this->fields['is_recursive']
-                              ? getSonsOf('glpi_entities', $this->fields['entities_id'])
-                              : $this->fields['entities_id'])));
+                        array('value'        => $this->fields["computers_id"],
+                              'entity'       => $this->fields['entities_id'],
+                              'entity_sons'  => $this->fields['is_recursive']));
       } else {
          echo $LANG['software'][51];
       }
