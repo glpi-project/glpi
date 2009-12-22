@@ -356,10 +356,10 @@ class TicketTask  extends CommonDBTM {
       return getUserName($this->fields["users_id"],$link);
    }
 
-   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
+   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $canedit = $caneditall;
+      $canedit = $this->can($this->fields['id'],'w');
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
        ($canedit
          ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].$this->fields['id']."$rand();\""
@@ -562,7 +562,7 @@ class TicketTask  extends CommonDBTM {
 
          while ($data = $DB->fetch_array($result)) {
             if ($this->getFromDB($data['id'])) {
-               $this->showInTicketSumnary($ticket, $rand, $showprivate, $caneditall);
+               $this->showInTicketSumnary($ticket, $rand, $showprivate);
             }
          }
          echo "</table>";

@@ -123,7 +123,11 @@ class TicketFollowup  extends CommonDBTM {
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
-      return true;
+      // Only the technician
+      return ((haveRight("comment_all_ticket","1")
+              || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || (isset($_SESSION["glpigroups"])
+                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
    }
 
    /**
@@ -317,10 +321,10 @@ class TicketFollowup  extends CommonDBTM {
       return getUserName($this->fields["users_id"],$link);
    }
 
-   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate, $caneditall) {
+   function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $canedit = ($caneditall || $this->fields['users_id'] == $_SESSION['glpiID']);
+      $canedit = $this->can($this->fields['id'],'w');
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
        ($canedit
          ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].$this->fields['id']."$rand();\""
@@ -386,48 +390,66 @@ class TicketFollowup  extends CommonDBTM {
 
       $canplan = haveRight("show_planning","1");
 
-      $this->showFormHeader($this->getFormURL(),$ID,'',2);
+      $tech=(haveRight("comment_all_ticket","1")
+             || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+             || (isset($_SESSION["glpigroups"])
+                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups']));
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='4'><textarea name='content' cols='50' rows='6'>".
-            $this->fields["content"]."</textarea></td>";
-      if ($this->fields["date"]) {
-         echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
-         echo "<td>".convDateTime($this->fields["date"]);
+      if ($tech) {
+
+         $this->showFormHeader($this->getFormURL(),$ID,'',2);
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td rowspan='4' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td class='center middle' rowspan='4'><textarea name='content' cols='50' rows='6'>".
+               $this->fields["content"]."</textarea></td>";
+         if ($this->fields["date"]) {
+            echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
+            echo "<td>".convDateTime($this->fields["date"]);
+         } else {
+            echo "<td colspan='2'>&nbsp;";
+         }
+         echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['job'][44]."&nbsp;:</td><td>";
+         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
+         echo "<td><select name='is_private'>";
+         echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".$LANG['choice'][0].
+               "</option>";
+         echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".$LANG['choice'][1].
+               "</option>";
+         echo "</select></td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
+         $hour = floor($this->fields["realtime"]);
+         $minute = round(($this->fields["realtime"]-$hour)*60,0);
+         Dropdown::showInteger('hour',$hour,0,100);
+         echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+         Dropdown::showInteger('minute',$minute,0,59);
+         echo "&nbsp;".$LANG['job'][22];
+         echo "</td></tr>\n";
+
+         $this->showFormButtons($ID,'',2);
       } else {
-         echo "<td colspan='2'>&nbsp;";
+         $this->showFormHeader($this->getFormURL(),$ID);
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td class='center middle'><textarea name='content' cols='80' rows='6'>".
+               $this->fields["content"]."</textarea>";
+         echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
+         echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk')."'>";
+         echo "</td></tr>\n";
+         $this->showFormButtons($ID);
       }
-      echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][44]."&nbsp;:</td><td>";
-      Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
-      echo "<td><select name='is_private'>";
-      echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".$LANG['choice'][0].
-            "</option>";
-      echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".$LANG['choice'][1].
-            "</option>";
-      echo "</select></td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"]-$hour)*60,0);
-      Dropdown::showInteger('hour',$hour,0,100);
-      echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-      Dropdown::showInteger('minute',$minute,0,59);
-      echo "&nbsp;".$LANG['job'][22];
-      echo "</td></tr>\n";
-
-      $this->showFormButtons($ID,'',2);
-
       return true;
    }
 
@@ -577,7 +599,7 @@ class TicketFollowup  extends CommonDBTM {
 
          while ($data = $DB->fetch_array($result)) {
             if ($this->getFromDB($data['id'])) {
-               $this->showInTicketSumnary($ticket, $rand, $showprivate, $caneditall);
+               $this->showInTicketSumnary($ticket, $rand, $showprivate);
             }
          }
          echo "</table>";
