@@ -886,7 +886,8 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    if ($extended) {
       echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      Dropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+      Dropdown::show('TicketCategory', array('value'=>$ticketcategories_id));
+
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td class='center' colspan='2'>";
@@ -1004,7 +1005,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['common'][36]."&nbsp;:<br>";
-   Dropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",$ticketcategories_id);
+   Dropdown::show('TicketCategory', array('value'=>$ticketcategories_id));
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][44]."&nbsp;:<br>";
@@ -1024,7 +1025,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    User::dropdownForTicket("users_id",$users_id,"users_id");
 
    echo "<br>".$LANG['common'][35]."&nbsp;: ";
-   Dropdown::dropdownValue("glpi_groups","group",$group);
+   Dropdown::show('Group', array('value'=>$group));
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][5]."&nbsp;:<br>";
@@ -1049,9 +1050,11 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
                            'right'=>'own_ticket',
                            'all' =>1));
       echo "<br>".$LANG['common'][35]."&nbsp;: ";
-      Dropdown::dropdownValue("glpi_groups","groups_id_assign",$groups_id_assign);
+
+      Dropdown::show('Group', array('name'=>'groups_id_assign','value'=>$groups_id_assign));
+
       echo "<br>".$LANG['financial'][26]."&nbsp;:&nbsp;";
-      Dropdown::dropdownValue("glpi_suppliers","suppliers_id_assign",$suppliers_id_assign);
+      Dropdown::show('Supplier', array('name'=>'suppliers_id_assign','value'=>$suppliers_id_assign));
    }
 
    echo "</td></tr>";
@@ -1938,8 +1941,11 @@ function showJobDetails($target, $ID,$array=array()) {
 
       //If user have access to more than one entity, then display a combobox
       if ($count > 1) {
-         $rand = Dropdown::dropdownValue("glpi_entities", "entities_id", $job->fields["entities_id"], 1,
-                               $values,'',array(),1);
+         $rand = Dropdown::show('Entity',
+                        array('value'=>$job->fields["entities_id"],
+                              'entity'=>$values,
+                              'auto_submit'=>1));
+
       } else {
          echo "<input type='hidden' name='entities_id' value='".$job->fields["entities_id"]."'>";
       }
@@ -1966,8 +1972,8 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      Dropdown::dropdownValue("glpi_groups","groups_id",$job->fields["groups_id"],1,
-                    $job->fields["entities_id"]);
+      Dropdown::show('Group',
+               array('value'=>$job->fields["groups_id"],'entity'=>$job->fields["entities_id"]));
    } else {
       echo Dropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
    }
@@ -2000,8 +2006,9 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][36]."&nbsp;: </td>";
    echo "<td >";
    if ($canupdate) {
-      Dropdown::dropdownValue("glpi_ticketcategories","ticketcategories_id",
-                    $job->fields["ticketcategories_id"],1,$job->fields["entities_id"]);
+      Dropdown::show('TicketCategory',
+               array('value'=>$job->fields["ticketcategories_id"],
+                     'entity'=>$job->fields["entities_id"]));
    } else {
       echo Dropdown::getDropdownName("glpi_ticketcategories",$job->fields["ticketcategories_id"]);
    }
@@ -2040,7 +2047,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      Dropdown::dropdownValue('glpi_requesttypes',"requesttypes_id",$job->fields["requesttypes_id"]);
+      Dropdown::show('RequestType',array('value'=>$job->fields["requesttypes_id"]));
    } else {
       echo Dropdown::getDropdownName('glpi_requesttypes', $job->fields["requesttypes_id"]);
    }
@@ -2048,8 +2055,10 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_groups","groups_id_assign",$job->fields["groups_id_assign"],1,
-                    $job->fields["entities_id"]);
+      Dropdown::show('Group',
+               array('name'=>'groups_id_assign',
+                     'value'=>$job->fields["groups_id_assign"],
+                     'entity'=>$job->fields["entities_id"]));
       echo "</td>";
    } else {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
@@ -2061,7 +2070,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
-   echo "<td rowspan='2''>";
+   echo "<td rowspan='2'>";
    if ($canupdate) {
       if ($ID && $job->fields['itemtype'] && class_exists($job->fields['itemtype'])) {
          $item = new $job->fields['itemtype']();
@@ -2089,8 +2098,11 @@ function showJobDetails($target, $ID,$array=array()) {
    if (haveRight("assign_ticket","1")) {
       echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_suppliers","suppliers_id_assign",
-                    $job->fields["suppliers_id_assign"],1,$job->fields["entities_id"]);
+      Dropdown::show('Supplier',
+               array('name'=>'suppliers_id_assign',
+                     'value'=>$job->fields["suppliers_id_assign"],
+                     'entity'=>$job->fields["entities_id"]));
+
       echo "</td>";
    } else {
       echo "<td colspan='2'>&nbsp;</td>";
@@ -2303,7 +2315,8 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "</td></tr>";
    }
    echo "</table>";
-*/   echo "</td></tr>";
+  echo "</td></tr>";
+*/ 
 
    if ($canupdate
        || $canupdate_descr
@@ -2314,12 +2327,12 @@ function showJobDetails($target, $ID,$array=array()) {
 
       echo "<tr class='tab_bg_1'>";
       if ($ID) {
-         echo "<td colspan='4' class='center'>";
+         echo "<td colspan='3' class='center'>";
          echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
       } else {
-         echo "<td colspan='2' class='center'>";
+         echo "<td colspan='1' class='center'>";
          echo "<a href='$target'>";
-         echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'/></a></td>";
+         echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a></td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='add' value='".$LANG['buttons'][2]."' class='submit'>";
       }
@@ -2356,7 +2369,6 @@ function showJobDetails($target, $ID,$array=array()) {
 */
    }
    echo "<input type='hidden' name='id' value='$ID'>";
-   echo "</div>";
    echo "</form>";
 
    return true;

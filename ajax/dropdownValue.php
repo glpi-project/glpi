@@ -240,6 +240,9 @@ if ($item instanceof CommonTreeDropdown) {
             echo "<option value='$ID' $style title=\"".cleanInputText($data['completename'].
                   $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
          }
+         if ($multi) {
+            echo "</optgroup>";
+         }
       }
       echo "</select>";
    }
