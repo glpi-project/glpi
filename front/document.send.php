@@ -51,7 +51,7 @@ if (isset($_GET['docid'])) { // docid for document
    if (!file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
       displayErrorAndDie($LANG['document'][38],true); // Not found
 
-   } else if ($doc->canViewFile()) {
+   } else if ($doc->canViewFile($_GET)) {
       if ($doc->fields['sha1sum']
           && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
 

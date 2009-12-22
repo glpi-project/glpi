@@ -399,9 +399,11 @@ class Document extends CommonDBTM {
    /**
     * Check is the curent user is allowed to see the file
     *
+    * @param $option array of options (only 'tickets_id' used)
+    *
     * @return boolean
     */
-   function canViewFile() {
+   function canViewFile($options) {
       global $DB, $CFG_GLPI;
 
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
@@ -444,13 +446,13 @@ class Document extends CommonDBTM {
          }
 
          // Tracking Case
-         if (isset($_GET["tickets_id"])) {
+         if (isset($options["tickets_id"])) {
             $job=new Ticket;
 
-            if ($job->can($_GET["tickets_id"],'r')) {
+            if ($job->can($options["tickets_id"],'r')) {
                $query = "SELECT *
                   FROM `glpi_documents_items`
-                  WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                  WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
                      AND `glpi_documents_items`.`itemtype` = 'Ticket'
                      AND `documents_id`='".$this->fields["id"]."'";
                $result=$DB->query($query);
@@ -483,13 +485,13 @@ class Document extends CommonDBTM {
          }
 
          // Tracking Case
-         if (isset($_GET["tickets_id"])) {
+         if (isset($options["tickets_id"])) {
             $job=new Ticket;
 
-            if ($job->can($_GET["tickets_id"],'r')) {
+            if ($job->can($options["tickets_id"],'r')) {
                $query = "SELECT *
                   FROM `glpi_documents_items`
-                  WHERE `glpi_documents_items`.`items_id` = '".$_GET["tickets_id"]."'
+                  WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
                      AND `glpi_documents_items`.`itemtype` = 'Ticket'
                      AND `documents_id`='".$this->fields["id"]."'";
                $result=$DB->query($query);
@@ -1013,6 +1015,10 @@ class Document extends CommonDBTM {
       if (empty($withtemplate)) {
          $withtemplate=0;
       }
+      $linkparam = '';
+      if (get_class($item)=='Ticket') {
+         $linkparam = "&amp;tickets_id=".$item->fields['id'];
+      }
       $canedit=$item->can($ID,'w');
       $is_recursive=$item->isRecursive();
 
@@ -1095,7 +1101,7 @@ class Document extends CommonDBTM {
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>".$document->getLink()."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
-            echo "<td class='center'>".$document->getDownloadLink()."</td>";
+            echo "<td class='center'>".$document->getDownloadLink($linkparam)."</td>";
             echo "<td class='center'>";
             if (!empty($data["link"])) {
                echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"]."</a>";
