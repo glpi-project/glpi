@@ -48,50 +48,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-function showReservationForm($itemtype,$items_id) {
-   global $CFG_GLPI,$LANG;
-
-   if (!haveRight("reservation_central","w")) {
-      return false;
-   }
-   if (class_exists($itemtype)) {
-      $item = new $itemtype();
-      if (!$item->getFromDB($items_id)) {
-         return false;
-      }
-      // Recursive type case => need entity right
-      if ($item->isRecursive()) {
-         if (!haveAccessToEntity($item->fields["entities_id"])) {
-            return false;
-         }
-      }
-   } else {
-      return false;
-   }
-   $ri=new ReservationItem;
-
-   if ($ri->getFromDBbyItem($itemtype,$items_id)) {
-      // Rendre le matériel réservable ou non
-      echo "<br><div>";
-      if ($ri->fields["is_active"]) {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$ri->fields['id'].
-               "&amp;is_active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
-      } else {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$ri->fields['id'].
-               "&amp;is_active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
-      }
-      echo "&nbsp;&nbsp;&nbsp;";
-      echo "<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".
-            addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"].
-            "/front/reservationitem.php?id=".$ri->fields['id']."&amp;delete=delete')\" class='icon_consol'>".
-            $LANG['reservation'][6]."</a></div>\n";
-   } else {
-      echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?";
-      echo "items_id=$items_id&amp;itemtype=$itemtype&amp;comment=&amp;add=add\" class='icon_consol' >".
-            $LANG['reservation'][7]."</a></div>\n";
-   }
-}
-
 function printCalendrier($target,$ID="") {
    global $LANG, $CFG_GLPI;
 
@@ -655,7 +611,7 @@ function showDeviceReservations($target,$itemtype,$ID) {
    }
 
    echo "<div class='center'>";
-   showReservationForm($itemtype,$ID);
+   ReservationItem::showActivationFormForItem($itemtype,$ID);
    echo "<br>";
 
    $ri=new ReservationItem;
