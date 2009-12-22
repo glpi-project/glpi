@@ -1856,7 +1856,7 @@ function showJobDetails($target, $ID,$array=array()) {
       if ($canupdate) {
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $job->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
+                              'entity' => $job->fields["entities_id"],
                               'right'  => 'all'));
       } else {
          echo getUserName($job->fields["users_id_recipient"],$showuserlink);
@@ -2326,7 +2326,7 @@ function showJobDetails($target, $ID,$array=array()) {
    }
    echo "</table>";
   echo "</td></tr>";
-*/ 
+*/
 
    if ($canupdate
        || $canupdate_descr
