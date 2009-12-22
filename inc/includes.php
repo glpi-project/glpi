@@ -150,14 +150,15 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED=1;
    $LOADED_PLUGINS=array();
+   $plugin = new Plugin();
    if (!isset($_SESSION["glpi_plugins"])) {
-      initPlugins();
+      $plugin->init();
    }
    if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
       //doHook("config");
       if (count($_SESSION["glpi_plugins"])) {
          foreach ($_SESSION["glpi_plugins"] as $name) {
-            usePlugin($name);
+            Plugin::load($name);
          }
       }
    }

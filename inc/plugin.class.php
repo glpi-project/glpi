@@ -73,6 +73,81 @@ class Plugin extends CommonDBTM {
    }
 
    /**
+   * Init plugins list reading plugins directory
+   * @return nothing
+   */
+   function init() {
+
+      $this->checkStates();
+      $plugins=$this->find('state='.PLUGIN_ACTIVATED);
+
+      $_SESSION["glpi_plugins"]=array();
+
+      if (count($plugins)) {
+         foreach ($plugins as $ID => $plug) {
+            $_SESSION["glpi_plugins"][$ID]=$plug['directory'];
+         }
+      }
+   }
+
+   /**
+   * Init a plugin including setup.php file
+   * launching plugin_init_NAME function  after checking compatibility
+   *
+   * @param $name Name of hook to use
+   * @param $withhook boolean to load hook functions
+   *
+   * @return nothing
+   */
+   static function load($name, $withhook=false) {
+      global $CFG_GLPI, $PLUGIN_HOOKS,$LANG,$LOADED_PLUGINS;
+
+      if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
+         include_once(GLPI_ROOT . "/plugins/$name/setup.php");
+         if (!isset($LOADED_PLUGINS[$name])) {
+            Plugin::loadLang($name);
+            $function = "plugin_init_$name";
+            if (function_exists($function)) {
+               $function();
+               $LOADED_PLUGINS[$name]=$name;
+            }
+         }
+      }
+      if ($withhook && file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
+         include_once(GLPI_ROOT . "/plugins/$name/hook.php");
+      }
+   }
+   /**
+   * Load lang file for a plugin
+   *
+   * @param $name Name of hook to use
+   *
+   * @return nothing
+   */
+   static function loadLang($name) {
+      global $CFG_GLPI,$LANG;
+
+      if (isset($_SESSION['glpilanguage'])
+         && file_exists(GLPI_ROOT . "/plugins/$name/locales/".
+                        $CFG_GLPI["languages"][$_SESSION['glpilanguage']][1])) {
+
+         include_once (GLPI_ROOT . "/plugins/$name/locales/".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][1]);
+
+      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".
+                           $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+
+         include_once (GLPI_ROOT . "/plugins/$name/locales/".
+                     $CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
+
+      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/en_GB.php")) {
+         include_once (GLPI_ROOT . "/plugins/$name/locales/en_GB.php");
+      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/fr_FR.php")) {
+         include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
+      }
+   }
+
+   /**
     * Check plugins states and detect new plugins
     *
    **/
@@ -98,7 +173,7 @@ class Plugin extends CommonDBTM {
              && is_dir($dirplug."/".$filename)) {
             // Find version
             if (file_exists($dirplug."/".$filename."/setup.php")) {
-               loadPluginLang($filename);
+               Plugin::loadLang($filename);
                include_once($dirplug."/".$filename."/setup.php");
                $function="plugin_version_$filename";
                if (function_exists($function)) {
@@ -185,7 +260,7 @@ class Plugin extends CommonDBTM {
       foreach ($pluglist as $ID => $plug) {
          if (function_exists("plugin_".$plug['directory']."_check_config")) {
             // init must not be called for incompatible plugins
-            usePlugin($plug['directory'],true);
+            self::load($plug['directory'],true);
          }
          $i++;
          $class='tab_bg_1';
@@ -374,7 +449,7 @@ class Plugin extends CommonDBTM {
    function uninstall($ID) {
 
       if ($this->getFromDB($ID)) {
-         usePlugin($this->fields['directory'],true);
+         self::load($this->fields['directory'],true);
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
@@ -398,7 +473,7 @@ class Plugin extends CommonDBTM {
    function install($ID) {
 
       if ($this->getFromDB($ID)) {
-         usePlugin($this->fields['directory'],true);
+         self::load($this->fields['directory'],true);
          $function = 'plugin_' . $this->fields['directory'] . '_install';
          $install_ok=false;
          if (function_exists($function)) {
@@ -427,7 +502,7 @@ class Plugin extends CommonDBTM {
       global $PLUGIN_HOOKS;
 
       if ($this->getFromDB($ID)) {
-         usePlugin($this->fields['directory'],true);
+         self::load($this->fields['directory'],true);
          $function = 'plugin_' . $this->fields['directory'] . 'check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {
