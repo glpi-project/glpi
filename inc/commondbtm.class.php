@@ -70,6 +70,10 @@ class CommonDBTM extends CommonGLPI {
       return $this->table;
    }
 
+   function getForeignKey() {
+      return getForeignKeyFieldForTable($this->getTable());
+   }
+
    /**
    * Retrieve an item from the database
    *

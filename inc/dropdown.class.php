@@ -45,7 +45,7 @@ class Dropdown {
     * @return nothing (display the select box)
     **/
    static function dropdownSimple($table,$myname,$display_comment=1,$entity_restrict=-1,$used=array()) {
-
+      echo "Dropdown::droppdownSimple will be deleted : use Dropdown::show instead";
       return Dropdown::dropdownValue($table,$myname,'',$display_comment,$entity_restrict,"",$used);
    }
 
@@ -68,6 +68,8 @@ class Dropdown {
                           $update_item="",$used=array(),$auto_submit=0) {
 
       global $DB,$CFG_GLPI,$LANG;
+
+      echo "Dropdown::droppdownValue will be deleted : use Dropdown::show instead";
 
       $rand=mt_rand();
       $name="------";
@@ -203,9 +205,10 @@ class Dropdown {
       if ($itemtype && !class_exists($itemtype)) {
          return false;
       }
+      $item = new $itemtype();
 
-      $params['table']=getTableForItemType($itemtype);
-      $params['name']=getForeignKeyFieldForTable($params['table']);
+      $params['table']=$item->getTable();
+      $params['name']=$item->getForeignKey();
 
       $params['value']='';
       $params['comments']=1;
@@ -226,8 +229,6 @@ class Dropdown {
       $comment="";
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
 
-      // Temporary computation before rewritten function using itemtype param
-      $item = new $itemtype();
 
       if (strlen($params['value'])==0) {
          $params['value']=-1;
