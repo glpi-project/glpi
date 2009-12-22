@@ -380,10 +380,9 @@ class TicketTask  extends CommonDBTM {
       if ($canedit) {
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
-         $params = array (
-            'type' => __CLASS__,
-            'id' => $this->fields["id"]
-         );
+         $params = array ('type'       => __CLASS__,
+                          'tickets_id' => $this->fields["tickets_id"],
+                          'id'         => $this->fields["id"]);
          ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                               $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
          echo "};";
@@ -433,13 +432,11 @@ class TicketTask  extends CommonDBTM {
     *@param $ticket Object : the ticket
     *
     */
-   function showForm($ID, Ticket $ticket=NULL) {
+   function showForm($ID, Ticket $ticket) {
       global $DB, $LANG, $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
-         $ticket = new Ticket();
-         $ticket->getFromDB($this->fields['tickets_id']);
       } else {
          // Create item
          $input=array('tickets_id' => $ticket->getField('id'));
@@ -533,9 +530,21 @@ class TicketTask  extends CommonDBTM {
 
       $rand = mt_rand();
 
-      echo "<div id='viewfollowup" . $tID . "$rand'>";
-      $this->showForm(-1, $ticket);
-      echo "</div>\n";
+      if ($caneditall) {
+         echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand(){\n";
+         $params = array ('type'       => __CLASS__,
+                          'tickets_id' => $ticket->fields['id'],
+                          'id'         => -1);
+         ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+         echo "};";
+         echo "</script>\n";
+         echo "<a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+         echo $LANG['job'][30]."</a>\n";
+      }
 
       echo "<div class='center'>";
       echo "<h3>" . $LANG['job'][37] . "</h3>";
