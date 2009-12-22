@@ -195,7 +195,7 @@ class Dropdown {
     * @return boolean : lse if error and random id if OK
     *
     */
-   static function show($itemtype,$options) {
+   static function show($itemtype,$options=array()) {
 
 //    static function show($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
 //                           $update_item="",$used=array(),$auto_submit=0) {

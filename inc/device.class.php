@@ -154,7 +154,7 @@ class Device extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
-      echo "<td colspan='2'>"
+      echo "<td colspan='2'>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>";
 

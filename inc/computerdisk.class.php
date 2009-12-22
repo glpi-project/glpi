@@ -132,7 +132,7 @@ class ComputerDisk extends CommonDBChild {
                               $this->fields["mountpoint"],40);
       echo "</td><td>".$LANG['computers'][4]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::dropdownValue("glpi_filesystems", "filesystems_id", $this->fields["filesystems_id"]);
+      Dropdown::show('FileSystem', array('value' => $this->fields["filesystems_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
