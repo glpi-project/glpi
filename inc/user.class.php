@@ -1802,31 +1802,6 @@ class User extends CommonDBTM {
       return $rand;
    }
 
-   /**
-    * Make a select box with all glpi users
-    *
-    *
-    * @param $myname select name
-    * @param $value default value
-    * @param $display_comment display comment near the dropdown
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
-    * @param $used Already used items ID: not to display in dropdown
-    *
-    * @return nothing (print out an HTML select box)
-    *
-    */
-   static function dropdownAll($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
-                             $used=array()) {
-
-      return User::dropdown(array(  'name'            => $myname,
-                                    'value'           => $value,
-                                    'right'           => "all",
-                                    'comments'        => $display_comment,
-                                    'entity'          => $entity_restrict,
-                                    'helpdesk_ajax'   => $helpdesk_ajax,
-                                    'used'            => $used));
-   }
 
    /**
     * Make a select box with all glpi users where select key = ID
