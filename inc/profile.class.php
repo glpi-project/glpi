@@ -47,14 +47,14 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   var $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','comment_ticket',
+   static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','comment_ticket',
                               'observe_ticket','password_update','helpdesk_hardware',
                               'helpdesk_item_type','show_group_ticket','show_group_hardware');
 
    /// Common fields used for all profiles type
-   var $common_fields=array("id","name","interface","is_default");
+   static public $common_fields=array("id","name","interface","is_default");
    /// Fields not related to a basic right
-   var $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
+   static public $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
                              'show_group_hardware','own_ticket','helpdesk_status');
 
    static function getTypeName() {
@@ -159,7 +159,7 @@ class Profile extends CommonDBTM {
 
       if ($this->fields["interface"]=="helpdesk") {
          foreach($this->fields as $key=>$val) {
-            if (!in_array($key,$this->common_fields) && !in_array($key,$this->helpdesk_rights)) {
+            if (!in_array($key,self::common_fields) && !in_array($key,self::helpdesk_rights)) {
                unset($this->fields[$key]);
             }
          }
@@ -186,7 +186,7 @@ class Profile extends CommonDBTM {
     * @param $separator Separator used at the beginning of the request
     * @return SQL restrict string
     **/
-   function getUnderProfileRetrictRequest($separator = "AND") {
+   static function getUnderActiveProfileRetrictRequest($separator = "AND") {
 
       $query = $separator ." ";
 
@@ -201,40 +201,40 @@ class Profile extends CommonDBTM {
       }
 
       if ($_SESSION['glpiactiveprofile']['interface']=='central') {
-         $query.= " (`".$this->table."`.`interface` = 'helpdesk') " ;
+         $query.= " (`glpi_profiles`.`interface` = 'helpdesk') " ;
       }
 
-      $query.= " OR (`".$this->table."`.`interface` = '".$_SESSION['glpiactiveprofile']['interface']."' ";
+      $query.= " OR (`glpi_profiles`.`interface` = '".$_SESSION['glpiactiveprofile']['interface']."' ";
       foreach ($_SESSION['glpiactiveprofile'] as $key => $val) {
          if (!is_array($val) // Do not include entities field added by login
-             && !in_array($key,$this->common_fields)
-             && !in_array($key,$this->noright_fields)
+             && !in_array($key,self::$common_fields)
+             && !in_array($key,self::$noright_fields)
              && ($_SESSION['glpiactiveprofile']['interface']=='central'
-                 || in_array($key,$this->helpdesk_rights))) {
+                 || in_array($key,self::$helpdesk_rights))) {
 
             switch ($val) {
                case '0' :
-                  $query.=" AND (`".$this->table."`.`$key` IS NULL
-                                 OR `".$this->table."`.`$key` IN ('0', '')) ";
+                  $query.=" AND (`glpi_profiles`.`$key` IS NULL
+                                 OR `glpi_profiles`.`$key` IN ('0', '')) ";
                   break;
 
                case '1' :
-                  $query.=" AND (`".$this->table."`.`$key` IS NULL
-                                 OR `".$this->table."`.`$key` IN ('0', '1', '')) ";
+                  $query.=" AND (`glpi_profiles`.`$key` IS NULL
+                                 OR `glpi_profiles`.`$key` IN ('0', '1', '')) ";
                   break;
 
                case 'r' :
-                  $query.=" AND (`".$this->table."`.`$key` IS NULL
-                                 OR `".$this->table."`.`$key` IN ('r', '')) ";
+                  $query.=" AND (`glpi_profiles`.`$key` IS NULL
+                                 OR `glpi_profiles`.`$key` IN ('r', '')) ";
                   break;
 
                case 'w' :
-                  $query.=" AND (`".$this->table."`.`$key` IS NULL
-                                 OR `".$this->table."`.`$key` IN ('w', 'r', '')) ";
+                  $query.=" AND (`glpi_profiles`.`$key` IS NULL
+                                 OR `glpi_profiles`.`$key` IN ('w', 'r', '')) ";
                   break;
 
                default :
-                  $query.=" AND (`".$this->table."`.`$key` IS NULL OR `".$this->table."`.`$key` = '') ";
+                  $query.=" AND (`glpi_profiles`.`$key` IS NULL OR `glpi_profiles`.`$key` = '') ";
             }
          }
       }
@@ -248,22 +248,22 @@ class Profile extends CommonDBTM {
     *@param $IDs array of profile ID to test
     *@return boolean true if have more right
     **/
-   function currentUserHaveMoreRightThan($IDs=array()) {
+   static function currentUserHaveMoreRightThan($IDs=array()) {
       global $DB;
-
       if (count($IDs)==0) {
          // Check all profiles (means more right than all possible profiles)
-         return (countElementsInTable($this->table)
-                 == countElementsInTable($this->table, $this->getUnderProfileRetrictRequest('')));
+         return (countElementsInTable('glpi_profiles')
+                 == countElementsInTable('glpi_profiles', Profile::getUnderActiveProfileRetrictRequest('')));
       }
       $under_profiles=array();
       $query = "SELECT *
-                FROM `".$this->table."` ".
-                $this->getUnderProfileRetrictRequest("WHERE");
+                FROM `glpi_profiles` ".
+                Profile::getUnderActiveProfileRetrictRequest("WHERE");
       $result=$DB->query($query);
       while ($data=$DB->fetch_assoc($result)) {
          $under_profiles[$data['id']]=$data['id'];
       }
+
       foreach ($IDs as $ID) {
          if (!isset($under_profiles[$ID])) {
             return false;
@@ -961,6 +961,44 @@ class Profile extends CommonDBTM {
          echo "<option value='w' ".($value=='w'?" selected ":"").">".$LANG['profiles'][11]."</option>";
       }
       echo "</select>";
+   }
+
+   /**
+   * Dropdown profiles which have rights under the active one
+   *
+   *    - name : string / name of the select (default is profiles_id)
+   *    - value : integer / preselected value (default 0)
+   * @param $options possible options
+   */
+   static function dropdownUnder($options=array()) {
+      global $DB;
+
+      $p['name']  = 'profiles_id';
+      $p['value'] = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
+
+      $profiles[0]="-----";
+
+      $query="SELECT *
+            FROM `glpi_profiles` ".
+            Profile::getUnderActiveProfileRetrictRequest("WHERE")."
+            ORDER BY `name`";
+      $res = $DB->query($query);
+
+      //New rule -> get the next free ranking
+      if ($DB->numrows($res)) {
+         while ($data = $DB->fetch_array($res)) {
+            $profiles[$data['id']]=$data['name'];
+         }
+      }
+
+      Dropdown::showFromArray($p['name'],$profiles,array('value' => $p['value']));
    }
 
 }

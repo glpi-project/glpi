@@ -1015,7 +1015,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * Is the current user have more right than the current one ?
+    * Is the specified user have more right than the current one ?
     *
     *@param $ID Integer : Id of the user
     *
@@ -1024,8 +1024,7 @@ class User extends CommonDBTM {
    function currentUserHaveMoreRightThan($ID) {
 
       $user_prof = $this->getUserProfiles($ID);
-      $prof = new Profile();
-      return $prof->currentUserHaveMoreRightThan($user_prof);
+      return Profile::currentUserHaveMoreRightThan($user_prof);
    }
 
    /**

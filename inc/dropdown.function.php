@@ -412,35 +412,6 @@ function dropdownRules ($sub_type, $myname) {
    return $rand;
 }
 
-/**
- * Dropdown profiles which have rights under the active one
- *
- * @param $name select name
- * @param $value default value
- */
-function dropdownUnderProfiles($name,$value='') {
-   global $DB;
-
-   $profiles[0]="-----";
-
-   $prof=new Profile();
-
-   $query="SELECT *
-           FROM `glpi_profiles` ".
-           $prof->getUnderProfileRetrictRequest("WHERE")."
-           ORDER BY `name`";
-
-   $res = $DB->query($query);
-
-   //New rule -> get the next free ranking
-   if ($DB->numrows($res)) {
-      while ($data = $DB->fetch_array($res)) {
-         $profiles[$data['id']]=$data['name'];
-      }
-   }
-
-   Dropdown::showFromArray($name,$profiles,array('value' => $value));
-}
 
 
 ?>

@@ -45,7 +45,7 @@ if (isset($_POST["add"])) {
    }
    // TODO right check on User not on Profile_User
    if ($user->can($_POST['users_id'],'r')
-       && $profile->currentUserHaveMoreRightThan(array($_POST['profiles_id'] => $_POST['profiles_id']))
+       && Profile::currentUserHaveMoreRightThan(array($_POST['profiles_id'] => $_POST['profiles_id']))
        && haveAccessToEntity($_POST['entities_id'])) {
 
       if ($right->add($_POST)) {
