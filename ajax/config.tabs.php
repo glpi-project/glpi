@@ -93,4 +93,5 @@ switch($_REQUEST['glpi_tab']) {
       }
 }
 
+ajaxFooter();
 ?>
