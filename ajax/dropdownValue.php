@@ -52,6 +52,17 @@ if (!class_exists($_POST['itemtype']) ) {
    exit();
 }
 $item = new $_POST['itemtype']();
+$table = $item->getTable();
+
+// No define value
+if (!isset($_POST['value'])) {
+   $_POST['value']='';
+}
+// No define rand
+if (!isset($_POST['rand'])) {
+   $_POST['rand']=mt_rand();
+}
+
 
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -82,7 +93,7 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT="";
 }
 
-$where .=" AND `".$_POST['table']."`.`id` NOT IN ('".$_POST['value']."'";
+$where .=" AND `$table`.`id` NOT IN ('".$_POST['value']."'";
 if (isset($_POST['used'])) {
    if (is_array($_POST['used'])) {
       $used=$_POST['used'];
@@ -107,13 +118,13 @@ if ($item instanceof CommonTreeDropdown) {
       $recur=$item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
-         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'',
+         $where.=getEntitiesRestrictRequest(" AND ",`$table`,'',
                                             $_POST["entity_restrict"],$recur);
          if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
             $multi=true;
          }
       } else {
-         $where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],'', '', $recur);
+         $where.=getEntitiesRestrictRequest(" AND ",$table,'', '', $recur);
          if (count($_SESSION['glpiactiveentities'])>1) {
             $multi=true;
          }
@@ -124,7 +135,7 @@ if ($item instanceof CommonTreeDropdown) {
          $multi=true;
       }
       // no multi view for entitites
-      if ($_POST['table']=="glpi_entities") {
+      if ($_POST['itemtype']=="Entity") {
          $multi=false;
       }
 
@@ -135,7 +146,7 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
    $query = "SELECT *
-             FROM `".$_POST['table']."`
+             FROM `$table`
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
@@ -145,7 +156,7 @@ if ($item instanceof CommonTreeDropdown) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
             $_POST['myname']."\" size='1'";
       /// TODO : why auto_sumbit only for entities ?
-      if ($_POST['table'] == "glpi_entities" && isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
+      if ($_POST['itemtype'] == "Entity" && isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
          echo " onChange='submit()'";
       }
       echo ">";
@@ -154,7 +165,7 @@ if ($item instanceof CommonTreeDropdown) {
          echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
       }
       $display_selected=true;
-      switch ($_POST["table"]) {
+      switch ($table) {
          case "glpi_knowbaseitemcategories" :
             echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
             break;
@@ -179,7 +190,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
 
       if ($display_selected) {
-         $outputval=Dropdown::getDropdownName($_POST['table'],$_POST['value']);
+         $outputval=Dropdown::getDropdownName($table,$_POST['value']);
          if (!empty($outputval) && $outputval!="&nbsp;") {
             if (utf8_strlen($outputval)>$_POST["limit"]) {
                // Completename for tree dropdown : keep right
@@ -251,13 +262,13 @@ if ($item instanceof CommonTreeDropdown) {
    if ($item->isEntityAssign()) {
       $multi=$item->maybeRecursive();
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
-         $where.=getEntitiesRestrictRequest("AND",$_POST['table'],"entities_id",
+         $where.=getEntitiesRestrictRequest("AND",$table,"entities_id",
                                             $_POST["entity_restrict"],$multi);
          if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
             $multi=true;
          }
       } else {
-         $where.=getEntitiesRestrictRequest("AND",$_POST['table'],'','',$multi);
+         $where.=getEntitiesRestrictRequest("AND",$table,'','',$multi);
          if (count($_SESSION['glpiactiveentities'])>1) {
             $multi=true;
          }
@@ -265,33 +276,33 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
    $field="name";
-   if (strstr($_POST['table'],"glpi_device") && !strstr($_POST['table'],"types")) {
+   if ($item instanceof CommonDevice) {
       $field="designation";
    }
 
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $search=makeTextSearch($_POST['searchText']);
-      $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
-      if ($_POST['table']=="glpi_softwarelicenses") {
+      $where.=" AND  (`$table`.`$field` ".$search;
+      if ($_POST['itemtype']=="SoftwareLicense") {
          $where.=" OR `glpi_softwares`.`name` ".$search;
       }
       $where.=')';
    }
 
-   switch ($_POST['table']) {
-      case "glpi_contacts" :
-         $query = "SELECT `".$_POST['table']."`.`entities_id`,
+   switch ($_POST['itemtype']) {
+      case "Contact" :
+         $query = "SELECT `$table`.`entities_id`,
                           CONCAT(`name`,' ',`firstname`) AS $field,
-                          `".$_POST['table']."`.`comment`, `".$_POST['table']."`.`id`
-                   FROM `".$_POST['table']."`
+                          `$table`.`comment`, `$table`.`id`
+                   FROM `$table`
                    $where";
          break;
 
-      case "glpi_softwarelicenses" :
-         $query = "SELECT `".$_POST['table']."`.*,
+      case "SoftwareLicense" :
+         $query = "SELECT `$table`.*,
                           CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwarelicenses`.`name`)
                                  AS $field
-                   FROM `".$_POST['table']."`
+                   FROM `$table`
                    LEFT JOIN `glpi_softwares`
                         ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
                    $where";
@@ -299,7 +310,7 @@ if ($item instanceof CommonTreeDropdown) {
 
       default :
          $query = "SELECT *
-                   FROM `".$_POST['table']."`
+                   FROM `$table`
                    $where";
          break;
    }
@@ -321,7 +332,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
       echo "<option value='0'>------</option>";
 
-      $output=Dropdown::getDropdownName($_POST['table'],$_POST['value']);
+      $output=Dropdown::getDropdownName($table,$_POST['value']);
       if (!empty($output) && $output!="&nbsp;") {
          if ($_SESSION["glpiis_ids_visible"]) {
             $output.=" (".$_POST['value'].")";
@@ -368,7 +379,7 @@ if ($item instanceof CommonTreeDropdown) {
 
 if (isset($_POST["comment"]) && $_POST["comment"]) {
    $paramscomment=array('value' => '__VALUE__',
-                        'table' => $_POST["table"]);
+                        'table' => $table);
    ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comment_".
                                $_POST["myname"].$_POST["rand"],
                                $CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomment,false);
