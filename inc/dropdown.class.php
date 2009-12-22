@@ -45,7 +45,7 @@ class Dropdown {
     * @return nothing (display the select box)
     **/
    static function dropdownSimple($table,$myname,$display_comment=1,$entity_restrict=-1,$used=array()) {
-      echo "Dropdown::droppdownSimple will be deleted : use Dropdown::show instead";
+      echo "Dropdown::dropdownSimple will be deleted : use Dropdown::show instead";
       return Dropdown::dropdownValue($table,$myname,'',$display_comment,$entity_restrict,"",$used);
    }
 
@@ -69,7 +69,7 @@ class Dropdown {
 
       global $DB,$CFG_GLPI,$LANG;
 
-      echo "Dropdown::droppdownValue will be deleted : use Dropdown::show instead";
+      echo "Dropdown::dropdownValue will be deleted : use Dropdown::show instead";
 
       $rand=mt_rand();
       $name="------";

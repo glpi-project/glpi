@@ -209,6 +209,14 @@ function addTracking($type,$ID,$ID_entity){
 			$query="INSERT INTO glpi_ticketplannings VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."','1');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
+		while (mt_rand(0,100)<$percent['tasks']){
+         $realtime=(mt_rand(0,3)+mt_rand(0,100)/100);
+			$query="INSERT INTO glpi_tickettasks VALUES (NULL,'$tID','".mt_rand($FIRST['taskcategory'],$LAST['taskcategory'])."','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','task $i ".getRandomString(15)."','".mt_rand(0,1)."','$realtime');";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$fID=$DB->insert_id();
+			$i++;
+		}
+
 	}
 	$query="UPDATE ".getTableForItemType($type)." SET ticket_tco='$tco'	WHERE id='".$ID."';";
 	$DB->query($query) or die("PB REQUETE ".$query);
@@ -283,7 +291,6 @@ function generateGlobalDropdowns(){
 		$query="INSERT INTO glpi_ticketsolutiontypes VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
-	
 	$items=array("Technicien","Commercial","Technico-Commercial","President","Secretaire");
 	for ($i=0;$i<$MAX['contact_type'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
@@ -703,13 +710,35 @@ function generate_entity($ID_entity){
 			}	
 		}
 	}	
-	
+
 	$query = "OPTIMIZE TABLE  glpi_locations;";
 	$DB->query($query) or die("PB REQUETE ".$query);
 	
 	regenerateTreeCompleteName("glpi_locations");
 	$LAST["locations"]=getMaxItem("glpi_locations");
 
+
+	// Task categories
+	$added=0;
+	$FIRST["taskcategory"]=getMaxItem("glpi_taskcategories")+1;
+	for ($i=0;$i<pow($MAX['taskcategory'],1/5)&&$added<$MAX['taskcategory'];$i++){
+		$added++;
+		$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','0','taskcategory $i','','comment lieu $i','1','','')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$newID=$DB->insert_id();
+		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
+			$added++;
+			$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','$newID','s-taskcategory $j','','comment s-lieu $j','2','','')";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$newID2=$DB->insert_id();
+		}
+	}
+
+	$query = "OPTIMIZE TABLE  glpi_taskcategories;";
+	$DB->query($query) or die("PB REQUETE ".$query);
+	
+	regenerateTreeCompleteName("glpi_taskcategories");
+	$LAST["taskcategory"]=getMaxItem("glpi_taskcategories");
 
 	// glpi_knowbaseitems
 	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
