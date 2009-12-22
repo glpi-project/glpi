@@ -216,7 +216,7 @@ class SoftwareVersion extends CommonDBTM {
       $p['softwares_id']=0;
       $p['value']=0;
 
-      if (count($options)) {
+      if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key]=$val;
          }

@@ -111,7 +111,7 @@ class Transfer extends CommonDBTM {
       // unset mailing
       $CFG_GLPI["use_mailing"] = 0;
 
-      $default_options = array('keep_ticket'          => 0,
+      $this->options = array('keep_ticket'          => 0,
                                'keep_networklink'     => 0,
                                'keep_reservation'     => 0,
                                'keep_history'         => 0,
@@ -155,9 +155,8 @@ class Transfer extends CommonDBTM {
          // Store to
          $this->to = $to;
          // Store options
-         $this->options = $options;
-         foreach ($default_options as $key => $val) {
-            if (!isset($this->options[$key])) {
+         if (is_array($options) && count($options)) {
+            foreach ($options as $key => $val) {
                $this->options[$key]=$val;
             }
          }

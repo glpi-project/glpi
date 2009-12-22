@@ -172,6 +172,153 @@ class Dropdown {
       return $rand;
    }
 
+   /**
+    * Print out an HTML "<select>" for a dropdown with preselected value
+    *
+    * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is depending itemtype)
+    *    - value : integer / preselected value (default 0)
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - toupdate : array / Update a specific item on select change on dropdown
+    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   and may have moreparams)
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - auto_submit : boolean / preselected value (default 0)
+    *
+    *
+    * @param $itemtype itemtype used for create dropdown
+    * @param $options possible options
+    * @return boolean : lse if error and random id if OK
+    *
+    */
+   static function show($itemtype,$options) {
+
+//    static function show($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
+//                           $update_item="",$used=array(),$auto_submit=0) {
+      global $DB,$CFG_GLPI,$LANG;
+
+
+      if ($itemtype && !class_exists($itemtype)) {
+         return false;
+      }
+
+      $params['table']=getTableForItemType($itemtype);
+      $params['name']=getForeignKeyFieldForTable($params['table']);
+
+      $params['value']='';
+      $params['comments']=1;
+      $params['entity']=-1;
+      $params['toupdate']='';
+      $params['used']=array();
+      $params['auto_submit']=0;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
+         }
+      }
+
+
+      $rand=mt_rand();
+      $name="------";
+      $comment="";
+      $limit_length=$_SESSION["glpidropdown_chars_limit"];
+
+      // Temporary computation before rewritten function using itemtype param
+      $item = new $itemtype();
+
+      if (strlen($params['value'])==0) {
+         $params['value']=-1;
+      }
+
+      if ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0)) {
+         $tmpname=Dropdown::getDropdownName($params['table'],$params['value'],1);
+         if ($tmpname["name"]!="&nbsp;") {
+            $name=$tmpname["name"];
+            $comment=$tmpname["comment"];
+
+            if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
+               if ($item instanceof CommonTreeDropdown) {
+                  $pos = strrpos($name,">");
+                  $limit_length=max(utf8_strlen($name)-$pos,$_SESSION["glpidropdown_chars_limit"]);
+                  if (utf8_strlen($name)>$limit_length) {
+                     $name = "&hellip;".utf8_substr($name,-$limit_length);
+                  }
+               } else {
+                  $limit_length = utf8_strlen($name);
+               }
+            } else {
+               $limit_length = $_SESSION["glpidropdown_chars_limit"];
+            }
+         }
+      }
+
+      $use_ajax=false;
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb=0;
+         if ($item->isEntityAssign()) {
+            if (!($params['entity']<0)) {
+               $nb=countElementsInTableForEntity($params['table'],$params['entity']);
+            } else {
+               $nb=countElementsInTableForMyEntities($params['table']);
+            }
+         } else {
+            $nb=countElementsInTable($params['table']);
+         }
+         $nb -= count($params['used']);
+         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax=true;
+         }
+      }
+
+      $params=array('searchText'=>'__VALUE__',
+                    'value'=>$params['value'],
+                    'table'=>$params['table'],
+                    'itemtype'=>$itemtype,
+                    'myname'=>$params['name'],
+                    'limit'=>$limit_length,
+                    'comment'=>$params['comments'],
+                    'rand'=>$rand,
+                    'entity_restrict'=>$params['entity'],
+                    'update_item'=>$params['toupdate'],
+                    'used'=>$params['used'],
+                    'auto_submit'=>$params['auto_submit']);
+
+      $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$rand."'>";
+      $default.="<option value='".$params['value']."'>$name</option></select>";
+      ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
+
+      // Display comment
+      if ($params['comments']) {
+         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+                onmouseout=\"cleanhide('comment_".$params['name']."$rand')\"
+                onmouseover=\"cleandisplay('comment_".$params['name']."$rand')\" >";
+         echo "<span class='over_link' id='comment_".$params['name']."$rand'>".nl2br($comment)."</span>";
+
+         if (($item instanceof CommonDropdown)
+               && $item->canCreate()) {
+
+               echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
+                     $item->getFormURL().
+                     "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+         }
+         // Display specific Links
+         if ($itemtype=="Supplier") {
+            if ($item->getFromDB($params['value'])) {
+               echo $item->getLinks();
+            }
+         }
+      }
+
+      return $rand;
+   }
+
+
+
 
    /**
     * Get the value of a dropdown
@@ -867,7 +1014,7 @@ class Dropdown {
       $param['used']=array();
       $param['readonly']=false;
 
-      if (is_array($options)) {
+      if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $param[$key]=$val;
          }
