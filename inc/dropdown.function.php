@@ -87,43 +87,6 @@ function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlygl
    return $rand;
 }
 
-/**
- * Make a select box for  connected port
- *
- * @param $ID ID of the current port to connect
- * @param $myname select name
- * @param $entity_restrict Restrict to a defined entity (or an array of entities)
- * @return nothing (print out an HTML select box)
- */
-function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
-   global $LANG,$CFG_GLPI;
-
-   $rand=mt_rand();
-   echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
-   echo "<option value='0'>-----</option>";
-
-   foreach ($CFG_GLPI["netport_types"] as $key => $itemtype) {
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-         echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
-      } else {
-         unset($CFG_GLPI["netport_types"][$key]);
-      }
-   }
-   echo "</select>";
-
-   $params=array('itemtype'         => '__VALUE__',
-                 'entity_restrict'  => $entity_restrict,
-                 'current'          => $ID,
-                 'myname'           => $myname);
-
-   ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",$CFG_GLPI["root_doc"].
-                               "/ajax/dropdownConnectPortDeviceType.php",$params);
-
-   echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
-
-   return $rand;
-}
 
 
 

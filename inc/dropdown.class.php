@@ -257,6 +257,7 @@ class Dropdown {
          }
       }
 
+      // Manage entity_sons
       if (!($params['entity']<0) && $params['entity_sons']) {
          if (is_array($params['entity'])) {
             echo "entity_sons options is not available with array of entity";

@@ -535,14 +535,10 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
       if ($canedit) {
          echo "<td class='left'>";
          if ($withtemplate != 2 && $withtemplate != 1) {
-            if (isset ($device1->fields["is_recursive"])
-                && $device1->fields["is_recursive"]) {
-
-               dropdownConnectPort($ID, "dport", getSonsOf("glpi_entities",
-                                   $device1->fields["entities_id"]));
-            } else {
-               dropdownConnectPort($ID, "dport", $device1->fields["entities_id"]);
-            }
+               NetworkPort::dropdownConnect($ID,
+                                       array('name'         => 'dport',
+                                             'entity'       => $device1->fields["entities_id"],
+                                             'entity_sons'  => $device1->getField("is_recursive")));
          } else {
             echo "&nbsp;";
          }

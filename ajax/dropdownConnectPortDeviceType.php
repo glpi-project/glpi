@@ -46,15 +46,25 @@ if (class_exists($_POST["itemtype"])) {
    $rand=mt_rand();
 
    $use_ajax=true;
-   $paramsconnectpdt=array('searchText'=>'__VALUE__',
-                           'itemtype'=>$_POST['itemtype'],
-                           'current'=>$_POST['current'],
-                           'myname'=>$_POST["myname"],
-                           'entity_restrict'=>$_POST["entity_restrict"]);
+   $paramsconnectpdt=array('searchText'      => '__VALUE__',
+                           'itemtype'        => $_POST['itemtype'],
+                           'rand'            => $rand,
+                           'myname'          => "items",
+                           'entity_restrict' => $_POST["entity_restrict"],
+                           'update_item'        =>
+                              array('value_fieldname' => 'item',
+                                    'to_update'       => "results_item_$rand",
+                                    'url'              => $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",
+                                    'moreparams'   => array('current' => $_POST['current'],
+                                                            'itemtype' => $_POST['itemtype'],
+                                                            'myname' => $_POST['myname'],))
+                     );
 
    $default="<select name='item$rand'><option value='0'>------</option></select>\n";
-   ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$paramsconnectpdt,$default,$rand);
+   ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsconnectpdt,$default,$rand);
 
+   echo "<span id='results_item_$rand'>";
+   echo "</span>\n";
 }
 
 ?>

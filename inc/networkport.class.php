@@ -178,6 +178,74 @@ class NetworkPort extends CommonDBTM {
       return $ong;
    }
 
+   /**
+   * Make a select box for  connected port
+   *
+   * Parameters which could be used in options array :
+   *    - name : string / name of the select (default is networkports_id)
+   *    - comments : boolean / is the comments displayed near the dropdown (default true)
+   *    - entity : integer or array / restrict to a defined entity or array of entities
+   *                   (default -1 : no restriction)
+   *    - entity_sons : boolean / if entity restrict specified auto select its sons
+   *                   only available if entity is a single value not an array (default false)
+   *
+   * @param $ID ID of the current port to connect
+   * @param $options possible options
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownConnect($ID,$options=array()) {
+      // $ID,$myname,$entity_restrict=-1
+      global $LANG,$CFG_GLPI;
+
+      $p['name']='networkports_id';
+      $p['comments']=1;
+      $p['entity']=-1;
+      $p['entity_sons']=false;
+
+
+     if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
+      // Manage entity_sons
+      if (!($p['entity']<0) && $p['entity_sons']) {
+         if (is_array($p['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
+         }
+      }
+
+      $rand=mt_rand();
+      echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
+      echo "<option value='0'>-----</option>";
+
+      foreach ($CFG_GLPI["netport_types"] as $key => $itemtype) {
+         if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
+         } else {
+            unset($CFG_GLPI["netport_types"][$key]);
+         }
+      }
+      echo "</select>";
+
+      $params=array('itemtype'       => '__VALUE__',
+                  'entity_restrict'  => $p['entity'],
+                  'current'          => $ID,
+                  'comments'         => $p['comments'],
+                  'myname'           => $p['name']);
+
+      ajaxUpdateItemOnSelectEvent("itemtype$rand","show_".$p['name']."$rand",$CFG_GLPI["root_doc"].
+                                 "/ajax/dropdownConnectPortDeviceType.php",$params);
+
+      echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
+
+      return $rand;
+   }
+
 }
 
 ?>
