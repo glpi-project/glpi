@@ -33,64 +33,70 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
 checkCentralAccess();
 
-if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
+if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
+   if ($_GET["display_type"] < 0) {
+      $_GET["display_type"] = -$_GET["display_type"];
+      $_GET["export_all"]=1;
+   }
 
-	if ($_GET["display_type"]<0) {
-		$_GET["display_type"]=-$_GET["display_type"];
-		$_GET["export_all"]=1;
-	}
+   // PDF case
+   if ($_GET["display_type"] == PDF_OUTPUT_LANDSCAPE
+       || $_GET["display_type"] == PDF_OUTPUT_PORTRAIT) {
 
-	// PDF case
-	if ($_GET["display_type"]==PDF_OUTPUT_LANDSCAPE || $_GET["display_type"]==PDF_OUTPUT_PORTRAIT){
-		include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
-	}
+      include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
+   }
 
-	switch ($_GET["item_type"]){
-		case 'KnowbaseItem' :
-			showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["knowbaseitemcategories_id"],$_GET["is_faq"]);
-			break;
-		case 'Ticket' :
-         showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],
-                          $_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["users_id"],
-                          $_GET["group"],$_GET["showfollowups"],$_GET["ticketcategories_id"],
-                          $_GET["users_id_assign"],$_GET["suppliers_id_assign"],
-                          $_GET["groups_id_assign"],$_GET["priority"],$_GET["requesttypes_id"],
-                          $_GET["items_id"],$_GET["itemtype"],$_GET["field"],$_GET["contains"],
-                          $_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],
-                          $_GET["enddate2"],$_GET["datemod1"],$_GET["datemod2"]);
-			break;
-		case 'Stat' :
+   switch ($_GET["item_type"]) {
+      case 'KnowbaseItem' :
+         showKbItemList($_SERVER['PHP_SELF'], $_GET["contains"], $_GET["start"],
+                        $_GET["knowbaseitemcategories_id"], $_GET["is_faq"]);
+         break;
 
-			if (isset($_GET["item_type_param"])){
-				$params=unserialize(stripslashes($_GET["item_type_param"]));
-				switch ($params["type"]){
-					case "comp_champ":
-						$val=getStatsItems($params["date1"],$params["date2"],$params["table"]);
-					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
-					break;
-					case "device":
-						$val=getStatsItems($params["date1"],$params["date2"],$params["field"]);
-					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
-					break;
-					default:
-					$val=getStatsItems($params["date1"],$params["date2"],$params["type"]);
-					displayStats($params["type"],$params["date1"],$params["date2"],$params["start"],$val);
-					break;
-				}
-			} else if (isset($_GET["type"])&&$_GET["type"]=="hardwares"){
-				showItemStats("",$_GET["date1"],$_GET["date2"],$_GET['start']);
-			}
-			break;
+      case 'Ticket' :
+         showTrackingList($_SERVER['PHP_SELF'], $_GET["start"], $_GET["sort"], $_GET["order"],
+                          $_GET["status"], $_GET["tosearch"], $_GET["search"], $_GET["users_id"],
+                          $_GET["group"], $_GET["showfollowups"], $_GET["ticketcategories_id"],
+                          $_GET["users_id_assign"], $_GET["suppliers_id_assign"],
+                          $_GET["groups_id_assign"], $_GET["priority"],$_GET["requesttypes_id"],
+                          $_GET["items_id"], $_GET["itemtype"], $_GET["field"], $_GET["contains"],
+                          $_GET["date1"], $_GET["date2"], $_GET["only_computers"], $_GET["enddate1"],
+                          $_GET["enddate2"], $_GET["datemod1"], $_GET["datemod2"]);
+         break;
+
+      case 'Stat' :
+         if (isset($_GET["item_type_param"])) {
+            $params = unserialize(stripslashes($_GET["item_type_param"]));
+            switch ($params["type"]) {
+               case "comp_champ" :
+                  $val = getStatsItems($params["date1"], $params["date2"], $params["table"]);
+                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                               $val, $params["field"]);
+                  break;
+
+               case "device" :
+                  $val = getStatsItems($params["date1"], $params["date2"], $params["field"]);
+                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                               $val, $params["field"]);
+                  break;
+
+               default :
+                  $val = getStatsItems($params["date1"], $params["date2"], $params["type"]);
+                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                               $val);
+            }
+         } else if (isset($_GET["type"]) && $_GET["type"] == "hardwares") {
+            showItemStats("",$_GET["date1"], $_GET["date2"], $_GET['start']);
+         }
+         break;
+
       default :
          // Plugin case
-         if ($plug=isPluginItemType($_GET["item_type"])){
+         if ($plug = isPluginItemType($_GET["item_type"])) {
             if (doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
                exit();
             }
