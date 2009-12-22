@@ -1717,10 +1717,11 @@ class User extends CommonDBTM {
     * @return nothing (print out an HTML select box)
     *
     */
-   static function dropdown($myname,$options=array()) {
+   static function dropdown($options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
       // Defautl values
+      $p['name']='users_id';
       $p['value']='';
       $p['right']='id';
       $p['all']=0;
@@ -1751,7 +1752,7 @@ class User extends CommonDBTM {
       $user=getUserName($p['value'],2);
       $default_display="";
 
-      $default_display = "<select id='dropdown_".$myname.$rand."' name='$myname'>";
+      $default_display = "<select id='dropdown_".$p['name'].$rand."' name='".$p['name']."'>";
       $default_display.= "<option value='".$p['value']."'>";
       $default_display.= utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"]);
       $default_display.= "</option></select>";
@@ -1760,7 +1761,7 @@ class User extends CommonDBTM {
 
       $params=array('searchText'       => '__VALUE__',
                     'value'            => $p['value'],
-                    'myname'           => $myname,
+                    'myname'           => $p['name'],
                     'all'              => $p['all'],
                     'right'            => $p['right'],
                     'comment'          => $p['comments'],
@@ -1777,10 +1778,10 @@ class User extends CommonDBTM {
          $default=$default_display;
       } else {
          if ($p['all']) {
-            $default = "<select name='$myname' id='dropdown_".$myname.$rand."'>";
+            $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
             $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
          } else {
-            $default = "<select name='$myname' id='dropdown_".$myname.$rand."'>";
+            $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
             $default.= "<option value='0'>[ Nobody ]</option></select>\n";
          }
       }
@@ -1795,7 +1796,7 @@ class User extends CommonDBTM {
             $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
          }
          displayToolTip($user["comment"], $user["link"],
-                        array('widget' => 'dropdown_'.$myname.$rand,
+                        array('widget' => 'dropdown_'.$p['name'].$rand,
                               'value'  => '__VALUE__',
                               'table'  => 'glpi_users'));
       }
@@ -1819,13 +1820,13 @@ class User extends CommonDBTM {
    static function dropdownAll($myname,$value=0,$display_comment=1,$entity_restrict=-1,$helpdesk_ajax=0,
                              $used=array()) {
 
-      return User::dropdown($myname,
-               array('value'           => $value,
-                     'right'           => "all",
-                     'comments'        => $display_comment,
-                     'entity'          => $entity_restrict,
-                     'helpdesk_ajax'   => $helpdesk_ajax,
-                     'used'            => $used));
+      return User::dropdown(array(  'name'            => $myname,
+                                    'value'           => $value,
+                                    'right'           => "all",
+                                    'comments'        => $display_comment,
+                                    'entity'          => $entity_restrict,
+                                    'helpdesk_ajax'   => $helpdesk_ajax,
+                                    'used'            => $used));
    }
 
    /**
@@ -1843,11 +1844,11 @@ class User extends CommonDBTM {
    static function dropdownID($myname,$value,$right,$display_comment=1,$entity_restrict=-1) {
       // Make a select box with all glpi users
 
-      return User::dropdown($myname,
-                           array('value'     => $value,
-                                 'right'     => $right,
-                                 'comments'  => $display_comment,
-                                 'entity'    => $entity_restrict));
+      return User::dropdown(array(  'name'      => $myname,
+                                    'value'     => $value,
+                                    'right'     => $right,
+                                    'comments'  => $display_comment,
+                                    'entity'    => $entity_restrict));
    }
 
    /**
