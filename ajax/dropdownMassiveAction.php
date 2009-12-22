@@ -132,7 +132,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "connect" :
-         dropdownConnect('Computer',$_POST["itemtype"],"connect_item");
+         Computer_Item::dropdownConnect('Computer',$_POST["itemtype"],"connect_item");
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;

@@ -42,50 +42,6 @@ if (!defined('GLPI_ROOT')){
 
 
 
-/**
- * Make a select box for connections
- *
- * @param $itemtype type to connect
- * @param $fromtype from where the connection is
- * @param $myname select name
- * @param $entity_restrict Restrict to a defined entity
- * @param $onlyglobal display only global devices (used for templates)
- * @param $used Already used items ID: not to display in dropdown
- *
- * @return nothing (print out an HTML select box)
- */
-function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,
-                         $used=array()) {
-   global $CFG_GLPI;
-
-   $rand=mt_rand();
-
-   $use_ajax=false;
-   if ($CFG_GLPI["use_ajax"]) {
-      $nb=0;
-      if ($entity_restrict>=0) {
-         $nb=countElementsInTableForEntity(getTableForItemType($itemtype),$entity_restrict);
-      } else {
-         $nb=countElementsInTableForMyEntities(getTableForItemType($itemtype));
-      }
-      if ($nb>$CFG_GLPI["ajax_limit_count"]) {
-         $use_ajax=true;
-      }
-   }
-
-   $params=array('searchText'       => '__VALUE__',
-                 'fromtype'         => $fromtype,
-                 'idtable'          => $itemtype,
-                 'myname'           => $myname,
-                 'onlyglobal'       => $onlyglobal,
-                 'entity_restrict'  => $entity_restrict,
-                 'used'             => $used);
-
-   $default="<select name='$myname'><option value='0'>------</option></select>\n";
-   ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
-
-   return $rand;
-}
 
 
 

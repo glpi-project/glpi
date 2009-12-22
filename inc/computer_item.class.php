@@ -420,7 +420,7 @@ class Computer_Item extends CommonDBRelation{
                      if (!empty($withtemplate)) {
                         echo "<input type='hidden' name='_no_history' value='1'>";
                      }
-                     dropdownConnect($itemtype,'Computer',"items_id",$comp->fields["entities_id"],
+                     Computer_Item::dropdownConnect($itemtype,'Computer',"items_id",$comp->fields["entities_id"],
                                      $withtemplate,$used);
                      echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9].
                           "\" class='submit'>";
@@ -499,10 +499,10 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
             if ($item->getField('is_recursive')) {
-               dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
@@ -521,10 +521,10 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
             if ($item->getField('is_recursive')) {
-               dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
@@ -577,6 +577,52 @@ class Computer_Item extends CommonDBRelation{
          }
       }
    }
+
+   /**
+   * Make a select box for connections
+   *
+   * @param $itemtype type to connect
+   * @param $fromtype from where the connection is
+   * @param $myname select name
+   * @param $entity_restrict Restrict to a defined entity
+   * @param $onlyglobal display only global devices (used for templates)
+   * @param $used Already used items ID: not to display in dropdown
+   *
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,
+                           $used=array()) {
+      global $CFG_GLPI;
+
+      $rand=mt_rand();
+
+      $use_ajax=false;
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb=0;
+         if ($entity_restrict>=0) {
+            $nb=countElementsInTableForEntity(getTableForItemType($itemtype),$entity_restrict);
+         } else {
+            $nb=countElementsInTableForMyEntities(getTableForItemType($itemtype));
+         }
+         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax=true;
+         }
+      }
+
+      $params=array('searchText'       => '__VALUE__',
+                  'fromtype'         => $fromtype,
+                  'idtable'          => $itemtype,
+                  'myname'           => $myname,
+                  'onlyglobal'       => $onlyglobal,
+                  'entity_restrict'  => $entity_restrict,
+                  'used'             => $used);
+
+      $default="<select name='$myname'><option value='0'>------</option></select>\n";
+      ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
+
+      return $rand;
+   }
+
 }
 
 ?>
