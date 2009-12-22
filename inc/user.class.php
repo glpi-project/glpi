@@ -1182,22 +1182,23 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
-      Dropdown::dropdownValue("glpi_usertitles", "usertitles_id", $this->fields["usertitles_id"], 1, -1);
+      Dropdown::show('UserTitle',array('value'=>$this->fields["usertitles_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
       if (!empty($ID)) {
          $entities = Profile_User::getUserEntities($ID,true);
          if (count($entities)>0) {
-            Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1,
-                          $entities);
+            Dropdown::show('Location',
+                     array('value'=>$this->fields["locations_id"],'entity'=>$entities));
          } else {
             echo "&nbsp;";
          }
       } else {
          if (!isMultiEntitiesMode()) {
             // Display all locations : only one entity
-            Dropdown::dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"], 1);
+            Dropdown::show('Location',
+                     array('value'=>$this->fields["locations_id"]));
          } else {
             echo "&nbsp;";
          }
@@ -1329,8 +1330,9 @@ class User extends CommonDBTM {
          echo "</td>";
          if (count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
-            Dropdown::dropdownValue("glpi_entities", "entities_id", $_SESSION["glpidefault_entity"], 1,
-                          $_SESSION['glpiactiveentities']);
+            Dropdown::show('Entity',
+                     array('value'=>$_SESSION["glpidefault_entity"],
+                           'entity'=>$_SESSION['glpiactiveentities']));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
