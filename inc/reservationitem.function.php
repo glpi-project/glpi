@@ -68,24 +68,22 @@ function showReservationForm($itemtype,$items_id) {
    } else {
       return false;
    }
+   $ri=new ReservationItem;
 
-   if ($resaID=isReservable($itemtype,$items_id)) {
-      $ri=new ReservationItem;
-      $ri->getFromDB($resaID);
-
+   if ($ri->getFromDBbyItem($itemtype,$items_id)) {
       // Rendre le matériel réservable ou non
       echo "<br><div>";
       if ($ri->fields["is_active"]) {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$resaID.
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$ri->fields['id'].
                "&amp;is_active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
       } else {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$resaID.
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?id=".$ri->fields['id'].
                "&amp;is_active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
       }
       echo "&nbsp;&nbsp;&nbsp;";
       echo "<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".
             addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"].
-            "/front/reservationitem.php?id=".$resaID."&amp;delete=delete')\" class='icon_consol'>".
+            "/front/reservationitem.php?id=".$ri->fields['id']."&amp;delete=delete')\" class='icon_consol'>".
             $LANG['reservation'][6]."</a></div>\n";
    } else {
       echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?";
@@ -660,22 +658,21 @@ function showDeviceReservations($target,$itemtype,$ID) {
    showReservationForm($itemtype,$ID);
    echo "<br>";
 
-   if ($resaID=isReservable($itemtype,$ID)) {
-      $ri=new ReservationItem;
-      $ri->getFromDB($resaID);
+   $ri=new ReservationItem;
+   if ($ri->getFromDBbyItem($itemtype,$ID)) {
       $now=$_SESSION["glpi_currenttime"];
 
       // Print reservation in progress
       $query = "SELECT *
                 FROM `glpi_reservations`
                 WHERE `end` > '$now'
-                      AND `reservationitems_id` = '$resaID'
+                      AND `reservationitems_id` = '".$ri->fields['id']."'
                 ORDER BY `begin`";
       $result=$DB->query($query);
 
       echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
       if ($ri->fields["is_active"]) {
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=$resaID' >".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".$ri->fields['id']."' >".
                 $LANG['reservation'][35]."</a>";
       } else {
          echo $LANG['reservation'][35];
@@ -700,7 +697,7 @@ function showDeviceReservations($target,$itemtype,$ID) {
             echo "<td class='center'>";
             list($annee,$mois,$jour)=explode("-",$data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".
-                   $resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
+                   $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
                    $LANG['reservation'][21]."'>";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
             echo "</td></tr>\n";
@@ -713,13 +710,13 @@ function showDeviceReservations($target,$itemtype,$ID) {
       $query = "SELECT *
                 FROM `glpi_reservations`
                 WHERE `end` <= '$now'
-                      AND `reservationitems_id` = '$resaID'
+                      AND `reservationitems_id` = '".$ri->fields['id']."'
                 ORDER BY `begin` DESC";
       $result=$DB->query($query);
 
       echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
       if ($ri->fields["is_active"]) {
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=$resaID' >".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".$ri->fields['id']."' >".
                 $LANG['reservation'][36]."</a>";
       } else {
          echo $LANG['reservation'][36];
@@ -745,7 +742,7 @@ function showDeviceReservations($target,$itemtype,$ID) {
             echo "<td class='center'>";
             list($annee,$mois,$jour)=explode("-",$data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".
-                   $resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
+                   $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
                    $LANG['reservation'][21]."'>";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
             echo "</td></tr>\n";
@@ -867,22 +864,6 @@ function showUserReservations($target,$ID) {
    }
    echo "</table>\n";
    echo "<br></div>\n";
-}
-
-function isReservable($itemtype,$items_id) {
-   global $DB;
-
-   $query = "SELECT `id`
-             FROM `glpi_reservationitems`
-             WHERE `itemtype` = '$itemtype'
-                   AND `items_id` = '$items_id'";
-   $result=$DB->query($query);
-
-   if ($DB->numrows($result)==0) {
-      return false;
-   } else {
-      return $DB->result($result,0,0);
-   }
 }
 
 ?>
