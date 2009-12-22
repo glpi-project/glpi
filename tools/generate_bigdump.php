@@ -72,7 +72,8 @@ $MAX['os_sp']=10;
 $MAX['ram_type']=10;
 $MAX['rubdocs']=10;
 $MAX['softwarecategory']=10;
-$MAX['softwarecategory']=2;
+$MAX['ticketsolutions']=2;
+$MAX['taskcategory']=2;
 $MAX['licensetype']=10;
 $MAX['state']=10;
 $MAX['vlan']=10;
@@ -132,6 +133,7 @@ $percent['tracking_on_item']=30;
 $MAX['general_tracking']=100;
 $percent['closed_tracking']=80;
 $percent['followups']=50;
+$percent['tasks']=50;
 // RESERVATION
 $percent['reservation']=1;
 // DOCUMENT
