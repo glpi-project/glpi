@@ -1914,18 +1914,12 @@ function showJobDetails($target, $ID,$array=array()) {
       echo $LANG['job'][4]."&nbsp;: </td>";
       echo "<td>";
 
-      ///Check if the user have access to this entity only, or subentities too
-      if (haveAccessToEntity($_SESSION["glpiactive_entity"],true)) {
-         $entities = getSonsOf("glpi_entities",$_SESSION["glpiactive_entity"]);
-      } else {
-         $entities = $_SESSION["glpiactive_entity"];
-      }
-
       //List all users in the active entity (and all it's sub-entities if needed)
-      User::dropdown(array('value'  => $array["users_id"],
-                           'entity' => $entities,
-                           'right'  => 'all',
-                           'helpdesk_ajax'    => 1));
+      User::dropdown(array('value'        => $array["users_id"],
+                           'entity'       => $entities,
+                           'entity_sons'  => haveAccessToEntity($_SESSION["glpiactive_entity"],true),
+                           'right'        => 'all',
+                           'helpdesk_ajax'=> 1));
 
       //Get all the user's entities
       $all_entities = Profile_User::getUserEntities($array["users_id"], true);

@@ -183,6 +183,8 @@ class Dropdown {
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
     *    - toupdate : array / Update a specific item on select change on dropdown
     *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
     *                   and may have moreparams)
@@ -197,8 +199,6 @@ class Dropdown {
     */
    static function show($itemtype,$options=array()) {
 
-//    static function show($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
-//                           $update_item="",$used=array(),$auto_submit=0) {
       global $DB,$CFG_GLPI,$LANG;
 
 
@@ -213,6 +213,7 @@ class Dropdown {
       $params['value']='';
       $params['comments']=1;
       $params['entity']=-1;
+      $params['entity_sons']=false;
       $params['toupdate']='';
       $params['used']=array();
       $params['auto_submit']=0;
@@ -253,6 +254,14 @@ class Dropdown {
             } else {
                $limit_length = $_SESSION["glpidropdown_chars_limit"];
             }
+         }
+      }
+
+      if (!($params['entity']<0) && $params['entity_sons']) {
+         if (is_array($params['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
          }
       }
 

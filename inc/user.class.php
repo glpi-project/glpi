@@ -1705,6 +1705,8 @@ class User extends CommonDBTM {
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
     *    - all : Nobody or All display for none selected
     *          all=0 (default) -> Nobody
     *          all=1 -> All
@@ -1727,6 +1729,7 @@ class User extends CommonDBTM {
       $p['helpdesk_ajax']  = 0;
       $p['comments']       = 1;
       $p['entity']         = -1;
+      $p['entity_sons']    = false;
       $p['used']           = array();
 
       if (is_array($options) && count($options)) {
@@ -1735,6 +1738,14 @@ class User extends CommonDBTM {
          }
       }
 
+
+      if (!($p['entity']<0) && $p['entity_sons']) {
+         if (is_array($p['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
+         }
+      }
 
 
       // Make a select box with all glpi users
