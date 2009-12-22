@@ -145,7 +145,7 @@ class Phone extends CommonDBTM {
                $np->fields["items_id"]=$newID;
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id'=>$data["id"])) as $vlan) {
+                                     array('networkports_id' => $data["id"])) as $vlan) {
                   assignVlan($portid, $vlan['vlans_id']);
                }
             }
@@ -251,19 +251,19 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
+      Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"],
-                           'entity'=>$this->fields["entities_id"]));
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('PhoneType', array('value'=>$this->fields["phonetypes_id"]));
+      Dropdown::show('PhoneType', array('value' => $this->fields["phonetypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -274,7 +274,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value'=>$this->fields["manufacturers_id"]));
+      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -285,7 +285,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('PhoneModel', array('value'=>$this->fields["phonemodels_id"]));
+      Dropdown::show('PhoneModel', array('value' => $this->fields["phonemodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -316,7 +316,7 @@ class Phone extends CommonDBTM {
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Group',
-               array('value'=>$this->fields["groups_id"],'entity'=>$this->fields["entities_id"]));
+               array('value' => $this->fields["groups_id"],'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
@@ -339,7 +339,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('PhonePowerSupply',array('value'=>$this->fields["phonepowersupplies_id"]));
+      Dropdown::show('PhonePowerSupply',array('value' => $this->fields["phonepowersupplies_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

@@ -194,7 +194,7 @@ class Rule extends CommonDBTM {
 
       $elements[AND_MATCHING] = $LANG['rulesengine'][42];
       $elements[OR_MATCHING] = $LANG['rulesengine'][43];
-      return Dropdown::showFromArray($name,$elements,array('value'=>$value));
+      return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
    /**
@@ -426,8 +426,8 @@ class Rule extends CommonDBTM {
          $items[$ID]=$crit['name'];
       }
       $rand=Dropdown::showFromArray("criteria", $items);
-      $params = array('criteria'=>'__VALUE__',
-                      'sub_type'=>$this->sub_type);
+      $params = array('criteria' => '__VALUE__',
+                      'sub_type' => $this->sub_type);
       ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",
                                   $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false);
 
@@ -453,9 +453,9 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $rand=Dropdown::showFromArray("field", $items, array('value'=>$value, 'used'=>$used));
-      $params = array('field'=>'__VALUE__',
-                      'sub_type'=>$this->sub_type);
+      $rand=Dropdown::showFromArray("field", $items, array('value' => $value, 'used' => $used));
+      $params = array('field'    => '__VALUE__',
+                      'sub_type' => $this->sub_type);
       ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",
                                   $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
 
@@ -1038,7 +1038,7 @@ class Rule extends CommonDBTM {
          switch ($crit['type']) {
             case "dropdown" :
                Dropdown::show(getItemTypeForTable($crit['table']),
-                        array('name'=>$name,'value'=>$value));
+                        array('name' => $name,'value' => $value));
                $display=true;
                break;
 

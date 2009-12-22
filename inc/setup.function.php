@@ -446,7 +446,8 @@ function showOtherAuthList($target) {
    echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>\n";
    echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
    Dropdown::show('AuthLDAP',
-               array('name'=>'authldaps_id_extra','value'=>$CFG_GLPI["authldaps_id_extra"]));
+               array('name'   => 'authldaps_id_extra',
+                     'value'  => $CFG_GLPI["authldaps_id_extra"]));
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";

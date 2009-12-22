@@ -73,13 +73,13 @@ function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlygl
       }
    }
 
-   $params=array('searchText'=>'__VALUE__',
-                 'fromtype'=>$fromtype,
-                 'idtable'=>$itemtype,
-                 'myname'=>$myname,
-                 'onlyglobal'=>$onlyglobal,
-                 'entity_restrict'=>$entity_restrict,
-                 'used'=>$used);
+   $params=array('searchText'       => '__VALUE__',
+                 'fromtype'         => $fromtype,
+                 'idtable'          => $itemtype,
+                 'myname'           => $myname,
+                 'onlyglobal'       => $onlyglobal,
+                 'entity_restrict'  => $entity_restrict,
+                 'used'             => $used);
 
    $default="<select name='$myname'><option value='0'>------</option></select>\n";
    ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
@@ -112,10 +112,10 @@ function dropdownConnectPort($ID,$myname,$entity_restrict=-1) {
    }
    echo "</select>";
 
-   $params=array('itemtype'=>'__VALUE__',
-                 'entity_restrict'=>$entity_restrict,
-                 'current'=>$ID,
-                 'myname'=>$myname);
+   $params=array('itemtype'         => '__VALUE__',
+                 'entity_restrict'  => $entity_restrict,
+                 'current'          => $ID,
+                 'myname'           => $myname);
 
    ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",$CFG_GLPI["root_doc"].
                                "/ajax/dropdownConnectPortDeviceType.php",$params);
@@ -294,9 +294,9 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
    }
    echo "</select>";
 
-   $params=array('action'=>'__VALUE__',
-                 'is_deleted'=>$is_deleted,
-                 'itemtype'=>$itemtype);
+   $params=array('action'     => '__VALUE__',
+                 'is_deleted' => $is_deleted,
+                 'itemtype'   => $itemtype);
 
    if (count($extraparams)) {
       foreach ($extraparams as $key => $val) {
@@ -328,8 +328,8 @@ function dropdownMassiveActionPorts($itemtype) {
    echo "<option value='move'>".$LANG['buttons'][20]."</option>";
    echo "</select>";
 
-   $params=array('action'=>'__VALUE__',
-                 'itemtype'=>$itemtype);
+   $params=array('action'     => '__VALUE__',
+                 'itemtype'   => $itemtype);
 
    ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"].
                                "/ajax/dropdownMassiveActionPorts.php",$params);
@@ -400,11 +400,11 @@ function dropdownRules ($sub_type, $myname) {
          $use_ajax=true;
       }
    }
-   $params=array('searchText'=>'__VALUE__',
-                 'myname'=>$myname,
-                 'limit'=>$limit_length,
-                 'rand'=>$rand,
-                 'type'=>$sub_type);
+   $params=array('searchText' => '__VALUE__',
+                 'myname'     => $myname,
+                 'limit'      => $limit_length,
+                 'rand'       => $rand,
+                 'type'       => $sub_type);
    $default ="<select name='$myname' id='dropdown_".$myname.$rand."'>";
    $default.="<option value='0'>------</option></select>";
    ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);
@@ -439,7 +439,7 @@ function dropdownUnderProfiles($name,$value='') {
       }
    }
 
-   Dropdown::showFromArray($name,$profiles,array('value'=>$value));
+   Dropdown::showFromArray($name,$profiles,array('value' => $value));
 }
 
 

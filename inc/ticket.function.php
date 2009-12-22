@@ -232,10 +232,10 @@ function showCentralJobCount() {
              GROUP BY `status`";
    $result = $DB->query($query);
 
-   $status = array('new'=>0,
-                   'assign'=>0,
-                   'plan'=>0,
-                   'waiting'=>0);
+   $status = array('new'      => 0,
+                   'assign'   => 0,
+                   'plan'     => 0,
+                   'waiting'  => 0);
 
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_assoc($result)) {
@@ -886,7 +886,7 @@ function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch=''
 
    if ($extended) {
       echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      Dropdown::show('TicketCategory', array('value'=>$ticketcategories_id));
+      Dropdown::show('TicketCategory', array('value' => $ticketcategories_id));
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'>";
@@ -1005,7 +1005,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['common'][36]."&nbsp;:<br>";
-   Dropdown::show('TicketCategory', array('value'=>$ticketcategories_id));
+   Dropdown::show('TicketCategory', array('value' => $ticketcategories_id));
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][44]."&nbsp;:<br>";
@@ -1025,7 +1025,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    User::dropdownForTicket("users_id",$users_id,"users_id");
 
    echo "<br>".$LANG['common'][35]."&nbsp;: ";
-   Dropdown::show('Group', array('value'=>$group));
+   Dropdown::show('Group', array('value' => $group));
    echo "</td>";
 
    echo "<td colspan='2' class='center'>".$LANG['job'][5]."&nbsp;:<br>";
@@ -1042,19 +1042,21 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
                                         $_SESSION['glpigroups']) as $tmpgroupid => $tmpgroupname) {
             $groups[$tmpgroupid] = $tmpgroupname;
          }
-         Dropdown::showFromArray('groups_id_assign',$groups,array('value'=>$groups_id_assign));
+         Dropdown::showFromArray('groups_id_assign', $groups, array('value' => $groups_id_assign));
       }
    } else {
       User::dropdown("users_id_assign",
-                     array('value'=>$users_id_assign,
-                           'right'=>'own_ticket',
-                           'all' =>1));
+                     array('value'  => $users_id_assign,
+                           'right'  => 'own_ticket',
+                           'all'    => 1));
       echo "<br>".$LANG['common'][35]."&nbsp;: ";
 
-      Dropdown::show('Group', array('name'=>'groups_id_assign','value'=>$groups_id_assign));
+      Dropdown::show('Group',
+                     array('name' => 'groups_id_assign','value' => $groups_id_assign));
 
       echo "<br>".$LANG['financial'][26]."&nbsp;:&nbsp;";
-      Dropdown::show('Supplier', array('name'=>'suppliers_id_assign','value'=>$suppliers_id_assign));
+      Dropdown::show('Supplier',
+                     array('name' => 'suppliers_id_assign','value' => $suppliers_id_assign));
    }
 
    echo "</td></tr>";
@@ -1942,9 +1944,9 @@ function showJobDetails($target, $ID,$array=array()) {
       //If user have access to more than one entity, then display a combobox
       if ($count > 1) {
          $rand = Dropdown::show('Entity',
-                        array('value'=>$job->fields["entities_id"],
-                              'entity'=>$values,
-                              'auto_submit'=>1));
+                        array('value'        => $job->fields["entities_id"],
+                              'entity'       => $values,
+                              'auto_submit'  => 1));
 
       } else {
          echo "<input type='hidden' name='entities_id' value='".$job->fields["entities_id"]."'>";
@@ -1973,7 +1975,8 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td>";
    if ($canupdate) {
       Dropdown::show('Group',
-               array('value'=>$job->fields["groups_id"],'entity'=>$job->fields["entities_id"]));
+               array('value'  => $job->fields["groups_id"],
+                     'entity' => $job->fields["entities_id"]));
    } else {
       echo Dropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
    }
@@ -2007,8 +2010,8 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td >";
    if ($canupdate) {
       Dropdown::show('TicketCategory',
-               array('value'=>$job->fields["ticketcategories_id"],
-                     'entity'=>$job->fields["entities_id"]));
+               array('value'  => $job->fields["ticketcategories_id"],
+                     'entity' => $job->fields["entities_id"]));
    } else {
       echo Dropdown::getDropdownName("glpi_ticketcategories",$job->fields["ticketcategories_id"]);
    }
@@ -2017,23 +2020,23 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<td class='left'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
       User::dropdown("users_id_assign",
-                     array('value'=>$job->fields["users_id_assign"],
-                           'right'=>'own_ticket',
-                           'entity'=>$job->fields["entities_id"]));
+                     array('value'  => $job->fields["users_id_assign"],
+                           'right'  => 'own_ticket',
+                           'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else if (haveRight("steal_ticket","1")) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
       User::dropdown("users_id_assign",
-                     array('value'=>$job->fields["users_id_assign"],
-                           'entity'=>$job->fields["entities_id"]));
+                     array('value'  => $job->fields["users_id_assign"],
+                           'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0) {
       echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
       echo "<td>";
       User::dropdown("users_id_assign",
-                     array('value'=>$job->fields["users_id_assign"],
-                           'entity'=>$job->fields["entities_id"]));
+                     array('value'  => $job->fields["users_id_assign"],
+                           'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else {
       echo "<td class='left'>".$LANG['job'][6]."&nbsp;: </td>";
@@ -2047,7 +2050,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
    echo "<td>";
    if ($canupdate) {
-      Dropdown::show('RequestType',array('value'=>$job->fields["requesttypes_id"]));
+      Dropdown::show('RequestType',array('value' => $job->fields["requesttypes_id"]));
    } else {
       echo Dropdown::getDropdownName('glpi_requesttypes', $job->fields["requesttypes_id"]);
    }
@@ -2056,9 +2059,9 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Group',
-               array('name'=>'groups_id_assign',
-                     'value'=>$job->fields["groups_id_assign"],
-                     'entity'=>$job->fields["entities_id"]));
+               array('name'   => 'groups_id_assign',
+                     'value'  => $job->fields["groups_id_assign"],
+                     'entity' => $job->fields["entities_id"]));
       echo "</td>";
    } else {
       echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
@@ -2099,9 +2102,9 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Supplier',
-               array('name'=>'suppliers_id_assign',
-                     'value'=>$job->fields["suppliers_id_assign"],
-                     'entity'=>$job->fields["entities_id"]));
+               array('name'   => 'suppliers_id_assign',
+                     'value'  => $job->fields["suppliers_id_assign"],
+                     'entity' => $job->fields["entities_id"]));
 
       echo "</td>";
    } else {
@@ -2310,7 +2313,7 @@ function showJobDetails($target, $ID,$array=array()) {
       echo "<input type='file' name='filename' size='20'>";
       if ($canupdate && haveRight("document","r")) {
          echo "<br>";
-         Document::dropdown("document",array('entity'=>$job->fields["entities_id"]));
+         Document::dropdown("document",array('entity' => $job->fields["entities_id"]));
       }
       echo "</td></tr>";
    }

@@ -218,7 +218,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][360] . "</td><td>";
       $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
-                        array('value'=>$CFG_GLPI["use_autoname_by_entity"]));
+                        array('value' => $CFG_GLPI["use_autoname_by_entity"]));
       echo "</td>";
       echo "<td class='center'>&nbsp;</td><td>&nbsp;";
       echo "</td></tr>";
@@ -956,7 +956,7 @@ class Config extends CommonDBTM {
                                 MAIL_SMTPSSL=>$LANG['setup'][652],
                                 MAIL_SMTPTLS=>$LANG['setup'][653]);
             Dropdown::showFromArray("smtp_mode",$mail_methods,
-                                 array('value'=>$CFG_GLPI["smtp_mode"]));
+                                 array('value' => $CFG_GLPI["smtp_mode"]));
             echo "</td></tr>";
             echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "</td>";
             echo "<td><input type=\"text\" name=\"smtp_host\" size='40' value=\"" .

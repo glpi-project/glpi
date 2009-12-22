@@ -271,17 +271,17 @@ class Software extends CommonDBTM {
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
-      Dropdown::show('Manufacturer', array('value'=>$this->fields["manufacturers_id"]));
+      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
       Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"],
-                           'entity'=>$this->fields["entities_id"]));
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
-      Dropdown::show('SoftwareCategory', array('value'=>$this->fields["softwarecategories_id"]));
+      Dropdown::show('SoftwareCategory', array('value' => $this->fields["softwarecategories_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -290,7 +290,7 @@ class Software extends CommonDBTM {
                       $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
-      Dropdown::show('OperatingSystem', array('value'=>$this->fields["operatingsystems_id"]));
+      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -305,8 +305,8 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
       Dropdown::show('Group',
-                     array('value'=>$this->fields["groups_id"],
-                           'entity'=>$this->fields["entities_id"]));
+                     array('value'  => $this->fields["groups_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
       echo "<td class='center middle' rowspan='3'><textarea cols='45' rows='5' name='comment' >" .
@@ -325,7 +325,7 @@ class Software extends CommonDBTM {
       echo "<td>" . $LANG['software'][29] . "&nbsp;:</td><td colspan='3'>";
       Dropdown::showYesNo("is_update",$this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
-      Dropdown::show('Software', array('value'=>$this->fields["softwares_id"]));
+      Dropdown::show('Software', array('value' => $this->fields["softwares_id"]));
       echo "</td></tr>\n";
 
       $this->showFormButtons($ID,$withtemplate,2);
@@ -545,9 +545,9 @@ class Software extends CommonDBTM {
          }
       }
 
-      $params=array('searchText'=>'__VALUE__',
-                    'myname'=>$myname,
-                    'entity_restrict'=>$entity_restrict);
+      $params=array('searchText'       => '__VALUE__',
+                    'myname'           => $myname,
+                    'entity_restrict'  => $entity_restrict);
 
       $default="<select name='$myname'><option value='0'>------</option></select>";
       ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftware.php",$params,$default,$rand);

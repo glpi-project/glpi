@@ -145,14 +145,17 @@ class Planning {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
                ($usertype=="user"?"checked":"").">";
          $rand_user=User::dropdown("uID",
-                  array('value'=>$uID,
-                        'right'=>'interface',
-                        'all'=>1,
-                        'entity'=>$_SESSION["glpiactive_entity"]));
+                  array('value'  => $uID,
+                        'right'  => 'interface',
+                        'all'    => 1,
+                        'entity' => $_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
                ($usertype=="group"?"checked":"").">";
-         $rand_group=Dropdown::dropdownValue("glpi_groups","gID",$gID,1,$_SESSION["glpiactive_entity"]);
+         $rand_group=Dropdown::show('Group',
+                                    array('value'  =>$gID,
+                                          'name'   =>'gID',
+                                          'entity' =>$_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
                ($usertype=="user_group"?"checked":"").">";

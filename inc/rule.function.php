@@ -178,7 +178,7 @@ function dropdownRulesConditions($type,$name,$value='') {
    $elements[REGEX_MATCH]         = $LANG['rulesengine'][26];
    $elements[REGEX_NOT_MATCH]     = $LANG['rulesengine'][27];
 
-   return Dropdown::showFromArray($name,$elements,array('value'=>$value));
+   return Dropdown::showFromArray($name,$elements,array('value' => $value));
 }
 
 /**
@@ -220,7 +220,7 @@ function dropdownRulesActions($sub_type,$name,$value='') {
             break;
       }
    }
-   return Dropdown::showFromArray($name,$elements,array('value'=>$value));
+   return Dropdown::showFromArray($name,$elements,array('value' => $value));
 }
 
 function getActionByID($ID) {

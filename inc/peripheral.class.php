@@ -144,7 +144,7 @@ class Peripheral  extends CommonDBTM {
                $np->fields["items_id"]=$newID;
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id'=>$data["id"])) as $vlan) {
+                                     array('networkports_id' => $data["id"])) as $vlan) {
                   assignVlan($portid, $vlan['vlans_id']);
                }
             }
@@ -247,19 +247,19 @@ class Peripheral  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('State', array('value'=>$this->fields["states_id"]));
+      Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>\n";
       echo "<td>";
       Dropdown::show('Location',
-                     array('value'=>$this->fields["locations_id"],
-                           'entity'=>$this->fields["entities_id"]));
+                     array('value'  => $this->fields["locations_id"],
+                           'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('PeripheralType', array('value'=>$this->fields["peripheraltypes_id"]));
+      Dropdown::show('PeripheralType', array('value' => $this->fields["peripheraltypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -270,7 +270,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value'=>$this->fields["manufacturers_id"]));
+      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -281,7 +281,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('PeripheralModel', array('value'=>$this->fields["peripheralmodels_id"]));
+      Dropdown::show('PeripheralModel', array('value' => $this->fields["peripheralmodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -313,7 +313,8 @@ class Peripheral  extends CommonDBTM {
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
       Dropdown::show('Group',
-               array('value'=>$this->fields["groups_id"],'entity'=>$this->fields["entities_id"]));
+               array('value'  => $this->fields["groups_id"],
+                     'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
       echo "<td>";
