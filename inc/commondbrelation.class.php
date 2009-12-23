@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')){
 abstract class CommonDBRelation extends CommonDBTM {
 
    // Mapping between DB fields
-   var $itemtype_1; // Type ref or field name
+   var $itemtype_1; // Type ref or field name (must start with itemtype)
    var $items_id_1; // Field name
-   var $itemtype_2; // Type ref or field name
+   var $itemtype_2; // Type ref or field name (must start with itemtype)
    var $items_id_2; // Field name
 
    /**
@@ -64,7 +64,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Must can read first Item of the relation
       $type1=$this->itemtype_1;
-      if ($type1=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $type1 = $input[$this->itemtype_1];
       }
       if (!class_exists($type1)) {
@@ -77,7 +77,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Must can read second Item of the relation
       $type2=$this->itemtype_2;
-      if ($type2=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_2)) {
          $type2 = $input[$this->itemtype_2];
       }
       if (!class_exists($type2)) {
@@ -136,7 +136,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       $type1=$this->itemtype_1;
-      if ($type1=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $type1 = $this->fields[$this->itemtype_1];
       }
       if (!class_exists($type1)) {
@@ -148,7 +148,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       $type2=$this->itemtype_2;
-      if ($type2=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_2)) {
          $type2 = $this->fields[$this->itemtype_2];
       }
       if (!class_exists($type2)) {
@@ -190,7 +190,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       $type1=$this->itemtype_1;
-      if ($type1=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $type1 = $this->fields[$this->itemtype_1];
       }
       if (!class_exists($type1)) {
@@ -202,7 +202,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       $type2=$this->itemtype_2;
-      if ($type2=="itemtype") {
+      if (preg_match('/^itemtype/',$this->itemtype_2)) {
          $type2 = $this->fields[$this->itemtype_2];
       }
       if (!class_exists($type2)) {
@@ -245,7 +245,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       if ($itemtype == $this->itemtype_1) {
          $where = " WHERE `".$this->items_id_1."`='$item_id'";
 
-      } else if (preg_match('/_id$/',$this->itemtype_1)) {
+      } else if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $where = " WHERE (`".$this->itemtype_1."`='$itemtype'
                            AND `".$this->items_id_1."`='$item_id')";
       } else {
@@ -256,7 +256,7 @@ abstract class CommonDBRelation extends CommonDBTM {
          $where .= (empty($where) ? " WHERE " : " OR ");
          $where .= " `".$this->items_id_2."`='$item_id'";
 
-      } else if (preg_match('/_id$/',$this->itemtype_2)) {
+      } else if (preg_match('/^itemtype/',$this->itemtype_2)) {
          $where .= (empty($where) ? " WHERE " : " OR ");
          $where .= " (`".$this->itemtype_2."`='$itemtype'
                       AND `".$this->items_id_2."`='$item_id')";

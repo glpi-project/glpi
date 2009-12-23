@@ -79,10 +79,10 @@ if (isset($_POST["add"])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
+   $input["id"] = $_GET["id"];
    if (isset($_POST["purge"])) {
       $input["id"]=$_POST["id"];
    }
-   $input["id"] = $_GET["id"];
 
    $soft->check($input["id"],'d');
 
