@@ -94,7 +94,6 @@ class TicketFollowup  extends CommonDBTM {
     * @return boolean
     */
    function canCreateItem() {
-      logDebug("Enter");
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;

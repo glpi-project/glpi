@@ -42,7 +42,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 $fup = new TicketFollowup();
 
 if (isset($_POST["add"])) {
-   logDebug("Form", $_POST);
    $fup->check(-1,'w',$_POST);
    $fup->add($_POST);
 
