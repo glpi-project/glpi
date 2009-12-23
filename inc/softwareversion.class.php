@@ -40,12 +40,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Version class
-class SoftwareVersion extends CommonDBTM {
+class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBTM
    public $table = 'glpi_softwareversions';
    public $type = 'SoftwareVersion';
    public $dohistory = true;
+
+   // From CommonDBChild
+   public $itemtype = 'Software';
+   public $items_id = 'softwares_id';
+
 
    static function getTypeName() {
       global $LANG;

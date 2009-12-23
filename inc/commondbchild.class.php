@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')){
 abstract class CommonDBChild extends CommonDBTM {
 
    // Mapping between DB fields
-   public $itemtype; // Class name or field name for link to Parent
+   public $itemtype; // Class name or field name (start with itemtype) for link to Parent
    public $items_id; // Field name
 
    // Make an history of the changes -
@@ -51,8 +51,8 @@ abstract class CommonDBChild extends CommonDBTM {
    **/
    function getEntityID () {
 
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -66,8 +66,8 @@ abstract class CommonDBChild extends CommonDBTM {
    }
 
    function isEntityAssign() {
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -85,8 +85,8 @@ abstract class CommonDBChild extends CommonDBTM {
    **/
    function maybeRecursive() {
 
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -104,8 +104,8 @@ abstract class CommonDBChild extends CommonDBTM {
     **/
    function isRecursive () {
 
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -132,8 +132,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (isset($input['_no_history']) || !$this->dohistory) {
          return false;
       }
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -163,8 +163,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (isset($input['_no_history']) || !$this->dohistory) {
          return false;
       }
-      if ($this->itemtype == "itemtype") {
-         $type = $this->fields["itemtype"];
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
@@ -192,13 +192,14 @@ abstract class CommonDBChild extends CommonDBTM {
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
+logDebug(__CLASS__, "cleanDBonItemDelete($itemtype, $item_id)", $this);
       $query = "SELECT `id`
                 FROM `".$this->table."`";
 
       if ($itemtype == $this->itemtype) {
          $where = " WHERE `".$this->items_id."`='$item_id'";
 
-      } else if (preg_match('/_id$/',$this->itemtype)) {
+      } else if (preg_match('/^itemtype/',$this->itemtype)) {
          $where = " WHERE (`".$this->itemtype."`='$itemtype'
                            AND `".$this->items_id."`='$item_id')";
       } else {
