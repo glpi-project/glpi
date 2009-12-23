@@ -46,7 +46,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 }
 
 if (!haveRight("reservation_central","r")){
-   printReservationItems();
+   ReservationItem::showListSimple();
 } else {
    Search::show('ReservationItem');
 }

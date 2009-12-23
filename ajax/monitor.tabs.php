@@ -103,7 +103,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations('Monitor',$_POST["id"]);
+            Reservation::showForItem('Monitor',$_POST["id"]);
             break;
 
          case 12 :
