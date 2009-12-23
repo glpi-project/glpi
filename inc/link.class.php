@@ -270,6 +270,11 @@ class Link extends CommonDBTM {
                      $tmplink=str_replace("[MAC]",$val['mac'],$tmplink);
                   }
                }
+               $name = $item->getField('name');
+               if (empty($name)) {
+                  $name = $item->getField('link');
+               }
+
                if ($disp) {
                   $links["$name #" .$val['number']." - $tmplink"]=$tmplink;
                }
