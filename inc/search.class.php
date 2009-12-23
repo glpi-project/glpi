@@ -526,7 +526,7 @@ class Search {
                   if (!empty($HAVING)) {
                      $LINK=$tmplink;
                   }
-                  $HAVING .= Search::addHaving($LINK,$NOT,$itemtype2[$key],$field2[$key],$contains2[$key],1,$key);
+                  $HAVING .= Search::addHaving($LINK,$NOT,$itemtype2[$key],$field2[$key],'contains',$contains2[$key],1,$key);
                } else { // Meta Where Search
                   $LINK=" ";
                   $NOT=0;
