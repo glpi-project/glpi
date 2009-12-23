@@ -2002,7 +2002,7 @@ class Ticket extends CommonDBTM {
 
                   while ($data=$DB->fetch_array($result)) {
                      $output=$data["name"];
-                     if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
+                     if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                         $output.=" (".$data['id'].")";
                      }
                      $output = $type_name . " - " . $output;
@@ -2078,18 +2078,18 @@ class Ticket extends CommonDBTM {
                               if (isset($data["name"])) {
                                  $output = $data["name"];
                               }
+                              if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                 $output .= " (".$data['id'].")";
+                              }
+                              $output = $type_name . " - " . $output;
                               if (isset($data['serial'])) {
                                  $output .= " - ".$data['serial'];
                               }
                               if (isset($data['otherserial'])) {
                                  $output .= " - ".$data['otherserial'];
                               }
-                              if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                 $output .= " (".$data['id'].")";
-                              }
                               $tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["id"];
                               $tmp_device.="' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
-                              $tmp_device.="$type_name - ";
                               $tmp_device.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
                               $tmp_device.="</option>";
 
@@ -2142,15 +2142,15 @@ class Ticket extends CommonDBTM {
                      while ($data=$DB->fetch_array($result)) {
                         if (!in_array($data["id"],$already_add[$itemtype])) {
                            $output=$data["name"];
-                           if ($itemtype != 'Software') {
-                              $output.=" - ".$data['serial']." - ".$data['otherserial'];
-                           }
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                               $output.=" (".$data['id'].")";
                            }
+                           $output = $type_name . " - " . $output;
+                           if ($itemtype != 'Software') {
+                              $output.=" - ".$data['serial']." - ".$data['otherserial'];
+                           }
                            $tmp_device.="<option title=\"$output\" value='".$itemtype."_".$data["id"];
                            $tmp_device.="' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">";
-                           $tmp_device.="$type_name - ";
                            $tmp_device.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
                            $tmp_device.="</option>";
 
@@ -2189,10 +2189,12 @@ class Ticket extends CommonDBTM {
                   }
                   while ($data=$DB->fetch_array($result)) {
                      if (!in_array($data["id"],$already_add['Software'])) {
-                        $tmp_device.="<option value='Software_".$data["id"]."' ";
+                        $output  = "$type_name - ".$data["name"]." (v. ".$data["version"].")";
+                        $output .= ($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
+
+                        $tmp_device.="<option title=\"$output\" value='Software_".$data["id"]."' ";
                         $tmp_device.=($my_item == 'Software'."_".$data["id"]?"selected":"").">";
-                        $tmp_device.="$type_name - ".$data["name"]." (v. ".$data["version"].")";
-                        $tmp_device.=($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
+                        $tmp_device.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
                         $tmp_device.="</option>";
 
                         $already_add['Software'][]=$data["id"];
