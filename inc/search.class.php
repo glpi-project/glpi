@@ -1044,7 +1044,7 @@ class Search {
                      }
                   }
                   if ($data["ACTIVE"]) {
-                     echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;id=".
+                     echo displaySearchItem($output_type,"<a href='reservation.php?reservationitems_id=".
                                     $data["refID"]."' title='".$LANG['reservation'][21]."'><img src=\"".
                                     $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",
                                     $item_num,$row_num,"class='center'");

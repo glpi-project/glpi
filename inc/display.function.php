@@ -429,8 +429,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['utils']['content']['reservation']['title']=$LANG['Menu'][17];
       $menu['utils']['content']['reservation']['page']='/front/reservationitem.php';
       $menu['utils']['content']['reservation']['links']['search']='/front/reservationitem.php';
-      $menu['utils']['content']['reservation']['links']['showall']='/front/reservationitem.php?' .
-            'show=resa&amp;id';
+      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php';
    }
 
    if (haveRight("reports","r")) {
@@ -1298,7 +1297,7 @@ function helpHeader($title,$url='') {
    // Reservation
    if (haveRight("reservation_helpdesk","1")) {
       echo "<li id='menu3' >";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\" title=\"".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php\" title=\"".
              $LANG['Menu'][17]."\" class='itemP'>".$LANG['Menu'][17]."</a>";
       echo "</li>";
    }

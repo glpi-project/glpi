@@ -106,7 +106,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 11 :
-         showDeviceReservations($_POST['target'],'NetworkEquipment',$_POST["id"]);
+         showDeviceReservations('NetworkEquipment',$_POST["id"]);
          break;
 
       case 12 :

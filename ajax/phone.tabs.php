@@ -112,7 +112,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],'Phone',$_POST["id"]);
+            showDeviceReservations('Phone',$_POST["id"]);
             break;
 
          case 12 :

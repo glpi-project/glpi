@@ -37,26 +37,27 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("reports","r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+checkLoginUser();
 
-if (!isset($_GET["id"])) $_GET["id"]=0;
+if (!isset($_GET["reservationitems_id"])) {
+   $_GET["reservationitems_id"]='';
+}
 
-echo "<div align='center'><form method=\"get\" name=\"form\" action=\"report.reservation.php\">";
-echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-echo "<td rowspan='2' align='center'>";
-User::dropdown(array('name'   => 'id',
-                     'value'  => $_GET["id"],
-                     'right'  => 'reservation_helpdesk'));
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+} else {
+   commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
+}
 
-echo "</td>";
-echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
-echo "</table></form></div>";
+printCalendrier($_GET["reservationitems_id"]);
 
-if ($_GET["id"]>0)
-showUserReservations($_GET["id"]);
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpFooter();
+} else {
+   commonFooter();
+}
 
-commonFooter();
+
 
 ?>
