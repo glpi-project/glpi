@@ -166,7 +166,7 @@ class Link extends CommonDBTM {
     * @param $item CommonDBTM : item used to make replacements
     * @return array of link contents (may have several when item have several IP / MAC cases)
     */
-   static function generateLinkContents($link, CommonDBTM $item) {
+   static function generateLinkContents($link, CommonDBTM $item, $name) {
       global $DB;
 
       if (strstr($link,"[ID]")) {
@@ -270,10 +270,6 @@ class Link extends CommonDBTM {
                      $tmplink=str_replace("[MAC]",$val['mac'],$tmplink);
                   }
                }
-               $name = $item->getField('name');
-               if (empty($name)) {
-                  $name = $item->getField('link');
-               }
 
                if ($disp) {
                   $links["$name #" .$val['number']." - $tmplink"]=$tmplink;
@@ -345,14 +341,14 @@ class Link extends CommonDBTM {
                $tosend=true;
             }
 
-            $contents=Link::generateLinkContents($link,$item);
+            $contents=Link::generateLinkContents($link,$item,$name);
             if (count($contents)) {
                foreach ($contents as $title => $link) {
                   $current_name=$name;
                   if (!empty($title)){
                      $current_name=$title;
                   }
-                  $clean_name=Link::generateLinkContents($current_name,$item);
+                  $clean_name=Link::generateLinkContents($current_name,$item, $name);
 
                   $url=$link;
                   if ($tosend) {
