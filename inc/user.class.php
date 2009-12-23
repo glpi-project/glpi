@@ -1279,6 +1279,8 @@ class User extends CommonDBTM {
          if (!$extauth && haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][19] . "&nbsp;:</td>";
             echo "<td><input type='password' name='password' value='' size='30' /></td></tr>";
+         } else {
+            echo "<td colspan='2'></tr>";
          }
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
