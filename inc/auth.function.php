@@ -87,7 +87,7 @@ function haveTypeRight($itemtype, $right) {
       $method = array($itemtype,'canView');
    }
    $item=new $itemtype();
-   
+
    if (method_exists($item,$method[1])) {
       return $item->$method[1]();
       return (call_user_func($method));
@@ -670,7 +670,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
    }
 
    if (!empty ($table)) {
-      $query .= $table . ".";
+      $query .= "`$table`.";
    }
    if (empty($field)) {
       if ($table=='glpi_entities') {
@@ -680,7 +680,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
       }
    }
 
-   $query.=$field;
+   $query .= "`$field`";
 
    if (is_array($value)) {
       $query .= " IN ('" . implode("','",$value) . "') ";
