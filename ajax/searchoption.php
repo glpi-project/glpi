@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ruleaction.php 9582 2009-12-08 20:22:50Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

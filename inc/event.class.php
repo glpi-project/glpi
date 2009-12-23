@@ -138,6 +138,7 @@ class Event extends CommonDBTM {
                          'typedocs'    => $LANG['log'][39],
                          'planning'    => $LANG['log'][16],
                          'reservation' => $LANG['log'][42],
+                         'reservationitem' => $LANG['log'][42],
                          'contracts'   => $LANG['log'][17],
                          'phones'      => $LANG['log'][43],
                          'dropdown'    => $LANG['log'][44],
@@ -186,8 +187,8 @@ class Event extends CommonDBTM {
                echo $items_id;
                break;
 
-            case "reservation" :
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.php?show=resa&amp;id=".
+            case "reservationitem" :
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $items_id."\">$items_id</a>";
                break;
 

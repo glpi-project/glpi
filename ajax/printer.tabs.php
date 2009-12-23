@@ -117,7 +117,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],'Printer',$_POST["id"]);
+            showDeviceReservations('Printer',$_POST["id"]);
             break;
 
          case 12 :

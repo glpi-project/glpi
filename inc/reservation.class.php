@@ -61,10 +61,7 @@ class Reservation extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      $target="";
-      if (isset($input['_target'])) {
-         $target=$input['_target'];
-      }
+
       $item=0;
       if (isset($input['_item'])) {
          $item=$_POST['_item'];
@@ -78,12 +75,12 @@ class Reservation extends CommonDBTM {
       $this->fields["end"] = $input["end"];
 
       if (!$this->test_valid_date()) {
-         $this->displayError("date",$item,$target);
+         $this->displayError("date",$item);
          return false;
       }
 
       if ($this->is_reserved()) {
-         $this->displayError("is_res",$item,$target);
+         $this->displayError("is_res",$item);
          return false;
       }
 
@@ -108,22 +105,19 @@ class Reservation extends CommonDBTM {
       if (isset($input['_ok']) && !$input['_ok']) {
          return false;
       }
-      $target="";
-      if (isset($input['_target'])) {
-         $target=$input['_target'];
-      }
+ 
       // set new date.
       $this->fields["reservationitems_id"] = $input["reservationitems_id"];
       $this->fields["begin"] = $input["begin"];
       $this->fields["end"] = $input["end"];
 
       if (!$this->test_valid_date()) {
-         $this->displayError("date",$input["reservationitems_id"],$target);
+         $this->displayError("date",$input["reservationitems_id"]);
          return false;
       }
 
       if ($this->is_reserved()) {
-         $this->displayError("is_res",$input["reservationitems_id"],$target);
+         $this->displayError("is_res",$input["reservationitems_id"]);
          return false;
       }
 
@@ -188,7 +182,7 @@ class Reservation extends CommonDBTM {
     * @param $target where to go on error
     *@return nothing
     **/
-   function displayError($type,$ID,$target) {
+   function displayError($type,$ID) {
       global $LANG;
 
       echo "<br><div class='center'>";
@@ -204,7 +198,7 @@ class Reservation extends CommonDBTM {
          default :
             echo "Unknown error";
       }
-      echo "<br><a href='".$target."?show=resa&amp;id=$ID'>".$LANG['reservation'][20]."</a>";
+      echo "<br><a href='reservation.php?reservationitems_id=$ID'>".$LANG['reservation'][20]."</a>";
       echo "</div>";
    }
 
@@ -269,7 +263,6 @@ class Reservation extends CommonDBTM {
    }
 
    function can($ID,$right,&$input=NULL) {
-
       if (empty($ID) || $ID<=0) {
          // Add reservation - TODO should also check commonitem->can(r)
          return haveRight("reservation_helpdesk","1");
@@ -287,18 +280,18 @@ class Reservation extends CommonDBTM {
       if (!haveRight("reservation_central",$right)) {
          return false;
       }
-      $item=new ReservationItem();
-      if (!$item->getFromDB($this->fields["reservationitems_id"])) {
+      $ri=new ReservationItem();
+      if (!$ri->getFromDB($this->fields["reservationitems_id"])) {
          return false;
       }
-      if (!class_exists($item->fields["itemtype"])) {
+      if (!class_exists($ri->fields["itemtype"])) {
          return false;
       }
-      $item = new $item->fields["itemtype"]();
-      if (!$item->getFromDB($item->fields["items_id"])) {
+      $item = new $ri->fields["itemtype"]();
+      if (!$item->getFromDB($ri->fields["items_id"])) {
          return false;
       }
-      return haveAccessToEntity($ci->obj->fields["entities_id"]);
+      return haveAccessToEntity($item->getEntityID());
    }
 }
 

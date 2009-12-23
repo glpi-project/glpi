@@ -136,7 +136,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations($_POST['target'],'Computer',$_POST["id"]);
+            showDeviceReservations('Computer',$_POST["id"]);
             break;
 
          case 12 :
