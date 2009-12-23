@@ -207,6 +207,7 @@ class TicketFollowup  extends CommonDBTM {
       // Manage File attached (from mailgate)
       $docadded=$input["_job"]->addFiles($input["tickets_id"]);
       if (count($docadded)>0) {
+         $input['content'] .= "\n";
          foreach ($docadded as $name) {
             $input['content'] .= "\n".$LANG['mailing'][26]." $name";
          }
@@ -348,7 +349,6 @@ class TicketFollowup  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
       }
-      else echo "--no--";
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 

@@ -1473,7 +1473,7 @@ class Ticket extends CommonDBTM {
                if ($docitem->add(array('documents_id' => $docID,
                                        'itemtype' => $this->type,
                                        'items_id' => $id))) {
-                  $docadded[]=stripslashes($doc->fields["name"]);
+                  $docadded[]=stripslashes($doc->fields["name"] . " - " . $doc->fields["filename"]);
                }
             }
 
