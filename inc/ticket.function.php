@@ -2557,50 +2557,7 @@ function showJobDetails($target, $ID,$array=array()) {
 */
 
 
-/** Computer total cost of a ticket
-* @param $realtime float : ticket realtime
-* @param $cost_time float : ticket time cost
-* @param $cost_fixed float : ticket fixed cost
-* @param $cost_material float : ticket material cost
-* @return total cost formatted string
-*/
-function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material) {
-   return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
-}
 
-
-/**
- * Calculate Ticket TCO for a device
- *
- *@param $itemtype device type
- *@param $items_id ID of the device
- *
- *@return float
- *
- **/
-function computeTicketTco($itemtype,$items_id) {
-   global $DB;
-
-   $totalcost=0;
-
-   $query = "SELECT *
-             FROM `glpi_tickets`
-             WHERE `itemtype` = '$itemtype'
-                   AND `items_id` = '$items_id'
-                   AND (`cost_time` > '0'
-                        OR `cost_fixed` > '0'
-                        OR `cost_material` > '0')";
-   $result = $DB->query($query);
-
-   $i = 0;
-   if ($DB->numrows($result)) {
-      while ($data=$DB->fetch_array($result)) {
-         $totalcost += trackingTotalCost($data["realtime"],$data["cost_time"],$data["cost_fixed"],
-                                         $data["cost_material"]);
-      }
-   }
-   return $totalcost;
-}
 
 
 function showPreviewAssignAction($output) {
