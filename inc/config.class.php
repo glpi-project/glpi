@@ -801,16 +801,14 @@ class Config extends CommonDBTM {
 
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['title'][24] . "</strong></td></tr>";
-
       if ($oncentral) {
+         echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
+         echo "<strong>" . $LANG['title'][24] . "</strong></td></tr>";
+
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
          echo " </td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-      }
 
-      if ($oncentral) {
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][39] . " </td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
          echo "</td>";
