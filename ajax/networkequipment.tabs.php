@@ -106,7 +106,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 11 :
-         showDeviceReservations('NetworkEquipment',$_POST["id"]);
+         Reservation::showForItem('NetworkEquipment',$_POST["id"]);
          break;
 
       case 12 :

@@ -111,7 +111,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations('Software',$_POST["id"]);
+            Reservation::showForItem('Software',$_POST["id"]);
             break;
 
          case 12 :

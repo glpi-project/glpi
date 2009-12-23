@@ -118,7 +118,7 @@ if (isset($_POST["update"])){
    if (!isset($_GET['date'])) {
       $_GET['date'] = date('Y-m-d');
    }
-   showAddReservationForm($_GET["id"],$_GET["item"],$_GET['date']);
+   $rr->showForm($_GET["id"],$_GET["item"],$_GET['date']);
 }
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

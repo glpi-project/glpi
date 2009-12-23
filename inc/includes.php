@@ -138,7 +138,6 @@ include_once (GLPI_ROOT . "/inc/ticket.function.php");
 include_once (GLPI_ROOT . "/inc/search.function.php");
 include_once (GLPI_ROOT . "/inc/rule.function.php");
 include_once (GLPI_ROOT . "/inc/stat.function.php");
-include_once (GLPI_ROOT . "/inc/reservationitem.function.php");
 include_once (GLPI_ROOT . "/inc/ldap.function.php");
 
 

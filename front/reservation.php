@@ -50,7 +50,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }
 
-printCalendrier($_GET["reservationitems_id"]);
+Reservation::showCalendar($_GET["reservationitems_id"]);
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    helpFooter();

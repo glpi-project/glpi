@@ -107,7 +107,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 11 :
-            showDeviceReservations('Peripheral',$_POST["id"]);
+            Reservation::showForItem('Peripheral',$_POST["id"]);
             break;
 
          case 12 :

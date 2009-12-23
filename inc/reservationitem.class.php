@@ -246,6 +246,80 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
    }
+
+
+   static function showListSimple() {
+      global $DB,$LANG,$CFG_GLPI;
+   
+      if (!haveRight("reservation_helpdesk","1")) {
+         return false;
+      }
+   
+      $ri=new ReservationItem;
+      $ok=false;
+      $showentity=isMultiEntitiesMode();
+   
+      echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>\n";
+   
+      foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item=new $itemtype();
+         $itemtable=getTableForItemType($itemtype);
+         $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
+                        "`$itemtable`.`name` AS name, ".
+                        "`$itemtable`.`entities_id` AS entities_id,
+                        `glpi_locations`.`completename` AS location,
+                        `glpi_reservationitems`.`items_id` AS items_id
+                  FROM `glpi_reservationitems`
+                  INNER JOIN `$itemtable`
+                        ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
+                           AND `glpi_reservationitems`.`items_id` = `$itemtable`.`id`)
+                  LEFT JOIN `glpi_locations`
+                        ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
+                  WHERE `glpi_reservationitems`.`is_active` = '1'
+                        AND `$itemtable`.`is_deleted` = '0'".
+                        getEntitiesRestrictRequest("AND",$itemtable)."
+                  ORDER BY `$itemtable`.`entities_id`,`$itemtable`.`name`";
+   
+         if ($result = $DB->query($query)) {
+            while ($row=$DB->fetch_array($result)) {
+               echo "<tr class='tab_bg_2'><td>";
+               echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'></td>";
+               $typename=$item->getTypeName();
+               if ($itemtype == 'Peripheral') {
+                  $item->getFromDB($row['items_id']);
+                  if (isset($item->fields["peripheraltypes_id"])
+                     && $item->fields["peripheraltypes_id"]!=0) {
+   
+                     $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
+                                             $item->fields["peripheraltypes_id"]);
+                  }
+               }
+               echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>$typename - ".
+                     $row["name"]."</a></td>";
+               echo "<td>".$row["location"]."</td>";
+               echo "<td>".nl2br($row["comment"])."</td>";
+               if ($showentity) {
+                  echo "<td>".Dropdown::getDropdownName("glpi_entities",$row["entities_id"])."</td>";
+               }
+               echo "</tr>\n";
+               $ok=true;
+            }
+         }
+      }
+      if ($ok) {
+         echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
+         echo "<input type='submit' value=\"".$LANG['buttons'][8]."\" class='submit'></td></tr>\n";
+      }
+      echo "</table>\n";
+      echo "<input type='hidden' name='id' value=''>";
+      echo "</form></div>\n";
+   }
+
 }
 
 
