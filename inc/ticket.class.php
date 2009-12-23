@@ -2277,10 +2277,10 @@ class Ticket extends CommonDBTM {
    function showCost($target) {
       global $DB,$LANG;
 
-      $this->showFormHeader($target,'',$ID = $this->getField('id'));
-      echo "<form method='post' name='form_ticket_cost' action='$target' >\n";
-      echo "<div class='center' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
+      $this->check($this->getField('id'), 'r');
+      $canedit = $this->can($this->getField('id'), 'w');
+
+      $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 1);
 
       echo "<tr><th colspan='2'>".$LANG['job'][47]."</th></tr>";
 
@@ -2290,7 +2290,7 @@ class Ticket extends CommonDBTM {
       echo "<td class='b'>".getRealtime($this->fields["realtime"])."</td>";
       echo "</tr>";
 
-      if (haveRight("contract","r")) {  // admin = oui on affiche les couts liés à l'interventions
+      if ($canedit) {  // admin = oui on affiche les couts liés à l'interventions
          echo "<tr class='tab_bg_1'>";
          echo "<td class='left'>".$LANG['job'][40]."&nbsp;: </td>";
 
@@ -2321,15 +2321,7 @@ class Ticket extends CommonDBTM {
          echo "</td>";
          echo "</tr>\n";
       }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][14]."'></td>";
-      echo "</tr>";
-      echo "</table>";
-      echo "<input type='hidden' name='id' value='$ID'>";
-      echo "</div>";
-      echo "</form>";
+      $this->showFormButtons($this->getField('id'), '', 1, false);
    }
 }
 ?>
