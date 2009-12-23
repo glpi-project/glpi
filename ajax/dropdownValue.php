@@ -118,7 +118,7 @@ if ($item instanceof CommonTreeDropdown) {
       $recur=$item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
-         $where.=getEntitiesRestrictRequest(" AND ",`$table`,'',
+         $where.=getEntitiesRestrictRequest(" AND ", "`$table`", '',
                                             $_POST["entity_restrict"],$recur);
          if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
             $multi=true;
