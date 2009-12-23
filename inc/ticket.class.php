@@ -470,8 +470,7 @@ class Ticket extends CommonDBTM {
                if ($item->getFromDB($this->fields["items_id"])) {
                   $newinput=array();
                   $newinput['id']=$this->fields["items_id"];
-                  $newinput['ticket_tco'] = computeTicketTco($this->fields["itemtype"],
-                                                            $this->fields["items_id"]);
+                  $newinput['ticket_tco'] = self::computeTco($item);
                   $item->update($newinput);
                }
             }
@@ -2316,12 +2315,58 @@ class Ticket extends CommonDBTM {
          echo "<td class='left'>".$LANG['job'][43]."&nbsp;: </td>";
 
          echo "<td class='b'>";
-         echo trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
-                                $this->fields["cost_fixed"],$this->fields["cost_material"]);
+         echo self::trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
+                                      $this->fields["cost_fixed"],$this->fields["cost_material"]);
          echo "</td>";
          echo "</tr>\n";
       }
       $this->showFormButtons($this->getField('id'), '', 1, false);
+   }
+
+   /**
+    * Calculate Ticket TCO for a device
+    *
+    *@param $itemtype device type
+    *@param $items_id ID of the device
+    *
+    *@return float
+    *
+    **/
+   static function computeTco(CommonDBTM $item) {
+      global $DB;
+
+      $totalcost=0;
+
+      $query = "SELECT `realtime`, `cost_time`, `cost_fixed`, `cost_material`
+                FROM `glpi_tickets`
+                WHERE `itemtype` = '".get_class($item)."'
+                      AND `items_id` = '".$item->getField('id')."'
+                      AND (`cost_time` > '0'
+                           OR `cost_fixed` > '0'
+                           OR `cost_material` > '0')";
+      $result = $DB->query($query);
+
+      $i = 0;
+      if ($DB->numrows($result)) {
+         while ($data=$DB->fetch_array($result)) {
+            $totalcost += self::trackingTotalCost($data["realtime"],$data["cost_time"],$data["cost_fixed"],
+                                            $data["cost_material"]);
+         }
+      }
+      return $totalcost;
+   }
+
+   /**
+    * Computer total cost of a ticket
+    *
+    * @param $realtime float : ticket realtime
+    * @param $cost_time float : ticket time cost
+    * @param $cost_fixed float : ticket fixed cost
+    * @param $cost_material float : ticket material cost
+    * @return total cost formatted string
+    */
+   static function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material) {
+      return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
    }
 }
 ?>
