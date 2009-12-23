@@ -2002,6 +2002,10 @@ class Ticket extends CommonDBTM {
 
                   while ($data=$DB->fetch_array($result)) {
                      $output=$data["name"];
+                     if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
+                        $output.=" (".$data['id'].")";
+                     }
+                     $output = $type_name . " - " . $output;
                      if ($itemtype != 'Software') {
                         if (!empty($data['serial'])) {
                            $output.=" - ".$data['serial'];
@@ -2010,11 +2014,8 @@ class Ticket extends CommonDBTM {
                            $output.=" - ".$data['otherserial'];
                         }
                      }
-                     if (empty($output)||$_SESSION["glpiis_ids_visible"]) {
-                        $output.=" (".$data['id'].")";
-                     }
                      $my_devices.="<option title=\"$output\" value='".$itemtype."_".$data["id"]."' ";
-                     $my_devices.=($my_item==$itemtype."_".$data["id"]?"selected":"").">$type_name - ";
+                     $my_devices.=($my_item==$itemtype."_".$data["id"]?"selected":"").">";
                      $my_devices.=utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
 
                      $already_add[$itemtype][]=$data["id"];

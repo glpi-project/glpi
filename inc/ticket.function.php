@@ -1916,7 +1916,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
       //List all users in the active entity (and all it's sub-entities if needed)
       User::dropdown(array('value'        => $array["users_id"],
-                           'entity'       => $entities,
+                           'entity'       => $job->fields["entities_id"],
                            'entity_sons'  => haveAccessToEntity($_SESSION["glpiactive_entity"],true),
                            'right'        => 'all',
                            'helpdesk_ajax'=> 1));
