@@ -147,9 +147,9 @@ class Ticket extends CommonDBTM {
  //        $ong[1] = $LANG['job'][38]." ".$ID;
          if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
              && $this->fields["users_id"]==$_SESSION["glpiID"]) {
-            $ong[1] = $LANG['Menu'][5];
-            $ong[2] = $LANG['job'][7];
          }
+         $ong[1] = $LANG['Menu'][5];
+         $ong[2] = $LANG['job'][7];
       }
       $ong[4] = $LANG['jobresolution'][1];
       $ong[3] = $LANG['job'][47];
