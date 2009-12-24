@@ -82,6 +82,26 @@ class DeviceNetworkCard extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if (!empty($this->fields["bandwidth"])) {
+         $data['label'][] = $LANG['device_iface'][0];
+         $data['value'][] = $this->fields["bandwidth"];
+      }
+      // Specificity
+      $data['label'][] = $LANG['device_iface'][2];
+      $data['size'] = 18;
+
+      return $data;
+   }
 }
 
 ?>

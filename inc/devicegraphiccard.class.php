@@ -81,6 +81,27 @@ class DeviceGraphicCard extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if ($this->fields["interfacetypes_id"]) {
+         $data['label'][] = $LANG['common'][65];
+         $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
+                                                      $this->fields["interfacetypes_id"]);
+      }
+      // Specificity
+      $data['label'][] = $LANG['device_gfxcard'][0];
+      $data['size'] = 10;
+
+      return $data;
+   }
 }
 
 ?>

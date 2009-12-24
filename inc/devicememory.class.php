@@ -90,6 +90,31 @@ class DeviceMemory extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if ($this->fields["devicememorytypes_id"]) {
+         $data['label'][] = $LANG['common'][17];
+         $data['value'][] = Dropdown::getDropdownName("glpi_devicememorytypes",
+                                                      $this->fields["devicememorytypes_id"]);
+      }
+      if (!empty($this->fields["frequence"])) {
+         $data['label'][] = $LANG['device_ram'][1];
+         $data['value'][] = $this->fields["frequence"];
+      }
+      // Specificity
+      $data['label'][] = $LANG['device_ram'][2];
+      $data['size'] = 10;
+
+      return $data;
+   }
 }
 
 ?>

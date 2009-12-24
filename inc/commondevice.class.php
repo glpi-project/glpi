@@ -101,6 +101,15 @@ abstract class CommonDevice extends CommonDropdown {
       }
       return NOT_AVAILABLE;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      return false;
+   }
 }
 
 ?>

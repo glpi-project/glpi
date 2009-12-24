@@ -41,7 +41,7 @@ header_nocache();
 checkCentralAccess();
 
 // Make a select box
-if (class_exists($_POST["idtable"])) {
+if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    $table=getTableForItemType($_POST["idtable"]);
 
    // Link to user for search only > normal users

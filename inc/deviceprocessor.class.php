@@ -82,6 +82,23 @@ class DeviceProcessor extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+
+      // Specificity
+      $data['label'][] = $LANG['device_ram'][1];
+      $data['size'] = 10;
+
+      return $data;
+   }
 }
 
 ?>

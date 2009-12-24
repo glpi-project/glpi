@@ -99,6 +99,35 @@ class DeviceHardDrive extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if (!empty($this->fields["rpm"])) {
+         $data['label'][] = $LANG['device_hdd'][0];
+         $data['value'][] = $this->fields["rpm"];
+      }
+      if ($this->fields["interfacetypes_id"]) {
+         $data['label'][] = $LANG['common'][65];
+         $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
+                                                      $this->fields["interfacetypes_id"]);
+      }
+      if (!empty($this->fields["cache"])) {
+         $data['label'][] = $LANG['device_hdd'][1];
+         $data['value'][] = $this->fields["cache"];
+      }
+      // Specificity
+      $data['label'][] = $LANG['device_hdd'][4];
+      $data['size'] = 10;
+
+      return $data;
+   }
 }
 
 ?>

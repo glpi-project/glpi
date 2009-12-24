@@ -72,6 +72,23 @@ class DeviceCase extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if ($this->fields["devicecasetypes_id"]) {
+         $data['label'][] = $LANG['device_case'][0];
+         $data['value'][] = Dropdown::getDropdownName("glpi_devicecasetypes",
+                                                      $this->fields["devicecasetypes_id"]);
+      }
+      return $data;
+   }
 }
 
 ?>

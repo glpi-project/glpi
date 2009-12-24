@@ -73,6 +73,23 @@ class DeviceSoundCard extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if (!empty($this->fields["type"])) {
+         $data['label'][] = $LANG['common'][17];
+         $data['value'][] = $this->fields["type"];
+      }
+
+      return $data;
+   }
 }
 
 ?>

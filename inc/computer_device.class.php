@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Computer and Items (monitor, printer, phone, peripheral only)
+// Relation between Computer and a CommonDevice (motherboard, memory, processor, ...)
 class Computer_Device extends CommonDBRelation{
 
    // From CommonDBTM
@@ -65,48 +65,92 @@ class Computer_Device extends CommonDBRelation{
     *@return Nothing (display)
     *
     **/
-   static function showDeviceComputerForm($target,$ID,$withtemplate='') {
-      global $LANG,$CFG_GLPI;
+   static function showForComputer(Computer $computer, $withtemplate='') {
+      global $DB, $LANG;
 
-      if (!haveRight("computer","r")) {
+      $ID = $computer->getField('id');
+      if (!$computer->can($ID, 'r')) {
          return false;
       }
-      $canedit=haveRight("computer","w");
+      $canedit = ($withtemplate!=2 && $computer->can($ID, 'w'));
 
-      $comp = new Computer;
-      if (empty($ID) && $withtemplate == 1) {
-         $comp->getEmpty();
+      $query = "SELECT count(*) AS NB, `id`, `itemtype`, `items_id`, `specificity`
+                FROM `glpi_computers_devices`
+                WHERE `computers_id` = '$ID'
+                GROUP BY `itemtype`, `items_id`, `specificity`";
+
+      if ($canedit) {
+         echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__)."' method=\"post\" >";
+         echo "<input type='hidden' name='computers_id' value='$ID'>";
+      }
+      echo "<table class='tab_cadre_fixe' >";
+      echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
+
+      $nb=0;
+      $prev = '';
+      foreach($DB->request($query) as $data) {
+         if ($data['itemtype'] != $prev) {
+            $prev = $data['itemtype'];
+            initNavigateListItems($data['itemtype'], $computer->getTypeName()." = ".$computer->getName());
+         }
+         addToNavigateListItems($data['itemtype'], $data['items_id']);
+
+         $device = new $data['itemtype'];
+         if ($device->getFromDB($data['items_id'])) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center'>";
+            Dropdown::showInteger('quantity_'.$data['items_id'], $data['NB']);
+            echo "</td><td>";
+            if ($device->canCreate()) {
+               echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
+            } else {
+               echo $device->getTypeName();
+            }
+            echo "</td><td>".$device->getLink()."</td>";
+
+            $spec = $device->getFormData();
+            if (isset($spec['label']) && count($spec['label'])) {
+               $colspan = (60/count($spec['label']));
+               foreach ($spec['label'] as $i => $label) {
+                  if (isset($spec['value'][$i])) {
+                     echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                     echo $spec['value'][$i]."</td>";
+                  } else if ($canedit){
+                     // Specificity
+                     echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                     echo "<input type='text' name='devicevalue_".$data['items_id']."' value='";
+                     echo $data['specificity']."' size='".$spec['size']."' ></td>";
+                  } else {
+                     echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                     echo $data['specificity']."</td>";
+                  }
+               }
+            } else {
+               echo "<td colspan='60'>&nbsp;</td>";
+            }
+            echo "</tr>";
+            $nb++;
+         }
+      }
+      if ($canedit && $nb>0) {
+         echo "<tr><td colspan='63' class='tab_bg_1 center'>";
+         echo "<input type='submit' class='submit' name='update_device' value='".
+                $LANG['buttons'][7]."'></td></tr>";
+
+
+         echo "<tr><td colspan='63' class='tab_bg_1 center'>";
+         echo $LANG['devices'][0]."&nbsp;: ";
+         $types =  array('DeviceMotherboard', 'DeviceProcessor', 'DeviceNetworkCard', 'DeviceMemory',
+                         'DeviceHardDrive', 'DeviceDrive', 'DeviceControl', 'DeviceGraphicCard',
+                         'DeviceSoundCard', 'DeviceCase', 'DevicePowerSupply', 'DevicePci');
+         Dropdown::showAllItems('items_id', '', 0, -1, $types);
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</tr></table></form>";
       } else {
-         $comp->getFromDBwithDevices($ID);
+      echo "</table>";
       }
 
-      if (!empty($ID)) {
-         echo "<div class='center'>";
-         echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
-         echo "<input type='hidden' name='id' value='$ID'>";
-         echo "<input type='hidden' name='device_action' value='$ID'>";
-         echo "<table class='tab_cadre_fixe' >";
-         echo "<tr><th colspan='65'>".$LANG['title'][30]."</th></tr>";
-         foreach($comp->devices as $key => $val) {
-            $device = new Device($val["devType"]);
-            $device->getFromDB($val["devID"]);
-            printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["id"],
-                                $val["compDevID"],$withtemplate);
-
-         }
-
-         if ($canedit && !(!empty($withtemplate) && $withtemplate == 2)
-                      && count($comp->devices)) {
-            echo "<tr><td colspan='65' class='tab_bg_1 center'>";
-            echo "<input type='submit' class='submit' name='update_device' value='".
-                   $LANG['buttons'][7]."'></td></tr>";
-         }
-         echo "</table>";
-         echo "</form>";
-         //ADD a new device form.
-         Device::dropdownDeviceSelector($target,$comp->fields["id"],$withtemplate);
-         echo "</div><br>";
-      }
+//      Device::dropdownDeviceSelector($target,$comp->fields["id"],$withtemplate);
    }
 }
 ?>

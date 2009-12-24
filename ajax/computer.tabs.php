@@ -84,14 +84,14 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          default :
             if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
-               Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+               Computer_Device::showForComputer($computer, $_POST["withtemplate"]);
             }
             break;
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+            Computer_Device::showForComputer($computer);
             ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
@@ -157,7 +157,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          default :
             if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
-               Computer_Device::showDeviceComputerForm($_POST['target'],$_POST["id"], $_POST["withtemplate"]);
+               Computer_Device::showForComputer($computer);
             }
             break;
       }

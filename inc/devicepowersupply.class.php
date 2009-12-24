@@ -82,6 +82,26 @@ class DevicePowerSupply extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if ($this->fields["is_atx"]) {
+         $data['label'][] = $LANG['device_power'][1];
+         $data['value'][] = Dropdown::getYesNo($this->fields["is_atx"]);
+      }
+      if (!empty($this->fields["power"])) {
+         $data['label'][] = $LANG['device_power'][0];
+         $data['value'][] = $this->fields["power"];
+      }
+      return $data;
+   }
 }
 
 ?>
