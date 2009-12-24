@@ -73,6 +73,23 @@ class DeviceMotherboard extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if (!empty($this->fields["chipset"])) {
+         $data['label'][] = $LANG['device_moboard'][0];
+         $data['value'][] = $this->fields["chipset"];
+      }
+
+      return $data;
+   }
 }
 
 ?>

@@ -318,17 +318,16 @@ CREATE TABLE `glpi_computers` (
 
 DROP TABLE IF EXISTS `glpi_computers_devices`;
 CREATE TABLE `glpi_computers_devices` (
-  `id` int(11) NOT NULL auto_increment,
-  `specificity` varchar(255) collate utf8_unicode_ci default NULL,
-  `devicetype` int(11) NOT NULL default '0',
-  `devices_id` int(11) NOT NULL default '0',
-  `computers_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `specificity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `computers_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `specificity` (`specificity`),
-  KEY `device_type` (`devicetype`,`devices_id`),
-  KEY `computers_id` (`computers_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+  KEY `computers_id` (`computers_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_computers_items
 

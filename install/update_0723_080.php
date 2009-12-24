@@ -2564,6 +2564,27 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add default value for search engine for AuthLDAP" . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_computers_devices','devicetype')) {
+
+      displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['title'][30]); // Updating schema
+
+      $query = "ALTER TABLE `glpi_computers_devices`
+                     ADD `itemtype` VARCHAR( 100 ) NOT NULL,
+                     ADD `items_id` INT(11) NOT NULL default '0'";
+      $DB->query($query) or die("0.80 add itemtype to table glpi_computers_devices " . $LANG['update'][90] . $DB->error());
+
+      foreach ($devtypetoname as $key => $val) {
+         $query = "UPDATE `glpi_computers_devices`
+                   SET `itemtype` = '$val', `items_id` = `devices_id`
+                   WHERE `devicetype` = '$key'";
+         $DB->query($query) or die("0.80 update itemtype of table glpi_computers_devices for $val " . $LANG['update'][90] . $DB->error());
+      }
+      $query = "ALTER TABLE `glpi_computers_devices`
+                     DROP `devicetype`,
+                     DROP `devices_id`,
+                     ADD INDEX `item` (`itemtype`,`items_id`)";
+      $DB->query($query) or die("0.80 drop devicetype of table glpi_computers_devices " . $LANG['update'][90] . $DB->error());
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

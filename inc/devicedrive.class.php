@@ -90,6 +90,32 @@ class DeviceDrive extends CommonDevice {
 
       return $tab;
    }
+
+   /**
+    * return the display data for a specific device
+    *
+    * @return array
+    */
+   function getFormData() {
+      global $LANG;
+
+      $data['label'] = $data['value'] = array();
+      if ($this->fields["is_writer"]) {
+         $data['label'][] = $LANG['device_drive'][0];
+         $data['value'][] = Dropdown::getYesNo($this->fields["is_writer"]);
+      }
+      if (!empty($this->fields["speed"])) {
+         $data['label'][] = $LANG['device_drive'][1];
+         $data['value'][] = $this->fields["speed"];
+      }
+      if ($this->fields["interfacetypes_id"]) {
+         $data['label'][] = $LANG['common'][65];
+         $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
+                                                      $this->fields["interfacetypes_id"]);
+      }
+
+      return $data;
+   }
 }
 
 ?>
