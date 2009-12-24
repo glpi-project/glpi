@@ -29,9 +29,7 @@
  */
 /*!
   \brief affiche le rapport r�eau par switch
-
  */
-
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -39,72 +37,106 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("reports","r");
 
 // Titre
-if (isset($_POST["switch"])&&$_POST["switch"]){
-	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+if (isset($_POST["switch"]) && $_POST["switch"]) {
+   commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-	$name=Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
-	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
+   $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
+   echo "<div class='center'><h2>".$LANG['reports'][49]." $name </h2></div><br>";
 
-	$query="SELECT c.name as port,c.ip as ip,c.mac as mac, c.id AS IDport, glpi_networkequipments.name as switch
-		FROM glpi_networkequipments
-		INNER JOIN glpi_networkports c ON c.itemtype='NetworkEquipment' AND c.items_id=glpi_networkequipments.id
-		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
+   $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_networkports`.`ip`AS ip,
+                    `glpi_networkports`.`mac` AS mac, `glpi_networkports`.`id` AS IDport,
+                    `glpi_networkequipments`.`name` AS switch
+             FROM `glpi_networkequipments`
+             INNER JOIN `glpi_networkports`
+                  ON (`glpi_networkports`.`itemtype` = 'NetworkEquipment'
+                      AND `glpi_networkports`.`items_id` = `glpi_networkequipments`.`id`)
+             WHERE `glpi_networkequipments`.`id` = '".$_POST["switch"]."'";
 
+   $result = $DB->query($query);
+   if ($result && $DB->numrows($result)) {
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th>".$LANG['reports'][46]."</th>";
+      echo "<th>".$LANG['reports'][38]."</th>";
+      echo "<th>".$LANG['device_iface'][2]."</th>";
+      echo "<th>".$LANG['reports'][47]."</th>";
+      echo "<th>".$LANG['reports'][38]."</th>";
+      echo "<th>".$LANG['device_iface'][2]."</th>";
+      echo "<th>".$LANG['reports'][36]."</th></tr>\n";
 
-	$result = $DB->query($query);
-	if ($result&&$DB->numrows($result)){
-		echo "<div align='center'><table class='tab_cadre_report'>";
-		echo "<tr> ";
-		echo "<th>&nbsp;</th>";
-		echo "<th>".$LANG['reports'][46]."</th>";
-		echo "<th>".$LANG['reports'][38]."</th>";
-		echo "<th>".$LANG['device_iface'][2]."</th>";
-		echo "<th>".$LANG['reports'][47]."</th>";
-		echo "<th>".$LANG['reports'][38]."</th>";
-		echo "<th>".$LANG['device_iface'][2]."</th>";
-		echo "<th>".$LANG['reports'][36]."</th>";
-		echo "</tr>\n";
+      while ($ligne = $DB->fetch_array($result)) {
+         $switch = $ligne['switch'];
+         $port = $ligne['port'];
+         $nw = new NetworkPort_NetworkPort();
+         $networkports_id_1 = $nw->getOppositeContact($ligne['IDport']);
+         $np = new NetworkPort();
+         $ip2 = "";
+         $mac2 = "";
+         $portordi = "";
+         $ordi = "";
 
-		while( $ligne = $DB->fetch_array($result)){
-			$switch = $ligne['switch'];
-			$port = $ligne['port'];
-			$nw=new NetworkPort_NetworkPort();
-			$networkports_id_1=$nw->getOppositeContact($ligne['IDport']);
-			$np=new NetworkPort();
-			$ip2="";
-			$mac2="";
-			$portordi="";
-			$ordi="";
+         if ($networkports_id_1) {
+            $np->getFromDB($networkports_id_1);
+            $np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
+            $ordi = $np->device_name;
+            $ip2 = $np->fields['ip'];
+            $mac2 = $np->fields['mac'];
+            $portordi = $np->fields['name'];
+         }
+         $ip = $ligne['ip'];
+         $mac = $ligne['mac'];
 
-			if ($networkports_id_1){
-				$np->getFromDB($networkports_id_1);
-				$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
-				$ordi=$np->device_name;
-				$ip2=$np->fields['ip'];
-				$mac2=$np->fields['mac'];
-				$portordi=$np->fields['name'];
-			}
-			$ip=$ligne['ip'];
-			$mac=$ligne['mac'];
-			//inserer ces valeures dans un tableau
-			echo "<tr class='tab_bg_1'>";
-			if($switch) echo "<td>$switch</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($port) echo "<td>$port</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($ip) echo "<td>$ip</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($mac) echo "<td>$mac</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($portordi) echo "<td>$portordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($ip2) echo "<td>$ip2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($mac2) echo "<td>$mac2</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			if($ordi) echo "<td>$ordi</td>"; else echo "<td> ".NOT_AVAILABLE." </td>";
-			echo "</tr>\n";
-		}
-		echo "</table></div><br><hr><br>";
-	}
+         //inserer ces valeures dans un tableau
+         echo "<tr class='tab_bg_1'>";
 
-	commonFooter();
+         if ($port) {
+            echo "<td class='center'>$port</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($ip) {
+            echo "<td>$ip</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($mac) {
+            echo "<td>$mac</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($portordi) {
+            echo "<td>$portordi</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($ip2) {
+            echo "<td>$ip2</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($mac2) {
+            echo "<td>$mac2</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+
+         if ($ordi) {
+            echo "<td>$ordi</td>";
+         } else {
+            echo "<td> ".NOT_AVAILABLE." </td>";
+         }
+         echo "</tr>\n";
+      }
+      echo "</table><br><hr><br>";
+   }
+   commonFooter();
 
 } else  {
-	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
+   glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>

@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -41,22 +40,25 @@ checkRight("reports","r");
 
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-if (!isset($_GET["id"])) $_GET["id"]=0;
+if (!isset($_GET["id"])) {
+   $_GET["id"] = 0;
+}
 
-echo "<div align='center'><form method=\"get\" name=\"form\" action=\"report.reservation.php\">";
+echo "<form method='get' name='form' action='report.reservation.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-echo "<td rowspan='2' align='center'>";
+echo "<td rowspan='2' class='center'>";
 User::dropdown(array('name'   => 'id',
                      'value'  => $_GET["id"],
                      'right'  => 'reservation_helpdesk'));
 
 echo "</td>";
-echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
-echo "</table></form></div>";
+echo "<td rowspan='2' class='center'><input type='submit' class='button' name='submit' value='".
+      $LANG['buttons'][7] ."'></td></tr>";
+echo "</table></form>";
 
-if ($_GET["id"]>0)
-showUserReservations($_GET["id"]);
-
+if ($_GET["id"] > 0) {
+   Reservation::showForUser($_GET["id"]);
+}
 commonFooter();
 
 ?>
