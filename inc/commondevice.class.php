@@ -126,6 +126,31 @@ abstract class CommonDevice extends CommonDropdown {
       $compdev = new Computer_Device();
       $compdev->cleanDBonItemDelete(get_class($this), $ID);
    }
+
+   /**
+    * Import a device is not exists
+    *
+    * @param $input of data
+    *
+    * @return interger ID of existing or new Device
+    */
+   function import($input) {
+      global $DB;
+
+      if (!isset($input['designation']) || empty($input['designation'])) {
+         return 0;
+      }
+      $query = "SELECT `id`
+                FROM `".$this->table."`
+                WHERE `designation` = '" . $input['designation'] . "'";
+
+      $result = $DB->query($query);
+      if ($DB->numrows($result)>0) {
+         $line = $DB->fetch_array($result);
+         return $line['id'];
+      }
+      return $this->add($input);
+   }
 }
 
 ?>

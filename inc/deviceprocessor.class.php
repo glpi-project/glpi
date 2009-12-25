@@ -113,6 +113,7 @@ class DeviceProcessor extends CommonDevice {
 
       return $data;
    }
+
 }
 
 ?>
