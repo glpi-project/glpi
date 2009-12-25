@@ -1508,7 +1508,7 @@ class OcsServer extends CommonDBTM {
                   // Get import drives
                   $import_disk = importArrayFromDB($line["import_disk"]);
                   OcsServer::updateDisk($line['computers_id'], $line['ocsid'], $ocsservers_id,
-                                        $cfg_ocs, $import_disk);
+                                        $cfg_ocs, $import_disk, $dohistory);
                }
                if ($mixed_checksum & pow(2, REGISTRY_FL)) {
                   //import registry entries not needed
@@ -3711,7 +3711,7 @@ class OcsServer extends CommonDBTM {
     *@return Nothing (void).
     *
     **/
-   static function updateDisk($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_disk) {
+   static function updateDisk($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_disk, $dohistory) {
       global $DB, $DBocs, $LANG;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -3758,6 +3758,9 @@ class OcsServer extends CommonDBTM {
                   $disk['freesize']=$line['FREE'];
                   if (!in_array($disk["name"], $import_disk)) {
                      $d->reset();
+                     if (!$dohistory) {
+                        $disk['_no_history'] = true;
+                     }
                      $id_disk = $d->add($disk);
                      if ($id_disk) {
                         OcsServer::addToOcsArray($computers_id, array ($id_disk => $disk["name"]), "import_disk");
