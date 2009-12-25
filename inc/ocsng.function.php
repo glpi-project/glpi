@@ -2347,9 +2347,8 @@ function ocsAddDevice($device_type, $dev_array) {
 	{
 		//For network interfaces, check designation AND speed
 		case "glpi_device_iface":
-         // TODO Review this as 'bandwidth' send, not SPEED
-			if (isset($dev_array["SPEED"]))
-				$query.=" AND bandwidth='".$dev_array["SPEED"]."'";
+			if (isset($dev_array["bandwidth"]))
+				$query.=" AND bandwidth='".$dev_array["bandwidth"]."'";
 		break;
 		default:
 		break;
