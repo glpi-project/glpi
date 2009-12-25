@@ -50,6 +50,12 @@ class DeviceMemory extends CommonDevice {
       return $LANG['devices'][6];
    }
 
+   static function getSpecifityLabel() {
+      global $LANG;
+
+      return $LANG['device_ram'][2];
+   }
+
    function getAdditionalFields() {
       global $LANG;
 

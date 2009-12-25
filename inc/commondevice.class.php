@@ -110,6 +110,15 @@ abstract class CommonDevice extends CommonDropdown {
    function getFormData() {
       return false;
    }
+
+   /**
+    * Return the specifity localized name for the Device
+    *
+    * @return string
+    */
+   static function getSpecifityLabel() {
+      return '';
+   }
 }
 
 ?>
