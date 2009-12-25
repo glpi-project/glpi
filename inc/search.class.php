@@ -266,7 +266,7 @@ class Search {
 
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
-         } else { 
+         } else {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',$item->maybeRecursive());
          }
       }
@@ -1283,7 +1283,7 @@ class Search {
          echo "</select>&nbsp;\n";
 
          echo "<span id='SearchSpan$itemtype$i'>\n";
-         
+
          $_POST["itemtype"]=$itemtype;
          $_POST["num"]=$i;
          $_POST["field"]=$selected;
@@ -1425,7 +1425,7 @@ class Search {
       }
       echo "</select> ";
       echo "</td>\n";
-*/  
+*/
       // Display deleted selection
       echo "<td class='center'>";
       $itemtable=getTableForItemType($itemtype);
@@ -1843,24 +1843,24 @@ class Search {
 
          case "glpi_deviceharddrives.specif_default" :
             if ($itemtype != 'DeviceHardDrive') {
-               return " SUM(`DEVICE_".HDD_DEVICE."`.`specificity`)
-                        / COUNT(`DEVICE_".HDD_DEVICE."`.`id`)
-                        * COUNT(DISTINCT `DEVICE_".HDD_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`DEVICE_glpi_deviceharddrives`.`specificity`)
+                        / COUNT(`DEVICE_glpi_deviceharddrives`.`id`)
+                        * COUNT(DISTINCT `DEVICE_glpi_deviceharddrives`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
          case "glpi_devicememories.specif_default" :
             if ($itemtype != 'DeviceMemory') {
-               return " SUM(`DEVICE_".RAM_DEVICE."`.`specificity`)
-                        / COUNT(`DEVICE_".RAM_DEVICE."`.`id`)
-                        * COUNT(DISTINCT `DEVICE_".RAM_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`DEVICE_glpi_devicememories`.`specificity`)
+                        / COUNT(`DEVICE_glpi_devicememories`.`id`)
+                        * COUNT(DISTINCT `DEVICE_glpi_devicememories`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
          case "glpi_deviceprocessors.specif_default" :
             if ($itemtype != 'DeviceProcessor') {
-               return " SUM(`DEVICE_".PROCESSOR_DEVICE."`.`specificity`)
-                        / COUNT(`DEVICE_".PROCESSOR_DEVICE."`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`DEVICE_glpi_deviceprocessors`.`specificity`)
+                        / COUNT(`DEVICE_glpi_deviceprocessors`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
@@ -1872,7 +1872,7 @@ class Search {
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
                         AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
-               $port .= "GROUP_CONCAT(DISTINCT `DEVICE_".NETWORK_DEVICE."`.`specificity`
+               $port .= "GROUP_CONCAT(DISTINCT `DEVICE_glpi_devicenetworkcards`.`specificity`
                                     SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
             }
             return $port;
@@ -2153,7 +2153,7 @@ class Search {
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
-               return "$link (".makeTextCriteria("`DEVICE_".NETWORK_DEVICE."`.`specificity`",$val,$nott,'').
+               return "$link (".makeTextCriteria("`DEVICE_glpi_devicenetworkcards`.`specificity`",$val,$nott,'').
                               makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').")";
             }
             return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
@@ -2237,7 +2237,7 @@ class Search {
                   $name1='name';
                   $name2='firstname';
                }
-   
+
                return $link." (`$table`.`$name1` $SEARCH
                               OR `$table`.`$name2` $SEARCH
                               OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
@@ -2435,7 +2435,7 @@ class Search {
    *@param $ref_table reference table
    *@param $already_link_tables array of tables already joined
    *@param $new_table new table to join
-   *@param $devicetype devicetype for search on computer device
+   *@param $devicetype devicetype for search on computer device (device table name)
    *@param $meta is it a meta item ?
    *@param $meta_type meta type table
    *@param $linkfield linkfield for LeftJoin
@@ -2444,7 +2444,7 @@ class Search {
    *
    **/
    static function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$linkfield,
-                        $devicetype=0,$meta=0,$meta_type=0){
+                        $devicetype='',$meta=0,$meta_type=0){
       global $PLUGIN_HOOKS,$LANG;
 
       // Rename table for meta left join
@@ -2718,12 +2718,12 @@ class Search {
                         ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
 
          case "glpi_computers_devices" :
-            if ($devicetype==0) {
+            if (empty($devicetype)) {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
             }
             return " LEFT JOIN `$new_table` AS DEVICE_".$devicetype."
                            ON (`$rt`.`id` = `DEVICE_".$devicetype."`.`computers_id`
-                              AND `DEVICE_".$devicetype."`.`devicetype` = '$devicetype') ";
+                              AND `DEVICE_".$devicetype."`.`itemtype` = '".getItemTypeForTable($devicetype)."') ";
 
          case "glpi_deviceprocessors" :
          case "glpi_devicepowersupplies" :
@@ -2733,36 +2733,10 @@ class Search {
          case "glpi_devicegraphiccards" :
          case "glpi_devicemotherboards" :
          case "glpi_deviceharddrives" :
-            switch ($new_table) {
-               case "glpi_deviceprocessors" :
-                  $type = PROCESSOR_DEVICE;
-                  break;
-               case "glpi_devicepowersupplies" :
-                  $type = POWER_DEVICE;
-                  break;
-               case "glpi_devicememories" :
-                  $type = RAM_DEVICE;
-                  break;
-               case "glpi_devicenetworkcards" :
-                  $type = NETWORK_DEVICE;
-                  break;
-               case "glpi_devicesoundcards" :
-                  $type = SND_DEVICE;
-                  break;
-               case "glpi_devicegraphiccards" :
-                  $type = GFX_DEVICE;
-                  break;
-               case "glpi_devicemotherboards" :
-                  $type = MOBOARD_DEVICE;
-                  break;
-               case "glpi_deviceharddrives" :
-                  $type = HDD_DEVICE;
-                  break;
-            }
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_computers_devices",
-                              $linkfield,$type,$meta,$meta_type);
+                              $linkfield,$new_table,$meta,$meta_type);
             return $out."
-                  LEFT JOIN `$new_table` $AS ON (`DEVICE_$type`.`devices_id` = `$nt`.`id`) ";
+                  LEFT JOIN `$new_table` $AS ON (`DEVICE_$new_table`.`items_id` = `$nt`.`id`) ";
 
          case 'glpi_plugins':
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
@@ -3939,7 +3913,7 @@ class Search {
       $searchopt=&Search::getOptions($itemtype);
       $actions = array('contains'=>$LANG['search'][2],
                        'searchopt' => array());
-      
+
       if (isset($searchopt[$field_num])) {
          $action['searchopt']=$searchopt[$field_num];
          switch ($searchopt[$field_num]['field']) {
@@ -3955,7 +3929,7 @@ class Search {
      }
 
       return $actions;
-      
+
    }
 
 }
