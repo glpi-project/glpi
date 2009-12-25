@@ -38,18 +38,75 @@ if (!defined('GLPI_ROOT')){
 }
 
 // Relation between Computer and a CommonDevice (motherboard, memory, processor, ...)
-class Computer_Device extends CommonDBRelation{
+class Computer_Device extends CommonDBChild {
 
    // From CommonDBTM
    public $table = 'glpi_computers_devices';
    public $type = 'Computer_Device';
 
-   // From CommonDBRelation
-   public $itemtype_1 = 'Computer';
-   public $items_id_1 = 'computers_id';
+   // From CommonDBChild
+   public $itemtype = 'Computer';
+   public $items_id = 'computers_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   function canCreate() {
+      return haveRight('computer', 'w');
+   }
+
+   function canView() {
+      return haveRight('computer', 'r');
+   }
+
+   function prepareInputForAdd($input) {
+      if (empty($input['itemtype']) || !$input['items_id'] || !$input['computers_id']) {
+         return false;
+      }
+      if (!isset($input['specificity']) || empty($input['specificity'])) {
+         $dev = new $input['itemtype'];
+         $dev->getFromDB($input['items_id']);
+         $input['specificity'] = $dev->getField('specif_default');
+      }
+      return $input;
+   }
+
+   // overload to log HISTORY_ADD_DEVICE instead of HISTORY_ADD_RELATION
+   function post_addItem($newID,$input) {
+
+      if (isset($input['_no_history'])) {
+         return false;
+      }
+      $dev = new $this->fields['itemtype'];
+      $dev->getFromDB($this->fields['items_id']);
+      $changes[0] = 0;
+      $changes[1] = '';
+      $changes[2] = addslashes($dev->getName());
+      historyLog ($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
+   }
+
+   // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
+   function post_deleteFromDB($ID) {
+
+      if (isset($input['_no_history'])) {
+         return false;
+      }
+      $dev = new $this->fields['itemtype'];
+      $dev->getFromDB($this->fields['items_id']);
+      $changes[0] = 0;
+      $changes[1] = addslashes($dev->getName());
+      $changes[2] = '';
+      historyLog ($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
+   }
+
+   function post_updateItem($input, $updates, $history=1) {
+
+      if (!$history || isset($this->input['_no_history']) || !in_array('specificity',$this->updates)) {
+         return false;
+      }
+      $changes[0] = 0;
+      $changes[1] = addslashes($this->oldvalues['specificity']);
+      $changes[2] = $this->fields['specificity'];
+      // history log
+      historyLog ($this->fields['computers_id'],'Computer',$changes,$this->fields['itemtype'],HISTORY_UPDATE_DEVICE);
+   }
 
    /**
     * Print the form for devices linked to a computer or a template
@@ -99,7 +156,7 @@ class Computer_Device extends CommonDBRelation{
          if ($device->getFromDB($data['items_id'])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>";
-            Dropdown::showInteger('quantity_'.$data['items_id'], $data['NB']);
+            Dropdown::showInteger('quantity_'.$data['id'], $data['NB']);
             echo "</td><td>";
             if ($device->canCreate()) {
                echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
@@ -118,7 +175,7 @@ class Computer_Device extends CommonDBRelation{
                   } else if ($canedit){
                      // Specificity
                      echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                     echo "<input type='text' name='devicevalue_".$data['items_id']."' value='";
+                     echo "<input type='text' name='value_".$data['id']."' value='";
                      echo $data['specificity']."' size='".$spec['size']."' ></td>";
                   } else {
                      echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
@@ -132,11 +189,12 @@ class Computer_Device extends CommonDBRelation{
             $nb++;
          }
       }
-      if ($canedit && $nb>0) {
-         echo "<tr><td colspan='63' class='tab_bg_1 center'>";
-         echo "<input type='submit' class='submit' name='update_device' value='".
-                $LANG['buttons'][7]."'></td></tr>";
-
+      if ($canedit) {
+         if ($nb>0) {
+            echo "<tr><td colspan='63' class='tab_bg_1 center'>";
+            echo "<input type='submit' class='submit' name='updateall' value='".
+                   $LANG['buttons'][7]."'></td></tr>";
+         }
 
          echo "<tr><td colspan='63' class='tab_bg_1 center'>";
          echo $LANG['devices'][0]."&nbsp;: ";
@@ -149,8 +207,103 @@ class Computer_Device extends CommonDBRelation{
       } else {
       echo "</table>";
       }
+   }
 
-//      Device::dropdownDeviceSelector($target,$comp->fields["id"],$withtemplate);
+   /**
+    * Update an internal device quantity
+    *
+    * @param $newNumber new quantity value
+    * @param $compDevID computer device ID
+    */
+   private function updateQuantity($newNumber, $compDevID) {
+      global $DB;
+
+      if (!$this->getFromDB($compDevID)) {
+         return false;
+      }
+      $query2 = "SELECT `id`
+                 FROM `glpi_computers_devices`
+                 WHERE `computers_id` = '".$this->fields["computers_id"]."'
+                       AND `itemtype` = '".$this->fields["itemtype"]."'
+                       AND `items_id` = '".$this->fields["items_id"]."'
+                       AND `specificity` = '".addslashes($this->fields["specificity"])."'";
+
+      if ($result2 = $DB->query($query2)) {
+         // Delete devices
+         $number=$DB->numrows($result2);
+         if ($number>$newNumber) {
+            for ($i=$newNumber ; $i<$number ; $i++) {
+               $data2 = $DB->fetch_array($result2);
+               $this->delete($data2);
+            }
+         // Add devices
+         } else if ($number<$newNumber) {
+            $input = array('computers_id' => $this->fields["computers_id"],
+                           'itemtype'     => $this->fields["itemtype"],
+                           'items_id'     => $this->fields["items_id"],
+                           'specificity'  => addslashes($this->fields["specificity"]));
+            for ($i=$number ; $i<$newNumber ; $i++) {
+               $this->add($input);
+            }
+         }
+      }
+   }
+
+   /**
+    * Update an internal device specificity
+    *
+    * @param $newValue new specifity value
+    * @param $compDevID computer device ID
+    */
+   private function updateSpecificity($newValue, $compDevID) {
+      global $DB;
+
+      if (!$this->getFromDB($compDevID)) {
+         return false;
+      }
+      // Is it a real change ?
+      if (addslashes($this->fields['specificity'])==$newValue) {
+         return false;
+      }
+      // Update specificity
+      $query = "SELECT `id`
+                FROM `glpi_computers_devices`
+                WHERE `computers_id` = '".$this->fields["computers_id"]."'
+                      AND `itemtype` = '".$this->fields["itemtype"]."'
+                      AND `items_id` = '".$this->fields["items_id"]."'
+                      AND `specificity` = '".addslashes($this->fields["specificity"])."'";
+
+      $first = true;
+      foreach ($DB->request($query) as $data) {
+         $data['specificity'] = $newValue;
+         $this->update($data, $first);
+         $first = false;
+      }
+   }
+
+   /**
+    * Update the device attached to a computer
+    *
+    * @param $input array of data from the input form
+    *
+    */
+   function updateAll($input) {
+
+      // Update quantity
+      foreach ($input as $key => $val) {
+         $data = explode("_",$key);
+         if (count($data) == 2 && $data[0] == "quantity") {
+            $this->updateQuantity($val, $data[1]);
+         }
+      }
+
+      // Update specificity
+      foreach ($_POST as $key => $val) {
+         $data = explode("_",$key);
+         if (count($data) == 2 && $data[0] == "value") {
+            $this->updateSpecificity($val,$data[1]);
+         }
+      }
    }
 }
 ?>
