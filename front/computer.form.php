@@ -153,15 +153,6 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-//add a new device
-} elseif (isset($_POST["connect_device"])) {
-   $computer->check($_POST['computers_id'],'w');
-
-   if (isset($_POST["devices_id"]) && $_POST["devices_id"] >0) {
-      compdevice_add($_POST["computers_id"],$_POST["devicetype"],$_POST["devices_id"]);
-   }
-   glpi_header($_SERVER['PHP_SELF']."?id=".$_POST["computers_id"]."&withtemplate=".$_POST["withtemplate"]);
-
 } else if (isset($_POST["unlock_monitor"])) {
    $computer->check($_POST['id'],'w');
 
