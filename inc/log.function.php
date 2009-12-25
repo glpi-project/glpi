@@ -241,14 +241,15 @@ function showHistory($itemtype,$items_id) {
                break;
 
             case HISTORY_UPDATE_DEVICE :
-               $field=NOT_AVAILABLE;
+               $field = NOT_AVAILABLE;
+               $change = '';
                if (class_exists($data["itemtype_link"])) {
                   $item = new $data["itemtype_link"]();
                   $field = $item->getTypeName();
+                  $change = $item->getSpecifityLabel()."&nbsp;<strong>:</strong>&nbsp;";
                }
-               $change = getDeviceSpecifityLabel($data["itemtype_link"])."&nbsp;<strong>:</strong>&nbsp;".
-                           $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
-                           $data[ "new_value"]."\"";
+               $change .= $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
+                          $data[ "new_value"]."\"";
                break;
 
             case HISTORY_DELETE_DEVICE :

@@ -50,6 +50,12 @@ class DeviceNetworkCard extends CommonDevice {
       return $LANG['devices'][3];
    }
 
+   static function getSpecifityLabel() {
+      global $LANG;
+
+      return $LANG['device_iface'][2];
+   }
+
    function getAdditionalFields() {
       global $LANG;
 
