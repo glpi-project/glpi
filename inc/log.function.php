@@ -231,20 +231,32 @@ function showHistory($itemtype,$items_id) {
                break;
 
             case HISTORY_ADD_DEVICE :
-               $field=getDictDeviceLabel($data["itemtype_link"]);
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["itemtype_link"])) {
+                  $item = new $data["itemtype_link"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["new_value"]."\"";
                break;
 
             case HISTORY_UPDATE_DEVICE :
-               $field=getDictDeviceLabel($data["itemtype_link"]);
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["itemtype_link"])) {
+                  $item = new $data["itemtype_link"]();
+                  $field = $item->getTypeName();
+               }
                $change = getDeviceSpecifityLabel($data["itemtype_link"])."&nbsp;<strong>:</strong>&nbsp;".
                            $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
                            $data[ "new_value"]."\"";
                break;
 
             case HISTORY_DELETE_DEVICE :
-               $field=getDictDeviceLabel($data["itemtype_link"]);
+               $field=NOT_AVAILABLE;
+               if (class_exists($data["itemtype_link"])) {
+                  $item = new $data["itemtype_link"]();
+                  $field = $item->getTypeName();
+               }
                $change = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                          $data["old_value"]."\"";
                break;

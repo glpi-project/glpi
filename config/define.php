@@ -65,7 +65,7 @@ define("OCS_IMPORT_TAG_080","_version_080_");
 // ITEMS TYPE
 /// Temporary definition for test
 
-if (!strstr($_SERVER['PHP_SELF'],"update.php")) {
+if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
    define("GENERAL_TYPE",'');
    define("COMPUTER_TYPE",'Computer');
    define("NETWORKING_TYPE",'NetworkEquipment');
