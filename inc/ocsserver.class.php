@@ -2701,7 +2701,7 @@ class OcsServer extends CommonDBTM {
                                       $import_device)) {
                            $dd["specif_default"] = $line2["DISKSIZE"];
                            $DeviceHardDrive = new DeviceHardDrive();
-                           $dd_id = DeviceHardDrive->import($dd);
+                           $dd_id = $DeviceHardDrive->import($dd);
                            if ($dd_id) {
                               $devID = $CompDevice->add(array('computers_id' => $computers_id,
                                                               'itemtype'     => 'DeviceHardDrive',
@@ -2879,7 +2879,7 @@ class OcsServer extends CommonDBTM {
                      if (!in_array(self::PROCESSOR_DEVICE . OCS_FIELD_SEPARATOR . $processor["designation"],
                                    $import_device)) {
                         $DeviceProcessor = new DeviceProcessor();
-                        $proc_id = DeviceProcessor->import($processor);
+                        $proc_id = $DeviceProcessor->import($processor);
                         if ($proc_id) {
                            $devID = $CompDevice->add(array('computers_id' => $computers_id,
                                                            'itemtype'     => 'DeviceProcessor',
