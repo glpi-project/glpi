@@ -89,93 +89,6 @@ function getDeviceTable($dev_type) {
    }
 }
 
-/** Get device specifity label based on device type
-*@param $dev_type device type
-*@return specifity label string
-*/
-function getDeviceSpecifityLabel($dev_type) {
-   global $LANG;
-
-   switch ($dev_type) {
-      case MOBOARD_DEVICE :
-         return "";
-         break;
-
-      case PROCESSOR_DEVICE :
-         return $LANG['device_ram'][1];
-         break;
-
-      case RAM_DEVICE :
-         return  $LANG['device_ram'][2];
-         break;
-
-      case HDD_DEVICE :
-         return $LANG['device_hdd'][4];
-         break;
-
-      case NETWORK_DEVICE :
-         return $LANG['device_iface'][2];
-         break;
-
-      case DRIVE_DEVICE :
-         return "";
-         break;
-
-      case CONTROL_DEVICE :
-         return "";
-         break;
-
-      case GFX_DEVICE :
-         return  $LANG['device_gfxcard'][0];
-         break;
-
-      case SND_DEVICE :
-         return "";
-         break;
-
-      case PCI_DEVICE :
-         return "";
-         break;
-
-      case CASE_DEVICE :
-         return "";
-         break;
-
-      case POWER_DEVICE :
-         return "";
-         break;
-   }
-}
-
-/**
- * Get device type name based on device type
- *
- * @param $device_num device type
- * @return if $device_num == -1 return array of names else return device name
- **/
-function getDictDeviceLabel($device_num=-1) {
-   global $LANG;
-
-   $dp=array();
-   $dp[MOBOARD_DEVICE]=$LANG['devices'][5];
-   $dp[PROCESSOR_DEVICE]=$LANG['devices'][4];
-   $dp[NETWORK_DEVICE]=$LANG['devices'][3];
-   $dp[RAM_DEVICE]=$LANG['devices'][6];
-   $dp[HDD_DEVICE]=$LANG['devices'][1];
-   $dp[DRIVE_DEVICE]=$LANG['devices'][19];
-   $dp[CONTROL_DEVICE]=$LANG['devices'][20];
-   $dp[GFX_DEVICE]=$LANG['devices'][2];
-   $dp[SND_DEVICE]=$LANG['devices'][7];
-   $dp[PCI_DEVICE]=$LANG['devices'][21];
-   $dp[CASE_DEVICE]=$LANG['devices'][22];
-   $dp[POWER_DEVICE]=$LANG['devices'][23];
-   if ($device_num==-1) {
-      return $dp;
-   } else {
-      return $dp[$device_num];
-   }
-}
-
 /**  Update an internal device specificity
 * @param $newValue new specifity value
 * @param $compDevID computer device ID
@@ -265,44 +178,6 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
    }
 }
 
-/**  Update an internal device quantity
-* @param $newNumber new quantity value
-* @param $compDevID computer device ID
-*/
-function update_device_quantity($newNumber,$compDevID) {
-   global $DB;
-
-   // Check old value for history
-   $query ="SELECT *
-            FROM `glpi_computers_devices`
-            WHERE `id` = '".$compDevID."'";
-   if ($result = $DB->query($query)) {
-      $data = addslashes_deep($DB->fetch_array($result));
-
-      $query2 = "SELECT `id`
-                 FROM `glpi_computers_devices`
-                 WHERE `devices_id` = '".$data["devices_id"]."'
-                       AND `computers_id` = '".$data["computers_id"]."'
-                       AND `devicetype` = '".$data["devicetype"]."'
-                       AND `specificity` = '".$data["specificity"]."'";
-      if ($result2 = $DB->query($query2)) {
-         // Delete devices
-         $number=$DB->numrows($result2);
-         if ($number>$newNumber) {
-            for ($i=$newNumber;$i<$number;$i++) {
-               $data2 = $DB->fetch_array($result2);
-               unLink_ItemType_computer($data2["id"],1);
-            }
-         // Add devices
-         } else if ($number<$newNumber) {
-            for ($i=$number;$i<$newNumber;$i++) {
-               compdevice_add($data["computers_id"],$data["devicetype"],$data["devices_id"],
-                              $data["specificity"],1);
-            }
-         }
-      }
-   }
-}
 
 /**
  * Unlink a device, linked to a computer.

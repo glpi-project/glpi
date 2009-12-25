@@ -89,6 +89,14 @@ class DeviceProcessor extends CommonDevice {
       return $tab;
    }
 
+   function prepareInputForAdd($input) {
+
+      if (isset($input['frequence']) && !is_numeric($input['frequence'])) {
+         $input['frequence']=0;
+      }
+      return $input;
+   }
+
    /**
     * return the display data for a specific device
     *

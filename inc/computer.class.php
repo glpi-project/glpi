@@ -496,7 +496,7 @@ class Computer extends CommonDBTM {
       $result = $DB->query($query);
 
       $compdev = new Computer_Device();
-      $compdev->cleanDBonItemDelete($this->type, $ID);
+      $compdev->cleanDBonItemDelete('Computer', $ID);
 
       $query = "DELETE
                 FROM `glpi_ocslinks`
@@ -504,7 +504,7 @@ class Computer extends CommonDBTM {
       $result = $DB->query($query);
 
       $disk = new ComputerDisk();
-      $disk->cleanDBonItemDelete($this->type, $ID);
+      $disk->cleanDBonItemDelete('Computer', $ID);
    }
 
    /**

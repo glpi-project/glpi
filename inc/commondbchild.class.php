@@ -192,7 +192,6 @@ abstract class CommonDBChild extends CommonDBTM {
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
-logDebug(__CLASS__, "cleanDBonItemDelete($itemtype, $item_id)", $this);
       $query = "SELECT `id`
                 FROM `".$this->table."`";
 

@@ -37,14 +37,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/** Determine if a table is a dropdown one for stat
-* @param $table string : table name
-* @return boolean
-*/
-function is_dropdown_stat($table) {
-   return !is_numeric($table);
-}
-
 
 function getStatsItems($date1,$date2,$type) {
    global $CFG_GLPI,$DB;
@@ -112,30 +104,29 @@ function getStatsItems($date1,$date2,$type) {
          $val = getNbIntervTitleOrType($date1,$date2,false);
          break;
 
-      case "glpi_computertypes" :
-      case "glpi_computermodels" :
-      case "glpi_operatingsystems" :
-      case "glpi_locations" :
-         $val = getNbIntervDropdown($type);
-         break;
-
       // DEVICE CASE
       default :
-         $device_table = getDeviceTable($type);
+         $item = new $type();
+         if ($item instanceof CommonDevice) {
+            $device_table = $item->getTable();
 
-         //select devices IDs (table row)
-         $query = "SELECT `id`, `designation`
-                   FROM `".$device_table."`
-                   ORDER BY `designation`";
-         $result = $DB->query($query);
+            //select devices IDs (table row)
+            $query = "SELECT `id`, `designation`
+                      FROM `".$device_table."`
+                      ORDER BY `designation`";
+            $result = $DB->query($query);
 
-         if ($DB->numrows($result) >=1) {
-            $i = 0;
-            while ($line = $DB->fetch_assoc($result)) {
-               $val[$i]['id'] = $line['id'];
-               $val[$i]['link'] = $line['designation'];
-               $i++;
+            if ($DB->numrows($result) >=1) {
+               $i = 0;
+               while ($line = $DB->fetch_assoc($result)) {
+                  $val[$i]['id'] = $line['id'];
+                  $val[$i]['link'] = $line['designation'];
+                  $i++;
+               }
             }
+         } else {
+            $val = getNbIntervDropdown($item->getTable());
+
          }
    }
    return $val;
@@ -542,9 +533,9 @@ function getNbIntervRecipient($date1,$date2) {
 }
 
 
-/** 
+/**
  * Get priorities of tickets between 2 dates
- * 
+ *
  * @param $date1 date : begin date
  * @param $date2 date : end date
  * @return array contains the distinct priorities of tickets
@@ -575,9 +566,9 @@ function getNbIntervPriority($date1,$date2) {
    return $tab;
 }
 
-/** 
+/**
  * Get urgencies of tickets between 2 dates
- * 
+ *
  * @param $date1 date : begin date
  * @param $date2 date : end date
  * @return array contains the distinct priorities of tickets
@@ -608,9 +599,9 @@ function getNbIntervUrgency($date1,$date2) {
    return $tab;
 }
 
-/** 
+/**
  * Get impacts of tickets between 2 dates
- * 
+ *
  * @param $date1 date : begin date
  * @param $date2 date : end date
  * @return array contains the distinct priorities of tickets
@@ -642,9 +633,9 @@ function getNbIntervImpact($date1,$date2) {
 }
 
 
-/** 
+/**
  * Get request types of tickets between 2 dates
- * 
+ *
  * @param $date1 date : begin date
  * @param $date2 date : end date
  * @return array contains the distinct request types of tickets
@@ -674,9 +665,9 @@ function getNbIntervRequestType($date1,$date2) {
    return $tab;
 }
 
-/** 
+/**
  * Get solution types of tickets between 2 dates
- * 
+ *
  * @param $date1 date : begin date
  * @param $date2 date : end date
  * @return array contains the distinct request types of tickets
@@ -868,16 +859,18 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
                                 AND `glpi_tickets`.`itemtype` = 'Computer')
                       INNER JOIN `glpi_computers_devices`
                             ON (`glpi_computers`.`id` = `glpi_computers_devices`.`computers_id`
-                                AND `glpi_computers_devices`.`devicetype` = '$value2'
-                                AND `glpi_computers_devices`.`devices_id` = '$value')";
+                                AND `glpi_computers_devices`.`itemtype` = '$value2'
+                                AND `glpi_computers_devices`.`items_id` = '$value')";
          $WHERE .= " AND `glpi_computers`.`is_template` <> '1' ";
          break;
 
       case "comp_champ" :
+         $table = getTableForItemType($value2);
+         $champ = getForeignKeyFieldForTable($table);
          $LEFTJOIN = "INNER JOIN `glpi_computers`
                             ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
                                 AND `glpi_tickets`.`itemtype` = 'Computer')";
-         $WHERE .= " AND `glpi_computers`.`$value2` = '$value'
+         $WHERE .= " AND `glpi_computers`.`$champ` = '$value'
                      AND `glpi_computers`.`is_template` <> '1'";
          break;
    }
