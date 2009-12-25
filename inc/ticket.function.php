@@ -1452,33 +1452,33 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
    $where .= getEntitiesRestrictRequest(" AND","glpi_tickets");
 
    if (!empty($wherecomp)) {
-      $where .= " AND `glpi_tickets`.`itemtype` = '1'
+      $where .= " AND `glpi_tickets`.`itemtype` = 'Computer'
                   AND `glpi_tickets`.`items_id`
                           IN (SELECT `comp`.`id`
                               FROM `glpi_computers` AS comp
                               LEFT JOIN `glpi_computers_devices` AS gcdev
                                     ON (comp.`id` = gcdev.`computers_id`)
                               LEFT JOIN `glpi_devicemotherboards`
-                                    ON (`glpi_devicemotherboards`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".MOBOARD_DEVICE."')
+                                    ON (`glpi_devicemotherboards`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceMotherboard')
                               LEFT JOIN `glpi_deviceprocessors`
-                                    ON (`glpi_deviceprocessors`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".PROCESSOR_DEVICE."')
+                                    ON (`glpi_deviceprocessors`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceProcessor')
                               LEFT JOIN `glpi_devicegraphiccards`
-                                    ON (`glpi_devicegraphiccards`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".GFX_DEVICE."')
+                                    ON (`glpi_devicegraphiccards`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceGraphicCard')
                               LEFT JOIN `glpi_deviceharddrives`
-                                    ON (`glpi_deviceharddrives`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".HDD_DEVICE."')
+                                    ON (`glpi_deviceharddrives`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceHardDrive')
                               LEFT JOIN `glpi_devicenetworkcards`
-                                    ON (`glpi_devicenetworkcards`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".NETWORK_DEVICE."')
+                                    ON (`glpi_devicenetworkcards`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceNetworkCard')
                               LEFT JOIN `glpi_devicememories`
-                                    ON (`glpi_devicememories`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".RAM_DEVICE."')
+                                    ON (`glpi_devicememories`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceMemory')
                               LEFT JOIN `glpi_devicesoundcards`
-                                    ON (`glpi_devicesoundcards`.`id` = gcdev.`devices_id`
-                                        AND gcdev.`devicetype` = '".SND_DEVICE."')
+                                    ON (`glpi_devicesoundcards`.`id` = gcdev.`items_id`
+                                        AND gcdev.`itemtype` = 'DeviceSoundCard')
                               LEFT JOIN `glpi_networkports`
                                     ON (comp.`id` = `glpi_networkports`.`items_id`
                                         AND `glpi_networkports`.`itemtype` = '1')
