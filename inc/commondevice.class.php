@@ -119,6 +119,13 @@ abstract class CommonDevice extends CommonDropdown {
    static function getSpecifityLabel() {
       return '';
    }
+
+   function cleanDBonPurge($ID) {
+      global $DB;
+
+      $compdev = new Computer_Device();
+      $compdev->cleanDBonItemDelete(get_class($this), $ID);
+   }
 }
 
 ?>

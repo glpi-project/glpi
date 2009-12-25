@@ -47,6 +47,7 @@ if (isset($_POST["add"])){
 } else if (isset($_POST["updateall"])){
    $compdev->check(-1, 'w', $_POST);
    $compdev->updateAll($_POST);
+   Event::log($_POST["computers_id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 }

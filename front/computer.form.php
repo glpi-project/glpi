@@ -126,33 +126,6 @@ if (isset($_POST["add"])) {
             $_SESSION["glpiname"] ." ".$LANG['log'][27]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-//Update a device specification
-} else if(isset($_POST["update_device"])) {
-   $computer->check($_POST['id'],'w');
-
-   // Update quantity
-   foreach ($_POST as $key => $val) {
-      $data = explode("_",$key);
-      if (count($data) == 2) {
-         if ($data[0] == "quantity") {
-            update_device_quantity($val,$data[1]);
-         }
-      }
-   }
-
-   // Update specificity
-   foreach ($_POST as $key => $val) {
-      $data = explode("_",$key);
-      if (count($data) == 2) {
-         if ($data[0] == "devicevalue") {
-            update_device_specif($val,$data[1]);
-         }
-      }
-   }
-
-   Event::log($_POST["id"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG['log'][28]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
 } else if (isset($_POST["unlock_monitor"])) {
    $computer->check($_POST['id'],'w');
 

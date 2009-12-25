@@ -225,7 +225,8 @@ switch($_GET["type"]) {
       $val1 = $_GET["id"];
       $val2 = $_GET["champ"];
 
-      $device_table = getDeviceTable($_GET["champ"]);
+      $item = new $_GET["champ"]();
+      $device_table = $item->getTable();
       $next = getNextItem($device_table,$_GET["id"],'','designation');
       $prev = getPreviousItem($device_table,$_GET["id"],'','designation');
 
@@ -234,17 +235,18 @@ switch($_GET["type"]) {
                 WHERE `id` = '".$_GET['id']."'";
       $result = $DB->query($query);
 
-      $title = $LANG['Menu'][13]."&nbsp;: ".$DB->result($result,0,"designation");
+      $title = $item->getTypeName()."&nbsp;: ".$DB->result($result,0,"designation");
       break;
 
    case "comp_champ" :
       $val1 = $_GET["id"];
       $val2 = $_GET["champ"];
 
-      $table = getTableNameForForeignKeyField($_GET["champ"]);
+      $item = new $_GET["champ"]();
+      $table = $item->getTable();
       $next = getNextItem($table,$_GET["id"]);
       $prev = getPreviousItem($table,$_GET["id"]);
-      $title = $LANG['stats'][26]."&nbsp;: ".Dropdown::getDropdownName($table,$_GET["id"]);
+      $title = $item->getTypeName()."&nbsp;: ".Dropdown::getDropdownName($table,$_GET["id"]);
       break;
 }
 

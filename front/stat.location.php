@@ -69,26 +69,31 @@ if (isset($_GET["dropdown"])) {
    $_POST["dropdown"] = $_GET["dropdown"];
 }
 if (empty($_POST["dropdown"])) {
-   $_POST["dropdown"] = "glpi_computertypes";
+   $_POST["dropdown"] = "ComputerType";
 }
 
 echo "<form method='post' name='form' action='stat.location.php'>";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
-echo "<option value='glpi_computertypes' ".($_POST["dropdown"]=="glpi_computertypes"?"selected":"").
+echo "<optgroup label='".$LANG['setup'][0]."'>";
+echo "<option value='ComputerType' ".($_POST["dropdown"]=="ComputerType"?"selected":"").
       ">".$LANG['common'][17]."</option>";
-echo "<option value='glpi_computermodels' ".($_POST["dropdown"]=="glpi_computermodels"?"selected":"").
+echo "<option value='ComputerModel' ".($_POST["dropdown"]=="ComputerModel"?"selected":"").
       ">".$LANG['common'][22]."</option>";
-echo "<option value='glpi_operatingsystems' ".
-      ($_POST["dropdown"]=="glpi_operatingsystems"?"selected":"").">".$LANG['computers'][9]."</option>";
-echo "<option value='glpi_locations' ".($_POST["dropdown"]=="glpi_locations"?"selected":"").">".
+echo "<option value='OperatingSystem' ".
+      ($_POST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
+echo "<option value='Location' ".($_POST["dropdown"]=="Location"?"selected":"").">".
       $LANG['common'][15]."</option>";
+echo "</optgroup>";
 
-$devices = getDictDeviceLabel(-1);
-
-foreach ($devices as $i => $name) {
-   echo "<option value='$i' ".($_POST["dropdown"]==$i?"selected":"").">$name</option>";
+$devices = Dropdown::getDeviceItemTypes();
+foreach($devices as $label => $dp) {
+   echo "<optgroup label='$label'>";
+   foreach ($dp as $i => $name) {
+      echo "<option value='$i' ".($_POST["dropdown"]==$i?"selected":"").">$name</option>";
+   }
+   echo "</optgroup>";
 }
 echo "</select></td>";
 
@@ -101,45 +106,47 @@ showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form>";
 
-echo "<div class ='center'>";
-
-if (is_dropdown_stat($_POST["dropdown"])) {
+if (empty($_POST["dropdown"]) || !class_exists($_POST["dropdown"])) {
+   // Do nothing
+   commonFooter();
+   exit();
+}
+$item = new $_POST["dropdown"];
+if (!($item instanceof CommonDevice)) {
+   echo "Dropdown";
    $type = "comp_champ";
-   $field = getForeignKeyFieldForTable($_POST["dropdown"]);
 
    $val = getStatsItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
-   $params = array('type'  => $type,
-                   'field' => $field,
-                   'table' => $_POST["dropdown"],
-                   'date1' => $_POST["date1"],
-                   'date2' =>$_POST["date2"],
-                   'start' => $_GET["start"]);
+   $params = array('type'     => $type,
+                   'dropdown' => $_POST["dropdown"],
+                   'date1'    => $_POST["date1"],
+                   'date2'    => $_POST["date2"],
+                   'start'    => $_GET["start"]);
 
    printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
+   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 
 } else {
+   echo "Device";
    $type = "device";
    $field = $_POST["dropdown"];
 
    $val = getStatsItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
-   $params = array('type'  => $type,
-                   'field' => $field,
-                   'date1' => $_POST["date1"],
-                   'date2' => $_POST["date2"],
-                   'start' => $_GET["start"]);
+   $params = array('type'     => $type,
+                   'dropdown' => $_POST["dropdown"],
+                   'date1'    => $_POST["date1"],
+                   'date2'    => $_POST["date2"],
+                   'start'    => $_GET["start"]);
 
    printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$field);
+   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 }
-
-echo "</div>";
 
 commonFooter();
 

@@ -305,5 +305,29 @@ class Computer_Device extends CommonDBChild {
          }
       }
    }
+
+   // This class is not a real CommonDBChild...
+   function cleanDBonItemDelete ($itemtype, $item_id) {
+      global $DB;
+
+      $query = "SELECT `id`
+                FROM `".$this->table."`";
+
+      if ($itemtype == 'Computer') {
+         $where = " WHERE `computers_id`='$item_id'";
+
+      } else  {
+         $where = " WHERE (`itemtype`='$itemtype'
+                           AND `items_id`='$item_id')";
+      }
+
+      $result = $DB->query($query.$where);
+      while ($data = $DB->fetch_assoc($result)) {
+         if ($itemtype == 'Computer') {
+            $data['_no_history'] = true; // Parent is deleted
+         }
+         $this->delete($data);
+      }
+   }
 }
 ?>
