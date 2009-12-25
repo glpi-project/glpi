@@ -348,12 +348,8 @@ class Computer extends CommonDBTM {
       // Manage add from template
       if (isset($input["_oldID"])) {
          // ADD Devices
-         $this->getFromDBwithDevices($input["_oldID"]);
-         foreach($this->devices as $key => $val) {
-            for ($i=0;$i<$val["quantity"];$i++) {
-               compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
-            }
-         }
+         $compdev = new Computer_Device();
+         $compdev->cloneComputer($input["_oldID"], $newID);
 
          // ADD Infocoms
          $ic= new Infocom();

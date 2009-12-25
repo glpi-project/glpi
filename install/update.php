@@ -97,6 +97,20 @@ define("NETWORKING_PORT_TYPE",42);
 define("FOLLOWUP_TYPE",43);
 define("BUDGET_TYPE",44);
 
+// Old devicetype for compatibility
+define("MOBOARD_DEVICE",1);
+define("PROCESSOR_DEVICE",2);
+define("RAM_DEVICE",3);
+define("HDD_DEVICE",4);
+define("NETWORK_DEVICE",5);
+define("DRIVE_DEVICE",6);
+define("CONTROL_DEVICE",7);
+define("GFX_DEVICE",8);
+define("SND_DEVICE",9);
+define("PCI_DEVICE",10);
+define("CASE_DEVICE",11);
+define("POWER_DEVICE",12);
+
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)){
 	setGlpiSessionPath();
@@ -105,18 +119,18 @@ if (is_writable(GLPI_SESSION_DIR)){
 // Init debug variable
 $_SESSION['glpi_use_mode']=DEBUG_MODE;
 // Only show errors
-$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
+$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0;
 $CFG_GLPI["use_errorlog"]=1;
-ini_set('display_errors','On'); 
-error_reporting(E_ALL | E_STRICT); 
-set_error_handler("userErrorHandlerDebug");           
+ini_set('display_errors','On');
+error_reporting(E_ALL | E_STRICT);
+set_error_handler("userErrorHandlerDebug");
 
 $DB=new DB();
 
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($LANGuage) {
-		if (isset($LANG)){ 
+		if (isset($LANG)){
 			unset($LANG);
 		}
 		global $LANG;
@@ -138,7 +152,7 @@ function displayMigrationMessage ($id, $msg="") {
 	global $LANG;
 	static $created=0;
 	static $deb;
-	
+
 	if ($created != $id) {
 		if (empty($msg)) $msg=$LANG['rulesengine'][90];
 		echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
@@ -148,9 +162,9 @@ function displayMigrationMessage ($id, $msg="") {
 		if (empty($msg)) $msg=$LANG['rulesengine'][91];
 		$fin = time();
 		$tps = timestampToString($fin-$deb);
-		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p class=\"center\">$msg ($tps)</p>';</script>\n";	
-	}	
-	glpi_flush();								
+		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p class=\"center\">$msg ($tps)</p>';</script>\n";
+	}
+	glpi_flush();
 }
 /**
  * Display the form of content update (addslashes compatibility (V0.4))
@@ -172,9 +186,9 @@ function showContentUpdateForm() {
 
 function validate_new_location(){
 	global $DB;
-	$query=" DROP TABLE `glpi_dropdown_locations`";	
+	$query=" DROP TABLE `glpi_dropdown_locations`";
 	$DB->query($query);
-	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
+	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";
 	$DB->query($query);
 }
 
@@ -262,7 +276,7 @@ function location_create_new($split_char,$add_first){
 	$query_clear_new="TRUNCATE TABLE `glpi_dropdown_locations_new`";
 	//echo $query_clear_new."<br>";
 
-	$result_clear_new=$DB->query($query_clear_new); 
+	$result_clear_new=$DB->query($query_clear_new);
 
 	if (!empty($add_first)){
 		$root_ID=$new_ID;
@@ -333,7 +347,7 @@ function showLocationUpdateForm(){
 			`parentID` INT NOT NULL ,
 			`comments` TEXT NULL ,
 			PRIMARY KEY (`ID`),
-			UNIQUE KEY (`name`,`parentID`), 
+			UNIQUE KEY (`name`,`parentID`),
 			KEY(`parentID`)) TYPE=MyISAM;";
 		$DB->query($query) or die("LOCATION ".$DB->error());
 	}
@@ -355,11 +369,11 @@ function showLocationUpdateForm(){
 
 
 	if (isset($_POST["new_location"])){
-		location_create_new($_POST['car_sep'],$_POST['root']);	
+		location_create_new($_POST['car_sep'],$_POST['root']);
 		echo "<h4>".$LANG['update'][138].": </h4>";
-		display_old_locations();	
+		display_old_locations();
 		echo "<h4>".$LANG['update'][137].": </h4>";
-		display_new_locations();	
+		display_new_locations();
 		echo "<p>".$LANG['update'][136]."</p>";
 		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
 		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$LANG['buttons'][2]."\">";
@@ -371,7 +385,7 @@ function showLocationUpdateForm(){
 		updateTreeDropdown();
 		return true;
 	} else {
-		display_old_locations();	
+		display_old_locations();
 	}
 	exit();
 }
@@ -493,28 +507,28 @@ function updateDbUpTo031()
 
 
 	switch ($current_version){
-		case "0.31": 
+		case "0.31":
 			include("update_031_04.php");
 			update031to04();
-		case "0.4": 
-		case "0.41": 
+		case "0.4":
+		case "0.41":
 			include("update_04_042.php");
 			update04to042();
-		case "0.42": 
+		case "0.42":
 			showLocationUpdateForm();
 			include("update_042_05.php");
 			update042to05();
-		case "0.5": 
+		case "0.5":
 			include("update_05_051.php");
 			update05to051();
-		case "0.51": 
-		case "0.51a": 
+		case "0.51":
+		case "0.51a":
 			include("update_051_06.php");
 			update051to06();
-		case "0.6": 
+		case "0.6":
 			include("update_06_065.php");
 			update06to065();
-		case "0.65": 
+		case "0.65":
 			include("update_065_068.php");
 			update065to068();
 		case "0.68":
@@ -626,11 +640,11 @@ function updateTreeDropdown(){
 	// Update Tree dropdown
 	if(TableExists("glpi_dropdown_locations") && !FieldExists("glpi_dropdown_locations","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
-		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());	
+		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());
 	}
 	if(TableExists("glpi_dropdown_kbcategories")&& !FieldExists("glpi_dropdown_kbcategories","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
-		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());	
+		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());
 	}
 
 	if(TableExists("glpi_locations") && !FieldExists("glpi_locations","completename")) {
@@ -698,7 +712,7 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 		echo "</form></div>";
 	}
 }
-// Step 2  
+// Step 2
 else {
 	if(test_connect()) {
 		echo "<h3>".$LANG['update'][93]."</h3>";
@@ -731,15 +745,15 @@ else {
 
 			if (showLocationUpdateForm()){
 				switch ($current_version){
-					case "0.31": 
-					case "0.4": 
-					case "0.41": 
-					case "0.42": 
-					case "0.5": 
-					case "0.51": 
-					case "0.51a": 
-					case "0.6": 
-					case "0.65": 
+					case "0.31":
+					case "0.4":
+					case "0.41":
+					case "0.42":
+					case "0.5":
+					case "0.51":
+					case "0.51a":
+					case "0.6":
+					case "0.65":
 					case "0.68":
 					case "0.68.1":
 					case "0.68.2":

@@ -71,7 +71,7 @@ class Computer_Device extends CommonDBChild {
    // overload to log HISTORY_ADD_DEVICE instead of HISTORY_ADD_RELATION
    function post_addItem($newID,$input) {
 
-      if (isset($input['_no_history'])) {
+      if (isset($input['_no_history']) && $input['_no_history']) {
          return false;
       }
       $dev = new $this->fields['itemtype'];
@@ -85,7 +85,7 @@ class Computer_Device extends CommonDBChild {
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
    function post_deleteFromDB($ID) {
 
-      if (isset($input['_no_history'])) {
+      if (isset($input['_no_history']) && $input['_no_history']) {
          return false;
       }
       $dev = new $this->fields['itemtype'];
@@ -98,7 +98,9 @@ class Computer_Device extends CommonDBChild {
 
    function post_updateItem($input, $updates, $history=1) {
 
-      if (!$history || isset($this->input['_no_history']) || !in_array('specificity',$this->updates)) {
+      if (!$history
+          || (isset($this->input['_no_history']) &&  $input['_no_history'])
+          || !in_array('specificity',$this->updates)) {
          return false;
       }
       $changes[0] = 0;
@@ -328,6 +330,54 @@ class Computer_Device extends CommonDBChild {
          }
          $this->delete($data);
       }
+   }
+
+   /**
+    *
+    */
+   function cloneComputer ($oldid, $newid) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE `computers_id`='$oldid'";
+
+      foreach ($db->request($query) as $data) {
+         unset($data['id']);
+         $data['computers_id'] = $newid;
+         $data['_no_history'] = true;
+
+         $this->add($data);
+      }
+   }
+
+   function prepareInputForUpdate($input) {
+
+      if ($this->fields['itemtype']=='DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
+         if (!$this->input['specificity']) {
+            // memory can't be 0 (but sometime OCS report such value)
+            return false;
+         }
+      }
+      if ($this->fields['itemtype']=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
+         if (!$this->input['specificity']) {
+            // frequency can't be 0 (but sometime OCS report such value)
+            return false;
+         }
+         if ($this->fields['specificity']) { // old value
+            $diff = ($this->input['specificity'] > $this->fields['specificity']
+                      ? $this->input['specificity'] - $this->fields['specificity']
+                      : $this->fields['specificity'] - $this->input['specificity']);
+            if (($diff*100/$this->fields['specificity'])<5) {
+               $this->input['_no_history'] = true;
+            }
+         }
+      }
+      if ($this->fields['specificity']==$this->input['specificity']) {
+         // No change
+         return false;
+      }
+      return $this->input;
    }
 }
 ?>

@@ -169,7 +169,7 @@ define("NORMAL_MODE",0);
 define("TRANSLATION_MODE",1);
 define("DEBUG_MODE",2);
 
-
+/*
 // DEVICE TYPE
 define("MOBOARD_DEVICE",1);
 define("PROCESSOR_DEVICE",2);
@@ -183,7 +183,7 @@ define("SND_DEVICE",9);
 define("PCI_DEVICE",10);
 define("CASE_DEVICE",11);
 define("POWER_DEVICE",12);
-
+*/
 
 // DEVICE INTERNAL ACTION
 define("HISTORY_ADD_DEVICE",1);
