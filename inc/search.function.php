@@ -52,7 +52,7 @@ function translate_table($table,$devicetype=0,$meta_type=0) {
 
    switch ($table) {
       case "glpi_computers_devices" :
-         if ($devicetype==0) {
+         if (empty($devicetype)) {
             return "$table$ADD";
          }
          return "DEVICE_$devicetype$ADD";
