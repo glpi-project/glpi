@@ -85,10 +85,6 @@ class Search {
       $default_values["field2"]="";
       $default_values["itemtype2"]="";
 
-      $default_values["target"] = getItemTypeSearchURL($itemtype);
-      // TODO keep this ? is paage not found ?
-      // $default_values["target"] = $_SERVER['PHP_SELF'];
-
       foreach ($default_values as $key => $val) {
          if (isset($params[$key])) {
             $$key=$params[$key];
@@ -100,6 +96,8 @@ class Search {
       if ($export_all) {
          $start=0;
       }
+
+      $target= getItemTypeSearchURL($itemtype);
 
       $limitsearchopt=Search::getCleanedOptions($itemtype);
 
@@ -727,12 +725,15 @@ class Search {
                         Search::getArrayUrlLink("link2",$link2);
 
          $parameters = "sort=$sort&amp;order=$order".$globallinkto;
+
+         // Not more used : clean pages : try to comment it
+         /*
          $tmp=explode('?',$target,2);
          if (count($tmp)>1) {
             $target = $tmp[0];
             $parameters = $tmp[1].'&amp;'.$parameters;
          }
-
+         */
          if ($output_type==GLOBAL_SEARCH) {
             if (class_exists($itemtype)) {
                echo "<div class='center'><h2>".$item->getTypeName();
@@ -1152,8 +1153,6 @@ class Search {
       $default_values["field2"]="";
       $default_values["itemtype2"]="";
 
-      $default_values["target"] = getItemTypeSearchURL($itemtype);
-
       foreach ($default_values as $key => $val) {
          if (isset($params[$key])) {
             $$key=$params[$key];
@@ -1163,6 +1162,7 @@ class Search {
       }
 
       $options=Search::getCleanedOptions($itemtype);
+      $target = getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
