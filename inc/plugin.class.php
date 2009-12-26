@@ -44,6 +44,16 @@ class Plugin extends CommonDBTM {
    public $table = 'glpi_plugins';
    public $type = 'Plugin';
 
+   // Class constant : Plugin state
+   const ANEW           = 0;
+   const ACTIVATED      = 1;
+   const NOTINSTALLED   = 2;
+   const TOBECONFIGURED = 3;
+   const NOTACTIVATED   = 4;
+   const TOBECLEANED    = 5;
+   const NOTUPDATED     = 6;
+
+
    /**
     * Retrieve an item from the database using its directory
     *
@@ -79,7 +89,7 @@ class Plugin extends CommonDBTM {
    function init() {
 
       $this->checkStates();
-      $plugins=$this->find('state='.PLUGIN_ACTIVATED);
+      $plugins=$this->find('state='.self::ACTIVATED);
 
       $_SESSION["glpi_plugins"]=array();
 
@@ -188,7 +198,7 @@ class Plugin extends CommonDBTM {
          $install_ok=true;
          // Check file
          if (!isset($file_plugins[$plug])) {
-            $this->update(array('id'=>$ID,'state'=>PLUGIN_TOBECLEANED));
+            $this->update(array('id'=>$ID,'state'=>self::TOBECLEANED));
             $install_ok=false;
          } else {
             // Check version
@@ -196,13 +206,13 @@ class Plugin extends CommonDBTM {
                $input=$file_plugins[$plug];
                $input['id']=$ID;
                if ($pluglist[$ID]['version'])
-                  $input['state']=PLUGIN_NOTUPDATED;
+                  $input['state']=self::NOTUPDATED;
                $this->update($input);
                $install_ok=false;
             }
          }
          // Check install is ok for activated plugins
-         if ($install_ok && ($pluglist[$ID]['state'] == PLUGIN_ACTIVATED)) {
+         if ($install_ok && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
             $usage_ok=true;
             $function="plugin_".$plug."_check_prerequisites";
             if (function_exists($function)) {
@@ -232,7 +242,7 @@ class Plugin extends CommonDBTM {
       if (count($file_plugins)) {
          foreach ($file_plugins as $plug => $data) {
             $data=$data;
-            $data['state']=PLUGIN_NOTINSTALLED;
+            $data['state']=self::NOTINSTALLED;
             $data['directory']=$plug;
             $this->add($data);
          }
@@ -275,9 +285,9 @@ class Plugin extends CommonDBTM {
          }
 
          // Only config for install plugins
-         if (in_array($plug['state'],array(PLUGIN_ACTIVATED,
-                                           PLUGIN_TOBECONFIGURED,
-                                           PLUGIN_NOTACTIVATED))
+         if (in_array($plug['state'],array(self::ACTIVATED,
+                                           self::TOBECONFIGURED,
+                                           self::NOTACTIVATED))
              && isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
 
             echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".
@@ -290,31 +300,31 @@ class Plugin extends CommonDBTM {
          echo "<td>".$plug['version']."</td>";
          echo "<td>";
          switch ($plug['state']) {
-            case PLUGIN_NEW :
+            case self::ANEW :
                echo $LANG['joblist'][9];
                break;
 
-            case PLUGIN_ACTIVATED :
+            case self::ACTIVATED :
                echo $LANG['setup'][192];
                break;
 
-            case PLUGIN_NOTINSTALLED :
+            case self::NOTINSTALLED :
                echo $LANG['common'][89];
                break;
 
-            case PLUGIN_NOTUPDATED :
+            case self::NOTUPDATED :
                echo $LANG['plugins'][6];
                break;
 
-            case PLUGIN_TOBECONFIGURED :
+            case self::TOBECONFIGURED :
                echo $LANG['plugins'][2];
                break;
 
-            case PLUGIN_NOTACTIVATED :
+            case self::NOTACTIVATED :
                echo $LANG['plugins'][3];
                break;
 
-            case PLUGIN_TOBECLEANED :
+            case self::TOBECLEANED :
             default:
                echo $LANG['plugins'][4];
                break;
@@ -333,7 +343,7 @@ class Plugin extends CommonDBTM {
          echo "</td>";
 
          switch ($plug['state']) {
-            case PLUGIN_ACTIVATED :
+            case self::ACTIVATED :
                echo "<td>";
                echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=unactivate'>".
                       $LANG['buttons'][42]."</a>";
@@ -347,9 +357,9 @@ class Plugin extends CommonDBTM {
                echo "</td>";
                break;
 
-            case PLUGIN_NEW :
-            case PLUGIN_NOTINSTALLED :
-            case PLUGIN_NOTUPDATED :
+            case self::ANEW :
+            case self::NOTINSTALLED :
+            case self::NOTUPDATED :
                echo "<td>";
                if (function_exists("plugin_".$plug['directory']."_install")
                    && function_exists("plugin_".$plug['directory']."_check_config")) {
@@ -359,7 +369,7 @@ class Plugin extends CommonDBTM {
                   if (function_exists($function)) {
                      $do_install=$function();
                   }
-                  if ($plug['state']==PLUGIN_NOTUPDATED) {
+                  if ($plug['state']==self::NOTUPDATED) {
                      $msg = $LANG['install'][4];
                   } else {
                      $msg = $LANG['buttons'][4];
@@ -392,13 +402,13 @@ class Plugin extends CommonDBTM {
                echo "</td>";
                break;
 
-            case PLUGIN_TOBECONFIGURED :
+            case self::TOBECONFIGURED :
                echo "<td>";
                $function = 'plugin_' . $plug['directory'] . '_check_config';
                if (function_exists($function)) {
                   if ($function(true)) {
                      $this->update(array('id'=>$ID,
-                                         'state'=>PLUGIN_NOTACTIVATED));
+                                         'state'=>self::NOTACTIVATED));
                      glpi_header($_SERVER['PHP_SELF']);
                   }
                } else {
@@ -414,7 +424,7 @@ class Plugin extends CommonDBTM {
                echo "</td>";
                break;
 
-            case PLUGIN_NOTACTIVATED :
+            case self::NOTACTIVATED :
                echo "<td>";
                echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=activate'>".
                       $LANG['buttons'][41]."</a>";
@@ -428,7 +438,7 @@ class Plugin extends CommonDBTM {
                echo "</td>";
                break;
 
-            case PLUGIN_TOBECLEANED :
+            case self::TOBECLEANED :
             default :
                echo "<td colspan='2'>";
                echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=clean'>".
@@ -457,11 +467,11 @@ class Plugin extends CommonDBTM {
          }
          CronTask::Unregister($this->fields['directory']);
          $this->update(array('id'=>$ID,
-                             'state'=>PLUGIN_NOTINSTALLED,
+                             'state'=>self::NOTINSTALLED,
                              'version'=>''));
          $this->removeFromSession($this->fields['directory']);
 
-         
+
       }
    }
 
@@ -482,10 +492,10 @@ class Plugin extends CommonDBTM {
                if (function_exists($function)) {
                   if ($function()) {
                      $this->update(array('id'=>$ID,
-                                         'state'=>PLUGIN_NOTACTIVATED));
+                                         'state'=>self::NOTACTIVATED));
                   } else {
                      $this->update(array('id'=>$ID,
-                                         'state'=>PLUGIN_TOBECONFIGURED));
+                                         'state'=>self::TOBECONFIGURED));
                   }
                }
             }
@@ -513,7 +523,7 @@ class Plugin extends CommonDBTM {
          if (function_exists($function)) {
             if ($function()) {
                $this->update(array('id'=>$ID,
-                                   'state'=>PLUGIN_ACTIVATED));
+                                   'state'=>self::ACTIVATED));
                $_SESSION['glpi_plugins'][]=$this->fields['directory'];
 
                // Initialize session for the plugin
@@ -543,7 +553,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          $this->update(array('id'=>$ID,
-                             'state'=>PLUGIN_NOTACTIVATED));
+                             'state'=>self::NOTACTIVATED));
          $this->removeFromSession($this->fields['directory']);
       }
    }
@@ -557,8 +567,8 @@ class Plugin extends CommonDBTM {
 
       $query = "UPDATE ".
                 $this->table."
-                SET `state` = ".PLUGIN_NOTACTIVATED."
-                WHERE `state` = ".PLUGIN_ACTIVATED;
+                SET `state` = ".self::NOTACTIVATED."
+                WHERE `state` = ".self::ACTIVATED;
       $DB->query($query);
       $_SESSION['glpi_plugins']=array();
    }
@@ -584,7 +594,7 @@ class Plugin extends CommonDBTM {
    function isActivated($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
-         return ($this->fields['state']==PLUGIN_ACTIVATED);
+         return ($this->fields['state']==self::ACTIVATED);
       }
    }
 
@@ -596,9 +606,9 @@ class Plugin extends CommonDBTM {
    function isInstalled($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
-         return ($this->fields['state']==PLUGIN_ACTIVATED
-                 || $this->fields['state']==PLUGIN_TOBECONFIGURED
-                 || $this->fields['state']==PLUGIN_NOTACTIVATED);
+         return ($this->fields['state']==self::ACTIVATED
+                 || $this->fields['state']==self::TOBECONFIGURED
+                 || $this->fields['state']==self::NOTACTIVATED);
       }
    }
 
@@ -702,27 +712,27 @@ class Plugin extends CommonDBTM {
          $msg .= $LANG['rulesengine'][78]."&nbsp;:".str_pad($plugin['version'],10)." ";
          $msg .= $LANG['joblist'][0]."&nbsp;:";
          switch ($plugin['state']) {
-            case PLUGIN_NEW :
+            case self::ANEW :
                $msg .=  $LANG['joblist'][9];
                break;
 
-            case PLUGIN_ACTIVATED :
+            case self::ACTIVATED :
                $msg .=  $LANG['setup'][192];
                break;
 
-            case PLUGIN_NOTINSTALLED :
+            case self::NOTINSTALLED :
                $msg .=  $LANG['common'][89];
                break;
 
-            case PLUGIN_TOBECONFIGURED :
+            case self::TOBECONFIGURED :
                $msg .=  $LANG['plugins'][2];
                break;
 
-            case PLUGIN_NOTACTIVATED :
+            case self::NOTACTIVATED :
                $msg .=  $LANG['plugins'][3];
                break;
 
-            case PLUGIN_TOBECLEANED :
+            case self::TOBECLEANED :
             default :
                $msg .=  $LANG['plugins'][4];
                break;
