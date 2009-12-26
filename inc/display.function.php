@@ -112,7 +112,6 @@ function includeCommonHtmlHeader($title='') {
    // DO not get it from extjs website
    echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
    echo " Ext.Updater.defaults.loadScripts = true;\n";
-   // TODO : Loading indicator in span not in div : HTML Error if doing that / maybe load a image ?
    // JMD : validator doesn't accept html in script , must escape html element to validate
    echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator\">".
          $LANG['common'][80]."<\/span>';\n";
@@ -2706,7 +2705,8 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
                                  $user_restrict=-1,$option='') {
    global $CFG_GLPI;
 
-   ///TODO : clean params / pass itemtype instead of table
+   ///TODO : clean params as dropdown / pass itemtype instead of table
+   /// $myname / $field + array of option : name if != field + others
 
    if ($CFG_GLPI["use_ajax"] && $CFG_GLPI["use_ajax_autocompletion"]) {
       $rand=mt_rand();
