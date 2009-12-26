@@ -663,8 +663,9 @@ class Rule extends CommonDBTM {
          $value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],
                                         $input[$criteria->fields["criteria"]]);
 
-         // TODO Store value in temp array : $criteria->fields["criteria"] / $criteria->fields["condition"] -> value
-         // TODO : Clean on update action
+         /// TODO Store value in temp array : $criteria->fields["criteria"] / $criteria->fields["condition"] -> value
+         /// TODO : Clean on update action
+         /// MoYo : what does it mean ? 
          $res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],
                            $regex_result);
       } else {
