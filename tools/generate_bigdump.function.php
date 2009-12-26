@@ -1191,31 +1191,31 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
 		// ADD DEVICE
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".MOBOARD_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DeviceMotherboard','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,3000)."','".PROCESSOR_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,3000)."','$compID','DeviceProcessor','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,1024)."','".RAM_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,1024)."','$compID','DeviceMemory','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,100000)."','".HDD_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,100000)."','$compID','DeviceHardDrive','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".getNextMAC()."','".NETWORK_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".getNextMAC()."','$compID','DeviceNetworkCard','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".DRIVE_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DeviceDrive','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".CONTROL_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DeviceControl','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,1024)."','".GFX_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'".mt_rand(0,1024)."','$compID','DeviceGraphicCard','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".SND_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DeviceSoundCard','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		if (mt_rand(0,100)<50){
-			$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".PCI_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+			$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DevicePci','".mt_rand(1,$MAX['device'])."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".CASE_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DeviceCase','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','".POWER_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computers_devices VALUES (NULL,'','$compID','DevicePowerSupply','".mt_rand(1,$MAX['device'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
 		// insert disk

@@ -368,7 +368,6 @@ class Search {
                               $first2=false;
                            }
                            $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$searchtype[$key],$contains[$key]);
-                            echo $WHERE."<br>";
                         }
                      }
                   }
