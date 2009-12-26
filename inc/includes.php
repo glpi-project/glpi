@@ -83,7 +83,6 @@ include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/software.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
-include_once (GLPI_ROOT . "/inc/device.function.php");
 include_once (GLPI_ROOT . "/inc/networkequipment.function.php");
 include_once (GLPI_ROOT . "/inc/knowbaseitem.function.php");
 
