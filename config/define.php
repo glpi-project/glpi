@@ -55,12 +55,6 @@ define("WEEK_TIMESTAMP",604800);
 define("MONTH_TIMESTAMP",2592000);
 
 
-//OCSNG IMPORT VARIABLES
-define("OCS_FIELD_SEPARATOR",'$$$$$');
-define("OCS_IMPORT_TAG_070","_version_070_");
-define("OCS_IMPORT_TAG_072","_version_072_");
-define("OCS_IMPORT_TAG_080","_version_080_");
-
 
 // ITEMS TYPE
 /// Temporary definition for test
@@ -203,27 +197,6 @@ define("HISTORY_RESTORE_ITEM",14);
 define("HISTORY_ADD_RELATION",15);
 define("HISTORY_DEL_RELATION",16);
 
-
-// OCSNG TYPES
-define("HARDWARE_FL",0);
-define("BIOS_FL",1);
-define("MEMORIES_FL",2);
-define("SLOTS_FL",3);
-define("REGISTRY_FL",4);
-define("CONTROLLERS_FL",5);
-define("MONITORS_FL",6);
-define("PORTS_FL",7);
-define("STORAGES_FL",8);
-define("DRIVES_FL",9);
-define("INPUTS_FL",10);
-define("MODEMS_FL",11);
-define("NETWORKS_FL",12);
-define("PRINTERS_FL",13);
-define("SOUNDS_FL",14);
-define("VIDEOS_FL",15);
-define("SOFTWARES_FL",16);
-
-define("MAX_OCS_CHECKSUM",131071);
 
 
 // MAILING TYPE
@@ -593,13 +566,6 @@ define("RULE_DICTIONNARY_OS_VERSION",20);
 //Bookmark types
 define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
-
-//OCS constants
-define("OCS_COMPUTER_IMPORTED", 0);
-define("OCS_COMPUTER_SYNCHRONIZED", 1);
-define("OCS_COMPUTER_LINKED", 2);
-define("OCS_COMPUTER_FAILED_IMPORT", 3);
-define("OCS_COMPUTER_NOTUPDATED", 4);
 
 
 // PLUGIN states
