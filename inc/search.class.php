@@ -157,17 +157,6 @@ class Search {
          array_push($toview,$sort);
       }
 
-      /// TODO to delete see after OR use to_view / to_search arrays to manage left join
-      // Manage search on all item
-      $SEARCH_ALL=array();
-      if (in_array("all",$field)) {
-         foreach ($field as $key => $val) {
-            if ($val=="all") {
-               array_push($SEARCH_ALL,array("contains"=>$contains[$key]));
-            }
-         }
-      }
-
       // Clean toview array
       $toview=array_unique($toview);
       foreach ($toview as $key => $val) {
@@ -210,9 +199,8 @@ class Search {
                               $searchopt[$itemtype][$val]["linkfield"]);
       }
 
-      /// TODO to delete : manage Left Join when need of search or display
       // Search all case :
-      if (count($SEARCH_ALL)>0) {
+      if (in_array("all",$field)) {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
