@@ -568,15 +568,6 @@ define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
 
 
-// PLUGIN states
-define("PLUGIN_NEW",0);
-define("PLUGIN_ACTIVATED",1);
-define("PLUGIN_NOTINSTALLED",2);
-define("PLUGIN_TOBECONFIGURED",3);
-define("PLUGIN_NOTACTIVATED",4);
-define("PLUGIN_TOBECLEANED",5);
-define("PLUGIN_NOTUPDATED",6);
-
 
 //DEVICE ARRAY.
 // tables in alphabetic order
