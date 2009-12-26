@@ -271,7 +271,6 @@ class Search {
       $WHERE="";
       $HAVING="";
 
-      /// TODO do also having here / simplify view - all cases : duplicates
       // Add search conditions
       // If there is search items
       if ($_SESSION["glpisearchcount"][$itemtype]>0 && count($contains)>0) {
@@ -309,8 +308,9 @@ class Search {
                      }
                      $WHERE .= Search::addWhere($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key]);
                   }
-               // view search
-               } else if ($field[$key]=="view") {
+
+               // view and all search
+               } else {
                   $LINK=" OR ";
                   $NOT=0;
                   $globallink=" AND ";
@@ -349,63 +349,18 @@ class Search {
                   $WHERE.= " ( ";
                   $first2=true;
 
-                  foreach ($toview as $key2 => $val2) {
-                     // Add Where clause if not to be done in HAVING CLAUSE
-                     if (!isset($searchopt[$itemtype][$val2]["usehaving"])) {
-                        $tmplink=$LINK;
-                        if ($first2) {
-                           $tmplink=" ";
-                           $first2=false;
-                        }
-                        $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$val2,'contains',$contains[$key]);
+                  $items=array();
+                  if ($field[$key]=="all") {
+                     $items=$searchopt[$itemtype];
+                  } else { // toview case : populate toview
+                     foreach ($toview as $key2 => $val2) {
+                        $items[$val2]=$searchopt[$itemtype][$val2];
                      }
                   }
-                  $WHERE.=" ) ";
 
-               // all search
-               } else if ($field[$key]=="all") {
-                  $LINK=" OR ";
-                  $NOT=0;
-                  $globallink=" AND ";
-                  if (is_array($link) && isset($link[$key])) {
-                     switch ($link[$key]) {
-                        case "AND" :
-                           $LINK=" OR ";
-                           $globallink=" AND ";
-                           break;
-
-                        case "AND NOT" :
-                           $LINK=" AND ";
-                           $NOT=1;
-                           $globallink=" AND ";
-                           break;
-
-                        case "OR" :
-                           $LINK=" OR ";
-                           $globallink=" OR ";
-                           break;
-
-                        case "OR NOT" :
-                           $LINK=" AND ";
-                           $NOT=1;
-                           $globallink=" OR ";
-                           break;
-                     }
-                  } else {
-                     $tmplink=" AND ";
-                  }
-
-                  // Manage Link if not first item
-                  if (!empty($WHERE)) {
-                     $WHERE.=$globallink;
-                  }
-
-                  $WHERE .= " ( ";
-                  $first2=true;
-
-                  foreach ($searchopt[$itemtype] as $key2 => $val2) {
+                  foreach ($items as $key2 => $val2) {
                      if (is_array($val2)) {
-                        // Add Where clause if not to be done ine HAVING CLAUSE
+                        // Add Where clause if not to be done in HAVING CLAUSE
                         if (!isset($val2["usehaving"])) {
                            $tmplink=$LINK;
                            if ($first2) {
@@ -413,15 +368,15 @@ class Search {
                               $first2=false;
                            }
                            $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$searchtype[$key],$contains[$key]);
+                            echo $WHERE."<br>";
                         }
                      }
                   }
-                  $WHERE .= ")";
+                  $WHERE.=" ) ";
                }
             }
          }
       }
-
 
       //// 4 - ORDER
       $ORDER=" ORDER BY `id` ";
@@ -2349,6 +2304,7 @@ class Search {
 
             case "number" :
             case "decimal" :
+
                $search=array("/\&lt;/",
                            "/\&gt;/");
                $replace=array("<",
@@ -2380,7 +2336,7 @@ class Search {
                         return $link." (($tocompute >= ".(intval($val)
                                                             - $searchopt[$ID]["width"])."
                                        AND $tocompute <= ".(intval($val)
-                                                               + $searchopt[$ID]["width"]).").
+                                                               + $searchopt[$ID]["width"]).")
                                        $ADD) ";
                      }
                   } else {
@@ -2527,7 +2483,7 @@ class Search {
             // Add networking device for computers
             if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_computers_devices",
-                                 $linkfield,NETWORK_DEVICE,$meta,$meta_type);
+                                 $linkfield,'DeviceNetworkCard',$meta,$meta_type);
             }
             return $out."
                   LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
