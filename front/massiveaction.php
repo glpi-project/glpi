@@ -545,7 +545,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "add_task" :
-            $task = new TicketFollowup();
+            $task = new TicketTask();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $input=array('tickets_id'        => $key,
