@@ -264,8 +264,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          //New software not already present in this entity
          if (!isset ($new_softs[$entity][$res_rule["name"]])) {
             // create new software or restore it from trash
-            $new_software_id = addSoftwareOrRestoreFromTrash($res_rule["name"], $manufacturer,
-                                                             $entity);
+            $new_software_id = Software::addOrRestoreFromTrash($res_rule["name"],
+                                                                       $manufacturer, $entity);
             $new_softs[$entity][$res_rule["name"]] = $new_software_id;
          } else {
             $new_software_id = $new_softs[$entity][$res_rule["name"]];

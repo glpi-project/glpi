@@ -339,52 +339,6 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
    return false;
 }
 
-/**
- * Create a new software
- * @param name the software's name
- * @param manufacturer the software's manufacturer
- * @param entity the entity in which the software must be added
- * @param comment
- * @return the software's ID
- */
-function addSoftware($name, $manufacturer, $entity, $comment = '') {
-   global $LANG, $DB,$CFG_GLPI;
-
-   $software = new Software;
-   $manufacturer_id = 0;
-   if ($manufacturer != '') {
-      $manufacturer_id = externalImportDropdown("glpi_manufacturers", $manufacturer);
-   }
-
-   $sql = "SELECT `id`
-           FROM `glpi_softwares`
-           WHERE `manufacturers_id` = '$manufacturer_id'
-                 AND `name` = '$name' " .
-                 getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id', $entity, true);
-
-   $res_soft = $DB->query($sql);
-   if ($soft = $DB->fetch_array($res_soft)) {
-      $id = $soft["id"];
-   } else {
-      $input["name"] = $name;
-      $input["manufacturers_id"] = $manufacturer_id;
-      $input["entities_id"] = $entity;
-      // No comment
-      $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
-
-      //Process software's category rules
-      $softcatrule = new RuleSoftwareCategoryCollection;
-      $result = $softcatrule->processAllRules(null, null, $input);
-      if (!empty ($result) && isset ($result["softwarecategories_id"])) {
-         $input["softwarecategories_id"] = $result["softwarecategories_id"];
-      } else {
-         $input["softwarecategories_id"] = 0;
-      }
-
-      $id = $software->add($input);
-   }
-   return $id;
-}
 
 
 /**
@@ -440,43 +394,6 @@ function removeSoftwareFromTrash($ID) {
 }
 
 
-/**
- * Add a Software. If already exist in trash restore it
- * @param name the software's name
- * @param manufacturer the software's manufacturer
- * @param entity the entity in which the software must be added
- * @param comment comment
- */
-function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comment='') {
-   global $DB;
-
-   //Look for the software by his name in GLPI for a specific entity
-   $query_search = "SELECT `glpi_softwares`.`id`, `glpi_softwares`.`is_deleted`
-                    FROM `glpi_softwares`
-                    WHERE `name` = '$name'
-                          AND `is_template` = '0'
-                          AND `entities_id` = '$entity'";
-
-   $result_search = $DB->query($query_search);
-
-   if ($DB->numrows($result_search) > 0) {
-      //Software already exists for this entity, get his ID
-      $data = $DB->fetch_array($result_search);
-      $ID = $data["id"];
-
-      // restore software
-      if ($data['is_deleted']) {
-         removeSoftwareFromTrash($ID);
-      }
-   } else {
-      $ID = 0;
-   }
-
-   if (!$ID) {
-      $ID = addSoftware($name, $manufacturer, $entity, $comment);
-   }
-   return $ID;
-}
 
 
 ?>
