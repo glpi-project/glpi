@@ -3953,7 +3953,7 @@ class OcsServer extends CommonDBTM {
                      //------------------------------------------------------------------------//
                      //---- The software doesn't exists in this version for this computer -----//
                      //------------------------------------------------------------------------//
-                     $isNewSoft= Software::addOrRestoreFromTrash($modified_name,
+                     $isNewSoft= $soft->addOrRestoreFromTrash($modified_name,
                                                                          $manufacturer, $entity);
                      //Import version for this software
                      $versionID = OcsServer::importVersion($isNewSoft,$modified_version);
@@ -4032,7 +4032,7 @@ class OcsServer extends CommonDBTM {
                             && countElementsInTable('glpi_softwareversions',
                                     "softwares_id = '" .$vers->fields['softwares_id']. "'") == 1) {
                            // 1 is the current to be removed
-                           Software::putInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
+                           $soft->putInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
                         }
                         $vers->delete(array ("id" => $data['softwareversions_id']));
                      }

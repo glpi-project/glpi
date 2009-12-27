@@ -711,6 +711,7 @@ logDebug("Software::cleanDBonPurge($ID)");
    function putInTrash($ID, $comment = '') {
       global $LANG,$CFG_GLPI;
 
+      $this->getFromDB($ID);
       $input["id"] = $ID;
       $input["is_deleted"] = 1;
 
