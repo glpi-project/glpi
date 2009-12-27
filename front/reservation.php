@@ -33,15 +33,13 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-
 
 checkLoginUser();
 
 if (!isset($_GET["reservationitems_id"])) {
-   $_GET["reservationitems_id"]='';
+   $_GET["reservationitems_id"] = '';
 }
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
@@ -57,7 +55,5 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 } else {
    commonFooter();
 }
-
-
 
 ?>

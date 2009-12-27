@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -45,7 +44,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }
 
-if (!haveRight("reservation_central","r")){
+if (!haveRight("reservation_central","r")) {
    ReservationItem::showListSimple();
 } else {
    Search::show('ReservationItem');
