@@ -4032,7 +4032,7 @@ class OcsServer extends CommonDBTM {
                             && countElementsInTable('glpi_softwareversions',
                                     "softwares_id = '" .$vers->fields['softwares_id']. "'") == 1) {
                            // 1 is the current to be removed
-                           putSoftwareInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
+                           Software::putInTrash($vers->fields['softwares_id'],$LANG['ocsng'][54]);
                         }
                         $vers->delete(array ("id" => $data['softwareversions_id']));
                      }

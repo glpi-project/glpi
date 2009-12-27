@@ -178,7 +178,7 @@ function mergeSoftware($ID, $item) {
    if ($i==($nb+1)) {
       //error_log ("All merge operations ok.");
       foreach ($item as $old) {
-         putSoftwareInTrash($old,$LANG['software'][49]);
+         Software::putInTrash($old,$LANG['software'][49]);
       }
    }
    changeProgressBarPosition($i,$nb+1,$LANG['rulesengine'][91]);
@@ -341,36 +341,6 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 
 
 
-/**
- * Put software in trash because it's been removed by GLPI software dictionnary
- * @param $ID  the ID of the software to put in trash
- * @param $comment the comment to add to the already existing software's comment
- */
-function putSoftwareInTrash($ID, $comment = '') {
-   global $LANG,$CFG_GLPI;
-
-   $software = new Software;
-   //Get the software's fields
-   $software->getFromDB($ID);
-
-   $input["id"] = $ID;
-   $input["is_deleted"] = 1;
-
-   $config = new Config;
-   $config->getFromDB($CFG_GLPI["id"]);
-
-   //change category of the software on deletion (if defined in glpi_configs)
-   if (isset($config->fields["softwarecategories_id_ondelete"])
-       && $config->fields["softwarecategories_id_ondelete"] != 0) {
-
-      $input["softwarecategories_id"] = $config->fields["softwarecategories_id_ondelete"];
-   }
-
-   //Add dictionnary comment to the current comment
-   $input["comment"] = ($software->fields["comment"] != '' ? "\n" : '') . $comment;
-
-   $software->update($input);
-}
 
 
 /**

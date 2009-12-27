@@ -702,6 +702,33 @@ logDebug("Software::cleanDBonPurge($ID)");
       return $ID;
    }
 
+
+   /**
+    * Put software in trash because it's been removed by GLPI software dictionnary
+    * @param $ID  the ID of the software to put in trash
+    * @param $comment the comment to add to the already existing software's comment
+    */
+   function putInTrash($ID, $comment = '') {
+      global $LANG,$CFG_GLPI;
+
+      $input["id"] = $ID;
+      $input["is_deleted"] = 1;
+
+      $config = new Config;
+      $config->getFromDB($CFG_GLPI["id"]);
+
+      //change category of the software on deletion (if defined in glpi_configs)
+      if (isset($config->fields["softwarecategories_id_ondelete"])
+          && $config->fields["softwarecategories_id_ondelete"] != 0) {
+
+         $input["softwarecategories_id"] = $config->fields["softwarecategories_id_ondelete"];
+      }
+
+      //Add dictionnary comment to the current comment
+      $input["comment"] = ($this->fields["comment"] != '' ? "\n" : '') . $comment;
+
+      $this->update($input);
+   }
 }
 
 ?>
