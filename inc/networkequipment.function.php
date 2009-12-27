@@ -185,21 +185,12 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
       $comp = new Computer();
       if (!empty ($netport->itemtype)) {
-         $comp->getFromDBwithDevices($netport->device_ID);
+         $comp->getFromDB($netport->device_ID);
       } else {
-         $comp->getFromDBwithDevices($ondevice);
+         $comp->getFromDB($ondevice);
       }
-      $macs = array ();
-      $i = 0;
-      // Get MAC adresses :
-      if (count($comp->devices) > 0) {
-         foreach ($comp->devices as $key => $val) {
-            if ($val['devType'] == NETWORK_DEVICE && !empty ($val['specificity'])) {
-               $macs[$i] = $val['specificity'];
-               $i++;
-            }
-         }
-      }
+      $macs = Computer_Device::getMacAddr($comp);
+
       if (count($macs) > 0) {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
          echo "<select name='pre_mac'>\n";
