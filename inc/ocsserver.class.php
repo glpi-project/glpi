@@ -3828,6 +3828,34 @@ class OcsServer extends CommonDBTM {
    }
 
    /**
+    * Install a software on a computer - check if not already installed
+    *
+    * @param $computers_id ID of the computer where to install a software
+    * @param $softwareversions_id ID of the version to install
+    * @param $dohistory Do history ?
+    * @return nothing
+    */
+   static function installSoftwareVersion($computers_id, $softwareversions_id, $dohistory=1) {
+      global $DB,$LANG;
+
+      if (!empty ($softwareversions_id) && $softwareversions_id > 0) {
+         $query_exists = "SELECT `id`
+                          FROM `glpi_computers_softwareversions`
+                          WHERE (`computers_id` = '$computers_id'
+                                 AND `softwareversions_id` = '$softwareversions_id')";
+         $result = $DB->query($query_exists);
+         if ($DB->numrows($result) > 0) {
+            return $DB->result($result, 0, "id");
+         }
+         $tmp = new Computer_SoftwareVersion();
+         return $tmp->add(array('computers_id'        => $computers_id,
+                                'softwareversions_id' => $softwareversions_id,
+                                '_no_history'         => !$dohistory));
+      }
+      return 0;
+   }
+
+   /**
     * Update config of a new software
     *
     * This function create a new software in GLPI with some general datas.
@@ -3958,7 +3986,7 @@ class OcsServer extends CommonDBTM {
                      //Import version for this software
                      $versionID = OcsServer::importVersion($isNewSoft,$modified_version);
                      //Install license for this machine
-                     $instID = installSoftwareVersion($computers_id, $versionID, $dohistory);
+                     $instID = self::installSoftwareVersion($computers_id, $versionID, $dohistory);
                      //Add the software to the table of softwares for this computer to add in database
                      $to_add_to_ocs_array[$instID] = $initname . self::FIELD_SEPARATOR. $version;
                   } else {
@@ -4011,6 +4039,7 @@ class OcsServer extends CommonDBTM {
 
          // Remove softwares not present in OCS
          if (count($import_software)) {
+            $inst = new Computer_SoftwareVersion();
             foreach ($import_software as $key => $val) {
                $query = "SELECT *
                          FROM `glpi_computers_softwareversions`
@@ -4018,7 +4047,9 @@ class OcsServer extends CommonDBTM {
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {
                   if ($data = $DB->fetch_assoc($result)) {
-                     uninstallSoftwareVersion($key, $dohistory);
+                     $inst->delete(array('id'          => $key,
+                                         '_no_history' => !$dohistory));
+
                      if (countElementsInTable('glpi_computers_softwareversions',
                               "softwareversions_id = '" .$data['softwareversions_id']. "'") == 0
                          && countElementsInTable('glpi_softwarelicenses',

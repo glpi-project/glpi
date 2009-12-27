@@ -45,75 +45,7 @@ if (!isset($_GET["softwares_id"])) {
 
 $version = new SoftwareVersion();
 
-/// TODO clean install process : create file for computer_softwareversion actions
-/// Begin of old management of install :
-if (isset($_REQUEST["install"])) {
-   checkRight("software","w");
-   installSoftwareVersion($_REQUEST["computers_id"],$_REQUEST["softwareversions_id"]);
-   Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." installed software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_GET["uninstall"])) {
-   checkRight("software","w");
-   uninstallSoftwareVersion($_GET["id"]);
-   Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["deleteinstalls"])) {
-   checkRight("software","w");
-
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1) {
-         uninstallSoftwareVersion($key);
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." uninstalled software for several computers.");
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["moveinstalls"])) {
-   checkRight("software","w");
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1 && $_POST['versionID'] > 0) {
-         updateInstalledVersion($key, $_POST['versionID']);
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." change version of versions installed on computers.");
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["uninstall_license"])) {
-   checkRight("software","w");
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/license_([0-9]+)/",$key,$ereg)) {
-         $input["id"] = $ereg[1];
-         uninstallSoftwareVersion($input["id"]);
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["install_license"]) && isset($_POST["computers_id"])) {
-   checkRight("software","w");
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/version_([0-9]+)/",$key,$ereg)) {
-         if ($ereg[1] > 0) {
-            installSoftwareVersion($_POST["computers_id"],$ereg[1]);
-         }
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." installed software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_GET["back"])) {
-   glpi_header($_GET["back"]);
-
-/// End of old management of install
-} else if (isset($_POST["add"])) {
+if (isset($_POST["add"])) {
     $version->check(-1,'w',$_POST);
 
    if ($newID = $version->add($_POST)) {
@@ -121,9 +53,8 @@ if (isset($_REQUEST["install"])) {
                  $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
       glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
                   $version->fields['softwares_id']);
-   } else {
-      glpi_header($_SERVER['HTTP_REFERER']);
    }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $version->check($_POST['id'],'w');
