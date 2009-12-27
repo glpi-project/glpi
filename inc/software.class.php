@@ -750,6 +750,152 @@ logDebug("Software::cleanDBonPurge($ID)");
       $this->restore(array("id" => $ID));
    }
 
+   /**
+    * Show softwares candidates to be merged with the current
+    *
+    * @return nothing
+    */
+   function showMergeCandidates() {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $ID = $this->getField('id');
+      $this->check($ID,"w");
+      $rand=mt_rand();
+
+      echo "<div class='center'>";
+      $sql = "SELECT `glpi_softwares`.`id`,
+                     `glpi_softwares`.`name`,
+                     `glpi_entities`.`completename` AS entity
+              FROM `glpi_softwares`
+              LEFT JOIN `glpi_entities` ON (`glpi_softwares`.`entities_id` = `glpi_entities`.`id`)
+              WHERE (`glpi_softwares`.`id` != '$ID'
+                     AND `glpi_softwares`.`name` = '".addslashes($this->fields["name"])."'
+                     AND `glpi_softwares`.`is_deleted` = '0'
+                     AND `glpi_softwares`.`is_template` = '0' " .
+                         getEntitiesRestrictRequest('AND', 'glpi_softwares','entities_id',
+                                       getSonsOf("glpi_entities",$this->fields["entities_id"]),false).")
+              ORDER BY `entity`";
+      $req = $DB->request($sql);
+
+      if ($req->numrows()) {
+         $link=getItemTypeFormURL('Software');
+         echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand' action='".
+                $link."'>";
+         echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
+         echo "<th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".$LANG['software'][19]."</th>";
+         echo "<th>".$LANG['software'][11]."</th></tr>";
+
+         foreach($req as $data) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+            echo "<td<a href='".$link."?id=".
+                      $data["id"]."'>".$data["name"]."</a></td>";
+            echo "<td>".$data["entity"]."</td>";
+            echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";
+            echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
+         }
+         echo "</table>\n";
+
+         openArrowMassive("mergesoftware_form$rand",true);
+         echo "<input type='hidden' name='id' value='$ID'>";
+         closeArrowMassive('mergesoftware', $LANG['software'][48]);
+
+         echo "</form>";
+      } else {
+         echo $LANG['search'][15];
+      }
+
+      echo "</div>";
+   }
+
+   /**
+    * Merge softwares with current
+    *
+    * @param $item array of software ID to be merged
+    *
+    * @return boolean about success
+    */
+   function merge($item) {
+      global $DB, $LANG;
+
+      $ID = $this->getField('id');
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadrehov'><tr><th>".$LANG['software'][47]."</th></tr>";
+      echo "<tr class='tab_bg_2'><td>";
+      createProgressBar($LANG['rulesengine'][90]);
+      echo "</td></tr></table></div>\n";
+
+      $item=array_keys($item);
+
+      // Search for software version
+      $req = $DB->request("glpi_softwareversions", array("softwares_id"=>$item));
+      $i=0;
+      if ($nb=$req->numrows()) {
+         foreach ($req as $from) {
+            $found=false;
+            foreach ($DB->request("glpi_softwareversions", array("softwares_id"=>$ID,
+                                                                  "name"=>$from["name"])) as $dest) {
+               // Update version ID on License
+               $sql = "UPDATE
+                       `glpi_softwarelicenses`
+                       SET `softwareversions_id_buy` = '".$dest["id"]."'
+                       WHERE `softwareversions_id_buy` = '".$from["id"]."'";
+               $DB->query($sql);
+
+               $sql = "UPDATE
+                       `glpi_softwarelicenses`
+                       SET `softwareversions_id_use` = '".$dest["id"]."'
+                       WHERE `softwareversions_id_use` = '".$from["id"]."'";
+               $DB->query($sql);
+
+               // Move installation to existing version in destination software
+               $sql = "UPDATE
+                       `glpi_computers_softwareversions`
+                       SET `softwareversions_id` = '".$dest["id"]."'
+                       WHERE `softwareversions_id` = '".$from["id"]."'";
+               $found=$DB->query($sql);
+            }
+            if ($found) {
+               // Installation has be moved, delete the source version
+               $sql = "DELETE
+                       FROM `glpi_softwareversions`
+                       WHERE `id` = '".$from["id"]."'";
+            } else {
+               // Move version to destination software
+               $sql = "UPDATE
+                       `glpi_softwareversions`
+                       SET `softwares_id` = '$ID'
+                       WHERE `id` = '".$from["id"]."'";
+            }
+            if ($DB->query($sql)) {
+               $i++;
+            }
+            changeProgressBarPosition($i,$nb+1);
+         }
+      }
+      // Move software license
+      $sql = "UPDATE
+              `glpi_softwarelicenses`
+              SET `softwares_id` = '$ID'
+              WHERE `softwares_id` IN ('".implode("','",$item)."')";
+      if ($DB->query($sql)) {
+         $i++;
+      }
+      if ($i==($nb+1)) {
+         //error_log ("All merge operations ok.");
+         foreach ($item as $old) {
+            $soft = new Software();
+            $soft->putInTrash($old,$LANG['software'][49]);
+         }
+      }
+      changeProgressBarPosition($i,$nb+1,$LANG['rulesengine'][91]);
+      return $i==($nb+1);
+   }
+
+
 }
 
 ?>

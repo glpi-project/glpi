@@ -119,7 +119,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 21 :
-            showSoftwareMergeCandidates($_POST["id"]);
+            $soft->showMergeCandidates();
             break;
 
          default :

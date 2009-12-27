@@ -98,8 +98,6 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["mergesoftware"])) {
-   $soft->check($_POST["id"],'w');
-
    popHeader($LANG['Menu'][4]);
 
    if (isset($_POST["id"])
@@ -107,7 +105,8 @@ if (isset($_POST["add"])) {
        && is_array($_POST["item"])
        && count($_POST["item"])) {
 
-      mergeSoftware($_POST["id"], $_POST["item"]);
+      $soft->check($_POST["id"],'w');
+      $soft->merge($_POST["item"]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
