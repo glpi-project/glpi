@@ -255,6 +255,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $res_rule = $this->processAllRules($input, array (), array ());
          $res_rule = addslashes_deep($res_rule);
       }
+     $soft = new Software;
 
       //Software's name has changed
       if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
@@ -264,7 +265,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          //New software not already present in this entity
          if (!isset ($new_softs[$entity][$res_rule["name"]])) {
             // create new software or restore it from trash
-            $new_software_id = Software::addOrRestoreFromTrash($res_rule["name"],
+            $new_software_id = $soft->addOrRestoreFromTrash($res_rule["name"],
                                                                        $manufacturer, $entity);
             $new_softs[$entity][$res_rule["name"]] = $new_software_id;
          } else {
@@ -279,7 +280,6 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $res_rule["manufacturers_id"] = $res_rule["manufacturer"];
             unset($res_rule["manufacturer"]);
          }
-         $soft = new Software;
          $soft->update($res_rule);
       }
 
@@ -328,7 +328,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                                              ORDER BY `cpt`");
          $software = new Software;
          while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-            Software::putInTrash($soft["id"], $LANG['rulesengine'][87]);
+            $software->putInTrash($soft["id"], $LANG['rulesengine'][87]);
          }
       }
    }
