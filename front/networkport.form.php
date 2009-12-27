@@ -56,6 +56,8 @@ if (!strpos($_SERVER['HTTP_REFERER'],"&referer=")) {
 }
 
 $np = new NetworkPort();
+$npv = new NetworkPort_Vlan();
+
 if (isset($_POST["add"])) {
    checkRight("networking","w");
 
@@ -158,7 +160,7 @@ if (isset($_POST["add"])) {
    if ($_POST["vlans_id"] >0) {
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
          foreach ($_POST["del_port"] as $port_id => $val) {
-            assignVlan($port_id,$_POST["vlans_id"]);
+            $npv->assignVlan($port_id,$_POST["vlans_id"]);
          }
       }
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
@@ -169,7 +171,7 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
 
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
-      assignVlan($_POST["id"],$_POST["vlans_id"]);
+      $npv->assignVlan($_POST["id"],$_POST["vlans_id"]);
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }
    glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
@@ -180,7 +182,7 @@ if (isset($_POST["add"])) {
    if ($_POST["vlans_id"] >0) {
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
          foreach ($_POST["del_port"] as $port_id => $val) {
-            unassignVlan($port_id,$_POST["vlans_id"]);
+            $npv->unassignVlan($port_id,$_POST["vlans_id"]);
          }
       }
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
@@ -190,7 +192,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET['unassign_vlan'])) {
    checkRight("networking","w");
 
-   unassignVlanbyID($_GET['id']);
+  $npv->unassignVlanbyID($_GET['id']);
    Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
    glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 
