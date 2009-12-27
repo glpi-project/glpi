@@ -690,7 +690,7 @@ logDebug("Software::cleanDBonPurge($ID)");
 
          // restore software
          if ($data['is_deleted']) {
-            removeSoftwareFromTrash($ID);
+            $this->removeFromTrash($ID);
          }
       } else {
          $ID = 0;
@@ -729,6 +729,26 @@ logDebug("Software::cleanDBonPurge($ID)");
 
       $this->update($input);
    }
+
+
+   /**
+    * Restore a software from trash
+    * @param $ID  the ID of the software to put in trash
+    */
+   function removeFromTrash($ID) {
+
+      $softcatrule = new RuleSoftwareCategoryCollection;
+      $result = $softcatrule->processAllRules(null, null, $s->fields);
+
+      if (!empty ($result) && isset ($result["softwarecategories_id"])) {
+         $input["softwarecategories_id"] = $result["softwarecategories_id"];
+      } else {
+         $input["softwarecategories_id"] = 0;
+      }
+
+      $this->restore(array("id" => $ID));
+   }
+
 }
 
 ?>
