@@ -90,7 +90,6 @@ function haveTypeRight($itemtype, $right) {
 
    if (method_exists($item,$method[1])) {
       return $item->$method[1]();
-      return (call_user_func($method));
    }
    return false;
 }
