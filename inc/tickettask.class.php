@@ -422,6 +422,20 @@ class TicketTask  extends CommonDBTM {
       echo "</tr>\n";
    }
 
+   /**
+    * Form for Followup on Massive action
+    */
+   static function showFormMassiveAction() {
+      global $LANG;
+
+      echo "&nbsp;".$LANG['job'][44]."&nbsp;: ";
+      Dropdown::show('TaskCategory');
+
+      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
+      echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
+
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+   }
 
    /** form for Task
     *

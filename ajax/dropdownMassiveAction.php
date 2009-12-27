@@ -80,7 +80,11 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_followup" :
-         showAddFollowupForm(-1,true);
+         TicketFollowup::showFormMassiveAction();
+         break;
+
+      case "add_task" :
+         TicketTask::showFormMassiveAction();
          break;
 
       case "change_authtype" :

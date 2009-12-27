@@ -138,7 +138,12 @@ class TicketFollowup  extends CommonDBTM {
       return $this->canUpdateItem();
    }
 
-
+   function post_getEmpty() {
+      if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
+         $this->fields['is_private'] = 1;
+      }
+      logDebug($this);
+   }
 
    function post_deleteFromDB($ID) {
 
@@ -370,6 +375,22 @@ class TicketFollowup  extends CommonDBTM {
       echo "</tr>\n";
    }
 
+   /**
+    * Form for Followup on Massive action
+    */
+   static function showFormMassiveAction() {
+      global $LANG;
+
+      echo "&nbsp;".$LANG['job'][44]."&nbsp;: ";
+      Dropdown::show('RequestType', array('value' => RequestType::getDefault('helpdesk')));
+
+      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
+      echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
+
+      echo "<input type='hidden' name='is_private' value='".$_SESSION['glpifollowup_private']."'>";
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+   }
+
    /** form for Followup
     *
     *@param $ID Integer : Id of the followup
@@ -417,14 +438,9 @@ class TicketFollowup  extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
-         echo "<td><select name='is_private'>";
-         echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".$LANG['choice'][0].
-               "</option>";
-         echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".$LANG['choice'][1].
-               "</option>";
-         echo "</select></td>";
-         echo "</tr>";
+         echo "<td>".$LANG['common'][77]."&nbsp;:</td><td>";
+         Dropdown::showYesNo('is_private', $this->fields["is_private"]);
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
