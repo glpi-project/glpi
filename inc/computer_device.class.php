@@ -334,7 +334,7 @@ class Computer_Device extends CommonDBChild {
    }
 
    /**
-    *
+    * Duplicate all device from a computer template to his clone
     */
    function cloneComputer ($oldid, $newid) {
       global $DB;

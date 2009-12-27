@@ -385,15 +385,8 @@ class Computer extends CommonDBTM {
          }
 
          // ADD software
-         $query="SELECT `softwareversions_id`
-                 FROM `glpi_computers_softwareversions`
-                 WHERE `computers_id`='".$input["_oldID"]."'";
-         $result=$DB->query($query);
-         if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
-               installSoftwareVersion($newID,$data['softwareversions_id']);
-            }
-         }
+         $inst = new Computer_SoftwareVersion();
+         $inst->cloneComputer($input["_oldID"], $newID);
 
          // ADD Contract
          $query="SELECT `contracts_id`

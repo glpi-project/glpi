@@ -251,7 +251,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
             if ($canedit) {
                echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".
-                      $CFG_GLPI["root_doc"]."/front/softwareversion.form.php\">";
+                      $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php\">";
                echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
                echo "<table class='tab_cadre_fixehov'><tr>";
                echo "<th>&nbsp;</th>";
@@ -451,7 +451,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-         echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/softwareversion.form.php\">";
+         echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php\">";
          echo "<div class='software-instal'>";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
@@ -540,26 +540,12 @@ class Computer_SoftwareVersion extends CommonDBTM {
          if ($canedit) {
             openArrowMassive("lic_form$cat$rand",true);
 
-            echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
-            echo "<option value=''>------</option>";
             if (isset($cat)) {
-               echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
+               closeArrowMassive('massuninstall', $LANG['buttons'][5]);
             } else {
-               echo "<option value='install_license'>".$LANG['buttons'][4]."</option>";
+               closeArrowMassive('massinstall', $LANG['buttons'][4]);
             }
-            echo "</select>";
 
-            $params = array('actiontype' => '__VALUE__');
-            ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand",
-                                        "update_licenses_view$cat$rand",
-                                        $CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",
-                                        $params,
-                                        false);
-
-            echo "<span id='update_licenses_view$cat$rand'>\n";
-            echo "&nbsp;</span>\n";
-
-            closeArrowMassive();
          }
          echo "</form>";
          echo "</div></td></tr>";
@@ -609,8 +595,9 @@ class Computer_SoftwareVersion extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "      <td colspan='5'>
                     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
-      echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/softwareversion.form.php\">";
-      echo "<input type='hidden' name='computers_ID' value='$computers_ID'>";
+      echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action='";
+      echo $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
+      echo "<input type='hidden' name='computers_id' value='$computers_ID'>";
       echo "         <table class='tab_cadre_fixe'>";
       echo "            <tr>";
       if ($canedit) {
@@ -642,7 +629,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
-         echo "<td><input type='checkbox' name='license_".$data['id']."'></td>";
+         echo "<td><input type='checkbox' name='softversion_".$data['id']."'></td>";
       }
       echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] .
             "/front/software.form.php?id=" . $data['softwares_id'] . "\">";
@@ -652,7 +639,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       echo "<td>" . $data["version"];
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
-         echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/softwareversion.form.php".
+         echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php".
               "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id\">";
          echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
       }
@@ -712,7 +699,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
       if ($canedit) {
          echo "<td>";
          if ((empty ($withtemplate) || $withtemplate != 2) && $ID>0) {
-            echo "<input type='checkbox' name='version_$ID'>";
+            echo "<input type='checkbox' name='softversion_$ID'>";
          }
          echo "</td>";
       }
@@ -724,7 +711,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
 
       echo "<td>" . $data["version"];
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit && $ID>0) {
-         echo " - <a href=\"" . $CFG_GLPI["root_doc"] ."/front/softwareversion.form.php".
+         echo " - <a href=\"" . $CFG_GLPI["root_doc"] ."/front/computer_softwareversion.form.php".
             "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id\">";
          echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
       }
@@ -823,6 +810,45 @@ class Computer_SoftwareVersion extends CommonDBTM {
          // Log on SoftwareVersion history
          historyLog($this->fields['softwareversions_id'], 'SoftwareVersion',
                     $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+      }
+   }
+
+   /**
+    * Update version installed on a computer
+    *
+    * @param $instID ID of the install software lienk
+    * @param $softwareversions_id ID of the new version
+    * @param $dohistory Do history ?
+    *
+    * @return nothing
+    */
+   function upgrade($instID, $softwareversions_id, $dohistory=1) {
+      global $DB;
+
+      if ($this->getFromDB($instID)) {
+         $computers_id = $this->fields['computers_id'];
+         $this->delete(array('id' => $instID));
+         $this->add(array('computers_id'        => $computers_id,
+                          'softwareversions_id' => $softwareversions_id));
+      }
+   }
+
+   /**
+    * Duplicate all software from a computer template to his clone
+    */
+   function cloneComputer ($oldid, $newid) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE `computers_id`='$oldid'";
+
+      foreach ($db->request($query) as $data) {
+         unset($data['id']);
+         $data['computers_id'] = $newid;
+         $data['_no_history'] = true;
+
+         $this->add($data);
       }
    }
 }
