@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
+
 // Relation between Computer and a CommonDevice (motherboard, memory, processor, ...)
 class Computer_Device extends CommonDBChild {
 
