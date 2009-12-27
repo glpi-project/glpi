@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -44,7 +44,7 @@ class Alert extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_alerts';
-   public $type = 0;
+   public $type = 'Alert';
 
    function prepareInputForAdd($input) {
       if (!isset($input['date']) || empty($input['date'])) {
