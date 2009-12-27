@@ -86,7 +86,12 @@ class SoftwareVersion extends CommonDBChild {
    }
 
    function isEntityAssign() {
-      return true;
+      if (isset($this->fields["softwares_id"])) {
+         // Object is instanciated (from can method, p.e.)
+         return true;
+      }
+      // Not intanciated, probably to check if entities_id field exists
+      return false;
    }
 
    function getEntityID () {
