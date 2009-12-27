@@ -3953,7 +3953,8 @@ class OcsServer extends CommonDBTM {
                      //------------------------------------------------------------------------//
                      //---- The software doesn't exists in this version for this computer -----//
                      //------------------------------------------------------------------------//
-                     $isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity);
+                     $isNewSoft= Software::addOrRestoreFromTrash($modified_name,
+                                                                         $manufacturer, $entity);
                      //Import version for this software
                      $versionID = OcsServer::importVersion($isNewSoft,$modified_version);
                      //Install license for this machine
