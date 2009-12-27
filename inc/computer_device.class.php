@@ -379,5 +379,27 @@ class Computer_Device extends CommonDBChild {
       }
       return $this->input;
    }
+
+   /**
+    * get the Mac Addresses for a computer
+    *
+    * @param $comp object
+    *
+    * @return array of Mac Addresses
+    */
+   static function getMacAddr (Computer $comp) {
+      global $DB;
+
+      $query = "SELECT DISTINCT `specificity`
+                FROM `glpi_computers_devices`
+                WHERE `itemtype`='DeviceNetworkCard'
+                  AND `computers_id`='".$comp->getField('id')."'";
+
+      $mac = array();
+      foreach ($DB->request($query) as $data) {
+         $mac[] = $data['specificity'];
+      }
+      return $mac;
+   }
 }
 ?>
