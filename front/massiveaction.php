@@ -55,7 +55,9 @@ if (isset($_POST["itemtype"])) {
                break;
 
             case "add_followup" :
-               checkRight("comment_all_ticket","1");
+            case "add_task" :
+               checkSeveralRightsOr(array('comment_all_ticket' => 1,
+                                          'own_ticket'         => 1));
                break;
 
             default :
@@ -531,9 +533,27 @@ if (isset($_POST["itemtype"])) {
             $fup = new TicketFollowup();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $_POST['tickets_id'] = $key;
-                  unset($fup->fields);
-                  $fup->add($_POST);
+                  $input=array('tickets_id'      => $key,
+                               'is_private'      => $_POST['is_private'],
+                               'requesttypes_id' => $_POST['requesttypes_id'],
+                               'content'         => $_POST['content']);
+                  if ($fup->can(-1,'w',$input)) {
+                     $fup->add($input);
+                  }
+               }
+            }
+            break;
+
+         case "add_task" :
+            $task = new TicketFollowup();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input=array('tickets_id'        => $key,
+                               'taskcategories_id' => $_POST['taskcategories_id'],
+                               'content'           => $_POST['content']);
+                  if ($task->can(-1,'w',$input)) {
+                     $task->add($input);
+                  }
                }
             }
             break;

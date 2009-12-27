@@ -180,8 +180,13 @@ function dropdownMassiveAction($itemtype,$is_deleted=0,$extraparams=array()) {
             break;
 
          case 'Ticket' :
-            if (haveRight("comment_all_ticket","1")) {
+            $tmp = new TicketFollowup();
+            if ($tmp->canCreate()) {
                echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
+            }
+            $tmp = new TicketTask();
+            if ($tmp->canCreate()) {
+               echo "<option value='add_task'>".$LANG['job'][30]."</option>";
             }
             break;
 
