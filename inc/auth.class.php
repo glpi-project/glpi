@@ -734,14 +734,14 @@ class Auth {
     * @param $auths_id Authentication method ID
     */
    static function getMethodsByID($authtype, $auths_id) {
-      global $DB;
+      global $CFG_GLPI;
 
       switch ($authtype) {
          case AUTH_X509 :
          case AUTH_EXTERNAL :
          case AUTH_CAS :
             // Use default LDAP config
-            $auths_id=$CFG_GLPI["authldaps_id_extra"];
+            $auths_id = $CFG_GLPI["authldaps_id_extra"];
          case AUTH_LDAP :
             $auth = new AuthLdap();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
