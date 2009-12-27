@@ -216,6 +216,7 @@ class Printer  extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
                $np= new NetworkPort();
+               $npv = new NetworkPort_Vlan();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);
@@ -225,7 +226,7 @@ class Printer  extends CommonDBTM {
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id'=>$data["id"])) as $vlan) {
-                  assignVlan($portid, $vlan['vlans_id']);
+                  $npv->assignVlan($portid, $vlan['vlans_id']);
                }
             }
          }
