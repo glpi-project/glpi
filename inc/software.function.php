@@ -178,7 +178,8 @@ function mergeSoftware($ID, $item) {
    if ($i==($nb+1)) {
       //error_log ("All merge operations ok.");
       foreach ($item as $old) {
-         Software::putInTrash($old,$LANG['software'][49]);
+         $soft = new Software();
+         $soft->putInTrash($old,$LANG['software'][49]);
       }
    }
    changeProgressBarPosition($i,$nb+1,$LANG['rulesengine'][91]);
