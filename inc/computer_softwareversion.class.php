@@ -738,6 +738,93 @@ class Computer_SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
    }
 
+   function post_addItem($newID,$input) {
+      global $DB;
+
+      $vers = new SoftwareVersion();
+      if (!$vers->getFromDB($this->fields['softwareversions_id'])) {
+         return false;
+      }
+
+      // Update affected licenses
+      $lic = new SoftwareLicense();
+      $query = "SELECT `id`
+                FROM `glpi_softwarelicenses`
+                WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
+                  AND `computers_id` = '".$this->fields['computers_id']."'
+                  AND `softwareversions_id_use` = '0'";
+      foreach ($DB->request($query) as $data) {
+         $data['softwareversions_id_use'] = $this->fields['softwareversions_id'];
+         $lic->update($data);
+      }
+
+      if (isset($input['_no_history']) && $input['_no_history']) {
+         return false;
+      }
+
+      $soft = new Software();
+      if ($soft->getFromDB($vers->fields['softwares_id'])) {
+         $changes[0] = '0';
+         $changes[1] = "";
+         $changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
+         // Log on Computer history
+         historyLog($this->fields['computers_id'], 'Computer',
+                    $changes, 0, HISTORY_INSTALL_SOFTWARE);
+      }
+      $comp = new Computer();
+      if ($comp->getFromDB($this->fields['computers_id'])) {
+         $changes[0] = '0';
+         $changes[1] = "";
+         $changes[2] = addslashes($comp->fields["name"]);
+         // Log on SoftwareVersion history
+         historyLog($this->fields['softwareversions_id'], 'SoftwareVersion',
+                    $changes, 0, HISTORY_INSTALL_SOFTWARE);
+      }
+   }
+
+   function post_deleteFromDB($ID) {
+      global $DB;
+
+      $vers = new SoftwareVersion();
+      if (!$vers->getFromDB($this->fields['softwareversions_id'])) {
+         return false;
+      }
+
+      // Update affected licenses
+      $lic = new SoftwareLicense();
+      $query = "SELECT `id`
+                FROM `glpi_softwarelicenses`
+                WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
+                  AND `computers_id` = '".$this->fields['computers_id']."'
+                  AND `softwareversions_id_use` = '".$this->fields['softwareversions_id']."'";
+      foreach ($DB->request($query) as $data) {
+         $data['softwareversions_id_use'] = 0;
+         $lic->update($data);
+      }
+
+      if (isset($input['_no_history']) && $input['_no_history']) {
+         return false;
+      }
+
+      $soft = new Software();
+      if ($soft->getFromDB($vers->fields['softwares_id'])) {
+         $changes[0] = '0';
+         $changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
+         $changes[2] = "";
+         // Log on Computer history
+         historyLog($this->fields['computers_id'], 'Computer',
+                    $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+      }
+      $comp = new Computer();
+      if ($comp->getFromDB($this->fields['computers_id'])) {
+         $changes[0] = '0';
+         $changes[1] = addslashes($comp->fields["name"]);
+         $changes[2] = "";
+         // Log on SoftwareVersion history
+         historyLog($this->fields['softwareversions_id'], 'SoftwareVersion',
+                    $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+      }
+   }
 }
 
 ?>
