@@ -328,7 +328,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                                              ORDER BY `cpt`");
          $software = new Software;
          while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-            putSoftwareInTrash($soft["id"], $LANG['rulesengine'][87]);
+            Software::putInTrash($soft["id"], $LANG['rulesengine'][87]);
          }
       }
    }
