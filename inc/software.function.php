@@ -38,11 +38,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
-
-
-
-
 /**
  * Install a software on a computer
  *
@@ -62,48 +57,13 @@ function installSoftwareVersion($computers_id, $softwareversions_id, $dohistory=
       $result = $DB->query($query_exists);
       if ($DB->numrows($result) > 0) {
          return $DB->result($result, 0, "id");
-      } else {
-         $query = "INSERT INTO
-                   `glpi_computers_softwareversions` (`computers_id`,`softwareversions_id`)
-                   VALUES ('$computers_id','$softwareversions_id')";
-
-         if ($result = $DB->query($query)) {
-            $newID = $DB->insert_id();
-            $vers = new SoftwareVersion();
-            if ($vers->getFromDB($softwareversions_id)) {
-               // Update softwareversions_id_use for Affected License
-               $DB->query("UPDATE
-                           `glpi_softwarelicenses`
-                           SET `softwareversions_id_use` = '$softwareversions_id'
-                           WHERE `softwares_id` = '".$vers->fields["softwares_id"]."'
-                                 AND `computers_id` = '$computers_id'
-                                 AND `softwareversions_id_use` = '0'");
-
-               if ($dohistory) {
-                  $soft = new Software();
-                  if ($soft->getFromDB($vers->fields["softwares_id"])) {
-                     $changes[0] = '0';
-                     $changes[1] = "";
-                     $changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-                     // Log on Computer history
-                     historyLog($computers_id, 'Computer', $changes, 0, HISTORY_INSTALL_SOFTWARE);
-                  }
-                  $comp = new Computer();
-                  if ($comp->getFromDB($computers_id)) {
-                     $changes[0] = '0';
-                     $changes[1] = "";
-                     $changes[2] = addslashes($comp->fields["name"]);
-                     // Log on SoftwareVersion history
-                     historyLog($softwareversions_id, 'SoftwareVersion', $changes, 0,
-                                HISTORY_INSTALL_SOFTWARE);
-                  }
-               }
-            }
-            return $newID;
-         }
-         return false;
       }
+      $tmp = new Computer_SoftwareVersion();
+      return $tmp->add(array('computers_id'        => $computers_id,
+                             'softwareversions_id' => $softwareversions_id,
+                             '_no_history'         => !$dohistory));
    }
+   return 0;
 }
 
 
@@ -153,45 +113,9 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
       return false;
    }
 
-   $query = "DELETE
-             FROM `glpi_computers_softwareversions`
-             WHERE `id` = '$ID'";
-
-   if ($result = $DB->query($query)) {
-      $vers = new SoftwareVersion();
-      if ($vers->getFromDB($data["softwareversions_id"])) {
-         // Clear softwareversions_id_use for Affected License
-         // If uninstalled is the used_version (OCS install new before uninstall old)
-         $DB->query("UPDATE
-                     `glpi_softwarelicenses`
-                     SET `softwareversions_id_use` = '0'
-                     WHERE `softwares_id` = '".$vers->fields["softwares_id"]."'
-                           AND `computers_id` = '".$data["computers_id"]."'
-                           AND `softwareversions_id_use` = '".$vers->fields["id"]."'");
-
-         if ($dohistory) {
-            $soft = new Software();
-            if ($soft->getFromDB($vers->fields["softwares_id"])) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-               $changes[2] = "";
-               // Log on Computer history
-               historyLog($data["computers_id"], 'Computer', $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
-            }
-            $comp = new Computer();
-            if ($comp->getFromDB($data["computers_id"])) {
-               $changes[0] = '0';
-               $changes[1] = addslashes($comp->fields["name"]);
-               $changes[2] = "";
-               // Log on SoftwareVersion history
-               historyLog($data["softwareversions_id"], 'SoftwareVersion', $changes, 0,
-                          HISTORY_UNINSTALL_SOFTWARE);
-            }
-         }
-      }
-      return true;
-   }
-   return false;
+   $tmp = new Computer_SoftwareVersion();
+   return $tmp->delete(array('id'          => $ID,
+                             '_no_history' => !$dohistory));
 }
 
 
