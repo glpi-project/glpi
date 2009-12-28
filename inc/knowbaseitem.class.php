@@ -411,6 +411,280 @@ class KnowbaseItem extends CommonDBTM {
       return true;
    }
 
+   /**
+    * Print out an HTML "<form>" for Search knowbase item
+    *
+    * @param $target where to go
+    * @param $contains search pattern
+    * @param $knowbaseitemcategories_id category ID
+    * @param $faq display on faq ?
+    * @return nothing (display the form)
+    **/
+   static function searchForm($target,$contains,$knowbaseitemcategories_id=0,$faq=0) {
+      global $LANG,$CFG_GLPI;
+
+      if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
+         return false;
+      }
+
+      echo "<div><table class='center-h'><tr><td>";
+
+      echo "<form method=get action=\"".$target."\">";
+      echo "<table border='0' class='tab_cadre'>";
+      echo "<tr><th colspan='2'>".$LANG['search'][0]."&nbsp;:</th></tr>";
+      echo "<tr class='tab_bg_2 center'><td>";
+      echo "<input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td>";
+      echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
+      echo "</table></form>";
+
+      echo "</td>";
+
+      // Category select not for anonymous FAQ
+      if (isset($_SESSION["glpiID"]) && !$faq) {
+         echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
+         echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp:</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
+         Dropdown::show('KnowbaseItemCategory', array('value' => $knowbaseitemcategories_id));
+
+         echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
+         echo "</table></form></td>";
+      }
+      echo "</tr></table></div>";
+   }
+
+   /**
+   *Print out list kb item
+   *
+   * @param $target where to go
+   * @param $contains search pattern
+   * @param $start where to start
+   * @param $knowbaseitemcategories_id category ID
+   * @param $faq display on faq ?
+   **/
+   static function showList($target,$contains,$start,$knowbaseitemcategories_id,$faq=0) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      // Lists kb Items
+      $where="";
+      $order="";
+      $score="";
+
+      // Build query
+      if (isset($_SESSION["glpiID"])) {
+         $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
+      } else {
+         // Anonymous access
+         if (isMultiEntitiesMode()) {
+            $where = " (`glpi_knowbaseitems`.`entities_id`='0'
+                        AND `glpi_knowbaseitems`.`is_recursive`='1')
+                       AND ";
+         }
+      }
+
+      if ($faq) { // helpdesk
+         $where .= " (`glpi_knowbaseitems`.`is_faq` = '1')
+                     AND ";
+      }
+
+      // a search with $contains
+      if (strlen($contains)>0) {
+         $search=unclean_cross_side_scripting_deep($contains);
+         $score=" ,MATCH(glpi_knowbaseitems.question,glpi_knowbaseitems.answer)
+                  AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
+         $where_1=$where." MATCH(glpi_knowbaseitems.question,glpi_knowbaseitems.answer)
+                  AGAINST('$search' IN BOOLEAN MODE) ";
+         $order="order by `SCORE` DESC";
+
+         // preliminar query to allow alternate search if no result with fulltext
+         $query_1 = "SELECT count(id)
+                     FROM `glpi_knowbaseitems`
+                     WHERE $where_1";
+         $result_1 = $DB->query($query_1);
+         $numrows_1 = $DB->result($result_1,0,0);
+
+         if ($numrows_1<= 0) {// not result this fulltext try with alternate search
+            $search1 = array(/* 1 */   '/\\\"/',
+                             /* 2 */   "/\+/",
+                             /* 3 */   "/\*/",
+                             /* 4 */   "/~/",
+                             /* 5 */   "/</",
+                             /* 6 */   "/>/",
+                             /* 7 */   "/\(/",
+                             /* 8 */   "/\)/",
+                             /* 9 */   "/\-/");
+            $contains = preg_replace($search1,"", $contains);
+            $where.= " (`glpi_knowbaseitems`.`question` ".makeTextSearch($contains)."
+                        OR `glpi_knowbaseitems`.`answer` ".makeTextSearch($contains).")";
+         } else {
+            $where=$where_1;
+         }
+      } else { // no search -> browse by category
+         $where.=" (`glpi_knowbaseitems`.`knowbaseitemcategories_id` = '$knowbaseitemcategories_id') ";
+         $order="ORDER BY `glpi_knowbaseitems`.`question` ASC";
+      }
+      if (!$start) {
+         $start = 0;
+      }
+      $query = "SELECT * $score
+                FROM `glpi_knowbaseitems`
+                WHERE $where
+                $order";
+
+      // Get it from database
+      if ($result = $DB->query($query)) {
+         $numrows =  $DB->numrows($result);
+         $list_limit=$_SESSION['glpilist_limit'];
+         // Limit the result, if no limit applies, use prior result
+         if ($numrows > $list_limit && !isset($_GET['export_all'])) {
+            $query_limit = $query ." LIMIT ".intval($start).",".intval($list_limit)." ";
+            $result_limit = $DB->query($query_limit);
+            $numrows_limit = $DB->numrows($result_limit);
+         } else {
+            $numrows_limit = $numrows;
+            $result_limit = $result;
+         }
+
+         if ($numrows_limit>0) {
+            // Set display type for export if define
+            $output_type=HTML_OUTPUT;
+            if (isset($_GET["display_type"])) {
+               $output_type=$_GET["display_type"];
+            }
+
+            // Pager
+            $parameters="start=$start&amp;knowbaseitemcategories_id=".
+                        "$knowbaseitemcategories_id&amp;contains=$contains&amp;is_faq=$faq";
+            if ($output_type==HTML_OUTPUT) {
+               printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
+            }
+            $nbcols=1;
+            // Display List Header
+            echo displaySearchHeader($output_type,$numrows_limit+1,$nbcols);
+
+            if ($output_type!=HTML_OUTPUT) {
+               $header_num=1;
+               echo displaySearchHeaderItem($output_type,$LANG['knowbase'][3],$header_num);
+               echo displaySearchHeaderItem($output_type,$LANG['knowbase'][4],$header_num);
+            }
+
+            // Num of the row (1=header_line)
+            $row_num=1;
+            for ($i=0; $i < $numrows_limit; $i++) {
+               $data=$DB->fetch_array($result_limit);
+               // Column num
+               $item_num=1;
+               $row_num++;
+               echo displaySearchNewLine($output_type,$i%2);
+
+               if ($output_type==HTML_OUTPUT) {
+                  echo displaySearchItem($output_type,"<div class='kb'><a ".
+                     ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
+                     $target."?id=".$data["id"]."\">".resume_text($data["question"],80).
+                     "</a></div><div class='kb_resume'>".
+                     resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),600).
+                     "</div>",$item_num,$row_num);
+               } else {
+                  echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
+                  echo displaySearchItem($output_type,
+                     html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
+                           ENT_QUOTES,"UTF-8"))),$item_num,$row_num);
+               }
+
+               // End Line
+               echo displaySearchEndLine($output_type);
+            }
+
+            // Display footer
+            if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
+               echo displaySearchFooter($output_type,Dropdown::getDropdownName("glpi_knowbaseitemcategories",
+                                                                     $knowbaseitemcategories_id));
+            } else {
+               echo displaySearchFooter($output_type);
+            }
+            echo "<br>";
+            if ($output_type==HTML_OUTPUT) {
+               printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
+            }
+         } else {
+            if ($knowbaseitemcategories_id!=0) {
+               echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";
+            }
+         }
+      }
+   }
+
+   /**
+    * Print out list recent or popular kb/faq
+    *
+    * @param $target where to go on action
+    * @param $type type : recent / popular
+    * @param $faq display only faq
+    * @return nothing (display table)
+    **/
+   private static function showRecentPopular($target,$type,$faq=0) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if ($type=="recent") {
+         $orderby="ORDER BY `date` DESC";
+         $title=$LANG['knowbase'][29];
+      } else {
+         $orderby="ORDER BY `view` DESC";
+         $title=$LANG['knowbase'][30];
+      }
+
+      $faq_limit="";
+      if (isset($_SESSION["glpiID"])) {
+         $faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true);
+      } else {
+         // Anonymous access
+         if (isMultiEntitiesMode()) {
+            $faq_limit .= " WHERE (`glpi_knowbaseitems`.`entities_id`='0'
+                                   AND `glpi_knowbaseitems`.`is_recursive`='1')";
+         } else {
+            $faq_limit .= " WHERE 1";
+         }
+      }
+
+      if ($faq) { // FAQ
+         $faq_limit.=" AND (`glpi_knowbaseitems`.`is_faq` = '1')";
+      }
+
+      $query = "SELECT *
+                FROM `glpi_knowbaseitems`
+                $faq_limit
+                $orderby
+                LIMIT 10";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if ($number > 0) {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr><th>".$title."</th></tr>";
+         while ($data=$DB->fetch_array($result)) {
+            echo "<tr class='tab_bg_2'><td class='left'>";
+            echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
+                  $target."?id=".$data["id"]."\">".resume_text($data["question"],80)."</a></td></tr>";
+         }
+         echo "</table>";
+      }
+   }
+
+   /**
+    * Print out lists of recent and popular kb/faq
+    *
+    * @param $target where to go on action
+    * @param $faq display only faq
+    * @return nothing (display table)
+    **/
+   static function showViewGlobal($target,$faq=0) {
+
+      echo "<div><table class='center-h' width='950px'><tr><td class='center middle'>";
+      self::showRecentPopular($target,"recent",$faq);
+      echo "</td><td class='center middle'>";
+      self::showRecentPopular($target,"popular",$faq);
+      echo "</td></tr>";
+      echo "</table></div>";
+}
 }
 
 ?>

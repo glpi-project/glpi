@@ -65,6 +65,112 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
       return (countElementsInTable($kb->table,"`$fk`='$id'")>0);
    }
+
+   /**
+    * Show KB categories
+    *
+    * @param $target where to go
+    * @param $knowbaseitemcategories_id category ID
+    * @param $faq display on faq ?
+    * @return nothing (display the form)
+    **/
+   static function showFirstLevel($target,$knowbaseitemcategories_id=0,$faq=0) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      if ($faq) {
+         if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
+            return false;
+         }
+
+         // Get All FAQ categories
+         if (!isset($_SESSION['glpi_faqcategories'])) {
+            $_SESSION['glpi_faqcategories']='(0)';
+            $tmp=array();
+            $query="SELECT DISTINCT `knowbaseitemcategories_id`
+                    FROM `glpi_knowbaseitems`
+                    WHERE `glpi_knowbaseitems`.`is_faq` = 1";
+            if ($result=$DB->query($query)) {
+               if ($DB->numrows($result)) {
+                  while ($data=$DB->fetch_array($result)) {
+                     if (!in_array($data['knowbaseitemcategories_id'],$tmp)) {
+                        $tmp[]=$data['knowbaseitemcategories_id'];
+                        $tmp=array_merge($tmp,
+                           getAncestorsOf('glpi_knowbaseitemcategories',$data['knowbaseitemcategories_id']));
+                     }
+                  }
+               }
+               if (count($tmp)) {
+                  $_SESSION['glpi_faqcategories']="('".implode("','",$tmp)."')";
+               }
+            }
+         }
+         $query = "SELECT DISTINCT `glpi_knowbaseitemcategories`.*
+                   FROM `glpi_knowbaseitemcategories`
+                   WHERE `id` IN ".$_SESSION['glpi_faqcategories']."
+                         AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
+                              '$knowbaseitemcategories_id')
+                   ORDER BY `name` ASC";
+      } else {
+         if (!haveRight("knowbase","r")) {
+            return false;
+         }
+         $query = "SELECT *
+                   FROM `glpi_knowbaseitemcategories`
+                   WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
+                         '$knowbaseitemcategories_id'
+                   ORDER BY `name` ASC";
+      }
+
+      // Show category
+      if ($result=$DB->query($query)) {
+         echo "<table class='tab_cadre_central'>";
+         echo "<tr><td colspan='3'><a href=\"".$target."\">";
+         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' class='bottom'></a>";
+
+         // Display Category
+         if ($knowbaseitemcategories_id!=0) {
+            $tmpID=$knowbaseitemcategories_id;
+            $todisplay="";
+            while ($tmpID!=0) {
+               $query2="SELECT *
+                        FROM `glpi_knowbaseitemcategories`
+                        WHERE `id`='$tmpID'";
+               $result2=$DB->query($query2);
+               if ($DB->numrows($result2)==1) {
+                  $data=$DB->fetch_assoc($result2);
+                  $tmpID=$data["knowbaseitemcategories_id"];
+                  $todisplay="<a href='$target?knowbaseitemcategories_id=".$data["id"]."'>".
+                              $data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
+               } else {
+                  $tmpID=0;
+               }
+            }
+            echo " > ".$todisplay;
+         }
+
+         if ($DB->numrows($result)>0) {
+            $i=0;
+            while ($row=$DB->fetch_array($result)) {
+               // on affiche les résultats sur trois colonnes
+               if ($i%3==0) {
+                  echo "<tr>";
+               }
+               $ID = $row["id"];
+               echo "<td class='tdkb_result'>";
+               echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" >";
+               echo "<strong><a href=\"".$target."?knowbaseitemcategories_id=".$row["id"]."\">".
+                              $row["name"]."</a></strong>";
+               echo "<div class='kb_resume'>".resume_text($row['comment'],60)."</div>";
+
+               if($i%3==2) {
+                  echo "</tr>";
+               }
+               $i++;
+            }
+         }
+         echo "<tr><td colspan='3'>&nbsp;</td></tr></table><br>";
+      }
+   }
 }
 
 ?>
