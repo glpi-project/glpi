@@ -69,8 +69,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",
-                                 $computer,1,$_POST["withtemplate"]);
+            Infocom::showForItem($computer,1,$_POST["withtemplate"]);
             Contract::showAssociated($computer,$_POST["withtemplate"]);
             break;
 
@@ -96,7 +95,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
             NetworkPort::showForItem('Computer', $_POST["id"]);
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$computer);
+            Infocom::showForItem($computer);
             Contract::showAssociated($computer,$_POST["withtemplate"]);
             Document::showAssociated($computer);
             showJobListForItem('Computer',$_POST["id"]);
@@ -115,7 +114,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$computer);
+            Infocom::showForItem($computer);
             Contract::showAssociated($computer);
             break;
 

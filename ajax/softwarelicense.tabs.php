@@ -58,13 +58,13 @@ $license = new SoftwareLicense();
 if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$license);
+         Infocom::showForItem($license);
          Document::showAssociated($license);
          Plugin::displayAction($license, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$license);
+         Infocom::showForItem($license);
          break;
 
       case 5 :

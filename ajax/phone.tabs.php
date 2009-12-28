@@ -63,8 +63,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$phone,
-                                 1,$_POST["withtemplate"]);
+            Infocom::showForItem($phone,1,$_POST["withtemplate"]);
             Contract::showAssociated($phone,$_POST["withtemplate"]);
             break;
 
@@ -82,7 +81,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
          case -1 :
             Computer_Item::showForItem($phone);
             NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$phone);
+            Infocom::showForItem($phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
             showJobListForItem('Phone',$_POST["id"]);
@@ -91,7 +90,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$phone);
+            Infocom::showForItem($phone);
             Contract::showAssociated($phone);
             break;
 

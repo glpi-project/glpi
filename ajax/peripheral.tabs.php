@@ -58,8 +58,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$periph,
-                                 1,$_POST["withtemplate"]);
+            Infocom::showForItem($periph,1,$_POST["withtemplate"]);
             Contract::showAssociated($periph,$_POST["withtemplate"]);
             break;
 
@@ -77,7 +76,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          case -1 :
             Computer_Item::showForItem($periph);
             NetworkPort::showForItem('Peripheral', $_POST["id"], $_POST["withtemplate"]);
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$periph);
+            Infocom::showForItem($periph);
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
             showJobListForItem('Peripheral',$_POST["id"]);
@@ -86,7 +85,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$periph);
+            Infocom::showForItem($periph);
             Contract::showAssociated($periph);
             break;
 

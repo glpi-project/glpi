@@ -59,7 +59,6 @@ if (isset($_GET["add"])) {
    Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-   /// TODO clean this part
    checkRight("infocom","r");
 
    popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
@@ -73,23 +72,17 @@ if (isset($_GET["add"])) {
    $item = false;
    if (isset($_GET["itemtype"]) && class_exists($_GET["itemtype"])) {
       $item = new $_GET["itemtype"]();
-   }
-
-   if (!$item
-      || !isset($_GET["device_id"])
-      || !$item->getFromDB($_GET["device_id"])) {
-
-      echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
-
-   } else {
-      echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
-      if (isset($_GET["update"]) && $_GET["update"]==1) {
-         $withtemplate = 0;
-      } else {
-         $withtemplate = 2;
+      if (!isset($_GET["items_id"]) || !$item->getFromDB($_GET["items_id"])) {
+         $item = false;
       }
-      Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$item,1,$withtemplate);
    }
+
+   if (isset($_GET["update"]) && $_GET["update"]==1) {
+      $withtemplate = 0;
+   } else {
+      $withtemplate = 2;
+   }
+   Infocom::showForItem($item,1,$withtemplate);
 
    popFooter();
 }

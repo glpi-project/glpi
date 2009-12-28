@@ -59,8 +59,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$soft,
-                                 1,$_POST["withtemplate"]);
+            Infocom::showForItem($soft,1,$_POST["withtemplate"]);
             Contract::showAssociated($soft,$_POST["withtemplate"]);
             break;
 
@@ -77,7 +76,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             SoftwareVersion::showForSoftware($soft);
             SoftwareLicense::showForSoftware($soft);
             Computer_SoftwareVersion::showForSoftware($soft);
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$soft);
+            Infocom::showForItem($soft);
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
             showJobListForItem('Software',$_POST["id"]);
@@ -90,7 +89,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$soft);
+            Infocom::showForItem($soft);
             Contract::showAssociated($soft);
             break;
 

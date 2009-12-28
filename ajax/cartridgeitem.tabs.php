@@ -52,14 +52,14 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Cartridge::showAddForm($cartridge);
          Cartridge::showForCartridgeItem($cartridge);
          Cartridge::showForCartridgeItem($cartridge, 1);
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
+         Infocom::showForItem($cartridge);
          Document::showAssociated($cartridge);
          Link::showForItem('CartridgeItem',$_POST["id"]);
          Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$cartridge);
+         Infocom::showForItem($cartridge);
          break;
 
       case 5 :

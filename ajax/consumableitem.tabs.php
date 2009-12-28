@@ -51,14 +51,14 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          Consumable::showAddForm($consumable);
          Consumable::showForItem($consumable);
          Consumable::showForItem($consumable, 1);
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
+         Infocom::showForItem($consumable);
          Document::showAssociated($consumable);
          Link::showForItem('ConsumableItem',$_POST["id"]);
          Plugin::displayAction($consumable,$_REQUEST['glpi_tab']);
          break;
 
       case 4 :
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$consumable);
+         Infocom::showForItem($consumable);
          break;
 
       case 5 :
