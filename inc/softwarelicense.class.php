@@ -495,7 +495,7 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Show Licenses of a software
     *
-    * @param $softwares_id ID of the software
+    * @param $software software object
     * @return nothing
     */
    static function showForSoftware($software) {

@@ -1568,14 +1568,15 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Dropdown of ticket priority
-    *
-    * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection
-    *
-    * @return string id of the select
-    */
+   * Dropdown of ticket priority
+   *
+   * @param $name select name
+   * @param $value default value
+   * @param $complete see also at least selection (major included)
+   * @param $major display major priority
+   *
+   * @return string id of the select
+   */
    static function dropdownPriority($name,$value=0,$complete=false,$major=false) {
       global $LANG;
 
@@ -1913,11 +1914,9 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Form to add a solution to a ticket
-    *
-    * @param $tID integer : ticket ID
-    * @param $massiveaction boolean : add followup using massive action
-    */
+   * Form to add a solution to a ticket
+   *
+   */
    function showSolutionForm() {
       global $DB,$LANG,$CFG_GLPI;
 
@@ -2334,10 +2333,9 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Calculate Ticket TCO for a device
+    * Calculate Ticket TCO for an item
     *
-    *@param $itemtype device type
-    *@param $items_id ID of the device
+    *@param $item CommonDBTM object of the item 
     *
     *@return float
     *

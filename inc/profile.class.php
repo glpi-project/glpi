@@ -350,10 +350,10 @@ class Profile extends CommonDBTM {
    }
 
    /**
-    * Print the helpdesk right form for the current profile
-    *
-    * @param $target of the form
-    **/
+   * Print the helpdesk right form for the current profile
+   *
+   * @param $target of the form
+   **/
    function showFormHelpdesk($target) {
       global $LANG,$CFG_GLPI;
 
@@ -456,10 +456,10 @@ class Profile extends CommonDBTM {
    }
 
    /**
-    * Print the Inventory/Management/Toolsd right form for the current profile
-    *
-    * @param $target of the form
-    **/
+   * Print the Inventory/Management/Toolsd right form for the current profile
+   *
+   * @param $target of the form
+   **/
    function showFormInventory($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
@@ -592,10 +592,10 @@ class Profile extends CommonDBTM {
    }
 
    /**
-    * Print the Tracking right form for the current profile
-    *
-    * @param $target of the form
-    **/
+   * Print the Tracking right form for the current profile
+   *
+   * @param $target of the form
+   **/
    function showFormTracking($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
@@ -774,11 +774,13 @@ class Profile extends CommonDBTM {
    }
 
    /**
-    * Print the central form for a profile
-    *
-    * @param $target of the form
-    *
-    **/
+   * Print the central form for a profile
+   *
+   * @param $target target of the form
+   * @param $openform boolean open the form
+   * @param $closeform boolean close the form
+   *
+   **/
    function showFormAdmin($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 

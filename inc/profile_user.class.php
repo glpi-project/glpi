@@ -50,8 +50,7 @@ class Profile_User extends CommonDBTM {
    /**
     * Show rights of a user
     *
-    * @param $target where to go on action
-    * @param $user object
+    * @param $user User object
     **/
    static function showForUser(User $user) {
       global $DB,$CFG_GLPI, $LANG;
@@ -161,8 +160,7 @@ class Profile_User extends CommonDBTM {
    /**
     * Show users of an entity
     *
-    * @param $target string : where to go on action
-    * @param $ID integer : entity ID
+    * @param $entity Entity object
     */
    static function showForEntity(Entity $entity) {
       global $DB,$CFG_GLPI, $LANG;
