@@ -761,35 +761,35 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 /**
  * Try to connect to a ldap server
  *
- * @param $id ID of the LDAP config (use to find replicate)
- * @param $host : LDAP host to connect
- * @param $port : port to use
- * @param $rdn : rootdn to use
- * @param $rpass : rootdn password to use
- * @param $use_tls : use a tls connection ?
- * @param $login : user login
- * @param $password : user password
- * @param $deref_options Deref options used
+ * @param $ldap_method : ldap_method array to use
+ * @param $login User Login
+ * @param $password User Password
+
  * @return link to the LDAP server : false if connection failed
 **/
-function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options,$id){
+function try_connect_ldap($ldap_method,$login, $password){
 
-   // TODO try to pass array of connection config to minimise parameters
-   $ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
+   $ds = connect_ldap($ldap_method['host'], $ldap_method['port'],
+                        $ldap_method['rootdn'], $ldap_method['rootdn_password'],
+                        $ldap_method['use_tls'], $ldap_method['deref_option']);
    // Test with login and password of the user if exists
    if (!$ds && !empty($login)) {
-      $ds = connect_ldap($host, $port, $login, $password, $use_tls,$deref_options);
+      $ds = connect_ldap($ldap_method['host'], $ldap_method['port'],
+                           $login, $password,
+                           $ldap_method['use_tls'], $ldap_method['deref_option']);
    }
 
    //If connection is not successfull on this directory, try replicates (if replicates exists)
-   if (!$ds && $id>0) {
-      foreach (getAllReplicateForAMaster($id) as $replicate) {
-         $ds = connect_ldap($replicate["host"], $replicate["port"], $rdn, $rpass, $use_tls,
-                            $deref_options);
+   if (!$ds && $ldap_method['id']>0) {
+      foreach (getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
+         $ds = connect_ldap($replicate["host"], $replicate["port"],
+                              $ldap_method['rootdn'], $ldap_method['rootdn_password'],
+                              $ldap_method['use_tls'], $ldap_method['deref_option']);
          // Test with login and password of the user
          if (!$ds && !empty($login)) {
-            $ds = connect_ldap($replicate["host"], $replicate["port"], $login, $password, $use_tls,
-                               $deref_options);
+            $ds = connect_ldap($replicate["host"], $replicate["port"],
+                                 $login, $password,
+                                 $ldap_method['use_tls'], $ldap_method['deref_option']);
          }
          if ($ds) {
             return $ds;
@@ -890,12 +890,7 @@ function try_ldap_auth($auth,$login,$password, $auths_id = 0) {
 **/
 function ldap_auth($auth,$login,$password, $ldap_method) {
 
-   $user_dn = $auth->connection_ldap($ldap_method["id"],$ldap_method["host"],
-                                            $ldap_method["port"], $ldap_method["basedn"],
-                                            $ldap_method["rootdn"], $ldap_method["rootdn_password"],
-                                            $ldap_method["login_field"],$login, $password,
-                                            $ldap_method["condition"], $ldap_method["use_tls"],
-                                            $ldap_method["deref_option"]);
+   $user_dn = $auth->connection_ldap($ldap_method,$login, $password);
    if ($user_dn) {
       $auth->auth_succeded = true;
       $auth->extauth = 1;
