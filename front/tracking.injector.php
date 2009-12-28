@@ -61,11 +61,9 @@ if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
-    //TODO revoir l'explode suite changement itemtype en string
-   $splitter = explode("_",$_POST["_my_items"]);
-   if (count($splitter) == 2) {
-      $_POST["itemtype"] = $splitter[0];
-      $_POST["items_id"] = $splitter[1];
+   if (preg_match('/(.*)_([1-9]+)/',$_POST["_my_items"],$matches)) {
+      $_POST["itemtype"] = $matches[1];
+      $_POST["items_id"] = $matches[2];
    }
 }
 
