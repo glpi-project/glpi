@@ -393,38 +393,14 @@ class Auth {
     * Get all the authentication methods parameters
     * and return it as an array
     *
-    * @todo is it the correct place to this function ? Maybe split it into and add it to AuthMail and AuthLdap classes ?
-    *
     * @return nothing
    **/
    function getAuthMethods() {
       global $DB;
 
-      $authtypes_ldap = array ();
-      //Get all the ldap directories
-      $sql = "SELECT *
-              FROM `glpi_authldaps`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         //Store in an array all the directories
-         while ($ldap_method = $DB->fetch_array($result)) {
-            $authtypes_ldap[$ldap_method["id"]] = $ldap_method;
-         }
-      }
-      $authtypes_mail = array ();
-      //Get all the pop/imap servers
-      $sql = "SELECT *
-              FROM `glpi_authmails`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         //Store all in an array
-         while ($mail_method = $DB->fetch_array($result)) {
-            $authtypes_mail[$mail_method["id"]] = $mail_method;
-         }
-      }
       //Return all the authentication methods in an array
-      $this->authtypes = array ('ldap' => $authtypes_ldap,
-                                'mail' => $authtypes_mail);
+      $this->authtypes = array ('ldap' => getAllDatasFromTable('glpi_authldaps'),
+                                'mail' => getAllDatasFromTable('glpi_authmails'));
    }
 
    /**

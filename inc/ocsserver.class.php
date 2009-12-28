@@ -124,7 +124,6 @@ class OcsServer extends CommonDBTM {
     *
     *@param $target form target
     *@param $ID Integer : Id of the ocs config
-    *@todo clean template process
     *@return Nothing (display)
     *
     **/
