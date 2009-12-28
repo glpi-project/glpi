@@ -1878,7 +1878,6 @@ class User extends CommonDBTM {
    }
 
    /**  Simple add user form for external auth
-   * @param $target where to go on action
    */
    static function showAddExtAuthForm() {
       global $LANG;

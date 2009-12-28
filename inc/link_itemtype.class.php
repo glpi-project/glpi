@@ -51,7 +51,7 @@ class Link_ItemType extends CommonDBTM{
     *
     * Print the HTML array for device on link for link $instID
     *
-    *@param $instID array : Link identifier.
+    *@param $links_id array : Link identifier.
     *
     *@return Nothing (display)
     *

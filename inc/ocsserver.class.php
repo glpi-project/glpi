@@ -3685,6 +3685,7 @@ class OcsServer extends CommonDBTM {
     *@param $ocsservers_id integer : ocs server id
     *@param $cfg_ocs array : ocs config
     *@param $import_disk array : already imported softwares
+    *@param $dohistory array : already imported softwares
     *
     *@return Nothing (void).
     *

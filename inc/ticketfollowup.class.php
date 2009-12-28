@@ -469,12 +469,11 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   /**
+   /*
     * Form to update a followup to a ticket
     *
     * @param $ID integer : followup ID
-    */
-/*   function showUpdateForm() {
+   function showUpdateForm() {
       global $DB,$LANG,$CFG_GLPI;
 
       $ID = $this->getField('id');
@@ -548,8 +547,9 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * Show the current ticketfollowup sumnary
-    */
+   * Show the current ticketfollowup summary
+   * @param $ticket Ticket object
+   */
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
 

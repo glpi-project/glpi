@@ -160,12 +160,13 @@ class Link extends CommonDBTM {
    }
 
    /**
-    * Generate link
-    *
-    * @param $link string : original string content
-    * @param $item CommonDBTM : item used to make replacements
-    * @return array of link contents (may have several when item have several IP / MAC cases)
-    */
+   * Generate link
+   *
+   * @param $link string : original string content
+   * @param $item CommonDBTM : item used to make replacements
+   * @param $name string : name used for multi link generation
+   * @return array of link contents (may have several when item have several IP / MAC cases)
+   */
    static function generateLinkContents($link, CommonDBTM $item, $name) {
       global $DB;
 

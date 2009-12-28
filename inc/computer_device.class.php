@@ -117,8 +117,7 @@ class Computer_Device extends CommonDBChild {
     *
     * Print the form for devices linked to a computer or a template
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the computer or the template to print
+    *@param $computer Computer object
     *@param $withtemplate='' boolean : template or basic computer
     *
     *
