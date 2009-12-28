@@ -50,7 +50,8 @@ class RegistryKey extends CommonDBTM {
    }
 
    function canCreate() {
-      return haveRight('ocsng', 'w'); // TODO why this right ?
+      // Only create on ocsng sync
+      return haveRight('sync_ocsng', 'w'); 
    }
 
    function canView() {

@@ -43,8 +43,6 @@ class RuleCached extends Rule {
    * Constructor
    * @param sub_type the rule type used for the collection
    **/
-   // Dummy constructor required for php 5.3.0 (regression ?)
-   // TODO : switch to __construct ?
    function __construct($sub_type=0) {
       parent::__construct($sub_type);
    }

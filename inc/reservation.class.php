@@ -264,7 +264,6 @@ class Reservation extends CommonDBTM {
 
    function can($ID,$right,&$input=NULL) {
       if (empty($ID) || $ID<=0) {
-         // Add reservation - TODO should also check commonitem->can(r)
          return haveRight("reservation_helpdesk","1");
       }
       if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
