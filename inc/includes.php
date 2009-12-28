@@ -41,6 +41,7 @@ include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/timer.class.php");
 
 function __autoload($classname) {
+   global $DEBUG_AUTOLOAD;
    static $notfound = array();
 
    $dir=GLPI_ROOT . "/inc/";
@@ -61,6 +62,9 @@ function __autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once ("$dir$item.class.php");
+      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+         $DEBUG_AUTOLOAD[]=$classname;
+      }
 
    } else if (!isset($notfound["x$classname"])) {
       // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
@@ -101,6 +105,7 @@ if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
    $DEBUG_SQL["queries"]=array();
    $DEBUG_SQL["errors"]=array();
    $DEBUG_SQL["times"]=array();
+   $DEBUG_AUTOLOAD=array();
 }
 
 // Security system
