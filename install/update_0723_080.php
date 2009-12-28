@@ -288,19 +288,16 @@ function update0723to080() {
                      ),
    'device_type' => array( array('to' => 'itemtype',
                            'noindex' => array('glpi_alerts','glpi_contracts_items',
-                                 'glpi_bookmarks_users','glpi_documents_items','glpi_logs',
+                                 'glpi_bookmarks_users','glpi_documents_items',
                                  'glpi_infocoms','glpi_links_itemtypes','glpi_networkports',
                                  'glpi_reservationitems','glpi_tickets',),
                            'tables' => array('glpi_alerts','glpi_contracts_items',
                                  'glpi_documents_items','glpi_infocoms','glpi_bookmarks',
-                                 'glpi_bookmarks_users','glpi_logs','glpi_links_itemtypes',
+                                 'glpi_bookmarks_users','glpi_links_itemtypes',
                                  'glpi_networkports','glpi_reservationitems','glpi_tickets')),
                            array('to' => 'devicetype',
                               'noindex' => array('glpi_computers_devices'),
                               'tables' => array('glpi_computers_devices')),
-                     ),
-   'device_internal_type' => array(array('to' => 'devicetype',
-                                       'tables' => array('glpi_logs')),
                      ),
    'domain' => array(array('to' => 'domains_id',
                            'tables' => array('glpi_computers','glpi_networkequipments',
@@ -384,10 +381,6 @@ function update0723to080() {
    'FK_glpi_consumables_type' => array(array('to' => 'consumableitems_id',
                            'noindex' => array(''),
                            'tables' => array('glpi_consumables',)),
-                     ),
-   'FK_glpi_device' => array(array('to' => 'items_id',
-                           'noindex' => array('glpi_logs'),
-                           'tables' => array('glpi_logs')),
                      ),
    'FK_glpi_dropdown_model_printers' => array(array('to' => 'printermodels_id',
                            'noindex' => array('glpi_cartridges_printermodels'),
@@ -1182,8 +1175,6 @@ function update0723to080() {
                         array('from' => 'amort_type', 'to' => 'sink_type', 'default' =>0, 'noindex'=>true,),//
                         array('from' => 'alert', 'to' => 'alert', 'default' =>0),//
                               ),
-      'glpi_logs' => array(array('from' => 'linked_action', 'to' => 'linked_action', 'default' =>0,'comments'=>'see define.php HISTORY_* constant'),//
-                     ),
       'glpi_mailingsettings' => array(array('from' => 'item_type', 'to' => 'mailingtype', 'default' =>0,'noindex'=>true,'comments'=>'see define.php *_MAILING_TYPE constant'),//
                      ),
       'glpi_monitors' => array(array('from' => 'size', 'to' => 'size', 'default' =>0,'noindex'=>true),//
@@ -1457,10 +1448,6 @@ function update0723to080() {
       $changes['glpi_events'][]="ADD INDEX `item` (`type`,`items_id`) ";
    }
 
-   if (!isIndex('glpi_logs', 'item')) {
-      $changes['glpi_logs'][]="ADD INDEX `item` (`itemtype`,`items_id`)";
-   }
-
    if (!isIndex('glpi_infocoms', 'unicity')) {
       $changes['glpi_infocoms'][]="ADD UNIQUE `unicity` (`itemtype`,`items_id`)  ";
    }
@@ -1562,7 +1549,6 @@ function update0723to080() {
          'glpi_entities' => array('name'/*,'parentID'*/),
          'glpi_entitydatas' => array('FK_entities'),
          'glpi_events' => array('comp','itemtype'),
-         'glpi_logs' => array('FK_glpi_device'),
          'glpi_infocoms' => array('FK_device'),
          'glpi_computers_softwareversions' => array('sID'),
          'glpi_links_itemtypes' => array('link'),
@@ -1659,11 +1645,12 @@ function update0723to080() {
 
    $itemtype_tables=array("glpi_alerts", "glpi_bookmarks", "glpi_bookmarks_users",
       "glpi_computers_items", "glpi_contracts_items", "glpi_displaypreferences",
-      "glpi_documents_items", "glpi_infocoms", "glpi_links_itemtypes", "glpi_logs",
+      "glpi_documents_items", "glpi_infocoms", "glpi_links_itemtypes",
       "glpi_networkports", "glpi_reservationitems", "glpi_tickets",
       );
 
    foreach ($itemtype_tables as $table) {
+      displayMigrationMessage("080", $LANG['update'][142] . ' - $table'); // Updating data
       // Alter itemtype field
       $query = "ALTER TABLE `$table` CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
       $DB->query($query) or die("0.80 alter itemtype of table $table " . $LANG['update'][90] . $DB->error());
@@ -1674,13 +1661,27 @@ function update0723to080() {
          $DB->query($query) or die("0.80 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
       }
    }
-   // Alter itemtype field
-   $query = " ALTER TABLE `glpi_logs` CHANGE `devicetype` `itemtype_link` VARCHAR(100) NOT NULL";
-   $DB->query($query) or die("0.80 alter itemtype_link of table glpi_logs " . $LANG['update'][90] . $DB->error());
 
+   // History migration, handled separatly for optimization
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
+   $query = "ALTER TABLE `glpi_logs`
+             CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
+             ADD `itemtype` VARCHAR(100) NOT NULL DEFAULT ''  AFTER `device_type`,
+             ADD `items_id` INT( 11 ) NOT NULL DEFAULT '0' AFTER `itemtype`,
+             ADD `itemtype_link` VARCHAR(100) NOT NULL DEFAULT '' AFTER `device_internal_type`,
+             CHANGE `linked_action` `linked_action` INT( 11 ) NOT NULL DEFAULT '0'
+                     COMMENT 'see define.php HISTORY_* constant'";
+         $DB->query($query) or die("0.80 add item* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
+
+   // Update values
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
    foreach ($typetoname as $key => $val) {
+      $query = "UPDATE `glpi_logs` SET `itemtype` = '$val', `items_id`=`FK_glpi_device`
+                WHERE `device_type` = '$key'";
+      $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+
       $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
-                WHERE `itemtype_link` = '$key'
+                WHERE `device_internal_type` = '$key'
                     AND `linked_action` IN (".HISTORY_ADD_RELATION.",".HISTORY_DEL_RELATION.",".
                                               HISTORY_DISCONNECT_DEVICE.",".HISTORY_CONNECT_DEVICE.")";
       $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
@@ -1688,10 +1689,19 @@ function update0723to080() {
 
    foreach ($devtypetoname as $key => $val) {
       $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
-                WHERE `itemtype_link` = '$key'
+                WHERE `device_internal_type` = '$key'
                   AND `linked_action` IN (".HISTORY_ADD_DEVICE.",".HISTORY_UPDATE_DEVICE.",".HISTORY_DELETE_DEVICE.")";
       $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
    }
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
+   $query = "ALTER TABLE `glpi_logs`
+             DROP `device_type`,
+             DROP `FK_glpi_device`,
+             DROP `device_internal_type`,
+             ADD INDEX `itemtype_link` (`itemtype_link`),
+             ADD INDEX `item` (`itemtype`,`items_id`)";
+   $DB->query($query) or die("0.80 drop device* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
 
    // Update glpi_profiles item_type
 
