@@ -681,7 +681,6 @@ class Auth {
    static function getMethodName($authtype, $auths_id, $link=0, $name='') {
       global $LANG,$CFG_GLPI;
 
-      /// TODO add informations about get LDAP extra infos for CAS EXTERNAL...
       switch ($authtype) {
          case AUTH_LDAP :
             $auth = new AuthLdap();
@@ -698,13 +697,34 @@ class Auth {
             return $LANG['login'][3]."&nbsp;$name";
 
          case AUTH_CAS :
-            return  $LANG['login'][4];
+            $out = $LANG['login'][4];
+            if ($auths_id > 0) {
+               $auth = new AuthLdap();
+               if ($auth->getFromDB($auths_id)) {
+                  $out.= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+               }
+            }
+            return $out;
 
          case AUTH_X509 :
-            return  $LANG['setup'][190];
+            $out = $LANG['setup'][190];
+            if ($auths_id > 0) {
+               $auth = new AuthLdap();
+               if ($auth->getFromDB($auths_id)) {
+                  $out.= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+               }
+            }
+            return $out;
 
          case AUTH_EXTERNAL :
-            return  $LANG['common'][62];
+            $out = $LANG['common'][62];
+            if ($auths_id > 0) {
+               $auth = new AuthLdap();
+               if ($auth->getFromDB($auths_id)) {
+                  $out.= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+               }
+            }
+            return $out;
 
          case AUTH_DB_GLPI :
             return $LANG['login'][18];
