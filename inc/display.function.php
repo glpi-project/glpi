@@ -1524,7 +1524,7 @@ function popFooter() {
  * @param $with_session with session information
  **/
 function displayDebugInfos($with_session=true) {
-   global $CFG_GLPI,$DEBUG_SQL,$SQL_TOTAL_REQUEST,$SQL_TOTAL_TIMER;
+   global $CFG_GLPI,$DEBUG_SQL,$SQL_TOTAL_REQUEST,$SQL_TOTAL_TIMER,$DEBUG_AUTOLOAD;
 
    if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
       echo "<div id='debug'>";
@@ -1562,6 +1562,8 @@ function displayDebugInfos($with_session=true) {
       }
 
       if ($CFG_GLPI["debug_vars"]) {
+         echo "<h2>AUTOLOAD</h2>";
+         echo "<p>" . implode(', ', $DEBUG_AUTOLOAD) . "</p>";
          echo "<h2>POST VARIABLE</h2>";
          printCleanArray($_POST);
          echo "<h2>GET VARIABLE</h2>";
