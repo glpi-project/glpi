@@ -47,7 +47,6 @@ $cart = new Cartridge();
 $cartype = new CartridgeItem();
 
 if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
-   /// TODO : maybe right on printer and not on cartridge type for such a thing ?
    $cart->check($_POST["cID"],'w');
 
    if ($cart->updatePages($_POST["cID"],$_POST['pages'])) {
