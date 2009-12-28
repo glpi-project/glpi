@@ -155,8 +155,7 @@ if ($item instanceof CommonTreeDropdown) {
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
             $_POST['myname']."\" size='1'";
-      /// TODO : why auto_sumbit only for entities ?
-      if ($_POST['itemtype'] == "Entity" && isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
+      if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
          echo " onChange='submit()'";
       }
       echo ">";
