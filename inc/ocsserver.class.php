@@ -812,20 +812,7 @@ class OcsServer extends CommonDBTM {
       if ($result) {
          return ($DB->insert_id());
       } else {
-         // TODO : Check if this code part is ok ?
-         // why to send a link if insert do not works ?
-         // May have problem for example on ocsLinkComputer
-         $query = "SELECT `id`
-                   FROM `glpi_ocslinks`
-                   WHERE `ocsid` = '$ocsid'
-                         AND `ocsservers_id` = '$ocsservers_id'";
-         $result = $DB->query($query);
-         $data = $DB->fetch_array($result);
-         if ($data['id']) {
-            return $data['id'];
-         } else {
-            return false;
-         }
+         return false;
       }
    }
 
@@ -1410,7 +1397,6 @@ class OcsServer extends CommonDBTM {
       OcsServer::checkOCSconnection($ocsservers_id);
       $cfg_ocs = OcsServer::getConfig($ocsservers_id);
 
-      /// TODO is check on ocsservers_id needed ?
       $query = "SELECT *
                 FROM `glpi_ocslinks`
                 WHERE `id` = '$ID'
@@ -2047,15 +2033,6 @@ class OcsServer extends CommonDBTM {
                      WHERE `ocsservers_id` = '$ocsservers_id'";
       $result_glpi = $DB->query($query_glpi);
 
-      if ($tolinked) {
-         // Computers existing in GLPI
-         $query_glpi_comp = "SELECT `id`, `name`
-                             FROM `glpi_computers`
-                             WHERE `is_template` = '0'
-                                   AND `entities_id` IN (".$_SESSION["glpiactiveentities_string"].")";
-         $result_glpi_comp = $DB->query($query_glpi_comp);
-      }
-
       if ($DBocs->numrows($result_ocs) > 0) {
          // Get all hardware from OCS DB
          $hardware = array ();
@@ -2074,17 +2051,7 @@ class OcsServer extends CommonDBTM {
                $already_linked[$data["ocsid"]] = $data["last_update"];
             }
          }
-         // Get all existing computers name in GLPI
-         if ($tolinked) {
-            $computer_names = array ();
-            if ($DB->numrows($result_glpi_comp) > 0) {
-               while ($data = $DBocs->fetch_array($result_glpi_comp)) {
-                  // TODO store multiple values for each name
-                  // really usefull for big database ?
-                  $computer_names[utf8_strtolower($data["name"])] = $data["id"];
-               }
-            }
-         }
+
          // Clean $hardware from already linked element
          if (count($already_linked) > 0) {
             foreach ($already_linked as $ID => $date) {

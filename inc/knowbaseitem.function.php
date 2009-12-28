@@ -74,8 +74,6 @@ function searchFormKnowbase($target,$contains,$knowbaseitemcategories_id=0,$faq=
       echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
       Dropdown::show('KnowbaseItemCategory', array('value' => $knowbaseitemcategories_id));
 
-      // ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
-
       echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
       echo "</table></form></td>";
    }
@@ -325,7 +323,6 @@ function showKbItemList($target,$contains,$start,$knowbaseitemcategories_id,$faq
                   html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
                         ENT_QUOTES,"UTF-8"))),$item_num,$row_num);
             }
-            // le cumul de fonction me plait pas TODO à optimiser.
 
             // End Line
             echo displaySearchEndLine($output_type);
