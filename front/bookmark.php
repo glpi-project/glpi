@@ -47,8 +47,6 @@ if (!isset($_GET["url"])) {
 
 $bookmark = new Bookmark;
 
-/// TODO : check rights for actions
-
 if (isset($_POST["add"])) {
    $bookmark->check(-1,'w',$_POST);
 
@@ -62,6 +60,8 @@ if (isset($_POST["add"])) {
    $_GET["action"] = "load";
 
 } else if ($_GET["action"] == "edit" && isset($_GET['mark_default']) && isset($_GET["id"])) {
+   $bookmark->check($_GET["id"],'w');
+
    if ($_GET["mark_default"] >0) {
       $bookmark->mark_default($_GET["id"]);
    } else if ($_GET["mark_default"]==0) {
@@ -70,6 +70,7 @@ if (isset($_POST["add"])) {
    $_GET["action"]="load";
 
 } else if ($_GET["action"] == "load" && isset($_GET["id"]) && $_GET["id"]>0) {
+   $bookmark->check($_GET["id"],'r');
    $bookmark->load($_GET["id"]);
 
 } else if (isset($_POST["delete"])) {
@@ -88,11 +89,14 @@ if (isset($_POST["add"])) {
 }
 
 if ($_GET["action"] == "edit") {
+
    if (isset($_GET['id']) && $_GET['id']>0) {
       // Modify
+      $bookmark->check($_GET["id"],'w');
       $bookmark->showForm($_SERVER['PHP_SELF'],$_GET['id']);
    } else {
       // Create
+      $bookmark->check(-1,'w');
       $bookmark->showForm($_SERVER['PHP_SELF'], 0, $_GET["type"], rawurldecode($_GET["url"]),
                           $_GET["itemtype"]);
    }
