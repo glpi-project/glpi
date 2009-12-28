@@ -133,7 +133,6 @@ class Location extends CommonTreeDropdown {
       return false;
    }
 
-   // TODO Move this to Netpoint class ?
    /**
     * Print the HTML array of the Netpoint associated to a Location
     *

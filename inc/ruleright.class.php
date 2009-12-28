@@ -71,7 +71,6 @@ class RuleRight extends Rule {
 
    /**
     * Display form to add rules
-    * @param $target where to post form
     * @param $ID entity ID
     */
    function showAndAddRuleForm($ID) {

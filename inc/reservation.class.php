@@ -179,7 +179,6 @@ class Reservation extends CommonDBTM {
     * display error message
     * @param $type error type : date / is_res / other
     * @param $ID ID of the item
-    * @param $target where to go on error
     *@return nothing
     **/
    function displayError($type,$ID) {

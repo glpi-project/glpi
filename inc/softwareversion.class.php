@@ -248,7 +248,7 @@ class SoftwareVersion extends CommonDBChild {
    /**
     * Show Versions of a software
     *
-    * @param $softwares_id ID of the software
+    * @param $soft Software object
     * @return nothing
     */
    static function showForSoftware($soft) {
