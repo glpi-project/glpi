@@ -948,10 +948,7 @@ class CommonDBTM extends CommonGLPI {
    *@param $history boolean : do history log ?
    *
    *@return boolean : true on success
-   *@todo specific ones : cartridges / consumables : more reuse than restore
-   *
    **/
-   // specific ones : cartridges / consumables
    function restore($input,$history=1) {
 
       if (!$this->getFromDB($input[$this->getIndexName()])) {
