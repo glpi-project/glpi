@@ -123,39 +123,28 @@ class Auth {
 
 
    /**
-    * Find a user in a LDAP and return is BaseDN
-    * Based on GRR auth system
-    *
-    * @param $id ID of the LDAP config (use to find replicate)
-    * @param $host LDAP host to connect
-    * @param $port LDAP port
-    * @param $use_tls use a tls connection
-    * @param $basedn Basedn to use
-    * @param $rdn Root dn
-    * @param $rpass Root Password
-    * @param $login_attr login attribute
-    * @param $login User Login
-    * @param $password User Password
-    * @param $condition Condition used to restrict login
-    * @param $deref_options Deref option used
-    *
-    * @return String : basedn of the user / false if not founded
+   * Find a user in a LDAP and return is BaseDN
+   * Based on GRR auth system
+   *
+   * @param $ldap_method : ldap_method array to use
+   * @param $login User Login
+   * @param $password User Password
+   *
+   * @return String : basedn of the user / false if not founded
    **/
-   function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password,
-                            $condition = "", $use_tls = false,$deref_options) {
-      // TODO try to pass array of connection config to minimise parameters
+   function connection_ldap($ldap_method, $login, $password) {
       global $CFG_GLPI, $LANG;
 
       // we prevent some delay...
-      if (empty ($host)) {
+      if (empty ($ldap_method['host'])) {
          return false;
       }
 
-      $this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login,
-                                                $password,$deref_options,$id);
+      $this->ldap_connection = try_connect_ldap($ldap_method,$login,$password);
 
       if ($this->ldap_connection) {
-         $dn = ldap_search_user_dn($this->ldap_connection, $basedn, $login_attr, $login, $condition);
+         $dn = ldap_search_user_dn($this->ldap_connection, $ldap_method['basedn'],
+                                    $ldap_method['login_field'], $login, $ldap_method['condition']);
          if (@ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
@@ -693,7 +682,6 @@ class Auth {
       global $LANG,$CFG_GLPI;
 
       /// TODO add informations about get LDAP extra infos for CAS EXTERNAL...
-
       switch ($authtype) {
          case AUTH_LDAP :
             $auth = new AuthLdap();
