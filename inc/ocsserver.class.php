@@ -3668,6 +3668,7 @@ class OcsServer extends CommonDBTM {
       if (!$isNewVers) {
          $vers = new SoftwareVersion;
          // TODO : define a default state ? Need a new option in config
+         // Use $cfg_ocs["states_id_default"] or create a specific one ?
          $input["softwares_id"] = $software;
          $input["name"] = $version;
          $isNewVers = $vers->add($input);
