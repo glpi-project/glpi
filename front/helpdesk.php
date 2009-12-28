@@ -56,7 +56,6 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   // TODO check the use of real name of field...(could also use Ticket->getEmpty)
    // Set default value...
    $values = array('users_id'             => $_SESSION["glpiID"],
                    'groups_id'            => 0,
@@ -71,7 +70,7 @@ if (isset($_POST["add"])) {
                    'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
                    'hour'                 => 0,
                    'minute'               => 0,
-                   'date'                 => date("Y-m-d H:i:s"),
+                   'date'                 => $_SESSION["glpiactive_entity"],
                    'entities_id'          => $_SESSION["glpiactive_entity"],
                    'status'               => 'new',
                    'followup'             => array(),
