@@ -1267,7 +1267,7 @@ class CommonDBTM extends CommonGLPI {
       return true;
    }
 
-   /*
+   /**
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
     *

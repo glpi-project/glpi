@@ -1341,7 +1341,6 @@ class Search {
       echo "<td width='150px'>";
       echo "<table width='100%'><tr>";
       // Display sort selection
-      /// TODO delete it from Search form : display it and sort using display
 /*      echo "<td colspan='2'>".$LANG['search'][4];
       echo "&nbsp;<select name='sort' size='1'>";
       reset($options);
