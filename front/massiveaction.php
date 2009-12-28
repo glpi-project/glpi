@@ -145,21 +145,11 @@ if (isset($_POST["itemtype"])) {
 
          case "disconnect" :
             $conn = new Computer_Item();
+            $item = new $_POST["itemtype"]();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  // TODO move this request in class
-                  $query = "SELECT `id`
-                            FROM `glpi_computers_items`
-                            WHERE `itemtype` = '".$_POST["itemtype"]."'
-                                  AND `items_id` = '$key'";
-                  $result = $DB->query($query);
-
-                  if ($DB->numrows($result) > 0) {
-                     while ($data = $DB->fetch_assoc($result)) {
-                        if ($conn->can($data["id"],'w')) {
-                           $conn->delete($data);
-                        }
-                     }
+                  if ($item->getFromDB($key)) {
+                     $conn->disconnectForItem($item);
                   }
                }
             }
