@@ -37,8 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-// TODO Add transfer Right
-
 checkRight("transfer","r");
 
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
