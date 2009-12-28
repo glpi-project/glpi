@@ -402,5 +402,26 @@ class Computer_Device extends CommonDBChild {
       }
       return $mac;
    }
+
+
+   /**
+    * Delete old devices settings
+    *
+    *@param $devicetype integer : device type identifier.
+    *@param $glpi_computers_id integer : glpi computer id.
+    *
+    *@return nothing.
+    *
+    **/
+   static function resetDevices($glpi_computers_id, $devicetype) {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_computers_devices`
+                WHERE `itemtype` = '$devicetype'
+                      AND `computers_id` = '$glpi_computers_id'";
+      $DB->query($query);
+   }
+
 }
 ?>

@@ -885,28 +885,28 @@ class OcsServer extends CommonDBTM {
                OcsServer::resetDropdown($computers_id, "operatingsystems_id", "glpi_operatingsystems");
             }
             if ($cfg_ocs["import_device_processor"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceProcessor');
+               Computer_Device::resetDevices($computers_id, 'DeviceProcessor');
             }
             if ($cfg_ocs["import_device_iface"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceNetworkCard');
+               Computer_Device::resetDevices($computers_id, 'DeviceNetworkCard');
             }
             if ($cfg_ocs["import_device_memory"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceMemory');
+               Computer_Device::resetDevices($computers_id, 'DeviceMemory');
             }
             if ($cfg_ocs["import_device_hdd"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceHardDrive');
+               Computer_Device::resetDevices($computers_id, 'DeviceHardDrive');
             }
             if ($cfg_ocs["import_device_sound"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceSoundCard');
+               Computer_Device::resetDevices($computers_id, 'DeviceSoundCard');
             }
             if ($cfg_ocs["import_device_gfxcard"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceGraphicCard');
+               Computer_Device::resetDevices($computers_id, 'DeviceGraphicCard');
             }
             if ($cfg_ocs["import_device_drive"]) {
-               OcsServer::resetDevices($computers_id, 'DeviceDrive');
+               Computer_Device::resetDevices($computers_id, 'DeviceDrive');
             }
             if ($cfg_ocs["import_device_modem"] || $cfg_ocs["import_device_port"]) {
-               OcsServer::resetDevices($computers_id, 'DevicePci');
+               Computer_Device::resetDevices($computers_id, 'DevicePci');
             }
             if ($cfg_ocs["import_software"]) {
                OcsServer::resetSoftwares($computers_id);
@@ -3575,28 +3575,6 @@ class OcsServer extends CommonDBTM {
             }
          }
       }
-   }
-
-   /**
-    * Delete old devices settings
-    *
-    * Delete Old device settings.
-    *
-    *@param $devicetype integer : device type identifier.
-    *@param $glpi_computers_id integer : glpi computer id.
-    *
-    *@return nothing.
-    *
-    **/
-   static function resetDevices($glpi_computers_id, $devicetype) {
-      global $DB;
-
-      // TODO this fonction should probably goes to Computer_Device class
-      $query = "DELETE
-                FROM `glpi_computers_devices`
-                WHERE `itemtype` = '$devicetype'
-                      AND `computers_id` = '$glpi_computers_id'";
-      $DB->query($query);
    }
 
 
