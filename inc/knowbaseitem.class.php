@@ -246,6 +246,171 @@ class KnowbaseItem extends CommonDBTM {
          return false;
       }
    } // function showForm
+
+   /**
+    * Add kb item to the public FAQ
+    *
+    * @return nothing
+    **/
+   function addToFaq() {
+      global $DB;
+
+      $DB->query("UPDATE
+                  `".$this->table."`
+                  SET `is_faq`='1'
+                  WHERE `id`='".$this->fields['id']."'");
+   }
+
+   /**
+    * Remove kb item from the public FAQ
+    *
+    * @return nothing
+    **/
+   function removeFromFaq() {
+      global $DB;
+
+      $DB->query("UPDATE
+                  `".$this->table."`
+                  SET `is_faq`='0'
+                  WHERE `id`='".$this->fields['id']."'");
+   }
+
+   /**
+    * Print out an HTML Menu for knowbase item
+    *
+    * @return nothing (display the form)
+    **/
+   function showMenu() {
+      global $LANG, $CFG_GLPI;
+
+      $ID = $this->fields['id'];
+      if (!$this->can($ID,'r')) {
+         return false;
+      }
+
+      $edit=$this->can($ID,'w');
+      $isFAQ = $this->fields["is_faq"];
+      $editFAQ=haveRight("faq","w");
+
+      echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
+      if ($isFAQ) {
+         echo $LANG['knowbase'][10]."</th></tr>\n";
+      } else {
+         echo $LANG['knowbase'][11]."</th></tr>\n";
+      }
+
+      if ($edit) {
+         echo "<tr>";
+         if ($editFAQ) {
+            if ($isFAQ) {
+               echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
+                     $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
+                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".
+                        $LANG['knowbase'][7]."' title='".$LANG['knowbase'][7]."'></a></td>\n";
+            } else {
+               echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
+                     $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
+                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".
+                        $LANG['knowbase'][5]."' title='".$LANG['knowbase'][5]."'></a></td>\n";
+            }
+         }
+         echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
+               $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8].
+               "' title='".$LANG['knowbase'][8]."'></a></td>\n";
+         echo "<td class='center' width='33%'>";
+         echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG['common'][55]).
+               "','".$CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9].
+               "' title='".$LANG['knowbase'][9]."'></a></td>";
+         echo "</tr>";
+      }
+      echo "</table><br>";
+   }
+
+   /**
+    * Print out (html) show item : question and answer
+    *
+    * @param $linkusers_id display users_id link
+    *
+    * @return nothing (display item : question and answer)
+    **/
+   function showFull($linkusers_id=true) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      // show item : question and answer
+      if (!haveRight("user","r")) {
+         $linkusers_id=false;
+      }
+
+      //update counter view
+      $query="UPDATE `glpi_knowbaseitems`
+              SET `view`=view+1
+              WHERE `id` = '".$this->fields['id']."'";
+      $DB->query($query);
+
+      if ($this->fields["is_faq"]) {
+         if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) {
+            return false;
+         }
+      } else if (!haveRight("knowbase","r")) {
+         return false;
+      }
+
+      $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
+      $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",$knowbaseitemcategories_id);
+
+      echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>";
+      echo $LANG['common'][36]."&nbsp;:&nbsp;";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
+            (isset($_SESSION['glpiactiveprofile'])
+             && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbaseitem.php":"helpdesk.faq.php").
+            "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+      echo "</th></tr>";
+
+      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
+      echo ($this->fields["is_faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
+      echo "</h2>";
+      echo $this->fields["question"];
+
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
+      echo ($this->fields["is_faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
+      echo "</h2>\n";
+
+      $answer = unclean_cross_side_scripting_deep($this->fields["answer"]);
+
+      echo "<div id='kbanswer'>".$answer."</div>";
+      echo "</td></tr>";
+
+      echo "<tr><th class='tdkb'>";
+      if ($this->fields["users_id"]) {
+         echo $LANG['common'][37]."&nbsp;: ";
+         // Integer because true may be 2 and getUserName return array
+         if ($linkusers_id) {
+            $linkusers_id=1;
+         } else {
+            $linkusers_id=0;
+         }
+
+         echo getUserName($this->fields["users_id"],$linkusers_id);
+         echo "&nbsp;&nbsp;|&nbsp;&nbsp;";
+      }
+      if ($this->fields["date"]) {
+         echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
+      }
+
+      echo "</th><th class='tdkb'>";
+      if ($this->fields["date_mod"]) {
+         echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
+              "&nbsp;&nbsp;|&nbsp;&nbsp; ";
+      }
+      echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
+      echo "</table><br>";
+
+      return true;
+   }
+
 }
 
 ?>

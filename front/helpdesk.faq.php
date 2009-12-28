@@ -68,7 +68,7 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
 
 if (isset($_GET["id"])) {
    $kb = new kbItem;
-   if ($kb->getFromDB($_GET["id"]) && ShowKbItemFull($_GET["id"],0)) {
+   if ($kb->getFromDB($_GET["id"]) && $kb->showFull(false)) {
       Document::showAssociated($kb);
    }
 

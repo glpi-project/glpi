@@ -97,15 +97,13 @@ if ($_GET["id"] == "new") {
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {
    // ajouter  un item dans la faq
    $kb->check($_GET["id"],'w');
-
-   KbItemaddtofaq($_GET["id"]);
+   $kb->addToFaq();
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["removefromfaq"],"yes") == 0) {
    // retirer  un item de la faq
    $kb->check($_GET["id"],'w');
-
-   KbItemremovefromfaq($_GET["id"]);
+   $kb->removeFromFaq($_GET["id"]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (empty($_GET["id"])) {
@@ -117,8 +115,8 @@ if ($_GET["id"] == "new") {
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
-   if (ShowKbItemFull($_GET["id"])) {
-      kbItemMenu($_GET["id"]);
+   if ($kb->showFull()) {
+      $kb->showMenu();
       Document::showAssociated($kb);
    }
    commonFooter();
