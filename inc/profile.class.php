@@ -459,6 +459,8 @@ class Profile extends CommonDBTM {
    * Print the Inventory/Management/Toolsd right form for the current profile
    *
    * @param $target of the form
+   * @param $openform boolean open the form
+   * @param $closeform boolean close the form
    **/
    function showFormInventory($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
@@ -595,6 +597,8 @@ class Profile extends CommonDBTM {
    * Print the Tracking right form for the current profile
    *
    * @param $target of the form
+   * @param $openform boolean open the form
+   * @param $closeform boolean close the form
    **/
    function showFormTracking($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
@@ -779,7 +783,6 @@ class Profile extends CommonDBTM {
    * @param $target target of the form
    * @param $openform boolean open the form
    * @param $closeform boolean close the form
-   *
    **/
    function showFormAdmin($target, $openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;

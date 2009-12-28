@@ -336,7 +336,7 @@ class Computer_Item extends CommonDBRelation{
    * Print the form for computers or templates connections to printers, screens or peripherals
    *
    *@param $target
-   *@param $ID integer: Computer or template ID
+   *@param $comp Computer object
    *@param $withtemplate=''  boolean : Template or basic item.
    *
    *@return Nothing (call to classes members)

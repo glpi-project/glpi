@@ -121,7 +121,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
    /**
     * Show installation of a Version
     *
-    * @param $software object
+    * @param $version SoftwareVersion object
     * @return nothing
     */
    static function showForVersion (SoftwareVersion $version) {
@@ -359,7 +359,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
    /**
     * Show number of installation per entity
     *
-    * @param $softwareversions_id ID of the version
+    * @param $version SoftwareVersion object
     *
     * @return nothing
     */
@@ -412,7 +412,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
    /**
     * Show software installed on a computer
     *
-    * @param $computers_id ID of the computer
+    * @param $comp Computer object
     * @param $withtemplate template case of the view process
     * @return nothing
     */

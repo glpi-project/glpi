@@ -50,20 +50,20 @@ class Dropdown {
    }
 
    /**
-    * Print out an HTML "<select>" for a dropdown with preselected value
-    *
-    *
-    * @param $table the dropdown table from witch we want values on the select
-    * @param $myname the name of the HTML select
-    * @param $value the preselected value we want
-    * @param $display_comment display the comment near the dropdown
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
-    * @param $used Already used items ID: not to display in dropdown
-    * @param $auto_submit boolean : use auto submit on change ?
-    * @return nothing (display the select box)
-    *
-    */
+   * Print out an HTML "<select>" for a dropdown with preselected value
+   *
+   *
+   * @param $table the dropdown table from witch we want values on the select
+   * @param $myname the name of the HTML select
+   * @param $value the preselected value we want
+   * @param $display_comment display the comment near the dropdown
+   * @param $entity_restrict Restrict to a defined entity
+   * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
+   * @param $used Already used items ID: not to display in dropdown
+   * @param $auto_submit boolean : use auto submit on change ?
+   * @return nothing (display the select box)
+   *
+   */
    static function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
                           $update_item="",$used=array(),$auto_submit=0) {
 
@@ -469,15 +469,16 @@ class Dropdown {
    }
 
    /**
-    *
-    * Make a select box for device type
-    *
-    *
-    * @param $name name of the select box
-    * @param $value default device type
-    * @param $types types to display
-    * @return nothing (print out an HTML select box)
-    */
+   *
+   * Make a select box for device type
+   *
+   *
+   * @param $name name of the select box
+   * @param $value default device type
+   * @param $types types to display
+   * @param $used Already used items ID: not to display in dropdown
+   * @return nothing (print out an HTML select box)
+   */
    static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
       global $CFG_GLPI;
 
@@ -723,6 +724,7 @@ class Dropdown {
     *
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
     * @param $value string URL of selected current value
+    * @param $title string title to display
     */
    static function showItemTypeMenu($title, $optgroup, $value='') {
       global $LANG;
@@ -1018,8 +1020,6 @@ class Dropdown {
    *
    */
    static function showFromArray($name,$elements,$options = array()) {
-
-      //$value='',$used=array()
 
       $param['value']='';
       $param['used']=array();

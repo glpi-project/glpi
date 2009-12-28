@@ -224,10 +224,10 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-    */
+   * Get search function for the class
+   *
+   * @return array of search option
+   */
    function getSearchOptions() {
       global $LANG;
 
@@ -264,11 +264,9 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    /** Check if the dropdown $ID is used into item tables
-    *
-    * @param $ID integer : value ID
-    *
-    * @return boolean : is the value used ?
-    */
+   *
+   * @return boolean : is the value used ?
+   */
    function isUsed() {
       global $DB;
 
@@ -304,21 +302,21 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    /**
-    * Report if a dropdown have Child
-    * Used to (dis)allow delete action
-    */
+   * Report if a dropdown have Child
+   * Used to (dis)allow delete action
+   */
    function haveChildren() {
       return false;
    }
 
    /**
-    * Show a dialog to Confirm delete action
-    * And propose a value to replace
-    *
-    * @param $target string URL
-    *
-    *
-    */
+   * Show a dialog to Confirm delete action
+   * And propose a value to replace
+   *
+   * @param $target string URL
+   *
+   *
+   */
    function showDeleteConfirmForm($target) {
       global $DB, $LANG,$CFG_GLPI;
 

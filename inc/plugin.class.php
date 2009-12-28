@@ -791,8 +791,7 @@ class Plugin extends CommonDBTM {
    }
    /**
     * Display plugin actions for a device type
-    * @param $itemtype ID of the item type
-    * @param $ID ID of the item
+    * @param $item object
     * @param $onglet Heading corresponding of the datas to display
     * @param $withtemplate is the item display like a template ?
     * @return true if display have been done
@@ -853,7 +852,6 @@ class Plugin extends CommonDBTM {
     * Display plugin headgsin for a device type
     * @param $target page to link
     * @param $item object
-    * @param $ID ID of the device
     * @param $withtemplate is the item display like a template ?
     * @return Array of tabs (sorted)
     */

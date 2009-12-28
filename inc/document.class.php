@@ -397,12 +397,12 @@ class Document extends CommonDBTM {
    }
 
    /**
-    * Check is the curent user is allowed to see the file
-    *
-    * @param $option array of options (only 'tickets_id' used)
-    *
-    * @return boolean
-    */
+   * Check is the curent user is allowed to see the file
+   *
+   * @param $options array of options (only 'tickets_id' used)
+   *
+   * @return boolean
+   */
    function canViewFile($options) {
       global $DB, $CFG_GLPI;
 

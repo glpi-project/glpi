@@ -504,9 +504,7 @@ class CronTask extends CommonDBTM{
    /**
     * Translate task description
     *
-    * @param $id integer
-    * @param $plugin string : name of plugin (empty for glpi core task)
-    * @param $name string : name of the task
+    * @param $id integer ID of the crontask
     * @return string
     */
    public function getDescription($id) {
@@ -532,9 +530,6 @@ class CronTask extends CommonDBTM{
    /**
     * Translate task parameter description
     *
-    * @param $id integer
-    * @param $plugin string : name of plugin (empty for glpi core task)
-    * @param $name string : name of the task
     * @return string
     */
    public function getParameterDescription() {

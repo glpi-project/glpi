@@ -2292,7 +2292,7 @@ function getActiveTab($itemtype) {
  * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
  * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
  * @param $type for active tab
- * @param $width of tabs panel
+ * @param $size width of tabs panel
  * @return nothing
  */
 function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),

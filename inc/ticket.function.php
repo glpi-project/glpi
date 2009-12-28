@@ -2380,12 +2380,11 @@ function showJobDetails($target, $ID,$array=array()) {
 
 
 
-/** Form to add a followup to a ticket
+/* Form to add a followup to a ticket
 * @param $tID integer : ticket ID
 * @param $massiveaction boolean : add followup using massive action
 * @param $datas array : datas to preset form
-*/
-/*function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
+function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
    global $DB,$LANG,$CFG_GLPI;
 
    $job=new Ticket();
