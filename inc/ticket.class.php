@@ -118,7 +118,7 @@ class Ticket extends CommonDBTM {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return $this->canCreate();
+      return $this->canUpdate();
    }
 
    /**
@@ -1033,7 +1033,7 @@ class Ticket extends CommonDBTM {
 
 
    /**
-    * Update realtime of the ticket based on realtim of the followups
+    * Update realtime of the ticket based on realtime of the followups and tasks
     *
     *@param $ID ID of the ticket
     *@return boolean : success
@@ -1041,24 +1041,34 @@ class Ticket extends CommonDBTM {
    function updateRealTime($ID) {
       global $DB;
 
-      // update Status of Ticket
+      $tot = 0;
+      // update Realtime of Ticket
       $query = "SELECT SUM(`realtime`)
                 FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '$ID'";
 
       if ($result = $DB->query($query)) {
          $sum = $DB->result($result,0,0);
-         if (is_null($sum)) {
-            $sum=0;
+         if (!is_null($sum)) {
+            $tot += $sum;
          }
-         $query2 = "UPDATE `".
-                    $this->table."`
-                    SET `realtime` = '$sum'
-                    WHERE `id` = '$ID'";
-         $DB->query($query2);
-         return true;
       }
-      return false;
+      $query = "SELECT SUM(`realtime`)
+                FROM `glpi_tickettasks`
+                WHERE `tickets_id` = '$ID'";
+
+      if ($result = $DB->query($query)) {
+         $sum = $DB->result($result,0,0);
+         if (!is_null($sum)) {
+            $tot += $sum;
+         }
+      }
+      $query2 = "UPDATE `".
+                 $this->table."`
+                 SET `realtime` = '$tot'
+                 WHERE `id` = '$ID'";
+
+      return $DB->query($query2);
    }
 
 
