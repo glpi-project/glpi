@@ -94,6 +94,8 @@ class Computer_Item extends CommonDBRelation{
       return parent::can($ID,$right,$input);
    }
 
+
+
    /**
    * Prepare input datas for adding the relation
    *
@@ -295,18 +297,51 @@ class Computer_Item extends CommonDBRelation{
       }
    }
 
+
+   
    /**
-    * Print the computers or template local connections form.
-    *
-    * Print the form for computers or templates connections to printers, screens or peripherals
-    *
-    *@param $target
-    *@param $ID integer: Computer or template ID
-    *@param $withtemplate=''  boolean : Template or basic item.
-    *
-    *@return Nothing (call to classes members)
-    *
-    **/
+   * Disconnect an item to its computer
+   *
+   * @param $item the Monitor/Phone/Peripheral/Printer
+   *
+   * @return boolean : action succeeded
+   *
+   */
+   function disconnectForItem(CommonDBTM $item) {
+      global $DB;
+
+      if ($item->getField('id')) {
+         $query = "SELECT `id`
+                     FROM `glpi_computers_items`
+                     WHERE `itemtype` = '".$item->getType()."'
+                           AND `items_id` = '".$item->getField('id')."'";
+         $result = $DB->query($query);
+
+         if ($DB->numrows($result) > 0) {
+            $ok=true;
+            while ($data = $DB->fetch_assoc($result)) {
+               if ($this->can($data["id"],'w')) {
+                  $ok&=$this->delete($data);
+               }
+            }
+            return $ok;
+         }
+      }
+      return false;
+   }
+
+   /**
+   * Print the computers or template local connections form.
+   *
+   * Print the form for computers or templates connections to printers, screens or peripherals
+   *
+   *@param $target
+   *@param $ID integer: Computer or template ID
+   *@param $withtemplate=''  boolean : Template or basic item.
+   *
+   *@return Nothing (call to classes members)
+   *
+   **/
    static function showForComputer($target, Computer $comp, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
@@ -437,14 +472,13 @@ class Computer_Item extends CommonDBRelation{
    }
 
    /**
-    * Prints a direct connection to a computer
-    *
-    * @param $target the page where we'll print out this.
-    * @param $item the Monitor/Phone/Peripheral/Printer
-    *
-    * @return nothing (print out a table)
-    *
-    */
+   * Prints a direct connection to a computer
+   *
+   * @param $item the Monitor/Phone/Peripheral/Printer
+   *
+   * @return nothing (print out a table)
+   *
+   */
    static function showForItem(CommonDBTM $item) {
       // Prints a direct connection to a computer
       global $DB, $LANG, $CFG_GLPI;
