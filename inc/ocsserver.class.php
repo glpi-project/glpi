@@ -3846,8 +3846,7 @@ class OcsServer extends CommonDBTM {
             //Replace in GLPI database the import_software by the new one
             OcsServer::replaceOcsArray($computers_id, $softs_array, "import_software");
 
-            //Get import_software from the GLPI db
-            //TODO: don't get import_software in DB, but use the newly contructed one
+            // Get import_software from the GLPI db
             $query = "SELECT `import_software`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$computers_id'";
@@ -4630,7 +4629,8 @@ class OcsServer extends CommonDBTM {
          $nbcomp = $DBocs->numrows($result_ocs);
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
-               $task->log("Update computer " . $data["ID"] . "\n"); // TODO remove if too much verbose ?
+               // TODO remove if too much verbose ?
+               $task->log("Update computer " . $data["ID"] . "\n"); 
                OcsServer::processComputer($data["ID"],$ocsservers_id,0,-1,1);
             }
             $task->setVolume($nbcomp);
