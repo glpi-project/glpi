@@ -1897,6 +1897,7 @@ $LANG['update'][138]="Lieux actuels";
 $LANG['update'][139]="Optimisation des tables";
 $LANG['update'][140]="Création d'index";
 $LANG['update'][141]="Modification du schéma";
+$LANG['update'][142]="Redressement des données";
 
 $LANG['users'][1]= "Titre";
 $LANG['users'][2]="Catégorie";
