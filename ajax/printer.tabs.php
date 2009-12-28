@@ -63,8 +63,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$printer,
-                                 1,$_POST["withtemplate"]);
+            Infocom::showForItem($printer, 1, $_POST["withtemplate"]);
             Contract::showAssociated($printer,$_POST["withtemplate"]);
             break;
 
@@ -82,7 +81,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Cartridge::showInstalled($printer, 1);
             Computer_Item::showForItem($printer);
             NetworkPort::showForItem('Printer', $_POST["id"], $_POST["withtemplate"]);
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$printer);
+            Infocom::showForItem($printer);
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
             showJobListForItem('Printer',$_POST["id"]);
@@ -96,7 +95,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$printer);
+            Infocom::showForItem($printer);
             Contract::showAssociated($printer);
             break;
 

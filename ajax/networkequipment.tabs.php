@@ -57,8 +57,7 @@ if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",
-                                 $netdevice,1,$_POST["withtemplate"]);
+            Infocom::showForItem($netdevice,1,$_POST["withtemplate"]);
             Contract::showAssociated($netdevice,$_POST["withtemplate"]);
             break;
 
@@ -76,7 +75,7 @@ if (!empty($_POST["withtemplate"])) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          NetworkPort::showForItem('NetworkEquipment', $_POST["id"]);
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$netdevice);
+         Infocom::showForItem($netdevice);
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice,$_POST["withtemplate"]);
          showJobListForItem('NetworkEquipment',$_POST["id"]);
@@ -85,7 +84,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 4 :
-         Infocom::showForItem($CFG_GLPI["root_doc"]."/front/infocom.form.php",$netdevice);
+         Infocom::showForItem($netdevice);
          Contract::showAssociated($netdevice);
          break;
 
