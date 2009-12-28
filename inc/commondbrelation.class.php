@@ -71,7 +71,9 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $item1 = new $type1();
-      if (!$item1->can($input[$this->items_id_1],'r')) {
+      // Can create a relation with a dropdown/device (use it) without read right
+      if (!($item1 instanceof CommonDropdown)
+          && !$item1->can($input[$this->items_id_1],'r')) {
          return false;
       }
 
@@ -84,7 +86,8 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $item2 = new $type2();
-      if (!$item2->can($input[$this->items_id_2],'r')) {
+      if (!($item2 instanceof CommonDropdown)
+          && !$item2->can($input[$this->items_id_2],'r')) {
          return false;
       }
 
