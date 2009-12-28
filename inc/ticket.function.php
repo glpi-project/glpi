@@ -1764,8 +1764,8 @@ function getAssignName($ID,$itemtype,$link=0) {
          if ($item->getFromDB($ID)) {
             $before = "";
             $after = "";
-            if ($link && $item->canView()) {
-               $item->getLink(1);
+            if ($link) {
+               return $item->getLink(1);
             }
             return $item->getNameID();
          }
