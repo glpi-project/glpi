@@ -48,8 +48,6 @@ class NetworkPort extends CommonDBTM {
    /// TODO manage access right on this object
 
    // Specific ones
-   /// ID of the port connected to the current one
-   var $contact_id		= 0;
    /// hardare data : name
    var $device_name	= "";
    /// hardare data : ID
@@ -107,7 +105,10 @@ class NetworkPort extends CommonDBTM {
    }
 
    function pre_deleteItem($ID) {
-      removeConnector($ID);
+      $nn= new NetworkPort_NetworkPort();
+      if ($nn->getFromDBForNetworkPort($ID)){
+         $nn->delete($nn->fields);
+      }
       return true;
    }
 
@@ -156,16 +157,16 @@ class NetworkPort extends CommonDBTM {
 
    /**
     * Get port opposite port ID if linked item
-    * ID store in contact_id
+    * 
     *@param $ID networking port ID
     *
-    *@return boolean item found
+    *@return ID of the NetworkPort found, false if not found
     **/
    function getContact($ID) {
 
       $wire = new NetworkPort_NetworkPort;
-      if ($this->contact_id = $wire->getOppositeContact($ID)) {
-         return true;
+      if ($contact_id = $wire->getOppositeContact($ID)) {
+         return $contact_id;
       } else {
          return false;
       }
@@ -176,6 +177,17 @@ class NetworkPort extends CommonDBTM {
 
       $ong[1] = $LANG['title'][26];
       return $ong;
+   }
+
+   /**
+   * Delete All connection of the given network port
+   *
+   *
+   * @param $ID ID of the port
+   * @return true on success
+   */
+   function resetConnections($ID) {
+
    }
 
    /**
@@ -400,13 +412,13 @@ class NetworkPort extends CommonDBTM {
          return false;
       }
 
-      $contact = new NetworkPort;
+      $contact = new NetworkPort_NetworkPort;
 
       $canedit = $device1->can($device1->fields["id"], 'w');
       $ID = $netport->fields["id"];
 
-      if ($contact->getContact($ID)) {
-         $netport->getFromDB($contact->contact_id);
+      if ($contact_id = $contact->getOppositeContact($ID)) {
+         $netport->getFromDB($contact_id);
          if (class_exists($netport->fields["itemtype"])) {
             $device2 = new $netport->fields["itemtype"]();
             if ($device2->getFromDB($netport->fields["items_id"])) {
@@ -430,7 +442,7 @@ class NetworkPort extends CommonDBTM {
                      echo "</td>\n<td class='right'><strong>";
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
-                              "disconnect&amp;id=$ID\">" . $LANG['buttons'][10] . "</a>";
+                              "disconnect&amp;id=".$contact->fields['id']."\">" . $LANG['buttons'][10] . "</a>";
                      } else {
                         "&nbsp;";
                      }

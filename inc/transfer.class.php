@@ -2546,6 +2546,7 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $np = new NetworkPort();
+      $nn = new NetworkPort_NetworkPort();
 
       $query = "SELECT *
                 FROM `glpi_networkports`
@@ -2579,7 +2580,9 @@ class Transfer extends CommonDBTM {
                   // Not a copy -> disconnect
                   if ($ID == $newID) {
                      while ($data = $DB->fetch_array($result)) {
-                        removeConnector($data['id']);
+                        if ($nn->getFromDBForNetworkPort($data['id'])) {
+                           $nn->delete($data);
+                        }
                         if ($data['netpoints_id']) {
                            $netpointID = $this->transferDropdownNetpoint($data['netpoints_id']);
                            $input['id'] = $data['id'];

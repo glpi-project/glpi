@@ -67,10 +67,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
          // Delete Contact VLAN if set
          $np = new NetworkPort();
-         if ($np->getContact($data['networkports_id'])) {
+         if ($contact_id = $np->getContact($data['networkports_id'])) {
             $query = "DELETE
                       FROM `glpi_networkports_vlans`
-                      WHERE `networkports_id` = '" . $np->contact_id . "'
+                      WHERE `networkports_id` = '$contact_id'
                             AND `vlans_id` = '" . $data['vlans_id'] . "'";
             $DB->query($query);
          }
@@ -89,10 +89,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       // Delete Contact VLAN if set
       $np = new NetworkPort();
-      if ($np->getContact($portID)) {
+      if ($contact_id=$np->getContact($portID)) {
          $query = "DELETE
                    FROM `glpi_networkports_vlans`
-                   WHERE `networkports_id` = '" . $np->contact_id . "'
+                   WHERE `networkports_id` = '$contact_id'
                          AND `vlans_id` = '$vlanID'";
          $DB->query($query);
       }
@@ -108,10 +108,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $DB->query($query);
 
       $np = new NetworkPort();
-      if ($np->getContact($port)) {
+      if ($contact_id=$np->getContact($port)) {
          $query = "INSERT INTO
                    `glpi_networkports_vlans` (`networkports_id`,`vlans_id`)
-                   VALUES ('" . $np->contact_id . "','$vlan')";
+                   VALUES ('$contact_id','$vlan')";
          $DB->query($query);
       }
    }

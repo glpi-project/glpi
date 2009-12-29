@@ -3146,12 +3146,8 @@ class OcsServer extends CommonDBTM {
       if ($do_clean && count($import_ip) && $devicetype == self::NETWORK_DEVICE) {
          foreach ($import_ip as $key => $val) {
             if ($key>0) {
-               // Disconnect wire
-               removeConnector($key);
-               $query2 = "DELETE
-                          FROM `glpi_networkports`
-                          WHERE `id` = '$key'";
-               $DB->query($query2);
+               $netport = new NetworkPort();
+               $netport->delete('id'=>$key);
                OcsServer::deleteInOcsArray($computers_id, $key, "import_ip");
             }
          }
