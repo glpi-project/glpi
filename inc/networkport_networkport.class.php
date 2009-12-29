@@ -38,15 +38,260 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// NetworkPort_NetworkPort class
-class NetworkPort_NetworkPort {
+class NetworkPort_NetworkPort extends CommonDBTM {
 
-   /// ID of the NetworkPort_NetworkPort
-   var $ID = 0;
-   /// first connected port ID
-   var $networkports_id_1 = 0;
-   /// second connected port ID
-   var $networkports_id_2 = 0;
+   public $table = 'glpi_networkports_networkports';
+   public $type = 'NetworkPort_NetworkPort';
 
+
+
+   /**
+    * Retrieve an item from the database
+    *
+    *@param $ID ID of the item to get
+    *@param $type ID of the type to get
+    *@return true if succeed else false
+    *
+   **/
+   function getFromDBForNetworkPort ($ID) {
+      global $DB;
+
+      // Make new database object and fill variables
+      if (empty($ID)) {
+         return false;
+      }
+
+      $query = "SELECT *
+                FROM `".$this->table."`
+                WHERE `networkports_id_1` = '$ID'
+                      OR `networkports_id_2` = '$ID'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $this->fields = $DB->fetch_assoc($result);
+            return true;
+         } else {
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
+
+   function post_addItem($newID,$input) {
+      global $DB,$LANG;
+
+      // Get netpoint for $sport and $dport
+      $sport = $this->fields['networkports_id_1'];
+      $dport = $this->fields['networkports_id_2'];
+
+      $ps = new NetworkPort;
+      if (!$ps->getFromDB($sport)) {
+         return false;
+      }
+      $pd = new NetworkPort;
+      if (!$pd->getFromDB($dport)) {
+         return false;
+      }
+
+      // Check netpoint for copy
+      $source = "";
+      $destination = "";
+      if (isset ($ps->fields['netpoints_id']) && $ps->fields['netpoints_id'] != 0) {
+         $source = $ps->fields['netpoints_id'];
+      }
+      if (isset ($pd->fields['netpoints_id']) && $pd->fields['netpoints_id'] != 0) {
+         $destination = $pd->fields['netpoints_id'];
+      }
+   // Update Item
+      $updates[0] = 'netpoints_id';
+      if (empty ($source) && !empty ($destination)) {
+         $ps->fields['netpoints_id'] = $destination;
+         $ps->updateInDB($updates);
+         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+      } else if (!empty ($source) && empty ($destination)) {
+         $pd->fields['netpoints_id'] = $source;
+         $pd->updateInDB($updates);
+         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+      } else if ($source != $destination) {
+         addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;: " . $LANG['networking'][51]);
+      }
+
+      // Manage VLAN : use networkings one as defaults
+      $npnet = -1;
+      $npdev = -1;
+      if ($ps->fields["itemtype"] != 'NetworkEquipment'
+         && $pd->fields["itemtype"] == 'NetworkEquipment') {
+         $npnet = $dport;
+         $npdev = $sport;
+      }
+      if ($pd->fields["itemtype"] != 'NetworkEquipment'
+         && $ps->fields["itemtype"] == 'NetworkEquipment') {
+         $npnet = $sport;
+         $npdev = $dport;
+      }
+      if ($npnet > 0 && $npdev > 0) {
+         // Get networking VLAN
+         // Unset MAC and IP from networking device
+         $query = "SELECT *
+                  FROM `glpi_networkports_vlans`
+                  WHERE `networkports_id` = '$npnet'";
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) > 0) {
+               // Found VLAN : clean vlan device and add found ones
+               $query = "DELETE
+                        FROM `glpi_networkports_vlans`
+                        WHERE `networkports_id` = '$npdev' ";
+               $DB->query($query);
+               while ($data = $DB->fetch_array($result)) {
+                  $query = "INSERT INTO
+                           `glpi_networkports_vlans` (`networkports_id`, `vlans_id`)
+                           VALUES ('$npdev','" . $data['vlans_id'] . "')";
+                  $DB->query($query);
+               }
+            }
+         }
+      }
+      // end manage VLAN
+
+      // Manage History
+      $sourcename=NOT_AVAILABLE;
+      $destname=NOT_AVAILABLE;
+      $sourcehistory=false;
+      $desthistory=false;
+      if (class_exists($ps->fields['itemtype'])) {
+         $sourceitem = new $ps->fields['itemtype']();
+         if ($sourceitem->getFromDB($ps->fields['items_id'])) {
+            $sourcename = $sourceitem->getName();
+            $sourcehistory = $sourceitem->dohistory;
+         }
+      }
+      if (class_exists($pd->fields['itemtype'])) {
+         $destitem = new $pd->fields['itemtype']();
+         if ($destitem->getFromDB($pd->fields['items_id'])) {
+            $destname = $destitem->getName();
+            $desthistory = $destitem->dohistory;
+         }
+      }
+
+      if ($sourcehistory) {
+
+         $changes[0] = 0;
+         $changes[1] = "";
+         $changes[2] = $destname;
+         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
+            $changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
+         }
+         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
+            $changes[2] = $changes[2] . " > #" . $pd->fields["name"];
+         }
+         historyLog($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
+                    $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+      }
+      if ($desthistory) {
+
+         $changes[2] = $sourcename;
+         if ($pd->fields["itemtype"] == 'NetworkEquipment') {
+            $changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
+         }
+         if ($ps->fields["itemtype"] == 'NetworkEquipment') {
+            $changes[2] = $changes[2] . " > #" . $ps->fields["name"];
+         }
+         historyLog($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
+                    $ps->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+      }
+   }
+
+
+   function post_deleteFromDB($ID) {
+
+      // Update to blank networking item
+      // clean datas of linked ports if network one
+      $np1 = new NetworkPort;
+      $np2 = new NetworkPort;
+      if ($np1->getFromDB($this->fields['networkports_id_1'])
+         && $np2->getFromDB($this->fields['networkports_id_2'])) {
+         $npnet = NULL;
+         $npdev = NULL;
+         if ($np1->fields["itemtype"] != 'NetworkEquipment'
+            && $np2->fields["itemtype"] == 'NetworkEquipment') {
+
+            $npnet = $np2;
+            $npdev = $np1;
+         }
+         if ($np2->fields["itemtype"] != 'NetworkEquipment'
+            && $np1->fields["itemtype"] == 'NetworkEquipment') {
+
+            $npnet = $np2;
+            $npdev = $np1;
+         }
+         if ($npnet && $npdev ) {
+            // If addresses are egal, was copied from device in GLPI 0.71 : clear it
+            // Unset MAC and IP from networking device
+            if ($npnet->fields['mac'] == $npdev->fields['mac']) {
+
+               $npnet->update(array('id'=>$npnet->fields['id'],
+                              'mac'=>''));
+            }
+            if ($np1->fields['ip'] == $np2->fields['ip']) {
+               $npnet->update(array('id'=>$npnet->fields['id'],
+                              'ip'=>'','netmask'=>'','subnet'=>'','gateway'=>''));
+            }
+            // Unset netpoint from common device
+            $npdev->update(array('id'=>$npdev->fields['id'],
+                              'netpoints_id'=>0));
+         }
+
+         // Manage history
+
+         $name=NOT_AVAILABLE;
+         $dohistory=false;
+         if (class_exists($np2->fields["itemtype"])) {
+            $item = new $np2->fields["itemtype"];
+            if ($item->getFromDB($np2->fields["items_id"])) {
+               $name = $item->getName();
+               $dohistory = $item->dohistory;
+            }
+         }
+         if ($dohistory) {
+            $changes[0] = 0;
+            $changes[1] = $name;
+            $changes[2] = '';
+            if ($np1->fields["itemtype"] == 'NetworkEquipment') {
+               $changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
+            }
+            if ($np2->fields["itemtype"] == 'NetworkEquipment') {
+               $changes[1] = $changes[1] . " > #" . $np2->fields["name"];
+            }
+            historyLog($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
+                     $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+         }
+
+         $name=NOT_AVAILABLE;
+         $dohistory=false;
+         if (class_exists($np1->fields["itemtype"])) {
+            $item = new $np1->fields["itemtype"];
+            if ($item->getFromDB($np1->fields["items_id"])) {
+               $name = $item->getName();
+               $dohistory = $item->dohistory;
+            }
+         }
+         if ($dohistory) {
+            $changes[0] = 0;
+            $changes[1] = $name;
+            $changes[2] = '';
+            if ($np2->fields["itemtype"] == 'NetworkEquipment') {
+               $changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
+            }
+            if ($np1->fields["itemtype"] == 'NetworkEquipment') {
+               $changes[1] = $changes[1] . " > #" . $np1->fields["name"];
+            }
+            historyLog($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
+                     $np1->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+         }
+      }
+
+   }
    /**
     * Get port opposite port ID
     *
@@ -57,20 +302,11 @@ class NetworkPort_NetworkPort {
    function getOppositeContact ($ID) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_networkports_networkports`
-                WHERE `networkports_id_1` = '$ID'
-                      OR `networkports_id_2` = '$ID'";
-      if ($result=$DB->query($query)) {
-         $data = $DB->fetch_array($result);
-         if (is_array($data)) {
-            $this->networkports_id_1 = $data["networkports_id_1"];
-            $this->networkports_id_2 = $data["networkports_id_2"];
-         }
-         if ($this->networkports_id_1 == $ID) {
-            return $this->networkports_id_2;
-         } else if ($this->networkports_id_2 == $ID) {
-            return $this->networkports_id_1;
+      if ($this->getFromDBForNetworkPort($ID)) {
+         if ($this->fields['networkports_id_1'] == $ID) {
+            return $this->fields['networkports_id_2'];
+         } else if ($this->fields['networkports_id_2'] == $ID) {
+            return $this->fields['networkports_id_1'];
          } else {
             return false;
          }

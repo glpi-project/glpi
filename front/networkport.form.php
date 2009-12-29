@@ -56,6 +56,7 @@ if (!strpos($_SERVER['HTTP_REFERER'],"&referer=")) {
 }
 
 $np = new NetworkPort();
+$nn = new NetworkPort_NetworkPort();
 $npv = new NetworkPort_Vlan();
 
 if (isset($_POST["add"])) {
@@ -137,7 +138,8 @@ if (isset($_POST["add"])) {
    if (isset($_POST["dport"]) && count($_POST["dport"])) {
       foreach ($_POST["dport"] as $sport => $dport) {
          if ($sport && $dport) {
-            makeConnector($sport,$dport);
+            
+            $nn->add(array('networkports_id_1'=> $sport, 'networkports_id_2' => $dport));
          }
       }
    }
@@ -146,7 +148,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["disconnect"])) {
    checkRight("networking","w");
    if (isset($_GET["id"])) {
-      removeConnector($_GET["id"]);
+      $nn->delete($_GET);
       $fin = "";
       if (isset($_GET["sport"])) {
          $fin = "?sport=".$_GET["sport"];
