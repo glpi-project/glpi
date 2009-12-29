@@ -166,6 +166,35 @@ function displayMigrationMessage ($id, $msg="") {
 	}
 	glpi_flush();
 }
+
+/**
+ * Add a dropdown if not exists (used by pre 0.80 update script)
+ * Only use for simple dropdown (no entity and not tree)
+ *
+ * @param $table string table name
+ * @param $name string name of the imported dropdown
+ *
+ * @param interger (ID of the existing/new dropdown)
+ */
+function update_importDropdown ($table, $name) {
+
+   $query = "SELECT `ID`
+             FROM `".$table."`
+             WHERE `name` = '".addslashes($name)."'";
+   if ($result = $DB->query($query) ) {
+      if ($DB->numrows($result) > 0) {
+         return $DB->result($result,0,"ID");
+      }
+   }
+   $query = "INSERT INTO `".$table."`
+             (`name`)
+             VALUES ('".addslashes($name)."')";
+   if ($result = $DB->query($query)) {
+      return $DB->insert_id();
+   }
+   return 0;
+}
+
 /**
  * Display the form of content update (addslashes compatibility (V0.4))
  *

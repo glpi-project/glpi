@@ -643,11 +643,10 @@ function update0713to072() {
 	//// Clean interface use for GFX card
 	// Insert default values
 
-   // TODO : need review as externalImportDropdown obsoleted
-	externalImportDropdown("glpi_dropdown_interface", "AGP");
-	externalImportDropdown("glpi_dropdown_interface", "PCI");
-	externalImportDropdown("glpi_dropdown_interface", "PCIe");
-	externalImportDropdown("glpi_dropdown_interface", "PCI-X");
+	update_importDropdown("glpi_dropdown_interface", "AGP");
+	update_importDropdown("glpi_dropdown_interface", "PCI");
+	update_importDropdown("glpi_dropdown_interface", "PCIe");
+	update_importDropdown("glpi_dropdown_interface", "PCI-X");
 
 	if (!FieldExists("glpi_device_gfxcard", "FK_interface")) {
 
@@ -661,7 +660,7 @@ function update0713to072() {
 				while ($data=$DB->fetch_assoc($result)){
 					$data = addslashes_deep($data);
 					// Update datas
-					if ($newID=externalImportDropdown("glpi_dropdown_interface", $data['OLDNAME'])){
+					if ($newID=update_importDropdown("glpi_dropdown_interface", $data['OLDNAME'])){
 						$query2="UPDATE glpi_device_gfxcard SET FK_interface='$newID' WHERE interface='".$data['OLDNAME']."'";
 						$DB->query($query2) or die("0.72 update glpi_device_gfxcard set new interface value " . $LANG['update'][90] . $DB->error());
 					}
