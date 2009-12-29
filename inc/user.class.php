@@ -334,7 +334,8 @@ class User extends CommonDBTM {
             $affectation["profiles_id"] = $DB->result($result,0,0);
             $affectation["users_id"] = $input["id"];
             $affectation["is_recursive"] = 0;
-            $affectation["is_dynamic"] = 0;
+            // Default right as dynamic. If dynamic rights are set it will disappear.
+            $affectation["is_dynamic"] = 1;
             $right = new Profile_User();
             $right->add($affectation);
          }
@@ -432,8 +433,6 @@ class User extends CommonDBTM {
              && isset($this->fields["_ldap_rules"])
              && count($this->fields["_ldap_rules"])) {
 
-            //TODO : do not erase all the dynamic rights, but compare it with the ones in DB
-
             //and add/update/delete only if it's necessary !
             if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])) {
                $entities_rules = $this->fields["_ldap_rules"]["rules_entities_rights"];
@@ -453,40 +452,32 @@ class User extends CommonDBTM {
                $rights = array();
             }
 
-            //purge dynamic rights
-            $this->purgeDynamicProfiles();
-
+            $dynamic_profiles = Profile_User::getForUser($this->fields["id"],true);
+            $retrieved_dynamic_profiles=array();
             //For each affectation -> write it in DB
             foreach($entities_rules as $entity) {
                //Multiple entities assignation
                if (is_array($entity[0])) {
                   foreach ($entity[0] as $tmp => $ent) {
-                     $affectation["entities_id"] = $ent[0];
-                     $affectation["profiles_id"] = $entity[1];
-                     $affectation["is_recursive"] = $entity[2];
-                     $affectation["users_id"] = $this->fields["id"];
-                     $affectation["is_dynamic"] = 1;
-                     $right = new Profile_User();
-                     $right->add($affectation);
+                     $affectation['entities_id'] = $ent[0];
+                     $affectation['profiles_id'] = $entity[1];
+                     $affectation['is_recursive'] = $entity[2];
+                     $affectation['users_id'] = $this->fields['id'];
+                     $affectation['is_dynamic'] = 1;
+
+                     $retrieved_dynamic_profiles[]=$affectation;
                   }
                } else {
-                  $affectation["entities_id"] = $entity[0];
-                  $affectation["profiles_id"] = $entity[1];
-                  $affectation["is_recursive"] = $entity[2];
-                  $affectation["users_id"] = $this->fields["id"];
-                  $affectation["is_dynamic"] = 1;
-                  $right = new Profile_User();
-                  $right->add($affectation);
+                  $affectation['entities_id'] = $entity[0];
+                  $affectation['profiles_id'] = $entity[1];
+                  $affectation['is_recursive'] = $entity[2];
+                  $affectation['users_id'] = $this->fields['id'];
+                  $affectation['is_dynamic'] = 1;
+                  $retrieved_dynamic_profiles[]=$affectation;
                }
             }
 
             if (count($entities)>0 && count($rights)==0) {
-               //If no dynamics profile is provided : get the profil by default if not existing profile
-               /*
-               $exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$this->fields["id"]."'";
-               $result = $DB->query($exist_profile);
-               if ($DB->numrows($result)==0){
-               */
                $sql_default_profile = "SELECT `id`
                                        FROM `glpi_profiles`
                                        WHERE `is_default` = '1'";
@@ -495,22 +486,52 @@ class User extends CommonDBTM {
                if ($DB->numrows($result)) {
                   $rights[] = $DB->result($result,0,0);
                }
-               //}
             }
 
             if (count($rights)>0 && count($entities)>0) {
                foreach($rights as $right) {
                   foreach($entities as $entity_tab) {
                      foreach ($entity_tab as $entity) {
-                        $affectation["entities_id"] = $entity[0];
-                        $affectation["profiles_id"] = $right;
-                        $affectation["users_id"] = $this->fields["id"];
-                        $affectation["is_recursive"] = $entity[1];
-                        $affectation["is_dynamic"] = 1;
-                        $right = new Profile_User();
-                        $right->add($affectation);
+                        $affectation['entities_id'] = $entity[0];
+                        $affectation['profiles_id'] = $right;
+                        $affectation['users_id'] = $this->fields['id'];
+                        $affectation['is_recursive'] = $entity[1];
+                        $affectation['is_dynamic'] = 1;
+                        $retrieved_dynamic_profiles[]=$affectation;
                      }
                   }
+               }
+            }
+
+            // Compare retrived profiles to existing ones : clean arrays to do purge and add
+            if (count($retrieved_dynamic_profiles)) {
+               foreach ($retrieved_dynamic_profiles as $keyretr => $retr_profile) {
+                  $found=false;
+                  foreach ($dynamic_profiles as $keydb => $db_profile) {
+                        // Found existing profile : unset values in array
+                        if (!$found &&
+                           $db_profile['entities_id'] == $retr_profile['entities_id']
+                           && $db_profile['profiles_id'] == $retr_profile['profiles_id']
+                           && $db_profile['is_recursive'] == $retr_profile['is_recursive']) {
+                              unset($retrieved_dynamic_profiles[$keyretr]);
+                              unset($dynamic_profiles[$keydb]);
+                        }
+                  }
+               }
+            }
+            
+            // Add new dynamic profiles
+            if (count($retrieved_dynamic_profiles)) {
+               $right = new Profile_User();
+               foreach ($retrieved_dynamic_profiles as $keyretr => $retr_profile) {
+                  $right->add($retr_profile);
+               }
+            }
+            // Delete old dynamic profiles
+            if (count($dynamic_profiles)) {
+               $right = new Profile_User();
+               foreach ($dynamic_profiles as $keydb => $db_profile) {
+                  $right->delete($db_profile);
                }
             }
 
@@ -1440,22 +1461,6 @@ class User extends CommonDBTM {
       return array($input,$updates);
    }
 
-
-   /**
-    * Delete dynamic profiles for the current user
-    **/
-   function purgeDynamicProfiles() {
-      global $DB;
-
-      //Purge only in case of connection to the master mysql server
-      if (!$DB->isSlave()) {
-         $sql = "DELETE
-                 FROM `glpi_profiles_users`
-                 WHERE `users_id` = '".$this->fields["id"]."'
-                       AND `is_dynamic` = '1'";
-         $DB->query($sql);
-      }
-   }
 
 
    function getSearchOptions() {

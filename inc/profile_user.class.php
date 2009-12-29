@@ -426,17 +426,17 @@ class Profile_User extends CommonDBTM {
    /**
     * Get entities for which a user have a right
     *
-    * @param $ID user ID
+    * @param $user_ID user ID
     * @param $is_recursive check also using recurisve rights
     *
     * @return array of entities ID
     */
-   static function getUserEntities($ID,$is_recursive=true) {
+   static function getUserEntities($user_ID,$is_recursive=true) {
       global $DB;
 
       $query = "SELECT DISTINCT `entities_id`, `is_recursive`
                 FROM `glpi_profiles_users`
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '$user_ID'";
       $result=$DB->query($query);
 
       if ($DB->numrows($result) >0) {
@@ -452,6 +452,26 @@ class Profile_User extends CommonDBTM {
          return array_unique($entities);
       }
       return array();
+   }
+
+   /**
+    * Get entities for which a user have a right
+    *
+    * @param $user_ID user ID
+    * @param $is_recursive check also using recurisve rights
+    *
+    * @return array of entities ID
+    */
+   static function getForUser($user_ID,$only_dynamic=false) {
+      global $DB;
+
+      $condition = "`users_id` = '$user_ID'";
+
+      if ($only_dynamic) {
+         $condition .= " AND `is_dynamic` = 1";
+      }
+
+      return getAllDatasFromTable('glpi_profiles_users',$condition);
    }
 }
 ?>
