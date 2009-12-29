@@ -1666,9 +1666,9 @@ function manageRedirect($where) {
                      }
                      break;
 
+                  // Use for compatibility with old name
                   case "tracking":
-
-                  case "ticket": ///TODO prepare update name : delete when tracking -> ticket
+                  case "ticket": 
                      glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
                                  $data[1]);
                      break;
@@ -1700,6 +1700,9 @@ function manageRedirect($where) {
                      glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
                      break;
 
+                  // Use for compatibility with old name
+                  case "tracking":
+                     $data[0] = "ticket";
                   default :
                      if (!empty($data[0] )&& $data[1]>0) {
                         glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".$data[1]);

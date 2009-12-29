@@ -780,8 +780,6 @@ class Document extends CommonDBTM {
    static function moveUploadedDocument(&$input,$filename) {
       global $CFG_GLPI,$LANG;
 
-      /// TODO add check of $input['current_filename']
-
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
       if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
