@@ -135,7 +135,8 @@ $percent['closed_tracking']=80;
 $percent['followups']=50;
 $percent['tasks']=50;
 // RESERVATION
-$percent['reservation']=1;
+$percent['reservationitems']=1;
+$percent['reservations']=90;
 // DOCUMENT
 $MAX['document']=10;
 $DOC_PER_ITEM=2;
