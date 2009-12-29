@@ -762,29 +762,6 @@ class User extends CommonDBTM {
       }
    }
 
-   // TODO probably not the batter place for this, but only used from this.
-   /**
-    * Get language in GLPI associated with the value coming from LDAP
-    * Value can be, for example : English, en_EN or en
-    * @param $lang : the value coming from LDAP
-    * @return the locale's php page in GLPI or '' is no language associated with the value
-    */
-   static function getLanguage($lang) {
-      global $CFG_GLPI;
-
-      /// TODO Add fields in config array to be more efficient / use stricmp instead of == for strings
-
-      foreach ($CFG_GLPI["languages"] as $ID => $language) {
-         if ($lang == $ID
-             || $lang == $language[0]
-             || $lang == $language[2]
-             || $lang == $language[3]) {
-            return $ID;
-         }
-      }
-      return "";
-   }
-
    /**
     * Function that try to load from LDAP the user information...
     *
@@ -837,7 +814,7 @@ class User extends CommonDBTM {
             } else {
                switch ($k) {
                   case "language" :
-                     $language = $this->getLanguage($v[0][$e][0]);
+                     $language = Config::getLanguage($v[0][$e][0]);
                      if ($language != '') {
                         $this->fields[$k] = $language;
                      }
