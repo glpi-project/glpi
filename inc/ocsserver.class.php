@@ -499,70 +499,69 @@ class OcsServer extends CommonDBTM {
       return $input;
    }
 
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
+   function pre_updateInDB() {
 
       // Update checksum
-      $input["checksum"]=0;
+      $checksum=0;
 
       if ($this->fields["import_printer"]) {
-         $input["checksum"]|= pow(2,self::PRINTERS_FL);
+         $checksum|= pow(2,self::PRINTERS_FL);
       }
       if ($this->fields["import_software"]) {
-         $input["checksum"]|= pow(2,self::SOFTWARES_FL);
+         $checksum|= pow(2,self::SOFTWARES_FL);
       }
       if ($this->fields["import_monitor"]) {
-         $input["checksum"]|= pow(2,self::MONITORS_FL);
+         $checksum|= pow(2,self::MONITORS_FL);
       }
       if ($this->fields["import_periph"]) {
-         $input["checksum"]|= pow(2,self::INPUTS_FL);
+         $checksum|= pow(2,self::INPUTS_FL);
       }
       if ($this->fields["import_registry"]) {
-         $input["checksum"]|= pow(2,self::REGISTRY_FL);
+         $checksum|= pow(2,self::REGISTRY_FL);
       }
       if ($this->fields["import_disk"]) {
-         $input["checksum"]|= pow(2,self::DRIVES_FL);
+         $checksum|= pow(2,self::DRIVES_FL);
       }
       if ($this->fields["import_ip"]) {
-         $input["checksum"]|= pow(2,self::NETWORKS_FL);
+         $checksum|= pow(2,self::NETWORKS_FL);
       }
       if ($this->fields["import_device_port"]) {
-         $input["checksum"]|= pow(2,self::PORTS_FL);
+         $checksum|= pow(2,self::PORTS_FL);
       }
       if ($this->fields["import_device_modem"]) {
-         $input["checksum"]|= pow(2,self::MODEMS_FL);
+         $checksum|= pow(2,self::MODEMS_FL);
       }
       if ($this->fields["import_device_drive"]) {
-         $input["checksum"]|= pow(2,self::STORAGES_FL);
+         $checksum|= pow(2,self::STORAGES_FL);
       }
       if ($this->fields["import_device_sound"]) {
-         $input["checksum"]|= pow(2,self::SOUNDS_FL);
+         $checksum|= pow(2,self::SOUNDS_FL);
       }
       if ($this->fields["import_device_gfxcard"]) {
-         $input["checksum"]|= pow(2,self::VIDEOS_FL);
+         $checksum|= pow(2,self::VIDEOS_FL);
       }
       if ($this->fields["import_device_iface"]) {
-         $input["checksum"]|= pow(2,self::NETWORKS_FL);
+         $checksum|= pow(2,self::NETWORKS_FL);
       }
       if ($this->fields["import_device_hdd"]) {
-         $input["checksum"]|= pow(2,self::STORAGES_FL);
+         $checksum|= pow(2,self::STORAGES_FL);
       }
       if ($this->fields["import_device_memory"]) {
-         $input["checksum"]|= pow(2,self::MEMORIES_FL);
+         $checksum|= pow(2,self::MEMORIES_FL);
       }
       if ($this->fields["import_device_processor"] || $this->fields["import_general_contact"]
           || $this->fields["import_general_comment"] || $this->fields["import_general_domain"]
           || $this->fields["import_general_os"] || $this->fields["import_general_name"]) {
 
-         $input["checksum"]|= pow(2,self::HARDWARE_FL);
+         $checksum|= pow(2,self::HARDWARE_FL);
       }
       if ($this->fields["import_general_manufacturer"] || $this->fields["import_general_type"]
           || $this->fields["import_general_model"] || $this->fields["import_general_serial"]) {
 
-         $input["checksum"]|= pow(2,self::BIOS_FL);
+         $checksum|= pow(2,self::BIOS_FL);
       }
-      $updates[]="checksum";
-      $this->fields["checksum"]=$input["checksum"];
-      return array($input,$updates);
+      $this->updates[]="checksum";
+      $this->fields["checksum"]=$checksum;
    }
 
    function prepareInputForAdd($input) {

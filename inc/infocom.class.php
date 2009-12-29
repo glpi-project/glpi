@@ -131,18 +131,17 @@ class Infocom extends CommonDBTM {
       return $input;
    }
 
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
+   function pre_updateInDB() {
 
       // Clean end alert if buy_date is after old one
       // Or if duration is greater than old one
-      if ((isset($oldvalues['buy_date']) && ($oldvalues['buy_date'] < $this->fields['buy_date']))
-          || (isset($oldvalues['warranty_duration'])
-          && ($oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
+      if ((isset($this->oldvalues['buy_date']) && ($this->oldvalues['buy_date'] < $this->fields['buy_date']))
+          || (isset($this->oldvalues['warranty_duration'])
+          && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
          $alert=new Alert();
          $alert->clear($this->type,$this->fields['id'],ALERT_END);
       }
-      return array($input,$updates);
    }
 
    /**

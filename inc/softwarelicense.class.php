@@ -61,14 +61,13 @@ class SoftwareLicense extends CommonDBTM {
       return haveRight('software', 'r');
    }
 
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
+   function pre_updateInDB() {
 
       // Clean end alert if expire is after old one
-      if ((isset($oldvalues['expire']) && ($oldvalues['expire'] < $this->fields['expire']))) {
+      if ((isset($this->oldvalues['expire']) && ($this->oldvalues['expire'] < $this->fields['expire']))) {
          $alert=new Alert();
          $alert->clear($this->type,$this->fields['id'],ALERT_END);
       }
-      return array($input,$updates);
    }
 
    function prepareInputForAdd($input) {
