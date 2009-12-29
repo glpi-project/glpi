@@ -1096,6 +1096,45 @@ class Dropdown {
       }
    }
 
+   /**
+    * Import a dropdown - check if already exists
+    *
+    * @param $itemtype string name of the class
+    * @param $input array of value to import
+    *
+    * @return the ID of the new
+    */
+   static function import ($itemtype, $input) {
+
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+      $item = new $itemtype();
+      return $item->import($input);
+   }
+
+   /**
+    * Import a value in a dropdown table.
+    *
+    * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+    *
+    * @param $itemtype string name of the class
+    * @param $value string : Value of the new dropdown.
+    * @param $entities_id int : entity in case of specific dropdown
+    * @param $external_params
+    * @param $comment
+    * @param $add if true, add it if not found. if false, just check if exists
+    *
+    * @return integer : dropdown id.
+    **/
+   function importExternal($itemtype,$value,$entities_id=-1,$external_params=array(),$comment='',$add=true) {
+
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+      $item = new $itemtype();
+      return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
+   }
 }
 
 ?>

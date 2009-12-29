@@ -561,7 +561,7 @@ logDebug("Software::cleanDBonPurge($ID)");
 
       $manufacturer_id = 0;
       if ($manufacturer != '') {
-         $manufacturer_id = externalImportDropdown("glpi_manufacturers", $manufacturer);
+         $manufacturer_id = Dropdown::externalImport('Manufacturer', $manufacturer);
       }
 
       $sql = "SELECT `id`
