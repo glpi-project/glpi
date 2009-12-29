@@ -785,7 +785,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
-      // TODO Temporary workaround to bug #1918
+      // Limit using global config
       Dropdown::showInteger('list_limit',
                       ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
                                                                        : $CFG_GLPI['list_limit_max']),
