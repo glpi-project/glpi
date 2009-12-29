@@ -1026,7 +1026,6 @@ class CronTask extends CommonDBTM{
 
    /**
     * Garbage collector for expired file session
-    * TODO : move this in a "tools" class when available
     *
     * @param $task for log
     *
