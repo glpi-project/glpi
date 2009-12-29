@@ -760,17 +760,6 @@ class Plugin extends CommonDBTM {
       }
       $plugin = strtolower($plug['plugin']);
 
-      /// TODO remove => no CommonItem :
-/*      if (isset($attrib['classname']) && !empty($attrib['classname'])) {
-         $PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];
-         unset($attrib['classname']);
-      }
-*/      /// TODO remove => getTypeName
-/*      if (isset($attrib['typename']) && !empty($attrib['typename'])) {
-         $PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
-         unset($attrib['typename']);
-      }
-*/
       foreach (array('contract_types','doc_types','helpdesk_types','helpdesk_visible_types',
                      'infocom_types','linkgroup_types','linkuser_types',
                      'massiveaction_noupdate_types','massiveaction_nodelete_types',
