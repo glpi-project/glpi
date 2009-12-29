@@ -227,9 +227,12 @@ function getGroupsFromLDAP($ldap_connection,$config_ldap,$filter,$search_in_grou
          $infos = ldap_get_entries($ldap_connection, $sr);
          for ($ligne=0; $ligne < $infos["count"];$ligne++) {
             if ($search_in_groups) {
-               $cn = $infos[$ligne]["cn"][0];
-               $groups[$infos[$ligne]["dn"]]= (array("cn"=>$infos[$ligne]["cn"][0],
-                                                     "search_type" => "groups"));
+               // No cn : not a real object
+               if (isset($infos[$ligne]["cn"][0])) {
+                  $cn = $infos[$ligne]["cn"][0];
+                  $groups[$infos[$ligne]["dn"]]= (array("cn"=>$infos[$ligne]["cn"][0],
+                                                        "search_type" => "groups"));
+               }
             } else {
                if (isset($infos[$ligne][$extra_attribute])) {
                   for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];
@@ -324,12 +327,20 @@ function getAllGroups($auths_id,$filter,$filter2,$entity,$order='DESC') {
             }
          }
       }
-      /// TODO : is this sort correct ? ksort sort on key but not a reverse sort ?
+
+      
+
       if ($order=='DESC') {
-         ksort($groups);
+         function local_cmp($b,$a) {
+            return strcasecmp($a['cn'],$b['cn']);
+         }
       } else {
-         sort($groups);
+         function local_cmp($a,$b) {
+            return strcasecmp($a['cn'],$b['cn']);
+         }
       }
+      usort($groups,'local_cmp');
+
    }
    return $groups;
 }
@@ -379,7 +390,8 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
                $LANG['buttons'][19] . "</a>";
          echo "<table class='tab_cadre'>";
          echo "<tr><th>" . $LANG['buttons'][37]. "</th>";
-         echo displaySearchHeaderItem(HTML_OUTPUT,0,$LANG['common'][35],$header_num=0,$target.
+         $header_num=0;
+         echo displaySearchHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
                                       "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
          echo "<th>".$LANG['setup'][261]."</th>";
          echo"<th>".$LANG['ocsng'][36]."</th></tr>";

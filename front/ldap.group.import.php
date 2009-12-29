@@ -111,10 +111,11 @@ if (isset($_GET['next'])) {
          }
 
          if (!isset($_SESSION["ldap_sortorder"])) {
-            $_SESSION["ldap_sortorder"] = "DESC";
+            $_SESSION["ldap_sortorder"] = "ASC";
          } else {
             $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
+
          showLdapGroups($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,
                         $_SESSION["ldap_group_filter"],$_SESSION["ldap_group_filter2"],
                         $_SESSION["glpiactive_entity"],$_SESSION["ldap_sortorder"]);
