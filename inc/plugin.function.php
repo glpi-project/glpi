@@ -103,13 +103,12 @@ function doHookFunction($name,$parm=NULL) {
 /**
  * This function executes a hook for 1 plugin.
  * @param $plugname Name of the plugin
- * @param $suffixe_of_function to be called
+ * @param $function function to be called (may be an array for call a class method)
  * @param $args params passed to the function
  *
  * @return mixed $data
  */
 function doOneHook() {
-
    $args=func_get_args();
    $plugname = array_shift($args);
    $hook = array_shift($args);
