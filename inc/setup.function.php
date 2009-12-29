@@ -230,7 +230,7 @@ function addDropdown($input) {
             regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
          }
          // Clean sons / ancestors if needed
-         CleanFields($input["tablename"], 'sons_cache', 'ancestors_cache');
+         CleanFields($input["tablename"], array('sons_cache', 'ancestors_cache'));
 
          return $ID;
       }

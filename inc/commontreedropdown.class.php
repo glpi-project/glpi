@@ -98,7 +98,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $parent = $this->fields[getForeignKeyFieldForTable($this->table)];
 
-      CleanFields($this->table, 'sons_cache', 'ancestors_cache');
+      CleanFields($this->table, array('sons_cache', 'ancestors_cache'));
       $tmp = clone $this;
       $crit = array('FIELDS'=>'id',
                     getForeignKeyFieldForTable($this->table)=>$ID);
@@ -122,7 +122,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function post_updateItem($input,$updates,$history=1) {
       if (in_array('name', $updates) || in_array(getForeignKeyFieldForTable($this->table), $updates)) {
          if (in_array(getForeignKeyFieldForTable($this->table), $updates)) {
-            CleanFields($this->table, 'sons_cache', 'ancestors_cache');
+            CleanFields($this->table, array('sons_cache', 'ancestors_cache'));
          }
          regenerateTreeCompleteNameUnderID($this->table, $input['id']);
       }

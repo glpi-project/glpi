@@ -1188,16 +1188,18 @@ function formatOutputWebLink($link) {
 /**
 * Clean fields if needed
 *
-* @param $table name
-* @param $field :sons_cache, ancestors_cache, ...
+* @param $table table name name
+* @param $fields fields to set NULL : may be a string or an array (sons_cache, ancestors_cache, ...)
 */
-function CleanFields() {
+function CleanFields($table,$fields) {
    global $DB;
 
-   $args = func_get_args();
-   $table = array_shift($args);
+   if (!is_array($fields)) {
+      $fields = array($fields);
+   }
+   
    $query = '';
-   foreach ($args as $field) {
+   foreach ($fields as $field) {
       if (FieldExists($table,$field)) {
          $query .= (empty($query)?"UPDATE `$table` SET" : ",")." `$field` = NULL ";
 
