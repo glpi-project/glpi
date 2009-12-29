@@ -119,6 +119,7 @@ function addReservation($type,$ID){
 
 		$date1=strtotime('-2 week'); // reservations since 2 weeks
 		$date2=$date1;
+      $i=0;
 
 		while (mt_rand(0,100)<$percent['reservations']){
          $date1=$date2+3600*mt_rand(0,10); // 10 hours between each resa max
