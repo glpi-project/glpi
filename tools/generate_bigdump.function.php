@@ -108,11 +108,28 @@ function getNextMAC(){
 * @param $ID item ID
 */
 function addReservation($type,$ID){
-	global $percent,$DB;
-	if (mt_rand(0,100)<$percent['reservation']){
+	global $percent,$DB,$FIRST,$LAST;
+
+	$current_year=date("Y");
+
+	if (mt_rand(0,100)<$percent['reservationitems']){
 		$query="INSERT INTO glpi_reservationitems VALUES (NULL,'$type','$ID','comment $ID $type','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		// TODO add elements in reservation planning
+      $tID=$DB->insert_id();
+
+		$date1=strtotime('-2 week'); // reservations since 2 weeks
+		$date2=$date1;
+
+		while (mt_rand(0,100)<$percent['reservations']){
+         $date1=$date2+3600*mt_rand(0,10); // 10 hours between each resa max
+			$date2=$date1+3600*mt_rand(1,5); // A reservation from 1 to 5 hours
+
+			$query="INSERT INTO glpi_reservations VALUES (NULL,'$tID','".date("Y-m-d H:i:s",$date1)."','".date("Y-m-d H:i:s",$date2)."','".mt_rand($FIRST['users_normal'],$LAST['users_postonly'])."','comments $i ".getRandomString(15)."');";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$DB->insert_id();
+			$i++;
+		}
+		
 	}
 
 }
@@ -155,7 +172,9 @@ function addContracts($type,$ID){
 * @param $ID_entity entity ID
 */
 function addTracking($type,$ID,$ID_entity){
-	global $percent,$DB,$MAX,$current_year,$FIRST,$LAST;
+	global $percent,$DB,$MAX,$FIRST,$LAST;
+
+	$current_year=date("Y");
 
 	$tco=0;
 	while (mt_rand(0,100)<$percent['tracking_on_item']){
@@ -542,8 +561,7 @@ function generateGlobalDropdowns(){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 
-
-   /// TODO complete it : by entity...
+   // GLobal ticket categories : also specific ones by entity
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
 		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','0','categorie $i','','comment categorie $i','1','0','0','0','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -555,10 +573,10 @@ function generateGlobalDropdowns(){
 			for ($k=0;$k<mt_rand(0,pow($MAX['tracking_category'],1/2));$k++){
 				$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','$newID2','ss-categorie $k','','comment ss-categorie $k','3','0','0','0','','')";
 				$DB->query($query) or die("PB REQUETE ".$query);
-			}	
+			}
 		}
-	}	
-	
+	}
+
 	$query = "OPTIMIZE TABLE  glpi_ticketcategories;";
 	$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -674,96 +692,9 @@ function getMaxItem($table){
 */
 function generate_entity($ID_entity){
 
-	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT,$MAX_DISK,$current_year;
+	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT,$MAX_DISK;
 	$current_year=date("Y");
 
-
-	// LOCATIONS
-	$added=0;
-	$FIRST["locations"]=getMaxItem("glpi_locations")+1;
-	for ($i=0;$i<pow($MAX['locations'],1/5)&&$added<$MAX['locations'];$i++){
-		$added++;
-		$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','lieu $i','0','','comment lieu $i','1','','','building X','room $i')";
-		$DB->query($query) or die("PB REQUETE ".$query);
-		$newID=$DB->insert_id();
-		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
-			$added++;
-			$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','s-lieu $j','$newID','','comment s-lieu $j','2','','','building X','room $i-$j')";
-			$DB->query($query) or die("PB REQUETE ".$query);
-			$newID2=$DB->insert_id();
-			for ($k=0;$k<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$k++){
-				$added++;
-				$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ss-lieu $k','$newID2','','comment ss-lieu $k','3','','','building X','room $i-$j-$k')";
-				$DB->query($query) or die("PB REQUETE ".$query);
-				$newID3=$DB->insert_id();
-				for ($l=0;$l<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$l++){
-					$added++;
-					$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','sss-lieu $l','$newID3','','comment sss-lieu $l','4','','','building X','room $i-$j-$k-$l')";
-					$DB->query($query) or die("PB REQUETE ".$query);
-					$newID4=$DB->insert_id();
-					for ($m=0;$m<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$m++){
-						$added++;
-						$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ssss-lieu $m','$newID4','','comment ssss-lieu $m',5,'','','building X','room $i-$j-$k-$l-$m')";
-						$DB->query($query) or die("PB REQUETE ".$query);
-					}	
-				}	
-			}	
-		}
-	}	
-
-	$query = "OPTIMIZE TABLE  glpi_locations;";
-	$DB->query($query) or die("PB REQUETE ".$query);
-	
-	regenerateTreeCompleteName("glpi_locations");
-	$LAST["locations"]=getMaxItem("glpi_locations");
-
-
-	// Task categories
-	$added=0;
-	$FIRST["taskcategory"]=getMaxItem("glpi_taskcategories")+1;
-	for ($i=0;$i<pow($MAX['taskcategory'],1/5)&&$added<$MAX['taskcategory'];$i++){
-		$added++;
-		$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','0','taskcategory $i','','comment lieu $i','1','','')";
-		$DB->query($query) or die("PB REQUETE ".$query);
-		$newID=$DB->insert_id();
-		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
-			$added++;
-			$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','$newID','s-taskcategory $j','','comment s-lieu $j','2','','')";
-			$DB->query($query) or die("PB REQUETE ".$query);
-			$newID2=$DB->insert_id();
-		}
-	}
-
-	$query = "OPTIMIZE TABLE  glpi_taskcategories;";
-	$DB->query($query) or die("PB REQUETE ".$query);
-	
-	regenerateTreeCompleteName("glpi_taskcategories");
-	$LAST["taskcategory"]=getMaxItem("glpi_taskcategories");
-
-	// glpi_knowbaseitems
-	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
-
-	// Add Specific questions
-	$k=0;
-	$FIRST["kbitems"]=getMaxItem("glpi_knowbaseitems")+1;
-	for ($i=1;$i<=$MAX['kbcategories'];$i++){
-		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
-		for ($j=0;$j<$nb;$j++){
-			$k++;
-			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','0','$i','Entity $ID_entity Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
-			$DB->query($query) or die("PB REQUETE ".$query);
-		}
-	}
-	// Add global questions
-	for ($i=1;$i<=$MAX['kbcategories']/2;$i++){
-		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
-		for ($j=0;$j<$nb;$j++){
-			$k++;
-			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','1','$i','Entity $ID_entity Recursive Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
-			$DB->query($query) or die("PB REQUETE ".$query);
-		}
-	}
-	$LAST["kbitems"]=getMaxItem("glpi_knowbaseitems");
 
 	// glpi_groups
 	$FIRST["groups"]=getMaxItem("glpi_groups")+1;
@@ -824,6 +755,107 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["users_postonly"]=getMaxItem("glpi_users");
+
+
+	// LOCATIONS
+	$added=0;
+	$FIRST["locations"]=getMaxItem("glpi_locations")+1;
+	for ($i=0;$i<pow($MAX['locations'],1/5)&&$added<$MAX['locations'];$i++){
+		$added++;
+		$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','lieu $i','0','','comment lieu $i','1','','','building X','room $i')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$newID=$DB->insert_id();
+		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
+			$added++;
+			$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','s-lieu $j','$newID','','comment s-lieu $j','2','','','building X','room $i-$j')";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$newID2=$DB->insert_id();
+			for ($k=0;$k<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$k++){
+				$added++;
+				$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ss-lieu $k','$newID2','','comment ss-lieu $k','3','','','building X','room $i-$j-$k')";
+				$DB->query($query) or die("PB REQUETE ".$query);
+				$newID3=$DB->insert_id();
+				for ($l=0;$l<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$l++){
+					$added++;
+					$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','sss-lieu $l','$newID3','','comment sss-lieu $l','4','','','building X','room $i-$j-$k-$l')";
+					$DB->query($query) or die("PB REQUETE ".$query);
+					$newID4=$DB->insert_id();
+					for ($m=0;$m<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$m++){
+						$added++;
+						$query="INSERT INTO glpi_locations VALUES (NULL,'$ID_entity','1','ssss-lieu $m','$newID4','','comment ssss-lieu $m',5,'','','building X','room $i-$j-$k-$l-$m')";
+						$DB->query($query) or die("PB REQUETE ".$query);
+					}	
+				}	
+			}	
+		}
+	}	
+
+	$query = "OPTIMIZE TABLE  glpi_locations;";
+	$DB->query($query) or die("PB REQUETE ".$query);
+	
+	regenerateTreeCompleteName("glpi_locations");
+	$LAST["locations"]=getMaxItem("glpi_locations");
+
+
+	// Task categories
+	$added=0;
+	$FIRST["taskcategory"]=getMaxItem("glpi_taskcategories")+1;
+	for ($i=0;$i<pow($MAX['taskcategory'],1/5)&&$added<$MAX['taskcategory'];$i++){
+		$added++;
+		$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','0','ent$ID_entity taskcategory $i','','comment lieu $i','1','','')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$newID=$DB->insert_id();
+		for ($j=0;$j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'];$j++){
+			$added++;
+			$query="INSERT INTO glpi_taskcategories VALUES (NULL,'$ID_entity','1','$newID','ent$ID_entity s-taskcategory $j','','comment s-lieu $j','2','','')";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$newID2=$DB->insert_id();
+		}
+	}
+
+	$query = "OPTIMIZE TABLE  glpi_taskcategories;";
+	$DB->query($query) or die("PB REQUETE ".$query);
+	
+	regenerateTreeCompleteName("glpi_taskcategories");
+	$LAST["taskcategory"]=getMaxItem("glpi_taskcategories");
+
+
+   // Specific ticket categories
+   $query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','0','category for entity $ID_entity','','comment category for entity $ID_entity','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','')";
+	$DB->query($query) or die("PB REQUETE ".$query);
+   $newID=$DB->insert_id();
+	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
+		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','$newID','categorie $i','','comment categorie $i','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$newID=$DB->insert_id();
+	}
+
+
+	// glpi_knowbaseitems
+	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
+
+	// Add Specific questions
+	$k=0;
+	$FIRST["kbitems"]=getMaxItem("glpi_knowbaseitems")+1;
+	for ($i=1;$i<=$MAX['kbcategories'];$i++){
+		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
+		for ($j=0;$j<$nb;$j++){
+			$k++;
+			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','0','$i','Entity $ID_entity Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
+			$DB->query($query) or die("PB REQUETE ".$query);
+		}
+	}
+	// Add global questions
+	for ($i=1;$i<=$MAX['kbcategories']/2;$i++){
+		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
+		for ($j=0;$j<$nb;$j++){
+			$k++;
+			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','1','$i','Entity $ID_entity Recursive Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
+			$DB->query($query) or die("PB REQUETE ".$query);
+		}
+	}
+	$LAST["kbitems"]=getMaxItem("glpi_knowbaseitems");
+
 
 
 	// Ajout documents  specific
@@ -1315,7 +1347,7 @@ function generate_entity($ID_entity){
 			// Add printer 
 			$typeID=mt_rand(1,$MAX['type_printers']);
 			$modelID=mt_rand(1,$MAX['model_printers']);
-			$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','0','printer of comp $i-$ID_entity',NOW(),'contact $i','num $i','$techID','".getRandomString(10)."','".getRandomString(10)."','0','0','1','comment $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['enterprises'])."','0','0','0','','0','notes printers $i','".mt_rand(2,$MAX['users_sadmin']+$MAX['users_admin']+$MAX['users_normal']+$MAX['users_postonly'])."','".mt_rand(1,$MAX["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+			$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','0','printer of comp $i-$ID_entity',NOW(),'contact $i','num $i','$techID','".getRandomString(10)."','".getRandomString(10)."','0','0','1','comment $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['enterprises'])."','0','0','0','','0','notes printers $i','".mt_rand($FIRST['users_postonly'],$LAST['users_postonly'])."','".mt_rand(1,$MAX["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$printID=$DB->insert_id();
 			addDocuments(PRINTER_TYPE,$printID);
@@ -1368,7 +1400,7 @@ function generate_entity($ID_entity){
 
 	// Add global peripherals
 	for ($i=0;$i<$MAX['global_peripherals'];$i++){
-		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
+		$techID=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
 		$query="INSERT INTO glpi_peripherals VALUES (NULL,'$ID_entity','periph $i-$ID_entity',NOW(),'contact $i','num $i','$techID','comment $i','".getRandomString(10)."','".getRandomString(10)."','0','".mt_rand(1,$MAX['type_peripherals'])."','".mt_rand(1,$MAX['model_peripherals'])."','brand $i','".mt_rand(1,$MAX['manufacturer'])."','1','0','0','','notes peripherals $i','".mt_rand($FIRST['users_normal'],$LAST['users_normal'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$periphID=$DB->insert_id();
@@ -1399,7 +1431,7 @@ function generate_entity($ID_entity){
 		else {$name="software $i";}
 	
 		$loc=mt_rand(1,$MAX['locations']);
-		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
+		$techID=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
 		$os=mt_rand(1,$MAX['os']);
 		$recursive=mt_rand(0,1);
 		$query="INSERT INTO glpi_softwares VALUES (NULL,'$ID_entity','$recursive','$name','comment $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";

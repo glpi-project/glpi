@@ -435,33 +435,11 @@ function update0713to072() {
 
 	displayMigrationMessage("072", $LANG['Menu'][4]); // Software
 
-/*	// ALTER softwareversions
-	// TODO to be removed if final schema used above
-	if (FieldExists("glpi_softwareversions", "buy")) {
-		$query="ALTER TABLE `glpi_softwareversions` DROP `serial`, DROP `expire`, DROP `oem`, DROP `oem_computer`, DROP `buy`, DROP `comments`;";
-		$DB->query($query) or die("0.72 alter clean softwareversion table" . $LANG['update'][90] . $DB->error());
-	}
-	if (FieldExists("glpi_softwareversions", "version")) {
-		$query=" ALTER TABLE `glpi_softwareversions` CHANGE `version` `name` VARCHAR( 255 ) NULL DEFAULT NULL  ";
-		$DB->query($query) or die("0.72 alter version to name in softwareversion table" . $LANG['update'][90] . $DB->error());
-	}
-	if (!FieldExists("glpi_softwareversions", "comments")) {
-		$query="ALTER TABLE `glpi_softwareversions` ADD `comments` TEXT NULL ;";
-		$DB->query($query) or die("0.72 add comments to softwareversion table" . $LANG['update'][90] . $DB->error());
-	}
-
-	if (!isIndex("glpi_softwareversions", "name")) {
-		$query="ALTER TABLE `glpi_softwareversions` ADD INDEX `name` ( `name` )  ";
-		$DB->query($query) or die("0.72 add index on name to softwareversion table" . $LANG['update'][90] . $DB->error());
-	}
-*/
-
 	// If migration run more than once
 	if (!FieldExists("glpi_softwareversions", "state")) {
 		$query="ALTER TABLE `glpi_softwareversions` ADD `state` INT NOT NULL DEFAULT '0' AFTER `sID`";
 		$DB->query($query) or die("0.72 add state to softwareversion table" . $LANG['update'][90] . $DB->error());
 	}
-	// TODO : to be removed on final 0.72 version ?
 	// To allow migration to be run more than once
 	if (FieldExists("glpi_software", "state")) {
 		$query="ALTER TABLE `glpi_software` CHANGE `state` `oldstate` INT( 11 ) NOT NULL DEFAULT '0'";

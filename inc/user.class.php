@@ -54,7 +54,6 @@ class User extends CommonDBTM {
       return $LANG['common'][34];
    }
 
-   /// TODO : works on right check : entity checks...
    function canCreate() {
       return haveRight('user', 'w');
    }
@@ -63,6 +62,21 @@ class User extends CommonDBTM {
       return haveRight('user', 'r');
    }
 
+   function canViewItem() {
+         $entities = Profile_User::getUserEntities($this->fields['id'],true);
+         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+            return true;
+         }
+         return false;
+   }
+
+   function canCreateItem() {
+         $entities = Profile_User::getUserEntities($this->fields['id'],true);
+         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+            return true;
+         }
+         return false;
+   }
 
    function isEntityAssign() {
       // glpi_users.entities_id is only a pref.
@@ -298,8 +312,8 @@ class User extends CommonDBTM {
 
       $input["id"] = $newID;
 
-      $this->syncLdapGroups($input);
-      $rulesplayed = $this->applyRightRules($input);
+      $this->syncLdapGroups();
+      $rulesplayed = $this->applyRightRules();
 
       // Add default profile
       if (!$rulesplayed) {
@@ -388,21 +402,14 @@ class User extends CommonDBTM {
          }
       }
 
-      // Get auth method fo sync ldap groups if needed
-      /// TODO : review it : maybe do it on post actions
-      if (!isset($input["authtype"])) {
-         $this->getFromDB($input['id']);
-         $input["authtype"] = $this->fields['authtype'];
-         if (!isset($input["auths_id"])) {
-            $input["auths_id"] = $this->fields['auths_id'];
-         }
-      }
-
-      $this->syncLdapGroups($input);
-
-      $this->applyRightRules($input);
-
       return $input;
+   }
+
+
+   function post_updateItem($input,$updates,$history=1) {
+      $this->syncLdapGroups();
+
+      $this->applyRightRules();
    }
 
 
@@ -410,40 +417,38 @@ class User extends CommonDBTM {
    /**
     * Apply rules to determine dynamic rights of the user
     *
-    *@param $input data used to apply rules
-    *
     *@return boolean : true if we play the Rule Engine
    **/
-   function applyRightRules($input) {
+   function applyRightRules() {
       global $DB;
 
-      if (isset($input["authtype"])
-          && ($input["authtype"] == AUTH_LDAP
-              || $input["authtype"] == AUTH_MAIL
-              || isAlternateAuthWithLdap($input["authtype"]))) {
+      if (isset($this->fields["authtype"])
+          && ($this->fields["authtype"] == AUTH_LDAP
+              || $this->fields["authtype"] == AUTH_MAIL
+              || isAlternateAuthWithLdap($this->fields["authtype"]))) {
 
-         if (isset($input["id"])
-             && $input["id"] >0
-             && isset($input["_ldap_rules"])
-             && count($input["_ldap_rules"])) {
+         if (isset($this->fields["id"])
+             && $this->fields["id"] >0
+             && isset($this->fields["_ldap_rules"])
+             && count($this->fields["_ldap_rules"])) {
 
             //TODO : do not erase all the dynamic rights, but compare it with the ones in DB
 
             //and add/update/delete only if it's necessary !
-            if (isset($input["_ldap_rules"]["rules_entities_rights"])) {
-               $entities_rules = $input["_ldap_rules"]["rules_entities_rights"];
+            if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])) {
+               $entities_rules = $this->fields["_ldap_rules"]["rules_entities_rights"];
             } else {
                $entities_rules = array();
             }
 
-            if (isset($input["_ldap_rules"]["rules_entities"])) {
-               $entities = $input["_ldap_rules"]["rules_entities"];
+            if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
+               $entities = $this->fields["_ldap_rules"]["rules_entities"];
             } else {
                $entities = array();
             }
 
-            if (isset($input["_ldap_rules"]["rules_rights"])) {
-               $rights = $input["_ldap_rules"]["rules_rights"];
+            if (isset($this->fields["_ldap_rules"]["rules_rights"])) {
+               $rights = $this->fields["_ldap_rules"]["rules_rights"];
             } else {
                $rights = array();
             }
@@ -459,7 +464,7 @@ class User extends CommonDBTM {
                      $affectation["entities_id"] = $ent[0];
                      $affectation["profiles_id"] = $entity[1];
                      $affectation["is_recursive"] = $entity[2];
-                     $affectation["users_id"] = $input["id"];
+                     $affectation["users_id"] = $this->fields["id"];
                      $affectation["is_dynamic"] = 1;
                      $right = new Profile_User();
                      $right->add($affectation);
@@ -468,7 +473,7 @@ class User extends CommonDBTM {
                   $affectation["entities_id"] = $entity[0];
                   $affectation["profiles_id"] = $entity[1];
                   $affectation["is_recursive"] = $entity[2];
-                  $affectation["users_id"] = $input["id"];
+                  $affectation["users_id"] = $this->fields["id"];
                   $affectation["is_dynamic"] = 1;
                   $right = new Profile_User();
                   $right->add($affectation);
@@ -478,7 +483,7 @@ class User extends CommonDBTM {
             if (count($entities)>0 && count($rights)==0) {
                //If no dynamics profile is provided : get the profil by default if not existing profile
                /*
-               $exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$input["id"]."'";
+               $exist_profile = "SELECT id FROM glpi_profiles_users WHERE users_id='".$this->fields["id"]."'";
                $result = $DB->query($exist_profile);
                if ($DB->numrows($result)==0){
                */
@@ -499,7 +504,7 @@ class User extends CommonDBTM {
                      foreach ($entity_tab as $entity) {
                         $affectation["entities_id"] = $entity[0];
                         $affectation["profiles_id"] = $right;
-                        $affectation["users_id"] = $input["id"];
+                        $affectation["users_id"] = $this->fields["id"];
                         $affectation["is_recursive"] = $entity[1];
                         $affectation["is_dynamic"] = 1;
                         $right = new Profile_User();
@@ -510,7 +515,7 @@ class User extends CommonDBTM {
             }
 
             //Unset all the temporary tables
-            unset($input["_ldap_rules"]);
+            unset($this->fields["_ldap_rules"]);
 
             return true;
          }
@@ -519,24 +524,23 @@ class User extends CommonDBTM {
    }
 
    /**
-    * Synchronise LDAP group of the user
-    *
-    *@param $input data used to sync
+   * Synchronise LDAP group of the user
+   *
    **/
-   function syncLdapGroups($input) {
+   function syncLdapGroups() {
       global $DB;
 
-      if (isset($input["authtype"])
-          && ($input["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($input['authtype']))) {
-         if (isset ($input["id"]) && $input["id"]>0) {
-            $authtype = Auth::getMethodsByID($input["authtype"], $input["auths_id"]);
+      if (isset($this->fields["authtype"])
+          && ($this->fields["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($this->fields['authtype']))) {
+         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
+            $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)) {
-               if (!isset($input["_groups"])) {
-                  $input["_groups"] = array();
+               if (!isset($this->fields["_groups"])) {
+                  $this->fields["_groups"] = array();
                }
                // Clean groups
-               $input["_groups"] = array_unique ($input["_groups"]);
+               $this->fields["_groups"] = array_unique ($this->fields["_groups"]);
 
                $WHERE = "";
                switch ($authtype["group_search_type"]) {
@@ -568,29 +572,29 @@ class User extends CommonDBTM {
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                         WHERE `glpi_groups_users`.`users_id` = '" . $input["id"] . "'
+                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
                                $WHERE";
                $result = $DB->query($query);
 
                $groupuser = new Group_User();
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_array($result)) {
-                     if (!in_array($data["groups_id"], $input["_groups"])) {
+                     if (!in_array($data["groups_id"], $this->fields["_groups"])) {
                         $groupuser->delete(array('id' => $data["id"]));
                      } else {
                         // Delete found item in order not to add it again
-                        unset($input["_groups"][array_search($data["groups_id"], $input["_groups"])]);
+                        unset($this->fields["_groups"][array_search($data["groups_id"], $this->fields["_groups"])]);
                      }
                   }
                }
 
                //If the user needs to be added to one group or more
-               if (count($input["_groups"])>0) {
-                  foreach ($input["_groups"] as $group) {
-                     $groupuser->add(array('users_id'    => $input["id"],
+               if (count($this->fields["_groups"])>0) {
+                  foreach ($this->fields["_groups"] as $group) {
+                     $groupuser->add(array('users_id'    => $this->fields["id"],
                                            'groups_id'   => $group));
                   }
-                  unset ($input["_groups"]);
+                  unset ($this->fields["_groups"]);
                }
             }
          }
@@ -1052,21 +1056,6 @@ class User extends CommonDBTM {
          }
       }
       return $prof;
-   }
-   function canViewItem() {
-         $entities = Profile_User::getUserEntities($this->fields['id'],true);
-         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
-            return true;
-         }
-         return false;
-   }
-
-   function canCreateItem() {
-         $entities = Profile_User::getUserEntities($this->fields['id'],true);
-         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
-            return true;
-         }
-         return false;
    }
 
    /**
