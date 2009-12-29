@@ -322,6 +322,7 @@ class Auth {
                      $_SESSION["glpi$field"] = $this->user->fields[$field];
                   }
                }
+               // Do it here : do not reset on each page, cause export issue
                if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
                   $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
                }
