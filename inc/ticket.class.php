@@ -365,34 +365,34 @@ class Ticket extends CommonDBTM {
    }
 
 
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
+   function pre_updateInDB() {
       global $LANG;
 
-      if (((in_array("users_id_assign",$updates) && $input["users_id_assign"]>0)
-           || (in_array("suppliers_id_assign",$updates) && $input["suppliers_id_assign"]>0)
-           || (in_array("groups_id_assign",$updates) && $input["groups_id_assign"]>0)
+      if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
+           || (in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
+           || (in_array("groups_id_assign",$this->updates) && $this->input["groups_id_assign"]>0)
           )
-          &&$this->fields["status"]=="new") {
+          && $this->fields["status"]=="new") {
 
-         $updates[]="status";
+         $this->updates[]="status";
          $this->fields["status"]="assign";
       }
-      if (isset($input["status"])) {
-         if (isset($input["suppliers_id_assign"])
-             && $input["suppliers_id_assign"]==0
-             && isset($input["groups_id_assign"])
-             && $input["groups_id_assign"]==0
-             && isset($input["users_id_assign"])
-             && $input["users_id_assign"]==0
-             && $input["status"]=="assign") {
+      if (isset($this->input["status"])) {
+         if (isset($this->input["suppliers_id_assign"])
+             && $this->input["suppliers_id_assign"]==0
+             && isset($this->input["groups_id_assign"])
+             && $this->input["groups_id_assign"]==0
+             && isset($this->input["users_id_assign"])
+             && $this->input["users_id_assign"]==0
+             && $this->input["status"]=="assign") {
 
-            $updates[]="status";
+            $this->updates[]="status";
             $this->fields["status"]="new";
          }
 
-         if (in_array("status",$updates) && $input["status"]=="closed") {
-            $updates[]="closedate";
-            $oldvalues['closedate']=$this->fields["closedate"];
+         if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
+            $this->updates[]="closedate";
+            $this->oldvalues['closedate']=$this->fields["closedate"];
             $this->fields["closedate"]=$_SESSION["glpi_currenttime"];
             // If invalid date : set open date
             if ($this->fields["closedate"]<$this->fields["date"]){
@@ -403,46 +403,44 @@ class Ticket extends CommonDBTM {
 
       // Status close : check dates
       if ($this->fields["status"]=="closed"
-          && (in_array("date",$updates) || in_array("closedate",$updates))) {
+          && (in_array("date",$this->updates) || in_array("closedate",$this->updates))) {
 
          // Invalid dates : no change
          if ($this->fields["closedate"]<$this->fields["date"]) {
             addMessageAfterRedirect($LANG['tracking'][3],false,ERROR);
-            if (($key=array_search('date',$updates))!==false) {
-               unset($updates[$key]);
+            if (($key=array_search('date',$this->updates))!==false) {
+               unset($this->updates[$key]);
             }
-            if (($key=array_search('closedate',$updates))!==false) {
-               unset($updates[$key]);
+            if (($key=array_search('closedate',$this->updates))!==false) {
+               unset($this->updates[$key]);
             }
          }
       }
 
       // Check dates change interval due to the fact that second are not displayed in form
 
-      if (($key=array_search('date',$updates))!==false
-          && (substr($this->fields["date"],0,16) == substr($oldvalues['date'],0,16))) {
-         unset($updates[$key]);
+      if (($key=array_search('date',$this->updates))!==false
+          && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
+         unset($this->updates[$key]);
       }
-      if (($key=array_search('closedate',$updates))!==false
-          && (substr($this->fields["closedate"],0,16) == substr($oldvalues['closedate'],0,16))) {
-         unset($updates[$key]);
+      if (($key=array_search('closedate',$this->updates))!==false
+          && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
+         unset($this->updates[$key]);
       }
 
-      if (in_array("users_id",$updates)) {
+      if (in_array("users_id",$this->updates)) {
          $user=new User;
-         $user->getFromDB($input["users_id"]);
+         $user->getFromDB($this->input["users_id"]);
          if (!empty($user->fields["email"])) {
-            $updates[]="user_email";
+            $this->updates[]="user_email";
             $this->fields["user_email"]=$user->fields["email"];
          }
       }
 
       // Do not take into account date_mod if no update is done
-      if (count($updates)==1 && ($key=array_search('date_mod',$updates))!==false) {
-         unset($updates[$key]);
+      if (count($this->updates)==1 && ($key=array_search('date_mod',$this->updates))!==false) {
+         unset($this->updates[$key]);
       }
-
-      return array($input,$updates);
    }
 
 

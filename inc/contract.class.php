@@ -100,12 +100,12 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
+   function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
       // Or if duration is greater than old one
-      if ((isset($oldvalues['begin_date']) && ($oldvalues['begin_date'] < $this->fields['begin_date']))
-          || (isset($oldvalues['duration']) && ($oldvalues['duration'] < $this->fields['duration']))) {
+      if ((isset($this->oldvalues['begin_date']) && ($this->oldvalues['begin_date'] < $this->fields['begin_date']))
+          || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))) {
          $alert=new Alert();
          $alert->clear($this->type,$this->fields['id'],ALERT_END);
       }
@@ -113,13 +113,12 @@ class Contract extends CommonDBTM {
       // Clean notice alert if begin_date is after old one
       // Or if duration is greater than old one
       // Or if notice is lesser than old one
-      if ((isset($oldvalues['begin_date']) && ($oldvalues['begin_date'] < $this->fields['begin_date']))
-          || (isset($oldvalues['duration']) && ($oldvalues['duration'] < $this->fields['duration']))
-          || (isset($oldvalues['notice']) && ($oldvalues['notice'] > $this->fields['notice']))) {
+      if ((isset($this->oldvalues['begin_date']) && ($this->oldvalues['begin_date'] < $this->fields['begin_date']))
+          || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))
+          || (isset($this->oldvalues['notice']) && ($this->oldvalues['notice'] > $this->fields['notice']))) {
          $alert=new Alert();
          $alert->clear($this->type,$this->fields['id'],ALERT_NOTICE);
       }
-      return array($input,$updates);
    }
 
    /**

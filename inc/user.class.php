@@ -1382,21 +1382,21 @@ class User extends CommonDBTM {
    }
 
 
-   function pre_updateInDB($input, $updates, $oldvalues=array()) {
+   function pre_updateInDB() {
       global $DB,$LANG;
 
-      if (($key=array_search('name',$updates)) !== false) {
+      if (($key=array_search('name',$this->updates)) !== false) {
          /// Check if user does not exists
          $query = "SELECT *
                    FROM `".$this->table."`
-                   WHERE `name` = '".$input['name']."'
-                         AND `id` <> '".$input['id']."';";
+                   WHERE `name` = '".$this->input['name']."'
+                         AND `id` <> '".$this->input['id']."';";
          $result=$DB->query($query);
 
          if ($DB->numrows($result) >0) {
-            unset($updates[$key]);
+            unset($this->updates[$key]);
             /// For displayed message
-            $this->fields['name'] = $oldvalues['name'];
+            $this->fields['name'] = $this->oldvalues['name'];
             addMessageAfterRedirect($LANG['setup'][614],false,ERROR);
          }
       }
@@ -1406,9 +1406,7 @@ class User extends CommonDBTM {
           && !haveRight("user", "w")
           && !strpos($_SERVER['PHP_SELF'],"login.php")) {
 
-         if ($_SESSION["glpiID"] == $input['id']) {
-            $ret = $updates;
-
+         if ($_SESSION["glpiID"] == $this->input['id']) {
             if (isset($this->fields["authtype"])) {
                // extauth ldap case
                if ($_SESSION["glpiextauth"]
@@ -1418,24 +1416,29 @@ class User extends CommonDBTM {
                   if (count($authtype)) {
                      $fields = AuthLDAP::getSyncFields($authtype);
                      foreach ($fields as $key => $val) {
-                        if (!empty ($val)) {
-                           unset ($ret[$key]);
+                        if (!empty ($val) && ($key2 = array_search($key,$this->updates))!==false) {
+                           unset ($this->updates[$key2]);
                         }
                      }
                   }
                }
                /// extauth imap case
                if (isset($this->fields["authtype"]) && $this->fields["authtype"] == AUTH_MAIL) {
-                  unset ($ret["email"]);
+                  if (($key = array_search("email",$this->updates))!==false) {
+                     unset ($this->updates[$key]);
+                  }
                }
-               unset ($ret["is_active"]);
-               unset ($ret["comment"]);
+
+               if (($key = array_search("is_active",$this->updates))!==false) {
+                  unset ($this->updates[$key]);
+               }
+
+               if (($key = array_search("comment",$this->updates))!==false) {
+                  unset ($this->updates[$key]);
+               }
             }
-            return array($input,$ret);
          }
-         return array($input,array());
       }
-      return array($input,$updates);
    }
 
 

@@ -720,8 +720,7 @@ class CommonDBTM extends CommonGLPI {
                   $this->updates[$x++] = 'date_mod';
                }
             }
-            list($this->input,$this->updates)=$this->pre_updateInDB($this->input,
-                                                   $this->updates,$this->oldvalues);
+            $this->pre_updateInDB();
 
             // CLean old_values history not needed  => Keep old value for plugin hook
             //if (!$this->dohistory || !$history) {
@@ -792,15 +791,10 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done before the UPDATE of the item in the database
    *
-   *@param $input datas used to update the item
-   *@param $updates array of the updated fields
-   *@param $oldvalues old values of updated fields
-   *
    *@return nothing
    *
    **/
-   function pre_updateInDB($input,$updates,$oldvalues=array()) {
-      return array($input,$updates);
+   function pre_updateInDB() {
    }
 
    /**
