@@ -48,13 +48,22 @@ function __autoload($classname) {
    //$classname="PluginExampleProfile";
    if ($plug=isPluginItemType($classname)) {
       $plugname=strtolower($plug['plugin']);
+      $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
+      $item=strtolower($plug['class']);
       // Is the plugin activate ?
-      /// TODO manage CLI : no glpi_plugins SESSION variable / need to do a real check plugin activation
-      if (in_array($plugname,$_SESSION['glpi_plugins'])) {
-         $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
-         $item=strtolower($plug['class']);
+      // Command line usage of GLPI : need to do a real check plugin activation
+      if (isCommandLine()) {
+         $plugin = new Plugin();
+         if (count($plugin->find("directory='$plugname' AND state=".Plugin::ACTIVATED)) == 0) {
+            // Plugin does not exists or not activated
+            return false;
+         }
       } else {
-         return false;
+         // Standard use of GLPI
+         if (!in_array($plugname,$_SESSION['glpi_plugins'])) {
+            // Plugin not activated
+            return false;
+         }
       }
    } else {
       $item=strtolower($classname);
