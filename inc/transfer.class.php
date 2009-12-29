@@ -198,8 +198,6 @@ class Transfer extends CommonDBTM {
          // Clean unused
          $this->cleanSoftwareVersions();
 
-         // TODO : don't do this as ticket, history, ... will be lost
-
          // Management Items
          $MANAGEMENT_TYPES = array('Contact', 'Supplier', 'Contract', 'Document');
          foreach ($MANAGEMENT_TYPES as $itemtype) {
@@ -973,9 +971,6 @@ class Transfer extends CommonDBTM {
             if ($itemtype == 'Printer') {
                $this->transferPrinterCartridges($ID,$newID);
             }
-            // TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
-            // TODO Users ???? : Update right to new entity ?
-            // TODO Linked Users ???? : Update right to new entity ?
 
             // Transfer Item
             $input = array('id'          => $newID,
