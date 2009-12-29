@@ -183,7 +183,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $fk = getForeignKeyFieldForTable($this->table);
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
-      
+
       if ($entity_assign){
          if ($fk == 'entities_id') {
             $crit['id']  = $_SESSION['glpiactiveentities'];
@@ -296,6 +296,82 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $id = $this->fields['id'];
 
       return (countElementsInTable($this->table,"`$fk`='$id'")>0);
+   }
+
+   /**
+    * check if a tree dropdown already exists (before import)
+    *
+    * @param $input array of value to import (name, ...)
+    *
+    * @return the ID of the new (or -1 if not found)
+    */
+   function getID (&$input) {
+      global $DB;
+
+      if (!empty($input["name"])) {
+         $fk = getForeignKeyFieldForTable($this->table);
+         $query = "SELECT `id`
+                   FROM `".$this->table."`
+                   WHERE `name` = '".$input["name"]."'
+                     AND `$fk`='".(isset($input[$fk]) ? $input[$fk] : 0)."'";
+         if ($this->isEntityAssign()) {
+            $query .= getEntitiesRestrictRequest(' AND ',$this->table,'',
+                                                 $input['entities_id'],$this->maybeRecursive());
+         }
+
+         // Check twin :
+         if ($result_twin = $DB->query($query) ) {
+            if ($DB->numrows($result_twin) > 0) {
+               return $DB->result($result_twin,0,"id");
+            }
+         }
+      }
+      return -1;
+   }
+
+   /**
+    * Import a dropdown - check if already exists
+    *
+    * @param $input array of value to import (name or completename, ...)
+    *
+    * @return the ID of the new or existing dropdown
+    */
+   function import ($input) {
+
+      if (isset($input['name'])) {
+         return parent::import($input);
+      }
+      if (!isset($input['completename']) || empty($input['completename'])) {
+         return -1;
+      }
+      // Import a full tree from completename
+      $names = explode('>',$input['completename']);
+      $fk = getForeignKeyFieldForTable($this->table);
+      $i=count($names);
+      $parent = 0;
+
+      foreach ($names as $name) {
+         $i--;
+         if (empty($name)) {
+            // Skip empty name (completename starting/endind with >, double >, ...)
+            continue;
+         }
+         $tmp['name'] = $name;
+         $tmp[$fk] = $parent;
+         if (isset($input['entities_id'])) {
+            $tmp['entities_id'] = $input['entities_id'];
+         }
+         if (!$i) {
+            // Other fields (comment, ...) only for last node of the tree
+            foreach ($input as $key => $val) {
+               if ($key != 'completename') {
+                  $tmp[$key] = $val;
+               }
+            }
+         }
+         $parent = parent::import($tmp);
+      }
+      return $parent;
    }
 }
 

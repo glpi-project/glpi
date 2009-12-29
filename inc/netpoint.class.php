@@ -184,6 +184,34 @@ class Netpoint extends CommonDropdown {
       return $rand;
    }
 
+   /**
+    * check if a netpoint already exists (before import)
+    *
+    * @param $input array of value to import (name, locations_id, entities_id)
+    *
+    * @return the ID of the new (or -1 if not found)
+    */
+   function getID (&$input) {
+      global $DB;
+
+      if (!empty($input["name"])) {
+
+         $query = "SELECT `id`
+                   FROM `".$this->table."`
+                   WHERE `name` = '".$input["name"]."'
+                     AND `locations_id`='".(isset($input["locations_id"])?$input["locations_id"]:0)."'".
+                     getEntitiesRestrictRequest(' AND ',$this->table,'',
+                                                $input['entities_id'],$this->maybeRecursive());
+
+         // Check twin :
+         if ($result_twin = $DB->query($query) ) {
+            if ($DB->numrows($result_twin) > 0) {
+               return $DB->result($result_twin,0,"id");
+            }
+         }
+      }
+      return -1;
+   }
 }
 
 ?>

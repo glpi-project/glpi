@@ -1622,22 +1622,22 @@ class OcsServer extends CommonDBTM {
                if (!seems_utf8($osname)) {
                   $osname=encodeInUtf8($osname);
                }
-               $compupdate["operatingsystems_id"] = externalImportDropdown('glpi_operatingsystems',
+               $compupdate["operatingsystems_id"] = Dropdowwn::importExternal('OperatingSystem',
                                                                            $osname);
             }
             if (!in_array("operatingsystemversions_id", $computer_updates)) {
                $compupdate["operatingsystemversions_id"]
-                     = externalImportDropdown('glpi_operatingsystemversions', $line["OSVERSION"]);
+                     = Dropdowwn::importExternal('OperatingSystemVersion', $line["OSVERSION"]);
             }
             if (!strpos($line["OSCOMMENTS"],"CEST")
                 && !in_array("operatingsystemservicepacks_id", $computer_updates)) {// Not linux comment
 
                $compupdate["operatingsystemservicepacks_id"]
-                  = externalImportDropdown('glpi_operatingsystemservicepacks', $line["OSCOMMENTS"]);
+                  = Dropdowwn::importExternal('OperatingSystemServicePack', $line["OSCOMMENTS"]);
             }
          }
          if ($cfg_ocs["import_general_domain"] && !in_array("domains_id", $computer_updates)) {
-            $compupdate["domains_id"] = externalImportDropdown('glpi_domains', $line["WORKGROUP"]);
+            $compupdate["domains_id"] = Dropdowwn::importExternal('Domain', $line["WORKGROUP"]);
          }
          if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
             $compupdate["contact"] = $line["USERID"];
@@ -1703,21 +1703,21 @@ class OcsServer extends CommonDBTM {
          }
          if ($cfg_ocs["import_general_model"] && !in_array("computermodels_id", $computer_updates)) {
             $compupdate["computermodels_id"]
-               = externalImportDropdown('glpi_computermodels',$line["SMODEL"],-1,
+               = Dropdowwn::importExternal('ComputerModel',$line["SMODEL"],-1,
                  (isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
          }
          if ($cfg_ocs["import_general_manufacturer"]
              && !in_array("manufacturers_id", $computer_updates)) {
 
-            $compupdate["manufacturers_id"] = externalImportDropdown("glpi_manufacturers",
-                                                                     $line["SMANUFACTURER"]);
+            $compupdate["manufacturers_id"] = Dropdowwn::importExternal('Manufacturer',
+                                                                        $line["SMANUFACTURER"]);
          }
          if ($cfg_ocs["import_general_type"]
              && !empty ($line["TYPE"])
              && !in_array("computertypes_id", $computer_updates)) {
 
-            $compupdate["computertypes_id"] = externalImportDropdown('glpi_computertypes',
-                                                                     $line["TYPE"]);
+            $compupdate["computertypes_id"] = Dropdowwn::importExternal('ComputerType',
+                                                                        $line["TYPE"]);
          }
          if (count($compupdate)) {
             $compupdate["id"] = $computers_id;
@@ -2646,7 +2646,7 @@ class OcsServer extends CommonDBTM {
                                       $import_device)) {
                            $ram["frequence"] = $line2["SPEED"];
                            $ram["devicememorytypes_id"]
-                                 = externalImportDropdown("glpi_devicememorytypes", $line2["TYPE"]);
+                                 = Dropdowwn::importExternal('DeviceMemoryType', $line2["TYPE"]);
 
                            $DeviceMemory = new DeviceMemory();
                            $ram_id = $DeviceMemory->import($ram);
@@ -2982,7 +2982,7 @@ class OcsServer extends CommonDBTM {
                         $netport=array();
                         $netport["mac"] = $line2["MACADDR"];
                         $netport["networkinterfaces_id"]
-                              = externalImportDropdown("glpi_networkinterfaces", $line2["TYPE"]);
+                              = Dropdowwn::importExternal('NetworkInterface', $line2["TYPE"]);
                         $netport["name"] = $line2["DESCRIPTION"];
                         $netport["items_id"] = $computers_id;
                         $netport["itemtype"] = 'Computer';
@@ -3711,14 +3711,14 @@ class OcsServer extends CommonDBTM {
                   $disk['name']=$line['VOLUMN'];
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['FILESYSTEM'];
-                  $disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["TYPE"]);
+                  $disk['filesystems_id']=Dropdowwn::importExternal('Filesystem', $line["TYPE"]);
                } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','jfs','jfs2',
                                                              'smbfs','nfs','hfs','ufs',
                                                              'Journaled HFS+','fusefs','fuseblk')) ) {
                   $disk['name']=$line['VOLUMN'];
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['TYPE'];
-                  $disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
+                  $disk['filesystems_id']=Dropdowwn::importExternal('Filesystem', $line["FILESYSTEM"]);
                } else if (in_array($line['FILESYSTEM'],array('FAT32',
                                                              'NTFS',
                                                              'FAT')) ){
@@ -3728,7 +3728,7 @@ class OcsServer extends CommonDBTM {
                      $disk['name']=$line['LETTER'];
                   }
                   $disk['mountpoint']=$line['LETTER'];
-                  $disk['filesystems_id']=externalImportDropdown('glpi_filesystems', $line["FILESYSTEM"]);
+                  $disk['filesystems_id']=Dropdowwn::importExternal('Filesystem', $line["FILESYSTEM"]);
                }
 
                // Ok import disk
@@ -4118,11 +4118,11 @@ class OcsServer extends CommonDBTM {
                         break;
 
                      case "locations_id" :
-                        $var = externalImportDropdown("glpi_locations", $var, $entity);
+                        $var = Dropdowwn::importExternal("Location", $var, $entity);
                         break;
 
                      case "networks_id" :
-                        $var = externalImportDropdown("glpi_networks", $var);
+                        $var = Dropdowwn::importExternal("Network", $var);
                         break;
                   }
                   $input = array ();
@@ -4243,7 +4243,7 @@ class OcsServer extends CommonDBTM {
                      if ($id === false) {
                         // Clean monitor object
                         $m->reset();
-                        $mon["manufacturers_id"] = externalImportDropdown("glpi_manufacturers",
+                        $mon["manufacturers_id"] = Dropdowwn::importExternal('Manufacturer',
                                                                           $line["MANUFACTURER"]);
                         if ($cfg_ocs["import_monitor_comment"]) {
                            $mon["comment"] = $line["DESCRIPTION"];
@@ -4476,7 +4476,7 @@ class OcsServer extends CommonDBTM {
                            $periph["comment"] = $line["INTERFACE"];
                         }
                         $periph["peripheraltypes_id"]
-                              = externalImportDropdown("glpi_peripheraltypes", $line["TYPE"]);
+                              = Dropdowwn::importExternal('PeripheralType', $line["TYPE"]);
                         $id_periph = 0;
 
                         if ($cfg_ocs["import_periph"] == 1) {
@@ -4630,7 +4630,7 @@ class OcsServer extends CommonDBTM {
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
                // TODO remove if too much verbose ?
-               $task->log("Update computer " . $data["ID"] . "\n"); 
+               $task->log("Update computer " . $data["ID"] . "\n");
                OcsServer::processComputer($data["ID"],$ocsservers_id,0,-1,1);
             }
             $task->setVolume($nbcomp);

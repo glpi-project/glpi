@@ -278,8 +278,8 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                }
             }
             //Replay Type dictionnary
-            $ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),
-                                       addslashes($data["comment"]));
+            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),addslashes($data["name"]),
+                                         -1, array(), addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']]=$ID;
                $type = GetItemTypeForTable($this->item_table);
@@ -364,8 +364,8 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                $data["manufacturer"] = processManufacturerName($data["manufacturer"]);
             }
             //Replay Type dictionnary
-            $ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,
-                                       addslashes($data["comment"]));
+            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),addslashes($data["name"]),
+                                         -1,$data,addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tocheck[$data["id"]][]=$ID;
                $sql = "UPDATE

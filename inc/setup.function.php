@@ -117,6 +117,8 @@ function externalImportDropdown($dpdTable, $value, $entities_id = -1,$external_p
                                 $comment="",$add=true) {
    global $DB, $CFG_GLPI;
 
+   trigger_error("externalImportDropdown is deprecated, use Dropdown::importExternal");
+
    $value=trim($value);
    if (strlen($value) == 0) {
       return 0;

@@ -819,10 +819,13 @@ class User extends CommonDBTM {
                      break;
 
                   case "usertitles_id" :
+                     $this->fields[$k] = Dropdown::importExternal('UserTitle',
+                                                                  addslashes($v[0][$e][0]));
+                     break;
+
                   case "usercategories_id" :
-                     $this->fields[$k] = externalImportDropdown(getTableNameForForeignKeyField($k),
-                                                                addslashes($v[0][$e][0]), -1,
-                                                                array(), '', true);
+                     $this->fields[$k] = Dropdown::importExternal('UserCategory',
+                                                                  addslashes($v[0][$e][0]));
                      break;
 
                   default :

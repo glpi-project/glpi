@@ -422,8 +422,112 @@ abstract class CommonDropdown extends CommonDBTM {
    }
     */
 
+   /**
+    * check if a dropdown already exists (before import)
+    *
+    * @param $input array of value to import (name)
+    *
+    * @return the ID of the new (or -1 if not found)
+    */
+   function getID (&$input) {
+      global $DB;
 
+      if (!empty($input["name"])) {
 
+         $query = "SELECT `id`
+                   FROM `".$this->table."`
+                   WHERE  `name` = '".$input["name"]."'";
+         if ($this->isEntityAssign()) {
+            $query .= getEntitiesRestrictRequest(' AND ',$this->table,'',
+                                                 $input['entities_id'],$this->maybeRecursive());
+         }
+
+         // Check twin :
+         if ($result_twin = $DB->query($query) ) {
+            if ($DB->numrows($result_twin) > 0) {
+               return $DB->result($result_twin,0,"id");
+            }
+         }
+      }
+      return -1;
+   }
+
+   /**
+    * Import a dropdown - check if already exists
+    *
+    * @param $input array of value to import (name, ...)
+    *
+    * @return the ID of the new or existing dropdown
+    */
+   function import ($input) {
+
+      if (!isset($input['name'])) {
+         return -1;
+      }
+      // Clean datas
+      $input['name']=trim($input['name']);
+
+      if (empty($input['name'])) {
+         return -1;
+      }
+
+      // Check twin :
+      if ($ID = $this->getID($input)) {
+         if ($ID>0) {
+            return $ID;
+         }
+      }
+
+      return $this->add($input);
+   }
+
+   /**
+    * Import a value in a dropdown table.
+    *
+    * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+    *
+    * @param $value string : Value of the new dropdown.
+    * @param $entities_id int : entity in case of specific dropdown
+    * @param $external_params array (manufacturer)
+    * @param $comment
+    * @param $add if true, add it if not found. if false, just check if exists
+    *
+    * @return integer : dropdown id.
+    **/
+   function importExternal($value, $entities_id = -1,$external_params=array(),$comment="",$add=true) {
+      global $DB, $CFG_GLPI;
+
+      $value=trim($value);
+      if (strlen($value) == 0) {
+         return 0;
+      }
+
+      $ruleinput = array("name" => $value);
+      $rulecollection = getRuleCollectionClassByTableName($this->table);
+
+      switch ($this->table) {
+         case "glpi_computermodels" :
+         case "glpi_monitormodels" :
+         case "glpi_printermodels" :
+         case "glpi_peripheralmodels" :
+         case "glpi_phonemodels" :
+         case "glpi_networkequipmentmodels" :
+            $ruleinput["manufacturer"] = $external_params["manufacturer"];
+            break;
+      }
+
+      $input["name"] = $value;
+      $input["comment"] = $comment;
+      $input["entities_id"] = $entities_id;
+
+      if ($rulecollection) {
+         $res_rule = $rulecollection->processAllRules($ruleinput, array (), array());
+         if (isset($res_rule["name"])) {
+            $input["name"] = $res_rule["name"];
+         }
+      }
+      return ($add ? $this->import($input) : $this->getID($input));
+   }
 }
 
 ?>
