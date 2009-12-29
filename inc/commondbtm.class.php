@@ -571,7 +571,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($newID= $this->addToDB()) {
-            $this->addMessageOnAddAction($this->input);
+            $this->addMessageOnAddAction();
             $this->post_addItem($newID, $this->input);
             doHook("item_add", $this);
             return $newID;
@@ -608,10 +608,8 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Add a message on add action
    *
-   *@param $input array : the _POST vars returned by the item form when press add
-   *
    **/
-   function addMessageOnAddAction($input) {
+   function addMessageOnAddAction() {
       global
       $CFG_GLPI, $LANG;
 
@@ -621,10 +619,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-      if (isset($input['_add'])) {
+      if (isset($this->input['_add'])) {
          $addMessAfterRedirect=true;
       }
-      if (isset($input['_no_message']) || !$this->auto_message_on_action) {
+      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
 
@@ -731,7 +729,7 @@ class CommonDBTM extends CommonGLPI {
             //}
 
              if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
-               $this->addMessageOnUpdateAction($this->input);
+               $this->addMessageOnUpdateAction();
                doHook("item_update", $this);
             }
          }
@@ -744,10 +742,8 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Add a message on update action
    *
-   *@param $input array : the _POST vars returned by the item form when press add
-   *
    **/
-   function addMessageOnUpdateAction($input) {
+   function addMessageOnUpdateAction() {
       global $CFG_GLPI, $LANG;
 
       $link=getItemTypeFormURL($this->type);
@@ -756,10 +752,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-      if (isset($input['_update'])) {
+      if (isset($this->input['_update'])) {
          $addMessAfterRedirect=true;
       }
-      if (isset($input['_no_message']) || !$this->auto_message_on_action) {
+      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
 
@@ -856,10 +852,10 @@ class CommonDBTM extends CommonGLPI {
       if ($this->pre_deleteItem($this->fields["id"])) {
          if ($this->deleteFromDB($this->fields["id"], $force)) {
             if ($force) {
-               $this->addMessageOnPurgeAction($this->input);
+               $this->addMessageOnPurgeAction();
                doHook("item_purge",$this);
             } else {
-               $this->addMessageOnDeleteAction($this->input);
+               $this->addMessageOnDeleteAction();
                if ($this->dohistory&&$history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
@@ -877,10 +873,8 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Add a message on delete action
    *
-   *@param $input array : the _POST vars returned by the item form when press add
-   *
    **/
-   function addMessageOnDeleteAction($input) {
+   function addMessageOnDeleteAction() {
       global $CFG_GLPI, $LANG;
 
       $link=getItemTypeFormURL($this->type);
@@ -892,10 +886,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-      if (isset($input['_delete'])) {
+      if (isset($this->input['_delete'])) {
          $addMessAfterRedirect=true;
       }
-      if (isset($input['_no_message']) || !$this->auto_message_on_action) {
+      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
@@ -906,10 +900,8 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Add a message on purge action
    *
-   *@param $input array : the _POST vars returned by the item form when press add
-   *
    **/
-   function addMessageOnPurgeAction($input) {
+   function addMessageOnPurgeAction() {
       global $CFG_GLPI, $LANG;
 
       $link=getItemTypeFormURL($this->type);
@@ -918,10 +910,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-      if (isset($input['_purge'])) {
+      if (isset($this->input['_purge'])) {
          $addMessAfterRedirect=true;
       }
-      if (isset($input['_no_message']) || !$this->auto_message_on_action) {
+      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
@@ -963,7 +955,7 @@ class CommonDBTM extends CommonGLPI {
       doHook("pre_item_restore",$this);
 
       if ($this->restoreInDB($this->input["id"])) {
-         $this->addMessageOnRestoreAction($this->input);
+         $this->addMessageOnRestoreAction();
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
@@ -979,10 +971,8 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Add a message on restore action
    *
-   *@param $input array : the _POST vars returned by the item form when press add
-   *
    **/
-   function addMessageOnRestoreAction($input) {
+   function addMessageOnRestoreAction() {
       global $CFG_GLPI, $LANG;
 
       $link=getItemTypeFormURL($this->type);
@@ -991,10 +981,10 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-      if (isset($input['_restore'])) {
+      if (isset($this->input['_restore'])) {
          $addMessAfterRedirect=true;
       }
-      if (isset($input['_no_message']) || !$this->auto_message_on_action) {
+      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
