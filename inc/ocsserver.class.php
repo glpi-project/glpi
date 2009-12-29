@@ -3147,7 +3147,7 @@ class OcsServer extends CommonDBTM {
          foreach ($import_ip as $key => $val) {
             if ($key>0) {
                $netport = new NetworkPort();
-               $netport->delete('id'=>$key);
+               $netport->delete(array('id'=>$key));
                OcsServer::deleteInOcsArray($computers_id, $key, "import_ip");
             }
          }
