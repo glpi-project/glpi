@@ -373,7 +373,7 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</div>";
    }
 
-   /** Replace a dropdown item (this) by another one (newID)  and update all linked fields
+   /* Replace a dropdown item (this) by another one (newID)  and update all linked fields
     * @param $new integer ID of the replacement item
    function replace($newID) {
       global $DB,$CFG_GLPI;

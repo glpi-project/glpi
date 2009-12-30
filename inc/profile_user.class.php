@@ -458,7 +458,7 @@ class Profile_User extends CommonDBTM {
     * Get entities for which a user have a right
     *
     * @param $user_ID user ID
-    * @param $is_recursive check also using recurisve rights
+    * @param $only_dynamic get only recursive rights
     *
     * @return array of entities ID
     */
