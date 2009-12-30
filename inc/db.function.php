@@ -415,7 +415,10 @@ function getAncestorsOf($table,$items_id) {
          if ($parent>0) {
             $id_found = getAncestorsOf($table,$parent);
          }
-         $id_found[$parent]=$parent;
+         // ID=0 only exists for Entities
+         if ($parent>0 || $table=='glpi_entities') {
+            $id_found[$parent]=$parent;
+         }
 
          // Store cache datas in DB
          $query="UPDATE `$table`
@@ -441,7 +444,7 @@ function getAncestorsOf($table,$items_id) {
       } else {
          $IDf=0;
       }
-      if (!isset($id_found[$IDf])) {
+      if (!isset($id_found[$IDf]) && ($IDf>0 || $table=='glpi_entities')) {
          $id_found[$IDf]=$IDf;
       } else {
          $IDf=0;
@@ -1197,7 +1200,7 @@ function CleanFields($table,$fields) {
    if (!is_array($fields)) {
       $fields = array($fields);
    }
-   
+
    $query = '';
    foreach ($fields as $field) {
       if (FieldExists($table,$field)) {
