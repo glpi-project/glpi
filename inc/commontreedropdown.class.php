@@ -96,7 +96,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function pre_deleteItem($ID) {
       global $DB;
 
-      $parent = $this->fields[getForeignKeyFieldForTable($this->table)];
+      if ($this->input['_replace_by']) {
+         $parent = $this->input['_replace_by'];
+      } else {
+         $parent = $this->fields[getForeignKeyFieldForTable($this->table)];
+      }
 
       CleanFields($this->table, array('sons_cache', 'ancestors_cache'));
       $tmp = clone $this;
