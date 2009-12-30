@@ -165,7 +165,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          return false;
       }
-      if (isset($this->fields['entities_id']) && isset($_SESSION["glpiactive_entity"])) {
+      if (array_key_exists('entities_id', $this->fields) && isset($_SESSION["glpiactive_entity"])) {
          $this->fields['entities_id']=$_SESSION["glpiactive_entity"];
       }
       $this->post_getEmpty();
@@ -819,7 +819,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->getField('is_template')
-            || !isset($this->fields['is_deleted'])) {
+            || !array_key_exists('is_deleted', $this->fields)) {
          $force = 1;
       }
       // Store input in the object to be available in all sub-method / hook
@@ -1538,7 +1538,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
-      return isset($this->fields['entities_id']);
+      return array_key_exists('entities_id', $this->fields);
    }
 
    /**
@@ -1552,7 +1552,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
-      return isset($this->fields['is_recursive']);
+      return array_key_exists('is_recursive', $this->fields);
    }
 
    /**
@@ -1578,7 +1578,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
-      return isset($this->fields['is_deleted']);
+      return array_key_exists('is_deleted', $this->fields);
    }
 
    /**
@@ -1626,7 +1626,8 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
       }
-      return (isset($this->fields['is_private']) && isset($this->fields['users_id']));
+      return (array_key_exists('is_private', $this->fields)
+              && array_key_exists('users_id', $this->fields));
    }
 
    /**
