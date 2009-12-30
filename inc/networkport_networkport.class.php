@@ -49,7 +49,6 @@ class NetworkPort_NetworkPort extends CommonDBTM {
     * Retrieve an item from the database
     *
     *@param $ID ID of the item to get
-    *@param $type ID of the type to get
     *@return true if succeed else false
     *
    **/
