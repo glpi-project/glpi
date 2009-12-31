@@ -81,6 +81,7 @@ echo "Delete bigdumps and older sql files";
 
 echo "Delete various scripts and directories"
 \rm -rf tools;
+\rm -rf phpunit;
 
 echo "Must be root to generate a clean tarball - Please login"
 echo "cd /tmp; chown -R root.root /tmp/glpi; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi; \rm -rf /tmp/glpi" | sudo -s
