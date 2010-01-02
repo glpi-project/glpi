@@ -1127,7 +1127,7 @@ class Dropdown {
     *
     * @return integer : dropdown id.
     **/
-   function importExternal($itemtype,$value,$entities_id=-1,$external_params=array(),$comment='',$add=true) {
+   static function importExternal($itemtype,$value,$entities_id=-1,$external_params=array(),$comment='',$add=true) {
 
       if (!class_exists($itemtype)) {
          return false;

@@ -700,7 +700,7 @@ class Computer extends CommonDBTM {
          echo $LANG['ocsng'][13]."&nbsp;: ".convDateTime($dataocs["last_update"]);
          echo "<br>";
          if (haveRight("ocsng","r")) {
-            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?id="
+            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
