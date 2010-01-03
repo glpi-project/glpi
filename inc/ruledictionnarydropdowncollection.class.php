@@ -325,7 +325,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
          echo "Error replaying rules";
          return false;
       }
-      $model_table=str_replace('models','',$this->item_table);
+      $model_table=str_replace('models','s',$this->item_table);
       $model_field=getForeignKeyFieldForTable($this->item_table);
 
       // Need to give manufacturer from item table
