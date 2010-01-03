@@ -33,33 +33,30 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-if(!defined('GLPI_ROOT')) {
+if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '..');
-
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup"))
-	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
-
-if (isset($_GET["sub_type"]))
-{
-	echo "<br>";
-	$rulecollection = getRuleCollectionClass($_GET["sub_type"]);
-	if (haveRight($rulecollection->right,"r"))
-	{
-		if (!isset($_GET["rules_id"]))
-			$rulecollection->showCacheStatusForRuleType();
-		else
-		{
-			$rule = $rulecollection->getRuleClass();
-			$rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
-			$rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
-		}
-	}
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
+}
+if (isset($_GET["sub_type"])) {
+   echo "<br>";
+   $rulecollection = getRuleCollectionClass($_GET["sub_type"]);
+   if (haveRight($rulecollection->right,"r")) {
+      if (!isset($_GET["rules_id"])) {
+         $rulecollection->showCacheStatusForRuleType();
+      } else {
+         $rule = $rulecollection->getRuleClass();
+         $rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
+         $rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
+      }
+   }
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup"))
-	commonFooter();
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonFooter();
+}
+
 ?>

@@ -33,125 +33,109 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
 $rule = $rulecollection->getRuleClass();
 
 checkRight($rule->right,"r");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
 
-if (isset($_POST["delete_criteria"]))
-{
-	checkRight($rule->right,"w");
+if (isset($_POST["delete_criteria"])) {
+   checkRight($rule->right,"w");
 
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-		{
-			$input["id"]=$key;
-			$rulecriteria->delete($input);
-		}
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         $input["id"] = $key;
+         $rulecriteria->delete($input);
+      }
+   }
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["rules_id"]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rules_id"]);
-	}
+} else if (isset($_POST["delete_action"])) {
+   checkRight($rule->right,"w");
 
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-if (isset($_POST["delete_action"]))
-{
-	checkRight($rule->right,"w");
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         $input["id"] = $key;
+         $ruleaction->delete($input);
+      }
+   }
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["rules_id"]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-		{
-			$input["id"]=$key;
-			$ruleaction->delete($input);
-		}
+} else if (isset($_POST["add_criteria"])) {
+   checkRight($rule->right,"w");
 
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rules_id"]);
-	}
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["rules_id"]);
+   }
+   $rulecriteria->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif (isset($_POST["add_criteria"]))
-{
-	checkRight($rule->right,"w");
+} else if (isset($_POST["add_action"])) {
+   checkRight($rule->right,"w");
 
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rules_id"]);
-	}
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["rules_id"]);
+   }
+   $ruleaction->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	$rulecriteria->add($_POST);
+} else if (isset($_POST["update_rule"])) {
+   checkRight($rule->right,"w");
 
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["id"]);
+   }
+   $rule->update($_POST);
+   Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif (isset($_POST["add_action"]))
-{
-	checkRight($rule->right,"w");
+} elseif (isset($_POST["add_rule"])) {
+   checkRight($rule->right,"w");
 
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rules_id"]);
-	}
+   $newID = $rule->add($_POST);
+   Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 
-	$ruleaction->add($_POST);
+} elseif (isset($_POST["delete_rule"])) {
+   checkRight($rule->right,"w");
+   $rulecollection->deleteRuleOrder($_POST["ranking"]);
+   $rule->delete($_POST);
+   Event::log($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-elseif (isset($_POST["update_rule"]))
-{
-	checkRight($rule->right,"w");
-
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["id"]);
-	}
-
-	$rule->update($_POST);
-	Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-
-	glpi_header($_SERVER['HTTP_REFERER']);
-} elseif (isset($_POST["add_rule"]))
-{
-	checkRight($rule->right,"w");
-
-	$newID=$rule->add($_POST);
-	Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-
-	glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
-} elseif (isset($_POST["delete_rule"]))
-{
-	checkRight($rule->right,"w");
-	$rulecollection->deleteRuleOrder($_POST["ranking"]);
-	$rule->delete($_POST);
-	Event::log($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["id"]);
-	}
-
-	glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
+   // Is a cached Rule ?
+   if (method_exists($rule,'deleteCacheByRuleId')) {
+      $rule->deleteCacheByRuleId($_POST["id"]);
+   }
+   glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
 }
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin",$rulecollection->menu_type,$rulecollection->menu_option);
+commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin",
+             $rulecollection->menu_type, $rulecollection->menu_option);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
-if (!empty($_GET["id"])&&$_GET["id"] >0) {
-	$rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["id"]);
-	$rule->showActionsList($_SERVER['PHP_SELF'],$_GET["id"]);
+if (!empty($_GET["id"]) && $_GET["id"] >0) {
+   $rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["id"]);
+   $rule->showActionsList($_SERVER['PHP_SELF'],$_GET["id"]);
 }
 commonFooter();
+
 ?>
