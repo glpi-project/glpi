@@ -33,42 +33,43 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if(!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')){
    define('GLPI_ROOT', '..');
-
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (isset($_POST["sub_type"]))$sub_type=$_POST["sub_type"];
-elseif (isset($_GET["sub_type"]))$sub_type=$_GET["sub_type"];
-else $sub_type=0;
+if (isset($_POST["sub_type"])) {
+   $sub_type = $_POST["sub_type"];
+} else if (isset($_GET["sub_type"])) {
+   $sub_type = $_GET["sub_type"];
+} else {
+   $sub_type = 0;
+}
 
 $rulecollection = getRuleCollectionClass($sub_type);
 checkRight($rulecollection->right,"r");
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")){
-	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 // Need for RuleEngines
 foreach ($_POST as $key => $val) {
-	$_POST[$key] = stripslashes($_POST[$key]);
+   $_POST[$key] = stripslashes($_POST[$key]);
 }
 $input = $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'],$_POST);
 
-if (isset($_POST["test_all_rules"]))
-{
-	//Unset values that must not be processed by the rule
-	unset($_POST["sub_type"]);
-	unset($_POST["test_all_rules"]);
+if (isset($_POST["test_all_rules"])) {
+   //Unset values that must not be processed by the rule
+   unset($_POST["sub_type"]);
+   unset($_POST["test_all_rules"]);
 
-	echo "<br>";
-	$rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'],$_POST);
+   echo "<br>";
+   $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'],$_POST);
 }
 
-
-if (!strpos($_SERVER['PHP_SELF'],"popup")){
-	commonFooter();
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonFooter();
 }
 
 ?>
