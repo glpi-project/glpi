@@ -33,29 +33,34 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","rule",-1);
 
-	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
-	if ($CFG_GLPI["use_ocs_mode"]&&haveRight("rule_ocs","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ruleocs.php\"><strong>" . $LANG['rulesengine'][18] .
- "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_ldap","r")){
-		echo "<tr class='tab_bg_1'><td align='center'><a href=\"ruleright.php\"><strong>" .$LANG['rulesengine'][19] . "</strong></a></td> </tr>";
-	}
-	if (haveRight("rule_ticket","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ruleticket.php\"><strong>" . $LANG['rulesengine'][28] . "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_softwarecategories","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rulesoftwarecategory.php\"><strong>" . $LANG['rulesengine'][37] . "</strong></a></td></tr>";
-	}
+echo "<table class='tab_cadre'>";
+echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
+if ($CFG_GLPI["use_ocs_mode"] && haveRight("rule_ocs","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='ruleocs.php'>" . $LANG['rulesengine'][18] . "</a></td></tr>";
+}
 
-	echo "</table></div>";
+if (haveRight("rule_ldap","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
+}
+
+if (haveRight("rule_ticket","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";
+}
+
+if (haveRight("rule_softwarecategories","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='rulesoftwarecategory.php'>&nbsp;" . $LANG['rulesengine'][37] . "&nbsp;</a></td></tr>";
+}
+
+echo "</table>";
 commonFooter();
+
 ?>

@@ -33,17 +33,15 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_GET["id"]))
-{
-	$generic_rule = new Rule;
-	$generic_rule->getFromDB($_GET["id"]);
-	checkRight($generic_rule->right,"r");
+if (isset($_GET["id"])) {
+   $generic_rule = new Rule;
+   $generic_rule->getFromDB($_GET["id"]);
+   checkRight($generic_rule->right,"r");
 
-	$rulecollection=getRuleCollectionClass($generic_rule->fields["sub_type"]);
-	include (GLPI_ROOT . "/front/rule.common.form.php");
+   $rulecollection = getRuleCollectionClass($generic_rule->fields["sub_type"]);
+   include (GLPI_ROOT . "/front/rule.common.form.php");
 }
 ?>
