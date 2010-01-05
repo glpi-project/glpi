@@ -391,11 +391,11 @@ class Mailing {
 
                            $item= new $this->job->fields["itemtype"]();
                            if ($item->getFromDB($this->job->fields["items_id"])) {
-                              if ($tmp=$item->getField('users_id_tech')) {
+                              if ($item->isField('users_id_tech')) {
                                  $query2 = "$selectdistinctuser
                                           FROM `glpi_users`
                                           $join
-                                          WHERE `glpi_users`.`id` = '".$tmp."'";
+                                          WHERE `glpi_users`.`id` = '".$item->getField('users_id_tech')."'";
                                  if ($result2 = $DB->query($query2)) {
                                     if ($DB->numrows($result2)==1) {
                                        $row = $DB->fetch_array($result2);
@@ -416,11 +416,11 @@ class Mailing {
 
                            $item= new $this->job->fields["itemtype"]();
                            if ($item->getFromDB($this->job->fields["items_id"])) {
-                              if ($tmp=$item->getField('users_id')) {
+                              if ($item->isField('users_id')) {
                                  $query2 = "$selectdistinctuser
                                           FROM `glpi_users`
                                           $join
-                                          WHERE `glpi_users`.`id` = '".$tmp."'";
+                                          WHERE `glpi_users`.`id` = '".$item->getField('users_id')."'";
                                  if ($result2 = $DB->query($query2)) {
                                     if ($DB->numrows($result2)==1) {
                                        $row = $DB->fetch_array($result2);
@@ -799,7 +799,7 @@ class MailingResa {
                            if (class_exists($ri->fields['itemtype'])) {
                               $item = new $ri->fields['itemtype'];
                               if ($item->getFromDB($ri->fields['items_id'])) {
-                                 $entity=$item->getField('entities_id');
+                                 $entity=$item->getEntityID();
                               }
                            }
                         }
@@ -832,10 +832,10 @@ class MailingResa {
                            if (class_exists($ri->fields["itemtype"])) {
                               $item = new $ri->fields["itemtype"]();
                               if ($item->getFromDB($ri->fields["items_id"])) {
-                                 if ($tmp=$item->getField('users_id_tech')) {
+                                 if ($item->isField('users_id_tech')) {
                                     $query2 = "$selectuser
                                              FROM `glpi_users`
-                                             WHERE `glpi_users`.`id` = '".$tmp."'";
+                                             WHERE `glpi_users`.`id` = '".$item->getField('users_id_tech')."'";
                                     if ($result2 = $DB->query($query2)) {
                                        if ($DB->numrows($result2)==1) {
                                           $row = $DB->fetch_row($result2);
@@ -855,10 +855,10 @@ class MailingResa {
                            if (class_exists($ri->fields["itemtype"])) {
                               $item = new $ri->fields["itemtype"]();
                               if ($item->getFromDB($ri->fields["items_id"])) {
-                                 if ($tmp=$item->getField('users_id')) {
+                                 if ($item->isField('users_id')) {
                                     $query2 = "$selectuser
                                              FROM `glpi_users`
-                                             WHERE `glpi_users`.`id` = '".$tmp."'";
+                                             WHERE `glpi_users`.`id` = '".$item->getField('users_id')."'";
                                     if ($result2 = $DB->query($query2)) {
                                        if ($DB->numrows($result2)==1) {
                                           $row = $DB->fetch_row($result2);
@@ -880,14 +880,13 @@ class MailingResa {
                   if (class_exists($ri->fields['itemtype'])) {
                      $item = new $ri->fields['itemtype']();
                      if ($item->getFromDB($ri->fields['items_id'])) {
-                        $entities_id=$item->getField('entities_id');
                         $query="$selectuser
                               FROM `glpi_profiles_users`
                               INNER JOIN `glpi_users`
                                        ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
                               WHERE `glpi_profiles_users`.`profiles_id`='".$data["items_id"]."'".
                                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                               $entities_id,true);
+                                                               $item->getEntityID(),true);
                         if ($result2= $DB->query($query)) {
                            if ($DB->numrows($result2)) {
                               while ($row=$DB->fetch_assoc($result2)) {
@@ -932,7 +931,7 @@ class MailingResa {
          if (class_exists($ri->fields['itemtype'])) {
             $item = new $ri->fields['itemtype']();
             if ($item->getFromDB($ri->fields['items_id'])) {
-               $entity=$item->getField('entities_id');
+               $entity=$item->getEntityID();
             }
          }
       }

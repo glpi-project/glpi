@@ -1661,7 +1661,7 @@ class CommonDBTM extends CommonGLPI {
       if (array_key_exists($field,$this->fields)) {
          return $this->fields[$field];
       }
-      return false;
+      return NOT_AVAILABLE;
    }
 
    /**
@@ -1670,6 +1670,9 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
     */
    function isField ($field) {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
        return array_key_exists($field,$this->fields);
    }
 
@@ -1682,41 +1685,41 @@ class CommonDBTM extends CommonGLPI {
       global $LANG,$CFG_GLPI;
 
       $comment="";
-      if ($tmp=$this->getField('serial')) {
-         $comment.="<strong>".$LANG['common'][19]."&nbsp;: "."</strong>".$tmp."<br>";
+      if ($this->isField('serial')) {
+         $comment.="<strong>".$LANG['common'][19]."&nbsp;: </strong>".$this->getField('serial')."<br>";
       }
-      if ($tmp=$this->getField('otherserial')) {
-         $comment.="<strong>".$LANG['common'][20]."&nbsp;: "."</strong>".$tmp."<br>";
+      if ($this->isField('otherserial')) {
+         $comment.="<strong>".$LANG['common'][20]."&nbsp;: </strong>".$this->getField('otherserial')."<br>";
       }
-      if ($tmp=$this->getField('locations_id')) {
-         $tmp=Dropdown::getDropdownName("glpi_locations",$tmp);
+      if ($this->isField('locations_id')) {
+         $tmp=Dropdown::getDropdownName("glpi_locations",$this->getField('locations_id'));
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('users_id')) {
-         $tmp=getUserName($tmp);
+      if ($this->isField('users_id')) {
+         $tmp=getUserName($this->getField('users_id'));
          if (!empty($tmp)&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][34]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('groups_id')) {
-         $tmp=Dropdown::getDropdownName("glpi_groups",$tmp);
+      if ($this->isField('groups_id')) {
+         $tmp=Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (!empty($tmp)&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('users_id_tech')) {
-         $tmp=getUserName($tmp);
+      if ($this->isField('users_id_tech')) {
+         $tmp=getUserName($this->getField('users_id_tech'));
          if (!empty($tmp)&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][10]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('contact')) {
-         $comment.="<strong>".$LANG['common'][18]."&nbsp;: "."</strong>".$tmp."<br>";
+      if ($this->isField('contact')) {
+         $comment.="<strong>".$LANG['common'][18]."&nbsp;: </strong>".$this->getField('contact')."<br>";
       }
-      if ($tmp=$this->getField('contact_num')) {
-         $comment.="<strong>".$LANG['common'][21]."&nbsp;: "."</strong>".$tmp."<br>";
+      if ($this->isField('contact_num')) {
+         $comment.="<strong>".$LANG['common'][21]."&nbsp;: </strong>".$this->getField('contact_num')."<br>";
       }
 
       if (!empty($comment)) {

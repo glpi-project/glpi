@@ -214,8 +214,8 @@ class Reservation extends CommonDBTM {
             $item=$ri->fields['itemtype']();
             if ($item->getFromDB($ri->fields['items_id'])) {
                $name=$item->getTypeName()." ".$item->getName();
-               if ($tmp=$item->getField('users_id_tech')) {
-                  $tech=getUserName($tmp);
+               if ($item->isField('users_id_tech')) {
+                  $tech=getUserName($item->getField('users_id_tech'));
                }
             }
          }
@@ -564,11 +564,11 @@ class Reservation extends CommonDBTM {
          echo "<td>";
          if (empty($ID)) {
             User::dropdown(array('value'  => $_SESSION["glpiID"],
-                                 'entity' => $item->getField('entities_id'),
+                                 'entity' => $item->getEntityID(),
                                  'right'  => 'all'));
          } else {
             User::dropdown(array('value'  => $resa->fields["users_id"],
-                                 'entity' => $item->getField('entities_id'),
+                                 'entity' => $item->getEntityID(),
                                  'right'  => 'all'));
          }
          echo "</td></tr>\n";

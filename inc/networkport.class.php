@@ -465,7 +465,7 @@ class NetworkPort extends CommonDBTM {
                   NetworkPort::dropdownConnect($ID,
                                           array('name'         => 'dport',
                                                 'entity'       => $device1->fields["entities_id"],
-                                                'entity_sons'  => $device1->getField("is_recursive")));
+                                                'entity_sons'  => $device1->isRecursive()));
             } else {
                echo "&nbsp;";
             }
