@@ -12,7 +12,7 @@
 #
 
 testdir=$(dirname $0)
-conf=../config/config_path.php
+conf=../../config/config_path.php
 
 cd $testdir
 
