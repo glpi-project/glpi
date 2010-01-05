@@ -816,26 +816,29 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if ($this->getField('is_template')
-            || !array_key_exists('is_deleted', $this->fields)) {
+      if ($this->isField('is_template')
+            || !$this->maybeDeleted()) {
          $force = 1;
       }
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
+      if (isset($this->input['purge'])) {
+         $this->input['_purge']=$this->input['purge'];
+         unset($this->input['purge']);
+      }
+      if (isset($this->input['delete'])) {
+         $this->input['_delete']=$this->input['delete'];
+         unset($input['delete']);
+      }
+
+      // Purge 
       if ($force) {
          doHook("pre_item_purge",$this);
-         if (isset($this->input['purge'])) {
-            $this->input['_purge']=$this->input['purge'];
-            unset($this->input['purge']);
-         }
       } else {
          doHook("pre_item_delete",$this);
-         if (isset($this->input['delete'])) {
-            $this->input['_delete']=$this->input['delete'];
-            unset($input['delete']);
-         }
       }
+
 
       if (!is_array($this->input)) {
          // $input clear by a hook to cancel delete
@@ -895,14 +898,15 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addMessageOnPurgeAction() {
       global $CFG_GLPI, $LANG;
-
       $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }
 
       $addMessAfterRedirect=false;
-      if (isset($this->input['_purge'])) {
+//      print_r($this->input);exit();
+
+      if (isset($this->input['_purge']) || isset($this->input['_delete'])) {
          $addMessAfterRedirect=true;
       }
       if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
@@ -1283,13 +1287,12 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
             echo "</td>\n";
             echo "<td class='tab_bg_2 center' colspan='".$colspan."' >\n";
-            if (isset($this->fields['is_deleted']) && $this->fields['is_deleted']){
+            if ($this->isDeleted()){
                echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21].
                       "\" class='submit'>";
                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".
                                                     $LANG['buttons'][22]."\" class='submit'>";
             }else {
-               /// TODO : change message for "destroy" / "send in trash" ?
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
                          "\" class='submit' OnClick='return window.confirm(\"" .
@@ -1302,7 +1305,6 @@ class CommonDBTM extends CommonGLPI {
          } else {
             echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-            // TODO : add a "no right to delete" message ?
          }
       }
       if ($ID>0) {
@@ -1656,11 +1658,19 @@ class CommonDBTM extends CommonGLPI {
     * @return value of the field / false if not exists
     */
    function getField ($field) {
-      if (isset($this->fields[$field])) {
+      if (array_key_exists($field,$this->fields)) {
          return $this->fields[$field];
       }
-      /// TODO find a new value : can be valid for boolean value
       return false;
+   }
+
+   /**
+    * Determine if a field exists
+    * @param $field field name
+    * @return boolean
+    */
+   function isField ($field) {
+       return array_key_exists($field,$this->fields);
    }
 
    /**
