@@ -121,8 +121,7 @@ class Event extends CommonDBTM {
                          'cartridges'  => $LANG['log'][7],
                          'peripherals' => $LANG['log'][8],
                          'consumables' => $LANG['log'][9],
-                         'tracking'    => $LANG['log'][10],
-                         'ticket'      => $LANG['log'][10], ///TODO prepare update name : delete when tracking -> ticket
+                         'ticket'      => $LANG['log'][10], 
                          'contacts'    => $LANG['log'][11],
                          'enterprises' => $LANG['log'][12],
                          'documents'   => $LANG['log'][13],
@@ -209,10 +208,8 @@ class Event extends CommonDBTM {
     * @param $target where to go when complete
     * @param $user string : name user to search on message
     **/
-   static function showforUser($target, $user="") {
+   static function showForUser($target, $user="") {
       global $DB,$CFG_GLPI, $LANG;
-
-      /// TODO clean $user param mau be more generic
 
       // Show events from $result in table form
       list($logItemtype,$logService) = self::logArray();

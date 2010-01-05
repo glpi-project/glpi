@@ -4620,7 +4620,6 @@ class OcsServer extends CommonDBTM {
          $nbcomp = $DBocs->numrows($result_ocs);
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
-               // TODO remove if too much verbose ?
                $task->log("Update computer " . $data["ID"] . "\n");
                OcsServer::processComputer($data["ID"],$ocsservers_id,0,-1,1);
             }
