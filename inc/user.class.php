@@ -405,7 +405,7 @@ class User extends CommonDBTM {
    }
 
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       $this->syncLdapGroups();
 
       $this->applyRightRules();

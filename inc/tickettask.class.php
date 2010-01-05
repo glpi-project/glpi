@@ -160,56 +160,56 @@ class TicketTask  extends CommonDBTM {
    }
 
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $CFG_GLPI;
 
       $job = new Ticket;
       $mailsend = false;
 
-      if ($job->getFromDB($input["tickets_id"])) {
-         $job->updateDateMod($input["tickets_id"]);
+      if ($job->getFromDB($this->input["tickets_id"])) {
+         $job->updateDateMod($this->input["tickets_id"]);
 
-         if (count($updates)) {
+         if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$updates) || isset($input['_need_send_mail']))) {
+                && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
                $user = new User;
                $user->getFromDB($_SESSION["glpiID"]);
                $mail = new Mailing("followup",$job,$user,
-                                   (isset($input["is_private"]) && $input["is_private"]));
+                                   (isset($this->input["is_private"]) && $this->input["is_private"]));
                $mail->send();
                $mailsend = true;
             }
 
-            if (in_array("realtime",$updates)) {
-               $job->updateRealTime($input["tickets_id"]);
+            if (in_array("realtime",$this->updates)) {
+               $job->updateRealTime($this->input["tickets_id"]);
             }
          }
       }
 
-      if (isset($input["_plan"])) {
+      if (isset($this->input["_plan"])) {
          $pt = new TicketPlanning();
          // Update case
-         if (isset($input["_plan"]["id"])) {
-            $input["_plan"]['tickettasks_id'] = $input["id"];
-            $input["_plan"]['tickets_id'] = $input['tickets_id'];
-            $input["_plan"]['_nomail'] = $mailsend;
+         if (isset($this->input["_plan"]["id"])) {
+            $this->input["_plan"]['tickettasks_id'] = $this->input["id"];
+            $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
+            $this->input["_plan"]['_nomail'] = $mailsend;
 
-            if (!$pt->update($input["_plan"])) {
+            if (!$pt->update($this->input["_plan"])) {
                return false;
             }
-            unset($input["_plan"]);
+            unset($this->input["_plan"]);
          // Add case
          } else {
-            $input["_plan"]['tickettasks_id'] = $input["id"];
-            $input["_plan"]['tickets_id'] = $input['tickets_id'];
-            $input["_plan"]['_nomail'] = 1;
+            $this->input["_plan"]['tickettasks_id'] = $this->input["id"];
+            $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
+            $this->input["_plan"]['_nomail'] = 1;
 
-            if (!$pt->add($input["_plan"])) {
+            if (!$pt->add($this->input["_plan"])) {
                return false;
             }
-            unset($input["_plan"]);
-            $input['_need_send_mail'] = true;
+            unset($this->input["_plan"]);
+            $this->input['_need_send_mail'] = true;
          }
       }
    }

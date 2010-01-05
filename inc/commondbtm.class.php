@@ -69,6 +69,15 @@ class CommonDBTM extends CommonGLPI {
       return $this->table;
    }
 
+   /**
+   * force table value (used for config management for old versions)
+   *
+   * @return nothing
+   */
+   function forceTable($table) {
+      $this->table=$table;
+   }
+
    function getForeignKeyField() {
       if (empty($this->fkfield)) {
          $this->fkfield=getForeignKeyFieldForTable($this->getTable());
@@ -730,7 +739,7 @@ class CommonDBTM extends CommonGLPI {
                doHook("item_update", $this);
             }
          }
-         $this->post_updateItem($this->input, $this->updates, $history);
+         $this->post_updateItem($history);
          return true;
       }
       return false;
@@ -776,14 +785,12 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done after the UPDATE of the item in the database
    *
-   *@param $input datas used to update the item
-   *@param $updates array of the updated fields
    *@param $history store changes history ?
    *
    *@return nothing
    *
    **/
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
    }
 
    /**

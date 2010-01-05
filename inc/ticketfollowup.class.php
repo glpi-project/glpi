@@ -161,29 +161,29 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $CFG_GLPI;
 
       $job = new Ticket;
       $mailsend = false;
 
-      if ($job->getFromDB($input["tickets_id"])) {
-         $job->updateDateMod($input["tickets_id"]);
+      if ($job->getFromDB($this->input["tickets_id"])) {
+         $job->updateDateMod($this->input["tickets_id"]);
 
-         if (count($updates)) {
+         if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$updates) || isset($input['_need_send_mail']))) {
+                && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
                $user = new User;
                $user->getFromDB($_SESSION["glpiID"]);
                $mail = new Mailing("followup",$job,$user,
-                                   (isset($input["is_private"]) && $input["is_private"]));
+                                   (isset($this->input["is_private"]) && $this->input["is_private"]));
                $mail->send();
                $mailsend = true;
             }
 
-            if (in_array("realtime",$updates)) {
-               $job->updateRealTime($input["tickets_id"]);
+            if (in_array("realtime",$this->updates)) {
+               $job->updateRealTime($this->input["tickets_id"]);
             }
          }
       }
