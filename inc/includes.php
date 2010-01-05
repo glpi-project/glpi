@@ -37,8 +37,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/timer.class.php");
+
+include_once (GLPI_ROOT . "/inc/common.function.php");
 
 function __autoload($classname) {
    global $DEBUG_AUTOLOAD;
@@ -88,7 +89,7 @@ $TIMER_DEBUG=new Timer;
 $TIMER_DEBUG->start();
 
 /// TODO try to remove them if possible
-include_once (GLPI_ROOT . "/inc/common.function.php");
+include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
