@@ -84,39 +84,6 @@ class CronTask extends CommonDBTM{
    }
 
    /**
-    * Read a Crontask by its name
-    *
-    *@param $name name of the task
-    *@param $plugin name of the plugin
-    *
-    *@return true if succeed else false
-    *
-    */
-   function getFromDBbyName($name, $plugin=NULL) {
-      global $DB;
-
-      $query = "SELECT * FROM `".$this->getTable()."`
-                WHERE `name`='$name'";
-      if ($plugin) {
-         $query .= " AND `plugin`='$plugin'";
-      } else {
-         $query .= " AND `plugin` IS NULL";
-      }
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-         return false;
-      }
-      return false;
-   }
-
-   /**
     * Give a task state
     *
     * @return interger 0 : task is enabled
@@ -132,13 +99,13 @@ class CronTask extends CommonDBTM{
          // Global lock
          return 2;
       }
-      if (empty($this->fields['plugin'])) {
+      if (!$tab=isPluginItemType($itemtype)) {
          return 0;
       }
 
       // Plugin case
       $plug = new Plugin();
-      if (!$plug->isActivated($this->fields["plugin"])) {
+      if (!$plug->isActivated($tab["plugin"])) {
          return 3;
       }
       return 0;
@@ -273,16 +240,19 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       $hour=date('H');
-      $query = "SELECT *
+      // First core ones
+      $query = "SELECT *, LOCATE('Plugin',itemtype) as ISPLUGIN
                 FROM `".$this->getTable()."`
-                WHERE (`plugin` IS NULL";
+                WHERE (`itemtype` NOT LIKE 'Plugin%'";
 
       if (count($_SESSION['glpi_plugins'])) {
          // Only activated plugins
-         $query .= " OR `plugin` IN ('".implode("','", $_SESSION['glpi_plugins'])."'))";
-      } else {
-         $query .= ')';
+         foreach ($_SESSION['glpi_plugins'] as $plug) {
+            $query .= " OR `itemtype` LIKE 'Plugin$plug%'";
+         }
       }
+      $query .= ')';
+
       if ($name) {
          $query .= " AND `name`='".addslashes($name)."' ";
       }
@@ -321,7 +291,7 @@ class CronTask extends CommonDBTM{
                      $lock ";
       }
       // Core task before plugins
-      $query .= "ORDER BY `plugin`, unix_timestamp(`lastrun`)+`frequency`";
+      $query .= "ORDER BY ISPLUGIN, unix_timestamp(`lastrun`)+`frequency`";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -357,8 +327,8 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td><strong>";
-      if (!empty($this->fields["plugin"])) {
-         echo $this->fields["plugin"]." - ";
+      if ($isplug=isPluginItemType($this->fields["itemtype"])) {
+         echo $isplug["plugin"]." - ";
       }
       echo $this->fields["name"]."</strong></td>";
       echo "<td rowspan='6' class='middle right'>".$LANG['common'][25].
@@ -381,9 +351,9 @@ class CronTask extends CommonDBTM{
          echo "<strong>" . $LANG['crontask'][60]."</strong><br>";
          $tmpstate = self::STATE_DISABLE;
       }
-      if (!empty($this->fields["plugin"])) {
+      if ($isplug) {
          $plug = new Plugin();
-         if (!$plug->isActivated($this->fields["plugin"])) {
+         if (!$plug->isActivated($isplug["plugin"])) {
             echo "<strong>" . $LANG['crontask'][61]."</strong><br>";
             $tmpstate = self::STATE_DISABLE;
          }
@@ -509,11 +479,9 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id']) || $this->fields['id']!=$id) {
          $this->getFromDB($id);
       }
-      if ($this->fields['itemtype']) {
-         $hook = array($this->fields['itemtype'], 'cronInfo');
+      $hook = array($this->fields['itemtype'], 'cronInfo');
+      if (is_callable($hook)) {
          $info = call_user_func($hook, $this->fields['name']);
-      } else if (!empty($this->fields['plugin'])) {
-         $info = doOneHook($this->fields['plugin'], 'cron_info', $this->fields['name']);
       } else {
          $info = false;
       }
@@ -530,12 +498,10 @@ class CronTask extends CommonDBTM{
     */
    public function getParameterDescription() {
       global $LANG;
+      $hook = array($this->fields['itemtype'], 'cronInfo');
 
-      if ($this->fields['itemtype']) {
-         $hook = array($this->fields['itemtype'], 'cronInfo');
+      if (is_callable($hook)) {
          $info = call_user_func($hook, $this->fields['name']);
-      } else if (!empty($this->fields['plugin'])) {
-         $info = doOneHook($this->fields['plugin'], 'cron_info', $this->fields['name']);
       } else {
          $info = false;
       }
@@ -643,17 +609,11 @@ class CronTask extends CommonDBTM{
             if ($task->getNeedToRun($mode, $name)) {
                $_SESSION["glpiID"]="cron_".$task->fields['name'];
 
-               if (empty($task->fields['plugin'])) {
-                  $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
-
-               } else {
-                  Plugin::load($task->fields['plugin'],true);
-                  if ($task->fields['itemtype']) {
-                     $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
-                  } else {
-                     $fonction = 'plugin_'.$task->fields['plugin'].'_cron_' . $task->fields['name'].'_run';
-                  }
+               if ($plug=isPluginItemType($task->fields['itemtype'])) {
+                  Plugin::load($plug['plugin'],true);
                }
+               $fonction = array($task->fields['itemtype'], 'cron' . $task->fields['name']);
+
                if (is_callable($fonction)) {
                   if ($task->start()) { // Lock in DB + log start
                      $taskname = $task->fields['name'];
@@ -694,7 +654,7 @@ class CronTask extends CommonDBTM{
    /**
     * Register new task for plugin (called by plugin during install)
     *
-    * @param $plugin : name of the plugin
+    * @param $itemtype : itemtype of the plugin object
     * @param $name : of the task
     * @param $frequency : of execution
     * @param $options array of optional options
@@ -702,22 +662,20 @@ class CronTask extends CommonDBTM{
     *
     * @return bool for success
     */
-   static public function Register($plugin, $name, $frequency, $options=array()) {
+   static public function Register($itemtype, $name, $frequency, $options=array()) {
 
       // Check that hook exists
-      if (isset($options['itemtype'])) {
-         // autoload won't work here (not yet activated)'
-      } else if (!function_exists("plugin_${plugin}_cron_${name}_run")
-                 || !function_exists("plugin_${plugin}_cron_info")) {
+      if (!isPluginItemType($itemtype)) {
          return false;
       }
       $input = array (
-         'plugin' => $plugin,
+         'itemtype' => $itemtype,
          'name' => $name,
          'frequency' => $frequency
       );
+
       foreach (array ('state', 'mode', 'allowmode', 'hourmin', 'hourmax',
-                      'logs_lifetime', 'param', 'comment', 'itemtype') as $key) {
+                      'logs_lifetime', 'param', 'comment') as $key) {
          if (isset ($options[$key])) {
             $input[$key] = $options[$key];
          }
@@ -741,9 +699,14 @@ class CronTask extends CommonDBTM{
       }
       $temp = new CronTask();
       $ret = true;
-      foreach ($DB->request('glpi_crontasks', array('plugin' => $plugin)) as $data) {
-         if (!$temp->delete($data)) {
-            $ret = false;
+
+      $query = "SELECT * FROM glpi_crontasks WHERE itemtype LIKE 'Plugin$plugin%';";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            if (!$temp->delete($data)) {
+               $ret = false;
+            }
          }
       }
       return $ret;
@@ -1005,9 +968,9 @@ class CronTask extends CommonDBTM{
       $tab[7]['name']      = $LANG['crontask'][40];
       $tab[7]['datatype']  = 'datetime';
 
-      $tab[8]['table']     = 'glpi_plugins';
-      $tab[8]['field']     = 'name';
-      $tab[8]['linkfield']     = 'plugin';
+      $tab[8]['table']     = 'glpi_crontasks';
+      $tab[8]['field']     = 'itemtype';
+      $tab[8]['linkfield'] = '';
       $tab[8]['name']      = $LANG['common'][29];
 
       $tab[16]['table']     = 'glpi_crontasks';

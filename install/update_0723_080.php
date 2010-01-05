@@ -2029,9 +2029,8 @@ function update0723to080() {
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `plugin` char(78) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'NULL (glpi) or plugin name',
-        `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
+        `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+        `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
         `frequency` int(11) NOT NULL COMMENT 'second between launch',
         `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
         `state` int(11) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
@@ -2044,26 +2043,26 @@ function update0723to080() {
         `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
         `comment` text COLLATE utf8_unicode_ci,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`plugin`,`name`)
+        UNIQUE KEY `unicity` (`itemtype`,`name`)
       ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
         COMMENT='Task run by internal / external cron.';";
       $DB->query($query) or die("0.80 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_crontasks`
-         (`id`, `plugin`, `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+         (`id`, `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
          VALUES
-         (1,  NULL, 'OcsServer', 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (2,  NULL, 'CartridgeItem', 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (3,  NULL, 'ConsumableItem', 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (4,  NULL, 'SoftwareLicense', 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (5,  NULL, 'Contract', 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (6,  NULL, 'InfoCom', 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (7,  NULL, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (8,  NULL, 'CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (9,  NULL, 'MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (10, NULL, 'DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
-         (11, NULL, 'CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (12, NULL, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
+         (1, 'OcsServer', 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (2, 'CartridgeItem', 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (3, 'ConsumableItem', 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (4, 'SoftwareLicense', 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (5, 'Contract', 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (6, 'InfoCom', 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (7, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (8, 'CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (9, 'MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (10, 'DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
+         (11, 'CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         (12, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)

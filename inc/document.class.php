@@ -1082,8 +1082,11 @@ class Document extends CommonDBTM {
          $document = new Document();
          while ($data=$DB->fetch_assoc($result)) {
             $docID=$data["id"];
+            $link=NOT_AVAILABLE;
+            $downloadlink=NOT_AVAILABLE;
             if (!$document->getFromDB($docID)) {
-               continue;
+               $link=$document->getLink();
+               $downloadlink=$document->getDownloadLink($linkparam);
             }
             if ($item->getType() != 'Document') {
                addToNavigateListItems('Document',$docID);
@@ -1092,9 +1095,9 @@ class Document extends CommonDBTM {
             $assocID=$data["assocID"];
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-            echo "<td class='center'>".$document->getLink()."</td>";
+            echo "<td class='center'>$link</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
-            echo "<td class='center'>".$document->getDownloadLink($linkparam)."</td>";
+            echo "<td class='center'>$downloadlink</td>";
             echo "<td class='center'>";
             if (!empty($data["link"])) {
                echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"]."</a>";
