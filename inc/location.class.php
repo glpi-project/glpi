@@ -208,7 +208,7 @@ class Location extends CommonTreeDropdown {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
-         autocompletionTextField("name",$this->table,"name");
+         autocompletionTextField($this, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".

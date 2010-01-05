@@ -85,9 +85,9 @@ class RuleRight extends Rule {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][16] . "&nbsp;:&nbsp;";
-         autocompletionTextField("name", "glpi_rules", "name", "", 33);
+         autocompletionTextField($this, "name", array('value'=>'', 'size'=>33));
          echo "&nbsp;&nbsp;&nbsp;".$LANG['joblist'][6] . "&nbsp;:&nbsp;";
-         autocompletionTextField("description", "glpi_rules", "description", "", 33);
+         autocompletionTextField($this, "description", array('value'=>'', 'size'=>33));
          echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
          $this->dropdownRulesMatch("match", "AND");
          echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";

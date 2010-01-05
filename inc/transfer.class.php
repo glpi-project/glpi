@@ -2685,7 +2685,7 @@ class Transfer extends CommonDBTM {
       if ($edit_form) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>".$LANG['common'][16]."&nbsp;:</td><td colspan='2'>";
-         autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+         autocompletionTextField($this,"name");
          echo "</td>";
          echo "</tr>";
       }

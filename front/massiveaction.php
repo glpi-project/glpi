@@ -205,7 +205,6 @@ if (isset($_POST["itemtype"])) {
                         $link_entity_type = $ent->fields["entities_id"];
                      }
                   }
-
                   foreach ($_POST["item"] as $key => $val) {
                      if ($val == 1) {
                         if ($item->getFromDB($key)) {
@@ -214,14 +213,24 @@ if (isset($_POST["itemtype"])) {
                                || ($ent->fields["is_recursive"]
                                    && in_array($link_entity_type, getAncestorsOf("glpi_entities",
                                                $item->getEntityID())))) {
+                              // Add infocom if not exists
+                              if (!$ic->getFromDBforDevice($_POST["itemtype"],$key)) {
+                                 $input2["items_id"]=$key;
+                                 $input2["itemtype"]=$_POST["itemtype"];
+                                 unset($ic->fields);
+                                 $ic->add($input2);
+                                 $ic->getFromDBforDevice($_POST["itemtype"],$key);
+                              }
+                              $id = $ic->fields["id"];
                               unset($ic->fields);
-                              $ic->update(array('itemtype' => $_POST["itemtype"],
-                                                'items_id' => $key,
-                                                              $_POST["field"] => $_POST[$_POST["field"]]));
+
+                              $ic->update(array('id' => $id,
+                                                $_POST["field"] => $_POST[$_POST["field"]]));
                            }
                         }
                      }
                   }
+
                } else { /// Not infocoms
                   $item = new $_POST["itemtype"]();
                   $link_entity_type = array();

@@ -147,7 +147,7 @@ class MailCollector  extends CommonDBTM {
          echo "</td></tr>";
       }
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td><td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      autocompletionTextField($this, "name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
@@ -163,7 +163,7 @@ class MailCollector  extends CommonDBTM {
       showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."&nbsp;:</td><td>";
-      autocompletionTextField("login",$this->table,"login",$this->fields["login"],40);
+      autocompletionTextField($this, "login");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td><td>";

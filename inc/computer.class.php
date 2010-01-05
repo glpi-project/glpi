@@ -546,7 +546,7 @@ class Computer extends CommonDBTM {
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),$this->type,
                     $this->fields["entities_id"]);
       
-      autocompletionTextField($this,'name');
+      autocompletionTextField($this,'name',array('value'=>$objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -612,7 +612,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField($this,'otherserial');
+      autocompletionTextField($this,'otherserial',array('value'=>$objectName));
 
       echo "</td></tr>\n";
 

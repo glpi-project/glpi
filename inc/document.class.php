@@ -240,8 +240,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],45,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='6' class='middle right'>".$LANG['common'][25].
       "&nbsp;: </td>";
@@ -274,8 +273,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][33]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("link",$this->table,"link",$this->fields["link"],45,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "link");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -287,8 +285,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][4]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("mime",$this->table,"mime",$this->fields["mime"],45,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "mime");
       if ($ID>0) {
          echo "</td><td>".$LANG['document'][1]."&nbsp;:</td>";
          echo "<td>".$this->fields["sha1sum"];

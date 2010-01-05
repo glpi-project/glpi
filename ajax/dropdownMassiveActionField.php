@@ -38,6 +38,11 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
+if (!class_exists($_POST["itemtype"])) {
+   exit();
+}
+
+$item = new $_POST["itemtype"]();
 switch ($_POST["itemtype"]) {
    case 'Ticket' :
       checkRight("update_ticket","1");
@@ -119,8 +124,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                }
             }
             if (!$plugdisplay && !$already_display) {
-               autocompletionTextField($search["linkfield"],$search["table"],$search["field"],'',40,
-                                       $_SESSION["glpiactive_entity"]);
+               $newtype=getItemTypeForTable($search["table"]);
+               if ($newtype != $_POST["itemtype"]) {
+                  $item = new $newtype();
+               }
+               autocompletionTextField($item,$search["field"],
+                                       array('name'   => $search["linkfield"],
+                                             'entity' => $_SESSION["glpiactive_entity"]));
             }
             break;
       }
@@ -152,8 +162,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                default :
-                  autocompletionTextField($search["field"],$search["table"],$search["field"],'',40,
-                                          $_SESSION["glpiactive_entity"]);
+                  $newtype=getItemTypeForTable($search["table"]);
+                  if ($newtype != $_POST["itemtype"]) {
+                     $item = new $newtype();
+                  }
+                  autocompletionTextField($item,$search["field"],
+                                          array('entity' => $_SESSION["glpiactive_entity"]));
                   break;
             }
             break;

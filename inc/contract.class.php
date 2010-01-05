@@ -152,8 +152,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
       Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
@@ -183,8 +182,7 @@ class Contract extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>".$LANG['financial'][13]."&nbsp;:</td><td>";
-      autocompletionTextField("accounting_number",$this->table,"accounting_number",
-                              $this->fields["accounting_number"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "accounting_number");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

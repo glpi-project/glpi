@@ -128,12 +128,11 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"] ,40);
+      autocompletionTextField($this,"name");
       echo "</td>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("description",$this->table,"description",$this->fields["description"] ,
-                              40);
+      autocompletionTextField($this,"description");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -1069,7 +1068,8 @@ class Rule extends CommonDBTM {
          }
       }
       if (!$display) {
-         autocompletionTextField($name, "glpi_rulecriterias", "pattern", $value, 40);
+         $rc = new RuleCriteria();
+         autocompletionTextField($rc,"pattern",array('name'=>$name));
       }
    }
 

@@ -2712,13 +2712,14 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
 
    // ($myname,$table,$field,$value='',$size=40,$entity_restrict=-1, $user_restrict=-1,$option='')
 
-   $params['table']  = $item->getTable();
    $params['name']   = $field;
 
+   $params['value']  = '';
    if (array_key_exists($field,$item->fields)) {
       $params['value']  = $item->fields[$field];
    }
    $params['size']   = 40;
+   $params['entity']  = -1;
    if (array_key_exists('entities_id',$item->fields)) {
       $params['entity']  = $item->fields['entities_id'];
    }
@@ -2748,7 +2749,6 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
          new Ext.data.Connection ({
             url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
             extraParams : {
-               table: '".$params['table']."',
                itemtype: '".$item->getType()."',
                field: '$field'";
 

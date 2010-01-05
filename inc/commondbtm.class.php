@@ -1348,8 +1348,7 @@ class CommonDBTM extends CommonGLPI {
       } else if (!empty($withtemplate) && $withtemplate == 1) {
          echo "<input type='hidden' name='is_template' value='1' />\n";
          echo $LANG['common'][6]."&nbsp;: ";
-         autocompletionTextField("template_name",$this->getTable(),"template_name",
-                                 $this->fields["template_name"],25,$this->fields["entities_id"]);
+         autocompletionTextField($this,"template_name",array('size'=>25));
       } else if (empty($ID)||$ID<0) {
          echo $this->getTypeName()." - ".$LANG['common'][87];
       } else {

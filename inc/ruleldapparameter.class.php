@@ -81,9 +81,9 @@ class RuleLdapParameter extends CommonDBTM {
          echo "<tr><th colspan='3'>" .$LANG['ruleldap'][3] . "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>".$LANG['common'][16] . "&nbsp;:&nbsp";
-         autocompletionTextField("name", $this->table, "name", "", 40);
+         autocompletionTextField($this, "name",array('value'=>''));
          echo "</td><td>".$LANG['setup'][601] . "&nbsp;:&nbsp";
-         autocompletionTextField("value", $this->table, "value", "", 40);
+         autocompletionTextField($this, "value",array('value'=>''));
          echo "</td><td><input type='submit' name='add' value=\"" . $LANG['buttons'][8] .
                      "\" class='submit'>";
          echo "</td></tr>";

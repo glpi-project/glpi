@@ -182,8 +182,10 @@ class Reminder extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,
-                              $this->fields["users_id"],$onfocus);
+      autocompletionTextField($this,"name",array('size'  => 80,
+                                                'entity' => -1,
+                                                'user'   => $this->fields["users_id"],
+                                                'option' => $onfocus));
       echo "</td></tr>\n";
 
       if (!$canedit) {
