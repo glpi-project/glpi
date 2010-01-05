@@ -99,7 +99,7 @@ class CronTask extends CommonDBTM{
          // Global lock
          return 2;
       }
-      if (!$tab=isPluginItemType($itemtype)) {
+      if (!$tab=isPluginItemType($this->fields['itemtype'])) {
          return 0;
       }
 
@@ -110,6 +110,7 @@ class CronTask extends CommonDBTM{
       }
       return 0;
    }
+
    /**
     * Start a task, timer, stat, log, ...
     *
