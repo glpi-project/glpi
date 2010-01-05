@@ -147,7 +147,7 @@ class Document extends CommonDBTM {
          $crit = array('sha1sum'=>$input['sha1sum'],
                        'entities_id'=>$input['entities_id']);
          foreach ($DB->request($this->getTable(), $crit) as $data) {
-            $link=getItemTypeFormURL($this->getType());
+            $link=$this->getFormURL();
             addMessageAfterRedirect($LANG['document'][48].
                "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",

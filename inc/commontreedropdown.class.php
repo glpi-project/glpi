@@ -226,7 +226,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       // Minimal form for quick input.
       if ($this->canCreate()) {
-         $link=getItemTypeFormURL($this->getType());
+         $link=$this->getFormURL();
          echo "<form action='".$link."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
