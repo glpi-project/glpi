@@ -178,7 +178,7 @@ abstract class CommonDropdown extends CommonDBTM {
                if ($field['name']=='entities_id') {
                   $restrict = -1;
                } else {
-                  $restrict = $this->fields[getForeignKeyFieldForTable($this->getTable())];
+                  $restrict = $this->fields[$this->getForeignKeyField()];
                }
                Dropdown::show(getItemTypeForTable($this->getTable()),
                               array('value'  => $this->fields[$field['name']],
@@ -349,7 +349,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
-         $fk=getForeignKeyFieldForTable($this->getTable());
+         $fk=$this->getForeignKeyField();
          Dropdown::show(getItemTypeForTable($this->getTable()),
                         array('name'   => '_replace_by',
                               'value'  => $this->fields[$fk],

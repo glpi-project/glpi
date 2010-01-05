@@ -574,7 +574,7 @@ if (isset($_POST["itemtype"])) {
          case 'move_under' :
             if (isset($_POST['parent']) && class_exists($_POST["itemtype"])) {
                $item = new $_POST["itemtype"]();
-               $fk = $item->getForeignKey();
+               $fk = $item->getForeignKeyField();
                foreach ($_POST["item"] as $key => $val) {
                   if ($val==1 && $item->can($key,'w')) {
                       $item->update(array('id' => $key,

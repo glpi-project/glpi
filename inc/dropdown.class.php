@@ -210,7 +210,7 @@ class Dropdown {
       $item = new $itemtype();
 
       $params['table']=$item->getTable();
-      $params['name']=$item->getForeignKey();
+      $params['name']=$item->getForeignKeyField();
 
       $params['value']='';
       $params['comments']=1;
