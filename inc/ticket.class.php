@@ -1127,9 +1127,11 @@ class Ticket extends CommonDBTM {
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
 
+                  // Use tasks instead of followups
+                  /*
                   $query2 = "SELECT *
                              FROM `glpi_ticketplannings`
-                             WHERE `ticketfollowups_id` = '".$data['id']."'";
+                             WHERE `tickettasks_id` = '".$data['id']."'";
                   $result2=$DB->query($query2);
 
                   if ($DB->numrows($result2)==0) {
@@ -1138,6 +1140,7 @@ class Ticket extends CommonDBTM {
                      $data2 = $DB->fetch_array($result2);
                      $message .= convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
                   }
+                  */
                   $message .= $LANG['mailing'][0]."\n";
                }
             }
@@ -1159,6 +1162,8 @@ class Ticket extends CommonDBTM {
                   }
                   $message .= $LANG['mailing'][25]." ";
 
+                  // Use tasks instead of followups
+                  /*
                   $query2 = "SELECT *
                              FROM `glpi_ticketplannings`
                              WHERE `ticketfollowups_id` = '".$data['id']."'";
@@ -1170,6 +1175,7 @@ class Ticket extends CommonDBTM {
                      $data2 = $DB->fetch_array($result2);
                      $message .= convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
                   }
+                  */
                   $message .= $LANG['mailing'][0]."\n";
                }
             }

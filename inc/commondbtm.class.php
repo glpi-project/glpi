@@ -421,14 +421,9 @@ class CommonDBTM extends CommonGLPI {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
                if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
-                  // TODO : use update method for history/notify ? check state != old ?
-                  $query = "UPDATE
-                            `glpi_tickets`
-                            SET `items_id` = '0', `itemtype` = '0'
-                            WHERE `id`='".$data["id"]."';";
-                  $DB->query($query);
+                  $job->update(array('id'=>$data["id"],'items_id'=>0,'itemtype'=>''));
                } else {
-                   $job->delete(array("id"=>$data["id"]));
+                  $job->delete(array("id"=>$data["id"]));
                }
             }
          }
