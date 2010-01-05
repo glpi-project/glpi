@@ -43,18 +43,18 @@ class Version extends PHPUnit_Framework_TestCase {
    public function testVersion() {
       global $CFG_GLPI;
 
-      $this->assertEquals('0.80', GLPI_VERSION);
-      $this->assertEquals(GLPI_VERSION, $CFG_GLPI['version']);
+      $this->assertEquals('0.80', GLPI_VERSION, "Bad version in source page");
+      $this->assertEquals(GLPI_VERSION, $CFG_GLPI['version'], "Bad version in config");
    }
 
    public function testLogin() {
 
       $auth = new Auth();
       $res = $auth->Login('stupid_login_which_doesnt_exists', 'stupid_password');
-      $this->assertFalse($res);
+      $this->assertFalse($res, "Bad login accepted");
 
       $res = $auth->Login('glpi', 'glpi');
-      $this->assertTrue($res);
+      $this->assertTrue($res, "Good login refused");
    }
 }
 
