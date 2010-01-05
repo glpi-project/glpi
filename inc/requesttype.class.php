@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class RequestType
 class RequestType extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_requesttypes';
-   public $type = 'RequestType';
 
    static function getTypeName() {
       global $LANG;
@@ -66,13 +63,13 @@ class RequestType extends CommonDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[14]['table']         = $this->table;
+      $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_helpdesk_default';
       $tab[14]['linkfield']     = '';
       $tab[14]['name']          = $LANG['tracking'][9];
       $tab[14]['datatype']      = 'bool';
 
-      $tab[15]['table']         = $this->table;
+      $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_mail_default';
       $tab[15]['linkfield']     = '';
       $tab[15]['name']          = $LANG['tracking'][10];
@@ -86,14 +83,14 @@ class RequestType extends CommonDropdown {
 
       if (isset($input["is_helpdesk_default"]) && $input["is_helpdesk_default"]) {
          $query = "UPDATE ".
-                   $this->table."
+                   $this->getTable()."
                    SET `is_helpdesk_default` = '0'
                    WHERE `id` <> '$newID'";
          $DB->query($query);
       }
       if (isset($input["is_mail_default"]) && $input["is_mail_default"]) {
          $query = "UPDATE ".
-                   $this->table."
+                   $this->getTable()."
                    SET `is_mail_default` = '0'
                    WHERE `id` <> '$newID'";
          $DB->query($query);
@@ -106,7 +103,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_helpdesk_default',$updates)) {
          if ($input["is_helpdesk_default"]) {
             $query = "UPDATE ".
-                      $this->table."
+                      $this->getTable()."
                       SET `is_helpdesk_default` = '0'
                       WHERE `id` <> '".$input['id']."'";
             $DB->query($query);
@@ -117,7 +114,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_mail_default',$updates)) {
          if ($input["is_mail_default"]) {
             $query = "UPDATE ".
-                      $this->table."
+                      $this->getTable()."
                       SET `is_mail_default` = '0'
                       WHERE `id` <> '".$input['id']."'";
             $DB->query($query);

@@ -107,16 +107,16 @@ class CommonGLPI {
             $extraparam.="&$key=$val";
          }
       }
-      if (empty($withtemplate) && $ID && $this->type) {
+      if (empty($withtemplate) && $ID && $this->getType()) {
          echo "<div id='menu_navigate'>";
          if (isset($this->sub_type)) {
-            $glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->sub_type];
-            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->type][$this->sub_type];
-            $glpilisturl   =& $_SESSION['glpilisturl'][$this->type][$this->sub_type];
+            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()][$this->sub_type];
+            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()][$this->sub_type];
+            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()][$this->sub_type];
          } else {
-            $glpilistitems =& $_SESSION['glpilistitems'][$this->type];
-            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->type];
-            $glpilisturl   =& $_SESSION['glpilisturl'][$this->type];
+            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
+            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
+            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
          }
          $next=$prev=$first=$last=-1;
          $current=false;
@@ -211,14 +211,14 @@ class CommonGLPI {
       }
       if (count($onglets)) {
 
-         $tabpage=getItemTypeTabsURL($this->type);
+         $tabpage=getItemTypeTabsURL($this->getType());
 
          $tabs=array();
 
          foreach ($onglets as $key => $val ) {
             $tabs[$key]=array('title'=>$val,
                               'url'=>$tabpage,
-                              'params'=>"target=$target&itemtype=".$this->type.
+                              'params'=>"target=$target&itemtype=".$this->getType().
                                         "&glpi_tab=$key&id=$ID$template$extraparam");
          }
          $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
@@ -228,10 +228,10 @@ class CommonGLPI {
             && count($tabs)>1) {
             $tabs[-1]=array('title'=>$LANG['common'][66],
                             'url'=>$tabpage,
-                            'params'=>"target=$target&itemtype=".$this->type.
+                            'params'=>"target=$target&itemtype=".$this->getType().
                                       "&glpi_tab=-1&id=$ID$template$extraparam");
          }
-         createAjaxTabs('tabspanel','tabcontent',$tabs,$this->type);
+         createAjaxTabs('tabspanel','tabcontent',$tabs,$this->getType());
       }
    }
 

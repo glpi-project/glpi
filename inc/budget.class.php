@@ -39,8 +39,6 @@ if (!defined('GLPI_ROOT')) {
 class Budget extends CommonDBTM{
 
    // From CommonDBTM
-   public $table = 'glpi_budgets';
-   public $type = 'Budget';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -165,13 +163,13 @@ class Budget extends CommonDBTM{
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
                  WHERE `items_id` = '".$input["_oldID"]."'
-                       AND `itemtype` = '".$this->type."';";
+                       AND `itemtype` = '".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $docitem=new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->type,
+                                   'itemtype' => $this->getType(),
                                    'items_id' => $newID));
             }
          }
@@ -271,14 +269,14 @@ class Budget extends CommonDBTM{
          }
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT ".$item->table.".*
+            $query = "SELECT ".$item->getTable().".*
                      FROM `glpi_infocoms`
-                     INNER JOIN ".$item->table."
-                                 ON (".$item->table.".`id` = `glpi_infocoms`.`items_id`)
+                     INNER JOIN ".$item->getTable()."
+                                 ON (".$item->getTable().".`id` = `glpi_infocoms`.`items_id`)
                      WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                            AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                              getEntitiesRestrictRequest(" AND",$item->table)."
-                     ORDER BY `entities_id`, ".$item->table.".`name`";
+                              getEntitiesRestrictRequest(" AND",$item->getTable())."
+                     ORDER BY `entities_id`, ".$item->getTable().".`name`";
 
             if ($result_linked=$DB->query($query)) {
                $nb=$DB->numrows($result_linked);

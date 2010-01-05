@@ -46,7 +46,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => getForeignKeyFieldForTable($this->table),
+      return array(array('name'  => $this->getForeignKey(),
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false));
@@ -79,13 +79,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $parent = clone $this;
 
-      if (isset($input[getForeignKeyFieldForTable($this->table)])
-          && $input[getForeignKeyFieldForTable($this->table)]>0
-          && $parent->getFromDB($input[getForeignKeyFieldForTable($this->table)])) {
+      if (isset($input[$this->getForeignKey()])
+          && $input[$this->getForeignKey()]>0
+          && $parent->getFromDB($input[$this->getForeignKey()])) {
          $input['level'] = $parent->fields['level']+1;
          $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
       } else {
-         $input[getForeignKeyFieldForTable($this->table)] = 0;
+         $input[$this->getForeignKey()] = 0;
          $input['level'] = 1;
          $input['completename'] = $input['name'];
       }
@@ -99,15 +99,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if ($this->input['_replace_by']) {
          $parent = $this->input['_replace_by'];
       } else {
-         $parent = $this->fields[getForeignKeyFieldForTable($this->table)];
+         $parent = $this->fields[$this->getForeignKey()];
       }
 
-      CleanFields($this->table, array('sons_cache', 'ancestors_cache'));
+      CleanFields($this->getTable(), array('sons_cache', 'ancestors_cache'));
       $tmp = clone $this;
-      $crit = array('FIELDS'=>'id',
-                    getForeignKeyFieldForTable($this->table)=>$ID);
-      foreach ($DB->request($this->table, $crit) as $data) {
-         $data[getForeignKeyFieldForTable($this->table)] = $parent;
+      $crit = array('FIELDS'=>'id',$this->getForeignKey()=>$ID);
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
+         $data[$this->getForeignKey()] = $parent;
          $tmp->update($data);
       }
       return true;
@@ -115,25 +114,25 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
       // Can't move a parent under a child
-      if (isset($input[getForeignKeyFieldForTable($this->table)])
-          && in_array($input[getForeignKeyFieldForTable($this->table)],
-                      getSonsOf($this->table, $input['id']))) {
+      if (isset($input[$this->getForeignKey()])
+          && in_array($input[$this->getForeignKey()],
+                      getSonsOf($this->getTable(), $input['id']))) {
          return false;
       }
       return $input;
    }
 
    function post_updateItem($input,$updates,$history=1) {
-      if (in_array('name', $updates) || in_array(getForeignKeyFieldForTable($this->table), $updates)) {
-         if (in_array(getForeignKeyFieldForTable($this->table), $updates)) {
-            CleanFields($this->table, array('sons_cache', 'ancestors_cache'));
+      if (in_array('name', $updates) || in_array($this->getForeignKey(), $updates)) {
+         if (in_array($this->getForeignKey(), $updates)) {
+            CleanFields($this->getTable(), array('sons_cache', 'ancestors_cache'));
          }
-         regenerateTreeCompleteNameUnderID($this->table, $input['id']);
+         regenerateTreeCompleteNameUnderID($this->getTable(), $input['id']);
       }
    }
 
    function post_addItem($newID,$input) {
-      CleanFields($this->table, 'sons_cache');
+      CleanFields($this->getTable(), 'sons_cache');
    }
 
    /**
@@ -144,9 +143,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getTreeLink() {
 
       $link = '';
-      if ($this->fields[getForeignKeyFieldForTable($this->table)]) {
+      if ($this->fields[$this->getForeignKey()]) {
          $papa = clone $this;
-         if ($papa->getFromDB($this->fields[getForeignKeyFieldForTable($this->table)])) {
+         if ($papa->getFromDB($this->fields[$this->getForeignKey()])) {
             $link = $papa->getTreeLink() . " > ";
          }
       }
@@ -184,7 +183,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "<th>".$LANG['common'][25]."</th>";
       echo "</tr>\n";
 
-      $fk = getForeignKeyFieldForTable($this->table);
+      $fk = $this->getForeignKey();
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
 
@@ -196,7 +195,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $crit['entities_id'] = $_SESSION['glpiactiveentities'];
          }
       }
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          echo "<tr class='tab_bg_1'>";
          echo "<td><a href='".$this->getFormURL();
          echo '?id='.$data['id']."'>".$data['name']."</a></td>";
@@ -227,7 +226,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       // Minimal form for quick input.
       if ($this->canCreate()) {
-         $link=getItemTypeFormURL($this->type);
+         $link=getItemTypeFormURL($this->getType());
          echo "<form action='".$link."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
@@ -236,7 +235,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($entity_assign){
             echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          }
-         echo "<input type='hidden' name='".getForeignKeyFieldForTable($this->table)."' value='$ID'></td>";
+         echo "<input type='hidden' name='".$this->getForeignKey()."' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
@@ -255,21 +254,21 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[1]['table']         = $this->table;
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'completename';
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][51];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->type;
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[14]['table']         = $this->table;
+      $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
       $tab[14]['linkfield']     = '';
       $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
-      $tab[14]['itemlink_link'] = $this->type;
+      $tab[14]['itemlink_link'] = $this->getType();
 
-      $tab[16]['table']     = $this->table;
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
@@ -282,7 +281,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[80]['name']      = $LANG['entity'][0];
       }
       if ($this->maybeRecursive()) {
-         $tab[86]['table']     = $this->table;
+         $tab[86]['table']     = $this->getTable();
          $tab[86]['field']     = 'is_recursive';
          $tab[86]['linkfield'] = 'is_recursive';
          $tab[86]['name']      = $LANG['entity'][9];
@@ -296,10 +295,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * Used to (dis)allow delete action
     */
    function haveChildren() {
-      $fk = getForeignKeyFieldForTable($this->table);
+      $fk = $this->getForeignKey();
       $id = $this->fields['id'];
 
-      return (countElementsInTable($this->table,"`$fk`='$id'")>0);
+      return (countElementsInTable($this->getTable(),"`$fk`='$id'")>0);
    }
 
    /**
@@ -313,13 +312,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB;
 
       if (!empty($input["name"])) {
-         $fk = getForeignKeyFieldForTable($this->table);
+         $fk = $this->getForeignKey();
          $query = "SELECT `id`
-                   FROM `".$this->table."`
+                   FROM `".$this->getTable()."`
                    WHERE `name` = '".$input["name"]."'
                      AND `$fk`='".(isset($input[$fk]) ? $input[$fk] : 0)."'";
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ',$this->table,'',
+            $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
                                                  $input['entities_id'],$this->maybeRecursive());
          }
 
@@ -350,7 +349,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       // Import a full tree from completename
       $names = explode('>',$input['completename']);
-      $fk = getForeignKeyFieldForTable($this->table);
+      $fk = $this->getForeignKey();
       $i=count($names);
       $parent = 0;
 

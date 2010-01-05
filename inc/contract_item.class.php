@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 // Relation between Contracts and Items
 class Contract_Item extends CommonDBRelation{
 
-   // From CommonDBTM
-   public $table = 'glpi_contracts_items';
-   public $type = 'Contract_Item';
-
    // From CommonDBRelation
    public $itemtype_1 = 'Contract';
    public $items_id_1 = 'contracts_id';
@@ -70,7 +66,7 @@ class Contract_Item extends CommonDBRelation{
             return false;
          }
          if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->table,
+             && countElementsInTable($this->getTable(),
                                      "`contracts_id`='".$input['contracts_id']."'") >=
                                           $contract->fields['max_links_allowed']) {
                return false;

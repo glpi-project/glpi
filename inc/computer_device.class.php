@@ -41,10 +41,6 @@ if (!defined('GLPI_ROOT')){
 // Relation between Computer and a CommonDevice (motherboard, memory, processor, ...)
 class Computer_Device extends CommonDBChild {
 
-   // From CommonDBTM
-   public $table = 'glpi_computers_devices';
-   public $type = 'Computer_Device';
-
    // From CommonDBChild
    public $itemtype = 'Computer';
    public $items_id = 'computers_id';
@@ -313,7 +309,7 @@ class Computer_Device extends CommonDBChild {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `".$this->table."`";
+                FROM `".$this->getTable()."`";
 
       if ($itemtype == 'Computer') {
          $where = " WHERE `computers_id`='$item_id'";
@@ -339,7 +335,7 @@ class Computer_Device extends CommonDBChild {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `computers_id`='$oldid'";
 
       foreach ($db->request($query) as $data) {

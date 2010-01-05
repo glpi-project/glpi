@@ -46,10 +46,6 @@ if (!defined('GLPI_ROOT')){
  */
 class MailCollector  extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_mailcollectors';
-   public $type = 'MailCollector';
-
    // Specific one
    /// working charset of the mail
    var $charset="";

@@ -39,10 +39,6 @@ if (!defined('GLPI_ROOT')) {
 /// OCS config class
 class OcsServer extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_ocsservers';
-   public $type = 'OcsServer';
-
    // Class constant - still used for import_device field
    // not used const MOBOARD_DEVICE=1;
    const PROCESSOR_DEVICE=2;
@@ -569,7 +565,7 @@ class OcsServer extends CommonDBTM {
 
       // Check if server config does not exists
       $query = "SELECT *
-                FROM `" . $this->table . "`
+                FROM `" . $this->getTable() . "`
                 WHERE `name` = '".$input['name']."';";
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {

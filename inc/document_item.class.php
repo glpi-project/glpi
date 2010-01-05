@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')){
 // Relation between Documents and Items
 class Document_Item extends CommonDBRelation{
 
-   // From CommonDBTM
-   public $table = 'glpi_documents_items';
-   public $type = 'Document_Item';
 
    // From CommonDBRelation
    public $itemtype_1 = 'Document';
@@ -61,7 +58,7 @@ class Document_Item extends CommonDBRelation{
       $restrict = "`documents_id` = '".$input['documents_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'";
-      if (countElementsInTable($this->table,$restrict)>0) {
+      if (countElementsInTable($this->getTable(),$restrict)>0) {
          return false;
       }
       return $input;

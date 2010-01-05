@@ -46,10 +46,6 @@ if (!defined('GLPI_ROOT')){
  **/
 class Cartridge extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_cartridges';
-   public $type = 'Cartridge';
-
    static function getTypeName() {
       global $LANG;
 
@@ -76,7 +72,7 @@ class Cartridge extends CommonDBTM {
       if ($ic->getFromDBforDevice('CartridgeItem',$this->fields["cartridgeitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
-         $ic->fields["itemtype"]=$this->type;
+         $ic->fields["itemtype"]=$this->getType();
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
          }
@@ -91,7 +87,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->table."`
+                `".$this->getTable()."`
                 SET `date_out` = NULL, `date_use` = NULL, `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
@@ -113,7 +109,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query="UPDATE
-              `".$this->table."`
+              `".$this->getTable()."`
               SET `pages`='$pages'
               WHERE `id`='$ID'";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
@@ -138,14 +134,14 @@ class Cartridge extends CommonDBTM {
 
       // Get first unused cartridge
       $query = "SELECT `id`
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE (`cartridgeitems_id` = '$tID'
                       AND `date_use` IS NULL)";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE
-                   `".$this->table."`
+                   `".$this->getTable()."`
                    SET `date_use` = '".date("Y-m-d")."', `printers_id` = '$pID'
                    WHERE (`id`='".$DB->result($result,0,0)."'
                          AND `date_use` IS NULL)";
@@ -172,7 +168,7 @@ class Cartridge extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->table."`
+                `".$this->getTable()."`
                 SET `date_out` = '".date("Y-m-d")."'
                 WHERE `id`='$ID'";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {

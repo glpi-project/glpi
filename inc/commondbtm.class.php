@@ -221,7 +221,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if(count($oldvalues)) {
-         constructHistory($this->fields["id"],$this->type,$oldvalues,$this->fields);
+         constructHistory($this->fields["id"],$this->getType(),$oldvalues,$this->fields);
       }
 
       return true;
@@ -360,7 +360,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->dohistory) {
          $query = "DELETE
                    FROM `glpi_logs`
-                   WHERE (`itemtype` = '".$this->type."'
+                   WHERE (`itemtype` = '".$this->getType()."'
                           AND `items_id` = '$ID')";
          $DB->query($query);
       }
@@ -403,13 +403,13 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Clean ticket open against the item
-      if (in_array($this->type,$CFG_GLPI["helpdesk_types"])) {
+      if (in_array($this->getType(),$CFG_GLPI["helpdesk_types"])) {
          $job=new Ticket;
 
          $query = "SELECT *
                    FROM `glpi_tickets`
                    WHERE `items_id` = '$ID'
-                     AND `itemtype`='".$this->type."'";
+                     AND `itemtype`='".$this->getType()."'";
          $result = $DB->query($query);
 
          if ($DB->numrows($result)) {
@@ -459,19 +459,19 @@ class CommonDBTM extends CommonGLPI {
       global $CFG_GLPI, $DB;
 
       // If this type have INFOCOM, clean one associated to purged item
-      if (in_array($this->type,$CFG_GLPI['infocom_types'])) {
+      if (in_array($this->getType(),$CFG_GLPI['infocom_types'])) {
          $infocom = new Infocom();
-         if ($infocom->getFromDBforDevice($this->type, $ID)) {
+         if ($infocom->getFromDBforDevice($this->getType(), $ID)) {
              $infocom->delete(array('id'=>$infocom->fields['id']));
          }
       }
 
       // If this type have NETPORT, clean one associated to purged item
-      if (in_array($this->type,$CFG_GLPI['netport_types'])) {
+      if (in_array($this->getType(),$CFG_GLPI['netport_types'])) {
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE (`items_id` = '$ID'
-                          AND `itemtype` = '".$this->type."')";
+                          AND `itemtype` = '".$this->getType()."')";
          $result = $DB->query($query);
 
          while ($data = $DB->fetch_array($result)) {
@@ -485,28 +485,28 @@ class CommonDBTM extends CommonGLPI {
          $query = "DELETE
                    FROM `glpi_networkports`
                    WHERE (`items_id` = '$ID'
-                          AND `itemtype` = '".$this->type."')";
+                          AND `itemtype` = '".$this->getType()."')";
          $result = $DB->query($query);
       }
 
       // If this type is RESERVABLE clean one associated to purged item
-      if (in_array($this->type,$CFG_GLPI['reservation_types'])) {
+      if (in_array($this->getType(),$CFG_GLPI['reservation_types'])) {
          $rr=new ReservationItem();
-         if ($rr->getFromDBbyItem($this->type, $ID)) {
+         if ($rr->getFromDBbyItem($this->getType(), $ID)) {
              $rr->delete(array('id'=>$infocom->fields['id']));
          }
       }
 
       // If this type have CONTRACT, clean one associated to purged item
-      if (in_array($this->type,$CFG_GLPI['contract_types'])) {
+      if (in_array($this->getType(),$CFG_GLPI['contract_types'])) {
          $ci = new Contract_Item();
-         $ci->cleanDBonItemDelete($this->type,$ID);
+         $ci->cleanDBonItemDelete($this->getType(),$ID);
       }
 
       // If this type have DOCUMENT, clean one associated to purged item
-      if (in_array($this->type,$CFG_GLPI["doc_types"])) {
+      if (in_array($this->getType(),$CFG_GLPI["doc_types"])) {
          $di = new Document_Item();
-         $di->cleanDBonItemDelete($this->type,$ID);
+         $di->cleanDBonItemDelete($this->getType(),$ID);
       }
    }
 
@@ -590,7 +590,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          return '';
       }
-      $link_item = getItemTypeFormURL($this->type);
+      $link_item = getItemTypeFormURL($this->getType());
       if (!$this->can($this->fields['id'],'r')) {
          return $this->getNameID($with_comment);
       }
@@ -610,7 +610,7 @@ class CommonDBTM extends CommonGLPI {
       global
       $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->type);
+      $link=getItemTypeFormURL($this->getType());
       if (!isset($link)) {
          return;
       }
@@ -742,7 +742,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnUpdateAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->type);
+      $link=getItemTypeFormURL($this->getType());
       if (!isset($link)) {
          return;
       }
@@ -851,7 +851,7 @@ class CommonDBTM extends CommonGLPI {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
 
-                  historyLog ($this->fields["id"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
+                  historyLog ($this->fields["id"],$this->getType(),$changes,0,HISTORY_DELETE_ITEM);
                }
                doHook("item_delete",$this);
             }
@@ -868,7 +868,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnDeleteAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->type);
+      $link=getItemTypeFormURL($this->getType());
       if (!isset($link)) {
          return;
       }
@@ -895,7 +895,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnPurgeAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->type);
+      $link=getItemTypeFormURL($this->getType());
       if (!isset($link)) {
          return;
       }
@@ -950,7 +950,7 @@ class CommonDBTM extends CommonGLPI {
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
-            historyLog ($this->input["id"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
+            historyLog ($this->input["id"],$this->getType(),$changes,0,HISTORY_RESTORE_ITEM);
          }
          doHook("item_restore", $this);
 
@@ -966,7 +966,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnRestoreAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->type);
+      $link=getItemTypeFormURL($this->getType());
       if (!isset($link)) {
          return;
       }
@@ -1077,10 +1077,10 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
       // Can delete an object with Infocom only if can delete Infocom
-      if (in_array($this->type, $CFG_GLPI['infocom_types'])) {
+      if (in_array($this->getType(), $CFG_GLPI['infocom_types'])) {
 
          $infocom = new Infocom();
-         if ($infocom->getFromDBforDevice($this->type, $this->fields['id'])) {
+         if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
             return $infocom->canDelete();
          }
       }
@@ -1232,10 +1232,10 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       // Doc links to this item
-      if ($this->type > 0
+      if ($this->getType() > 0
          && countElementsInTable("`glpi_documents_items`, `glpi_documents`",
                                  "`glpi_documents_items`.`items_id`='$ID'
-                                  AND `glpi_documents_items`.`itemtype`=".$this->type."
+                                  AND `glpi_documents_items`.`itemtype`=".$this->getType()."
                                   AND `glpi_documents_items`.`documents_id`=`glpi_documents`.`id`
                                   AND `glpi_documents`.`entities_id` NOT IN $entities")>'0') {
          return false;
@@ -1776,7 +1776,7 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = $this->type;
+      $tab[1]['itemlink_link'] = $this->getType();
 
       return $tab;
    }

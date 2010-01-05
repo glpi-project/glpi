@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DevicePci
 class DevicePci extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicepcis';
-   public $type = 'DevicePci';
-
    static function getTypeName() {
       global $LANG;
 

@@ -412,7 +412,7 @@ function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
       $item = new $itemtype();
 
       $query = "SELECT `obj.id`
-               FROM " . $item->table . " AS obj, `glpi_domains` AS gdd
+               FROM " . $item->getTable() . " AS obj, `glpi_domains` AS gdd
                WHERE `obj.entities_id` = '$entity'
                      AND `obj`.`domains_id` = `gdd`.`id`
                      AND LOWER( '$fqdn' ) = (CONCAT(LOWER(`obj`.`name`) , '.', LOWER(`gdd`.`name`)))";

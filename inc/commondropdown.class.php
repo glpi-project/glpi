@@ -137,7 +137,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='hidden' name='itemtype' value='".$this->type."'>";
+      echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation
          autocompletionTextField($this,"designation");
@@ -178,13 +178,13 @@ abstract class CommonDropdown extends CommonDBTM {
                if ($field['name']=='entities_id') {
                   $restrict = -1;
                } else {
-                  $restrict = $this->fields[getForeignKeyFieldForTable($this->table)];
+                  $restrict = $this->fields[getForeignKeyFieldForTable($this->getTable())];
                }
-               Dropdown::show(getItemTypeForTable($this->table),
+               Dropdown::show(getItemTypeForTable($this->getTable()),
                               array('value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],
                                     'entity' => $restrict,
-                                    'used'   => ($ID>0 ? getSonsOf($this->table, $ID) : array())));
+                                    'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID) : array())));
                break;
 
             case 'icon' :
@@ -233,14 +233,14 @@ abstract class CommonDropdown extends CommonDBTM {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[1]['table']         = $this->table;
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = $this->type;
+      $tab[1]['itemlink_link'] = $this->getType();
 
-      $tab[16]['table']     = $this->table;
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
@@ -253,7 +253,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $tab[80]['name']      = $LANG['entity'][0];
       }
       if ($this->maybeRecursive()) {
-         $tab[86]['table']     = $this->table;
+         $tab[86]['table']     = $this->getTable();
          $tab[86]['field']     = 'is_recursive';
          $tab[86]['linkfield'] = 'is_recursive';
          $tab[86]['name']      = $LANG['entity'][9];
@@ -272,8 +272,8 @@ abstract class CommonDropdown extends CommonDBTM {
       $ID = $this->fields['id'];
 
       $RELATION = getDbRelations();
-      if (isset ($RELATION[$this->table])) {
-         foreach ($RELATION[$this->table] as $tablename => $field) {
+      if (isset ($RELATION[$this->getTable()])) {
+         foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {
                   $query = "SELECT COUNT(*) AS cpt
@@ -349,15 +349,15 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
-         $fk=getForeignKeyFieldForTable($this->table);
-         Dropdown::show(getItemTypeForTable($this->table),
+         $fk=getForeignKeyFieldForTable($this->getTable());
+         Dropdown::show(getItemTypeForTable($this->getTable()),
                         array('name'   => '_replace_by',
                               'value'  => $this->fields[$fk],
                               'entity' => $this->getEntityID(),
-                              'used'   => getSonsOf($this->table, $ID)));
+                              'used'   => getSonsOf($this->getTable(), $ID)));
 
       } else {
-         Dropdown::show(getItemTypeForTable($this->table),
+         Dropdown::show(getItemTypeForTable($this->getTable()),
                         array('name'   => '_replace_by',
                               'entity' => $this->getEntityID(),
                               'used'   => array($ID)));
@@ -381,8 +381,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $RELATION = getDbRelations();
 
-      if (isset ($RELATION[$this->table])) {
-         foreach ($RELATION[$this->table] as $table => $field) {
+      if (isset ($RELATION[$this->getTable()])) {
+         foreach ($RELATION[$this->getTable()] as $table => $field) {
             if ($table[0]!='_') {
                if (!is_array($field)) {
                   // Manage OCS lock for items - no need for array case
@@ -434,10 +434,10 @@ abstract class CommonDropdown extends CommonDBTM {
       if (!empty($input["name"])) {
 
          $query = "SELECT `id`
-                   FROM `".$this->table."`
+                   FROM `".$this->getTable()."`
                    WHERE  `name` = '".$input["name"]."'";
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ',$this->table,'',
+            $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
                                                  $input['entities_id'],$this->maybeRecursive());
          }
 
@@ -502,9 +502,9 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       $ruleinput = array("name" => $value);
-      $rulecollection = getRuleCollectionClassByTableName($this->table);
+      $rulecollection = getRuleCollectionClassByTableName($this->getTable());
 
-      switch ($this->table) {
+      switch ($this->getTable()) {
          case "glpi_computermodels" :
          case "glpi_monitormodels" :
          case "glpi_printermodels" :

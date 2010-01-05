@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')){
 class Contact extends CommonDBTM{
 
    // From CommonDBTM
-   public $table = 'glpi_contacts';
-   public $type = 'Contact';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -65,7 +63,7 @@ class Contact extends CommonDBTM{
       global $DB;
 
       $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->type,$ID);
+      $cs->cleanDBonItemDelete($this->getType(),$ID);
    }
 
    function defineTabs($ID,$withtemplate) {

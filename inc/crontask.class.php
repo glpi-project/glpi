@@ -38,10 +38,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class CronTask extends CommonDBTM{
 
-   // From CommonDBTM
-   public $table = 'glpi_crontasks';
-   public $type = 'CronTask';
-
    // Specific ones
    static private $lockname='';
    private $timer=0.0;
@@ -99,7 +95,7 @@ class CronTask extends CommonDBTM{
    function getFromDBbyName($name, $plugin=NULL) {
       global $DB;
 
-      $query = "SELECT * FROM `".$this->table."`
+      $query = "SELECT * FROM `".$this->getTable()."`
                 WHERE `name`='$name'";
       if ($plugin) {
          $query .= " AND `plugin`='$plugin'";
@@ -158,7 +154,7 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id'])) {
          return false;
       }
-      $query = "UPDATE `".$this->table."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".self::STATE_RUNNING."',
                     `lastrun` = NOW()
                 WHERE `id` = '".$this->fields['id']."'
@@ -213,7 +209,7 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id'])) {
          return false;
       }
-      $query = "UPDATE `".$this->table."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".$this->fields['state']."',
                     `lastrun` = NOW()
                 WHERE `id` = '".$this->fields['id']."'
@@ -278,7 +274,7 @@ class CronTask extends CommonDBTM{
 
       $hour=date('H');
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE (`plugin` IS NULL";
 
       if (count($_SESSION['glpi_plugins'])) {

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceSoundCard
 class DeviceSoundCard extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicesoundcards';
-   public $type = 'DeviceSoundCard';
-
    static function getTypeName() {
       global $LANG;
 
@@ -65,7 +61,7 @@ class DeviceSoundCard extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'type';
       $tab[12]['linkfield']     = 'type';
       $tab[12]['name']          = $LANG['common'][17];

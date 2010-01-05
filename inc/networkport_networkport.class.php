@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// NetworkPort_NetworkPort class
 class NetworkPort_NetworkPort extends CommonDBTM {
 
-   public $table = 'glpi_networkports_networkports';
-   public $type = 'NetworkPort_NetworkPort';
-
-
 
    /**
     * Retrieve an item from the database
@@ -61,7 +57,7 @@ class NetworkPort_NetworkPort extends CommonDBTM {
       }
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `networkports_id_1` = '$ID'
                       OR `networkports_id_2` = '$ID'";
 

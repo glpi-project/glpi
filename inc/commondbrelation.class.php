@@ -243,7 +243,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `".$this->table."`";
+                FROM `".$this->getTable()."`";
 
       if ($itemtype == $this->itemtype_1) {
          $where = " WHERE `".$this->items_id_1."`='$item_id'";

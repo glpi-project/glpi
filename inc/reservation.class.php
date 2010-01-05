@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Reservation class
 class Reservation extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_reservations';
-
    function pre_deleteItem($ID) {
       global $CFG_GLPI;
 
@@ -154,7 +151,7 @@ class Reservation extends CommonDBTM {
          $ID_where=" `id` <> '".$this->fields["id"]."' AND ";
       }
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE $ID_where
                          `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
                      AND '".$this->fields["begin"]."' < `end`

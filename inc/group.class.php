@@ -42,10 +42,6 @@ if (!defined('GLPI_ROOT')){
  */
 class Group extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_groups';
-   public $type = 'Group';
-
    static function getTypeName() {
       global $LANG;
 
@@ -305,7 +301,7 @@ class Group extends CommonDBTM {
          }
          $item = new $itemtype();
          $query="SELECT *
-                 FROM ".$item->table."
+                 FROM ".$item->getTable()."
                  WHERE `groups_id`='$ID' " .
                        getEntitiesRestrictRequest(" AND ", getTableForItemType($itemtype), '', '',
                                                   $item->maybeRecursive());

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceProcessor
 class DeviceProcessor extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_deviceprocessors';
-   public $type = 'DeviceProcessor';
-
    static function getTypeName() {
       global $LANG;
 
@@ -74,13 +70,13 @@ class DeviceProcessor extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'specif_default';
       $tab[11]['linkfield']     = 'specif_default';
       $tab[11]['name']          = $LANG['device_ram'][1]." ".$LANG['devices'][24];
       $tab[11]['datatype']      = 'text';
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'frequence';
       $tab[12]['linkfield']     = 'frequence';
       $tab[12]['name']          = $LANG['device_ram'][1];

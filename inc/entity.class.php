@@ -42,10 +42,6 @@ if (!defined('GLPI_ROOT')){
  */
 class Entity extends CommonTreeDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_entities';
-   public $type = 'Entity';
-
    function getFromDB($ID) {
       global $LANG;
       
@@ -209,7 +205,7 @@ class Entity extends CommonTreeDropdown {
    }
 
    function post_addItem($newID,$input) {
-      CleanFields($this->table, 'sons_cache');
+      CleanFields($this->getTable(), 'sons_cache');
 
       // Add right to current user - Hack to avoid login/logout
       $_SESSION['glpiactiveentities'][$newID] = $newID;

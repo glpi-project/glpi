@@ -86,7 +86,7 @@ class glpi_phpmailer extends phpmailer {
 class Mailing {
 
    //! mailing type (new,attrib,followup,finish)
-   var $type=NULL;
+   var $mailtype=NULL;
    /** Job class variable - job to be mailed
     * @see Job
     */
@@ -108,7 +108,7 @@ class Mailing {
     */
    function __construct ($type="",$job=NULL,$user=NULL,$followupisprivate=false) {
 
-      $this->type=$type;
+      $this->mailtype=$type;
       if (!isset($job->hardwaredatas) || !count($job->hardwaredatas)) {
          $job->getHardwareData();
       }
@@ -151,7 +151,7 @@ class Mailing {
       $emails=array();
       $query="SELECT *
               FROM `glpi_mailingsettings`
-              WHERE `type`='".$this->type."'";
+              WHERE `type`='".$this->mailtype."'";
       $result=$DB->query($query);
       if ($DB->numrows($result)) {
          $selectdistinctuser ="SELECT DISTINCT `glpi_users`.`email` AS email,
@@ -545,7 +545,7 @@ class Mailing {
 //         $subject.=Dropdown::getDropdownName("glpi_entities",$this->job->fields['entities_id'])." | ";
 //      }
 
-      switch ($this->type) {
+      switch ($this->mailtype) {
          case "new" :
             $subject.=$LANG['mailing'][9];
             break;
@@ -607,7 +607,7 @@ class Mailing {
          return $CFG_GLPI["admin_reply"];
       }
       // No specific config
-      switch ($this->type) {
+      switch ($this->mailtype) {
          case "new" :
             if (isset($this->job->fields["user_email"])
                 && isValidEmail($this->job->fields["user_email"])) {
@@ -641,7 +641,7 @@ class Mailing {
       global $CFG_GLPI,$LANG;
 
       if ($CFG_GLPI["use_mailing"]) {
-         if (!is_null($this->job)  && in_array($this->type,array("new",
+         if (!is_null($this->job)  && in_array($this->mailtype,array("new",
                                                                  "update",
                                                                  "followup",
                                                                  "finish"))) {
@@ -731,7 +731,7 @@ class MailingResa {
     */
    var $resa;
    //! type of mailing (new, update, delete)
-   var $type;
+   var $mailtype;
 
    /**
     * Constructor
@@ -741,7 +741,7 @@ class MailingResa {
     */
    function __construct ($resa,$type="new") {
       $this->resa=$resa;
-      $this->type=$type;
+      $this->mailtype=$type;
    }
 
    /**
@@ -984,11 +984,11 @@ class MailingResa {
       global $LANG;
 
       // Create the message subject
-      if ($this->type=="new") {
+      if ($this->mailtype=="new") {
          $subject="[GLPI] ".$LANG['mailing'][19];
-      } else if ($this->type=="update") {
+      } else if ($this->mailtype=="update") {
          $subject="[GLPI] ".$LANG['mailing'][23];
-      } else if ($this->type=="delete") {
+      } else if ($this->mailtype=="delete") {
          $subject="[GLPI] ".$LANG['mailing'][29];
       }
       return $subject;
@@ -1081,7 +1081,7 @@ class MailingResa {
 class MailingAlert {
 
    /// mailing type (contract,infocom,cartridge,consumable)
-   var $type=NULL;
+   var $mailtype=NULL;
    /// message to send
    var $message="";
    /// working entity
@@ -1095,7 +1095,7 @@ class MailingAlert {
     * @return nothing
     */
    function __construct ($type,$message,$entity=-1) {
-      $this->type=$type;
+      $this->mailtype=$type;
       $this->message=$message;
       $this->entity=$entity;
    }
@@ -1113,7 +1113,7 @@ class MailingAlert {
       $emails=array();
       $query="SELECT *
               FROM `glpi_mailingsettings`
-              WHERE `type`='".$this->type."'";
+              WHERE `type`='".$this->mailtype."'";
       $result=$DB->query($query);
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_assoc($result)) {
@@ -1221,7 +1221,7 @@ class MailingAlert {
       // Create the message subject
       $subject="[GLPI]";
 
-      switch ($this->type) {
+      switch ($this->mailtype) {
          case "alertcartridge" :
             $subject.=" ".$LANG['mailing'][33]. " - ".Dropdown::getDropdownName("glpi_entities",$this->entity);
             break;

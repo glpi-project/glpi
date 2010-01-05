@@ -41,10 +41,6 @@ if (!defined('GLPI_ROOT')){
 // TODO move this as a CommonDBRelation
 class Computer_SoftwareVersion extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_computers_softwareversions';
-   public $type = 'Computer_SoftwareVersion';
-
    // From CommonDBRelation
    //public $itemtype_1 = 'Computer';
    //public $items_id_1 = 'computers_id';
@@ -840,7 +836,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `computers_id`='$oldid'";
 
       foreach ($db->request($query) as $data) {
