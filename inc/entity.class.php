@@ -44,7 +44,7 @@ class Entity extends CommonTreeDropdown {
 
    function getFromDB($ID) {
       global $LANG;
-      
+
       if ($ID==0) {
          $this->fields=array('id'=>0,
                         'name'=>$LANG['entity'][2],
@@ -208,7 +208,7 @@ class Entity extends CommonTreeDropdown {
       CleanFields($this->getTable(), 'sons_cache');
 
       // Add right to current user - Hack to avoid login/logout
-      $_SESSION['glpiactiveentities'][$newID] = $this->fields['id'];
+      $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
       $_SESSION['glpiactiveentities_string'] .= ",'".$this->fields['id']."'";
    }
 
