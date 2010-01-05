@@ -577,6 +577,9 @@ class Plugin extends CommonDBTM {
    function clean($ID) {
 
       if ($this->getFromDB($ID)) {
+         // Clean crontask after "hard" remove
+         CronTask::Unregister($this->fields['directory']);
+
          $this->delete(array('id'=>$ID));
          $this->removeFromSession($this->fields['directory']);
       }
