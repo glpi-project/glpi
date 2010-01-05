@@ -596,7 +596,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          return '';
       }
-      $link_item = getItemTypeFormURL($this->getType());
+      $link_item = $this->getFormURL();
       if (!$this->can($this->fields['id'],'r')) {
          return $this->getNameID($with_comment);
       }
@@ -616,7 +616,7 @@ class CommonDBTM extends CommonGLPI {
       global
       $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->getType());
+      $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }
@@ -748,7 +748,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnUpdateAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->getType());
+      $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }
@@ -874,7 +874,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnDeleteAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->getType());
+      $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }
@@ -901,7 +901,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnPurgeAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->getType());
+      $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }
@@ -972,7 +972,7 @@ class CommonDBTM extends CommonGLPI {
    function addMessageOnRestoreAction() {
       global $CFG_GLPI, $LANG;
 
-      $link=getItemTypeFormURL($this->getType());
+      $link=$this->getFormURL();
       if (!isset($link)) {
          return;
       }

@@ -211,7 +211,7 @@ class CommonGLPI {
       }
       if (count($onglets)) {
 
-         $tabpage=getItemTypeTabsURL($this->getType());
+         $tabpage=$this->getTabsURL();
 
          $tabs=array();
 
