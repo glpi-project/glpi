@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: networkinterface.class.php 9836 2009-12-20 16:54:39Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
