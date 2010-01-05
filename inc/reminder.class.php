@@ -41,10 +41,6 @@ if (!defined('GLPI_ROOT')) {
 /// Reminder class
 class Reminder extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_reminders';
-   public $type = 'Reminder';
-
    static function getTypeName() {
       global $LANG;
 

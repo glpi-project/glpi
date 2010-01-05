@@ -45,10 +45,6 @@ if (!defined('GLPI_ROOT')){
  */
 class ConsumableItem extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_consumableitems';
-   public $type = 'ConsumableItem';
-
    static function getTypeName() {
       global $LANG;
 

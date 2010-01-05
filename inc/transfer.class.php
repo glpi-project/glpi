@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 
 class Transfer extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_transfers';
-   public $type = 'Transfer';
-
    // Specific ones
    /// Already transfer item
    var $already_transfer = array();

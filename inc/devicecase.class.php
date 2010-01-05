@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceCase
 class DeviceCase extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicecases';
-   public $type = 'DeviceCase';
-
    static function getTypeName() {
       global $LANG;
 

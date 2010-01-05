@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class ContactType
 class ContactType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_contacttypes';
-   public $type = 'ContactType';
-
    static function getTypeName() {
       global $LANG;
 

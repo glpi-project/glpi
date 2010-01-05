@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')){
 class Config extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_configs';
-   public $type = 'Config';
    public $auto_message_on_action = false;
 
    static function getTypeName() {

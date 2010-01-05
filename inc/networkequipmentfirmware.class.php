@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class NetworkEquipmentFirmware
 class NetworkEquipmentFirmware extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_networkequipmentfirmwares';
-   public $type = 'NetworkEquipmentFirmware';
-
    static function getTypeName() {
       global $LANG;
 

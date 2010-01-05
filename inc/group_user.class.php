@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Group_User class - Relation between Group and User
 class Group_User extends CommonDBRelation{
 
-   // From CommonDBTM
-   public $table = 'glpi_groups_users';
-   public $type = 'Group_User';
-
    // From CommonDBRelation
    public $itemtype_1 = 'User';
    public $items_id_1 = 'users_id';

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceCaseType (Interface is a reserved keyword)
 class DeviceCaseType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_devicecasetypes';
-   public $type = 'DeviceCaseType';
-
    static function getTypeName() {
       global $LANG;
 

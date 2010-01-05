@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// TicketSolutionType class
 class TicketSolutionType extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_ticketsolutiontypes';
-   public $type = 'TicketSolutionType';
-
    static function getTypeName() {
       global $LANG;
 

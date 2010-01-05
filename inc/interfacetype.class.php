@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class InterfaceType (Interface is a reserved keyword)
 class InterfaceType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_interfacetypes';
-   public $type = 'InterfaceType';
-
    static function getTypeName() {
       global $LANG;
 

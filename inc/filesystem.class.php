@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class Filesystem
 class Filesystem extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_filesystems';
-   public $type = 'Filesystem';
-
    static function getTypeName() {
       global $LANG;
 

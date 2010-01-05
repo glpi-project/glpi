@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class SoftwareCategory
 class SoftwareCategory extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_softwarecategories';
-   public $type = 'SoftwareCategory';
-
    static function getTypeName() {
       global $LANG;
 

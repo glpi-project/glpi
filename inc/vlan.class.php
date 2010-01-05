@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class Vlan
 class Vlan extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_vlans';
-   public $type = 'Vlan';
-
    static function getTypeName() {
       global $LANG;
 

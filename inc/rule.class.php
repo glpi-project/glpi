@@ -43,9 +43,6 @@ if (!defined('GLPI_ROOT')) {
  *   - actions
 **/
 class Rule extends CommonDBTM {
-   // From CommonDBTM
-   public $table = 'glpi_rules';
-   public $type = 'Rule';
 
    // Specific ones
    ///Actions affected to this rule

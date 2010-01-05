@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class PhoneType
 class PhoneType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_phonetypes';
-   public $type = 'PhoneType';
-
    static function getTypeName() {
       global $LANG;
 

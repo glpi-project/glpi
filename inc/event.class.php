@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 // Event class
 class Event extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_events';
-   public $type = 'Event';
-
    static function getTypeName() {
       global $LANG;
 

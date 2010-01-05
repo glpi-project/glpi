@@ -41,8 +41,6 @@ class TicketTask  extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_tickettasks';
-   public $type = 'TicketTask';
    public $auto_message_on_action = false;
 
    static function getTypeName() {

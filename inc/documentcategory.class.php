@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DocumentCategory
 class DocumentCategory extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_documentcategories';
-   public $type = 'DocumentCategory';
-
    static function getTypeName() {
       global $LANG;
 

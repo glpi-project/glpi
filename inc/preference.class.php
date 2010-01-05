@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')){
 // class Preference for the current connected User
 class Preference extends CommonGLPI {
 
-   public $type = 'Preference';
-
    static function getTypeName() {
       global $LANG;
 

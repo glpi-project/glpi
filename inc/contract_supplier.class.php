@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation {
 
-   // From CommonDBTM
-   public $table = 'glpi_contracts_suppliers';
-   public $type = 'Contract_Supplier';
-
    // From CommonDBRelation
    public $itemtype_1 = 'Contract';
    public $items_id_1 = 'contracts_id';
