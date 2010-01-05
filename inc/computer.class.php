@@ -545,8 +545,8 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),$this->type,
                     $this->fields["entities_id"]);
-      autocompletionTextField("name",$this->table,"name",$objectName,40,
-                               $this->fields["entities_id"]);
+      
+      autocompletionTextField($this,'name');
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -581,8 +581,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;: </td>";
       echo "<td >";
-      autocompletionTextField("contact_num",$this->table,"contact_num",
-                              $this->fields["contact_num"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this,'contact_num');
+
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
       echo "<td>";
@@ -592,13 +592,13 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("contact",$this->table,"contact",
-                              $this->fields["contact"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this,'contact');
+
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                               $this->fields["entities_id"]);
+      autocompletionTextField($this,'serial');
+
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -612,8 +612,8 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
-                               $this->fields["entities_id"]);
+      autocompletionTextField($this,'otherserial');
+
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -663,15 +663,13 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("os_licenseid",$this->table,"os_licenseid",
-                              $this->fields["os_licenseid"],40, $this->fields["entities_id"]);
+      autocompletionTextField($this,'os_licenseid');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField("os_license_number",$this->table,"os_license_number",
-                              $this->fields["os_license_number"],40, $this->fields["entities_id"]);
+      autocompletionTextField($this,'os_license_number');
       echo "</td></tr>\n";
 
       // Get OCS Datas :
