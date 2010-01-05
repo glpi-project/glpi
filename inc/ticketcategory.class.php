@@ -51,7 +51,7 @@ class TicketCategory extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return  array(array('name'  => getForeignKeyFieldForTable($this->getTable()),
+      return  array(array('name'  => $this->getForeignKeyField(),
                           'label' => $LANG['setup'][75],
                           'type'  => 'parent',
                           'list'  => false),

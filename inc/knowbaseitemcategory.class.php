@@ -57,7 +57,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          return true;
       }
       $kb = new KnowbaseItem();
-      $fk = $this->getForeignKey();
+      $fk = $this->getForeignKeyField();
       $id = $this->fields['id'];
 
       return (countElementsInTable($kb->getTable(),"`$fk`='$id'")>0);

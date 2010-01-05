@@ -48,6 +48,8 @@ class CommonDBTM extends CommonGLPI {
 
    /// Table name cache : set dynamically calling getTable
    protected $table="";
+   /// Foreign key field cache : set dynamically calling getForeignKeyField
+   protected $fkfield="";
 
    /**
    * Constructor
@@ -67,8 +69,12 @@ class CommonDBTM extends CommonGLPI {
       return $this->table;
    }
 
-   function getForeignKey() {
-      return getForeignKeyFieldForTable($this->getTable());
+   function getForeignKeyField() {
+      if (empty($this->fkfield)) {
+         $this->fkfield=getForeignKeyFieldForTable($this->getTable());
+      }
+
+      return $this->fkfield;
    }
 
    /**
