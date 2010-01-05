@@ -67,16 +67,16 @@ class NetworkPort extends CommonDBTM {
       return haveRight('networking', 'r');
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
 
       // Only netpoint updates : ip and mac may be different.
       $tomatch=array("netpoints_id");
-      $updates=array_intersect($updates,$tomatch);
-      if (count($updates)) {
+      $updates=array_intersect($this->updates,$tomatch);
+      if (count($this->updates)) {
          $save_ID=$this->fields["id"];
          $n=new NetworkPort_NetworkPort;
          if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
-            $this->updateInDB($updates);
+            $this->updateInDB($this->updates);
          }
          $this->fields["id"]=$save_ID;
       }

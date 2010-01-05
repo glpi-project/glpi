@@ -87,14 +87,14 @@ class Profile extends CommonDBTM {
       return $ong;
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $DB;
 
-      if (isset($input["is_default"]) && $input["is_default"]==1) {
+      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
          $query = "UPDATE ".
                    $this->getTable()."
                    SET `is_default` = '0'
-                   WHERE `id` <> '".$input['id']."'";
+                   WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
       }
    }

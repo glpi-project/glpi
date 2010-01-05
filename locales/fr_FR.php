@@ -275,6 +275,7 @@ $LANG['common'][86]="Vous n'avez pas les droits suffisants pour modifier la visi
 $LANG['common'][87]="Nouvelle fiche";
 $LANG['common'][88]="Identifiant interne du serveur (ID)";
 $LANG['common'][89]="Non installé";
+$LANG['common'][90]="Objet";
 
 $LANG['computers'][0]="Volume";
 $LANG['computers'][1]="Pourcentage libre";

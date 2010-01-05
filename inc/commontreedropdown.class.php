@@ -122,12 +122,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return $input;
    }
 
-   function post_updateItem($input,$updates,$history=1) {
-      if (in_array('name', $updates) || in_array($this->getForeignKeyField(), $updates)) {
-         if (in_array($this->getForeignKeyField(), $updates)) {
+   function post_updateItem($history=1) {
+      if (in_array('name', $this->updates)
+         || in_array($this->getForeignKeyField(), $this->updates)) {
+         if (in_array($this->getForeignKeyField(), $this->updates)) {
             CleanFields($this->getTable(), array('sons_cache', 'ancestors_cache'));
          }
-         regenerateTreeCompleteNameUnderID($this->getTable(), $input['id']);
+         regenerateTreeCompleteNameUnderID($this->getTable(), $this->input['id']);
       }
    }
 

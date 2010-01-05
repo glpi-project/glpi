@@ -93,10 +93,10 @@ class Computer_Device extends CommonDBChild {
       historyLog ($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
    }
 
-   function post_updateItem($input, $updates, $history=1) {
+   function post_updateItem($history=1) {
 
       if (!$history
-          || (isset($this->input['_no_history']) &&  $input['_no_history'])
+          || (isset($this->input['_no_history']) &&  $this->input['_no_history'])
           || !in_array('specificity',$this->updates)) {
          return false;
       }
