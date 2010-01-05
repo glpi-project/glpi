@@ -1307,20 +1307,20 @@ function showItemStats($target,$date1,$date2,$start) {
             echo displaySearchNewLine($output_type,$i%2);
             echo displaySearchItem($output_type,$item->getTypeName()." - ".$item->getLink(),$item_num,
                                    $i-$start+1,"class='center'"." ".
-                                   ($item->getField("is_deleted")?" class='deleted' ":""));
+                                   ($item->isDeleted()?" class='deleted' ":""));
             if ($view_entities) {
-               $ent=$item->getField('entities_id');
+               $ent=$item->getEntityID();
                if ($ent==0) {
                   $ent=$LANG['entity'][2];
                } else {
                   $ent=$entities[$ent]['completename'];
                }
                echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"class='center'"." ".
-                                      ($item->getField("is_deleted")?" class='deleted' ":""));
+                                      ($item->isDeleted()?" class='deleted' ":""));
             }
             echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,
                                    "class='center'"." ".
-                                   ($item->getField("is_deleted")?" class='deleted' ":""));
+                                   ($item->isDeleted()?" class='deleted' ":""));
          }
       }
 

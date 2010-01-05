@@ -297,8 +297,8 @@ class Ticket extends CommonDBTM {
             if ($input["itemtype"] && class_exists($input["itemtype"])) {
                $item = new $input["itemtype"]();
                $item->getFromDB($input["items_id"]);
-               if ($tmp=$item->getField('groups_id')) {
-                  $input["groups_id"] = $tmp;
+               if ($item->isField('groups_id')) {
+                  $input["groups_id"] = $item->getField('groups_id');
                }
             }
          }
@@ -851,8 +851,8 @@ class Ticket extends CommonDBTM {
 
       // Auto group define from item
       if ($item != NULL) {
-         if ($tmp=$item->getField('groups_id')) {
-            $input["groups_id"] = $tmp;
+         if ($item->isField('groups_id')) {
+            $input["groups_id"] = $item->getField('groups_id');
          }
       }
 
@@ -861,8 +861,8 @@ class Ticket extends CommonDBTM {
          // Auto assign tech from item
          if ($input["users_id_assign"]==0 && $item != NULL) {
 
-            if ($tmp=$item->getField('users_id_tech')) {
-               $input["users_id_assign"] = $tmp;
+            if ($item->isField('users_id_tech')) {
+               $input["users_id_assign"] = $item->getField('users_id_tech');
                if ($input["users_id_assign"]>0) {
                   $input["status"] = "assign";
                }
@@ -875,11 +875,11 @@ class Ticket extends CommonDBTM {
 
             $cat = new TicketCategory();
             $cat->getFromDB($input['ticketcategories_id']);
-            if (!$input['users_id_assign'] && $tmp=$cat->getField('users_id')) {
-               $input['users_id_assign'] = $tmp;
+            if (!$input['users_id_assign'] && $cat->isField('users_id')) {
+               $input['users_id_assign'] = $cat->getField('users_id');
             }
-            if (!$input['groups_id_assign'] && $tmp=$cat->getField('groups_id')) {
-               $input['groups_id_assign'] = $tmp;
+            if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
+               $input['groups_id_assign'] = $cat->getField('groups_id');
             }
          }
       }
@@ -1202,29 +1202,29 @@ class Ticket extends CommonDBTM {
       if ($this->hardwaredatas!=NULL) {
          $name = $this->hardwaredatas->getTypeName()." ".$this->hardwaredatas->getName();
 
-         if ($serial=$this->hardwaredatas->getField("serial")) {
+         if ($this->hardwaredatas->isField("serial")) {
 
-            $name .= " - #".$serial;
+            $name .= " - #".$this->hardwaredatas->getField("serial");
          }
          $modeltable = getSingular($this->hardwaredatas->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
-         if ($model=$this->hardwaredatas->getField($modelfield)) {
-            $name .= " - ".Dropdown::getDropdownName($modeltable,$this->hardwaredatas->fields[$modelfield]);
+         if ($this->hardwaredatas->isField($modelfield)) {
+            $name .= " - ".Dropdown::getDropdownName($modeltable,$this->hardwaredatas->getField($modelfield));
          }
-         if ($tmp=$this->hardwaredatas->getField("users_id_tech")) {
-            $tech = getUserName($tmp);
+         if ($this->hardwaredatas->isField("users_id_tech")) {
+            $tech = getUserName($this->hardwaredatas->getField("users_id_tech"));
          }
-         if ($tmp=$this->hardwaredatas->getField("contact")) {
-            $contact = $tmp;
+         if ($this->hardwaredatas->isField("contact")) {
+            $contact = $this->hardwaredatas->getField("contact");
          }
-         if ($tmp=$this->hardwaredatas->getField("users_id")) {
-            $contact = getUserName($tmp);
+         if ($this->hardwaredatas->isField("users_id")) {
+            $contact = getUserName($this->hardwaredatas->getField("users_id"));
          }
-         if ($tmp=$this->hardwaredatas->getField("groups_id")) {
+         if ($this->hardwaredatas->isField("groups_id")) {
             if (!empty($contact)) {
                $contact.=" / ";
             }
-            $contact .= Dropdown::getDropdownName("glpi_groups",$this->hardwaredatas->fields["groups_id"]);
+            $contact .= Dropdown::getDropdownName("glpi_groups",$this->hardwaredatas->getField("groups_id"));
          }
       }
 

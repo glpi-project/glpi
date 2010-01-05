@@ -179,43 +179,48 @@ class Link extends CommonDBTM {
          $link=str_replace("[NAME]",$item->getName(),$link);
       }
       if (strstr($link,"[SERIAL]")) {
-         if ($tmp=$item->getField('serial')) {
-            $link=str_replace("[SERIAL]",$tmp,$link);
+         if ($item->isField('serial')) {
+            $link=str_replace("[SERIAL]",$item->getField('serial'),$link);
          }
       }
       if (strstr($link,"[OTHERSERIAL]")) {
-         if ($tmp=$item->getField('otherserial')) {
-            $link=str_replace("[OTHERSERIAL]",$tmp,$link);
+         if ($item->isField('otherserial')) {
+            $link=str_replace("[OTHERSERIAL]",$item->getField('otherserial'),$link);
          }
       }
       if (strstr($link,"[LOCATIONID]")) {
-         if ($tmp=$item->getField('locations_id')) {
-            $link=str_replace("[LOCATIONID]",$tmp,$link);
+         if ($item->isField('locations_id')) {
+            $link=str_replace("[LOCATIONID]",$item->getField('locations_id'),$link);
          }
       }
       if (strstr($link,"[LOCATION]")) {
-         if ($tmp=$item->getField('locations_id')) {
-            $link=str_replace("[LOCATION]",Dropdown::getDropdownName("glpi_locations",$tmp),$link);
+         if ($item->isField('locations_id')) {
+            $link=str_replace("[LOCATION]",
+               Dropdown::getDropdownName("glpi_locations",$item->getField('locations_id')),$link);
          }
       }
       if (strstr($link,"[NETWORK]")) {
-         if ($tmp=$item->getField('networks_id')) {
-            $link=str_replace("[NETWORK]",Dropdown::getDropdownName("glpi_networks",$tmp),$link);
+         if ($item->isField('networks_id')) {
+            $link=str_replace("[NETWORK]",
+               Dropdown::getDropdownName("glpi_networks",$item->getField('networks_id')),$link);
          }
       }
       if (strstr($link,"[DOMAIN]")) {
-         if ($tmp=$item->getField('domains_id')) {
-            $link=str_replace("[DOMAIN]",Dropdown::getDropdownName("glpi_domains",$tmp),$link);
+         if ($item->isField('domains_id')) {
+            $link=str_replace("[DOMAIN]",
+               Dropdown::getDropdownName("glpi_domains",$item->getField('domains_id')),$link);
          }
       }
       if (strstr($link,"[USER]")) {
-         if ($tmp=$item->getField('users_id')) {
-            $link=str_replace("[USER]",Dropdown::getDropdownName("glpi_users",$tmp),$link);
+         if ($item->isField('users_id')) {
+            $link=str_replace("[USER]",
+               Dropdown::getDropdownName("glpi_users",$item->getField('users_id')),$link);
          }
       }
       if (strstr($link,"[GROUP]")) {
-         if ($tmp=$item->getField('groups_id')) {
-            $link=str_replace("[GROUP]",Dropdown::getDropdownName("glpi_groups",$tmp),$link);
+         if ($item->isField('groups_id')) {
+            $link=str_replace("[GROUP]",
+               Dropdown::getDropdownName("glpi_groups",$item->getField('groups_id')),$link);
          }
       }
       $ipmac=array();

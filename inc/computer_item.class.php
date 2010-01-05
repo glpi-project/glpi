@@ -225,31 +225,31 @@ class Computer_Item extends CommonDBRelation{
 
                if (!$device->getField('is_global')) {
                   $updates=array();
-                  if ($CFG_GLPI["is_location_autoclean"] && $device->getField('locations_id')) {
+                  if ($CFG_GLPI["is_location_autoclean"] && $device->isField('locations_id')) {
                      $updates[]="locations_id";
                      $device->fields['locations_id']=0;
                   }
-                  if ($CFG_GLPI["is_user_autoclean"] && $device->getField('users_id')) {
+                  if ($CFG_GLPI["is_user_autoclean"] && $device->isField('users_id')) {
                      $updates[]="users_id";
                      $device->fields['users_id']=0;
                   }
-                  if ($CFG_GLPI["is_group_autoclean"] && $device->getField('groups_id')) {
+                  if ($CFG_GLPI["is_group_autoclean"] && $device->isField('groups_id')) {
                      $updates[]="groups_id";
                      $device->fields['groups_id']=0;
                   }
-                  if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact')) {
+                  if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact')) {
                      $updates[]="contact";
                      $device->fields['contact']="";
                   }
-                  if ($CFG_GLPI["is_contact_autoclean"] && $device->getField('contact_num')) {
+                  if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact_num')) {
                      $updates[]="contact_num";
                      $device->fields['contact_num']="";
                   }
-                  if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->getField('states_id')) {
+                  if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->isField('states_id')) {
                      $updates[]="states_id";
                      $device->fields['states_id']=0;
                   }
-                  if ($CFG_GLPI["state_autoclean_mode"]>0
+                  if ($CFG_GLPI["state_autoclean_mode"]>0 && $device->isField('states_id')
                      && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
                      $updates[]="states_id";
                      $device->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
@@ -404,7 +404,7 @@ class Computer_Item extends CommonDBRelation{
                      $item->getFromDB($tID);
                      $used[] = $tID;
 
-                     echo "<tr ".($item->getField('is_deleted')?"class='tab_bg_2_2'":"").">";
+                     echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
                      echo "<td class='center'><strong>";
                      echo $item->getLink();
                      echo "</strong>";
@@ -528,12 +528,12 @@ class Computer_Item extends CommonDBRelation{
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-            if ($item->getField('is_recursive')) {
+            if ($item->isRecursive()) {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
+                               getSonsOf("glpi_entities",$item->getEntityID()),0,$used);
             } else {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               $item->getField('entities_id'),0,$used);
+                               $item->getEntityID(),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
             echo "</form>";
@@ -550,12 +550,12 @@ class Computer_Item extends CommonDBRelation{
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-            if ($item->getField('is_recursive')) {
+            if ($item->isRecursive()) {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
+                               getSonsOf("glpi_entities",$item->getEntityID()),0,$used);
             } else {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               $item->getField('entities_id'),0,$used);
+                               $item->getEntityID(),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
             echo "</form>";

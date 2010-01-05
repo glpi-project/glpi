@@ -658,7 +658,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
          if (class_exists($data["itemtype"])) {
             $item=new $data["itemtype"]();
             if ($item->getFromDB($data["items_id"])) {
-               $is_deleted=$item->getField("is_deleted");
+               $is_deleted=$item->isDeleted();
 
                $sixth_col .= $item->getTypeName();
 
@@ -763,7 +763,7 @@ function showJobVeryShort($ID) {
 
       if ($job->hardwaredatas && $job->hardwaredatas->canView()) {
          echo "<td class='center";
-         if ($job->hardwaredatas->getField("is_deleted")) {
+         if ($job->hardwaredatas->isDeleted()) {
             echo " tab_bg_1_2";
          }
          echo "'>";
