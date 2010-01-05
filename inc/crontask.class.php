@@ -671,7 +671,6 @@ class CronTask extends CommonDBTM{
                   logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
                   logInFile('cron', $prefix."Can't start ".$task->fields['name'].
                      "\nUndefined function '$fonction'\n");
-                  // TODO disable task ??
                }
             } else if ($i==1) {
                logInFile('cron', $prefix."Nothing to launch\n");
