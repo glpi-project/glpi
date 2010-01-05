@@ -38,10 +38,6 @@ if (!defined('GLPI_ROOT')){
 }
 class NetworkPort_Vlan extends CommonDBRelation {
 
-      // From CommonDBTM
-   public $table = 'glpi_networkports_vlans';
-   public $type  = 'Networkport_Vlan';
-
    // From CommonDBRelation
    public $itemtype_1 = 'NetworkPort';
    public $items_id_1 = 'networkports_id';

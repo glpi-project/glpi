@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')) {
 class Computer extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_computers';
-   public $type = 'Computer';
    public $dohistory=true;
 
    // Specific ones

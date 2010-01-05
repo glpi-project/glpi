@@ -41,10 +41,6 @@ if (!defined('GLPI_ROOT')){
 /// NetworkPort class
 class NetworkPort extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_networkports';
-   public $type = 'NetworkPort';
-
    /// TODO manage access right on this object
 
    // Specific ones

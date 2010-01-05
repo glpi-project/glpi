@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class ContractType
 class ContractType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_contracttypes';
-   public $type = 'ContractType';
-
    static function getTypeName() {
       global $LANG;
 

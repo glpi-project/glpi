@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class CartridgeItemType
 class CartridgeItemType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_cartridgeitemtypes';
-   public $type = 'CartridgeItemType';
-
    static function getTypeName() {
       global $LANG;
 

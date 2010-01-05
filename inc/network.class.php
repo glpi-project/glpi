@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class Network
 class Network extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_networks';
-   public $type = 'Network';
-
    static function getTypeName() {
       global $LANG;
 

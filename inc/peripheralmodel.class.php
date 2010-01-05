@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class PeripheralModel
 class PeripheralModel extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_peripheralmodels';
-   public $type = 'PeripheralModel';
-
    static function getTypeName() {
       global $LANG;
 

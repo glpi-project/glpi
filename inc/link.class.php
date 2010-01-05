@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 // CLASSES link
 class Link extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_links';
-   public $type = 'Link';
-
    static function getTypeName() {
       global $LANG;
 

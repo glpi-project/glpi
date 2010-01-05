@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class PhonePowerSupply
 class PhonePowerSupply extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_phonepowersupplies';
-   public $type = 'PhonePowerSupply';
-
    static function getTypeName() {
       global $LANG;
 

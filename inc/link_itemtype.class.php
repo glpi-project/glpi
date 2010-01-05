@@ -35,10 +35,6 @@ if (!defined('GLPI_ROOT')) {
 
 class Link_ItemType extends CommonDBTM{
 
-   // From CommonDBTM
-   public $table = 'glpi_links_itemtypes';
-   public $type = 'Link_ItemType';
-
    // From CommonDBRelation
    public $itemtype_1 = 'Link';
    public $items_id_1 = 'links_id';

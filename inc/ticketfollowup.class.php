@@ -42,8 +42,6 @@ class TicketFollowup  extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_ticketfollowups';
-   public $type = 'TicketFollowup';
    public $auto_message_on_action = false;
 
    static function getTypeName() {

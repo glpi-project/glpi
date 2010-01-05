@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class MonitorModel
 class MonitorModel extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_monitormodels';
-   public $type = 'MonitorModel';
-
    static function getTypeName() {
       global $LANG;
 

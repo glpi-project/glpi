@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class Manufacturer
 class Manufacturer extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_manufacturers';
-   public $type = 'Manufacturer';
-
    static function getTypeName() {
       global $LANG;
 

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class PrinterModel
 class PrinterModel extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_printermodels';
-   public $type = 'PrinterModel';
-
    static function getTypeName() {
       global $LANG;
 

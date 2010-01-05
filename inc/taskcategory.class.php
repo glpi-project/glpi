@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// TaskCategory class
 class TaskCategory extends CommonTreeDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_taskcategories';
-   public $type = 'TaskCategory';
-
    static function getTypeName() {
       global $LANG;
 

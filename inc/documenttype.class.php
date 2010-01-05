@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// DocumentType class
 class DocumentType  extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_documenttypes';
-   public $type  = 'DocumentType';
-
    function getAdditionalFields() {
       global $LANG;
 

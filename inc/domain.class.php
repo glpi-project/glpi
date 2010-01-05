@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class Domain
 class Domain extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_domains';
-   public $type = 'Domain';
-
    static function getTypeName() {
       global $LANG;
 

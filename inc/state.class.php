@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class State
 class State extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_states';
-   public $type = 'State';
-
    static function getTypeName() {
       global $LANG;
 

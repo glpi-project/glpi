@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class OperatingSystemServicePack
 class OperatingSystemServicePack extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_operatingsystemservicepacks';
-   public $type = 'OperatingSystemServicePack';
-
    static function getTypeName() {
       global $LANG;
 

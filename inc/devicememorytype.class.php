@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceMemoryType
 class DeviceMemoryType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_devicememorytypes';
-   public $type = 'DeviceMemoryType';
-
    static function getTypeName() {
       global $LANG;
 

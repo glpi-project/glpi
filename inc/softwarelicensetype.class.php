@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class SoftwareLicenseType
 class SoftwareLicenseType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_softwarelicensetypes';
-   public $type = 'SoftwareLicenseType';
-
    static function getTypeName() {
       global $LANG;
 

@@ -46,10 +46,6 @@ if (!defined('GLPI_ROOT')){
  */
 class CartridgeItem extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_cartridgeitems';
-   public $type = 'CartridgeItem';
-
    static function getTypeName() {
       global $LANG;
 

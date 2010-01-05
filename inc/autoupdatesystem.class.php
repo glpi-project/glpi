@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class AutoUpdateSystem
 class AutoUpdateSystem extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_autoupdatesystems';
-   public $type = 'AutoUpdateSystem';
-
    static function getTypeName() {
       global $LANG;
 

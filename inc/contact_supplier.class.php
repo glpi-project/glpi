@@ -39,10 +39,6 @@ if (!defined('GLPI_ROOT')){
 
 class Contact_Supplier extends CommonDBRelation{
 
-   // From CommonDBTM
-   public $table = 'glpi_contacts_suppliers';
-   public $type = 'Contact_Supplier';
-
    // From CommonDBRelation
    public $itemtype_1 = 'Contact';
    public $items_id_1 = 'contacts_id';

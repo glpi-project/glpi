@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class OperatingSystem
 class OperatingSystem extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_operatingsystems';
-   public $type = 'OperatingSystem';
-
    static function getTypeName() {
       global $LANG;
 

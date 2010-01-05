@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class ComputerModel
 class ComputerModel extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_computermodels';
-   public $type = 'ComputerModel';
-
    static function getTypeName() {
       global $LANG;
 

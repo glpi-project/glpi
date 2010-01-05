@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Disk class
 class ComputerDisk extends CommonDBChild {
 
-   // From CommonDBTM
-   public $table = 'glpi_computerdisks';
-   public $type = 'ComputerDisk';
-
    // From CommonDBChild
    public $itemtype = 'Computer';
    public $items_id = 'computers_id';

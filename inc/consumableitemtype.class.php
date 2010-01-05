@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class ConsumableItemType
 class ConsumableItemType extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_consumableitemtypes';
-   public $type = 'ConsumableItemType';
-
    static function getTypeName() {
       global $LANG;
 

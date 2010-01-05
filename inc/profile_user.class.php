@@ -36,10 +36,6 @@ if (!defined('GLPI_ROOT')) {
 /// Profile_User class
 class Profile_User extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_profiles_users';
-   public $type = 'Profile_User';
-
    //TODO : right management
 
    function maybeRecursive() {

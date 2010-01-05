@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class UserTitle
 class UserTitle extends CommonDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_usertitles';
-   public $type = 'UserTitle';
-
    static function getTypeName() {
       global $LANG;
 

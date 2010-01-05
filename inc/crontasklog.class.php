@@ -38,10 +38,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class CronTaskLog extends CommonDBTM{
 
-   // From CommonDBTM
-   public $table = 'glpi_crontasklogs';
-   public $type = 'CronTaskLog';
-
    // Class constant
    const STATE_START = 0;
    const STATE_RUN   = 1;

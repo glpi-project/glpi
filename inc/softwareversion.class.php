@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')) {
 class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBTM
-   public $table = 'glpi_softwareversions';
-   public $type = 'SoftwareVersion';
    public $dohistory = true;
 
    // From CommonDBChild
