@@ -305,10 +305,8 @@ class User extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID, $input) {
+   function post_addItem() {
       global $DB;
-
-      $input["id"] = $newID;
 
       $this->syncLdapGroups();
       $rulesplayed = $this->applyRightRules();
@@ -322,15 +320,15 @@ class User extends CommonDBTM {
 
          if ($DB->numrows($result)) {
             $right = $DB->result($result,0,0);
-            if (isset($input["entities_id"])) {
-               $affectation["entities_id"] = $input["entities_id"];
+            if (isset($this->input["entities_id"])) {
+               $affectation["entities_id"] = $this->input["entities_id"];
             } else if (isset($_SESSION['glpiactive_entity'])) {
                $affectation["entities_id"] = $_SESSION['glpiactive_entity'];
             } else {
                $affectation["entities_id"] = 0;
             }
             $affectation["profiles_id"] = $DB->result($result,0,0);
-            $affectation["users_id"] = $input["id"];
+            $affectation["users_id"] = $this->fields["id"];
             $affectation["is_recursive"] = 0;
             // Default right as dynamic. If dynamic rights are set it will disappear.
             $affectation["is_dynamic"] = 1;

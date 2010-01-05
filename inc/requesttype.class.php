@@ -78,21 +78,21 @@ class RequestType extends CommonDropdown {
       return $tab;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB;
 
-      if (isset($input["is_helpdesk_default"]) && $input["is_helpdesk_default"]) {
+      if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
          $query = "UPDATE ".
                    $this->getTable()."
                    SET `is_helpdesk_default` = '0'
-                   WHERE `id` <> '$newID'";
+                   WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
-      if (isset($input["is_mail_default"]) && $input["is_mail_default"]) {
+      if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
          $query = "UPDATE ".
                    $this->getTable()."
                    SET `is_mail_default` = '0'
-                   WHERE `id` <> '$newID'";
+                   WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
    }

@@ -73,7 +73,7 @@ class NetworkPort_NetworkPort extends CommonDBTM {
       }
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB,$LANG;
 
       // Get netpoint for $sport and $dport

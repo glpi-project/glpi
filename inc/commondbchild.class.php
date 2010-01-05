@@ -121,15 +121,12 @@ abstract class CommonDBChild extends CommonDBTM {
    /**
     * Actions done after the ADD of the item in the database
     *
-    *@param $newID ID of the new item
-    *@param $input datas used to add the item
-    *
     * @return nothing
     *
    **/
-   function post_addItem($newID,$input) {
+   function post_addItem() {
 
-      if (isset($input['_no_history']) || !$this->dohistory) {
+      if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
       if (preg_match('/^itemtype/', $this->itemtype)) {
@@ -160,7 +157,7 @@ abstract class CommonDBChild extends CommonDBTM {
     **/
    function post_deleteFromDB($ID) {
 
-      if (isset($input['_no_history']) || !$this->dohistory) {
+      if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
       if (preg_match('/^itemtype/', $this->itemtype)) {

@@ -99,22 +99,22 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID, $input) {
+   function post_addItem() {
 
       $itemtype = 'Software';
       $dupid = $this->fields["softwares_id"];
-      if (isset ($input["_duplicate_license"])) {
+      if (isset ($this->input["_duplicate_license"])) {
          $itemtype = 'SoftwareLicense';
-         $dupid = $input["_duplicate_license"];
+         $dupid = $this->input["_duplicate_license"];
       }
       // Add infocoms if exists for the licence
       $ic = new Infocom();
       if ($ic->getFromDBforDevice($itemtype, $dupid)) {
          unset ($ic->fields["id"]);
-         $ic->fields["items_id"] = $newID;
+         $ic->fields["items_id"] = $this->fields['id'];
          if (isset($ic->fields["immo_number"])) {
             $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                  'Infocom', $input['entities_id']);
+                                                  'Infocom', $this->input['entities_id']);
          }
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);

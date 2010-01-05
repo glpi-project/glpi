@@ -215,12 +215,12 @@ class TicketPlanning extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $CFG_GLPI;
 
       // Auto update Status
       $job=new Ticket();
-      $job->getFromDB($input["tickets_id"]);
+      $job->getFromDB($this->input["tickets_id"]);
       if ($job->fields["status"]=="new" || $job->fields["status"]=="assign") {
          $job->fields["status"]="plan";
          $updates[]="status";
@@ -229,7 +229,7 @@ class TicketPlanning extends CommonDBTM {
 
       // Auto update realtime
       $fup=new TicketTask();
-      $fup->getFromDB($input["tickettasks_id"]);
+      $fup->getFromDB($this->input["tickettasks_id"]);
       if ($fup->fields["realtime"]==0) {
          $tmp_beg=explode(" ",$this->fields["begin"]);
          $tmp_end=explode(" ",$this->fields["end"]);
@@ -245,10 +245,10 @@ class TicketPlanning extends CommonDBTM {
          $updates2[]="realtime";
          $fup->fields["realtime"]=$dateDiff/60/60;
          $fup->updateInDB($updates2);
-         $job->updateRealTime($input["tickets_id"]);
+         $job->updateRealTime($this->input["tickets_id"]);
       }
 
-      if ((!isset($input["_nomail"]) || $input["_nomail"]==0)
+      if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
           && $CFG_GLPI["use_mailing"]) {
 
          $user=new User;

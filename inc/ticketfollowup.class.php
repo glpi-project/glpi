@@ -259,54 +259,55 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $CFG_GLPI;
 
-      $input["_job"]->updateDateMod($input["tickets_id"]);
+      $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
-      if (isset($input["realtime"]) && $input["realtime"]>0) {
-         $input["_job"]->updateRealTime($input["tickets_id"]);
+      if (isset($this->input["realtime"]) && $this->input["realtime"]>0) {
+         $this->input["_job"]->updateRealTime($this->input["tickets_id"]);
       }
 
-      if ($input["_isadmin"] && $input["_type"]!="update") {
+      if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
 
          // TODO add + close from solution tab, not from followup
-         if ($input["_close"] && $input["_type"]!="update" && $input["_type"]!="finish") {
+         if ($this->input["_close"] && $this->input["_type"]!="update"
+                                    && $this->input["_type"]!="finish") {
             $updates[] = "status";
             $updates[] = "closedate";
-            $input["_job"]->fields["status"] = "solved";
-            $input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
-            $input["_job"]->updateInDB($updates);
+            $this->input["_job"]->fields["status"] = "solved";
+            $this->input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
+            $this->input["_job"]->updateInDB($updates);
          }
       }
 
       // No check on admin because my be used by mailgate
-      if (isset($input["_reopen"])
-          && $input["_reopen"]
-          && strstr($input["_job"]->fields["status"],"old_")) {
+      if (isset($this->input["_reopen"])
+          && $this->input["_reopen"]
+          && strstr($this->input["_job"]->fields["status"],"old_")) {
 
          $updates[]="status";
-         if ($input["_job"]->fields["users_id_assign"]>0
-             || $input["_job"]->fields["groups_id_assign"]>0
-             || $input["_job"]->fields["suppliers_id_assign"]>0) {
+         if ($this->input["_job"]->fields["users_id_assign"]>0
+             || $this->input["_job"]->fields["groups_id_assign"]>0
+             || $this->input["_job"]->fields["suppliers_id_assign"]>0) {
 
-            $input["_job"]->fields["status"]="assign";
+            $this->input["_job"]->fields["status"]="assign";
          } else {
-            $input["_job"]->fields["status"] = "new";
+            $this->input["_job"]->fields["status"] = "new";
          }
-         $input["_job"]->updateInDB($updates);
+         $this->input["_job"]->updateInDB($updates);
       }
 
       if ($CFG_GLPI["use_mailing"]) {
-         if ($input["_close"]) {
-            $input["_type"] = "finish";
+         if ($this->input["_close"]) {
+            $this->input["_type"] = "finish";
          }
          $user = new User;
-         if (!isset($input['_auto_import']) && isset($_SESSION["glpiID"])) {
+         if (!isset($this->input['_auto_import']) && isset($_SESSION["glpiID"])) {
             $user->getFromDB($_SESSION["glpiID"]);
          }
-         $mail = new Mailing($input["_type"],$input["_job"],$user,
-                             (isset($input["is_private"]) && $input["is_private"]));
+         $mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
+                             (isset($this->input["is_private"]) && $this->input["is_private"]));
          $mail->send();
       }
    }

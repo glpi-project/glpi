@@ -121,7 +121,7 @@ class Reservation extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_mailing"]) {

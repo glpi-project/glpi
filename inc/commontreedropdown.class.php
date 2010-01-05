@@ -132,7 +132,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       CleanFields($this->getTable(), 'sons_cache');
    }
 
