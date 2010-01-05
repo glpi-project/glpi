@@ -87,10 +87,10 @@ class Reservation extends CommonDBTM {
       return $input;
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      if (count($updates) && $CFG_GLPI["use_mailing"]) {
+      if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
          $mail = new MailingResa($this,"update");
          $mail->send();
       }

@@ -97,26 +97,26 @@ class RequestType extends CommonDropdown {
       }
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $DB, $LANG;
 
-      if (in_array('is_helpdesk_default',$updates)) {
-         if ($input["is_helpdesk_default"]) {
+      if (in_array('is_helpdesk_default',$this->updates)) {
+         if ($this->input["is_helpdesk_default"]) {
             $query = "UPDATE ".
                       $this->getTable()."
                       SET `is_helpdesk_default` = '0'
-                      WHERE `id` <> '".$input['id']."'";
+                      WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
          } else {
             addMessageAfterRedirect($LANG['setup'][313], true);
          }
       }
-      if (in_array('is_mail_default',$updates)) {
-         if ($input["is_mail_default"]) {
+      if (in_array('is_mail_default',$this->updates)) {
+         if ($this->input["is_mail_default"]) {
             $query = "UPDATE ".
                       $this->getTable()."
                       SET `is_mail_default` = '0'
-                      WHERE `id` <> '".$input['id']."'";
+                      WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
          } else {
             addMessageAfterRedirect($LANG['setup'][313], true);

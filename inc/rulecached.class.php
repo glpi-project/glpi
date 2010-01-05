@@ -65,10 +65,10 @@ class RuleCached extends Rule {
       $this->deleteCacheByRuleId($ID);
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
 
-      if (isset($updates['match'])) {
-         $this->deleteCacheByRuleId($input["id"]);
+      if (isset($this->updates['match'])) {
+         $this->deleteCacheByRuleId($this->input["id"]);
       }
    }
 

@@ -145,26 +145,26 @@ class Computer extends CommonDBTM {
       return false;
    }
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $DB,$LANG,$CFG_GLPI;
 
       // Manage changes for OCS if more than 1 element (date_mod)
       // Need dohistory==1 if dohistory==2 no locking fields
-      if ($this->fields["is_ocs_import"] && $history==1 && count($updates)>1) {
-         OcsServer::mergeOcsArray($this->fields["id"],$updates,"computer_update");
+      if ($this->fields["is_ocs_import"] && $history==1 && count($this->updates)>1) {
+         OcsServer::mergeOcsArray($this->fields["id"],$this->updates,"computer_update");
       }
 
-      if (isset($input["_auto_update_ocs"])){
+      if (isset($this->input["_auto_update_ocs"])){
          $query="UPDATE
                  `glpi_ocslinks`
-                 SET `use_auto_update`='".$input["_auto_update_ocs"]."'
-                 WHERE `computers_id`='".$input["id"]."'";
+                 SET `use_auto_update`='".$this->input["_auto_update_ocs"]."'
+                 WHERE `computers_id`='".$this->input["id"]."'";
          $DB->query($query);
       }
 
-      for ($i=0; $i < count($updates); $i++) {
+      for ($i=0; $i < count($this->updates); $i++) {
          // Update contact of attached items
-         if (($updates[$i]=="contact"  || $updates[$i]=="contact_num")
+         if (($this->updates[$i]=="contact"  || $this->updates[$i]=="contact_num")
               && $CFG_GLPI["is_contact_autoupdate"]) {
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
 
@@ -205,9 +205,9 @@ class Computer extends CommonDBTM {
          }
 
          // Update users and groups of attached items
-         if (($updates[$i]=="users_id"  && $this->fields["users_id"]!=0
+         if (($this->updates[$i]=="users_id"  && $this->fields["users_id"]!=0
                                         && $CFG_GLPI["is_user_autoupdate"])
-              ||($updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
+              ||($this->updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
                                            && $CFG_GLPI["is_group_autoupdate"])) {
 
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
@@ -253,7 +253,7 @@ class Computer extends CommonDBTM {
          }
 
          // Update state of attached items
-         if ($updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
+         if ($this->updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
             $update_done=false;
 
@@ -289,7 +289,7 @@ class Computer extends CommonDBTM {
          }
 
          // Update loction of attached items
-         if ($updates[$i]=="locations_id" && $this->fields["locations_id"]!=0
+         if ($this->updates[$i]=="locations_id" && $this->fields["locations_id"]!=0
                                           && $CFG_GLPI["is_location_autoupdate"]) {
 
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');

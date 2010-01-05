@@ -442,24 +442,24 @@ class Ticket extends CommonDBTM {
    }
 
 
-   function post_updateItem($input,$updates,$history=1) {
+   function post_updateItem($history=1) {
       global $CFG_GLPI,$LANG;
 
-      if (count($updates)) {
+      if (count($this->updates)) {
          // New values for add followup in change
          $change_followup_content="";
-         if (isset($input['_doc_added']) && count($input['_doc_added'])>0) {
-            foreach ($input['_doc_added'] as $name) {
+         if (isset($this->input['_doc_added']) && count($this->input['_doc_added'])>0) {
+            foreach ($this->input['_doc_added'] as $name) {
                $change_followup_content .= $LANG['mailing'][26]." $name\n";
             }
          }
          $global_mail_change_count=0;
 
          // Update Ticket Tco
-         if (in_array("realtime",$updates)
-             || in_array("cost_time",$updates)
-             || in_array("cost_fixed",$updates)
-             || in_array("cost_material",$updates)) {
+         if (in_array("realtime",$this->updates)
+             || in_array("cost_time",$this->updates)
+             || in_array("cost_fixed",$this->updates)
+             || in_array("cost_material",$this->updates)) {
 
             if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
                $item=new $this->fields["itemtype"]();
@@ -472,8 +472,8 @@ class Ticket extends CommonDBTM {
             }
          }
 
-         if ($CFG_GLPI["add_followup_on_update_ticket"] && count($updates)) {
-            foreach ($updates as $key) {
+         if ($CFG_GLPI["add_followup_on_update_ticket"] && count($this->updates)) {
+            foreach ($this->updates as $key) {
                switch ($key) {
                   case "name" :
                      $change_followup_content .= $LANG['mailing'][45]."\n";
@@ -488,21 +488,21 @@ class Ticket extends CommonDBTM {
                   case "ticketsolutiontypes_id" :
                   case "solution" :
                      $change_followup_content .= $LANG['mailing'][53]." : " .
-                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$input["_old_soltype"])." -> ".
+                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->input["_old_soltype"])." -> ".
                                                  Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->fields["ticketsolutiontypes_id"])."\n";
                      break;
 
                   case "date" :
                      $change_followup_content .= $LANG['mailing'][48]."&nbsp;: ".
-                                                 $input["_old_date"]." -> ".$this->fields["date"]."\n";
+                                                 $this->input["_old_date"]." -> ".$this->fields["date"]."\n";
                      $global_mail_change_count++;
                      break;
 
                   case "closedate" :
                      // if update status from an not closed status : no mail for change closedate
-                     if (!in_array("status",$updates) || !$input["status"]!="closed") {
+                     if (!in_array("status",$this->updates) || !$this->input["status"]!="closed") {
                         $change_followup_content .= $LANG['mailing'][49]."&nbsp;: ".
-                                                    $input["_old_closedate"]." -> ".
+                                                    $this->input["_old_closedate"]." -> ".
                                                     $this->fields["closedate"]."\n";
                         $global_mail_change_count++;
                      }
@@ -511,12 +511,12 @@ class Ticket extends CommonDBTM {
                   case "status" :
                      $new_status=$this->fields["status"];
                      $change_followup_content .= $LANG['mailing'][27]."&nbsp;: ".
-                                                 $this->getStatus($input["_old_status"])." -> ".
+                                                 $this->getStatus($this->input["_old_status"])." -> ".
                                                  $this->getStatus($new_status)."\n";
                      if ($new_status=="closed") {
                         $newinput["add_close"]="add_close";
                      }
-                     if (in_array("closedate",$updates)) {
+                     if (in_array("closedate",$this->updates)) {
                         $global_mail_change_count++; // Manage closedate
                      }
                      $global_mail_change_count++;
@@ -524,7 +524,7 @@ class Ticket extends CommonDBTM {
 
                   case "users_id" :
                      $users_id=new User;
-                     $users_id->getFromDB($input["_old_users_id"]);
+                     $users_id->getFromDB($this->input["_old_users_id"]);
                      $old_users_id_name = $users_id->getName();
                      $users_id->getFromDB($this->fields["users_id"]);
                      $new_users_id_name = $users_id->getName();
@@ -535,7 +535,7 @@ class Ticket extends CommonDBTM {
 
                   case "users_id_recipient" :
                      $recipient=new User;
-                     $recipient->getFromDB($input["_old_recipient"]);
+                     $recipient->getFromDB($this->input["_old_recipient"]);
                      $old_recipient_name = $recipient->getName();
                      $recipient->getFromDB($this->fields["users_id_recipient"]);
                      $new_recipient_name = $recipient->getName();
@@ -547,7 +547,7 @@ class Ticket extends CommonDBTM {
                   case "groups_id" :
                      $new_group=$this->fields["groups_id"];
                      $old_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
-                                                   Dropdown::getDropdownName("glpi_groups",$input["_old_group"]));
+                                                   Dropdown::getDropdownName("glpi_groups",$this->input["_old_group"]));
                      $new_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
                                                    Dropdown::getDropdownName("glpi_groups",$new_group));
                      $change_followup_content .= $LANG['mailing'][20].": ".$old_group_name." -> ".
@@ -558,7 +558,7 @@ class Ticket extends CommonDBTM {
                   case "priority" :
                      $new_priority = $this->fields["priority"];
                      $change_followup_content .= $LANG['mailing'][15]."&nbsp;: ".
-                                                 Ticket::getPriorityName($input["_old_priority"])." -> ".
+                                                 Ticket::getPriorityName($this->input["_old_priority"])." -> ".
                                                  Ticket::getPriorityName($new_priority)."\n";
                      $global_mail_change_count++;
                      break;
@@ -567,7 +567,7 @@ class Ticket extends CommonDBTM {
                      $new_ticketcategories_id = $this->fields["ticketcategories_id"];
                      $old_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
                                                       Dropdown::getDropdownName("glpi_ticketcategories",
-                                                                      $input["_old_ticketcategories_id"]));
+                                                                      $this->input["_old_ticketcategories_id"]));
                      $new_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
                                                       Dropdown::getDropdownName("glpi_ticketcategories",
                                                                       $new_ticketcategories_id));
@@ -578,7 +578,7 @@ class Ticket extends CommonDBTM {
 
                   case "requesttypes_id" :
                      $old_requesttype_name = Dropdown::getDropdownName('glpi_requesttypes',
-                                                             $input["_old_requesttypes_id"]);
+                                                             $this->input["_old_requesttypes_id"]);
                      $new_requesttype_name = Dropdown::getDropdownName('glpi_requesttypes',
                                                              $this->fields["requesttypes_id"]);
                      $change_followup_content .= $LANG['mailing'][21]."&nbsp;: ".
@@ -595,9 +595,9 @@ class Ticket extends CommonDBTM {
                         $already_done_computer_itemtype_update=true;
                      }
                      $old_item_name = $LANG['mailing'][107];
-                     if ($input["_old_itemtype"] && class_exists($input["_old_itemtype"])) {
-                        $item=new $input["_old_itemtype"]();
-                        if ($item->getFromDB($input["_old_items_id"])) {
+                     if ($this->input["_old_itemtype"] && class_exists($this->input["_old_itemtype"])) {
+                        $item=new $this->input["_old_itemtype"]();
+                        if ($item->getFromDB($this->input["_old_items_id"])) {
                            $old_item_name = $item->getName();
                            if ($old_item_name==NOT_AVAILABLE || empty($old_item_name)) {
                               $old_item_name = $LANG['mailing'][107];
@@ -616,21 +616,21 @@ class Ticket extends CommonDBTM {
                      }
                      $change_followup_content .= $LANG['mailing'][17]."&nbsp;:
                                                  $old_item_name -> ".$new_item_name."\n";
-                     if (in_array("items_id",$updates)) {
+                     if (in_array("items_id",$this->updates)) {
                         $global_mail_change_count++;
                      }
-                     if (in_array("itemtype",$updates)) {
+                     if (in_array("itemtype",$this->updates)) {
                         $global_mail_change_count++;
                      }
                      break;
 
                   case "users_id_assign" :
                      $new_assign_name = getAssignName($this->fields["users_id_assign"],'User');
-                     if ($input["_old_assign"]==0) {
-                        $input["_old_assign_name"]=$LANG['mailing'][105];
+                     if ($this->input["_old_assign"]==0) {
+                        $this->input["_old_assign_name"]=$LANG['mailing'][105];
                      }
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $input["_old_assign_name"]." -> ".
+                                                 $this->input["_old_assign_name"]." -> ".
                                                  $new_assign_name."\n";
                      $global_mail_change_count++;
                      break;
@@ -639,7 +639,7 @@ class Ticket extends CommonDBTM {
                      $new_assign_supplier_name = getAssignName($this->fields["suppliers_id_assign"],
                                                                'Supplier');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $input["_old_assign_supplier_name"]." -> ".
+                                                 $this->input["_old_assign_supplier_name"]." -> ".
                                                  $new_assign_supplier_name."\n";
                      $global_mail_change_count++;
                      break;
@@ -648,28 +648,28 @@ class Ticket extends CommonDBTM {
                      $new_groups_id_assign_name = getAssignName($this->fields["groups_id_assign"],
                                                                 'Group');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $input["_old_groups_id_assign_name"]." -> ".
+                                                 $this->input["_old_groups_id_assign_name"]." -> ".
                                                  $new_groups_id_assign_name."\n";
                      $global_mail_change_count++;
                      break;
 
                   case "cost_time" :
                      $change_followup_content .= $LANG['mailing'][42]."&nbsp;: ".
-                                                 formatNumber($input["_old_cost_time"])." -> ".
+                                                 formatNumber($this->input["_old_cost_time"])." -> ".
                                                  formatNumber($this->fields["cost_time"])."\n";
                      $global_mail_change_count++;
                      break;
 
                   case "cost_fixed" :
                      $change_followup_content .= $LANG['mailing'][43]."&nbsp;: ".
-                                                 formatNumber($input["_old_cost_fixed"])." -> ".
+                                                 formatNumber($this->input["_old_cost_fixed"])." -> ".
                                                  formatNumber($this->fields["cost_fixed"])."\n";
                      $global_mail_change_count++;
                      break;
 
                   case "cost_material" :
                      $change_followup_content .= $LANG['mailing'][44]."&nbsp;: ".
-                                                 formatNumber($input["_old_cost_material"])." -> ".
+                                                 formatNumber($this->input["_old_cost_material"])." -> ".
                                                  formatNumber($this->fields["cost_material"])."\n";
                      $global_mail_change_count++;
                      break;
@@ -685,8 +685,8 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-         if (!in_array("users_id_assign",$updates)) {
-            unset($input["_old_assign"]);
+         if (!in_array("users_id_assign",$this->updates)) {
+            unset($this->input["_old_assign"]);
          }
          $mail_send=false;
 
@@ -700,13 +700,13 @@ class Ticket extends CommonDBTM {
             $newinput["type"]       = "update";
             $newinput["_do_not_check_users_id"] = true;
             // pass _old_assign if assig changed
-            if (isset($input["_old_assign"])) {
-               $newinput["_old_assign"] = $input["_old_assign"];
+            if (isset($this->input["_old_assign"])) {
+               $newinput["_old_assign"] = $this->input["_old_assign"];
             }
 
-            if (isset($input["status"])
-                && in_array("status",$updates)
-                && $input["status"]=="solved") {
+            if (isset($this->input["status"])
+                && in_array("status",$this->updates)
+                && $this->input["status"]=="solved") {
 
                $newinput["type"]="finish";
             }
@@ -719,22 +719,22 @@ class Ticket extends CommonDBTM {
          $this->fields["content"] = stripslashes($this->fields["content"]);
 
          if (!$mail_send
-             && count($updates)>$global_mail_change_count
+             && count($this->updates)>$global_mail_change_count
              && $CFG_GLPI["use_mailing"]) {
 
             $user=new User;
             $user->getFromDB($_SESSION["glpiID"]);
             $mailtype = "update";
 
-            if (isset($input["status"])
-                && $input["status"]
-                && in_array("status",$updates)
-                && $input["status"]=="solved") {
+            if (isset($this->input["status"])
+                && $this->input["status"]
+                && in_array("status",$this->updates)
+                && $this->input["status"]=="solved") {
 
                $mailtype="finish";
             }
-            if (isset($input["_old_assign"])) {
-               $this->fields["_old_assign"] = $input["_old_assign"];
+            if (isset($this->input["_old_assign"])) {
+               $this->fields["_old_assign"] = $this->input["_old_assign"];
             }
             $mail = new Mailing($mailtype,$this,$user);
             $mail->send();

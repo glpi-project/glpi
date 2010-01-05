@@ -479,6 +479,7 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id']) || $this->fields['id']!=$id) {
          $this->getFromDB($id);
       }
+
       $hook = array($this->fields['itemtype'], 'cronInfo');
       if (is_callable($hook)) {
          $info = call_user_func($hook, $this->fields['name']);
