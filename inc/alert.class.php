@@ -42,10 +42,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class Alert extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_alerts';
-   public $type = 'Alert';
-
    function prepareInputForAdd($input) {
       if (!isset($input['date']) || empty($input['date'])) {
          $input['date']=date("Y-m-d H:i:s");;
@@ -70,7 +66,7 @@ class Alert extends CommonDBTM {
       }
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '$type'
                       AND `items_id` = '$ID'";
 
@@ -99,7 +95,7 @@ class Alert extends CommonDBTM {
       global $DB;
 
       $query="DELETE
-              FROM `".$this->table."`
+              FROM `".$this->getTable()."`
               WHERE `itemtype` = '$itemtype'
                     AND `items_id` = '$ID'
                     AND `type` = '$alert_type'";

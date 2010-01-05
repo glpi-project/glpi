@@ -44,8 +44,6 @@ class Software extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_softwares';
-   public $type = 'Software';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -142,7 +140,7 @@ class Software extends CommonDBTM {
       if (isset($input["_oldID"])) {
          // ADD Infocoms
          $ic = new Infocom();
-         if ($ic->getFromDBforDevice($this->type, $input["_oldID"])) {
+         if ($ic->getFromDBforDevice($this->getType(), $input["_oldID"])) {
             $ic->fields["items_id"] = $newID;
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
@@ -162,13 +160,13 @@ class Software extends CommonDBTM {
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
                    WHERE `items_id` = '" . $input["_oldID"] . "'
-                         AND `itemtype` = '" . $this->type . "'";
+                         AND `itemtype` = '" . $this->getType() . "'";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
             $contractitem=new Contract_Item();
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->type,
+                                        'itemtype' => $this->getType(),
                                         'items_id' => $newID));
             }
          }
@@ -177,13 +175,13 @@ class Software extends CommonDBTM {
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
                    WHERE `items_id` = '" . $input["_oldID"] . "'
-                         AND `itemtype` = '" . $this->type . "'";
+                         AND `itemtype` = '" . $this->getType() . "'";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
             $docitem=new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->type,
+                                   'itemtype' => $this->getType(),
                                    'items_id' => $newID));
             }
          }

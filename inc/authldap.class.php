@@ -38,10 +38,6 @@
 **/
 class AuthLDAP extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_authldaps';
-   public $type = 'AuthLDAP';
-
    static function getTypeName() {
       global $LANG;
 

@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')) {
 class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_softwarelicenses';
-   public $type = 'SoftwareLicense';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -66,7 +64,7 @@ class SoftwareLicense extends CommonDBTM {
       // Clean end alert if expire is after old one
       if ((isset($this->oldvalues['expire']) && ($this->oldvalues['expire'] < $this->fields['expire']))) {
          $alert=new Alert();
-         $alert->clear($this->type,$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
       }
    }
 
@@ -124,7 +122,7 @@ class SoftwareLicense extends CommonDBTM {
          if (empty($ic->fields['buy_date'])) {
             unset($ic->fields['buy_date']);
          }
-         $ic->fields["itemtype"] = $this->type;
+         $ic->fields["itemtype"] = $this->getType();
          $ic->addToDB();
       }
    }

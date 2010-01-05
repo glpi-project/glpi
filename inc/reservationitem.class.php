@@ -41,9 +41,6 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_reservationitems';
-   public $type = 'ReservationItem';
-
    /**
     * Retrieve an item from the database for a specific item
     *
@@ -55,7 +52,7 @@ class ReservationItem extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE (`itemtype` = '$itemtype'
                        AND `items_id` = '$ID')";
 

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// TicketsCategory class
 class TicketCategory extends CommonTreeDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_ticketcategories';
-   public $type = 'TicketCategory';
-
    function canCreate() {
       return haveRight('entity_dropdown','w');
    }
@@ -55,7 +51,7 @@ class TicketCategory extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return  array(array('name'  => getForeignKeyFieldForTable($this->table),
+      return  array(array('name'  => getForeignKeyFieldForTable($this->getTable()),
                           'label' => $LANG['setup'][75],
                           'type'  => 'parent',
                           'list'  => false),

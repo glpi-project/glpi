@@ -332,7 +332,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField($this,'name',array('value'=>$objectName);
+      autocompletionTextField($this,'name',array('value'=>$objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";

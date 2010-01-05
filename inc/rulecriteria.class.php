@@ -38,8 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 /// Criteria Rule class
 class RuleCriteria extends CommonDBTM {
-   // From CommonDBTM
-   public $table = 'glpi_rulecriterias';
 
    /**
     * Get all criterias for a given rule
@@ -117,11 +115,11 @@ class RuleCriteria extends CommonDBTM {
    function getValueToMatch($condition,&$initValue) {
       global $LANG;
 
-      if (!empty($this->type)
+      if (!empty($this->getType())
           && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
-         switch ($this->type) {
+         switch ($this->getType()) {
             case "dropdown" :
-               return Dropdown::getDropdownName($this->table,$initValue);
+               return Dropdown::getDropdownName($this->getTable(),$initValue);
 
             case "dropdown_users" :
                return getUserName($initValue);

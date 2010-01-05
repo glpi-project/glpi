@@ -57,13 +57,7 @@ for ($i = 0; $line = $DB->fetch_array($result); $i++) {
       if (get_class($item) != $type) {
          echo "** $table > $type > " . get_class($item) . " incoherent get_class($type) ** \n";
       }
-      if (!isset ($item->table)) {
-         echo "** $table > $type > no \$type->table ** \n";
 
-      } else
-         if ($table != $item->table) {
-            echo "** $table > $type > " . $item->table . " incoherent $type->table ** \n";
-         }
       $table2 = getTableForItemType($type);
       if ($table != $table2) {
          echo "** $table > $type > " . $table2 . " incoherent getTableForItemType() ** \n";
