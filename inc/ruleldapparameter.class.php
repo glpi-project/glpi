@@ -40,15 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class RuleLdapParameter extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_ruleldapparameters';
-
    /// Get parameters list
    function getParametersList() {
       global $DB;
 
       $sql = "SELECT *
-              FROM `".$this->table."`
+              FROM `".$this->getTable()."`
               ORDER BY `name` ASC";
       $result = $DB->query($sql);
       $parameters = array ();

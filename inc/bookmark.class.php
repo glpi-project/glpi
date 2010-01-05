@@ -38,10 +38,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class Bookmark extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_bookmarks';
-   public $type = 'Bookmark';
-
    function canCreate() {
       return haveRight('bookmark_public', 'w');
    }
@@ -338,19 +334,19 @@ class Bookmark extends CommonDBTM {
          return false;
       }
 
-      $query="SELECT `".$this->table."`.*, `glpi_bookmarks_users`.`id` AS IS_DEFAULT
-              FROM `".$this->table."`
+      $query="SELECT `".$this->getTable()."`.*, `glpi_bookmarks_users`.`id` AS IS_DEFAULT
+              FROM `".$this->getTable()."`
               LEFT JOIN `glpi_bookmarks_users`
-                        ON (`".$this->table."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
-                            AND `".$this->table."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
+                        ON (`".$this->getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
+                            AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
               WHERE ";
 
       if ($is_private) {
-         $query.="(`".$this->table."`.`is_private`='1'
-                   AND `".$this->table."`.`users_id`='".$_SESSION['glpiID']."') ";
+         $query.="(`".$this->getTable()."`.`is_private`='1'
+                   AND `".$this->getTable()."`.`users_id`='".$_SESSION['glpiID']."') ";
       } else {
-         $query.="(`".$this->table."`.`is_private`='0' ".
-                   getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
+         $query.="(`".$this->getTable()."`.`is_private`='0' ".
+                   getEntitiesRestrictRequest("AND",$this->getTable(),"","",true) . ")";
       }
 
       $query.=" ORDER BY `itemtype`, `name`";

@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')) {
 class User extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_users';
-   public $type = 'User';
    public $dohistory = true;
    public $history_blacklist = array('last_login');
 
@@ -238,7 +236,7 @@ class User extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `name` = '$name'";
 
       if ($result = $DB->query($query)) {
@@ -258,7 +256,7 @@ class User extends CommonDBTM {
 
       // Check if user does not exists
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `name` = '".$input['name']."'";
       $result = $DB->query($query);
 
@@ -985,7 +983,7 @@ class User extends CommonDBTM {
 
       if (!empty ($this->fields["name"])) {
          $query = "UPDATE
-                   `".$this->table."`
+                   `".$this->getTable()."`
                    SET `password` = ''
                    WHERE `name` = '" . $this->fields["name"] . "'";
          $DB->query($query);
@@ -1387,7 +1385,7 @@ class User extends CommonDBTM {
       if (($key=array_search('name',$this->updates)) !== false) {
          /// Check if user does not exists
          $query = "SELECT *
-                   FROM `".$this->table."`
+                   FROM `".$this->getTable()."`
                    WHERE `name` = '".$this->input['name']."'
                          AND `id` <> '".$this->input['id']."';";
          $result=$DB->query($query);

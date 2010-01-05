@@ -41,9 +41,6 @@ if (!defined('GLPI_ROOT')){
 
 class TicketPlanning extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_ticketplannings';
-
    function canCreate() {
       return (haveRight('show_planning', 1));
    }
@@ -65,7 +62,7 @@ class TicketPlanning extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `tickettasks_id` = '$tickettasks_id'";
 
       if ($result = $DB->query($query)) {
@@ -297,7 +294,7 @@ class TicketPlanning extends CommonDBTM {
          $ID_where=" (`id` <> '".$this->fields["id"]."') AND ";
       }
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE $ID_where
                       `users_id` = '".$this->fields["users_id"]."'
                       AND '".$this->fields["end"]."' > `begin`
