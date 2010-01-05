@@ -49,11 +49,13 @@ include_once (GLPI_ROOT."/inc/rule.function.php");
 checkLoginUser();
 $display=false;
 
+$ra = new RuleAction();
+
 switch ($_POST["action_type"]) {
    //If a regex value is used, then always display an autocompletiontextfield
    case "regex_result" :
    case "append_regex_result" :
-      autocompletionTextField("value", "glpi_ruleactions", "value", "", 40);
+      autocompletionTextField($ra,"value");
       break;
 
    default :
@@ -93,7 +95,7 @@ switch ($_POST["action_type"]) {
          }
       }
       if (!$display) {
-         autocompletionTextField("value", "glpi_ruleactions", "value", "", 40);
+         autocompletionTextField($ra, "value");
       }
 }
 

@@ -151,8 +151,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    if ($several != "yes") {
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("logical_number", "glpi_networkports", "logical_number",
-                              $netport->fields["logical_number"], 5);
+      autocompletionTextField($netport,"logical_number", array('size'=>5));
       echo "</td></tr>\n";
    } else {
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
@@ -168,7 +167,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>\n";
    echo "<td>";
-   autocompletionTextField("name", "glpi_networkports", "name", $netport->fields["name"], 40);
+   autocompletionTextField($netport, "name");
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
@@ -176,7 +175,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
-   autocompletionTextField("ip", "glpi_networkports", "ip", $netport->fields["ip"], 40);
+   autocompletionTextField($netport, "ip");
    echo "</td></tr>\n";
 
    // Show device MAC adresses
@@ -207,20 +206,19 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    }
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
-   autocompletionTextField("mac", "glpi_networkports", "mac", $netport->fields["mac"], 40);
+   autocompletionTextField($netport, "mac");
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . "&nbsp;:</td>\n<td>";
-   autocompletionTextField("netmask", "glpi_networkports", "netmask",
-                           $netport->fields["netmask"], 40);
+   autocompletionTextField($netport, "netmask");
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][59] . "&nbsp;:</td>\n<td>";
-   autocompletionTextField("gateway", "glpi_networkports", "gateway",$netport->fields["gateway"], 40);
+   autocompletionTextField($netport, "gateway");
    echo "</td></tr>\n";
 
    echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][61] . "&nbsp;:</td>\n<td>";
-   autocompletionTextField("subnet", "glpi_networkports", "subnet", $netport->fields["subnet"], 40);
+   autocompletionTextField($netport, "subnet");
    echo "</td></tr>\n";
 
    if ($several != "yes") {

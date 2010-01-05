@@ -234,8 +234,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",
-         $this->fields["name"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
       "&nbsp;: </td>";
@@ -245,8 +244,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]." : </td>";
       echo "<td>";
-      autocompletionTextField("ref",$this->table,"ref",
-         $this->fields["ref"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "ref");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

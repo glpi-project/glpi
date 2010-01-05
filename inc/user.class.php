@@ -1098,7 +1098,8 @@ class User extends CommonDBTM {
       } else {
          if (!empty ($this->fields["password"]) || $this->fields["authtype"] == AUTH_DB_GLPI) {
             echo "<td>";
-            autocompletionTextField("name", $this->table, "name", $this->fields["name"], 40);
+            
+            autocompletionTextField($this, "name");
          } else {
             echo "<td class='b'>" . $this->fields["name"];
             echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
@@ -1121,7 +1122,7 @@ class User extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
-      autocompletionTextField("realname", $this->table, "realname", $this->fields["realname"], 40);
+      autocompletionTextField($this,"realname");
       echo "</td>";
       //Authentications informations : auth method used and server used
       //don't display is creation of a new user'
@@ -1137,22 +1138,21 @@ class User extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
-      autocompletionTextField("firstname", $this->table, "firstname", $this->fields["firstname"],
-                              40);
+      autocompletionTextField($this, "firstname");
       echo "</td>";
       echo "<td>".$LANG['common'][60]."&nbsp;:</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
-      autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
+      autocompletionTextField($this, "mobile");
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
       Dropdown::show('UserCategory',array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
-      autocompletionTextField("email_form", $this->table, "email", $this->fields["email"], 40);
+      autocompletionTextField($this, "email", array('name'=>"email_form"));
       if (!empty($ID) && !isValidEmail($this->fields["email"])) {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
       }
@@ -1163,11 +1163,11 @@ class User extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
-      autocompletionTextField("phone", $this->table, "phone", $this->fields["phone"], 40);
+      autocompletionTextField($this, "phone");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
-      autocompletionTextField("phone2", $this->table, "phone2", $this->fields["phone2"], 40);
+      autocompletionTextField($this, "phone2");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
@@ -1261,8 +1261,7 @@ class User extends CommonDBTM {
          if ($extauth && isset ($authtype['email_field']) && !empty ($authtype['realname_field'])) {
             echo $this->fields["realname"];
          } else {
-            autocompletionTextField("realname", $this->table, "realname", $this->fields["realname"],
-                                    40);
+            autocompletionTextField($this, "realname");
          }
          echo "</td>";
          //do some rights verification
@@ -1279,7 +1278,7 @@ class User extends CommonDBTM {
              && !empty ($authtype['firstname_field'])) {
             echo $this->fields["firstname"];
          } else {
-            autocompletionTextField("firstname", $this->table, "firstname", $this->fields["firstname"], 40);
+            autocompletionTextField($this, "firstname");
          }
          echo "</td>";
          if (!GLPI_DEMO_MODE){
@@ -1295,7 +1294,7 @@ class User extends CommonDBTM {
          if ($extauth && isset ($authtype['mobile_field']) && !empty ($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
          } else {
-            autocompletionTextField("mobile", $this->table, "mobile", $this->fields["mobile"], 40);
+            autocompletionTextField($this, "mobile");
          }
          echo "</td>";
          if (count($_SESSION['glpiprofiles']) >1) {
@@ -1315,7 +1314,7 @@ class User extends CommonDBTM {
          if ($extauth && isset ($authtype['email_field']) && !empty ($authtype['email_field'])) {
             echo $this->fields["email"];
          } else {
-            autocompletionTextField("email_form", $this->table, "email", $this->fields["email"], 40);
+            autocompletionTextField($this, "email", array('name'=>"email_form"));
             if (!isValidEmail($this->fields["email"])) {
                echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
             }
@@ -1335,7 +1334,7 @@ class User extends CommonDBTM {
          if ($extauth && isset ($authtype['phone_field']) && !empty ($authtype['phone_field'])) {
             echo $this->fields["phone"];
          } else {
-            autocompletionTextField("phone", $this->table, "phone", $this->fields["phone"], 40);
+            autocompletionTextField($this, "phone");
          }
          echo "</td>";
         if (haveRight("config", "w")) {
@@ -1359,7 +1358,7 @@ class User extends CommonDBTM {
          if ($extauth && isset ($authtype['phone2_field']) && !empty ($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
          } else {
-            autocompletionTextField("phone2", $this->table, "phone2", $this->fields["phone2"], 40);
+            autocompletionTextField($this, "phone2");
          }
          echo "</td></tr>";
 

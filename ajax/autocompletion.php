@@ -45,7 +45,15 @@ header_nocache();
 checkLoginUser();
 
 // Security
-if (! TableExists($_POST['table']) || ! FieldExists($_POST['table'],$_POST['field']) ) {
+if (!class_exists($_POST['itemtype'])) {
+   exit();
+}
+
+$item = new $_POST['itemtype']();
+$item->getEmpty();
+$table = $item->getTable();
+// Security
+if (!isset($item->fields[$_POST['field']])) {
    exit();
 }
 
@@ -62,7 +70,7 @@ if (isset($_POST['user_restrict']) && $_POST['user_restrict']>0) {
 }
 
 $query = "SELECT COUNT(`".$_POST['field']."`)
-          FROM `".$_POST['table']."`
+          FROM `$table`
           WHERE `".$_POST['field']."` LIKE '".$_POST['query']."%'
                 AND `".$_POST['field']."` <> '".$_POST['query']."'
                 $entity ";
@@ -70,7 +78,7 @@ $result=$DB->query($query);
 $totnum=$DB->result($result,0,0);
 
 $query = "SELECT DISTINCT `".$_POST['field']."` AS VAL
-          FROM `".$_POST['table']."`
+          FROM `$table`
           WHERE `".$_POST['field']."` LIKE '".$_POST['query']."%'
                 AND `".$_POST['field']."` <> '".$_POST['query']."'
                 $entity

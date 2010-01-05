@@ -2247,8 +2247,7 @@ function showJobDetails($target, $ID,$array=array()) {
          echo "<input type='text' size='30' name='user_email' value='$email'>";
       } else {
          if ($canupdate) {
-            autocompletionTextField("user_email","glpi_tickets","user_email",
-                                    $job->fields["user_email"],35,$job->fields["entities_id"]);
+            autocompletionTextField($job,"user_email");
             if (!empty($job->fields["user_email"])) {
                echo "<a href='mailto:".$job->fields["user_email"]."'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";

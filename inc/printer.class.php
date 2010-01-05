@@ -332,7 +332,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("name",$this->table,"name",$objectName,40,$this->fields["entities_id"]);
+      autocompletionTextField($this,'name',array('value'=>$objectName);
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
@@ -367,8 +367,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],
-                              40,$this->fields["entities_id"]);
+      autocompletionTextField($this,"contact_num");
       echo "</td>\n";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
@@ -378,13 +377,11 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this,"contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this,"serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -398,8 +395,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this,'otherserial',array('value'=>$objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -434,8 +430,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("memory_size",$this->table,"memory_size",$this->fields["memory_size"],
-                              40,$this->fields["entities_id"]);
+      autocompletionTextField($this,"memory_size");
       echo "</td>";
       echo "<td rowspan='4'>";
       echo $LANG['common'][25]."&nbsp;:</td>\n";
@@ -445,8 +440,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("init_pages_counter",$this->table,"init_pages_counter",
-                              $this->fields["init_pages_counter"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this,"init_pages_counter");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

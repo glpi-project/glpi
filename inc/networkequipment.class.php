@@ -285,8 +285,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("name",$this->table,"name",$objectName,40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -322,8 +321,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("contact_num",$this->table,"contact_num",
-                              $this->fields["contact_num"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "contact_num");
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
@@ -333,13 +331,11 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("contact",$this->table,"contact",
-                              $this->fields["contact"],40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "contact");
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "serial");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -353,8 +349,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -383,15 +378,13 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['networking'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("ip",$this->table,"ip",$this->fields["ip"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "ip");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['networking'][15]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("mac",$this->table,"mac",$this->fields["mac"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "mac");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -404,8 +397,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['networking'][5]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("ram",$this->table,"ram",$this->fields["ram"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "ram");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

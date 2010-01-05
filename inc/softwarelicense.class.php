@@ -193,11 +193,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40);
+      autocompletionTextField($this,"name");
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40);
+      autocompletionTextField($this,"serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -209,8 +209,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("otherserial",$this->table,"otherserial",
-                              $this->fields["otherserial"],40);
+      autocompletionTextField($this,"otherserial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

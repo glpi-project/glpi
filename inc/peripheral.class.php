@@ -244,7 +244,7 @@ class Peripheral  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("name",$this->table,"name",$objectName,40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "name", array('value'=>$objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
@@ -279,8 +279,7 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("contact_num",$this->table,"contact_num",$this->fields["contact_num"],
-                              40,$this->fields["entities_id"]);
+      autocompletionTextField($this, "contact_num");
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
@@ -290,13 +289,11 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("contact",$this->table,"contact",$this->fields["contact"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("serial",$this->table,"serial",$this->fields["serial"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -310,8 +307,7 @@ class Peripheral  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->type,$this->fields["entities_id"]);
-      autocompletionTextField("otherserial",$this->table,"otherserial",$objectName,40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "otherserial", array('value'=>$objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -330,8 +326,7 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField("brand",$this->table,"brand",$this->fields["brand"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "brand");
       echo "</td>\n";
       echo "<td rowspan='2'>";
       echo $LANG['common'][25]."&nbsp;:</td>\n";

@@ -122,8 +122,7 @@ class Group extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
       echo "<td class='center middle' rowspan='3'>.<textarea cols='45' rows='3' name='comment' >".
@@ -264,15 +263,13 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][260]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_field",$this->table,"ldap_field",
-                                 $this->fields["ldap_field"],40,$this->fields["entities_id"]);
+         autocompletionTextField($this, "ldap_field");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][601]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_value",$this->table,"ldap_value",
-                                 $this->fields["ldap_value"],40,$this->fields["entities_id"]);
+         autocompletionTextField($this, "ldap_value");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -282,8 +279,7 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][261]."&nbsp;:</td>";
          echo "<td>";
-         autocompletionTextField("ldap_group_dn",$this->table,"ldap_group_dn",
-                                 $this->fields["ldap_group_dn"],40,$this->fields["entities_id"]);
+         autocompletionTextField($this, "ldap_group_dn");
          echo "</td></tr>";
       }
 

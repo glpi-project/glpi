@@ -256,8 +256,7 @@ logDebug("Software::cleanDBonPurge($ID)");
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][16] . "&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name", $this->table, "name", $this->fields["name"], 40,
-                              $this->fields["entities_id"]);
+      autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));

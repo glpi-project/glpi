@@ -112,7 +112,8 @@ class Infocom extends CommonDBTM {
    }
 
    function prepareInputForUpdate($input) {
-
+      // No more use : need id to update
+      /*
       if (isset($input["id"])) {
          $this->getFromDB($input["id"]);
       } else {
@@ -124,7 +125,7 @@ class Infocom extends CommonDBTM {
          }
          $input["id"]=$this->fields["id"];
       }
-
+      */
       if (isset($input['warranty_duration'])) {
          $input['_warranty_duration']=$this->fields['warranty_duration'];
       }
@@ -694,17 +695,15 @@ class Infocom extends CommonDBTM {
             echo "</td>";
             echo "<td>".$LANG['financial'][82]."&nbsp;:</td>";
             echo "<td >";
-            autocompletionTextField("bill","glpi_infocoms","bill",$ic->fields["bill"],40,-1,-1,$option);
+            autocompletionTextField($ic, "bill",array('option' => $option));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['financial'][18]."&nbsp;:</td>";
             echo "<td >";
-            autocompletionTextField("order_number","glpi_infocoms","order_number",
-                                    $ic->fields["order_number"],40,-1,-1,$option);
+            autocompletionTextField($ic, "order_number",array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][19]."&nbsp;:</td><td>";
-            autocompletionTextField("delivery_number","glpi_infocoms","delivery_number",
-                                    $ic->fields["delivery_number"],40,-1,-1,$option);
+            autocompletionTextField($ic, "delivery_number",array('option' => $option));
             echo "</td></tr>";
 
             // Can edit calendar ?
@@ -753,8 +752,7 @@ class Infocom extends CommonDBTM {
                         formatNumber($ic->fields["warranty_value"],true)."\" size='14'></td>";
                echo "<td>".$LANG['financial'][16]."&nbsp;:</td>";
                echo "<td >";
-               autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",
-                                       $ic->fields["warranty_info"],40,-1,-1,$option);
+               autocompletionTextField($ic, "warranty_info",array('option' => $option));
                echo "</td></tr>";
             }
 
@@ -776,8 +774,8 @@ class Infocom extends CommonDBTM {
                echo "<td >";
                $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2),
                                     'Infocom',$item->getEntityID());
-               autocompletionTextField("immo_number","glpi_infocoms","immo_number",
-                                       $objectName,40,-1,-1,$option);
+               autocompletionTextField($ic, "immo_number",array('value' => $objectName,
+                                                               'option' => $option));
                echo "</td>";
                echo "<td>".$LANG['financial'][22]."&nbsp;:</td><td >";
                if ($withtemplate==2) {
@@ -797,8 +795,7 @@ class Infocom extends CommonDBTM {
                echo "</td>";
                echo "<td>".$LANG['financial'][77]."&nbsp;:</td>";
                echo "<td >";
-               autocompletionTextField("sink_coeff","glpi_infocoms","sink_coeff",
-                                       $ic->fields["sink_coeff"],14,-1,-1,$option);
+               autocompletionTextField($ic, "sink_coeff",array('size'=>14,'option' => $option));
                echo "</td></tr>";
             }
             //TCO
