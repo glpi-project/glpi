@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')){
 // class Central
 class Central extends CommonGLPI {
 
-   public $type = 'central';
+   public $type = 'Central';
 
    static function getTypeName() {
       global $LANG;

@@ -37,19 +37,33 @@ if (!defined('GLPI_ROOT')){
  */
 class CommonGLPI {
 
-   /// GLPI Item type
-   var $type = -1;
+   /// GLPI Item type cache : set dynamically calling getType
+
+   protected $type = -1;
 
    /**
-    * Return the localized name of the current Type
-    * Shoudl be overloaded in each new class
-    *
-    * @return string
-    */
+   * Return the localized name of the current Type
+   * Should be overloaded in each new class
+   *
+   * @return string
+   */
    static function getTypeName() {
       global $LANG;
 
       return $LANG['help'][30];
+   }
+
+
+   /**
+   * Return the type of the object : class name
+   *
+   * @return string
+   */
+   function getType() {
+      if ($this->type == -1) {
+         $this->type=get_class($this);
+      }
+      return $this->type;
    }
 
    /**
