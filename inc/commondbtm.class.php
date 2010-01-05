@@ -283,8 +283,8 @@ class CommonDBTM extends CommonGLPI {
          }
          $query .= ")";
          if ($result=$DB->query($query)) {
-            $this->fields[$this->getIndexName()]=$DB->insert_id();
-            return $this->fields[$this->getIndexName()];
+            $this->fields['id']=$DB->insert_id();
+            return $this->fields['id'];
          } else {
             return false;
          }
@@ -581,7 +581,7 @@ class CommonDBTM extends CommonGLPI {
             $this->addMessageOnAddAction();
             $this->post_addItem();
             doHook("item_add", $this);
-            return $this->fields[$this->getIndexName()];
+            return $this->fields['id'];
          }
       }
       return false;
