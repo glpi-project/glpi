@@ -2,13 +2,17 @@
 #
 # Launcher for the GLPI regression test suite
 #
-# Need a dedicated fresh DB
+# Simple way, use command : 
+#	phpunit AllTests
+#
+# If you prefer not run test in your dev DB, create a 	
+# dedicated fresh DB :
 # - save your config_db.php
 # - install a new GLPI database instance (glpiphpunit, p.e.)
 # - copy generated config_db.php here
 # - restore config_db.php
 #
-# PHPunit will use his own database without altering others
+# PHPunit will use this new database without altering others
 #
 
 testdir=$(dirname $0)
@@ -19,6 +23,7 @@ cd $testdir
 if [ ! -f config_db.php ]
 then
 	echo "no config_db.php (must have a specific one, with a PHPUnit dedicated DB)"
+	echo "or simply run : phpunit AllTests"
 	exit 1;
 fi
 if [ -f $conf ]
