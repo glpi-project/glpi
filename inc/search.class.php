@@ -3156,6 +3156,11 @@ class Search {
 
          case 'glpi_crontasks.mode':
             return CronTask::getModeName($data[$NAME.$num]);
+         case 'glpi_crontasks.itemtype':
+            if ($plug=isPluginItemType($data[$NAME.$num])) {
+               return $plug['plugin'];
+            }
+            return '';
       }
 
 
