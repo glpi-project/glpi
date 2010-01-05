@@ -2691,45 +2691,72 @@ function closeArrowMassive($name='',$label='') {
 }
 
 /**
- * Show div with auto completion
- *
- * @param $myname text field name
- * @param $table table to search for autocompletion
- * @param $field field to serahc for autocompletion
- * @param $value value to fill text field
- * @param $size size of the text field
- * @param $option option of the textfield
- * @param $entity_restrict Restrict to a defined entity
- * @param $user_restrict Restrict to a specific user
- * @return nothing (print out an HTML div)
- */
-function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,
-                                 $user_restrict=-1,$option='') {
+* Show div with auto completion
+*
+* Parameters which could be used in options array :
+*    - name : string / name of the select (default is field parameter)
+*    - value : integer / preselected value (default value of the item object)
+*    - size : integer / size of the text field
+*    - entity : integer / restrict to a defined entity (default entity of the object if define)
+*              set to -1 not to take into account
+*    - user : integer / restrict to a defined user (default -1 : no restriction)
+*    - option : string / options to add to text field
+*
+* @param $item item object used for create dropdown
+* @param $field field to search for autocompletion
+* @param $options possible options
+* @return nothing (print out an HTML div)
+*/
+function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
    global $CFG_GLPI;
 
-   ///TODO : clean params as dropdown / pass itemtype instead of table
-   /// $myname / $field + array of option : name if != field + others
+   // ($myname,$table,$field,$value='',$size=40,$entity_restrict=-1, $user_restrict=-1,$option='')
+
+   $params['table']  = $item->getTable();
+   $params['name']   = $field;
+
+   if (array_key_exists($field,$item->fields)) {
+      $params['value']  = $item->fields[$field];
+   }
+   $params['size']   = 40;
+   if (array_key_exists('entities_id',$item->fields)) {
+      $params['entity']  = $item->fields['entities_id'];
+   }
+   $params['user']   = -1;
+   $params['option'] = '';
+
+
+   if (is_array($options) && count($options)) {
+      foreach ($options as $key => $val) {
+         $params[$key]=$val;
+      }
+   }
+
+
+
 
    if ($CFG_GLPI["use_ajax"] && $CFG_GLPI["use_ajax_autocompletion"]) {
       $rand=mt_rand();
-      echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".
-             cleanInputText($value)."\" size='$size'>\n";
+      $name="field_".$params['name'].$rand;
+      echo "<input ".$params['option']." id='text$name'
+            type='text' name='".$params['name']."' value=\"".
+             cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
       $output = "<script type='text/javascript' >\n";
 
-      $output .= "var textfield_$myname$rand = new Ext.data.Store({
+      $output .= "var text$name = new Ext.data.Store({
          proxy: new Ext.data.HttpProxy(
          new Ext.data.Connection ({
             url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
             extraParams : {
-               table: '$table',
-               itemtype: '".getItemTypeForTable($table)."',
+               table: '".$params['table']."',
+               itemtype: '".$item->getType()."',
                field: '$field'";
 
-            if (!empty($entity_restrict) && $entity_restrict>=0){
-               $output .= ",entity_restrict: $entity_restrict";
+            if ($params['entity']>=0){
+               $output .= ",entity_restrict: ".$params['entity'];
             }
-            if (!empty($user_restrict) && $user_restrict>=0){
-               $output .= ",user_restrict: $user_restrict";
+            if ($params['user']>=0){
+               $output .= ",user_restrict: ".$params['user'];
             }
             $output .= "
             },
@@ -2746,15 +2773,15 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
       });
       ";
 
-      $output .= "var searchfield_$myname$rand = new Ext.ux.form.SpanComboBox({
-         store: textfield_$myname$rand,
+      $output .= "var search$name = new Ext.ux.form.SpanComboBox({
+         store: text$name,
          displayField:'value',
          pageSize:20,
          hideTrigger:true,
          minChars:3,
          resizable:true,
-         minListWidth:".($size*5).", // IE problem : wrong computation of the width of the ComboBox field
-         applyTo: 'textfield_$myname$rand'
+         minListWidth:".($params['size']*5).", // IE problem : wrong computation of the width of the ComboBox field
+         applyTo: 'text$name'
       });";
 
       $output .= "</script>";
@@ -2762,8 +2789,8 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
       echo $output;
 
    } else {
-      echo "<input $option type='text' name='$myname' value=\"".
-             cleanInputText($value)."\" size='$size'>\n";
+      echo "<input ".$params['option']." type='text' name='".$params['name']."' value=\"".
+             cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
 
