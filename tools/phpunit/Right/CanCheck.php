@@ -43,21 +43,21 @@ class Right_CanCheck extends PHPUnit_Framework_TestCase {
       $id[0] = $printer->add(array('name'         => "Printer 1",
                                    'entities_id'  => $ent0,
                                    'is_recursive' => 0));
-      $this->assertGreaterThan(0, $id[0]);
+      $this->assertGreaterThan(0, $id[0], "Fail to create Printer 1");
 
       $id[1] = $printer->add(array('name'         => "Printer 2",
                                    'entities_id'  => $ent0,
                                    'is_recursive' => 1));
-      $this->assertGreaterThan(0, $id[1]);
+      $this->assertGreaterThan(0, $id[1], "Fail to create Printer 2");
 
       $id[2] = $printer->add(array('name'         => "Printer 3",
                                    'entities_id'  => $ent1,
                                    'is_recursive' => 1));
-      $this->assertGreaterThan(0, $id[2]);
+      $this->assertGreaterThan(0, $id[2], "Fail to create Ptiner 3");
 
       $id[3] = $printer->add(array('name'         => "Printer 4",
                                    'entities_id'  => $ent2));
-      $this->assertGreaterThan(0, $id[3]);
+      $this->assertGreaterThan(0, $id[3], "Fail to create Printer 4");
 
       // Super admin
       changeProfile(4);
@@ -67,54 +67,54 @@ class Right_CanCheck extends PHPUnit_Framework_TestCase {
       // See all
       $this->assertTrue(changeActiveEntities("all"));
 
-      $this->assertTrue($printer->can($id[0],'r'));
-      $this->assertTrue($printer->can($id[1],'r'));
-      $this->assertTrue($printer->can($id[2],'r'));
-      $this->assertTrue($printer->can($id[3],'r'));
+      $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
+      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
+      $this->assertTrue($printer->can($id[2],'r'), "Fail can read Printer 3");
+      $this->assertTrue($printer->can($id[3],'r'), "Fail can read Printer 4");
 
-      $this->assertTrue($printer->can($id[0],'w'));
-      $this->assertTrue($printer->can($id[1],'w'));
-      $this->assertTrue($printer->can($id[2],'w'));
-      $this->assertTrue($printer->can($id[3],'w'));
+      $this->assertTrue($printer->can($id[0],'w'), "Fail can write Printer 1");
+      $this->assertTrue($printer->can($id[1],'w'), "Fail can write Printer 2");
+      $this->assertTrue($printer->can($id[2],'w'), "Fail can write Printer 3");
+      $this->assertTrue($printer->can($id[3],'w'), "Fail can write Printer 4");
 
       // See only in main entity
       $this->assertTrue(changeActiveEntities($ent0));
 
-      $this->assertTrue($printer->can($id[0],'r'));
-      $this->assertTrue($printer->can($id[1],'r'));
-      $this->assertFalse($printer->can($id[2],'r'));
-      $this->assertFalse($printer->can($id[3],'r'));
+      $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
+      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
+      $this->assertFalse($printer->can($id[2],'r'), "Fail can't read Printer 3");
+      $this->assertFalse($printer->can($id[3],'r'), "Fail can't read Printer 1");
 
-      $this->assertTrue($printer->can($id[0],'w'));
-      $this->assertTrue($printer->can($id[1],'w'));
-      $this->assertFalse($printer->can($id[2],'w'));
-      $this->assertFalse($printer->can($id[3],'w'));
+      $this->assertTrue($printer->can($id[0],'w'), "Fail can write Printer 1");
+      $this->assertTrue($printer->can($id[1],'w'), "Fail can write Printer 2");
+      $this->assertFalse($printer->can($id[2],'w'), "Fail can't write Printer 1");
+      $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 1");
 
       // See only in child entity 1 + parent if recursive
       $this->assertTrue(changeActiveEntities($ent1));
 
-      $this->assertFalse($printer->can($id[0],'r'));
-      $this->assertTrue($printer->can($id[1],'r'));
-      $this->assertTrue($printer->can($id[2],'r'));
-      $this->assertFalse($printer->can($id[3],'r'));
+      $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
+      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
+      $this->assertTrue($printer->can($id[2],'r'), "Fail can read Printer 3");
+      $this->assertFalse($printer->can($id[3],'r'), "Fail can't read Printer 4");
 
-      $this->assertFalse($printer->can($id[0],'w'));
-      $this->assertFalse($printer->can($id[1],'w'));
-      $this->assertTrue($printer->can($id[2],'w'));
-      $this->assertFalse($printer->can($id[3],'w'));
+      $this->assertFalse($printer->can($id[0],'w'), "Fail can't write Printer 1");
+      $this->assertFalse($printer->can($id[1],'w'), "Fail can't write Printer 2");
+      $this->assertTrue($printer->can($id[2],'w'), "Fail can write Printer 2");
+      $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 2");
 
       // See only in child entity 2 + parent if recursive
       $this->assertTrue(changeActiveEntities($ent2));
 
-      $this->assertFalse($printer->can($id[0],'r'));
-      $this->assertTrue($printer->can($id[1],'r'));
-      $this->assertFalse($printer->can($id[2],'r'));
-      $this->assertTrue($printer->can($id[3],'r'));
+      $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
+      $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
+      $this->assertFalse($printer->can($id[2],'r'), "Fail can't read Printer 3");
+      $this->assertTrue($printer->can($id[3],'r'), "Fail can read Printer 4");
 
-      $this->assertFalse($printer->can($id[0],'w'));
-      $this->assertFalse($printer->can($id[1],'w'));
-      $this->assertFalse($printer->can($id[2],'w'));
-      $this->assertTrue($printer->can($id[3],'w'));
+      $this->assertFalse($printer->can($id[0],'w'), "Fail can't write Printer 1");
+      $this->assertFalse($printer->can($id[1],'w'), "Fail can't write Printer 2");
+      $this->assertFalse($printer->can($id[2],'w'), "Fail can't write Printer 3");
+      $this->assertTrue($printer->can($id[3],'w'), "Fail can write Printer 4");
    }
 
    /**
