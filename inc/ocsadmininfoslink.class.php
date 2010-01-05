@@ -41,9 +41,6 @@ if (!defined('GLPI_ROOT')){
  */
 class OcsAdminInfosLink extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_ocsadmininfoslinks';
-
    /**
     * Actions done when item is deleted from the database
     *
@@ -56,7 +53,7 @@ class OcsAdminInfosLink extends CommonDBTM {
       global $DB;
 
       $query = "DELETE
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `ocsservers_id` = '$ID'";
       $result = $DB->query($query);
    }

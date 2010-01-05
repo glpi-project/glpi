@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonTreeDropdown {
 
-      // From CommonDBTM
-   public $table = 'glpi_knowbaseitemcategories';
-   public $type = 'KnowbaseItemCategory';
 
    static function getTypeName() {
       global $LANG;
@@ -60,10 +57,10 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          return true;
       }
       $kb = new KnowbaseItem();
-      $fk = getForeignKeyFieldForTable($this->table);
+      $fk = $this->getForeignKey();
       $id = $this->fields['id'];
 
-      return (countElementsInTable($kb->table,"`$fk`='$id'")>0);
+      return (countElementsInTable($kb->getTable(),"`$fk`='$id'")>0);
    }
 
    /**

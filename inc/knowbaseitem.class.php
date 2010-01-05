@@ -41,10 +41,6 @@ if (!defined('GLPI_ROOT')){
 
 class KnowbaseItem extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_knowbaseitems';
-   public $type = 'KnowbaseItem';
-
    static function getTypeName() {
       global $LANG;
 
@@ -256,7 +252,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB;
 
       $DB->query("UPDATE
-                  `".$this->table."`
+                  `".$this->getTable()."`
                   SET `is_faq`='1'
                   WHERE `id`='".$this->fields['id']."'");
    }
@@ -270,7 +266,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB;
 
       $DB->query("UPDATE
-                  `".$this->table."`
+                  `".$this->getTable()."`
                   SET `is_faq`='0'
                   WHERE `id`='".$this->fields['id']."'");
    }

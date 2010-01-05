@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')){
 class Infocom extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_infocoms';
-   public $type = 'Infocom';
    public $dohistory=true;
    public $auto_message_on_action=true;
 
@@ -79,7 +77,7 @@ class Infocom extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `items_id` = '$ID'
                       AND `itemtype`='$itemtype'";
 
@@ -141,7 +139,7 @@ class Infocom extends CommonDBTM {
           && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
          $alert=new Alert();
-         $alert->clear($this->type,$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
       }
    }
 
@@ -661,16 +659,16 @@ class Infocom extends CommonDBTM {
          }
 
          if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")
-            && in_array($item->type,array('Software','CartridgeItem','ConsumableItem'))) {
+            && in_array($item->getType(),array('Software','CartridgeItem','ConsumableItem'))) {
             echo "<div class='center'>".$LANG['financial'][84]."</div>";
          }
-         if (!$ic->getFromDBforDevice($item->type,$dev_ID)) {
+         if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             //$input=array('entities_id'=>$entity);
-            $input=array('itemtype' => $item->type,
+            $input=array('itemtype' => $item->getType(),
                         'items_id' => $dev_ID);
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
                echo "<table class='tab_cadre'><tr><th>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->type."&amp;items_id=$dev_ID&amp;add=add'>".
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
                      $LANG['financial'][68]."</a></th></tr></table>";
             }
          } else { // getFromDBforDevice
@@ -799,7 +797,7 @@ class Infocom extends CommonDBTM {
                echo "</td></tr>";
             }
             //TCO
-            if (!in_array($item->type, array('Software','CartridgeItem','ConsumableItem',
+            if (!in_array($item->getType(), array('Software','CartridgeItem','ConsumableItem',
                                              'Consumable', 'Cartridge', 'SoftwareLicense'))) {
 
                echo "<tr class='tab_bg_1'><td>";

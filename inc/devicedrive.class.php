@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceDrive
 class DeviceDrive extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicedrives';
-   public $type = 'DeviceDrive';
-
    static function getTypeName() {
       global $LANG;
 
@@ -71,13 +67,13 @@ class DeviceDrive extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'is_writer';
       $tab[12]['linkfield']     = 'is_writer';
       $tab[12]['name']          = $LANG['device_drive'][0];
       $tab[12]['datatype']      = 'bool';
 
-      $tab[13]['table']         = $this->table;
+      $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'speed';
       $tab[13]['linkfield']     = 'speed';
       $tab[13]['name']          = $LANG['device_drive'][1];

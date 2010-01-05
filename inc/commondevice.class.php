@@ -57,19 +57,19 @@ abstract class CommonDevice extends CommonDropdown {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[1]['table']         = $this->table;
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'designation';
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = $this->type;
+      $tab[1]['itemlink_link'] = $this->getType();
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
       $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
-      $tab[16]['table']     = $this->table;
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
@@ -141,7 +141,7 @@ abstract class CommonDevice extends CommonDropdown {
          return 0;
       }
       $query = "SELECT `id`
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `designation` = '" . $input['designation'] . "'";
 
       $result = $DB->query($query);

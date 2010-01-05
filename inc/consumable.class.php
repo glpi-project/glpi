@@ -45,9 +45,6 @@ if (!defined('GLPI_ROOT')){
  */
 class Consumable extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_consumables';
-   public $type = 'Consumable';
 
    static function getTypeName() {
       global $LANG;
@@ -69,7 +66,7 @@ class Consumable extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '$ID'
-                       AND `itemtype`='".$this->type."')";
+                       AND `itemtype`='".$this->getType()."')";
       $result = $DB->query($query);
    }
 
@@ -86,7 +83,7 @@ class Consumable extends CommonDBTM {
       if ($ic->getFromDBforDevice('ConsumableItem',$this->fields["consumableitems_id"])) {
          unset($ic->fields["id"]);
          $ic->fields["items_id"]=$newID;
-         $ic->fields["itemtype"]=$this->type;
+         $ic->fields["itemtype"]=$this->getType();
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
          }
@@ -101,7 +98,7 @@ class Consumable extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->table."`
+                `".$this->getTable()."`
                 SET `date_out` = NULL
                 WHERE `id`='".$input["id"]."'";
 
@@ -127,7 +124,7 @@ class Consumable extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE
-                `".$this->table."`
+                `".$this->getTable()."`
                 SET `date_out` = '".date("Y-m-d")."',
                     `users_id` = '$users_id'
                 WHERE `id` = '$ID'";

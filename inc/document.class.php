@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')){
 class Document extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_documents';
-   public $type = 'Document';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -65,13 +63,13 @@ class Document extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
 
       $di = new Document_Item();
-      $di->cleanDBonItemDelete($this->type,$ID);
+      $di->cleanDBonItemDelete($this->getType(),$ID);
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filepath"])) {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
-             && countElementsInTable($this->table,"`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
+             && countElementsInTable($this->getTable(),"`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
                addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
                                        $this->fields["filepath"]);
@@ -148,8 +146,8 @@ class Document extends CommonDBTM {
          // Check if already upload in the current entity
          $crit = array('sha1sum'=>$input['sha1sum'],
                        'entities_id'=>$input['entities_id']);
-         foreach ($DB->request($this->table, $crit) as $data) {
-            $link=getItemTypeFormURL($this->type);
+         foreach ($DB->request($this->getTable(), $crit) as $data) {
+            $link=getItemTypeFormURL($this->getType());
             addMessageAfterRedirect($LANG['document'][48].
                "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",
@@ -386,7 +384,7 @@ class Document extends CommonDBTM {
       $crit = array('sha1sum' => $sum,
                     'entities_id' => $entity);
 
-      foreach ($DB->request($this->table, $crit) as $data) {
+      foreach ($DB->request($this->getTable(), $crit) as $data) {
          $this->fields = $data;
          return true;
       }
@@ -1024,7 +1022,7 @@ class Document extends CommonDBTM {
                           ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
                 LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                 WHERE `glpi_documents_items`.`items_id` = '$ID'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->type."' ";
+                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
       if (isset($_SESSION["glpiID"])) {
          $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
@@ -1033,7 +1031,7 @@ class Document extends CommonDBTM {
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
       }
       // Document : search links in both order using union
-      if ($item->type == 'Document') {
+      if ($item->getType() == 'Document') {
          $query .= "UNION
                     SELECT `glpi_documents_items`.`id` AS assocID, `glpi_entities`.`id` AS entity,
                            `glpi_documents`.`name` AS assocName, `glpi_documents`.*
@@ -1042,7 +1040,7 @@ class Document extends CommonDBTM {
                               ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
                     LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
-                          AND `glpi_documents_items`.`itemtype` = '".$item->type."' ";
+                          AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
          if (isset($_SESSION["glpiID"])) {
             $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
@@ -1077,7 +1075,7 @@ class Document extends CommonDBTM {
       if ($number) {
          // Don't use this for document associated to document
          // To not loose navigation list for current document
-         if ($item->type != 'Document') {
+         if ($item->getType() != 'Document') {
             initNavigateListItems('Document', $item->getTypeName()." = ".$item->getName());
          }
 
@@ -1087,7 +1085,7 @@ class Document extends CommonDBTM {
             if (!$document->getFromDB($docID)) {
                continue;
             }
-            if ($item->type != 'Document') {
+            if ($item->getType() != 'Document') {
                addToNavigateListItems('Document',$docID);
             }
             $used[$docID]=$docID;
@@ -1113,7 +1111,7 @@ class Document extends CommonDBTM {
                if ($canedit) {
                   echo "<a href='".$CFG_GLPI["root_doc"];
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
-                  echo "&amp;itemtype=".$item->type."&amp;items_id=$ID&amp;documents_id=$docID'>";
+                  echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
                   echo $LANG['buttons'][6]."</a>";
                } else {
                   echo "&nbsp;";
@@ -1149,12 +1147,12 @@ class Document extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
-            echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></td>";
 
-            if ($item->type == 'Document') {
+            if ($item->getType() == 'Document') {
                $used[$ID]=$ID;
             }
 

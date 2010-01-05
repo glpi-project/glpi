@@ -41,14 +41,13 @@ if (!defined('GLPI_ROOT')){
 class DisplayPreference extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_displaypreferences';
    var $auto_message_on_action = false;
 
    function prepareInputForAdd($input) {
       global $DB;
 
       $query = "SELECT MAX(`rank`)
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '".$input["itemtype"]."'
                       AND `users_id` = '".$input["users_id"]."'";
       $result=$DB->query($query);
@@ -108,7 +107,7 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '".$input["itemtype"]."'
                       AND `users_id` = '0'";
       $result=$DB->query($query);
@@ -152,14 +151,14 @@ class DisplayPreference extends CommonDBTM {
 
       // Get current item
       $query = "SELECT `rank`
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `id` = '".$input['id']."'";
       $result=$DB->query($query);
       $rank1=$DB->result($result,0,0);
 
       // Get previous or next item
       $query = "SELECT `id`, `rank`
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '".$input['itemtype']."'
                       AND `users_id` = '".$input["users_id"]."'";
       switch ($action) {
@@ -181,11 +180,11 @@ class DisplayPreference extends CommonDBTM {
       $ID2=$DB->result($result,0,"id");
 
       // Update items
-      $query = "UPDATE `".$this->table."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `rank` = '$rank2'
                 WHERE `id` = '".$input['id']."'";
       $DB->query($query);
-      $query = "UPDATE `".$this->table."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `rank` = '$rank1'
                 WHERE `id` = '$ID2'";
       $DB->query($query);
@@ -212,7 +211,7 @@ class DisplayPreference extends CommonDBTM {
       echo "<div class='center' id='tabsbody' >";
       // Defined items
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '$IDuser'
                 ORDER BY `rank`";
@@ -340,7 +339,7 @@ class DisplayPreference extends CommonDBTM {
       echo "<div class='center' id='tabsbody' >";
       // Defined items
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '$IDuser'
                 ORDER BY `rank`";

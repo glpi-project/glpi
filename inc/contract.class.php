@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')){
 class Contract extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_contracts';
-   public $type = 'Contract';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -71,10 +69,10 @@ class Contract extends CommonDBTM {
       global $DB;
 
       $cs = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->type,$ID);
+      $cs->cleanDBonItemDelete($this->getType(),$ID);
 
       $ci = new Contract_Item();
-      $ci->cleanDBonItemDelete($this->type,$ID);
+      $ci->cleanDBonItemDelete($this->getType(),$ID);
    }
 
    function defineTabs($ID,$withtemplate) {
@@ -107,7 +105,7 @@ class Contract extends CommonDBTM {
       if ((isset($this->oldvalues['begin_date']) && ($this->oldvalues['begin_date'] < $this->fields['begin_date']))
           || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))) {
          $alert=new Alert();
-         $alert->clear($this->type,$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
       }
 
       // Clean notice alert if begin_date is after old one
@@ -117,7 +115,7 @@ class Contract extends CommonDBTM {
           || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))
           || (isset($this->oldvalues['notice']) && ($this->oldvalues['notice'] > $this->fields['notice']))) {
          $alert=new Alert();
-         $alert->clear($this->type,$this->fields['id'],ALERT_NOTICE);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_NOTICE);
       }
    }
 
@@ -798,7 +796,7 @@ class Contract extends CommonDBTM {
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
-      $itemtype = $item->type;
+      $itemtype = $item->getType();
       $ID = $item->fields['id'];
 
       if (!haveRight("contract","r") || !$item->can($ID,"r")) {

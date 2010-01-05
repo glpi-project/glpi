@@ -193,7 +193,7 @@ abstract class CommonDBChild extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `".$this->table."`";
+                FROM `".$this->getTable()."`";
 
       if ($itemtype == $this->itemtype) {
          $where = " WHERE `".$this->items_id."`='$item_id'";

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Profile class
 class Profile extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_profiles';
-   public $type = 'Profile';
-
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
@@ -96,7 +92,7 @@ class Profile extends CommonDBTM {
 
       if (isset($input["is_default"]) && $input["is_default"]==1) {
          $query = "UPDATE ".
-                   $this->table."
+                   $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$input['id']."'";
          $DB->query($query);

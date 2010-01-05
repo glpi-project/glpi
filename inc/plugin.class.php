@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')) {
 
 class Plugin extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_plugins';
-   public $type = 'Plugin';
-
    // Class constant : Plugin state
    const ANEW           = 0;
    const ACTIVATED      = 1;
@@ -65,7 +61,7 @@ class Plugin extends CommonDBTM {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE (`directory` = '" . $dir . "')";
 
       if ($result = $DB->query($query)) {
@@ -566,7 +562,7 @@ class Plugin extends CommonDBTM {
       global$DB;
 
       $query = "UPDATE ".
-                $this->table."
+                $this->getTable()."
                 SET `state` = ".self::NOTACTIVATED."
                 WHERE `state` = ".self::ACTIVATED;
       $DB->query($query);

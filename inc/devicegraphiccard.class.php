@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceGraphicCard
 class DeviceGraphicCard extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicegraphiccards';
-   public $type = 'DeviceGraphicCard';
-
    static function getTypeName() {
       global $LANG;
 
@@ -74,7 +70,7 @@ class DeviceGraphicCard extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'specif_default';
       $tab[12]['linkfield']     = 'specif_default';
       $tab[12]['name']          = $LANG['device_gfxcard'][0]." ".$LANG['devices'][24];

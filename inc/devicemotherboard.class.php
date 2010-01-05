@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceMotherboard
 class DeviceMotherboard extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicemotherboards';
-   public $type = 'DeviceMotherboard';
-
    static function getTypeName() {
       global $LANG;
 
@@ -65,7 +61,7 @@ class DeviceMotherboard extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'chipset';
       $tab[11]['linkfield']     = 'chipset';
       $tab[11]['name']          = $LANG['device_moboard'][0];

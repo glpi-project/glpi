@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Netpoint class
 class Netpoint extends CommonDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_netpoints';
-   public $type = 'Netpoint';
-
    function getAdditionalFields() {
       global $LANG;
 
@@ -197,10 +193,10 @@ class Netpoint extends CommonDropdown {
       if (!empty($input["name"])) {
 
          $query = "SELECT `id`
-                   FROM `".$this->table."`
+                   FROM `".$this->getTable()."`
                    WHERE `name` = '".$input["name"]."'
                      AND `locations_id`='".(isset($input["locations_id"])?$input["locations_id"]:0)."'".
-                     getEntitiesRestrictRequest(' AND ',$this->table,'',
+                     getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
                                                 $input['entities_id'],$this->maybeRecursive());
 
          // Check twin :

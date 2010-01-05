@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceControl
 class DeviceControl extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicecontrols';
-   public $type = 'DeviceControl';
-
    static function getTypeName() {
       global $LANG;
 
@@ -68,7 +64,7 @@ class DeviceControl extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'is_raid';
       $tab[12]['linkfield']     = 'is_raid';
       $tab[12]['name']          = $LANG['device_control'][0];

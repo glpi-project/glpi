@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Location class
 class Location extends CommonTreeDropdown {
 
-   // From CommonDBTM
-   public $table = 'glpi_locations';
-   public $type = 'Location';
-
    function canCreate() {
       return haveRight('entity_dropdown','w');
    }
@@ -55,7 +51,7 @@ class Location extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => getForeignKeyFieldForTable($this->table),
+      return array(array('name'  => $this->getForeignKey(),
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false),
@@ -85,13 +81,13 @@ class Location extends CommonTreeDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'building';
       $tab[11]['linkfield']     = 'building';
       $tab[11]['name']          = $LANG['setup'][99];
       $tab[11]['datatype']      = 'text';
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'room';
       $tab[12]['linkfield']     = 'room';
       $tab[12]['name']          = $LANG['setup'][100];

@@ -39,10 +39,6 @@ if (!defined('GLPI_ROOT')) {
 
 class RegistryKey extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_registrykeys';
-   public $type = 'RegistryKey';
-
    static function getTypeName() {
       global $LANG;
 
@@ -62,7 +58,7 @@ class RegistryKey extends CommonDBTM {
       global $DB;
 
       $query = "DELETE
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `computers_id` = '$ID'";
       $result = $DB->query($query);
    }

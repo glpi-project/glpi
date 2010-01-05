@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DevicePowerSupply
 class DevicePowerSupply extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicepowersupplies';
-   public $type = 'DevicePowerSupply';
-
    static function getTypeName() {
       global $LANG;
 
@@ -68,13 +64,13 @@ class DevicePowerSupply extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'is_atx';
       $tab[11]['linkfield']     = 'is_atx';
       $tab[11]['name']          = $LANG['device_power'][1];
       $tab[11]['datatype']      = 'bool';
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'power';
       $tab[12]['linkfield']     = 'power';
       $tab[12]['name']          = $LANG['device_power'][0];

@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_deviceharddrives';
-   public $type = 'DeviceHardDrive';
-
    static function getTypeName() {
       global $LANG;
 
@@ -80,19 +76,19 @@ class DeviceHardDrive extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'specif_default';
       $tab[11]['linkfield']     = 'specif_default';
       $tab[11]['name']          = $LANG['device_hdd'][4]." ".$LANG['devices'][24];
       $tab[11]['datatype']      = 'text';
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'rpm';
       $tab[12]['linkfield']     = 'rpm';
       $tab[12]['name']          = $LANG['device_hdd'][0];
       $tab[12]['datatype']      = 'text';
 
-      $tab[13]['table']         = $this->table;
+      $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'cache';
       $tab[13]['linkfield']     = 'cache';
       $tab[13]['name']          = $LANG['device_hdd'][1];

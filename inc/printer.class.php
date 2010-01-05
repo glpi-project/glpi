@@ -42,8 +42,6 @@ if (!defined('GLPI_ROOT')) {
 class Printer  extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_printers';
-   public $type = 'Printer';
    public $dohistory=true;
 
    static function getTypeName() {
@@ -135,7 +133,7 @@ class Printer  extends CommonDBTM {
                  WHERE `glpi_networkports_networkports`.$endb = `glpi_networkports`.`id`
                        AND `glpi_networkports_networkports`.$enda IN (SELECT `id`
                                                                       FROM `glpi_networkports`
-                                                                      WHERE `itemtype`=".$this->type."
+                                                                      WHERE `itemtype`=".$this->getType()."
                                                                             AND `items_id`='$ID')
                  GROUP BY `itemtype`";
          $res = $DB->query($sql);
@@ -191,7 +189,7 @@ class Printer  extends CommonDBTM {
       if (isset($input["_oldID"])) {
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice($this->type,$input["_oldID"])) {
+         if ($ic->getFromDBforDevice($this->getType(),$input["_oldID"])) {
             $ic->fields["items_id"]=$newID;
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
@@ -211,7 +209,7 @@ class Printer  extends CommonDBTM {
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE `items_id` = '".$input["_oldID"]."'
-                         AND `itemtype` = '".$this->type."'";
+                         AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
@@ -235,13 +233,13 @@ class Printer  extends CommonDBTM {
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
                    WHERE `items_id` = '".$input["_oldID"]."'
-                         AND `itemtype` = '".$this->type."'";
+                         AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $contractitem=new Contract_Item();
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->type,
+                                        'itemtype' => $this->getType(),
                                         'items_id' => $newID));
             }
          }
@@ -250,13 +248,13 @@ class Printer  extends CommonDBTM {
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
                    WHERE `items_id` = '".$input["_oldID"]."'
-                         AND `itemtype` = '".$this->type."'";
+                         AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $docitem=new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->type,
+                                   'itemtype' => $this->getType(),
                                    'items_id' => $newID));
             }
          }
@@ -268,7 +266,7 @@ class Printer  extends CommonDBTM {
 
       $query="SELECT `id`
               FROM `glpi_computers_items`
-              WHERE `itemtype` = '".$this->type."'
+              WHERE `itemtype` = '".$this->getType()."'
                 AND `items_id` = '$ID'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -331,7 +329,7 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
-                             $this->type,$this->fields["entities_id"]);
+                             $this->getType(),$this->fields["entities_id"]);
       autocompletionTextField($this,'name',array('value'=>$objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
@@ -394,7 +392,7 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->type,$this->fields["entities_id"]);
+                             $this->getType(),$this->fields["entities_id"]);
       autocompletionTextField($this,'otherserial',array('value'=>$objectName));
       echo "</td></tr>\n";
 
@@ -483,7 +481,7 @@ class Printer  extends CommonDBTM {
 
       return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
-              WHERE `itemtype` = '".$this->type."'
+              WHERE `itemtype` = '".$this->getType()."'
                     AND `items_id` = '" . $this->fields['id']."'";
    }
 

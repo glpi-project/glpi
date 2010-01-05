@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 /// Class DeviceNetworkCard
 class DeviceNetworkCard extends CommonDevice {
 
-   // From CommonDBTM
-   public $table = 'glpi_devicenetworkcards';
-   public $type = 'DeviceNetworkCard';
-
    static function getTypeName() {
       global $LANG;
 
@@ -74,13 +70,13 @@ class DeviceNetworkCard extends CommonDevice {
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->table;
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'specif_default';
       $tab[11]['linkfield']     = 'specif_default';
       $tab[11]['name']          = $LANG['device_iface'][2]." ".$LANG['devices'][24];
       $tab[11]['datatype']      = 'text';
 
-      $tab[12]['table']         = $this->table;
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'bandwidth';
       $tab[12]['linkfield']     = 'bandwidth';
       $tab[12]['name']          = $LANG['device_iface'][0];
@@ -123,7 +119,7 @@ class DeviceNetworkCard extends CommonDevice {
          return 0;
       }
       $query = "SELECT `id`
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `designation` = '" . $input['designation'] . "'";
 
       if (isset($input["bandwidth"])) {

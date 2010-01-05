@@ -40,10 +40,6 @@ if (!defined('GLPI_ROOT')){
 // Relation between Computer and Items (monitor, printer, phone, peripheral only)
 class Computer_Item extends CommonDBRelation{
 
-   // From CommonDBTM
-   public $table = 'glpi_computers_items';
-   public $type = 'Computer_Item';
-
    // From CommonDBRelation
    public $itemtype_1 = 'Computer';
    public $items_id_1 = 'computers_id';
@@ -499,7 +495,7 @@ class Computer_Item extends CommonDBRelation{
       $used = array();
       $compids = array();
       $crit = array('FIELDS'   => array('id', 'computers_id'),
-                    'itemtype' => $item->type,
+                    'itemtype' => $item->getType(),
                     'items_id' => $ID);
       foreach ($DB->request('glpi_computers_items', $crit) as $data) {
          $compids[$data['id']] = $data['computers_id'];
@@ -531,12 +527,12 @@ class Computer_Item extends CommonDBRelation{
          if ($canedit) {
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->getField('is_recursive')) {
-               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
@@ -553,12 +549,12 @@ class Computer_Item extends CommonDBRelation{
          if ($canedit) {
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='".$item->type."'>";
+            echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->getField('is_recursive')) {
-               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                getSonsOf("glpi_entities",$item->getField('entities_id')),0,$used);
             } else {
-               Computer_Item::dropdownConnect('Computer', $item->type, "computers_id",
+               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                $item->getField('entities_id'),0,$used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
@@ -590,7 +586,7 @@ class Computer_Item extends CommonDBRelation{
          $query = "SELECT `glpi_computers_items`.`id`
                    FROM `glpi_computers_items`
                    WHERE `glpi_computers_items`.`items_id` = '".$item->fields['id']."'
-                         AND `glpi_computers_items`.`itemtype` = '".$item->type."'";
+                         AND `glpi_computers_items`.`itemtype` = '".$item->getType()."'";
          $result=$DB->query($query);
 
          if ($data=$DB->fetch_array($result)) {
