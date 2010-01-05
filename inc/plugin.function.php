@@ -114,10 +114,9 @@ function doOneHook() {
    $hook = array_shift($args);
    if (!is_array($hook)) {
       $hook = "plugin_" . $plugname . "_" . $hook;
-   }
-   // TODO move this in the above test when autoload ready
-   if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
-      include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
+      if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
+         include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
+      }
    }
    if (is_callable($hook)) {
       return call_user_func_array($hook, $args);
