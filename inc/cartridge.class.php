@@ -65,13 +65,13 @@ class Cartridge extends CommonDBTM {
                    "date_in"=>date("Y-m-d"));
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       // Add infocoms if exists for the licence
       $ic=new Infocom();
 
       if ($ic->getFromDBforDevice('CartridgeItem',$this->fields["cartridgeitems_id"])) {
          unset($ic->fields["id"]);
-         $ic->fields["items_id"]=$newID;
+         $ic->fields["items_id"]=$this->fields['id'];
          $ic->fields["itemtype"]=$this->getType();
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);

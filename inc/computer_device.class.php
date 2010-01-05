@@ -66,9 +66,9 @@ class Computer_Device extends CommonDBChild {
    }
 
    // overload to log HISTORY_ADD_DEVICE instead of HISTORY_ADD_RELATION
-   function post_addItem($newID,$input) {
+   function post_addItem() {
 
-      if (isset($input['_no_history']) && $input['_no_history']) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
       $dev = new $this->fields['itemtype'];
@@ -82,7 +82,7 @@ class Computer_Device extends CommonDBChild {
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
    function post_deleteFromDB($ID) {
 
-      if (isset($input['_no_history']) && $input['_no_history']) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
       $dev = new $this->fields['itemtype'];

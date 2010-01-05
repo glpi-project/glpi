@@ -204,12 +204,12 @@ class Entity extends CommonTreeDropdown {
       return true;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       CleanFields($this->getTable(), 'sons_cache');
 
       // Add right to current user - Hack to avoid login/logout
-      $_SESSION['glpiactiveentities'][$newID] = $newID;
-      $_SESSION['glpiactiveentities_string'] .= ",'$newID'";
+      $_SESSION['glpiactiveentities'][$newID] = $this->fields['id'];
+      $_SESSION['glpiactiveentities_string'] .= ",'".$this->fields['id']."'";
    }
 
    function getSearchOptions() {

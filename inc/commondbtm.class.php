@@ -283,8 +283,8 @@ class CommonDBTM extends CommonGLPI {
          }
          $query .= ")";
          if ($result=$DB->query($query)) {
-            $this->fields["id"]=$DB->insert_id();
-            return $this->fields["id"];
+            $this->fields[$this->getIndexName()]=$DB->insert_id();
+            return $this->fields[$this->getIndexName()];
          } else {
             return false;
          }
@@ -577,11 +577,11 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
          }
 
-         if ($newID= $this->addToDB()) {
+         if ($this->addToDB()) {
             $this->addMessageOnAddAction();
-            $this->post_addItem($newID, $this->input);
+            $this->post_addItem();
             doHook("item_add", $this);
-            return $newID;
+            return $this->fields[$this->getIndexName()];
          }
       }
       return false;
@@ -659,7 +659,7 @@ class CommonDBTM extends CommonGLPI {
    * @return nothing
    *
    **/
-   function post_addItem($newID,$input) {
+   function post_addItem() {
    }
 
    /**

@@ -126,15 +126,12 @@ abstract class CommonDBRelation extends CommonDBTM {
    /**
     * Actions done after the ADD of the item in the database
     *
-    *@param $newID ID of the new item
-    *@param $input datas used to add the item
-    *
     * @return nothing
     *
    **/
-   function post_addItem($newID,$input) {
+   function post_addItem() {
 
-      if (isset($input['_no_history'])) {
+      if (isset($this->input['_no_history'])) {
          return false;
       }
 

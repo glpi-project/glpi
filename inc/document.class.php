@@ -158,17 +158,18 @@ class Document extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $LANG;
 
-      if (isset($input["items_id"]) && isset($input["itemtype"]) && $input["items_id"] > 0
-          && !empty($input["itemtype"])){
+      if (isset($this->input["items_id"]) && $this->input["items_id"] > 0
+            && isset($this->input["itemtype"]) && !empty($this->input["itemtype"])){
 
          $docitem=new Document_Item();
-         $docitem->add(array('documents_id' => $newID,
-                             'itemtype' => $input["itemtype"],
-                             'items_id' => $input["items_id"]));
-         Event::log($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+         $docitem->add(array('documents_id' => $this->fields['id'],
+                             'itemtype' => $this->input["itemtype"],
+                             'items_id' => $this->input["items_id"]));
+         Event::log($this->fields['id'], "documents", 4, "document",
+                                    $_SESSION["glpiname"]." ".$LANG['log'][32]);
       }
    }
 

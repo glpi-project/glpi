@@ -154,15 +154,15 @@ class Budget extends CommonDBTM{
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB;
 
       // Manage add from template
-      if (isset($input["_oldID"])) {
+      if (isset($this->input["_oldID"])) {
          // ADD Documents
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
-                 WHERE `items_id` = '".$input["_oldID"]."'
+                 WHERE `items_id` = '".$this->input["_oldID"]."'
                        AND `itemtype` = '".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -170,7 +170,7 @@ class Budget extends CommonDBTM{
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype' => $this->getType(),
-                                   'items_id' => $newID));
+                                   'items_id' => $this->fields['id']));
             }
          }
       }

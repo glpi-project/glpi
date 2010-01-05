@@ -340,23 +340,23 @@ class Computer extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB;
 
       // Manage add from template
-      if (isset($input["_oldID"])) {
+      if (isset($this->input["_oldID"])) {
          // ADD Devices
          $compdev = new Computer_Device();
-         $compdev->cloneComputer($input["_oldID"], $newID);
+         $compdev->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice($this->getType(),$input["_oldID"])) {
-            $ic->fields["items_id"]=$newID;
+         if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
+            $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"],
-                                            "immo_number", 1, 'Infocom', $input['entities_id']);
+                                            "immo_number", 1, 'Infocom', $this->input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -370,26 +370,26 @@ class Computer extends CommonDBTM {
          // ADD volumes
          $query="SELECT `id`
                  FROM `glpi_computerdisks`
-                 WHERE `computers_id`='".$input["_oldID"]."'";
+                 WHERE `computers_id`='".$this->input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
                $disk=new ComputerDisk();
                $disk->getfromDB($data['id']);
                unset($disk->fields["id"]);
-               $disk->fields["computers_id"]=$newID;
+               $disk->fields["computers_id"]=$this->fields['id'];
                $disk->addToDB();
             }
          }
 
          // ADD software
          $inst = new Computer_SoftwareVersion();
-         $inst->cloneComputer($input["_oldID"], $newID);
+         $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          $query="SELECT `contracts_id`
                  FROM `glpi_contracts_items`
-                 WHERE `items_id`='".$input["_oldID"]."'
+                 WHERE `items_id`='".$this->input["_oldID"]."'
                        AND `itemtype`='".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -397,14 +397,14 @@ class Computer extends CommonDBTM {
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype' => $this->getType(),
-                                        'items_id' => $newID));
+                                        'items_id' => $this->fields['id']));
             }
          }
 
          // ADD Documents
          $query="SELECT `documents_id`
                  FROM `glpi_documents_items`
-                 WHERE `items_id`='".$input["_oldID"]."'
+                 WHERE `items_id`='".$this->input["_oldID"]."'
                        AND `itemtype`='".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -412,14 +412,14 @@ class Computer extends CommonDBTM {
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype' => $this->getType(),
-                                   'items_id' => $newID));
+                                   'items_id' => $this->fields['id']));
             }
          }
 
          // ADD Ports
          $query="SELECT `id`
                  FROM `glpi_networkports`
-                 WHERE `items_id`='".$input["_oldID"]."'
+                 WHERE `items_id`='".$this->input["_oldID"]."'
                        AND `itemtype`='".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -431,7 +431,7 @@ class Computer extends CommonDBTM {
                unset($np->fields["ip"]);
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$newID;
+               $np->fields["items_id"]=$this->fields['id'];
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id'=>$data["id"])) as $vlan) {
@@ -443,13 +443,13 @@ class Computer extends CommonDBTM {
          // Add connected devices
          $query="SELECT *
                  FROM `glpi_computers_items`
-                 WHERE `computers_id`='".$input["_oldID"]."';";
+                 WHERE `computers_id`='".$this->input["_oldID"]."';";
 
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
             while ($data=$DB->fetch_array($result)) {
-               $conn->add(array('computers_id' => $newID,
+               $conn->add(array('computers_id' => $this->fields['id'],
                                 'itemtype'     => $data["itemtype"],
                                 'items_id'     => $data["items_id"]));
             }

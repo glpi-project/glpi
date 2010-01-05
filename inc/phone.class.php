@@ -103,19 +103,19 @@ class Phone extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB;
 
       // Manage add from template
-      if (isset($input["_oldID"])) {
+      if (isset($this->input["_oldID"])) {
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice($this->getType(),$input["_oldID"])) {
-            $ic->fields["items_id"]=$newID;
+         if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
+            $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                     'Infocom', $input['entities_id']);
+                                                     'Infocom', $this->input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -129,7 +129,7 @@ class Phone extends CommonDBTM {
          // ADD Ports
          $query = "SELECT `id`
                    FROM `glpi_networkports`
-                   WHERE `items_id`='".$input["_oldID"]."'
+                   WHERE `items_id`='".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -141,7 +141,7 @@ class Phone extends CommonDBTM {
                unset($np->fields["ip"]);
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$newID;
+               $np->fields["items_id"]=$this->fields['id'];
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id' => $data["id"])) as $vlan) {
@@ -153,7 +153,7 @@ class Phone extends CommonDBTM {
          // ADD Contract
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
-                   WHERE `items_id` = '".$input["_oldID"]."'
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -161,14 +161,14 @@ class Phone extends CommonDBTM {
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype' => $this->getType(),
-                                        'items_id' => $newID));
+                                        'items_id' => $this->fields['id']));
             }
          }
 
          // ADD Documents
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
-                   WHERE `items_id` = '".$input["_oldID"]."'
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
@@ -176,7 +176,7 @@ class Phone extends CommonDBTM {
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype' => $this->getType(),
-                                   'items_id' => $newID));
+                                   'items_id' => $this->fields['id']));
             }
          }
       }

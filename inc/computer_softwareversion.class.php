@@ -721,7 +721,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
       echo "</td></tr>\n";
    }
 
-   function post_addItem($newID,$input) {
+   function post_addItem() {
       global $DB;
 
       $vers = new SoftwareVersion();
@@ -741,7 +741,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
          $lic->update($data);
       }
 
-      if (isset($input['_no_history']) && $input['_no_history']) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
 
@@ -785,7 +785,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
          $lic->update($data);
       }
 
-      if (isset($input['_no_history']) && $input['_no_history']) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
 
