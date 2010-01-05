@@ -42,8 +42,6 @@ class Ticket extends CommonDBTM {
 
 
    // From CommonDBTM
-   public $table = 'glpi_tickets';
-   public $type = 'Ticket';
    public $dohistory = true;
 
    // Specific ones
@@ -326,7 +324,7 @@ class Ticket extends CommonDBTM {
          if ($doc->getFromDB($input["document"])) {
             $docitem=new Document_Item();
             if ($docitem->add(array('documents_id' => $input["document"],
-                                    'itemtype' => $this->type,
+                                    'itemtype' => $this->getType(),
                                     'items_id' => $input["id"]))) {
                // Force date_mod of tracking
                $input["date_mod"]=$_SESSION["glpi_currenttime"];
@@ -1062,7 +1060,7 @@ class Ticket extends CommonDBTM {
          }
       }
       $query2 = "UPDATE `".
-                 $this->table."`
+                 $this->getTable()."`
                  SET `realtime` = '$tot'
                  WHERE `id` = '$ID'";
 
@@ -1079,7 +1077,7 @@ class Ticket extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE `".
-                $this->table."`
+                $this->getTable()."`
                 SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'
                 WHERE `id` = '$ID'";
       $DB->query($query);
@@ -1202,7 +1200,7 @@ class Ticket extends CommonDBTM {
 
             $name .= " - #".$serial;
          }
-         $modeltable = $this->hardwaredatas->table."models";
+         $modeltable = getSingular($this->hardwaredatas->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
          if ($model=$this->hardwaredatas->getField($modelfield)) {
             $name .= " - ".Dropdown::getDropdownName($modeltable,$this->hardwaredatas->fields[$modelfield]);
@@ -1478,7 +1476,7 @@ class Ticket extends CommonDBTM {
             }
             if ($docID>0) {
                if ($docitem->add(array('documents_id' => $docID,
-                                       'itemtype' => $this->type,
+                                       'itemtype' => $this->getType(),
                                        'items_id' => $id))) {
                   $docadded[]=stripslashes($doc->fields["name"] . " - " . $doc->fields["filename"]);
                }

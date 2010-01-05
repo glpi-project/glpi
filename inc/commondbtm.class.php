@@ -39,10 +39,6 @@ class CommonDBTM extends CommonGLPI {
 
    /// Data of the Item
    var $fields	= array();
-   /// Table name
-   var $table="";
-   /// GLPI Item type
-   var $type="";
    /// Make an history of the changes
    var $dohistory=false;
    /// Black list fields for history log or date mod update
@@ -50,19 +46,20 @@ class CommonDBTM extends CommonGLPI {
    /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
 
+   /// Table name cache : set dynamically calling getTable
+   protected $table="";
+
    /**
    * Constructor
    **/
    function __construct () {
    }
 
-   function getType() {
-      if (empty($this->type)) {
-         $this->type=get_class($this);
-      }
-      return $this->type;
-   }
-
+   /**
+   * Return the table used to stor this object
+   *
+   * @return string
+   */
    function getTable() {
       if (empty($this->table)) {
          $this->table=getTableForItemType($this->getType());
@@ -90,7 +87,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $query = "SELECT *
-                FROM `".$this->table."`
+                FROM `".$this->getTable()."`
                 WHERE `".$this->getIndexName()."` = '$ID'";
 
       if ($result = $DB->query($query)) {
@@ -115,7 +112,7 @@ class CommonDBTM extends CommonGLPI {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->table."`";
+                FROM `".$this->getTable()."`";
       if (!empty($condition)) {
          $query.=" WHERE $condition";
       }
@@ -158,7 +155,7 @@ class CommonDBTM extends CommonGLPI {
       //make an empty database object
       global $DB;
 
-      if ($fields = $DB->list_fields($this->table)) {
+      if ($fields = $DB->list_fields($this->getTable())) {
          foreach ($fields as $key => $val) {
             $this->fields[$key] = "";
          }
@@ -195,7 +192,7 @@ class CommonDBTM extends CommonGLPI {
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
             $query  = "UPDATE `".
-                       $this->table."`
+                       $this->getTable()."`
                        SET `";
             $query .= $field."`";
 
@@ -244,7 +241,7 @@ class CommonDBTM extends CommonGLPI {
       if ($nb_fields>0) {
          // Build query
          $query = "INSERT INTO `".
-                   $this->table."` (";
+                   $this->getTable()."` (";
          $i=0;
          foreach ($this->fields as $key => $val) {
             $fields[$i] = $key;
@@ -292,7 +289,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->maybeDeleted()) {
          $query = "UPDATE `".
-                   $this->table."`
+                   $this->getTable()."`
                    SET `is_deleted`='0'
                    WHERE `id` = '$ID'";
          if ($result = $DB->query($query)) {
@@ -324,7 +321,7 @@ class CommonDBTM extends CommonGLPI {
          $this->cleanRelationTable($ID);
 
          $query = "DELETE
-                   FROM `".$this->table."`
+                   FROM `".$this->getTable()."`
                    WHERE `id` = '$ID'";
 
          if ($result = $DB->query($query)) {
@@ -335,7 +332,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }else {
          $query = "UPDATE `".
-                   $this->table."`
+                   $this->getTable()."`
                    SET `is_deleted`='1'
                    WHERE `id` = '$ID'";
          $this->cleanDBonMarkDeleted($ID);
@@ -382,9 +379,9 @@ class CommonDBTM extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       $RELATION=getDbRelations();
-      if (isset($RELATION[$this->table])) {
+      if (isset($RELATION[$this->getTable()])) {
          $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
-         foreach ($RELATION[$this->table] as $tablename => $field) {
+         foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {
                   $query="UPDATE
@@ -557,7 +554,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->input && is_array($this->input)) {
          $this->fields=array();
-         $table_fields=$DB->list_fields($this->table);
+         $table_fields=$DB->list_fields($this->getTable());
 
          // fill array for add
          foreach ($this->input as $key => $val) {
@@ -1149,14 +1146,14 @@ class CommonDBTM extends CommonGLPI {
       $RELATION=getDbRelations();
 
       if ($this instanceof CommonTreeDropdown) {
-         $f = getForeignKeyFieldForTable($this->table);
-         if (countElementsInTable($this->table, "`$f`='$ID'
+         $f = getForeignKeyFieldForTable($this->getTable());
+         if (countElementsInTable($this->getTable(), "`$f`='$ID'
                                                  AND entities_id NOT IN $entities")>0) {
             return false;
          }
       }
-      if (isset($RELATION[$this->table])) {
-         foreach ($RELATION[$this->table] as $tablename => $field) {
+      if (isset($RELATION[$this->getTable()])) {
+         foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             $itemtype=getItemTypeForTable($tablename);
             $item = new $itemtype();
             if ($item->isEntityAssign()) {
@@ -1205,7 +1202,7 @@ class CommonDBTM extends CommonGLPI {
                         }
                      }
                   // Search for another N->N Relation
-                  } else if ($othertable != $this->table && isset($rel[$tablename])) {
+                  } else if ($othertable != $this->getTable() && isset($rel[$tablename])) {
                      $itemtype=getItemTypeForTable($othertable);
                      $item = new $itemtype();
 
@@ -1351,7 +1348,7 @@ class CommonDBTM extends CommonGLPI {
       } else if (!empty($withtemplate) && $withtemplate == 1) {
          echo "<input type='hidden' name='is_template' value='1' />\n";
          echo $LANG['common'][6]."&nbsp;: ";
-         autocompletionTextField("template_name",$this->table,"template_name",
+         autocompletionTextField("template_name",$this->getTable(),"template_name",
                                  $this->fields["template_name"],25,$this->fields["entities_id"]);
       } else if (empty($ID)||$ID<0) {
          echo $this->getTypeName()." - ".$LANG['common'][87];
@@ -1775,7 +1772,7 @@ class CommonDBTM extends CommonGLPI {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[1]['table']         = $this->table;
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];

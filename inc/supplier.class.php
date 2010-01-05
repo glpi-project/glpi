@@ -42,8 +42,6 @@ if (!defined('GLPI_ROOT')){
 class Supplier extends CommonDBTM {
 
    // From CommonDBTM
-   public $table = 'glpi_suppliers';
-   public $type = 'Supplier';
    public $dohistory = true;
 
    static function getTypeName() {
@@ -66,10 +64,10 @@ class Supplier extends CommonDBTM {
       $job=new Ticket;
 
       $cs = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->type,$ID);
+      $cs->cleanDBonItemDelete($this->getType(),$ID);
 
       $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->type,$ID);
+      $cs->cleanDBonItemDelete($this->getType(),$ID);
    }
 
    function defineTabs($ID,$withtemplate) {
@@ -134,7 +132,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("name",$this->table,"name",$this->fields["name"],40,
+      autocompletionTextField("name",$this->getTable(),"name",$this->fields["name"],40,
                               $this->fields["entities_id"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
@@ -145,7 +143,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("phonenumber",$this->table,"phonenumber",
+      autocompletionTextField("phonenumber",$this->getTable(),"phonenumber",
                               $this->fields["phonenumber"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "<td rowspan='8' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
@@ -155,21 +153,21 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("fax",$this->table,"fax",$this->fields["fax"],40,
+      autocompletionTextField("fax",$this->getTable(),"fax",$this->fields["fax"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("website",$this->table,"website",$this->fields["website"],40,
+      autocompletionTextField("website",$this->getTable(),"website",$this->fields["website"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("email",$this->table,"email",$this->fields["email"],40,
+      autocompletionTextField("email",$this->getTable(),"email",$this->fields["email"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
@@ -181,24 +179,24 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("postcode",$this->table,"postcode",$this->fields["postcode"],7,
+      autocompletionTextField("postcode",$this->getTable(),"postcode",$this->fields["postcode"],7,
                               $this->fields["entities_id"]);
       echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField("town",$this->table,"town",$this->fields["town"],25,
+      autocompletionTextField("town",$this->getTable(),"town",$this->fields["town"],25,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("state",$this->table,"state",$this->fields["state"],40,
+      autocompletionTextField("state",$this->getTable(),"state",$this->fields["state"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField("country",$this->table,"country",$this->fields["country"],40,
+      autocompletionTextField("country",$this->getTable(),"country",$this->fields["country"],40,
                               $this->fields["entities_id"]);
       echo "</td></tr>";
 
