@@ -115,7 +115,8 @@ class RuleCriteria extends CommonDBTM {
    function getValueToMatch($condition,&$initValue) {
       global $LANG;
 
-      if (!empty($this->getType())
+      $type = $this->getType();
+      if (!empty($type)
           && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
          switch ($this->getType()) {
             case "dropdown" :

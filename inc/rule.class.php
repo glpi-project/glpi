@@ -66,6 +66,8 @@ class Rule extends CommonDBTM {
       if ($sub_type > 0) {
          $this->sub_type=$sub_type;
       }
+      // Temproray hack for this class
+      $this->forceTable('glpi_rules');
    }
 
    function canCreate() {
