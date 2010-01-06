@@ -150,7 +150,7 @@ class Infocom extends CommonDBTM {
    **/
    function isEntityAssign() {
 
-      if (class_exists($this->fields["itemtype"])) {
+      if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
          $item = new $this->fields["itemtype"]();
          return $item->isEntityAssign();
       }
