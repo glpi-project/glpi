@@ -50,6 +50,9 @@ class RuleRight extends Rule {
    function __construct() {
       //Dynamically add all the ldap criterias to the current list of rule's criterias
       $this->addLdapCriteriasToArray();
+
+      // Temproray hack for this class
+      $this->forceTable('glpi_rules');
    }
 
    function canCreate() {
