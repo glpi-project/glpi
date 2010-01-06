@@ -136,7 +136,11 @@ class TicketTask  extends CommonDBTM {
       return $this->canUpdateItem();
    }
 
-
+   function post_getEmpty() {
+      if (isset($_SESSION['glpitask_private']) && $_SESSION['glpitask_private']) {
+         $this->fields['is_private'] = 1;
+      }
+   }
 
    function post_deleteFromDB($ID) {
 
@@ -433,6 +437,7 @@ class TicketTask  extends CommonDBTM {
       echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
 
+      echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
       echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
    }
 

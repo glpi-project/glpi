@@ -140,7 +140,6 @@ class TicketFollowup  extends CommonDBTM {
       if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
          $this->fields['is_private'] = 1;
       }
-      logDebug($this);
    }
 
    function post_deleteFromDB($ID) {

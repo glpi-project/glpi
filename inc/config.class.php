@@ -805,10 +805,12 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
-         echo " </td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][39] . " </td><td>";
+         echo " </td><td>".$LANG['setup'][39]." </td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][40] . " </td><td>";
+         Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td>";
          echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
          Dropdown::show('RequestType',
@@ -1224,7 +1226,7 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       // Search in order : ID or extjs dico or tinymce dico / native lang / english name / extjs dico / tinymce dico
-      // ID  or extjs dico or tinymce dico 
+      // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if (strcasecmp($lang,$ID) == 0
             || strcasecmp($lang,$language[2]) == 0
