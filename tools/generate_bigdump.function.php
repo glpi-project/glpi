@@ -564,15 +564,15 @@ function generateGlobalDropdowns(){
 
    // GLobal ticket categories : also specific ones by entity
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
-		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','0','categorie $i','','comment categorie $i','1','0','0','0','','')";
+		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','0','categorie $i','','comment categorie $i','1','0','0','0','','',1)";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID=$DB->insert_id();
 		for ($j=0;$j<mt_rand(0,pow($MAX['tracking_category'],1/2));$j++){
-			$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','$newID','s-categorie $j','','comment s-categorie $j','2','0','0','0','','')";
+			$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','$newID','s-categorie $j','','comment s-categorie $j','2','0','0','0','','',1)";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$newID2=$DB->insert_id();
 			for ($k=0;$k<mt_rand(0,pow($MAX['tracking_category'],1/2));$k++){
-				$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','$newID2','ss-categorie $k','','comment ss-categorie $k','3','0','0','0','','')";
+				$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','$newID2','ss-categorie $k','','comment ss-categorie $k','3','0','0','0','','',1)";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}
 		}
@@ -822,11 +822,11 @@ function generate_entity($ID_entity){
 
 
    // Specific ticket categories
-   $query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','0','category for entity $ID_entity','','comment category for entity $ID_entity','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','')";
+   $query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','0','category for entity $ID_entity','','comment category for entity $ID_entity','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','',1)";
 	$DB->query($query) or die("PB REQUETE ".$query);
    $newID=$DB->insert_id();
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
-		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','$newID','categorie $i','','comment categorie $i','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','')";
+		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'$ID_entity','1','$newID','categorie $i','','comment categorie $i','1','0','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST['groups'],$LAST['groups'])."','','',1)";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID=$DB->insert_id();
 	}

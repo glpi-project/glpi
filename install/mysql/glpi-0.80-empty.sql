@@ -2981,6 +2981,7 @@ CREATE TABLE `glpi_ticketcategories` (
   `groups_id` int(11) NOT NULL default '0',
   `ancestors_cache` longtext collate utf8_unicode_ci,
   `sons_cache` longtext collate utf8_unicode_ci,
+  `is_helpdeskvisible` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `ticketcategories_id` (`ticketcategories_id`),

@@ -1845,7 +1845,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-   Dropdown::show('TicketCategory', array('value' => $ticketcategories_id));
+   TicketCategory::dropdown(array('value' => $ticketcategories_id, 'interface'=>'helpdesk'));
+   //Dropdown::show('TicketCategory', array('value' => $ticketcategories_id, 'interface'=>'helpdesk'));
    echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";

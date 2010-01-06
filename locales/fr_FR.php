@@ -1864,6 +1864,7 @@ $LANG['tracking'][34]="Directe";
 $LANG['tracking'][35]="Écrite";
 $LANG['tracking'][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
 $LANG['tracking'][38]="Un mail de suivi a été envoyé à";
+$LANG['tracking'][39]="Visible dans l'interface Helpdesk";
 
 $LANG['transfer'][1]="Transfert";
 $LANG['transfer'][2]="Ajouter une configuration de transfert";
