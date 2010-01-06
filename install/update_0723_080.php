@@ -2611,6 +2611,19 @@ function update0723to080() {
       $DB->query($query) or die("0.80 drop devicetype of table glpi_computers_devices " . $LANG['update'][90] . $DB->error());
    }
 
+
+   if (!FieldExists('glpi_users','task_private')) {
+      $query = "ALTER TABLE `glpi_users`
+                ADD `task_private` TINYINT(1) DEFAULT NULL AFTER `followup_private`";
+      $DB->query($query) or die("0.80 add task_private to glpi_users" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_configs','task_private')) {
+      $query = "ALTER TABLE `glpi_configs`
+                ADD `task_private` TINYINT(1) NOT NULL DEFAULT '0' AFTER `followup_private`";
+      $DB->query($query) or die("0.80 add task_private to glpi_users" . $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }
