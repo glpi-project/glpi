@@ -117,6 +117,7 @@ class TicketCategory extends CommonTreeDropdown {
       $params['entity']=-1;
       $params['used']=array();
       $params['auto_submit']=0;
+      $params['toupdate']='';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
