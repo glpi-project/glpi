@@ -168,15 +168,15 @@ if ($item instanceof CommonTreeDropdown) {
                $hide = true;
             }
 
-            if ($multi && $data["entities_id"]!=$prev) {
-                     if ($prev>=0) {
-                           echo "</optgroup>";
-                     }
-                     $prev=$data["entities_id"];
-                     echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
-            }
 
             if (!$hide) {
+               if ($multi && $data["entities_id"]!=$prev) {
+                        if ($prev>=0) {
+                              echo "</optgroup>";
+                        }
+                        $prev=$data["entities_id"];
+                        echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
+               }
 
                $class=" class='tree' ";
                $raquo="&raquo;";
