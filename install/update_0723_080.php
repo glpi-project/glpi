@@ -2255,6 +2255,13 @@ function update0723to080() {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_ticketcategories','is_helpdeskvisible')) {
+      $query = "ALTER TABLE `glpi_ticketcategories`
+                        ADD `is_helpdeskvisible` TINYINT( 1 ) NOT NULL DEFAULT '1'";
+
+      $DB->query($query) or die("0.80 add cache in glpi_ticketcategories" .
+                                 $LANG['update'][90] . $DB->error());
+   }
 
 
    // change item type management for helpdesk
@@ -2326,6 +2333,7 @@ function update0723to080() {
            `level` int(11) NOT NULL default '0',
            `ancestors_cache` longtext,
            `sons_cache` longtext,
+           `is_helpdeskvisible` tinyint(1) NOT NULL default '1',
            PRIMARY KEY  (`id`),
            KEY `name` (`name`),
            KEY `taskcategories_id` (`taskcategories_id`),
