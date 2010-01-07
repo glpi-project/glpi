@@ -2566,7 +2566,7 @@ function update0723to080() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_tickettasks" . $LANG['update'][90] . $DB->error());
 
-      // Required for migration from ticketfollowups to tickettasks
+      // Required for migration from ticketfollowups to tickettasks - planned followups
       $query = "INSERT INTO `glpi_tickettasks`
                     (`id`, `tickets_id`, `date`, `users_id`, `content`, `is_private`, `realtime`)
                    SELECT `glpi_ticketfollowups`.`id`,
@@ -2581,11 +2581,30 @@ function update0723to080() {
                      ON (`glpi_ticketplannings`.`ticketfollowups_id` = `glpi_ticketfollowups`.`id`)";
       $DB->query($query) or die("0.80 populate glpi_tickettasks" . $LANG['update'][90] . $DB->error());
 
-      // delete from ticketfollowups
+      // delete from ticketfollowups - planned followups, previously copied
       $query = "DELETE FROM `glpi_ticketfollowups`
                 WHERE `glpi_ticketfollowups`.`id` IN
                   (SELECT `glpi_ticketplannings`.`ticketfollowups_id`
                    FROM `glpi_ticketplannings`)";
+      $DB->query($query) or die("0.80 delete from glpi_ticketfollowups" . $LANG['update'][90] . $DB->error());
+
+      // Required for migration from ticketfollowups to tickettasks - followups with a duration
+      $query = "INSERT INTO `glpi_tickettasks`
+                    (`id`, `tickets_id`, `date`, `users_id`, `content`, `is_private`, `realtime`)
+                   SELECT `glpi_ticketfollowups`.`id`,
+                          `glpi_ticketfollowups`.`tickets_id`,
+                          `glpi_ticketfollowups`.`date`,
+                          `glpi_ticketfollowups`.`users_id`,
+                          `glpi_ticketfollowups`.`content`,
+                          `glpi_ticketfollowups`.`is_private`,
+                          `glpi_ticketfollowups`.`realtime`
+                   FROM `glpi_ticketfollowups`
+                   WHERE `realtime`>0";
+      $DB->query($query) or die("0.80 populate glpi_tickettasks" . $LANG['update'][90] . $DB->error());
+
+      // delete from ticketfollowups - followups with duration, previously copied
+      $query = "DELETE FROM `glpi_ticketfollowups`
+                WHERE `realtime`>0";
       $DB->query($query) or die("0.80 delete from glpi_ticketfollowups" . $LANG['update'][90] . $DB->error());
 
       // ticketplannings is for tickettasks
@@ -2595,6 +2614,7 @@ function update0723to080() {
 
       // add requesttype for glpi_ticketfollowups
       $query = "ALTER TABLE `glpi_ticketfollowups`
+                  DROP `realtime`,
                   ADD `requesttypes_id` int(11) NOT NULL default '0',
                   ADD INDEX `requesttypes_id` (`requesttypes_id`)";
       $DB->query($query) or die("0.80 alter glpi_ticketplannings" . $LANG['update'][90] . $DB->error());
