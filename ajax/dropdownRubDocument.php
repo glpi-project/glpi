@@ -55,15 +55,20 @@ if (isset($_POST["rubdoc"])) {
                               ) > $CFG_GLPI["ajax_limit_count"] ) {
       $use_ajax=true;
    }
+
    $paramsrubdoc=array('searchText'=>'__VALUE__',
-                       'rubdoc'=>$_POST["rubdoc"],
+                       'itemtype' => 'Document',
+                       'condition'=>'`glpi_documents`.`documentcategories_id` = \''.$_POST['rubdoc'].'\'',
                        'entity_restrict'=>$_POST["entity_restrict"],
                        'rand'=>$_POST['rand'],
                        'myname'=>$_POST['myname'],
+                       'auto_submit'=>0,
+                       'toupdate'=>'',
                        'used'=>$_POST['used']);
 
    $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-   ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
+   //ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
+   ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsrubdoc,$default,$rand);
 }
 
 ?>
