@@ -2010,8 +2010,7 @@ function showJobDetails($target, $ID,$array=array()) {
    echo "<td class='left'>".$LANG['common'][36]."&nbsp;: </td>";
    echo "<td >";
    if ($canupdate) {
-      TicketCategory::dropdown(
-      //Dropdown::show('TicketCategory',
+      Dropdown::show('TicketCategory',
                array('value'  => $job->fields["ticketcategories_id"],
                      'entity' => $job->fields["entities_id"]));
    } else {

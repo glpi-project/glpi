@@ -78,6 +78,7 @@ class Dropdown {
       $params['toupdate']='';
       $params['used']=array();
       $params['auto_submit']=0;
+      $params['condition']='';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -156,7 +157,8 @@ class Dropdown {
                     'entity_restrict'  => $params['entity'],
                     'update_item'      => $params['toupdate'],
                     'used'             => $params['used'],
-                    'auto_submit'      => $params['auto_submit']);
+                    'auto_submit'      => $params['auto_submit'],
+                    'condition'        => $params['condition']);
 
       $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$rand."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";
