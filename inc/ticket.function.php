@@ -2306,8 +2306,8 @@ function showJobDetails($target, $ID,$array=array()) {
       }
    }
 
-   if ($canupdate || haveRight("comment_all_ticket","1")
-       || (haveRight("comment_ticket","1") && !strstr($job->fields["status"],'old_'))) {
+   if ($canupdate || haveRight("global_add_followups","1")
+       || (haveRight("add_followups","1") && !strstr($job->fields["status"],'old_'))) {
       echo "<tr>";
       echo "<td colspan='2'>";
       echo "<input type='file' name='filename' size='20'>";
@@ -2399,14 +2399,14 @@ function showAddFollowupForm($tID,$massiveaction=false,$datas=array()) {
       $prefix = "_followup[";
       $postfix = "]";
    }
-   if (!haveRight("comment_ticket","1")
-       && !haveRight("comment_all_ticket","1")
+   if (!haveRight("add_followups","1")
+       && !haveRight("global_add_followups","1")
        && $job->fields["users_id_assign"] != $_SESSION["glpiID"]
        && !in_array($job->fields["groups_id_assign"],$_SESSION["glpigroups"])) {
       return false;
    }
 
-   $commentall = (haveRight("comment_all_ticket","1")
+   $commentall = (haveRight("global_add_followups","1")
                   || $job->fields["users_id_assign"]==$_SESSION["glpiID"]
                   || in_array($job->fields["groups_id_assign"],$_SESSION["glpigroups"]));
    $editticket = haveRight("update_ticket","1");
