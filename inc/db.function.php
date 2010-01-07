@@ -214,16 +214,21 @@ function countElementsInTable($table,$condition="") {
  * Count the number of elements in a table for a specific entity
  *
  * @param $table string: table name
+ * @param $condition string: additional condition
  *
  * return int nb of elements in table
  */
-function countElementsInTableForMyEntities($table) {
+function countElementsInTableForMyEntities($table,$condition='') {
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype=getItemTypeForTable($table);
    $item=new $itemtype();
 
-   return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',
-                                          $item->maybeRecursive()));
+   if (!empty($condition)) {
+      $condition .= " AND ";
+   }
+   $condition.=getEntitiesRestrictRequest("",$table,'','',$item->maybeRecursive());
+
+   return countElementsInTable($table,$condition);
 }
 
 /**
@@ -231,16 +236,20 @@ function countElementsInTableForMyEntities($table) {
  *
  * @param $table string: table name
  * @param $entity integer: the entity ID
+ * @param $condition string: additional condition
  *
  * return int nb of elements in table
  */
-function countElementsInTableForEntity($table,$entity) {
+function countElementsInTableForEntity($table,$entity,$condition='') {
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype=getItemTypeForTable($table);
    $item=new $itemtype();
 
-   return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,
-                                          $item->maybeRecursive()));
+   if (!empty($condition)) {
+      $condition .= " AND ";
+   }
+   $condition.=getEntitiesRestrictRequest("",$table,'',$entity,$item->maybeRecursive());
+   return countElementsInTable($table,$condition);
 }
 
 /**

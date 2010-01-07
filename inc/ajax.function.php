@@ -224,7 +224,11 @@ function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$
          } else if ($val==="__VALUE__") {
             $out .=  "'+Ext.get('$toobserve').getValue()+'";
          } else {
-            $out .=  $val;
+            if (preg_match("/'/",$val)) {
+               $out .=  rawurlencode($val);
+            } else {
+               $out .=  $val;
+            }
          }
 
       }

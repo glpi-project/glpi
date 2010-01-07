@@ -704,7 +704,7 @@ class Document extends CommonDBTM {
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
                      }
-                     echo "<td class='center'>".$item->getTypeName($itemtype)."</td>";
+                     echo "<td class='center'>".$item->getTypeName()."</td>";
                      echo "<td ".(isset($data['is_deleted']) &&
                                   $data['is_deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data['entity']);
@@ -1085,7 +1085,7 @@ class Document extends CommonDBTM {
             $docID=$data["id"];
             $link=NOT_AVAILABLE;
             $downloadlink=NOT_AVAILABLE;
-            if (!$document->getFromDB($docID)) {
+            if ($document->getFromDB($docID)) {
                $link=$document->getLink();
                $downloadlink=$document->getDownloadLink($linkparam);
             }
@@ -1230,7 +1230,7 @@ class Document extends CommonDBTM {
       echo "</select>";
 
       $params=array('rubdoc'=>'__VALUE__',
-                    'entity_restrict'=>$p['entity'],
+                    'entity'=>$p['entity'],
                     'rand'=>$rand,
                     'myname'=>$p['name'],
                     'used'=>$p['used']);
@@ -1239,7 +1239,7 @@ class Document extends CommonDBTM {
                                   "/ajax/dropdownRubDocument.php",$params);
 
       echo "<span id='show_".$p['name']."$rand'>";
-      $_POST["entity_restrict"]=$p['entity'];
+      $_POST["entity"]=$p['entity'];
       $_POST["rubdoc"]=0;
       $_POST["myname"]=$p['name'];
       $_POST["rand"]=$rand;
