@@ -60,7 +60,7 @@ class TicketTask  extends CommonDBTM {
    }
 
    function canCreate() {
-      return (haveRight('comment_all_ticket', 1)
+      return (haveRight('global_add_tasks', 1)
               || haveRight('own_ticket', 1));
    }
 
@@ -103,7 +103,7 @@ class TicketTask  extends CommonDBTM {
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
-      return (haveRight("comment_all_ticket","1")
+      return (haveRight("global_add_tasks","1")
               || (isset($_SESSION["glpiID"])
                   && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
               || (isset($_SESSION["glpigroups"])
@@ -117,7 +117,7 @@ class TicketTask  extends CommonDBTM {
     */
    function canUpdateItem() {
 
-      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_followups',1)) {
+      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_tasks',1)) {
          return false;
       }
       $ticket = new Ticket();
@@ -222,7 +222,7 @@ class TicketTask  extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
-      $input["_isadmin"] = haveRight("comment_all_ticket","1");
+      $input["_isadmin"] = haveRight("global_add_tasks","1");
       $input["_job"] = new Ticket;
 
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
@@ -527,7 +527,7 @@ class TicketTask  extends CommonDBTM {
 
       // Display existing Followups
       $showprivate = haveRight("show_full_ticket", "1");
-      $caneditall = haveRight("update_followups", "1");
+      $caneditall = haveRight("update_tasks", "1");
       $tmp = array('tickets_id'=>$tID);
       $canadd = $this->can(-1,'w',$tmp);
 

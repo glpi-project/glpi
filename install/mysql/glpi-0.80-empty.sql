@@ -2288,8 +2288,9 @@ CREATE TABLE `glpi_profiles` (
   `backup` char(1) collate utf8_unicode_ci default NULL,
   `create_ticket` char(1) collate utf8_unicode_ci default NULL,
   `delete_ticket` char(1) collate utf8_unicode_ci default NULL,
-  `comment_ticket` char(1) collate utf8_unicode_ci default NULL,
-  `comment_all_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `add_followups` char(1) collate utf8_unicode_ci default NULL,
+  `global_add_followups` char(1) collate utf8_unicode_ci default NULL,
+  `global_add_tasks` char(1) collate utf8_unicode_ci default NULL,
   `update_ticket` char(1) collate utf8_unicode_ci default NULL,
   `update_priority` char(1) collate utf8_unicode_ci default NULL,
   `own_ticket` char(1) collate utf8_unicode_ci default NULL,
@@ -2300,6 +2301,7 @@ CREATE TABLE `glpi_profiles` (
   `show_full_ticket` char(1) collate utf8_unicode_ci default NULL,
   `observe_ticket` char(1) collate utf8_unicode_ci default NULL,
   `update_followups` char(1) collate utf8_unicode_ci default NULL,
+  `update_tasks` char(1) collate utf8_unicode_ci default NULL,
   `show_planning` char(1) collate utf8_unicode_ci default NULL,
   `show_group_planning` char(1) collate utf8_unicode_ci default NULL,
   `show_all_planning` char(1) collate utf8_unicode_ci default NULL,
@@ -2318,10 +2320,10 @@ CREATE TABLE `glpi_profiles` (
   KEY `is_default` (`is_default`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_profiles` VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,'1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_profiles` VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','0','1','0','0','1','1','0','1','0','1','0','0','1','1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'r');
-INSERT INTO `glpi_profiles` VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'w');
-INSERT INTO `glpi_profiles` VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0','w','w','w');
+INSERT INTO `glpi_profiles` VALUES(1, 'post-only', 'helpdesk', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, '1', 1, '["Computer","Software","Phone"]', NULL, '0', '0', NULL, NULL, NULL);
+INSERT INTO `glpi_profiles` VALUES(2, 'normal', 'central', 0, 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', '1', 'r', 'r', NULL, 'r', NULL, NULL, NULL, NULL, 'r', 'r', NULL, NULL, NULL, NULL, NULL, 'w', NULL, 'r', NULL, 'r', 'r', 'r', NULL, NULL, NULL, NULL, NULL, NULL, '1', '1', '1', '0', '0', '0', '0', '1', '0', '0', '1', '1', '0', '1', '0', '0', '1', '0', '0', '1', '1', 1, '["Computer","Software","Phone"]', NULL, '0', '0', NULL, NULL, 'r');
+INSERT INTO `glpi_profiles` VALUES(3, 'admin', 'central', 0, 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', NULL, NULL, NULL, NULL, NULL, 'w', 'w', 'r', 'r', 'w', 'w', 'w', NULL, NULL, NULL, NULL, NULL, NULL, '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 3, '["Computer","Software","Phone"]', NULL, '0', '0', NULL, NULL, 'w');
+INSERT INTO `glpi_profiles` VALUES(4, 'super-admin', 'central', 0, 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', 3, '["Computer","Software","Phone"]', NULL, '0', '0', 'w', 'w', 'w');
 
 ### Dump table glpi_profiles_users
 
