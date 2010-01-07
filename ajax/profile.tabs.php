@@ -53,7 +53,9 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             $prof->showFormHelpdesk($_POST['target']);
             Plugin::displayAction($prof, $_REQUEST['glpi_tab']);
             break;
-
+         case 4 :
+            Profile_User::showForProfile($prof);
+            break;
          default :
             if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
