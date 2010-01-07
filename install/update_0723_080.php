@@ -2319,13 +2319,13 @@ function update0723to080() {
       $DB->query($query) or die("0.80 set update_priority in glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists('glpi_profiles','add_followups')) {
+   if (FieldExists('glpi_profiles','comment_ticket')) {
       $query = "ALTER TABLE `glpi_profiles`
                 CHANGE `comment_ticket` `add_followups` CHAR(1) NULL DEFAULT NULL";
       $DB->query($query) or die("0.80 add add_followups in glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists('glpi_profiles','global_add_followups')) {
+   if (FieldExists('glpi_profiles','comment_all_ticket')) {
       $query = "ALTER TABLE `glpi_profiles`
                 CHANGE `comment_all_ticket` `global_add_followups`  CHAR(1) NULL DEFAULT NULL";
       $DB->query($query) or die("0.80 add add_followups in glpi_profiles" .
