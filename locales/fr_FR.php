@@ -742,6 +742,7 @@ $LANG['job'][41]="Coût fixe";
 $LANG['job'][42]="Coût matériel";
 $LANG['job'][43]="Coût total";
 $LANG['job'][44]="Source de la demande";
+$LANG['job'][45]="Source du suivi";
 $LANG['job'][46]="Ticket créé dans l'entité";
 $LANG['job'][47]="Coûts";
 $LANG['job'][48]="Type de solution";
