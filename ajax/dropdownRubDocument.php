@@ -45,30 +45,23 @@ checkCentralAccess();
 
 // Make a select box
 if (isset($_POST["rubdoc"])) {
-   $rand=$_POST['rand'];
-   $use_ajax=false;
-   if ($CFG_GLPI["use_ajax"]
-       && countElementsInTable('glpi_documents',"glpi_documents.documentcategories_id='".
-                               $_POST["rubdoc"]."' ".
-                               getEntitiesRestrictRequest("AND", "glpi_documents","",
-                                                          $_POST["entity_restrict"],true)
-                              ) > $CFG_GLPI["ajax_limit_count"] ) {
-      $use_ajax=true;
+   if (!is_array($_POST['used'])) {
+      $_POST['used']=unserialize(stripslashes($_POST['used']));
    }
-
-   $paramsrubdoc=array('searchText'=>'__VALUE__',
-                       'itemtype' => 'Document',
-                       'condition'=>'`glpi_documents`.`documentcategories_id` = \''.$_POST['rubdoc'].'\'',
-                       'entity_restrict'=>$_POST["entity_restrict"],
-                       'rand'=>$_POST['rand'],
-                       'myname'=>$_POST['myname'],
-                       'auto_submit'=>0,
-                       'toupdate'=>'',
-                       'used'=>$_POST['used']);
-
-   $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-   //ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
-   ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsrubdoc,$default,$rand);
+   $used=array();
+   // Clean used array
+   if (count($_POST['used'])>0) {
+      $query="SELECT id FROM glpi_documents WHERE id IN (".implode(',',$_POST['used']).") AND documentcategories_id='".$_POST["rubdoc"]."'";
+      foreach ($DB->request($query) AS $data) {
+         $used[$data['id']]=$data['id'];
+      }
+   }
+   Dropdown::show('Document',array('name'    => $_POST['myname'],
+                                    'used'     => $used,
+                                    'entity'   => $_POST['entity'],
+                                    'rand'   => $_POST['rand'],
+                                    'condition'=> "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"
+                              ));
 }
 
 ?>

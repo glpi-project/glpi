@@ -51,6 +51,7 @@ class Dropdown {
    *                   and may have moreparams)
    *    - used : array / Already used items ID: not to display in dropdown (default empty)
    *    - auto_submit : boolean / preselected value (default 0)
+   *    - rand : integer / already computed rand value
    *
    *
    * @param $itemtype itemtype used for create dropdown
@@ -68,7 +69,7 @@ class Dropdown {
       }
       $item = new $itemtype();
 
-      $params['table']=$item->getTable();
+      $table=$item->getTable();
       $params['name']=$item->getForeignKeyField();
 
       $params['value']='';
@@ -79,6 +80,7 @@ class Dropdown {
       $params['used']=array();
       $params['auto_submit']=0;
       $params['condition']='';
+      $params['rand']=mt_rand();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -87,7 +89,6 @@ class Dropdown {
       }
 
 
-      $rand=mt_rand();
       $name="------";
       $comment="";
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
@@ -98,7 +99,7 @@ class Dropdown {
       }
 
       if ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0)) {
-         $tmpname=Dropdown::getDropdownName($params['table'],$params['value'],1);
+         $tmpname=Dropdown::getDropdownName($table,$params['value'],1);
          if ($tmpname["name"]!="&nbsp;") {
             $name=$tmpname["name"];
             $comment=$tmpname["comment"];
@@ -133,12 +134,12 @@ class Dropdown {
          $nb=0;
          if ($item->isEntityAssign()) {
             if (!($params['entity']<0)) {
-               $nb=countElementsInTableForEntity($params['table'],$params['entity']);
+               $nb=countElementsInTableForEntity($table,$params['entity'],$params['condition']);
             } else {
-               $nb=countElementsInTableForMyEntities($params['table']);
+               $nb=countElementsInTableForMyEntities($table,$params['condition']);
             }
          } else {
-            $nb=countElementsInTable($params['table']);
+            $nb=countElementsInTable($table,$params['condition']);
          }
          $nb -= count($params['used']);
          if ($nb>$CFG_GLPI["ajax_limit_count"]) {
@@ -148,28 +149,27 @@ class Dropdown {
 
       $param=array('searchText'        => '__VALUE__',
                     'value'            => $params['value'],
-                    'table'            => $params['table'],
                     'itemtype'         => $itemtype,
                     'myname'           => $params['name'],
                     'limit'            => $limit_length,
                     'comment'          => $params['comments'],
-                    'rand'             => $rand,
+                    'rand'             => $params['rand'],
                     'entity_restrict'  => $params['entity'],
                     'update_item'      => $params['toupdate'],
                     'used'             => $params['used'],
                     'auto_submit'      => $params['auto_submit'],
                     'condition'        => $params['condition']);
 
-      $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$rand."'>";
+      $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$params['rand']."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";
-      ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$param,$default,$rand);
+      ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$param,$default,$params['rand']);
 
       // Display comment
       if ($params['comments']) {
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-                onmouseout=\"cleanhide('comment_".$params['name']."$rand')\"
-                onmouseover=\"cleandisplay('comment_".$params['name']."$rand')\" >";
-         echo "<span class='over_link' id='comment_".$params['name']."$rand'>".nl2br($comment)."</span>";
+                onmouseout=\"cleanhide('comment_".$params['name'].$params['rand']."')\"
+                onmouseover=\"cleandisplay('comment_".$params['name'].$params['rand']."')\" >";
+         echo "<span class='over_link' id='comment_".$params['name'].$params['rand']."'>".nl2br($comment)."</span>";
 
          if (($item instanceof CommonDropdown)
                && $item->canCreate()) {
@@ -177,7 +177,7 @@ class Dropdown {
                echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'  onClick=\"var w = window.open('".
                      $item->getFormURL().
-                     "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
+                     "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
                      "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
          // Display specific Links
@@ -188,7 +188,7 @@ class Dropdown {
          }
       }
 
-      return $rand;
+      return $params['rand'];
    }
 
 

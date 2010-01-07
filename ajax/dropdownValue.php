@@ -63,6 +63,9 @@ if (!isset($_POST['rand'])) {
    $_POST['rand']=mt_rand();
 }
 
+if (isset($_POST['condition']) && !empty($_POST['condition'])) {
+   $_POST['condition']=rawurldecode(stripslashes($_POST['condition']));
+}
 
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -107,7 +110,7 @@ if (isset($_POST['used'])) {
 $where .= ") ";
 
 if ($_POST['condition'] != '') {
-   $where .= " AND ".$_POST['condition'];
+   $where .= " AND ".$_POST['condition']." ";
 }
 
 if ($item instanceof CommonTreeDropdown) {
@@ -325,6 +328,7 @@ if ($item instanceof CommonTreeDropdown) {
       $query.=" ORDER BY $field
                 $LIMIT";
    }
+//   echo $query;
    if ($result = $DB->query($query)){
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
