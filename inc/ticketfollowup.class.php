@@ -145,14 +145,12 @@ class TicketFollowup  extends CommonDBTM {
    function post_deleteFromDB($ID) {
 
       $job = new Ticket();
-      $job->updateRealtime($this->fields['tickets_id']);
       $job->updateDateMod($this->fields["tickets_id"]);
    }
 
 
    function prepareInputForUpdate($input) {
 
-      $input["realtime"] = $input["hour"]+$input["minute"]/60;
       if (isset($_SESSION["glpiID"])) {
          $input["users_id"] = $_SESSION["glpiID"];
       }
@@ -179,10 +177,6 @@ class TicketFollowup  extends CommonDBTM {
                                    (isset($this->input["is_private"]) && $this->input["is_private"]));
                $mail->send();
                $mailsend = true;
-            }
-
-            if (in_array("realtime",$this->updates)) {
-               $job->updateRealTime($this->input["tickets_id"]);
             }
          }
       }
@@ -240,18 +234,7 @@ class TicketFollowup  extends CommonDBTM {
             $input['_reopen'] = 1;
          }
          unset($input["add_reopen"]);
-         if (!isset($input["hour"])) {
-            $input["hour"] = 0;
-         }
-         if (!isset($input["minute"])) {
-            $input["minute"] = 0;
-         }
-         if ($input["hour"]>0 || $input["minute"]>0) {
-            $input["realtime"] = $input["hour"]+$input["minute"]/60;
-         }
       }
-      unset($input["minute"]);
-      unset($input["hour"]);
       $input["date"] = $_SESSION["glpi_currenttime"];
 
       return $input;
@@ -262,10 +245,6 @@ class TicketFollowup  extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
-
-      if (isset($this->input["realtime"]) && $this->input["realtime"]>0) {
-         $this->input["_job"]->updateRealTime($this->input["tickets_id"]);
-      }
 
       if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
 
@@ -355,15 +334,7 @@ class TicketFollowup  extends CommonDBTM {
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"] - $hour) * 60, 0);
-      echo "<td>";
-      if ($hour) {
-         echo "$hour " . $LANG['job'][21] . "<br>";
-      }
-      if ($minute || !$hour) {
-         echo "$minute " . $LANG['job'][22] . "</td>";
-      }
+      echo "<td>&nbsp;</td>";
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
@@ -418,8 +389,8 @@ class TicketFollowup  extends CommonDBTM {
          $this->showFormHeader($this->getFormURL(),$ID,'',2);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='4' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-         echo "<td class='center middle' rowspan='4'><textarea name='content' cols='50' rows='6'>".
+         echo "<td rowspan='3' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td class='center middle' rowspan='3'><textarea name='content' cols='50' rows='6'>".
                $this->fields["content"]."</textarea></td>";
          if ($this->fields["date"]) {
             echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
@@ -439,16 +410,6 @@ class TicketFollowup  extends CommonDBTM {
          echo "<td>".$LANG['common'][77]."&nbsp;:</td><td>";
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
-         $hour = floor($this->fields["realtime"]);
-         $minute = round(($this->fields["realtime"]-$hour)*60,0);
-         Dropdown::showInteger('hour',$hour,0,100);
-         echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-         Dropdown::showInteger('minute',$minute,0,59);
-         echo "&nbsp;".$LANG['job'][22];
-         echo "</td></tr>\n";
 
          $this->showFormButtons($ID,'',2);
       } else {

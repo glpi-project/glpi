@@ -3005,7 +3005,6 @@ CREATE TABLE `glpi_ticketfollowups` (
   `users_id` int(11) NOT NULL default '0',
   `content` longtext collate utf8_unicode_ci,
   `is_private` tinyint(1) NOT NULL default '0',
-  `realtime` float NOT NULL default '0',
   `requesttypes_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `date` (`date`),

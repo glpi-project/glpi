@@ -1039,17 +1039,7 @@ class Ticket extends CommonDBTM {
       global $DB;
 
       $tot = 0;
-      // update Realtime of Ticket
-      $query = "SELECT SUM(`realtime`)
-                FROM `glpi_ticketfollowups`
-                WHERE `tickets_id` = '$ID'";
 
-      if ($result = $DB->query($query)) {
-         $sum = $DB->result($result,0,0);
-         if (!is_null($sum)) {
-            $tot += $sum;
-         }
-      }
       $query = "SELECT SUM(`realtime`)
                 FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '$ID'";
