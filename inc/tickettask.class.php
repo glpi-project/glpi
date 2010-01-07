@@ -431,7 +431,7 @@ class TicketTask  extends CommonDBTM {
    static function showFormMassiveAction() {
       global $LANG;
 
-      echo "&nbsp;".$LANG['job'][44]."&nbsp;: ";
+      echo "&nbsp;".$LANG['common'][36]."&nbsp;: ";
       Dropdown::show('TaskCategory');
 
       echo "<br>".$LANG['joblist'][6]."&nbsp;: ";

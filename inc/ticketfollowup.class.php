@@ -379,7 +379,7 @@ class TicketFollowup  extends CommonDBTM {
    static function showFormMassiveAction() {
       global $LANG;
 
-      echo "&nbsp;".$LANG['job'][44]."&nbsp;: ";
+      echo "&nbsp;".$LANG['job'][45]."&nbsp;: ";
       Dropdown::show('RequestType', array('value' => RequestType::getDefault('helpdesk')));
 
       echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
@@ -431,7 +431,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][44]."&nbsp;:</td><td>";
+         echo "<td>".$LANG['job'][45]."&nbsp;:</td><td>";
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
          echo "</td></tr>\n";
 
@@ -502,7 +502,7 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<table width='100%'>";
 
-      echo "<tr><td>".$LANG['job'][44]."&nbsp;:</td>";
+      echo "<tr><td>".$LANG['job'][45]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       echo "</td></tr>";
