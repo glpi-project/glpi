@@ -62,8 +62,8 @@ if (isset($_POST['update'])) {
 
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
-   checkSeveralRightsOr(array('comment_ticket'     => '1',
-                              'comment_all_ticket' => '1',
+   checkSeveralRightsOr(array('add_followups'     => '1',
+                              'global_add_followups' => '1',
                               'show_assign_ticket' => '1'));
    $newID = $fup->add($_POST);
 
