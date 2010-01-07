@@ -75,6 +75,9 @@ class Profile extends CommonDBTM {
 
       } else if ($this->fields['interface']=='helpdesk') {
          $ong[1]=$LANG['Menu'][31]; // Helpdesk
+         if (haveRight("user","r")) {
+            $ong[4]=$LANG['Menu'][14];
+         }
 
       } else {
          $ong[1]=$LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
