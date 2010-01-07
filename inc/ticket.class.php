@@ -141,7 +141,7 @@ class Ticket extends CommonDBTM {
             $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
          }
-      } else if (haveRight("comment_ticket","1")) {
+      } else if (haveRight("add_followups","1")) {
  //        $ong[1] = $LANG['job'][38]." ".$ID;
          if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
              && $this->fields["users_id"]==$_SESSION["glpiID"]) {
@@ -1404,8 +1404,8 @@ class Ticket extends CommonDBTM {
     */
    function canAddFollowups() {
 
-      return ((haveRight("comment_ticket","1") && $this->fields["users_id"]==$_SESSION["glpiID"])
-              || haveRight("comment_all_ticket","1")
+      return ((haveRight("add_followups","1") && $this->fields["users_id"]==$_SESSION["glpiID"])
+              || haveRight("global_add_followups","1")
               || (isset($_SESSION["glpiID"])
                   && $this->fields["users_id_assign"]==$_SESSION["glpiID"])
               || (isset($_SESSION["glpigroups"])
@@ -2338,7 +2338,7 @@ class Ticket extends CommonDBTM {
    /**
     * Calculate Ticket TCO for an item
     *
-    *@param $item CommonDBTM object of the item 
+    *@param $item CommonDBTM object of the item
     *
     *@return float
     *

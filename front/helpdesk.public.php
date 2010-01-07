@@ -73,7 +73,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
    //*******************
    // Affichage interventions en cours
    //******************
-   if (isset($_POST['add']) && haveRight("comment_ticket","1")) {
+   if (isset($_POST['add']) && haveRight("add_followups","1")) {
       $fup = new TicketFollowup();
       $newID = $fup->add($_POST);
 

@@ -2318,7 +2318,30 @@ function update0723to080() {
       $query = "UPDATE `glpi_profiles` SET `update_priority`=`update_ticket`";
       $DB->query($query) or die("0.80 set update_priority in glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists('glpi_profiles','add_followups')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                CHANGE `comment_ticket` `add_followups` CHAR(1) NULL DEFAULT NULL";
+      $DB->query($query) or die("0.80 add add_followups in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists('glpi_profiles','global_add_followups')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                CHANGE `comment_all_ticket` `global_add_followups`  CHAR(1) NULL DEFAULT NULL";
+      $DB->query($query) or die("0.80 add add_followups in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists('glpi_profiles','update_tasks')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                ADD `global_add_tasks` CHAR( 1 ) NULL AFTER `global_add_followups`,
+                ADD `update_tasks` CHAR( 1 ) NULL AFTER `update_followups`";
+      $DB->query($query) or die("0.80 add global_add_tasks, update_tasks in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
 
+      $query = "UPDATE `glpi_profiles`
+                SET `update_tasks`=`update_followups`, `global_add_tasks`=`global_add_followups`";
+      $DB->query($query) or die("0.80 set update_tasks, global_add_tasks in glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
    }
 
    if (!TableExists('glpi_taskcategories')) {

@@ -261,7 +261,7 @@ class TicketPlanning extends CommonDBTM {
    function pre_deleteItem($ID) {
 
       if (isset($this->fields["users_id"]) &&
-          ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("comment_all_ticket","1"))) {
+          ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("global_add_tasks","1"))) {
 
          // Auto update realtime
          $fup=new TicketTask();

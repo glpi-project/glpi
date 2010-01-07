@@ -49,11 +49,11 @@ if (!isset($_GET['id'])) {
 commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 
 if (isset($_POST['update'])) {
-   checkSeveralRightsOr(array('update_ticket'      => '1',
-                              'assign_ticket'      => '1',
-                              'steal_ticket'       => '1',
-                              'comment_ticket'     => '1',
-                              'comment_all_ticket' => '1'));
+   checkSeveralRightsOr(array('update_ticket'        => '1',
+                              'assign_ticket'        => '1',
+                              'steal_ticket'         => '1',
+                              'add_followups'        => '1',
+                              'global_add_followups' => '1'));
 
    $track->update($_POST);
    Event::log($_POST["id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);

@@ -43,7 +43,7 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','comment_ticket',
+   static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','add_followups',
                               'observe_ticket','password_update','helpdesk_hardware',
                               'helpdesk_item_type','show_group_ticket','show_group_hardware');
 
@@ -375,7 +375,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("create_ticket",$this->fields["create_ticket"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][6]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("comment_ticket",$this->fields["comment_ticket"]);
+      Dropdown::showYesNo("add_followups",$this->fields["add_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -624,10 +624,16 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("create_ticket",$this->fields["create_ticket"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][6]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("comment_ticket",$this->fields["comment_ticket"]);
+      Dropdown::showYesNo("add_followups",$this->fields["add_followups"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][15]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("comment_all_ticket",$this->fields["comment_all_ticket"]);
+      Dropdown::showYesNo("global_add_followups",$this->fields["global_add_followups"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4'>&nbsp;</td>";
+      echo "<td>".$LANG['profiles'][45]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("global_add_tasks",$this->fields["global_add_tasks"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][40]."</strong></td></tr>\n";
@@ -647,7 +653,10 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_priority",$this->fields["update_priority"]);
       echo "</td>";
-      echo "<td colspan='4'>&nbsp;</td></tr>\n";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][39]."</strong></td></tr>\n";
 

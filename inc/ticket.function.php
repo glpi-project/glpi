@@ -2116,7 +2116,7 @@ function showJobDetails($target, $ID,$array=array()) {
 
    echo "<tr class='tab_bg_1'>";
    // Need comment right to add a followup with the realtime
-   if (haveRight("comment_all_ticket","1") && !$ID) {
+   if (haveRight("global_add_followups","1") && !$ID) {
       echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
       echo "<td class='center' colspan='3'>";
       Dropdown::showInteger('hour',$array['hour'],0,100);
@@ -2324,8 +2324,8 @@ function showJobDetails($target, $ID,$array=array()) {
 
    if ($canupdate
        || $canupdate_descr
-       || haveRight("comment_all_ticket","1")
-       ||(haveRight("comment_ticket","1") && !strstr($job->fields["status"],'old_'))
+       || haveRight("global_add_followups","1")
+       ||(haveRight("add_followups","1") && !strstr($job->fields["status"],'old_'))
        || haveRight("assign_ticket","1")
        || haveRight("steal_ticket","1")) {
 

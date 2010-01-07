@@ -52,8 +52,8 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function canCreate() {
-      return (haveRight('comment_all_ticket', 1)
-              || haveRight('comment_ticket', 1)
+      return (haveRight('global_add_followups', 1)
+              || haveRight('add_followups', 1)
               || haveRight('own_ticket', 1));
    }
 
@@ -97,8 +97,8 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
       // From canAddFollowup
-      $right=((haveRight("comment_ticket","1") && $ticket->fields["users_id"]==$_SESSION["glpiID"])
-              || haveRight("comment_all_ticket","1")
+      $right=((haveRight("add_followups","1") && $ticket->fields["users_id"]==$_SESSION["glpiID"])
+              || haveRight("global_add_followups","1")
               || (isset($_SESSION["glpiID"])
                   && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
               || (isset($_SESSION["glpigroups"])
@@ -121,7 +121,7 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
       // Only the technician
-      return ((haveRight("comment_all_ticket","1")
+      return ((haveRight("global_add_followups","1")
               || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
               || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
@@ -192,7 +192,7 @@ class TicketFollowup  extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
-      $input["_isadmin"] = haveRight("comment_all_ticket","1");
+      $input["_isadmin"] = haveRight("global_add_followups","1");
       $input["_job"] = new Ticket;
 
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
@@ -408,7 +408,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $canplan = haveRight("show_planning","1");
 
-      $tech=(haveRight("comment_all_ticket","1")
+      $tech=(haveRight("global_add_followups","1")
              || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
              || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups']));
