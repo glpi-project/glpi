@@ -106,6 +106,10 @@ if (isset($_POST['used'])) {
 }
 $where .= ") ";
 
+if ($_POST['condition'] != '') {
+   $where .= " AND ".$_POST['condition'];
+}
+
 if ($item instanceof CommonTreeDropdown) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
@@ -150,7 +154,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-//   echo $query;
+
    if ($result = $DB->query($query)) {
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".
