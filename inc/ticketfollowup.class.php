@@ -298,7 +298,7 @@ class TicketFollowup  extends CommonDBTM {
       // Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($this->getName(true));
+      $changes[2] = addslashes($this->getName());
       historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
    }
 
