@@ -105,7 +105,7 @@ function getItemTypeForTable($table) {
  *
  * @param $itemtype string: itemtype
  *
- * return string itemtype corresponding to a table name parameter
+ * return string table name corresponding to the itemtype  parameter
  */
 function getTableForItemType($itemtype) {
    global $CFG_GLPI;

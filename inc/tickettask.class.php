@@ -147,6 +147,12 @@ class TicketTask  extends CommonDBTM {
       $job = new Ticket();
       $job->updateRealtime($this->fields['tickets_id']);
       $job->updateDateMod($this->fields["tickets_id"]);
+
+      // Add log entry in the ticket
+      $changes[0] = 0;
+      $changes[1] = addslashes($this->getName(true));
+      $changes[2] = '';
+      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
    }
 
 
@@ -344,6 +350,12 @@ class TicketTask  extends CommonDBTM {
                              (isset($this->input["is_private"]) && $this->input["is_private"]));
          $mail->send();
       }
+
+      // Add log entry in the ticket
+      $changes[0] = 0;
+      $changes[1] = '';
+      $changes[2] = addslashes($this->getName(true));
+      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
    }
 
 
@@ -358,6 +370,27 @@ class TicketTask  extends CommonDBTM {
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"],$link);
    }
+
+   function getName($with_comment=0) {
+      global $LANG;
+
+      if (!isset($this->fields['taskcategories_id'])) {
+         return NOT_AVAILABLE;
+      }
+      if ($this->fields['taskcategories_id']) {
+         $name = Dropdown::getDropdownName('glpi_taskcategories',$this->fields['taskcategories_id']);
+      } else {
+         $name = $this->getTypeName();
+      }
+      if ($with_comment) {
+         $name .= ' ('.convDateTime($this->fields['date']);
+         $name .= ', '.getUserName($this->fields['users_id']);
+         $name .= ', '.($this->fields['is_private'] ? $LANG['common'][77] : $LANG['common'][76]);
+         $name .= ')';
+      }
+      return $name;
+   }
+
 
    function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI, $LANG;

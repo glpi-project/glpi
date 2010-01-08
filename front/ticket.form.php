@@ -76,9 +76,10 @@ if (isset($_POST['update'])) {
 }
 $track->check($_GET["id"],'r');
 
+// TODO move this to $track->showForm();
 $track->showTabs($_GET["id"]);
+showJobDetails($_SERVER['PHP_SELF'],$_GET["id"]);
 echo "<div id='tabcontent'></div>";
-
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 commonFooter();

@@ -146,6 +146,12 @@ class TicketFollowup  extends CommonDBTM {
 
       $job = new Ticket();
       $job->updateDateMod($this->fields["tickets_id"]);
+
+      // Add log entry in the ticket
+      $changes[0] = 0;
+      $changes[1] = addslashes($this->getName(true));
+      $changes[2] = '';
+      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
    }
 
 
@@ -242,7 +248,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function post_addItem() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $LANG;
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
@@ -288,6 +294,12 @@ class TicketFollowup  extends CommonDBTM {
                              (isset($this->input["is_private"]) && $this->input["is_private"]));
          $mail->send();
       }
+
+      // Add log entry in the ticket
+      $changes[0] = 0;
+      $changes[1] = '';
+      $changes[2] = addslashes($this->getName(true));
+      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
    }
 
 
@@ -301,6 +313,26 @@ class TicketFollowup  extends CommonDBTM {
    **/
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"],$link);
+   }
+
+   function getName($with_comment=0) {
+      global $LANG;
+
+      if (!isset($this->fields['requesttypes_id'])) {
+         return NOT_AVAILABLE;
+      }
+      if ($this->fields['requesttypes_id']) {
+         $name = Dropdown::getDropdownName('glpi_requesttypes',$this->fields['requesttypes_id']);
+      } else {
+         $name = $this->getTypeName();
+      }
+      if ($with_comment) {
+         $name .= ' ('.convDateTime($this->fields['date']);
+         $name .= ', '.getUserName($this->fields['users_id']);
+         $name .= ', '.($this->fields['is_private'] ? $LANG['common'][77] : $LANG['common'][76]);
+         $name .= ')';
+      }
+      return $name;
    }
 
    function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
@@ -334,13 +366,13 @@ class TicketFollowup  extends CommonDBTM {
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
-      echo "<td>&nbsp;</td>";
+      // echo "<td>&nbsp;</td>";
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
          echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
       }
-      echo "<td>&nbsp;</td>";
+      // echo "<td>&nbsp;</td>";
       echo "</tr>\n";
    }
 
@@ -564,12 +596,12 @@ class TicketFollowup  extends CommonDBTM {
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
-         echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . $LANG['joblist'][6] . "</th>";//"<th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['common'][37] . "</th>";
          if ($showprivate) {
             echo "<th>" . $LANG['common'][77] . "</th>";
          }
-         echo "<th></th></tr>\n";
+         echo "</tr>\n";
 
          while ($data = $DB->fetch_array($result)) {
             if ($this->getFromDB($data['id'])) {
