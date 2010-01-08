@@ -110,5 +110,47 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals($id[4], $obj->fields[$fk]);
       $this->assertEquals('B > C > D', $obj->fields['completename']);
    }
+
+   /**
+    * Import of Manufacturer (with Rule)
+    */
+   public function testManufacturer() {
+
+      // Create some rules
+      $rule = new RuleDictionnaryDropdown(RULE_DICTIONNARY_MANUFACTURER);
+      $crit = new RuleCriteria();
+      $acte = new RuleAction();
+
+      $idr[0] = $rule->add(array('name'      => 'test1',
+                                 'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                 'match'     => 'AND',
+                                 'ranking'   => 1,
+                                 'is_active' => 1));
+      $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
+
+      $idc[0] = $crit->add(array('rules_id' => $idr[0],
+                                 'criteria ' => 'name',
+                                 'condition' => PATTERN_CONTAIN,
+                                 'pattern'   => 'indepnet'));
+      $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
+
+      $ida[0] = $crit->add(array('rules_id'    => $idr[0],
+                                 'action_type' => 'assign',
+                                 'field'       => 'name',
+                                 'value'       => $out='Indepnet'));
+      $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
+
+      $manu = new Manufacturer();
+      $id[0] = $manu->importExternal($in='the indepnet team');
+      $this->assertGreaterThan(0, $id[0]);
+      $this->assertTrue($manu->getFromDB($id[0]));
+      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+
+      $id[1] = $manu->importExternal($in='The INDEPNET Team');
+      $this->assertGreaterThan(0, $id[1]);
+      $this->assertGreaterThan($id[0], $id[1]);
+      $this->assertTrue($manu->getFromDB($id[1]));
+      $this->assertEquals($in, $manu->fields['name'], "Fail: PATTERN_CONTAIN match");
+   }
 }
 ?>
