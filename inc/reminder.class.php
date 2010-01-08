@@ -78,7 +78,7 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if ($input['is_recursive'] && !$input['is_private']) {
+      if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
          if (!haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
             addMessageAfterRedirect($LANG['common'][75],false,ERROR);
