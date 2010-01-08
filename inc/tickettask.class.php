@@ -150,7 +150,7 @@ class TicketTask  extends CommonDBTM {
 
       // Add log entry in the ticket
       $changes[0] = 0;
-      $changes[1] = addslashes($this->getName(true));
+      $changes[1] = addslashes($this->getName());
       $changes[2] = '';
       historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
    }
