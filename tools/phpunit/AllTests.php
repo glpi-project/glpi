@@ -37,7 +37,7 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors','On');
 
 include 'Dropdown/AllTests.php';
-include 'Right/AllTests.php';
+include 'CommonDBTM/AllTests.php';
 
 class Version extends PHPUnit_Framework_TestCase {
    public function testVersion() {
@@ -65,8 +65,8 @@ class AllTests extends PHPUnit_Framework_TestSuite {
    public static function suite()
       {
       $suite = new AllTests('Version');
+      $suite->addTest(CommonDBTM_AllTests::suite());
       $suite->addTest(Dropdown_AllTests::suite());
-      $suite->addTest(Right_AllTests::suite());
 
       return $suite;
       }
@@ -96,7 +96,7 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 
 
       if (!$tab['entity'][0]                                         // Crash detection
-          || !FieldExists('glpi_computers_devices','itemtype')) {    // Schema detection
+          || !FieldExists('glpi_users','task_private')) {    // Schema detection
 
          if (!$tab['entity'][0]) {
             echo "Couldn't run test (previous run not cleaned)\n";
