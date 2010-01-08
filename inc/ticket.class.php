@@ -1833,8 +1833,7 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Show the current ticket sumnary
-    */
+    * Show the current ticket sumnary --- NOT USED
    function showSummary() {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -1905,6 +1904,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</div>";
    }
+    */
 
    /**
    * Form to add a solution to a ticket
