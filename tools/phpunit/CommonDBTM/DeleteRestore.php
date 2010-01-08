@@ -27,14 +27,25 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-require_once 'CanCheck.php';
+class CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
 
-class Right_AllTests {
-    public static function suite()
-    {
-        $suite = new PHPUnit_Framework_TestSuite('Right_CanCheck');
+   /**
+    * Check right on Recursive object
+    */
+   public function testPrinter() {
 
-        return $suite;
-    }
+      $printer = new Printer();
+
+      $id[0] = $printer->add(array('name'         => "Printer 1",
+                                   'entities_id'  => 0,
+                                   'is_recursive' => 0));
+      $this->assertGreaterThan(0, $id[0], "Fail to create Printer 1");
+      $this->assertTrue($printer->getFromDB($id[0]), "Fail to read Printer 1");
+      $this->assertEquals(0, $printer->fields['is_deleted'], "Fail: is_deleted set");
+
+      $this->assertTrue($printer->delete(array('id'=>$id[0]),0), "Fail to delete Printer 1");
+      $this->assertTrue($printer->getFromDB($id[0]), "Fail to read Printer 1");
+      $this->assertEquals(1, $printer->fields['is_deleted'], "Fail: is_deleted not set");
+   }
 }
 ?>

@@ -823,7 +823,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if ($this->isField('is_template')
+      if ($this->getField('is_template')==1
             || !$this->maybeDeleted()) {
          $force = 1;
       }
@@ -839,7 +839,7 @@ class CommonDBTM extends CommonGLPI {
          unset($input['delete']);
       }
 
-      // Purge 
+      // Purge
       if ($force) {
          doHook("pre_item_purge",$this);
       } else {

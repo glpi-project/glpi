@@ -27,7 +27,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-class Right_CanCheck extends PHPUnit_Framework_TestCase {
+class CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
 
    /**
     * Check right on Recursive object
