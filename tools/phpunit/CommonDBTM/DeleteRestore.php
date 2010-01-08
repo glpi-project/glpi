@@ -42,6 +42,8 @@ class CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
                                    'is_template'  => 0));
       $this->assertGreaterThan(0, $id[0], "Fail to create Printer 1");
       $this->assertTrue($printer->getFromDB($id[0]), "Fail: can't read Printer");
+
+      // Verify DB Schema have not change
       $this->assertArrayHasKey('is_deleted',$printer->fields, "Fail: no is_deleted field");
       $this->assertArrayHasKey('is_template',$printer->fields, "Fail: no is_template field");
       $this->assertEquals(0, $printer->fields['is_deleted'], "Fail: is_deleted set");
@@ -101,6 +103,8 @@ class CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
                                     'users_id'     => $_SESSION['glpiID']));
       $this->assertGreaterThan(0, $id[0], "Fail to create Reminder");
       $this->assertTrue($reminder->getFromDB($id[0]), "Fail: can't read Reminder");
+
+      // Verify DB Schema have not change
       $this->assertArrayNotHasKey('is_deleted',$reminder->fields, "Fail: is_deleted field");
       $this->assertArrayNotHasKey('is_template',$reminder->fields, "Fail: is_template field");
 
