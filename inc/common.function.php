@@ -210,7 +210,7 @@ function logDebug() {
          $msg .= ' ' . $arg;
       }
    }
-   logInFile('php-errors', $msg."\n");
+   logInFile('php-errors', $msg."\n",true);
 }
 
 /**
@@ -1688,7 +1688,7 @@ function manageRedirect($where) {
 
                   // Use for compatibility with old name
                   case "tracking":
-                  case "ticket": 
+                  case "ticket":
                      glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
                                  $data[1]);
                      break;
