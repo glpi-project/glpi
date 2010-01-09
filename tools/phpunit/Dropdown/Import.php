@@ -140,17 +140,39 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
                                  'value'       => $out='Indepnet'));
       $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
 
+      $cache = $rule->getCacheTable();
+      $check = "`rules_id`=".$idr[0];
+      $this->assertEquals(0, countElementsInTable($cache, $check), "Fail: cache not empty");
+
       $manu = new Manufacturer();
+
+      // Import first and fill cache
       $id[0] = $manu->importExternal($in='the indepnet team');
       $this->assertGreaterThan(0, $id[0]);
       $this->assertTrue($manu->getFromDB($id[0]));
       $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(1, countElementsInTable($cache, $check), "Fail: cache empty");
 
+      // Import second and use cache
       $id[1] = $manu->importExternal($in='The INDEPNET Team');
       $this->assertGreaterThan(0, $id[1]);
       $this->assertEquals($id[0], $id[1]);
       $this->assertTrue($manu->getFromDB($id[1]));
-      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN match");
+      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(1, countElementsInTable($cache, $check), "Fail: cache not filled");
+
+      // Import third not in cache
+      $id[1] = $manu->importExternal($in='http://www.indepnet.net/');
+      $this->assertGreaterThan(0, $id[1]);
+      $this->assertEquals($id[0], $id[1]);
+      $this->assertTrue($manu->getFromDB($id[1]));
+      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(2, countElementsInTable($cache, $check), "Fail: cache not filled");
+
+      // Set is_active=0, and clean cache
+      $this->assertTrue($rule->update(array('id' => $idr[0],
+                                            'is_active' => 0)), "Fail: update rule");
+      $this->assertEquals(0, countElementsInTable($cache, $check), "Fail: cache not empty");
    }
 }
 ?>
