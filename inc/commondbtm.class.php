@@ -607,7 +607,7 @@ class CommonDBTM extends CommonGLPI {
 
       $link  = $link_item;
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
-      $link .= ($this->getField('is_template') ? "&amp;withtemplate=1" : "");
+      $link .= ($this->getField('is_template')==1 ? "&amp;withtemplate=1" : "");
 
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
