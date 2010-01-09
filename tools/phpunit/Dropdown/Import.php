@@ -116,6 +116,11 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
     */
    public function testManufacturer() {
 
+      // Old counters
+      $nbr = countElementsInTable('glpi_rules');
+      $nba = countElementsInTable('glpi_ruleactions');
+      $nbc = countElementsInTable('glpi_rulecriterias');
+
       // Create some rules
       $rule = new RuleDictionnaryDropdown(RULE_DICTIONNARY_MANUFACTURER);
       $crit = new RuleCriteria();
@@ -264,6 +269,21 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertTrue($manu->getFromDB($id[8]));
       $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
       $this->assertNotEquals($id[7], $id[8]);
+      $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not empty");
+
+      // Clean
+      $this->assertEquals($nbr+2, countElementsInTable('glpi_rules'), "Fail: glpi_rules content");
+      $this->assertEquals($nba+2, countElementsInTable('glpi_ruleactions'), "Fail: glpi_ruleactions content");
+      $this->assertEquals($nbc+2, countElementsInTable('glpi_rulecriterias'), "Fail: glpi_ruleactions content");
+
+      $this->assertTrue($rule->delete(array('id'=>$idr[0])));
+      $this->assertEquals(1, countElementsInTable($cache), "Fail: cache not empty");
+
+      $this->assertTrue($rule->delete(array('id'=>$idr[1])));
+      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
+      $this->assertEquals($nbr, countElementsInTable('glpi_rules'), "Fail: glpi_rules not empty");
+      $this->assertEquals($nba, countElementsInTable('glpi_ruleactions'), "Fail: glpi_ruleactions not empty");
+      $this->assertEquals($nbc, countElementsInTable('glpi_rulecriterias'), "Fail: glpi_ruleactions not empty");
    }
 }
 ?>

@@ -95,8 +95,9 @@ class AllTests extends PHPUnit_Framework_TestSuite {
       $tab['entity'][0] = $entity->add(array('name'        => 'PHP Unit root'));
 
 
-      if (!$tab['entity'][0]                                         // Crash detection
-          || !FieldExists('glpi_users','task_private')) {    // Schema detection
+if (!$tab['entity'][0]                                   // Crash detection
+          || !FieldExists('glpi_users','task_private')   // Schema detection
+          || countElementsInTable('glpi_rules')!=2) {    // Old rules
 
          if (!$tab['entity'][0]) {
             echo "Couldn't run test (previous run not cleaned)\n";
