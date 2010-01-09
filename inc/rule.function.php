@@ -380,12 +380,6 @@ function getRuleCollectionClassByTableName($tablename) {
    return NULL;
 }
 
-function getCacheTableByRuleType($type) {
-
-   $rulecollection = getRuleCollectionClass($type);
-   return $rulecollection->cache_table;
-}
-
 function getRegexResultById($action,$regex_results) {
    $results = array();
 
