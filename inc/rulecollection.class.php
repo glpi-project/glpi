@@ -416,42 +416,45 @@ class RuleCollection {
          $rank=1;
       }
 
+      $rule = $this->getRuleClass();
+
       // Move others rules in the collection
       if ($old_rank < $rank) {
          if ($type=="before"){
             $rank--;
          }
          // Move back all rules between old and new rank
-         $query = "UPDATE
-                   `glpi_rules`
-                   SET `ranking` = `ranking`-1
+         $query = "SELECT `id`, `ranking`
+                   FROM `glpi_rules`
                    WHERE `sub_type` ='".$this->sub_type."'
                          AND `ranking` > '$old_rank'
                          AND `ranking` <= '$rank'";
-         $result = $DB->query($query);
+         foreach ($DB->request($query) as $data) {
+            $data['ranking']--;
+            $result = $rule->update($data);
+         }
       } else if ($old_rank > $rank) {
          if ($type=="after") {
             $rank++;
          }
          // Move forward all rule  between old and new rank
-         $query = "UPDATE
-                   `glpi_rules`
-                   SET `ranking` = `ranking`+1
+         $query = "SELECT `id`, `ranking`
+                   FROM `glpi_rules`
                    WHERE `sub_type` ='".$this->sub_type."'
                          AND `ranking` >= '$rank'
                          AND `ranking` < '$old_rank'";
-         $result = $DB->query($query);
+         foreach ($DB->request($query) as $data) {
+            $data['ranking']++;
+            $result = $rule->update($data);
+         }
       } else { // $old_rank == $rank : nothing to do
          $result = false;
       }
 
       // Move the rule
       if ($result && $old_rank != $rank) {
-         $query = "UPDATE
-                   `glpi_rules`
-                   SET `ranking` = '$rank'
-                   WHERE `id` = '$ID' ";
-         $result = $DB->query($query);
+         $result = $rule->update(array('id'      => $ID,
+                                       'ranking' => $rank));
       }
       return ($result ? true : false);
    }
@@ -468,7 +471,6 @@ class RuleCollection {
       // Get Collection datas
       $this->getCollectionDatas(1,1);
       $input=$this->prepareInputDataForProcess($input,$params);
-
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
             //If the rule is active, process it
