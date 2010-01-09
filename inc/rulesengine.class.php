@@ -444,7 +444,7 @@ class RuleCollection {
 			$rank = $ligne['maxi'];
 		} else { 
 			// Move before all
-			$rank=0;
+			$rank=1;
 		}	
 
 		// Move others rules in the collection
