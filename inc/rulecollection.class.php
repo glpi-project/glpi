@@ -345,15 +345,12 @@ class RuleCollection {
             if ($result2 = $DB->query($sql2)) {
                if ($DB->numrows($result2)==1) {
                   list($other_ID,$new_rank)=$DB->fetch_array($result2);
-                  $query = "UPDATE
-                            `glpi_rules`
-                            SET `ranking` = '$new_rank'
-                            WHERE `id` ='$ID'";
-                  $query2 = "UPDATE
-                             `glpi_rules`
-                             SET `ranking` = '$current_rank'
-                             WHERE `id` ='$other_ID'";
-                  return ($DB->query($query)&&$DB->query($query2));
+
+                  $rule = $this->getRuleClass();
+                  return ($rule->update(array('id'      => $ID,
+                                              'ranking' => $new_rank))
+                          && $rule->update(array('id'      => $other_ID,
+                                                 'ranking' => $current_rank)));
                }
             }
          }
