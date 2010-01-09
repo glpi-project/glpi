@@ -237,9 +237,33 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $id[6] = $manu->importExternal($in='http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[6]);
-      $this->assertEquals($id[5], $id[6]);
       $this->assertTrue($manu->getFromDB($id[6]));
       $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals($id[5], $id[6]);
+
+      // Change rules orders again
+      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp->load=0;
+      // Move rule 1 up (before rule 2)
+      $this->assertTrue($collection->changeRuleOrder($idr[0], 'up'), "Fail: can't move rules");
+      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
+
+      $this->assertTrue($rule->getFromDB($idr[0]));
+      $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not change");
+      $this->assertTrue($rule->getFromDB($idr[1]));
+      $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not change");
+
+      // Import again and fill cache
+      $id[7] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $this->assertGreaterThan(0, $id[7]);
+      $this->assertTrue($manu->getFromDB($id[7]));
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+
+      $id[8] = $manu->importExternal($in='http://www.indepnet.net/');
+      $this->assertGreaterThan(0, $id[8]);
+      $this->assertTrue($manu->getFromDB($id[8]));
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertNotEquals($id[7], $id[8]);
    }
 }
 ?>
