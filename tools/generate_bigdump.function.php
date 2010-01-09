@@ -225,10 +225,6 @@ function addTracking($type,$ID,$ID_entity){
 			$fID=$DB->insert_id();
 			$i++;
 		}
-		if ($status=="plan"&&$fID){
-			$query="INSERT INTO glpi_ticketplannings VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."','1');";
-			$DB->query($query) or die("PB REQUETE ".$query);
-		}
 		while (mt_rand(0,100)<$percent['tasks']){
          $realtime=(mt_rand(0,3)+mt_rand(0,100)/100);
 			$query="INSERT INTO glpi_tickettasks VALUES (NULL,'$tID','".mt_rand($FIRST['taskcategory'],$LAST['taskcategory'])."','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','task $i ".getRandomString(15)."','".mt_rand(0,1)."','$realtime');";
@@ -236,6 +232,10 @@ function addTracking($type,$ID,$ID_entity){
 			$fID=$DB->insert_id();
 			$i++;
 		}
+      if ($status=="plan"&&$fID){
+         $query="INSERT INTO glpi_ticketplannings VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."','1');";
+         $DB->query($query) or die("PB REQUETE ".$query);
+      }
 
 	}
 	$query="UPDATE ".getTableForItemType($type)." SET ticket_tco='$tco'	WHERE id='".$ID."';";
