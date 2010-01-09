@@ -2755,8 +2755,8 @@ CREATE TABLE `glpi_rules` (
   KEY `sub_type` (`sub_type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('1','-1','0','0','Root','','AND','1',NULL);
-INSERT INTO `glpi_rules` VALUES ('2','-1','1','1','Root','','OR','1',NULL);
+INSERT INTO `glpi_rules` VALUES ('1','-1','0','0','Root','','AND','1',NULL,NULL);
+INSERT INTO `glpi_rules` VALUES ('2','-1','1','1','Root','','OR','1',NULL,NULL);
 
 ### Dump table glpi_rulescachesoftwares
 
