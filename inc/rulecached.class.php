@@ -48,6 +48,18 @@ class RuleCached extends Rule {
    }
 
    /**
+    * get the cache table name for this rule type
+    *
+    * @return string table name
+    */
+   function getCacheTable() {
+
+      $rulecollection = getRuleCollectionClass($this->sub_type);
+      return $rulecollection->cache_table;
+   }
+
+
+   /**
    * Delete cache for a rule
    * @param $ID rule ID
    **/
@@ -55,7 +67,7 @@ class RuleCached extends Rule {
       global $DB;
 
       $DB->query("DELETE
-                  FROM ".getCacheTableByRuleType($this->sub_type)."
+                  FROM `".$this->getCacheTable()."`
                   WHERE `rules_id` = '$ID'");
    }
 
