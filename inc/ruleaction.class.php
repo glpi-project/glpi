@@ -55,7 +55,7 @@ class RuleAction extends CommonDBTM {
       $result = $DB->query($sql);
 
       $rules_actions = array ();
-      while ($rule = $DB->fetch_array($result)) {
+      while ($rule = $DB->fetch_assoc($result)) {
          $tmp = new RuleAction;
          $tmp->fields = $rule;
          $rules_actions[] = $tmp;

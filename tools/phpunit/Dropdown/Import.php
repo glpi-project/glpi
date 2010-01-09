@@ -128,13 +128,13 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
 
-      $idc[0] = $crit->add(array('rules_id' => $idr[0],
-                                 'criteria ' => 'name',
+      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+                                 'criteria'  => 'name',
                                  'condition' => PATTERN_CONTAIN,
                                  'pattern'   => 'indepnet'));
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
 
-      $ida[0] = $crit->add(array('rules_id'    => $idr[0],
+      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
                                  'value'       => $out='Indepnet'));
@@ -148,9 +148,9 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $id[1] = $manu->importExternal($in='The INDEPNET Team');
       $this->assertGreaterThan(0, $id[1]);
-      $this->assertGreaterThan($id[0], $id[1]);
+      $this->assertEquals($id[0], $id[1]);
       $this->assertTrue($manu->getFromDB($id[1]));
-      $this->assertEquals($in, $manu->fields['name'], "Fail: PATTERN_CONTAIN match");
+      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN match");
    }
 }
 ?>
