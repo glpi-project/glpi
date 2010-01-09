@@ -83,6 +83,14 @@ class RuleTicket extends Rule {
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
 
+               case 'compute':
+                  // Value could be not set (from test)
+                  $urgency = (isset($output['urgency'])?$output['urgency']:3);
+                  $impact  = (isset($output['impact'])?$output['impact']:3);
+                  // Apply priority_matrix from config
+                  $output['priority'] = Ticket::computePriority($urgency, $impact);
+                  break;
+
                case "affectbyip" :
                case "affectbyfqdn" :
                case "affectbymac" :

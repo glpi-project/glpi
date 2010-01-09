@@ -1104,6 +1104,12 @@ class Rule extends CommonDBTM {
                   return $LANG['choice'][0];
                }
 
+            case "dropdown_urgency" :
+               return Ticket::getUrgencyName($value);
+
+            case "dropdown_impact" :
+               return Ticket::getImpactName($value);
+
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);
          }

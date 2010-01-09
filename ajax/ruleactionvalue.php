@@ -78,8 +78,20 @@ switch ($_POST["action_type"]) {
                $display=true;
                break;
 
+            case "dropdown_urgency" :
+               Ticket::dropdownUrgency("value");
+               $display=true;
+               break;
+
+            case "dropdown_impact" :
+               Ticket::dropdownImpact("value");
+               $display=true;
+               break;
+
             case "dropdown_priority" :
-               Ticket::dropdownPriority("value");
+               if ($_POST["action_type"]!='compute') {
+                  Ticket::dropdownPriority("value");
+               }
                $display=true;
                break;
 

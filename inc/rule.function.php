@@ -218,6 +218,10 @@ function dropdownRulesActions($sub_type,$name,$value='') {
          case "affectbymac" :
             $elements["affectbymac"] = $LANG['rulesengine'][49];
             break;
+
+         case 'compute';
+            $elements['compute'] = $LANG['rulesengine'][38];
+            break;
       }
    }
    return Dropdown::showFromArray($name,$elements,array('value' => $value));
@@ -244,6 +248,9 @@ function getActionByID($ID) {
 
       case "affectbymac" :
          return $LANG['rulesengine'][49];
+
+      case 'compute' :
+         return $LANG['rulesengine'][38];
    }
 }
 
