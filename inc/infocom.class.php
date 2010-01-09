@@ -261,7 +261,7 @@ class Infocom extends CommonDBTM {
                }
 
                // define message alert / Not for template items
-               if ($item->getField('is_template')!=1) {
+               if (!$item->isTemplate()) {
                   $message[$entity].=$LANG['mailing'][40]." ".
                                      $item->getTypeName()." - ".$item->getName()." : ".
                                      getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>";
