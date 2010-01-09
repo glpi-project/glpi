@@ -147,7 +147,11 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='middle' colspan='3'>";
-      echo "<textarea cols='110' rows='2' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea cols='110' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
+      if (!$new) {
+         echo $LANG['common'][26]."&nbsp;: ";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+      }
       echo"</td></tr>\n";
 
       if ($canedit) {

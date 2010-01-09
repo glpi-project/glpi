@@ -2748,6 +2748,7 @@ CREATE TABLE `glpi_rules` (
   `match` char(10) collate utf8_unicode_ci default NULL COMMENT 'see define.php *_MATCHING constant',
   `is_active` tinyint(1) NOT NULL default '1',
   `comment` text collate utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY  (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_active` (`is_active`),

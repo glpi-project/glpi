@@ -67,9 +67,8 @@ class RuleCached extends Rule {
 
    function post_updateItem($history=1) {
 
-      if (isset($this->updates['match'])) {
-         $this->deleteCacheByRuleId($this->input["id"]);
-      }
+      // Clean cache in all case (match, active, ranking, add/delete criteria/action)
+      $this->deleteCacheByRuleId($this->input["id"]);
    }
 
    /**
