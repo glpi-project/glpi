@@ -607,7 +607,7 @@ class CommonDBTM extends CommonGLPI {
 
       $link  = $link_item;
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
-      $link .= ($this->getField('is_template')==1 ? "&amp;withtemplate=1" : "");
+      $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
 
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
@@ -823,8 +823,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      if ($this->getField('is_template')==1
-            || !$this->maybeDeleted()) {
+      if ($this->isTemplate() || !$this->maybeDeleted()) {
          $force = 1;
       }
       // Store input in the object to be available in all sub-method / hook
