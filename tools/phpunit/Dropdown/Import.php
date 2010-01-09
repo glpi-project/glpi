@@ -124,9 +124,10 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $idr[0] = $rule->add(array('name'      => 'test1',
                                  'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
                                  'match'     => 'AND',
-                                 'ranking'   => 1,
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
+      $this->assertTrue($rule->getFromDB($idr[0]));
+      $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not set");
 
       $idc[0] = $crit->add(array('rules_id'  => $idr[0],
                                  'criteria'  => 'name',
@@ -173,6 +174,29 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertTrue($rule->update(array('id' => $idr[0],
                                             'is_active' => 0)), "Fail: update rule");
       $this->assertEquals(0, countElementsInTable($cache, $check), "Fail: cache not empty");
+      $this->assertTrue($rule->update(array('id' => $idr[0],
+                                            'is_active' => 1)), "Fail: update rule");
+
+      // Add another rule
+      $idr[1] = $rule->add(array('name'      => 'test2',
+                                 'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                 'match'     => 'AND',
+                                 'is_active' => 1));
+      $this->assertGreaterThan(0, $idr[1], "Fail: can't create rule 2");
+      $this->assertTrue($rule->getFromDB($idr[1]));
+      $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not set");
+
+      $idc[1] = $crit->add(array('rules_id'  => $idr[1],
+                                 'criteria'  => 'name',
+                                 'condition' => PATTERN_BEGIN,
+                                 'pattern'   => 'http:'));
+      $this->assertGreaterThan(0, $idc[1], "Fail: can't create rule 2 criteria");
+
+      $ida[1] = $acte->add(array('rules_id'    => $idr[1],
+                                 'action_type' => 'assign',
+                                 'field'       => 'name',
+                                 'value'       => $out2='Web Site'));
+      $this->assertGreaterThan(0, $ida[1], "Fail: can't create rule 2 action");
    }
 }
 ?>
