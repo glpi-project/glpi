@@ -138,44 +138,8 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $ida[0] = $acte->add(array('rules_id'    => $idr[0],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
-                                 'value'       => $out='Indepnet'));
+                                 'value'       => $out1='Indepnet'));
       $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
-
-      $cache = $rule->getCacheTable();
-      $check = "`rules_id`=".$idr[0];
-      $this->assertEquals(0, countElementsInTable($cache, $check), "Fail: cache not empty");
-
-      $manu = new Manufacturer();
-
-      // Import first and fill cache
-      $id[0] = $manu->importExternal($in='the indepnet team');
-      $this->assertGreaterThan(0, $id[0]);
-      $this->assertTrue($manu->getFromDB($id[0]));
-      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
-      $this->assertEquals(1, countElementsInTable($cache, $check), "Fail: cache empty");
-
-      // Import second and use cache
-      $id[1] = $manu->importExternal($in='The INDEPNET Team');
-      $this->assertGreaterThan(0, $id[1]);
-      $this->assertEquals($id[0], $id[1]);
-      $this->assertTrue($manu->getFromDB($id[1]));
-      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
-      $this->assertEquals(1, countElementsInTable($cache, $check), "Fail: cache not filled");
-
-      // Import third not in cache
-      $id[1] = $manu->importExternal($in='http://www.indepnet.net/');
-      $this->assertGreaterThan(0, $id[1]);
-      $this->assertEquals($id[0], $id[1]);
-      $this->assertTrue($manu->getFromDB($id[1]));
-      $this->assertEquals($out, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
-      $this->assertEquals(2, countElementsInTable($cache, $check), "Fail: cache not filled");
-
-      // Set is_active=0, and clean cache
-      $this->assertTrue($rule->update(array('id' => $idr[0],
-                                            'is_active' => 0)), "Fail: update rule");
-      $this->assertEquals(0, countElementsInTable($cache, $check), "Fail: cache not empty");
-      $this->assertTrue($rule->update(array('id' => $idr[0],
-                                            'is_active' => 1)), "Fail: update rule");
 
       // Add another rule
       $idr[1] = $rule->add(array('name'      => 'test2',
@@ -197,6 +161,85 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
                                  'field'       => 'name',
                                  'value'       => $out2='Web Site'));
       $this->assertGreaterThan(0, $ida[1], "Fail: can't create rule 2 action");
+
+      // Cache empty
+      $cache = $rule->getCacheTable();
+      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
+
+      $manu = new Manufacturer();
+
+      // Import first and fill cache
+      $id[0] = $manu->importExternal($in='the indepnet team');
+      $this->assertGreaterThan(0, $id[0]);
+      $this->assertTrue($manu->getFromDB($id[0]));
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
+
+      // Import second and use cache
+      $id[1] = $manu->importExternal($in='The INDEPNET Team');
+      $this->assertGreaterThan(0, $id[1]);
+      $this->assertEquals($id[0], $id[1]);
+      $this->assertTrue($manu->getFromDB($id[1]));
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(1, countElementsInTable($cache), "Fail: cache not filled");
+
+      // Import third not in cache
+      $id[2] = $manu->importExternal($in='http://www.indepnet.net/');
+      $this->assertGreaterThan(0, $id[2]);
+      $this->assertEquals($id[0], $id[2]);
+      $this->assertTrue($manu->getFromDB($id[2]));
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
+
+      // Set is_active=0, and clean cache
+      $this->assertTrue($rule->update(array('id' => $idr[0],
+                                            'is_active' => 0)), "Fail: update rule");
+      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
+      $this->assertTrue($rule->update(array('id' => $idr[0],
+                                            'is_active' => 1)), "Fail: update rule");
+
+
+      // Import again and fill cache
+      $id[3] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $this->assertGreaterThan(0, $id[3]);
+      $this->assertGreaterThan($id[0], $id[3]);
+      $this->assertTrue($manu->getFromDB($id[3]));
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
+
+      $id[4] = $manu->importExternal($in='http://www.indepnet.net/');
+      $this->assertGreaterThan(0, $id[4]);
+      $this->assertEquals($id[0], $id[4]);
+      $this->assertTrue($manu->getFromDB($id[4]));
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
+
+      // Hack : to disable preload done by Singleton
+      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp->load=0;
+
+      // Change rules order
+      $collection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
+      // Move rule 1 after rule 2
+      $this->assertTrue($collection->moveRule($idr[0], $idr[1]), "Fail: can't move rules");
+      $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
+
+      $this->assertTrue($rule->getFromDB($idr[1]));
+      $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not change");
+      $this->assertTrue($rule->getFromDB($idr[0]));
+      $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not change");
+
+      // Import again and fill cache
+      $id[5] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $this->assertGreaterThan(0, $id[5]);
+      $this->assertTrue($manu->getFromDB($id[5]));
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+
+      $id[6] = $manu->importExternal($in='http://www.indepnet.net/');
+      $this->assertGreaterThan(0, $id[6]);
+      $this->assertEquals($id[5], $id[6]);
+      $this->assertTrue($manu->getFromDB($id[6]));
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
    }
 }
 ?>
