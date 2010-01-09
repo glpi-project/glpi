@@ -943,10 +943,10 @@ class Ticket extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       // Add document if needed
-      $this->addFiles($this->input['id']);
+      $this->addFiles($this->fields['id']);
 
       // Log this event
-      Event::log($this->input['id'],"tracking",4,"tracking",
+      Event::log($this->fields['id'],"tracking",4,"tracking",
                   getUserName($this->input["users_id"])." ".$LANG['log'][20]);
 
       $already_mail=false;
@@ -992,7 +992,7 @@ class Ticket extends CommonDBTM {
          $user = new User();
          $user->getFromDB($this->input["users_id"]);
          // Clean reload of the ticket
-         $this->getFromDB($this->input['id']);
+         $this->getFromDB($this->fields['id']);
 
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
@@ -1553,6 +1553,8 @@ class Ticket extends CommonDBTM {
     * @return integer from 1 to 5 (priority)
     */
    static function computePriority ($urgency, $impact) {
+      global $CFG_GLPI;
+
       if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
          return $CFG_GLPI['priority_matrix'][$urgency][$impact];
       }

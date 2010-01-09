@@ -252,8 +252,15 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['groups_id_assign']['name']  = $LANG['
                                                                          $LANG['common'][35];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['groups_id_assign']['type']  = 'dropdown';
 
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['urgency']['name'] = $LANG['joblist'][29];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['urgency']['type'] = 'dropdown_urgency';
+
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['impact']['name'] = $LANG['joblist'][30];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['impact']['type'] = 'dropdown_impact';
+
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['name'] = $LANG['joblist'][2];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type'] = 'dropdown_priority';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['force_actions'] = array('assign','compute');
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['name'] = $LANG['joblist'][0];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['type'] = 'dropdown_status';
