@@ -634,8 +634,11 @@ class Software extends CommonDBTM {
 
    /**
     * Put software in trash because it's been removed by GLPI software dictionnary
+    *
     * @param $ID  the ID of the software to put in trash
     * @param $comment the comment to add to the already existing software's comment
+    *
+    * @return boolean (success)
     */
    function putInTrash($ID, $comment = '') {
       global $LANG,$CFG_GLPI;
@@ -644,30 +647,30 @@ class Software extends CommonDBTM {
       $input["id"] = $ID;
       $input["is_deleted"] = 1;
 
-      $config = new Config;
-      $config->getFromDB($CFG_GLPI["id"]);
-
       //change category of the software on deletion (if defined in glpi_configs)
-      if (isset($config->fields["softwarecategories_id_ondelete"])
-          && $config->fields["softwarecategories_id_ondelete"] != 0) {
+      if (isset($CFG_GLPI["softwarecategories_id_ondelete"])
+          && $CFG_GLPI["softwarecategories_id_ondelete"] != 0) {
 
-         $input["softwarecategories_id"] = $config->fields["softwarecategories_id_ondelete"];
+         $input["softwarecategories_id"] = $CFG_GLPI["softwarecategories_id_ondelete"];
       }
 
       //Add dictionnary comment to the current comment
       $input["comment"] = ($this->fields["comment"] != '' ? "\n" : '') . $comment;
 
-      $this->update($input);
+      return $this->update($input);
    }
 
 
    /**
     * Restore a software from trash
+    *
     * @param $ID  the ID of the software to put in trash
+    *
+    * @return boolean (success)
     */
    function removeFromTrash($ID) {
 
-      $this->restore(array("id" => $ID));
+      $res = $this->restore(array("id" => $ID));
 
       $softcatrule = new RuleSoftwareCategoryCollection;
       $result = $softcatrule->processAllRules(null, null, $this->fields);
@@ -679,6 +682,8 @@ class Software extends CommonDBTM {
          $this->update(array('id'                    => $ID,
                              'softwarecategories_id' => $result['softwarecategories_id']));
       }
+
+      return $res;
    }
 
    /**
