@@ -372,8 +372,11 @@ class Ticket extends CommonDBTM {
           )
           && $this->fields["status"]=="new") {
 
-         $this->updates[]="status";
-         $this->fields["status"]="assign";
+         if (!in_array('status', $this->updates)) {
+            $this->oldvalues['status'] = $this->fields['status'];
+            $this->updates[] = 'status';
+         }
+         $this->fields['status'] = 'assign';
       }
       if (isset($this->input["status"])) {
          if (isset($this->input["suppliers_id_assign"])
@@ -384,8 +387,11 @@ class Ticket extends CommonDBTM {
              && $this->input["users_id_assign"]==0
              && $this->input["status"]=="assign") {
 
-            $this->updates[]="status";
-            $this->fields["status"]="new";
+            if (!in_array('status', $this->updates)) {
+               $this->oldvalues['status'] = $this->fields['status'];
+               $this->updates[] = 'status';
+            }
+            $this->fields['status'] = 'new';
          }
 
          if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
@@ -433,6 +439,11 @@ class Ticket extends CommonDBTM {
             $this->updates[]="user_email";
             $this->fields["user_email"]=$user->fields["email"];
          }
+      }
+      if (($key=array_search('status',$this->updates))!==false
+          && $this->oldvalues['status'] == $this->fields['status']) {
+         unset($this->updates[$key]);
+         unset($this->oldvalues['status']);
       }
 
       // Do not take into account date_mod if no update is done
