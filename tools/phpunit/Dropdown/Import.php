@@ -292,7 +292,7 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
     */
    public function testSoftwareRule() {
 
-      // Change rules orders again
+      // Clean preload rules
       $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
       $tmp->load=0;
       $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_SOFTWARE);
@@ -423,6 +423,83 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
                                             'is_recursive' => 1)), "Fail: can't update software 1)");
       $id[4] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent2);
       $this->assertEquals($id[0],$id[4], "Fail: previous not used");
+
+      // Clean
+      $this->assertTrue($soft->delete(array('id'=>$id[0]),true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(array('id'=>$id[2]),true), "Fail: can't delete software 1)");
+   }
+
+   /**
+    * Test software category Rule and putInTrash / removeFromTrash
+    */
+   public function testSoftwareCategory() {
+      global $CFG_GLPI;
+
+      $ent0 = $this->sharedFixture['entity'][0];
+
+      // Clean preload rules
+      $tmp = SingletonRuleList::getInstance(RULE_SOFTWARE_CATEGORY);
+      $tmp->load=0;
+
+      $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
+
+      $idcat[0] = Dropdown::import('SoftwareCategory', array('name'=>'Trashed'));
+      $this->assertGreaterThan (0,$idcat[0],"Fail: can't create SoftwareCategory");
+
+      $idcat[1] = Dropdown::import('SoftwareCategory', array('name'=>'OpenSource'));
+      $this->assertGreaterThan (0,$idcat[1],"Fail: can't create SoftwareCategory");
+
+      $rule = new RuleSoftwareCategory();
+      $crit = new RuleCriteria();
+      $acte = new RuleAction();
+
+      $idr[0] = $rule->add(array('name'      => 'OSS',
+                                 'sub_type'  => RULE_SOFTWARE_CATEGORY,
+                                 'match'     => 'AND',
+                                 'is_active' => 1));
+      $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
+      $this->assertTrue($rule->getFromDB($idr[0]));
+      $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not set");
+
+      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+                                 'criteria'  => 'manufacturer',
+                                 'condition' => PATTERN_IS,
+                                 'pattern'   => 'Indepnet'));
+      $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
+
+      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
+                                 'action_type' => 'assign',
+                                 'field'       => 'softwarecategories_id',
+                                 'value'       => $idcat[1]));
+      $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
+
+      // Createthe software
+      $soft = new Software();
+      $id[0] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent0);
+      $this->assertGreaterThan(0, $id[0], "Fail: can't create software 1");
+      // Check name
+      $this->assertTrue($soft->getFromDB($id[0]), "Fail: can't read new soft");
+      $this->assertEquals('GLPI', $soft->getField('name'), "Fail: name not set");
+      // Check category
+      $catid = $soft->getField('softwarecategories_id');
+      $this->assertEquals($idcat[1], $catid, "Fail: category not set");
+
+      // Change configuration
+      $CFG_GLPI["softwarecategories_id_ondelete"] = $idcat[0];
+
+      // Delete
+      $this->assertTrue($soft->putInTrash($id[0]), "Fail: can't put soft in trash");
+      $this->assertTrue($soft->getFromDB($id[0]), "Fail: can't read new soft");
+      $catid = $soft->getField('softwarecategories_id');
+      $this->assertEquals($idcat[0], $catid, "Fail: category not set");
+      $this->assertEquals(1, $soft->getField('is_deleted'), "Fail: soft not deleted");
+
+      // Restore
+      $this->assertTrue($soft->removeFromTrash($id[0]), "Fail: can't put soft in trash");
+      $this->assertTrue($soft->getFromDB($id[0]), "Fail: can't read new soft");
+      $catid = $soft->getField('softwarecategories_id');
+      $this->assertEquals($idcat[1], $catid, "Fail: category not set");
+      $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
    }
 }
 ?>
