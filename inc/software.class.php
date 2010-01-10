@@ -558,7 +558,7 @@ class Software extends CommonDBTM {
 
       $manufacturer_id = 0;
       if ($manufacturer != '') {
-         $manufacturer_id = Dropdown::externalImport('Manufacturer', $manufacturer);
+         $manufacturer_id = Dropdown::importExternal('Manufacturer', $manufacturer);
       }
 
       $sql = "SELECT `id`
@@ -667,16 +667,18 @@ class Software extends CommonDBTM {
     */
    function removeFromTrash($ID) {
 
-      $softcatrule = new RuleSoftwareCategoryCollection;
-      $result = $softcatrule->processAllRules(null, null, $s->fields);
-
-      if (!empty ($result) && isset ($result["softwarecategories_id"])) {
-         $input["softwarecategories_id"] = $result["softwarecategories_id"];
-      } else {
-         $input["softwarecategories_id"] = 0;
-      }
-
       $this->restore(array("id" => $ID));
+
+      $softcatrule = new RuleSoftwareCategoryCollection;
+      $result = $softcatrule->processAllRules(null, null, $this->fields);
+
+      if (!empty($result)
+          && isset($result['softwarecategories_id'])
+          && $result['softwarecategories_id']!=$this->fields['softwarecategories_id']) {
+
+         $this->update(array('id'                    => $ID,
+                             'softwarecategories_id' => $result['softwarecategories_id']));
+      }
    }
 
    /**
