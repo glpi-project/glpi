@@ -455,7 +455,7 @@ function processManufacturerName($old_name)
 		
 	$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
 	$output=array();
-	$rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
+	$output = $rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
 	if (isset($output["name"]))
 		return $output["name"];
 	else
