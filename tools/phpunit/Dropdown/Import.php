@@ -290,7 +290,7 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
     *
     * From OcsServer class
     */
-   public function testSoftware() {
+   public function testSoftwareRule() {
 
       // Change rules orders again
       $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
@@ -371,6 +371,58 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       // Clean
       $this->assertTrue($rulem->delete(array('id'=>$idr[0])));
       $this->assertTrue($rules->delete(array('id'=>$idr[1])));
+   }
+
+   /**
+    * test for addOrRestoreFromTrash
+    */
+   public function testSoftwareImport() {
+
+      $ent0 = $this->sharedFixture['entity'][0];
+      $ent1 = $this->sharedFixture['entity'][1];
+      $ent2 = $this->sharedFixture['entity'][2];
+
+      $soft = new Software();
+      $manu = new Manufacturer();
+
+      // Import Software
+      $id[0] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent0);
+      $this->assertGreaterThan(0, $id[0], "Fail: can't create software 1");
+      // Check name
+      $this->assertTrue($soft->getFromDB($id[0]), "Fail: can't read new soft");
+      $this->assertEquals('GLPI', $soft->getField('name'), "Fail: name not set");
+      // Check manufacturer
+      $manid = $soft->getField('manufacturers_id');
+      $this->assertGreaterThan(0, $manid, "Fail: manufacturer not set");
+      $this->assertTrue($manu->getFromDB($manid), "Fail: can't manufacturer");
+      $this->assertEquals('Indepnet', $manu->getField('name'));
+
+      // Import again => same result
+      $id[1] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent0);
+      $this->assertGreaterThan(0, $id[1], "Fail: can't create software 2");
+      $this->assertEquals($id[0],$id[1], "Fail: previous not found");
+
+      // Import in another entity
+      $id[2] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent1);
+      $this->assertGreaterThan(0, $id[2], "Fail: can't create software 3");
+      $this->assertNotEquals($id[0],$id[2], "Fail: previous used (from another entity)");
+
+      // Delete
+      $this->assertTrue($soft->delete(array('id'=>$id[2])), "Fail: can't delete software 3)");
+      $this->assertTrue($soft->getFromDB($id[2]), "Fail: can't read new soft");
+      $this->assertEquals(1, $soft->getField('is_deleted'), "Fail: soft not deleted");
+
+      // Import again => restore
+      $id[3] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent1);
+      $this->assertEquals($id[2],$id[3], "Fail: previous not used");
+      $this->assertTrue($soft->getFromDB($id[2]), "Fail: can't read new soft");
+      $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
+
+      // Import again => with recursive
+      $this->assertTrue($soft->update(array('id'           => $id[0],
+                                            'is_recursive' => 1)), "Fail: can't update software 1)");
+      $id[4] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent2);
+      $this->assertEquals($id[0],$id[4], "Fail: previous not used");
    }
 }
 ?>
