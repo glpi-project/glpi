@@ -500,6 +500,9 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $catid = $soft->getField('softwarecategories_id');
       $this->assertEquals($idcat[1], $catid, "Fail: category not set");
       $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
+
+      // Clean
+      $this->assertTrue($soft->delete(array('id'=>$id[0]),true), "Fail: can't delete software 1)");
    }
 }
 ?>
