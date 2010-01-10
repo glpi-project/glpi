@@ -285,5 +285,92 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals($nba, countElementsInTable('glpi_ruleactions'), "Fail: glpi_ruleactions not empty");
       $this->assertEquals($nbc, countElementsInTable('glpi_rulecriterias'), "Fail: glpi_ruleactions not empty");
    }
+   /**
+    * Import of Software (with Rule)
+    *
+    * From OcsServer class
+    */
+   public function testSoftware() {
+
+      // Change rules orders again
+      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp->load=0;
+      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_SOFTWARE);
+      $tmp->load=0;
+
+      // Needed objetcs
+      $rulem = new RuleDictionnaryDropdown(RULE_DICTIONNARY_MANUFACTURER);
+      $rules = new RuleDictionnaryDropdown(RULE_DICTIONNARY_SOFTWARE);
+      $crit = new RuleCriteria();
+      $acte = new RuleAction();
+
+      // Rule for Manufacturer
+      $idr[0] = $rulem->add(array('name'      => 'test1',
+                                  'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                  'match'     => 'AND',
+                                  'is_active' => 1));
+      $this->assertGreaterThan(0, $idr[0], "Fail: can't create manufacturer rule");
+      $this->assertTrue($rulem->getFromDB($idr[0]));
+      $this->assertEquals(1, $rulem->fields['ranking'], "Fail: ranking not set");
+
+      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+                                 'criteria'  => 'name',
+                                 'condition' => PATTERN_CONTAIN,
+                                 'pattern'   => 'indepnet'));
+      $this->assertGreaterThan(0, $idc[0], "Fail: can't create manufacturer rule criteria");
+
+      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
+                                 'action_type' => 'assign',
+                                 'field'       => 'name',
+                                 'value'       => $outm='Indepnet'));
+      $this->assertGreaterThan(0, $ida[0], "Fail: can't create manufacturer rule action");
+
+      // Rule for Software
+      $idr[1] = $rules->add(array('name'      => 'test2',
+                                 'sub_type'  => RULE_DICTIONNARY_SOFTWARE,
+                                 'match'     => 'AND',
+                                 'is_active' => 1));
+      $this->assertGreaterThan(0, $idr[1], "Fail: can't create software rule");
+      $this->assertTrue($rules->getFromDB($idr[1]));
+      $this->assertEquals(1, $rules->fields['ranking'], "Fail: ranking not set");
+
+      $idc[1] = $crit->add(array('rules_id'  => $idr[1],
+                                 'criteria'  => 'name',
+                                 'condition' => REGEX_MATCH,
+                                 'pattern'   => '/^glpi (0\.[0-9]+)/'));
+      $this->assertGreaterThan(0, $idc[1], "Fail: can't create software rule criteria");
+
+      $ida[1] = $acte->add(array('rules_id'    => $idr[1],
+                                 'action_type' => 'assign',
+                                 'field'       => 'name',
+                                 'value'       => $outs='GLPI'));
+      $this->assertGreaterThan(0, $ida[1], "Fail: can't create software rule action");
+
+      $ida[2] = $acte->add(array('rules_id'    => $idr[1],
+                                 'action_type' => 'regex_result',
+                                 'field'       => 'version',
+                                 'value'       => $outv='#0'));
+      $this->assertGreaterThan(0, $ida[2], "Fail: can't create software rule action");
+
+      // Apply Rule to manufacturer
+      $manu = processManufacturerName('the indepnet team');
+      $this->assertEquals('Indepnet', $manu, "Fail: manufacturer not altered");
+
+      // Apply Rule to software
+      $rulecollection = new RuleDictionnarySoftwareCollection;
+      $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.80',
+                                                         "manufacturer" => $manu,
+                                                         "old_version"  => ''),
+                                                   array (), array());
+      $this->assertArrayHasKey('name', $res_rule, "Fail: name not altered");
+      $this->assertEquals('GLPI', $res_rule['name'], "Fail: name not correct");
+
+      $this->assertArrayHasKey('version', $res_rule, "Fail: name not altered");
+      $this->assertEquals('0.80', $res_rule['version'], "Fail: version not correct");
+
+      // Clean
+      $this->assertTrue($rulem->delete(array('id'=>$idr[0])));
+      $this->assertTrue($rules->delete(array('id'=>$idr[1])));
+   }
 }
 ?>
