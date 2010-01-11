@@ -110,7 +110,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Peripheral',$_POST["id"]);
+            Log::showForItem($periph);
             break;
 
          default :

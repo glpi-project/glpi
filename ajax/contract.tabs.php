@@ -75,7 +75,7 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          break;
 
       case 12 :
-         showHistory('Contract',$_POST["id"]);
+         Log::showForItem($contract);
          break;
 
       default :

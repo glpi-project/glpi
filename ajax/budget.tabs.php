@@ -73,7 +73,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          break;
 
       case 12 :
-         showHistory('Budget',$_POST["id"]);
+            Log::showForItem($budget);
          break;
 
       default :

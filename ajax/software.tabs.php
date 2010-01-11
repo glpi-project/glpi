@@ -114,7 +114,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Software',$_POST["id"]);
+            Log::showForItem($soft);
             break;
 
          case 21 :

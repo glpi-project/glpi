@@ -120,7 +120,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Printer',$_POST["id"]);
+            Log::showForItem($printer);
             break;
 
          default :

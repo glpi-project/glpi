@@ -115,7 +115,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Phone',$_POST["id"]);
+            Log::showForItem($phone);
             break;
 
          default :
