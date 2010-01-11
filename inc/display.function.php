@@ -338,9 +338,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    if (haveRight("create_ticket","1")) {
       $menu['maintain']['content']['helpdesk']['title']=$LANG['Menu'][31];
       $menu['maintain']['content']['helpdesk']['shortcut']='h';
-      $menu['maintain']['content']['helpdesk']['page']='/front/helpdesk.php';
-      $menu['maintain']['content']['helpdesk']['links']['add']='/front/helpdesk.php';
-      $menu['maintain']['content']['tracking']['links']['add']='/front/helpdesk.php';
+      $menu['maintain']['content']['helpdesk']['page']='/front/ticket.form.php';
+      $menu['maintain']['content']['helpdesk']['links']['add']='/front/ticket.form.php';
+      $menu['maintain']['content']['tracking']['links']['add']='/front/ticket.form.php';
    }
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']=$LANG['Menu'][29];

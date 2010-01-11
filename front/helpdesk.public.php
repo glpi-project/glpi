@@ -129,16 +129,14 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
                        $_GET["group"],$_GET["showfollowups"],$_GET["ticketcategories_id"]);
 
    } else {
+      $track = new Ticket();
+
       if (isset($_POST["update"])) {
-         $track = new Ticket();
          $track->update($_POST);
          glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
       }
       $track = new Ticket();
-      $track->check($_GET["id"],'r');
-      $track->showTabs($_GET["id"]);
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $track->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
    }
 
 //*******************
