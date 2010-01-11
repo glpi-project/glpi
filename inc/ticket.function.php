@@ -321,7 +321,7 @@ function showJobListForItem($itemtype,$items_id) {
    // Link to open a new ticcket
    if ($items_id) {
       echo "<tr><td class='tab_bg_2 center' colspan='10'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$items_id&amp;itemtype=".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=$items_id&amp;itemtype=".
              "$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
       echo "</td></tr>";
    }

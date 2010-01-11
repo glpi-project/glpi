@@ -46,9 +46,20 @@ if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
 
-commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+if (isset($_POST["add"])) {
+   if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
+      $splitter = explode("_",$_POST["_my_items"]);
+      if (count($splitter) == 2) {
+         $_POST["itemtype"] = $splitter[0];
+         $_POST["items_id"] = $splitter[1];
+      }
+   }
+   if ($newID=$track->add($_POST)) {
+      Event::log($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-if (isset($_POST['update'])) {
+} else if (isset($_POST['update'])) {
    checkSeveralRightsOr(array('update_ticket'        => '1',
                               'assign_ticket'        => '1',
                               'steal_ticket'         => '1',
@@ -74,8 +85,55 @@ if (isset($_POST['update'])) {
 
 */
 }
-$track->check($_GET["id"],'r');
-$track->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+
+if (isset($_GET["id"]) && $_GET["id"]>0) {
+   commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+   $track->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+
+} else {
+   commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
+
+   // Set default value...
+   $values = array('users_id'             => $_SESSION["glpiID"],
+                   'groups_id'            => 0,
+                   'users_id_assign'      => 0,
+                   'groups_id_assign'     => 0,
+                   'name'                 => '',
+                   'content'              => '',
+                   'ticketcategories_id'  => 0,
+                   'urgency'              => 3,
+                   'impact'               => 3,
+                   'priority'             => Ticket::computePriority(3,3),
+                   'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
+                   'hour'                 => 0,
+                   'minute'               => 0,
+                   'date'                 => $_SESSION["glpiactive_entity"],
+                   'entities_id'          => $_SESSION["glpiactive_entity"],
+                   'status'               => 'new',
+                   'followup'             => array(),
+                   'itemtype'             => '',
+                   'items_id'             => 0,
+                   'plan'                 => array());
+
+   // Restore saved value or override with page parameter
+   foreach ($values as $name => $value) {
+      if (isset($_REQUEST[$name])) {
+         $values[$name] = $_REQUEST[$name];
+      } else if (isset($_SESSION["helpdeskSaved"][$name])) {
+         $values[$name] = $_SESSION["helpdeskSaved"]["$name"];
+      }
+   }
+   // Clean text fields
+   $values['name'] = stripslashes($values['name']);
+   $values['content'] = cleanPostForTextArea($values['content']);
+
+   if (isset($_SESSION["helpdeskSaved"])) {
+      unset($_SESSION["helpdeskSaved"]);
+   }
+
+   $track->showForm($_SERVER['PHP_SELF'], 0, $values);
+}
+
 
 commonFooter();
 
