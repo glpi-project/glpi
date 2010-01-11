@@ -1503,7 +1503,7 @@ class Ticket extends CommonDBTM {
    function getSearchOptions() {
       global $LANG;
 
-      // TRACKING_TYPE - used for massive actions
+      // TRACKING_TYPE - used for massive actions and for history
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
@@ -1551,6 +1551,16 @@ class Ticket extends CommonDBTM {
       $tab[9]['field']     = 'name';
       $tab[9]['linkfield'] = 'requesttypes_id';
       $tab[9]['name']      = $LANG['job'][44];
+
+      $tab[10]['table']     = 'glpi_tickets';
+      $tab[10]['field']     = 'urgency';
+      $tab[10]['linkfield'] = 'urgency';
+      $tab[10]['name']      = $LANG['joblist'][29];
+
+      $tab[11]['table']     = 'glpi_tickets';
+      $tab[11]['field']     = 'impact';
+      $tab[11]['linkfield'] = 'impact';
+      $tab[11]['name']      = $LANG['joblist'][30];
 
       return $tab;
    }

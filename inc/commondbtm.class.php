@@ -707,7 +707,6 @@ class CommonDBTM extends CommonGLPI {
                   $this->fields[$key]='NULL';
                }
                if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
-                  logDebug("changes detected",'"'.mysql_real_escape_string($this->fields[$key]).'"', '"'.$this->input[$key].'"');
                   if ($key!="id") {
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {

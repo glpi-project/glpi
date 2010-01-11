@@ -53,91 +53,122 @@ class Log extends CommonDBTM {
     * @param $items CommonDBTM object
     * @param $oldvalues array of old values updated
     * @param $values array of all values of the item
+    *
+    * @return boolean for success (at least 1 log entry added)
     **/
    static function constructHistory(CommonDBTM $item, & $oldvalues, & $values) {
       global $LANG;
 
-      if (count($oldvalues)) {
-         // needed to have  $SEARCHOPTION
-         foreach ($oldvalues as $key => $oldval) {
-            $changes = array ();
+      if (!count($oldvalues)) {
+         return false;
+      }
+      // needed to have  $SEARCHOPTION
+      if ($item->getType() == 'Infocom') {
+         $real_type = $item->fields['itemtype'];
+         $real_id = $item->fields['items_id'];
+      } else {
+         $real_type = $item->getType();
+         $real_id = $item->fields['id'];
+      }
+      $searchopt = Search::getOptions($real_type);
+      if (!is_array($searchopt)) {
+         return false;
+      }
+      $result = 0;
+      foreach ($oldvalues as $key => $oldval) {
+         $changes = array ();
+
+         if ($real_type == 'Infocom') {
             // Parsing $SEARCHOPTION to find infocom
-            if ($item->getType() == 'Infocom') {
-               $real_type = $item->fields['itemtype'];
-               $real_id = $item->fields['items_id'];
+            foreach ($searchopt as $key2 => $val2) {
+               if (($val2["field"] == $key && strpos($val2['table'], 'infocoms'))
+                   || ($key == 'budgets_id' && $val2['table'] == 'glpi_budgets')
+                   || ($key == 'suppliers_id' && $val2['table'] == 'glpi_suppliers_infocoms')) {
 
-               $searchopt = Search :: getOptions($real_type);
-               if (is_array($searchopt)) {
-                  foreach ($searchopt as $key2 => $val2) {
-                     if (($val2["field"] == $key && strpos($val2['table'], 'infocoms'))
-                         || ($key == 'budgets_id' && $val2['table'] == 'glpi_budgets')
-                         || ($key == 'suppliers_id' && $val2['table'] == 'glpi_suppliers_infocoms')) {
-
-                        $id_search_option = $key2; // Give ID of the $SEARCHOPTION
-                        if ($val2["table"] == "glpi_infocoms") {
-                           // 1st case : text field -> keep datas
-                           $changes = array (
-                              $id_search_option,
-                              addslashes($oldval),
-                              $values[$key]
-                           );
-                        } else
-                           if ($val2["table"] == "glpi_suppliers_infocoms") {
-                              // 2nd case ; link field -> get data from glpi_suppliers
-                              $changes = array (
-                                 $id_search_option,
-                                 addslashes(Dropdown :: getDropdownName("glpi_suppliers", $oldval)),
-                                 addslashes(Dropdown :: getDropdownName("glpi_suppliers", $values[$key]))
-                              );
-                           } else {
-                              // 3rd case ; link field -> get data from dropdown (budget)
-                              $changes = array (
-                                 $id_search_option,
-                                 addslashes(Dropdown :: getDropdownName($val2["table"], $oldval)),
-                                 addslashes(Dropdown :: getDropdownName($val2["table"], $values[$key]))
-                              );
-                           }
-                        break; // foreach exit
-                     }
+                  $id_search_option = $key2; // Give ID of the $SEARCHOPTION
+                  if ($val2["table"] == "glpi_infocoms") {
+                     // 1st case : text field -> keep datas
+                     $changes = array (
+                        $id_search_option,
+                        addslashes($oldval),
+                        $values[$key]
+                     );
+                  } else if ($val2["table"] == "glpi_suppliers_infocoms") {
+                     // 2nd case ; link field -> get data from glpi_suppliers
+                     $changes = array (
+                        $id_search_option,
+                        addslashes(Dropdown::getDropdownName("glpi_suppliers", $oldval)),
+                        addslashes(Dropdown::getDropdownName("glpi_suppliers", $values[$key])));
+                  } else {
+                     // 3rd case ; link field -> get data from dropdown (budget)
+                     $changes = array (
+                        $id_search_option,
+                        addslashes(Dropdown::getDropdownName($val2["table"], $oldval)),
+                        addslashes(Dropdown::getDropdownName($val2["table"], $values[$key])));
                   }
-               }
-            } else {
-               $real_type = $item->getType();
-               $real_id = $item->fields['id'];
-
-               // Parsing $SEARCHOPTION, check if an entry exists matching $key
-               $searchopt = Search :: getOptions($real_type);
-               if (is_array($searchopt)) {
-                  foreach ($searchopt as $key2 => $val2) {
-                     // Linkfield or standard field not massive action enable
-                     if ($val2["linkfield"] == $key || (empty ($val2["linkfield"]) && $key == $val2["field"])) {
-
-                        $id_search_option = $key2; // Give ID of the $SEARCHOPTION
-                        if ($val2["table"] == $item->getTable()) {
-                           // 1st case : text field -> keep datas
-                           $changes = array (
-                              $id_search_option,
-                              addslashes($oldval),
-                              $values[$key]
-                           );
-                        } else {
-                           // 2nd case ; link field -> get data from dropdown
-                           $changes = array (
-                              $id_search_option,
-                              addslashes(Dropdown :: getDropdownName($val2["table"], $oldval)),
-                              addslashes(Dropdown :: getDropdownName($val2["table"], $values[$key]))
-                           );
-                        }
-                        break;
-                     }
-                  }
+                  break; // foreach exit
                }
             }
-            if (count($changes)) {
-               Log::history($real_id, $real_type, $changes);
+         } else { // Not an Infocom
+            // Parsing $SEARCHOPTION to find changed field
+            foreach ($searchopt as $key2 => $val2) {
+               // Linkfield or standard field not massive action enable
+               if ($val2["linkfield"] == $key || (empty ($val2["linkfield"]) && $key == $val2["field"])) {
+
+                  $id_search_option = $key2; // Give ID of the $SEARCHOPTION
+
+                  // 1st case : Ticket specific dropdown case (without table)
+                  if ($real_type=='Ticket' && in_array($key,array('status','urgency','impact','priority'))) {
+                     switch ($key) {
+                        case 'status' :
+                           $changes = array ($id_search_option,
+                                             addslashes(Ticket::getStatus($oldval)),
+                                             addslashes(Ticket::getStatus($values[$key])));
+                           break;
+
+                        case 'urgency' :
+                           $changes = array ($id_search_option,
+                                             addslashes(Ticket::getUrgencyName($oldval)),
+                                             addslashes(Ticket::getUrgencyName($values[$key])));
+                           break;
+
+                        case 'impact' :
+                           $changes = array ($id_search_option,
+                                             addslashes(Ticket::getImpactName($oldval)),
+                                             addslashes(Ticket::getImpactName($values[$key])));
+                           break;
+
+                        case 'priority' :
+                           $changes = array ($id_search_option,
+                                             addslashes(Ticket::getPriorityName($oldval)),
+                                             addslashes(Ticket::getPriorityName($values[$key])));
+                           break;
+
+                     }
+                  } else if ($val2["table"] == $item->getTable()) {
+                     // 2nd case : text field -> keep datas
+                     $changes = array (
+                        $id_search_option,
+                        addslashes($oldval),
+                        $values[$key]
+                     );
+                  } else {
+                     // other cases ; link field -> get data from dropdown
+                     $changes = array (
+                        $id_search_option,
+                        addslashes(Dropdown::getDropdownName($val2["table"], $oldval)),
+                        addslashes(Dropdown::getDropdownName($val2["table"], $values[$key]))
+                     );
+                  }
+                  break;
+               }
             }
          }
+         if (count($changes)) {
+            $result = Log::history($real_id, $real_type, $changes);
+         }
       }
+      return $result;
    } // function construct_history
 
    /**
@@ -180,7 +211,10 @@ class Log extends CommonDBTM {
                 VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action','".
                         addslashes($username)."', '$date_mod', '$id_search_option', '".
                         utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."')";
-      $DB->query($query);
+      if ($DB->query($query)) {
+         return $DB->insert_id();
+      }
+      return false;
    }
 
    /**
