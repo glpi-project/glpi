@@ -627,9 +627,12 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
       Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
       echo "</td>";
+      /*
       echo "<td class='center'>" . $LANG['setup'][405] . "</td><td>";
       Dropdown::showYesNo("add_followup_on_update_ticket", $CFG_GLPI["add_followup_on_update_ticket"]);
       echo "</td></tr>";
+      */
+      echo "<td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['tracking'][37] . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
