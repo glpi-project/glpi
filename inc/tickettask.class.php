@@ -152,7 +152,7 @@ class TicketTask  extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = addslashes($this->getName());
       $changes[2] = '';
-      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
    }
 
 
@@ -355,7 +355,7 @@ class TicketTask  extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = addslashes($this->getName(true));
-      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
    }
 
 

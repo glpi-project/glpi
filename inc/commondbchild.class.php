@@ -144,8 +144,8 @@ abstract class CommonDBChild extends CommonDBTM {
       $changes[0]='0';
       $changes[1]="";
       $changes[2]=addslashes($this->getNameID());
-      historyLog ($this->fields[$this->items_id],$type,$changes,get_class($this),
-                  HISTORY_ADD_RELATION);
+      Log::history($this->fields[$this->items_id],$type,$changes,get_class($this),
+                   HISTORY_ADD_RELATION);
    }
    /**
     * Actions done after the DELETE of the item in the database
@@ -175,8 +175,8 @@ abstract class CommonDBChild extends CommonDBTM {
       $changes[0]='0';
       $changes[1]=addslashes($this->getNameID());
       $changes[2]="";
-      historyLog ($this->fields[$this->items_id],$type,$changes,get_class($this),
-                  HISTORY_DEL_RELATION);
+      Log::history($this->fields[$this->items_id],$type,$changes,get_class($this),
+                   HISTORY_DEL_RELATION);
    }
 
    /**

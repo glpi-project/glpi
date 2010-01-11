@@ -923,7 +923,7 @@ class OcsServer extends CommonDBTM {
             $changes[0]='0';
             $changes[1]="";
             $changes[2]=$ocsid;
-            historyLog ($computers_id,'Computer',$changes,0,HISTORY_OCS_LINK);
+            Log::history($computers_id,'Computer',$changes,0,HISTORY_OCS_LINK);
 
             OcsServer::updateComputer($idlink, $ocsservers_id, 0);
             return true;
@@ -1085,8 +1085,8 @@ class OcsServer extends CommonDBTM {
                            $changes[1]=$del;
                            //New ocsid
                            $changes[2]=$data["ID"];
-                           historyLog ($DB->result($res_id,0,"computers_id"),'Computer',$changes,0,
-                                       HISTORY_OCS_IDCHANGED);
+                           Log::history($DB->result($res_id,0,"computers_id"),'Computer',$changes,0,
+                                        HISTORY_OCS_IDCHANGED);
                         }
                      }
                   }
@@ -1112,7 +1112,7 @@ class OcsServer extends CommonDBTM {
                         $changes[0]='0';
                         $changes[1]=$data["ocsid"];
                         $changes[2]="";
-                        historyLog ($data["computers_id"],'Computer',$changes,0,HISTORY_OCS_DELETE);
+                        Log::history($data["computers_id"],'Computer',$changes,0,HISTORY_OCS_DELETE);
 
                         $query = "DELETE
                                   FROM `glpi_ocslinks`
@@ -1205,7 +1205,7 @@ class OcsServer extends CommonDBTM {
             $changes[0]='0';
             $changes[1]="";
             $changes[2]=$ocsid;
-            historyLog ($computers_id,'Computer',$changes,0,HISTORY_OCS_IMPORT);
+            Log::history($computers_id,'Computer',$changes,0,HISTORY_OCS_IMPORT);
 
             if ($idlink = OcsServer::ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
                OcsServer::updateComputer($idlink, $ocsservers_id, 0);

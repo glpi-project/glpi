@@ -164,15 +164,15 @@ abstract class CommonDBRelation extends CommonDBTM {
          $changes[0]='0';
          $changes[1]="";
          $changes[2]=addslashes($item2->getNameID());
-         historyLog ($item1->fields["id"],get_class($item1),$changes,get_class($item2),
-                     HISTORY_ADD_RELATION);
+         Log::history($item1->fields["id"],get_class($item1),$changes,get_class($item2),
+                      HISTORY_ADD_RELATION);
       }
       if ($item2->dohistory) {
          $changes[0]='0';
          $changes[1]="";
          $changes[2]=addslashes($item1->getNameID());
-         historyLog ($item2->fields["id"],get_class($item2),$changes,get_class($item1),
-                     HISTORY_ADD_RELATION);
+         Log::history($item2->fields["id"],get_class($item2),$changes,get_class($item1),
+                      HISTORY_ADD_RELATION);
       }
    }
    /**
@@ -217,15 +217,15 @@ abstract class CommonDBRelation extends CommonDBTM {
          $changes[0]='0';
          $changes[1]=addslashes($item2->getNameID());
          $changes[2]="";
-         historyLog ($item1->fields["id"],get_class($item1),$changes,get_class($item2),
-                     HISTORY_DEL_RELATION);
+         Log::history($item1->fields["id"],get_class($item1),$changes,get_class($item2),
+                      HISTORY_DEL_RELATION);
       }
       if ($item2->dohistory) {
          $changes[0]='0';
          $changes[1]=addslashes($item1->getNameID());
          $changes[2]="";
-         historyLog ($item2->fields["id"],get_class($item2),$changes,get_class($item1),
-                     HISTORY_DEL_RELATION);
+         Log::history($item2->fields["id"],get_class($item2),$changes,get_class($item1),
+                      HISTORY_DEL_RELATION);
       }
    }
 

@@ -180,8 +180,8 @@ class NetworkPort_NetworkPort extends CommonDBTM {
          if ($pd->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = $changes[2] . " > #" . $pd->fields["name"];
          }
-         historyLog($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
-                    $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+         Log::history($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
+                      $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
       }
       if ($desthistory) {
 
@@ -192,8 +192,8 @@ class NetworkPort_NetworkPort extends CommonDBTM {
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
             $changes[2] = $changes[2] . " > #" . $ps->fields["name"];
          }
-         historyLog($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
-                    $ps->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+         Log::history($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
+                      $ps->fields["itemtype"], HISTORY_CONNECT_DEVICE);
       }
    }
 
@@ -258,8 +258,8 @@ class NetworkPort_NetworkPort extends CommonDBTM {
             if ($np2->fields["itemtype"] == 'NetworkEquipment') {
                $changes[1] = $changes[1] . " > #" . $np2->fields["name"];
             }
-            historyLog($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
-                     $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+            Log::history($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
+                         $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
          }
 
          $name=NOT_AVAILABLE;
@@ -281,8 +281,8 @@ class NetworkPort_NetworkPort extends CommonDBTM {
             if ($np1->fields["itemtype"] == 'NetworkEquipment') {
                $changes[1] = $changes[1] . " > #" . $np1->fields["name"];
             }
-            historyLog($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
-                     $np1->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+            Log::history($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
+                         $np1->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
          }
       }
 
