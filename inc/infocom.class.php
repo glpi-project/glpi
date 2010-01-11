@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')){
 class Infocom extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory=true;
-   public $auto_message_on_action=true;
+   public $dohistory = true;
+   public $auto_message_on_action = false; // Link in message can't work'
 
    static function getTypeName() {
       global $LANG;
