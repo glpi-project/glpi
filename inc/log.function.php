@@ -38,47 +38,6 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * Log  history
- *
- * @param $items_id
- * @param $itemtype
- * @param $changes
- * @param $itemtype_link
- * @param $linked_action
- **/
-function historyLog ($items_id,$itemtype,$changes,$itemtype_link='',$linked_action='0') {
-   global $DB;
-
-   $date_mod=$_SESSION["glpi_currenttime"];
-   if (!empty($changes)) {
-
-      // create a query to insert history
-      $id_search_option=$changes[0];
-      $old_value=$changes[1];
-      $new_value=$changes[2];
-
-      if (isset($_SESSION["glpiID"])) {
-         if (is_numeric($_SESSION["glpiID"])) {
-            $username = getUserName($_SESSION["glpiID"],$link=0);
-         } else { // For cron management
-            $username=$_SESSION["glpiID"];
-         }
-      } else {
-         $username="";
-      }
-
-      // Build query
-      $query = "INSERT INTO
-                `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
-                             `date_mod`, `id_search_option`, `old_value`, `new_value`)
-                VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action','".
-                        addslashes($username)."', '$date_mod', '$id_search_option', '".
-                        utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."')";
-      $DB->query($query);
-   }
-}
-
-/**
  * Show History
  **
  * Show history for a device

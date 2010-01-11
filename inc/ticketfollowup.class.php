@@ -151,7 +151,7 @@ class TicketFollowup  extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = addslashes($this->getName(true));
       $changes[2] = '';
-      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
    }
 
 
@@ -299,7 +299,7 @@ class TicketFollowup  extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = addslashes($this->getName());
-      historyLog ($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
    }
 
 

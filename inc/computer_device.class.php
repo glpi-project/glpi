@@ -76,7 +76,7 @@ class Computer_Device extends CommonDBChild {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = addslashes($dev->getName());
-      historyLog ($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
    }
 
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
@@ -90,7 +90,7 @@ class Computer_Device extends CommonDBChild {
       $changes[0] = 0;
       $changes[1] = addslashes($dev->getName());
       $changes[2] = '';
-      historyLog ($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
    }
 
    function post_updateItem($history=1) {
@@ -104,7 +104,7 @@ class Computer_Device extends CommonDBChild {
       $changes[1] = addslashes($this->oldvalues['specificity']);
       $changes[2] = $this->fields['specificity'];
       // history log
-      historyLog ($this->fields['computers_id'],'Computer',$changes,$this->fields['itemtype'],HISTORY_UPDATE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,$this->fields['itemtype'],HISTORY_UPDATE_DEVICE);
    }
 
    /**

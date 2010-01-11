@@ -707,6 +707,7 @@ class CommonDBTM extends CommonGLPI {
                   $this->fields[$key]='NULL';
                }
                if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
+                  logDebug("changes detected",'"'.mysql_real_escape_string($this->fields[$key]).'"', '"'.$this->input[$key].'"');
                   if ($key!="id") {
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {
@@ -861,7 +862,7 @@ class CommonDBTM extends CommonGLPI {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
 
-                  historyLog ($this->fields["id"],$this->getType(),$changes,0,HISTORY_DELETE_ITEM);
+                  Log::history($this->fields["id"],$this->getType(),$changes,0,HISTORY_DELETE_ITEM);
                }
                doHook("item_delete",$this);
             }
@@ -961,7 +962,7 @@ class CommonDBTM extends CommonGLPI {
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
-            historyLog ($this->input["id"],$this->getType(),$changes,0,HISTORY_RESTORE_ITEM);
+            Log::history($this->input["id"],$this->getType(),$changes,0,HISTORY_RESTORE_ITEM);
          }
          doHook("item_restore", $this);
 

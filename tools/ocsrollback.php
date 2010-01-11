@@ -151,7 +151,7 @@ while ($event=$DB->fetch_array($res)) {
 					$changes[0] = 0;
 					$changes[2] = "Rollback: restauration lien du $maxti";
 					$changes[1] = "";
-					historyLog($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+					Log::history($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 				} else {
 					echo "*** MySQL : $sql\n*** Error : " . $DB->error() . "\n";
 				}
@@ -188,7 +188,7 @@ while ($event=$DB->fetch_array($res)) {
 					$changes[0] = 0;
 					$changes[2] = "Rollback: restauration statut au $maxti";
 					$changes[1] = "";
-					historyLog($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+					Log::history($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 
 				} else {
 					echo "*** MySQL : $sql\n*** Error : " . $DB->error() . "\n";

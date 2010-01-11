@@ -820,8 +820,8 @@ class Infocom extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='middle'>";
             echo $LANG['common'][25]."&nbsp;:</td>";
             echo "<td class='left' colspan='3'>
-                  <textarea cols='116' $option rows='2' name='comment' >".$ic->fields["comment"]."
-                  </textarea>";
+                  <textarea cols='116' $option rows='2' name='comment' >".$ic->fields["comment"];
+            echo "</textarea>";
             echo "</td></tr>";
 
             if ($canedit) {
