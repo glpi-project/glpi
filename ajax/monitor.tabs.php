@@ -106,7 +106,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Monitor',$_POST["id"]);
+            Log::showForItem($monitor);
             break;
 
          default :

@@ -109,7 +109,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 12 :
-         showHistory('NetworkEquipment',$_POST["id"]);
+            Log::showForItem($netdevice);
          break;
 
       default :

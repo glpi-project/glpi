@@ -64,7 +64,7 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       case 6 :
-         showHistory('Ticket',$_POST["id"]);
+         Log::showForItem($ticket);
          break;
 
       default :

@@ -69,7 +69,7 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          break;
 
       case 12 :
-         showHistory('Contact',$_POST["id"]);
+         Log::showForItem($contact);
          break;
 
       default :

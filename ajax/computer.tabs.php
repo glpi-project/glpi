@@ -139,7 +139,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 12 :
-            showHistory('Computer',$_POST["id"]);
+            Log::showForItem($computer);
             break;
 
          case 13 :

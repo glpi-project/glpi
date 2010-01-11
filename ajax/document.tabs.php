@@ -61,7 +61,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory('Document',$_POST["id"]);
+         Log::showForItem($doc);
          break;
 
       default :

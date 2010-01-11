@@ -85,7 +85,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         showHistory('Supplier',$_POST["id"]);
+         Log::showForItem($supplier);
          break;
 
       case 15 :
