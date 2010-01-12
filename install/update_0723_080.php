@@ -2590,17 +2590,6 @@ function update0723to080() {
       $DB->query($query) or die("0.80 alter glpi_ticketplannings" . $LANG['update'][90] . $DB->error());
    }
 
-   if (countElementsInTable('glpi_displaypreferences',"itemtype='AuthMail'") == 0) {
-      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
-         VALUES ('AuthMail', 3, 1, 0);";
-      $DB->query($query) or die("0.80 add default value for search engine for AuthMail" . $LANG['update'][90] . $DB->error());
-   }
-
-   if (countElementsInTable('glpi_displaypreferences',"itemtype='AuthLDAP'") == 0) {
-      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
-         VALUES ('AuthLDAP', 3, 1, 0);";
-      $DB->query($query) or die("0.80 add default value for search engine for AuthLDAP" . $LANG['update'][90] . $DB->error());
-   }
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
@@ -2847,27 +2836,78 @@ function update0723to080() {
    }
 
    // Change mailgate search pref : add active / date_mod
-	$query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='MailCollector';";
-	if ($result = $DB->query($query)) {
-		if ($DB->numrows($result)>0) {
-			while ($data = $DB->fetch_assoc($result)) {
-				$query="SELECT max(rank) FROM glpi_displaypreferences WHERE users_id='".$data['users_id']."' AND itemtype='MailCollector';";
-				$result=$DB->query($query);
-				$rank=$DB->result($result,0,0);
-				$rank++;
-				$query="SELECT * FROM glpi_displaypreferences WHERE users_id='".$data['users_id']."' AND num=2 AND itemtype='MailCollector';";
-				if ($result2=$DB->query($query)) {
-					if ($DB->numrows($result2)==0) {
-						$query="INSERT INTO glpi_displaypreferences (itemtype ,`num` ,`rank` ,users_id) VALUES ('MailCollector', '2', '".$rank++."', '".$data['users_id']."');";
-						$DB->query($query);
-						$query="INSERT INTO glpi_displaypreferences (itemtype ,`num` ,`rank` ,users_id) VALUES ('MailCollector', '19', '".$rank++."', '".$data['users_id']."');";
-						$DB->query($query);
-					}
-				}
-			}
-		}
-	}
+   $ADDTODISPLAYPREF['MailCollector']=array(2,19);
 
+
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+
+   if (!FieldExists('glpi_authldaps','date_mod')) {
+      $query = "ALTER TABLE `glpi_authldaps`
+                ADD `date_mod` DATETIME NULL";
+
+      $DB->query($query) or die("0.80 add date_mod to glpi_authldaps" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_authldaps','comment')) {
+      $query = "ALTER TABLE `glpi_authldaps`
+                ADD `comment` text collate utf8_unicode_ci";
+
+      $DB->query($query) or die("0.80 add comment to glpi_authldaps" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   $ADDTODISPLAYPREF['AuthLDAP']=array(3,19);
+
+   // Change mailgate search pref : date_mod
+   $ADDTODISPLAYPREF['AuthLDAP']=array(3,19);
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+
+   if (!FieldExists('glpi_authmails','date_mod')) {
+      $query = "ALTER TABLE `glpi_authmails`
+                ADD `date_mod` DATETIME NULL";
+
+      $DB->query($query) or die("0.80 add date_mod to glpi_authmails" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_authmails','comment')) {
+      $query = "ALTER TABLE `glpi_authmails`
+                ADD `comment` text collate utf8_unicode_ci";
+
+      $DB->query($query) or die("0.80 add comment to glpi_authmails" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   // Change mailgate search pref : host, date_mod
+   $ADDTODISPLAYPREF['AuthMail']=array(3,19);
+
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+
+      $query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='$type';";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query="SELECT max(rank) FROM glpi_displaypreferences
+                           WHERE users_id='".$data['users_id']."' AND itemtype='$type';";
+               $result=$DB->query($query);
+               $rank=$DB->result($result,0,0);
+               $rank++;
+               foreach ($tab as $newval) {
+                  $query="SELECT * FROM glpi_displaypreferences
+                           WHERE users_id='".$data['users_id']."' AND num=$newval AND itemtype='$type';";
+                  if ($result2=$DB->query($query)) {
+                     if ($DB->numrows($result2)==0) {
+                        $query="INSERT INTO glpi_displaypreferences (itemtype ,`num` ,`rank` ,users_id)
+                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."');";
+                        $DB->query($query);
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

@@ -137,7 +137,7 @@ class MailCollector  extends CommonDBTM {
          echo $LANG['mailgate'][0]."&nbsp;: ".$this->fields["id"];
       }
       echo "</th><th>";
-      echo ($ID>0?$LANG['common'][26].": ".convDateTime($this->fields["date_mod"]):'&nbsp;');
+      echo ($ID>0?$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
       echo "</th></tr>";
 
       if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {

@@ -94,6 +94,19 @@ class AuthMail extends CommonDBTM {
       $tab[4]['linkfield']     = '';
       $tab[4]['name']          = $LANG['setup'][170];
 
+      $tab[19]['table']       = 'glpi_authmails';
+      $tab[19]['field']       = 'date_mod';
+      $tab[19]['linkfield']   = '';
+      $tab[19]['name']        = $LANG['common'][26];
+      $tab[19]['datatype']    = 'datetime';
+
+      $tab[16]['table']     = 'glpi_authmails';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+
       return $tab;
    }
 
@@ -129,7 +142,9 @@ class AuthMail extends CommonDBTM {
          }
          echo "<div class='center'>";
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . $LANG['login'][3] . "</th></tr>";
+         echo "<tr><th>" . $LANG['login'][3] . "</th><th>";
+         echo ($ID>0?$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
+         echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
          echo "</td></tr>";
@@ -138,6 +153,11 @@ class AuthMail extends CommonDBTM {
          echo "</td></tr>";
 
          showMailServerConfig($this->fields["connect_string"]);
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
+         echo "<td>";
+         echo "<textarea cols='40' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>";
 
          if (empty ($ID)) {
             echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
