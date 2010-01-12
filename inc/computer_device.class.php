@@ -75,16 +75,32 @@ class Computer_Device extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
-      if (empty($input['_itemtype'])  || !$input['computers_id']) {
+      // For add from interface
+      if (isset($input['itemtype'])) {
+         $input['_itemtype'] = $input['itemtype'];
+         unset($input['itemtype']);
+      }
 
+
+      if (empty($input['_itemtype'])  || !$input['computers_id']) {
          return false;
       }
+
       $dev = new $input['_itemtype']();
+      // For add from interface
+      if (isset($input['items_id'])) {
+         $input[$dev->getForeignKeyField()] = $input['items_id'];
+         unset($input['items_id']);
+      }
       if (!$input[$dev->getForeignKeyField()]) {
          return false;
       }
 
-      if (!isset($input['specificity']) || empty($input['specificity'])) {
+      $linktable=getTableForItemType('Computer_'.$input['_itemtype']);
+      $this->forceTable($linktable);
+
+      if (count($dev->getSpecifityLabel()) > 0 &&
+         ( !isset($input['specificity']) || empty($input['specificity']))) {
          $dev = new $input['_itemtype'];
       
          $dev->getFromDB($input[$dev->getForeignKeyField()]);
@@ -406,20 +422,31 @@ class Computer_Device extends CommonDBChild {
    function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `computers_id`='$oldid'";
+      $devtypes=self::getDeviceTypes();
+      foreach ($devtypes as $itemtype) {
+         $linktable=getTableForItemType('Computer_'.$itemtype);
+         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
-      foreach ($db->request($query) as $data) {
-         unset($data['id']);
-         $data['computers_id'] = $newid;
-         $data['_no_history'] = true;
+         $query = "SELECT *
+                     FROM `$linktable`
+                     WHERE `computers_id`='$oldid'";
 
-         $this->add($data);
+         foreach ($db->request($query) as $data) {
+            unset($data['id']);
+            $data['computers_id'] = $newid;
+            $data['_itemtype'] = $itemtype;
+            $data['_no_history'] = true;
+
+            $this->add($data);
+         }
       }
-   }
+}
 
    function prepareInputForUpdate($input) {
+      if (isset($input['itemtype'])) {
+         $input['_itemtype'] = $input['itemtype'];
+         unset($input['itemtype']);
+      }
 
       if ($input['_itemtype'] == 'DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
@@ -445,6 +472,9 @@ class Computer_Device extends CommonDBChild {
          // No change
          return false;
       }
+      $linktable=getTableForItemType('Computer_'.$input['_itemtype']);
+      $this->forceTable($linktable);
+
       return $this->input;
    }
 

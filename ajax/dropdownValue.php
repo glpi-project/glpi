@@ -109,7 +109,7 @@ if (isset($_POST['used'])) {
 }
 $where .= ") ";
 
-if ($_POST['condition'] != '') {
+if (isset($_POST['condition']) && $_POST['condition'] != '') {
    $where .= " AND ".$_POST['condition']." ";
 }
 
