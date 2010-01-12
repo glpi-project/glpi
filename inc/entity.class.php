@@ -74,8 +74,18 @@ class Entity extends CommonTreeDropdown {
       return haveRight('entity', 'r');
    }
 
+   function canCreateItem() {
+      // Check the parent
+      return haveRecursiveAccessToEntity($this->getField('entities_id'));
+   }
+
+   function canUpdateItem() {
+      // Check the current entity
+      return haveAccessToEntity($this->getField('id'));
+   }
+
    function isNewID($ID) {
-      return (empty($ID)||$ID<0);
+      return ($ID<0 || !strlen($ID));
    }
 
    function defineTabs($ID,$withtemplate) {
