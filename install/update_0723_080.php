@@ -2757,10 +2757,94 @@ function update0723to080() {
 
    if (!FieldExists('glpi_profiles','import_externalauth_users')) {
       $query = "ALTER TABLE `glpi_profiles` ADD `import_externalauth_users` CHAR( 1 ) NULL";
-      $DB->query($query) or die("0.80 add import_externalauth_users in glpi_profiles");
+      $DB->query($query) or die("0.80 add import_externalauth_users in glpi_profiles". $LANG['update'][90] . $DB->error());
 
       $query = "UPDATE `glpi_profiles` SET `import_externalauth_users`='w' WHERE `name` IN ('super-admin','admin')";
       $DB->query($query) or die("0.80 add import_externalauth_users write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+   }
+
+   // Migrate infocoms entity information
+   if (!FieldExists('glpi_infocoms','entities_id')) {
+      displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['financial'][3]); // Updating schema
+
+      $query = "ALTER TABLE `glpi_infocoms` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
+                        ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
+                        ADD INDEX `entities_id` ( `entities_id` )";
+      $DB->query($query) or die("0.80 add entities_id and is_recursive in glpi_infocoms". $LANG['update'][90] . $DB->error());
+
+
+      $entities=getAllDatasFromTable('glpi_entities');
+      $entities[0]="Root";
+
+      $query = "SELECT DISTINCT itemtype FROM glpi_infocoms";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['financial'][3].' - '.$data['itemtype']); // Updating schema
+
+               $itemtable=getTableForItemType($data['itemtype']);
+               $do_recursive=false;
+               if (FieldExists($itemtable,'is_recurisve')) {
+                  $do_recursive=true;
+               }
+               foreach ($entities as $entID => $val) {
+                  if ($do_recursive) {
+                     // Non recurisve ones
+                     $query3="UPDATE glpi_infocoms
+                              SET entities_id=$entID, is_recursive=0
+                              WHERE itemtype='".$data['itemtype']."'
+                                 AND items_id IN (SELECT id FROM $itemtable
+                                 WHERE entities_id=$entID AND is_recursive=0)";
+                     $DB->query($query3) or die("0.80 update entities_id and is_recursive=0
+                           in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+
+                     // Recurisve ones
+                     $query3="UPDATE glpi_infocoms
+                              SET entities_id=$entID, is_recursive=1
+                              WHERE itemtype='".$data['itemtype']."'
+                                 AND items_id IN (SELECT id FROM $itemtable
+                                 WHERE entities_id=$entID AND is_recursive=1)";
+                     $DB->query($query3) or die("0.80 update entities_id and is_recursive=1
+                           in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+                  } else {
+                     $query3="UPDATE glpi_infocoms
+                              SET entities_id=$entID
+                              WHERE itemtype='".$data['itemtype']."'
+                                 AND items_id IN (SELECT id FROM $itemtable
+                                 WHERE entities_id=$entID)";
+                     $DB->query($query3) or die("0.80 update entities_id in glpi_infocoms
+                           for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+
+                  }
+
+               }
+            }
+         }
+      }
+   }
+
+   // Migrate consumable and cartridge entity information
+   $items=array('glpi_cartridges' => 'glpi_cartridgeitems','glpi_consumables'=> 'glpi_consumableitems');
+   foreach ($items as $linkitem => $sourceitem) {
+      if (!FieldExists($linkitem,'entities_id')) {
+         displayMigrationMessage("080", $LANG['update'][141].' - '.$linkitem); // Updating schema
+
+         $query = "ALTER TABLE `$linkitem` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
+                           ADD INDEX `entities_id` ( `entities_id` )";
+         $DB->query($query) or die("0.80 add entities_id in $linkitem ". $LANG['update'][90] . $DB->error());
+
+
+         $entities=getAllDatasFromTable('glpi_entities');
+         $entities[0]="Root";
+
+         foreach ($entities as $entID => $val) {
+            $query3="UPDATE $linkitem
+                     SET entities_id=$entID
+                     WHERE ".getForeignKeyFieldForTable($sourceitem)." IN
+                        (SELECT id FROM $sourceitem WHERE entities_id=$entID )";
+            $DB->query($query3) or die("0.80 update entities_id in $linkitem ". $LANG['update'][90] . $DB->error());
+         }
+      }
    }
 
    // Display "Work ended." message - Keep this as the last action.
