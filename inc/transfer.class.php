@@ -74,7 +74,7 @@ class Transfer extends CommonDBTM {
    var $DEVICES_TYPES =array('DeviceMotherboard','DeviceProcessor','DeviceMemory',
                           'DeviceHardDrive','DeviceNetworkCard','DeviceDrive',
                           'DeviceControl','DeviceGraphicCard','DeviceSoundCard',
-                          'DevicePci','DeviceCase','DevicePowerSupply')
+                          'DevicePci','DeviceCase','DevicePowerSupply');
 
 
    function canCreate() {
