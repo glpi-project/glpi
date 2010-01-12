@@ -1767,26 +1767,26 @@ class Search {
                         AS ".$NAME."_".$num.", ";
             break;
 
-         case "glpi_deviceharddrives.specif_default" :
+         case "glpi_computers_deviceharddrives.specificity" :
             if ($itemtype != 'DeviceHardDrive') {
-               return " SUM(`DEVICE_glpi_deviceharddrives`.`specificity`)
-                        / COUNT(`DEVICE_glpi_deviceharddrives`.`id`)
-                        * COUNT(DISTINCT `DEVICE_glpi_deviceharddrives`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`glpi_computers_deviceharddrives`.`specificity`)
+                        / COUNT(`glpi_computers_deviceharddrives`.`id`)
+                        * COUNT(DISTINCT `glpi_computers_deviceharddrives`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
-         case "glpi_devicememories.specif_default" :
+         case "glpi_computers_devicememories.specificity" :
             if ($itemtype != 'DeviceMemory') {
-               return " SUM(`DEVICE_glpi_devicememories`.`specificity`)
-                        / COUNT(`DEVICE_glpi_devicememories`.`id`)
-                        * COUNT(DISTINCT `DEVICE_glpi_devicememories`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`glpi_computers_devicememories`.`specificity`)
+                        / COUNT(`glpi_computers_devicememories`.`id`)
+                        * COUNT(DISTINCT `glpi_computers_devicememories`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
-         case "glpi_deviceprocessors.specif_default" :
+         case "glpi_computers_deviceprocessors.specificity" :
             if ($itemtype != 'DeviceProcessor') {
-               return " SUM(`DEVICE_glpi_deviceprocessors`.`specificity`)
-                        / COUNT(`DEVICE_glpi_deviceprocessors`.`id`) AS ".$NAME."_".$num.", ";
+               return " SUM(`glpi_computers_deviceprocessors`.`specificity`)
+                        / COUNT(`glpi_computers_deviceprocessors`.`id`) AS ".$NAME."_".$num.", ";
             }
             break;
 
@@ -1798,7 +1798,7 @@ class Search {
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
                         AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
-               $port .= "GROUP_CONCAT(DISTINCT `DEVICE_glpi_devicenetworkcards`.`specificity`
+               $port .= "GROUP_CONCAT(DISTINCT `glpi_computers_devicenetworkcards`.`specificity`
                                     SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
             }
             return $port;
@@ -2079,7 +2079,7 @@ class Search {
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
-               return "$link (".makeTextCriteria("`DEVICE_glpi_devicenetworkcards`.`specificity`",$val,$nott,'').
+               return "$link (".makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",$val,$nott,'').
                               makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').")";
             }
             return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
@@ -2639,14 +2639,6 @@ class Search {
                   LEFT JOIN `$new_table` $AS
                         ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
 
-         case "glpi_computers_devices" :
-            if (empty($devicetype)) {
-               return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
-            }
-            return " LEFT JOIN `$new_table` AS DEVICE_".$devicetype."
-                           ON (`$rt`.`id` = `DEVICE_".$devicetype."`.`computers_id`
-                              AND `DEVICE_".$devicetype."`.`itemtype` = '".getItemTypeForTable($devicetype)."') ";
-
          case "glpi_computers_devicecases" :
          case "glpi_computers_devicecontrols" :
          case "glpi_computers_devicedrives" :
@@ -2996,9 +2988,9 @@ class Search {
             }
             return NOT_AVAILABLE;
 
-         case "glpi_deviceharddrives.specif_default" :
-         case "glpi_devicememories.specif_default" :
-         case "glpi_deviceprocessors.specif_default" :
+         case "glpi_deviceharddrives.specificity" :
+         case "glpi_devicememories.specificity" :
+         case "glpi_deviceprocessors.specificity" :
             return $data[$NAME.$num];
 
          case "glpi_networkports.mac" :

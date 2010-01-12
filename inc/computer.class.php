@@ -907,8 +907,8 @@ class Computer extends CommonDBTM {
       $tab[7]['forcegroupby'] = true;
       $tab[7]['usehaving']    = true;
 
-      $tab[36]['table']        = 'glpi_deviceprocessors';
-      $tab[36]['field']        = 'specif_default';
+      $tab[36]['table']        = 'glpi_computers_deviceprocessors';
+      $tab[36]['field']        = 'specificity';
       $tab[36]['linkfield']    = '';
       $tab[36]['name']         = $LANG['computers'][21]." ".$LANG['setup'][35];
       $tab[36]['forcegroupby'] = true;
@@ -923,8 +923,8 @@ class Computer extends CommonDBTM {
       $tab[10]['forcegroupby'] = true;
       $tab[10]['usehaving']    = true;
 
-      $tab[35]['table']        = 'glpi_devicememories';
-      $tab[35]['field']        = 'specif_default';
+      $tab[35]['table']        = 'glpi_computers_devicememories';
+      $tab[35]['field']        = 'specificity';
       $tab[35]['linkfield']    = '';
       $tab[35]['name']         = $LANG['computers'][24];
       $tab[35]['forcegroupby'] = true;
@@ -963,8 +963,8 @@ class Computer extends CommonDBTM {
       $tab[15]['forcegroupby'] = true;
       $tab[15]['usehaving']    = true;
 
-      $tab[34]['table']        = 'glpi_deviceharddrives';
-      $tab[34]['field']        = 'specif_default';
+      $tab[34]['table']        = 'glpi_computers_deviceharddrives';
+      $tab[34]['field']        = 'specificity';
       $tab[34]['linkfield']    = '';
       $tab[34]['name']         = $LANG['computers'][25];
       $tab[34]['forcegroupby'] = true;
