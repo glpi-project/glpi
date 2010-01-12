@@ -45,9 +45,11 @@ class Computer_Device extends CommonDBChild {
    public $itemtype = 'Computer';
    public $items_id = 'computers_id';
 
-   function __construct($itemtype) {
-      $linktable=getTableForItemType('Computer_'.$itemtype);
-      $this->forceTable($linktable);
+   function __construct($itemtype='') {
+      if (!empty($itemtype)) {
+         $linktable=getTableForItemType('Computer_'.$itemtype);
+         $this->forceTable($linktable);
+      }
    }
 
    /// Get itemtype of devices : key is ocs identifier
@@ -257,6 +259,7 @@ class Computer_Device extends CommonDBChild {
       global $DB;
 
       $linktable=getTableForItemType('Computer_'.$itemtype);
+      $this->forceTable($linktable);
       $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
       // Force table for link
       $item = new $itemtype();
@@ -322,6 +325,7 @@ class Computer_Device extends CommonDBChild {
       }
 
       $linktable=getTableForItemType('Computer_'.$itemtype);
+      $this->forceTable($linktable);
       $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
       if (!$this->getFromDB($compDevID)) {
