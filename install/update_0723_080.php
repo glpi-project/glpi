@@ -2674,6 +2674,26 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add date_mod to glpi_rules" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_authldaps','entity_field')) {
+      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_field` VARCHAR( 255 ) NULL";
+      $DB->query($query) or die("0.80 add entity_field to glpi_authldaps" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_authldaps','entity_condition')) {
+      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_condition`  TEXT collate utf8_unicode_ci";
+      $DB->query($query) or die("0.80 add entity_condition to glpi_authldaps" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists ('glpi_entitydatas','ldapservers_id')) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `ldapservers_id` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add ldapservers_id to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists ('glpi_entitydatas','entity_ldapfilter')) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `entity_ldapfilter`  TEXT collate utf8_unicode_ci";
+      $DB->query($query) or die("0.80 add entity_ldapfilter to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }
