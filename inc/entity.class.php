@@ -193,6 +193,14 @@ class Entity extends CommonTreeDropdown {
       return -1;
    }
 
+   function isEntityAssign() {
+      return true;
+   }
+
+   function maybeRecursive() {
+      return true;
+   }
+
    /**
     * Is the object recursive
     *
