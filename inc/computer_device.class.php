@@ -396,23 +396,36 @@ class Computer_Device extends CommonDBChild {
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`";
-
       if ($itemtype == 'Computer') {
-         $where = " WHERE `computers_id`='$item_id'";
 
-      } else  {
-         $where = " WHERE (`itemtype`='$itemtype'
-                           AND `items_id`='$item_id')";
-      }
+         $devtypes=self::getDeviceTypes();
+         foreach ($devtypes as $type) {
+            $linktable=getTableForItemType('Computer_'.$type);
+            $this->forceTable($linktable);
 
-      $result = $DB->query($query.$where);
-      while ($data = $DB->fetch_assoc($result)) {
-         if ($itemtype == 'Computer') {
-            $data['_no_history'] = true; // Parent is deleted
+            $query = "SELECT `id`
+                     FROM `$linktable` WHERE `computers_id`='$item_id'";
+
+            $result = $DB->query($query);
+            while ($data = $DB->fetch_assoc($result)) {
+               $data['_no_history'] = true; // Parent is deleted
+               $data['_itemtype']=$type;
+               $this->delete($data);
+            }
          }
-         $this->delete($data);
+      } else {
+         $linktable=getTableForItemType('Computer_'.$itemtype);
+         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+         $this->forceTable($linktable);
+
+         $query = "SELECT `id`
+                  FROM `$linktable` WHERE `$fk`='$item_id'";
+
+         $result = $DB->query($query);
+         while ($data = $DB->fetch_assoc($result)) {
+            $data['_itemtype']=$itemtype;
+            $this->delete($data);
+         }
       }
    }
 
