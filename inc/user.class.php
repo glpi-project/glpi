@@ -552,17 +552,17 @@ class User extends CommonDBTM {
    function syncLdapGroups() {
       global $DB;
 
-      if (isset($this->fields["authtype"])
-          && ($this->fields["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($this->fields['authtype']))) {
-         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
-            $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
+      if (isset($this->input["authtype"])
+          && ($this->input["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($this->input['authtype']))) {
+         if (isset ($this->input["id"]) && $this->input["id"]>0) {
+            $authtype = Auth::getMethodsByID($this->input["authtype"], $this->input["auths_id"]);
 
             if (count($authtype)) {
-               if (!isset($this->fields["_groups"])) {
-                  $this->fields["_groups"] = array();
+               if (!isset($this->input["_groups"])) {
+                  $this->input["_groups"] = array();
                }
                // Clean groups
-               $this->fields["_groups"] = array_unique ($this->fields["_groups"]);
+               $this->input["_groups"] = array_unique ($this->input["_groups"]);
 
                $WHERE = "";
                switch ($authtype["group_search_type"]) {
@@ -594,29 +594,29 @@ class User extends CommonDBTM {
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
+                         WHERE `glpi_groups_users`.`users_id` = '" . $this->input["id"] . "'
                                $WHERE";
                $result = $DB->query($query);
 
                $groupuser = new Group_User();
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_array($result)) {
-                     if (!in_array($data["groups_id"], $this->fields["_groups"])) {
+                     if (!in_array($data["groups_id"], $this->input["_groups"])) {
                         $groupuser->delete(array('id' => $data["id"]));
                      } else {
                         // Delete found item in order not to add it again
-                        unset($this->fields["_groups"][array_search($data["groups_id"], $this->fields["_groups"])]);
+                        unset($this->input["_groups"][array_search($data["groups_id"], $this->input["_groups"])]);
                      }
                   }
                }
 
                //If the user needs to be added to one group or more
-               if (count($this->fields["_groups"])>0) {
-                  foreach ($this->fields["_groups"] as $group) {
-                     $groupuser->add(array('users_id'    => $this->fields["id"],
+               if (count($this->input["_groups"])>0) {
+                  foreach ($this->input["_groups"] as $group) {
+                     $groupuser->add(array('users_id'    => $this->input["id"],
                                            'groups_id'   => $group));
                   }
-                  unset ($this->fields["_groups"]);
+                  unset ($this->input["_groups"]);
                }
             }
          }
@@ -865,11 +865,13 @@ class User extends CommonDBTM {
             } else {
                $groups = array();
             }
+
             $this->fields = $rule->processAllRules($groups, $this->fields,
                                                    array('type'        => 'LDAP',
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
                                                          'userdn'      => $userdn));
+
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])
                //or use matches no rules & do not import users with no rights
