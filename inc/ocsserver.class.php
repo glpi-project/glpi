@@ -2639,6 +2639,10 @@ class OcsServer extends CommonDBTM {
                            }
                            $ram["designation"] .= $line2["DESCRIPTION"];
                         }
+                        if (!is_numeric($line2["CAPACITY"])) {
+                           $line2["CAPACITY"]=0;
+                        }
+
                         $ram["specif_default"] = $line2["CAPACITY"];
                         if (!in_array(self::RAM_DEVICE . self::FIELD_SEPARATOR . $ram["designation"],
                                       $import_device)) {
@@ -2695,8 +2699,12 @@ class OcsServer extends CommonDBTM {
                               $dd["designation"] = "Unknown";
                            }
                         }
+                        if (!is_numeric($line2["DISKSIZE"])) {
+                           $line2["DISKSIZE"]=0;
+                        }
                         if (!in_array(self::HDD_DEVICE . self::FIELD_SEPARATOR . $dd["designation"],
                                       $import_device)) {
+
                            $dd["specif_default"] = $line2["DISKSIZE"];
                            $DeviceHardDrive = new DeviceHardDrive();
                            $dd_id = $DeviceHardDrive->import($dd);
@@ -2874,6 +2882,10 @@ class OcsServer extends CommonDBTM {
                   for ($i = 0; $i < $line["PROCESSORN"]; $i++) {
                      $processor = array();
                      $processor["designation"] = $line["PROCESSORT"];
+                     if (!is_numeric($line["PROCESSORS"])) {
+                        $line["PROCESSORS"]=0;
+                     }
+
                      $processor["specif_default"] = $line["PROCESSORS"];
                      if (!in_array(self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR . $processor["designation"],
                                    $import_device)) {
@@ -3062,12 +3074,12 @@ class OcsServer extends CommonDBTM {
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      $video["designation"] = $line2["NAME"];
+                     if (!is_numeric($line2["MEMORY"])) {
+                        $line2["MEMORY"]=0;
+                     }
                      if (!in_array(self::GFX_DEVICE . self::FIELD_SEPARATOR . $video["designation"],
                                    $import_device)) {
-                        $video["specif_default"] = "";
-                        if (!empty ($line2["MEMORY"])) {
-                           $video["specif_default"] = $line2["MEMORY"];
-                        }
+                        $video["specif_default"] = $line2["MEMORY"];
                         $DeviceGraphicCard = new DeviceGraphicCard();
                         $video_id = $DeviceGraphicCard->import($video);
                         if ($video_id) {
