@@ -839,7 +839,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
                 FROM `".$this->getTable()."`
                 WHERE `computers_id`='$oldid'";
 
-      foreach ($db->request($query) as $data) {
+      foreach ($DB->request($query) as $data) {
          unset($data['id']);
          $data['computers_id'] = $newid;
          $data['_no_history'] = true;
