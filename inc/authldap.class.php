@@ -155,7 +155,8 @@ class AuthLDAP extends CommonDBTM {
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
-         echo "<td colspan='3'><input type='text' name='name' value='". $this->fields["name"] ."'>";
+         echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td><td>";
+         echo ($ID>0?$LANG['common'][26]."&nbsp;:</td><td>".convDateTime($this->fields["date_mod"]):'&nbsp;');
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
@@ -180,6 +181,11 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
          echo "<td colspan='3'><input type='text' name='condition' value='".
                                  $this->fields["condition"]."' size='100'></td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
+         echo "<td colspan='3'>";
+         echo "<textarea cols='40' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>";
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
@@ -495,6 +501,18 @@ class AuthLDAP extends CommonDBTM {
       $tab[6]['field']         = 'condition';
       $tab[6]['linkfield']     = 'condition';
       $tab[6]['name']          = $LANG['setup'][159];
+
+      $tab[19]['table']       = 'glpi_authldaps';
+      $tab[19]['field']       = 'date_mod';
+      $tab[19]['linkfield']   = '';
+      $tab[19]['name']        = $LANG['common'][26];
+      $tab[19]['datatype']    = 'datetime';
+
+      $tab[16]['table']     = 'glpi_authldaps';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
 
       return $tab;
    }
