@@ -853,14 +853,15 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
          break;
 
       case "device":
+         $devtable=getTableForItemType('Computer_'.$value2);
+         $fkname=getForeignKeyFieldForTable(getTableForItemType($value2));
          //select computers IDs that are using this device;
          $LEFTJOIN = "INNER JOIN `glpi_computers`
                             ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
                                 AND `glpi_tickets`.`itemtype` = 'Computer')
-                      INNER JOIN `glpi_computers_devices`
-                            ON (`glpi_computers`.`id` = `glpi_computers_devices`.`computers_id`
-                                AND `glpi_computers_devices`.`itemtype` = '$value2'
-                                AND `glpi_computers_devices`.`items_id` = '$value')";
+                      INNER JOIN `$devtable`
+                            ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
+                                AND `$devtable`.`$fkname` = '$value')";
          $WHERE .= " AND `glpi_computers`.`is_template` <> '1' ";
          break;
 
