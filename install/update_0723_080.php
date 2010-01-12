@@ -2446,6 +2446,9 @@ function update0723to080() {
                   addslashes($LANG['tracking'][35])."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(6, '".
                   addslashes($LANG['common'][62])."', 0, 0, NULL)");
+      // Add default display
+      $DB->query("INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`) VALUES ('RequestType', '14', '1', '0');");
+      $DB->query("INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`) VALUES ('RequestType', '15', '2', '0');");
    }
    if (FieldExists('glpi_tickets','request_type')) {
       $query = "ALTER TABLE `glpi_tickets`
