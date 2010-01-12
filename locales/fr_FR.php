@@ -1286,6 +1286,7 @@ $LANG['profiles'][43]="Méthode d'authentification et synchronisation des utilis
 $LANG['profiles'][44]="Modifier la priorité";
 $LANG['profiles'][45]="Ajouter une tâche à tous les tickets";
 $LANG['profiles'][46]="Éditer toutes les tâches";
+$LANG['profiles'][47]="Ajout d'utilisateur depuis une source externe";
 
 $LANG['registry'][1]="Ruche";
 $LANG['registry'][2]="Chemin";
