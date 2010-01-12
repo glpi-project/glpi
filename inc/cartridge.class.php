@@ -187,20 +187,20 @@ class Cartridge extends CommonDBTM {
    }
 
 
-   function isEntityAssign() {
-      return true;
-   }
+//    function isEntityAssign() {
+//       return true;
+//    }
 
    /**
    * Get the ID of entity assigned to the cartdrige
    *
    * @return ID of the entity
    **/
-   function getEntityID () {
-      $ci=new CartridgeItem();
-      $ci->getFromDB($this->fields["cartridgeitems_id"]);
-      return $ci->getEntityID();
-   }
+//    function getEntityID () {
+//       $ci=new CartridgeItem();
+//       $ci->getFromDB($this->fields["cartridgeitems_id"]);
+//       return $ci->getEntityID();
+//    }
 
    /**
     * Print the cartridge count HTML array for a defined cartridge type

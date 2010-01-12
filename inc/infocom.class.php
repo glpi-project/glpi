@@ -150,51 +150,52 @@ class Infocom extends CommonDBTM {
       }
    }
 
+
    /**
     * Is the object assigned to an entity
     *
     * @return boolean
    **/
-   function isEntityAssign() {
-
-      if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
-         $item = new $this->fields["itemtype"]();
-         return $item->isEntityAssign();
-      }
-
-      return false;
-   }
+//    function isEntityAssign() {
+// 
+//       if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
+//          $item = new $this->fields["itemtype"]();
+//          return $item->isEntityAssign();
+//       }
+// 
+//       return false;
+//    }
 
    /**
     * Get the ID of entity assigned to the object
     *
     * @return ID of the entity
    **/
-   function getEntityID () {
-
-      if (class_exists($this->fields["itemtype"])) {
-         $item = new $this->fields["itemtype"]();
-         if ($item->getFromDB($this->fields["items_id"])) {
-            return $item->getEntityID();
-         }
-      }
-      return -1;
-   }
+//    function getEntityID () {
+// 
+//       if (class_exists($this->fields["itemtype"])) {
+//          $item = new $this->fields["itemtype"]();
+//          if ($item->getFromDB($this->fields["items_id"])) {
+//             return $item->getEntityID();
+//          }
+//       }
+//       return -1;
+//    }
 
    /**
     * Is the object may be recursive
     *
     * @return boolean
    **/
-   function maybeRecursive() {
-
-      if (class_exists($this->fields["itemtype"])) {
-         $item = new $this->fields["itemtype"]();
-         return $item->maybeRecursive();
-      }
-
-      return false;
-   }
+//    function maybeRecursive() {
+// 
+//       if (class_exists($this->fields["itemtype"])) {
+//          $item = new $this->fields["itemtype"]();
+//          return $item->maybeRecursive();
+//       }
+// 
+//       return false;
+//    }
 
    /**
     * Is the object recursive
@@ -203,15 +204,15 @@ class Infocom extends CommonDBTM {
     *
     * @return integer (0/1)
    **/
-   function isRecursive() {
-
-      if (class_exists($this->fields["itemtype"])) {
-         $item = new $this->fields["itemtype"]();
-         return $item->isRecursive();
-      }
-
-      return false;
-   }
+//    function isRecursive() {
+// 
+//       if (class_exists($this->fields["itemtype"])) {
+//          $item = new $this->fields["itemtype"]();
+//          return $item->isRecursive();
+//       }
+// 
+//       return false;
+//    }
 
    static function cronInfo($name) {
       global $LANG;
