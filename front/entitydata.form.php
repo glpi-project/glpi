@@ -44,7 +44,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
-   $data->check($_POST["id"],'w');
+   $data->check($_POST["entities_id"],'w');
 
    if ($data->update($_POST)) {
       Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
