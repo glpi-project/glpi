@@ -57,7 +57,6 @@ class Computer_Device extends CommonDBTM {
    }
 
    function getEmpty() {
-      // Default values for commonDBchild working
       $this->fields['id']='';
       $this->fields['computers_id']='';
    }
@@ -388,7 +387,6 @@ class Computer_Device extends CommonDBTM {
       }
    }
 
-   // This class is not a real CommonDBChild...
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
