@@ -46,6 +46,9 @@ if (!defined('GLPI_ROOT')){
  **/
 class Cartridge extends CommonDBTM {
 
+   // From CommonDBTM
+   protected $forward_entity_to=array('Infocom');
+
    static function getTypeName() {
       global $LANG;
 
@@ -61,8 +64,14 @@ class Cartridge extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      return array("cartridgeitems_id"=>$input["tID"],
-                   "date_in"=>date("Y-m-d"));
+      $item= new CartridgeItem();
+      if ($item->getFromDB($input["tID"])) {
+         return array("cartridgeitems_id"=>$item->fields["id"],
+                     "entities_id"=>$item->getEntityID(),
+                     "date_in"=>date("Y-m-d"));
+      } else {
+         return array();
+      }
    }
 
    function post_addItem() {

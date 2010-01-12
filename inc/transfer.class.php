@@ -1867,7 +1867,7 @@ class Transfer extends CommonDBTM {
             // Foreach get item
             while ($data = $DB->fetch_array($result)) {
                $item_ID = $data['items_id'];
-               if ($link_item($item_ID)) {
+               if ($link_item->getFromDB($item_ID)) {
                   // If global :
                   if ($link_item->fields['is_global'] == 1) {
                      $need_clean_process = false;

@@ -104,7 +104,14 @@ class Infocom extends CommonDBTM {
 
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
          $input['alert']=$CFG_GLPI["default_infocom_alert"];
-         return $input;
+         if (class_exists($input['itemtype'])) {
+            $item = new $input['itemtype']();
+            if ($item->getFromDB($input['items_id'])) {
+               $input['entities_id']=$item->getEntityID();
+               $input['is_recursive']=intval($item->isRecursive());
+               return $input;
+            }
+         }
       }
       return false;
    }

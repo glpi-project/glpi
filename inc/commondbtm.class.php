@@ -45,11 +45,14 @@ class CommonDBTM extends CommonGLPI {
    var $history_blacklist	= array();
    /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
+   /// Forward entity datas to linked items
+   protected $forward_entity_to=array();
 
    /// Table name cache : set dynamically calling getTable
    protected $table="";
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield="";
+
 
    /**
    * Constructor
@@ -576,7 +579,6 @@ class CommonDBTM extends CommonGLPI {
          if (isset($table_fields['date_mod'])) {
             $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
          }
-
          if ($this->addToDB()) {
             $this->addMessageOnAddAction();
             $this->post_addItem();
@@ -734,15 +736,54 @@ class CommonDBTM extends CommonGLPI {
             //   $this->oldvalues=array();
             //}
 
+
              if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
                $this->addMessageOnUpdateAction();
                doHook("item_update", $this);
+
+               // forward entity information if needed
+               if (count($this->forward_entity_to) &&
+                     (in_array("entities_id",$this->updates) || in_array("is_recursive",$this->updates)) ) {
+                  $this->forwardEntityInformations();
+               }
+
             }
          }
          $this->post_updateItem($history);
+         
          return true;
       }
       return false;
+   }
+
+   /**
+   * Forward entity informations to linked items
+   *
+   **/
+   protected function forwardEntityInformations() {
+      global $DB;
+      if (!isset($this->fields['id']) || !($this->fields['id']>=0)) {
+         return false;
+      }
+      if (count($this->forward_entity_to)) {
+         foreach ($this->forward_entity_to as $type) {
+            $item=new $type();
+            $query="SELECT `id` FROM `".$item->getTable()."` WHERE ";
+            if ($item->isField('itemtype')) {
+               $query.=" `itemtype` = '".$this->getType()."' AND `items_id`='".$this->fields['id']."'";
+            } else {
+               $query.=" `".$this->getForeignKeyField()."` = '".$this->fields['id']."'";
+            }
+            $input=array('entities_id'=>$this->getEntityID());
+            if ($this->maybeRecursive()) {
+               $input['is_recursive']=$this->isRecursive();
+            }
+            foreach ($DB->request($query) as $data) {
+               $input['id']=$data['id'];
+               $item->update($input);
+            }
+         }
+      }
    }
 
    /**
