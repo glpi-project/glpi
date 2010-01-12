@@ -191,7 +191,7 @@ class Software extends CommonDBTM {
 
    function cleanDBonPurge($ID) {
       global $DB, $CFG_GLPI;
-      logDebug("Software::cleanDBonPurge($ID)");
+
       // Delete all licenses
       $query2 = "SELECT `id`
                  FROM `glpi_softwarelicenses`
