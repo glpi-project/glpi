@@ -366,7 +366,7 @@ class CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertTrue($entity->can($ent4,'r'), "Fail: can't read entity 2.2");
       $this->assertFalse($entity->can(99999,'r'), "Fail: can read not existing entity");
 
-      //$this->assertFalse($entity->can(0,'w'), "Fail: can write root entity");
+      $this->assertFalse($entity->can(0,'w'), "Fail: can write root entity");
       $this->assertFalse($entity->can($ent0,'w'), "Fail: can write entity 0");
       $this->assertFalse($entity->can($ent1,'w'), "Fail: can write entity 1");
       $this->assertTrue($entity->can($ent2,'w'), "Fail: can't write entity 2");
@@ -384,6 +384,17 @@ class CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
       $input=array('entities_id' => -1);
       $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+
+      $this->assertTrue(changeActiveEntities($ent2,false));
+      $input=array('entities_id' => $ent1);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $input=array('entities_id' => $ent2);
+      // next should be false (or not).... but check is done on glpiactiveprofile
+      // will require to save current state in session - this is probably acceptable
+      // this allow creation when no child defined yet (no way to select tree in this case)
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $input=array('entities_id' => $ent3);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in 2.1");
    }
 }
 ?>
