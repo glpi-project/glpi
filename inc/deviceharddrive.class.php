@@ -49,7 +49,7 @@ class DeviceHardDrive extends CommonDevice {
    static function getSpecifityLabel() {
       global $LANG;
 
-      return $LANG['device_hdd'][4];
+      return array('specificity'=>$LANG['device_hdd'][4]);
    }
 
    function getAdditionalFields() {

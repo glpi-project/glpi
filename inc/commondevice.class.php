@@ -112,12 +112,12 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
    /**
-    * Return the specifity localized name for the Device
+    * Return the specifities localized name for the Device
     *
     * @return string
     */
    static function getSpecifityLabel() {
-      return '';
+      return array();
    }
 
    function cleanDBonPurge($ID) {

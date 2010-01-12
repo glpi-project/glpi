@@ -38,12 +38,26 @@ if (!defined('GLPI_ROOT')){
 }
 
 
-// Relation between Computer and a CommonDevice (motherboard, memory, processor, ...)
+// Relation between Computer and devices
 class Computer_Device extends CommonDBChild {
 
    // From CommonDBChild
    public $itemtype = 'Computer';
    public $items_id = 'computers_id';
+
+   /// Get itemtype of devices 
+   static function getDeviceTypes() {
+      return array ('DeviceMotherboard','DeviceProcessor','DeviceMemory',
+                          'DeviceHardDrive','DeviceNetworkCard','DeviceDrive',
+                          'DeviceControl','DeviceGraphicCard','DeviceSoundCard',
+                          'DevicePci','DeviceCase','DevicePowerSupply');
+   }
+
+   function getEmpty() {
+      // Default values for commonDBchild working
+      $this->fields['id']='';
+      $this->fields['computers_id']='';
+   }
 
    function canCreate() {
       return haveRight('computer', 'w');
@@ -54,13 +68,12 @@ class Computer_Device extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
-      if (empty($input['itemtype']) || !$input['items_id'] || !$input['computers_id']) {
+      if (!isset($input['_item']) || !$input[$input['_item']->getForeignKeyField()] || !$input['computers_id']) {
          return false;
       }
       if (!isset($input['specificity']) || empty($input['specificity'])) {
-         $dev = new $input['itemtype'];
-         $dev->getFromDB($input['items_id']);
-         $input['specificity'] = $dev->getField('specif_default');
+         $input['_item']->getFromDB($input[$input['_item']->getForeignKeyField()]);
+         $input['specificity'] = $input['_item']->getField('specif_default');
       }
       return $input;
    }
@@ -71,12 +84,11 @@ class Computer_Device extends CommonDBChild {
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
-      $dev = new $this->fields['itemtype'];
-      $dev->getFromDB($this->fields['items_id']);
+      $this->input['_item']->getFromDB($this->fields[$this->input['_item']->getForeignKeyField()]);
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($dev->getName());
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
+      $changes[2] = addslashes($this->input['_item']->getName());
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_ADD_DEVICE);
    }
 
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
@@ -85,12 +97,11 @@ class Computer_Device extends CommonDBChild {
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
-      $dev = new $this->fields['itemtype'];
-      $dev->getFromDB($this->fields['items_id']);
+      $this->input['_item']->getFromDB($this->fields[$this->input['_item']->getForeignKeyField()]);
       $changes[0] = 0;
-      $changes[1] = addslashes($dev->getName());
+      $changes[1] = addslashes($this->input['_item']->getName());
       $changes[2] = '';
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_DELETE_DEVICE);
    }
 
    function post_updateItem($history=1) {
@@ -104,7 +115,7 @@ class Computer_Device extends CommonDBChild {
       $changes[1] = addslashes($this->oldvalues['specificity']);
       $changes[2] = $this->fields['specificity'];
       // history log
-      Log::history($this->fields['computers_id'],'Computer',$changes,$this->fields['itemtype'],HISTORY_UPDATE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_UPDATE_DEVICE);
    }
 
    /**
@@ -123,16 +134,14 @@ class Computer_Device extends CommonDBChild {
    static function showForComputer(Computer $computer, $withtemplate='') {
       global $DB, $LANG;
 
+      $devtypes=self::getDeviceTypes();
+
       $ID = $computer->getField('id');
       if (!$computer->can($ID, 'r')) {
          return false;
       }
       $canedit = ($withtemplate!=2 && $computer->can($ID, 'w'));
 
-      $query = "SELECT count(*) AS NB, `id`, `itemtype`, `items_id`, `specificity`
-                FROM `glpi_computers_devices`
-                WHERE `computers_id` = '$ID'
-                GROUP BY `itemtype`, `items_id`, `specificity`";
 
       if ($canedit) {
          echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__)."' method=\"post\" >";
@@ -140,53 +149,69 @@ class Computer_Device extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
-
       $nb=0;
-      $prev = '';
-      foreach($DB->request($query) as $data) {
-         if ($data['itemtype'] != $prev) {
-            $prev = $data['itemtype'];
-            initNavigateListItems($data['itemtype'], $computer->getTypeName()." = ".$computer->getName());
+
+      foreach ($devtypes as $itemtype) {
+         initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
+
+         $device = new $itemtype;
+         $specificities = $device->getSpecifityLabel();
+         $specif_fields = array_keys($specificities);
+         $specif_text = implode(',',$specif_fields);
+         if (!empty($specif_text)) {
+            $specif_text=" ,".$specif_text." ";
          }
-         addToNavigateListItems($data['itemtype'], $data['items_id']);
 
-         $device = new $data['itemtype'];
-         if ($device->getFromDB($data['items_id'])) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>";
-            Dropdown::showInteger('quantity_'.$data['id'], $data['NB']);
-            echo "</td><td>";
-            if ($device->canCreate()) {
-               echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
-            } else {
-               echo $device->getTypeName();
-            }
-            echo "</td><td>".$device->getLink()."</td>";
+         $linktable=getTableForItemType('Computer_'.$itemtype);
+         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
-            $spec = $device->getFormData();
-            if (isset($spec['label']) && count($spec['label'])) {
-               $colspan = (60/count($spec['label']));
-               foreach ($spec['label'] as $i => $label) {
-                  if (isset($spec['value'][$i])) {
-                     echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                     echo $spec['value'][$i]."</td>";
-                  } else if ($canedit){
-                     // Specificity
-                     echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                     echo "<input type='text' name='value_".$data['id']."' value='";
-                     echo $data['specificity']."' size='".$spec['size']."' ></td>";
-                  } else {
-                     echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                     echo $data['specificity']."</td>";
-                  }
+         $query = "SELECT count(*) AS NB, `id`, `$fk` $specif_text
+                  FROM `$linktable`
+                  WHERE `computers_id` = '$ID'
+                  GROUP BY `$fk` $specif_text";
+
+         $prev = '';
+         foreach($DB->request($query) as $data) {
+            addToNavigateListItems($itemtype, $data[$fk]);
+
+            if ($device->getFromDB($data[$fk])) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td class='center'>";
+               Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], $data['NB']);
+               echo "</td><td>";
+               if ($device->canCreate()) {
+                  echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
+               } else {
+                  echo $device->getTypeName();
                }
-            } else {
-               echo "<td colspan='60'>&nbsp;</td>";
+               echo "</td><td>".$device->getLink()."</td>";
+
+               $spec = $device->getFormData();
+               if (isset($spec['label']) && count($spec['label'])) {
+                  $colspan = (60/count($spec['label']));
+                  foreach ($spec['label'] as $i => $label) {
+                     if (isset($spec['value'][$i])) {
+                        echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                        echo $spec['value'][$i]."</td>";
+                     } else if ($canedit){
+                        // Specificity
+                        echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                        echo "<input type='text' name='value_".$itemtype."_".$data['id']."' value='";
+                        echo $data['specificity']."' size='".$spec['size']."' ></td>";
+                     } else {
+                        echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                        echo $data['specificity']."</td>";
+                     }
+                  }
+               } else {
+                  echo "<td colspan='60'>&nbsp;</td>";
+               }
+               echo "</tr>";
+               $nb++;
             }
-            echo "</tr>";
-            $nb++;
          }
       }
+
       if ($canedit) {
          if ($nb>0) {
             echo "<tr><td colspan='63' class='tab_bg_1 center'>";
@@ -196,10 +221,7 @@ class Computer_Device extends CommonDBChild {
 
          echo "<tr><td colspan='63' class='tab_bg_1 center'>";
          echo $LANG['devices'][0]."&nbsp;: ";
-         $types =  array('DeviceMotherboard', 'DeviceProcessor', 'DeviceNetworkCard', 'DeviceMemory',
-                         'DeviceHardDrive', 'DeviceDrive', 'DeviceControl', 'DeviceGraphicCard',
-                         'DeviceSoundCard', 'DeviceCase', 'DevicePowerSupply', 'DevicePci');
-         Dropdown::showAllItems('items_id', '', 0, -1, $types);
+         Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</tr></table></form>";
       } else {
@@ -211,20 +233,33 @@ class Computer_Device extends CommonDBChild {
     * Update an internal device quantity
     *
     * @param $newNumber new quantity value
+    * @param $itemtype itemtype of device
     * @param $compDevID computer device ID
     */
-   private function updateQuantity($newNumber, $compDevID) {
+   private function updateQuantity($newNumber, $itemtype,$compDevID) {
       global $DB;
 
+      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+      // Force table for link
+      $this->forceTable($linktable);
+      $item = new $itemtype();
+      $specif_fields=$item->getSpecifityLabel();
+      
       if (!$this->getFromDB($compDevID)) {
          return false;
       }
+      
+
       $query2 = "SELECT `id`
-                 FROM `glpi_computers_devices`
+                 FROM `$linktable`
                  WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                       AND `itemtype` = '".$this->fields["itemtype"]."'
-                       AND `items_id` = '".$this->fields["items_id"]."'
-                       AND `specificity` = '".addslashes($this->fields["specificity"])."'";
+                       AND `$fk` = '".$this->fields[$fk]."'";
+      if (count($specif_fields)) {
+         foreach ($specif_fields as $field => $name) {
+            $query2.= " AND `$field` = '".addslashes($this->fields[$field])."' ";
+         }
+      }
 
       if ($result2 = $DB->query($query2)) {
          // Delete devices
@@ -232,14 +267,19 @@ class Computer_Device extends CommonDBChild {
          if ($number>$newNumber) {
             for ($i=$newNumber ; $i<$number ; $i++) {
                $data2 = $DB->fetch_array($result2);
+               $data2['_item']=$item;
                $this->delete($data2);
             }
          // Add devices
          } else if ($number<$newNumber) {
             $input = array('computers_id' => $this->fields["computers_id"],
-                           'itemtype'     => $this->fields["itemtype"],
-                           'items_id'     => $this->fields["items_id"],
-                           'specificity'  => addslashes($this->fields["specificity"]));
+                           '_item' => $item,
+                           $fk     => $this->fields[$fk]);
+            if (count($specif_fields)) {
+               foreach ($specif_fields as $field => $name) {
+                  $input[$field]= addslashes($this->fields["specificity"]);
+               }
+            }
             for ($i=$number ; $i<$newNumber ; $i++) {
                $this->add($input);
             }
@@ -251,10 +291,24 @@ class Computer_Device extends CommonDBChild {
     * Update an internal device specificity
     *
     * @param $newValue new specifity value
+    * @param $itemtype itemtype of device
     * @param $compDevID computer device ID
     */
-   private function updateSpecificity($newValue, $compDevID) {
+   private function updateSpecificity($newValue, $itemtype,$compDevID) {
       global $DB;
+
+      $item = new $itemtype();
+      $specif_fields=$item->getSpecifityLabel();
+
+      // No specificity for this device type
+      if (count($specif_fields) == 0) {
+         return false;
+      }
+
+      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+      // Force table for link
+      $this->forceTable($linktable);
 
       if (!$this->getFromDB($compDevID)) {
          return false;
@@ -265,15 +319,15 @@ class Computer_Device extends CommonDBChild {
       }
       // Update specificity
       $query = "SELECT `id`
-                FROM `glpi_computers_devices`
+                FROM `$linktable`
                 WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                      AND `itemtype` = '".$this->fields["itemtype"]."'
-                      AND `items_id` = '".$this->fields["items_id"]."'
+                      AND `$fk` = '".$this->fields[$fk]."'";"
                       AND `specificity` = '".addslashes($this->fields["specificity"])."'";
 
       $first = true;
       foreach ($DB->request($query) as $data) {
          $data['specificity'] = $newValue;
+         $data['_item'] = $item;
          $this->update($data, $first);
          $first = false;
       }
@@ -290,16 +344,16 @@ class Computer_Device extends CommonDBChild {
       // Update quantity
       foreach ($input as $key => $val) {
          $data = explode("_",$key);
-         if (count($data) == 2 && $data[0] == "quantity") {
-            $this->updateQuantity($val, $data[1]);
+         if (count($data) == 3 && $data[0] == "quantity") {
+            $this->updateQuantity($val, $data[1],$data[2]);
          }
       }
 
       // Update specificity
       foreach ($_POST as $key => $val) {
          $data = explode("_",$key);
-         if (count($data) == 2 && $data[0] == "value") {
-            $this->updateSpecificity($val,$data[1]);
+         if (count($data) == 3 && $data[0] == "value") {
+            $this->updateSpecificity($val,$data[1],$data[2]);
          }
       }
    }
@@ -349,13 +403,13 @@ class Computer_Device extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      if ($this->fields['itemtype']=='DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_item']->getType() == 'DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
             // memory can't be 0 (but sometime OCS report such value)
             return false;
          }
       }
-      if ($this->fields['itemtype']=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_item']->getType()=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
             // frequency can't be 0 (but sometime OCS report such value)
             return false;
@@ -417,6 +471,7 @@ class Computer_Device extends CommonDBChild {
                       AND `computers_id` = '$glpi_computers_id'";
       $DB->query($query);
    }
+
 
 }
 ?>
