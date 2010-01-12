@@ -2702,10 +2702,10 @@ function update0723to080() {
                   $DB->query($query) or die("0.80 update specificity in glpi_computer_device for $itemtype" . $LANG['update'][90] . $DB->error());
                }
             }
-            // copy datas to new table
-            $query="INSERT INTO `$linktable` (`computers_id`,`$fkname`
+            // copy datas to new table : keep id for ocs sync
+            $query="INSERT INTO `$linktable` (`id`,`computers_id`,`$fkname`
                      ".($withspecifity[$key]?",`specificity`":'').")
-                        SELECT FK_computers,FK_device".($withspecifity[$key]?",specificity":'')."
+                        SELECT ID, FK_computers,FK_device".($withspecifity[$key]?",specificity":'')."
                         FROM glpi_computer_device
                         WHERE device_type=$key";
             $DB->query($query) or die("0.80 populate $linktable " . $LANG['update'][90] . $DB->error());
