@@ -65,10 +65,14 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          break;
 
       case 4 :
-         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
+         $authldap->showFormEntityConfig($_POST['id'],$_POST['target']);
          break;
 
       case 5 :
+         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
+         break;
+
+      case 6 :
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          break;
 

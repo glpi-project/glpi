@@ -302,6 +302,16 @@ class Entity extends CommonTreeDropdown {
       $tab[8]['linkfield'] = '';
       $tab[8]['name']      = $LANG['entity'][13];
 
+      $tab[9]['table']     = 'glpi_entitydatas';
+      $tab[9]['field']     = 'ldapservers_id';
+      $tab[9]['linkfield'] = '';
+      $tab[9]['name']      = $LANG['entity'][15];
+
+      $tab[10]['table']     = 'glpi_entitydatas';
+      $tab[10]['field']     = 'entity_ldapfilter';
+      $tab[10]['linkfield'] = '';
+      $tab[10]['name']      = $LANG['entity'][16];
+
       return $tab;
    }
 

@@ -484,6 +484,8 @@ $LANG['entity'][11]="pour voir l'entité et ses sous-entités";
 $LANG['entity'][12]="Information LDAP représentant l'entité";
 $LANG['entity'][13]="Information OCS représentant l'entité";
 $LANG['entity'][14]="Informations avancées";
+$LANG['entity'][15]="Annuaire associé à l'entité";
+$LANG['entity'][16]="Filtre de recherche de l'entité";
 
 $LANG['event'][0]="Item (ID)";
 $LANG['event'][2]="Service";
@@ -1740,6 +1742,10 @@ $LANG['setup'][615]="Cycle de vie des tickets";
 $LANG['setup'][616]="Depuis \ Vers";
 
 $LANG['setup'][620]="Liaison";
+
+$LANG['setup'][621]="Filtre de recherche des entités";
+$LANG['setup'][622]="Attribut représentant l'entité";
+$LANG['setup'][623]="Importation des entités depuis LDAP";
 
 $LANG['setup'][650]="PHP";
 $LANG['setup'][651]="SMTP";

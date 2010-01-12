@@ -98,7 +98,8 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['mobile_field']='mobile';
             $this->fields['comment_field']='info';
             $this->fields['title_field']='title';
-            //$this->fields['language_field']='preferredlanguage';
+            $this->fields['entity_field']='ou';
+            $this->fields['entity_condition']='(objectclass=organizationalUnit)';
             $this->fields['use_dn']=1;
             break;
 
@@ -186,7 +187,7 @@ class AuthLDAP extends CommonDBTM {
                                     'group_condition', 'group_search_type', 'group_member_field',
                                     'email_field', 'realname_field', 'firstname_field',
                                     'phone_field', 'phone2_field', 'mobile_field', 'comment_field',
-                                    'title_field', 'use_dn');
+                                    'title_field', 'use_dn', 'entity_field', 'entity_condition');
 
             foreach ($hidden_fields as $hidden_field) {
                echo "<input type='hidden' name='$hidden_field' value='".
@@ -415,6 +416,32 @@ class AuthLDAP extends CommonDBTM {
       echo "</table></form></div>";
    }
 
+
+   function showFormEntityConfig($ID, $target) {
+      global $LANG,$CFG_GLPI;
+      echo "<form method='post' action='$target'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<input type='hidden' name='id' value='$ID'>";
+
+      echo "<th class='center' colspan='4'>" . $LANG['setup'][623] . "</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][621] . "&nbsp;:</td>";
+      echo "<td colspan='3'><input type='text' name='entity_field' value='".
+         $this->fields["entity_field"]."'>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][622] . "&nbsp;:</td>";
+      echo "<td colspan='3'><input type='text' name='entity_condition' value='".
+             $this->fields["entity_condition"]."' size='100'>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<input type='submit' name='update' class='submit' value='".
+                $LANG['buttons'][2]."'></td>";
+      echo "</td></tr>";
+      echo "</table></form></div>";
+
+   }
    function defineTabs($ID,$withtemplate) {
       global $LANG;
 
@@ -424,8 +451,9 @@ class AuthLDAP extends CommonDBTM {
       if ($ID>0) {
             $ong[2] = $LANG['Menu'][14];
             $ong[3] = $LANG['Menu'][36];
-            $ong[4] = $LANG['entity'][14];
-            $ong[5] = $LANG['ldap'][22];
+            $ong[4] = $LANG['entity'][0];
+            $ong[5] = $LANG['entity'][14];
+            $ong[6] = $LANG['ldap'][22];
       }
       return $ong;
    }

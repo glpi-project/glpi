@@ -61,6 +61,8 @@ CREATE TABLE `glpi_authldaps` (
   `title_field` varchar(255) collate utf8_unicode_ci default NULL,
   `category_field` varchar(255) collate utf8_unicode_ci default NULL,
   `language_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `entity_field` VARCHAR( 255 ) NULL,
+  `entity_condition`  TEXT collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1271,6 +1273,8 @@ CREATE TABLE `glpi_entitydatas` (
   `notepad` longtext collate utf8_unicode_ci,
   `ldap_dn` varchar(255) collate utf8_unicode_ci default NULL,
   `tag` varchar(255) collate utf8_unicode_ci default NULL,
+  `ldapservers_id` INT( 11 ) NOT NULL DEFAULT '0',
+  `entity_ldapfilter` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
