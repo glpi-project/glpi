@@ -45,6 +45,8 @@ if (!defined('GLPI_ROOT')){
  * \see Cartridge
  */
 class CartridgeItem extends CommonDBTM {
+   // From CommonDBTM
+   protected $forward_entity_to=array('Infocom','Cartridge');
 
    static function getTypeName() {
       global $LANG;

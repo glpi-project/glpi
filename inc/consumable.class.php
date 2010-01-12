@@ -45,6 +45,8 @@ if (!defined('GLPI_ROOT')){
  */
 class Consumable extends CommonDBTM {
 
+   // From CommonDBTM
+   protected $forward_entity_to=array('Infocom');
 
    static function getTypeName() {
       global $LANG;
@@ -71,8 +73,14 @@ class Consumable extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      return array("consumableitems_id"=>$input["tID"],
-                   "date_in"=>date("Y-m-d"));
+      $item=$item new ConsumbaleItem();
+      if ($cartitem->getFromDB($input["tID"])) {
+         return array("consumableitems_id"=>$item->fields["id"],
+                     "entities_id"=>$item->getEntityID(),
+                     "date_in"=>date("Y-m-d"));
+      } else {
+         return array();
+      }
    }
 
    function post_addItem() {

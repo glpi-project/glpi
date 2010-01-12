@@ -44,6 +44,8 @@ if (!defined('GLPI_ROOT')){
  * @author Julien Dombre
  */
 class ConsumableItem extends CommonDBTM {
+   // From CommonDBTM
+   protected $forward_entity_to=array('Infocom','Consumable');
 
    static function getTypeName() {
       global $LANG;
