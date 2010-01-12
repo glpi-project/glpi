@@ -2627,7 +2627,7 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add default value for search engine for AuthLDAP" . $LANG['update'][90] . $DB->error());
    }
 
-   // Migrate devices 
+   // Migrate devices
    if (TableExists('glpi_computer_device')) {
       displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['title'][30]); // Updating schema
 
@@ -2753,6 +2753,14 @@ function update0723to080() {
    if (!FieldExists ('glpi_entitydatas','entity_ldapfilter')) {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `entity_ldapfilter`  TEXT collate utf8_unicode_ci";
       $DB->query($query) or die("0.80 add entity_ldapfilter to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_profiles','import_externalauth_users')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `import_externalauth_users` CHAR( 1 ) NULL";
+      $DB->query($query) or die("0.80 add import_externalauth_users in glpi_profiles");
+
+      $query = "UPDATE `glpi_profiles` SET `import_externalauth_users`='w' WHERE `name` IN ('super-admin','admin')";
+      $DB->query($query) or die("0.80 add import_externalauth_users write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
    // Display "Work ended." message - Keep this as the last action.

@@ -836,8 +836,12 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][12]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][30]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['Menu'][30]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
+      echo "</td>";
+
+      echo "<td class='tab_bg_2'>".$LANG['profiles'][47]."&nbsp;:</td><td class='tab_bg_2'>";
+      Profile::dropdownNoneReadWrite("import_externalauth_users",$this->fields["import_externalauth_users"],1,0,1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
