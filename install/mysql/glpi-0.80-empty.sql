@@ -1224,6 +1224,8 @@ INSERT INTO `glpi_displaypreferences` VALUES ('126','Crontask','4','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('127','Crontask','7','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('128','AuthMail','3','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('129','AuthLDAP','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('130','RequestType','14','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('131','RequestType','15','2','0');
 
 ### Dump table glpi_documentcategories
 
