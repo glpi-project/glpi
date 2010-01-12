@@ -76,7 +76,7 @@ class Search {
       $p['contains']    = array();//
       $p['searchtype']  = array();//
       $p['sort']        = '1'; //
-      $p['order']       = 'ASC';// 
+      $p['order']       = 'ASC';//
       $p['start']       = 0;//
       $p['is_deleted']  = 0;
       $p['export_all']  = 0;
@@ -1668,7 +1668,9 @@ class Search {
          default :
             $ret = "";
       }
-      if ($mayberecursive) {
+      if ($itemtable=='glpi_entities') {
+         $ret .= "`$itemtable`.`id` as entities_id, '1' as is_recursive, ";
+      } else if ($mayberecursive) {
          $ret .= "`$itemtable`.`entities_id`, `$itemtable`.`is_recursive`, ";
       }
       return $ret;
