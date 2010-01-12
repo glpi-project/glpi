@@ -127,14 +127,17 @@ class MailCollector  extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
       }
+
       echo "<div class='center'><form method='post' name=form action=\"$target\">";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th class='center' colspan='2'>";
+      echo "<tr><th class='center'>";
       if (empty($ID)) {
          echo $LANG['mailgate'][1];
       } else {
          echo $LANG['mailgate'][0]."&nbsp;: ".$this->fields["id"];
       }
+      echo "</th><th>";
+      echo ($ID>0?$LANG['common'][26].": ".convDateTime($this->fields["date_mod"]):'&nbsp;');
       echo "</th></tr>";
 
       if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {
@@ -171,6 +174,10 @@ class MailCollector  extends CommonDBTM {
       echo "<input type='text' size='15' name='filesize_max' value=\"" .
              $this->fields["filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".
              getSize($this->fields["filesize_max"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td><td>";
+      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       if (haveRight("config","w")) {
@@ -222,6 +229,19 @@ class MailCollector  extends CommonDBTM {
       $tab[2]['linkfield'] = 'is_active';
       $tab[2]['name']      = $LANG['common'][60];
       $tab[2]['datatype']  = 'bool';
+
+      $tab[19]['table']     = 'glpi_mailcollectors';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
+      $tab[16]['table']     = 'glpi_mailcollectors';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
 
       return $tab;
    }
