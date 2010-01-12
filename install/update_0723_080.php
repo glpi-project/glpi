@@ -2032,10 +2032,7 @@ function update0723to080() {
          (12, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_displaypreferences` (`itemtype`, `num`, `rank`, `users_id`)
-         VALUES ('Crontask', 8, 1, 0), ('Crontask', 3, 2, 0),
-                ('Crontask', 4, 3, 0),  ('Crontask', 7, 4, 0);";
-      $DB->query($query) or die("0.80 populate glpi_displaypreferences for glpi_crontasks" . $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
    }
 
    if (!TableExists('glpi_crontasklogs')) {
@@ -2419,8 +2416,7 @@ function update0723to080() {
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(6, '".
                   addslashes($LANG['common'][62])."', 0, 0, NULL)");
       // Add default display
-      $DB->query("INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`) VALUES ('RequestType', '14', '1', '0');");
-      $DB->query("INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`) VALUES ('RequestType', '15', '2', '0');");
+      $ADDTODISPLAYPREF['RequestType']=array(14,15);
    }
    if (FieldExists('glpi_tickets','request_type')) {
       $query = "ALTER TABLE `glpi_tickets`
@@ -2857,10 +2853,11 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add comment to glpi_authldaps" .
                                  $LANG['update'][90] . $DB->error());
    }
-   $ADDTODISPLAYPREF['AuthLDAP']=array(3,19);
 
    // Change mailgate search pref : date_mod
    $ADDTODISPLAYPREF['AuthLDAP']=array(3,19);
+
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authmails','date_mod')) {
@@ -2889,7 +2886,7 @@ function update0723to080() {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query="SELECT max(rank) FROM glpi_displaypreferences
-                           WHERE users_id='".$data['users_id']."' AND itemtype='$type';";
+                           WHERE users_id='".$data['users_id']."' AND `itemtype`='$type';";
                $result=$DB->query($query);
                $rank=$DB->result($result,0,0);
                $rank++;
@@ -2898,12 +2895,19 @@ function update0723to080() {
                            WHERE users_id='".$data['users_id']."' AND num=$newval AND itemtype='$type';";
                   if ($result2=$DB->query($query)) {
                      if ($DB->numrows($result2)==0) {
-                        $query="INSERT INTO glpi_displaypreferences (itemtype ,`num` ,`rank` ,users_id)
+                        $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
                                  VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."');";
                         $DB->query($query);
                      }
                   }
                }
+            }
+         } else { // Add for default user
+            $rank=1;
+            foreach ($tab as $newval) {
+               $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
+                        VALUES ('$type', '$newval', '".$rank++."', '0');";
+               $DB->query($query);
             }
          }
       }
