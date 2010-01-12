@@ -73,7 +73,7 @@ class Consumable extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
-      $item=$item new ConsumbaleItem();
+      $item=new ConsumbaleItem();
       if ($cartitem->getFromDB($input["tID"])) {
          return array("consumableitems_id"=>$item->fields["id"],
                      "entities_id"=>$item->getEntityID(),
