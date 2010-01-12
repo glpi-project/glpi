@@ -63,7 +63,6 @@ function update0723to080() {
       'glpi_computerdisks'                => 'glpi_computerdisks',
       'glpi_dropdown_model'               => 'glpi_computermodels',
       'glpi_type_computers'               => 'glpi_computertypes',
-      'glpi_computer_device'              => 'glpi_computers_devices',
       'glpi_connect_wire'                 => 'glpi_computers_items',
       'glpi_inst_software'                => 'glpi_computers_softwareversions',
       'glpi_config'                       => 'glpi_configs',
@@ -295,9 +294,6 @@ function update0723to080() {
                                  'glpi_documents_items','glpi_infocoms','glpi_bookmarks',
                                  'glpi_bookmarks_users','glpi_links_itemtypes',
                                  'glpi_networkports','glpi_reservationitems','glpi_tickets')),
-                           array('to' => 'devicetype',
-                              'noindex' => array('glpi_computers_devices'),
-                              'tables' => array('glpi_computers_devices')),
                      ),
    'domain' => array(array('to' => 'domains_id',
                            'tables' => array('glpi_computers','glpi_networkequipments',
@@ -328,7 +324,7 @@ function update0723to080() {
                            'tables' => array('glpi_bookmarks_users')),
                      ),
    'FK_computers' => array(array('to' => 'computers_id',
-                           'tables' => array('glpi_computers_devices','glpi_computerdisks',
+                           'tables' => array('glpi_computerdisks',
                                        'glpi_softwarelicenses',)),
                      ),
    'FK_contact' => array(array('to' => 'contacts_id',
@@ -343,9 +339,6 @@ function update0723to080() {
                                  'glpi_documents_items','glpi_infocoms'),
                            'tables' => array('glpi_alerts','glpi_contracts_items',
                                  'glpi_documents_items','glpi_infocoms')),
-                        array('to' => 'devices_id',
-                           'noindex' => array('glpi_computers_devices'),
-                           'tables' => array('glpi_computers_devices')),
                      ),
    'FK_doc' => array(array('to' => 'documents_id',
                            'noindex' => array('glpi_documents_items'),
@@ -1534,7 +1527,6 @@ function update0723to080() {
    $indextodrop=array(
          'glpi_alerts' => array('alert','FK_device'),
          'glpi_cartridges_printermodels' => array('FK_glpi_type_printer'),
-         'glpi_computers_devices' => array('FK_device'),
          'glpi_computers_items' => array('connect','type','end1','end1_2'),
          'glpi_consumables' => array('FK_glpi_cartridges_type'),
          'glpi_contacts_suppliers' => array('FK_enterprise'),
@@ -1650,7 +1642,7 @@ function update0723to080() {
       );
 
    foreach ($itemtype_tables as $table) {
-      displayMigrationMessage("080", $LANG['update'][142] . ' - $table'); // Updating data
+      displayMigrationMessage("080", $LANG['update'][142] . " - $table"); // Updating data
       // Alter itemtype field
       $query = "ALTER TABLE `$table` CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
       $DB->query($query) or die("0.80 alter itemtype of table $table " . $LANG['update'][90] . $DB->error());
@@ -1662,46 +1654,49 @@ function update0723to080() {
       }
    }
 
-   // History migration, handled separatly for optimization
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
-   $query = "ALTER TABLE `glpi_logs`
-             CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
-             ADD `itemtype` VARCHAR(100) NOT NULL DEFAULT ''  AFTER `device_type`,
-             ADD `items_id` INT( 11 ) NOT NULL DEFAULT '0' AFTER `itemtype`,
-             ADD `itemtype_link` VARCHAR(100) NOT NULL DEFAULT '' AFTER `device_internal_type`,
-             CHANGE `linked_action` `linked_action` INT( 11 ) NOT NULL DEFAULT '0'
-                     COMMENT 'see define.php HISTORY_* constant'";
-         $DB->query($query) or die("0.80 add item* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
+   if (FieldExists('glpi_logs', 'device_type')) {
 
-   // Update values
-   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
-   foreach ($typetoname as $key => $val) {
-      $query = "UPDATE `glpi_logs` SET `itemtype` = '$val', `items_id`=`FK_glpi_device`
-                WHERE `device_type` = '$key'";
-      $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+      // History migration, handled separatly for optimization
+      displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
+      $query = "ALTER TABLE `glpi_logs`
+               CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
+               ADD `itemtype` VARCHAR(100) NOT NULL DEFAULT ''  AFTER `device_type`,
+               ADD `items_id` INT( 11 ) NOT NULL DEFAULT '0' AFTER `itemtype`,
+               ADD `itemtype_link` VARCHAR(100) NOT NULL DEFAULT '' AFTER `device_internal_type`,
+               CHANGE `linked_action` `linked_action` INT( 11 ) NOT NULL DEFAULT '0'
+                        COMMENT 'see define.php HISTORY_* constant'";
+            $DB->query($query) or die("0.80 add item* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
-                WHERE `device_internal_type` = '$key'
-                    AND `linked_action` IN (".HISTORY_ADD_RELATION.",".HISTORY_DEL_RELATION.",".
-                                              HISTORY_DISCONNECT_DEVICE.",".HISTORY_CONNECT_DEVICE.")";
-      $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+      // Update values
+      displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
+      foreach ($typetoname as $key => $val) {
+         $query = "UPDATE `glpi_logs` SET `itemtype` = '$val', `items_id`=`FK_glpi_device`
+                  WHERE `device_type` = '$key'";
+         $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+
+         $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
+                  WHERE `device_internal_type` = '$key'
+                     AND `linked_action` IN (".HISTORY_ADD_RELATION.",".HISTORY_DEL_RELATION.",".
+                                                HISTORY_DISCONNECT_DEVICE.",".HISTORY_CONNECT_DEVICE.")";
+         $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+      }
+
+      foreach ($devtypetoname as $key => $val) {
+         $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
+                  WHERE `device_internal_type` = '$key'
+                     AND `linked_action` IN (".HISTORY_ADD_DEVICE.",".HISTORY_UPDATE_DEVICE.",".HISTORY_DELETE_DEVICE.")";
+         $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
+      }
+
+      displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
+      $query = "ALTER TABLE `glpi_logs`
+               DROP `device_type`,
+               DROP `FK_glpi_device`,
+               DROP `device_internal_type`,
+               ADD INDEX `itemtype_link` (`itemtype_link`),
+               ADD INDEX `item` (`itemtype`,`items_id`)";
+      $DB->query($query) or die("0.80 drop device* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
    }
-
-   foreach ($devtypetoname as $key => $val) {
-      $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
-                WHERE `device_internal_type` = '$key'
-                  AND `linked_action` IN (".HISTORY_ADD_DEVICE.",".HISTORY_UPDATE_DEVICE.",".HISTORY_DELETE_DEVICE.")";
-      $DB->query($query) or die("0.80 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
-   }
-
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
-   $query = "ALTER TABLE `glpi_logs`
-             DROP `device_type`,
-             DROP `FK_glpi_device`,
-             DROP `device_internal_type`,
-             ADD INDEX `itemtype_link` (`itemtype_link`),
-             ADD INDEX `item` (`itemtype`,`items_id`)";
-   $DB->query($query) or die("0.80 drop device* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
 
    // Update glpi_profiles item_type
 
@@ -2632,28 +2627,94 @@ function update0723to080() {
       $DB->query($query) or die("0.80 add default value for search engine for AuthLDAP" . $LANG['update'][90] . $DB->error());
    }
 
-   if (FieldExists('glpi_computers_devices','devicetype')) {
+   // Migrate devices 
+   if (TableExists('glpi_computer_device')) {
+      displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['title'][30]); // Updating schema
 
-      displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['title'][30]); // Updating schema
+      foreach ($devtypetoname as $key => $itemtype) {
+         displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['title'][30].' - '.$itemtype); // Updating schema
+         $linktype="Computer_$itemtype";
+         $linktable = getTableForItemType($linktype);
+         $itemtable = getTableForItemType($itemtype);
+         $fkname    = getForeignKeyFieldForTable($itemtable);
+         $withspecifity = array(MOBOARD_DEVICE     => false,
+                              PROCESSOR_DEVICE   => 'int',
+                              RAM_DEVICE         => 'int',
+                              HDD_DEVICE         => 'int',
+                              NETWORK_DEVICE     => 'varchar',
+                              DRIVE_DEVICE       => false,
+                              CONTROL_DEVICE     => false,
+                              GFX_DEVICE         => 'int',
+                              SND_DEVICE         => false,
+                              PCI_DEVICE         => false,
+                              CASE_DEVICE        => false,
+                              POWER_DEVICE       => false,);
 
-      $query = "ALTER TABLE `glpi_computers_devices`
-                     ADD `itemtype` VARCHAR( 100 ) NOT NULL,
-                     ADD `items_id` INT(11) NOT NULL default '0'";
-      $DB->query($query) or die("0.80 add itemtype to table glpi_computers_devices " . $LANG['update'][90] . $DB->error());
+         if (FieldExists($itemtable,'specif_default')) {
+            // Convert default specifity
+            if ($withspecifity[$key]) {
+               // Convert data to int
+               if ($withspecifity[$key] == 'int') {
+                  // clean non integer values
+                  $query="UPDATE `$itemtable` SET `specif_default` = 0 WHERE `specif_default` NOT REGEXP '^[0-9]*$' OR `specif_default` = ''";
+                  $DB->query($query) or die("0.80 update specif_default in $itemtable " . $LANG['update'][90] . $DB->error());
 
-      foreach ($devtypetoname as $key => $val) {
-         $query = "UPDATE `glpi_computers_devices`
-                   SET `itemtype` = '$val', `items_id` = `devices_id`
-                   WHERE `devicetype` = '$key'";
-         $DB->query($query) or die("0.80 update itemtype of table glpi_computers_devices for $val " . $LANG['update'][90] . $DB->error());
+                  $query = "ALTER TABLE `$itemtable` CHANGE `specif_default` `specif_default` INT(11) NOT NULL";
+                  $DB->query($query) or die("0.80 alter specif_default in $itemtable " . $LANG['update'][90] . $DB->error());
+               }
+            } else { // Drop default specificity
+               $query = "ALTER TABLE `$itemtable` DROP `specif_default`";
+               $DB->query($query) or die("0.80 drop specif_default in $itemtable " . $LANG['update'][90] . $DB->error());
+            }
+         }
+
+         if (!TableExists($linktable)) {
+            // create table
+            $query = "CREATE TABLE `$linktable` (
+                        `id` int(11) NOT NULL auto_increment,
+                        `computers_id` int(11) NOT NULL default '0',
+                        `$fkname` int(11) NOT NULL default '0',";
+            if ($withspecifity[$key]) {
+               if ($withspecifity[$key] == 'int') {
+                  $query.="`specificity` int(11) NOT NULL,";
+
+               } else {
+                  $query.="`specificity` varchar(255) collate utf8_unicode_ci default NULL,";
+               }
+            }
+            $query.="PRIMARY KEY  (`id`),
+                     KEY `computers_id` (`computers_id`),
+                     KEY `$fkname` (`$fkname`)";
+            if ($withspecifity[$key]) {
+               $query.=",KEY `specificity` (`specificity`)";
+            }
+            $query.=") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            $DB->query($query) or die("0.80 create $linktable " . $LANG['update'][90] . $DB->error());
+
+            // Update data before copy
+            if ($withspecifity[$key]) {
+               // Convert data to int
+               if ($withspecifity[$key] == 'int') {
+                  // clean non integer values
+                  $query="UPDATE `glpi_computer_device` SET `specificity` = 0
+                        WHERE device_type=$key
+                           AND `specificity` NOT REGEXP '^[0-9]*$' OR `specificity` = ''";
+                  $DB->query($query) or die("0.80 update specificity in glpi_computer_device for $itemtype" . $LANG['update'][90] . $DB->error());
+               }
+            }
+            // copy datas to new table
+            $query="INSERT INTO `$linktable` (`computers_id`,`$fkname`
+                     ".($withspecifity[$key]?",`specificity`":'').")
+                        SELECT FK_computers,FK_device".($withspecifity[$key]?",specificity":'')."
+                        FROM glpi_computer_device
+                        WHERE device_type=$key";
+            $DB->query($query) or die("0.80 populate $linktable " . $LANG['update'][90] . $DB->error());
+         }
       }
-      $query = "ALTER TABLE `glpi_computers_devices`
-                     DROP `devicetype`,
-                     DROP `devices_id`,
-                     ADD INDEX `item` (`itemtype`,`items_id`)";
-      $DB->query($query) or die("0.80 drop devicetype of table glpi_computers_devices " . $LANG['update'][90] . $DB->error());
+      // Drop computer_device_table
+      $query="DROP TABLE `glpi_computer_device`";
+      $DB->query($query) or die("0.80 drop glpi_computer_device " . $LANG['update'][90] . $DB->error());
    }
-
 
    if (!FieldExists('glpi_users','task_private')) {
       $query = "ALTER TABLE `glpi_users`
