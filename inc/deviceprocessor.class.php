@@ -62,7 +62,7 @@ class DeviceProcessor extends CommonDevice {
    static function getSpecifityLabel() {
       global $LANG;
 
-      return $LANG['device_ram'][1];
+      return array('specificity'=>$LANG['device_ram'][1]);
    }
 
    function getSearchOptions() {

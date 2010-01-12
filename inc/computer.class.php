@@ -113,38 +113,6 @@ class Computer extends CommonDBTM {
       return $ong;
    }
 
-   /**
-   * Retrieve an item from the database with device associated
-   *
-   *@param $ID ID of the item to get
-   *@return true if succeed else false
-   **/
-   function getFromDBwithDevices ($ID) {
-      global $DB;
-
-      if ($this->getFromDB($ID)) {
-         $query = "SELECT count(*) AS NB, `id`, `devicetype`, `devices_id`, `specificity`
-                   FROM `glpi_computers_devices`
-                   WHERE `computers_id` = '$ID'
-                   GROUP BY `devicetype`, `devices_id`, `specificity`";
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)>0) {
-               $i = 0;
-               while($data = $DB->fetch_array($result)) {
-                  $this->devices[$i] = array("compDevID"=>$data["id"],
-                                             "devType"=>$data["devicetype"],
-                                             "devID"=>$data["devices_id"],
-                                             "specificity"=>$data["specificity"],
-                                             "quantity"=>$data["NB"]);
-                  $i++;
-               }
-            }
-            return true;
-         }
-      }
-      return false;
-   }
-
    function post_updateItem($history=1) {
       global $DB,$LANG,$CFG_GLPI;
 

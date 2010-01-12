@@ -300,7 +300,8 @@ class Log extends CommonDBTM {
                   if (class_exists($data["itemtype_link"])) {
                      $item = new $data["itemtype_link"]();
                      $field = $item->getTypeName();
-                     $change = $item->getSpecifityLabel()."&nbsp;<strong>:</strong>&nbsp;";
+                     $specif_fields=$item->getSpecifityLabel();
+                     $change = $specif_fields['specificity']."&nbsp;<strong>:</strong>&nbsp;";
                   }
                   $change .= $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
                              $data[ "new_value"]."\"";

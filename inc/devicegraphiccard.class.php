@@ -49,7 +49,7 @@ class DeviceGraphicCard extends CommonDevice {
    static function getSpecifityLabel() {
       global $LANG;
 
-      return $LANG['device_gfxcard'][0];
+      return array('specificity'=>$LANG['device_gfxcard'][0]);
    }
 
    function getAdditionalFields() {
