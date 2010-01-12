@@ -37,16 +37,20 @@ class Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $ent0 = $this->sharedFixture['entity'][0];
       $ent1 = $this->sharedFixture['entity'][1];
       $ent2 = $this->sharedFixture['entity'][2];
+      $ent3 = $this->sharedFixture['entity'][3];
+      $ent4 = $this->sharedFixture['entity'][4];
 
       $parent = getAncestorsOf('glpi_entities', $ent0);
       $this->assertEquals(1, count($parent));
       $this->assertArrayHasKey(0, $parent);
 
       $sons = getSonsOf('glpi_entities',$ent0);
-      $this->assertEquals(3, count($sons));
+      $this->assertEquals(5, count($sons));
       $this->assertArrayHasKey($ent0, $sons);
       $this->assertArrayHasKey($ent1, $sons);
       $this->assertArrayHasKey($ent2, $sons);
+      $this->assertArrayHasKey($ent3, $sons);
+      $this->assertArrayHasKey($ent4, $sons);
 
       $parent = getAncestorsOf('glpi_entities', $ent1);
       $this->assertEquals(2, count($parent));
@@ -56,6 +60,19 @@ class Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $sons = getSonsOf('glpi_entities',$ent1);
       $this->assertEquals(1, count($sons));
       $this->assertArrayHasKey($ent1, $sons);
+
+      $sons = getSonsOf('glpi_entities',$ent2);
+      $this->assertEquals(3, count($sons));
+      $this->assertArrayHasKey($ent2, $sons);
+      $this->assertArrayHasKey($ent3, $sons);
+      $this->assertArrayHasKey($ent4, $sons);
+
+      $parent = getAncestorsOf('glpi_entities', $ent4);
+      $this->assertEquals(3, count($parent));
+      $this->assertArrayHasKey(0, $parent);
+      $this->assertArrayHasKey($ent0, $parent);
+      $this->assertArrayHasKey($ent2, $parent);
+
    }
 
    /**

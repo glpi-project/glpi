@@ -315,5 +315,75 @@ class CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertTrue($rel->can($idr[8],'r'));
       $this->assertTrue($rel->can($idr[8],'w'));
    }
+
+   /**
+    * Entity right check
+    */
+   public function testEntity() {
+
+      $ent0 = $this->sharedFixture['entity'][0];
+      $ent1 = $this->sharedFixture['entity'][1];
+      $ent2 = $this->sharedFixture['entity'][2];
+      $ent3 = $this->sharedFixture['entity'][3];
+      $ent4 = $this->sharedFixture['entity'][4];
+
+      $entity = new Entity();
+
+      $this->assertTrue(changeActiveEntities("all"));
+
+      $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
+      $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
+      $this->assertTrue($entity->can($ent1,'r'), "Fail: can't read entity 1");
+      $this->assertTrue($entity->can($ent2,'r'), "Fail: can't read entity 2");
+      $this->assertTrue($entity->can($ent3,'r'), "Fail: can't read entity 2.1");
+      $this->assertTrue($entity->can($ent4,'r'), "Fail: can't read entity 2.2");
+
+      $this->assertTrue($entity->can(0,'w'), "Fail: can't write root entity");
+      $this->assertTrue($entity->can($ent0,'w'), "Fail: can't write entity 0");
+      $this->assertTrue($entity->can($ent1,'w'), "Fail: can't write entity 1");
+      $this->assertTrue($entity->can($ent2,'w'), "Fail: can't write entity 2");
+      $this->assertTrue($entity->can($ent3,'w'), "Fail: can't write entity 2.1");
+      $this->assertTrue($entity->can($ent4,'w'), "Fail: can't write entity 2.2");
+
+      $input=array('entities_id' => $ent1);
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $input=array('entities_id' => $ent2);
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $input=array('entities_id' => $ent3);
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2.1");
+      $input=array('entities_id' => 99999);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $input=array('entities_id' => -1);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+
+      $this->assertTrue(changeActiveEntities($ent2,true));
+
+      $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
+      $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
+      $this->assertFalse($entity->can($ent1,'r'), "Fail: can read entity 1");
+      $this->assertTrue($entity->can($ent2,'r'), "Fail: can't read entity 2");
+      $this->assertTrue($entity->can($ent3,'r'), "Fail: can't read entity 2.1");
+      $this->assertTrue($entity->can($ent4,'r'), "Fail: can't read entity 2.2");
+      $this->assertFalse($entity->can(99999,'r'), "Fail: can read not existing entity");
+
+      //$this->assertFalse($entity->can(0,'w'), "Fail: can write root entity");
+      $this->assertFalse($entity->can($ent0,'w'), "Fail: can write entity 0");
+      $this->assertFalse($entity->can($ent1,'w'), "Fail: can write entity 1");
+      $this->assertTrue($entity->can($ent2,'w'), "Fail: can't write entity 2");
+      $this->assertTrue($entity->can($ent3,'w'), "Fail: can't write entity 2.1");
+      $this->assertTrue($entity->can($ent4,'w'), "Fail: can't write entity 2.2");
+      $this->assertFalse($entity->can(99999,'w'), "Fail: can write not existing entity");
+
+      $input=array('entities_id' => $ent1);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $input=array('entities_id' => $ent2);
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $input=array('entities_id' => $ent3);
+      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2.1");
+      $input=array('entities_id' => 99999);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $input=array('entities_id' => -1);
+      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+   }
 }
 ?>

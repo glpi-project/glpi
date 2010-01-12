@@ -115,6 +115,12 @@ if (!$tab['entity'][0]                                   // Crash detection
       $tab['entity'][2] = $entity->add(array('name'        => 'PHP Unit Child 2',
                                              'entities_id' => $tab['entity'][0]));
 
+      $tab['entity'][3] = $entity->add(array('name'        => 'PHP Unit Child 2.1',
+                                             'entities_id' => $tab['entity'][2]));
+
+      $tab['entity'][4] = $entity->add(array('name'        => 'PHP Unit Child 2.2',
+                                             'entities_id' => $tab['entity'][2]));
+
       // New session with all the entities
       $auth->Login('glpi', 'glpi') or die("Login glpi/glpi invalid !\n");
 
