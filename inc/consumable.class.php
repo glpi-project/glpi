@@ -145,21 +145,21 @@ class Consumable extends CommonDBTM {
    }
 
 
-   function isEntityAssign() {
-      return true;
-   }
+//    function isEntityAssign() {
+//       return true;
+//    }
 
    /**
     * Get the ID of entity assigned to the Consumable
     *
     * @return ID of the entity
    **/
-   function getEntityID () {
-      $ci=new ConsumableItem();
-      $ci->getFromDB($this->fields["consumableitems_id"]);
-
-      return $ci->getEntityID();
-   }
+//    function getEntityID () {
+//       $ci=new ConsumableItem();
+//       $ci->getFromDB($this->fields["consumableitems_id"]);
+// 
+//       return $ci->getEntityID();
+//    }
 
    /**
     * count how many consumable for a consumable type
