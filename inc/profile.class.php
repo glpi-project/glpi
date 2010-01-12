@@ -1014,5 +1014,18 @@ class Profile extends CommonDBTM {
       Dropdown::showFromArray($p['name'],$profiles,array('value' => $p['value']));
    }
 
+   /**
+    * Get the default Profile for new user
+    *
+    * @return integer profiles_id
+    */
+   static function getDefault() {
+      global $DB;
+
+      foreach ($DB->request('glpi_profiles', array('is_default'=>1)) as $data) {
+         return $data['id'];
+      }
+      return 0;
+   }
 }
 ?>

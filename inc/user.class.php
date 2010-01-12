@@ -53,7 +53,12 @@ class User extends CommonDBTM {
    }
 
    function canCreate() {
-      return haveRight('user', 'w');
+      if (haveRight('user', 'w')             // Write right
+          && (haveAccessToEntity(0)          // Access to root entity (required when no default profile)
+              || Profile::getDefault()>0)) { // Default profile will be given in current entity
+         return true;
+      }
+      return false;
    }
 
    function canView() {
@@ -61,19 +66,24 @@ class User extends CommonDBTM {
    }
 
    function canViewItem() {
-         $entities = Profile_User::getUserEntities($this->fields['id'],true);
-         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
-            return true;
-         }
-         return false;
+      $entities = Profile_User::getUserEntities($this->fields['id'],true);
+      if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+         return true;
+      }
+      return false;
    }
 
    function canCreateItem() {
-         $entities = Profile_User::getUserEntities($this->fields['id'],true);
-         if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
-            return true;
-         }
-         return false;
+      // New user : no entity defined
+      return true;
+   }
+
+   function canUpdateItem() {
+      $entities = Profile_User::getUserEntities($this->fields['id'],true);
+      if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+         return true;
+      }
+      return false;
    }
 
    function isEntityAssign() {
@@ -313,13 +323,8 @@ class User extends CommonDBTM {
 
       // Add default profile
       if (!$rulesplayed) {
-         $sql_default_profile = "SELECT `id`
-                                 FROM `glpi_profiles`
-                                 WHERE `is_default` = '1'";
-         $result = $DB->query($sql_default_profile);
-
-         if ($DB->numrows($result)) {
-            $right = $DB->result($result,0,0);
+         $profile = Profile::getDefault();
+         if ($profile) {
             if (isset($this->input["entities_id"])) {
                $affectation["entities_id"] = $this->input["entities_id"];
             } else if (isset($_SESSION['glpiactive_entity'])) {
@@ -327,7 +332,7 @@ class User extends CommonDBTM {
             } else {
                $affectation["entities_id"] = 0;
             }
-            $affectation["profiles_id"] = $DB->result($result,0,0);
+            $affectation["profiles_id"] = $profile;
             $affectation["users_id"] = $this->fields["id"];
             $affectation["is_recursive"] = 0;
             // Default right as dynamic. If dynamic rights are set it will disappear.
@@ -515,7 +520,7 @@ class User extends CommonDBTM {
                   }
                }
             }
-            
+
             // Add new dynamic profiles
             if (count($retrieved_dynamic_profiles)) {
                $right = new Profile_User();
@@ -1094,7 +1099,7 @@ class User extends CommonDBTM {
       } else {
          if (!empty ($this->fields["password"]) || $this->fields["authtype"] == AUTH_DB_GLPI) {
             echo "<td>";
-            
+
             autocompletionTextField($this, "name");
          } else {
             echo "<td class='b'>" . $this->fields["name"];
