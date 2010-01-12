@@ -124,7 +124,7 @@ abstract class CommonDevice extends CommonDropdown {
       global $DB;
 
       $compdev = new Computer_Device();
-      $compdev->cleanDBonItemDelete(get_class($this), $ID);
+      $compdev->cleanDBonItemDelete($this->getType(), $ID);
    }
 
    /**
