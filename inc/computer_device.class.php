@@ -45,12 +45,17 @@ class Computer_Device extends CommonDBChild {
    public $itemtype = 'Computer';
    public $items_id = 'computers_id';
 
-   /// Get itemtype of devices 
+   function __construct($itemtype) {
+      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $this->forceTable($linktable);
+   }
+
+   /// Get itemtype of devices : key is ocs identifier
    static function getDeviceTypes() {
-      return array ('DeviceMotherboard','DeviceProcessor','DeviceMemory',
-                          'DeviceHardDrive','DeviceNetworkCard','DeviceDrive',
-                          'DeviceControl','DeviceGraphicCard','DeviceSoundCard',
-                          'DevicePci','DeviceCase','DevicePowerSupply');
+      return array (1=>'DeviceMotherboard',2=>'DeviceProcessor',3=>'DeviceMemory',
+                          4=>'DeviceHardDrive',5=>'DeviceNetworkCard',6=>'DeviceDrive',
+                          7=>'DeviceControl',8=>'DeviceGraphicCard',9=>'DeviceSoundCard',
+                          10=>'DevicePci',11=>'DeviceCase',12=>'DevicePowerSupply');
    }
 
    function getEmpty() {
@@ -68,12 +73,20 @@ class Computer_Device extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
-      if (!isset($input['_item']) || !$input[$input['_item']->getForeignKeyField()] || !$input['computers_id']) {
+      if (empty($input['_itemtype'])  || !$input['computers_id']) {
+
          return false;
       }
+      $dev = new $input['_itemtype']();
+      if (!$input[$dev->getForeignKeyField()]) {
+         return false;
+      }
+
       if (!isset($input['specificity']) || empty($input['specificity'])) {
-         $input['_item']->getFromDB($input[$input['_item']->getForeignKeyField()]);
-         $input['specificity'] = $input['_item']->getField('specif_default');
+         $dev = new $input['_itemtype'];
+      
+         $dev->getFromDB($input[$dev->getForeignKeyField()]);
+         $input['specificity'] = $dev->getField('specif_default');
       }
       return $input;
    }
@@ -84,11 +97,13 @@ class Computer_Device extends CommonDBChild {
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
-      $this->input['_item']->getFromDB($this->fields[$this->input['_item']->getForeignKeyField()]);
+      $dev = new $this->input['_itemtype']();
+
+      $dev->getFromDB($this->fields[$dev->getForeignKeyField()]);
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($this->input['_item']->getName());
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_ADD_DEVICE);
+      $changes[2] = addslashes($dev->getName());
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
    }
 
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
@@ -97,11 +112,13 @@ class Computer_Device extends CommonDBChild {
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
-      $this->input['_item']->getFromDB($this->fields[$this->input['_item']->getForeignKeyField()]);
+      $dev = new $this->input['_itemtype']();
+
+      $dev->getFromDB($this->fields[$dev->getForeignKeyField()]);
       $changes[0] = 0;
-      $changes[1] = addslashes($this->input['_item']->getName());
+      $changes[1] = addslashes($dev->getName());
       $changes[2] = '';
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_DELETE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
    }
 
    function post_updateItem($history=1) {
@@ -115,7 +132,7 @@ class Computer_Device extends CommonDBChild {
       $changes[1] = addslashes($this->oldvalues['specificity']);
       $changes[2] = $this->fields['specificity'];
       // history log
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_item']),HISTORY_UPDATE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_itemtype']),HISTORY_UPDATE_DEVICE);
    }
 
    /**
@@ -242,7 +259,6 @@ class Computer_Device extends CommonDBChild {
       $linktable=getTableForItemType('Computer_'.$itemtype);
       $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
       // Force table for link
-      $this->forceTable($linktable);
       $item = new $itemtype();
       $specif_fields=$item->getSpecifityLabel();
       
@@ -267,13 +283,13 @@ class Computer_Device extends CommonDBChild {
          if ($number>$newNumber) {
             for ($i=$newNumber ; $i<$number ; $i++) {
                $data2 = $DB->fetch_array($result2);
-               $data2['_item']=$item;
+               $data2['_itemtype']=$itemtype;
                $this->delete($data2);
             }
          // Add devices
          } else if ($number<$newNumber) {
             $input = array('computers_id' => $this->fields["computers_id"],
-                           '_item' => $item,
+                           '_itemtype' => $itemtype,
                            $fk     => $this->fields[$fk]);
             if (count($specif_fields)) {
                foreach ($specif_fields as $field => $name) {
@@ -307,8 +323,6 @@ class Computer_Device extends CommonDBChild {
 
       $linktable=getTableForItemType('Computer_'.$itemtype);
       $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
-      // Force table for link
-      $this->forceTable($linktable);
 
       if (!$this->getFromDB($compDevID)) {
          return false;
@@ -327,7 +341,7 @@ class Computer_Device extends CommonDBChild {
       $first = true;
       foreach ($DB->request($query) as $data) {
          $data['specificity'] = $newValue;
-         $data['_item'] = $item;
+         $data['_itemtype'] = $itemtype;
          $this->update($data, $first);
          $first = false;
       }
@@ -403,13 +417,13 @@ class Computer_Device extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      if ($input['_item']->getType() == 'DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_itemtype'] == 'DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
             // memory can't be 0 (but sometime OCS report such value)
             return false;
          }
       }
-      if ($input['_item']->getType()=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_itemtype']=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
             // frequency can't be 0 (but sometime OCS report such value)
             return false;
@@ -441,9 +455,8 @@ class Computer_Device extends CommonDBChild {
       global $DB;
 
       $query = "SELECT DISTINCT `specificity`
-                FROM `glpi_computers_devices`
-                WHERE `itemtype`='DeviceNetworkCard'
-                  AND `computers_id`='".$comp->getField('id')."'";
+                FROM `glpi_computers_devicenetworkcards`
+                WHERE `computers_id`='".$comp->getField('id')."'";
 
       $mac = array();
       foreach ($DB->request($query) as $data) {
@@ -456,19 +469,20 @@ class Computer_Device extends CommonDBChild {
    /**
     * Delete old devices settings
     *
-    *@param $devicetype integer : device type identifier.
+    *@param $itemtype integer : device type identifier.
     *@param $glpi_computers_id integer : glpi computer id.
     *
     *@return nothing.
     *
     **/
-   static function resetDevices($glpi_computers_id, $devicetype) {
+   static function resetDevices($glpi_computers_id, $itemtype) {
       global $DB;
 
+      $linktable=getTableForItemType('Computer_'.$itemtype);
+
       $query = "DELETE
-                FROM `glpi_computers_devices`
-                WHERE `itemtype` = '$devicetype'
-                      AND `computers_id` = '$glpi_computers_id'";
+                FROM `$linktable`
+                WHERE `computers_id` = '$glpi_computers_id'";
       $DB->query($query);
    }
 
