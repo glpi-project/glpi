@@ -431,7 +431,7 @@ class Computer_Device extends CommonDBChild {
                      FROM `$linktable`
                      WHERE `computers_id`='$oldid'";
 
-         foreach ($db->request($query) as $data) {
+         foreach ($DB->request($query) as $data) {
             unset($data['id']);
             $data['computers_id'] = $newid;
             $data['_itemtype'] = $itemtype;
