@@ -96,7 +96,7 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 
 
 if (!$tab['entity'][0]                                   // Crash detection
-          || !FieldExists('glpi_users','task_private')   // Schema detection
+          || !FieldExists('glpi_infocoms','entities_id')   // Schema detection
           || countElementsInTable('glpi_rules')!=2) {    // Old rules
 
          if (!$tab['entity'][0]) {
