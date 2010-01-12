@@ -39,11 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 
 // Relation between Computer and devices
-class Computer_Device extends CommonDBChild {
-
-   // From CommonDBChild
-   public $itemtype = 'Computer';
-   public $items_id = 'computers_id';
+class Computer_Device extends CommonDBTM {
 
    function __construct($itemtype='') {
       if (!empty($itemtype)) {
