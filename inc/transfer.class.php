@@ -71,6 +71,10 @@ class Transfer extends CommonDBTM {
                                 'Software', 'Contact', 'Supplier', 'Contract', 'CartridgeItem',
                                 'Document', 'ConsumableItem', 'Phone');
 
+   var $DEVICES_TYPES =array('DeviceMotherboard','DeviceProcessor','DeviceMemory',
+                          'DeviceHardDrive','DeviceNetworkCard','DeviceDrive',
+                          'DeviceControl','DeviceGraphicCard','DeviceSoundCard',
+                          'DevicePci','DeviceCase','DevicePowerSupply')
 
 
    function canCreate() {
@@ -2504,12 +2508,16 @@ class Transfer extends CommonDBTM {
 
       // Only same case because no duplication of computers
       switch ($this->options['keep_device']) {
+         
          // delete devices
          case 0 :
-            $query = "DELETE
-                      FROM `glpi_computers_devices`
-                      WHERE `computers_id` = '$ID'";
-            $result = $DB->query($query);
+            foreach ($this->DEVICES_TYPES as $type) {
+               $table=getTableForItemType('Computer_'.$type);
+               $query = "DELETE
+                        FROM `$table`
+                        WHERE `computers_id` = '$ID'";
+               $result = $DB->query($query);
+            }
 
             // Only case of ocs link update is needed (if devices are keep nothing to do)
             if ($ocs_computer) {

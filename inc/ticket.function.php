@@ -1456,29 +1456,34 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
                   AND `glpi_tickets`.`items_id`
                           IN (SELECT `comp`.`id`
                               FROM `glpi_computers` AS comp
-                              LEFT JOIN `glpi_computers_devices` AS gcdev
-                                    ON (comp.`id` = gcdev.`computers_id`)
+                              LEFT JOIN `glpi_computers_devicemotherboards` AS gcmem
+                                    ON (comp.`id` = gcmem.`computers_id`)
                               LEFT JOIN `glpi_devicemotherboards`
-                                    ON (`glpi_devicemotherboards`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceMotherboard')
+                                    ON (`glpi_devicemotherboards`.`id` = gcmem.`devicemotherboards_id`)
+                              LEFT JOIN `glpi_computers_deviceprocessors` AS gcproc
+                                    ON (comp.`id` = gcproc.`computers_id`)
                               LEFT JOIN `glpi_deviceprocessors`
-                                    ON (`glpi_deviceprocessors`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceProcessor')
+                                    ON (`glpi_deviceprocessors`.`id` = gcproc.`deviceprocessors_id`)
+                              LEFT JOIN `glpi_computers_devicegraphiccards` AS gcgc
+                                    ON (comp.`id` = gcgc.`computers_id`)
                               LEFT JOIN `glpi_devicegraphiccards`
-                                    ON (`glpi_devicegraphiccards`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceGraphicCard')
+                                    ON (`glpi_devicegraphiccards`.`id` = gcgc.`devicegraphiccards_id`)
+                              LEFT JOIN `glpi_computers_deviceharddrives` AS gchd
+                                    ON (comp.`id` = gchd.`computers_id`)
                               LEFT JOIN `glpi_deviceharddrives`
-                                    ON (`glpi_deviceharddrives`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceHardDrive')
+                                    ON (`glpi_deviceharddrives`.`id` = gchd.`deviceharddrives_id`)
+                              LEFT JOIN `glpi_computers_devicenetworkcards` AS gcnc
+                                    ON (comp.`id` = gcnc.`computers_id`)
                               LEFT JOIN `glpi_devicenetworkcards`
-                                    ON (`glpi_devicenetworkcards`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceNetworkCard')
+                                    ON (`glpi_devicenetworkcards`.`id` = gcnc.`devicenetworkcards_id`)
+                              LEFT JOIN `glpi_computers_devicememories` AS gcm
+                                    ON (comp.`id` = gcm.`computers_id`)
                               LEFT JOIN `glpi_devicememories`
-                                    ON (`glpi_devicememories`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceMemory')
+                                    ON (`glpi_devicememories`.`id` = gcm.`devicememories_id`)
+                              LEFT JOIN `glpi_computers_devicesoundcards` AS gcsc
+                                    ON (comp.`id` = gcsc.`computers_id`)
                               LEFT JOIN `glpi_devicesoundcards`
-                                    ON (`glpi_devicesoundcards`.`id` = gcdev.`items_id`
-                                        AND gcdev.`itemtype` = 'DeviceSoundCard')
+                                    ON (`glpi_devicesoundcards`.`id` = gcsc.`devicesoundcards_id`)
                               LEFT JOIN `glpi_networkports`
                                     ON (comp.`id` = `glpi_networkports`.`items_id`
                                         AND `glpi_networkports`.`itemtype` = '1')
