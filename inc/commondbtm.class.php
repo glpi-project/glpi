@@ -341,10 +341,10 @@ class CommonDBTM extends CommonGLPI {
 
          $query = "DELETE
                    FROM `".$this->getTable()."`
-                   WHERE `id` = '$ID'";
+                   WHERE `id` = '".$this->fields['id']."'";
 
          if ($result = $DB->query($query)) {
-            $this->post_deleteFromDB($ID);
+            $this->post_deleteFromDB();
             return true;
          } else {
             return false;
@@ -353,7 +353,7 @@ class CommonDBTM extends CommonGLPI {
          $query = "UPDATE `".
                    $this->getTable()."`
                    SET `is_deleted`='1'
-                   WHERE `id` = '$ID'";
+                   WHERE `id` = '".$this->fields['id']."'";
          $this->cleanDBonMarkDeleted($ID);
 
          if ($result = $DB->query($query)) {
@@ -443,12 +443,10 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done after the DELETE of the item in the database
    *
-   *@param $ID ID of the item
-   *
    *@return nothing
    *
    **/
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
    }
 
    /**

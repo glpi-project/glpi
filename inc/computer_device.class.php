@@ -97,7 +97,7 @@ class Computer_Device extends CommonDBTM {
       if (count($dev->getSpecifityLabel()) > 0 &&
          ( !isset($input['specificity']) || empty($input['specificity']))) {
          $dev = new $input['_itemtype'];
-      
+
          $dev->getFromDB($input[$dev->getForeignKeyField()]);
          $input['specificity'] = $dev->getField('specif_default');
       }
@@ -120,7 +120,7 @@ class Computer_Device extends CommonDBTM {
    }
 
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
 
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
@@ -275,11 +275,11 @@ class Computer_Device extends CommonDBTM {
       // Force table for link
       $item = new $itemtype();
       $specif_fields=$item->getSpecifityLabel();
-      
+
       if (!$this->getFromDB($compDevID)) {
          return false;
       }
-      
+
 
       $query2 = "SELECT `id`
                  FROM `$linktable`

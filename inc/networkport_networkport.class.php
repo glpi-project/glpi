@@ -198,7 +198,7 @@ class NetworkPort_NetworkPort extends CommonDBTM {
    }
 
 
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
 
       // Update to blank networking item
       // clean datas of linked ports if network one
