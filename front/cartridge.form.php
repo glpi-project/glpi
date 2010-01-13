@@ -49,7 +49,7 @@ $cartype = new CartridgeItem();
 if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    $cart->check($_POST["cID"],'w');
 
-   if ($cart->updatePages($_POST["cID"],$_POST['pages'])) {
+   if ($cart->updatePages($_POST['pages'])) {
       Event::log(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
