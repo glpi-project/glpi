@@ -164,21 +164,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Get the object defined as default value, if type supports it
-    * @return the default value object
-    */
-   static function getDefault() {
-      global $DB;
-
-      if ($this->mayHaveDefaultValue()) {
-         foreach ($DB->request($this->getTable(), array('is_default'=>1)) as $data) {
-            return $data['id'];
-         }
-      }
-      return 0;
-   }
-
-   /**
    * Get an empty item
    *
    *@return true if succeed else false
