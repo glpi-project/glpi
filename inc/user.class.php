@@ -180,7 +180,7 @@ class User extends CommonDBTM {
       }
    }
 
-   function cleanDBonMarkDeleted($ID) {
+   function cleanDBonMarkDeleted() {
    }
 
    function cleanDBonPurge() {
