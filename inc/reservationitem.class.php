@@ -65,12 +65,12 @@ class ReservationItem extends CommonDBTM {
       return false;
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query2 = "DELETE
                  FROM `glpi_reservations`
-                 WHERE `reservationitems_id` = '$ID'";
+                 WHERE `reservationitems_id` = '".$this->fields['id']."'";
       $result2 = $DB->query($query2);
    }
 
@@ -247,19 +247,19 @@ class ReservationItem extends CommonDBTM {
 
    static function showListSimple() {
       global $DB,$LANG,$CFG_GLPI;
-   
+
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
-   
+
       $ri=new ReservationItem;
       $ok=false;
       $showentity=isMultiEntitiesMode();
-   
+
       echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>\n";
-   
+
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
          if (!class_exists($itemtype)) {
             continue;
@@ -281,7 +281,7 @@ class ReservationItem extends CommonDBTM {
                         AND `$itemtable`.`is_deleted` = '0'".
                         getEntitiesRestrictRequest("AND",$itemtable)."
                   ORDER BY `$itemtable`.`entities_id`,`$itemtable`.`name`";
-   
+
          if ($result = $DB->query($query)) {
             while ($row=$DB->fetch_array($result)) {
                echo "<tr class='tab_bg_2'><td>";
@@ -291,7 +291,7 @@ class ReservationItem extends CommonDBTM {
                   $item->getFromDB($row['items_id']);
                   if (isset($item->fields["peripheraltypes_id"])
                      && $item->fields["peripheraltypes_id"]!=0) {
-   
+
                      $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
                                              $item->fields["peripheraltypes_id"]);
                   }

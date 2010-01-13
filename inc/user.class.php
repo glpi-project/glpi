@@ -183,33 +183,33 @@ class User extends CommonDBTM {
    function cleanDBonMarkDeleted($ID) {
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `glpi_profiles_users`
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
       $query = "DELETE
                 FROM `glpi_groups_users`
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
       $query = "DELETE
                 FROM `glpi_displaypreferences`
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
       $query = "DELETE
                 FROM `glpi_bookmarks_users`
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
       // Delete private reminder
       $query = "DELETE
                 FROM `glpi_reminders`
-                WHERE `users_id` = '$ID'
+                WHERE `users_id` = '".$this->fields['id']."'
                       AND `is_private` = '1'";
       $DB->query($query);
 
@@ -217,13 +217,13 @@ class User extends CommonDBTM {
       $query = "UPDATE
                 `glpi_reminders`
                 SET `users_id` = '0'
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
       // Delete private bookmark
       $query = "DELETE
                 FROM `glpi_bookmarks`
-                WHERE `users_id` = '$ID'
+                WHERE `users_id` = '".$this->fields['id']."'
                       AND `is_private` = '1'";
       $DB->query($query);
 
@@ -231,7 +231,7 @@ class User extends CommonDBTM {
       $query = "UPDATE
                 `glpi_bookmarks`
                 SET `users_id` = '0'
-                WHERE `users_id` = '$ID'";
+                WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
    }
 

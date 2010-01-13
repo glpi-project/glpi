@@ -581,12 +581,12 @@ class OcsServer extends CommonDBTM {
       return $input;
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `glpi_ocslinks`
-                WHERE `ocsservers_id` = '$ID'";
+                WHERE `ocsservers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 
@@ -602,7 +602,7 @@ class OcsServer extends CommonDBTM {
           || isset ($tab["import_contact_num"])) {
 
          $adm = new OcsAdminInfosLink();
-         $adm->cleanDBonPurge($tab["id"]);
+         $adm->cleanDBonPurge();
          if (isset ($tab["import_location"])) {
             if ($tab["import_location"]!="") {
                $adm = new OcsAdminInfosLink();

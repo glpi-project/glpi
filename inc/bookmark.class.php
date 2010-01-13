@@ -90,12 +90,12 @@ class Bookmark extends CommonDBTM {
       $this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query="DELETE
               FROM `glpi_bookmarks_users`
-              WHERE `bookmarks_id`='$ID'";
+              WHERE `bookmarks_id`='".$this->fields['id']."'";
       $DB->query($query);
    }
 

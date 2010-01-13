@@ -59,11 +59,10 @@ class Contact extends CommonDBTM{
       return haveRight('contact_enterprise', 'r');
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB;
+   function cleanDBonPurge() {
 
       $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(),$ID);
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
    function defineTabs($ID,$withtemplate) {

@@ -65,14 +65,13 @@ class Contract extends CommonDBTM {
       $this->fields["alert"]=$CFG_GLPI["default_contract_alert"];
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB;
+   function cleanDBonPurge() {
 
       $cs = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(),$ID);
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $ci = new Contract_Item();
-      $ci->cleanDBonItemDelete($this->getType(),$ID);
+      $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
    function defineTabs($ID,$withtemplate) {

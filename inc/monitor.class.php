@@ -161,13 +161,13 @@ class Monitor extends CommonDBTM {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
-      $query="SELECT `id`
-              FROM `glpi_computers_items`
-              WHERE `itemtype` = '".$this->getType()."'
-                AND `items_id` = '$ID'";
+      $query = "SELECT `id`
+                FROM `glpi_computers_items`
+                WHERE `itemtype` = '".$this->getType()."'
+                      AND `items_id` = '".$this->fields['id']."'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();

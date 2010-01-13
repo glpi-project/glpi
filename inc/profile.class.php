@@ -103,12 +103,12 @@ class Profile extends CommonDBTM {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
       $query = "DELETE
                 FROM `glpi_profiles_users`
-                WHERE `profiles_id` = '$ID'";
+                WHERE `profiles_id` = '".$this->fields['id']."'";
       $DB->query($query);
    }
 

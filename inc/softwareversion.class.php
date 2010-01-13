@@ -64,13 +64,13 @@ class SoftwareVersion extends CommonDBChild {
       return haveRight('software', 'r');
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       // Delete Installations
       $query2 = "DELETE
                  FROM `glpi_computers_softwareversions`
-                 WHERE `softwareversions_id` = '$ID'";
+                 WHERE `softwareversions_id` = '".$this->fields['id']."'";
       $DB->query($query2);
    }
 

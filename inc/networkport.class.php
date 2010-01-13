@@ -109,13 +109,13 @@ class NetworkPort extends CommonDBTM {
    }
 
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `glpi_networkports_networkports`
-                WHERE `networkports_id_1` = '$ID'
-                      OR `networkports_id_2` = '$ID'";
+                WHERE `networkports_id_1` = '".$this->fields['id']."'
+                      OR `networkports_id_2` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 
@@ -153,7 +153,7 @@ class NetworkPort extends CommonDBTM {
 
    /**
     * Get port opposite port ID if linked item
-    * 
+    *
     *@param $ID networking port ID
     *
     *@return ID of the NetworkPort found, false if not found

@@ -334,7 +334,7 @@ class CommonDBTM extends CommonGLPI {
       global $DB,$CFG_GLPI;
 
       if ($force==1 || !$this->maybeDeleted()) {
-         $this->cleanDBonPurge($ID);
+         $this->cleanDBonPurge();
          $this->cleanHistory($ID);
          $this->cleanRelationData($ID);
          $this->cleanRelationTable($ID);
@@ -461,7 +461,7 @@ class CommonDBTM extends CommonGLPI {
    *
    *@return nothing
    **/
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
    }
 
    /**

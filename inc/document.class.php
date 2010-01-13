@@ -59,17 +59,18 @@ class Document extends CommonDBTM {
       return haveRight('document', 'r');
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI,$LANG;
+   function cleanDBonPurge() {
+      global $LANG;
 
       $di = new Document_Item();
-      $di->cleanDBonItemDelete($this->getType(),$ID);
+      $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       // UNLINK DU FICHIER
       if (!empty($this->fields["filepath"])) {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
-             && countElementsInTable($this->getTable(),"`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
+             && countElementsInTable($this->getTable(),
+                                     "`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
                addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
                                        $this->fields["filepath"]);

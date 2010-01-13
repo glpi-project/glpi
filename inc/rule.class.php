@@ -744,18 +744,18 @@ class Rule extends CommonDBTM {
       return $output;
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       // Delete a rule and all associated criterias and actions
       $sql = "DELETE
               FROM `glpi_ruleactions`
-              WHERE `rules_id` = '$ID'";
+              WHERE `rules_id` = '".$this->fields['id']."'";
       $DB->query($sql);
 
       $sql = "DELETE
               FROM `glpi_rulecriterias`
-              WHERE `rules_id` = '$ID'";
+              WHERE `rules_id` = '".$this->fields['id']."'";
       $DB->query($sql);
    }
 
