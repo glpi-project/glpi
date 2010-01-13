@@ -2616,7 +2616,8 @@ function update0723to080() {
                // Convert data to int
                if ($withspecifity[$key] == 'int') {
                   // clean non integer values
-                  $query="UPDATE `$itemtable` SET `specif_default` = 0 WHERE `specif_default` NOT REGEXP '^[0-9]*$' OR `specif_default` = ''";
+                  $query="UPDATE `$itemtable` SET `specif_default` = 0 
+                             WHERE `specif_default` NOT REGEXP '^[0-9]*$' OR `specif_default` = '' OR `specif_default` IS NULL";
                   $DB->query($query) or die("0.80 update specif_default in $itemtable " . $LANG['update'][90] . $DB->error());
 
                   $query = "ALTER TABLE `$itemtable` CHANGE `specif_default` `specif_default` INT(11) NOT NULL";
