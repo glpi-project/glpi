@@ -337,7 +337,7 @@ class CommonDBTM extends CommonGLPI {
          $this->cleanDBonPurge();
          $this->cleanHistory();
          $this->cleanRelationData($ID);
-         $this->cleanRelationTable($ID);
+         $this->cleanRelationTable();
 
          $query = "DELETE
                    FROM `".$this->getTable()."`
@@ -466,13 +466,13 @@ class CommonDBTM extends CommonGLPI {
     * Clear N/N Relation
     *
     */
-   function cleanRelationTable ($ID) {
+   function cleanRelationTable () {
       global $CFG_GLPI, $DB;
 
       // If this type have INFOCOM, clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['infocom_types'])) {
          $infocom = new Infocom();
-         if ($infocom->getFromDBforDevice($this->getType(), $ID)) {
+         if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
              $infocom->delete(array('id'=>$infocom->fields['id']));
          }
       }
@@ -481,7 +481,7 @@ class CommonDBTM extends CommonGLPI {
       if (in_array($this->getType(),$CFG_GLPI['netport_types'])) {
          $query = "SELECT `id`
                    FROM `glpi_networkports`
-                   WHERE (`items_id` = '$ID'
+                   WHERE (`items_id` = '".$this->fields['id']."'
                           AND `itemtype` = '".$this->getType()."')";
          $result = $DB->query($query);
 
@@ -495,7 +495,7 @@ class CommonDBTM extends CommonGLPI {
 
          $query = "DELETE
                    FROM `glpi_networkports`
-                   WHERE (`items_id` = '$ID'
+                   WHERE (`items_id` = '".$this->fields['id']."'
                           AND `itemtype` = '".$this->getType()."')";
          $result = $DB->query($query);
       }
@@ -503,7 +503,7 @@ class CommonDBTM extends CommonGLPI {
       // If this type is RESERVABLE clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['reservation_types'])) {
          $rr=new ReservationItem();
-         if ($rr->getFromDBbyItem($this->getType(), $ID)) {
+         if ($rr->getFromDBbyItem($this->getType(), $this->fields['id'])) {
              $rr->delete(array('id'=>$infocom->fields['id']));
          }
       }
@@ -511,13 +511,13 @@ class CommonDBTM extends CommonGLPI {
       // If this type have CONTRACT, clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['contract_types'])) {
          $ci = new Contract_Item();
-         $ci->cleanDBonItemDelete($this->getType(),$ID);
+         $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
 
       // If this type have DOCUMENT, clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI["doc_types"])) {
          $di = new Document_Item();
-         $di->cleanDBonItemDelete($this->getType(),$ID);
+         $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
    }
 
