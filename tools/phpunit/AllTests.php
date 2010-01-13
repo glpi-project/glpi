@@ -29,6 +29,9 @@
  */
 require_once 'PHPUnit/Framework.php';
 
+// Hack for old PHPUnit
+global $CFG_GLPI;
+
 define('GLPI_ROOT', '../..');
 include GLPI_ROOT . "/inc/includes.php";
 restore_error_handler();
