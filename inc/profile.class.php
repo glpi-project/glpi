@@ -90,7 +90,7 @@ class Profile extends CommonDBTM {
       return $ong;
    }
 
-/*
+
    function post_updateItem($history=1) {
       global $DB;
 
@@ -102,7 +102,7 @@ class Profile extends CommonDBTM {
          $DB->query($query);
       }
    }
-*/
+
    function cleanDBonPurge($ID) {
       global $DB,$CFG_GLPI;
 
@@ -1024,7 +1024,7 @@ class Profile extends CommonDBTM {
     *
     * @return integer profiles_id
     */
-   /*
+
    static function getDefault() {
       global $DB;
 
@@ -1032,6 +1032,6 @@ class Profile extends CommonDBTM {
          return $data['id'];
       }
       return 0;
-   }*/
+   }
 }
 ?>
