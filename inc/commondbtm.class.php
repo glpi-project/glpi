@@ -354,7 +354,7 @@ class CommonDBTM extends CommonGLPI {
                    $this->getTable()."`
                    SET `is_deleted`='1'
                    WHERE `id` = '".$this->fields['id']."'";
-         $this->cleanDBonMarkDeleted($ID);
+         $this->cleanDBonMarkDeleted();
 
          if ($result = $DB->query($query)) {
             return true;
@@ -522,12 +522,10 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done when item flag deleted is set to an item
    *
-   *@param $ID ID of the item
-   *
    *@return nothing
    *
    **/
-   function cleanDBonMarkDeleted($ID) {
+   function cleanDBonMarkDeleted() {
    }
 
    // Common functions
