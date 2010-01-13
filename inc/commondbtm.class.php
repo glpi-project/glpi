@@ -407,7 +407,7 @@ class CommonDBTM extends CommonGLPI {
                      $query="UPDATE
                              `$tablename`
                              SET `$f` = '$newval'
-                             WHERE `$f` = ".$this->fields['id']."'";
+                             WHERE `$f` = '".$this->fields['id']."'";
                      $DB->query($query);
                   }
                }
@@ -421,7 +421,7 @@ class CommonDBTM extends CommonGLPI {
 
          $query = "SELECT *
                    FROM `glpi_tickets`
-                   WHERE `items_id` = ".$this->fields['id']."'
+                   WHERE `items_id` = '".$this->fields['id']."'
                          AND `itemtype`='".$this->getType()."'";
          $result = $DB->query($query);
 
