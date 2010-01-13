@@ -324,19 +324,18 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Mark deleted or purge an item in the database
    *
-   *@param $ID integer ID of the current item
    *@param $force force the purge of the item (not used if the table do not have a deleted field)
    *
    *@return true if succeed else false
    *
    **/
-   function deleteFromDB($ID,$force=0) {
+   function deleteFromDB($force=0) {
       global $DB,$CFG_GLPI;
 
       if ($force==1 || !$this->maybeDeleted()) {
          $this->cleanDBonPurge();
          $this->cleanHistory();
-         $this->cleanRelationData($ID);
+         $this->cleanRelationData();
          $this->cleanRelationTable();
 
          $query = "DELETE
@@ -386,12 +385,10 @@ class CommonDBTM extends CommonGLPI {
    * Clean data in the tables which have linked the deleted item
    * Clear 1/N Relation
    *
-   * @param $ID integer : ID of the item
-   *
    *@return nothing
    *
    **/
-   function cleanRelationData($ID) {
+   function cleanRelationData() {
       global $DB, $CFG_GLPI;
 
       $RELATION=getDbRelations();
@@ -403,14 +400,14 @@ class CommonDBTM extends CommonGLPI {
                   $query="UPDATE
                           `$tablename`
                           SET `$field` = '$newval'
-                          WHERE `$field`='$ID' ";
+                          WHERE `$field` = '".$this->fields['id']."'";
                   $DB->query($query);
                } else {
                   foreach ($field as $f) {
                      $query="UPDATE
                              `$tablename`
                              SET `$f` = '$newval'
-                             WHERE `$f`='$ID' ";
+                             WHERE `$f` = ".$this->fields['id']."'";
                      $DB->query($query);
                   }
                }
@@ -424,8 +421,8 @@ class CommonDBTM extends CommonGLPI {
 
          $query = "SELECT *
                    FROM `glpi_tickets`
-                   WHERE `items_id` = '$ID'
-                     AND `itemtype`='".$this->getType()."'";
+                   WHERE `items_id` = ".$this->fields['id']."'
+                         AND `itemtype`='".$this->getType()."'";
          $result = $DB->query($query);
 
          if ($DB->numrows($result)) {
@@ -886,7 +883,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
       if ($this->pre_deleteItem($this->fields["id"])) {
-         if ($this->deleteFromDB($this->fields["id"], $force)) {
+         if ($this->deleteFromDB($force)) {
             if ($force) {
                $this->addMessageOnPurgeAction();
                doHook("item_purge",$this);
