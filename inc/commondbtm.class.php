@@ -164,6 +164,21 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+    * Get the object defined as default value, if type supports it
+    * @return the default value object
+    */
+   static function getDefault() {
+      global $DB;
+
+      if ($this->mayHaveDefaultValue()) {
+         foreach ($DB->request($this->getTable(), array('is_default'=>1)) as $data) {
+            return $data['id'];
+         }
+      }
+      return 0;
+   }
+
+   /**
    * Get an empty item
    *
    *@return true if succeed else false
@@ -186,6 +201,7 @@ class CommonDBTM extends CommonGLPI {
       $this->post_getEmpty();
       return true;
    }
+
 
    /**
    * Actions done at the end of the getEmpty function
@@ -750,7 +766,7 @@ class CommonDBTM extends CommonGLPI {
             }
          }
          $this->post_updateItem($history);
-         
+
          return true;
       }
       return false;
@@ -832,6 +848,9 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function post_updateItem($history=1) {
+      if ($this->mayHaveDefaultValue()) {
+      	$this->manageDefaultValue();
+      }
    }
 
    /**
@@ -1602,6 +1621,18 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+   * Is the object may have a default value
+   *
+   * @return boolean
+   **/
+   function mayHaveDefaultValue() {
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return array_key_exists('is_default', $this->fields);
+   }
+
+   /**
     * Is the object recursive
     *
     * Can be overloaded (ex : infocom)
@@ -1868,6 +1899,20 @@ class CommonDBTM extends CommonGLPI {
       */
    }
 
+   /**
+    * Manage default value for an object (only one object can be by default)
+    */
+   function manageDefaultValue() {
+      global $DB;
+
+      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+         $query = "UPDATE ".
+                   $this->getTable()."
+                   SET `is_default` = '0'
+                   WHERE `id` <> '".$this->input['id']."'";
+         $DB->query($query);
+      }
+   }
 }
 
 ?>
