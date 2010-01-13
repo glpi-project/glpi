@@ -109,18 +109,17 @@ class Cartridge extends CommonDBTM {
    /**
    * Update count pages value of a cartridge
    *
-   *@param $ID ID of the cartridge
    *@param $pages  count pages value
    *
    *@return boolean : true for success
    **/
-   function updatePages($ID,$pages) {
+   function updatePages($pages) {
       global $DB;
 
       $query="UPDATE
               `".$this->getTable()."`
               SET `pages`='$pages'
-              WHERE `id`='$ID'";
+              WHERE `id`= '".$this->fields['id']."'";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
          return true;
       }
