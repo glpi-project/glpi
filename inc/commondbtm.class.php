@@ -763,6 +763,10 @@ class CommonDBTM extends CommonGLPI {
                   $this->forwardEntityInformations();
                }
 
+               //manage default value if needed
+               if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+                  $this->manageDefaultValue();
+               }
             }
          }
          $this->post_updateItem($history);
@@ -848,9 +852,6 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function post_updateItem($history=1) {
-      if ($this->mayHaveDefaultValue()) {
-      	$this->manageDefaultValue();
-      }
    }
 
    /**
@@ -1905,12 +1906,16 @@ class CommonDBTM extends CommonGLPI {
    function manageDefaultValue() {
       global $DB;
 
-      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
-         $query = "UPDATE ".
-                   $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'";
-         $DB->query($query);
+      //Get current default value
+      $query = "SELECT id FROM `".$this->table."` WHERE `is_default`='1'
+                  AND `id` <> '".$this->input['id']."'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         $current_id = $DB->result($result,0,'id');
+         //Update the object to set is_default to 0 (can be traced in history is enable)
+         $type = $this->getType();
+         $obj =  new $type ();
+         $obj->update(array ('id'=>$current_id,'is_default'=>0));
       }
    }
 }
