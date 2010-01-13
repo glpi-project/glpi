@@ -56,12 +56,12 @@ class Group extends CommonDBTM {
       return haveRight('group', 'r');
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
       $query = "DELETE
                 FROM `glpi_groups_users`
-                WHERE `groups_id` = '$ID'";
+                WHERE `groups_id` = '".$this->fields['id']."'";
       $DB->query($query);
    }
 

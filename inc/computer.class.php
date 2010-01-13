@@ -425,17 +425,17 @@ class Computer extends CommonDBTM {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
       $query = "DELETE
                 FROM `glpi_computers_softwareversions`
-                WHERE `computers_id` = '$ID'";
+                WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $query="SELECT `id`
               FROM `glpi_computers_items`
-              WHERE `computers_id`='$ID'";
+              WHERE `computers_id` = '".$this->fields['id']."'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
@@ -448,19 +448,19 @@ class Computer extends CommonDBTM {
 
       $query = "DELETE
                 FROM `glpi_registrykeys`
-                WHERE `computers_id` = '$ID'";
+                WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $compdev = new Computer_Device();
-      $compdev->cleanDBonItemDelete('Computer', $ID);
+      $compdev->cleanDBonItemDelete('Computer', $this->fields['id']);
 
       $query = "DELETE
                 FROM `glpi_ocslinks`
-                WHERE `computers_id` = '$ID'";
+                WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $disk = new ComputerDisk();
-      $disk->cleanDBonItemDelete('Computer', $ID);
+      $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
    /**
@@ -511,7 +511,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),$this->getType(),
                     $this->fields["entities_id"]);
-      
+
       autocompletionTextField($this,'name',array('value'=>$objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";

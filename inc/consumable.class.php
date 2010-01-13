@@ -62,12 +62,12 @@ class Consumable extends CommonDBTM {
       return haveRight('consumable', 'r');
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `glpi_infocoms`
-                WHERE (`items_id` = '$ID'
+                WHERE (`items_id` = '".$this->fields['id']."'
                        AND `itemtype`='".$this->getType()."')";
       $result = $DB->query($query);
    }
@@ -157,7 +157,7 @@ class Consumable extends CommonDBTM {
 //    function getEntityID () {
 //       $ci=new ConsumableItem();
 //       $ci->getFromDB($this->fields["consumableitems_id"]);
-// 
+//
 //       return $ci->getEntityID();
 //    }
 

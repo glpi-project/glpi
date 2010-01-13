@@ -49,12 +49,12 @@ class OcsAdminInfosLink extends CommonDBTM {
     *@return nothing
     *
     **/
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `".$this->getTable()."`
-                WHERE `ocsservers_id` = '$ID'";
+                WHERE `ocsservers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 }

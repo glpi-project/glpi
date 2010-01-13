@@ -189,13 +189,13 @@ class Software extends CommonDBTM {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB, $CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
       // Delete all licenses
       $query2 = "SELECT `id`
                  FROM `glpi_softwarelicenses`
-                 WHERE `softwares_id` = '$ID'";
+                 WHERE `softwares_id` = '".$this->fields['id']."'";
 
       if ($result2 = $DB->query($query2)) {
          if ($DB->numrows($result2)) {
@@ -207,7 +207,7 @@ class Software extends CommonDBTM {
       }
 
       $version = new SoftwareVersion();
-      $version->cleanDBonItemDelete(__CLASS__, $ID);
+      $version->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
    }
 
    /**

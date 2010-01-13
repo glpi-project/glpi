@@ -47,19 +47,19 @@ class RegistryKey extends CommonDBTM {
 
    function canCreate() {
       // Only create on ocsng sync
-      return haveRight('sync_ocsng', 'w'); 
+      return haveRight('sync_ocsng', 'w');
    }
 
    function canView() {
       return haveRight('ocsng', 'r');
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `".$this->getTable()."`
-                WHERE `computers_id` = '$ID'";
+                WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 

@@ -262,13 +262,13 @@ class Printer  extends CommonDBTM {
       }
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB,$CFG_GLPI;
+   function cleanDBonPurge() {
+      global $DB;
 
-      $query="SELECT `id`
-              FROM `glpi_computers_items`
-              WHERE `itemtype` = '".$this->getType()."'
-                AND `items_id` = '$ID'";
+      $query = "SELECT `id`
+                FROM `glpi_computers_items`
+                WHERE `itemtype` = '".$this->getType()."'
+                      AND `items_id` = '".$this->fields['id']."'";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
@@ -282,7 +282,7 @@ class Printer  extends CommonDBTM {
       $query = "UPDATE
                 `glpi_cartridges`
                 SET `printers_id` = NULL
-                WHERE `printers_id` = '$ID'";
+                WHERE `printers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 

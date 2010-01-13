@@ -71,10 +71,10 @@ class RuleCached extends Rule {
                   WHERE `rules_id` = '$ID'");
    }
 
-   function cleanDBonPurge($ID) {
-      parent::cleanDBonPurge($ID);
+   function cleanDBonPurge() {
+      parent::cleanDBonPurge();
 
-      $this->deleteCacheByRuleId($ID);
+      $this->deleteCacheByRuleId($this->fields['id']);
    }
 
    function post_updateItem($history=1) {

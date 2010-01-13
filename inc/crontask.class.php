@@ -74,17 +74,17 @@ class CronTask extends CommonDBTM{
       return false;
    }
 
-   function cleanDBonPurge($id) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "DELETE
                 FROM `glpi_crontasklogs`
-                WHERE `crontasks_id` = '$id'";
+                WHERE `crontasks_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 
    /**
-    * Read a Crontask by its name 
+    * Read a Crontask by its name
     *
     * Used by plugins to load its crontasks
     *

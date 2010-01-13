@@ -120,11 +120,10 @@ abstract class CommonDevice extends CommonDropdown {
       return array();
    }
 
-   function cleanDBonPurge($ID) {
-      global $DB;
+   function cleanDBonPurge() {
 
       $compdev = new Computer_Device();
-      $compdev->cleanDBonItemDelete($this->getType(), $ID);
+      $compdev->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
    /**

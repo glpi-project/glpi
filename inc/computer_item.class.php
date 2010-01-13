@@ -210,8 +210,8 @@ class Computer_Item extends CommonDBRelation{
     *
     *@return nothing
     **/
-   function cleanDBonPurge($ID) {
-      global $DB, $CFG_GLPI;
+   function cleanDBonPurge() {
+      global $CFG_GLPI;
 
       if (!isset($this->input['_no_auto_action'])) {
          //Get the computer name
@@ -294,7 +294,7 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   
+
    /**
    * Disconnect an item to its computer
    *

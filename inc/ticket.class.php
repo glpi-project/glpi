@@ -201,12 +201,12 @@ class Ticket extends CommonDBTM {
    }
 
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $query = "SELECT `id`
                 FROM `glpi_ticketfollowups`
-                WHERE `tickets_id` = '$ID'";
+                WHERE `tickets_id` = '".$this->fields['id']."'";
       $result=$DB->query($query);
 
       if ($DB->numrows($result)>0) {
@@ -219,7 +219,7 @@ class Ticket extends CommonDBTM {
       }
       $query1 = "DELETE
                  FROM `glpi_ticketfollowups`
-                 WHERE `tickets_id` = '$ID'";
+                 WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
    }
 

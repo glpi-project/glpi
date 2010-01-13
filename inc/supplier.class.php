@@ -58,16 +58,16 @@ class Supplier extends CommonDBTM {
       return haveRight('contact_enterprise', 'r');
    }
 
-   function cleanDBonPurge($ID) {
+   function cleanDBonPurge() {
       global $DB;
 
       $job=new Ticket;
 
       $cs = new Contract_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(),$ID);
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $cs = new Contact_Supplier();
-      $cs->cleanDBonItemDelete($this->getType(),$ID);
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
    function defineTabs($ID,$withtemplate) {
