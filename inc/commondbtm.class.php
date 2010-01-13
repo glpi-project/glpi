@@ -335,7 +335,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($force==1 || !$this->maybeDeleted()) {
          $this->cleanDBonPurge();
-         $this->cleanHistory($ID);
+         $this->cleanHistory();
          $this->cleanRelationData($ID);
          $this->cleanRelationTable($ID);
 
@@ -367,20 +367,17 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Clean data in the tables which have linked the deleted item
    *
-   *@param $ID ID of the item
-   *
-   *
-   *@return nothing
+    *@return nothing
    *
    **/
-   function cleanHistory($ID){
+   function cleanHistory(){
       global $DB;
 
       if ($this->dohistory) {
          $query = "DELETE
                    FROM `glpi_logs`
                    WHERE (`itemtype` = '".$this->getType()."'
-                          AND `items_id` = '$ID')";
+                          AND `items_id` = '".$this->fields['id']."')";
          $DB->query($query);
       }
    }
