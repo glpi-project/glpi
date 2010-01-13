@@ -142,7 +142,7 @@ class TicketTask  extends CommonDBTM {
       }
    }
 
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
 
       $job = new Ticket();
       $job->updateRealtime($this->fields['tickets_id']);

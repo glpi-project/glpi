@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       }
    }
 
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
 
       $job = new Ticket();
       $job->updateDateMod($this->fields["tickets_id"]);

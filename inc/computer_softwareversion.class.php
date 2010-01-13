@@ -765,7 +765,7 @@ class Computer_SoftwareVersion extends CommonDBTM {
       }
    }
 
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
       global $DB;
 
       $vers = new SoftwareVersion();

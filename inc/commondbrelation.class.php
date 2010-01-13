@@ -178,12 +178,10 @@ abstract class CommonDBRelation extends CommonDBTM {
    /**
     * Actions done after the DELETE of the item in the database
     *
-    *@param $ID ID of the item
-    *
     *@return nothing
     *
     **/
-   function post_deleteFromDB($ID) {
+   function post_deleteFromDB() {
 
       if (isset($this->input['_no_history'])) {
          return false;
