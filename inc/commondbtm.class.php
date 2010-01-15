@@ -1593,18 +1593,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-   * Is the object may have a default value
-   *
-   * @return boolean
-   **/
-   function mayHaveDefaultValue() {
-      if (!isset($this->fields['id'])) {
-         $this->getEmpty();
-      }
-      return array_key_exists('is_default', $this->fields);
-   }
-
-   /**
     * Is the object recursive
     *
     * Can be overloaded (ex : infocom)

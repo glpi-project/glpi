@@ -382,6 +382,11 @@ class ConsumableItem extends CommonDBTM {
       }
       return 0;
    }
+
+   function getEvents() {
+      global $LANG;
+      return array ('alert' => $LANG['crontask'][3]);
+   }
 }
 
 ?>

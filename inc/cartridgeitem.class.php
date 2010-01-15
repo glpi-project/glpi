@@ -558,5 +558,10 @@ class CartridgeItem extends CommonDBTM {
       }
       echo "</table></div></form>"    ;
    }
+
+  function getEvents() {
+      global $LANG;
+      return array ('alert' => $LANG['crontask'][2]);
+   }
 }
 ?>

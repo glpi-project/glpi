@@ -1,8 +1,6 @@
 <?php
-
-
 /*
- * @version $Id$
+ * @version $Id: dropdownInstallVersion.php 9341 2009-11-24 18:33:38Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -31,18 +29,18 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationEvent.php")) {
+   $AJAX_INCLUDE=1;
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-checkRight("notification",'r');
-
-commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
-
-Search::show('Notification');
-
-commonFooter();
+checkRight("notification","w");
+NotificationEvent::dropdownEvents($_POST['itemtype'],'');
 ?>

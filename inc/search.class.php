@@ -1062,10 +1062,6 @@ class Search {
       $_SESSION['glpimassiveactionselected']=array();
    }
 
-
-
-
-
    /**
    * Print generic search form
    *
@@ -3155,6 +3151,9 @@ class Search {
                      $data['refID']."' title='".$LANG['reservation'][22]."'>".
                      resume_text($data[$NAME.$num])."</a>";
 
+         case 'glpi_notifications.mode' :
+               return Notification::getMode($data[$NAME.$num]);
+
          case 'glpi_crontasks.description' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
@@ -3335,6 +3334,15 @@ class Search {
 
             case "bool" :
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
+
+            case "itemtypename":
+               if (class_exists($data[$NAME.$num])) {
+                  $obj = new $data[$NAME.$num] ();
+                  return $obj->getTypeName();
+               }
+               else {
+                  return "";
+               }
          }
       }
 

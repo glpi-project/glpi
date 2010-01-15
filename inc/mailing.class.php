@@ -37,49 +37,6 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
-
-/**
- *  glpi_phpmailer class extends
- */
-class glpi_phpmailer extends phpmailer {
-
-   /// Set default variables for all new objects
-   var $WordWrap = 80;
-   /// Defaut charset
-   var $CharSet ="utf-8";
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-      global $CFG_GLPI;
-
-      // Comes from config
-      $this->SetLanguage("en", GLPI_PHPMAILER_DIR . "/language/");
-
-      if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-         $this->Mailer = "smtp";
-         $this->Host = $CFG_GLPI['smtp_host'];
-         if ($CFG_GLPI['smtp_username'] != '') {
-            $this->SMTPAuth  = true;
-            $this->Username  = $CFG_GLPI['smtp_username'];
-            $this->Password  =  $CFG_GLPI['smtp_password'];
-         }
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
-            $this->SMTPSecure = "ssl";
-         }
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS){
-            $this->SMTPSecure = "tls";
-         }
-      }
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-         $this->do_debug = 3;
-      }
-   }
-
-}
-
 /**
  *  Mailing class for trackings
  */

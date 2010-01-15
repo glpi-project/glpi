@@ -1022,6 +1022,15 @@ $LANG['mailing'][109]="Pas de groupe";
 $LANG['mailing'][110]="Email invalide";
 $LANG['mailing'][111]="Mail d'alerte envoyé à";
 $LANG['mailing'][112]="Type d'Email invalide";
+$LANG['mailing'][113]="Modèles de notifications";
+$LANG['mailing'][114]="Modèle par défaut";
+$LANG['mailing'][115]="Corps de l'email";
+$LANG['mailing'][116]="HTML";
+$LANG['mailing'][117]="texte";
+$LANG['mailing'][118]="Email";
+$LANG['mailing'][119]="Evènement";
+$LANG['mailing'][120]="Mode de notification";
+$LANG['mailing'][121]="Destinataires";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
@@ -1761,6 +1770,7 @@ $LANG['setup'][720]="Info. Système";
 $LANG['setup'][721]="Informations sur le système, l'installation et la configuration";
 $LANG['setup'][722]="A copier/coller lors d'une demande d'assistance";
 
+$LANG['setup'][730]="Configuration des notifications";
 
 //MySQL Replicate
 $LANG['setup'][800]="Réplicat MySQL";

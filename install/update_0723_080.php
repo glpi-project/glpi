@@ -2616,7 +2616,7 @@ function update0723to080() {
                // Convert data to int
                if ($withspecifity[$key] == 'int') {
                   // clean non integer values
-                  $query="UPDATE `$itemtable` SET `specif_default` = 0 
+                  $query="UPDATE `$itemtable` SET `specif_default` = 0
                              WHERE `specif_default` NOT REGEXP '^[0-9]*$' OR `specif_default` = '' OR `specif_default` IS NULL";
                   $DB->query($query) or die("0.80 update specif_default in $itemtable " . $LANG['update'][90] . $DB->error());
 
@@ -2722,6 +2722,58 @@ function update0723to080() {
 
       $query = "UPDATE `glpi_profiles` SET `import_externalauth_users`='w' WHERE `name` IN ('super-admin','admin')";
       $DB->query($query) or die("0.80 add import_externalauth_users write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_notificationtemplates')) {
+      $query = "CREATE TABLE `glpi_notificationtemplates` (
+                 `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                 `name` VARCHAR( 255 ) NOT NULL ,
+                 `language` VARCHAR( 255 ) NOT NULL ,
+                 `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                 `subject` TEXT NOT NULL ,
+                 `content_text` TEXT NOT NULL ,
+                 `content_html` TEXT NOT NULL ,
+                 `comment` TEXT NOT NULL ,
+                 `itemtype` VARCHAR( 255 ) NOT NULL,
+                 PRIMARY KEY ( `ID` )
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query) or die("0.80 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_notifications')) {
+      $query = "CREATE TABLE `glpi_notifications` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `name` VARCHAR( 255 ) NOT NULL ,
+                  `entities_id` INT( 11 ) NOT NULL DEFAULT '0',
+                  `itemtype` VARCHAR( 255 ) NOT NULL ,
+                  `event` VARCHAR( 255 ) NOT NULL ,
+                  `mode` VARCHAR( 255 ) NOT NULL ,
+                  `notificationtemplates_id` INT( 11 ) NOT NULL DEFAULT '0',
+                  `content` TEXT NOT NULL ,
+                  `comment` TEXT NOT NULL ,
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  PRIMARY KEY ( `id` )
+                  ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_notifications" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_notificationtargets')) {
+      $query = "CREATE TABLE `glpi_notificationtargets` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `notifications_id` INT( 11 ) NOT NULL DEFAULT '0',
+                  `type` INT( 11 ) NOT NULL DEFAULT '0',
+                  `items_id` INT( 11 ) NOT NULL DEFAULT '0',
+                  PRIMARY KEY ( `id` )
+                  ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_profiles','notification')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `notification` CHAR( 1 ) NULL";
+      $DB->query($query) or die("0.80 add notification in glpi_profiles". $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `notification`='w' WHERE `name` IN ('super-admin','admin')";
+      $DB->query($query) or die("0.80 add notification write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
    // Migrate infocoms entity information

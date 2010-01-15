@@ -1,8 +1,6 @@
 <?php
-
-
 /*
- * @version $Id$
+ * @version $Id: entitydata.class.php 10111 2010-01-12 09:03:26Z walid $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -31,18 +29,29 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
 
-checkRight("notification",'r');
+/**
+ * Entity Data class
+ */
+class NotificationEvent extends CommonDBTM {
 
-commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
+   static function dropdownEvents($itemtype,$value='') {
+      $events = array();
 
-Search::show('Notification');
+      if (class_exists($itemtype)) {
+         $item = new $itemtype ();
+         $events = $item->getEvents();
+      }
+      $events[''] = '-----';
+      Dropdown::showFromArray('event',$events, array ('value'=>$value));
+   }
+}
 
-commonFooter();
 ?>

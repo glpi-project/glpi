@@ -39,23 +39,22 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("config", "r");
+checkRight("notification",'r');
 
-$config = new Config();
-$notif = new Notification();
-
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      $config->showFormMailing($_POST['target'],1);
-      $config->showFormMailing($_POST['target'],2);
-      $config->showFormMailing($_POST['target'],3);
-      Plugin::displayAction($notif, $_REQUEST['glpi_tab']);
-      break;
-
-   default :
-      if (!Plugin::displayAction($notif, $_REQUEST['glpi_tab'])) {
-         $config->showFormMailing($_POST['target'],$_REQUEST['glpi_tab']);
-      }
+if ($_POST['id'] > 0) {
+   $target =new NotificationTarget;
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         $target->showForm($_POST['target'], $_POST["id"]);
+         Plugin::displayAction($target, $_REQUEST['glpi_tab']);
+         break;
+      case 2 :
+         $target->showForm($_POST['target'], $_POST["id"]);
+         break;
+      default :
+         if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {
+         }
+   }
 }
 
 ajaxFooter();
